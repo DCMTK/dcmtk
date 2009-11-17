@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmPixelData
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-03 14:32:50 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2009-11-17 16:36:51 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -558,13 +558,12 @@ public:
      */
     void setNonEncapsulationFlag(OFBool flag);
 
-
     /** access single frame without decompressing or loading a complete
      *  multi-frame object. The frame is copied into the buffer passed by the caller
      *  which must be large enough to contain a complete frame.
-     *  @param dataset pointer to DICOM dataset in which this pixel data object is located.
-     *    Used to access rows, columns, samples per pixel etc.
-     *  @param frameNo numer of frame, starting with 0 for the first frame.
+     *  @param dataset pointer to DICOM dataset in which this pixel data object is
+     *    located. Used to access rows, columns, samples per pixel etc.
+     *  @param frameNo number of frame, starting with 0 for the first frame.
      *  @param startFragment index of the compressed fragment that contains
      *    all or the first part of the compressed bitstream for the given frameNo.
      *    Upon successful return this parameter is updated to contain the index
@@ -595,6 +594,17 @@ public:
         OFString& decompressedColorModel,
         DcmFileCache *cache=NULL);
 
+    /** determine color model of the decompressed image
+     *  @param dataset pointer to DICOM dataset in which this pixel data object
+     *    is located. Used to access photometric interpretation.
+     *  @param decompressedColorModel upon successful return, the color model
+     *    of the decompressed image (which may be different from the one used
+     *    in the compressed images) is returned in this parameter
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getDecompressedColorModel(
+        DcmItem *dataset,
+        OFString &decompressedColorModel);
 };
 
 #endif
@@ -603,6 +613,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
+** Revision 1.37  2009-11-17 16:36:51  joergr
+** Added new method that allows for determining the color model of the
+** decompressed image.
+**
 ** Revision 1.36  2008-11-03 14:32:50  joergr
 ** Added method createValueFromTempFile() - overrides method in DcmElement.
 **

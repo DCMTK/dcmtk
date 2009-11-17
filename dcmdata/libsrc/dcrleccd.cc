@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: decoder codec class for RLE
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrleccd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-17 16:41:26 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +99,7 @@ OFCondition DcmRLECodecDecoder::decode(
     Uint32 rleHeader[16];
     DcmItem *ditem = OFstatic_cast(DcmItem *, dataset);
     OFBool numberOfFramesPresent = OFFalse;
-    
+
     if (result.good()) result = ditem->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
     if (result.good()) result = ditem->findAndGetUint16(DCM_Rows, imageRows);
     if (result.good()) result = ditem->findAndGetUint16(DCM_Columns, imageColumns);
@@ -393,13 +392,12 @@ OFCondition DcmRLECodecDecoder::decode(
     if (dataset->ident() == EVR_dataset)
     {
         // create new SOP instance UID if codec parameters require so
-        if (result.good() && djcp->getUIDCreation()) result = 
+        if (result.good() && djcp->getUIDCreation()) result =
           DcmCodec::newInstance(OFstatic_cast(DcmItem *, dataset), NULL, NULL, NULL);
     }
   }
   return result;
 }
-
 
 
 OFCondition DcmRLECodecDecoder::decodeFrame(
@@ -452,7 +450,7 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     if (result.good()) (void) ditem->findAndGetSint32(DCM_NumberOfFrames, imageFrames);
     if (imageFrames < 1) imageFrames = 1; // default in case this attribute contains garbage
 
-    if (result.bad()) 
+    if (result.bad())
        return result;
 
     DcmPixelItem *pixItem = NULL;
@@ -479,9 +477,9 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
         if (result.bad())
             return result;
     }
-    
-    // now access and decompress the frame starting at the item we have identified   
-    result = fromPixSeq->getItem(pixItem, currentItem); 
+
+    // now access and decompress the frame starting at the item we have identified
+    result = fromPixSeq->getItem(pixItem, currentItem);
     if (result.bad())
        return result;
 
@@ -508,7 +506,7 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     Uint32 inputBytes = 0;
 
     // pointers for buffer copy operations
-    Uint8 *outputBuffer = NULL; 
+    Uint8 *outputBuffer = NULL;
     Uint8 *pixelPointer = NULL;
     Uint16 *imageData16 = OFreinterpret_cast(Uint16 *, buffer);
     Uint8 *imageData8 = OFreinterpret_cast(Uint8 *, buffer);
@@ -628,18 +626,18 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
 
     // adjust byte order for uncompressed image to little endian
     swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, imageData16, frameSize, sizeof(Uint16));
- 
+
     return result;
 }
 
 
 OFCondition DcmRLECodecDecoder::encode(
-        const Uint16 * /* pixelData */,
-        const Uint32 /* length */,
-        const DcmRepresentationParameter * /* toRepParam */,
-        DcmPixelSequence * & /* pixSeq */,
-        const DcmCodecParameter * /* cp */,
-        DcmStack & /* objStack */) const
+    const Uint16 * /* pixelData */,
+    const Uint32 /* length */,
+    const DcmRepresentationParameter * /* toRepParam */,
+    DcmPixelSequence * & /* pixSeq */,
+    const DcmCodecParameter * /* cp */,
+    DcmStack & /* objStack */) const
 {
   // we are a decoder only
   return EC_IllegalCall;
@@ -660,9 +658,30 @@ OFCondition DcmRLECodecDecoder::encode(
 }
 
 
+OFCondition DcmRLECodecDecoder::determineDecompressedColorModel(
+    const DcmRepresentationParameter * /* fromParam */,
+    DcmPixelSequence * /* fromPixSeq */,
+    const DcmCodecParameter * /* cp */,
+    DcmItem *dataset,
+    OFString &decompressedColorModel) const
+{
+    OFCondition result = EC_InvalidTag;
+    if ((dataset != NULL ) && ((dataset->ident() == EVR_dataset) || (dataset->ident() == EVR_item)))
+    {
+        // retrieve color model from given dataset
+        result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, decompressedColorModel);
+    }
+    return result;
+}
+
+
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
+ * Revision 1.13  2009-11-17 16:41:26  joergr
+ * Added new method that allows for determining the color model of the
+ * decompressed image.
+ *
  * Revision 1.12  2009-11-04 09:58:10  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

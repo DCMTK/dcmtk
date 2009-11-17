@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-05-11 16:10:14 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-17 16:41:26 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -282,9 +282,9 @@ DcmPixelData::canWriteXfer(
 
 OFCondition
 DcmPixelData::chooseRepresentation(
-        const E_TransferSyntax repType,
-        const DcmRepresentationParameter * repParam,
-        DcmStack & pixelStack)
+    const E_TransferSyntax repType,
+    const DcmRepresentationParameter * repParam,
+    DcmStack & pixelStack)
 {
     OFCondition l_error = EC_CannotChangeRepresentation;
     DcmXfer toType(repType);
@@ -602,11 +602,12 @@ DcmPixelData::insertRepresentationEntry(
 }
 
 void
-DcmPixelData::print(STD_NAMESPACE ostream&out,
-                    const size_t flags,
-                    const int level,
-                    const char *pixelFileName,
-                    size_t *pixelCounter)
+DcmPixelData::print(
+    STD_NAMESPACE ostream&out,
+    const size_t flags,
+    const int level,
+    const char *pixelFileName,
+    size_t *pixelCounter)
 {
     if (current == repListEnd)
         printPixel(out, flags, level, pixelFileName, pixelCounter);
@@ -1054,17 +1055,17 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 
 void DcmPixelData::setNonEncapsulationFlag(OFBool flag)
 {
-   alwaysUnencapsulated = flag;
+    alwaysUnencapsulated = flag;
 }
 
 OFCondition DcmPixelData::getUncompressedFrame(
-        DcmItem *dataset,
-        Uint32 frameNo,
-        Uint32& startFragment,
-        void *buffer,
-        Uint32 bufSize,
-        OFString& decompressedColorModel,
-        DcmFileCache *cache)
+    DcmItem *dataset,
+    Uint32 frameNo,
+    Uint32& startFragment,
+    void *buffer,
+    Uint32 bufSize,
+    OFString& decompressedColorModel,
+    DcmFileCache *cache)
 {
     if ((dataset == NULL) || (buffer == NULL)) return EC_IllegalCall;
 
@@ -1075,7 +1076,7 @@ OFCondition DcmPixelData::getUncompressedFrame(
     Uint32 frameSize;
     OFCondition result = getUncompressedFrameSize(dataset, frameSize);
     if (result.bad()) return result;
-    
+
     // determine the minimum buffer size, which may be frame size plus one pad byte if frame size is odd.
     Uint32 minBufSize = frameSize;
     if (minBufSize & 1) ++minBufSize;
@@ -1105,9 +1106,37 @@ OFCondition DcmPixelData::getUncompressedFrame(
 }
 
 
+OFCondition DcmPixelData::getDecompressedColorModel(
+    DcmItem *dataset,
+    OFString &decompressedColorModel)
+{
+    OFCondition result = EC_IllegalCall;
+    if (dataset != NULL)
+    {
+      if (existUnencapsulated)
+      {
+        // we already have an uncompressed version of the pixel data either in memory or in file,
+        // so just retrieve the color model from the given dataset
+        result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, decompressedColorModel);
+      } else {
+        // we only have a compressed version of the pixel data.
+        // Identify a codec for determining the color model.
+        result = DcmCodecList::determineDecompressedColorModel(
+          (*original)->repType, (*original)->repParam, (*original)->pixSeq,
+          dataset, decompressedColorModel);
+      }
+    }
+    return result;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
+** Revision 1.47  2009-11-17 16:41:26  joergr
+** Added new method that allows for determining the color model of the
+** decompressed image.
+**
 ** Revision 1.46  2009-05-11 16:10:14  meichel
 ** DcmPixelData::getUncompressedFrame() now returns color model also
 **   for uncompressed images.

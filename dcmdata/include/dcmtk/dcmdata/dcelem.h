@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:05:29 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2009-11-17 16:36:51 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -632,8 +632,8 @@ class DcmElement
     /** access single frame without decompressing or loading a complete
      *  multi-frame object. The frame is copied into the buffer passed by the caller
      *  which must be large enough to contain a complete frame.
-     *  @param dataset pointer to DICOM dataset in which this pixel data object is located.
-     *    Used to access rows, columns, samples per pixel etc.
+     *  @param dataset pointer to DICOM dataset in which this pixel data object is
+     *    located. Used to access rows, columns, samples per pixel etc.
      *  @param frameNo numer of frame, starting with 0 for the first frame.
      *  @param startFragment index of the compressed fragment that contains
      *    all or the first part of the compressed bitstream for the given frameNo.
@@ -664,7 +664,18 @@ class DcmElement
                                              OFString &decompressedColorModel,
                                              DcmFileCache *cache = NULL);
 
-    /* --- static helper functions --- */
+    /** determine color model of the decompressed image
+     *  @param dataset pointer to DICOM dataset in which this pixel data object
+     *    is located. Used to access photometric interpretation.
+     *  @param decompressedColorModel upon successful return, the color model
+     *    of the decompressed image (which may be different from the one used
+     *    in the compressed images) is returned in this parameter
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getDecompressedColorModel(DcmItem *dataset,
+                                                  OFString &decompressedColorModel);
+
+	/* --- static helper functions --- */
 
     /** scan string value for conformance with given value representation (VR)
      *  @param value string value to be scanned
@@ -802,6 +813,10 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
+** Revision 1.43  2009-11-17 16:36:51  joergr
+** Added new method that allows for determining the color model of the
+** decompressed image.
+**
 ** Revision 1.42  2009-08-03 09:05:29  joergr
 ** Added methods that check whether a given string value conforms to the VR and
 ** VM definitions of the DICOM standards.

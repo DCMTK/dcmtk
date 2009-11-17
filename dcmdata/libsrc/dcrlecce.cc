@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: encoder codec class for RLE
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecce.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-17 16:41:26 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,12 +119,12 @@ OFCondition DcmRLECodecEncoder::encode(
 
 
 OFCondition DcmRLECodecEncoder::encode(
-        const Uint16 *pixelData,
-        const Uint32 length,
-        const DcmRepresentationParameter * /* toRepParam */ ,
-        DcmPixelSequence * & pixSeq,
-        const DcmCodecParameter *cp,
-        DcmStack & objStack) const
+    const Uint16 *pixelData,
+    const Uint32 length,
+    const DcmRepresentationParameter * /* toRepParam */ ,
+    DcmPixelSequence * & pixSeq,
+    const DcmCodecParameter *cp,
+    DcmStack & objStack) const
 {
   OFCondition result = EC_Normal;
 
@@ -432,9 +431,24 @@ OFCondition DcmRLECodecEncoder::updateDerivationDescription(
 }
 
 
+OFCondition DcmRLECodecEncoder::determineDecompressedColorModel(
+    const DcmRepresentationParameter * /* fromParam */,
+    DcmPixelSequence * /* fromPixSeq */,
+    const DcmCodecParameter * /* cp */,
+    DcmItem * /* dataset */,
+    OFString & /* decompressedColorModel */) const
+{
+    return EC_IllegalCall;
+}
+
+
 /*
  * CVS/RCS Log
  * $Log: dcrlecce.cc,v $
+ * Revision 1.14  2009-11-17 16:41:26  joergr
+ * Added new method that allows for determining the color model of the
+ * decompressed image.
+ *
  * Revision 1.13  2009-11-04 09:58:10  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

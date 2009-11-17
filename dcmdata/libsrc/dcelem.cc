@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:11:20 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2009-11-17 16:41:26 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1517,6 +1517,7 @@ void DcmElement::compact()
   }
 }
 
+
 OFCondition DcmElement::createValueFromTempFile(DcmInputStreamFactory *factory,
                                                 const Uint32 length,
                                                 const E_ByteOrder byteOrder)
@@ -1539,6 +1540,7 @@ OFCondition DcmElement::createValueFromTempFile(DcmInputStreamFactory *factory,
     }
     else return EC_IllegalCall;
 }
+
 
 OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
                                                  Uint32 &frameSize) const
@@ -1574,6 +1576,7 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
   return result;
 }
 
+
 OFCondition DcmElement::getUncompressedFrame(DcmItem * /* dataset */ ,
                                              Uint32 /* frameNo */ ,
                                              Uint32& /* startFragment */ ,
@@ -1581,6 +1584,13 @@ OFCondition DcmElement::getUncompressedFrame(DcmItem * /* dataset */ ,
                                              Uint32 /* bufSize */ ,
                                              OFString& /* decompressedColorModel */ ,
                                              DcmFileCache * /* cache */ )
+{
+  return EC_IllegalCall;
+}
+
+
+OFCondition DcmElement::getDecompressedColorModel(DcmItem * /* dataset */,
+                                                  OFString & /* decompressedColorModel */)
 {
   return EC_IllegalCall;
 }
@@ -1672,6 +1682,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.78  2009-11-17 16:41:26  joergr
+** Added new method that allows for determining the color model of the
+** decompressed image.
+**
 ** Revision 1.77  2009-11-13 13:11:20  joergr
 ** Fixed minor issues in log output.
 **

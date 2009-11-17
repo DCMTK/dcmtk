@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2008, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-03 14:34:10 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2009-11-17 16:41:26 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,6 +62,7 @@ OFCondition DcmCodec::insertStringIfMissing(DcmItem *dataset, const DcmTagKey& t
   }
   return EC_Normal;
 }
+
 
 OFCondition DcmCodec::convertToSecondaryCapture(DcmItem *dataset)
 {
@@ -102,6 +103,7 @@ OFCondition DcmCodec::convertToSecondaryCapture(DcmItem *dataset)
   return result;
 }
 
+
 OFCondition DcmCodec::insertCodeSequence(
     DcmItem *dataset,
     const DcmTagKey &tagKey,
@@ -131,6 +133,7 @@ OFCondition DcmCodec::insertCodeSequence(
 
   return result;
 }
+
 
 OFCondition DcmCodec::newInstance(
   DcmItem *dataset,
@@ -615,9 +618,50 @@ OFBool DcmCodecList::canChangeCoding(
   return result;
 }
 
+OFCondition DcmCodecList::determineDecompressedColorModel(
+  const DcmXfer &fromType,
+  const DcmRepresentationParameter *fromParam,
+  DcmPixelSequence *fromPixSeq,
+  DcmItem *dataset,
+  OFString &decompressedColorModel)
+{
+#ifdef _REENTRANT
+  if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
+#endif
+  OFCondition result = EC_CannotChangeRepresentation;
+
+  // acquire write lock on codec list.  Will block if some write lock is currently active.
+#ifdef _REENTRANT
+  if (0 == codecLock.rdlock())
+  {
+#endif
+    E_TransferSyntax fromXfer = fromType.getXfer();
+    OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
+    OFListIterator(DcmCodecList *) last = registeredCodecs.end();
+    while (first != last)
+    {
+      if ((*first)->codec->canChangeCoding(fromXfer, EXS_LittleEndianExplicit))
+      {
+        result = (*first)->codec->determineDecompressedColorModel(fromParam, fromPixSeq, (*first)->codecParameter,
+                 dataset, decompressedColorModel);
+        first = last;
+      } else ++first;
+    }
+#ifdef _REENTRANT
+    codecLock.unlock();
+  } else result = EC_IllegalCall;
+#endif
+  return result;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
+** Revision 1.17  2009-11-17 16:41:26  joergr
+** Added new method that allows for determining the color model of the
+** decompressed image.
+**
 ** Revision 1.16  2008-11-03 14:34:10  joergr
 ** Fixed typo.
 **
