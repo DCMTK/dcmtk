@@ -22,8 +22,8 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:38:17 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2009-11-17 17:55:47 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #define DIUTILS_H
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/ofstd/ofglobal.h"
 #include "dcmtk/ofstd/ofcast.h"
@@ -94,6 +95,15 @@ const unsigned long CIF_CheckLutBitDepth             = 0x0000100;
 
 /// use absolute (possible) pixel range for determining the internal representation (monochrome only)
 const unsigned long CIF_UseAbsolutePixelRange        = 0x0000200;
+
+/// use partial access to pixel data, i.e. without decompressing or loading a complete multi-frame image
+const unsigned long CIF_UsePartialAccessToPixelData  = 0x0000400;
+
+/// always decompress complete pixel data when processing an image, i.e. even if partial access is used
+const unsigned long CIF_DecompressCompletePixelData  = 0x0000800;
+
+/// never access embedded overlays since this requires to load and uncompress the complete pixel data
+const unsigned long CIF_NeverAccessEmbeddedOverlays  = 0x0001000;
 //@}
 
 
@@ -111,6 +121,8 @@ enum EP_Interpretation
 {
     /// unknown, undefined, invalid
     EPI_Unknown,
+    // no element value available
+    EPI_Missing,
     /// monochrome 1
     EPI_Monochrome1,
     /// monochrome 2
@@ -419,6 +431,11 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
+ * Revision 1.37  2009-11-17 17:55:47  joergr
+ * Added new enum value for missing photometric interpretation value.
+ * Added new configuration flags for the upcoming support of partial access to
+ * pixel data, i.e. without decompressing/loading a complete multi-frame image.
+ *
  * Revision 1.36  2009-10-28 14:38:17  joergr
  * Fixed minor issues in log output.
  *

@@ -20,6 +20,13 @@ Changes between releases are documented here.
            dcmjpeg/libsrc/djcodecd.cc
            dcmjpeg/libsrc/djcodece.cc
 
+- Added new enum value for missing photometric interpretation value.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diutils.h
+
+- Added new configuration flags for the upcoming support of partial access to
+  pixel data, i.e. without decompressing/loading a complete multi-frame image.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diutils.h
+
 **** Changes from 2009.11.17 (schlachter)
 
 - Make OFLogger::getChainedLogLevel() accessible.
