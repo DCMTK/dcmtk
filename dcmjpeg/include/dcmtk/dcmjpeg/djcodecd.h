@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2008, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: abstract codec class for JPEG decoders.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:48:44 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/dcmtk/dcmjpeg/djcodecd.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-17 16:46:01 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,15 +49,15 @@ class DJDecoder;
 
 /** abstract codec class for JPEG decoders.
  *  This abstract class contains most of the application logic
- *  needed for a dcmdata codec object that implements a JPEG decoder 
+ *  needed for a dcmdata codec object that implements a JPEG decoder
  *  using the DJDecoder interface to the underlying JPEG implementation.
  *  This class only supports decompression, it neither implements
  *  encoding nor transcoding.
  */
 class DJCodecDecoder : public DcmCodec
 {
-public:  
- 
+public:
+
   /// default constructor
   DJCodecDecoder();
 
@@ -126,7 +125,7 @@ public:
    *  @param toRepParam representation parameter describing the desired
    *    compressed representation (e.g. JPEG quality)
    *  @param pixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.   
+   *    allocated on heap) returned in this parameter upon success.
    *  @param cp codec parameters for this codec
    *  @param objStack stack pointing to the location of the pixel data
    *    element in the current dataset.
@@ -148,7 +147,7 @@ public:
    *  @param toRepParam representation parameter describing the desired
    *    new compressed representation (e.g. JPEG quality)
    *  @param toPixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.   
+   *    allocated on heap) returned in this parameter upon success.
    *  @param cp codec parameters for this codec
    *  @param objStack stack pointing to the location of the pixel data
    *    element in the current dataset.
@@ -174,13 +173,33 @@ public:
     const E_TransferSyntax oldRepType,
     const E_TransferSyntax newRepType) const;
 
+  /** determine color model of the decompressed image
+   *  @param fromParam representation parameter of current compressed
+   *    representation, may be NULL
+   *  @param fromPixSeq compressed pixel sequence
+   *  @param cp codec parameters for this codec
+   *  @param dataset pointer to dataset in which pixel data element is contained
+   *  @param dataset pointer to DICOM dataset in which this pixel data object
+   *    is located. Used to access photometric interpretation.
+   *  @param decompressedColorModel upon successful return, the color model
+   *    of the decompressed image (which may be different from the one used
+   *    in the compressed images) is returned in this parameter
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition determineDecompressedColorModel(
+    const DcmRepresentationParameter *fromParam,
+    DcmPixelSequence *fromPixSeq,
+    const DcmCodecParameter *cp,
+    DcmItem *dataset,
+    OFString &decompressedColorModel) const;
+
   /** returns the transfer syntax that this particular codec
    *  is able to decode.
    *  @return supported transfer syntax
    */
   virtual E_TransferSyntax supportedTransferSyntax() const = 0;
 
-private: 
+private:
 
   /** creates an instance of the compression library to be used for decoding.
    *  @param toRepParam representation parameter passed to decode()
@@ -253,7 +272,6 @@ private:
   static OFBool requiresPlanarConfiguration(
     const char *sopClassUID,
     EP_Interpretation photometricInterpretation);
-
 };
 
 #endif
@@ -261,6 +279,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcodecd.h,v $
+ * Revision 1.7  2009-11-17 16:46:01  joergr
+ * Added new method that allows for determining the color model of the
+ * decompressed image.
+ *
  * Revision 1.6  2008-05-29 10:48:44  meichel
  * Implemented new method DcmPixelData::getUncompressedFrame
  *   that permits frame-wise access to compressed and uncompressed

@@ -21,9 +21,9 @@
  *
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-10 09:38:06 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-17 16:45:21 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@
 // dcmjpeg includes
 #include "dcmtk/dcmjpeg/djcparam.h"  /* for class DJCodecParameter */
 #include "dcmtk/dcmjpeg/djdecabs.h"  /* for class DJDecoder */
+
 
 DJCodecDecoder::DJCodecDecoder()
 : DcmCodec()
@@ -468,7 +469,6 @@ OFCondition DJCodecDecoder::decodeFrame(
                     }
                   }
 
-
                   if (result.good())
                   {
                     // compression was successful. Now update output parameters
@@ -519,12 +519,12 @@ OFCondition DJCodecDecoder::decodeFrame(
 
 
 OFCondition DJCodecDecoder::encode(
-        const Uint16 * /* pixelData */,
-        const Uint32 /* length */,
-        const DcmRepresentationParameter * /* toRepParam */,
-        DcmPixelSequence * & /* pixSeq */,
-        const DcmCodecParameter * /* cp */,
-        DcmStack & /* objStack */) const
+    const Uint16 * /* pixelData */,
+    const Uint32 /* length */,
+    const DcmRepresentationParameter * /* toRepParam */,
+    DcmPixelSequence * & /* pixSeq */,
+    const DcmCodecParameter * /* cp */,
+    DcmStack & /* objStack */) const
 {
   // we are a decoder only
   return EC_IllegalCall;
@@ -542,6 +542,38 @@ OFCondition DJCodecDecoder::encode(
 {
   // we don't support re-coding for now.
   return EC_IllegalCall;
+}
+
+
+OFCondition DJCodecDecoder::determineDecompressedColorModel(
+    const DcmRepresentationParameter *fromParam,
+    DcmPixelSequence *fromPixSeq,
+    const DcmCodecParameter *cp,
+    DcmItem *dataset,
+    OFString &decompressedColorModel) const
+{
+  OFCondition result = EC_CorruptedData;
+  if ((dataset != NULL) && (fromPixSeq != NULL))
+  {
+    // the first frame always starts with the second fragment
+    Uint32 startFragment = 1;
+    Uint32 bufSize = 0;
+    // determine size of uncompressed frame
+    if ((fromPixSeq->getUncompressedFrameSize(dataset, bufSize).good()) && (bufSize > 0))
+    {
+      // allocate temporary buffer for a single frame
+      Uint8 *buffer = new Uint8[bufSize];
+      if (buffer != NULL)
+      {
+        // simple approach: decode first frame in order to determine the uncompressed color model
+        result = decodeFrame(fromParam, fromPixSeq, cp, dataset, 0 /* frameNo */, startFragment,
+          OFstatic_cast(void *, buffer), bufSize, decompressedColorModel);
+      } else
+        result = EC_MemoryExhausted;
+      delete[] buffer;
+    }
+  }
+  return result;
 }
 
 
@@ -786,6 +818,10 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
+ * Revision 1.14  2009-11-17 16:45:21  joergr
+ * Added new method that allows for determining the color model of the
+ * decompressed image.
+ *
  * Revision 1.13  2009-08-10 09:38:06  meichel
  * All decompression codecs now replace NumberOfFrames if larger than one
  *   or present in the original image.

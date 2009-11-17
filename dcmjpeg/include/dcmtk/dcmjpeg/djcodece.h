@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2008, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:48:44 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/dcmtk/dcmjpeg/djcodece.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-17 16:46:01 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +38,7 @@
 #include "dcmtk/dcmdata/dccodec.h"    /* for class DcmCodec */
 #include "dcmtk/dcmjpeg/djutils.h"    /* for enums */
 #include "dcmtk/ofstd/oflist.h"
-#include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
+#include "dcmtk/ofstd/ofstring.h"     /* for class OFString */
 
 class DataInterface;
 class DJEncoder;
@@ -178,6 +177,26 @@ public:
     const E_TransferSyntax oldRepType,
     const E_TransferSyntax newRepType) const;
 
+  /** determine color model of the decompressed image
+   *  @param fromParam representation parameter of current compressed
+   *    representation, may be NULL
+   *  @param fromPixSeq compressed pixel sequence
+   *  @param cp codec parameters for this codec
+   *  @param dataset pointer to dataset in which pixel data element is contained
+   *  @param dataset pointer to DICOM dataset in which this pixel data object
+   *    is located. Used to access photometric interpretation.
+   *  @param decompressedColorModel upon successful return, the color model
+   *    of the decompressed image (which may be different from the one used
+   *    in the compressed images) is returned in this parameter
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition determineDecompressedColorModel(
+    const DcmRepresentationParameter *fromParam,
+    DcmPixelSequence *fromPixSeq,
+    const DcmCodecParameter *cp,
+    DcmItem *dataset,
+    OFString &decompressedColorModel) const;
+
   /** returns the transfer syntax that this particular codec
    *  is able to encode and decode.
    *  @return supported transfer syntax
@@ -245,12 +264,12 @@ private:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition encodeColorImage(
-        OFBool YBRmode,
-        DcmItem *dataset,
-        const DcmRepresentationParameter * toRepParam,
-        DcmPixelSequence * & pixSeq,
-        const DJCodecParameter *cp,
-        double& compressionRatio) const;
+    OFBool YBRmode,
+    DcmItem *dataset,
+    const DcmRepresentationParameter * toRepParam,
+    DcmPixelSequence * & pixSeq,
+    const DJCodecParameter *cp,
+    double& compressionRatio) const;
 
   /** compresses the given uncompressed monochrome DICOM image and stores
    *  the result in the given pixSeq element.
@@ -310,11 +329,11 @@ private:
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition updateDerivationDescription(
-      DcmItem *dataset,
-      const DcmRepresentationParameter * toRepParam,
-      const DJCodecParameter *cp,
-      Uint8 bitsPerSample,
-      double ratio) const;
+    DcmItem *dataset,
+    const DcmRepresentationParameter * toRepParam,
+    const DJCodecParameter *cp,
+    Uint8 bitsPerSample,
+    double ratio) const;
 
   /** for all overlay groups create (60xx,3000) Overlay Data.
    *  @param dataset dataset to be modified
@@ -378,6 +397,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcodece.h,v $
+ * Revision 1.9  2009-11-17 16:46:01  joergr
+ * Added new method that allows for determining the color model of the
+ * decompressed image.
+ *
  * Revision 1.8  2008-05-29 10:48:44  meichel
  * Implemented new method DcmPixelData::getUncompressedFrame
  *   that permits frame-wise access to compressed and uncompressed

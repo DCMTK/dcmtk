@@ -1,6 +1,25 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.17 (riesmeier)
+
+- Added new method that allows for determining the color model of the
+  decompressed image.
+  Affects: dcmdata/include/dcmtk/dcmdata/dccodec.h
+           dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/include/dcmtk/dcmdata/dcpixel.h
+           dcmdata/include/dcmtk/dcmdata/dcrleccd.h
+           dcmdata/include/dcmtk/dcmdata/dcrlecce.h
+           dcmdata/libsrc/dccodec.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcpixel.cc
+           dcmdata/libsrc/dcrleccd.cc
+           dcmdata/libsrc/dcrlecce.cc
+           dcmjpeg/include/dcmtk/dcmjpeg/djcodecd.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djcodece.h
+           dcmjpeg/libsrc/djcodecd.cc
+           dcmjpeg/libsrc/djcodece.cc
+
 **** Changes from 2009.11.17 (schlachter)
 
 - Make OFLogger::getChainedLogLevel() accessible.

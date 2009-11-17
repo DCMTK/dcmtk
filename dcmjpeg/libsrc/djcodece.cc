@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2009, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 12:44:33 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-17 16:45:22 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,8 +50,8 @@
 #include "dcmtk/dcmdata/dcvrst.h"     /* for class DcmShortText */
 #include "dcmtk/dcmdata/dcvrus.h"     /* for class DcmUnsignedShort */
 #include "dcmtk/dcmdata/dcswap.h"     /* for swapIfNecessary */
-                                      
-// dcmjpeg includes                   
+
+// dcmjpeg includes
 #include "dcmtk/dcmjpeg/djcparam.h"   /* for class DJCodecParameter */
 #include "dcmtk/dcmjpeg/djencabs.h"   /* for class DJEncoder */
 
@@ -178,6 +177,7 @@ OFCondition DJCodecEncoder::encode(
         result = encodeColorImage(OFTrue, (DcmItem *)dataset, toRepParam, pixSeq, djcp, compressionRatio);
         break;
       case EPI_Unknown:
+      case EPI_Missing:
         // unknown color model - bail out
         result = EJ_UnsupportedPhotometricInterpretation;
         break;
@@ -233,6 +233,17 @@ OFCondition DJCodecEncoder::encode(
     }
   }
   return result;
+}
+
+
+OFCondition DJCodecEncoder::determineDecompressedColorModel(
+    const DcmRepresentationParameter * /* fromParam */,
+    DcmPixelSequence * /* fromPixSeq */,
+    const DcmCodecParameter * /* cp */,
+    DcmItem * /* dataset */,
+    OFString & /* decompressedColorModel */) const
+{
+    return EC_IllegalCall;
 }
 
 
@@ -1471,9 +1482,14 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
   return item->putAndInsertUint16(DCM_PlanarConfiguration, newPlanConf);
 }
 
+
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
+ * Revision 1.30  2009-11-17 16:45:22  joergr
+ * Added new method that allows for determining the color model of the
+ * decompressed image.
+ *
  * Revision 1.29  2009-10-07 12:44:33  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
