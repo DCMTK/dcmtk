@@ -21,9 +21,9 @@
  *
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-06 09:41:22 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-17 14:26:21 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,6 +87,14 @@ public:
 
     /// this function is only used internally by OFLOG_FATAL and friends
     using log4cplus::Logger::forcedLog;
+
+    /** Get the logger's log level.
+     *  One of the checks that isEnabledFor() does looks like this:
+     *    if (getChainedLogLevel() < level)
+     *        return false;
+     *  @return the log level to which this logger is set.
+     */
+    using log4cplus::Logger::getChainedLogLevel;
 };
 
 /** functions for initializing the logging system
@@ -135,6 +143,9 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.6  2009-11-17 14:26:21  uli
+ * Make OFLogger::getChainedLogLevel() accessible.
+ *
  * Revision 1.5  2009-11-06 09:41:22  joergr
  * Changed documentation on log level "trace".
  *

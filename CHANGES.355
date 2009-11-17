@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.17 (schlachter)
+
+- Make OFLogger::getChainedLogLevel() accessible.
+  Affects: oflog/include/dcmtk/oflog/oflog.h
+
 **** Changes from 2009.11.13 (riesmeier)
 
 - Fixed minor issues in log output.
