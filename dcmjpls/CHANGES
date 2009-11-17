@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.17 (riesmeier)
+
+- Added new method that allows for determining the color model of the
+  decompressed image.
+  Affects: dcmjpls/include/dcmtk/dcmjpls/djcodecd.h
+           dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodece.cc
+
 **** Changes from 2009.10.07 (schlachter)
 
 - Switched to logging mechanism provided by the "new" oflog module.

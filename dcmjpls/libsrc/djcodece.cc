@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2009, OFFIS
+ *  Copyright (C) 2007-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: codec classes for JPEG-LS encoders.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 13:16:47 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-17 16:56:35 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,6 +78,7 @@ BEGIN_EXTERN_C
 #include <sys/stat.h>    /* for stat, fstat */
 #endif
 END_EXTERN_C
+
 
 E_TransferSyntax DJLSLosslessEncoder::supportedTransferSyntax() const
 {
@@ -154,12 +155,12 @@ OFCondition DJLSEncoderBase::encode(
 }
 
 OFCondition DJLSEncoderBase::encode(
-        const Uint16 * pixelData,
-        const Uint32 length,
-        const DcmRepresentationParameter * toRepParam,
-        DcmPixelSequence * & pixSeq,
-        const DcmCodecParameter *cp,
-        DcmStack & objStack) const
+    const Uint16 * pixelData,
+    const Uint32 length,
+    const DcmRepresentationParameter * toRepParam,
+    DcmPixelSequence * & pixSeq,
+    const DcmCodecParameter *cp,
+    DcmStack & objStack) const
 {
   OFCondition result = EC_Normal;
 
@@ -228,6 +229,16 @@ OFCondition DJLSEncoderBase::encode(
   return result;
 }
 
+
+OFCondition DJLSEncoderBase::determineDecompressedColorModel(
+    const DcmRepresentationParameter * /* fromParam */,
+    DcmPixelSequence * /* fromPixSeq */,
+    const DcmCodecParameter * /* cp */,
+    DcmItem * /* dataset */,
+    OFString & /* decompressedColorModel */) const
+{
+    return EC_IllegalCall;
+}
 
 
 OFCondition DJLSEncoderBase::adjustOverlays(
@@ -387,13 +398,13 @@ OFCondition DJLSEncoderBase::updateDerivationDescription(
 
 
 OFCondition DJLSEncoderBase::losslessRawEncode(
-        const Uint16 *pixelData,
-        const Uint32 length,
-        DcmItem *dataset,
-        const DJLSRepresentationParameter *djrp,
-        DcmPixelSequence * & pixSeq,
-        const DJLSCodecParameter *djcp,
-        double& compressionRatio) const
+    const Uint16 *pixelData,
+    const Uint32 length,
+    DcmItem *dataset,
+    const DJLSRepresentationParameter *djrp,
+    DcmPixelSequence * & pixSeq,
+    const DJLSCodecParameter *djcp,
+    double& compressionRatio) const
 {
   compressionRatio = 0.0; // initialize if something goes wrong
 
@@ -682,14 +693,14 @@ OFCondition DJLSEncoderBase::compressRawFrame(
 
 
 OFCondition DJLSEncoderBase::losslessCookedEncode(
-        const Uint16 *pixelData,
-        const Uint32 length,
-        DcmItem *dataset,
-        const DJLSRepresentationParameter *djrp,
-        DcmPixelSequence * & pixSeq,
-        const DJLSCodecParameter *djcp,
-        double& compressionRatio,
-        Uint16 nearLosslessDeviation) const
+    const Uint16 *pixelData,
+    const Uint32 length,
+    DcmItem *dataset,
+    const DJLSRepresentationParameter *djrp,
+    DcmPixelSequence * & pixSeq,
+    const DJLSCodecParameter *djcp,
+    double& compressionRatio,
+    Uint16 nearLosslessDeviation) const
 {
   compressionRatio = 0.0; // initialize if something goes wrong
 
@@ -1128,6 +1139,10 @@ OFCondition DJLSEncoderBase::convertToSampleInterleaved(
 /*
  * CVS/RCS Log:
  * $Log: djcodece.cc,v $
+ * Revision 1.7  2009-11-17 16:56:35  joergr
+ * Added new method that allows for determining the color model of the
+ * decompressed image.
+ *
  * Revision 1.6  2009-10-07 13:16:47  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

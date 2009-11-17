@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2009, OFFIS
+ *  Copyright (C) 2007-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: codec classes for JPEG-LS encoders.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 13:16:47 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-17 16:57:14 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,6 +167,26 @@ public:
     const E_TransferSyntax oldRepType,
     const E_TransferSyntax newRepType) const;
 
+  /** determine color model of the decompressed image
+   *  @param fromParam representation parameter of current compressed
+   *    representation, may be NULL
+   *  @param fromPixSeq compressed pixel sequence
+   *  @param cp codec parameters for this codec
+   *  @param dataset pointer to dataset in which pixel data element is contained
+   *  @param dataset pointer to DICOM dataset in which this pixel data object
+   *    is located. Used to access photometric interpretation.
+   *  @param decompressedColorModel upon successful return, the color model
+   *    of the decompressed image (which may be different from the one used
+   *    in the compressed images) is returned in this parameter
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition determineDecompressedColorModel(
+    const DcmRepresentationParameter *fromParam,
+    DcmPixelSequence *fromPixSeq,
+    const DcmCodecParameter *cp,
+    DcmItem *dataset,
+    OFString &decompressedColorModel) const;
+
 private:
 
   /** returns the transfer syntax that this particular codec
@@ -188,13 +208,13 @@ private:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition losslessRawEncode(
-        const Uint16 *pixelData,
-        const Uint32 length,
-        DcmItem *dataset,
-        const DJLSRepresentationParameter *djrp,
-        DcmPixelSequence * & pixSeq,
-        const DJLSCodecParameter *djcp,
-        double& compressionRatio) const;
+    const Uint16 *pixelData,
+    const Uint32 length,
+    DcmItem *dataset,
+    const DJLSRepresentationParameter *djrp,
+    DcmPixelSequence * & pixSeq,
+    const DJLSCodecParameter *djcp,
+    double& compressionRatio) const;
 
   /** lossless encoder that moves Overlays to (60xx,3000) and only
    *  compresses the stored bits of the pixel cell.
@@ -210,14 +230,14 @@ private:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition losslessCookedEncode(
-        const Uint16 * pixelData,
-        const Uint32 length,
-        DcmItem *dataset,
-        const DJLSRepresentationParameter *djrp,
-        DcmPixelSequence * & pixSeq,
-        const DJLSCodecParameter *djcp,
-        double& compressionRatio,
-        Uint16 nearLosslessDeviation) const;
+    const Uint16 * pixelData,
+    const Uint32 length,
+    DcmItem *dataset,
+    const DJLSRepresentationParameter *djrp,
+    DcmPixelSequence * & pixSeq,
+    const DJLSCodecParameter *djcp,
+    double& compressionRatio,
+    Uint16 nearLosslessDeviation) const;
 
   /** for all overlay groups create (60xx,3000) Overlay Data.
    *  @param dataset dataset to be modified
@@ -315,12 +335,12 @@ private:
    *  @return EC_Normal if succesful, an error code otherwise
    */
   OFCondition convertToUninterleaved(
-      Uint8 *target,
-      const Uint8 *source,
-      Uint8 components,
-      Uint32 width,
-      Uint32 height,
-      Uint8 bitsAllocated) const;
+    Uint8 *target,
+    const Uint8 *source,
+    Uint8 components,
+    Uint32 width,
+    Uint32 height,
+    Uint8 bitsAllocated) const;
 
   /** Convert an image from uninterleaved to sample interleaved.
    *  @param target A buffer where the converted image will be stored
@@ -331,12 +351,12 @@ private:
    *  @return EC_Normal if succesful, an error code otherwise
    */
   OFCondition convertToSampleInterleaved(
-      Uint8 *target,
-      const Uint8 *source,
-      Uint8 components,
-      Uint32 width,
-      Uint32 height,
-      Uint8 bitsAllocated) const;
+    Uint8 *target,
+    const Uint8 *source,
+    Uint8 components,
+    Uint32 width,
+    Uint32 height,
+    Uint8 bitsAllocated) const;
 };
 
 
@@ -367,6 +387,10 @@ class DJLSNearLosslessEncoder : public DJLSEncoderBase
 /*
  * CVS/RCS Log:
  * $Log: djcodece.h,v $
+ * Revision 1.4  2009-11-17 16:57:14  joergr
+ * Added new method that allows for determining the color model of the
+ * decompressed image.
+ *
  * Revision 1.3  2009-10-07 13:16:47  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

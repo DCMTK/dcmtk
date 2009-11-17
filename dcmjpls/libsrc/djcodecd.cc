@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2009, OFFIS
+ *  Copyright (C) 2007-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: codec classes for JPEG-LS decoders.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 13:16:47 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-17 16:56:35 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,8 +80,8 @@ OFBool DJLSDecoderBase::canChangeCoding(
   // this codec only handles conversion from JPEG-LS to uncompressed.
 
   DcmXfer newRep(newRepType);
-  if (newRep.isNotEncapsulated() && 
-     ((oldRepType == EXS_JPEGLSLossless)||(oldRepType == EXS_JPEGLSLossy))) 
+  if (newRep.isNotEncapsulated() &&
+     ((oldRepType == EXS_JPEGLSLossless)||(oldRepType == EXS_JPEGLSLossy)))
      return OFTrue;
 
   return OFFalse;
@@ -103,7 +103,7 @@ OFCondition DJLSDecoderBase::decode(
   DcmItem *dataset = OFstatic_cast(DcmItem *, dobject);
   OFBool numberOfFramesPresent = OFFalse;
 
-  // determine properties of uncompressed dataset  
+  // determine properties of uncompressed dataset
   Uint16 imageSamplesPerPixel = 0;
   if (dataset->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel).bad()) return EC_TagNotFound;
   // we only handle one or three samples per pixel
@@ -158,8 +158,8 @@ OFCondition DJLSDecoderBase::decode(
   // determine planar configuration for uncompressed data
   OFString imageSopClass;
   OFString imagePhotometricInterpretation;
-  dataset->findAndGetOFString(DCM_SOPClassUID, imageSopClass); 
-  dataset->findAndGetOFString(DCM_PhotometricInterpretation, imagePhotometricInterpretation); 
+  dataset->findAndGetOFString(DCM_SOPClassUID, imageSopClass);
+  dataset->findAndGetOFString(DCM_PhotometricInterpretation, imagePhotometricInterpretation);
   Uint16 imagePlanarConfiguration = 0; // 0 is color-by-pixel, 1 is color-by-plane
 
   if (imageSamplesPerPixel > 1)
@@ -171,7 +171,7 @@ OFCondition DJLSDecoderBase::decode(
         imagePlanarConfiguration = 2; // invalid value
         dataset->findAndGetUint16(DCM_PlanarConfiguration, imagePlanarConfiguration);
         // determine auto default if not found or invalid
-        if (imagePlanarConfiguration > 1) 
+        if (imagePlanarConfiguration > 1)
           imagePlanarConfiguration = determinePlanarConfiguration(imageSopClass, imagePhotometricInterpretation);
         break;
       case EJLSPC_auto:
@@ -204,7 +204,7 @@ OFCondition DJLSDecoderBase::decode(
   OFString pnmTempName;
   size_t compressedSize;
 
-  while (result.good() && !done)  
+  while (result.good() && !done)
   {
       DCMJPLS_INFO("Current Frame Number: " << currentFrame+1);
 
@@ -341,7 +341,7 @@ OFCondition DJLSDecoderBase::decode(
     // which should always identify itself as dataset, not as item.
     if ((dataset->ident() == EVR_dataset) && (djcp->getUIDCreation() == EJLSUC_always))
     {
-        // create new SOP instance UID 
+        // create new SOP instance UID
         result = DcmCodec::newInstance((DcmItem *)dataset, NULL, NULL, NULL);
     }
   }
@@ -363,16 +363,16 @@ OFCondition DJLSDecoderBase::decodeFrame(
 {
   // UNIMPLEMENTED
   return EC_IllegalCall;
-}    
+}
 
 
 OFCondition DJLSDecoderBase::encode(
-        const Uint16 * /* pixelData */,
-        const Uint32 /* length */,
-        const DcmRepresentationParameter * /* toRepParam */,
-        DcmPixelSequence * & /* pixSeq */,
-        const DcmCodecParameter * /* cp */,
-        DcmStack & /* objStack */) const
+    const Uint16 * /* pixelData */,
+    const Uint32 /* length */,
+    const DcmRepresentationParameter * /* toRepParam */,
+    DcmPixelSequence * & /* pixSeq */,
+    const DcmCodecParameter * /* cp */,
+    DcmStack & /* objStack */) const
 {
   // we are a decoder only
   return EC_IllegalCall;
@@ -393,6 +393,43 @@ OFCondition DJLSDecoderBase::encode(
 }
 
 
+OFCondition DJLSDecoderBase::determineDecompressedColorModel(
+    const DcmRepresentationParameter *fromParam,
+    DcmPixelSequence *fromPixSeq,
+    const DcmCodecParameter *cp,
+    DcmItem *dataset,
+    OFString &decompressedColorModel) const
+{
+#if 1
+  // decodeFrame() is not yet implemented for this class
+  return EC_IllegalCall;
+#else
+  OFCondition result = EC_CorruptedData;
+  if ((dataset != NULL) && (fromPixSeq != NULL))
+  {
+    // the first frame always starts with the second fragment
+    Uint32 startFragment = 1;
+    Uint32 bufSize = 0;
+    // determine size of uncompressed frame
+    if ((fromPixSeq->getUncompressedFrameSize(dataset, bufSize).good()) && (bufSize > 0))
+    {
+      // allocate temporary buffer for a single frame
+      Uint8 *buffer = new Uint8[bufSize];
+      if (buffer != NULL)
+      {
+        // simple approach: decode first frame in order to determine the uncompressed color model
+        result = decodeFrame(fromParam, fromPixSeq, cp, dataset, 0 /* frameNo */, startFragment,
+          OFstatic_cast(void *, buffer), bufSize, decompressedColorModel);
+      } else
+        result = EC_MemoryExhausted;
+      delete[] buffer;
+    }
+  }
+  return result;
+#endif
+}
+
+
 Uint16 DJLSDecoderBase::determinePlanarConfiguration(
   const OFString& sopClassUID,
   const OFString& photometricInterpretation)
@@ -403,7 +440,7 @@ Uint16 DJLSDecoderBase::determinePlanarConfiguration(
   // The 1996 Ultrasound Image IODs require color-by-plane if color model is YBR_FULL.
   if (photometricInterpretation == "YBR_FULL")
   {
-    if ((sopClassUID == UID_UltrasoundMultiframeImageStorage) 
+    if ((sopClassUID == UID_UltrasoundMultiframeImageStorage)
        ||(sopClassUID == UID_UltrasoundImageStorage)) return 1;
   }
 
@@ -454,14 +491,14 @@ Uint32 DJLSDecoderBase::computeNumberOfFragments(
         {
           // now we can access the offset table
           Uint32 *offsetData32 = OFreinterpret_cast(Uint32 *, offsetData);
-    
+
           // extract the offset for the NEXT frame. This offset is guaranteed to exist
           // because the "last frame/single frame" case is handled above.
           Uint32 offset = offsetData32[currentFrame+1];
-    
+
           // convert to local endian byte order (always little endian in file)
           swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, &offset, sizeof(Uint32), sizeof(Uint32));
-    
+
           // determine index of start fragment for next frame
           Uint32 byteCount = 0;
           Uint32 fragmentIndex = 1;
@@ -474,10 +511,10 @@ Uint32 DJLSDecoderBase::computeNumberOfFragments(
                byteCount += pixItem->getLength() + 8; // add 8 bytes for item tag and length
                if ((byteCount == offset) && (fragmentIndex > startItem))
                {
-                 // bingo, we have found the offset for the next frame               
+                 // bingo, we have found the offset for the next frame
                  return fragmentIndex - startItem;
                }
-             } 
+             }
              else break; /* something went wrong, break out of while loop */
           } /* while */
         }
@@ -485,7 +522,7 @@ Uint32 DJLSDecoderBase::computeNumberOfFragments(
     }
   }
 
-  // So we have a multi-frame image with multiple fragments per frame and the 
+  // So we have a multi-frame image with multiple fragments per frame and the
   // offset table is empty or wrong. Our last chance is to peek into the JPEG-LS
   // bistream and identify the start of the next frame.
   Uint32 nextItem = startItem;
@@ -505,9 +542,9 @@ Uint32 DJLSDecoderBase::computeNumberOfFragments(
             // found a JPEG-LS SOI marker. Assume that this is the start of the next frame.
             return (nextItem - startItem);
           }
-        }      
+        }
         else break; /* something went wrong, break out of while loop */
-    }    
+    }
     else break; /* something went wrong, break out of while loop */
   }
 
@@ -652,6 +689,10 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.6  2009-11-17 16:56:35  joergr
+ * Added new method that allows for determining the color model of the
+ * decompressed image.
+ *
  * Revision 1.5  2009-10-07 13:16:47  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
