@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2009.11.18 (schlachter)
 
+- Remove the unused string_append_iterator.
+  Affects: oflog/include/dcmtk/oflog/helpers/stringhelper.h
+
 - Use more than just the INFO log level.
   Affects: dcmjpeg/include/dcmtk/dcmjpeg/djdijg12.h
            dcmjpeg/include/dcmtk/dcmjpeg/djdijg16.h
