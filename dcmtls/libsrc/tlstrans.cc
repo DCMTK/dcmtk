@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSConnection
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:02:56 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 12:11:19 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -286,16 +286,20 @@ OFBool DcmTLSConnection::isTransparentConnection()
   return OFFalse;
 }
 
-void DcmTLSConnection::dumpConnectionParameters(STD_NAMESPACE ostream& out)
+OFString& DcmTLSConnection::dumpConnectionParameters(OFString& str)
 {
-  out << "Transport connection: TLS/SSL over TCP/IP" << OFendl
-      << "  Protocol: " << SSL_get_version(tlsConnection) << OFendl 
-      << "  Ciphersuite: " << SSL_CIPHER_get_name(SSL_get_current_cipher(tlsConnection))
-      << ", version: " << SSL_CIPHER_get_version(SSL_get_current_cipher(tlsConnection))
-      << ", encryption: " << SSL_CIPHER_get_bits(SSL_get_current_cipher(tlsConnection), NULL) << " bits" << OFendl;
-  DcmTLSTransportLayer::printX509Certificate(out, SSL_get_peer_certificate(tlsConnection));
+  OFOStringStream stream;
+  stream << "Transport connection: TLS/SSL over TCP/IP" << OFendl
+         << "  Protocol: " << SSL_get_version(tlsConnection) << OFendl
+         << "  Ciphersuite: " << SSL_CIPHER_get_name(SSL_get_current_cipher(tlsConnection))
+         << ", version: " << SSL_CIPHER_get_version(SSL_get_current_cipher(tlsConnection))
+         << ", encryption: " << SSL_CIPHER_get_bits(SSL_get_current_cipher(tlsConnection), NULL) << " bits" << OFendl
+         << DcmTLSTransportLayer::dumpX509Certificate(SSL_get_peer_certificate(tlsConnection)) << OFendl;
   // out << "Certificate verification: " << X509_verify_cert_error_string(SSL_get_verify_result(tlsConnection)) << OFendl;
-  return;
+  OFSTRINGSTREAM_GETSTR(stream, res)
+  str = res;
+  OFSTRINGSTREAM_FREESTR(res)
+  return str;
 }
 
 const char *DcmTLSConnection::errorString(DcmTransportLayerStatus code)
@@ -342,6 +346,9 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
+ *  Revision 1.12  2009-11-18 12:11:19  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.11  2006-08-15 16:02:56  meichel
  *  Updated the code in module dcmtls to correctly compile when
  *    all standard C++ classes remain in namespace std.

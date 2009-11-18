@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTransportConnection
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:02:55 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 12:11:19 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,11 +135,11 @@ public:
    */
   virtual OFBool isTransparentConnection();
 
-  /** prints the characteristics of the current connection
-   *  on the given output stream.
-   *  @param out output stream
+  /** dump the characteristics of the current connection
+   *  @param str the string to dump into
+   *  @return reference to string
    */
-  virtual void dumpConnectionParameters(STD_NAMESPACE ostream& out);
+  virtual OFString& dumpConnectionParameters(OFString& str);
 
   /** returns an error string for a given error code.
    *  @param code error code
@@ -168,6 +168,9 @@ private:
 
 /*
  *  $Log: tlstrans.h,v $
+ *  Revision 1.8  2009-11-18 12:11:19  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.7  2006-08-15 16:02:55  meichel
  *  Updated the code in module dcmtls to correctly compile when
  *    all standard C++ classes remain in namespace std.

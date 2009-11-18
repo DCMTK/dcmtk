@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSTransportLayer
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:02:55 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 12:11:19 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,11 +37,21 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/dcmlayer.h"    /* for DcmTransportLayer */
 #include "dcmtk/ofstd/ofstream.h"    /* for ostream */
+#include "dcmtk/oflog/oflog.h"
 
 #ifdef WITH_OPENSSL
 BEGIN_EXTERN_C
 #include <openssl/ssl.h>
 END_EXTERN_C
+
+OFLogger DCM_dcmtlsGetLogger();
+
+#define DCMTLS_TRACE(msg) OFLOG_TRACE(DCM_dcmtlsGetLogger(), msg)
+#define DCMTLS_DEBUG(msg) OFLOG_DEBUG(DCM_dcmtlsGetLogger(), msg)
+#define DCMTLS_INFO(msg)  OFLOG_INFO(DCM_dcmtlsGetLogger(), msg)
+#define DCMTLS_WARN(msg)  OFLOG_WARN(DCM_dcmtlsGetLogger(), msg)
+#define DCMTLS_ERROR(msg) OFLOG_ERROR(DCM_dcmtlsGetLogger(), msg)
+#define DCMTLS_FATAL(msg) OFLOG_FATAL(DCM_dcmtlsGetLogger(), msg)
 
 /** this enum describes how to handle X.509 certificates on a TLS based
  *  secure transport connection. They can be ignored, validated if present
@@ -219,12 +229,11 @@ public:
    */
   OFBool setTempDHParameters(const char *filename);
 
-  /** prints the most important attributes of the given X.509 certificate
-   *  to the given output stream.
-   *  @param out output stream
+  /** gets the most important attributes of the given X.509 certificate.
    *  @param peerCertificate X.509 certificate, may be NULL
+   *  @return a string describing the certificate
    */
-  static void printX509Certificate(STD_NAMESPACE ostream& out, X509 *peerCertificate);
+  static OFString dumpX509Certificate(X509 *peerCertificate);
 
 private:
 
@@ -251,6 +260,9 @@ private:
 
 /*
  *  $Log: tlslayer.h,v $
+ *  Revision 1.8  2009-11-18 12:11:19  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.7  2006-08-15 16:02:55  meichel
  *  Updated the code in module dcmtls to correctly compile when
  *    all standard C++ classes remain in namespace std.

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSTransportLayer
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-30 13:53:53 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 12:11:19 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,14 @@ END_EXTERN_C
 
 extern "C" int DcmTLSTransportLayer_certificateValidationCallback(int ok, X509_STORE_CTX *storeContext);
 
+OFLogger DCM_dcmtlsGetLogger()
+{
+    // We don't just use a global variable, because constructors of globals are
+    // executed in random order. This guarantees that the OFLogger is constructed
+    // before first use.
+    static OFLogger DCM_dcmtlsLogger = OFLog::getLogger("dcmtk.dcmtls");
+    return DCM_dcmtlsLogger;
+}
 
 int DcmTLSTransportLayer_certificateValidationCallback(int ok, X509_STORE_CTX * /* storeContext */)
 {
@@ -208,8 +216,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile
    {
       const char *result = ERR_reason_error_string(ERR_peek_error());
       if (result == NULL) result = "unknown error in SSL_CTX_new()";
-      ofConsole.lockCerr() << "error: unable to create TLS transport layer: " << result << OFendl;
-      ofConsole.unlockCerr();      
+      DCMTLS_ERROR("unable to create TLS transport layer: " << result);
    }
 #endif
 
@@ -384,8 +391,7 @@ void DcmTLSTransportLayer::seedPRNG(const char *randFile)
   else
   {
     /* warn user */
-    ofConsole.lockCerr() << "Warning: PRNG for TLS not seeded with sufficient random data." << OFendl;
-    ofConsole.unlockCerr();    
+    DCMTLS_WARN("PRNG for TLS not seeded with sufficient random data.");
   }
 }
 
@@ -403,7 +409,7 @@ OFBool DcmTLSTransportLayer::writeRandomSeed(const char *randFile)
   return OFFalse;
 }
 
-void DcmTLSTransportLayer::printX509Certificate(STD_NAMESPACE ostream& out, X509 *peerCertificate)
+OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
 {
   if (peerCertificate)
   {
@@ -461,15 +467,18 @@ void DcmTLSTransportLayer::printX509Certificate(STD_NAMESPACE ostream& out, X509
       }
       certPubKeyBits = EVP_PKEY_bits(pubkey);
       EVP_PKEY_free(pubkey);
-    } 
+    }
+    OFOStringStream out;
     out << "X.509v" << certVersion << " Certificate" << OFendl
          << "  Subject      : " << certSubjectName << OFendl
          << "  Issued by    : " << certIssuerName << OFendl
          << "  Serial no.   : " << certSerialNumber << OFendl
          << "  Validity     : not before " << certValidNotBefore << ", not after " << certValidNotAfter << OFendl
          << "  Public key   : " << certPubKeyType << ", " << certPubKeyBits << " bits" << OFendl;
+    OFSTRINGSTREAM_GETOFSTRING(out, ret)
+    return ret;
   } else {
-    out << "No X.509 Certificate." << OFendl;
+    return "No X.509 Certificate.";
   }
 }
 
@@ -487,6 +496,9 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
+ *  Revision 1.14  2009-11-18 12:11:19  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.13  2009-01-30 13:53:53  joergr
  *  Replaced checking of macro WINDOWS by _WIN32.
  *
