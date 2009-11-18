@@ -21,10 +21,10 @@
  *
  *  Purpose: compression routines of the IJG JPEG library configured for 16 bits/sample. 
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:59:26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 16:17:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/dcmtk/dcmjpeg/djeijg16.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,12 +133,13 @@ public:
    *  @param cinfo pointer to compress info
    */
   void termDestination(jpeg_compress_struct *cinfo);
-  	
+
   /** callback function used to report warning messages and the like.
    *  Should not be called by user code directly.
    *  @param arg opaque pointer to JPEG compress structure
+   *  @param msg_level -1 for warnings, 0 and above for trace messages
    */
-  virtual void outputMessage(void *arg) const;
+  virtual void emitMessage(void *arg, int msg_level) const;
 
 private:
 
@@ -176,6 +177,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djeijg16.h,v $
+ * Revision 1.4  2009-11-18 16:17:54  uli
+ * Use more than just the INFO log level.
+ *
  * Revision 1.3  2005-12-08 16:59:26  meichel
  * Changed include path schema for all DCMTK header files
  *

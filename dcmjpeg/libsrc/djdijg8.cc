@@ -22,9 +22,9 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 8 bits/sample.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 12:44:33 $
+ *  Update Date:      $Date: 2009-11-18 16:17:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg8.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,7 +98,7 @@ struct DJDIJG8SourceManagerStruct
 
 // callback forward declarations
 void DJDIJG8ErrorExit(j_common_ptr);
-void DJDIJG8OutputMessage(j_common_ptr cinfo);
+void DJDIJG8EmitMessage(j_common_ptr cinfo, int msg_level);
 void DJDIJG8initSource(j_decompress_ptr);
 ijg_boolean DJDIJG8fillInputBuffer(j_decompress_ptr);
 void DJDIJG8skipInputData(j_decompress_ptr, long);
@@ -115,10 +115,10 @@ void DJDIJG8ErrorExit(j_common_ptr cinfo)
 }
 
 // message handler for warning messages and the like
-void DJDIJG8OutputMessage(j_common_ptr cinfo)
+void DJDIJG8EmitMessage(j_common_ptr cinfo, int msg_level)
 {
   DJDIJG8ErrorStruct *myerr = (DJDIJG8ErrorStruct *)cinfo->err;
-  myerr->instance->outputMessage();
+  myerr->instance->emitMessage(msg_level);
 }
 
 
@@ -246,7 +246,7 @@ OFCondition DJDecompressIJG8Bit::init()
       cinfo->err = jpeg_std_error(& OFconst_cast(DJDIJG8ErrorStruct *, jerr)->pub);
       jerr->instance = this;
       jerr->pub.error_exit = DJDIJG8ErrorExit;
-      jerr->pub.output_message = DJDIJG8OutputMessage;
+      jerr->pub.emit_message = DJDIJG8EmitMessage;
       if (setjmp(OFconst_cast(DJDIJG8ErrorStruct *, jerr)->setjmp_buffer))
       {
         // the IJG error handler will cause the following code to be executed
@@ -435,13 +435,33 @@ OFCondition DJDecompressIJG8Bit::decode(
   return EC_Normal;
 }
 
-void DJDecompressIJG8Bit::outputMessage() const
+void DJDecompressIJG8Bit::emitMessage(int msg_level) const
 {
-  if (cinfo && DCM_dcmjpegGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL))
+  // This is how we map the message levels:
+  // -1 - 0: Warning (could also be errors, but no way to find out)
+  //  1    : Debug
+  // Everything else: Trace (No point in splitting this further up)
+  OFLogger::LogLevel level;
+
+  switch (msg_level)
+  {
+  case -1:
+  case 0:
+    level = OFLogger::WARN_LOG_LEVEL;
+    break;
+  case 1:
+    level = OFLogger::DEBUG_LOG_LEVEL;
+    break;
+  default:
+    level = OFLogger::TRACE_LOG_LEVEL;
+    break;
+  }
+
+  if (cinfo && DCM_dcmjpegGetLogger().isEnabledFor(level))
   {
     char buffer[JMSG_LENGTH_MAX];
     (*cinfo->err->format_message)((jpeg_common_struct *)cinfo, buffer); /* Create the message */
-    DCMJPEG_INFO(buffer);
+    DCM_dcmjpegGetLogger().forcedLog(level, buffer, __FILE__, __LINE__);
   }
 }
 
@@ -449,6 +469,9 @@ void DJDecompressIJG8Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg8.cc,v $
+ * Revision 1.16  2009-11-18 16:17:54  uli
+ * Use more than just the INFO log level.
+ *
  * Revision 1.15  2009-10-07 12:44:33  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

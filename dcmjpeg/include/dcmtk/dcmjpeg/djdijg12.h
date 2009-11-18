@@ -21,10 +21,10 @@
  *
  *  Purpose: decompression routines of the IJG JPEG library configured for 12 bits/sample.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:59:22 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 16:17:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/dcmtk/dcmjpeg/djdijg12.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,8 +102,9 @@ public:
 
   /** callback function used to report warning messages and the like.
    *  Should not be called by user code directly.
+   *  @param msg_level -1 for warnings, 0 and above for trace messages
    */
-  virtual void outputMessage() const;
+  virtual void emitMessage(int msg_level) const;
 
 private:
 
@@ -141,6 +142,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djdijg12.h,v $
+ * Revision 1.5  2009-11-18 16:17:53  uli
+ * Use more than just the INFO log level.
+ *
  * Revision 1.4  2005-12-08 16:59:22  meichel
  * Changed include path schema for all DCMTK header files
  *

@@ -22,9 +22,9 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 12 bits/sample. 
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 12:44:34 $
+ *  Update Date:      $Date: 2009-11-18 16:17:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg12.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ struct DJEIJG12ErrorStruct
 
 // callback forward declarations
 void DJEIJG12ErrorExit(j_common_ptr);
-void DJEIJG12OutputMessage(j_common_ptr cinfo);
+void DJEIJG12EmitMessage(j_common_ptr cinfo, int msg_level);
 void DJEIJG12initDestination(j_compress_ptr cinfo);
 ijg_boolean DJEIJG12emptyOutputBuffer(j_compress_ptr cinfo);
 void DJEIJG12termDestination(j_compress_ptr cinfo);
@@ -103,10 +103,10 @@ void DJEIJG12ErrorExit(j_common_ptr cinfo)
 }
 
 // message handler for warning messages and the like
-void DJEIJG12OutputMessage(j_common_ptr cinfo)
+void DJEIJG12EmitMessage(j_common_ptr cinfo, int msg_level)
 {
   DJEIJG12ErrorStruct *myerr = (DJEIJG12ErrorStruct *)cinfo->err;
-  myerr->instance->outputMessage(cinfo);
+  myerr->instance->emitMessage(cinfo, msg_level);
 }
 
 // callbacks for compress-destination-manager
@@ -348,7 +348,7 @@ OFCondition DJCompressIJG12Bit::encode(
   cinfo.err = jpeg_std_error(&jerr.pub);
   jerr.instance = this;
   jerr.pub.error_exit = DJEIJG12ErrorExit;
-  jerr.pub.output_message = DJEIJG12OutputMessage;
+  jerr.pub.emit_message = DJEIJG12EmitMessage;
   if (setjmp(jerr.setjmp_buffer))
   {
     // the IJG error handler will cause the following code to be executed
@@ -538,14 +538,35 @@ void DJCompressIJG12Bit::cleanup()
   bytesInLastBlock = 0;
 }
 
-void DJCompressIJG12Bit::outputMessage(void *arg) const
+void DJCompressIJG12Bit::emitMessage(void *arg, int msg_level) const
 {
   jpeg_common_struct *cinfo = (jpeg_common_struct *)arg;
-  if (cinfo && DCM_dcmjpegGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL))
+
+  // This is how we map the message levels:
+  // -1 - 0: Warning (could also be errors, but no way to find out)
+  //  1    : Debug
+  // Everything else: Trace (No point in splitting this further up)
+  OFLogger::LogLevel level;
+
+  switch (msg_level)
   {
-    char buffer[JMSG_LENGTH_MAX];    
+  case -1:
+  case 0:
+    level = OFLogger::WARN_LOG_LEVEL;
+    break;
+  case 1:
+    level = OFLogger::DEBUG_LOG_LEVEL;
+    break;
+  default:
+    level = OFLogger::TRACE_LOG_LEVEL;
+    break;
+  }
+
+  if (cinfo && DCM_dcmjpegGetLogger().isEnabledFor(level))
+  {
+    char buffer[JMSG_LENGTH_MAX];
     (*cinfo->err->format_message)(cinfo, buffer); /* Create the message */
-    DCMJPEG_INFO(buffer);
+    DCM_dcmjpegGetLogger().forcedLog(level, buffer, __FILE__, __LINE__);
   }
 }
 
@@ -553,6 +574,9 @@ void DJCompressIJG12Bit::outputMessage(void *arg) const
 /*
  * CVS/RCS Log
  * $Log: djeijg12.cc,v $
+ * Revision 1.12  2009-11-18 16:17:54  uli
+ * Use more than just the INFO log level.
+ *
  * Revision 1.11  2009-10-07 12:44:34  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

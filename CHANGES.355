@@ -3,6 +3,20 @@ Changes between releases are documented here.
 
 **** Changes from 2009.11.18 (schlachter)
 
+- Use more than just the INFO log level.
+  Affects: dcmjpeg/include/dcmtk/dcmjpeg/djdijg12.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djdijg16.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djdijg8.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djeijg12.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djeijg16.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djeijg8.h
+           dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+           dcmjpeg/libsrc/djeijg12.cc
+           dcmjpeg/libsrc/djeijg16.cc
+           dcmjpeg/libsrc/djeijg8.cc
+
 - Fix compiler errors due to removal of DUL_Debug() and DIMSE_Debug().
   Affects: dcmqrdb/apps/dcmqrscp.cc
            dcmqrdb/apps/dcmqrti.cc
