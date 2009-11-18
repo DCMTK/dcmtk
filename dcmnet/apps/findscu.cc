@@ -21,9 +21,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-08 16:14:08 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 11:53:58 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcdict.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -47,6 +46,8 @@
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "findscu"
+
+static OFLogger findscuLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -66,7 +67,6 @@ int main(int argc, char *argv[])
     int                   opt_acse_timeout = 30;
     T_DIMSE_BlockingMode  opt_blockMode = DIMSE_BLOCKING;
     OFCmdSignedInt        opt_cancelAfterNResponses = -1;
-    OFBool                opt_debug = OFFalse;
     int                   opt_dimse_timeout = 0;
     OFBool                opt_extractResponsesToFile = OFFalse;
     OFCmdUnsignedInt      opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
@@ -77,7 +77,6 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt      opt_port = 104;
     OFCmdUnsignedInt      opt_repeatCount = 1;
     OFBool                opt_secureConnection = OFFalse; /* default: no secure connection */
-    OFBool                opt_verbose = OFFalse;
     OFList<OFString>      overrideKeys;
 
 #ifdef WITH_OPENSSL
@@ -116,6 +115,7 @@ int main(int argc, char *argv[])
 #endif
 
   char tempstr[20];
+  OFString temp_str;
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM query (C-FIND) SCU", rcsid);
   OFCommandLine cmd;
 
@@ -128,9 +128,8 @@ int main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                 "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--arguments",                       "print expanded command line arguments");
-   cmd.addOption("--verbose",              "-v",      "verbose mode, print processing details");
-   cmd.addOption("--debug",                "-d",      "debug mode, print debug information");
+   OFLog::addOptions(cmd);
+
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
       cmd.addOption("--key",               "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dictionary name=\"str\"",
@@ -220,10 +219,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -250,14 +245,7 @@ int main(int argc, char *argv[])
       cmd.getParam(1, opt_peer);
       app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
 
-      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
-      if (cmd.findOption("--debug"))
-      {
-        opt_debug = OFTrue;
-        DUL_Debug(OFTrue);
-        DIMSE_debug(OFTrue);
-        SetDebugLevel(3);
-      }
+      OFLog::configureFromCommandLine(cmd, app);
 
       if (cmd.findOption("--key", 0, OFCommandLine::FOM_FirstFromLeft))
       {
@@ -425,11 +413,11 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
           {
-            CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << OFendl;
+            OFLOG_FATAL(findscuLogger, "ciphersuite '" << current << "' is unknown. Known ciphersuites are:");
             unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
             for (unsigned long cs=0; cs < numSuites; cs++)
             {
-              CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
+              OFLOG_FATAL(findscuLogger, "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
             }
             return 1;
           } else {
@@ -443,20 +431,20 @@ int main(int argc, char *argv[])
 
     }
 
-    if (opt_debug)
-      app.printIdentifier();
+    /* print resource identifier */
+    OFLOG_DEBUG(findscuLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-        fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-                DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(findscuLogger, "no data dictionary loaded, check environment variable: "
+                << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // declare findSCU handler and initialize network
-    DcmFindSCU findscu(opt_verbose, opt_debug);
+    DcmFindSCU findscu;
     OFCondition cond = findscu.initializeNetwork(opt_acse_timeout);
     if (cond.bad()) {
-        DimseCondition::dump(cond);
+        OFLOG_ERROR(findscuLogger, DimseCondition::dump(temp_str, cond));
         return 1;
     }
 
@@ -468,7 +456,8 @@ int main(int argc, char *argv[])
       tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, opt_readSeedFile);
       if (tLayer == NULL)
       {
-        app.printError("unable to create TLS transport layer");
+        OFLOG_FATAL(findscuLogger, "unable to create TLS transport layer");
+        return 1;
       }
 
       if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
@@ -479,7 +468,7 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
           {
-            CERR << "warning unable to load certificate file '" << current << "', ignoring" << OFendl;
+            OFLOG_WARN(findscuLogger, "unable to load certificate file '" << current << "', ignoring");
           }
         } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
       }
@@ -492,14 +481,14 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
           {
-            CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << OFendl;
+            OFLOG_WARN(findscuLogger, "unable to load certificates from directory '" << current << "', ignoring");
           }
         } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
       }
 
       if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
       {
-        CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << OFendl;
+        OFLOG_WARN(findscuLogger, "unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring");
       }
 
       if (opt_doAuthenticate)
@@ -508,24 +497,24 @@ int main(int argc, char *argv[])
 
         if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
         {
-          CERR << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << OFendl;
+          OFLOG_FATAL(findscuLogger, "unable to load private TLS key from '" << opt_privateKeyFile << "'");
           return 1;
         }
         if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
         {
-          CERR << "unable to load certificate from '" << opt_certificateFile << "'" << OFendl;
+          OFLOG_FATAL(findscuLogger, "unable to load certificate from '" << opt_certificateFile << "'");
           return 1;
         }
         if (! tLayer->checkPrivateKeyMatchesCertificate())
         {
-          CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << OFendl;
+          OFLOG_FATAL(findscuLogger, "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match");
           return 1;
         }
       }
 
       if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
       {
-        CERR << "unable to set selected cipher suites" << OFendl;
+        OFLOG_FATAL(findscuLogger, "unable to set selected cipher suites");
         return 1;
       }
 
@@ -535,7 +524,7 @@ int main(int argc, char *argv[])
       cond = findscu.setTransportLayer(tLayer);
       if (cond.bad())
       {
-          DimseCondition::dump(cond);
+          OFLOG_ERROR(findscuLogger, DimseCondition::dump(temp_str, cond));
           return 1;
       }
     }
@@ -563,11 +552,11 @@ int main(int argc, char *argv[])
       NULL, /* we want to use the default callback */
       &fileNameList);
 
-    if (cond.bad()) DimseCondition::dump(cond);
+    if (cond.bad()) OFLOG_ERROR(findscuLogger, DimseCondition::dump(temp_str, cond));
 
     // destroy network structure
     cond = findscu.dropNetwork();
-    if (cond.bad()) DimseCondition::dump(cond);
+    if (cond.bad()) OFLOG_ERROR(findscuLogger, DimseCondition::dump(temp_str, cond));
 
 #ifdef HAVE_WINSOCK_H
     WSACleanup();
@@ -580,10 +569,10 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
         {
-          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << OFendl;
+          OFLOG_ERROR(findscuLogger, "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring.");
         }
       } else {
-        CERR << "Warning: cannot write random seed, ignoring." << OFendl;
+        OFLOG_ERROR(findscuLogger, "cannot write random seed, ignoring.");
       }
     }
     delete tLayer;
@@ -596,6 +585,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
+** Revision 1.58  2009-11-18 11:53:58  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.57  2009-07-08 16:14:08  onken
 ** Added support for specifying tag paths as override keys.
 **

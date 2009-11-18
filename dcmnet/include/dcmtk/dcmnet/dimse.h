@@ -56,10 +56,10 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2009-08-04 10:07:48 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2009-11-18 11:53:58 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dimse.h,v $
-** CVS/RCS Revision:    $Revision: 1.20 $
+** CVS/RCS Revision:    $Revision: 1.21 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -995,45 +995,107 @@ DIMSE_ignoreDataSet( T_ASC_Association * assoc,
  * Misc functions
  */
 
-void DIMSE_debug(int level);
-        /* set debug level */
+OFString DIMSE_warn_str(T_ASC_Association *assoc);
 
-void DIMSE_warning(T_ASC_Association *assoc, const char *format, ...);
+enum DIMSE_direction {
+    DIMSE_INCOMING,
+    DIMSE_OUTGOING
+};
 
 /* Debugging functions for printing contents of a command structure */
-void DIMSE_printCommand(FILE *f, T_DIMSE_Message *msg);
-void DIMSE_printCEchoRQ(FILE * f, T_DIMSE_C_EchoRQ * req);
-void DIMSE_printCEchoRSP(FILE * f, T_DIMSE_C_EchoRSP * rsp);
-void DIMSE_printCStoreRQ(FILE * f, T_DIMSE_C_StoreRQ * req, T_ASC_PresentationContextID presID = 0);
-void DIMSE_printCStoreRSP(FILE * f, T_DIMSE_C_StoreRSP * rsp, T_ASC_PresentationContextID presID = 0);
-void DIMSE_printCGetRQ(FILE * f, T_DIMSE_C_GetRQ * req);
-void DIMSE_printCGetRSP(FILE * f, T_DIMSE_C_GetRSP * rsp);
-void DIMSE_printCMoveRQ(FILE * f, T_DIMSE_C_MoveRQ * req);
-void DIMSE_printCMoveRSP(FILE * f, T_DIMSE_C_MoveRSP * rsp);
-void DIMSE_printCFindRQ(FILE * f, T_DIMSE_C_FindRQ * req);
-void DIMSE_printCFindRSP(FILE * f, T_DIMSE_C_FindRSP * rsp);
-void DIMSE_printCCancelRQ(FILE * f, T_DIMSE_C_CancelRQ * req);
-void DIMSE_printNEventReportRQ(FILE * f, T_DIMSE_N_EventReportRQ * req);
-void DIMSE_printNEventReportRSP(FILE * f, T_DIMSE_N_EventReportRSP * rsp);
-void DIMSE_printNGetRQ(FILE * f, T_DIMSE_N_GetRQ * req);
-void DIMSE_printNGetRSP(FILE * f, T_DIMSE_N_GetRSP * rsp);
-void DIMSE_printNSetRQ(FILE * f, T_DIMSE_N_SetRQ * req);
-void DIMSE_printNSetRSP(FILE * f, T_DIMSE_N_SetRSP * rsp);
-void DIMSE_printNActionRQ(FILE * f, T_DIMSE_N_ActionRQ * req);
-void DIMSE_printNActionRSP(FILE * f, T_DIMSE_N_ActionRSP * rsp);
-void DIMSE_printNCreateRQ(FILE * f, T_DIMSE_N_CreateRQ * req);
-void DIMSE_printNCreateRSP(FILE * f, T_DIMSE_N_CreateRSP * rsp);
-void DIMSE_printNDeleteRQ(FILE * f, T_DIMSE_N_DeleteRQ * req);
-void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_Message &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_EchoRQ &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_EchoRSP &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_GetRQ &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_GetRSP &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_MoveRQ &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_MoveRSP &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_FindRQ &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_FindRSP &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_StoreRQ &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_StoreRSP &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_CancelRQ &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_EventReportRQ &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_EventReportRSP &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_GetRQ &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_GetRSP &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_SetRQ &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_SetRSP &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_ActionRQ &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_ActionRSP &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_CreateRQ &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_CreateRSP &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_DeleteRQ &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
+OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_DeleteRSP &msg,
+                            enum DIMSE_direction dir, DcmItem *dataset = NULL, T_ASC_PresentationContextID presID = 0);
 
-void DIMSE_printMessage(STD_NAMESPACE ostream& outstream, T_DIMSE_Message &msg, DcmItem *dataset=NULL);
 
+// Compatibility wrapper
+#define DIMSE_COMPAT_WRAP(func, type)                 \
+    static inline void func (FILE * f, type * msg)    \
+    {                                                 \
+        OFString str;                                 \
+        DIMSE_dumpMessage(str, *msg, DIMSE_INCOMING); \
+        fprintf(f, "%s\n", str.c_str());              \
+    }
+#define DIMSE_COMPAT_WRAP_R(func, type)         \
+    DIMSE_COMPAT_WRAP(func ## RQ, type ## RQ)   \
+    DIMSE_COMPAT_WRAP(func ## RSP, type ## RSP)
+
+static inline void DIMSE_printMessage(STD_NAMESPACE ostream& ostream, T_DIMSE_Message &msg, DcmItem *dataset = NULL)
+{
+    OFString str;
+    ostream << DIMSE_dumpMessage(str, msg, DIMSE_INCOMING, dataset) << OFendl;
+}
+
+DIMSE_COMPAT_WRAP(DIMSE_printCommand, T_DIMSE_Message)
+DIMSE_COMPAT_WRAP_R(DIMSE_printCEcho, T_DIMSE_C_Echo)
+DIMSE_COMPAT_WRAP_R(DIMSE_printCStore, T_DIMSE_C_Store)
+DIMSE_COMPAT_WRAP_R(DIMSE_printCGet, T_DIMSE_C_Get)
+DIMSE_COMPAT_WRAP_R(DIMSE_printCMove, T_DIMSE_C_Move)
+DIMSE_COMPAT_WRAP_R(DIMSE_printCFind, T_DIMSE_C_Find)
+DIMSE_COMPAT_WRAP(DIMSE_printCCancelRQ, T_DIMSE_C_EchoRQ)
+DIMSE_COMPAT_WRAP_R(DIMSE_printNEventReport, T_DIMSE_N_EventReport)
+DIMSE_COMPAT_WRAP_R(DIMSE_printNGet, T_DIMSE_N_Get)
+DIMSE_COMPAT_WRAP_R(DIMSE_printNSet, T_DIMSE_N_Set)
+DIMSE_COMPAT_WRAP_R(DIMSE_printNAction, T_DIMSE_N_Action)
+DIMSE_COMPAT_WRAP_R(DIMSE_printNCreate, T_DIMSE_N_Create)
+DIMSE_COMPAT_WRAP_R(DIMSE_printNDelete, T_DIMSE_N_Delete)
+
+#undef DIMSE_COMPAT_WRAP
+#undef DIMSE_COMPAT_WRAP_R
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
+** Revision 1.21  2009-11-18 11:53:58  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.20  2009-08-04 10:07:48  joergr
 ** Added optional parameter to printCStore() functions that allows for printing
 ** the Presentation Context ID.

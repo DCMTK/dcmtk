@@ -22,9 +22,9 @@
  *  Purpose: Termination Service Class User (negotiates the private shutdown
  *           SOP class in order to shutdown server applications)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-24 12:26:06 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 11:53:58 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,12 +42,11 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/ofstd/ofcmdln.h"
-#include "dcmtk/dcmnet/assoc.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/dcmnet/dimse.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmnet/assoc.h"
+#include "dcmtk/dcmnet/dimse.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>
@@ -61,17 +60,7 @@
 #define SHORTCOL 4
 #define LONGCOL  11
 
-// ----------------------------------------------------------------------------
-
-static void DumpError( const char *msg )
-// Date       : September 12, 2005
-// Author     : Thomas Wilkens
-// Task       : Dumps a given error message to stderr.
-// Parameters : msg - [in] The message which shall be dumped to stderr.
-{
-  if( msg )
-    fprintf( stderr, "%s: %s\n", OFFIS_CONSOLE_APPLICATION, msg );
-}
+static OFLogger termscuLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 // ----------------------------------------------------------------------------
 
@@ -87,8 +76,6 @@ int main( int argc, char *argv[] )
   const char *opt_peerTitle = PEERAPPLICATIONTITLE;
   const char *opt_ourTitle = APPLICATIONTITLE;
   OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
-  OFBool opt_verbose = OFFalse;
-  OFBool opt_debug = OFFalse;
   T_ASC_Network *net;
   T_ASC_Parameters *params;
   T_ASC_Association *assoc;
@@ -112,6 +99,7 @@ int main( int argc, char *argv[] )
 #endif
 
   char tempstr[20];
+  OFString temp_str;
   OFConsoleApplication app( OFFIS_CONSOLE_APPLICATION , "DICOM termination SCU", rcsid );
   OFCommandLine cmd;
 
@@ -123,9 +111,7 @@ int main( int argc, char *argv[] )
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
   cmd.addOption("--help",      "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
   cmd.addOption("--version",              "print version information and exit", OFCommandLine::AF_Exclusive);
-  cmd.addOption("--arguments",            "print expanded command line arguments");
-  cmd.addOption("--verbose",   "-v",      "verbose mode, print processing details");
-  cmd.addOption("--debug",     "-d",      "debug mode, print debug information");
+  OFLog::addOptions(cmd);
 
   cmd.addGroup("network options:");
    cmd.addSubGroup("application entity titles:");
@@ -155,10 +141,6 @@ int main( int argc, char *argv[] )
   prepareCmdLineArgs( argc, argv, OFFIS_CONSOLE_APPLICATION );
   if( app.parseCommandLine( cmd, argc, argv ) )
   {
-    /* check whether to print the command line arguments */
-    if (cmd.findOption("--arguments"))
-      app.printArguments();
-
     // check exclusive options first
     if (cmd.hasExclusiveOption())
     {
@@ -180,15 +162,8 @@ int main( int argc, char *argv[] )
     app.checkParam( cmd.getParamAndCheckMinMax( 2, opt_port, 1, 65535 ) );
 
     // command line options
-    if( cmd.findOption("--verbose") )
-      opt_verbose = OFTrue;
-    if( cmd.findOption("--debug") )
-    {
-      opt_debug = OFTrue;
-      DUL_Debug(OFTrue);
-      DIMSE_debug(OFTrue);
-      SetDebugLevel(5);
-    }
+    OFLog::configureFromCommandLine(cmd, app);
+
     if( cmd.findOption("--aetitle") )
       app.checkValue( cmd.getValue( opt_ourTitle ) );
     if( cmd.findOption("--call") )
@@ -197,18 +172,18 @@ int main( int argc, char *argv[] )
       app.checkValue( cmd.getValueAndCheckMinMax( opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE ) );
   }
 
-  if (opt_debug)
-    app.printIdentifier();
+  /* print resource identifier */
+  OFLOG_DEBUG(termscuLogger, rcsid << OFendl);
 
   // make sure data dictionary is loaded
   if( !dcmDataDict.isDictionaryLoaded() )
-    fprintf( stderr, "Warning: no data dictionary loaded, check environment variable: %s\n", DCM_DICT_ENVIRONMENT_VARIABLE );
+    OFLOG_WARN(termscuLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
 
   // initialize network
   OFCondition cond = ASC_initializeNetwork( NET_REQUESTOR, 0, 30, &net );
   if( cond.bad() )
   {
-    DimseCondition::dump(cond);
+    OFLOG_FATAL(termscuLogger, DimseCondition::dump(temp_str, cond));
     exit( 1 );
   }
 
@@ -216,7 +191,7 @@ int main( int argc, char *argv[] )
   cond = ASC_createAssociationParameters( &params, opt_maxReceivePDULength );
   if( cond.bad() )
   {
-    DimseCondition::dump(cond);
+    OFLOG_FATAL(termscuLogger, DimseCondition::dump(temp_str, cond));
     exit( 1 );
   }
 
@@ -227,7 +202,7 @@ int main( int argc, char *argv[] )
   cond = ASC_setTransportLayerType( params, OFFalse );
   if( cond.bad() )
   {
-    DimseCondition::dump(cond);
+    OFLOG_FATAL(termscuLogger, DimseCondition::dump(temp_str, cond));
     return( 1 );
   }
 
@@ -242,20 +217,15 @@ int main( int argc, char *argv[] )
   cond = ASC_addPresentationContext( params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, transferSyntaxCount );
   if( cond.bad() )
   {
-    DimseCondition::dump(cond);
+    OFLOG_FATAL(termscuLogger, DimseCondition::dump(temp_str, cond));
     exit(1);
   }
 
   // dump presentation contexts
-  if( opt_debug )
-  {
-    printf("Request Parameters:\n");
-    ASC_dumpParameters( params, COUT );
-  }
+  OFLOG_DEBUG(termscuLogger, "Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
 
   // dump information
-  if( opt_verbose )
-    printf("Requesting Association\n");
+  OFLOG_INFO(termscuLogger, "Requesting Association");
 
   // create association
   cond = ASC_requestAssociation( net, params, &assoc );
@@ -265,30 +235,24 @@ int main( int argc, char *argv[] )
     {
       T_ASC_RejectParameters rej;
       ASC_getRejectParameters( params, &rej );
-      DumpError("Association Rejected:");
-      ASC_printRejectParameters( stderr, &rej );
+      OFLOG_FATAL(termscuLogger, "Association Rejected: " << OFendl << ASC_printRejectParameters(temp_str, &rej));
       exit( 1 );
     }
     else
     {
-      DumpError("Association Request Failed:");
-      DimseCondition::dump(cond);
+      OFLOG_FATAL(termscuLogger, "Association Request Failed: " << DimseCondition::dump(temp_str, cond));
       exit( 1 );
     }
   }
 
   // dump the presentation contexts which have been accepted/refused
-  if( opt_debug )
-  {
-    printf("Association Parameters Negotiated:\n");
-    ASC_dumpParameters( params, COUT );
-  }
+  OFLOG_DEBUG(termscuLogger, "Association Parameters Negotiated:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
 
   // count the presentation contexts which have been accepted by the SCP
   // If there are none, finish the execution
   if( ASC_countAcceptedPresentationContexts( params ) == 0 )
   {
-    DumpError("No Acceptable Presentation Contexts");
+    OFLOG_FATAL(termscuLogger, "No Acceptable Presentation Contexts");
     exit( 1 );
   }
 
@@ -301,23 +265,20 @@ int main( int argc, char *argv[] )
   // tained in this file in order to "do nothing" if an association was accepted
 
   // dump general information concerning the establishment of the network connection if required
-  if( opt_verbose )
-    printf("Association Accepted (Max Send PDV: %lu)\n", assoc->sendPDVLength );
+  OFLOG_INFO(termscuLogger, "Association Accepted (Max Send PDV: " << assoc->sendPDVLength << ")");
 
   //
   // do nothing when the association was accepted
   //
 
   // dump information
-  if( opt_verbose )
-    printf("Releasing Association\n");
+  OFLOG_INFO(termscuLogger, "Releasing Association");
 
   // release association
   cond = ASC_releaseAssociation( assoc );
   if( cond.bad() )
   {
-    DumpError("Association Release Failed:");
-    DimseCondition::dump(cond);
+    OFLOG_FATAL(termscuLogger, "Association Release Failed: " << DimseCondition::dump(temp_str, cond));
     exit( 1 );
   }
 
@@ -325,7 +286,7 @@ int main( int argc, char *argv[] )
   cond = ASC_destroyAssociation( &assoc );
   if( cond.bad() )
   {
-    DimseCondition::dump(cond);
+    OFLOG_FATAL(termscuLogger, DimseCondition::dump(temp_str, cond));
     exit( 1 );
   }
 
@@ -333,7 +294,7 @@ int main( int argc, char *argv[] )
   cond = ASC_dropNetwork( &net );
   if( cond.bad() )
   {
-    DimseCondition::dump(cond);
+    OFLOG_FATAL(termscuLogger, DimseCondition::dump(temp_str, cond));
     exit( 1 );
   }
 
@@ -349,6 +310,9 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: termscu.cc,v $
+** Revision 1.11  2009-11-18 11:53:58  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.10  2009-04-24 12:26:06  joergr
 ** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
 **

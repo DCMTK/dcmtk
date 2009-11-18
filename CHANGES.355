@@ -1,6 +1,49 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.18 (schlachter)
+
+- Switched to logging mechanism provided by the "new" oflog module.
+  Affects: dcmnet/apps/Makefile.dep
+           dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/apps/termscu.cc
+           dcmnet/docs/echoscu.man
+           dcmnet/docs/findscu.man
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmnet/docs/termscu.man
+           dcmnet/include/dcmtk/dcmnet/assoc.h
+           dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/include/dcmtk/dcmnet/dcmtrans.h
+           dcmnet/include/dcmtk/dcmnet/dfindscu.h
+           dcmnet/include/dcmtk/dcmnet/dimse.h
+           dcmnet/include/dcmtk/dcmnet/diutil.h
+           dcmnet/include/dcmtk/dcmnet/dul.h
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/libsrc/Makefile.in
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/dcmtrans.cc
+           dcmnet/libsrc/dcompat.cc
+           dcmnet/libsrc/dcuserid.cc
+           dcmnet/libsrc/dfindscu.cc
+           dcmnet/libsrc/dimdump.cc
+           dcmnet/libsrc/dimfind.cc
+           dcmnet/libsrc/dimget.cc
+           dcmnet/libsrc/dimmove.cc
+           dcmnet/libsrc/dimse.cc
+           dcmnet/libsrc/diutil.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulconst.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/libsrc/dulparse.cc
+           dcmnet/libsrc/dulpriv.h
+
 **** Changes from 2009.11.17 (riesmeier)
 
 - Added new method that allows for determining the color model of the

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-08 13:17:13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 11:53:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,12 +126,21 @@ const OFCondition DUL_UNEXPECTEDPDU(            DULE_UNEXPECTEDPDU);
 const OFCondition DUL_UNSUPPORTEDPEERPROTOCOL(  DULE_UNSUPPORTEDPEERPROTOCOL);
 const OFCondition DUL_WRONGDATATYPE(            DULE_WRONGDATATYPE);
 
-void DimseCondition::dump(OFCondition cond, OFConsole& console)
+OFString& DimseCondition::dump(OFString& str, OFCondition cond)
 {
   char buf[16];
   sprintf(buf,"%04x:%04x ", cond.module(), cond.code());
-  console.lockCerr() << buf << cond.text() << OFendl;
-  console.unlockCerr();
+  str = buf;
+  str += cond.text();
+  return str;
+}
+
+void DimseCondition::dump(OFCondition cond, OFConsole& console)
+{
+    OFString str;
+    dump(str, cond);
+    console.lockCerr() << str << OFendl;
+    console.unlockCerr();
 }
 
 OFCondition DimseCondition::push(
@@ -164,6 +173,9 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
+ * Revision 1.18  2009-11-18 11:53:59  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.17  2008-09-08 13:17:13  joergr
  * Fixed typo in OFCondition text string.
  *

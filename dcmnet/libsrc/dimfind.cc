@@ -56,10 +56,10 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2005-12-08 15:44:42 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2009-11-18 11:53:59 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimfind.cc,v $
-** CVS/RCS Revision:    $Revision: 1.12 $
+** CVS/RCS Revision:    $Revision: 1.13 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -84,7 +84,6 @@
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/dimse.h"              /* always include the module header */
 #include "dcmtk/dcmnet/cond.h"
-
 
 /*
 **
@@ -209,8 +208,7 @@ DIMSE_findUser(
 
             /* forget about status detail information if there is some */
             if (*statusDetail != NULL) {
-                DIMSE_warning(assoc, 
-                    "findUser: Pending with statusDetail, ignoring detail");
+                DCMNET_WARN(DIMSE_warn_str(assoc) << "findUser: Pending with statusDetail, ignoring detail");
                 delete *statusDetail;
                 *statusDetail = NULL;
             }
@@ -218,10 +216,8 @@ DIMSE_findUser(
             /* if the response message's data set type field reveals that there is */
             /* no data set attached to the current C-FIND-RSP, something is fishy */
             if (response->DataSetType == DIMSE_DATASET_NULL) {
-                DIMSE_warning(assoc, 
-                    "findUser: Status Pending, but DataSetType==NULL");
-                DIMSE_warning(assoc, 
-                    "  Assuming response identifiers are present");
+                DCMNET_WARN(DIMSE_warn_str(assoc) << "findUser: Status Pending, but DataSetType==NULL");
+                DCMNET_WARN(DIMSE_warn_str(assoc) << "  Assuming response identifiers are present");
             }
 
             /* receive the result data set on the network connection */
@@ -244,10 +240,8 @@ DIMSE_findUser(
             /* in case the response message's data set type field reveals that there */
             /* is a data set attached to the current C-FIND-RSP, something is fishy */
             if (response->DataSetType != DIMSE_DATASET_NULL) {
-                DIMSE_warning(assoc, 
-                    "findUser: Status Success, but DataSetType!=NULL");
-                DIMSE_warning(assoc, 
-                    "  Assuming no response identifiers are present");
+                DCMNET_WARN(DIMSE_warn_str(assoc) << "findUser: Status Success, but DataSetType!=NULL");
+                DCMNET_WARN(DIMSE_warn_str(assoc) << "Assuming no response identifiers are present");
             }
             break;
         default:
@@ -255,11 +249,9 @@ DIMSE_findUser(
             /* following the C-FIND-RSP message, do nothing else (but go ahead  */
             /* and try to receive the next C-FIND-RSP) */
             if (response->DataSetType != DIMSE_DATASET_NULL) {
-                DIMSE_warning(assoc, 
-                    "findUser: Status %s, but DataSetType!=NULL",
-                    DU_cfindStatusString(status));
-                DIMSE_warning(assoc, 
-                    "  Assuming no response identifiers are present");
+                DCMNET_WARN(DIMSE_warn_str(assoc) << "findUser: Status " << DU_cfindStatusString(status)
+                        << ", but DataSetType!=NULL");
+                DCMNET_WARN(DIMSE_warn_str(assoc) << "Assuming no response identifiers are present");
             }
             break;
         } //switch
@@ -458,6 +450,9 @@ DIMSE_findProvider(
 /*
 ** CVS Log
 ** $Log: dimfind.cc,v $
+** Revision 1.13  2009-11-18 11:53:59  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.12  2005-12-08 15:44:42  meichel
 ** Changed include path schema for all DCMTK header files
 **

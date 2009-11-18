@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-29 11:39:20 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 11:53:59 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -175,6 +175,12 @@ OFBool DcmTransportConnection::selectReadableAssociation(DcmTransportConnection 
   return safeSelectReadableAssociation(connections, connCount, timeout);
 }
 
+void DcmTransportConnection::dumpConnectionParameters(STD_NAMESPACE ostream& out)
+{
+    OFString str;
+    out << dumpConnectionParameters(str) << OFendl;
+}
+
 /* ================================================ */
 
 DcmTCPConnection::DcmTCPConnection(int openSocket)
@@ -277,9 +283,10 @@ OFBool DcmTCPConnection::isTransparentConnection()
   return OFTrue;
 }
 
-void DcmTCPConnection::dumpConnectionParameters(STD_NAMESPACE ostream& out)
+OFString& DcmTCPConnection::dumpConnectionParameters(OFString& str)
 {
-  out << "Transport connection: TCP/IP, unencrypted." << OFendl;
+  str = "Transport connection: TCP/IP, unencrypted.";
+  return str;
 }
 
 const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
@@ -307,6 +314,9 @@ const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
 
 /*
  *  $Log: dcmtrans.cc,v $
+ *  Revision 1.12  2009-11-18 11:53:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.11  2009-01-29 11:39:20  joergr
  *  Fixed issue with missing invalidation of socket variable during close method.
  *  Please note that this is only required if the connection objects exists after

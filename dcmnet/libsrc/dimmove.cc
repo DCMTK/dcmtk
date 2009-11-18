@@ -56,10 +56,10 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2005-12-08 15:44:44 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2009-11-18 11:53:59 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimmove.cc,v $
-** CVS/RCS Revision:    $Revision: 1.12 $
+** CVS/RCS Revision:    $Revision: 1.13 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -229,24 +229,23 @@ DIMSE_moveUser(
         switch (status) {
         case STATUS_Pending:
             if (*statusDetail != NULL) {
-                DIMSE_warning(assoc, 
-                    "moveUser: Pending with statusDetail, ignoring detail");
+                DCMNET_WARN(DIMSE_warn_str(assoc) << "moveUser: Pending with statusDetail, ignoring detail");
                 delete *statusDetail;
                 *statusDetail = NULL;
             }
             if (response->DataSetType != DIMSE_DATASET_NULL) 
             {
-                DIMSE_warning(assoc, "moveUser: Status Pending, but DataSetType!=NULL");
+                DCMNET_WARN(DIMSE_warn_str(assoc) << "moveUser: Status Pending, but DataSetType!=NULL");
                 if (! ignorePendingDatasets)
                 {
                     // Some systems send an (illegal) dataset following C-MOVE-RSP messages
                     // with pending status, which is a protocol violation, but we need to
                     // handle this nevertheless. The MV300 has been reported to exhibit
                     // this behavior.
-                    DIMSE_warning(assoc, "  Reading but ignoring response identifier set");
+                    DCMNET_WARN(DIMSE_warn_str(assoc) << "Reading but ignoring response identifier set");
                     DcmDataset *tempset = NULL;
                     cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &tempset, NULL, NULL);
-                    delete tempset;                
+                    delete tempset;
                     if (cond != EC_Normal) {
                         return cond;
                     }
@@ -255,7 +254,7 @@ DIMSE_moveUser(
                 {
                     // The alternative is to assume that the command set is wrong
                     // and not to read a dataset from the network association.
-                    DIMSE_warning(assoc, "  Assuming NO response identifiers are present");
+                    DCMNET_WARN(DIMSE_warn_str(assoc) << "Assuming NO response identifiers are present");
                 }
             }
 
@@ -447,6 +446,9 @@ DIMSE_moveProvider(
 /*
 ** CVS Log
 ** $Log: dimmove.cc,v $
+** Revision 1.13  2009-11-18 11:53:59  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.12  2005-12-08 15:44:44  meichel
 ** Changed include path schema for all DCMTK header files
 **

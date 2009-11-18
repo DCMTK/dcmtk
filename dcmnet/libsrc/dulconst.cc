@@ -49,9 +49,9 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-1993
 ** Intent:    This file contains functions for construction of
 **      DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:   $Author: onken $, $Date: 2008-04-17 15:27:35 $
+** Last Update:   $Author: uli $, $Date: 2009-11-18 11:53:59 $
 ** Source File:   $RCSfile: dulconst.cc,v $
-** Revision:    $Revision: 1.20 $
+** Revision:    $Revision: 1.21 $
 ** Status:    $State: Exp $
 */
 
@@ -65,6 +65,7 @@
 
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmnet/cond.h"
+#include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/lst.h"
 #include "dcmtk/dcmnet/dul.h"
 #include "dulstruc.h"
@@ -122,8 +123,6 @@ streamExtNegList(SOPClassExtendedNegotiationSubItemList *lst, unsigned char *b, 
 
 static OFCondition
 streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsigned long *len);
-
-static OFBool debug = OFFalse;
 
 /* constructAssociatePDU
 **
@@ -189,8 +188,7 @@ constructAssociatePDU(DUL_ASSOCIATESERVICEPARAMETERS * params,
 
     cond = EC_Normal;
     if (type == DUL_TYPEASSOCIATERQ) {
-  if (debug)
-      DEBUG_DEVICE << "Constructing Associate RQ PDU" << OFendl;
+        DCMNET_DEBUG("Constructing Associate RQ PDU");
   presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->requestedPresentationContext);
   (void) LST_Position(&params->requestedPresentationContext,
           (LST_NODE*)presentationCtx);
@@ -212,8 +210,7 @@ constructAssociatePDU(DUL_ASSOCIATESERVICEPARAMETERS * params,
       presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->requestedPresentationContext);
   }
     } else {
-  if (debug)
-      DEBUG_DEVICE << "Constructing Associate AC PDU" << OFendl;
+        DCMNET_DEBUG("Constructing Associate AC PDU");
   if (params->acceptedPresentationContext != NULL) {
       presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext);
       if (presentationCtx != NULL)
@@ -633,28 +630,6 @@ streamDataPDUHead(DUL_DATAPDU * pdu, unsigned char *buf,
     return EC_Normal;
 }
 
-
-/* constructDebug
-**
-** Purpose:
-**  To enable/disable the debugging facility
-**
-** Parameter Dictionary:
-**  flag    Set/Unset the debugging facility.
-**
-** Return Values:
-**  None
-**
-** Notes:
-**
-** Algorithm:
-**  Description of the algorithm (optional) and any other notes.
-*/
-void
-constructDebug(OFBool flag)
-{
-    debug = flag;
-}
 
 /*    ======================================================
  *  Private functions are defined below.
@@ -1537,6 +1512,9 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
+** Revision 1.21  2009-11-18 11:53:59  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.20  2008-04-17 15:27:35  onken
 ** Reworked and extended User Identity Negotiation code.
 **

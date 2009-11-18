@@ -45,9 +45,9 @@
 ** Intent:          This file contains functions for parsing Dicom
 **                  Upper Layer (DUL) Protocol Data Units (PDUs)
 **                  into logical in-memory structures.
-** Last Update:     $Author: onken $, $Date: 2008-04-17 15:27:35 $
+** Last Update:     $Author: uli $, $Date: 2009-11-18 11:53:59 $
 ** Source File:     $RCSfile: dulparse.cc,v $
-** Revision:        $Revision: 1.28 $
+** Revision:        $Revision: 1.29 $
 ** Status:          $State: Exp $
 */
 
@@ -64,6 +64,7 @@
 #include "dcmtk/dcmnet/cond.h"
 #include "dcmtk/dcmnet/lst.h"
 #include "dcmtk/dcmnet/dul.h"
+#include "dcmtk/dcmnet/diutil.h"
 #include "dulstruc.h"
 #include "dulpriv.h"
 #include "dcmtk/ofstd/ofconsol.h"
@@ -92,10 +93,6 @@ static void trim_trailing_spaces(char *s);
 static OFCondition
 parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
             unsigned long *length);
-
-#ifdef DEBUG
-static OFBool debug = OFFalse;
-#endif
 
 /* parseAssociate
 **
@@ -165,10 +162,9 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
     buf += 32;
     pduLength -= 32;
 
-#ifdef DEBUG
-    if (debug) {
+    if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::DEBUG_LOG_LEVEL)) {
         const char *s;
-        DEBUG_DEVICE << "Parsing an A-ASSOCIATE PDU" << OFendl;
+        DCMNET_DEBUG("Parsing an A-ASSOCIATE PDU");
         if (assoc->type == DUL_TYPEASSOCIATERQ)
             s = "A-ASSOCIATE RQ";
         else if (assoc->type == DUL_TYPEASSOCIATEAC)
@@ -180,27 +176,21 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 **      This function is only supposed to parse A-ASSOCIATE PDUs and
 **      expects its input to have been properly screened.
 */
-        DEBUG_DEVICE << "PDU type: "
+        DCMNET_TRACE("PDU type: "
             << STD_NAMESPACE hex << ((unsigned int)assoc->type)
             << STD_NAMESPACE dec << " (" << s << "), PDU Length: " << assoc->length << OFendl
             << "DICOM Protocol: "
             << STD_NAMESPACE hex << assoc->protocol
             << STD_NAMESPACE dec << OFendl
             << "Called AP Title:  " << assoc->calledAPTitle << OFendl
-            << "Calling AP Title: " << assoc->callingAPTitle << OFendl;
+            << "Calling AP Title: " << assoc->callingAPTitle);
     }
-#endif
     while ((cond.good()) && (pduLength > 0))
     {
         type = *buf;
-#ifdef DEBUG
-        if (debug) {
-            DEBUG_DEVICE << "Parsing remaining " << pduLength << " bytes of A-ASSOCIATE PDU" << OFendl
+        DCMNET_TRACE("Parsing remaining " << pduLength << " bytes of A-ASSOCIATE PDU" << OFendl
                 << "Next item type: "
-                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << ((unsigned int)type)
-                << STD_NAMESPACE dec << OFendl;
-        }
-#endif
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << ((unsigned int)type));
         switch (type) {
         case DUL_TYPEAPPLICATIONCONTEXT:
             cond = parseSubItem(&assoc->applicationContext,
@@ -209,10 +199,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             {
                 buf += itemLength;
                 pduLength -= itemLength;
-#ifdef DEBUG
-                if (debug)
-                    COUT << "Successfully parsed Application Context" << OFendl;
-#endif
+                DCMNET_TRACE("Successfully parsed Application Context");
             }
             break;
         case DUL_TYPEPRESENTATIONCONTEXTRQ:
@@ -226,10 +213,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             pduLength -= itemLength;
             cond = LST_Enqueue(&assoc->presentationContextList, (LST_NODE*)context);
             if (cond.bad()) return cond;
-#ifdef DEBUG
-            if (debug)
-                    DEBUG_DEVICE << "Successfully parsed Presentation Context " << OFendl;
-#endif
+            DCMNET_TRACE("Successfully parsed Presentation Context ");
             break;
         case DUL_TYPEUSERINFO:
             cond = parseUserInfo(&assoc->userInfo, buf, &itemLength, assoc->type);
@@ -237,10 +221,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
                 return cond;
             buf += itemLength;
             pduLength -= itemLength;
-#ifdef DEBUG
-            if (debug)
-                    DEBUG_DEVICE << "Successfully parsed User Information" << OFendl;
-#endif
+            DCMNET_TRACE("Successfully parsed User Information");
             break;
         default:
             cond = parseDummy(buf, &itemLength);
@@ -252,32 +233,6 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
     return cond;
 }
 
-/* parseDebug
-**
-** Purpose:
-**      Set global 'debug' flag for this module (OFTrue or OFFalse).
-**
-** Parameter Dictionary:
-**      flag    OFBool flag to be copied to global 'debug'
-**
-** Return Values:
-**      None
-**
-** Algorithm:
-*/
-
-#ifdef DEBUG
-void
-parseDebug(OFBool flag)
-{
-    debug = flag;
-}
-#else
-void
-parseDebug(OFBool /*flag*/)
-{
-}
-#endif
 
 /* ============================================================
 **  Private functions (to this module) defined below.
@@ -312,14 +267,10 @@ parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
 
     *itemLength = 2 + 2 + subItem->length;
 
-#ifdef DEBUG
-    if (debug) {
-        DEBUG_DEVICE << "Subitem parse: Type "
+    DCMNET_TRACE("Subitem parse: Type "
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << ((unsigned int)subItem->type)
             << STD_NAMESPACE dec << ", Length " << STD_NAMESPACE setw(4) << (int)subItem->length
-            << ", Content: " << subItem->data << OFendl;
-    }
-#endif
+            << ", Content: " << subItem->data);
     return EC_Normal;
 }
 
@@ -372,28 +323,19 @@ parsePresentationContext(unsigned char type,
     length = context->length;
     *itemLength = 2 + 2 + length;
 
-#ifdef DEBUG
-    if (debug) {
-        DEBUG_DEVICE << "Parsing Presentation Context: ("
+    DCMNET_TRACE("Parsing Presentation Context: ("
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)context->type
             << STD_NAMESPACE dec << "), Length: " << (unsigned long)context->length << OFendl
             << "Presentation Context ID: "
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)context->contextID
-            << STD_NAMESPACE dec << OFendl;
-    }
-#endif
+            << STD_NAMESPACE dec);
     presentationLength = length - 4;
     if (!((type == DUL_TYPEPRESENTATIONCONTEXTAC) &&
           (context->result != DUL_PRESENTATION_ACCEPT))) {
         while (presentationLength > 0) {
-#ifdef DEBUG
-            if (debug) {
-                DEBUG_DEVICE << "Parsing remaining " << presentationLength << " bytes of Presentation Ctx" << OFendl
+            DCMNET_TRACE("Parsing remaining " << presentationLength << " bytes of Presentation Ctx" << OFendl
                     << "Next item type: "
-                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)*buf
-                    << STD_NAMESPACE dec << OFendl;
-            }
-#endif
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)*buf);
             switch (*buf) {
             case DUL_TYPEABSTRACTSYNTAX:
                 cond = parseSubItem(&context->abstractSyntax, buf, &length);
@@ -402,11 +344,7 @@ parsePresentationContext(unsigned char type,
 
                 buf += length;
                 presentationLength -= length;
-#ifdef DEBUG
-                if (debug) {
-                    DEBUG_DEVICE << "Successfully parsed Abstract Syntax" << OFendl;
-                }
-#endif
+                DCMNET_TRACE("Successfully parsed Abstract Syntax");
                 break;
             case DUL_TYPETRANSFERSYNTAX:
                 subItem = (DUL_SUBITEM*)malloc(sizeof(DUL_SUBITEM));
@@ -417,11 +355,7 @@ parsePresentationContext(unsigned char type,
                 if (cond.bad()) return cond;
                 buf += length;
                 presentationLength -= length;
-#ifdef DEBUG
-                if (debug) {
-                    DEBUG_DEVICE << "Successfully parsed Transfer Syntax" << OFendl;
-                }
-#endif
+                DCMNET_TRACE("Successfully parsed Transfer Syntax");
                 break;
             default:
                 cond = parseDummy(buf, &length);
@@ -477,22 +411,13 @@ parseUserInfo(DUL_USERINFO * userInfo,
     userLength = userInfo->length;
     *itemLength = userLength + 4;
 
-#ifdef DEBUG
-    if (debug) {
-        DEBUG_DEVICE << "Parsing user info field ("
+    DCMNET_TRACE("Parsing user info field ("
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)userInfo->type
-            << STD_NAMESPACE dec << "), Length: " << (unsigned long)userInfo->length << OFendl;
-    }
-#endif
+            << STD_NAMESPACE dec << "), Length: " << (unsigned long)userInfo->length);
     while (userLength > 0) {
-#ifdef DEBUG
-        if (debug) {
-            DEBUG_DEVICE << "Parsing remaining " << (long)userLength << " bytes of User Information" << OFendl
+        DCMNET_TRACE("Parsing remaining " << (long)userLength << " bytes of User Information" << OFendl
                 << "Next item type: "
-                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)*buf
-                << STD_NAMESPACE dec << OFendl;
-        }
-#endif
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)*buf);
         switch (*buf) {
         case DUL_TYPEMAXLENGTH:
             cond = parseMaxPDU(&userInfo->maxLength, buf, &length);
@@ -500,11 +425,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
                 return cond;
             buf += length;
             userLength -= (unsigned short) length;
-#ifdef DEBUG
-            if (debug) {
-                    DEBUG_DEVICE << "Successfully parsed Maximum PDU Length" << OFendl;
-            }
-#endif
+            DCMNET_TRACE("Successfully parsed Maximum PDU Length");
             break;
         case DUL_TYPEIMPLEMENTATIONCLASSUID:
             cond = parseSubItem(&userInfo->implementationClassUID,
@@ -611,11 +532,7 @@ parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
     EXTRACT_LONG_BIG(buf, max->maxLength);
     *itemLength = 2 + 2 + max->length;
 
-#ifdef DEBUG
-    if (debug) {
-            DEBUG_DEVICE << "Maximum PDU Length: " << (unsigned long)max->maxLength << OFendl;
-    }
-#endif
+    DCMNET_TRACE("Maximum PDU Length: " << (unsigned long)max->maxLength);
 
     return EC_Normal;
 }
@@ -692,14 +609,10 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 
     *length = 2 + 2 + role->length;
 
-#ifdef DEBUG
-    if (debug) {
-        DEBUG_DEVICE << "Subitem parse: Type "
+    DCMNET_TRACE("Subitem parse: Type "
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)role->type
             << STD_NAMESPACE dec << ", Length " << STD_NAMESPACE setw(4) << (int)role->length
-            << ", Content: " << role->SOPClassUID << " " << (int)role->SCURole << " " << (int)role->SCPRole << OFendl;
-    }
-#endif
+            << ", Content: " << role->SOPClassUID << " " << (int)role->SCURole << " " << (int)role->SCPRole);
     return EC_Normal;
 }
 
@@ -738,22 +651,22 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
         extNeg->serviceClassAppInfo[i] = *buf++;
     }
 
-#ifdef DEBUG
-    if (debug) {
-        DEBUG_DEVICE << "ExtNeg Subitem parse: Type "
-            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)extNeg->itemType
+    if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::TRACE_LOG_LEVEL)) {
+        DCMNET_TRACE("ExtNeg Subitem parse: Type "
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, extNeg->itemType)
             << STD_NAMESPACE dec << ", Length " << STD_NAMESPACE setw(4) << (int)extNeg->itemLength
-            << ", SOP Class: " << extNeg->sopClassUID.c_str() << OFendl;
+            << ", SOP Class: " << extNeg->sopClassUID.c_str());
 
-        DEBUG_DEVICE << "   values: ";
+        OFOStringStream str;
+        str << "   values: ";
         for (int j=0; j<extNeg->serviceClassAppInfoLength; j++) {
-            DEBUG_DEVICE
-                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << extNeg->serviceClassAppInfo[j]
+            str << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << extNeg->serviceClassAppInfo[j]
                 << STD_NAMESPACE dec << " ";
         }
-        DEBUG_DEVICE << OFendl;
+        str << OFStringStream_ends;
+        OFSTRINGSTREAM_GETOFSTRING(str, res)
+        DCMNET_TRACE(res);
     }
-#endif
 
     return EC_Normal;
 }
@@ -797,6 +710,9 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
+** Revision 1.29  2009-11-18 11:53:59  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.28  2008-04-17 15:27:35  onken
 ** Reworked and extended User Identity Negotiation code.
 **

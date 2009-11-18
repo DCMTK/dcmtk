@@ -51,9 +51,9 @@
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
 **
-** Last Update:		$Author: meichel $, $Date: 2005-12-08 15:48:09 $
+** Last Update:		$Author: uli $, $Date: 2009-11-18 11:53:59 $
 ** Source File:		$RCSfile: dulpriv.h,v $
-** Revision:		$Revision: 1.8 $
+** Revision:		$Revision: 1.9 $
 ** Status:		$State: Exp $
 */
 
@@ -65,8 +65,6 @@
 
 #define	PRV_DEFAULTTIMEOUT	-1
 #define	PRV_LISTENBACKLOG	50
-
-#define DEBUG_DEVICE	COUT
 
 OFCondition DUL_InitializeFSM(void);
 OFCondition
@@ -105,15 +103,14 @@ OFCondition
 PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association,
 		DUL_BLOCKOPTIONS block, int timeout, unsigned char *type);
 
-void fsmDebug(OFBool flag);
-void constructDebug(OFBool flag);
-void parseDebug(OFBool flag);
-
 #endif
 
 /*
 ** CVS Log
 ** $Log: dulpriv.h,v $
+** Revision 1.9  2009-11-18 11:53:59  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.8  2005-12-08 15:48:09  meichel
 ** Updated Makefiles to correctly install header files
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-10 13:21:04 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 11:53:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dfindscu.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,12 +116,10 @@ public:
    *  @param extractResponsesToFile if true, C-FIND-RSP datasets will be stored as DICOM files
    *  @param cancelAfterNResponses if non-negative, a C-FIND-CANCEL will be issued after the
    *    given number of incoming C-FIND-RSP messages
-   *  @param verbose flag for verbose mode
    */
   DcmFindSCUDefaultCallback(
     OFBool extractResponsesToFile,
-    int cancelAfterNResponses,
-    OFBool verbose);
+    int cancelAfterNResponses);
   
   /// destructor
   virtual ~DcmFindSCUDefaultCallback() {}
@@ -145,9 +143,6 @@ private:
 
    /// if non-negative, a C-FIND-CANCEL will be issued after the given number of incoming C-FIND-RSP messages
    int cancelAfterNResponses_;
-   
-   /// flag for verbose mode
-   OFBool verbose_;
 };
 
 
@@ -161,7 +156,7 @@ class DcmFindSCU
 public:
 
   /// constructor, does not execute any network-related code
-  DcmFindSCU(OFBool verboseMode, OFBool debugMode);
+  DcmFindSCU();
 
   /// destructor. Destroys network structure if not done already.
   virtual ~DcmFindSCU();
@@ -312,12 +307,6 @@ private:
   /// pointer to network structure
   T_ASC_Network *net_;
 
-  /// verbose mode flag
-  OFBool verbose_;
-
-  /// debug mode flag
-  OFBool debug_;
-
 };
 
 #endif
@@ -325,6 +314,9 @@ private:
 /*
  * CVS Log
  * $Log: dfindscu.h,v $
+ * Revision 1.4  2009-11-18 11:53:58  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.3  2009-07-10 13:21:04  onken
  * Moved override key functionality to DcmPathProcessor.
  *

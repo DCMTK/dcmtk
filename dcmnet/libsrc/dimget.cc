@@ -10,10 +10,10 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2005-12-08 15:44:43 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2009-11-18 11:53:59 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimget.cc,v $
-** CVS/RCS Revision:    $Revision: 1.6 $
+** CVS/RCS Revision:    $Revision: 1.7 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -191,16 +191,13 @@ DIMSE_getUser(
         switch (status) {
         case STATUS_Pending:
             if (*statusDetail != NULL) {
-                DIMSE_warning(assoc, 
-                    "getUser: Pending with statusDetail, ignoring detail");
+                DCMNET_WARN(DIMSE_warn_str(assoc) << "getUser: Pending with statusDetail, ignoring detail");
                 delete *statusDetail;
                 *statusDetail = NULL;
             }
             if (response->DataSetType != DIMSE_DATASET_NULL) {
-                DIMSE_warning(assoc, 
-                    "getUser: Status Pending, but DataSetType!=NULL");
-                DIMSE_warning(assoc, 
-                    "  Assuming NO response identifiers are present");
+                DCMNET_WARN(DIMSE_warn_str(assoc) << "getUser: Status Pending, but DataSetType!=NULL");
+                DCMNET_WARN(DIMSE_warn_str(assoc) << "Assuming NO response identifiers are present");
             }
 
             /* execute callback */
@@ -383,6 +380,9 @@ DIMSE_getProvider(
 /*
 ** CVS Log
 ** $Log: dimget.cc,v $
+** Revision 1.7  2009-11-18 11:53:59  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.6  2005-12-08 15:44:43  meichel
 ** Changed include path schema for all DCMTK header files
 **

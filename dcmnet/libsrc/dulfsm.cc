@@ -46,9 +46,9 @@
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
 ** Intent:        Define tables and provide functions that implement
 **                the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:   $Author: joergr $, $Date: 2008-09-08 13:16:36 $
+** Last Update:   $Author: uli $, $Date: 2009-11-18 11:53:59 $
 ** Source File:   $RCSfile: dulfsm.cc,v $
-** Revision:      $Revision: 1.65 $
+** Revision:      $Revision: 1.66 $
 ** Status:        $State: Exp $
 */
 
@@ -106,8 +106,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/assoc.h"    /* for ASC_MAXIMUMPDUSIZE */
 #include "dcmtk/dcmnet/dcmtrans.h"
 #include "dcmtk/dcmnet/dcmlayer.h"
-
-static OFBool debug = OFFalse;
+#include "dcmtk/dcmnet/diutil.h"
 
 static OFCondition
 AE_1_TransportConnect(PRIVATE_NETWORKKEY ** network,
@@ -262,7 +261,7 @@ static OFCondition
 defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t timerStart,
               int timeout, void *b, unsigned long l, unsigned long *rtnLen);
 
-static void dump_pdu(const char *type, void *buffer, unsigned long length);
+static OFString dump_pdu(const char *type, void *buffer, unsigned long length);
 
 static void setTCPBufferLength(int sock);
 OFCondition
@@ -733,15 +732,10 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
     /* 8, section 9) (or the corresponding section in a later version of the standard) */
     entry = &StateTable[event][state - 1];
 
-#ifdef DEBUG
     /* dump information if required */
-    if (debug) {
-        DEBUG_DEVICE.width(2);
-        DEBUG_DEVICE << "DUL  FSM Table: State: " << state << " Event: " << event << OFendl
+    DCMNET_TRACE("DUL  FSM Table: State: " << state << " Event: " << event << OFendl
             << "DUL  Event:  " << entry->eventName << OFendl
-            << "DUL  Action: " << entry->actionName << OFendl;
-    }
-#endif
+            << "DUL  Action: " << entry->actionName);
 
     /* if the state table's entry specifies an action function, execute this function and return */
     /* it's result value. If there is no action function defined, return a corresponding error. */
@@ -754,29 +748,6 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
       return makeDcmnetCondition(DULC_FSMERROR, OF_error, buf1);
     }
 }
-
-/* fsmDebug
-**
-** Purpose:
-**      To enable/disable the debugging facility.
-**
-** Parameter Dictionary:
-**      flag    Used to enable/disable the debugging facility.
-**
-** Return Values:
-**      None
-**
-** Notes:
-**
-** Algorithm:
-**      Description of the algorithm (optional) and any other notes.
-*/
-void
-fsmDebug(OFBool flag)
-{
-    debug = flag;
-}
-
 
 /* ============================================================
 **
@@ -909,8 +880,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
 
     /* cond is good so we know that buffer exists */
 
-    if (debug)
-        dump_pdu("Associate Accept", buffer, pduLength + 6);
+    DCMNET_DEBUG(dump_pdu("Associate Accept", buffer, pduLength + 6));
 
     if (pduType == DUL_TYPEASSOCIATEAC)
     {
@@ -927,9 +897,6 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
 
         cond = parseAssociate(buffer, pduLength, &assoc);
         free(buffer);
-        if (debug) {
-            DEBUG_DEVICE.flush();
-        }
         if (cond.bad()) return makeDcmnetSubCondition(DULC_ILLEGALPDU, OF_error, "DUL Illegal or ill-formed PDU", cond);
 
         (void) strcpy(service->respondingAPTitle, assoc.calledAPTitle);
@@ -1179,15 +1146,11 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
           }
         }
 
-        if (debug)
-            dump_pdu("Associate Request", buffer, pduLength + 6);
+        DCMNET_DEBUG(dump_pdu("Associate Request", buffer, pduLength + 6));
         cond = parseAssociate(buffer, pduLength, &assoc);
         free(buffer);
         buffer = NULL;
 
-        if (debug) {
-            DEBUG_DEVICE.flush();
-        }
         if (cond.bad()) {
             if (cond == DUL_UNSUPPORTEDPEERPROTOCOL)    /* Make it look OK */
                 (*association)->protocolState = STATE3;
@@ -2454,8 +2417,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         {
             if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1)
             {
-              ofConsole.lockCerr() << "DULFSM: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString << OFendl;
-              ofConsole.unlockCerr();
+              DCMNET_WARN("DULFSM: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString);
             }
         }
         if (tcpNoDelay) {
@@ -3426,18 +3388,13 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     /* if receiving was not successful, return the corresponding error value */
     if (cond.bad()) return cond;
 
-#ifdef DEBUG
-    /* dump some information if required */
-    if (debug) {
-        DEBUG_DEVICE << "Read PDU HEAD TCP: ";
-        for (idx = 0; idx < 6; idx++)
-        {
-            DEBUG_DEVICE
-                << STD_NAMESPACE hex << " " << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned short)(buffer[idx]);
-        }
-        DEBUG_DEVICE << STD_NAMESPACE dec << OFendl;
-    }
-#endif
+    DCMNET_TRACE("Read PDU HEAD TCP:" << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+                    << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[0])
+                    << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[1])
+                    << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[2])
+                    << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[3])
+                    << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[4])
+                    << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[5]));
 
     /* determine PDU type (captured in byte 0 of buffer) and assign it to reference parameter */
     *type = *buffer++;
@@ -3465,19 +3422,11 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     buffer += 4;
     *pduLength = length;
 
-#ifdef DEBUG
-    /* dump some information if required */
-    if (debug) {
-            DEBUG_DEVICE << "Read PDU HEAD TCP: type: "
+    DCMNET_TRACE("Read PDU HEAD TCP: type: "
                 << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned short)(*type)
-                << ", length: "
-                << STD_NAMESPACE dec << (*pduLength)
-                << " ("
+                << ", length: " << STD_NAMESPACE dec << (*pduLength) << " ("
                 << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)*pduLength
-                << ")"
-                << STD_NAMESPACE dec << OFendl;
-        }
-#endif
+                << ")");
 
     /* return ok */
     return EC_Normal;
@@ -3679,28 +3628,32 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
 **      Description of the algorithm (optional) and any other notes.
 */
 
-static void
+static OFString
 dump_pdu(const char *type, void *buffer, unsigned long length)
 {
     unsigned char
        *p;
     int
         position = 0;
+    OFOStringStream
+        str;
 
-    DEBUG_DEVICE << "PDU Type: " << type << ", PDU Length: " << length-6 << " + 6 bytes PDU header" << OFendl;
+    str << "PDU Type: " << type << ", PDU Length: " << length-6 << " + 6 bytes PDU header" << OFendl;
     if (length > 512) {
-            DEBUG_DEVICE << "Only dumping 512 bytes." << OFendl;
+            str << "Only dumping 512 bytes." << OFendl;
             length = 512;
     }
     p = (unsigned char*)buffer;
 
     while (length-- > 0) {
-        DEBUG_DEVICE << "  "
+        str << "  "
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << ((unsigned int)(*p++))
             << STD_NAMESPACE dec;
-        if ((++position) % 16 == 0) DEBUG_DEVICE << OFendl;
+        if ((++position) % 16 == 0) str << OFendl;
     }
-    DEBUG_DEVICE << OFendl;
+    str << OFStringStream_ends;
+    OFSTRINGSTREAM_GETOFSTRING(str, ret)
+    return ret;
 }
 
 
@@ -3743,18 +3696,16 @@ setTCPBufferLength(int sock)
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
         if (sscanf(TCPBufferLength, "%d", &bufLen) != 1)
         {
-            ofConsole.lockCerr() << "DULFSM: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength << OFendl;
-            ofConsole.unlockCerr();
+            DCMNET_WARN("DULFSM: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength);
         }
     }
 #if defined(SO_SNDBUF) && defined(SO_RCVBUF)
     (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen, sizeof(bufLen));
     (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen, sizeof(bufLen));
 #else
-     ofConsole.lockCerr() << "DULFSM: setTCPBufferLength: "
+     DCMNET_WARN("DULFSM: setTCPBufferLength: "
             "cannot set TCP buffer length socket option: "
-            "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown" << OFendl;
-     ofConsole.unlockCerr();
+            "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown");
 #endif // SO_SNDBUF and SO_RCVBUF
 #endif // HAVE_GUSI_H
 }
@@ -3966,6 +3917,9 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.66  2009-11-18 11:53:59  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.65  2008-09-08 13:16:36  joergr
 ** Added missing newline in debug output.
 **

@@ -63,10 +63,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2006-08-15 16:04:29 $
+** Last Update:		$Author: uli $
+** Update Date:		$Date: 2009-11-18 11:53:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.29 $
+** CVS/RCS Revision:	$Revision: 1.30 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -138,14 +138,14 @@ char dcompat_functionDefinedOnlyToStopLinkerMoaning;
 
 int dcmtk_flock(int fd, int operation)
 {
-  CERR << "WARNING: Unsupported flock(fd[" << fd << "],operation[0x"
-    << hex << operation << "])" << dec << OFendl;
+  DCMNET_WARN("Unsupported flock(fd[" << fd << "],operation[0x"
+    << hex << operation << "])");
   return 0;
 }
 
 void dcmtk_plockerr(const char *s)
 {
-  CERR << s << ": flock not implemented" << OFendl;
+  DCMNET_WARN(s << ": flock not implemented");
 }
 
 #else /* macintosh */
@@ -220,7 +220,8 @@ void dcmtk_plockerr(const char *s)
     MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
     (LPTSTR) &lpMsgBuf, 0, NULL);
 
-  if (lpMsgBuf && s) CERR << s << ": " << (const char*)lpMsgBuf << OFendl;
+  if (lpMsgBuf && s)
+      DCMNET_ERROR(s << ": " << (const char*)lpMsgBuf);
   LocalFree(lpMsgBuf);
 } 
 
@@ -258,7 +259,7 @@ int dcmtk_flock(int fd, int operation)
 
 void dcmtk_plockerr(const char *s)
 {
-  CERR << s << ": " << strerror(errno) << OFendl;
+  DCMNET_ERROR(s << ": " << strerror(errno));
 }
 
 #endif /* USE__LOCKING */
@@ -316,7 +317,7 @@ int dcmtk_flock(int fd, int operation)
 
 void dcmtk_plockerr(const char *s)
 {
-  CERR << s << ": " << strerror(errno) << OFendl;
+  DCMNET_ERROR(s << ": " << strerror(errno));
 }
 
 #endif /* _WIN32 */
@@ -462,6 +463,9 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
+** Revision 1.30  2009-11-18 11:53:59  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.29  2006-08-15 16:04:29  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.

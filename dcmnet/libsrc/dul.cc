@@ -54,14 +54,15 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: meichel $, $Date: 2009-08-19 11:55:44 $
+** Last Update:         $Author: uli $, $Date: 2009-11-18 11:53:59 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.82 $
+** Revision:            $Revision: 1.83 $
 ** Status:              $State: Exp $
 */
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmnet/diutil.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -186,8 +187,8 @@ get_association_parameter(void *paramAddress,
 static void setTCPBufferLength(int sock);
 static OFCondition checkNetwork(PRIVATE_NETWORKKEY ** networkKey);
 static OFCondition checkAssociation(PRIVATE_ASSOCIATIONKEY ** association);
-static void dump_presentation_ctx(LST_HEAD ** l);
-static void dump_uid(const char *UID, const char *indent);
+static OFString dump_presentation_ctx(LST_HEAD ** l);
+static OFString dump_uid(const char *UID, const char *indent);
 static void clearRequestorsParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
 static void clearPresentationContext(LST_HEAD ** l);
 
@@ -1152,29 +1153,6 @@ DUL_ReadPDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
     return cond;
 }
 
-/* DUL_Debug
-**
-** Purpose:
-**      Set debug flag in this module and in the other modules.
-**
-** Parameter Dictionary:
-**      flag    The boolean variable to set the debug facility.
-**
-** Return Values:
-**      None
-**
-** Algorithm:
-**      Description of the algorithm (optional) and any other notes.
-*/
-
-void
-DUL_Debug(OFBool flag)
-{
-    fsmDebug(flag);
-    constructDebug(flag);
-    parseDebug(flag);
-}
-
 
 /* DUL_AssociationParameter
 **
@@ -1812,7 +1790,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     char* tcpNoDelayString = NULL;
     if ((tcpNoDelayString = getenv("TCP_NODELAY")) != NULL) {
         if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1) {
-            CERR << "DUL: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString << OFendl;
+            DCMNET_WARN("DUL: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString);
         }
     }
     if (tcpNoDelay) {
@@ -2276,16 +2254,16 @@ setTCPBufferLength(int sock)
     bufLen = 32768; // a socket buffer size of 32K gives best throughput for image transmission
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
         if (sscanf(TCPBufferLength, "%d", &bufLen) != 1) {
-            CERR << "DUL: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength << OFendl;
+            DCMNET_WARN("DUL: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength);
         }
     }
 #if defined(SO_SNDBUF) && defined(SO_RCVBUF)
     (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen, sizeof(bufLen));
     (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen, sizeof(bufLen));
 #else
-    CERR << "DULFSM: setTCPBufferLength: "
+    OFLOG_WARN("DULFSM: setTCPBufferLength: "
             "cannot set TCP buffer length socket option: "
-            "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown" << OFendl;
+            "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown");
 #endif // SO_SNDBUF and SO_RCVBUF
 #endif // HAVE_GUSI_H
 }
@@ -2293,7 +2271,7 @@ setTCPBufferLength(int sock)
 /* DUL_DumpParams
 **
 ** Purpose:
-**      Display information of various fields of the service parameters.
+**      Returns information of various fields of the service parameters.
 **
 ** Parameter Dictionary:
 **      params          Pointer to structure holding the service parameters.
@@ -2306,12 +2284,15 @@ setTCPBufferLength(int sock)
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-void
-DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params)
+OFString&
+DUL_DumpParams(OFString& ret_str, DUL_ASSOCIATESERVICEPARAMETERS * params)
 {
-    COUT << "APP CTX NAME:" << params->applicationContextName << OFendl;
-    dump_uid(params->applicationContextName, "%13s");
-    COUT << "AP TITLE:     " << params->callingAPTitle << OFendl
+    OFOStringStream str;
+    OFString temp_str;
+
+    str << "APP CTX NAME:" << params->applicationContextName << OFendl;
+    str << dump_uid(params->applicationContextName, "%13s");
+    str << "AP TITLE:     " << params->callingAPTitle << OFendl
         << "AP TITLE:     " << params->calledAPTitle << OFendl
         << "AP TITLE:     " << params->respondingAPTitle << OFendl
         << "MAX PDU:      " << (int)params->maxPDU << OFendl
@@ -2319,23 +2300,30 @@ DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params)
         << "PRES ADDR:    " << params->callingPresentationAddress << OFendl
         << "PRES ADDR:    " << params->calledPresentationAddress << OFendl
         << "REQ IMP UID:  " << params->callingImplementationClassUID << OFendl;
-    dump_uid(params->callingImplementationClassUID, "%13s");
-    COUT << "REQ VERSION:  " << params->callingImplementationVersionName << OFendl
+    str << dump_uid(params->callingImplementationClassUID, "%13s");
+    str << "REQ VERSION:  " << params->callingImplementationVersionName << OFendl
         << "ACC IMP UID:  " << params->calledImplementationClassUID << OFendl;
-    dump_uid(params->calledImplementationClassUID, "%13s");
-    COUT << "ACC VERSION:  " << params->calledImplementationVersionName << OFendl
+    str << dump_uid(params->calledImplementationClassUID, "%13s");
+    str << "ACC VERSION:  " << params->calledImplementationVersionName << OFendl
         << "Requested Presentation Ctx" << OFendl;
-    dump_presentation_ctx(&params->requestedPresentationContext);
-    COUT << "Accepted Presentation Ctx" << OFendl;
-    dump_presentation_ctx(&params->acceptedPresentationContext);
+    str << dump_presentation_ctx(&params->requestedPresentationContext);
+    str << "Accepted Presentation Ctx" << OFendl;
+    str << dump_presentation_ctx(&params->acceptedPresentationContext);
     if (params->requestedExtNegList != NULL) {
-        COUT << "Requested Extended Negotiation" << OFendl;
-        dumpExtNegList(*params->requestedExtNegList);
+        str << "Requested Extended Negotiation" << OFendl;
+        str << dumpExtNegList(temp_str, *params->requestedExtNegList);
     }
     if (params->acceptedExtNegList != NULL) {
-        COUT << "Accepted Extended Negotiation" << OFendl;
-        dumpExtNegList(*params->acceptedExtNegList);
+        str << "Accepted Extended Negotiation" << OFendl;
+        str << dumpExtNegList(temp_str, *params->acceptedExtNegList);
     }
+    str << OFStringStream_ends;
+
+    OFSTRINGSTREAM_GETSTR(str, ret)
+    ret_str = ret;
+    OFSTRINGSTREAM_FREESTR(ret)
+
+    return ret_str;
 }
 
 typedef struct {
@@ -2365,7 +2353,7 @@ static SC_MAP scMap[] = {
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-static void
+static OFString
 dump_presentation_ctx(LST_HEAD ** l)
 {
     DUL_PRESENTATIONCONTEXT
@@ -2374,46 +2362,51 @@ dump_presentation_ctx(LST_HEAD ** l)
         * transfer;
     int
         l_index;
+    OFOStringStream
+        str;
 
     if (*l == NULL)
-        return;
+        return "";
 
     ctx = (DUL_PRESENTATIONCONTEXT*)LST_Head(l);
     if (ctx == NULL)
-        return;
+        return "";
 
     (void) LST_Position(l, (LST_NODE*)ctx);
 
     while (ctx != NULL) {
-        COUT << "  Context ID:           " << ctx->presentationContextID << OFendl
+        str << "  Context ID:           " << ctx->presentationContextID << OFendl
             << "  Abstract Syntax:      " << ctx->abstractSyntax << OFendl;
-        dump_uid(ctx->abstractSyntax, "%24s");
-        COUT << "  Result field:         " << (int) ctx->result << OFendl;
+        str << dump_uid(ctx->abstractSyntax, "%24s");
+        str << "  Result field:         " << (int) ctx->result << OFendl;
         for (l_index = 0; l_index < (int) DIM_OF(scMap); l_index++) {
             if (ctx->proposedSCRole == scMap[l_index].role)
-                COUT << "  Proposed SCU/SCP Role:  " << scMap[l_index].text << OFendl;
+                str << "  Proposed SCU/SCP Role:  " << scMap[l_index].text << OFendl;
         }
         for (l_index = 0; l_index < (int) DIM_OF(scMap); l_index++) {
             if (ctx->acceptedSCRole == scMap[l_index].role)
-                COUT << "  Accepted SCU/SCP Role:  " << scMap[l_index].text << OFendl;
+                str << "  Accepted SCU/SCP Role:  " << scMap[l_index].text << OFendl;
         }
-        COUT << "  Proposed Xfer Syntax(es)" << OFendl;
+        str << "  Proposed Xfer Syntax(es)" << OFendl;
         if (ctx->proposedTransferSyntax != NULL) {
             transfer = (DUL_TRANSFERSYNTAX*)LST_Head(&ctx->proposedTransferSyntax);
             if (transfer != NULL)
                 (void) LST_Position(&ctx->proposedTransferSyntax, (LST_NODE*)transfer);
 
             while (transfer != NULL) {
-                COUT << "                  " << transfer->transferSyntax << OFendl;
-                dump_uid(transfer->transferSyntax, "%18s");
+                str << "                  " << transfer->transferSyntax << OFendl;
+                str << dump_uid(transfer->transferSyntax, "%18s");
                 transfer = (DUL_TRANSFERSYNTAX*)LST_Next(&ctx->proposedTransferSyntax);
             }
         }
-        COUT << "  Accepted Xfer Syntax: " << ctx->acceptedTransferSyntax << OFendl;
-        dump_uid(ctx->acceptedTransferSyntax, "%24s");
+        str << "  Accepted Xfer Syntax: " << ctx->acceptedTransferSyntax << OFendl;
+        str << dump_uid(ctx->acceptedTransferSyntax, "%24s");
         ctx = (DUL_PRESENTATIONCONTEXT*)LST_Next(l);
     }
 
+    str << OFStringStream_ends;
+    OFSTRINGSTREAM_GETOFSTRING(str, ret)
+    return ret;
 }
 
 /* dumpExtNegList
@@ -2430,23 +2423,30 @@ dump_presentation_ctx(LST_HEAD ** l)
 **      Description of the algorithm (optional) and any other notes.
 */
 
-void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
+OFString& dumpExtNegList(OFString& ret, SOPClassExtendedNegotiationSubItemList& lst)
 {
+    OFOStringStream str;
     OFListIterator(SOPClassExtendedNegotiationSubItem*) i = lst.begin();
     while (i != lst.end()) {
         SOPClassExtendedNegotiationSubItem* extNeg = *i;
         const char* uidName = dcmFindNameOfUID(extNeg->sopClassUID.c_str());
-        COUT << "  =" << ((uidName)?(uidName):("Unknown-UID"))
+        str << "  =" << ((uidName)?(uidName):("Unknown-UID"))
             << " (" << extNeg->sopClassUID.c_str() << ")" << OFendl
             << "    [";
         for (int k=0; k<(int)extNeg->serviceClassAppInfoLength; k++) {
-            COUT << "0x";
-            COUT << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (int)(extNeg->serviceClassAppInfo[k]);
-            if (k < (int)(extNeg->serviceClassAppInfoLength-1)) COUT << ", ";
+            str << "0x";
+            str << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (int)(extNeg->serviceClassAppInfo[k]);
+            if (k < (int)(extNeg->serviceClassAppInfoLength-1)) str << ", ";
         }
-        COUT << "]" << STD_NAMESPACE dec << OFendl;
+        str << "]" << STD_NAMESPACE dec << OFendl;
         ++i;
     }
+
+    str << OFStringStream_ends;
+    OFSTRINGSTREAM_GETSTR(str, res)
+    ret = res;
+    OFSTRINGSTREAM_FREESTR(res);
+    return ret;
 }
 
 /* dump_uid
@@ -2466,7 +2466,7 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-static void
+static OFString
 dump_uid(const char *UID, const char *indent)
 {
     const char* uidName;
@@ -2475,15 +2475,15 @@ dump_uid(const char *UID, const char *indent)
     if ((UID==NULL)||(UID[0] == '\0'))
     {
         sprintf(buf, indent, " ");
-        COUT << buf << "No UID" << OFendl;
+        return OFString(buf) + "No UID";
     } else {
         uidName = dcmFindNameOfUID(UID);
         if (uidName != NULL) {
             sprintf(buf, indent, " ");
-            COUT << buf << uidName << OFendl;
+            return OFString(buf) + uidName;
         } else {
             sprintf(buf, indent, " ");
-            COUT << buf << "Unknown UID" << OFendl;
+            return OFString(buf) + "Unknown UID";
         }
     }
 }
@@ -2629,18 +2629,43 @@ OFCondition DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransport
   return DUL_NULLKEY;
 }
 
-void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE ostream& outstream)
+OFString& DUL_DumpConnectionParameters(OFString& str, DUL_ASSOCIATIONKEY *association)
 {
   if (association)
   {
     PRIVATE_ASSOCIATIONKEY *assoc = (PRIVATE_ASSOCIATIONKEY *)association;
-    if (assoc->connection) assoc->connection->dumpConnectionParameters(outstream);
+    if (assoc->connection)
+        return assoc->connection->dumpConnectionParameters(str);
   }
+  str.clear();
+  return str;
+}
+
+// Legacy functions!
+void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params)
+{
+    OFString str;
+    COUT << DUL_DumpParams(str, params) << OFendl;
+}
+
+void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE ostream& outstream)
+{
+    OFString str;
+    outstream << DUL_DumpConnectionParameters(str, association) << OFendl;
+}
+
+void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
+{
+    OFString str;
+    COUT << dumpExtNegList(str, lst) << OFendl;
 }
 
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.83  2009-11-18 11:53:59  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.82  2009-08-19 11:55:44  meichel
 ** Added additional includes needed for Sun Studio 11 on Solaris.
 **

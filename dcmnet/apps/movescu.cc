@@ -21,9 +21,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-12 10:13:01 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 11:53:58 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,6 @@
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
@@ -64,6 +63,8 @@
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "movescu"
+
+static OFLogger movescuLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -101,8 +102,6 @@ E_PaddingEncoding opt_paddingType = EPD_withoutPadding;
 OFCmdUnsignedInt  opt_filepad = 0;
 OFCmdUnsignedInt  opt_itempad = 0;
 OFCmdUnsignedInt  opt_compressionLevel = 0;
-OFBool            opt_verbose = OFFalse;
-OFBool            opt_debug = OFFalse;
 OFBool            opt_bitPreserving = OFFalse;
 OFBool            opt_ignore = OFFalse;
 OFBool            opt_abortDuringStore = OFFalse;
@@ -234,8 +233,6 @@ main(int argc, char *argv[])
     const char *opt_ourTitle = APPLICATIONTITLE;
     OFList<OFString> fileNameList;
 
-    SetDebugLevel((0)); /* stop dcmdata debugging messages */
-
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
     GUSISetup(GUSIwithSIOUXSockets);
@@ -250,6 +247,7 @@ main(int argc, char *argv[])
 #endif
 
   char tempstr[20];
+  OFString temp_str;
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM retrieve (C-MOVE) SCU", rcsid);
   OFCommandLine cmd;
 
@@ -262,9 +260,8 @@ main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                   "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                           "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--arguments",                         "print expanded command line arguments");
-   cmd.addOption("--verbose",                "-v",      "verbose mode, print processing details");
-   cmd.addOption("--debug",                  "-d",      "debug mode, print debug information");
+   OFLog::addOptions(cmd);
+
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
       cmd.addOption("--key",                 "-k",   1, "[k]ey: gggg,eeee=\"str\" or dict. name=\"str\"",
@@ -387,10 +384,6 @@ main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -418,14 +411,7 @@ main(int argc, char *argv[])
       cmd.getParam(1, opt_peer);
       app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
 
-      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
-      if (cmd.findOption("--debug"))
-      {
-        opt_debug = OFTrue;
-        DUL_Debug(OFTrue);
-        DIMSE_debug(OFTrue);
-        SetDebugLevel(3);
-      }
+      OFLog::configureFromCommandLine(cmd, app);
 
       if (cmd.findOption("--key", 0, OFCommandLine::FOM_First))
       {
@@ -700,13 +686,13 @@ main(int argc, char *argv[])
       }
     }
 
-    if (opt_debug)
-      app.printIdentifier();
+    /* print resource identifier */
+    OFLOG_DEBUG(movescuLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+        OFLOG_WARN(movescuLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* make sure output directory exists and is writeable */
@@ -723,7 +709,7 @@ main(int argc, char *argv[])
     if ((opt_retrievePort > 0) && (opt_retrievePort < 1024)) {
         if (geteuid() != 0)
         {
-          CERR << "Error: cannot listen on port " << opt_retrievePort << ", insufficient privileges" << OFendl;
+          OFLOG_FATAL(movescuLogger, "cannot listen on port " << opt_retrievePort << ", insufficient privileges");
           return 1;
         }
     }
@@ -734,8 +720,7 @@ main(int argc, char *argv[])
     OFCondition cond = ASC_initializeNetwork(role, OFstatic_cast(int, opt_retrievePort), opt_acse_timeout, &net);
     if (cond.bad())
     {
-        CERR << "Error: cannot create network:" << OFendl;
-        DimseCondition::dump(cond);
+        OFLOG_FATAL(movescuLogger, "cannot create network: " << DimseCondition::dump(temp_str, cond));
         return 1;
     }
 
@@ -751,7 +736,7 @@ main(int argc, char *argv[])
     /* set up main association */
     cond = ASC_createAssociationParameters(&params, opt_maxPDU);
     if (cond.bad()) {
-        DimseCondition::dump(cond);
+        OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
         exit(1);
     }
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
@@ -770,45 +755,38 @@ main(int argc, char *argv[])
     cond = addPresentationContext(params, 3,
         querySyntax[opt_queryModel].moveSyntax);
     if (cond.bad()) {
-        DimseCondition::dump(cond);
+        OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
         exit(1);
     }
-    if (opt_debug) {
-        COUT << "Request Parameters:" << OFendl;
-        ASC_dumpParameters(params, COUT);
-    }
+
+    OFLOG_DEBUG(movescuLogger, "Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
 
     /* create association */
-    if (opt_verbose)
-        COUT << "Requesting Association" << OFendl;
+    OFLOG_INFO(movescuLogger, "Requesting Association");
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond.bad()) {
         if (cond == DUL_ASSOCIATIONREJECTED) {
             T_ASC_RejectParameters rej;
 
             ASC_getRejectParameters(params, &rej);
-            CERR << "Association Rejected:" << OFendl;
-            ASC_printRejectParameters(stderr, &rej);
+            OFLOG_FATAL(movescuLogger, "Association Rejected:");
+            OFLOG_FATAL(movescuLogger, ASC_printRejectParameters(temp_str, &rej));
             exit(1);
         } else {
-            CERR << "Association Request Failed:" << OFendl;
-            DimseCondition::dump(cond);
+            OFLOG_FATAL(movescuLogger, "Association Request Failed:");
+            OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
             exit(1);
         }
     }
     /* what has been accepted/refused ? */
-    if (opt_debug) {
-        COUT << "Association Parameters Negotiated:" << OFendl;
-        ASC_dumpParameters(params, COUT);
-    }
+    OFLOG_DEBUG(movescuLogger, "Association Parameters Negotiated:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
 
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
-        CERR << "No Acceptable Presentation Contexts" << OFendl;
+        OFLOG_FATAL(movescuLogger, "No Acceptable Presentation Contexts");
         exit(1);
     }
 
-    if (opt_verbose)
-      COUT << "Association Accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << OFendl;
+    OFLOG_INFO(movescuLogger, "Association Accepted (Max Send PDV: " << assoc->sendPDVLength << ")");
 
     /* do the real work */
     cond = EC_Normal;
@@ -830,66 +808,57 @@ main(int argc, char *argv[])
     if (cond == EC_Normal)
     {
         if (opt_abortAssociation) {
-            if (opt_verbose)
-                COUT << "Aborting Association" << OFendl;
+            OFLOG_INFO(movescuLogger, "Aborting Association");
             cond = ASC_abortAssociation(assoc);
             if (cond.bad()) {
-                CERR << "Association Abort Failed:" << OFendl;
-                DimseCondition::dump(cond);
+                OFLOG_FATAL(movescuLogger, "Association Abort Failed:" << DimseCondition::dump(temp_str, cond));
                 exit(1);
             }
         } else {
             /* release association */
-            if (opt_verbose)
-                COUT << "Releasing Association" << OFendl;
+            OFLOG_INFO(movescuLogger, "Releasing Association");
             cond = ASC_releaseAssociation(assoc);
             if (cond.bad())
             {
-                CERR << "Association Release Failed:" << OFendl;
-                DimseCondition::dump(cond);
+                OFLOG_FATAL(movescuLogger, "Association Release Failed:");
+                OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
                 exit(1);
             }
         }
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-        CERR << "Protocol Error: peer requested release (Aborting)" << OFendl;
-        if (opt_verbose)
-            COUT << "Aborting Association" << OFendl;
+        OFLOG_ERROR(movescuLogger, "Protocol Error: peer requested release (Aborting)");
+        OFLOG_INFO(movescuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
-            CERR << "Association Abort Failed:" << OFendl;
-            DimseCondition::dump(cond);
+            OFLOG_FATAL(movescuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
             exit(1);
         }
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-        if (opt_verbose)
-          COUT << "Peer Aborted Association" << OFendl;
+        OFLOG_INFO(movescuLogger, "Peer Aborted Association");
     }
     else
     {
-        CERR << "movescu: Move SCU failed:" << OFendl;
-        DimseCondition::dump(cond);
-        if (opt_verbose)
-            COUT << "Aborting Association" << OFendl;
+        OFLOG_ERROR(movescuLogger, "movescu: Move SCU failed:" << DimseCondition::dump(temp_str, cond));
+        OFLOG_INFO(movescuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
-            CERR << "Association Abort Failed:" << OFendl;
-            DimseCondition::dump(cond);
+            OFLOG_FATAL(movescuLogger, "Association Abort Failed:" << DimseCondition::dump(temp_str, cond));
             exit(1);
         }
     }
 
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad()) {
-        DimseCondition::dump(cond);
+        OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
         exit(1);
     }
     cond = ASC_dropNetwork(&net);
     if (cond.bad()) {
-        DimseCondition::dump(cond);
+        OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
         exit(1);
     }
 
@@ -1155,18 +1124,15 @@ static OFCondition echoSCP(
   T_DIMSE_Message * msg,
   T_ASC_PresentationContextID presID)
 {
-  if (opt_verbose)
-  {
-    COUT << "Received ";
-    DIMSE_printCEchoRQ(stdout, &msg->msg.CEchoRQ);
-  }
+  OFString temp_str;
+  OFLOG_INFO(movescuLogger, "Received echo request");
+  OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, msg->msg.CEchoRQ, DIMSE_INCOMING));
 
   /* the echo succeeded !! */
   OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, STATUS_Success, NULL);
   if (cond.bad())
   {
-    CERR << "storescp: Echo SCP failed:" << OFendl;
-    DimseCondition::dump(cond);
+    OFLOG_ERROR(movescuLogger, "storescp: Echo SCP failed: " << DimseCondition::dump(temp_str, cond));
   }
   return cond;
 }
@@ -1194,8 +1160,7 @@ storeSCPCallback(
 
     if ((opt_abortDuringStore && progress->state != DIMSE_StoreBegin) ||
         (opt_abortAfterStore && progress->state == DIMSE_StoreEnd)) {
-        if (opt_verbose)
-            COUT << "ABORT initiated (due to command line options)" << OFendl;
+        OFLOG_INFO(movescuLogger, "ABORT initiated (due to command line options)");
         ASC_abortAssociation(((StoreCallbackData*) callbackData)->assoc);
         rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
         return;
@@ -1207,7 +1172,12 @@ storeSCPCallback(
     }
 
     // dump some information if required (depending on the progress state)
-    if (opt_verbose)
+    // We can't use oflog for the pdu output, but we use a special logger for
+    // generating this output. If it is set to level "INFO" we generate the
+    // output, if it's set to "DEBUG" then we'll assume that there is debug output
+    // generated for each PDU elsewhere.
+    OFLogger progressLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION ".progress");
+    if (progressLogger.getChainedLogLevel() == OFLogger::INFO_LOG_LEVEL)
     {
       switch (progress->state)
       {
@@ -1251,7 +1221,7 @@ storeSCPCallback(
            (opt_useMetaheader) ? EWM_fileformat : EWM_dataset);
          if (cond.bad())
          {
-           CERR << "Error: cannot write DICOM file: " << ofname << OFendl;
+           OFLOG_ERROR(movescuLogger, "cannot write DICOM file: " << ofname);
            rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
          }
 
@@ -1264,7 +1234,7 @@ storeSCPCallback(
           /* which SOP class and SOP instance ? */
           if (!DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
           {
-             CERR << "Error: bad DICOM file: " << imageFileName << OFendl;
+             OFLOG_FATAL(movescuLogger, "bad DICOM file: " << imageFileName);
              rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
           }
           else if (strcmp(sopClass, req->AffectedSOPClassUID) != 0)
@@ -1304,11 +1274,9 @@ static OFCondition storeSCP(
             req->AffectedSOPInstanceUID);
     }
 
-    if (opt_verbose)
-    {
-      COUT << "Received ";
-      DIMSE_printCStoreRQ(stdout, req, (opt_debug) ? presID : 0);
-    }
+    OFString temp_str;
+    OFLOG_INFO(movescuLogger, "Received store request");
+    OFLOG_DEBUG(movescuLogger, "Received\n" << DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
 
     StoreCallbackData callbackData;
     callbackData.assoc = assoc;
@@ -1336,8 +1304,7 @@ static OFCondition storeSCP(
 
     if (cond.bad())
     {
-      CERR << "storescp: Store SCP failed:" << OFendl;
-      DimseCondition::dump(cond);
+      OFLOG_ERROR(movescuLogger, "storescp: Store SCP failed: " << DimseCondition::dump(temp_str, cond));
       /* remove file */
       if (!opt_ignore)
       {
@@ -1379,9 +1346,8 @@ subOpSCP(T_ASC_Association **subAssoc)
           break;
         default:
           cond = DIMSE_BADCOMMANDTYPE;
-          CERR << "movescu: cannot handle command: 0x"
-               << STD_NAMESPACE hex << OFstatic_cast(unsigned, msg.CommandField)
-               << STD_NAMESPACE dec << OFendl;
+          OFLOG_ERROR(movescuLogger, "movescu: cannot handle command: 0x"
+               << STD_NAMESPACE hex << OFstatic_cast(unsigned, msg.CommandField));
           break;
       }
     }
@@ -1398,8 +1364,8 @@ subOpSCP(T_ASC_Association **subAssoc)
     }
     else if (cond != EC_Normal)
     {
-        CERR << "movescu: DIMSE failure (aborting sub-association):" << OFendl;
-        DimseCondition::dump(cond);
+        OFString temp_str;
+        OFLOG_ERROR(movescuLogger, "movescu: DIMSE failure (aborting sub-association): " << DimseCondition::dump(temp_str, cond));
         /* some kind of error so abort the association */
         cond = ASC_abortAssociation(*subAssoc);
     }
@@ -1437,22 +1403,17 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 
     myCallbackData = (MyCallbackInfo*)callbackData;
 
-    if (opt_verbose) {
-        COUT << "Move Response " << responseCount << ": ";
-        DIMSE_printCMoveRSP(stdout, response);
-    }
+    OFString temp_str;
+    OFLOG_INFO(movescuLogger, "Move Response " << responseCount << ":\n" << DIMSE_dumpMessage(temp_str, *response, DIMSE_INCOMING));
+
     /* should we send a cancel back ?? */
     if (opt_cancelAfterNResponses == responseCount) {
-        if (opt_verbose)
-        {
-            COUT << "Sending C-Cancel RQ: MsgID " << request->MessageID
-                 << ", PresID " << myCallbackData->presId << OFendl;
-        }
+        OFLOG_INFO(movescuLogger, "Sending C-Cancel RQ: MsgID " << request->MessageID
+                 << ", PresID " << myCallbackData->presId);
         cond = DIMSE_sendCancelRequest(myCallbackData->assoc,
             myCallbackData->presId, request->MessageID);
         if (cond != EC_Normal) {
-            CERR << "movescu: C-Cancel RQ failed:" << OFendl;
-            DimseCondition::dump(cond);
+            OFLOG_ERROR(movescuLogger, "movescu: C-Cancel RQ failed: " << DimseCondition::dump(temp_str, cond));
         }
     }
 }
@@ -1490,14 +1451,13 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     DcmDataset          *statusDetail = NULL;
     MyCallbackInfo      callbackData;
 
-    if (opt_verbose)
-        COUT << "================================" << OFendl;
+    OFLOG_INFO(movescuLogger, "================================");
 
     DcmFileFormat dcmff;
 
     if (fname != NULL) {
         if (dcmff.loadFile(fname).bad()) {
-            CERR << "Error: bad DICOM file: " << fname << ": " << dcmff.error().text();
+            OFLOG_ERROR(movescuLogger, "bad DICOM file: " << fname << ": " << dcmff.error().text());
             return DIMSE_BADDATA;
         }
     }
@@ -1511,11 +1471,9 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
 
-    if (opt_verbose) {
-        COUT << "Sending C-Move RQ: MsgID " << msgId << OFendl;
-        COUT << "Request:" << OFendl;
-        dcmff.getDataset()->print(COUT);
-        COUT << OFendl;
+    if (movescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+        OFLOG_INFO(movescuLogger, "Sending C-Move RQ: MsgID " << msgId);
+        OFLOG_INFO(movescuLogger, "Request:" << OFendl << DcmObject::PrintHelper(*dcmff.getDataset()));
     }
 
     callbackData.assoc = assoc;
@@ -1537,24 +1495,19 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
         moveCallback, &callbackData, opt_blockMode, opt_dimse_timeout, net, subOpCallback,
         NULL, &rsp, &statusDetail, &rspIds, opt_ignorePendingDatasets);
 
-    if (cond == EC_Normal) {
-        if (opt_verbose) {
-            DIMSE_printCMoveRSP(stdout, &rsp);
-            if (rspIds != NULL)
-            {
-                COUT << "Response Identifiers:" << OFendl;
-                rspIds->print(COUT);
-                COUT << OFendl;
-            }
+    if (cond == EC_Normal && movescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+        OFString temp_str;
+        OFLOG_INFO(movescuLogger, DIMSE_dumpMessage(temp_str, rsp, DIMSE_INCOMING));
+        if (rspIds != NULL)
+        {
+            OFLOG_INFO(movescuLogger, "Response Identifiers:" << OFendl << DcmObject::PrintHelper(*rspIds));
         }
     } else {
-        CERR << "movescu: C-Move RQ failed:" << OFendl;
-        DimseCondition::dump(cond);
+        OFString temp_str;
+        OFLOG_ERROR(movescuLogger, "movescu: C-Move RQ failed: " << DimseCondition::dump(temp_str, cond));
     }
     if (statusDetail != NULL) {
-        COUT << "Status Detail:" << OFendl;
-        statusDetail->print(COUT);
-        COUT << OFendl;
+        OFLOG_WARN(movescuLogger, "Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
         delete statusDetail;
     }
 
@@ -1579,6 +1532,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.78  2009-11-18 11:53:58  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.77  2009-11-12 10:13:01  joergr
 ** Fixed issue with --accept-all command line option which caused the other
 ** --prefer-xxx options to be ignored under certain conditions.

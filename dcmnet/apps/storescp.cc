@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-12 10:13:01 $
- *  CVS/RCS Revision: $Revision: 1.116 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 11:53:58 $
+ *  CVS/RCS Revision: $Revision: 1.117 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,6 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/dcasccfg.h"      /* for class DcmAssociationConfiguration */
 #include "dcmtk/dcmnet/dcasccff.h"      /* for class DcmAssociationConfigurationFile */
 #include "dcmtk/dcmdata/dcfilefo.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
@@ -110,6 +109,8 @@ PRIVATE_STORESCP_DECLARATIONS
 #else
 #define OFFIS_CONSOLE_APPLICATION "storescp"
 #endif
+
+static OFLogger storescpLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
@@ -167,8 +168,6 @@ E_PaddingEncoding  opt_paddingType = EPD_withoutPadding;
 OFCmdUnsignedInt   opt_filepad = 0;
 OFCmdUnsignedInt   opt_itempad = 0;
 OFCmdUnsignedInt   opt_compressionLevel = 0;
-OFBool             opt_verbose = OFFalse;
-OFBool             opt_debug = OFFalse;
 OFBool             opt_bitPreserving = OFFalse;
 OFBool             opt_ignore = OFFalse;
 OFBool             opt_abortDuringStore = OFFalse;
@@ -267,6 +266,7 @@ int main(int argc, char *argv[])
 #endif
 
   char tempstr[20];
+  OFString temp_str;
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM storage (C-STORE) SCP", rcsid);
   OFCommandLine cmd;
 
@@ -277,9 +277,7 @@ int main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                     "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--version",                             "print version information and exit", OFCommandLine::AF_Exclusive);
-    cmd.addOption("--arguments",                           "print expanded command line arguments");
-    cmd.addOption("--verbose",                  "-v",      "verbose mode, print processing details");
-    cmd.addOption("--debug",                    "-d",      "debug mode, print debug information");
+    OFLog::addOptions(cmd);
 
 #if defined(HAVE_FORK) || defined(_WIN32)
   cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL + 2);
@@ -463,10 +461,6 @@ int main(int argc, char *argv[])
     if (cmd.getArgCount() == 0)
       app.printUsage();
 
-    /* check whether to print the command line arguments */
-    if (cmd.findOption("--arguments"))
-      app.printArguments();
-
     /* check exclusive options first */
     if (cmd.hasExclusiveOption())
     {
@@ -545,7 +539,7 @@ int main(int argc, char *argv[])
     {
       // port number is not required in inetd mode
       if (cmd.getParamCount() > 0)
-        app.printWarning("Parameter port not required");
+        OFLOG_WARN(storescpLogger, "Parameter port not required in inetd mode");
     } else {
       // omitting the port number is only allowed in inetd mode
       if (cmd.getParamCount() == 0)
@@ -554,14 +548,7 @@ int main(int argc, char *argv[])
         app.checkParam(cmd.getParamAndCheckMinMax(1, opt_port, 1, 65535));
     }
 
-    if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-    if (cmd.findOption("--debug"))
-    {
-      opt_debug = OFTrue;
-      DUL_Debug(OFTrue);
-      DIMSE_debug(OFTrue);
-      SetDebugLevel(3);
-    }
+    OFLog::configureFromCommandLine(cmd, app);
 
     cmd.beginOptionBlock();
     if (cmd.findOption("--prefer-uncompr"))
@@ -647,7 +634,7 @@ int main(int argc, char *argv[])
       OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, opt_configFile);
       if (cond.bad())
       {
-        CERR << "Error while reading config file: " << cond.text() << OFendl;
+        OFLOG_FATAL(storescpLogger, "Error while reading config file: " << cond.text());
         return 1;
       }
 
@@ -662,13 +649,13 @@ int main(int argc, char *argv[])
 
       if (!asccfg.isKnownProfile(sprofile.c_str()))
       {
-        CERR << "Error: unknown configuration profile name: " << sprofile << OFendl;
+        OFLOG_FATAL(storescpLogger, "unknown configuration profile name: " << sprofile);
         return 1;
       }
 
       if (!asccfg.isValidSCPProfile(sprofile.c_str()))
       {
-        CERR << "Error: profile '" << sprofile << "' is not valid for SCP use, duplicate abstract syntaxes found" << OFendl;
+        OFLOG_FATAL(storescpLogger, "profile '" << sprofile << "' is not valid for SCP use, duplicate abstract syntaxes found");
         return 1;
       }
 
@@ -889,6 +876,9 @@ int main(int argc, char *argv[])
 
   }
 
+  /* print resource identifier */
+  OFLOG_DEBUG(storescpLogger, rcsid << OFendl);
+
 #ifdef WITH_OPENSSL
 
   cmd.beginOptionBlock();
@@ -963,11 +953,11 @@ int main(int argc, char *argv[])
       app.checkValue(cmd.getValue(current));
       if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
       {
-        CERR << "ciphersuite '" << current << "' is unknown, known ciphersuites are:" << OFendl;
+        OFLOG_FATAL(storescpLogger, "ciphersuite '" << current << "' is unknown, known ciphersuites are:");
         unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
         for (unsigned long cs = 0; cs < numSuites; cs++)
         {
-          CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
+          OFLOG_FATAL(storescpLogger, "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
         }
         return 1;
       }
@@ -981,16 +971,13 @@ int main(int argc, char *argv[])
 
 #endif
 
-  if (opt_debug && !opt_forkedChild)
-    app.printIdentifier();
-
 #ifdef HAVE_GETEUID
   /* if port is privileged we must be as well */
   if (opt_port < 1024)
   {
     if (geteuid() != 0)
     {
-      CERR << "Error: cannot listen on port " << opt_port << ", insufficient privileges" << OFendl;
+      OFLOG_FATAL(storescpLogger, "cannot listen on port " << opt_port << ", insufficient privileges");
       return 1;
     }
   }
@@ -998,7 +985,7 @@ int main(int argc, char *argv[])
 
   /* make sure data dictionary is loaded */
   if (!dcmDataDict.isDictionaryLoaded())
-    CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+    OFLOG_WARN(storescpLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
 
   /* if the output directory does not equal "." (default directory) */
   if (opt_outputDirectory != ".")
@@ -1040,7 +1027,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-      CERR << "Error while reading socket handle: " << GetLastError() << OFendl;
+      OFLOG_ERROR(storescpLogger, "Error while reading socket handle: " << GetLastError());
       return 1;
     }
   }
@@ -1056,8 +1043,7 @@ int main(int argc, char *argv[])
   OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, opt_port), opt_acse_timeout, &net);
   if (cond.bad())
   {
-    CERR << "Error: cannot create network:" << OFendl;
-    DimseCondition::dump(cond);
+    OFLOG_ERROR(storescpLogger, "cannot create network: " << DimseCondition::dump(temp_str, cond));
     return 1;
   }
 
@@ -1077,7 +1063,8 @@ int main(int argc, char *argv[])
     tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_ACCEPTOR, opt_readSeedFile);
     if (tLayer == NULL)
     {
-      app.printError("unable to create TLS transport layer");
+      OFLOG_FATAL(storescpLogger, "unable to create TLS transport layer");
+      return 1;
     }
 
     if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
@@ -1087,7 +1074,7 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(current));
         if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
         {
-          CERR << "Warning: unable to load certificate file '" << current << "', ignoring" << OFendl;
+          OFLOG_WARN(storescpLogger, "unable to load certificate file '" << current << "', ignoring");
         }
       } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
     }
@@ -1099,37 +1086,37 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(current));
         if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
         {
-          CERR << "Warning: unable to load certificates from directory '" << current << "', ignoring" << OFendl;
+          OFLOG_WARN(storescpLogger, "unable to load certificates from directory '" << current << "', ignoring");
         }
       } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
     }
 
     if (opt_dhparam && !(tLayer->setTempDHParameters(opt_dhparam)))
     {
-      CERR << "Warning: unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << OFendl;
+      OFLOG_WARN(storescpLogger, "unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring");
     }
 
     if (opt_passwd) tLayer->setPrivateKeyPasswd(opt_passwd);
 
     if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
     {
-      CERR << "Error: unable to load private TLS key from '" << opt_privateKeyFile << "'" << OFendl;
+      OFLOG_WARN(storescpLogger, "unable to load private TLS key from '" << opt_privateKeyFile << "'");
       return 1;
     }
     if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
     {
-      CERR << "Error: unable to load certificate from '" << opt_certificateFile << "'" << OFendl;
+      OFLOG_WARN(storescpLogger, "unable to load certificate from '" << opt_certificateFile << "'");
       return 1;
     }
     if (! tLayer->checkPrivateKeyMatchesCertificate())
     {
-      CERR << "Error: private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << OFendl;
+      OFLOG_WARN(storescpLogger, "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match");
       return 1;
     }
 
     if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
     {
-      CERR << "Error: unable to set selected cipher suites" << OFendl;
+      OFLOG_WARN(storescpLogger, "unable to set selected cipher suites");
       return 1;
     }
 
@@ -1139,7 +1126,7 @@ int main(int argc, char *argv[])
     cond = ASC_setTransportLayer(net, tLayer, 0);
     if (cond.bad())
     {
-      DimseCondition::dump(cond);
+      OFLOG_ERROR(storescpLogger, DimseCondition::dump(temp_str, cond));
       return 1;
     }
   }
@@ -1167,11 +1154,11 @@ int main(int argc, char *argv[])
       if (tLayer->canWriteRandomSeed())
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
-          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring" << OFendl;
+          OFLOG_WARN(storescpLogger, "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring");
       }
       else
       {
-        CERR << "Warning: cannot write random seed, ignoring" << OFendl;
+        OFLOG_WARN(storescpLogger, "cannot write random seed, ignoring");
       }
     }
 #endif
@@ -1187,7 +1174,7 @@ int main(int argc, char *argv[])
   cond = ASC_dropNetwork(&net);
   if (cond.bad())
   {
-    DimseCondition::dump(cond);
+    OFLOG_ERROR(storescpLogger, DimseCondition::dump(temp_str, cond));
     return 1;
   }
 
@@ -1209,6 +1196,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   T_ASC_Association *assoc;
   OFCondition cond;
   OFString sprofile;
+  OFString temp_str;
 
 #ifdef PRIVATE_STORESCP_VARIABLES
   PRIVATE_STORESCP_VARIABLES
@@ -1231,7 +1219,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 
   if (cond.code() == DULC_FORKEDCHILD)
   {
-    // if (opt_debug) DimseCondition::dump(cond);
+    // if (opt_debug) DimseCondition::dump(temp_str, cond);
     goto cleanup;
   }
 
@@ -1275,34 +1263,22 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     // If something else was wrong we might have to dump an error message.
     else
     {
-      if (opt_debug)
-        DimseCondition::dump(cond);
+      OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));
     }
 
     // no matter what kind of error occurred, we need to do a cleanup
     goto cleanup;
   }
 
-  if (opt_verbose)
-  {
 #if defined(HAVE_FORK) || defined(_WIN32)
-    if (opt_forkMode)
-    {
-      COUT << "Association Received in " << (DUL_processIsForkedChild() ? "child" : "parent")
-           << " process (pid: " << OFstatic_cast(long, getpid()) << ")" << OFendl;
-    }
-    else
-      COUT << "Association Received" << OFendl;
-#else
-    COUT << "Association Received" << OFendl;
+  if (opt_forkMode)
+    OFLOG_INFO(storescpLogger, "Association Received in " << (DUL_processIsForkedChild() ? "child" : "parent")
+           << " process (pid: " << OFstatic_cast(long, getpid()) << ")");
+  else
 #endif
-  }
+    OFLOG_INFO(storescpLogger, "Association Received");
 
-  if (opt_debug)
-  {
-    COUT << "Parameters:" << OFendl;
-    ASC_dumpParameters(assoc->params, COUT);
-  }
+  OFLOG_DEBUG(storescpLogger, "Parameters:\n" << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
 
   if (opt_refuseAssociation)
   {
@@ -1313,13 +1289,11 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       ASC_REASON_SU_NOREASON
     };
 
-    if (opt_verbose)
-      COUT << "Refusing Association (forced via command line)" << OFendl;
+    OFLOG_INFO(storescpLogger, "Refusing Association (forced via command line)");
     cond = ASC_rejectAssociation(assoc, &rej);
     if (cond.bad())
     {
-      CERR << "Association Reject Failed:" << OFendl;
-      DimseCondition::dump(cond);
+      OFLOG_ERROR(storescpLogger, "Association Reject Failed: " << DimseCondition::dump(temp_str, cond));
     }
     goto cleanup;
   }
@@ -1488,7 +1462,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     cond = asccfg.evaluateAssociationParameters(sprofile.c_str(), *assoc);
     if (cond.bad())
     {
-      if (opt_debug) DimseCondition::dump(cond);
+      OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));
       goto cleanup;
     }
   }
@@ -1498,7 +1472,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes), transferSyntaxes, numTransferSyntaxes);
     if (cond.bad())
     {
-      if (opt_debug) DimseCondition::dump(cond);
+      OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));
       goto cleanup;
     }
 
@@ -1506,7 +1480,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, dcmAllStorageSOPClassUIDs, numberOfAllDcmStorageSOPClassUIDs, transferSyntaxes, numTransferSyntaxes);
     if (cond.bad())
     {
-      if (opt_debug) DimseCondition::dump(cond);
+      OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));
       goto cleanup;
     }
 
@@ -1517,7 +1491,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
         assoc->params, transferSyntaxes, numTransferSyntaxes);
       if (cond.bad())
       {
-        if (opt_debug) DimseCondition::dump(cond);
+        OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));
         goto cleanup;
       }
     }
@@ -1538,12 +1512,11 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED
     };
 
-    if (opt_verbose)
-      COUT << "Association Rejected: bad application context name: " << buf << OFendl;
+    OFLOG_INFO(storescpLogger, "Association Rejected: bad application context name: " << buf);
     cond = ASC_rejectAssociation(assoc, &rej);
     if (cond.bad())
     {
-      if (opt_debug) DimseCondition::dump(cond);
+      OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));
     }
     goto cleanup;
 
@@ -1558,12 +1531,11 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       ASC_REASON_SU_NOREASON
     };
 
-    if (opt_verbose)
-      COUT << "Association Rejected: No Implementation Class UID provided" << OFendl;
+    OFLOG_INFO(storescpLogger, "Association Rejected: No Implementation Class UID provided");
     cond = ASC_rejectAssociation(assoc, &rej);
     if (cond.bad())
     {
-      if (opt_debug) DimseCondition::dump(cond);
+      OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));
     }
     goto cleanup;
   }
@@ -1575,17 +1547,13 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     cond = ASC_acknowledgeAssociation(assoc);
     if (cond.bad())
     {
-      DimseCondition::dump(cond);
+      OFLOG_ERROR(storescpLogger, DimseCondition::dump(temp_str, cond));
       goto cleanup;
     }
-    if (opt_verbose)
-    {
-      COUT << "Association Acknowledged (Max Send PDV: " << assoc->sendPDVLength << ")" << OFendl;
-      if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
-        COUT << "    (but no valid presentation contexts)" << OFendl;
-      if (opt_debug)
-        ASC_dumpParameters(assoc->params, COUT);
-    }
+    OFLOG_INFO(storescpLogger, "Association Acknowledged (Max Send PDV: " << assoc->sendPDVLength << ")");
+    if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
+      OFLOG_INFO(storescpLogger, "    (but no valid presentation contexts)");
+    OFLOG_DEBUG(storescpLogger, ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
   }
 
 #ifdef BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX
@@ -1633,19 +1601,16 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 
   if (cond == DUL_PEERREQUESTEDRELEASE)
   {
-    if (opt_verbose)
-      COUT << "Association Release" << OFendl;
+    OFLOG_INFO(storescpLogger, "Association Release");
     cond = ASC_acknowledgeRelease(assoc);
   }
   else if (cond == DUL_PEERABORTEDASSOCIATION)
   {
-    if (opt_verbose)
-      COUT << "Association Aborted" << OFendl;
+    OFLOG_INFO(storescpLogger, "Association Aborted");
   }
   else
   {
-    CERR << "storescp: DIMSE failure (aborting association):" << OFendl;
-    DimseCondition::dump(cond);
+    OFLOG_ERROR(storescpLogger, "storescp: DIMSE failure (aborting association):" << DimseCondition::dump(temp_str, cond));
     /* some kind of error so abort the association */
     cond = ASC_abortAssociation(assoc);
   }
@@ -1657,13 +1622,13 @@ cleanup:
   cond = ASC_dropSCPAssociation(assoc);
   if (cond.bad())
   {
-    DimseCondition::dump(cond);
+    OFLOG_FATAL(storescpLogger, DimseCondition::dump(temp_str, cond));
     exit(1);
   }
   cond = ASC_destroyAssociation(&assoc);
   if (cond.bad())
   {
-    DimseCondition::dump(cond);
+    OFLOG_FATAL(storescpLogger, DimseCondition::dump(temp_str, cond));
     exit(1);
   }
 
@@ -1735,9 +1700,7 @@ processCommands(T_ASC_Association * assoc)
     // detail information, dump this information
     if (statusDetail != NULL)
     {
-      COUT << "Status Detail:" << OFendl;
-      statusDetail->print(COUT);
-      COUT << OFendl;
+      OFLOG_WARN(storescpLogger, "Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
       delete statusDetail;
     }
 
@@ -1759,9 +1722,8 @@ processCommands(T_ASC_Association * assoc)
         default:
           // we cannot handle this kind of message
           cond = DIMSE_BADCOMMANDTYPE;
-          CERR << "storescp: cannot handle command: 0x"
-               << STD_NAMESPACE hex << OFstatic_cast(unsigned, msg.CommandField)
-               << STD_NAMESPACE dec << OFendl;
+          OFLOG_ERROR(storescpLogger, "storescp: cannot handle command: 0x"
+               << STD_NAMESPACE hex << OFstatic_cast(unsigned, msg.CommandField));
           break;
       }
     }
@@ -1772,18 +1734,15 @@ processCommands(T_ASC_Association * assoc)
 
 static OFCondition echoSCP( T_ASC_Association * assoc, T_DIMSE_Message * msg, T_ASC_PresentationContextID presID)
 {
-  if (opt_verbose)
-  {
-    COUT << "Received ";
-    DIMSE_printCEchoRQ(stdout, &msg->msg.CEchoRQ);
-  }
+  OFString temp_str;
+  OFLOG_INFO(storescpLogger, "Received echo request");
+  OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(temp_str, msg->msg.CEchoRQ, DIMSE_INCOMING, NULL, presID));
 
   /* the echo succeeded !! */
   OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, STATUS_Success, NULL);
   if (cond.bad())
   {
-    CERR << "storescp: Echo SCP failed:" << OFendl;
-    DimseCondition::dump(cond);
+    OFLOG_ERROR(storescpLogger, "storescp: Echo SCP failed: " << DimseCondition::dump(temp_str, cond));
   }
   return cond;
 }
@@ -1856,8 +1815,7 @@ storeSCPCallback(
   if( (opt_abortDuringStore && progress->state != DIMSE_StoreBegin) ||
       (opt_abortAfterStore && progress->state == DIMSE_StoreEnd) )
   {
-    if (opt_verbose)
-      COUT << "ABORT initiated (due to command line options)" << OFendl;
+    OFLOG_INFO(storescpLogger, "ABORT initiated (due to command line options)");
     ASC_abortAssociation((OFstatic_cast(StoreCallbackData*, callbackData))->assoc);
     rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
     return;
@@ -1871,7 +1829,12 @@ storeSCPCallback(
   }
 
   // dump some information if required (depending on the progress state)
-  if (opt_verbose)
+  // We can't use oflog for the pdu output, but we use a special logger for
+  // generating this output. If it is set to level "INFO" we generate the
+  // output, if it's set to "DEBUG" then we'll assume that there is debug output
+  // generated for each PDU elsewhere.
+  OFLogger progressLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION ".progress");
+  if (progressLogger.getChainedLogLevel() == OFLogger::INFO_LOG_LEVEL)
   {
     switch (progress->state)
     {
@@ -1917,7 +1880,7 @@ storeSCPCallback(
         OFString currentStudyInstanceUID;
         if ((*imageDataSet)->findAndGetOFString(DCM_StudyInstanceUID, currentStudyInstanceUID).bad() || currentStudyInstanceUID.empty())
         {
-          CERR << "Error: element StudyInstanceUID " << DCM_StudyInstanceUID << " absent or empty in data set" << OFendl;
+          OFLOG_ERROR(storescpLogger, "element StudyInstanceUID " << DCM_StudyInstanceUID << " absent or empty in data set");
           rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
           return;
         }
@@ -1932,8 +1895,8 @@ storeSCPCallback(
           {
             // default if patient name is missing or empty
             tmpName = "ANONYMOUS";
-            CERR << "Warning: element PatientsName " << DCM_PatientsName << " absent or empty in data set, using '"
-                 << tmpName << "' instead" << OFendl;
+            OFLOG_WARN(storescpLogger, "element PatientsName " << DCM_PatientsName << " absent or empty in data set, using '"
+                 << tmpName << "' instead");
           }
 
           /* substitute non-ASCII characters in patient name to ASCII "equivalent" */
@@ -2006,19 +1969,18 @@ storeSCPCallback(
           // check if the subdirectory already exists
           // if it already exists dump a warning
           if( OFStandard::dirExists(subdirectoryPathAndName) )
-            CERR << "Warning: subdirectory for study already exists: " << subdirectoryPathAndName << OFendl;
+            OFLOG_WARN(storescpLogger, "subdirectory for study already exists: " << subdirectoryPathAndName);
           else
           {
             // if it does not exist create it
-            if (opt_verbose)
-              COUT << "Creating new subdirectory for study: " << subdirectoryPathAndName << OFendl;
+            OFLOG_INFO(storescpLogger, "Creating new subdirectory for study: " << subdirectoryPathAndName);
 #ifdef HAVE_WINDOWS_H
             if( _mkdir( subdirectoryPathAndName.c_str() ) == -1 )
 #else
             if( mkdir( subdirectoryPathAndName.c_str(), S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
 #endif
             {
-              CERR << "Error: could not create subdirectory for study: " << subdirectoryPathAndName << OFendl;
+              OFLOG_ERROR(storescpLogger, "could not create subdirectory for study: " << subdirectoryPathAndName);
               rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
               return;
             }
@@ -2061,7 +2023,7 @@ storeSCPCallback(
           (opt_useMetaheader) ? EWM_fileformat : EWM_dataset);
       if (cond.bad())
       {
-        CERR << "Error: cannot write DICOM file: " << fileName << OFendl;
+        OFLOG_ERROR(storescpLogger, "cannot write DICOM file: " << fileName);
         rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
       }
 
@@ -2072,7 +2034,7 @@ storeSCPCallback(
         // which SOP class and SOP instance ?
         if (!DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
         {
-           CERR << "Error: bad DICOM file: " << fileName << OFendl;
+           OFLOG_ERROR(storescpLogger, "bad DICOM file: " << fileName);
            rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
         }
         else if (strcmp(sopClass, req->AffectedSOPClassUID) != 0)
@@ -2198,11 +2160,9 @@ static OFCondition storeSCP(
   }
 
   // dump some information if required
-  if (opt_verbose)
-  {
-    COUT << "Received ";
-    DIMSE_printCStoreRQ(stdout, req, (opt_debug) ? presID : 0);
-  }
+  OFString str;
+  OFLOG_INFO(storescpLogger, "Received store request");
+  OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(str, *req, DIMSE_INCOMING, NULL, presID));
 
   // intialize some variables
   StoreCallbackData callbackData;
@@ -2238,8 +2198,8 @@ static OFCondition storeSCP(
   // if some error occured, dump corresponding information and remove the outfile if necessary
   if (cond.bad())
   {
-    CERR << "storescp: Store SCP failed:" << OFendl;
-    DimseCondition::dump(cond);
+    OFString temp_str;
+    OFLOG_ERROR(storescpLogger, "storescp: Store SCP failed: " << DimseCondition::dump(temp_str, cond));
     // remove file
     if (!opt_ignore)
     {
@@ -2415,7 +2375,7 @@ static void renameOnEndOfStudy()
 
     // rename file
     if( rename( oldPathAndFileName.c_str(), newPathAndFileName.c_str() ) != 0 )
-      CERR << "Warning: cannot rename file '" << oldPathAndFileName << "' to '" << newPathAndFileName << "'" << OFendl;
+      OFLOG_WARN(storescpLogger, "cannot rename file '" << oldPathAndFileName << "' to '" << newPathAndFileName << "'");
 
     // remove entry from list
     first = outputFileNameArray.erase(first);
@@ -2497,7 +2457,7 @@ static void executeCommand( const OFString &cmd )
 #ifdef HAVE_FORK
   pid_t pid = fork();
   if( pid < 0 )     // in case fork failed, dump an error message
-    CERR << "Error: cannot execute command '" << cmd << "' (fork failed)" << OFendl;
+    OFLOG_ERROR(storescpLogger, "cannot execute command '" << cmd << "' (fork failed)");
   else if (pid > 0)
   {
     /* we are the parent process */
@@ -2512,7 +2472,7 @@ static void executeCommand( const OFString &cmd )
     // which hopefully exists on all Posix systems.
 
     if (execl( "/bin/sh", "/bin/sh", "-c", cmd.c_str(), NULL ) < 0)
-      CERR << "Error: cannot execute /bin/sh" << OFendl;
+      OFLOG_ERROR(storescpLogger, "cannot execute /bin/sh");
 
     // if execl succeeds, this part will not get executed.
     // if execl fails, there is not much we can do except bailing out.
@@ -2527,7 +2487,7 @@ static void executeCommand( const OFString &cmd )
   // execute command (Attention: Do not pass DETACHED_PROCESS as sixth argument to the below
   // called function because in such a case the execution of batch-files is not going to work.)
   if( !CreateProcess(NULL, OFconst_cast(char *, cmd.c_str()), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
-    CERR << "Error: cannot execute command '" << cmd << "'" << OFendl;
+    OFLOG_ERROR(storescpLogger, "cannot execute command '" << cmd << "'");
 
   if (opt_execSync)
   {
@@ -2573,7 +2533,7 @@ static void cleanChildren(pid_t pid, OFBool synch)
     if (child < 0)
     {
       if (errno != ECHILD)
-        CERR << "Warning: wait for child failed: " << strerror(errno) << OFendl;
+        OFLOG_WARN(storescpLogger, "wait for child failed: " << strerror(errno));
     }
 
     if (synch) child = -1; // break out of loop
@@ -2737,6 +2697,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.117  2009-11-18 11:53:58  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.116  2009-11-12 10:13:01  joergr
 ** Fixed issue with --accept-all command line option which caused the other
 ** --prefer-xxx options to be ignored under certain conditions.

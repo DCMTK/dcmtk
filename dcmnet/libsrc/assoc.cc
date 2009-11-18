@@ -67,10 +67,10 @@
 **      Module Prefix: ASC_
 **
 **
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2009-08-03 15:39:13 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2009-11-18 11:53:59 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.53 $
+** CVS/RCS Revision:    $Revision: 1.54 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -83,6 +83,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/assoc.h"      /* always include the module header */
+#include "dcmtk/dcmnet/diutil.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -298,16 +299,13 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     /* make sure max pdv length is even */
     if ((maxReceivePDUSize % 2) != 0)
     {
-      ofConsole.lockCerr() << "ASSOC: Warning: PDV receive length " << maxReceivePDUSize << " is odd (using " << (maxReceivePDUSize-1) << ")" << OFendl;
-      ofConsole.unlockCerr();
+      DCMNET_WARN("ASSOC: PDV receive length " << maxReceivePDUSize << " is odd (using " << (maxReceivePDUSize-1) << ")");
       maxReceivePDUSize--;
     }
     if (maxReceivePDUSize < ASC_MINIMUMPDUSIZE)
     {
-      ofConsole.lockCerr() << "ASC_createAssociationParameters: Warning: maxReceivePDUSize "
-            << maxReceivePDUSize << " too small (using " << ASC_MINIMUMPDUSIZE << ")"
-            << OFendl;
-      ofConsole.unlockCerr();
+      DCMNET_WARN("ASC_createAssociationParameters: maxReceivePDUSize "
+            << maxReceivePDUSize << " too small (using " << ASC_MINIMUMPDUSIZE << ")");
       maxReceivePDUSize = ASC_MINIMUMPDUSIZE;
     }
 
@@ -497,102 +495,53 @@ ASC_getRejectParameters(T_ASC_Parameters * params,
     return EC_Normal;
 }
 
-void
-ASC_printRejectParameters(FILE *f, T_ASC_RejectParameters *rej)
+OFString&
+ASC_printRejectParameters(OFString& str, T_ASC_RejectParameters *rej)
 {
-    fprintf(f, "Result: ");
+    const char *result;
+    const char *source;
+    const char *reason;
+
     switch (rej->result) {
     case ASC_RESULT_REJECTEDPERMANENT:
-        fprintf(f, "Rejected Permanent"); break;
+        result = "Rejected Permanent"; break;
     case ASC_RESULT_REJECTEDTRANSIENT:
-        fprintf(f, "Rejected Transient"); break;
+        result = "Rejected Transient"; break;
     default:
-        fprintf(f, "UNKNOWN"); break;
+        result = "UNKNOWN"; break;
     }
-    fprintf(f, ", Source: ");
     switch (rej->source) {
     case ASC_SOURCE_SERVICEUSER:
-        fprintf(f, "Service User"); break;
+        source =  "Service User"; break;
     case ASC_SOURCE_SERVICEPROVIDER_ACSE_RELATED:
-        fprintf(f, "Service Provider (ACSE Related)"); break;
+        source = "Service Provider (ACSE Related)"; break;
     case ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED:
-        fprintf(f, "Service Provider (Presentation Related)"); break;
+        source = "Service Provider (Presentation Related)"; break;
     default:
-        fprintf(f, "UNKNOWN"); break;
+        source = "UNKNOWN"; break;
     }
-    fprintf(f, "\n");
-    fprintf(f, "Reason: ");
     switch (rej->reason) {
     case ASC_REASON_SU_NOREASON:
     case ASC_REASON_SP_ACSE_NOREASON:
-        fprintf(f, "No Reason"); break;
+        reason = "No Reason"; break;
     case ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED:
-        fprintf(f, "App Context Name Not Supported"); break;
+        reason = "App Context Name Not Supported"; break;
     case ASC_REASON_SU_CALLINGAETITLENOTRECOGNIZED:
-        fprintf(f, "Calling AE Title Not Recognized"); break;
+        reason = "Calling AE Title Not Recognized"; break;
     case ASC_REASON_SU_CALLEDAETITLENOTRECOGNIZED:
-        fprintf(f, "Called AE Title Not Recognized"); break;
+        reason = "Called AE Title Not Recognized"; break;
     case ASC_REASON_SP_ACSE_PROTOCOLVERSIONNOTSUPPORTED:
-        fprintf(f, "Protocol Version Not Supported"); break;
+        reason = "Protocol Version Not Supported"; break;
         /* Service Provider Presentation Related reasons */
     case ASC_REASON_SP_PRES_TEMPORARYCONGESTION:
-        fprintf(f, "Temporary Congestion"); break;
+        reason = "Temporary Congestion"; break;
     case ASC_REASON_SP_PRES_LOCALLIMITEXCEEDED:
-        fprintf(f, "Local Limit Exceeded"); break;
+        reason = "Local Limit Exceeded"; break;
     default:
-        fprintf(f, "UNKNOWN"); break;
+        reason = "UNKNOWN"; break;
     }
-    fprintf(f, "\n");
-}
-
-void
-ASC_printRejectParameters(STD_NAMESPACE ostream& out, T_ASC_RejectParameters *rej)
-{
-    out << "Result: ";
-    switch (rej->result)
-    {
-      case ASC_RESULT_REJECTEDPERMANENT:
-        out << "Rejected Permanent"; break;
-      case ASC_RESULT_REJECTEDTRANSIENT:
-        out << "Rejected Transient"; break;
-      default:
-        out << "UNKNOWN"; break;
-    }
-    out << ", Source: ";
-    switch (rej->source)
-    {
-      case ASC_SOURCE_SERVICEUSER:
-        out << "Service User"; break;
-      case ASC_SOURCE_SERVICEPROVIDER_ACSE_RELATED:
-        out << "Service Provider (ACSE Related)"; break;
-      case ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED:
-        out << "Service Provider (Presentation Related)"; break;
-      default:
-        out << "UNKNOWN"; break;
-    }
-    out << ", Reason: ";
-    switch (rej->reason)
-    {
-    case ASC_REASON_SU_NOREASON:
-    case ASC_REASON_SP_ACSE_NOREASON:
-        out << "No Reason"; break;
-    case ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED:
-        out << "App Context Name Not Supported"; break;
-    case ASC_REASON_SU_CALLINGAETITLENOTRECOGNIZED:
-        out << "Calling AE Title Not Recognized"; break;
-    case ASC_REASON_SU_CALLEDAETITLENOTRECOGNIZED:
-        out << "Called AE Title Not Recognized"; break;
-    case ASC_REASON_SP_ACSE_PROTOCOLVERSIONNOTSUPPORTED:
-        out << "Protocol Version Not Supported"; break;
-        /* Service Provider Presentation Related reasons */
-    case ASC_REASON_SP_PRES_TEMPORARYCONGESTION:
-        out << "Temporary Congestion"; break;
-    case ASC_REASON_SP_PRES_LOCALLIMITEXCEEDED:
-        out << "Local Limit Exceeded"; break;
-    default:
-        out << "UNKNOWN"; break;
-    }
-    out << OFendl;
+    str = OFString("Result: ") + result + ", Source: " + source + "\nReason: " + reason;
+    return str;
 }
 
 static T_ASC_SC_ROLE
@@ -1437,96 +1386,15 @@ OFCondition ASC_setIdentAC(
 }
 
 
-void
-ASC_dumpParameters(T_ASC_Parameters * params, STD_NAMESPACE ostream& outstream)
- /*
-  * Write parameters in textual form to stdout (debugging aid)
-  */
-{
-    int i;
-    T_ASC_PresentationContext pc;
-
-    outstream << "Our Implementation Class UID:    "
-        << params->ourImplementationClassUID << OFendl
-        << "Our Implementation Version Name: "
-        << params->ourImplementationVersionName << OFendl
-        << "Their Implementation Class UID:    "
-        << params->theirImplementationClassUID << OFendl
-        << "Their Implementation Version Name: "
-        << params->theirImplementationVersionName << OFendl
-        << "Application Context Name:    "
-        << params->DULparams.applicationContextName << OFendl
-        << "Calling Application Name:    "
-        << params->DULparams.callingAPTitle << OFendl
-        << "Called Application Name:     "
-        << params->DULparams.calledAPTitle << OFendl
-        << "Responding Application Name: "
-        << params->DULparams.respondingAPTitle << OFendl
-        << "Our Max PDU Receive Size: "
-        << params->ourMaxPDUReceiveSize << OFendl
-        << "Their Max PDU Receive Size: "
-        << params->theirMaxPDUReceiveSize << OFendl;
-
-    outstream << "Presentation Contexts:" << OFendl;
-    for (i=0; i<ASC_countPresentationContexts(params); i++) {
-        ASC_getPresentationContext(params, i, &pc);
-        ASC_dumpPresentationContext(&pc, outstream);
-    }
-
-    SOPClassExtendedNegotiationSubItemList* extNegList=NULL;
-    ASC_getRequestedExtNegList(params, &extNegList);
-    outstream << "Requested Extended Negotiation:";
-    if (extNegList != NULL) {
-        outstream << OFendl;
-        dumpExtNegList(*extNegList);
-    } else {
-        outstream << " none" << OFendl;
-    }
-    ASC_getAcceptedExtNegList(params, &extNegList);
-    outstream << "Accepted Extended Negotiation:";
-    if (extNegList != NULL) {
-        outstream << OFendl;
-        dumpExtNegList(*extNegList);
-    } else {
-        outstream << " none" << OFendl;
-    }
-
-    UserIdentityNegotiationSubItemRQ *userIdentRQ = NULL;
-    ASC_getUserIdentRQ(params, &userIdentRQ);
-    outstream << "Requested User Identity Negotiation:";
-    if (userIdentRQ != NULL) {
-        outstream << OFendl;
-        userIdentRQ->dump(outstream);
-    } else {
-        outstream << " none" << OFendl;
-    }
-
-    UserIdentityNegotiationSubItemAC *userIdentAC = NULL;
-    ASC_getUserIdentAC(params, &userIdentAC);
-    outstream << "User Identity Negotiation Response:";
-    if (userIdentAC != NULL) {
-        outstream << OFendl;
-        userIdentAC->dump(outstream);
-    } else {
-        outstream << " none" << OFendl;
-    }
-
-
-#if 0
-    outstream << "DUL Params --- BEGIN" << OFendl;
-    DUL_DumpParams(&params->DULparams);
-    outstream << "DUL Params --- END" << OFendl;
-#endif
-}
-
-void
-ASC_dumpPresentationContext(T_ASC_PresentationContext * p, STD_NAMESPACE ostream& outstream)
+static OFString
+ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
  /*
   * Write presentation context structure in textual form to stdout.
   * (debugging aid)
   */
 {
     int i = 0;
+    OFOStringStream outstream;
 
     outstream << "  Context ID:        " << (int)p->presentationContextID << " ";
     switch (p->resultReason) {
@@ -1585,13 +1453,130 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p, STD_NAMESPACE ostream
             }
         }
     }
+    outstream << OFStringStream_ends;
+
+    OFSTRINGSTREAM_GETOFSTRING(outstream, ret)
+    return ret;
 }
 
-void
-ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostream& outstream)
+
+OFString&
+ASC_dumpParameters(OFString& str, T_ASC_Parameters * params, ASC_associateType dir)
+ /*
+  * Write parameters in textual form to stdout (debugging aid)
+  */
 {
-  if (association==NULL) return;
-  DUL_DumpConnectionParameters(association->DULassociation, outstream);
+    int i;
+    T_ASC_PresentationContext pc;
+    OFOStringStream outstream;
+    OFString temp_str;
+    const char *str_dir = NULL;
+
+    switch (dir)
+    {
+        case ASC_ASSOC_RQ:
+            str_dir = "RQ";
+            break;
+        case ASC_ASSOC_AC:
+            str_dir = "AC";
+            break;
+        case ASC_ASSOC_RJ:
+            str_dir = "RJ";
+            break;
+        default:
+            // Should *NEVER* happen
+            str_dir = "UNKNOWN";
+            break;
+    }
+
+    outstream << "====================== BEGIN A-ASSOCIATE-" << str_dir << " =====================" << OFendl
+        << "Our Implementation Class UID:    "
+        << params->ourImplementationClassUID << OFendl
+        << "Our Implementation Version Name: "
+        << params->ourImplementationVersionName << OFendl
+        << "Their Implementation Class UID:    "
+        << params->theirImplementationClassUID << OFendl
+        << "Their Implementation Version Name: "
+        << params->theirImplementationVersionName << OFendl
+        << "Application Context Name:    "
+        << params->DULparams.applicationContextName << OFendl
+        << "Calling Application Name:    "
+        << params->DULparams.callingAPTitle << OFendl
+        << "Called Application Name:     "
+        << params->DULparams.calledAPTitle << OFendl
+        << "Responding Application Name: "
+        << params->DULparams.respondingAPTitle << OFendl
+        << "Our Max PDU Receive Size: "
+        << params->ourMaxPDUReceiveSize << OFendl
+        << "Their Max PDU Receive Size: "
+        << params->theirMaxPDUReceiveSize << OFendl;
+
+    outstream << "Presentation Contexts:" << OFendl;
+    for (i=0; i<ASC_countPresentationContexts(params); i++) {
+        ASC_getPresentationContext(params, i, &pc);
+        outstream << ASC_dumpPresentationContext(&pc);
+    }
+
+    SOPClassExtendedNegotiationSubItemList* extNegList=NULL;
+    ASC_getRequestedExtNegList(params, &extNegList);
+    outstream << "Requested Extended Negotiation:";
+    if (extNegList != NULL) {
+        outstream << OFendl;
+        outstream << dumpExtNegList(temp_str, *extNegList);
+    } else {
+        outstream << " none" << OFendl;
+    }
+    ASC_getAcceptedExtNegList(params, &extNegList);
+    outstream << "Accepted Extended Negotiation:";
+    if (extNegList != NULL) {
+        outstream << OFendl;
+        outstream << dumpExtNegList(temp_str, *extNegList);
+    } else {
+        outstream << " none" << OFendl;
+    }
+
+    UserIdentityNegotiationSubItemRQ *userIdentRQ = NULL;
+    ASC_getUserIdentRQ(params, &userIdentRQ);
+    outstream << "Requested User Identity Negotiation:";
+    if (userIdentRQ != NULL) {
+        outstream << OFendl;
+        userIdentRQ->dump(outstream);
+    } else {
+        outstream << " none" << OFendl;
+    }
+
+    UserIdentityNegotiationSubItemAC *userIdentAC = NULL;
+    ASC_getUserIdentAC(params, &userIdentAC);
+    outstream << "User Identity Negotiation Response:";
+    if (userIdentAC != NULL) {
+        outstream << OFendl;
+        userIdentAC->dump(outstream);
+    } else {
+        outstream << " none" << OFendl;
+    }
+
+
+#if 0
+    outstream << "DUL Params --- BEGIN" << OFendl;
+    DUL_DumpParams(&params->DULparams);
+    outstream << "DUL Params --- END" << OFendl;
+#endif
+
+    outstream << "======================= END A-ASSOCIATE-" << str_dir << " ======================"
+              << OFStringStream_ends;
+
+    OFSTRINGSTREAM_GETSTR(outstream, res)
+    str = res;
+    OFSTRINGSTREAM_FREESTR(res)
+    return str;
+}
+
+OFString&
+ASC_dumpConnectionParameters(OFString &str, T_ASC_Association *association)
+{
+  str.clear();
+  if (association==NULL) return str;
+  return DUL_DumpConnectionParameters(str, association->DULassociation);
 }
 
 /*
@@ -1913,17 +1898,15 @@ ASC_requestAssociation(T_ASC_Network * network,
         /* make sure max pdv length is even */
         if ((sendLen % 2) != 0)
         {
-          ofConsole.lockCerr() << "ASSOC: Warning: PDV send length " << sendLen
-                << " is odd (using " << (sendLen-1) << ")" << OFendl;
-          ofConsole.unlockCerr();
+          DCMNET_WARN("ASSOC: PDV send length " << sendLen
+                << " is odd (using " << (sendLen-1) << ")");
           sendLen--;
         }
         /* length is minus PDU and PDV header bytes */
         sendLen -= 12;
         if (sendLen < 1)
         {
-            ofConsole.lockCerr() << "ASSOC: Warning: PDV send length " << sendLen << " (using default)" << OFendl;
-            ofConsole.unlockCerr();
+            DCMNET_WARN("ASSOC: PDV send length " << sendLen << " (using default)");
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
         if (sendLen < 12)
@@ -1933,8 +1916,7 @@ ASC_requestAssociation(T_ASC_Network * network,
              * We use a larger value on this level and let the Upper Layer FSM
              * split the buffer for us into many small PDVs.
              */
-            ofConsole.lockCerr() << "ASSOC: Warning: PDV send length too small, using DUL to split larger PDVs." << OFendl;
-            ofConsole.unlockCerr();
+            DCMNET_WARN("ASSOC: PDV send length too small, using DUL to split larger PDVs.");
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
         (*assoc)->sendPDVLength = sendLen;
@@ -1998,18 +1980,16 @@ ASC_acknowledgeAssociation(
         /* make sure max pdv length is even */
         if ((sendLen % 2) != 0)
         {
-           ofConsole.lockCerr() << "ASSOC: Warning: PDV send length " << sendLen
-                << " is odd (using " << (sendLen-1) << ")" << OFendl;
-           ofConsole.unlockCerr();
+           DCMNET_WARN("ASSOC: PDV send length " << sendLen
+                << " is odd (using " << (sendLen-1) << ")");
           sendLen--;
         }
         /* length is minus PDU and PDV header bytes */
         sendLen -= 12;
         if (sendLen < 1)
         {
-           ofConsole.lockCerr() << "ASSOC: Warning: PDV send length " << sendLen
-                << " (using default)" << OFendl;
-           ofConsole.unlockCerr();
+           DCMNET_WARN("ASSOC: PDV send length " << sendLen
+                << " (using default)");
            sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
         if (sendLen < 12)
@@ -2019,8 +1999,7 @@ ASC_acknowledgeAssociation(
              * We use a larger value on this level and let the Upper Layer FSM
              * split the buffer for us into many small PDVs.
              */
-            ofConsole.lockCerr() << "ASSOC: Warning: PDV send length too small, using DUL to split larger PDVs." << OFendl;
-            ofConsole.unlockCerr();
+            DCMNET_WARN("ASSOC: PDV send length too small, using DUL to split larger PDVs.");
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
         assoc->sendPDVLength = sendLen;
@@ -2157,9 +2136,51 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 }
 
 
+// Deprecated wrapper functions follow
+void ASC_printRejectParameters(FILE *f, T_ASC_RejectParameters *rej)
+{
+    OFString str;
+    ASC_printRejectParameters(str, rej);
+    fprintf(f, "%s\n", str.c_str());
+}
+
+void ASC_printRejectParameters(STD_NAMESPACE ostream& out, T_ASC_RejectParameters *rej)
+{
+    OFString str;
+    ASC_printRejectParameters(str, rej);
+    out << str << OFendl;
+}
+
+void
+ASC_dumpParameters(T_ASC_Parameters * params, STD_NAMESPACE ostream& outstream)
+{
+    OFString str;
+    // FIXME: ASC_ASSOC_AC is just a weird, wrong guess
+    ASC_dumpParameters(str, params, ASC_ASSOC_AC);
+    outstream << str << OFendl;
+}
+
+void
+ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext, STD_NAMESPACE ostream& outstream)
+{
+    outstream << ASC_dumpPresentationContext(presentationContext) << OFendl;
+}
+
+void
+ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostream& outstream)
+{
+    OFString str;
+    ASC_dumpConnectionParameters(str, association);
+    outstream << str << OFendl;
+}
+
+
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
+** Revision 1.54  2009-11-18 11:53:59  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.53  2009-08-03 15:39:13  meichel
 ** Fixed application crash due to dereferenced NULL pointer that affected
 **   some SCP applications when connected by a non-DICOM tool such as nmap.

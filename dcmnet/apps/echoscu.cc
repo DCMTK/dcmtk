@@ -21,9 +21,9 @@
  *
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-04 14:36:42 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 11:53:58 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,6 @@
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
@@ -63,6 +62,8 @@ PRIVATE_ECHOSCU_DECLARATIONS
 #define OFFIS_CONSOLE_APPLICATION "echoscu"
 #endif
 
+static OFLogger echoscuLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
@@ -70,15 +71,8 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define APPLICATIONTITLE     "ECHOSCU"
 #define PEERAPPLICATIONTITLE "ANY-SCP"
 
-static OFBool opt_verbose = OFFalse;
-static OFBool opt_debug = OFFalse;
 static T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
 static int opt_dimse_timeout = 0;
-
-static void errmsg(const char *msg)
-{
-  if (msg) fprintf(stderr, "%s: %s\n", OFFIS_CONSOLE_APPLICATION, msg);
-}
 
 static OFCondition cecho(T_ASC_Association * assoc, unsigned long num_repeat);
 
@@ -159,6 +153,7 @@ main(int argc, char *argv[])
     DIC_NODENAME localHost;
     DIC_NODENAME peerHost;
     T_ASC_Association *assoc;
+    OFString temp_str;
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -185,9 +180,7 @@ main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
    cmd.addOption("--help",                 "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--arguments",                       "print expanded command line arguments");
-   cmd.addOption("--verbose",              "-v",      "verbose mode, print processing details");
-   cmd.addOption("--debug",                "-d",      "debug mode, print debug information");
+   OFLog::addOptions(cmd);
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("application entity titles:");
@@ -268,10 +261,6 @@ main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -299,14 +288,7 @@ main(int argc, char *argv[])
       cmd.getParam(1, opt_peer);
       app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
 
-      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
-      if (cmd.findOption("--debug"))
-      {
-        opt_debug = OFTrue;
-        DUL_Debug(OFTrue);
-        DIMSE_debug(OFTrue);
-        SetDebugLevel(5);
-      }
+      OFLog::configureFromCommandLine(cmd, app);
 
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
@@ -418,11 +400,11 @@ main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
           {
-            CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << OFendl;
+            OFLOG_FATAL(echoscuLogger, "ciphersuite '" << current << "' is unknown. Known ciphersuites are:");
             unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
             for (unsigned long cs=0; cs < numSuites; cs++)
             {
-              CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
+                OFLOG_FATAL(echoscuLogger, "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
             }
             return 1;
           } else {
@@ -435,19 +417,19 @@ main(int argc, char *argv[])
 #endif
     }
 
-    if (opt_debug)
-      app.printIdentifier();
+    /* print resource identifier */
+    OFLOG_DEBUG(echoscuLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-        fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-                DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(echoscuLogger, "no data dictionary loaded, check environment variable: "
+                << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* initialize network, i.e. create an instance of T_ASC_Network*. */
     OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, opt_acse_timeout, &net);
     if (cond.bad()) {
-        DimseCondition::dump(cond);
+        OFLOG_FATAL(echoscuLogger, DimseCondition::dump(temp_str, cond));
         exit(1);
     }
 
@@ -459,7 +441,8 @@ main(int argc, char *argv[])
       tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, opt_readSeedFile);
       if (tLayer == NULL)
       {
-        app.printError("unable to create TLS transport layer");
+        OFLOG_FATAL(echoscuLogger, "unable to create TLS transport layer");
+        return 1;
       }
 
       if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
@@ -470,7 +453,7 @@ main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
           {
-            CERR << "warning unable to load certificate file '" << current << "', ignoring" << OFendl;
+              OFLOG_WARN(echoscuLogger, "unable to load certificate file '" << current << "', ignoring");
           }
         } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
       }
@@ -483,14 +466,14 @@ main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
           {
-            CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << OFendl;
+            OFLOG_WARN(echoscuLogger, "unable to load certificates from directory '" << current << "', ignoring");
           }
         } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
       }
 
       if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
       {
-        CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << OFendl;
+        OFLOG_WARN(echoscuLogger, "unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring");
       }
 
       if (opt_doAuthenticate)
@@ -499,24 +482,24 @@ main(int argc, char *argv[])
 
         if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
         {
-          CERR << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << OFendl;
+          OFLOG_ERROR(echoscuLogger, "unable to load private TLS key from '" << opt_privateKeyFile << "'");
           return 1;
         }
         if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
         {
-          CERR << "unable to load certificate from '" << opt_certificateFile << "'" << OFendl;
+          OFLOG_ERROR(echoscuLogger, "unable to load certificate from '" << opt_certificateFile << "'");
           return 1;
         }
         if (! tLayer->checkPrivateKeyMatchesCertificate())
         {
-          CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << OFendl;
+          OFLOG_ERROR(echoscuLogger, "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match");
           return 1;
         }
       }
 
       if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
       {
-        CERR << "unable to set selected cipher suites" << OFendl;
+        OFLOG_ERROR(echoscuLogger, "unable to set selected cipher suites");
         return 1;
       }
 
@@ -526,7 +509,7 @@ main(int argc, char *argv[])
       cond = ASC_setTransportLayer(net, tLayer, 0);
       if (cond.bad())
       {
-          DimseCondition::dump(cond);
+          OFLOG_FATAL(echoscuLogger, DimseCondition::dump(temp_str, cond));
           return 1;
       }
     }
@@ -536,7 +519,7 @@ main(int argc, char *argv[])
     /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
     cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
     if (cond.bad()) {
-        DimseCondition::dump(cond);
+        OFLOG_FATAL(echoscuLogger, DimseCondition::dump(temp_str, cond));
         exit(1);
     }
 
@@ -553,7 +536,7 @@ main(int argc, char *argv[])
     /* available the user is able to request an encrypted,secure connection. */
     cond = ASC_setTransportLayerType(params, opt_secureConnection);
     if (cond.bad()) {
-        DimseCondition::dump(cond);
+        OFLOG_FATAL(echoscuLogger, DimseCondition::dump(temp_str, cond));
         return 1;
     }
 
@@ -568,26 +551,22 @@ main(int argc, char *argv[])
     int presentationContextID = 1; /* odd byte value 1, 3, 5, .. 255 */
     for (unsigned long ii=0; ii<opt_numPresentationCtx; ii++)
     {
-      cond = ASC_addPresentationContext(params, presentationContextID, UID_VerificationSOPClass,
+        cond = ASC_addPresentationContext(params, presentationContextID, UID_VerificationSOPClass,
                  transferSyntaxes, (int)opt_numXferSyntaxes);
-      presentationContextID += 2;
-      if (cond.bad())
-      {
-            DimseCondition::dump(cond);
+        presentationContextID += 2;
+        if (cond.bad())
+        {
+            OFLOG_FATAL(echoscuLogger, DimseCondition::dump(temp_str, cond));
             exit(1);
-      }
+        }
     }
 
     /* dump presentation contexts if required */
-    if (opt_debug) {
-        printf("Request Parameters:\n");
-        ASC_dumpParameters(params, COUT);
-    }
+    OFLOG_DEBUG(echoscuLogger, "Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
 
     /* create association, i.e. try to establish a network connection to another */
     /* DICOM application. This call creates an instance of T_ASC_Association*. */
-    if (opt_verbose)
-        printf("Requesting Association\n");
+    OFLOG_INFO(echoscuLogger, "Requesting Association");
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond.bad()) {
         if (cond == DUL_ASSOCIATIONREJECTED)
@@ -595,35 +574,26 @@ main(int argc, char *argv[])
             T_ASC_RejectParameters rej;
 
             ASC_getRejectParameters(params, &rej);
-            errmsg("Association Rejected:");
-            ASC_printRejectParameters(stderr, &rej);
+            OFLOG_FATAL(echoscuLogger, "Association Rejected: " << OFendl << ASC_printRejectParameters(temp_str, &rej));
             exit(1);
         } else {
-            errmsg("Association Request Failed:");
-            DimseCondition::dump(cond);
+            OFLOG_FATAL(echoscuLogger, "Association Request Failed: " << DimseCondition::dump(temp_str, cond));
             exit(1);
         }
     }
 
     /* dump the presentation contexts which have been accepted/refused */
-    if (opt_debug) {
-        printf("Association Parameters Negotiated:\n");
-        ASC_dumpParameters(params, COUT);
-    }
+    OFLOG_DEBUG(echoscuLogger, "Association Parameters Negotiated:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
 
     /* count the presentation contexts which have been accepted by the SCP */
     /* If there are none, finish the execution */
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
-        errmsg("No Acceptable Presentation Contexts");
+        OFLOG_FATAL(echoscuLogger, "No Acceptable Presentation Contexts");
         exit(1);
     }
 
     /* dump general information concerning the establishment of the network connection if required */
-    if (opt_verbose) {
-        printf("Association Accepted (Max Send PDV: %lu)\n",
-                assoc->sendPDVLength);
-    }
-
+    OFLOG_INFO(echoscuLogger, "Association Accepted (Max Send PDV: " << assoc->sendPDVLength << ")");
 
     /* do the real work, i.e. send a number of C-ECHO-RQ messages to the DICOM application */
     /* this application is connected with and handle corresponding C-ECHO-RSP messages. */
@@ -633,54 +603,45 @@ main(int argc, char *argv[])
     if (cond == EC_Normal)
     {
         if (opt_abortAssociation) {
-            if (opt_verbose)
-                printf("Aborting Association\n");
+            OFLOG_INFO(echoscuLogger, "Aborting Association");
             cond = ASC_abortAssociation(assoc);
             if (cond.bad())
             {
-                errmsg("Association Abort Failed:");
-                DimseCondition::dump(cond);
+                OFLOG_FATAL(echoscuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
                 exit(1);
             }
         } else {
             /* release association */
-            if (opt_verbose)
-                printf("Releasing Association\n");
+            OFLOG_INFO(echoscuLogger, "Releasing Association");
             cond = ASC_releaseAssociation(assoc);
             if (cond.bad())
             {
-                errmsg("Association Release Failed:");
-                DimseCondition::dump(cond);
+                OFLOG_FATAL(echoscuLogger, "Association Release Failed: " << DimseCondition::dump(temp_str, cond));
                 exit(1);
             }
         }
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-        errmsg("Protocol Error: peer requested release (Aborting)");
-        if (opt_verbose)
-            printf("Aborting Association\n");
+        OFLOG_FATAL(echoscuLogger, "Protocol Error: peer requested release (Aborting)");
+        OFLOG_INFO(echoscuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
-            errmsg("Association Abort Failed:");
-            DimseCondition::dump(cond);
+            OFLOG_FATAL(echoscuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
             exit(1);
         }
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-        if (opt_verbose) printf("Peer Aborted Association\n");
+        OFLOG_INFO(echoscuLogger, "Peer Aborted Association");
     }
     else
     {
-        errmsg("SCU Failed:");
-        DimseCondition::dump(cond);
-        if (opt_verbose)
-            printf("Aborting Association\n");
+        OFLOG_FATAL(echoscuLogger, "SCU Failed:" << DimseCondition::dump(temp_str, cond));
+        OFLOG_INFO(echoscuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
-            errmsg("Association Abort Failed:");
-            DimseCondition::dump(cond);
+            OFLOG_FATAL(echoscuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
             exit(1);
         }
     }
@@ -689,7 +650,7 @@ main(int argc, char *argv[])
     /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad()) {
-        DimseCondition::dump(cond);
+        OFLOG_FATAL(echoscuLogger, DimseCondition::dump(temp_str, cond));
         exit(1);
     }
 
@@ -697,7 +658,7 @@ main(int argc, char *argv[])
     /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
     cond = ASC_dropNetwork(&net);
     if (cond.bad()) {
-        DimseCondition::dump(cond);
+        OFLOG_FATAL(echoscuLogger, DimseCondition::dump(temp_str, cond));
         exit(1);
     }
 
@@ -712,10 +673,10 @@ main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
         {
-          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << OFendl;
+          OFLOG_ERROR(echoscuLogger, "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring.");
         }
       } else {
-        CERR << "Warning: cannot write random seed, ignoring." << OFendl;
+        OFLOG_ERROR(echoscuLogger, "cannot write random seed, ignoring.");
       }
     }
     delete tLayer;
@@ -739,29 +700,22 @@ echoSCU(T_ASC_Association * assoc)
     DcmDataset *statusDetail = NULL;
 
     /* dump information if required */
-    if (opt_verbose) {
-        printf("Echo [%d], ", msgId);
-        fflush(stdout);
-    }
+    OFLOG_INFO(echoscuLogger, "Echo [" << msgId << "], ");
 
     /* send C-ECHO-RQ and handle response */
     OFCondition cond = DIMSE_echoUser(assoc, msgId, opt_blockMode, opt_dimse_timeout, &status, &statusDetail);
 
     /* depending on if a response was received, dump some information */
     if (cond.good()) {
-        if (opt_verbose) {
-            printf("Complete [Status: %s]\n",
-                DU_cstoreStatusString(status));
-        }
+        OFLOG_INFO(echoscuLogger, "Complete [Status: " << DU_cstoreStatusString(status) << "]");
     } else {
-        errmsg("Failed:");
-        DimseCondition::dump(cond);
+        OFString temp_str;
+        OFLOG_ERROR(echoscuLogger, "Failed: " << DimseCondition::dump(temp_str, cond));
     }
 
     /* check for status detail information, there should never be any */
     if (statusDetail != NULL) {
-        printf("  Status Detail (should never be any):\n");
-        statusDetail->print(COUT);
+        OFLOG_INFO(echoscuLogger, "  Status Detail (should never be any):" << OFendl << DcmObject::PrintHelper(*statusDetail));
         delete statusDetail;
     }
 
@@ -793,6 +747,9 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
+** Revision 1.48  2009-11-18 11:53:58  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.47  2009-09-04 14:36:42  joergr
 ** Output all --version information to COUT (and not to CERR).
 **

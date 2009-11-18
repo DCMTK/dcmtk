@@ -7,10 +7,10 @@
 ** Purpose:
 **   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
 **
-** Last Update:         $Author: onken $
-** Update Date:         $Date: 2008-10-07 09:08:15 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2009-11-18 11:53:59 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcuserid.cc,v $
-** CVS/RCS Revision:    $Revision: 1.3 $
+** CVS/RCS Revision:    $Revision: 1.4 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -307,64 +307,63 @@ OFCondition UserIdentityNegotiationSubItemRQ::parseFromBuffer(unsigned char *rea
 
 
 // Dump User Identity sub item to specified output stream
-void UserIdentityNegotiationSubItemRQ::dump(STD_NAMESPACE ostream& outstream) const
+void UserIdentityNegotiationSubItemRQ::dump(STD_NAMESPACE ostream& stream) const
 {
   switch (m_userIdentityType)
   {
     case ASC_USER_IDENTITY_NONE:
-        outstream << "none";
+       stream << "none";
     break;
     case ASC_USER_IDENTITY_USER:
-       outstream << "  Authentication mode 1: Username" << OFendl;
+       stream << "  Authentication mode 1: Username" << OFendl;
        if (m_primFieldLength > 0)
        {
          char* buf = new char[m_primFieldLength+1];
          strncpy(buf, OFstatic_cast(const char*, m_primField), m_primFieldLength);
          buf[m_primFieldLength] = '\0';
-         outstream << "  Username: [" << buf << "]" << OFendl;
+         stream << "  Username: [" << buf << "]" << OFendl;
          delete[] buf;
        }
        else
-         outstream << "  Username: []" << OFendl;
+         stream << "  Username: []" << OFendl;
     break;
     case ASC_USER_IDENTITY_USER_PASSWORD:
-      outstream << "  Authentication mode 2: Username/Password" << OFendl;
+       stream << "  Authentication mode 2: Username/Password" << OFendl;
        if (m_primFieldLength > 0)
        {
          char* buf = new char[m_primFieldLength+1];
          strncpy(buf, OFstatic_cast(const char*, m_primField), m_primFieldLength);
          buf[m_primFieldLength] = '\0';
-         outstream << "  Username: [" << buf << "]" << OFendl;
+         stream << "  Username: [" << buf << "]" << OFendl;
          delete[] buf;
        }
        else
-         outstream << "  Username: []" << OFendl;
+         stream << "  Username: []" << OFendl;
        if (m_secFieldLength > 0)
        {
          char* buf = new char[m_secFieldLength+1];
          strncpy(buf, OFstatic_cast(const char*, m_secField), m_secFieldLength);
          buf[m_secFieldLength] = '\0';
-         outstream << "  Password: [" << buf << "]" << OFendl;
+         stream << "  Password: [" << buf << "]" << OFendl;
          delete[] buf;
        }
        else
-         outstream << "  Password: []" << OFendl;
+         stream << "  Password: []" << OFendl;
       break;
     case ASC_USER_IDENTITY_KERBEROS:
-      outstream << "  Authentication mode 3: Kerberos" << OFendl <<
+      stream << "  Authentication mode 3: Kerberos" << OFendl <<
         "  Kerberos Service Ticket (not dumped) length: "<< m_primFieldLength << OFendl;
       break;
     case ASC_USER_IDENTITY_SAML:
-      outstream << "  Authentication mode 4: SAML" << OFendl <<
+      stream << "  Authentication mode 4: SAML" << OFendl <<
         "  SAML Assertion (not dumped) length: " << m_primFieldLength << OFendl;
       break;
     default:
-      outstream << "  Authentication mode: Unknown " << OFendl <<
+      stream << "  Authentication mode: Unknown " << OFendl <<
         "  First value (not dumped), length: " << m_primFieldLength << OFendl <<
         "  Second Value (not dumped), length: " << m_secFieldLength << OFendl;
   }
-  outstream << "  Positive Response requested: " << ((m_posRspRequested != 0) ? "Yes" : "No") << OFendl;
-
+  stream << "  Positive Response requested: " << ((m_posRspRequested != 0) ? "Yes" : "No") << OFendl << OFStringStream_ends;
 }
 
 
@@ -545,9 +544,9 @@ OFCondition UserIdentityNegotiationSubItemAC::parseFromBuffer(unsigned char *rea
 
 
 // Dumps contents of this User Identity sub item to output stream
-void UserIdentityNegotiationSubItemAC::dump(STD_NAMESPACE ostream& outstream) const
+void UserIdentityNegotiationSubItemAC::dump(STD_NAMESPACE ostream& stream) const
 {
-  outstream << "  Server Response (not dumped) length: " << m_rspLength << OFendl;
+  stream << "  Server Response (not dumped) length: " << m_rspLength << OFendl;
 }
 
 
@@ -585,6 +584,9 @@ UserIdentityNegotiationSubItemAC::~UserIdentityNegotiationSubItemAC()
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.cc,v $
+** Revision 1.4  2009-11-18 11:53:59  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.3  2008-10-07 09:08:15  onken
 ** Fixed possible memory leak in user identity classes and added code for
 ** accessing user identity from the server's side. Thanks to "Pim"

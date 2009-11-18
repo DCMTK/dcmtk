@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-29 11:39:44 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 11:53:58 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,11 +133,18 @@ public:
    */
   virtual OFBool isTransparentConnection() = 0;
 
+  /** dump the characteristics of the current connection
+   *  @param str the string to dump into
+   *  @return reference to string
+   */
+  virtual OFString& dumpConnectionParameters(OFString& str) = 0;
+
   /** prints the characteristics of the current connection
    *  on the given output stream.
    *  @param out output stream
+   *  @deprecated Please use the other dumpConnectionParameters() function instead!
    */
-  virtual void dumpConnectionParameters(STD_NAMESPACE ostream& out) = 0;
+  void dumpConnectionParameters(STD_NAMESPACE ostream& out);
 
   /** returns an error string for a given error code.
    *  @param code error code
@@ -310,11 +317,11 @@ public:
    */
   virtual OFBool isTransparentConnection();
 
-  /** prints the characteristics of the current connection
-   *  on the given output stream.
-   *  @param out output stream
+  /** dump the characteristics of the current connection
+   *  @param str the string to dump into
+   *  @return reference to string
    */
-  virtual void dumpConnectionParameters(STD_NAMESPACE ostream& out);
+  virtual OFString& dumpConnectionParameters(OFString& str);
 
   /** returns an error string for a given error code.
    *  @param code error code
@@ -336,6 +343,9 @@ private:
 
 /*
  *  $Log: dcmtrans.h,v $
+ *  Revision 1.10  2009-11-18 11:53:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.9  2009-01-29 11:39:44  joergr
  *  Fixed issue with missing invalidation of socket variable during close method.
  *  Please note that this is only required if the connection objects exists after

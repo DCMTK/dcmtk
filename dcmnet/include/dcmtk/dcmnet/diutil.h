@@ -57,10 +57,10 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: onken $
-** Update Date:		$Date: 2007-07-12 12:18:00 $
+** Last Update:		$Author: uli $
+** Update Date:		$Date: 2009-11-18 11:53:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/diutil.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -74,6 +74,18 @@
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/oflog/oflog.h"
+
+
+OFLogger DCM_dcmnetGetLogger();
+
+#define DCMNET_TRACE(msg) OFLOG_TRACE(DCM_dcmnetGetLogger(), msg)
+#define DCMNET_DEBUG(msg) OFLOG_DEBUG(DCM_dcmnetGetLogger(), msg)
+#define DCMNET_INFO(msg)  OFLOG_INFO(DCM_dcmnetGetLogger(), msg)
+#define DCMNET_WARN(msg)  OFLOG_WARN(DCM_dcmnetGetLogger(), msg)
+#define DCMNET_ERROR(msg) OFLOG_ERROR(DCM_dcmnetGetLogger(), msg)
+#define DCMNET_FATAL(msg) OFLOG_FATAL(DCM_dcmnetGetLogger(), msg)
+
 
 char* DU_stripTrailingSpaces(char *s);
 char* DU_stripLeadingSpaces(char *s);
@@ -115,6 +127,9 @@ const char *DU_neventReportStatusString(Uint16 statusCode);
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
+** Revision 1.9  2009-11-18 11:53:58  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.8  2007-07-12 12:18:00  onken
 ** Added status codes and corresponding printing routines for DIMSE-N.
 **

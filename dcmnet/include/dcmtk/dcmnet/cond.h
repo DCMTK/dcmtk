@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-08 13:16:11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 11:53:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/cond.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,12 +211,23 @@ class DimseCondition
 {
 public:
 
-  /** dumps given condition code to console.
+  /** Get a string representation for the given condition code
+   *  This method is intended as a replacement for COND_DumpCondition().
+   *  Since no global condition stack exists anymore, the condition
+   *  must be passed to this method.
+   *  @param str string to dump into
+   *  @param cond condition to be dumped
+   *  @return reference to string
+   */
+  static OFString& dump(OFString& str, OFCondition cond);
+
+  /** dumps a given condition code to the console.
    *  This method is intended as a replacement for COND_DumpCondition().
    *  Since no global condition stack exists anymore, the condition
    *  must be passed to this method.
    *  @param cond condition to be dumped
    *  @param console console to dump to
+   *  @deprecated Please use the other dump() function instead!
    */
   static void dump(OFCondition cond, OFConsole& console = ofConsole);
 
@@ -273,6 +284,9 @@ typedef OFCondition CONDITION;
 /*
  * CVS Log
  * $Log: cond.h,v $
+ * Revision 1.13  2009-11-18 11:53:58  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.12  2008-09-08 13:16:11  joergr
  * Fixed typo in OFCondition text string.
  *

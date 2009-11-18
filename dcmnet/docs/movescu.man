@@ -48,11 +48,21 @@ dcmfile-in  DICOM query file(s)
         --arguments
           print expanded command line arguments
 
+  -q    --quiet
+          quiet mode, print no warnings and errors
+
   -v    --verbose
           verbose mode, print processing details
 
   -d    --debug
           debug mode, print debug information
+
+  -ll   --log-level  [l]evel: string constant
+          (fatal, error, warn, info, debug, trace)
+          use level l for the logger
+
+  -lc   --log-config  [f]ilename: string
+          use config file f for the logger
 \endverbatim
 
 \subsection network_options network options
@@ -524,6 +534,25 @@ Images can be copied to a third party by using a different destination AE title
 (e.g. \b --move ANOTHER_AE).  Of course, the SCP must "know" this AE title and
 the destination must be acting as an SCP of the Storage Service Class (the
 \b storescp application can be used for this purpose).
+
+\section logging LOGGING
+
+The level of logging output of the various command line tools and underlying
+libraries can be specified by the user.  By default, only errors and warnings
+are written to the standard error stream.  Using option \e --verbose also
+informational messages like processing details are reported.  Option
+\e --debug can be used to get more details on the internal activity, e.g. for
+debugging purposes.  Other logging levels can be selected using option
+\e --log-level.  In \e --quiet mode only fatal errors are reported.  In such
+very severe error events, the application will usually terminate.  For more
+details on the different logging levels, see documentation of module "oflog".
+
+In case the logging output should be written to file (optionally with logfile
+rotation), to syslog (Unix) or the event log (Windows) option \e --log-config
+can be used.  This configuration file also allows for directing only certain
+messages to a particular output stream and for filtering certain messages
+based on the module or application where they are generated.  An example
+configuration file is provided in <em>\<etcdir\>/logger.cfg</em>).
 
 \section command_line COMMAND LINE
 

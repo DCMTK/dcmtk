@@ -44,9 +44,9 @@
 ** Intent:    This file defines the public structures and constants
 **      and the function prototypes for the DUL (DICOM Upper
 **      Layer) facility.
-** Last Update:   $Author: onken $, $Date: 2008-04-17 15:28:33 $
+** Last Update:   $Author: uli $, $Date: 2009-11-18 11:53:58 $
 ** Source File:   $RCSfile: dul.h,v $
-** Revision:    $Revision: 1.26 $
+** Revision:    $Revision: 1.27 $
 ** Status:    $State: Exp $
 */
 
@@ -400,8 +400,6 @@ OFCondition DUL_NextPDV(DUL_ASSOCIATIONKEY ** association, DUL_PDV * pdv);
 
 /* Miscellaneous functions.
 */
-const char *DUL_Message(OFCondition cond);
-void DUL_Debug(OFBool flag);
 OFCondition
 DUL_AssociationParameter(DUL_ASSOCIATIONKEY ** association,
        DUL_ASSOCIATION_PARAMETER param, DUL_DATA_TYPE type,
@@ -411,12 +409,12 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
          DUL_SC_ROLE proposedSCRole, DUL_SC_ROLE acceptedSCRole,
 DUL_PRESENTATIONCONTEXTID ctxID, unsigned char reason, const char *abstractSyntax,
       const char *transferSyntax,...);
-void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
-void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE ostream& outstream);
+OFString& DUL_DumpParams(OFString& str, DUL_ASSOCIATESERVICEPARAMETERS * params);
+OFString& DUL_DumpConnectionParameters(OFString& str, DUL_ASSOCIATIONKEY *association);
 
 OFCondition DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
-void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
+OFString& dumpExtNegList(OFString& str, SOPClassExtendedNegotiationSubItemList& lst);
 
 /*
 ** Additional functions (from dulextra.cc) needed to support
@@ -484,11 +482,22 @@ void DUL_markProcessAsForkedChild();
  */
 void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[]);
 
+
+/// @deprecated Use OFString& DUL_DumpParams(OFString&, DUL_ASSOCIATESERVICEPARAMETERS) instead.
+void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
+/// @deprecated Use OFString& DUL_DumpConnectionParameters(OFString&, DUL_ASSOCIATIONKEY*) instead.
+void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE ostream& outstream);
+/// @deprecated Use OFString& dumpExtNegList(OFString&, SOPClassExtendedNegotiationSubItemList&) instead.
+void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
+
 #endif
 
 /*
 ** CVS Log
 ** $Log: dul.h,v $
+** Revision 1.27  2009-11-18 11:53:58  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.26  2008-04-17 15:28:33  onken
 ** Reworked and extended User Identity Negotiation code.
 **

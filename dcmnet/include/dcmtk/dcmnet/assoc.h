@@ -67,10 +67,10 @@
 **  Module Prefix: ASC_
 **
 **
-** Last Update:   $Author: onken $
-** Update Date:   $Date: 2008-10-07 09:07:47 $
+** Last Update:   $Author: uli $
+** Update Date:   $Date: 2009-11-18 11:53:58 $
 ** Source File:   $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/assoc.h,v $
-** CVS/RCS Revision:  $Revision: 1.28 $
+** CVS/RCS Revision:  $Revision: 1.29 $
 ** Status:    $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -322,14 +322,9 @@ ASC_getRejectParameters(
     T_ASC_Parameters * params,
     T_ASC_RejectParameters * rejectParameters);
 
-void
+OFString&
 ASC_printRejectParameters(
-    FILE *f,
-    T_ASC_RejectParameters *rej);
-
-void
-ASC_printRejectParameters(
-    STD_NAMESPACE ostream& out,
+    OFString& str,
     T_ASC_RejectParameters *rej);
 
 OFCondition
@@ -514,14 +509,18 @@ unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsign
 OFCondition
 ASC_setTransportLayer(T_ASC_Network *network, DcmTransportLayer *newLayer, int takeoverOwnership);
 
-void
-ASC_dumpParameters(T_ASC_Parameters * params, STD_NAMESPACE ostream& outstream);
+enum ASC_associateType
+{
+    ASC_ASSOC_RQ,
+    ASC_ASSOC_AC,
+    ASC_ASSOC_RJ,
+};
 
-void
-ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext, STD_NAMESPACE ostream& outstream);
+OFString&
+ASC_dumpParameters(OFString& str, T_ASC_Parameters * param, ASC_associateType dir);
 
-void
-ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostream& outstream);
+OFString&
+ASC_dumpConnectionParameters(OFString& str, T_ASC_Association *association);
 
 void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb);
 
@@ -596,12 +595,45 @@ ASC_dropAssociation(T_ASC_Association * association);
 OFCondition
 ASC_destroyAssociation(T_ASC_Association ** association);
 
+/// @deprecated Please use OFString& ASC_printRejectParameters(OFString&, T_ASC_RejectParameters*) instead.
+void
+ASC_printRejectParameters(
+    FILE *f,
+    T_ASC_RejectParameters *rej);
+
+/// @deprecated Please use OFString& ASC_printRejectParameters(OFString&, T_ASC_RejectParameters*) instead.
+void
+ASC_printRejectParameters(
+    STD_NAMESPACE ostream& out,
+    T_ASC_RejectParameters *rej);
+
+/**
+ * @deprecated Please use OFString& ASC_dumpParameters(OFString&, T_ASC_Parameters *,
+ *             ASC_associateType) instead.
+ */
+void
+ASC_dumpParameters(T_ASC_Parameters * params, STD_NAMESPACE ostream& outstream);
+
+/// @deprecated You should dump the complete T_ASC_Parameters with ASC_dumpParameters() instead.
+void
+ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext, STD_NAMESPACE ostream& outstream);
+
+/**
+ * @deprecated Please use OFString& ASC_dumpParameters(OFString&, T_ASC_Parameters*,
+ *             ASC_associateType) instead.
+ */
+void
+ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostream& outstream);
+
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
+** Revision 1.29  2009-11-18 11:53:58  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.28  2008-10-07 09:07:47  onken
 ** Added code for accessing user identity from the server's side.
 **

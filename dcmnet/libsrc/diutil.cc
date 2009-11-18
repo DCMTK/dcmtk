@@ -57,10 +57,10 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: onken $
-** Update Date:		$Date: 2007-07-13 12:24:51 $
+** Last Update:		$Author: uli $
+** Update Date:		$Date: 2009-11-18 11:53:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.24 $
+** CVS/RCS Revision:	$Revision: 1.25 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -102,6 +102,12 @@
 #include "dcmtk/dcmdata/dcuid.h"
 
 static char staticBuf[256];
+
+OFLogger DCM_dcmnetGetLogger()
+{
+    static OFLogger DCM_dcmnetLogger = OFLog::getLogger("dcmtk.dcmnet");
+    return DCM_dcmnetLogger;
+}
 
 char* 
 DU_stripTrailingSpaces(char *s)
@@ -801,6 +807,9 @@ DU_neventReportStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
+** Revision 1.25  2009-11-18 11:53:59  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.24  2007-07-13 12:24:51  onken
 ** Fixed some status code for DIMSE-N.
 **

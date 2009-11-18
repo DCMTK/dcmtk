@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-04 10:08:42 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 11:53:58 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,6 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
@@ -89,6 +88,8 @@ END_EXTERN_C
 
 #define OFFIS_CONSOLE_APPLICATION "storescu"
 
+static OFLogger storescuLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
@@ -96,9 +97,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define APPLICATIONTITLE     "STORESCU"
 #define PEERAPPLICATIONTITLE "ANY-SCP"
 
-static OFBool opt_verbose = OFFalse;
 static OFBool opt_showPresentationContexts = OFFalse;
-static OFBool opt_debug = OFFalse;
 static OFBool opt_abortAssociation = OFFalse;
 static OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
 static OFCmdUnsignedInt opt_maxSendPDULength = 0;
@@ -210,6 +209,7 @@ int main(int argc, char *argv[])
 #endif
 
   char tempstr[20];
+  OFString temp_str;
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM storage (C-STORE) SCU", rcsid);
   OFCommandLine cmd;
 
@@ -222,10 +222,9 @@ int main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                    "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                            "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--arguments",                          "print expanded command line arguments");
-   cmd.addOption("--verbose",                 "-v",      "verbose mode, print processing details");
-   cmd.addOption("--verbose-pc",              "+v",      "verbose mode and show presentation contexts");
-   cmd.addOption("--debug",                   "-d",      "debug mode, print debug information");
+   cmd.addOption("--verbose-pc",              "+v",      "show presentation contexts in verbose mode");
+   OFLog::addOptions(cmd);
+
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",            "+f",      "read file format or data set (default)");
@@ -372,10 +371,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -403,19 +398,9 @@ int main(int argc, char *argv[])
       cmd.getParam(1, opt_peer);
       app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
 
-      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
+      OFLog::configureFromCommandLine(cmd, app);
       if (cmd.findOption("--verbose-pc"))
-      {
-        opt_verbose = OFTrue;
         opt_showPresentationContexts = OFTrue;
-      }
-      if (cmd.findOption("--debug"))
-      {
-        opt_debug = OFTrue;
-        DUL_Debug(OFTrue);
-        DIMSE_debug(OFTrue);
-        SetDebugLevel(3);
-      }
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
@@ -493,7 +478,7 @@ int main(int argc, char *argv[])
         OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, opt_configFile);
         if (cond.bad())
         {
-          CERR << "error reading config file: " << cond.text() << OFendl;
+          OFLOG_ERROR(storescuLogger, "reading config file: " << cond.text());
           return 1;
         }
       }
@@ -653,10 +638,10 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
           {
-            CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << OFendl;
+            OFLOG_ERROR(storescuLogger, "ciphersuite '" << current << "' is unknown. Known ciphersuites are:");
             unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
             for (unsigned long cs = 0; cs < numSuites; cs++)
-              CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
+              OFLOG_ERROR(storescuLogger, "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
             return 1;
           } else {
             if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
@@ -709,8 +694,8 @@ int main(int argc, char *argv[])
       const char *paramString = NULL;
       const int paramCount = cmd.getParamCount();
       OFList<OFString> inputFiles;
-      if (opt_scanDir && opt_verbose)
-        COUT << "determining input files ..." << OFendl;
+      if (opt_scanDir)
+        OFLOG_INFO(storescuLogger, "determining input files ...");
       /* iterate over all input filenames */
       for (int i = 3; i <= paramCount; i++)
       {
@@ -720,14 +705,17 @@ int main(int argc, char *argv[])
         {
           if (opt_scanDir)
             OFStandard::searchDirectoryRecursively(paramString, inputFiles, opt_scanPattern, "" /*dirPrefix*/, opt_recurse);
-          else if (opt_debug)
-            CERR << "warning: ignoring directory because option --scan-directories is not set: " << paramString << OFendl;
+          else
+            OFLOG_DEBUG(storescuLogger, "ignoring directory because option --scan-directories is not set: " << paramString);
         } else
           inputFiles.push_back(paramString);
       }
       /* check whether there are any input files at all */
       if (inputFiles.empty())
-        app.printError("no input files to be sent");
+      {
+        OFLOG_FATAL(storescuLogger, "no input files to be sent");
+        exit(1);
+      }
 
       /* check input files */
       OFString errormsg;
@@ -738,8 +726,7 @@ int main(int argc, char *argv[])
       const char *currentFilename = NULL;
       OFListIterator(OFString) if_iter = inputFiles.begin();
       OFListIterator(OFString) if_last = inputFiles.end();
-      if (opt_verbose)
-        COUT << "checking input files ..." << OFendl;
+      OFLOG_INFO(storescuLogger, "checking input files ...");
       /* iterate over all input filenames */
       while (if_iter != if_last)
       {
@@ -755,9 +742,12 @@ int main(int argc, char *argv[])
               errormsg = "missing SOP class (or instance) in file: ";
               errormsg += currentFilename;
               if (opt_haltOnUnsuccessfulStore)
-                app.printError(errormsg.c_str());
+              {
+                OFLOG_FATAL(storescuLogger, errormsg);
+                exit(1);
+              }
               else
-                CERR << "warning: " << errormsg << ", ignoring file" << OFendl;
+                OFLOG_WARN(storescuLogger, errormsg << ", ignoring file");
             }
             else if (!dcmIsaStorageSOPClassUID(sopClassUID))
             {
@@ -767,9 +757,12 @@ int main(int argc, char *argv[])
               errormsg += ": ";
               errormsg += sopClassUID;
               if (opt_haltOnUnsuccessfulStore)
-                app.printError(errormsg.c_str());
+              {
+                OFLOG_FATAL(storescuLogger, errormsg);
+                exit(1);
+              }
               else
-                CERR << "warning: " << errormsg << ", ignoring file" << OFendl;
+                OFLOG_WARN(storescuLogger, errormsg << ", ignoring file");
             }
             else
             {
@@ -784,13 +777,19 @@ int main(int argc, char *argv[])
           errormsg = "cannot access file: ";
           errormsg += currentFilename;
           if (opt_haltOnUnsuccessfulStore)
-            app.printError(errormsg.c_str());
+          {
+            OFLOG_FATAL(storescuLogger, errormsg);
+            exit(1);
+          }
           else
-            CERR << "warning: " << errormsg << ", ignoring file" << OFendl;
+            OFLOG_WARN(storescuLogger, errormsg << ", ignoring file");
         }
         ++if_iter;
       }
    }
+
+    /* print resource identifier */
+    OFLOG_DEBUG(storescuLogger, rcsid << OFendl);
 
 #ifdef ON_THE_FLY_COMPRESSION
     // register global JPEG decompression codecs
@@ -806,19 +805,16 @@ int main(int argc, char *argv[])
     DcmRLEDecoderRegistration::registerCodecs();
 #endif
 
-    if (opt_debug)
-      app.printIdentifier();
-
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-      CERR << "Warning: no data dictionary loaded, check environment variable: "
-           << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+      OFLOG_WARN(storescuLogger, "no data dictionary loaded, check environment variable: "
+           << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* initialize network, i.e. create an instance of T_ASC_Network*. */
     OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, opt_acse_timeout, &net);
     if (cond.bad()) {
-      DimseCondition::dump(cond);
+      OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
       return 1;
     }
 
@@ -829,7 +825,10 @@ int main(int argc, char *argv[])
     {
       tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, opt_readSeedFile);
       if (tLayer == NULL)
-        app.printError("unable to create TLS transport layer");
+      {
+        OFLOG_FATAL(storescuLogger, "unable to create TLS transport layer");
+        exit(1);
+      }
 
       if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
       {
@@ -838,7 +837,7 @@ int main(int argc, char *argv[])
         {
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
-            CERR << "warning unable to load certificate file '" << current << "', ignoring" << OFendl;
+            OFLOG_WARN(storescuLogger, "unable to load certificate file '" << current << "', ignoring");
         } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
       }
 
@@ -849,12 +848,12 @@ int main(int argc, char *argv[])
         {
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
-            CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << OFendl;
+            OFLOG_WARN(storescuLogger, "unable to load certificates from directory '" << current << "', ignoring");
         } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
       }
 
       if (opt_dhparam && !(tLayer->setTempDHParameters(opt_dhparam)))
-        CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << OFendl;
+        OFLOG_WARN(storescuLogger, "unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring");
 
       if (opt_doAuthenticate)
       {
@@ -862,24 +861,24 @@ int main(int argc, char *argv[])
 
         if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
         {
-          CERR << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << OFendl;
+          OFLOG_ERROR(storescuLogger, "unable to load private TLS key from '" << opt_privateKeyFile << "'");
           return 1;
         }
         if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
         {
-          CERR << "unable to load certificate from '" << opt_certificateFile << "'" << OFendl;
+          OFLOG_ERROR(storescuLogger, "unable to load certificate from '" << opt_certificateFile << "'");
           return 1;
         }
         if (! tLayer->checkPrivateKeyMatchesCertificate())
         {
-          CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << OFendl;
+          OFLOG_ERROR(storescuLogger, "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match");
           return 1;
         }
       }
 
       if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
       {
-        CERR << "unable to set selected cipher suites" << OFendl;
+        OFLOG_ERROR(storescuLogger, "unable to set selected cipher suites");
         return 1;
       }
 
@@ -889,7 +888,7 @@ int main(int argc, char *argv[])
       cond = ASC_setTransportLayer(net, tLayer, 0);
       if (cond.bad())
       {
-          DimseCondition::dump(cond);
+          OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
           return 1;
       }
     }
@@ -899,7 +898,7 @@ int main(int argc, char *argv[])
     /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
     cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
     if (cond.bad()) {
-        DimseCondition::dump(cond);
+        OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
         return 1;
     }
     /* sets this application's title and the called application's title in the params */
@@ -911,7 +910,7 @@ int main(int argc, char *argv[])
     /* available the user is able to request an encrypted,secure connection. */
     cond = ASC_setTransportLayerType(params, opt_secureConnection);
     if (cond.bad()) {
-      DimseCondition::dump(cond);
+      OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
       return 1;
     }
 
@@ -951,54 +950,46 @@ int main(int argc, char *argv[])
     }
 
     if (cond.bad()) {
-      DimseCondition::dump(cond);
+      OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
       return 1;
     }
 
     /* dump presentation contexts if required */
-    if (opt_showPresentationContexts || opt_debug) {
-      COUT << "Request Parameters:" << OFendl;
-      ASC_dumpParameters(params, COUT);
-    }
+    if (opt_showPresentationContexts)
+      OFLOG_INFO(storescuLogger, "Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
+    else
+      OFLOG_DEBUG(storescuLogger, "Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
 
     /* create association, i.e. try to establish a network connection to another */
     /* DICOM application. This call creates an instance of T_ASC_Association*. */
-    if (opt_verbose)
-      COUT << "Requesting Association" << OFendl;
+    OFLOG_INFO(storescuLogger, "Requesting Association");
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond.bad()) {
       if (cond == DUL_ASSOCIATIONREJECTED) {
         T_ASC_RejectParameters rej;
 
         ASC_getRejectParameters(params, &rej);
-        CERR << "Association Rejected:" << OFendl;
-        ASC_printRejectParameters(stderr, &rej);
+        OFLOG_FATAL(storescuLogger, "Association Rejected:" << OFendl << ASC_printRejectParameters(temp_str, &rej));
         return 1;
       } else {
-        CERR << "Association Request Failed:" << OFendl;
-        DimseCondition::dump(cond);
+        OFLOG_FATAL(storescuLogger, "Association Request Failed:" << DimseCondition::dump(temp_str, cond));
         return 1;
       }
     }
 
     /* dump the connection parameters if in debug mode*/
-    if (opt_debug)
-    {
-      STD_NAMESPACE ostream &out = ofConsole.lockCout();
-      ASC_dumpConnectionParameters(assoc, out);
-      ofConsole.unlockCout();
-    }
+    OFLOG_DEBUG(storescuLogger, ASC_dumpConnectionParameters(temp_str, assoc));
 
     /* dump the presentation contexts which have been accepted/refused */
-    if (opt_showPresentationContexts || opt_debug) {
-      COUT << "Association Parameters Negotiated:" << OFendl;
-      ASC_dumpParameters(params, COUT);
-    }
+    if (opt_showPresentationContexts)
+      OFLOG_INFO(storescuLogger, "Association Parameters Negotiated:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
+    else
+      OFLOG_DEBUG(storescuLogger, "Association Parameters Negotiated:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
 
     /* count the presentation contexts which have been accepted by the SCP */
     /* If there are none, finish the execution */
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
-      CERR << "No Acceptable Presentation Contexts" << OFendl;
+      OFLOG_FATAL(storescuLogger, "No Acceptable Presentation Contexts");
       return 1;
     }
 
@@ -1006,12 +997,11 @@ int main(int argc, char *argv[])
     cond = checkUserIdentityResponse(params);
     if (cond.bad())
     {
-      DimseCondition::dump(cond);
+      OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
       return 1;
     }
     /* dump general information concerning the establishment of the network connection if required */
-    if (opt_verbose)
-      COUT << "Association Accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << OFendl;
+    OFLOG_INFO(storescuLogger, "Association Accepted (Max Send PDV: " << assoc->sendPDVLength << ")");
 
     /* do the real work, i.e. for all files which were specified in the */
     /* command line, transmit the encapsulated DICOM objects to the SCP. */
@@ -1029,54 +1019,44 @@ int main(int argc, char *argv[])
     if (cond == EC_Normal)
     {
       if (opt_abortAssociation) {
-        if (opt_verbose)
-          COUT << "Aborting Association" << OFendl;
+        OFLOG_INFO(storescuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
-          CERR << "Association Abort Failed:" << OFendl;
-          DimseCondition::dump(cond);
+          OFLOG_ERROR(storescuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
           return 1;
         }
       } else {
         /* release association */
-        if (opt_verbose)
-          COUT << "Releasing Association" << OFendl;
+        OFLOG_INFO(storescuLogger, "Releasing Association");
         cond = ASC_releaseAssociation(assoc);
         if (cond.bad())
         {
-          CERR << "Association Release Failed:" << OFendl;
-          DimseCondition::dump(cond);
+          OFLOG_ERROR(storescuLogger, "Association Release Failed: " << DimseCondition::dump(temp_str, cond));
           return 1;
         }
       }
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-      CERR << "Protocol Error: peer requested release (Aborting)" << OFendl;
-      if (opt_verbose)
-        COUT << "Aborting Association" << OFendl;
+      OFLOG_ERROR(storescuLogger, "Protocol Error: peer requested release (Aborting)");
+      OFLOG_INFO(storescuLogger, "Aborting Association");
       cond = ASC_abortAssociation(assoc);
       if (cond.bad()) {
-        CERR << "Association Abort Failed:" << OFendl;
-        DimseCondition::dump(cond);
+        OFLOG_ERROR(storescuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
         return 1;
       }
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-      if (opt_verbose)
-        COUT << "Peer Aborted Association" << OFendl;
+      OFLOG_INFO(storescuLogger, "Peer Aborted Association");
     }
     else
     {
-      CERR << "SCU Failed:" << OFendl;
-      DimseCondition::dump(cond);
-      if (opt_verbose)
-        COUT << "Aborting Association" << OFendl;
+      OFLOG_ERROR(storescuLogger, "SCU Failed: " << DimseCondition::dump(temp_str, cond));
+      OFLOG_INFO(storescuLogger, "Aborting Association");
       cond = ASC_abortAssociation(assoc);
       if (cond.bad()) {
-        CERR << "Association Abort Failed:" << OFendl;
-        DimseCondition::dump(cond);
+        OFLOG_ERROR(storescuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
         return 1;
       }
     }
@@ -1085,14 +1065,14 @@ int main(int argc, char *argv[])
     /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad()) {
-      DimseCondition::dump(cond);
+      OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
       return 1;
     }
     /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
     /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
     cond = ASC_dropNetwork(&net);
     if (cond.bad()) {
-      DimseCondition::dump(cond);
+      OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
       return 1;
     }
 
@@ -1106,9 +1086,9 @@ int main(int argc, char *argv[])
       if (tLayer->canWriteRandomSeed())
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
-          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << OFendl;
+          OFLOG_WARN(storescuLogger, "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring.");
       } else
-        CERR << "Warning: cannot write random seed, ignoring." << OFendl;
+        OFLOG_WARN(storescuLogger, "cannot write random seed, ignoring.");
     }
     delete tLayer;
 #endif
@@ -1284,7 +1264,7 @@ addStoragePresentationContexts(T_ASC_Parameters *params,
   while (s_cur != s_end && cond.good()) {
 
     if (pid > 255) {
-      CERR << "Too many presentation contexts" << OFendl;
+      OFLOG_ERROR(storescuLogger, "Too many presentation contexts");
       return ASC_BADPRESENTATIONCONTEXTID;
     }
 
@@ -1299,7 +1279,7 @@ addStoragePresentationContexts(T_ASC_Parameters *params,
 
       if (fallbackSyntaxes.size() > 0) {
         if (pid > 255) {
-          CERR << "Too many presentation contexts" << OFendl;
+          OFLOG_ERROR(storescuLogger, "Too many presentation contexts");
           return ASC_BADPRESENTATIONCONTEXTID;
         }
 
@@ -1347,8 +1327,8 @@ updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &key, OFString &val
   OFCondition cond = EC_Normal;
   cond = dataset->search(key, stack, ESM_fromHere, OFFalse);
   if (cond != EC_Normal) {
-    CERR << "error: updateStringAttributeValue: cannot find: " << tag.getTagName()
-         << " " << key << ": " << cond.text() << OFendl;
+    OFLOG_ERROR(storescuLogger, "updateStringAttributeValue: cannot find: " << tag.getTagName()
+         << " " << key << ": " << cond.text());
     return OFFalse;
   }
 
@@ -1356,16 +1336,16 @@ updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &key, OFString &val
 
   DcmVR vr(elem->ident());
   if (elem->getLength() > vr.getMaxValueLength()) {
-    CERR << "error: updateStringAttributeValue: INTERNAL ERROR: " << tag.getTagName()
+    OFLOG_ERROR(storescuLogger, "updateStringAttributeValue: INTERNAL ERROR: " << tag.getTagName()
          << " " << key << ": value too large (max " << vr.getMaxValueLength()
-         << ") for " << vr.getVRName() << " value: " << value << OFendl;
+         << ") for " << vr.getVRName() << " value: " << value);
     return OFFalse;
   }
 
   cond = elem->putOFStringArray(value);
   if (cond != EC_Normal) {
-    CERR << "error: updateStringAttributeValue: cannot put string in attribute: " << tag.getTagName()
-         << " " << key << ": " << cond.text() << OFendl;
+    OFLOG_ERROR(storescuLogger, "updateStringAttributeValue: cannot put string in attribute: " << tag.getTagName()
+         << " " << key << ": " << cond.text());
     return OFFalse;
   }
 
@@ -1419,19 +1399,17 @@ replaceSOPInstanceInformation(DcmDataset *dataset)
   OFString sopInstanceUID = makeUID(SITE_INSTANCE_UID_ROOT, (int)imageCounter);
   OFString imageNumber = intToString((int)imageCounter);
 
-  if (opt_verbose) {
-    COUT << "Inventing Identifying Information ("
+  OFLOG_INFO(storescuLogger, "Inventing Identifying Information ("
          << "pa" << patientCounter << ", st" << studyCounter
-         << ", se" << seriesCounter << ", im" << imageCounter << "): " << OFendl;
-    COUT << "  PatientName=" << patientName << OFendl;
-    COUT << "  PatientID=" << patientID << OFendl;
-    COUT << "  StudyInstanceUID=" << studyInstanceUID << OFendl;
-    COUT << "  StudyID=" << studyID << OFendl;
-    COUT << "  SeriesInstanceUID=" << seriesInstanceUID << OFendl;
-    COUT << "  SeriesNumber=" << seriesNumber << OFendl;
-    COUT << "  SOPInstanceUID=" << sopInstanceUID << OFendl;
-    COUT << "  ImageNumber=" << imageNumber << OFendl;
-  }
+         << ", se" << seriesCounter << ", im" << imageCounter << "):");
+  OFLOG_INFO(storescuLogger, "  PatientName=" << patientName);
+  OFLOG_INFO(storescuLogger, "  PatientID=" << patientID);
+  OFLOG_INFO(storescuLogger, "  StudyInstanceUID=" << studyInstanceUID);
+  OFLOG_INFO(storescuLogger, "  StudyID=" << studyID);
+  OFLOG_INFO(storescuLogger, "  SeriesInstanceUID=" << seriesInstanceUID);
+  OFLOG_INFO(storescuLogger, "  SeriesNumber=" << seriesNumber);
+  OFLOG_INFO(storescuLogger, "  SOPInstanceUID=" << sopInstanceUID);
+  OFLOG_INFO(storescuLogger, "  ImageNumber=" << imageNumber);
 
   updateStringAttributeValue(dataset, DCM_PatientsName, patientName);
   updateStringAttributeValue(dataset, DCM_PatientID, patientID);
@@ -1448,9 +1426,20 @@ replaceSOPInstanceInformation(DcmDataset *dataset)
 static void
 progressCallback(void * /*callbackData*/,
   T_DIMSE_StoreProgress *progress,
-  T_DIMSE_C_StoreRQ * /*req*/)
+  T_DIMSE_C_StoreRQ * req)
 {
-  if (opt_verbose) {
+  if (progress->state == DIMSE_StoreBegin)
+  {
+    OFString str;
+    OFLOG_DEBUG(storescuLogger, DIMSE_dumpMessage(str, *req, DIMSE_OUTGOING));
+  }
+
+  // We can't use oflog for the pdu output, but we use a special logger for
+  // generating this output. If it is set to level "INFO" we generate the
+  // output, if it's set to "DEBUG" then we'll assume that there is debug output
+  // generated for each PDU elsewhere.
+  OFLogger progressLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION ".progress");
+  if (progressLogger.getChainedLogLevel() == OFLogger::INFO_LOG_LEVEL) {
     switch (progress->state) {
       case DIMSE_StoreBegin:
         COUT << "XMIT: "; break;
@@ -1486,10 +1475,8 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
 
   unsuccessfulStoreEncountered = OFTrue; // assumption
 
-  if (opt_verbose) {
-    COUT << "--------------------------" << OFendl;
-    COUT << "Sending file: " << fname << OFendl;
-  }
+  OFLOG_INFO(storescuLogger, "--------------------------");
+  OFLOG_INFO(storescuLogger, "Sending file: " << fname);
 
   /* read information from file. After the call to DcmFileFormat::loadFile(...) the information */
   /* which is encapsulated in the file will be available through the DcmFileFormat object. */
@@ -1500,7 +1487,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
 
   /* figure out if an error occured while the file was read*/
   if (cond.bad()) {
-    CERR << "Bad DICOM file: " << fname << ": " << cond.text() << OFendl;
+    OFLOG_ERROR(storescuLogger, "Bad DICOM file: " << fname << ": " << cond.text());
     return cond;
   }
 
@@ -1512,7 +1499,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   /* figure out which SOP class and SOP instance is encapsulated in the file */
   if (!DU_findSOPClassAndInstanceInDataSet(dcmff.getDataset(),
     sopClass, sopInstance, opt_correctUIDPadding)) {
-      CERR << "No SOP Class or Instance UIDs in file: " << fname << OFendl;
+      OFLOG_ERROR(storescuLogger, "No SOP Class or Instance UIDs in file: " << fname);
       return DIMSE_BADDATA;
   }
 
@@ -1535,18 +1522,18 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
     const char *modalityName = dcmSOPClassUIDToModality(sopClass);
     if (!modalityName) modalityName = dcmFindNameOfUID(sopClass);
     if (!modalityName) modalityName = "unknown SOP class";
-    CERR << "No presentation context for: (" << modalityName << ") " << sopClass << OFendl;
+    OFLOG_ERROR(storescuLogger, "No presentation context for: (" << modalityName << ") " << sopClass);
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
 
   /* if required, dump general information concerning transfer syntaxes */
-  if (opt_verbose) {
+  if (storescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
     DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
     T_ASC_PresentationContext pc;
     ASC_findAcceptedPresentationContext(assoc->params, presID, &pc);
     DcmXfer netTransfer(pc.acceptedTransferSyntax);
-    COUT << "Transfer: " << dcmFindNameOfUID(fileTransfer.getXferID())
-         << " -> " << dcmFindNameOfUID(netTransfer.getXferID()) << OFendl;
+    OFLOG_INFO(storescuLogger, "Transfer: " << dcmFindNameOfUID(fileTransfer.getXferID())
+         << " -> " << dcmFindNameOfUID(netTransfer.getXferID()));
   }
 
   /* prepare the transmission of data */
@@ -1558,8 +1545,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   req.Priority = DIMSE_PRIORITY_LOW;
 
   /* if required, dump some more general information */
-  if (opt_verbose)
-    COUT << "Store SCU RQ: MsgID " << msgId << ", (" << dcmSOPClassUIDToModality(sopClass) << ")" << OFendl;
+  OFLOG_INFO(storescuLogger, "Store SCU RQ: MsgID " << msgId << ", (" << dcmSOPClassUIDToModality(sopClass) << ")");
 
   /* finally conduct transmission of data */
   cond = DIMSE_storeUser(assoc, presID, &req,
@@ -1581,20 +1567,19 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   /* dump some more general information */
   if (cond == EC_Normal)
   {
-    if (opt_verbose) {
-      DIMSE_printCStoreRSP(stdout, &rsp, (opt_debug) ? presID : 0);
-    }
+    OFString str;
+    OFLOG_INFO(storescuLogger, "Received store response");
+    OFLOG_DEBUG(storescuLogger, DIMSE_dumpMessage(str, rsp, DIMSE_INCOMING, NULL, presID));
   }
   else
   {
-    CERR << "Store Failed, file: " << fname << ":" << OFendl;
-    DimseCondition::dump(cond);
+    OFString temp_str;
+    OFLOG_ERROR(storescuLogger, "Store Failed, file: " << fname << ":" << OFendl << DimseCondition::dump(temp_str, cond));
   }
 
   /* dump status detail information if there is some */
   if (statusDetail != NULL) {
-    COUT << "  Status Detail:" << OFendl;
-    statusDetail->print(COUT);
+    OFLOG_WARN(storescuLogger, "  Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
     delete statusDetail;
   }
   /* return */
@@ -1680,7 +1665,7 @@ configureUserIdentityRequest(T_ASC_Parameters *params)
       {
         OFString openerror;
         identFile.getLastErrorString(openerror);
-        CERR << "Unable to open Kerberos or SAML file: " << openerror << OFendl;
+        OFLOG_ERROR(storescuLogger, "Unable to open Kerberos or SAML file: " << openerror);
         return EC_IllegalCall;
       }
       // determine file size
@@ -1691,8 +1676,7 @@ configureUserIdentityRequest(T_ASC_Parameters *params)
       identFile.rewind();
       if (filesize > 65535)
       {
-        if (opt_debug)
-          CERR << "Warning: Kerberos or SAML file is larger than 65535 bytes, bytes after that position are ignored" << OFendl;
+        OFLOG_INFO(storescuLogger, "Kerberos or SAML file is larger than 65535 bytes, bytes after that position are ignored");
         filesize = 65535;
       }
 
@@ -1701,7 +1685,7 @@ configureUserIdentityRequest(T_ASC_Parameters *params)
       identFile.fclose();
       if (bytesRead == 0)
       {
-        CERR << "Unable to read Kerberos or SAML info from file: File empty?" << OFendl;
+        OFLOG_ERROR(storescuLogger, "Unable to read Kerberos or SAML info from file: File empty?");
         delete[] buf;
         return EC_IllegalCall;
       }
@@ -1718,7 +1702,10 @@ configureUserIdentityRequest(T_ASC_Parameters *params)
     }
   }
   if (cond.bad())
-    DimseCondition::dump(cond);
+  {
+    OFString temp_str;
+    OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
+  }
   return cond;
 }
 
@@ -1741,7 +1728,7 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
     UserIdentityNegotiationSubItemAC *rsp = params->DULparams.ackUserIdentNeg;
     if (rsp == NULL)
     {
-      CERR << "User Identity Negotiation failed: Positive response requested but none received" << OFendl;
+      OFLOG_ERROR(storescuLogger, "User Identity Negotiation failed: Positive response requested but none received");
       return ASC_USERIDENTIFICATIONFAILED;
     }
   }
@@ -1751,6 +1738,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.83  2009-11-18 11:53:58  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.82  2009-08-04 10:08:42  joergr
 ** Added output of Presentation Context ID of the C-STORE message in debug mode.
 **
