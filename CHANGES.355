@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2009.11.18 (schlachter)
 
+- Fix compiler errors due to removal of DUL_Debug() and DIMSE_Debug().
+  Affects: dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/apps/dcmqrti.cc
+           dcmwlm/apps/wlcefs.cc
+
 - Switched to logging mechanism provided by the "new" oflog module.
   Affects: dcmtls/include/dcmtk/dcmtls/tlslayer.h
            dcmtls/include/dcmtk/dcmtls/tlstrans.h

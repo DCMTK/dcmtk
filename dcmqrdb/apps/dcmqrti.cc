@@ -21,9 +21,9 @@
  *
  *  Purpose: Telnet Initiator (ti) Main Program
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:49:41 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 12:17:30 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -204,8 +204,6 @@ int main( int argc, char *argv[] )
     {
       debug = OFTrue;
       verbose = OFTrue;
-      DUL_Debug(OFTrue);
-      DIMSE_debug(OFTrue);
       SetDebugLevel(3);
     }
     if( cmd.findOption("--config") ) app.checkValue( cmd.getValue( configFileName ) );
@@ -431,6 +429,9 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
+ * Revision 1.16  2009-11-18 12:17:30  uli
+ * Fix compiler errors due to removal of DUL_Debug() and DIMSE_Debug().
+ *
  * Revision 1.15  2009-08-21 09:49:41  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

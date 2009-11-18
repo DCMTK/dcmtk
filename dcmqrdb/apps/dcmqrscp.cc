@@ -21,9 +21,9 @@
  *
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-04 14:38:02 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 12:17:30 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -349,8 +349,6 @@ main(int argc, char *argv[])
       if (cmd.findOption("--debug"))
       {
         options.debug_ = OFTrue;
-        DUL_Debug(OFTrue);
-        DIMSE_debug(OFTrue);
         SetDebugLevel(3);
       }
       if (cmd.findOption("--config")) app.checkValue(cmd.getValue(opt_configFileName));
@@ -763,6 +761,9 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
+ * Revision 1.19  2009-11-18 12:17:30  uli
+ * Fix compiler errors due to removal of DUL_Debug() and DIMSE_Debug().
+ *
  * Revision 1.18  2009-09-04 14:38:02  joergr
  * Output all --version information to COUT (and not to CERR).
  *

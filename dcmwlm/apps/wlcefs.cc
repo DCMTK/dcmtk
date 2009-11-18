@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:14:05 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-18 12:17:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -224,8 +224,6 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if( cmd->findOption("--debug") )
     {
       opt_debug = OFTrue;
-      DUL_Debug(OFTrue);
-      DIMSE_debug(OFTrue);
       SetDebugLevel(3);
     }
 
@@ -435,6 +433,9 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
+** Revision 1.25  2009-11-18 12:17:30  uli
+** Fix compiler errors due to removal of DUL_Debug() and DIMSE_Debug().
+**
 ** Revision 1.24  2009-04-21 14:14:05  joergr
 ** Fixed minor inconsistencies in manpage / syntax usage.
 **
