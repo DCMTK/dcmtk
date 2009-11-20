@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.20 (onken)
+
+- Fixed bug in JPEG true lossless encoder which prohibited the generation
+  of a new SOP Instance UID if desired by the user or if image is
+  converted to Secondary Capture.
+  Affects: dcmjpeg/libsrc/djcodece.cc
+
 **** Changes from 2009.11.18 (schlachter)
 
 - Remove the unused string_append_iterator.

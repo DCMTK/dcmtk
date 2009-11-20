@@ -21,9 +21,9 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-17 16:45:22 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-11-20 16:52:39 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -663,21 +663,26 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     // but other modules such as SOP Common.  We only perform these
     // changes if we're on the main level of the datsetItem,
     // which should always identify itself as datsetItem, not as item.
-    if (result.good())
-      result = updateDerivationDescription(datsetItem, toRepParam, djcp, OFstatic_cast(Uint8, bitsAllocated), compressionRatio);
 
-    if ( (datsetItem->ident() == EVR_item) && result.good() )
+    // update derivation description reflecting the JPEG compression applied
+    result = updateDerivationDescription(datsetItem, toRepParam, djcp, OFstatic_cast(Uint8, bitsAllocated), compressionRatio);
+
+    if ( (datsetItem->ident() == EVR_dataset) && result.good() )
     {
       // convert to Secondary Capture if requested by user.
       // This method creates a new SOP class UID, so it should be executed
       // after the call to newInstance() which creates a Source Image Sequence.
       if ( djcp->getConvertToSC() || (djcp->getUIDCreation() == EUC_always) )
       {
-        result = DcmCodec::convertToSecondaryCapture(datsetItem);
+        if (djcp->getConvertToSC())
+        {
+          result = DcmCodec::convertToSecondaryCapture(datsetItem);
+        }
         // update image type (set to DERIVED)
         if (result.good())
           result = DcmCodec::updateImageType(datsetItem);
-        result = DcmCodec::newInstance((DcmItem *)datsetItem, "DCM", "121320", "Uncompressed predecessor");
+        if (result.good())
+          result = DcmCodec::newInstance((DcmItem *)datsetItem, "DCM", "121320", "Uncompressed predecessor");
       }
     }
     // switch _original_ pixel data back to "color by plane", if required
@@ -1486,6 +1491,11 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
+ * Revision 1.31  2009-11-20 16:52:39  onken
+ * Fixed bug in JPEG true lossless encoder which prohibited the generation
+ * of a new SOP Instance UID if desired by the user or if image is
+ * converted to Secondary Capture.
+ *
  * Revision 1.30  2009-11-17 16:45:22  joergr
  * Added new method that allows for determining the color model of the
  * decompressed image.
