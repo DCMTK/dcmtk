@@ -21,9 +21,9 @@
  *
  *  Purpose: TI Common Constants, Types, Globals and Functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:50:07 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,16 +203,6 @@ public:
      */
     void setXferSyntax(E_TransferSyntax xfer) { networkTransferSyntax = xfer; }
 
-    /** set verbose and debug mode
-     *  @param is_verbose verbose mode flag
-     *  @param is_debug debug mode flag
-     */
-    void setDebug (OFBool is_verbose, OFBool is_debug)
-    {
-      verbose = is_verbose;
-      debug = is_debug;
-    }
-
     /** set blocking mode and timeout for DIMSE operations
      *  @param blockMode blocking mode for DIMSE operations
      *  @param timeout timeout for DIMSE operations
@@ -304,12 +294,6 @@ private:
     /// network transfer syntax
     E_TransferSyntax networkTransferSyntax;
 
-    /// verbose mode flag
-    OFBool verbose;
-
-    /// debug mode flag
-    OFBool debug;
-
     /// blocking mode for DIMSE operations
     T_DIMSE_BlockingMode blockMode_;
 
@@ -324,6 +308,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrtis.h,v $
+ * Revision 1.6  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.5  2009-08-21 09:50:07  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

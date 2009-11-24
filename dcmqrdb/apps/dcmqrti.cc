@@ -22,8 +22,8 @@
  *  Purpose: Telnet Initiator (ti) Main Program
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 12:17:30 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2009-11-24 10:10:41 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,6 @@ END_EXTERN_C
 #include "dcmtk/dcmqrdb/dcmqrcnf.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #ifdef WITH_ZLIB
@@ -68,6 +67,8 @@ END_EXTERN_C
 #define APPLICATIONTITLE "TELNET_INITIATOR"
 #define SHORTCOL 4
 #define LONGCOL 18
+
+static OFLogger dcmqrtiLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 DcmQueryRetrieveConfig config;
@@ -91,8 +92,6 @@ extern "C" void TI_signalHandler(int)
 int main( int argc, char *argv[] )
 {
 
-  OFBool verbose = OFFalse;
-  OFBool debug = OFFalse;
   const char *remoteDBTitles[ MAXREMOTEDBTITLES ];
   int remoteDBTitlesCount = 0;
   const char *configFileName = DEFAULT_CONFIGURATION_DIR "dcmqrscp.cfg";
@@ -104,6 +103,7 @@ int main( int argc, char *argv[] )
   int peerCount, j, n, returnValue = 0;
   OFCondition cond = EC_Normal;
   char tempstr[20];
+  OFString temp_str;
 
 #ifdef HAVE_GUSI_H
   // needed for Macintosh
@@ -132,9 +132,8 @@ int main( int argc, char *argv[] )
   cmd.addGroup( "general options:");
     cmd.addOption( "--help",                      "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive );
     cmd.addOption( "--version",                              "print version information and exit", OFCommandLine::AF_Exclusive );
-    cmd.addOption("--arguments",                             "print expanded command line arguments");
-    cmd.addOption( "--verbose",                   "-v",      "verbose mode, print processing details" );
-    cmd.addOption( "--debug",                     "-d",      "debug mode, print debug information" );
+    OFLog::addOptions(cmd);
+
     if (strlen(configFileName) > 21)
     {
         OFString opt0 = "use specific configuration file\n(default: ";
@@ -175,10 +174,6 @@ int main( int argc, char *argv[] )
   prepareCmdLineArgs( argc, argv, OFFIS_CONSOLE_APPLICATION );
   if( app.parseCommandLine( cmd, argc, argv, OFCommandLine::PF_ExpandWildcards ) )
   {
-    /* check whether to print the command line arguments */
-    if (cmd.findOption("--arguments"))
-      app.printArguments();
-
     /* check exclusive options first */
     if (cmd.hasExclusiveOption())
     {
@@ -199,17 +194,11 @@ int main( int argc, char *argv[] )
     }
 
     // command line parameters
-    if( cmd.findOption("--verbose") ) verbose = OFTrue;
-    if( cmd.findOption("--debug") )
-    {
-      debug = OFTrue;
-      verbose = OFTrue;
-      SetDebugLevel(3);
-    }
+    OFLog::configureFromCommandLine(cmd, app);
+
     if( cmd.findOption("--config") ) app.checkValue( cmd.getValue( configFileName ) );
     if( cmd.findOption("--propose-implicit") ) networkTransferSyntax = EXS_LittleEndianImplicit;
 
-    conf.setDebug(verbose, debug);
     conf.setXferSyntax(networkTransferSyntax);
 
     const char *myAE = NULL;
@@ -262,14 +251,14 @@ int main( int argc, char *argv[] )
           app.checkValue( cmd.getValue( remoteDBTitles[remoteDBTitlesCount] ) );
           remoteDBTitlesCount++;
         }
-        else CERR << "ti: Too many remote database titles." << OFendl;
+        else OFLOG_ERROR(dcmqrtiLogger, "ti: Too many remote database titles.");
       } while (cmd.findOption("--remote", 0, OFCommandLine::FOM_Next));
     }
 
   }
 
-  if (debug)
-    app.printIdentifier();
+  /* print resource identifier */
+  OFLOG_DEBUG(dcmqrtiLogger, rcsid << OFendl);
 
   // in case accessing the configuration file for reading is successful
   if( access( configFileName, R_OK ) != -1 )
@@ -278,7 +267,7 @@ int main( int argc, char *argv[] )
     if( config.init( configFileName ) == 1 )
     {
       // dump information
-      if( verbose )
+      if (dcmqrtiLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
         config.printConfig();
 
       // determine max pdu size from configuration file
@@ -288,7 +277,7 @@ int main( int argc, char *argv[] )
       // in case its value is not in a certain range, use the default value
       if( maxPDU == 0 || maxPDU < ASC_MINIMUMPDUSIZE || maxPDU > ASC_MAXIMUMPDUSIZE )
       {
-        COUT << "ti: no or invalid max pdu size found in configuration file." << OFendl;
+        OFLOG_WARN(dcmqrtiLogger, "ti: no or invalid max pdu size found in configuration file.");
         maxPDU = ASC_DEFAULTMAXPDU;
       }
 
@@ -353,12 +342,12 @@ int main( int argc, char *argv[] )
       if( conf.getdbCount() > 0 )
       {
         // dump information
-        if( verbose )
+        if (dcmqrtiLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
           conf.printConfig();
 
         // make sure data dictionary is loaded
         if( !dcmDataDict.isDictionaryLoaded() )
-          CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+          OFLOG_WARN(dcmqrtiLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
 
         // if starting up network is successful
         cond = ASC_initializeNetwork( NET_REQUESTOR, 0, opt_acse_timeout, conf.accessNet() );
@@ -385,33 +374,31 @@ int main( int argc, char *argv[] )
           cond = ASC_dropNetwork( conf.accessNet() );
           if( cond.bad() )
           {
-            CERR << "ti: error dropping network: ";
-            DimseCondition::dump( cond );
+            OFLOG_ERROR(dcmqrtiLogger, "ti: error dropping network: " << DimseCondition::dump(temp_str, cond));
             returnValue = 1;
           }
         }
         else
         {
-          CERR << "ti: error initialising network: ";
-          DimseCondition::dump( cond );
+          OFLOG_ERROR(dcmqrtiLogger, "ti: error initialising network: " << DimseCondition::dump(temp_str, cond));
           returnValue = 1;
         }
       }
       else
       {
-        CERR << "ti: no accessable databases." << OFendl;
+        OFLOG_ERROR(dcmqrtiLogger, "ti: no accessable databases.");
         returnValue = 1;
       }
     }
     else
     {
-      CERR << "ti: error while reading configuration file '" << configFileName << "'." << OFendl;
+      OFLOG_ERROR(dcmqrtiLogger, "ti: error while reading configuration file '" << configFileName << "'.");
       returnValue = 1;
     }
   }
   else
   {
-    CERR << "ti: cannot access configuration file '" << configFileName << "'." << OFendl;
+    OFLOG_ERROR(dcmqrtiLogger, "ti: cannot access configuration file '" << configFileName << "'.");
     returnValue = 1;
   }
 
@@ -429,6 +416,9 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
+ * Revision 1.17  2009-11-24 10:10:41  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.16  2009-11-18 12:17:30  uli
  * Fix compiler errors due to removal of DUL_Debug() and DIMSE_Debug().
  *

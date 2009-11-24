@@ -1,6 +1,38 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.24 (schlachter)
+
+- Switched to logging mechanism provided by the "new" oflog module.
+  Affects: dcmqrdb/CMakeLists.txt
+           dcmqrdb/apps/Makefile.dep
+           dcmqrdb/apps/dcmqridx.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/apps/dcmqrti.cc
+           dcmqrdb/docs/dcmqridx.man
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/docs/dcmqrti.man
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbg.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbm.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcnf.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdba.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqropt.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrptb.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrsrv.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrtis.h
+           dcmqrdb/libsrc/Makefile.dep
+           dcmqrdb/libsrc/dcmqrcbf.cc
+           dcmqrdb/libsrc/dcmqrcbg.cc
+           dcmqrdb/libsrc/dcmqrcbm.cc
+           dcmqrdb/libsrc/dcmqrcbs.cc
+           dcmqrdb/libsrc/dcmqrcnf.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmqrdb/libsrc/dcmqropt.cc
+           dcmqrdb/libsrc/dcmqrptb.cc
+           dcmqrdb/libsrc/dcmqrsrv.cc
+           dcmqrdb/libsrc/dcmqrtis.cc
+
 **** Changes from 2009.11.20 (onken)
 
 - Fixed bug in JPEG true lossless encoder which prohibited the generation

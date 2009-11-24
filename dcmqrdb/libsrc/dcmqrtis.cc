@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveOptions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:54:11 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ TI_getInfoFromImage(char *imgFile, DIC_PN patientsName, DIC_CS studyId,
     DcmFileFormat dcmff;
     if (dcmff.loadFile(imgFile).bad())
     {
-        DcmQueryRetrieveOptions::errmsg("Help!, cannot open image file: %s", imgFile);
+        DCMQRDB_ERROR("Help!, cannot open image file: " << imgFile);
         return;
     }
 
@@ -173,7 +173,6 @@ static void storeProgressCallback(void * /*callbackData*/,
 typedef struct {
     TI_GenericEntryCallbackFunction cbf;
     TI_GenericCallbackStruct *cbs;
-    OFBool verbose;
 } TI_LocalFindCallbackData;
 
 static void findCallback(
@@ -189,12 +188,11 @@ static void findCallback(
 
     cbd = (TI_LocalFindCallbackData*)callbackData;
 
-    if (cbd->verbose) {
-        printf("Find Response %d:\n", responseCount);
-        DIMSE_printCFindRSP(stdout, response);
-        printf("Identifiers %d:\n", responseCount);
-        responseIdentifiers->print(COUT);
-    }
+    OFString res;
+    DCMQRDB_INFO("Find Response " << responseCount << ":" << OFendl
+            << DIMSE_dumpMessage(res, *response, DIMSE_INCOMING) << OFendl
+            << "Identifiers " << responseCount << ":" << OFendl
+            << DcmObject::PrintHelper(*responseIdentifiers));
 
     /* call the callback function */
     cbd->cbf(cbd->cbs, responseIdentifiers);
@@ -267,7 +265,7 @@ static void TI_buildStudyQuery(DcmDataset **query)
     if (*query != NULL) delete *query;
     *query = new DcmDataset;
     if (*query == NULL) {
-        DcmQueryRetrieveOptions::errmsg("Help, out of memory");
+        DCMQRDB_ERROR("Help, out of memory");
         return;
     }
 
@@ -293,7 +291,7 @@ TI_addSeriesEntry(TI_StudyEntry *study, DcmDataset *reply)
     OFBool ok = OFTrue;
 
     if (study->seriesCount >= TI_MAXSERIES) {
-        DcmQueryRetrieveOptions::errmsg("TI_addSeriesEntry: too many series");
+        DCMQRDB_ERROR("TI_addSeriesEntry: too many series");
         return OFFalse;
     }
 
@@ -308,7 +306,7 @@ TI_addSeriesEntry(TI_StudyEntry *study, DcmDataset *reply)
     if (ok) ok = DU_getStringDOElement(reply, DCM_Modality, series->modality);
 
     if (!ok) {
-        DcmQueryRetrieveOptions::errmsg("TI_addSeriesEntry: missing data in DB reply");
+        DCMQRDB_ERROR("TI_addSeriesEntry: missing data in DB reply");
         return OFFalse;
     }
 
@@ -349,7 +347,7 @@ static void TI_buildSeriesQuery(DcmDataset **query, TI_StudyEntry *study)
     if (*query != NULL) delete *query;
     *query = new DcmDataset;
     if (*query == NULL) {
-        DcmQueryRetrieveOptions::errmsg("Help, out of memory");
+        DCMQRDB_ERROR("Help, out of memory");
         return;
     }
 
@@ -369,7 +367,7 @@ TI_addImageEntry(TI_SeriesEntry *series, DcmDataset *reply)
     DIC_CS studyID;
 
     if (series->imageCount >= TI_MAXIMAGES) {
-        DcmQueryRetrieveOptions::errmsg("TI_addImageEntry: too many images");
+        DCMQRDB_ERROR("TI_addImageEntry: too many images");
         return OFFalse;
     }
 
@@ -385,7 +383,7 @@ TI_addImageEntry(TI_SeriesEntry *series, DcmDataset *reply)
     if (ok) ok = DU_getStringDOElement(reply, DCM_InstanceNumber, image->imageNumber);
 
     if (!ok) {
-        DcmQueryRetrieveOptions::errmsg("TI_addImageEntry: missing data in DB reply");
+        DCMQRDB_ERROR("TI_addImageEntry: missing data in DB reply");
         return OFFalse;
     }
 
@@ -427,7 +425,7 @@ static void TI_buildImageQuery(DcmDataset **query, TI_StudyEntry *study,
     if (*query != NULL) delete *query;
     *query = new DcmDataset;
     if (*query == NULL) {
-        DcmQueryRetrieveOptions::errmsg("Help, out of memory!");
+        DCMQRDB_ERROR("Help, out of memory!");
         return;
     }
 
@@ -448,7 +446,7 @@ TI_addStudyEntry(TI_DBEntry *db, DcmDataset *reply)
     OFBool ok = OFTrue;
 
     if (db->studyCount >= TI_MAXSTUDIES) {
-        DcmQueryRetrieveOptions::errmsg("TI_addStudyEntry: too many studies");
+        DCMQRDB_ERROR("TI_addStudyEntry: too many studies");
         return OFFalse;
     }
 
@@ -464,7 +462,7 @@ TI_addStudyEntry(TI_DBEntry *db, DcmDataset *reply)
     if (ok) ok = DU_getStringDOElement(reply, DCM_PatientID, se->patientID);
 
     if (!ok) {
-        DcmQueryRetrieveOptions::errmsg("TI_addStudyEntry: missing data in DB reply");
+        DCMQRDB_ERROR("TI_addStudyEntry: missing data in DB reply");
         return OFFalse;
     }
 
@@ -496,8 +494,6 @@ DcmQueryRetrieveTelnetInitiator::DcmQueryRetrieveTelnetInitiator(
 , currentPeerTitle(NULL)
 , config(cfg)
 , networkTransferSyntax(EXS_Unknown)
-, verbose(OFFalse)
-, debug(OFFalse)
 , blockMode_(DIMSE_BLOCKING)
 , dimse_timeout_(0)
 {
@@ -509,6 +505,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_detachAssociation(OFBool abortFlag)
     OFCondition cond = EC_Normal;
     DIC_NODENAME presentationAddress;
     DIC_AE peerTitle;
+    OFString temp_str;
 
     if (assoc == NULL) {
       return OFTrue;  /* nothing to do */
@@ -520,21 +517,17 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_detachAssociation(OFBool abortFlag)
 
     if (abortFlag) {
         /* abort association */
-        if (verbose)
-            printf("Aborting Association (%s)\n", peerTitle);
+        DCMQRDB_INFO("Aborting Association (" << peerTitle << ")");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("Association Abort Failed:");
-            DimseCondition::dump(cond);
+            DCMQRDB_ERROR("Association Abort Failed:" << DimseCondition::dump(temp_str, cond));
         }
     } else {
         /* release association */
-        if (verbose)
-            printf("Releasing Association (%s)\n", peerTitle);
+        DCMQRDB_INFO("Releasing Association (" << peerTitle << ")");
         cond = ASC_releaseAssociation(assoc);
         if (cond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("Association Release Failed:");
-            DimseCondition::dump(cond);
+            DCMQRDB_ERROR("Association Release Failed:\n" << DimseCondition::dump(temp_str, cond));
         }
     }
     ASC_dropAssociation(assoc);
@@ -628,6 +621,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
     T_ASC_Parameters *params;
     DIC_NODENAME localHost;
     DIC_AE currentAETitle;
+    OFString temp_str;
 
     if (assoc != NULL) {
         TI_detachAssociation(OFFalse);
@@ -641,16 +635,14 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
 
     cond = ASC_createAssociationParameters(&params, maxReceivePDULength);
     if (cond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("Help, cannot create association parameters:");
-        DimseCondition::dump(cond);
+        DCMQRDB_ERROR("Help, cannot create association parameters:\n" << DimseCondition::dump(temp_str, cond));
         return OFFalse;
     }
     ASC_setAPTitles(params, currentAETitle, currentPeerTitle, NULL);
 
     gethostname(localHost, sizeof(localHost) - 1);
     if (!config.peerForAETitle(currentPeerTitle, &peer, &port)) {
-        DcmQueryRetrieveOptions::errmsg("Help, AE title (%s) no longer in config",
-            currentPeerTitle);
+        DCMQRDB_ERROR("Help, AE title (" << currentPeerTitle << ") no longer in config");
         ASC_destroyAssociationParameters(&params);
         return OFFalse;
     }
@@ -659,37 +651,29 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
 
     cond = addPresentationContexts(params);
     if (cond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("Help, cannot add presentation contexts:");
-        DimseCondition::dump(cond);
+        DCMQRDB_ERROR("Help, cannot add presentation contexts:\n" << DimseCondition::dump(temp_str, cond));
         ASC_destroyAssociationParameters(&params);
 
         return OFFalse;
     }
-    if (debug) {
-        printf("Request Parameters:\n");
-        ASC_dumpParameters(params, COUT);
-    }
+    DCMQRDB_DEBUG("Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
 
     /* create association */
-    if (verbose)
-        printf("Requesting Association\n");
+    DCMQRDB_INFO("Requesting Association");
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond.bad()) {
         if (cond == DUL_ASSOCIATIONREJECTED) {
             T_ASC_RejectParameters rej;
 
             ASC_getRejectParameters(params, &rej);
-            DcmQueryRetrieveOptions::errmsg("Association Rejected:");
-            ASC_printRejectParameters(stderr, &rej);
-            fprintf(stderr, "\n");
+            DCMQRDB_ERROR("Association Rejected:\n" << ASC_printRejectParameters(temp_str, &rej));
             ASC_dropAssociation(assoc);
             ASC_destroyAssociation(&assoc);
 
             return OFFalse;
         } else {
-            DcmQueryRetrieveOptions::errmsg("Association Request Failed: Peer (%s, %s)",
-                presentationAddress, currentPeerTitle);
-            DimseCondition::dump(cond);
+            DCMQRDB_ERROR("Association Request Failed: Peer (" << presentationAddress << ", "
+                << currentPeerTitle << ")\n" << DimseCondition::dump(temp_str, cond));
             ASC_dropAssociation(assoc);
             ASC_destroyAssociation(&assoc);
 
@@ -697,14 +681,11 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
         }
     }
     /* what has been accepted/refused ? */
-    if (debug) {
-        printf("Association Parameters Negotiated:\n");
-        ASC_dumpParameters(params, COUT);
-    }
+    DCMQRDB_DEBUG("Association Parameters Negotiated:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
 
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
-        DcmQueryRetrieveOptions::errmsg("All Presentation Contexts Refused: Peer (%s, %s)",
-                presentationAddress, currentPeerTitle);
+        DCMQRDB_ERROR("All Presentation Contexts Refused: Peer (" << presentationAddress << ","
+                << currentPeerTitle << ")");
         ASC_abortAssociation(assoc);
         ASC_dropAssociation(assoc);
         ASC_destroyAssociation(&assoc);
@@ -712,10 +693,8 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
         return OFFalse;
     }
 
-    if (verbose) {
-        printf("Association Accepted (Max Send PDV: %lu)\n",
-          assoc->sendPDVLength);
-    }
+    DCMQRDB_INFO("Association Accepted (Max Send PDV: "
+          << assoc->sendPDVLength << ")");
 
     printf("New Association Started (%s,%s)\n", presentationAddress,
         currentPeerTitle);
@@ -766,8 +745,8 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendEcho()
         printf("Complete [Status: %s]\n",
             DU_cstoreStatusString(status));
     } else {
-        DcmQueryRetrieveOptions::errmsg("Failed:");
-        DimseCondition::dump(cond);
+        OFString temp_str;
+        DCMQRDB_ERROR("Failed:\n" << DimseCondition::dump(temp_str, cond));
         ASC_abortAssociation(assoc);
         ASC_dropAssociation(assoc);
         ASC_destroyAssociation(&assoc);
@@ -797,8 +776,8 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_storeImage(char *sopClass, char *sopI
     DIC_IS imageNumber;
 
     if (strlen(sopClass) == 0) {
-        printf("WARNING: CTN has deleted image, giving up (no sopClass): %s\n",
-         (imgFile)?(imgFile):("(nil)"));
+        DCMQRDB_WARN("CTN has deleted image, giving up (no sopClass): "
+                << ((imgFile)?(imgFile):("(nil)")));
         /* give up because if this image is gone, then others are also
          * very likely to have disappeared.  The user should restart
          * the operation when other activities have finished.
@@ -815,8 +794,8 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_storeImage(char *sopClass, char *sopI
     lockfd = open(imgFile, O_RDONLY, 0666);
 #endif
     if (lockfd < 0) {
-        printf("WARNING: CTN has deleted image, giving up (no imgFile): %s\n",
-         (imgFile)?(imgFile):("(nil)"));
+        DCMQRDB_WARN("CTN has deleted image, giving up (no imgFile): "
+                << ((imgFile)?(imgFile):("(nil)")));
         /* give up because if this image is gone, then others are also
          * very likely to have disappeared.  The user should restart
          * the operation when other activities have finished.
@@ -829,8 +808,8 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_storeImage(char *sopClass, char *sopI
     /* which presentation context should be used */
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) {
-        DcmQueryRetrieveOptions::errmsg("No presentation context for: (%s) %s",
-            dcmSOPClassUIDToModality(sopClass), sopClass);
+        DCMQRDB_ERROR("No presentation context for: ("
+            << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass);
         return OFFalse;
     }
 
@@ -868,8 +847,8 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_storeImage(char *sopClass, char *sopI
         printf("[MsgID %d] Complete [Status: %s]\n", msgId,
             DU_cstoreStatusString(rsp.DimseStatus));
     } else {
-        DcmQueryRetrieveOptions::errmsg("[MsgID %d] Failed:", msgId);
-        DimseCondition::dump(cond);
+        OFString temp_str;
+        DCMQRDB_ERROR("[MsgID " << msgId << "] Failed:\n" << DimseCondition::dump(temp_str, cond));
         ASC_abortAssociation(assoc);
         ASC_dropAssociation(assoc);
         ASC_destroyAssociation(&assoc);
@@ -909,22 +888,18 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_remoteFindQuery(TI_DBEntry *db, DcmDa
 
     cbd.cbf = callbackFunction;
     cbd.cbs = callbackData;
-    cbd.verbose = verbose;
 
     /* which presentation context should be used */
     presId = ASC_findAcceptedPresentationContextID(assoc,
         UID_FINDStudyRootQueryRetrieveInformationModel);
     if (presId == 0) {
-        DcmQueryRetrieveOptions::errmsg("No Presentation Context for Find Operation");
+        DCMQRDB_ERROR("No Presentation Context for Find Operation");
         return OFFalse;
     }
 
     msgId =  assoc->nextMsgID++;
 
-    if (verbose) {
-        printf("Sending Find SCU RQ: MsgID %d:\n", msgId);
-        query->print(COUT);
-    }
+    DCMQRDB_INFO("Sending Find SCU RQ: MsgID " << msgId << ":\n" << DcmObject::PrintHelper(*query));
 
     req.MessageID = msgId;
     strcpy(req.AffectedSOPClassUID,
@@ -935,12 +910,11 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_remoteFindQuery(TI_DBEntry *db, DcmDa
       findCallback, &cbd, blockMode_, dimse_timeout_, &rsp, &stDetail);
 
     if (cond.good()) {
-        if (verbose) {
-            DIMSE_printCFindRSP(stdout, &rsp);
-        }
+        OFString temp_str;
+        DCMQRDB_INFO(DIMSE_dumpMessage(temp_str, rsp, DIMSE_INCOMING));
     } else {
-        DcmQueryRetrieveOptions::errmsg("Find Failed:");
-        DimseCondition::dump(cond);
+        OFString temp_str;
+        DCMQRDB_ERROR("Find Failed:\n" << DimseCondition::dump(temp_str, cond));
     }
     if (stDetail != NULL) {
         printf("  Status Detail:\n");
@@ -964,7 +938,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_shortHelp(int /*arg*/ , const char * 
 
 OFBool DcmQueryRetrieveTelnetInitiator::TI_help(int arg, const char * /*cmdbuf*/ )
 {
-    if (verbose) {
+    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_help: arg=%d\n", arg);
     }
     printf("Command Summary:\n");
@@ -993,7 +967,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_title(int arg, const char * /*cmdbuf*
     int port;
     DIC_AE peerTitle;
 
-    if (verbose) {
+    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_title: arg=%d\n", arg);
     }
 
@@ -1045,7 +1019,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachDB(TI_DBEntry *db)
             config.getMaxStudies(db->title),
             config.getMaxBytesPerStudy(db->title), dbcond);
         if (dbcond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("TI_attachDB: cannot create DB Handle");
+            DCMQRDB_ERROR("TI_attachDB: cannot create DB Handle");
             return OFFalse;
         }
     } else {
@@ -1061,7 +1035,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_database(int arg, const char * /*cmdb
     TI_DBEntry *db = NULL;
     OFBool found = OFFalse;
 
-    if (verbose) {
+    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_database: arg=%d\n", arg);
     }
 
@@ -1110,8 +1084,8 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_database(int arg, const char * /*cmdb
 
             if (!TI_attachDB(dbEntries[currentdb]))
             {
-                     DcmQueryRetrieveOptions::errmsg("ERROR: unable to open database, bailing out.\n");
-                     exit(10);
+                DCMQRDB_FATAL("unable to open database, bailing out.\n");
+                exit(10);
             }
         }
     }
@@ -1123,7 +1097,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_echo(int arg, const char * /*cmdbuf*/
 {
     OFBool ok = OFTrue;
 
-    if (verbose) {
+    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_echo: arg=%d\n", arg);
     }
 
@@ -1145,7 +1119,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_echo(int arg, const char * /*cmdbuf*/
 
 OFBool DcmQueryRetrieveTelnetInitiator::TI_quit(int arg, const char * /*cmdbuf*/ )
 {
-    if (verbose) {
+    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_quit: arg=%d\n", arg);
     }
     TI_detachAssociation(OFFalse);
@@ -1181,7 +1155,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_study(int arg, const char * /*cmdbuf*
     TI_StudyEntry *se;
     int i;
 
-    if (verbose) {
+    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_study: arg=%d\n", arg);
     }
 
@@ -1268,7 +1242,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_series(int arg, const char * /*cmdbuf
     TI_SeriesEntry *series;
     int i;
 
-    if (verbose) {
+    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_sseries: arg=%d\n", arg);
     }
 
@@ -1366,7 +1340,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_image(int arg, const char * /*cmdbuf*
     TI_ImageEntry *image;
     int i;
 
-    if (verbose) {
+    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_image: arg=%d\n", arg);
     }
 
@@ -1437,7 +1411,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendStudy(int arg, const char * /*cmd
     char imgFile[MAXPATHLEN+1];
     DIC_US nRemaining = 0;
 
-    if (verbose) {
+    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_sendStudy: arg=%d\n", arg);
     }
 
@@ -1480,7 +1454,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendStudy(int arg, const char * /*cmd
     /* fabricate query */
     query = new DcmDataset;
     if (query == NULL) {
-        DcmQueryRetrieveOptions::errmsg("Help, out of memory");
+        DCMQRDB_ERROR("Help, out of memory");
         return OFFalse;
     }
     DU_putStringDOElement(query, DCM_QueryRetrieveLevel, "STUDY");
@@ -1490,7 +1464,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendStudy(int arg, const char * /*cmd
         UID_MOVEStudyRootQueryRetrieveInformationModel, query, &dbStatus);
     delete query; query = NULL;
     if (dbcond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("TI_sendStudy: cannot query database");
+        DCMQRDB_ERROR("TI_sendStudy: cannot query database");
         return OFFalse;
     }
 
@@ -1498,7 +1472,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendStudy(int arg, const char * /*cmd
         dbcond = db->dbHandle->nextMoveResponse(sopClass, sopInstance,
             imgFile, &nRemaining, &dbStatus);
         if (dbcond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("TI_sendStudy: database error");
+            DCMQRDB_ERROR("TI_sendStudy: database error");
             return OFFalse;
         }
         if (dbStatus.status() == STATUS_Pending) {
@@ -1530,7 +1504,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendSeries(int arg, const char * /*cm
     char imgFile[MAXPATHLEN+1];
     DIC_US nRemaining = 0;
 
-    if (verbose) {
+    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_sendSeries: arg=%d\n", arg);
     }
 
@@ -1561,7 +1535,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendSeries(int arg, const char * /*cm
     /* fabricate query */
     query = new DcmDataset;
     if (query == NULL) {
-        DcmQueryRetrieveOptions::errmsg("Help, out of memory");
+        DCMQRDB_ERROR("Help, out of memory");
         return OFFalse;
     }
     DU_putStringDOElement(query, DCM_QueryRetrieveLevel, "SERIES");
@@ -1573,7 +1547,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendSeries(int arg, const char * /*cm
         UID_MOVEStudyRootQueryRetrieveInformationModel, query, &dbStatus);
     delete query; query = NULL;
     if (dbcond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("TI_sendSeries: cannot query database");
+        DCMQRDB_ERROR("TI_sendSeries: cannot query database");
         return OFFalse;
     }
 
@@ -1581,7 +1555,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendSeries(int arg, const char * /*cm
         dbcond = db->dbHandle->nextMoveResponse(sopClass, sopInstance,
             imgFile, &nRemaining, &dbStatus);
         if (dbcond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("TI_sendSeries: database error");
+            DCMQRDB_ERROR("TI_sendSeries: database error");
             return OFFalse;
         }
         if (dbStatus.status() == STATUS_Pending) {
@@ -1613,7 +1587,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendImage(int arg, const char * /*cmd
     char imgFile[MAXPATHLEN+1];
     DIC_US nRemaining = 0;
 
-    if (verbose) {
+    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_sendImage: arg=%d\n", arg);
     }
 
@@ -1646,7 +1620,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendImage(int arg, const char * /*cmd
     /* fabricate query */
     query = new DcmDataset;
     if (query == NULL) {
-        DcmQueryRetrieveOptions::errmsg("Help, out of memory");
+        DCMQRDB_ERROR("Help, out of memory");
         return OFFalse;
     }
     DU_putStringDOElement(query, DCM_QueryRetrieveLevel, "IMAGE");
@@ -1660,7 +1634,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendImage(int arg, const char * /*cmd
         UID_MOVEStudyRootQueryRetrieveInformationModel, query, &dbStatus);
     delete query; query = NULL;
     if (dbcond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("TI_sendImage: cannot query database");
+        DCMQRDB_ERROR("TI_sendImage: cannot query database");
         return OFFalse;
     }
 
@@ -1673,7 +1647,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendImage(int arg, const char * /*cmd
         dbcond = db->dbHandle->nextMoveResponse(sopClass, sopInstance,
       imgFile, &nRemaining, &dbStatus);
         if (dbcond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("TI_sendImage: database error");
+            DCMQRDB_ERROR("TI_sendImage: database error");
             return OFFalse;
         }
         if (dbStatus.status() == STATUS_Pending) {
@@ -1737,7 +1711,7 @@ void DcmQueryRetrieveTelnetInitiator::TI_userInput()
         printf("%s->%s> ", dbEntries[currentdb]->title,
             currentPeerTitle);
         if (fgets(cmdBuf, 1024, stdin) == NULL) {
-            DcmQueryRetrieveOptions::errmsg("unexpected end of input\n");
+            DCMQRDB_ERROR("unexpected end of input\n");
             return; /* give up */
         }
 
@@ -1786,7 +1760,7 @@ time_t DcmQueryRetrieveTelnetInitiator::TI_dbModifyTime(const char *dbTitle)
     sprintf(path, "%s%c%s", config.getStorageArea(dbTitle), PATH_SEPARATOR, DBINDEXFILE);
 
     if (stat(path, &s) < 0) {
-        DcmQueryRetrieveOptions::errmsg("cannot stat: %s", path);
+        DCMQRDB_ERROR("cannot stat: " << path);
         return 0;
     }
     return s.st_mtime;
@@ -1845,7 +1819,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildStudies(TI_DBEntry *db)
     dbcond = db->dbHandle->startFindRequest(
         UID_FINDStudyRootQueryRetrieveInformationModel, query, &dbStatus);
     if (dbcond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("TI_buildStudies: cannot query database");
+        DCMQRDB_ERROR("TI_buildStudies: cannot query database");
         delete query;
         return OFFalse;
     }
@@ -1855,7 +1829,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildStudies(TI_DBEntry *db)
     while (dbStatus.status() == STATUS_Pending) {
         dbcond = db->dbHandle->nextFindResponse(&reply, &dbStatus);
         if (dbcond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("TI_buildStudies: database error");
+            DCMQRDB_ERROR("TI_buildStudies: database error");
             return OFFalse;
         }
         if (dbStatus.status() == STATUS_Pending) {
@@ -1924,7 +1898,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildSeries(TI_DBEntry *db, TI_StudyE
     dbcond = db->dbHandle->startFindRequest(
         UID_FINDStudyRootQueryRetrieveInformationModel, query, &dbStatus);
     if (dbcond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("TI_buildSeries: cannot query database");
+        DCMQRDB_ERROR("TI_buildSeries: cannot query database");
         delete query; query = NULL;
         return OFFalse;
     }
@@ -1934,7 +1908,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildSeries(TI_DBEntry *db, TI_StudyE
     while (dbStatus.status() == STATUS_Pending) {
         dbcond = db->dbHandle->nextFindResponse(&reply, &dbStatus);
         if (dbcond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("TI_buildSeries: database error");
+            DCMQRDB_ERROR("TI_buildSeries: database error");
             return OFFalse;
         }
         if (dbStatus.status() == STATUS_Pending) {
@@ -2004,7 +1978,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildImages(TI_DBEntry *db, TI_StudyE
     /* get all known images in current series */
     TI_buildImageQuery(&query, study, series);
 
-    if (verbose) {
+    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("QUERY OBJECT:\n");
         query->print(COUT);
     }
@@ -2016,18 +1990,18 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildImages(TI_DBEntry *db, TI_StudyE
         UID_FINDStudyRootQueryRetrieveInformationModel, query, &dbStatus);
     delete query; query = NULL;
     if (dbcond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("TI_buildImages: cannot query database");
+        DCMQRDB_ERROR("TI_buildImages: cannot query database");
         return OFFalse;
     }
 
     while (dbStatus.status() == STATUS_Pending) {
         dbcond = db->dbHandle->nextFindResponse(&reply, &dbStatus);
         if (dbcond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("TI_buildImages: database error");
+            DCMQRDB_ERROR("TI_buildImages: database error");
             return OFFalse;
         }
         if (dbStatus.status() == STATUS_Pending) {
-            if (verbose) {
+            if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
                 printf("REPLY OBJECT:\n");
                 reply->print(COUT);
             }
@@ -2063,7 +2037,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::addPeerName(const char *peerName, const 
 
   if( config.aeTitlesForPeer( peerName, &aeTitles ) <= 0 )
   {
-    DcmQueryRetrieveOptions::errmsg("no AE titles defined (in: %s) for peer: %s", configFileName, peerName);
+    DCMQRDB_ERROR("no AE titles defined (in: " << configFileName << ") for peer: " << peerName);
     return( OFFalse );
   }
 
@@ -2079,18 +2053,20 @@ void DcmQueryRetrieveTelnetInitiator::printConfig()
 {
   int i,j;
 
-  printf("TI Configuration:\n");
-  printf("My AE Title: %s\n", myAETitle );
-  printf("DatabaseTitles    Peer AE Titles\n");
+  DCMQRDB_INFO("TI Configuration:");
+  DCMQRDB_INFO("My AE Title: " << myAETitle);
+  DCMQRDB_INFO("DatabaseTitles    Peer AE Titles");
 
   for( i=0 ; i<dbCount ; i++ )
   {
-    printf("%-18s", dbEntries[i]->title );
+    OFString tmpString = dbEntries[i]->title;
 
-    for( j=0 ; j<dbEntries[i]->peerTitleCount ; j++ )
-      printf("%s ", dbEntries[i]->peerTitles[j] );
+    for( j=0 ; j<dbEntries[i]->peerTitleCount ; j++ ) {
+      tmpString += dbEntries[i]->peerTitles[j];
+      tmpString += ' ';
+    }
 
-    printf("\n");
+    DCMQRDB_INFO(tmpString);
   }
 }
 
@@ -2107,7 +2083,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::findDBPeerTitles(
   peerTitleCount = config.aeTitlesForPeer( peer,&peerTitles );
   if( peerTitleCount <= 0 )
   {
-    DcmQueryRetrieveOptions::errmsg("no AE titles defined (in: %s) for peer: %s", configFileName, peer);
+    DCMQRDB_ERROR("no AE titles defined (in: " << configFileName << ") for peer: " << peer);
     return( OFFalse );
   }
 
@@ -2151,7 +2127,7 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
   for( i=0 ; i<ctnTitleCount ; i++ )
   {
     if( !TI_dbReadable( ctnTitles[i] ) )
-      DcmQueryRetrieveOptions::errmsg("Warning: db does not exist: %s", ctnTitles[i]);
+      DCMQRDB_ERROR("db does not exist: " << ctnTitles[i]);
     else
     {
       dbEntry = (TI_DBEntry*) malloc( sizeof(TI_DBEntry) );
@@ -2209,7 +2185,7 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 
         peerTitleCount = config.aeTitlesForPeer( peerNames[j], &peerTitles );
         if( peerTitleCount <= 0 )
-          DcmQueryRetrieveOptions::errmsg("no AE titles defined (in: %s) for peer: %s", configFileName, peerNames[j]);
+          DCMQRDB_ERROR("no AE titles defined (in: " << configFileName << ") for peer: " << peerNames[j]);
 
         for( k=0 ; k<peerTitleCount ; k++ )
         {
@@ -2234,6 +2210,9 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
+ * Revision 1.12  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.11  2009-08-21 09:54:11  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

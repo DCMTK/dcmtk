@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveGetContext
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:54:11 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,8 +51,13 @@ static void getSubOpProgressCallback(void * callbackData,
     T_DIMSE_StoreProgress *progress,
     T_DIMSE_C_StoreRQ * /*req*/)
 {
-  DcmQueryRetrieveGetContext *context = OFstatic_cast(DcmQueryRetrieveGetContext *, callbackData);
-  if (context->isVerbose())
+  //DcmQueryRetrieveGetContext *context = OFstatic_cast(DcmQueryRetrieveGetContext *, callbackData);
+  // We can't use oflog for the pdu output, but we use a special logger for
+  // generating this output. If it is set to level "INFO" we generate the
+  // output, if it's set to "DEBUG" then we'll assume that there is debug output
+  // generated for each PDU elsewhere.
+  OFLogger progressLogger = OFLog::getLogger("dcmtk.dcmqrdb.progress");
+  if (progressLogger.getChainedLogLevel() == OFLogger::INFO_LOG_LEVEL)
   {
     switch (progress->state)
     {
@@ -70,11 +75,6 @@ static void getSubOpProgressCallback(void * callbackData,
   }
 }
 
-OFBool DcmQueryRetrieveGetContext::isVerbose() const
-{
-  return options_.verbose_ ? OFTrue : OFFalse;
-}
-
 void DcmQueryRetrieveGetContext::callbackHandler(
     /* in */
     OFBool cancelled, T_DIMSE_C_GetRQ *request,
@@ -88,15 +88,12 @@ void DcmQueryRetrieveGetContext::callbackHandler(
 
     if (responseCount == 1) {
         /* start the database search */
-        if (options_.verbose_) {
-            printf("Get SCP Request Identifiers:\n");
-            requestIdentifiers->print(COUT);
-        }
+        DCMQRDB_INFO("Get SCP Request Identifiers:\n" << DcmObject::PrintHelper(*requestIdentifiers));
         dbcond = dbHandle.startMoveRequest(
             request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         if (dbcond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("getSCP: Database: startMoveRequest Failed (%s):",
-                DU_cmoveStatusString(dbStatus.status()));
+            DCMQRDB_ERROR("getSCP: Database: startMoveRequest Failed ("
+                    << DU_cmoveStatusString(dbStatus.status()) << "):");
         }
     }
 
@@ -128,10 +125,8 @@ void DcmQueryRetrieveGetContext::callbackHandler(
         }
     }
 
-    if (options_.verbose_) {
-        printf("Get SCP Response %d [status: %s]\n", responseCount,
-            DU_cmoveStatusString(dbStatus.status()));
-    }
+    DCMQRDB_INFO("Get SCP Response " << responseCount << " [status: "
+            << DU_cmoveStatusString(dbStatus.status()) << "]");
 
     if (dbStatus.status() != STATUS_Success &&
         dbStatus.status() != STATUS_Pending) {
@@ -158,7 +153,7 @@ void DcmQueryRetrieveGetContext::addFailedUIDInstance(const char *sopInstance)
 
     if (failedUIDs == NULL) {
         if ((failedUIDs = (char*)malloc(DIC_UI_LEN+1)) == NULL) {
-            DcmQueryRetrieveOptions::errmsg("malloc failure: addFailedUIDInstance");
+            DCMQRDB_ERROR("malloc failure: addFailedUIDInstance");
             return;
         }
         strcpy(failedUIDs, sopInstance);
@@ -166,7 +161,7 @@ void DcmQueryRetrieveGetContext::addFailedUIDInstance(const char *sopInstance)
         len = strlen(failedUIDs);
         if ((failedUIDs = (char*)realloc(failedUIDs,
             (len+strlen(sopInstance)+2))) == NULL) {
-            DcmQueryRetrieveOptions::errmsg("realloc failure: addFailedUIDInstance");
+            DCMQRDB_ERROR("realloc failure: addFailedUIDInstance");
             return;
         }
         /* tag sopInstance onto end of old with '\' between */
@@ -194,7 +189,7 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
 #endif
     if (lockfd < 0) {
         /* due to quota system the file could have been deleted */
-        DcmQueryRetrieveOptions::errmsg("Get SCP: storeSCU: [file: %s]: %s", fname, strerror(errno));
+        DCMQRDB_ERROR("Get SCP: storeSCU: [file: " << fname << "]: " << strerror(errno));
         nFailed++;
         addFailedUIDInstance(sopInstance);
         return EC_Normal;
@@ -210,8 +205,8 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
     if (presId == 0) {
         nFailed++;
         addFailedUIDInstance(sopInstance);
-        DcmQueryRetrieveOptions::errmsg("Get SCP: storeSCU: [file: %s] No presentation context for: (%s) %s",
-            fname, dcmSOPClassUIDToModality(sopClass), sopClass);
+        DCMQRDB_ERROR("Get SCP: storeSCU: [file: " << fname << "] No presentation context for: ("
+                << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass);
         return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     } else {
         /* make sure that we can send images in this presentation context */
@@ -222,8 +217,8 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
             /* the role is not appropriate */
             nFailed++;
             addFailedUIDInstance(sopInstance);
-            DcmQueryRetrieveOptions::errmsg("Get SCP: storeSCU: [file: %s] No presentation context with requestor SCP role for: (%s) %s",
-                fname, dcmSOPClassUIDToModality(sopClass), sopClass);
+            DCMQRDB_ERROR("Get SCP: storeSCU: [file: " << fname << "] No presentation context with requestor SCP role for: ("
+                << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass);
             return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
         }
     }
@@ -235,10 +230,8 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
     req.Priority = priority;
     req.opts = 0;
 
-    if (options_.verbose_) {
-        printf("Store SCU RQ: MsgID %d, (%s)\n",
-            msgId, dcmSOPClassUIDToModality(sopClass));
-    }
+    DCMQRDB_INFO("Store SCU RQ: MsgID " << msgId << ", ("
+            << dcmSOPClassUIDToModality(sopClass) << ")");
 
     T_DIMSE_DetectedCancelParameters cancelParameters;
 
@@ -258,40 +251,35 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
                 origMsgId == cancelParameters.req.MessageIDBeingRespondedTo) {
                 getCancelled = OFTrue;
             } else {
-                DcmQueryRetrieveOptions::errmsg("Get SCP: Unexpected C-Cancel-RQ encountered: pid=%d, mid=%d",
-                    (int)cancelParameters.presId, (int)cancelParameters.req.MessageIDBeingRespondedTo);
+                DCMQRDB_ERROR("Get SCP: Unexpected C-Cancel-RQ encountered: pid=" << (int)cancelParameters.presId
+                        << ", mid=" << (int)cancelParameters.req.MessageIDBeingRespondedTo);
             }
         }
-        if (options_.verbose_) {
-            printf("Get SCP: Received Store SCU RSP [Status=%s]\n",
-                DU_cstoreStatusString(rsp.DimseStatus));
-        }
+        DCMQRDB_INFO("Get SCP: Received Store SCU RSP [Status="
+                << DU_cstoreStatusString(rsp.DimseStatus) << "]");
         if (rsp.DimseStatus == STATUS_Success) {
             /* everything ok */
             nCompleted++;
         } else if ((rsp.DimseStatus & 0xf000) == 0xb000) {
             /* a warning status message */
             nWarning++;
-            DcmQueryRetrieveOptions::errmsg("Get SCP: Store Warning: Response Status: %s",
+            DCMQRDB_ERROR("Get SCP: Store Warning: Response Status: " <<
                 DU_cstoreStatusString(rsp.DimseStatus));
         } else {
             nFailed++;
             addFailedUIDInstance(sopInstance);
             /* print a status message */
-            DcmQueryRetrieveOptions::errmsg("Get SCP: Store Failed: Response Status: %s",
-                DU_cstoreStatusString(rsp.DimseStatus));
+            DCMQRDB_ERROR("Get SCP: Store Failed: Response Status: "
+                << DU_cstoreStatusString(rsp.DimseStatus));
         }
     } else {
         nFailed++;
         addFailedUIDInstance(sopInstance);
-        DcmQueryRetrieveOptions::errmsg("Get SCP: storeSCU: Store Request Failed:");
-        DimseCondition::dump(cond);
+        OFString temp_str;
+        DCMQRDB_ERROR("Get SCP: storeSCU: Store Request Failed:" << DimseCondition::dump(temp_str, cond));
     }
     if (stDetail) {
-        if (options_.verbose_) {
-            printf("  Status Detail:\n");
-            stDetail->print(COUT);
-        }
+        DCMQRDB_INFO("  Status Detail:\n" << DcmObject::PrintHelper(*stDetail));
         delete stDetail;
     }
     return cond;
@@ -314,8 +302,8 @@ void DcmQueryRetrieveGetContext::getNextImage(DcmQueryRetrieveDatabaseStatus * d
     dbcond = dbHandle.nextMoveResponse(
         subImgSOPClass, subImgSOPInstance, subImgFileName, &nRemaining, dbStatus);
     if (dbcond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("getSCP: Database: nextMoveResponse Failed (%s):",
-            DU_cmoveStatusString(dbStatus->status()));
+        DCMQRDB_ERROR("getSCP: Database: nextMoveResponse Failed ("
+            << DU_cmoveStatusString(dbStatus->status()) << "):");
     }
 
     if (dbStatus->status() == STATUS_Pending) {
@@ -324,14 +312,12 @@ void DcmQueryRetrieveGetContext::getNextImage(DcmQueryRetrieveDatabaseStatus * d
 
         if (getCancelled) {
             dbStatus->setStatus(STATUS_GET_Cancel_SubOperationsTerminatedDueToCancelIndication);
-            if (options_.verbose_) {
-                printf("Get SCP: Received C-Cancel RQ\n");
-            }
+            DCMQRDB_INFO("Get SCP: Received C-Cancel RQ");
        }
 
         if (cond != EC_Normal) {
-            DcmQueryRetrieveOptions::errmsg("getSCP: Get Sub-Op Failed:");
-            DimseCondition::dump(cond);
+            OFString temp_str;
+            DCMQRDB_ERROR("getSCP: Get Sub-Op Failed:" << DimseCondition::dump(temp_str, cond));
             /* clear condition stack */
         }
     }
@@ -345,7 +331,7 @@ void DcmQueryRetrieveGetContext::buildFailedInstanceList(DcmDataset ** rspIds)
         *rspIds = new DcmDataset();
         ok = DU_putStringDOElement(*rspIds, DCM_FailedSOPInstanceUIDList, failedUIDs);
         if (!ok) {
-            DcmQueryRetrieveOptions::errmsg("getSCP: failed to build DCM_FailedSOPInstanceUIDList");
+            DCMQRDB_ERROR("getSCP: failed to build DCM_FailedSOPInstanceUIDList");
         }
         free(failedUIDs);
         failedUIDs = NULL;
@@ -356,6 +342,9 @@ void DcmQueryRetrieveGetContext::buildFailedInstanceList(DcmDataset ** rspIds)
 /*
  * CVS Log
  * $Log: dcmqrcbg.cc,v $
+ * Revision 1.7  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.6  2009-08-21 09:54:11  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveStoreContext
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:53:52 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,12 @@
 
 void DcmQueryRetrieveStoreContext::updateDisplay(T_DIMSE_StoreProgress * progress)
 {
-  if (options_.verbose_)
+  // We can't use oflog for the pdu output, but we use a special logger for
+  // generating this output. If it is set to level "INFO" we generate the
+  // output, if it's set to "DEBUG" then we'll assume that there is debug output
+  // generated for each PDU elsewhere.
+  OFLogger progressLogger = OFLog::getLogger("dcmtk.dcmqrdb.progress");
+  if (progressLogger.getChainedLogLevel() == OFLogger::INFO_LOG_LEVEL)
   {
     switch (progress->state)
     {
@@ -87,9 +92,9 @@ void DcmQueryRetrieveStoreContext::saveImageToDB(
             imageFileName, &dbStatus);
         if (dbcond.bad())
         {
-            DcmQueryRetrieveOptions::errmsg("storeSCP: Database: storeRequest Failed (%s)",
-               DU_cstoreStatusString(dbStatus.status()));
-            DimseCondition::dump(dbcond);
+            OFString temp_str;
+            DCMQRDB_ERROR("storeSCP: Database: storeRequest Failed (" <<
+               DU_cstoreStatusString(dbStatus.status()) << ")\n" << DimseCondition::dump(temp_str, dbcond));
         }
         status = dbStatus.status();
     }
@@ -112,7 +117,7 @@ void DcmQueryRetrieveStoreContext::writeToFile(
 
     if (cond.bad())
     {
-      fprintf(stderr, "storescp: Cannot write image file: %s\n", fname);
+      DCMQRDB_ERROR("storescp: Cannot write image file: " << fname);
       rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
     }
 }
@@ -138,7 +143,7 @@ void DcmQueryRetrieveStoreContext::checkRequestAgainstDataset(
 
     if (!DU_findSOPClassAndInstanceInDataSet(dataSet, sopClass, sopInstance, uidPadding))
     {
-        DcmQueryRetrieveOptions::errmsg("Bad image file: %s", fname);
+        DCMQRDB_ERROR("Bad image file: " << fname);
         rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
     } else if (strcmp(sopClass, req->AffectedSOPClassUID) != 0) {
         rsp->DimseStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
@@ -178,13 +183,11 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
             }
         }
 
-        if (options_.verbose_) {
-            printf("Sending:\n");
-            DIMSE_printCStoreRSP(stdout, rsp);
-        } else if (rsp->DimseStatus != STATUS_Success) {
-            fprintf(stdout, "NOTICE: StoreSCP:\n");
-            DIMSE_printCStoreRSP(stdout, rsp);
-        }
+        OFString str;
+        if (rsp->DimseStatus != STATUS_Success)
+            DCMQRDB_WARN("NOTICE: StoreSCP:\n" << DIMSE_dumpMessage(str, *rsp, DIMSE_OUTGOING));
+        else
+            DCMQRDB_INFO("Sending:\n" << DIMSE_dumpMessage(str, *rsp, DIMSE_OUTGOING));
         status = rsp->DimseStatus;
     }
 }
@@ -193,6 +196,9 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
 /*
  * CVS Log
  * $Log: dcmqrcbs.cc,v $
+ * Revision 1.5  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.4  2009-08-21 09:53:52  joergr
  * Added parameter 'writeMode' to save/write methods which allows for specifying
  * whether to write a dataset or fileformat as well as whether to update the

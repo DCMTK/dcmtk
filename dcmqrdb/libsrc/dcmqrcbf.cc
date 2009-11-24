@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveFindContext
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:54:11 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,15 +56,12 @@ void DcmQueryRetrieveFindContext::callbackHandler(
 
     if (responseCount == 1) {
         /* start the database search */
-        if (options_.verbose_) {
-            printf("Find SCP Request Identifiers:\n");
-            requestIdentifiers->print(COUT);
-        }
+        DCMQRDB_INFO("Find SCP Request Identifiers:\n" << DcmObject::PrintHelper(*requestIdentifiers));
         dbcond = dbHandle.startFindRequest(
             request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         if (dbcond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("findSCP: Database: startFindRequest Failed (%s):",
-                DU_cfindStatusString(dbStatus.status()));
+            DCMQRDB_ERROR("findSCP: Database: startFindRequest Failed ("
+                    << DU_cfindStatusString(dbStatus.status()) << "):");
         }
     }
 
@@ -76,8 +73,8 @@ void DcmQueryRetrieveFindContext::callbackHandler(
     if (DICOM_PENDING_STATUS(dbStatus.status())) {
         dbcond = dbHandle.nextFindResponse(responseIdentifiers, &dbStatus);
         if (dbcond.bad()) {
-             DcmQueryRetrieveOptions::errmsg("findSCP: Database: nextFindResponse Failed (%s):",
-             DU_cfindStatusString(dbStatus.status()));
+             DCMQRDB_ERROR("findSCP: Database: nextFindResponse Failed ("
+                     << DU_cfindStatusString(dbStatus.status()) << "):");
         }
     }
 
@@ -85,7 +82,7 @@ void DcmQueryRetrieveFindContext::callbackHandler(
     {
 
         if (! DU_putStringDOElement(*responseIdentifiers, DCM_RetrieveAETitle, ourAETitle.c_str())) {
-            DcmQueryRetrieveOptions::errmsg("DO Error: adding Retrieve AE Title");
+            DCMQRDB_ERROR("DO: adding Retrieve AE Title");
         }
     }
 
@@ -93,27 +90,23 @@ void DcmQueryRetrieveFindContext::callbackHandler(
     response->DimseStatus = dbStatus.status();
     *stDetail = dbStatus.extractStatusDetail();
 
-    if (options_.verbose_) {
-        printf("Find SCP Response %d [status: %s]\n", responseCount,
-            DU_cfindStatusString(dbStatus.status()));
-    }
-    if (options_.verbose_ > 1) {
-        DIMSE_printCFindRSP(stdout, response);
-        if (DICOM_PENDING_STATUS(dbStatus.status()) && (*responseIdentifiers != NULL)) {
-            printf("Find SCP Response Identifiers:\n");
-            (*responseIdentifiers)->print(COUT);
-        }
-        if (*stDetail) {
-            printf("Status detail:\n");
-            (*stDetail)->print(COUT);
-        }
-    }
+    OFString str;
+    DCMQRDB_INFO("Find SCP Response " << responseCount << " [status: "
+            << DU_cfindStatusString(dbStatus.status()) << "]");
+    DCMQRDB_DEBUG(DIMSE_dumpMessage(str, *response, DIMSE_OUTGOING));
+    if (DICOM_PENDING_STATUS(dbStatus.status()) && (*responseIdentifiers != NULL))
+        DCMQRDB_DEBUG("Find SCP Response Identifiers:\n" << DcmObject::PrintHelper(**responseIdentifiers));
+    if (*stDetail)
+        DCMQRDB_DEBUG("Status detail:\n" << DcmObject::PrintHelper(**stDetail));
 }
 
 
 /*
  * CVS Log
  * $Log: dcmqrcbf.cc,v $
+ * Revision 1.4  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.3  2009-08-21 09:54:11  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: This test program registers image files in the image database.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-04 14:38:02 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:41 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,24 +37,25 @@
 #define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
-#include "dcmtk/dcmnet/dicom.h"
-#include "dcmtk/dcmqrdb/dcmqrdbs.h"
-#include "dcmtk/dcmqrdb/dcmqrdbi.h"
-#include "dcmtk/dcmnet/diutil.h"
-#include "dcmtk/dcmdata/dcdebug.h"
-#include "dcmtk/dcmnet/dcompat.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofcmdln.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
-#include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/ofstd/ofcmdln.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/dul.h"
+#include "dcmtk/dcmnet/dcompat.h"
+#include "dcmtk/dcmqrdb/dcmqrdbs.h"
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmqridx"
+
+static OFLogger dcmqridxLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -77,12 +78,8 @@ int main (int argc, char *argv[])
     DcmQueryRetrieveDatabaseStatus status;
 
     const char *opt_storageArea = NULL;
-    OFBool opt_debug = OFFalse;
-    OFBool opt_verbose = OFFalse;
     OFBool opt_print = OFFalse;
     OFBool opt_isNewFlag = OFTrue;
-
-    SetDebugLevel(( 0 ));
 
 #ifdef WITH_TCPWRAPPER
     // this code makes sure that the linker cannot optimize away
@@ -102,9 +99,7 @@ int main (int argc, char *argv[])
     cmd.addGroup("options:", LONGCOL, SHORTCOL);
      cmd.addOption("--help",      "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--arguments",       "print expanded command line arguments");
-     cmd.addOption("--verbose",   "-v", "verbose mode, print processing details");
-     cmd.addOption("--debug",     "-d", "debug mode, print debug information");
+     OFLog::addOptions(cmd);
      cmd.addOption("--print",     "-p", "list contents of database index file");
      cmd.addOption("--not-new",   "-n", "set instance reviewed status to 'not new'");
 
@@ -118,10 +113,6 @@ int main (int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-        /* check whether to print the command line arguments */
-        if (cmd.findOption("--arguments"))
-            app.printArguments();
-
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
@@ -147,14 +138,8 @@ int main (int argc, char *argv[])
         /* command line parameters and options */
         cmd.getParam(1, opt_storageArea);
 
-        if (cmd.findOption("--verbose"))
-            opt_verbose = OFTrue;
-        if (cmd.findOption("--debug"))
-        {
-            opt_debug = OFTrue;
-            SetDebugLevel(3);
-            app.printIdentifier();
-        }
+        OFLog::configureFromCommandLine(cmd, app);
+
         if (cmd.findOption("--print"))
             opt_print = OFTrue;
 
@@ -162,15 +147,17 @@ int main (int argc, char *argv[])
             opt_isNewFlag = OFFalse;
     }
 
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmqridxLogger, rcsid << OFendl);
+
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-        fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n", DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(dcmqridxLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
 
     OFCondition cond;
     DcmQueryRetrieveIndexDatabaseHandle hdl(opt_storageArea, DB_UpperMaxStudies, DB_UpperMaxBytesPerStudy, cond);
     if (cond.good())
     {
-        hdl.setDebugLevel(opt_debug ? 3 : 0);
         hdl.enableQuotaSystem(OFFalse); /* disable deletion of images */
         int paramCount = cmd.getParamCount();
         for (int param = 2; param <= paramCount; param++)
@@ -178,29 +165,25 @@ int main (int argc, char *argv[])
             const char *opt_imageFile = NULL;
             cmd.getParam(param, opt_imageFile);
             if (access(opt_imageFile, R_OK) < 0)
-                fprintf(stderr, "cannot access: %s\n", opt_imageFile);
+                OFLOG_ERROR(dcmqridxLogger, "cannot access: " << opt_imageFile);
             else
             {
-                if (opt_verbose)
-                    printf("registering: %s\n", opt_imageFile);
+                OFLOG_INFO(dcmqridxLogger, "registering: " << opt_imageFile);
                 if (DU_findSOPClassAndInstanceInFile(opt_imageFile, sclass, sinst))
                 {
 #ifdef DEBUG
-                    if (hdl.getDebugLevel() > 0)
-                    {
-                        /*** Test what filename is recommended by DB_Module **/
-                        hdl.makeNewStoreFileName (sclass, sinst, fname) ;
-                        printf("DB_Module recommends %s for filename\n", fname) ;
-                    }
+                    /*** Test what filename is recommended by DB_Module **/
+                    hdl.makeNewStoreFileName (sclass, sinst, fname) ;
+                    OFLOG_DEBUG(dcmqridxLogger, "DB_Module recommends " << fname << " for filename");
 #endif
                     hdl.storeRequest(sclass, sinst, opt_imageFile, &status, opt_isNewFlag) ;
                 } else
-                    fprintf(stderr, "%s: cannot load dicom file: %s\n", OFFIS_CONSOLE_APPLICATION, opt_imageFile);
+                    OFLOG_ERROR(dcmqridxLogger, OFFIS_CONSOLE_APPLICATION << ": cannot load dicom file: " << opt_imageFile);
             }
         }
         if (opt_print)
         {
-            printf("-- DB Index File --\n");
+            OFLOG_WARN(dcmqridxLogger, "-- DB Index File --");
             hdl.printIndexFile((char *)opt_storageArea);
         }
         return 0;
@@ -213,6 +196,9 @@ int main (int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqridx.cc,v $
+ * Revision 1.12  2009-11-24 10:10:41  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.11  2009-09-04 14:38:02  joergr
  * Output all --version information to COUT (and not to CERR).
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2006, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: classes DcmQueryRetrieveProcessSlot, DcmQueryRetrieveProcessTable
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:54:11 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmqrdb/dcmqrptb.h"
+#include "dcmtk/dcmqrdb/dcmqropt.h"
 
 /** helper class that describes entries in the process slot table. Internal use only.
  */
@@ -186,7 +187,7 @@ OFBool DcmQueryRetrieveProcessTable::haveProcessWithWriteAccess(const char *call
 }
 
 
-void DcmQueryRetrieveProcessTable::cleanChildren(OFBool verbose)
+void DcmQueryRetrieveProcessTable::cleanChildren()
 {
 #if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)
 
@@ -218,18 +219,13 @@ void DcmQueryRetrieveProcessTable::cleanChildren(OFBool verbose)
           }
           else if (errno != 0)
           {
-            ofConsole.lockCerr() << "error: wait for child process failed: " << strerror(errno) << OFendl;
-            ofConsole.unlockCerr();
+            DCMQRDB_ERROR("wait for child process failed: " << strerror(errno));
           }
       }
       else if (child > 0)
       {
-          if (verbose)
-          {
-            time_t t = time(NULL);
-            ofConsole.lockCerr() << "Cleaned up after child (" << child << ") " << ctime(&t) << OFendl;
-            ofConsole.unlockCerr();
-          }
+          time_t t = time(NULL);
+          DCMQRDB_INFO("Cleaned up after child (" << child << ") " << ctime(&t));
 
           /* Remove Entry from Process Table */
           removeProcessFromTable(child);
@@ -244,6 +240,9 @@ void DcmQueryRetrieveProcessTable::cleanChildren(OFBool verbose)
 /*
  * CVS Log
  * $Log: dcmqrptb.cc,v $
+ * Revision 1.7  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.6  2009-08-21 09:54:11  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

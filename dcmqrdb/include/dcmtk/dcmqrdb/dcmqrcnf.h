@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:50:07 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,16 @@
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofcmdln.h"
+#include "dcmtk/oflog/oflog.h"
+
+OFLogger DCM_dcmqrdbGetLogger();
+
+#define DCMQRDB_TRACE(msg) OFLOG_TRACE(DCM_dcmqrdbGetLogger(), msg)
+#define DCMQRDB_DEBUG(msg) OFLOG_DEBUG(DCM_dcmqrdbGetLogger(), msg)
+#define DCMQRDB_INFO(msg)  OFLOG_INFO(DCM_dcmqrdbGetLogger(), msg)
+#define DCMQRDB_WARN(msg)  OFLOG_WARN(DCM_dcmqrdbGetLogger(), msg)
+#define DCMQRDB_ERROR(msg) OFLOG_ERROR(DCM_dcmqrdbGetLogger(), msg)
+#define DCMQRDB_FATAL(msg) OFLOG_FATAL(DCM_dcmqrdbGetLogger(), msg)
 
 /** this class describes configuration settings for the quota of a storage area
  */
@@ -472,6 +482,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcnf.h,v $
+ * Revision 1.5  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.4  2009-08-21 09:50:07  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

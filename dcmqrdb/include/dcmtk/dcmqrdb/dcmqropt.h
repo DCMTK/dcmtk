@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveOptions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:50:07 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,9 +58,6 @@ public:
   /// destructor
   ~DcmQueryRetrieveOptions();
 
-  /// helper function for error messages to stderr
-  static void errmsg(const char* msg, ...);
-
   // these member variables should be private but are public for now
 
   /// enable negotiation of private shutdown SOP class
@@ -71,9 +68,6 @@ public:
 
   /// silently correct space-padded UIDs
   OFBool            correctUIDPadding_;
-
-  /// debug mode
-  OFBool            debug_;
 
   /// enable/disable C-GET support
   OFBool            disableGetSupport_;
@@ -157,9 +151,6 @@ public:
    */
   OFBool            keepDBHandleDuringAssociation_;
 
-  /// verbose mode
-  int               verbose_;
-
   /// transfer syntax for writing
   E_TransferSyntax  writeTransferSyntax_;
 
@@ -180,6 +171,9 @@ public:
 /*
  * CVS Log
  * $Log: dcmqropt.h,v $
+ * Revision 1.7  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.6  2009-08-21 09:50:07  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

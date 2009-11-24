@@ -22,8 +22,8 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 12:17:30 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2009-11-24 10:10:41 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,6 @@ END_EXTERN_C
 #include "dcmtk/dcmqrdb/dcmqrcnf.h"
 #include "dcmtk/dcmqrdb/dcmqrsrv.h"
 #include "dcmtk/dcmdata/dcdict.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcostrmz.h"    /* for dcmZlibCompressionLevel */
@@ -100,6 +99,8 @@ END_EXTERN_C
 #define OFFIS_CONSOLE_APPLICATION "dcmqrscp"
 #endif
 
+static OFLogger dcmqrscpLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
@@ -109,17 +110,6 @@ const char *opt_configFileName = DEFAULT_CONFIGURATION_DIR "dcmqrscp.cfg";
 OFBool      opt_checkFindIdentifier = OFFalse;
 OFBool      opt_checkMoveIdentifier = OFFalse;
 OFCmdUnsignedInt opt_port = 0;
-
-void errmsg(const char* msg, ...)
-{
-  va_list args;
-
-  fprintf(stderr, "%s: ", OFFIS_CONSOLE_APPLICATION);
-  va_start(args, msg);
-  vfprintf(stderr, msg, args);
-  va_end(args);
-  fprintf(stderr, "\n");
-}
 
 #define SHORTCOL 4
 #define LONGCOL 22
@@ -146,6 +136,7 @@ main(int argc, char *argv[])
 #endif
 
   char tempstr[20];
+  OFString temp_str;
 #ifdef HAVE_FORK
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)", rcsid);
 #else
@@ -161,10 +152,8 @@ main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                     "-h",        "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--version",                               "print version information and exit", OFCommandLine::AF_Exclusive);
-    cmd.addOption("--arguments",                             "print expanded command line arguments");
-    cmd.addOption("--verbose",                  "-v",        "verbose mode, print processing details");
-    cmd.addOption("--very-verbose",             "-vv",       "print more processing details");
-    cmd.addOption("--debug",                    "-d",        "debug mode, print debug information");
+    OFLog::addOptions(cmd);
+
     if (strlen(opt_configFileName) > 16)
     {
         OFString opt5 = "use specific configuration file\n(default: ";
@@ -315,10 +304,6 @@ main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -344,13 +329,8 @@ main(int argc, char *argv[])
       /* command line parameters and options */
       if (cmd.getParamCount() > 0) app.checkParam(cmd.getParamAndCheckMinMax(1, overridePort, 1, 65535));
 
-      if (cmd.findOption("--verbose")) options.verbose_ = 1;
-      if (cmd.findOption("--very-verbose")) options.verbose_ = 2;
-      if (cmd.findOption("--debug"))
-      {
-        options.debug_ = OFTrue;
-        SetDebugLevel(3);
-      }
+      OFLog::configureFromCommandLine(cmd, app);
+
       if (cmd.findOption("--config")) app.checkValue(cmd.getValue(opt_configFileName));
 #ifdef HAVE_FORK
       cmd.beginOptionBlock();
@@ -630,19 +610,19 @@ main(int argc, char *argv[])
 #endif
     }
 
-    if (options.debug_)
-      app.printIdentifier();
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmqrscpLogger, rcsid << OFendl);
 
     /* read config file */
     if (access(opt_configFileName, R_OK) < 0) {
-      errmsg("cannot access %s: %s", opt_configFileName, strerror(errno));
+      OFLOG_FATAL(dcmqrscpLogger, "cannot access " << opt_configFileName << ": " << strerror(errno));
       return 10;
     }
 
     DcmQueryRetrieveConfig config;
 
     if (!config.init(opt_configFileName)) {
-      errmsg("bad config file: %s", opt_configFileName);
+      OFLOG_FATAL(dcmqrscpLogger, "bad config file: " << opt_configFileName);
       return 10;
     }
     options.maxAssociations_ = config.getMaxAssociations();
@@ -655,21 +635,22 @@ main(int argc, char *argv[])
     if (options.maxPDU_ == 0) options.maxPDU_ = ASC_DEFAULTMAXPDU; /* not set, use default */
     if (options.maxPDU_ < ASC_MINIMUMPDUSIZE || options.maxPDU_ > ASC_MAXIMUMPDUSIZE)
     {
-      app.printError("invalid MaxPDUSize in config file");
+      OFLOG_FATAL(dcmqrscpLogger, "invalid MaxPDUSize in config file");
+      return 10;
     }
     if (overrideMaxPDU > 0) options.maxPDU_ = overrideMaxPDU;
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-      fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-        DCM_DICT_ENVIRONMENT_VARIABLE);
+      OFLOG_WARN(dcmqrscpLogger, "no data dictionary loaded, check environment variable: "
+        << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
 #ifdef HAVE_GETEUID
     /* if port is privileged we must be as well */
     if (opt_port < 1024) {
       if (geteuid() != 0) {
-        errmsg("cannot listen on port %d, insufficient privileges", (int)opt_port);
+        OFLOG_FATAL(dcmqrscpLogger, "cannot listen on port " << opt_port << ", insufficient privileges");
         return 10;
       }
     }
@@ -677,8 +658,7 @@ main(int argc, char *argv[])
 
     cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, options.acse_timeout_, &options.net_);
     if (cond.bad()) {
-      errmsg("Error initialising network:");
-      DimseCondition::dump(cond);
+      OFLOG_FATAL(dcmqrscpLogger, "Error initialising network:" << DimseCondition::dump(temp_str, cond));
       return 10;
     }
 
@@ -701,12 +681,12 @@ main(int argc, char *argv[])
      {
        if (!(grp = getgrnam(opt_GroupName)))
        {
-         errmsg("Bad group name %s", opt_GroupName);
+         OFLOG_FATAL(dcmqrscpLogger, "Bad group name " << opt_GroupName);
          return 10;
        }
        if (setgid(grp->gr_gid) == -1)
        {
-         errmsg("setgid: Unable to set group id to group %u", (unsigned)grp->gr_gid);
+         OFLOG_FATAL(dcmqrscpLogger, "setgid: Unable to set group id to group " << (unsigned)grp->gr_gid);
          return 10;
        }
      }
@@ -714,12 +694,12 @@ main(int argc, char *argv[])
      {
        if (!(pwd = getpwnam(opt_UserName)))
        {
-         errmsg("Bad user name %s\n", opt_UserName);
+         OFLOG_FATAL(dcmqrscpLogger, "Bad user name " << opt_UserName);
          return 10;
        }
        if (setuid(pwd->pw_uid) == -1)
        {
-         errmsg("setuid: Unable to set user id to user %u", (unsigned)pwd->pw_uid);
+         OFLOG_FATAL(dcmqrscpLogger, "setuid: Unable to set user id to user " << (unsigned)pwd->pw_uid);
          return 10;
        }
      }
@@ -734,19 +714,18 @@ main(int argc, char *argv[])
 #endif
 
     DcmQueryRetrieveSCP scp(config, options, factory);
-    scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier, options.debug_);
+    scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier);
 
     /* loop waiting for associations */
     while (cond.good())
     {
       cond = scp.waitForAssociation(options.net_);
-      if (!options.singleProcess_) scp.cleanChildren(options.verbose_ ? OFTrue : OFFalse);  /* clean up any child processes */
+      if (!options.singleProcess_) scp.cleanChildren();  /* clean up any child processes */
     }
 
     cond = ASC_dropNetwork(&options.net_);
     if (cond.bad()) {
-      errmsg("Error dropping network:");
-      DimseCondition::dump(cond);
+      OFLOG_FATAL(dcmqrscpLogger, "Error dropping network:" << DimseCondition::dump(temp_str, cond));
       return 10;
     }
 
@@ -761,6 +740,9 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
+ * Revision 1.20  2009-11-24 10:10:41  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.19  2009-11-18 12:17:30  uli
  * Fix compiler errors due to removal of DUL_Debug() and DIMSE_Debug().
  *

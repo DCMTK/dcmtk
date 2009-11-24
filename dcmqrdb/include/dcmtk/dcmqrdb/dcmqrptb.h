@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveProcessTable
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:50:07 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,9 +81,8 @@ public:
   /** check if child processes have terminated and, if yes, remove
    *  them from the process table.  This method should be called
    *  regularly.
-   *  @param verbose if true, diagnostic output is printed to the console
    */
-  void cleanChildren(OFBool verbose = OFFalse);
+  void cleanChildren();
 
   /** check if we have a child process that has write access to the
    *  given aetitle. Used to enforce an ad-hoc rule that allows only
@@ -109,6 +108,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrptb.h,v $
+ * Revision 1.4  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.3  2009-08-21 09:50:07  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

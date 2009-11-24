@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:50:07 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,9 +104,6 @@ public:
         /* out */
         T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
         DcmDataset **responseIdentifiers);
-
-    /// check whether verbose mode is enabled
-    OFBool isVerbose() const;
 
     /** set the AEtitle under which this application operates
      *  @param ae AEtitle, is copied into this object.
@@ -191,6 +188,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcbm.h,v $
+ * Revision 1.7  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.6  2009-08-21 09:50:07  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

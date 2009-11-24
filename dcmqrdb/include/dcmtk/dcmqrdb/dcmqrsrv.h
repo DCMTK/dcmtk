@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveSCP
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:50:07 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,17 +91,14 @@ public:
   /** set database flags
    *  @param dbCheckFindIdentifier flag indicating that a check should be performed for C-FIND requests
    *  @param dbCheckMoveIdentifier flag indicating that a check should be performed for C-MOVE requests
-   *  @param dbDebug database debug mode
    */
   void setDatabaseFlags(
     OFBool dbCheckFindIdentifier,
-    OFBool dbCheckMoveIdentifier,
-    OFBool dbDebug);
+    OFBool dbCheckMoveIdentifier);
 
   /** clean up terminated child processes.
-   *  @param verbose verbose mode flag
    */
-  void cleanChildren(OFBool verbose = OFFalse);
+  void cleanChildren();
 
 private:
 
@@ -167,9 +164,6 @@ private:
   /// flag for database interface: check C-MOVE identifier
   OFBool dbCheckMoveIdentifier_;
 
-  /// flag for database interface: debug mode
-  OFBool dbDebug_;
-
   /// factory object used to create database handles
   const DcmQueryRetrieveDatabaseHandleFactory& factory_;
 
@@ -182,6 +176,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrsrv.h,v $
+ * Revision 1.3  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.2  2009-08-21 09:50:07  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

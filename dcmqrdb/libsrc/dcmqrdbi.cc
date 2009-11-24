@@ -21,9 +21,9 @@
  *
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:54:11 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,7 +144,7 @@ static void DB_UIDAddFound (
 
     plist = (DB_UidList *) malloc (sizeof (DB_UidList)) ;
     if (plist == NULL) {
-        CERR << "DB_UIDAddFound: out of memory" << OFendl;
+        DCMQRDB_ERROR("DB_UIDAddFound: out of memory");
         return;
     }
     plist->next = phandle->uidList ;
@@ -395,35 +395,33 @@ static long DB_lseek(int fildes, long offset, int whence)
     ** we should not be seeking to an offset < 0
     */
     if (offset < 0) {
-        CERR << "*** DB ALERT: attempt to seek before begining of file" << OFendl;
+        DCMQRDB_ERROR("*** DB ALERT: attempt to seek before begining of file");
     }
 
     /* get the current position */
     curpos = lseek(fildes, 0, SEEK_CUR);
     if (curpos < 0) {
-        CERR << "DB_lseek: cannot get current position: " << strerror(errno) << OFendl;
+        DCMQRDB_ERROR("DB_lseek: cannot get current position: " << strerror(errno));
         return curpos;
     }
     /* get the end of file position */
     endpos = lseek(fildes, 0, SEEK_END);
     if (endpos < 0) {
-        CERR << "DB_lseek: cannot get end of file position: " << strerror(errno) << OFendl;
+        DCMQRDB_ERROR("DB_lseek: cannot get end of file position: " << strerror(errno));
         return endpos;
     }
 
     /* return to current position */
     curpos = lseek(fildes, curpos, SEEK_SET);
     if (curpos < 0) {
-        CERR << "DB_lseek: cannot reset current position: " << strerror(errno) << OFendl;
+        DCMQRDB_ERROR("DB_lseek: cannot reset current position: " << strerror(errno));
         return curpos;
     }
 
     /* do the requested seek */
     pos = lseek(fildes, offset, whence);
     if (pos < 0) {
-        char msg[1024];
-        sprintf(msg, "DB_lseek: cannot seek to %ld", offset);
-        CERR << msg << ": " << strerror(errno) << OFendl;
+        DCMQRDB_ERROR("DB_lseek: cannot seek to " << offset << ": " << strerror(errno));
         return pos;
     }
 
@@ -434,15 +432,15 @@ static long DB_lseek(int fildes, long offset, int whence)
     */
     const long maxFileSize = 33554432;
     if (pos > maxFileSize) {
-        CERR << "*** DB ALERT: attempt to seek beyond " << maxFileSize << " bytes" << OFendl;
+        DCMQRDB_ERROR("*** DB ALERT: attempt to seek beyond " << maxFileSize << " bytes");
     }
 
     /* print an alert if we are seeking beyond the end of file.
      * ignore when file is empty
      */
     if ((endpos > 0) && (pos > endpos)) {
-        CERR << "*** DB ALERT: attempt to seek beyond end of file" << OFendl
-            << "              offset=" << offset << " filesize=" << endpos << OFendl;
+        DCMQRDB_ERROR("*** DB ALERT: attempt to seek beyond end of file" << OFendl
+                   << "              offset=" << offset << " filesize=" << endpos);
     }
 
     return pos;
@@ -939,16 +937,16 @@ static void DB_DuplicateElement (DB_SmallDcmElmt *src, DB_SmallDcmElmt *dst)
     dst -> ValueLength = src -> ValueLength;
 
     if (src -> ValueLength == 0)
-    dst -> PValueField = NULL;
+        dst -> PValueField = NULL;
     else {
-    dst -> PValueField = (char *)malloc ((int) src -> ValueLength+1);
-    bzero(dst->PValueField, (size_t)(src->ValueLength+1));
-    if (dst->PValueField != NULL) {
-        memcpy (dst -> PValueField,  src -> PValueField,
-            (size_t) src -> ValueLength);
-    } else {
-        CERR << "DB_DuplicateElement: out of memory" << OFendl;
-    }
+        dst -> PValueField = (char *)malloc ((int) src -> ValueLength+1);
+        bzero(dst->PValueField, (size_t)(src->ValueLength+1));
+        if (dst->PValueField != NULL) {
+            memcpy (dst -> PValueField,  src -> PValueField,
+                (size_t) src -> ValueLength);
+        } else {
+            DCMQRDB_ERROR("DB_DuplicateElement: out of memory");
+        }
     }
 }
 
@@ -1331,7 +1329,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
 
         plist = (DB_ElementList *) malloc (sizeof (DB_ElementList)) ;
         if (plist == NULL) {
-            CERR << "makeResponseList: out of memory" << OFendl;
+            DCMQRDB_ERROR("makeResponseList: out of memory");
             return;
         }
         plist->next = NULL ;
@@ -1372,12 +1370,12 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
     ***/
 
     if (queryLevel < infLevel) {
-        dbdebug(1,"Level incompatible with Information Model (level %d)\n", queryLevel) ;
+        DCMQRDB_INFO("Level incompatible with Information Model (level " << queryLevel << ")");
         return DcmQRIndexDatabaseError ;
     }
 
     if (queryLevel > lowestLevel) {
-        dbdebug(1,"Level incompatible with Information Model (level %d)\n", queryLevel) ;
+        DCMQRDB_DEBUG("Level incompatible with Information Model (level " << queryLevel << ")");
         return DcmQRIndexDatabaseError ;
     }
 
@@ -1401,7 +1399,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
                 atLeastOneKeyFound = OFTrue ;
             }
             if (atLeastOneKeyFound && (queryLevel != STUDY_LEVEL)) {
-                dbdebug(1,"Key found in Study Root Information Model (level %d)\n", level) ;
+                DCMQRDB_DEBUG("Key found in Study Root Information Model (level " << level << ")");
                 return DcmQRIndexDatabaseError ;
             }
         }
@@ -1424,11 +1422,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
                     continue ;
                 DB_GetTagKeyAttr (plist->elem. XTag, &XTagType) ;
                 if (XTagType != UNIQUE_KEY) {
-                    dbdebug(1,"Non Unique Key found (level %d)\n", level) ;
+                    DCMQRDB_DEBUG("Non Unique Key found (level " << level << ")");
                     return DcmQRIndexDatabaseError ;
                 }
                 else if (uniqueKeyFound) {
-                    dbdebug(1,"More than one Unique Key found (level %d)\n", level) ;
+                    DCMQRDB_DEBUG("More than one Unique Key found (level " << level << ")");
                     return DcmQRIndexDatabaseError ;
                 }
                 else
@@ -1455,7 +1453,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
                 atLeastOneKeyFound = OFTrue ;
             }
             if (! atLeastOneKeyFound) {
-                dbdebug(1,"No Key found at query level (level %d)\n", level) ;
+                DCMQRDB_DEBUG("No Key found at query level (level " << level << ")");
                 return DcmQRIndexDatabaseError ;
             }
         }
@@ -1479,7 +1477,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
                 atLeastOneKeyFound = OFTrue ;
             }
             if (atLeastOneKeyFound) {
-                dbdebug(1,"Key found beyond query level (level %d)\n", level) ;
+                DCMQRDB_DEBUG("Key found beyond query level (level " << level << ")");
                 return DcmQRIndexDatabaseError ;
             }
         }
@@ -1528,7 +1526,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
 
         if (plist == NULL) {
             *match = OFFalse ;
-            CERR << "hierarchicalCompare : No UID Key found at level " << (int) level << OFendl;
+            DCMQRDB_WARN("hierarchicalCompare : No UID Key found at level " << (int) level);
             return DcmQRIndexDatabaseError ;
         }
 
@@ -1710,7 +1708,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
                     if (elem. PValueField)
                         free (elem. PValueField) ;
 #ifdef DEBUG
-                    dbdebug(1, "DB_startFindRequest () : Illegal query level (%s)\n", level) ;
+                    DCMQRDB_DEBUG("DB_startFindRequest () : Illegal query level (" << level << ")");
 #endif
                     status->setStatus(STATUS_FIND_Failed_UnableToProcess);
                     return (DcmQRIndexDatabaseError) ;
@@ -1747,7 +1745,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     if (!qrLevelFound) {
         /* The Query/Retrieve Level is missing */
         status->setStatus(STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass);
-        CERR << "DB_startFindRequest(): missing Query/Retrieve Level" << OFendl;
+        DCMQRDB_WARN("DB_startFindRequest(): missing Query/Retrieve Level");
         handle_->idxCounter = -1 ;
         DB_FreeElementList (handle_->findRequestList) ;
         handle_->findRequestList = NULL ;
@@ -1780,7 +1778,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
             DB_FreeElementList (handle_->findRequestList) ;
             handle_->findRequestList = NULL ;
 #ifdef DEBUG
-            dbdebug(1, "DB_startFindRequest () : STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass - Invalid RequestList\n") ;
+            DCMQRDB_DEBUG("DB_startFindRequest () : STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass - Invalid RequestList");
 #endif
             status->setStatus(STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass);
             return (cond) ;
@@ -1824,7 +1822,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
         DB_FreeElementList (handle_->findRequestList) ;
         handle_->findRequestList = NULL ;
 #ifdef DEBUG
-        dbdebug(1, "DB_startFindRequest () : STATUS_FIND_Failed_UnableToProcess\n") ;
+        DCMQRDB_DEBUG("DB_startFindRequest () : STATUS_FIND_Failed_UnableToProcess");
 #endif
         status->setStatus(STATUS_FIND_Failed_UnableToProcess);
 
@@ -1844,7 +1842,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
         DB_UIDAddFound (handle_, &idxRec) ;
         makeResponseList (handle_, &idxRec) ;
 #ifdef DEBUG
-        dbdebug(1, "DB_startFindRequest () : STATUS_Pending\n") ;
+        DCMQRDB_DEBUG("DB_startFindRequest () : STATUS_Pending");
 #endif
         status->setStatus(STATUS_Pending);
         return (EC_Normal) ;
@@ -1860,7 +1858,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
         DB_FreeElementList (handle_->findRequestList) ;
         handle_->findRequestList = NULL ;
 #ifdef DEBUG
-        dbdebug(1, "DB_startFindRequest () : STATUS_Success\n") ;
+        DCMQRDB_DEBUG("DB_startFindRequest () : STATUS_Success");
 #endif
         status->setStatus(STATUS_Success);
 
@@ -1889,7 +1887,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
 
     if (handle_->findResponseList == NULL) {
 #ifdef DEBUG
-        dbdebug(1, "DB_nextFindResponse () : STATUS_Success\n") ;
+        DCMQRDB_DEBUG("DB_nextFindResponse () : STATUS_Success");
 #endif
         *findResponseIdentifiers = NULL ;
         status->setStatus(STATUS_Success);
@@ -1920,14 +1918,14 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
                 strlen(plist->elem.PValueField) > 0) {
                 OFCondition ec = dce->putString(plist->elem.PValueField);
                 if (ec != EC_Normal) {
-                    CERR << "dbfind: DB_nextFindResponse: cannot put()" << OFendl;
+                    DCMQRDB_WARN("dbfind: DB_nextFindResponse: cannot put()");
                     status->setStatus(STATUS_FIND_Failed_UnableToProcess);
                     return DcmQRIndexDatabaseError;
                 }
             }
             OFCondition ec = (*findResponseIdentifiers)->insert(dce, OFTrue /*replaceOld*/);
             if (ec != EC_Normal) {
-                CERR << "dbfind: DB_nextFindResponse: cannot insert()" << OFendl;
+                DCMQRDB_WARN("dbfind: DB_nextFindResponse: cannot insert()");
                 status->setStatus(STATUS_FIND_Failed_UnableToProcess);
                 return DcmQRIndexDatabaseError;
             }
@@ -1953,10 +1951,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
         DU_putStringDOElement(*findResponseIdentifiers,
                               DCM_QueryRetrieveLevel, queryLevelString);
 #ifdef DEBUG
-        if (debugLevel > 0) {
-            COUT << "DB: findResponseIdentifiers:" << OFendl;
-            (*findResponseIdentifiers)->print(COUT);
-        }
+        DCMQRDB_DEBUG("DB: findResponseIdentifiers:" << OFendl
+                << DcmObject::PrintHelper(**findResponseIdentifiers));
 #endif
     }
     else {
@@ -2018,7 +2014,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
         DB_FreeElementList (handle_->findRequestList) ;
         handle_->findRequestList = NULL ;
 #ifdef DEBUG
-        dbdebug(1, "DB_nextFindResponse () : STATUS_FIND_Failed_UnableToProcess\n") ;
+        DCMQRDB_DEBUG("DB_nextFindResponse () : STATUS_FIND_Failed_UnableToProcess");
 #endif
         status->setStatus(STATUS_FIND_Failed_UnableToProcess);
 
@@ -2037,7 +2033,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
         DB_UIDAddFound (handle_, &idxRec) ;
         makeResponseList (handle_, &idxRec) ;
 #ifdef DEBUG
-        dbdebug(1, "DB_nextFindResponse () : STATUS_Pending\n") ;
+        DCMQRDB_DEBUG("DB_nextFindResponse () : STATUS_Pending");
 #endif
         status->setStatus(STATUS_Pending);
         return (EC_Normal) ;
@@ -2058,7 +2054,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
 
 
 #ifdef DEBUG
-    dbdebug(1, "DB_nextFindResponse () : STATUS_Pending\n") ;
+    DCMQRDB_DEBUG("DB_nextFindResponse () : STATUS_Pending");
 #endif
     status->setStatus(STATUS_Pending);
     return (EC_Normal) ;
@@ -2109,12 +2105,12 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
     ***/
 
     if (queryLevel < infLevel) {
-        dbdebug(1,"Level incompatible with Information Model (level %d)\n", (int)queryLevel) ;
+        DCMQRDB_DEBUG("Level incompatible with Information Model (level " << (int)queryLevel << ")");
         return DcmQRIndexDatabaseError ;
     }
 
     if (queryLevel > lowestLevel) {
-        dbdebug(1,"Level incompatible with Information Model (level %d)\n", (int)queryLevel) ;
+        DCMQRDB_DEBUG("Level incompatible with Information Model (level " << (int)queryLevel << ")");
         return DcmQRIndexDatabaseError ;
     }
 
@@ -2139,7 +2135,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
                 atLeastOneKeyFound = OFTrue ;
             }
             if (atLeastOneKeyFound) {
-                dbdebug(1,"Key found in Study Root Information Model (level %d)\n", level) ;
+                DCMQRDB_DEBUG("Key found in Study Root Information Model (level " << level << ")");
                 return DcmQRIndexDatabaseError ;
             }
         }
@@ -2162,18 +2158,18 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
                     continue ;
                 DB_GetTagKeyAttr (plist->elem. XTag, &XTagType) ;
                 if (XTagType != UNIQUE_KEY) {
-                    dbdebug(1,"Non Unique Key found (level %d)\n", level) ;
+                    DCMQRDB_DEBUG("Non Unique Key found (level " << level << ")");
                     return DcmQRIndexDatabaseError ;
                 }
                 else if (uniqueKeyFound) {
-                    dbdebug(1,"More than one Unique Key found (level %d)\n", level) ;
+                    DCMQRDB_DEBUG("More than one Unique Key found (level " << level << ")");
                     return DcmQRIndexDatabaseError ;
                 }
                 else
                     uniqueKeyFound = OFTrue ;
             }
             if (! uniqueKeyFound) {
-                dbdebug(1,"No Unique Key found (level %d)\n", level) ;
+                DCMQRDB_DEBUG("No Unique Key found (level " << level << ")");
                 return DcmQRIndexDatabaseError ;
             }
         }
@@ -2197,7 +2193,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
                 atLeastOneKeyFound = OFTrue ;
             }
             if (atLeastOneKeyFound) {
-                dbdebug(1,"Key found beyond query level (level %d)\n", level) ;
+                DCMQRDB_DEBUG("Key found beyond query level (level " << level << ")");
                 return DcmQRIndexDatabaseError ;
             }
         }
@@ -2309,7 +2305,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
                     handle_->queryLevel = IMAGE_LEVEL ;
                 else {
 #ifdef DEBUG
-                    dbdebug(1,"DB_startMoveRequest : STATUS_MOVE_Failed_UnableToProcess\n") ;
+                    DCMQRDB_DEBUG("DB_startMoveRequest : STATUS_MOVE_Failed_UnableToProcess");
 #endif
                     status->setStatus(STATUS_MOVE_Failed_UnableToProcess);
                     return (DcmQRIndexDatabaseError) ;
@@ -2346,7 +2342,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     if (!qrLevelFound) {
         /* The Query/Retrieve Level is missing */
         status->setStatus(STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass);
-        CERR << "DB_startMoveRequest(): missing Query/Retrieve Level" << OFendl;
+        DCMQRDB_WARN("DB_startMoveRequest(): missing Query/Retrieve Level");
         handle_->idxCounter = -1 ;
         DB_FreeElementList (handle_->findRequestList) ;
         handle_->findRequestList = NULL ;
@@ -2380,7 +2376,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
             DB_FreeElementList (handle_->findRequestList) ;
             handle_->findRequestList = NULL ;
 #ifdef DEBUG
-            dbdebug(1,"DB_startMoveRequest () : STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass - Invalid RequestList\n") ;
+            DCMQRDB_DEBUG("DB_startMoveRequest () : STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass - Invalid RequestList");
 #endif
             status->setStatus(STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass);
             return (cond) ;
@@ -2442,7 +2438,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 
     if ( handle_->NumberRemainOperations > 0 ) {
 #ifdef DEBUG
-        dbdebug(1,"DB_startMoveRequest : STATUS_Pending\n") ;
+        DCMQRDB_DEBUG("DB_startMoveRequest : STATUS_Pending");
 #endif
         status->setStatus(STATUS_Pending);
         return (EC_Normal) ;
@@ -2456,7 +2452,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     else {
         handle_->idxCounter = -1 ;
 #ifdef DEBUG
-        dbdebug(1,"DB_startMoveRequest : STATUS_Success\n") ;
+        DCMQRDB_DEBUG("DB_startMoveRequest : STATUS_Success");
 #endif
         status->setStatus(STATUS_Success);
 
@@ -2495,7 +2491,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
 
     if (DB_IdxRead (handle_->moveCounterList->idxCounter, &idxRec) != EC_Normal) {
 #ifdef DEBUG
-        dbdebug(1,"DB_nextMoveResponse : STATUS_MOVE_Failed_UnableToProcess\n") ;
+        DCMQRDB_DEBUG("DB_nextMoveResponse : STATUS_MOVE_Failed_UnableToProcess");
 #endif
         status->setStatus(STATUS_MOVE_Failed_UnableToProcess);
 
@@ -2516,7 +2512,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
     handle_->moveCounterList = nextlist ;
     status->setStatus(STATUS_Pending);
 #ifdef DEBUG
-    dbdebug(1,"DB_nextMoveResponse : STATUS_Pending\n") ;
+    DCMQRDB_DEBUG("DB_nextMoveResponse : STATUS_Pending");
 #endif
     return (EC_Normal) ;
 }
@@ -2558,10 +2554,10 @@ void DcmQueryRetrieveIndexDatabaseHandle::enableQuotaSystem(OFBool enable)
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
 {
     if (!quotaSystemEnabled) {
-      CERR << "file delete operations are disabled, keeping file: " << imgFile << " despite duplicate SOP Instance UID." << OFendl;
+      DCMQRDB_WARN("file delete operations are disabled, keeping file: " << imgFile << " despite duplicate SOP Instance UID.");
       return EC_Normal;
     } else {
-      CERR << "Deleting file: " << imgFile << " due to quota or duplicate SOP instance UID." << OFendl;
+      DCMQRDB_WARN("Deleting file: " << imgFile << " due to quota or duplicate SOP instance UID.");
     }
 
 #ifdef LOCK_IMAGE_FILES
@@ -2572,24 +2568,24 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
     lockfd = open(imgFile, O_RDWR, 0666);   /* obtain file descriptor */
 #endif
     if (lockfd < 0) {
-    CERR << "DB ERROR: cannot open image file for deleting: " << imgFile << OFendl;
-    return DcmQRIndexDatabaseError;
+      DCMQRDB_WARN("DB ERROR: cannot open image file for deleting: " << imgFile);
+      return DcmQRIndexDatabaseError;
     }
     if (dcmtk_flock(lockfd, LOCK_EX) < 0) { /* exclusive lock (blocking) */
-    CERR << "DB ERROR: cannot lock image file  for deleting: " << imgFile << OFendl;
-        dcmtk_plockerr("DB ERROR");
+      DCMQRDB_WARN("DB ERROR: cannot lock image file  for deleting: " << imgFile);
+      dcmtk_plockerr("DB ERROR");
     }
 #endif
 
     if (unlink(imgFile) < 0) {
         /* delete file */
-    CERR << "DB ERROR: cannot delete image file: " << imgFile << OFendl
-        << "DcmQRIndexDatabaseError: " << strerror(errno) << OFendl;
-   }
+        DCMQRDB_ERROR("DB ERROR: cannot delete image file: " << imgFile << OFendl
+            << "DcmQRIndexDatabaseError: " << strerror(errno));
+    }
 
 #ifdef LOCK_IMAGE_FILES
     if (dcmtk_flock(lockfd, LOCK_UN) < 0) { /* unlock */
-    CERR << "DB ERROR: cannot unlock image file  for deleting: " << imgFile << OFendl;
+        DCMQRDB_WARN("DB ERROR: cannot unlock image file  for deleting: " << imgFile);
         dcmtk_plockerr("DB ERROR");
      }
     close(lockfd);              /* release file descriptor */
@@ -2617,7 +2613,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(StudyDescRecord *pStu
     OldestDate = 0.0 ;
 
 #ifdef DEBUG
-    dbdebug(1, "deleteOldestStudy\n") ;
+    DCMQRDB_DEBUG("deleteOldestStudy");
 #endif
 
     for ( s = 0 ; s < handle_ -> maxStudiesAllowed ; s++ ) {
@@ -2629,7 +2625,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(StudyDescRecord *pStu
     }
 
 #ifdef DEBUG
-    dbdebug(1, "deleteOldestStudy oldestStudy = %d\n",oldestStudy) ;
+    DCMQRDB_DEBUG("deleteOldestStudy oldestStudy = " << oldestStudy);
 #endif
 
     n = strlen(pStudyDesc[oldestStudy].StudyInstanceUID) ;
@@ -2663,14 +2659,14 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
     long DeletedSize ;
 
 #ifdef DEBUG
-    dbdebug(1, "deleteOldestImages RequiredSize = %ld\n",RequiredSize) ;
+    DCMQRDB_DEBUG("deleteOldestImages RequiredSize = " << RequiredSize);
 #endif
     n = strlen(StudyUID) ;
     StudyArray = (ImagesofStudyArray *)malloc(MAX_NUMBER_OF_IMAGES * sizeof(ImagesofStudyArray)) ;
 
     if (StudyArray == NULL) {
-    CERR << "deleteOldestImages: out of memory" << OFendl;
-    return DcmQRIndexDatabaseError;
+        DCMQRDB_WARN("deleteOldestImages: out of memory");
+        return DcmQRIndexDatabaseError;
     }
 
     /** Find all images having the same StudyUID
@@ -2693,11 +2689,12 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
 #ifdef DEBUG
     {
     int i ;
-    dbdebug(1, "deleteOldestImages : Sorted images ref array\n") ;
+    DCMQRDB_DEBUG("deleteOldestImages : Sorted images ref array");
     for (i = 0 ; i < nbimages ; i++)
-        dbdebug(1, "[%2d] :   Size %ld   Date %20.3f   Ref %d \n",
-            i, StudyArray[i]. ImageSize, StudyArray[i]. RecordedDate, StudyArray[i]. idxCounter) ;
-    dbdebug(1, "deleteOldestImages : end of ref array\n") ;
+        DCMQRDB_DEBUG("[" << STD_NAMESPACE setw(2) << i << "] :   Size " << StudyArray[i].ImageSize
+                << "   Date " << STD_NAMESPACE setw(20) << STD_NAMESPACE setprecision(3) << StudyArray[i].RecordedDate
+                << "   Ref " << StudyArray[i].idxCounter);
+    DCMQRDB_DEBUG("deleteOldestImages : end of ref array");
     }
 #endif
 
@@ -2709,7 +2706,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
     IdxRecord idxRemoveRec ;
     DB_IdxRead (StudyArray[s]. idxCounter, &idxRemoveRec) ;
 #ifdef DEBUG
-    dbdebug(1, "Removing file : %s\n", idxRemoveRec. filename) ;
+    DCMQRDB_DEBUG("Removing file : " << idxRemoveRec. filename);
 #endif
     deleteImageFile(idxRemoveRec.filename);
 
@@ -2720,8 +2717,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
     }
 
 #ifdef DEBUG
-    dbdebug(1, "deleteOldestImages DeletedSize = %d\n",
-         (int)DeletedSize) ;
+    DCMQRDB_DEBUG("deleteOldestImages DeletedSize = " << (int)DeletedSize);
 #endif
     free(StudyArray) ;
     return( EC_Normal ) ;
@@ -2776,15 +2772,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
     if ( pStudyDesc[s]. NumberofRegistratedImages != 0 ) {
 
 #ifdef DEBUG
-    dbdebug(1, "checkupinStudyDesc: study already exists : %d\n",s) ;
+    DCMQRDB_DEBUG("checkupinStudyDesc: study already exists : " << s) ;
 #endif
     if ( ( pStudyDesc[s]. StudySize + imageSize )
          > handle_ -> maxBytesPerStudy ) {
         if ( imageSize > handle_ -> maxBytesPerStudy ) {
 #ifdef DEBUG
-        dbdebug(1,
-             "checkupinStudyDesc: imageSize = %ld too large\n",
-             imageSize) ;
+        DCMQRDB_DEBUG("checkupinStudyDesc: imageSize = " << imageSize << " too large");
 #endif
         return ( DcmQRIndexDatabaseError ) ;
         }
@@ -2799,12 +2793,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
     }
     else {
 #ifdef DEBUG
-    dbdebug(1, "checkupinStudyDesc: study doesn't already exist\n") ;
+    DCMQRDB_DEBUG("checkupinStudyDesc: study doesn't already exist");
 #endif
     if ( imageSize > handle_ -> maxBytesPerStudy ) {
 #ifdef DEBUG
-        dbdebug(1, "checkupinStudyDesc: imageSize = %ld too large\n",
-             imageSize) ;
+        DCMQRDB_DEBUG("checkupinStudyDesc: imageSize = " << imageSize << " too large");
 #endif
         return ( DcmQRIndexDatabaseError ) ;
     }
@@ -2815,8 +2808,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
 
     pStudyDesc[s]. StudySize += imageSize ;
 #ifdef DEBUG
-    dbdebug(1, "checkupinStudyDesc: ~~~~~~~~ StudySize = %ld\n",
-         pStudyDesc[s]. StudySize) ;
+    DCMQRDB_DEBUG("checkupinStudyDesc: ~~~~~~~~ StudySize = " << pStudyDesc[s]. StudySize);
 #endif
 
     /* we only have second accuracy */
@@ -2859,8 +2851,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(
     if (strcmp(idxRec.SOPInstanceUID, SOPInstanceUID) == 0) {
 
 #ifdef DEBUG
-        dbdebug(1,"--- Removing Existing DB Image Record: %s\n",
-           idxRec.filename) ;
+        DCMQRDB_DEBUG("--- Removing Existing DB Image Record: " << idxRec.filename);
 #endif
         /* remove the idx record  */
         DB_IdxRemove (idx);
@@ -2907,7 +2898,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
 
     strncpy(idxRec.filename, imageFileName, DBC_MAXSTRING);
 #ifdef DEBUG
-    dbdebug(1,"DB_storeRequest () : storage request of file : %s\n",idxRec . filename) ;
+    DCMQRDB_DEBUG("DB_storeRequest () : storage request of file : " << idxRec.filename);
 #endif
     strncpy (idxRec.SOPClassUID, SOPClassUID, UI_MAX_LENGTH);
 
@@ -2917,8 +2908,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     DcmFileFormat dcmff;
     if (dcmff.loadFile(imageFileName).bad())
     {
-      CERR << "DB: Cannot open file: " << imageFileName << ": "
-           << strerror(errno) << OFendl;
+      DCMQRDB_WARN("DB: Cannot open file: " << imageFileName << ": "
+          << strerror(errno));
       status->setStatus(STATUS_STORE_Error_CannotUnderstand);
       return (DcmQRIndexDatabaseError) ;
     }
@@ -3020,15 +3011,15 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     ***/
 
 #ifdef DEBUG
-    dbdebug(1,"-- BEGIN Parameters to Register in DB\n") ;
+    DCMQRDB_DEBUG("-- BEGIN Parameters to Register in DB");
     for (i = 0 ; i < NBPARAMETERS ; i++) {  /* new definition */
     DB_SmallDcmElmt *se = idxRec.param + i;
     const char* value = "";
     if (se->PValueField != NULL) value = se->PValueField;
     DcmTag tag(se->XTag);
-    dbdebug(1," %s: \"%s\"\n", tag.getTagName(), value);
+    DCMQRDB_DEBUG(" " << tag.getTagName() << ": \"" << value << "\"");
     }
-    dbdebug(1,"-- END Parameters to Register in DB\n") ;
+    DCMQRDB_DEBUG("-- END Parameters to Register in DB");
 #endif
 
     /**** Goto the end of IndexFile, and write the record
@@ -3038,7 +3029,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
 
     pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
     if (pStudyDesc == NULL) {
-      CERR << "DB_storeRequest: out of memory" << OFendl;
+      DCMQRDB_ERROR("DB_storeRequest: out of memory");
       status->setStatus(STATUS_STORE_Refused_OutOfResources);
       DB_unlock();
       return (DcmQRIndexDatabaseError) ;
@@ -3102,7 +3093,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::pruneInvalidRecords()
 
     pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
     if (pStudyDesc == NULL) {
-      CERR << "DB_pruneInvalidRecords: out of memory" << OFendl;
+      DCMQRDB_WARN("DB_pruneInvalidRecords: out of memory");
       DB_unlock();
       return (DcmQRIndexDatabaseError) ;
     }
@@ -3117,7 +3108,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::pruneInvalidRecords()
       if (access(idxRec.filename, R_OK) < 0)
       {
 #ifdef DEBUG
-        dbdebug(1,"*** Pruning Invalid DB Image Record: %s\n", idxRec.filename);
+        DCMQRDB_DEBUG("*** Pruning Invalid DB Image Record: " << idxRec.filename);
 #endif
         /* update the study info */
         int studyIdx = matchStudyUIDInStudyDesc(pStudyDesc, idxRec.StudyInstanceUID, (int)(handle_->maxStudiesAllowed)) ;
@@ -3170,7 +3161,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
 
     pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
     if (pStudyDesc == NULL) {
-        CERR << "printIndexFile: out of memory" << OFendl;
+        DCMQRDB_ERROR("printIndexFile: out of memory");
         return;
     }
 
@@ -3233,31 +3224,6 @@ const char *DcmQueryRetrieveIndexDatabaseHandle::getIndexFilename() const
   return handle_->indexFilename;
 }
 
-void DcmQueryRetrieveIndexDatabaseHandle::setDebugLevel(int dLevel)
-{
-    debugLevel = dLevel;
-}
-
-int DcmQueryRetrieveIndexDatabaseHandle::getDebugLevel() const
-{
-    return debugLevel;
-}
-
-void DcmQueryRetrieveIndexDatabaseHandle::dbdebug(int level, const char* format, ...) const
-{
-    va_list ap;
-    char buf[4096]; /* we hope a message never gets larger */
-
-    if (level <= debugLevel) {
-        CERR << "DB:";
-        va_start(ap, format);
-        vsprintf(buf, format, ap);
-        va_end(ap);
-        CERR << buf << OFendl;
-    }
-}
-
-
 void DcmQueryRetrieveIndexDatabaseHandle::setIdentifierChecking(OFBool checkFind, OFBool checkMove)
 {
     doCheckFindIdentifier = checkFind;
@@ -3279,20 +3245,19 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
 , doCheckFindIdentifier(OFFalse)
 , doCheckMoveIdentifier(OFFalse)
 , fnamecreator()
-, debugLevel(0)
 {
 
     handle_ = new DB_Private_Handle;
 
 #ifdef DEBUG
-    dbdebug(1, "DB_createHandle () : Handle created for %s\n",storageArea);
-    dbdebug(1, "                     maxStudiesPerStorageArea: %ld maxBytesPerStudy: %ld\n",
-            maxStudiesPerStorageArea, maxBytesPerStudy);
+    DCMQRDB_DEBUG("DB_createHandle () : Handle created for " << storageArea);
+    DCMQRDB_DEBUG("                     maxStudiesPerStorageArea: " << maxStudiesPerStorageArea
+            << " maxBytesPerStudy: " << maxBytesPerStudy);
 #endif
 
     if (maxStudiesPerStorageArea > DB_UpperMaxStudies) {
-        CERR << "WARING: maxStudiesPerStorageArea too large" << OFendl
-             << "        setting to " << DB_UpperMaxStudies << OFendl;
+        DCMQRDB_WARN("maxStudiesPerStorageArea too large" << OFendl
+                  << "        setting to " << DB_UpperMaxStudies);
         maxStudiesPerStorageArea = DB_UpperMaxStudies;
     }
     if (maxStudiesPerStorageArea < 0) {
@@ -3309,7 +3274,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
         /* create index file if it does not already exist */
         FILE* f = fopen(handle_->indexFilename, "ab");
         if (f == NULL) {
-            CERR << handle_->indexFilename << ": " << strerror(errno) << OFendl;
+            DCMQRDB_ERROR(handle_->indexFilename << ": " << strerror(errno));
             result = DcmQRIndexDatabaseError;
             return;
         }
@@ -3469,6 +3434,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.17  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.16  2009-08-21 09:54:11  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

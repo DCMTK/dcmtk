@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:54:11 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,12 @@
 #define INCLUDE_CSTDARG
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofcmdln.h"
+
+OFLogger DCM_dcmqrdbGetLogger()
+{
+    static OFLogger DCM_dcmqrdbLogger = OFLog::getLogger("dcmtk.dcmqrdb");
+    return DCM_dcmqrdbLogger;
+}
 
 int DcmQueryRetrieveConfig::aeTitlesForPeer(const char *hostName, const char *** aeTitleList) const
 {
@@ -205,11 +211,27 @@ void DcmQueryRetrieveConfig::initConfigStruct()
 void DcmQueryRetrieveConfig::panic(const char *fmt, ...)
 {
    va_list  ap;
-
    va_start(ap, fmt);
+
+#ifdef HAVE_VSNPRINTF
+   char buf[4096];
+
+#ifdef HAVE_PROTOTYPE_STD__VSNPRINTF
+   std::vsnprintf(buf, sizeof(buf), fmt, ap);
+#else
+   vsnprintf(buf, sizeof(buf), fmt, ap);
+#endif
+
+   // Since we can't do anything about a too small buffer for vsnprintf(), we
+   // ignore it. But we do make sure the buffer is null-terminated!
+   buf[4095] = '\0';
+
+   DCMQRDB_ERROR("CONFIG Error: " << buf << "!");
+#else
    fprintf(stderr, "CONFIG Error: ");
    vfprintf(stderr, fmt, ap);
    fprintf(stderr, "!\n");
+#endif
    va_end(ap);
 }
 
@@ -773,41 +795,41 @@ void DcmQueryRetrieveConfig::printConfig()
 {
    int i,j;
 
-   printf("\nHostTable: %d\n", CNF_HETable.noOfHostEntries);
+   DCMQRDB_INFO("\nHostTable: " <<  CNF_HETable.noOfHostEntries);
    for(i = 0; i < CNF_HETable.noOfHostEntries; i++) {
-      printf("%s %d\n", CNF_HETable.HostEntries[i].SymbolicName, CNF_HETable.HostEntries[i].noOfPeers);
+      DCMQRDB_INFO(CNF_HETable.HostEntries[i].SymbolicName << " " << CNF_HETable.HostEntries[i].noOfPeers);
       for(j = 0; j < CNF_HETable.HostEntries[i].noOfPeers; j++) {
-         printf("%s %s %d\n", CNF_HETable.HostEntries[i].Peers[j].ApplicationTitle,
-            CNF_HETable.HostEntries[i].Peers[j].HostName, CNF_HETable.HostEntries[i].Peers[j].PortNumber);
+         DCMQRDB_INFO(CNF_HETable.HostEntries[i].Peers[j].ApplicationTitle << " " <<
+            CNF_HETable.HostEntries[i].Peers[j].HostName << " " << CNF_HETable.HostEntries[i].Peers[j].PortNumber);
       }
    }
-   printf("\nVendorTable: %d\n", CNF_VendorTable.noOfHostEntries);
+   DCMQRDB_INFO("\nVendorTable: " << CNF_VendorTable.noOfHostEntries);
    for(i = 0; i < CNF_VendorTable.noOfHostEntries; i++) {
-      printf("%s %d\n", CNF_VendorTable.HostEntries[i].SymbolicName, CNF_VendorTable.HostEntries[i].noOfPeers);
+      DCMQRDB_INFO(CNF_VendorTable.HostEntries[i].SymbolicName << " " << CNF_VendorTable.HostEntries[i].noOfPeers);
       for(j = 0; j < CNF_VendorTable.HostEntries[i].noOfPeers; j++) {
-         printf("%s %s %d\n", CNF_VendorTable.HostEntries[i].Peers[j].ApplicationTitle,
-            CNF_VendorTable.HostEntries[i].Peers[j].HostName, CNF_VendorTable.HostEntries[i].Peers[j].PortNumber);
+         DCMQRDB_INFO(CNF_VendorTable.HostEntries[i].Peers[j].ApplicationTitle << " " <<
+            CNF_VendorTable.HostEntries[i].Peers[j].HostName << " " << CNF_VendorTable.HostEntries[i].Peers[j].PortNumber);
       }
    }
-   printf("\nGlobal Parameters:\n%s\n%s\n%s\n%s\n%s\n%d\n%lu\n%d\n",
-      applicationTitle_.c_str(), applicationContext_.c_str(), implementationClass_.c_str(),
-      implementationVersion_.c_str(), networkType_.c_str(), networkTCPPort_, OFstatic_cast(unsigned long, maxPDUSize_),
+   DCMQRDB_INFO("\nGlobal Parameters:\n" << applicationTitle_ << "\n" << applicationContext_ << "\n" <<
+      implementationClass_ << "\n" << implementationVersion_ << "\n" << networkType_ << "\n" <<
+      networkTCPPort_ << "\n" << OFstatic_cast(unsigned long, maxPDUSize_) << "\n" <<
       maxAssociations_);
-   printf("\nAEEntries: %d\n", CNF_Config.noOfAEEntries);
+   DCMQRDB_INFO("\nAEEntries: " << CNF_Config.noOfAEEntries);
    for(i = 0; i < CNF_Config.noOfAEEntries; i++) {
-      printf("%s\n%s\n%s\n%d, %ld\n", CNF_Config.AEEntries[i].ApplicationTitle, CNF_Config.AEEntries[i].StorageArea,
-         CNF_Config.AEEntries[i].Access, CNF_Config.AEEntries[i].StorageQuota->maxStudies,
-         CNF_Config.AEEntries[i].StorageQuota->maxBytesPerStudy);
+      DCMQRDB_INFO(CNF_Config.AEEntries[i].ApplicationTitle << "\n" << CNF_Config.AEEntries[i].StorageArea
+         << "\n" << CNF_Config.AEEntries[i].Access << "\n" << CNF_Config.AEEntries[i].StorageQuota->maxStudies
+         << ", " << CNF_Config.AEEntries[i].StorageQuota->maxBytesPerStudy);
       if (CNF_Config.AEEntries[i].noOfPeers == -1)
-         printf("Peers: ANY\n");
+         DCMQRDB_INFO("Peers: ANY");
       else {
-         printf("Peers: %d\n", CNF_Config.AEEntries[i].noOfPeers);
+         DCMQRDB_INFO("Peers: " << CNF_Config.AEEntries[i].noOfPeers);
          for(j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++) {
-            printf("%s %s %d\n", CNF_Config.AEEntries[i].Peers[j].ApplicationTitle,
-               CNF_Config.AEEntries[i].Peers[j].HostName, CNF_Config.AEEntries[i].Peers[j].PortNumber);
+            DCMQRDB_INFO(CNF_Config.AEEntries[i].Peers[j].ApplicationTitle << " " <<
+               CNF_Config.AEEntries[i].Peers[j].HostName << " " << CNF_Config.AEEntries[i].Peers[j].PortNumber);
          }
       }
-      printf("----------------------------------\n");
+      DCMQRDB_INFO("----------------------------------\n");
    }
 }
 
@@ -1034,6 +1056,9 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
+ * Revision 1.8  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.7  2009-08-21 09:54:11  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

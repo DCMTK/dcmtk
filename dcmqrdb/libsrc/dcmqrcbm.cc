@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:54:11 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,8 +52,13 @@ static void moveSubOpProgressCallback(void *callbackData,
     T_DIMSE_StoreProgress *progress,
     T_DIMSE_C_StoreRQ * /*req*/)
 {
-  DcmQueryRetrieveMoveContext *context = OFstatic_cast(DcmQueryRetrieveMoveContext *, callbackData);
-  if (context->isVerbose())
+  //DcmQueryRetrieveMoveContext *context = OFstatic_cast(DcmQueryRetrieveMoveContext *, callbackData);
+  // We can't use oflog for the pdu output, but we use a special logger for
+  // generating this output. If it is set to level "INFO" we generate the
+  // output, if it's set to "DEBUG" then we'll assume that there is debug output
+  // generated for each PDU elsewhere.
+  OFLogger progressLogger = OFLog::getLogger("dcmtk.dcmqrdb.progress");
+  if (progressLogger.getChainedLogLevel() == OFLogger::INFO_LOG_LEVEL)
   {
     switch (progress->state)
     {
@@ -71,11 +76,6 @@ static void moveSubOpProgressCallback(void *callbackData,
   }
 }
 
-OFBool DcmQueryRetrieveMoveContext::isVerbose() const
-{
-  return options_.verbose_ ? OFTrue : OFFalse;
-}
-
 void DcmQueryRetrieveMoveContext::callbackHandler(
     /* in */
     OFBool cancelled, T_DIMSE_C_MoveRQ *request,
@@ -90,15 +90,12 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
 
     if (responseCount == 1) {
         /* start the database search */
-        if (options_.verbose_) {
-            printf("Move SCP Request Identifiers:\n");
-            requestIdentifiers->print(COUT);
-        }
+        DCMQRDB_INFO("Move SCP Request Identifiers:\n" << DcmObject::PrintHelper(*requestIdentifiers));
         dbcond = dbHandle.startMoveRequest(
         request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         if (dbcond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("moveSCP: Database: startMoveRequest Failed (%s):",
-            DU_cmoveStatusString(dbStatus.status()));
+            DCMQRDB_ERROR("moveSCP: Database: startMoveRequest Failed ("
+                    << DU_cmoveStatusString(dbStatus.status()) << "):");
         }
 
         if (dbStatus.status() == STATUS_Pending) {
@@ -164,20 +161,15 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
     response->NumberOfWarningSubOperations = nWarning;
     *stDetail = dbStatus.extractStatusDetail();
 
-    if (options_.verbose_) {
-        printf("Move SCP Response %d [status: %s]\n", responseCount,
-            DU_cmoveStatusString(dbStatus.status()));
+    OFString str;
+    DCMQRDB_INFO("Move SCP Response " << responseCount << " [status: "
+            << DU_cmoveStatusString(dbStatus.status()) << "]");
+    DCMQRDB_DEBUG(DIMSE_dumpMessage(str, *response, DIMSE_OUTGOING));
+    if (DICOM_PENDING_STATUS(dbStatus.status()) && (*responseIdentifiers != NULL)) {
+        DCMQRDB_DEBUG("Move SCP Response Identifiers:\n" << DcmObject::PrintHelper(**responseIdentifiers));
     }
-    if (options_.verbose_ > 1) {
-        DIMSE_printCMoveRSP(stdout, response);
-        if (DICOM_PENDING_STATUS(dbStatus.status()) && (*responseIdentifiers != NULL)) {
-            printf("Move SCP Response Identifiers:\n");
-            (*responseIdentifiers)->print(COUT);
-        }
-        if (*stDetail) {
-            printf("Status detail:\n");
-            (*stDetail)->print(COUT);
-        }
+    if (*stDetail) {
+        DCMQRDB_DEBUG("Status detail:\n" << DcmObject::PrintHelper(**stDetail));
     }
 }
 
@@ -187,7 +179,7 @@ void DcmQueryRetrieveMoveContext::addFailedUIDInstance(const char *sopInstance)
 
     if (failedUIDs == NULL) {
         if ((failedUIDs = (char*)malloc(DIC_UI_LEN+1)) == NULL) {
-            DcmQueryRetrieveOptions::errmsg("malloc failure: addFailedUIDInstance");
+            DCMQRDB_ERROR("malloc failure: addFailedUIDInstance");
             return;
         }
         strcpy(failedUIDs, sopInstance);
@@ -195,7 +187,7 @@ void DcmQueryRetrieveMoveContext::addFailedUIDInstance(const char *sopInstance)
         len = strlen(failedUIDs);
         if ((failedUIDs = (char*)realloc(failedUIDs,
             (len+strlen(sopInstance)+2))) == NULL) {
-            DcmQueryRetrieveOptions::errmsg("realloc failure: addFailedUIDInstance");
+            DCMQRDB_ERROR("realloc failure: addFailedUIDInstance");
             return;
         }
         /* tag sopInstance onto end of old with '\' between */
@@ -223,8 +215,7 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
 #endif
     if (lockfd < 0) {
         /* due to quota system the file could have been deleted */
-        DcmQueryRetrieveOptions::errmsg("Move SCP: storeSCU: [file: %s]: %s",
-            fname, strerror(errno));
+        DCMQRDB_ERROR("Move SCP: storeSCU: [file: " << fname << "]: " << strerror(errno));
         nFailed++;
         addFailedUIDInstance(sopInstance);
         return EC_Normal;
@@ -240,8 +231,8 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     if (presId == 0) {
         nFailed++;
         addFailedUIDInstance(sopInstance);
-        DcmQueryRetrieveOptions::errmsg("Move SCP: storeSCU: [file: %s] No presentation context for: (%s) %s",
-            fname, dcmSOPClassUIDToModality(sopClass), sopClass);
+        DCMQRDB_ERROR("Move SCP: storeSCU: [file: " << fname << "] No presentation context for: ("
+            << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass);
         return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
 
@@ -254,10 +245,8 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     strcpy(req.MoveOriginatorApplicationEntityTitle, origAETitle);
     req.MoveOriginatorID = origMsgId;
 
-    if (options_.verbose_) {
-        printf("Store SCU RQ: MsgID %d, (%s)\n",
-            msgId, dcmSOPClassUIDToModality(sopClass));
-    }
+    DCMQRDB_INFO("Store SCU RQ: MsgID " << msgId << ", ("
+            << dcmSOPClassUIDToModality(sopClass) << ")");
 
     cond = DIMSE_storeUser(subAssoc, presId, &req,
         fname, NULL, moveSubOpProgressCallback, this,
@@ -271,36 +260,31 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
 #endif
 
     if (cond.good()) {
-        if (options_.verbose_) {
-            printf("Move SCP: Received Store SCU RSP [Status=%s]\n",
-                DU_cstoreStatusString(rsp.DimseStatus));
-        }
+        DCMQRDB_INFO("Move SCP: Received Store SCU RSP [Status="
+                << DU_cstoreStatusString(rsp.DimseStatus) << "]");
         if (rsp.DimseStatus == STATUS_Success) {
             /* everything ok */
             nCompleted++;
         } else if ((rsp.DimseStatus & 0xf000) == 0xb000) {
             /* a warning status message */
             nWarning++;
-            DcmQueryRetrieveOptions::errmsg("Move SCP: Store Waring: Response Status: %s",
-                DU_cstoreStatusString(rsp.DimseStatus));
+            DCMQRDB_ERROR("Move SCP: Store Warning: Response Status: " <<
+                    DU_cstoreStatusString(rsp.DimseStatus));
         } else {
             nFailed++;
             addFailedUIDInstance(sopInstance);
             /* print a status message */
-            DcmQueryRetrieveOptions::errmsg("Move SCP: Store Failed: Response Status: %s",
-            DU_cstoreStatusString(rsp.DimseStatus));
+            DCMQRDB_ERROR("Move SCP: Store Failed: Response Status: " <<
+                    DU_cstoreStatusString(rsp.DimseStatus));
         }
     } else {
         nFailed++;
         addFailedUIDInstance(sopInstance);
-        DcmQueryRetrieveOptions::errmsg("Move SCP: storeSCU: Store Request Failed:");
-        DimseCondition::dump(cond);
+        OFString temp_str;
+        DCMQRDB_ERROR("Move SCP: storeSCU: Store Request Failed:\n" << DimseCondition::dump(temp_str, cond));
     }
     if (stDetail != NULL) {
-        if (options_.verbose_) {
-            printf("  Status Detail:\n");
-            stDetail->print(COUT);
-        }
+        DCMQRDB_INFO("  Status Detail:\n" << DcmObject::PrintHelper(*stDetail));
         delete stDetail;
     }
     return cond;
@@ -314,6 +298,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     int dstPortNumber;
     DIC_NODENAME localHostName;
     T_ASC_Parameters *params;
+    OFString temp_str;
 
     strcpy(dstAETitle, request->MoveDestination);
 
@@ -337,8 +322,9 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     if (cond.good()) {
         cond = ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU);
         if (cond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("moveSCP: Cannot create Association-params for sub-ops:");
-            DimseCondition::dump(cond);
+            OFString temp_str;
+            DCMQRDB_ERROR("moveSCP: Cannot create Association-params for sub-ops:\n"
+                    << DimseCondition::dump(temp_str, cond));
         }
     }
     if (cond.good()) {
@@ -350,29 +336,22 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
 
         cond = addAllStoragePresentationContexts(params);
         if (cond.bad()) {
-            DimseCondition::dump(cond);
+            DCMQRDB_ERROR(DimseCondition::dump(temp_str, cond));
         }
-        if (options_.debug_) {
-            printf("Request Parameters:\n");
-            ASC_dumpParameters(params, COUT);
-        }
+        DCMQRDB_DEBUG("Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
     }
     if (cond.good()) {
         /* create association */
-        if (options_.verbose_)
-            printf("Requesting Sub-Association\n");
+        DCMQRDB_INFO("Requesting Sub-Association");
         cond = ASC_requestAssociation(options_.net_, params, &subAssoc);
         if (cond.bad()) {
             if (cond == DUL_ASSOCIATIONREJECTED) {
                 T_ASC_RejectParameters rej;
 
                 ASC_getRejectParameters(params, &rej);
-                DcmQueryRetrieveOptions::errmsg("moveSCP: Sub-Association Rejected");
-                ASC_printRejectParameters(stderr, &rej);
-                fprintf(stderr, "\n");
+                DCMQRDB_ERROR("moveSCP: Sub-Association Rejected\n" << ASC_printRejectParameters(temp_str, &rej));
             } else {
-                DcmQueryRetrieveOptions::errmsg("moveSCP: Sub-Association Request Failed:");
-                DimseCondition::dump(cond);
+                DCMQRDB_ERROR("moveSCP: Sub-Association Request Failed:\n" << DimseCondition::dump(temp_str, cond));
             }
         }
     }
@@ -389,22 +368,19 @@ OFCondition DcmQueryRetrieveMoveContext::closeSubAssociation()
 
     if (subAssoc != NULL) {
         /* release association */
-        if (options_.verbose_)
-            printf("Releasing Sub-Association\n");
+        OFString temp_str;
+        DCMQRDB_INFO("Releasing Sub-Association");
         cond = ASC_releaseAssociation(subAssoc);
         if (cond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("moveSCP: Sub-Association Release Failed:");
-            DimseCondition::dump(cond);
+            DCMQRDB_ERROR("moveSCP: Sub-Association Release Failed:\n" << DimseCondition::dump(temp_str, cond));
         }
         cond = ASC_dropAssociation(subAssoc);
         if (cond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("moveSCP: Sub-Association Drop Failed:");
-            DimseCondition::dump(cond);
+            DCMQRDB_ERROR("moveSCP: Sub-Association Drop Failed:\n" << DimseCondition::dump(temp_str, cond));
         }
         cond = ASC_destroyAssociation(&subAssoc);
         if (cond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("moveSCP: Sub-Association Destroy Failed:");
-            DimseCondition::dump(cond);
+            DCMQRDB_ERROR("moveSCP: Sub-Association Destroy Failed:\n" << DimseCondition::dump(temp_str, cond));
         }
 
     }
@@ -433,16 +409,16 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
     dbcond = dbHandle.nextMoveResponse(
         subImgSOPClass, subImgSOPInstance, subImgFileName, &nRemaining, dbStatus);
     if (dbcond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("moveSCP: Database: nextMoveResponse Failed (%s):",
-            DU_cmoveStatusString(dbStatus->status()));
+        DCMQRDB_ERROR("moveSCP: Database: nextMoveResponse Failed ("
+                << DU_cmoveStatusString(dbStatus->status()) << "):");
     }
 
     if (dbStatus->status() == STATUS_Pending) {
         /* perform sub-op */
         cond = performMoveSubOp(subImgSOPClass, subImgSOPInstance, subImgFileName);
         if (cond != EC_Normal) {
-            DcmQueryRetrieveOptions::errmsg("moveSCP: Move Sub-Op Failed:");
-            DimseCondition::dump(cond);
+            OFString temp_str;
+            DCMQRDB_ERROR("moveSCP: Move Sub-Op Failed:" << DimseCondition::dump(temp_str, cond));
             /* clear condition stack */
         }
     }
@@ -465,8 +441,8 @@ void DcmQueryRetrieveMoveContext::failAllSubOperations(DcmQueryRetrieveDatabaseS
         dbcond = dbHandle.nextMoveResponse(
             subImgSOPClass, subImgSOPInstance, subImgFileName, &nRemaining, dbStatus);
         if (dbcond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("moveSCP: Database: nextMoveResponse Failed (%s):",
-                DU_cmoveStatusString(dbStatus->status()));
+            DCMQRDB_ERROR("moveSCP: Database: nextMoveResponse Failed ("
+                << DU_cmoveStatusString(dbStatus->status()) << "):");
         }
 
         if (dbStatus->status() == STATUS_Pending) {
@@ -485,7 +461,7 @@ void DcmQueryRetrieveMoveContext::buildFailedInstanceList(DcmDataset ** rspIds)
         *rspIds = new DcmDataset();
         ok = DU_putStringDOElement(*rspIds, DCM_FailedSOPInstanceUIDList, failedUIDs);
         if (!ok) {
-            DcmQueryRetrieveOptions::errmsg("moveSCP: failed to build DCM_FailedSOPInstanceUIDList");
+            DCMQRDB_ERROR("moveSCP: failed to build DCM_FailedSOPInstanceUIDList");
         }
         free(failedUIDs);
         failedUIDs = NULL;
@@ -508,18 +484,14 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
         /* AE Titles the same ? */
         ok = (strcmp(origAE, dstAE) == 0);
         if (!ok) {
-            if (options_.verbose_) {
-                printf("mapMoveDestination: strictMove Reqs: '%s' != '%s'\n", origAE, dstAE);
-            }
+            DCMQRDB_INFO("mapMoveDestination: strictMove Reqs: '" << origAE << "' != '" << dstAE << "'");
             return OFFalse;
         }
     }
 
     ok = config->peerForAETitle((char*)dstAE, &dstPeerName, dstPort) > 0;
     if (!ok) {
-        if (options_.verbose_) {
-            printf("mapMoveDestination: unknown AE: '%s'\n", dstAE);
-        }
+        DCMQRDB_INFO("mapMoveDestination: unknown AE: '" << dstAE << "'");
         return OFFalse;     /* dstAE not known */
     }
 
@@ -529,9 +501,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
         /* hosts the same ? */
         ok = (strcmp(origPeer, dstPeer) == 0);
         if (!ok) {
-            if (options_.verbose_) {
-                printf("mapMoveDestination: different hosts: '%s', '%s'\n", origPeer, dstPeer);
-            }
+            DCMQRDB_INFO("mapMoveDestination: different hosts: '" << origPeer << "', '" << dstPeer << "'");
             return OFFalse;
         }
     }
@@ -540,9 +510,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
         /* AE titles belong to the same vendor */
         ok = config->checkForSameVendor((char*)origAE, (char*)dstAE) > 0;
         if (!ok) {
-            if (options_.verbose_) {
-                printf("mapMoveDestination: different vendors: '%s', '%s'\n", origAE, dstAE);
-            }
+            DCMQRDB_INFO("mapMoveDestination: different vendors: '" << origAE << "', '" << dstAE << "'");
             return OFFalse;
         }
     }
@@ -709,6 +677,9 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
+ * Revision 1.12  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.11  2009-08-21 09:54:11  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

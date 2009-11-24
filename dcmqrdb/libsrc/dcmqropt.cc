@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveOptions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:54:11 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,6 @@ DcmQueryRetrieveOptions::DcmQueryRetrieveOptions()
 : allowShutdown_(OFFalse)
 , bitPreserving_(OFFalse)
 , correctUIDPadding_(OFFalse)
-, debug_(OFFalse)
 , disableGetSupport_(OFFalse)
 , filepad_(0)
 , groupLength_(EGL_recalcGL)
@@ -79,7 +78,6 @@ DcmQueryRetrieveOptions::DcmQueryRetrieveOptions()
 , supportStudyRoot_(OFTrue)
 , useMetaheader_(OFTrue)
 , keepDBHandleDuringAssociation_(OFTrue)
-, verbose_(0)
 , writeTransferSyntax_(EXS_Unknown)
 , blockMode_(DIMSE_BLOCKING)
 , dimse_timeout_(0)
@@ -91,20 +89,12 @@ DcmQueryRetrieveOptions::~DcmQueryRetrieveOptions()
 {
 }
 
-void DcmQueryRetrieveOptions::errmsg(const char* msg, ...)
-{
-    va_list args;
-
-    fprintf(stderr, "DcmQueryRetrieve: ");
-    va_start(args, msg);
-    vfprintf(stderr, msg, args);
-    va_end(args);
-    fprintf(stderr, "\n");
-}
-
 /*
  * CVS Log
  * $Log: dcmqropt.cc,v $
+ * Revision 1.7  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.6  2009-08-21 09:54:11  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

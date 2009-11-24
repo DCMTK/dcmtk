@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveSCP
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:54:11 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,7 +114,6 @@ DcmQueryRetrieveSCP::DcmQueryRetrieveSCP(
 : config_(&config)
 , dbCheckFindIdentifier_(OFFalse)
 , dbCheckMoveIdentifier_(OFFalse)
-, dbDebug_(OFFalse)
 , factory_(factory)
 , options_(options)
 {
@@ -141,18 +140,17 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
 
         if (cond.bad())
         {
-          DcmQueryRetrieveOptions::errmsg("dispatch: cannot create DB Handle");
+          DCMQRDB_ERROR("dispatch: cannot create DB Handle");
           return cond;
         }
 
         if (dbHandle == NULL)
         {
           // this should not happen, but we check it anyway
-          DcmQueryRetrieveOptions::errmsg("dispatch: cannot create DB Handle");
+          DCMQRDB_ERROR("dispatch: cannot create DB Handle");
           return EC_IllegalCall;
         }
 
-        dbHandle->setDebugLevel(dbDebug_ ? 1 : 0);
         dbHandle->setIdentifierChecking(dbCheckFindIdentifier_, dbCheckMoveIdentifier_);
         firstLoop = OFTrue;
 
@@ -186,14 +184,12 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                     break;
                 case DIMSE_C_CANCEL_RQ:
                     /* This is a late cancel request, just ignore it */
-                    if (options_.verbose_) {
-                        printf("dispatch: late C-CANCEL-RQ, ignoring\n");
-                    }
+                    DCMQRDB_INFO("dispatch: late C-CANCEL-RQ, ignoring");
                     break;
                 default:
                     /* we cannot handle this kind of message */
                     cond = DIMSE_BADCOMMANDTYPE;
-                    DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n",
+                    DCMQRDB_ERROR("Cannot handle command: 0x" << STD_NAMESPACE hex <<
                             (unsigned)msg.CommandField);
                     /* the condition will be returned, the caller will abort the association. */
                 }
@@ -223,6 +219,7 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
     DIC_NODENAME        peerHostName;
     DIC_AE              peerAETitle;
     DIC_AE              myAETitle;
+    OFString            temp_str;
 
     ASC_getPresentationAddresses(assoc->params, peerHostName, NULL);
     ASC_getAPTitles(assoc->params, peerAETitle, myAETitle, NULL);
@@ -232,29 +229,24 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
 
  /* clean up on association termination */
     if (cond == DUL_PEERREQUESTEDRELEASE) {
-        if (options_.verbose_)
-            printf("Association Release\n");
+        DCMQRDB_INFO("Association Release");
         cond = ASC_acknowledgeRelease(assoc);
         ASC_dropSCPAssociation(assoc);
     } else if (cond == DUL_PEERABORTEDASSOCIATION) {
-        if (options_.verbose_)
-            printf("Association Aborted\n");
+        DCMQRDB_INFO("Association Aborted");
     } else {
-        DcmQueryRetrieveOptions::errmsg("DIMSE Failure (aborting association):\n");
-        DimseCondition::dump(cond);
+        DCMQRDB_ERROR("DIMSE Failure (aborting association):\n" << DimseCondition::dump(temp_str, cond));
     /* some kind of error so abort the association */
         cond = ASC_abortAssociation(assoc);
     }
 
     cond = ASC_dropAssociation(assoc);
     if (cond.bad()) {
-        fprintf(stderr, "Cannot Drop Association:\n");
-        DimseCondition::dump(cond);
+        DCMQRDB_ERROR("Cannot Drop Association:\n" << DimseCondition::dump(temp_str, cond));
     }
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad()) {
-        fprintf(stderr, "Cannot Destroy Association:\n");
-        DimseCondition::dump(cond);
+        DCMQRDB_ERROR("Cannot Destroy Association:\n" << DimseCondition::dump(temp_str, cond));
     }
 
     return cond;
@@ -266,17 +258,14 @@ OFCondition DcmQueryRetrieveSCP::echoSCP(T_ASC_Association * assoc, T_DIMSE_C_Ec
 {
     OFCondition cond = EC_Normal;
 
-    if (options_.verbose_) {
-        printf("Received Echo SCP RQ: MsgID %d\n",
-                req->MessageID);
-    }
+    DCMQRDB_INFO("Received Echo SCP RQ: MsgID " << req->MessageID);
     /* we send an echo response back */
     cond = DIMSE_sendEchoResponse(assoc, presId,
         req, STATUS_Success, NULL);
 
     if (cond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("echoSCP: Echo Response Failed:");
-        DimseCondition::dump(cond);
+        OFString temp_str;
+        DCMQRDB_ERROR("echoSCP: Echo Response Failed:\n" << DimseCondition::dump(temp_str, cond));
     }
     return cond;
 }
@@ -295,16 +284,13 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
     ASC_getAPTitles(assoc->params, NULL, aeTitle, NULL);
     context.setOurAETitle(aeTitle);
 
-    if (options_.verbose_) {
-        printf("Received Find SCP: ");
-        DIMSE_printCFindRQ(stdout, request);
-    }
+    OFString temp_str;
+    DCMQRDB_INFO("Received Find SCP:\n" << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
     cond = DIMSE_findProvider(assoc, presID, request,
         findCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("Find SCP Failed:");
-        DimseCondition::dump(cond);
+        DCMQRDB_ERROR("Find SCP Failed:\n" << DimseCondition::dump(temp_str, cond));
     }
     return cond;
 }
@@ -321,16 +307,13 @@ OFCondition DcmQueryRetrieveSCP::getSCP(T_ASC_Association * assoc, T_DIMSE_C_Get
     ASC_getAPTitles(assoc->params, NULL, aeTitle, NULL);
     context.setOurAETitle(aeTitle);
 
-    if (options_.verbose_) {
-        printf("Received Get SCP: ");
-        DIMSE_printCGetRQ(stdout, request);
-    }
+    OFString temp_str;
+    DCMQRDB_INFO("Received Get SCP:\n" << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
     cond = DIMSE_getProvider(assoc, presID, request,
         getCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("Get SCP Failed:");
-        DimseCondition::dump(cond);
+        DCMQRDB_ERROR("Get SCP Failed:\n" << DimseCondition::dump(temp_str, cond));
     }
     return cond;
 }
@@ -347,16 +330,13 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
     ASC_getAPTitles(assoc->params, NULL, aeTitle, NULL);
     context.setOurAETitle(aeTitle);
 
-    if (options_.verbose_) {
-        printf("Received Move SCP: ");
-        DIMSE_printCMoveRQ(stdout, request);
-    }
+    OFString temp_str;
+    DCMQRDB_INFO("Received Move SCP:\n" << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
     cond = DIMSE_moveProvider(assoc, presID, request,
         moveCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("Move SCP Failed:");
-        DimseCondition::dump(cond);
+        DCMQRDB_ERROR("Move SCP Failed:" << DimseCondition::dump(temp_str, cond));
     }
     return cond;
 }
@@ -374,10 +354,8 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 
     DcmQueryRetrieveStoreContext context(dbHandle, options_, STATUS_Success, &dcmff, correctUIDPadding);
 
-    if (options_.verbose_) {
-        printf("Received Store SCP: ");
-        DIMSE_printCStoreRQ(stdout, request);
-    }
+    OFString temp_str;
+    DCMQRDB_INFO("Received Store SCP:\n" << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
     if (!dcmIsaStorageSOPClassUID(request->AffectedSOPClassUID)) {
         /* callback will send back sop class not supported status */
@@ -392,7 +370,7 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
             request->AffectedSOPInstanceUID,
             imageFileName);
         if (dbcond.bad()) {
-            DcmQueryRetrieveOptions::errmsg("storeSCP: Database: makeNewStoreFileName Failed");
+            DCMQRDB_ERROR("storeSCP: Database: makeNewStoreFileName Failed");
             /* must still receive data */
             strcpy(imageFileName, NULL_DEVICE_NAME);
             /* callback will send back out of resources status */
@@ -409,7 +387,7 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 #endif
     if (lockfd < 0)
     {
-        DcmQueryRetrieveOptions::errmsg("storeSCP: file locking failed, cannot create file");
+        DCMQRDB_ERROR("storeSCP: file locking failed, cannot create file");
 
         /* must still receive data */
         strcpy(imageFileName, NULL_DEVICE_NAME);
@@ -445,15 +423,14 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
     }
 
     if (cond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("Store SCP Failed:");
-        DimseCondition::dump(cond);
+        DCMQRDB_ERROR("Store SCP Failed:\n" << DimseCondition::dump(temp_str, cond));
     }
     if (!options_.ignoreStoreData_ && (cond.bad() || (context.getStatus() != STATUS_Success)))
     {
       /* remove file */
       if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) // don't try to delete /dev/null
       {
-        if (options_.verbose_) fprintf(stderr, "Store SCP: Deleting Image File: %s\n", imageFileName);
+        DCMQRDB_INFO("Store SCP: Deleting Image File: %s" << imageFileName);
         unlink(imageFileName);
       }
       dbHandle.pruneInvalidRecords();
@@ -492,36 +469,34 @@ OFCondition DcmQueryRetrieveSCP::refuseAssociation(T_ASC_Association ** assoc, C
 {
     OFCondition cond = EC_Normal;
     T_ASC_RejectParameters rej;
+    OFString temp_str;
 
-    if (options_.verbose_)
+    const char *reason_string;
+    switch (reason)
     {
-      printf("Refusing Association (");
-      switch (reason)
-      {
-        case CTN_TooManyAssociations:
-            printf("TooManyAssociations");
-            break;
-        case CTN_CannotFork:
-            printf("CannotFork");
-            break;
-        case CTN_BadAppContext:
-            printf("BadAppContext");
-            break;
-        case CTN_BadAEPeer:
-            printf("BadAEPeer");
-            break;
-        case CTN_BadAEService:
-            printf("BadAEService");
-            break;
-        case CTN_NoReason:
-            printf("NoReason");
-            break;
-        default:
-            printf("???");
-            break;
-      }
-      printf(")\n");
+      case CTN_TooManyAssociations:
+          reason_string = "TooManyAssociations";
+          break;
+      case CTN_CannotFork:
+          reason_string = "CannotFork";
+          break;
+      case CTN_BadAppContext:
+          reason_string = "BadAppContext";
+          break;
+      case CTN_BadAEPeer:
+          reason_string = "BadAEPeer";
+          break;
+      case CTN_BadAEService:
+          reason_string = "BadAEService";
+          break;
+      case CTN_NoReason:
+          reason_string = "NoReason";
+        break;
+      default:
+          reason_string = "???";
+          break;
     }
+    DCMQRDB_INFO("Refusing Association (" << reason_string << ")");
 
     switch (reason)
     {
@@ -562,21 +537,18 @@ OFCondition DcmQueryRetrieveSCP::refuseAssociation(T_ASC_Association ** assoc, C
 
     if (cond.bad())
     {
-      fprintf(stderr, "Association Reject Failed:\n");
-      DimseCondition::dump(cond);
+      DCMQRDB_ERROR("Association Reject Failed:\n" << DimseCondition::dump(temp_str, cond));
     }
 
     cond = ASC_dropAssociation(*assoc);
     if (cond.bad())
     {
-      fprintf(stderr, "Cannot Drop Association:\n");
-      DimseCondition::dump(cond);
+      DCMQRDB_ERROR("Cannot Drop Association:\n" << DimseCondition::dump(temp_str, cond));
     }
     cond = ASC_destroyAssociation(assoc);
     if (cond.bad())
     {
-      fprintf(stderr, "Cannot Destroy Association:\n");
-      DimseCondition::dump(cond);
+      DCMQRDB_ERROR("Cannot Destroy Association:\n" << DimseCondition::dump(temp_str, cond));
     }
 
     return cond;
@@ -588,6 +560,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     OFCondition cond = EC_Normal;
     int i;
     T_ASC_PresentationContextID movepid, findpid;
+    OFString temp_str;
     struct { const char *moveSyntax, *findSyntax; } queryRetrievePairs[] =
     {
     { UID_MOVEPatientRootQueryRetrieveInformationModel,
@@ -799,8 +772,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     (const char**)selectedNonStorageSyntaxes, numberOfSelectedNonStorageSyntaxes,
     (const char**)transferSyntaxes, numTransferSyntaxes);
     if (cond.bad()) {
-    DcmQueryRetrieveOptions::errmsg("Cannot accept presentation contexts:");
-    DimseCondition::dump(cond);
+        DCMQRDB_ERROR("Cannot accept presentation contexts:\n" << DimseCondition::dump(temp_str, cond));
     }
 
     /*  accept any of the storage syntaxes */
@@ -812,8 +784,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         dcmAllStorageSOPClassUIDs, numberOfAllDcmStorageSOPClassUIDs,
         (const char**)transferSyntaxes, DIM_OF(transferSyntaxes));
       if (cond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("Cannot accept presentation contexts:");
-        DimseCondition::dump(cond);
+        DCMQRDB_ERROR("Cannot accept presentation contexts:\n" << DimseCondition::dump(temp_str, cond));
       }
     } else {
       /* accept storage syntaxes with proposed role */
@@ -861,9 +832,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
      */
     if (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PrivateShutdownSOPClass))
     {
-      if (options_.verbose_) {
-        printf("Shutting down server ... (negotiated private \"shut down\" SOP class)\n");
-      }
+      DCMQRDB_INFO("Shutting down server ... (negotiated private \"shut down\" SOP class)");
       refuseAssociation(&assoc, CTN_NoReason);
       return ASC_SHUTDOWNAPPLICATION;
     }
@@ -894,7 +863,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
             ASC_refusePresentationContext(assoc->params,
                 movepid, ASC_P_USERREJECTION);
             } else {
-            DcmQueryRetrieveOptions::errmsg("WARNING: Move PresCtx but no Find (accepting for now)");
+            DCMQRDB_ERROR("Move PresCtx but no Find (accepting for now)");
         }
         }
         }
@@ -925,6 +894,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
 OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 {
     OFCondition cond = EC_Normal;
+    OFString temp_str;
 #ifdef HAVE_FORK
     int                 pid;
 #endif
@@ -949,39 +919,23 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         cond = ASC_receiveAssociation(theNet, &assoc, (int)options_.maxPDU_);
         if (cond.bad())
         {
-          if (options_.verbose_)
-          {
-            DcmQueryRetrieveOptions::errmsg("Failed to receive association:");
-            DimseCondition::dump(cond);
-          }
+          DCMQRDB_INFO("Failed to receive association:\n" << DimseCondition::dump(temp_str, cond));
           go_cleanup = OFTrue;
         }
     } else return EC_Normal;
 
     if (! go_cleanup)
     {
-        if (options_.verbose_)
-        {
-            time_t t = time(NULL);
-            printf("Association Received (%s:%s -> %s) %s",
-               assoc->params->DULparams.callingPresentationAddress,
-               assoc->params->DULparams.callingAPTitle,
-               assoc->params->DULparams.calledAPTitle,
-               ctime(&t));
-        }
+        time_t t = time(NULL);
+        DCMQRDB_INFO("Association Received (" << assoc->params->DULparams.callingPresentationAddress
+                << ":" << assoc->params->DULparams.callingAPTitle << " -> "
+                << assoc->params->DULparams.calledAPTitle << ") " << ctime(&t));
 
-        if (options_.debug_)
-        {
-          printf("Parameters:\n");
-          ASC_dumpParameters(assoc->params, COUT);
-        }
+        DCMQRDB_DEBUG("Parameters:\n" << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
 
         if (options_.refuse_)
         {
-            if (options_.verbose_)
-            {
-                printf("Refusing Association (forced via command line)\n");
-            }
+            DCMQRDB_INFO("Refusing Association (forced via command line)");
             cond = refuseAssociation(&assoc, CTN_NoReason);
             go_cleanup = OFTrue;
         }
@@ -994,10 +948,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         if (cond.bad() || strcmp(buf, DICOM_STDAPPLICATIONCONTEXT) != 0)
         {
             /* reject: the application context name is not supported */
-            if (options_.verbose_)
-            {
-                DcmQueryRetrieveOptions::errmsg("Bad AppContextName: %s", buf);
-            }
+            DCMQRDB_INFO("Bad AppContextName: " << buf);
             cond = refuseAssociation(&assoc, CTN_BadAppContext);
             go_cleanup = OFTrue;
         }
@@ -1010,10 +961,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         strlen(assoc->params->theirImplementationClassUID) == 0)
         {
             /* reject: no implementation Class UID provided */
-            if (options_.verbose_)
-            {
-                DcmQueryRetrieveOptions::errmsg("No implementation Class UID provided");
-            }
+            DCMQRDB_INFO("No implementation Class UID provided");
             cond = refuseAssociation(&assoc, CTN_NoReason);
             go_cleanup = OFTrue;
         }
@@ -1052,23 +1000,17 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         cond = ASC_acknowledgeAssociation(assoc);
         if (cond.bad())
         {
-            DimseCondition::dump(cond);
+            DCMQRDB_ERROR(DimseCondition::dump(temp_str, cond));
             go_cleanup = OFTrue;
         }
     }
 
     if (! go_cleanup)
     {
-
-        if (options_.verbose_)
-        {
-            printf("Association Acknowledged (Max Send PDV: %lu)\n",
-                   assoc->sendPDVLength);
-            if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
-                printf("    (but no valid presentation contexts)\n");
-            if (options_.debug_)
-                ASC_dumpParameters(assoc->params, COUT);
-        }
+        DCMQRDB_INFO("Association Acknowledged (Max Send PDV: " << assoc->sendPDVLength << ")");
+        if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
+            DCMQRDB_INFO("    (but no valid presentation contexts)");
+        DCMQRDB_DEBUG(ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
 
         if (options_.singleProcess_)
         {
@@ -1082,8 +1024,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             pid = (int)(fork());
             if (pid < 0)
             {
-                DcmQueryRetrieveOptions::errmsg("Cannot create association sub-process: %s",
-                   strerror(errno));
+                DCMQRDB_ERROR("Cannot create association sub-process: "
+                   << strerror(errno));
                 cond = refuseAssociation(&assoc, CTN_CannotFork);
                 go_cleanup = OFTrue;
             }
@@ -1111,14 +1053,12 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         cond = ASC_dropAssociation(assoc);
         if (cond.bad())
         {
-            DcmQueryRetrieveOptions::errmsg("Cannot Drop Association:");
-            DimseCondition::dump(cond);
+            DCMQRDB_ERROR("Cannot Drop Association:\n" << DimseCondition::dump(temp_str, cond));
         }
         cond = ASC_destroyAssociation(&assoc);
         if (cond.bad())
         {
-            DcmQueryRetrieveOptions::errmsg("Cannot Destroy Association:");
-            DimseCondition::dump(cond);
+            DCMQRDB_ERROR("Cannot Destroy Association:\n" << DimseCondition::dump(temp_str, cond));
         }
     }
 
@@ -1127,26 +1067,27 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 }
 
 
-void DcmQueryRetrieveSCP::cleanChildren(OFBool verbose)
+void DcmQueryRetrieveSCP::cleanChildren()
 {
-  processtable_.cleanChildren(verbose);
+  processtable_.cleanChildren();
 }
 
 
 void DcmQueryRetrieveSCP::setDatabaseFlags(
   OFBool dbCheckFindIdentifier,
-  OFBool dbCheckMoveIdentifier,
-  OFBool dbDebug)
+  OFBool dbCheckMoveIdentifier)
 {
   dbCheckFindIdentifier_ = dbCheckFindIdentifier;
   dbCheckMoveIdentifier_ = dbCheckMoveIdentifier;
-  dbDebug_ = dbDebug;
 }
 
 
 /*
  * CVS Log
  * $Log: dcmqrsrv.cc,v $
+ * Revision 1.6  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.5  2009-08-21 09:54:11  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

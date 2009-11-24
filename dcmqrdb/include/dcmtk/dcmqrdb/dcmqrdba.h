@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveDatabaseHandle
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:50:07 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -195,11 +195,6 @@ public:
    */
   virtual OFCondition pruneInvalidRecords() = 0;
 
-  /** set the debug level.
-   *  @param debug level, zero or nonzero
-   */
-  virtual void setDebugLevel(int debugLevel) = 0;
-
   /** Configure the DB module to perform (or not perform) checking
    *  of FIND and MOVE request identifiers. Default is no checking.
    *  @param checkFind checking for C-FIND parameters
@@ -240,6 +235,9 @@ public:
 /*
  * CVS Log
  * $Log: dcmqrdba.h,v $
+ * Revision 1.6  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.5  2009-08-21 09:50:07  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveIndexDatabaseHandle
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:50:07 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,11 +123,6 @@ public:
    */
    ~DcmQueryRetrieveIndexDatabaseHandle();
   
-  /** set the debug level.
-   *  @param debug level, zero or nonzero
-   */
-  void setDebugLevel(int debugLevel);
-    
   /** Configure the DB module to perform (or not perform) checking
    *  of FIND and MOVE request identifiers. Default is no checking.
    *  @param checkFind checking for C-FIND parameters
@@ -267,10 +262,6 @@ public:
 
   // methods not inherited from the base class
 
-  /** return current debug level
-   */
-  int getDebugLevel() const;
-
   /** enable/disable the DB quota system (default: enabled) which causes images
    *  to be deleted if certain boundaries (number of studies, bytes per study) are exceeded.
    */
@@ -365,7 +356,6 @@ private:
   void makeResponseList(DB_Private_Handle *phandle, IdxRecord *idxRec);
   int matchStudyUIDInStudyDesc (StudyDescRecord *pStudyDesc, char *StudyUID, int maxStudiesAllowed);
   OFCondition checkupinStudyDesc(StudyDescRecord *pStudyDesc, char *StudyUID, long imageSize);
-  void dbdebug(int level, const char* format, ...) const;
 
   OFCondition hierarchicalCompare (
       DB_Private_Handle *phandle,
@@ -400,9 +390,6 @@ private:
 
   /// helper object for file name creation
   OFFilenameCreator fnamecreator;
-
-  /// current debug level
-  int debugLevel;
 
 };
 
@@ -446,6 +433,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrdbi.h,v $
+ * Revision 1.7  2009-11-24 10:10:42  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.6  2009-08-21 09:50:07  joergr
  * Replaced tabs by spaces and updated copyright date.
  *
