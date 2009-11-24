@@ -23,9 +23,9 @@
  *    sample application that reads a DICOM image and creates
  *    a matching presentation state.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:48:48 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:56 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,20 +44,21 @@
 #include <GUSI.h>
 #endif
 
-#include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/dcdebug.h"
-#include "dcmtk/dcmpstat/dcmpstat.h"
-#include "dcmtk/dcmpstat/dvpshlp.h"
-#include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
 #include "dcmtk/dcmnet/dul.h"
+#include "dcmtk/dcmpstat/dcmpstat.h"
+#include "dcmtk/dcmpstat/dvpshlp.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmpsmk"
+
+static OFLogger dcmpsmkLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -82,8 +83,6 @@ int main(int argc, char *argv[])
     dcmTCPWrapperDaemonName.set(NULL);
 #endif
 
-    int opt_debugMode = 0;
-
     // Variables for input parameters
     const char* opt_ifname = NULL;
     E_FileReadMode opt_readMode = ERM_autoDetect;
@@ -91,7 +90,6 @@ int main(int argc, char *argv[])
 
     // Variables for output parameters
     const char* opt_ofname = NULL;
-    OFBool verbosemode = OFFalse;
     E_TransferSyntax opt_oxfer = EXS_Unknown;
     E_GrpLenEncoding oglenc = EGL_recalcGL;        // currently not available as command line option
     E_EncodingType oenctype = EET_ExplicitLength;  // currently not available as command line option
@@ -111,8 +109,6 @@ int main(int argc, char *argv[])
     const char *          opt_filesetID          = NULL;
     const char *          opt_filesetUID         = NULL;
 
-    SetDebugLevel((0));
-
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Create DICOM grayscale softcopy presentation state", rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
@@ -124,9 +120,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--arguments",                      "print expanded command line arguments");
-      cmd.addOption("--verbose",              "-v",     "verbose mode, print processing details");
-      cmd.addOption("--debug",                "-d",     "debug mode, print debug information");
+      OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
@@ -180,10 +174,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -204,8 +194,7 @@ int main(int argc, char *argv[])
       cmd.getParam(1, opt_ifname);
       cmd.getParam(cmd.getParamCount(), opt_ofname);
 
-      if (cmd.findOption("--verbose")) verbosemode=OFTrue;
-      if (cmd.findOption("--debug")) opt_debugMode=3;
+      OFLog::configureFromCommandLine(cmd, app);
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
@@ -289,45 +278,39 @@ int main(int argc, char *argv[])
 
     }
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmpsmkLogger, rcsid << OFendl);
 
     // additional checks
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << "invalid input filename: <empty string>" << OFendl;
+        OFLOG_FATAL(dcmpsmkLogger, "invalid input filename: <empty string>");
         return 1;
     }
 
     if ((opt_ofname == NULL) || (strlen(opt_ofname) == 0))
     {
-        CERR << "invalid output filename: <empty string>" << OFendl;
+        OFLOG_FATAL(dcmpsmkLogger, "invalid output filename: <empty string>");
         return 1;
     }
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, "
+        OFLOG_WARN(dcmpsmkLogger, "no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // open input file
     DcmFileFormat fileformat;
 
-    if (verbosemode)
-        COUT << "read and interpret DICOM file "
-             << opt_ifname << OFendl;
-
+    OFLOG_INFO(dcmpsmkLogger, "read and interpret DICOM file " << opt_ifname);
 
     OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
-             << ": reading file: " <<  opt_ifname << OFendl;
+        OFLOG_FATAL(dcmpsmkLogger, error.text() << ": reading file: " << opt_ifname);
         return 1;
     }
 
@@ -335,26 +318,20 @@ int main(int argc, char *argv[])
 
     /* create presentation state */
     DcmPresentationState state;
-    if (verbosemode)
-    {
-        COUT << "creating presentation state object" << OFendl;
-    }
+    OFLOG_INFO(dcmpsmkLogger, "creating presentation state object");
 
     error = state.createFromImage(*dataset, overlayActivation, voiActivation,
       curveActivation, shutterActivation, presentationActivation, layering, opt_aetitle, opt_filesetID, opt_filesetUID);
     if (error != EC_Normal)
     {
-        CERR << "Error: "
-             << error.text()
-             << ": creating presentation state from image file: " << opt_ifname << OFendl;
+        OFLOG_FATAL(dcmpsmkLogger, error.text() << ": creating presentation state from image file: " << opt_ifname);
         return 1;
     }
 
     /* add additional image references to pstate */
     if (cmd.getParamCount() > 2)
     {
-        if (verbosemode)
-            COUT << "adding additonal image reference(s)" << OFendl;
+        OFLOG_INFO(dcmpsmkLogger, "adding additonal image reference(s)");
         const int count = cmd.getParamCount();
         for (int i = 2; i < count; i++)
         {
@@ -382,21 +359,17 @@ int main(int argc, char *argv[])
     error = state.write(*dataset2, OFTrue);
     if (error != EC_Normal)
     {
-        CERR << "Error: "
-             << error.text()
-             << ": re-encoding presentation state : " <<  opt_ifname << OFendl;
+        OFLOG_FATAL(dcmpsmkLogger, error.text() << ": re-encoding presentation state : " << opt_ifname);
         return 1;
     }
 
     if (opt_oxfer == EXS_Unknown)
     {
-        if (verbosemode)
-            COUT << "set output transfersyntax to input transfer syntax\n";
+        OFLOG_INFO(dcmpsmkLogger, "set output transfersyntax to input transfer syntax");
         opt_oxfer = dataset->getOriginalXfer();
     }
 
-    if (verbosemode)
-        COUT << "Check if new output transfer syntax is possible\n";
+    OFLOG_INFO(dcmpsmkLogger, "Check if new output transfer syntax is possible");
 
     DcmXfer oxferSyn(opt_oxfer);
 
@@ -404,29 +377,24 @@ int main(int argc, char *argv[])
 
     if (dataset2->canWriteXfer(opt_oxfer))
     {
-        if (verbosemode)
-           COUT << "Output transfer syntax " << oxferSyn.getXferName()
-                << " can be written\n";
+        OFLOG_INFO(dcmpsmkLogger, "Output transfer syntax " << oxferSyn.getXferName()
+                << " can be written");
     } else {
-        CERR << "No conversion to transfer syntax " << oxferSyn.getXferName()
-             << " possible!\n";
+        OFLOG_FATAL(dcmpsmkLogger, "No conversion to transfer syntax " << oxferSyn.getXferName()
+             << " possible!");
         return 1;
     }
 
-    if (verbosemode)
-        COUT << "write converted DICOM file\n";
+    OFLOG_INFO(dcmpsmkLogger, "write converted DICOM file");
 
     error = fileformat2.saveFile(opt_ofname, opt_oxfer, oenctype, oglenc, opadenc, padlen, subPadlen);
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
-             << ": writing file: " <<  opt_ofname << OFendl;
+        OFLOG_FATAL(dcmpsmkLogger, error.text() << ": writing file: " <<  opt_ofname);
         return 1;
     }
 
-    if (verbosemode)
-        COUT << "conversion successful\n";
+    OFLOG_INFO(dcmpsmkLogger, "conversion successful");
 
     return 0;
 }
@@ -435,6 +403,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
+** Revision 1.28  2009-11-24 14:12:56  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.27  2009-08-21 09:48:48  joergr
 ** Removed unused option 'opt_oDataset'.
 **

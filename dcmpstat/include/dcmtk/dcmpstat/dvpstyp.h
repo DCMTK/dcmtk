@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *           DVPSPresentationLUTType, DVPSRotationType, 
  *           DVPSShutterType
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:10 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,28 +426,6 @@ enum DVPSDisplayTransform
   DVPSD_max=DVPSD_none
 };
 
-/** describes the different status levels used for the log file messages.
- *  The assigned values need to be the same as in OFLogFile:LF_Level!
- */
-enum DVPSLogMessageLevel
-{
-  /** no log messages (only used as a filter)
-   */  
-  DVPSM_none = 0,
-  /** only error messages
-   */  
-  DVPSM_error = 1,
-  /** warning messages (includes DVPSM_error)
-   */  
-  DVPSM_warning = 2,
-  /** informational messages (includes DVPSM_warning)
-   */  
-  DVPSM_informational = 3,
-  /** debug messages (includes DVPSM_informational)
-   */  
-  DVPSM_debug = 4
-};
-
 /** describes the result of an association negotiation
  */
 enum DVPSAssociationNegotiationResult
@@ -557,6 +535,9 @@ enum DVPSVerifyAndSignMode
 
 /*
  *  $Log: dvpstyp.h,v $
+ *  Revision 1.19  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.18  2005-12-08 16:04:10  meichel
  *  Changed include path schema for all DCMTK header files
  *

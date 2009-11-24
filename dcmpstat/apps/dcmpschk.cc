@@ -23,9 +23,9 @@
  *    VR and IOD checker for Presentation States
  *
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:12:53 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:56 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,9 +50,8 @@
 #include "dcmtk/ofstd/ofstring.h"      /* for class OFString */
 #include "dcmtk/ofstd/ofconapp.h"      /* for OFConsoleApplication */
 #include "dcmtk/dcmdata/dctk.h"        /* for class DcmDataset */
-#include "dcmtk/dcmdata/dcdebug.h"
-#include "dcmtk/dcmpstat/dcmpstat.h"   /* for DcmPresentationState */
 #include "dcmtk/dcmnet/dul.h"
+#include "dcmtk/dcmpstat/dcmpstat.h"   /* for DcmPresentationState */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>                      /* for zlibVersion() */
@@ -60,16 +59,13 @@
 
 #define OFFIS_CONSOLE_APPLICATION "dcmpschk"
 
+static OFLogger dcmpschkLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* command line options */
-static OFBool      opt_verbose          = OFFalse;   /* default: not verbose */
-static const char *opt_logfilename      = NULL;
 static const char *opt_filename         = NULL;
-static int         opt_debugMode        = 0;
-
-static STD_NAMESPACE ostream *logstream = &COUT;
 
 // ********************************************
 
@@ -96,12 +92,12 @@ enum ErrorMode
 #define MSGw_dubiousDate   "Warning: Dubious date (year before 1850 or after 2050)."
 
 void printVRError(
-  STD_NAMESPACE ostream& out,
   ErrorMode mode,
   const char *elementDescription,
   const DcmDictEntry* dictRef,
   const char *format)
 {
+  OFOStringStream out;
   if      (mode == EM_error)         out << MSGe_wrongDType << OFendl;
   else if (mode == EM_warning)       out << MSGw_wrongDType << OFendl;
   else if (mode == EM_informational) out << MSGi_wrongDType << OFendl;
@@ -123,11 +119,13 @@ void printVRError(
       out << format << OFendl;
     } else out << "(undefined)" << OFendl;
   }
-  out << OFendl;
+  out << OFStringStream_ends;
+  OFSTRINGSTREAM_GETSTR(out, tmp)
+  OFLOG_ERROR(dcmpschkLogger, tmp);
+  OFSTRINGSTREAM_FREESTR(tmp)
 }
 
 void printResult(
-  STD_NAMESPACE ostream& out,
   DcmStack& stack,
   OFBool showFullData)
 {
@@ -135,6 +133,8 @@ void printResult(
     if (n == 0) {
         return;
     }
+
+    OFString tmp;
 
     /* print the path leading up to the top stack elem */
     for (unsigned long i=n-1; i>=1; i--)
@@ -149,14 +149,13 @@ void printResult(
             sprintf(buf, "(%04x,%04x).",
                     (unsigned)dobj->getGTag(),
                     (unsigned)dobj->getETag());
-            out << buf;
+            tmp += buf;
         }
     }
 
     /* print the tag and its value */
     DcmObject *dobj = stack.top();
-    dobj->print(out, (showFullData ? 0 : DCMTypes::PF_shortenLongTagValues));
-
+    OFLOG_WARN(dcmpschkLogger, tmp << DcmObject::PrintHelper(*dobj, showFullData ? 0 : DCMTypes::PF_shortenLongTagValues));
 }
 
 OFBool isaStringVR(DcmVR& vr)
@@ -272,13 +271,11 @@ OFBool isaKnownPointer(DcmTag& t)
 }
 
 int checkelem(
-  STD_NAMESPACE ostream& out,
   DcmElement *elem,
   DcmXfer& oxfer,
   DcmStack& stack,
   OFBool showFullData,
-  int& dderrors,
-  OFBool /* verbose */)
+  int& dderrors)
 {
     DcmVR vr(elem->getVR());
     Uint32 len = elem->getLength();
@@ -294,21 +291,19 @@ int checkelem(
     */
     if (oxfer.isExplicitVR()) {
         if (!vr.isStandard() && !isaKnownPointer(tag)) {
-            out << MSG_invalidVR << OFendl
-                << "   Affected VR       : [" << vr.getVRName() << "]";
-            if (dictRef) out << ", should be ["
-                << dictRef->getVR().getVRName() << "] according to data dictionary.";
-            out << OFendl << "   Affected attribute: ";
-            printResult(out, stack, showFullData);
-            out << OFendl;
+            OFLOG_WARN(dcmpschkLogger, MSG_invalidVR << OFendl
+                << "   Affected VR       : [" << vr.getVRName() << "]"
+                << (dictRef ? OFString(", should be [")
+                    + dictRef->getVR().getVRName() + "] according to data dictionary." : "")
+                << OFendl << "   Affected attribute: ");
+            printResult(stack, showFullData);
             dderrors++;
         } else if (dictRef && !vr.isEquivalent(dictRef->getVR())) {
-            out << MSG_unexpectedVR << OFendl
+            OFLOG_WARN(dcmpschkLogger, MSG_unexpectedVR << OFendl
                 << "   Affected VR       : [" << vr.getVRName() << "], should be ["
                 << dictRef->getVR().getVRName() << "] according to data dictionary." << OFendl
-                << "   Affected attribute: ";
-            printResult(out, stack, showFullData);
-            out << OFendl;
+                << "   Affected attribute: ");
+            printResult(stack, showFullData);
             dderrors++;
         }
     }
@@ -321,23 +316,21 @@ int checkelem(
        */
        if ((dictRef)&&(vm < (Uint32)dictRef->getVMMin()))
        {
-           out << MSG_vmtoosmall << OFendl
+           OFLOG_WARN(dcmpschkLogger, MSG_vmtoosmall << OFendl
                << "   Affected VM       : " << vm << ", should be "
                << streamvm(dictRef) << " according to data dictionary."
-               << OFendl << "   Affected attribute: ";
-           printResult(out, stack, showFullData);
-           out << OFendl;
+               << OFendl << "   Affected attribute: ");
+           printResult(stack, showFullData);
            dderrors++;
        }
 
        if ((dictRef)&&(vm > (Uint32)dictRef->getVMMax()))
        {
-           out << MSG_vmtoolarge << OFendl
+           OFLOG_WARN(dcmpschkLogger, MSG_vmtoolarge << OFendl
                << "   Affected VM       : " << vm << ", should be "
                << streamvm(dictRef) << " according to data dictionary."
-               << OFendl << "   Affected attribute: ";
-           printResult(out, stack, showFullData);
-           out << OFendl;
+               << OFendl << "   Affected attribute: ");
+           printResult(stack, showFullData);
            dderrors++;
        }
 
@@ -352,38 +345,38 @@ int checkelem(
 
            char **fields = new char*[vm+1];
            if (fields == NULL) {
-               printResult(out, stack, showFullData);
-               out << "Internal error: out of memory (value multiplicity too large)" << OFendl;
+               printResult(stack, showFullData);
+               OFLOG_FATAL(dcmpschkLogger, "Internal error: out of memory (value multiplicity too large)");
            } else {
                int nfields = splitFields(value, fields, vm, '\\');
                if ((Uint32)nfields != vm) {
-                   printResult(out, stack, showFullData);
-                   out << "Internal error: splitFields inconsistency ("
-                       << nfields << "!=" << vm << ")" << OFendl;
+                   printResult(stack, showFullData);
+                   OFLOG_FATAL(dcmpschkLogger, "Internal error: splitFields inconsistency ("
+                       << nfields << "!=" << vm << ")");
                    exit(1);
                }
                for (i=0; (Uint32)i<vm; i++) {
                    char* s = fields[i];
                    int slen = strlen(s);
                    if ((Uint32)slen > vr.getMaxValueLength()) {
-                       out << MSG_lengthtoolarge << OFendl
+                       OFLOG_WARN(dcmpschkLogger, MSG_lengthtoolarge << OFendl
                            << "   Affected length   : " << slen << " bytes, should be "
-                           << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << OFendl;
-                    if (vm > 1) out << "   Affected value [" << i << "]: \"" << s << "\"" << OFendl;
-                       out << "   Affected attribute: ";
-                       printResult(out, stack, showFullData);
+                           << streamLengthOfValue(vr) << " for " << vr.getVRName() << ".");
+                       if (vm > 1)
+                         OFLOG_WARN(dcmpschkLogger, "   Affected value [" << i << "]: \"" << s << "\"");
+                       OFLOG_WARN(dcmpschkLogger, "   Affected attribute: ");
+                       printResult(stack, showFullData);
                     dderrors++;
-                    out << OFendl;
                    }
                    if ((Uint32)slen < vr.getMinValueLength()) {
-                       out << MSG_lengthtoosmall << OFendl
+                       OFLOG_WARN(dcmpschkLogger, MSG_lengthtoosmall << OFendl
                            << "   Affected length   : " << slen << " bytes, should be "
-                           << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << OFendl;
-                    if (vm > 1) out << "   Affected value [" << i << "]: \"" << s << "\"" << OFendl;
-                       out << "   Affected attribute: ";
-                       printResult(out, stack, showFullData);
+                           << streamLengthOfValue(vr) << " for " << vr.getVRName() << ".");
+                       if (vm > 1)
+                         OFLOG_WARN(dcmpschkLogger, "   Affected value [" << i << "]: \"" << s << "\"");
+                       OFLOG_WARN(dcmpschkLogger, "   Affected attribute: ");
+                       printResult(stack, showFullData);
                     dderrors++;
-                    out << OFendl;
                    }
 
                    delete[] fields[i];
@@ -395,22 +388,20 @@ int checkelem(
            Uint32 componentSize = len; /* vm is 0 if value field is too short, e.g. < 8 bytes for FD */
            if (vm>0) componentSize = len/vm;
            if (componentSize > vr.getMaxValueLength()) {
-               out << MSG_lengthtoolarge << OFendl
+               OFLOG_WARN(dcmpschkLogger, MSG_lengthtoolarge << OFendl
                    << "   Affected length   : " << componentSize << " bytes, should be "
                    << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << OFendl
-                   << "   Affected attribute: ";
-               printResult(out, stack, showFullData);
+                   << "   Affected attribute: ");
+               printResult(stack, showFullData);
             dderrors++;
-            out << OFendl;
         }
            if (componentSize < vr.getMinValueLength()) {
-               out << MSG_lengthtoosmall << OFendl
+               OFLOG_WARN(dcmpschkLogger, MSG_lengthtoosmall << OFendl
                    << "   Affected length   : " << componentSize << " bytes, should be "
                    << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << OFendl
-                   << "   Affected attribute: ";
-               printResult(out, stack, showFullData);
+                   << "   Affected attribute: ");
+               printResult(stack, showFullData);
             dderrors++;
-            out << OFendl;
            }
        }
 
@@ -429,7 +420,7 @@ int checkelem(
                 const int realVR = DcmElement::scanValue(value, "ae");
                 if (realVR != 13)
                 {
-                   printVRError(out, EM_error, value, dictRef, "all but control characters");
+                   printVRError(EM_error, value, dictRef, "all but control characters");
                    dderrors++;
                 }
               }
@@ -439,7 +430,7 @@ int checkelem(
                 const int realVR = DcmElement::scanValue(value, "as");
                 if (realVR != 1)
                 {
-                   printVRError(out, EM_error, value, dictRef, "[0-9]{3}[DWMY]");
+                   printVRError(EM_error, value, dictRef, "[0-9]{3}[DWMY]");
                    dderrors++;
                 }
               }
@@ -449,7 +440,7 @@ int checkelem(
                 const int realVR = DcmElement::scanValue(value, "cs");
                 if (realVR != 10)
                 {
-                   printVRError(out, EM_error, value, dictRef, "[0-9A-Z _]+");
+                   printVRError(EM_error, value, dictRef, "[0-9A-Z _]+");
                    dderrors++;
                 }
              }
@@ -462,16 +453,16 @@ int checkelem(
                   switch (realVR)
                   {
                     case 3:
-                      printVRError(out, EM_warning, value, dictRef, NULL);
+                      printVRError(EM_warning, value, dictRef, NULL);
                       dderrors++;
                       break;
                     case 17:
-                      out << MSGw_dubiousDate << OFendl;
-                      printVRError(out, EM_ok, value, dictRef, NULL);
+                      OFLOG_WARN(dcmpschkLogger, MSGw_dubiousDate);
+                      printVRError(EM_ok, value, dictRef, NULL);
                       dderrors++;
                       break;
                     default:
-                      printVRError(out, EM_error, value, dictRef, "[0-9]{8} with valid values for year, month and day");
+                      printVRError(EM_error, value, dictRef, "[0-9]{8} with valid values for year, month and day");
                       dderrors++;
                       break;
                   }
@@ -483,7 +474,7 @@ int checkelem(
                 const int realVR = DcmElement::scanValue(value, "ds");
                 if (realVR != 6)
                 {
-                   printVRError(out, EM_error, value, dictRef, "([\\-\\+]?[0-9]*[\\.]?[0-9]+)|([\\-\\+]?[0-9][\\.]?[0-9]+[Ee][\\+\\-][0-9]+)");
+                   printVRError(EM_error, value, dictRef, "([\\-\\+]?[0-9]*[\\.]?[0-9]+)|([\\-\\+]?[0-9][\\.]?[0-9]+[Ee][\\+\\-][0-9]+)");
                    dderrors++;
                 }
               }
@@ -495,11 +486,11 @@ int checkelem(
                 {
                   if (realVR == 18)
                   {
-                     out << MSGw_dubiousDate << OFendl;
-                     printVRError(out, EM_ok, value, dictRef, NULL);
+                     OFLOG_WARN(dcmpschkLogger, MSGw_dubiousDate);
+                     printVRError(EM_ok, value, dictRef, NULL);
                      dderrors++;
                   } else {
-                     printVRError(out, EM_error, value, dictRef, "[0-9]{8}[0-9]{2}([0-9]{2}([0-9]{2}(\\.[0-9]{1,6})?)?)?([\\+\\-][0-9]{4})?");
+                     printVRError(EM_error, value, dictRef, "[0-9]{8}[0-9]{2}([0-9]{2}([0-9]{2}(\\.[0-9]{1,6})?)?)?([\\+\\-][0-9]{4})?");
                      dderrors++;
                   }
                 }
@@ -510,7 +501,7 @@ int checkelem(
                 const int realVR = DcmElement::scanValue(value, "is");
                 if (realVR != 8)
                 {
-                   printVRError(out, EM_error, value, dictRef, "[\\+\\-]?[0-9]+ in the range -2^31 .. 2^31-1");
+                   printVRError(EM_error, value, dictRef, "[\\+\\-]?[0-9]+ in the range -2^31 .. 2^31-1");
                    dderrors++;
                 }
               }
@@ -521,7 +512,7 @@ int checkelem(
                 const int realVR = DcmElement::scanValue(value, "lo");
                 if (realVR != 12)
                 {
-                   printVRError(out, EM_error, value, dictRef, "all but '\\' and control characters");
+                   printVRError(EM_error, value, dictRef, "all but '\\' and control characters");
                    dderrors++;
                 }
               }
@@ -533,7 +524,7 @@ int checkelem(
                 const int realVR = DcmElement::scanValue(value, "lt");
                 if (realVR != 14)
                 {
-                   printVRError(out, EM_error, value, dictRef, "all");
+                   printVRError(EM_error, value, dictRef, "all");
                    dderrors++;
                 }
               }
@@ -545,10 +536,10 @@ int checkelem(
                 {
                    if (realVR == 15) /* OLD_PN */
                    {
-                     printVRError(out, EM_warning, value, dictRef, NULL);
+                     printVRError(EM_warning, value, dictRef, NULL);
                      dderrors++;
                    } else {
-                     printVRError(out, EM_error, value, dictRef, "{all}*([\\^]{all}*([\\^]{all}*([\\^]{all}*(\\^{all}*)?)?)?)?");
+                     printVRError(EM_error, value, dictRef, "{all}*([\\^]{all}*([\\^]{all}*([\\^]{all}*(\\^{all}*)?)?)?)?");
                      dderrors++;
                    }
                 }
@@ -561,10 +552,10 @@ int checkelem(
                 {
                    if (realVR == 5)
                    {
-                     printVRError(out, EM_warning, value, dictRef, NULL);
+                     printVRError(EM_warning, value, dictRef, NULL);
                      dderrors++;
                    } else {
-                     printVRError(out, EM_error, value, dictRef, "[0-9]{2}([0-9]{2}([0-9]{2}(\\.[0-9]{1,6})?)?)? with valid values for hour, minute and second");
+                     printVRError(EM_error, value, dictRef, "[0-9]{2}([0-9]{2}([0-9]{2}(\\.[0-9]{1,6})?)?)? with valid values for hour, minute and second");
                      dderrors++;
                    }
                 }
@@ -575,7 +566,7 @@ int checkelem(
                 const int realVR = DcmElement::scanValue(value, "ui");
                 if (realVR != 9)
                 {
-                   printVRError(out, EM_error, value, dictRef, "([0-9]+\\.)*[0-9]+ without any leading zeroes");
+                   printVRError(EM_error, value, dictRef, "([0-9]+\\.)*[0-9]+ without any leading zeroes");
                    dderrors++;
                 }
               }
@@ -592,13 +583,11 @@ int checkelem(
 }
 
 int checkitem(
-  STD_NAMESPACE ostream& out,
   DcmItem *item,
   DcmXfer& oxfer,
   DcmStack& stack,
   OFBool showFullData,
-  int& dderrors,
-  OFBool verbose)
+  int& dderrors)
 {
 
     if (item == NULL) {
@@ -613,7 +602,7 @@ int checkitem(
         DcmElement *elem = item->getElement(i);
 
         stack.push(elem);
-        checkelem(out, elem, oxfer, stack, showFullData, dderrors, verbose);
+        checkelem(elem, oxfer, stack, showFullData, dderrors);
         stack.pop();
 
         if (elem->ident() == EVR_SQ) {
@@ -622,7 +611,7 @@ int checkitem(
             for (unsigned long j=0; j<nitems; j++) {
                 /* check each item.  an item is just another dataset */
                 stack.push(seq);
-                checkitem(out, seq->getItem(j), oxfer, stack, showFullData, dderrors, verbose);
+                checkitem(seq->getItem(j), oxfer, stack, showFullData, dderrors);
                 stack.pop();
             }
         }
@@ -631,29 +620,27 @@ int checkitem(
 }
 
 int dcmchk(
-  STD_NAMESPACE ostream& out,
   const char* ifname,
   E_FileReadMode readMode,
   E_TransferSyntax xfer,
   OFBool showFullData,
   OFBool loadAllDataInMemory,
-  int& dderrors,
-  OFBool verbose)
+  int& dderrors)
 {
     DcmFileFormat *ds = new DcmFileFormat();
 
     OFCondition cond = ds->loadFile(ifname, xfer, EGL_noChange, DCM_MaxReadLength, readMode);
     if (! cond.good())
     {
-      out << "Error: " << cond.text() << " reading file: " << ifname << OFendl;
+      OFLOG_ERROR(dcmpschkLogger, cond.text() << " reading file: " << ifname);
     }
 
     if (loadAllDataInMemory) {
         ds->loadAllDataIntoMemory();
         if (ds->error() != EC_Normal)
         {
-           out << "Error: " << ds->error().text()
-                << " reading file: " << ifname << OFendl;
+            OFLOG_ERROR(dcmpschkLogger, ds->error().text()
+                << " reading file: " << ifname);
             return 1;
         }
     }
@@ -665,11 +652,11 @@ int dcmchk(
     if (mi->card() > 0)
     {
       // we only check the meta-header if there is something to check
-      checkitem(out, mi, oxfer, stack, showFullData, dderrors, verbose);
+      checkitem(mi, oxfer, stack, showFullData, dderrors);
     }
 
     oxfer = ds->getDataset()->getOriginalXfer();
-    checkitem(out, ds->getDataset(),  oxfer, stack, showFullData, dderrors, verbose);
+    checkitem(ds->getDataset(), oxfer, stack, showFullData, dderrors);
 
     delete ds;
 
@@ -678,40 +665,47 @@ int dcmchk(
 
 //*********************************************************
 
-static void printAttribute(
-  STD_NAMESPACE ostream& out,
+static OFString printAttribute(
+  OFString &ret,
   DcmItem* dset,
   const DcmTagKey& key)
 {
     DcmElement *elem = NULL;
     DcmStack stack;
     OFCondition ec = EC_Normal;
+    OFOStringStream str;
 
     ec = dset->search(key, stack, ESM_fromHere, OFFalse);
     elem = (DcmElement*) stack.top();
-    elem->print(out, DCMTypes::PF_shortenLongTagValues);
+    if (elem)
+        elem->print(str, DCMTypes::PF_shortenLongTagValues);
+    else
+        str << "<Attribute not found>";
+    str << OFStringStream_ends;
+
+    OFSTRINGSTREAM_GETSTR(str, tmp)
+    ret = tmp;
+    OFSTRINGSTREAM_FREESTR(tmp)
+    return ret;
 }
 
 static OFBool
 chkType1AttributeExistance(
-  STD_NAMESPACE ostream& out,
   DcmItem* dset,
   const DcmTagKey& key)
 {
     OFBool found = OFTrue;
     if (!dset->tagExistsWithValue(key)) {
         DcmTag t(key);
-        out << MSGe_missingAtt << OFendl
+        OFLOG_WARN(dcmpschkLogger, MSGe_missingAtt << OFendl
             << "   Affected attribute: " << t.getXTag()
-            << " " << t.getTagName() << OFendl;
-        out << OFendl;
+            << " " << t.getTagName() << OFendl);
         found = OFFalse;
     }
     return found;
 }
 
 int dcmchkMetaHeader(
-  STD_NAMESPACE ostream& out,
   DcmMetaInfo* meta,
   DcmDataset* dset)
 {
@@ -722,6 +716,7 @@ int dcmchkMetaHeader(
     }
 
     int nErrs = 0;
+    OFString tmp_str;
 
     /*
     ** The meta-header should use the LittleEndianExplicit transfer syntax
@@ -729,9 +724,9 @@ int dcmchkMetaHeader(
     if (meta->getOriginalXfer() != EXS_LittleEndianExplicit) {
         DcmXfer used(meta->getOriginalXfer());
         DcmXfer expected(EXS_LittleEndianExplicit);
-        out << MSGe_mhxferError << OFendl
+        OFLOG_WARN(dcmpschkLogger, MSGe_mhxferError << OFendl
             << "    Expected: " << expected.getXferName() << OFendl
-            << "    Used:     " << used.getXferName() << OFendl << OFendl;
+            << "    Used:     " << used.getXferName() << OFendl);
         nErrs++;
     }
 
@@ -741,7 +736,7 @@ int dcmchkMetaHeader(
 
     // examine the FileMetaInformationVersion
     DcmTagKey fmiv(DCM_FileMetaInformationVersion);
-    if (chkType1AttributeExistance(out, meta, fmiv)) {
+    if (chkType1AttributeExistance(meta, fmiv)) {
         Uint8 b0 = 0xff;
         Uint8 b1 = 0xff;
         // get bytes
@@ -749,11 +744,10 @@ int dcmchkMetaHeader(
         meta->findAndGetUint8(fmiv, b1, 1);
         // we expect 0x00/0x01 for the version
         if ((b0 != 0x00) || (b1 != 0x01)) {
-            out << MSGe_wrongAtt << OFendl
-                << "   Invalid FileMetaInformationVersion (expected: 00\\01)"
-                << OFendl << "   Affected attribute: " << OFendl << "      ";
-            printAttribute(out, meta, fmiv);
-            out << OFendl;
+            OFLOG_WARN(dcmpschkLogger, MSGe_wrongAtt << OFendl
+                << "   Invalid FileMetaInformationVersion (expected: 00\\01)" << OFendl
+                << "   Affected attribute: " << OFendl
+                << "      " << printAttribute(tmp_str, meta, fmiv));
             nErrs++;
         }
     } else {
@@ -762,7 +756,7 @@ int dcmchkMetaHeader(
 
     // examine the MediaStorageSOPClassUID
     DcmTagKey msscuid(DCM_MediaStorageSOPClassUID);
-    if (chkType1AttributeExistance(out, meta, msscuid)) {
+    if (chkType1AttributeExistance(meta, msscuid)) {
         OFString metaHeaderClassUID;
         meta->findAndGetOFStringArray(msscuid, metaHeaderClassUID);
         // should be the same as SOPClassUID in the dataset
@@ -770,22 +764,19 @@ int dcmchkMetaHeader(
             OFString datasetClassUID;
             dset->findAndGetOFStringArray(DCM_SOPClassUID, datasetClassUID);
             if (metaHeaderClassUID != datasetClassUID) {
-                out << MSGe_wrongAtt << OFendl
-                    << "   Inconsistent SOP class information"
-                << OFendl << "   Affected attributes: " << OFendl << "      ";
-                printAttribute(out, meta, msscuid);
-                out << "      ";
-                printAttribute(out, dset, DCM_SOPClassUID);
-                out << OFendl;
+                OFLOG_WARN(dcmpschkLogger, MSGe_wrongAtt << OFendl
+                    << "   Inconsistent SOP class information" << OFendl
+                    << "   Affected attributes: " << OFendl
+                    << "      " << printAttribute(tmp_str, meta, msscuid) << OFendl
+                    << "      " << printAttribute(tmp_str, dset, DCM_SOPClassUID));
                 nErrs++;
             }
         }
         if (!dcmFindNameOfUID(metaHeaderClassUID.c_str())) {
-            out << MSGe_wrongAtt << OFendl
-                << "   Unknown SOP Class"
-                << OFendl << "   Affected attribute: " << OFendl << "      ";
-            printAttribute(out, meta, msscuid);
-            out << OFendl;
+            OFLOG_WARN(dcmpschkLogger, MSGe_wrongAtt << OFendl
+                << "   Unknown SOP Class" << OFendl
+                << "   Affected attribute: " << OFendl
+                << "      " << printAttribute(tmp_str, meta, msscuid));
             nErrs++;
         }
     } else {
@@ -794,7 +785,7 @@ int dcmchkMetaHeader(
 
     // Examine MediaStorageSOPInstanceUID
     DcmTagKey mssiuid(DCM_MediaStorageSOPInstanceUID);
-    if (chkType1AttributeExistance(out, meta, mssiuid)) {
+    if (chkType1AttributeExistance(meta, mssiuid)) {
         OFString metaHeaderInstanceUID;
         meta->findAndGetOFStringArray(mssiuid, metaHeaderInstanceUID);
         // should be the same as SOPInstanceUID in the dataset
@@ -802,13 +793,11 @@ int dcmchkMetaHeader(
             OFString datasetInstanceUID;
             dset->findAndGetOFStringArray(DCM_SOPInstanceUID, datasetInstanceUID);
             if (metaHeaderInstanceUID != datasetInstanceUID) {
-                out << MSGe_wrongAtt << OFendl
-                    << "   Inconsistent SOP instance information"
-                << OFendl << "   Affected attributes: " << OFendl << "      ";
-                printAttribute(out, meta, mssiuid);
-                out << "      ";
-                printAttribute(out, dset, DCM_SOPInstanceUID);
-                out << OFendl;
+                OFLOG_WARN(dcmpschkLogger, MSGe_wrongAtt << OFendl
+                    << "   Inconsistent SOP instance information" << OFendl
+                    << "   Affected attributes: " << OFendl
+                    << "      " << printAttribute(tmp_str, meta, mssiuid) << OFendl
+                    << "      " << printAttribute(tmp_str, dset, DCM_SOPInstanceUID));
                 nErrs++;
             }
         }
@@ -818,17 +807,16 @@ int dcmchkMetaHeader(
 
     // examine the TransferSyntaxUID
     DcmTagKey tsuid(DCM_TransferSyntaxUID);
-    if (chkType1AttributeExistance(out, meta, tsuid)) {
+    if (chkType1AttributeExistance(meta, tsuid)) {
         OFString transferSyntaxUID;
         meta->findAndGetOFStringArray(tsuid, transferSyntaxUID);
         // is this transfer syntax known ?
         DcmXfer expected(transferSyntaxUID.c_str());
         if (expected.getXfer() == EXS_Unknown) {
-            out << MSGe_wrongAtt << OFendl
-                << "   Unknown Transfer Syntax"
-                << OFendl << "   Affected attribute: " << OFendl << "      ";
-            printAttribute(out, meta, tsuid);
-            out << OFendl;
+            OFLOG_WARN(dcmpschkLogger, MSGe_wrongAtt << OFendl
+                << "   Unknown Transfer Syntax" << OFendl
+                << "   Affected attribute: " << OFendl
+                << "      " << printAttribute(tmp_str, meta, tsuid));
             nErrs++;
         }
 
@@ -837,12 +825,11 @@ int dcmchkMetaHeader(
             DcmXfer used(dset->getOriginalXfer());
             OFString usedTransferSyntaxUID(used.getXferID());
             if (transferSyntaxUID != usedTransferSyntaxUID) {
-                out << MSGe_wrongAtt << OFendl
-                    << "   Dataset not encoded using specified transfer syntax"
-                    << OFendl << "   Affected attribute: " << OFendl << "      ";
-                printAttribute(out, meta, tsuid);
-                out << "   Dataset encoded using: " << used.getXferName()
-                    << OFendl << OFendl;
+                OFLOG_WARN(dcmpschkLogger, MSGe_wrongAtt << OFendl
+                    << "   Dataset not encoded using specified transfer syntax" << OFendl
+                    << "   Affected attribute: " << OFendl
+                    << "      " << printAttribute(tmp_str, meta, tsuid));
+                OFLOG_WARN(dcmpschkLogger, "   Dataset encoded using: " << used.getXferName());
                 nErrs++;
             }
 
@@ -853,7 +840,7 @@ int dcmchkMetaHeader(
 
     // Check the group length information
     DcmTagKey gltag(DCM_FileMetaInformationGroupLength);
-    if (chkType1AttributeExistance(out, meta, gltag)) {
+    if (chkType1AttributeExistance(meta, gltag)) {
         Uint32 len = 0;
         meta->findAndGetUint32(gltag, len, 0);
         // Compute how large the Meta-Header should be
@@ -862,12 +849,11 @@ int dcmchkMetaHeader(
         expectedLength -= 12; // less length of group length element itself
 
         if (len != expectedLength) {
-            out << MSGe_wrongAtt << OFendl
+            OFLOG_WARN(dcmpschkLogger, MSGe_wrongAtt << OFendl
                 << "   Invalid meta-header group length (expected: "
-                <<  expectedLength  << ")"
-                << OFendl << "   Affected attribute: " << OFendl << "      ";
-            printAttribute(out, meta, gltag);
-            out << OFendl;
+                <<  expectedLength  << ")" << OFendl
+                << "   Affected attribute: " << OFendl
+                << "      " << printAttribute(tmp_str, meta, gltag));
             nErrs++;
         }
     } else {
@@ -877,24 +863,19 @@ int dcmchkMetaHeader(
     return nErrs;
 }
 
-int checkfile(
-  const char *filename,
-  OFBool verbose,
-  STD_NAMESPACE ostream& out,
-  OFConsole *outconsole,
-  OFBool opt_debug)
+int checkfile(const char *filename)
 {
     DcmFileFormat *dfile = new DcmFileFormat();
     if (dfile == NULL)
     {
-      out << "Error: out of memory." << OFendl;
+      OFLOG_ERROR(dcmpschkLogger, "out of memory.");
       return -1;
     }
 
     OFCondition cond = dfile->loadFile(filename);
     if (! cond.good())
     {
-      out << "Error: " << cond.text() << " reading file: " << filename << OFendl;
+      OFLOG_ERROR(dcmpschkLogger, cond.text() << " reading file: " << filename);
       delete dfile;
       return -1;
     }
@@ -905,45 +886,29 @@ int checkfile(
     DcmDataset *DataSet = dfile->getDataset();
     DcmMetaInfo *MetaInfo = dfile->getMetaInfo();
 
-    if (verbose)
-    {
-      out << "=========================================================" << OFendl;
-    }
-    out << "Testing: " << filename << OFendl;
-    if (verbose)
-    {
-      out << "=========================================================" << OFendl << OFendl;
-    } else out << OFendl;
+    OFLOG_INFO(dcmpschkLogger, "=========================================================");
+    OFLOG_WARN(dcmpschkLogger, "Testing: " << filename);
+    OFLOG_INFO(dcmpschkLogger, "=========================================================");
 
     if (MetaInfo)
     {
-      if (verbose)
-      {
-        out << "---------------------------------------------------------" << OFendl
+      OFLOG_INFO(dcmpschkLogger, "---------------------------------------------------------" << OFendl
             << "Pass 1 - Inconsistencies between Meta-header and Data Set" << OFendl
-            << "---------------------------------------------------------" << OFendl << OFendl;
-      }
-      numberOfErrors += dcmchkMetaHeader(out, MetaInfo, DataSet);
+            << "---------------------------------------------------------");
+      numberOfErrors += dcmchkMetaHeader(MetaInfo, DataSet);
     }
 
-    if (verbose)
-    {
-      out << "-------------------------------------------------------------" << OFendl
+    OFLOG_INFO(dcmpschkLogger, "-------------------------------------------------------------" << OFendl
           << "Pass 2 - Inconsistencies between Data Dictionary and Data Set" << OFendl
-          << "-------------------------------------------------------------" << OFendl << OFendl;
-    }
+          << "-------------------------------------------------------------");
 
-    dcmchk(out, opt_filename, ERM_autoDetect, EXS_Unknown,
+    dcmchk(opt_filename, ERM_autoDetect, EXS_Unknown,
           OFFalse /* showFullData */, OFTrue /* loadAllDataInMemory */,
-          numberOfErrors, verbose);
+          numberOfErrors);
 
-    if (verbose)
-    {
-      out << "-------------------------------------------------------------" << OFendl
+    OFLOG_INFO(dcmpschkLogger, "-------------------------------------------------------------" << OFendl
           << "Pass 3 - Semantic Check of Presentation State Object         " << OFendl
-          << "-------------------------------------------------------------" << OFendl << OFendl;
-    }
-
+          << "-------------------------------------------------------------");
 
     DcmUniqueIdentifier sopclassuid(DCM_SOPClassUID);
     DcmStack stack;
@@ -956,34 +921,20 @@ int checkfile(
     if (aString == UID_GrayscaleSoftcopyPresentationStateStorage)
     {
       DcmPresentationState pState;
-      pState.setLog(outconsole, OFTrue, opt_debug);
       if (pState.read(*DataSet).bad())
       {
         test_passed = OFFalse;
-        out << OFendl;
       }
     } else {
-      if (verbose) out << "Not a Grayscale Softcopy Presentation State, skipping pass 3." << OFendl << OFendl;
+      OFLOG_INFO(dcmpschkLogger, "Not a Grayscale Softcopy Presentation State, skipping pass 3.");
     }
     if (numberOfErrors > 0) test_passed = OFFalse;
 
-    if (test_passed) out << "Test passed." << OFendl << OFendl;
-    else out << "Test failed - one or more errors." << OFendl << OFendl;
+    if (test_passed) OFLOG_WARN(dcmpschkLogger, "Test passed.");
+    else OFLOG_WARN(dcmpschkLogger, "Test failed - one or more errors.");
 
     if (dfile) delete dfile;
     return numberOfErrors;
-}
-
-
-void closeLog()
-{
-  ofConsole.setCout();
-  ofConsole.split();
-  if (logstream != &COUT)
-  {
-    delete logstream;
-    logstream = &COUT;
-  }
 }
 
 #define SHORTCOL 2
@@ -1011,8 +962,6 @@ int main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-    SetDebugLevel((0));
-
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Checking tool for presentation states", rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
@@ -1023,21 +972,12 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:");
      cmd.addOption("--help",      "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",            "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--arguments",          "print expanded command line arguments");
-     cmd.addOption("--verbose",   "-v",    "verbose mode, print actions");
-     cmd.addOption("--debug",     "-d",    "debug mode, print debug information");
-
-     cmd.addOption("--logfile",   "-l", 1, "[f]ilename: string",
-                                           "write output to logfile f");
+     OFLog::addOptions(cmd);
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -1055,41 +995,18 @@ int main(int argc, char *argv[])
       }
 
       /* options */
-      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug"))   opt_debugMode = 3;
-      if (cmd.findOption("--logfile"))
-      {
-        app.checkValue(cmd.getValue(opt_logfilename));
-      }
+      OFLog::configureFromCommandLine(cmd, app);
     }
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
-
-    if (opt_logfilename)
-    {
-      STD_NAMESPACE ofstream *newstream = new STD_NAMESPACE ofstream(opt_logfilename);
-      if (newstream && (newstream->good()))
-      {
-        logstream=newstream;
-        ofConsole.setCout(logstream);
-        ofConsole.join();
-      }
-      else
-      {
-        delete newstream;
-      }
-    }
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmpschkLogger, rcsid << OFendl);
 
     int paramCount = cmd.getParamCount();
     for (int param=1; param <= paramCount; param++)
     {
       cmd.getParam(param, opt_filename);
-      checkfile(opt_filename, opt_verbose, *logstream, &ofConsole, ((opt_debugMode>0) ? OFTrue : OFFalse));
+      checkfile(opt_filename);
     }
-
-    closeLog();
 
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
@@ -1100,6 +1017,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
+ * Revision 1.29  2009-11-24 14:12:56  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.28  2009-08-03 09:12:53  joergr
  * Added support for checking the data type UT (Unlimited Text).
  * Moved flex++ generated lexical scanner from module "dcmpstat" to "dcmdata".

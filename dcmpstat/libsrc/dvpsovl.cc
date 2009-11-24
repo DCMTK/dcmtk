@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlay_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:37 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,17 +38,11 @@
 
 DVPSOverlay_PList::DVPSOverlay_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSOverlay_PList::DVPSOverlay_PList(const DVPSOverlay_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSOverlay *) first = arg.list_.begin();
   OFListConstIterator(DVPSOverlay *) last = arg.list_.end();
@@ -93,7 +87,6 @@ OFCondition DVPSOverlay_PList::read(DcmItem &dset)
         newOverlay = new DVPSOverlay();
         if (newOverlay)
         {
-          newOverlay->setLog(logstream, verboseMode, debugMode);
           result = newOverlay->read(dset,i);
           list_.push_back(newOverlay);
         } else result = EC_MemoryExhausted;
@@ -196,7 +189,6 @@ OFCondition DVPSOverlay_PList::addOverlay(DcmItem& overlayIOD, Uint16 groupInIte
     newOverlay = new DVPSOverlay();
     if (newOverlay)
     {
-      newOverlay->setLog(logstream, verboseMode, debugMode);
       result = newOverlay->read(overlayIOD,(Uint8)(groupInItem-0x6000), (Uint8)(newGroup-0x6000));
       if (EC_Normal==result) list_.push_back(newOverlay); else delete newOverlay;
     } else result = EC_MemoryExhausted;
@@ -204,22 +196,11 @@ OFCondition DVPSOverlay_PList::addOverlay(DcmItem& overlayIOD, Uint16 groupInIte
   return result;
 }
 
-void DVPSOverlay_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSOverlay *) first = list_.begin();
-  OFListIterator(DVPSOverlay *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }
-}
-
 /*
  *  $Log: dvpsovl.cc,v $
+ *  Revision 1.13  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.12  2005-12-08 15:46:37  meichel
  *  Changed include path schema for all DCMTK header files
  *

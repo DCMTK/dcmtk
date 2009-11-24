@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    definitions of constants and macros for pstat module
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:03:41 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,20 @@
 #define __DVPSDEF_H__
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "dcmtk/oflog/oflog.h"
+
+OFLogger DCM_dcmpstatGetLogger();
+OFLogger DCM_dcmpstatDumpGetLogger();
+
+#define DCMPSTAT_TRACE(msg) OFLOG_TRACE(DCM_dcmpstatGetLogger(), msg)
+#define DCMPSTAT_DEBUG(msg) OFLOG_DEBUG(DCM_dcmpstatGetLogger(), msg)
+#define DCMPSTAT_INFO(msg)  OFLOG_INFO(DCM_dcmpstatGetLogger(), msg)
+#define DCMPSTAT_WARN(msg)  OFLOG_WARN(DCM_dcmpstatGetLogger(), msg)
+#define DCMPSTAT_ERROR(msg) OFLOG_ERROR(DCM_dcmpstatGetLogger(), msg)
+#define DCMPSTAT_FATAL(msg) OFLOG_FATAL(DCM_dcmpstatGetLogger(), msg)
+
+#define DCMPSTAT_DUMP(msg) OFLOG_DEBUG(DCM_dcmpstatDumpGetLogger(), msg)
 
 /* default for max PDU size */
 #define DEFAULT_MAXPDU 16384
@@ -181,6 +195,9 @@ if (result==EC_Normal)                                              \
 
 /*
  *  $Log: dvpsdef.h,v $
+ *  Revision 1.9  2009-11-24 14:12:57  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.8  2005-12-08 16:03:41  meichel
  *  Changed include path schema for all DCMTK header files
  *

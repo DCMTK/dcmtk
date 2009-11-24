@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSGraphicObject
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,9 +44,6 @@ DVPSGraphicObject::DVPSGraphicObject()
 , graphicData(DCM_GraphicData)
 , graphicType(DCM_GraphicType)
 , graphicFilled(DCM_GraphicFilled)
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
@@ -56,9 +53,6 @@ DVPSGraphicObject::DVPSGraphicObject(const DVPSGraphicObject& copy)
 , graphicData(copy.graphicData)
 , graphicType(copy.graphicType)
 , graphicFilled(copy.graphicFilled)
-, logstream(copy.logstream)
-, verboseMode(copy.verboseMode)
-, debugMode(copy.debugMode)
 {
 }
 
@@ -84,108 +78,64 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
   if (graphicAnnotationUnits.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicAnnotationUnits absent or empty");
   }
   else if (graphicAnnotationUnits.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicAnnotationUnits VM != 1");
   }
 
   if (graphicDimensions.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicDimensions VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicDimensions VM != 1");
   } else {
     Uint16 dimension=0;
     if ((EC_Normal != graphicDimensions.getUint16(dimension,0))||(dimension != 2))
     {
       result=EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicDimensions != 2" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicDimensions != 2");
     }
   }
   
   if (numberOfGraphicPoints.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with numberOfGraphicPoints absent or empty");
   }
   else if (numberOfGraphicPoints.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with numberOfGraphicPoints VM != 1");
   }
   
   if (graphicData.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicData absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicData absent or empty");
   }
   else if (graphicData.getVM() < 2)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicData VM < 2" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicData VM < 2");
   }
   
   if (graphicType.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicType absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicType absent or empty");
   }
   else if (graphicType.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicType VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicType VM != 1");
   }
   
   if ((graphicFilled.getLength() > 0)&&(graphicFilled.getVM() != 1))
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicFilled present but VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a graphic object SQ item with graphicFilled present but VM != 1");
   }
   
   return result;
@@ -319,16 +269,12 @@ OFCondition DVPSGraphicObject::setFilled(OFBool filled)
   return result;
 }
 
-void DVPSGraphicObject::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-}
-
 
 /*
  *  $Log: dvpsgr.cc,v $
+ *  Revision 1.13  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.12  2006-08-15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

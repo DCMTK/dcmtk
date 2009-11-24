@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:03:36 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,9 +39,9 @@
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/dcmdata/dctypes.h"    /* for Uint32 */
 #include "dcmtk/dcmpstat/dvpstyp.h"    /* for DVPS enums */
+#include "dcmtk/oflog/oflog.h"         /* for OFLogger::LogLevel */
 
 class OFConfigFile;
-class OFConsole;
 
 /** Configuration class for the Softcopy Presentation State viewer.
  *  This class manages the configuration file content used by the
@@ -612,9 +612,9 @@ class DVConfiguration
   /** returns the log level / filter to be used for general application messages.
    *  Value is taken from the section GENERAL/APPLICATION/LOGLEVEL
    *  in the config file.
-   *  @return log level, default: DVPSM_none.
+   *  @return log level, default: OFLogger::FATAL_LOG_LEVEL
    */
-  DVPSLogMessageLevel getLogLevel();
+  OFLogger::LogLevel getLogLevel();
 
   /** returns the port on which the GUI application accepts notification 
    *  messages from the network processes.
@@ -1066,29 +1066,6 @@ class DVConfiguration
    *  @return key file for the given user
    */
   const char *getUserPrivateKey(const char *userID);
-  
-  /* Other settings */
-  
-  /** sets a new log stream
-   *  @param stream new log stream, NULL for default logstream
-   *  @param verbMode verbose mode flag
-   *  @param dbgMode debug mode flag
-   */
-  virtual void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
-
-protected:
-
-  /** output stream for error messages, never NULL
-   */
-  OFConsole *logstream;
-  
-  /** flag indicating whether we're operating in verbose mode
-   */
-  OFBool verboseMode;
-   
-  /** flag indicating whether we're operating in debug mode
-   */
-  OFBool debugMode;
 
 private:
 
@@ -1131,6 +1108,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
+ *  Revision 1.33  2009-11-24 14:12:57  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.32  2005-12-08 16:03:36  meichel
  *  Changed include path schema for all DCMTK header files
  *

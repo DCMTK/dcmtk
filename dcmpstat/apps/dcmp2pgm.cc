@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2008, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -26,8 +26,8 @@
  *    ignored. If no presentation state is loaded, a default is created.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:41 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2009-11-24 14:12:56 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,13 +51,14 @@
 #include "dcmtk/ofstd/ofcmdln.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmp2pgm"
+
+static OFLogger dcmp2pgmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -68,152 +69,154 @@ void dumpPresentationState(DVPresentationState &ps)
   size_t i, j, max;
   const char *c;
 
-  COUT << "DUMPING PRESENTATION STATE" << OFendl
+  OFOStringStream oss;
+
+  oss << "DUMPING PRESENTATION STATE" << OFendl
        << "--------------------------" << OFendl << OFendl;
 
   c = ps.getPresentationLabel();
-  COUT << "Presentation Label: "; if (c) COUT << c << OFendl; else COUT << "none" << OFendl;
+  oss << "Presentation Label: "; if (c) oss << c << OFendl; else oss << "none" << OFendl;
   c = ps.getPresentationDescription();
-  COUT << "Presentation Description: "; if (c) COUT << c << OFendl; else COUT << "none" << OFendl;
+  oss << "Presentation Description: "; if (c) oss << c << OFendl; else oss << "none" << OFendl;
   c = ps.getPresentationCreatorsName();
-  COUT << "Presentation Creator's Name: "; if (c) COUT << c << OFendl; else COUT << "none" << OFendl;
+  oss << "Presentation Creator's Name: "; if (c) oss << c << OFendl; else oss << "none" << OFendl;
 
-  COUT << "VOI transformation: ";
+  oss << "VOI transformation: ";
   if (ps.haveActiveVOIWindow())
   {
     double width=0.0, center=0.0;
     ps.getCurrentWindowWidth(width);
     ps.getCurrentWindowCenter(center);
-    COUT << "window center=" << center << " width=" << width << " description=\"";
+    oss << "window center=" << center << " width=" << width << " description=\"";
     c = ps.getCurrentVOIDescription();
-    if (c) COUT << c << "\"" << OFendl; else COUT << "(none)\"" << OFendl;
+    if (c) oss << c << "\"" << OFendl; else oss << "(none)\"" << OFendl;
   }
   else if (ps.haveActiveVOILUT())
   {
-    COUT << "lut description=\"";
+    oss << "lut description=\"";
     c = ps.getCurrentVOIDescription();
-    if (c) COUT << c << "\"" << OFendl; else COUT << "(none)\"" << OFendl;
+    if (c) oss << c << "\"" << OFendl; else oss << "(none)\"" << OFendl;
   }
-  else COUT << "none" << OFendl;
+  else oss << "none" << OFendl;
 
-  COUT << "Rotation: ";
+  oss << "Rotation: ";
   switch (ps.getRotation())
   {
     case DVPSR_0_deg:
-      COUT << "none";
+      oss << "none";
       break;
     case DVPSR_90_deg:
-      COUT << "90 degrees";
+      oss << "90 degrees";
       break;
     case DVPSR_180_deg:
-      COUT << "180 degrees";
+      oss << "180 degrees";
       break;
     case DVPSR_270_deg:
-      COUT << "270 degrees";
+      oss << "270 degrees";
       break;
   }
-  COUT << OFendl;
-  COUT << "Flip: ";
-  if (ps.getFlip()) COUT << "yes" << OFendl; else COUT << "no" << OFendl;
+  oss << OFendl;
+  oss << "Flip: ";
+  if (ps.getFlip()) oss << "yes" << OFendl; else oss << "no" << OFendl;
 
   Sint32 tlhcX=0;
   Sint32 tlhcY=0;
   Sint32 brhcX=0;
   Sint32 brhcY=0;
-  COUT << "Displayed area:" << OFendl;
+  oss << "Displayed area:" << OFendl;
 
   DVPSPresentationSizeMode sizemode = ps.getDisplayedAreaPresentationSizeMode();
   double factor=1.0;
   switch (sizemode)
   {
     case DVPSD_scaleToFit:
-      COUT << "  presentation size mode: SCALE TO FIT" << OFendl;
+      oss << "  presentation size mode: SCALE TO FIT" << OFendl;
       break;
     case DVPSD_trueSize:
-      COUT << "  presentation size mode: TRUE SIZE" << OFendl;
+      oss << "  presentation size mode: TRUE SIZE" << OFendl;
       break;
     case DVPSD_magnify:
       ps.getDisplayedAreaPresentationPixelMagnificationRatio(factor);
-      COUT << "  presentation size mode: MAGNIFY factor=" << factor << OFendl;
+      oss << "  presentation size mode: MAGNIFY factor=" << factor << OFendl;
       break;
   }
   ps.getStandardDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
-  COUT << "  displayed area TLHC=" << tlhcX << "\\" << tlhcY << " BRHC=" << brhcX << "\\" << brhcY << OFendl;
+  oss << "  displayed area TLHC=" << tlhcX << "\\" << tlhcY << " BRHC=" << brhcX << "\\" << brhcY << OFendl;
 
   double x, y;
   if (EC_Normal == ps.getDisplayedAreaPresentationPixelSpacing(x,y))
   {
-    COUT << "  presentation pixel spacing: X=" << x << "mm Y=" << y << " mm" << OFendl;
+    oss << "  presentation pixel spacing: X=" << x << "mm Y=" << y << " mm" << OFendl;
   } else {
-    COUT << "  presentation pixel aspect ratio: " << ps.getDisplayedAreaPresentationPixelAspectRatio() << OFendl;
+    oss << "  presentation pixel aspect ratio: " << ps.getDisplayedAreaPresentationPixelAspectRatio() << OFendl;
   }
 
-  COUT << "Rectangular shutter: ";
+  oss << "Rectangular shutter: ";
   if (ps.haveShutter(DVPSU_rectangular))
   {
-    COUT << "LV=" << ps.getRectShutterLV()
+    oss << "LV=" << ps.getRectShutterLV()
          << " RV=" << ps.getRectShutterRV()
          << " UH=" << ps.getRectShutterUH()
          << " LH=" << ps.getRectShutterLH() << OFendl;
 
-  } else COUT << "none" << OFendl;
-  COUT << "Circular shutter: ";
+  } else oss << "none" << OFendl;
+  oss << "Circular shutter: ";
   if (ps.haveShutter(DVPSU_circular))
   {
-    COUT << "center=" << ps.getCenterOfCircularShutter_x()
+    oss << "center=" << ps.getCenterOfCircularShutter_x()
          << "\\" << ps.getCenterOfCircularShutter_y()
          << " radius=" << ps.getRadiusOfCircularShutter() << OFendl;
-  } else COUT << "none" << OFendl;
-  COUT << "Polygonal shutter: ";
+  } else oss << "none" << OFendl;
+  oss << "Polygonal shutter: ";
   if (ps.haveShutter(DVPSU_polygonal))
   {
-     COUT << "points=" << ps.getNumberOfPolyShutterVertices() << " coordinates=";
+     oss << "points=" << ps.getNumberOfPolyShutterVertices() << " coordinates=";
      j = ps.getNumberOfPolyShutterVertices();
      Sint32 polyX, polyY;
      for (i=0; i<j; i++)
      {
      	if (EC_Normal == ps.getPolyShutterVertex(i, polyX, polyY))
      	{
-     	  COUT << polyX << "\\" << polyY << ", ";
-     	} else COUT << "???\\???,";
+     	  oss << polyX << "\\" << polyY << ", ";
+     	} else oss << "???\\???,";
      }
-     COUT << OFendl;
-  } else COUT << "none" << OFendl;
-  COUT << "Bitmap shutter: ";
+     oss << OFendl;
+  } else oss << "none" << OFendl;
+  oss << "Bitmap shutter: ";
   if (ps.haveShutter(DVPSU_bitmap))
   {
-     COUT << "present" << OFendl;
-  } else COUT << "none" << OFendl;
-  COUT << "Shutter presentation value: 0x" << STD_NAMESPACE hex << ps.getShutterPresentationValue() << STD_NAMESPACE dec << OFendl;
-  COUT << OFendl;
+     oss << "present" << OFendl;
+  } else oss << "none" << OFendl;
+  oss << "Shutter presentation value: 0x" << STD_NAMESPACE hex << ps.getShutterPresentationValue() << STD_NAMESPACE dec << OFendl;
+  oss << OFendl;
 
   ps.sortGraphicLayers();  // to order of display
   for (size_t layer=0; layer<ps.getNumberOfGraphicLayers(); layer++)
   {
     c = ps.getGraphicLayerName(layer);
-    COUT << "Graphic Layer #" << layer+1 << " ["; if (c) COUT << c; else COUT << "(unnamed)";
-    COUT << "]" << OFendl;
+    oss << "Graphic Layer #" << layer+1 << " ["; if (c) oss << c; else oss << "(unnamed)";
+    oss << "]" << OFendl;
     c = ps.getGraphicLayerDescription(layer);
-    COUT << "  Description: "; if (c) COUT << c << OFendl; else COUT << "none" << OFendl;
-    COUT << "  Recomm. display value: ";
+    oss << "  Description: "; if (c) oss << c << OFendl; else oss << "none" << OFendl;
+    oss << "  Recomm. display value: ";
     if (ps.haveGraphicLayerRecommendedDisplayValue(layer))
     {
       Uint16 r, g, b;
-      COUT << "gray ";
+      oss << "gray ";
       if (EC_Normal == ps.getGraphicLayerRecommendedDisplayValueGray(layer, g))
       {
-      	  COUT << "0x" << STD_NAMESPACE hex << g << STD_NAMESPACE dec << OFendl;
-      } else COUT << "error" << OFendl;
-      COUT << "color ";
+      	  oss << "0x" << STD_NAMESPACE hex << g << STD_NAMESPACE dec << OFendl;
+      } else oss << "error" << OFendl;
+      oss << "color ";
       if (EC_Normal == ps.getGraphicLayerRecommendedDisplayValueRGB(layer, r, g, b))
       {
-      	  COUT << "0x" << STD_NAMESPACE hex << r << "\\0x" << g << "\\0x" << b << STD_NAMESPACE dec << OFendl;
-      } else COUT << "error" << OFendl;
-    } else COUT << "none" << OFendl;
+      	  oss << "0x" << STD_NAMESPACE hex << r << "\\0x" << g << "\\0x" << b << STD_NAMESPACE dec << OFendl;
+      } else oss << "error" << OFendl;
+    } else oss << "none" << OFendl;
 
     // text objects
     max = ps.getNumberOfTextObjects(layer);
-    COUT << "  Number of text objects: " << max << OFendl;
+    oss << "  Number of text objects: " << max << OFendl;
     DVPSTextObject *ptext = NULL;
     for (size_t textidx=0; textidx<max; textidx++)
     {
@@ -221,47 +224,47 @@ void dumpPresentationState(DVPresentationState &ps)
       if (ptext)
       {
       	// display contents of text object
-        COUT << "      text " << textidx+1 << ": \"" << ptext->getText() << "\"" << OFendl;
-        COUT << "        anchor point: ";
+        oss << "      text " << textidx+1 << ": \"" << ptext->getText() << "\"" << OFendl;
+        oss << "        anchor point: ";
         if (ptext->haveAnchorPoint())
         {
-          COUT << ptext->getAnchorPoint_x() << "\\" << ptext->getAnchorPoint_y() << " units=";
-          if (ptext->getAnchorPointAnnotationUnits()==DVPSA_display) COUT << "display"; else COUT << "pixel";
-          COUT << " visible=";
-          if (ptext->anchorPointIsVisible()) COUT << "yes"; else COUT << "no";
-          COUT << OFendl;
-        } else COUT << "none" << OFendl;
-        COUT << "        bounding box: ";
+          oss << ptext->getAnchorPoint_x() << "\\" << ptext->getAnchorPoint_y() << " units=";
+          if (ptext->getAnchorPointAnnotationUnits()==DVPSA_display) oss << "display"; else oss << "pixel";
+          oss << " visible=";
+          if (ptext->anchorPointIsVisible()) oss << "yes"; else oss << "no";
+          oss << OFendl;
+        } else oss << "none" << OFendl;
+        oss << "        bounding box: ";
         if (ptext->haveBoundingBox())
         {
-          COUT << "TLHC=";
-          COUT << ptext->getBoundingBoxTLHC_x() << "\\" << ptext->getBoundingBoxTLHC_y()
+          oss << "TLHC=";
+          oss << ptext->getBoundingBoxTLHC_x() << "\\" << ptext->getBoundingBoxTLHC_y()
                << " BRHC=" << ptext->getBoundingBoxBRHC_x() << "\\" << ptext->getBoundingBoxBRHC_y()
                << " units=";
-          if (ptext->getBoundingBoxAnnotationUnits()==DVPSA_display) COUT << "display"; else COUT << "pixel";
+          if (ptext->getBoundingBoxAnnotationUnits()==DVPSA_display) oss << "display"; else oss << "pixel";
 
           DVPSTextJustification justification = ptext->getBoundingBoxHorizontalJustification();
-          COUT << " justification=";
+          oss << " justification=";
           switch (justification)
           {
             case DVPSX_left:
-              COUT << "left";
+              oss << "left";
               break;
             case DVPSX_right:
-              COUT << "right";
+              oss << "right";
               break;
             case DVPSX_center:
-              COUT << "center";
+              oss << "center";
               break;
           }
-          COUT << OFendl;
-        } else COUT << "none" << OFendl;
+          oss << OFendl;
+        } else oss << "none" << OFendl;
       }
     }
 
     // graphic objects
     max = ps.getNumberOfGraphicObjects(layer);
-    COUT << "  Number of graphic objects: " << max << OFendl;
+    oss << "  Number of graphic objects: " << max << OFendl;
     DVPSGraphicObject *pgraphic = NULL;
     for (size_t graphicidx=0; graphicidx<max; graphicidx++)
     {
@@ -269,35 +272,35 @@ void dumpPresentationState(DVPresentationState &ps)
       if (pgraphic)
       {
       	// display contents of graphic object
-        COUT << "      graphic " << graphicidx+1 << ": points=" << pgraphic->getNumberOfPoints()
+        oss << "      graphic " << graphicidx+1 << ": points=" << pgraphic->getNumberOfPoints()
              << " type=";
         switch (pgraphic->getGraphicType())
         {
-          case DVPST_polyline: COUT << "polyline filled="; break;
-          case DVPST_interpolated: COUT << "interpolated filled="; break;
-          case DVPST_circle: COUT << "circle filled="; break;
-          case DVPST_ellipse: COUT << "ellipse filled="; break;
-          case DVPST_point: COUT << "point filled="; break;
+          case DVPST_polyline: oss << "polyline filled="; break;
+          case DVPST_interpolated: oss << "interpolated filled="; break;
+          case DVPST_circle: oss << "circle filled="; break;
+          case DVPST_ellipse: oss << "ellipse filled="; break;
+          case DVPST_point: oss << "point filled="; break;
         }
-        if (pgraphic->isFilled()) COUT << "yes units="; else COUT << "no units=";
-        if (pgraphic->getAnnotationUnits()==DVPSA_display) COUT << "display"; else COUT << "pixel";
-        COUT << OFendl << "        coordinates: ";
+        if (pgraphic->isFilled()) oss << "yes units="; else oss << "no units=";
+        if (pgraphic->getAnnotationUnits()==DVPSA_display) oss << "display"; else oss << "pixel";
+        oss << OFendl << "        coordinates: ";
         j = pgraphic->getNumberOfPoints();
         Float32 fx=0.0, fy=0.0;
         for (i=0; i<j; i++)
         {
           if (EC_Normal==pgraphic->getPoint(i,fx,fy))
           {
-            COUT << fx << "\\" << fy << ", ";
-          } else COUT << "???\\???, ";
+            oss << fx << "\\" << fy << ", ";
+          } else oss << "???\\???, ";
         }
-        COUT << OFendl;
+        oss << OFendl;
       }
     }
 
     // curve objects
     max = ps.getNumberOfCurves(layer);
-    COUT << "  Number of activated curves: " << max << OFendl;
+    oss << "  Number of activated curves: " << max << OFendl;
     DVPSCurve *pcurve = NULL;
     for (size_t curveidx=0; curveidx<max; curveidx++)
     {
@@ -305,34 +308,34 @@ void dumpPresentationState(DVPresentationState &ps)
       if (pcurve)
       {
       	// display contents of curve
-        COUT << "      curve " << curveidx+1 << ": points=" << pcurve->getNumberOfPoints()
+        oss << "      curve " << curveidx+1 << ": points=" << pcurve->getNumberOfPoints()
              << " type=";
         switch (pcurve->getTypeOfData())
         {
-          case DVPSL_roiCurve: COUT << "roi units="; break;
-          case DVPSL_polylineCurve: COUT << "poly units="; break;
+          case DVPSL_roiCurve: oss << "roi units="; break;
+          case DVPSL_polylineCurve: oss << "poly units="; break;
         }
         c = pcurve->getCurveAxisUnitsX();
-        if (c && (strlen(c)>0)) COUT << c << "\\"; else COUT << "(none)\\";
+        if (c && (strlen(c)>0)) oss << c << "\\"; else oss << "(none)\\";
         c = pcurve->getCurveAxisUnitsY();
-        if (c && (strlen(c)>0)) COUT << c << OFendl; else COUT << "(none)" << OFendl;
-        COUT << "        label=";
+        if (c && (strlen(c)>0)) oss << c << OFendl; else oss << "(none)" << OFendl;
+        oss << "        label=";
         c = pcurve->getCurveLabel();
-        if (c && (strlen(c)>0)) COUT << c << " description="; else COUT << "(none) description=";
+        if (c && (strlen(c)>0)) oss << c << " description="; else oss << "(none) description=";
         c = pcurve->getCurveDescription();
-        if (c && (strlen(c)>0)) COUT << c << OFendl; else COUT << "(none)" << OFendl;
-        COUT << "        coordinates: ";
+        if (c && (strlen(c)>0)) oss << c << OFendl; else oss << "(none)" << OFendl;
+        oss << "        coordinates: ";
         j = pcurve->getNumberOfPoints();
         double dx=0.0, dy=0.0;
         for (i=0; i<j; i++)
         {
           if (EC_Normal==pcurve->getPoint(i,dx,dy))
           {
-            COUT << dx << "\\" << dy << ", ";
-          } else COUT << "???\\???, ";
+            oss << dx << "\\" << dy << ", ";
+          } else oss << "???\\???, ";
         }
-        COUT << OFendl;
-      } else COUT << "      curve " << curveidx+1 << " not present in image." << OFendl;
+        oss << OFendl;
+      } else oss << "      curve " << curveidx+1 << " not present in image." << OFendl;
     }
 
     // overlay objects
@@ -344,28 +347,28 @@ void dumpPresentationState(DVPresentationState &ps)
     FILE *ofile=NULL;
 
     max = ps.getNumberOfActiveOverlays(layer);
-    COUT << "  Number of activated overlays: " << max << OFendl;
+    oss << "  Number of activated overlays: " << max << OFendl;
     for (size_t ovlidx=0; ovlidx<max; ovlidx++)
     {
-      COUT << "      overlay " << ovlidx+1 << ": group=0x" << STD_NAMESPACE hex
+      oss << "      overlay " << ovlidx+1 << ": group=0x" << STD_NAMESPACE hex
            << ps.getActiveOverlayGroup(layer, ovlidx) << STD_NAMESPACE dec << " label=\"";
       c=ps.getActiveOverlayLabel(layer, ovlidx);
-      if (c) COUT << c; else COUT << "(none)";
-      COUT << "\" description=\"";
+      if (c) oss << c; else oss << "(none)";
+      oss << "\" description=\"";
       c=ps.getActiveOverlayDescription(layer, ovlidx);
-      if (c) COUT << c; else COUT << "(none)";
-      COUT << "\" type=";
-      if (ps.activeOverlayIsROI(layer, ovlidx)) COUT << "ROI"; else COUT << "graphic";
-      COUT << OFendl;
+      if (c) oss << c; else oss << "(none)";
+      oss << "\" type=";
+      if (ps.activeOverlayIsROI(layer, ovlidx)) oss << "ROI"; else oss << "graphic";
+      oss << OFendl;
 
       /* get overlay data */
       if (EC_Normal == ps.getOverlayData(layer, ovlidx, overlayData, overlayWidth, overlayHeight,
           overlayLeft, overlayTop, overlayROI, overlayTransp))
       {
-      	COUT << "        columns=" << overlayWidth << " rows=" << overlayHeight << " left="
+      	oss << "        columns=" << overlayWidth << " rows=" << overlayHeight << " left="
       	<< overlayLeft << " top=" << overlayTop << OFendl;
       	sprintf(overlayfile, "ovl_%02d%02d.pgm", (int)layer+1, (int)ovlidx+1);
-      	COUT << "        filename=\"" << overlayfile << "\"";
+      	oss << "        filename=\"" << overlayfile << "\"";
 
         ofile = fopen(overlayfile, "wb");
         if (ofile)
@@ -373,50 +376,53 @@ void dumpPresentationState(DVPresentationState &ps)
            fprintf(ofile, "P5\n%d %d 255\n", overlayWidth, overlayHeight);
            fwrite(overlayData, overlayWidth, overlayHeight, ofile);
            fclose(ofile);
-           COUT << " - written." << OFendl;
-        } else COUT << " -write error-" << OFendl;
+           oss << " - written." << OFendl;
+        } else oss << " -write error-" << OFendl;
       } else {
-      	COUT << "        unable to access overlay data!" << OFendl;
+      	oss << "        unable to access overlay data!" << OFendl;
       }
     }
   }
 
-  COUT << OFendl;
+  oss << OFendl;
 
   max = ps.getNumberOfVOILUTsInImage();
-  COUT << "VOI LUTs available in attached image: " << max << OFendl;
+  oss << "VOI LUTs available in attached image: " << max << OFendl;
   for (size_t lutidx=0; lutidx<max; lutidx++)
   {
-    COUT << "  LUT #" << lutidx+1 << ": description=";
+    oss << "  LUT #" << lutidx+1 << ": description=";
     c=ps.getDescriptionOfVOILUTsInImage(lutidx);
-    if (c) COUT << c << OFendl; else COUT << "(none)" << OFendl;
+    if (c) oss << c << OFendl; else oss << "(none)" << OFendl;
   }
 
   max = ps.getNumberOfVOIWindowsInImage();
-  COUT << "VOI windows available in attached image: " << max << OFendl;
+  oss << "VOI windows available in attached image: " << max << OFendl;
   for (size_t winidx=0; winidx<max; winidx++)
   {
-    COUT << "  Window #" << winidx+1 << ": description=";
+    oss << "  Window #" << winidx+1 << ": description=";
     c=ps.getDescriptionOfVOIWindowsInImage(winidx);
-    if (c) COUT << c << OFendl; else COUT << "(none)" << OFendl;
+    if (c) oss << c << OFendl; else oss << "(none)" << OFendl;
   }
 
   max = ps.getNumberOfOverlaysInImage();
-  COUT << "Overlays available (non-shadowed) in attached image: " << max << OFendl;
+  oss << "Overlays available (non-shadowed) in attached image: " << max << OFendl;
   for (size_t oidx=0; oidx<max; oidx++)
   {
-    COUT << "  Overlay #" << oidx+1 << ": group=0x" << STD_NAMESPACE hex << ps.getOverlayInImageGroup(oidx) << STD_NAMESPACE dec << " label=\"";
+    oss << "  Overlay #" << oidx+1 << ": group=0x" << STD_NAMESPACE hex << ps.getOverlayInImageGroup(oidx) << STD_NAMESPACE dec << " label=\"";
     c=ps.getOverlayInImageLabel(oidx);
-    if (c) COUT << c; else COUT << "(none)";
-    COUT << "\" description=\"";
+    if (c) oss << c; else oss << "(none)";
+    oss << "\" description=\"";
     c=ps.getOverlayInImageDescription(oidx);
-    if (c) COUT << c; else COUT << "(none)";
-    COUT << "\" type=";
-    if (ps.overlayInImageIsROI(oidx)) COUT << "ROI"; else COUT << "graphic";
-    COUT << OFendl;
+    if (c) oss << c; else oss << "(none)";
+    oss << "\" type=";
+    if (ps.overlayInImageIsROI(oidx)) oss << "ROI"; else oss << "graphic";
+    oss << OFendl;
   }
-  COUT << OFendl;
 
+  oss << OFStringStream_ends;
+  OFSTRINGSTREAM_GETSTR(oss, res)
+  OFLOG_INFO(dcmp2pgmLogger, res);
+  OFSTRINGSTREAM_FREESTR(res)
 }
 
 
@@ -425,7 +431,6 @@ void dumpPresentationState(DVPresentationState &ps)
 
 int main(int argc, char *argv[])
 {
-    int    opt_debugMode       = 0;                       /* default: no debug */
     OFBool opt_dump_pstate     = OFFalse;                 /* default: do not dump presentation state */
     OFBool opt_dicom_mode      = OFFalse;                 /* default: create PGM, not DICOM SC */
     OFCmdUnsignedInt opt_frame = 1;                       /* default: first frame */
@@ -434,9 +439,6 @@ int main(int argc, char *argv[])
     const char *opt_pgmName    = NULL;                    /* pgm save file name */
     const char *opt_savName    = NULL;                    /* pstate save file name */
     const char *opt_cfgName    = NULL;                    /* config read file name */
-
-    SetDebugLevel(( 0 ));
-    //DicomImageClass::setDebugLevel(DicomImageClass::DL_NoMessages);
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Read DICOM image and presentation state and render bitmap", rcsid);
     OFCommandLine cmd;
@@ -449,9 +451,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:");
      cmd.addOption("--help",        "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",              "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--arguments",            "print expanded command line arguments");
-     cmd.addOption("--verbose",     "-v",    "verbose mode, dump presentation state contents");
-     cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
+     OFLog::addOptions(cmd);
 
     cmd.addGroup("processing options:");
      cmd.addOption("--pstate",      "-p", 1, "[f]ilename: string",
@@ -472,10 +472,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -496,8 +492,11 @@ int main(int argc, char *argv[])
       cmd.getParam(1, opt_imgName);
       if (cmd.getParamCount() > 1)
         cmd.getParam(2, opt_pgmName);
-      if (cmd.findOption("--verbose"))     opt_dump_pstate=OFTrue;
-      if (cmd.findOption("--debug"))       opt_debugMode = 3;
+
+      OFLog::configureFromCommandLine(cmd, app);
+
+      opt_dump_pstate = dcmp2pgmLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL);
+
       if (cmd.findOption("--pstate"))      app.checkValue(cmd.getValue(opt_pstName));
       if (cmd.findOption("--config"))      app.checkValue(cmd.getValue(opt_cfgName));
       if (cmd.findOption("--frame"))       app.checkValue(cmd.getValueAndCheckMin(opt_frame, 1));
@@ -506,17 +505,15 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--save-pstate")) app.checkValue(cmd.getValue(opt_savName));
     }
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
-    //DicomImageClass::setDebugLevel(opt_debugMode);
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmp2pgmLogger, rcsid << OFendl);
 
     if (opt_cfgName)
     {
       FILE *cfgfile = fopen(opt_cfgName, "rb");
       if (cfgfile) fclose(cfgfile); else
       {
-        CERR << "error: can't open configuration file '" << opt_cfgName << "'" << OFendl;
+        OFLOG_FATAL(dcmp2pgmLogger, "can't open configuration file '" << opt_cfgName << "'");
         return 10;
       }
     }
@@ -525,15 +522,11 @@ int main(int argc, char *argv[])
 
     if (opt_pstName == NULL)
     {
-        if (opt_debugMode > 0)
-            CERR << "reading DICOM image file: " << opt_imgName << OFendl;
+        OFLOG_DEBUG(dcmp2pgmLogger, "reading DICOM image file: " << opt_imgName);
         status = dvi.loadImage(opt_imgName);
     } else {
-        if (opt_debugMode > 0)
-        {
-            CERR << "reading DICOM pstate file: " << opt_pstName << OFendl;
-            CERR << "reading DICOM image file: " << opt_imgName << OFendl;
-        }
+        OFLOG_DEBUG(dcmp2pgmLogger, "reading DICOM pstate file: " << opt_pstName);
+        OFLOG_DEBUG(dcmp2pgmLogger, "reading DICOM image file: " << opt_imgName);
         status = dvi.loadPState(opt_pstName, opt_imgName);
     }
 
@@ -545,41 +538,50 @@ int main(int argc, char *argv[])
             const void *pixelData = NULL;
             unsigned long width = 0;
             unsigned long height = 0;
-            if (opt_debugMode > 0) CERR << "creating pixel data" << OFendl;
+            OFLOG_DEBUG(dcmp2pgmLogger, "creating pixel data");
             if ((opt_frame > 0) && (dvi.getCurrentPState().selectImageFrameNumber(opt_frame) != EC_Normal))
-               CERR << "cannot select frame " << opt_frame << OFendl;
+               OFLOG_ERROR(dcmp2pgmLogger, "cannot select frame " << opt_frame);
             if ((dvi.getCurrentPState().getPixelData(pixelData, width, height) == EC_Normal) && (pixelData != NULL))
             {
               if (opt_dicom_mode)
               {
                 double pixelAspectRatio = dvi.getCurrentPState().getPrintBitmapPixelAspectRatio(); // works for rotated images
-                if (opt_debugMode > 0) CERR << "writing DICOM SC file: " << opt_pgmName << OFendl;
+                OFLOG_DEBUG(dcmp2pgmLogger, "writing DICOM SC file: " << opt_pgmName);
                 if (EC_Normal != dvi.saveDICOMImage(opt_pgmName, pixelData, width, height, pixelAspectRatio))
                 {
-                  CERR << "error during creation of DICOM file" << OFendl;
+                  OFLOG_ERROR(dcmp2pgmLogger, "error during creation of DICOM file");
                 }
               } else {
                 FILE *outfile = fopen(opt_pgmName, "wb");
                 if (outfile)
                 {
-                    if (opt_debugMode > 0)
-                        CERR << "writing PGM file: " << opt_pgmName << OFendl;
+                    OFLOG_DEBUG(dcmp2pgmLogger, "writing PGM file: " << opt_pgmName);
                     fprintf(outfile, "P5\n%ld %ld 255\n", width, height);
                     fwrite(pixelData, (size_t)width, (size_t)height, outfile);
                     fclose(outfile);
-                } else app.printError("Can't create output file.");
+                } else {
+                    OFLOG_FATAL(dcmp2pgmLogger, "Can't create output file.");
+                    return 10;
+                }
               }
-            } else app.printError("Can't create output data.");
+            } else {
+                OFLOG_FATAL(dcmp2pgmLogger, "Can't create output data.");
+                return 10;
+            }
         }
         if (opt_savName != NULL)
         {
-            if (opt_debugMode > 0)
-                CERR << "writing pstate file: " << opt_savName << OFendl;
+            OFLOG_DEBUG(dcmp2pgmLogger, "writing pstate file: " << opt_savName);
             if (dvi.savePState(opt_savName, OFFalse) != EC_Normal)
-                app.printError("Can't write pstate file.");
+            {
+                OFLOG_FATAL(dcmp2pgmLogger, "Can't write pstate file.");
+                return 10;
+            }
         }
-    } else
-        app.printError("Can't open input file(s).");
+    } else {
+        OFLOG_FATAL(dcmp2pgmLogger, "Can't open input file(s).");
+        return 10;
+    }
 
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
@@ -592,6 +594,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
+ * Revision 1.41  2009-11-24 14:12:56  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.40  2009-10-28 09:53:41  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

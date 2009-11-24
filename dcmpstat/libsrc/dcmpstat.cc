@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:01 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,6 +62,18 @@
 #define INCLUDE_LIBC
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
+
+OFLogger DCM_dcmpstatGetLogger()
+{
+    static OFLogger DCM_dcmpstatLogger = OFLog::getLogger("dcmtk.dcmpstat");
+    return DCM_dcmpstatLogger;
+}
+
+OFLogger DCM_dcmpstatDumpGetLogger()
+{
+    static OFLogger DCM_dcmpstatLogger = OFLog::getLogger("dcmtk.dcmpstat.dump");
+    return DCM_dcmpstatLogger;
+}
 
 /* --------------- class DcmPresentationState --------------- */
 
@@ -123,9 +135,6 @@ DcmPresentationState::DcmPresentationState()
 , rescaleSlope(DCM_RescaleSlope)
 , rescaleType(DCM_RescaleType)
 , softcopyVOIList()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
   createInstanceUID();
 }
@@ -316,61 +325,37 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
   if (sopclassuid.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: SOPClassUID absent or empty in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("SOPClassUID absent or empty in presentation state");
   }
   else if (sopclassuid.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: SOPClassUID VM != 1 in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("SOPClassUID VM != 1 in presentation state");
   }
 
   if (modality.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: Modality absent or empty in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("Modality absent or empty in presentation state");
   }
   else if (modality.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: Modality VM != 1 in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("Modality VM != 1 in presentation state");
   }
 
   sopclassuid.getOFString(aString,0);
   if (aString != UID_GrayscaleSoftcopyPresentationStateStorage)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: SOP Class UID does not match GrayscaleSoftcopyPresentationStateStorage" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("SOP Class UID does not match GrayscaleSoftcopyPresentationStateStorage");
   }
 
   modality.getOFString(aString,0);
   if (aString != "PR")
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: Modality does not match 'PR' for presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("Modality does not match 'PR' for presentation state");
   }
 
   if (result==EC_Normal)
@@ -452,11 +437,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
          }
       } else {
         result=EC_TagNotFound;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: Modality LUT SQ does not have exactly one item in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("Modality LUT SQ does not have exactly one item in presentation state");
       }
     }
   }
@@ -478,165 +459,97 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
   if (patientName.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: patientName absent or empty in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("patientName absent or empty in presentation state");
   }
   else if (patientName.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: patientName VM != 1 in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("patientName VM != 1 in presentation state");
   }
 
   if (studyInstanceUID.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: studyInstanceUID absent or empty in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("studyInstanceUID absent or empty in presentation state");
   }
   else if (studyInstanceUID.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: studyInstanceUID VM != 1 in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("studyInstanceUID VM != 1 in presentation state");
   }
 
   if (displayedAreaSelectionList.size() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: displayedAreaSelectionSQ absent or empty in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("displayedAreaSelectionSQ absent or empty in presentation state");
   }
 
   if (imageNumber.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: instanceNumber absent or empty in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("instanceNumber absent or empty in presentation state");
   }
   else if (imageNumber.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: instanceNumber VM != 1 in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("instanceNumber VM != 1 in presentation state");
   }
 
   if (presentationLabel.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentationLabel absent or empty in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentationLabel absent or empty in presentation state");
   }
   else if (presentationLabel.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentationLabel VM != 1 in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentationLabel VM != 1 in presentation state");
   }
 
   if (presentationCreationDate.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentationCreationDate absent or empty in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentationCreationDate absent or empty in presentation state");
   }
   else if (presentationCreationDate.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentationCreationDate VM != 1 in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentationCreationDate VM != 1 in presentation state");
   }
 
   if (presentationCreationTime.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentationCreationTime absent or empty in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentationCreationTime absent or empty in presentation state");
   }
   else if (presentationCreationTime.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentationCreationTime VM != 1 in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentationCreationTime VM != 1 in presentation state");
   }
 
   if (sOPInstanceUID.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: sOPInstanceUID absent or empty in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("sOPInstanceUID absent or empty in presentation state");
   }
   else if (sOPInstanceUID.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: sOPInstanceUID VM != 1 in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("sOPInstanceUID VM != 1 in presentation state");
   }
 
     /* if imageRotation or imageHorizontalFlip are present, then both must be present. */
     if ((imageRotation.getLength() > 0)&&(imageHorizontalFlip.getLength() == 0))
     {
       result=EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: imageRotation present but imageHorizontalFlip absent or empty in presentation state" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("imageRotation present but imageHorizontalFlip absent or empty in presentation state");
     }
 
     if ((imageRotation.getLength() == 0)&&(imageHorizontalFlip.getLength() > 0))
     {
       result=EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: imageHorizontalFlip present but imageRotation absent or empty in presentation state" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("imageHorizontalFlip present but imageRotation absent or empty in presentation state");
     }
 
     /* Modality LUT */
@@ -647,47 +560,27 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       if (rescaleSlope.getLength() == 0)
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleSlope absent or empty in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("rescaleIntercept present but rescaleSlope absent or empty in presentation state");
       }
       else if (rescaleSlope.getVM() != 1)
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleSlope VM != 1 in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("rescaleIntercept present but rescaleSlope VM != 1 in presentation state");
       }
       if (rescaleType.getLength() == 0)
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleType absent or empty in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("rescaleIntercept present but rescaleType absent or empty in presentation state");
       }
       else if (rescaleType.getVM() != 1)
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleType VM != 1 in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("rescaleIntercept present but rescaleType VM != 1 in presentation state");
       }
       if (rescaleIntercept.getVM() != 1)
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: rescaleIntercept present but VM != 1 in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("rescaleIntercept present but VM != 1 in presentation state");
       }
     } else useModalityRescale = OFFalse;
     if (modalityLUTData.getLength() > 0)
@@ -697,20 +590,12 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       if (modalityLUTDescriptor.getLength() == 0)
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: modalityLUTData present but modalityLUTDescriptor absent or empty in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("modalityLUTData present but modalityLUTDescriptor absent or empty in presentation state");
       }
       else if (modalityLUTDescriptor.getVM() != 3)
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: modalityLUTData present but modalityLUTDescriptor VM != 3 in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("modalityLUTData present but modalityLUTDescriptor VM != 3 in presentation state");
       }
 
     } else useModalityLUT = OFFalse;
@@ -718,11 +603,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     if (useModalityRescale && useModalityLUT)
     {
       result=EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: both modality rescale and LUT present in presentation state" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("both modality rescale and LUT present in presentation state");
     }
 
   } /* end result==EC_Normal */
@@ -747,11 +628,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       else
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: unknown shutter type '" << aString << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("unknown shutter type '" << aString << "'");
       }
     }
 
@@ -760,38 +637,22 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       if ((shutterLeftVerticalEdge.getLength() == 0)||(shutterLeftVerticalEdge.getVM() != 1))
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: rectangular shutter used but shutterLeftVerticalEdge absent or VM != 1 in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("rectangular shutter used but shutterLeftVerticalEdge absent or VM != 1 in presentation state");
       }
       if ((shutterRightVerticalEdge.getLength() == 0)||(shutterRightVerticalEdge.getVM() != 1))
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: rectangular shutter used but shutterRightVerticalEdge absent or VM != 1 in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("rectangular shutter used but shutterRightVerticalEdge absent or VM != 1 in presentation state");
       }
       if ((shutterUpperHorizontalEdge.getLength() == 0)||(shutterUpperHorizontalEdge.getVM() != 1))
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: rectangular shutter used but shutterUpperHorizontalEdge absent or VM != 1 in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("rectangular shutter used but shutterUpperHorizontalEdge absent or VM != 1 in presentation state");
       }
       if ((shutterLowerHorizontalEdge.getLength() == 0)||(shutterLowerHorizontalEdge.getVM() != 1))
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: rectangular shutter used but shutterLowerHorizontalEdge absent or VM != 1 in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("rectangular shutter used but shutterLowerHorizontalEdge absent or VM != 1 in presentation state");
       }
     }
     if (useShutterCircular)
@@ -799,20 +660,12 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       if ((centerOfCircularShutter.getLength() == 0)||(centerOfCircularShutter.getVM() != 2))
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: circular shutter used but centerOfCircularShutter absent or VM != 2 in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("circular shutter used but centerOfCircularShutter absent or VM != 2 in presentation state");
       }
       if ((radiusOfCircularShutter.getLength() == 0)||(radiusOfCircularShutter.getVM() != 1))
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: circular shutter used but radiusOfCircularShutter absent or VM != 1 in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("circular shutter used but radiusOfCircularShutter absent or VM != 1 in presentation state");
       }
     }
     if (useShutterPolygonal)
@@ -823,11 +676,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
           ((verticesOfThePolygonalShutter.getVM() % 2) != 0))
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: polygonal shutter used but verticesOfThePolygonalShutter absent or VM != 2-2n in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("polygonal shutter used but verticesOfThePolygonalShutter absent or VM != 2-2n in presentation state");
       }
     }
     if (useShutterBitmap)
@@ -835,11 +684,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       if ((shutterOverlayGroup.getLength() == 0)||(shutterOverlayGroup.getVM() != 1))
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: bitmap shutter used but shutterOverlayGroup absent or VM != 1 in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("bitmap shutter used but shutterOverlayGroup absent or VM != 1 in presentation state");
       }
     }
     if (useShutterRectangular || useShutterCircular || useShutterPolygonal || useShutterBitmap)
@@ -847,22 +692,14 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       if ((shutterPresentationValue.getLength() == 0)||(shutterPresentationValue.getVM() != 1))
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: shutter used but shutterPresentationValue absent or VM != 1 in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("shutter used but shutterPresentationValue absent or VM != 1 in presentation state");
       }
     }
     /* we can either have rect/circ/poly shutter or bitmap shutter but not both */
     if (useShutterBitmap && (useShutterRectangular || useShutterCircular || useShutterPolygonal))
     {
       result=EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: both bitmap and rect/circ/poly shutter specified in presentation state" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("both bitmap and rect/circ/poly shutter specified in presentation state");
     }
   }
 
@@ -876,19 +713,11 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       if (!overlayList.haveOverlayGroup(shuttergroup))
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: bitmap shutter specified but referenced overlay group missing in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("bitmap shutter specified but referenced overlay group missing in presentation state");
       }
     } else {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: wrong overlay group specified for bitmap shutter in presentation state" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("wrong overlay group specified for bitmap shutter in presentation state");
     }
   }
 
@@ -908,21 +737,13 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
   if (EC_Normal == dset.search(DCM_MaskSubtractionSequence, stack, ESM_fromHere, OFFalse))
   {
       result=EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: mask module present in presentation state, but unsupported" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("mask module present in presentation state, but unsupported");
   }
   stack.clear();
   if (EC_Normal == dset.search(DCM_RecommendedViewingMode, stack, ESM_fromHere, OFFalse))
   {
       result=EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: mask module present in presentation state, but unsupported" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("mask module present in presentation state, but unsupported");
   }
 
   return result;
@@ -1126,11 +947,7 @@ OFCondition DcmPresentationState::createFromImage(
     else if ((aString != "MONOCHROME2")&&(aString != "MONOCHROME 2"))
     {
       result = EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: Wrong image photometric interpretation - not MONOCHROME1/2" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("Wrong image photometric interpretation - not MONOCHROME1/2");
     }
   }
 
@@ -1176,11 +993,7 @@ OFCondition DcmPresentationState::createFromImage(
       if (aString == "INVERSE") presentationLUT.setType(DVPSP_inverse);
       if (aString == "LIN OD")
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Warning LIN OD found in prsentation state; set to IDENTITY" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("LIN OD found in prsentation state; set to IDENTITY");
         presentationLUT.setType(DVPSP_identity);
       }
     }
@@ -1505,11 +1318,7 @@ OFCondition DcmPresentationState::addImageReference(
   studyInstanceUID.getOFString(study,0);
   if (study != studyUID)
   {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: cannot add reference to image with different Study Instance UID." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot add reference to image with different Study Instance UID.");
     return EC_IllegalCall;
   }
   return referencedSeriesList.addImageReference(seriesUID, sopclassUID, instanceUID, frames, aetitle, filesetID, filesetUID);
@@ -2144,24 +1953,12 @@ OFCondition DcmPresentationState::moveOverlay(size_t old_layer, size_t idx, size
   return activationLayerList.setActivation(group, lname);
 }
 
-void DcmPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  displayedAreaSelectionList.setLog(logstream, verbMode, dbgMode);
-  presentationLUT.setLog(logstream, verbMode, dbgMode);
-  referencedSeriesList.setLog(logstream, verbMode, dbgMode);
-  overlayList.setLog(logstream, verbMode, dbgMode);
-  activationLayerList.setLog(logstream, verbMode, dbgMode);
-  graphicAnnotationList.setLog(logstream, verbMode, dbgMode);
-  graphicLayerList.setLog(logstream, verbMode, dbgMode);
-  softcopyVOIList.setLog(logstream, verbMode, dbgMode);
-}
-
 
 /*
  *  $Log: dcmpstat.cc,v $
+ *  Revision 1.10  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.9  2006-08-15 16:57:01  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

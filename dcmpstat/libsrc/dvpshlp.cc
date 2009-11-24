@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DVPSHelper
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:38 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmpstat/dvpshlp.h"
+#include "dcmtk/dcmpstat/dvpsdef.h"
 #include "dcmtk/dcmnet/dcompat.h"     /* compatability routines */
 #include "dcmtk/dcmdata/dctk.h"
 
@@ -138,7 +139,7 @@ OFCondition DVPSHelper::putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 valu
     return result;
 }
 
-void DVPSHelper::cleanChildren(OFConsole *logconsole)
+void DVPSHelper::cleanChildren()
 {
 #ifdef HAVE_WAITPID
     int stat_loc;
@@ -166,11 +167,7 @@ void DVPSHelper::cleanChildren(OFConsole *logconsole)
         {
           if ((errno != ECHILD) && (errno != 0))
           {
-            if (logconsole)
-            {
-              logconsole->lockCerr() << "wait for child failed: " << strerror(errno) << OFendl;
-              logconsole->unlockCerr();
-            }
+            DCMPSTAT_INFO("wait for child failed: " << strerror(errno));
           }
         }
     }
@@ -236,6 +233,9 @@ OFCondition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.cc,v $
+ *  Revision 1.17  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.16  2009-09-30 10:42:38  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h

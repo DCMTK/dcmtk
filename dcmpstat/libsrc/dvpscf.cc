@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,6 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmpstat/dvpscf.h"      /* for DVConfiguration */
 #include "dcmtk/ofstd/ofconfig.h"    /* for class OFConfigFile */
-#include "dcmtk/ofstd/ofconsol.h"    /* for OFConsole */
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants */
 #include "dcmtk/ofstd/ofstd.h"       /* for class OFStandard */
 
@@ -159,7 +158,7 @@ extern "C" int strncasecmp(const char *s1, const char *s2, size_t n);
 
 /* --------------- static helper functions --------------- */
 
-static DVPSPeerType getConfigTargetType(const char *val, OFConsole *logstream, OFBool verboseMode)
+static DVPSPeerType getConfigTargetType(const char *val)
 {
   DVPSPeerType result = DVPSE_storage; /* default */
 
@@ -181,11 +180,7 @@ static DVPSPeerType getConfigTargetType(const char *val, OFConsole *logstream, O
   if (ostring=="STORAGE")       result=DVPSE_storage; else
   if (ostring=="RECEIVER")      result=DVPSE_receiver; else
   {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "warning: unsupported peer type in config file: '" << val << "', ignoring." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("unsupported peer type in config file: '" << val << "', ignoring.");
   }
   return result;
 }
@@ -235,10 +230,7 @@ static int strCompare(const char *str1, const char *str2, size_t len)
 
 
 DVConfiguration::DVConfiguration(const char *config_file)
-: logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
-, pConfig(NULL)
+: pConfig(NULL)
 {
   if (config_file)
   {
@@ -271,7 +263,7 @@ Uint32 DVConfiguration::getNumberOfTargets(DVPSPeerType peerType)
        pConfig->first_section(1);
        while (pConfig->section_valid(1))
        {
-         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE), logstream, verboseMode);
+         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE));
          switch (peerType)
          {
            case DVPSE_storage:
@@ -316,7 +308,7 @@ const char *DVConfiguration::getTargetID(Uint32 idx, DVPSPeerType peerType)
        pConfig->first_section(1);
        while ((! found)&&(pConfig->section_valid(1)))
        {
-         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE), logstream, verboseMode);
+         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE));
          switch (peerType)
          {
            case DVPSE_storage:
@@ -448,7 +440,7 @@ OFBool DVConfiguration::getTargetDisableNewVRs(const char *targetID)
 
 DVPSPeerType DVConfiguration::getTargetType(const char *targetID)
 {
-  return getConfigTargetType(getConfigEntry(L2_COMMUNICATION, targetID, L0_TYPE), logstream, verboseMode);
+  return getConfigTargetType(getConfigEntry(L2_COMMUNICATION, targetID, L0_TYPE));
 }
 
 const char *DVConfiguration::getLogFolder()
@@ -461,20 +453,20 @@ const char *DVConfiguration::getLogFile()
   return getConfigEntry(L2_GENERAL, L1_APPLICATION, L0_LOGFILE);
 }
 
-DVPSLogMessageLevel DVConfiguration::getLogLevel()
+OFLogger::LogLevel DVConfiguration::getLogLevel()
 {
-  DVPSLogMessageLevel result = DVPSM_none;
+  OFLogger::LogLevel result = OFLogger::FATAL_LOG_LEVEL;
   const char *c = getConfigEntry(L2_GENERAL, L1_APPLICATION, L0_LOGLEVEL);
   if (c != NULL)
   {
     if (strCompare(c, "ERROR", 5) == 0)
-      result = DVPSM_error;
+      result = OFLogger::ERROR_LOG_LEVEL;
     else if (strCompare(c, "WARN", 4) == 0)
-      result = DVPSM_warning;
+      result = OFLogger::WARN_LOG_LEVEL;
     else if (strCompare(c, "INFO", 4) == 0)
-      result = DVPSM_informational;
+      result = OFLogger::INFO_LOG_LEVEL;
     else if (strCompare(c, "DEBUG", 5) == 0)
-      result = DVPSM_debug;
+      result = OFLogger::DEBUG_LOG_LEVEL;
   }
   return result;
 }
@@ -1312,13 +1304,6 @@ Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
   return 0;
 }
 
-void DVConfiguration::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-}
-
 const char *DVConfiguration::getTLSFolder()
 {
   return getConfigEntry(L2_GENERAL, L1_TLS, L0_TLSDIRECTORY);
@@ -1508,6 +1493,9 @@ const char *DVConfiguration::getUserCodeMeaning(const char *userID, OFString& va
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
+ *  Revision 1.45  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.44  2006-08-15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

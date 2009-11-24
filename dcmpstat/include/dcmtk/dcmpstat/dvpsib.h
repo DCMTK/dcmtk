@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:03:50 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -255,13 +255,6 @@ public:
    */
   OFCondition prepareBasicImageBox(DcmItem &dset);
 
-  /** sets a new log stream
-   *  @param stream new log stream, NULL for default logstream
-   *  @param verbMode verbose mode flag
-   *  @param dbgMode debug mode flag
-   */
-  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
-
   /** checks whether the given Presentation LUT type could be used together
    *  with this image box on a Print SCP that requires a matching alignment
    *  between a Presentation LUT and the image pixel data.
@@ -394,24 +387,15 @@ private:
   /// describes whether the image depth is 8 bit or 12 bit.
   DVPSImageDepth           imageDepth;
 
-  /** output stream for error messages, never NULL
-   */
-  OFConsole *logstream;
-
-  /** flag indicating whether we're operating in verbose mode
-   */
-  OFBool verboseMode;
-   
-  /** flag indicating whether we're operating in debug mode
-   */
-  OFBool debugMode;
-
 };
 
 #endif
 
 /*
  *  $Log: dvpsib.h,v $
+ *  Revision 1.22  2009-11-24 14:12:57  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.21  2005-12-08 16:03:50  meichel
  *  Changed include path schema for all DCMTK header files
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2008, OFFIS
+ *  Copyright (C) 1999-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:43 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,17 +44,11 @@
 
 DVPSPresentationLUT_PList::DVPSPresentationLUT_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSPresentationLUT_PList::DVPSPresentationLUT_PList(const DVPSPresentationLUT_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSPresentationLUT *) first = arg.list_.begin();
   OFListConstIterator(DVPSPresentationLUT *) last = arg.list_.end();
@@ -101,7 +95,6 @@ OFCondition DVPSPresentationLUT_PList::read(DcmItem &dset)
         newLUT = new DVPSPresentationLUT();
         if (newLUT && ditem)
         {
-          newLUT->setLog(logstream, verboseMode, debugMode);
           result = newLUT->read(*ditem, OFTrue);
           list_.push_back(newLUT);
         } else result = EC_MemoryExhausted;
@@ -141,20 +134,6 @@ OFCondition DVPSPresentationLUT_PList::write(DcmItem &dset)
     if (result==EC_Normal) dset.insert(dseq, OFTrue /*replaceOld*/); else delete dseq;
   } else result = EC_MemoryExhausted;
   return result;
-}
-
-void DVPSPresentationLUT_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSPresentationLUT *) first = list_.begin();
-  OFListIterator(DVPSPresentationLUT *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }	
 }
 
 void DVPSPresentationLUT_PList::cleanup(const char *filmBox, DVPSImageBoxContent_PList& imageBoxes)
@@ -275,11 +254,7 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
     list_.erase(first);
   } else {
     // presentation LUT does not exist or wrong instance UID
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot delete presentation LUT with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot delete presentation LUT with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist.");
     rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
@@ -287,6 +262,9 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
 
 /*
  *  $Log: dvpspll.cc,v $
+ *  Revision 1.20  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.19  2008-04-30 12:38:43  meichel
  *  Fixed compile errors due to changes in attribute tag names
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSTextObject_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:54 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,17 +38,11 @@
 
 DVPSTextObject_PList::DVPSTextObject_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSTextObject_PList::DVPSTextObject_PList(const DVPSTextObject_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSTextObject *) first = arg.list_.begin();
   OFListConstIterator(DVPSTextObject *) last = arg.list_.end();
@@ -95,7 +89,6 @@ OFCondition DVPSTextObject_PList::read(DcmItem &dset)
         newObject = new DVPSTextObject();
         if (newObject && ditem)
         {
-          newObject->setLog(logstream, verboseMode, debugMode);
           result = newObject->read(*ditem);
           list_.push_back(newObject);
         } else result = EC_MemoryExhausted;
@@ -174,23 +167,12 @@ DVPSTextObject *DVPSTextObject_PList::removeTextObject(size_t idx)
   return NULL;
 }
 
-void DVPSTextObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSTextObject *) first = list_.begin();
-  OFListIterator(DVPSTextObject *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }
-}
-
 
 /*
  *  $Log: dvpstxl.cc,v $
+ *  Revision 1.12  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.11  2005-12-08 15:46:54  meichel
  *  Changed include path schema for all DCMTK header files
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSCurve
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:21 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,13 +45,9 @@ DVPSCurve::DVPSCurve()
 , curveLabel()
 , axisUnitsX()
 , axisUnitsY()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
-  
 DVPSCurve::DVPSCurve(const DVPSCurve& copy)
 : curveGroup(copy.curveGroup)
 , numberOfPoints(copy.numberOfPoints)
@@ -61,9 +57,6 @@ DVPSCurve::DVPSCurve(const DVPSCurve& copy)
 , curveLabel(copy.curveLabel)
 , axisUnitsX(copy.axisUnitsX)
 , axisUnitsY(copy.axisUnitsY)
-, logstream(copy.logstream)
-, verboseMode(copy.verboseMode)
-, debugMode(copy.debugMode)
 {
   if (copy.curveData)
   {
@@ -360,16 +353,11 @@ OFCondition DVPSCurve::getPoint(size_t idx, double& x, double& y)
   return EC_Normal;
 }
 
-void DVPSCurve::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-}
-
-
 /*
  *  $Log: dvpscu.cc,v $
+ *  Revision 1.7  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.6  2005-12-08 15:46:21  meichel
  *  Changed include path schema for all DCMTK header files
  *

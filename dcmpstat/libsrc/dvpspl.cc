@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2006, OFFIS
+ *  Copyright (C) 1999-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:38 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,9 +47,6 @@ DVPSPresentationLUT::DVPSPresentationLUT()
 , presentationLUTExplanation(DCM_LUTExplanation)
 , presentationLUTData(DCM_LUTData)
 , sOPInstanceUID(DCM_SOPInstanceUID)
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
@@ -59,9 +56,6 @@ DVPSPresentationLUT::DVPSPresentationLUT(const DVPSPresentationLUT& copy)
 , presentationLUTExplanation(copy.presentationLUTExplanation)
 , presentationLUTData(copy.presentationLUTData)
 , sOPInstanceUID(copy.sOPInstanceUID)
-, logstream(copy.logstream)
-, verboseMode(copy.verboseMode)
-, debugMode(copy.debugMode)
 {
 }
 
@@ -122,12 +116,8 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
          }
       } else {
         result=EC_TagNotFound;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: found Presentation LUT SQ with number of items != 1" << OFendl;
-          logstream->unlockCerr();
-        }
-      } 
+        DCMPSTAT_INFO("found Presentation LUT SQ with number of items != 1");
+      }
     }
   }
 
@@ -141,39 +131,23 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
     if (presentationLUTDescriptor.getLength() == 0)
     {
       result=EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: presentationLUTShape and presentationLUTDescriptor absent or empty" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("presentationLUTShape and presentationLUTDescriptor absent or empty");
     }
     else if (presentationLUTDescriptor.getVM() != 3)
     {
       result=EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: presentationLUTDescriptor present but VM != 3 in presentation state" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("presentationLUTDescriptor present but VM != 3 in presentation state");
     }
     if (presentationLUTData.getLength() == 0)
     {
       result=EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: presentationLUTShape and presentationLUTData absent or empty" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("presentationLUTShape and presentationLUTData absent or empty");
     }
   } else {
     if (presentationLUTShape.getVM() != 1)
     {
       result=EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: presentationLUTShape present but VM != 1" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("presentationLUTShape present but VM != 1");
     } else {
       // check presentation LUT shape
       aString.clear();
@@ -184,11 +158,7 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
       else
       {
         result=EC_IllegalCall;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: unknown presentationLUTShape keyword: " << aString << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("unknown presentationLUTShape keyword: " << aString);
       }
     }
   }
@@ -198,20 +168,12 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
     if (sOPInstanceUID.getLength() == 0)
     {
       result=EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: sOPInstanceUID absent in Presentation LUT Content Sequence" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("sOPInstanceUID absent in Presentation LUT Content Sequence");
     }
     else if (sOPInstanceUID.getVM() != 1)
     {
       result=EC_IllegalCall;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: sOPInstanceUID VM != 1 in Presentation LUT Content Sequence" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("sOPInstanceUID VM != 1 in Presentation LUT Content Sequence");
     }
   }
   
@@ -421,11 +383,7 @@ OFBool DVPSPresentationLUT::printSCPCreate(
   
   if ((rqDataset==NULL)||(EC_Normal != read(*rqDataset, OFFalse)))
   {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "cannot create Presentation LUT: attribute list error." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot create Presentation LUT: attribute list error.");
     rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
     result = OFFalse;
   }
@@ -451,14 +409,9 @@ OFBool DVPSPresentationLUT::printSCPCreate(
       else if (currentTag == DCM_PresentationLUTSequence) /* OK */ ;
       else
       {
-        if (verboseMode)
-        {
-          STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-          mycerr << "cannot create Presentation LUT: unsupported attribute received:" << OFendl;
-          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-          logstream->unlockCerr();
-        }
-      	rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
+        DCMPSTAT_INFO("cannot create Presentation LUT: unsupported attribute received:" << OFendl
+            << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
+        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
     }
@@ -483,11 +436,7 @@ OFBool DVPSPresentationLUT::printSCPCreate(
     }
     if (!matches)
     {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "cannot create Presentation LUT: Mismatch between LUT entries and image pixel depth." << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("cannot create Presentation LUT: Mismatch between LUT entries and image pixel depth.");
       rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
       result = OFFalse;
     }
@@ -516,15 +465,11 @@ OFBool DVPSPresentationLUT::printSCPCreate(
   return result;
 }
 
-void DVPSPresentationLUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-}
-
 /*
  *  $Log: dvpspl.cc,v $
+ *  Revision 1.30  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.29  2009-09-30 10:42:38  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h

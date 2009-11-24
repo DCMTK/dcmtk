@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSCurve
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:03:37 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,10 +41,9 @@
 #include "dcmtk/dcmdata/dcerror.h"
 
 class DcmItem;
-class OFConsole;
 
 /** the representation of one Curve in a DICOM image.
- */  
+ */
 
 class DVPSCurve
 {
@@ -122,13 +121,6 @@ public:
    *  @return curve description
    */
   const char *getCurveAxisUnitsY() { return axisUnitsY.c_str(); }
-  
-  /** sets a new log stream
-   *  @param stream new log stream, NULL for default logstream
-   *  @param verbMode verbose mode flag
-   *  @param dbgMode debug mode flag
-   */
-  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
 
 private:
   /// private undefined assignment operator
@@ -151,23 +143,15 @@ private:
   /// axis units Y if present
   OFString axisUnitsY;
 
-  /** output stream for error messages, never NULL
-   */
-  OFConsole *logstream;
-
-  /** flag indicating whether we're operating in verbose mode
-   */
-  OFBool verboseMode;
-   
-  /** flag indicating whether we're operating in debug mode
-   */
-  OFBool debugMode;
 };
 
 #endif
 
 /*
  *  $Log: dvpscu.h,v $
+ *  Revision 1.7  2009-11-24 14:12:57  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.6  2005-12-08 16:03:37  meichel
  *  Changed include path schema for all DCMTK header files
  *

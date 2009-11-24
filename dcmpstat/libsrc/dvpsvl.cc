@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSVOILUT
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:55 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,9 +44,6 @@ DVPSVOILUT::DVPSVOILUT()
 : voiLUTDescriptor(DCM_LUTDescriptor)
 , voiLUTExplanation(DCM_LUTExplanation)
 , voiLUTData(DCM_LUTData)
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
@@ -54,9 +51,6 @@ DVPSVOILUT::DVPSVOILUT(const DVPSVOILUT& copy)
 : voiLUTDescriptor(copy.voiLUTDescriptor)
 , voiLUTExplanation(copy.voiLUTExplanation)
 , voiLUTData(copy.voiLUTData)
-, logstream(copy.logstream)
-, verboseMode(copy.verboseMode)
-, debugMode(copy.debugMode)
 {
 }
 
@@ -109,15 +103,11 @@ OFCondition DVPSVOILUT::assign(DVPSSoftcopyVOI& voi)
   return voi.setVOILUT(voiLUTDescriptor, voiLUTData, voiLUTExplanation);
 }
 
-void DVPSVOILUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-}
-
 /*
  *  $Log: dvpsvl.cc,v $
+ *  Revision 1.10  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.9  2005-12-08 15:46:55  meichel
  *  Changed include path schema for all DCMTK header files
  *

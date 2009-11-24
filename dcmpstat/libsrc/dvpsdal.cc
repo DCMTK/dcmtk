@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSDisplayedArea_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:24 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,17 +39,11 @@
 
 DVPSDisplayedArea_PList::DVPSDisplayedArea_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSDisplayedArea_PList::DVPSDisplayedArea_PList(const DVPSDisplayedArea_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSDisplayedArea *) first = arg.list_.begin();
   OFListConstIterator(DVPSDisplayedArea *) last = arg.list_.end();
@@ -96,7 +90,6 @@ OFCondition DVPSDisplayedArea_PList::read(DcmItem &dset)
         newImage = new DVPSDisplayedArea();
         if (newImage && ditem)
         {
-          newImage->setLog(logstream, verboseMode, debugMode);
           result = newImage->read(*ditem);
           list_.push_back(newImage);
         } else result = EC_MemoryExhausted;
@@ -209,7 +202,6 @@ DVPSDisplayedArea *DVPSDisplayedArea_PList::createDisplayedArea(
 
   if (newArea)
   {
-    newArea->setLog(logstream, verboseMode, debugMode);  	
     if (applicability != DVPSB_allImages) newArea->addImageReference(sopclassUID, instanceUID, frame, applicability);
     list_.push_back(newArea);
   }
@@ -217,23 +209,11 @@ DVPSDisplayedArea *DVPSDisplayedArea_PList::createDisplayedArea(
 }
 
 
-void DVPSDisplayedArea_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSDisplayedArea *) first = list_.begin();
-  OFListIterator(DVPSDisplayedArea *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }	
-}
-
-
 /*
  *  $Log: dvpsdal.cc,v $
+ *  Revision 1.14  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.13  2005-12-08 15:46:24  meichel
  *  Changed include path schema for all DCMTK header files
  *

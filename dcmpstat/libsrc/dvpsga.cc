@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,10 +46,6 @@ DVPSGraphicAnnotation::DVPSGraphicAnnotation()
 , graphicAnnotationLayer(DCM_GraphicLayer)
 , textObjectList()
 , graphicObjectList()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
-
 {
 }
 
@@ -58,9 +54,6 @@ DVPSGraphicAnnotation::DVPSGraphicAnnotation(const DVPSGraphicAnnotation& copy)
 , graphicAnnotationLayer(copy.graphicAnnotationLayer)
 , textObjectList(copy.textObjectList)
 , graphicObjectList(copy.graphicObjectList)
-, logstream(copy.logstream)
-, verboseMode(copy.verboseMode)
-, debugMode(copy.debugMode)
 {
 }
 
@@ -83,30 +76,18 @@ OFCondition DVPSGraphicAnnotation::read(DcmItem &dset)
   if (graphicAnnotationLayer.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a graphic annotation SQ item with graphicAnnotationLayer absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a graphic annotation SQ item with graphicAnnotationLayer absent or empty");
   }
   else if (graphicAnnotationLayer.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a graphic annotation SQ item with graphicAnnotationLayer VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a graphic annotation SQ item with graphicAnnotationLayer VM != 1");
   }
 
   if ((textObjectList.size() ==0)&&(graphicObjectList.size() ==0))
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a graphic annotation SQ item without any graphic or text objects" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a graphic annotation SQ item without any graphic or text objects");
   }
   
   return result;
@@ -223,19 +204,12 @@ OFBool DVPSGraphicAnnotation::isApplicable(
   return OFFalse;
 }
 
-void DVPSGraphicAnnotation::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  referencedImageList.setLog(logstream, verbMode, dbgMode);
-  textObjectList.setLog(logstream, verbMode, dbgMode);
-  graphicObjectList.setLog(logstream, verbMode, dbgMode);
-}
-
 
 /*
  *  $Log: dvpsga.cc,v $
+ *  Revision 1.13  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.12  2006-08-15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

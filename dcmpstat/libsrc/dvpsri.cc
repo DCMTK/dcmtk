@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:39 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,9 +49,6 @@ DVPSReferencedImage::DVPSReferencedImage()
 , referencedFrameNumber(DCM_ReferencedFrameNumber)
 , frameCache(NULL)
 , frameCacheEntries(0)
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
@@ -61,9 +58,6 @@ DVPSReferencedImage::DVPSReferencedImage(const DVPSReferencedImage& copy)
 , referencedFrameNumber(copy.referencedFrameNumber)
 , frameCache(NULL) // we don't copy the frame cache
 , frameCacheEntries(0)
-, logstream(copy.logstream)
-, verboseMode(copy.verboseMode)
-, debugMode(copy.debugMode)
 {
 }
 
@@ -88,39 +82,23 @@ OFCondition DVPSReferencedImage::read(DcmItem &dset)
   if (referencedSOPClassUID.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a referenced image SQ item with referencedSOPClassUID absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a referenced image SQ item with referencedSOPClassUID absent or empty");
   }
   else if (referencedSOPClassUID.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a referenced image SQ item with referencedSOPClassUID VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a referenced image SQ item with referencedSOPClassUID VM != 1");
   }
 
   if (referencedSOPInstanceUID.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a referenced image SQ item with referencedSOPInstanceUID absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a referenced image SQ item with referencedSOPInstanceUID absent or empty");
   }
   else if (referencedSOPInstanceUID.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a referenced image SQ item with referencedSOPInstanceUID VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a referenced image SQ item with referencedSOPInstanceUID VM != 1");
   }
 
   return result;
@@ -149,11 +127,7 @@ OFBool DVPSReferencedImage::validateSOPClassUID(OFString& sopclassuid)
     if (currentUID != sopclassuid)
     {
       result = OFFalse;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: images of different SOP classes referenced in presentation state" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("images of different SOP classes referenced in presentation state");
     }
   }
   return result;
@@ -295,15 +269,11 @@ void DVPSReferencedImage::removeFrameReference(unsigned long frame, unsigned lon
 }
 
 
-void DVPSReferencedImage::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-}
-
 /*
  *  $Log: dvpsri.cc,v $
+ *  Revision 1.19  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.18  2009-09-30 10:42:39  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h

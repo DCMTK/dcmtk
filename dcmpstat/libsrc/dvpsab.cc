@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSAnnotationContent
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:38 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,9 +44,6 @@ DVPSAnnotationContent::DVPSAnnotationContent()
 : sOPInstanceUID(DCM_SOPInstanceUID)
 , annotationPosition(DCM_AnnotationPosition)
 , textString(DCM_TextString)
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
@@ -54,9 +51,6 @@ DVPSAnnotationContent::DVPSAnnotationContent(const DVPSAnnotationContent& copy)
 : sOPInstanceUID(copy.sOPInstanceUID)
 , annotationPosition(copy.annotationPosition)
 , textString(copy.textString)
-, logstream(copy.logstream)
-, verboseMode(copy.verboseMode)
-, debugMode(copy.debugMode)
 {
 }
 
@@ -104,29 +98,17 @@ OFCondition DVPSAnnotationContent::read(DcmItem &dset)
     if ((sOPInstanceUID.getLength() == 0)||(sOPInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: SOPInstanceUID missing or incorrect in Stored Print Annotation" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("SOPInstanceUID missing or incorrect in Stored Print Annotation");
     }
     if ((annotationPosition.getLength() == 0)||(annotationPosition.getVM() != 1))
     {
         result=EC_TagNotFound;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: AnnotationPosition missing or incorrect in Stored Print Annotation" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("AnnotationPosition missing or incorrect in Stored Print Annotation");
     }
     if ((textString.getLength() == 0)||(textString.getVM() != 1))
     {
         result=EC_TagNotFound;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: TextString missing or incorrect in Stored Print Annotation" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("TextString missing or incorrect in Stored Print Annotation");
     }
   }
 
@@ -142,29 +124,17 @@ OFCondition DVPSAnnotationContent::write(DcmItem &dset)
   if (sOPInstanceUID.getLength() == 0)
   {
     result=EC_TagNotFound;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: cannot write Stored Print Annotation: SOPInstanceUID empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot write Stored Print Annotation: SOPInstanceUID empty");
   }
   if (annotationPosition.getLength() == 0)
   {
     result=EC_TagNotFound;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: cannot write Stored Print Annotation: AnnotationPosition empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot write Stored Print Annotation: AnnotationPosition empty");
   }
   if (textString.getLength() == 0)
   {
     result=EC_TagNotFound;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: cannot write Stored Print Annotation: TextString empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot write Stored Print Annotation: TextString empty");
   }
 
   ADD_TO_DATASET(DcmUniqueIdentifier, sOPInstanceUID)
@@ -200,15 +170,11 @@ const char *DVPSAnnotationContent::getSOPInstanceUID()
   if (EC_Normal == sOPInstanceUID.getString(c)) return c; else return NULL;
 }
 
-void DVPSAnnotationContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-}
-
 /*
  *  $Log: dvpsab.cc,v $
+ *  Revision 1.12  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.11  2009-09-30 10:42:38  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h

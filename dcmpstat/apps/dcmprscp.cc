@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2008, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Presentation State Viewer - Print Server
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 16:30:24 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:56 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,6 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmpstat/dvpsprt.h"
 #include "dcmtk/dcmpstat/dvpshlp.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlstrans.h"
@@ -66,44 +65,15 @@ END_EXTERN_C
 
 #define OFFIS_CONSOLE_APPLICATION "dcmprscp"
 
+static OFLogger dcmprscpLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* command line options */
-static OFBool           opt_verbose         = OFFalse;             /* default: not verbose */
-static int              opt_debugMode       = 0;
-static OFBool           opt_dumpMode        = OFFalse;
-static OFBool           opt_logFile         = OFFalse;
 static OFBool           opt_binaryLog       = OFFalse;
 static const char *     opt_cfgName         = NULL;                /* config file name */
 static const char *     opt_printer         = NULL;                /* printer name */
-static STD_NAMESPACE ostream *        logstream           = &CERR;
-
-/* print scp data, taken from configuration file */
-static OFBool         haveHandledClients    = OFFalse;
-
-static int errorCond(OFCondition cond, const char *message)
-{
-  int result = (cond.bad());
-  if (result)
-  {
-    CERR << message << OFendl;
-    DimseCondition::dump(cond);
-  }
-  return result;
-}
-
-void closeLog()
-{
-  ofConsole.setCout();
-  ofConsole.split();
-  if (logstream != &CERR)
-  {
-    *logstream << OFendl << OFDateTime::getCurrentDateTime() << OFendl << "terminating" << OFendl;
-    delete logstream;
-    logstream = &CERR;
-  }
-}
 
 static void cleanChildren()
 {
@@ -131,7 +101,8 @@ static void cleanChildren()
 #endif
         if (child < 0)
         {
-           if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << OFendl;
+           if (errno != ECHILD)
+             OFLOG_ERROR(dcmprscpLogger, "wait for child failed: " << strerror(errno));
         }
     }
 #endif
@@ -156,7 +127,6 @@ int main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-    SetDebugLevel((0));
     dcmDisableGethostbyaddr.set(OFTrue);  // disable hostname lookup
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM basic grayscale print management SCP", rcsid);
@@ -167,9 +137,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:");
      cmd.addOption("--help",    "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",          "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--arguments",        "print expanded command line arguments");
-     cmd.addOption("--verbose", "-v",    "verbose mode, print actions");
-     cmd.addOption("--debug",   "-d",    "debug mode, print debug information");
+     OFLog::addOptions(cmd);
 
     cmd.addGroup("processing options:");
      cmd.addOption("--config",  "-c", 1, "[f]ilename: string",
@@ -177,16 +145,11 @@ int main(int argc, char *argv[])
      cmd.addOption("--printer", "-p", 1, "[n]ame: string (default: 1st printer in cfg file)",
                                          "select printer with identifier [n] from cfg file");
      cmd.addOption("--dump",    "+d",    "print all DIMSE messages");
-     cmd.addOption("--logfile", "-l",    "print to log file instead of stdout");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -210,26 +173,33 @@ int main(int argc, char *argv[])
       }
 
       /* options */
-      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug"))   opt_debugMode = 3;
-      if (cmd.findOption("--dump"))    opt_dumpMode = OFTrue;
-      if (cmd.findOption("--logfile")) opt_logFile = OFTrue;
+      if (cmd.findOption("--dump"))
+      {
+        // Messages to the "dump" logger are always written with the debug log
+        // level, thus enabling that logger for this level shows the dumps
+        log4cplus::Logger log = log4cplus::Logger::getInstance("dcmtk.dcmpstat.dump");
+        log.setLogLevel(OFLogger::DEBUG_LOG_LEVEL);
+      }
+
+      OFLog::configureFromCommandLine(cmd, app);
+
       if (cmd.findOption("--config"))  app.checkValue(cmd.getValue(opt_cfgName));
       if (cmd.findOption("--printer")) app.checkValue(cmd.getValue(opt_printer));
     }
 
-    SetDebugLevel((opt_debugMode));
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmprscpLogger, rcsid << OFendl);
 
     if (opt_cfgName)
     {
       FILE *cfgfile = fopen(opt_cfgName, "rb");
       if (cfgfile) fclose(cfgfile); else
       {
-        *logstream << "error: can't open configuration file '" << opt_cfgName << "'" << OFendl;
+        OFLOG_FATAL(dcmprscpLogger, "can't open configuration file '" << opt_cfgName << "'");
         return 10;
       }
     } else {
-        *logstream << "error: no configuration file specified" << OFendl;
+        OFLOG_FATAL(dcmprscpLogger, "no configuration file specified");
         return 10;
     }
 
@@ -239,14 +209,14 @@ int main(int argc, char *argv[])
     {
       if (DVPSE_printLocal != dvi.getTargetType(opt_printer))
       {
-        *logstream << "error: no print scp definition for '" << opt_printer << "' found in config file." << OFendl;
+        OFLOG_FATAL(dcmprscpLogger, "no print scp definition for '" << opt_printer << "' found in config file.");
         return 10;
       }
     } else {
       opt_printer = dvi.getTargetID(0, DVPSE_printLocal); // use default print scp
       if (opt_printer==NULL)
       {
-        *logstream << "error: no default print scp available - no config file?" << OFendl;
+        OFLOG_FATAL(dcmprscpLogger, "no default print scp available - no config file?");
         return 10;
       }
     }
@@ -258,10 +228,7 @@ int main(int argc, char *argv[])
     unsigned long logcounter = 0;
     char logcounterbuf[20];
 
-    if (dvi.getLogFolder() != NULL)
-        logfileprefix = dvi.getLogFolder();
-    else
-        logfileprefix = dvi.getSpoolFolder();
+    logfileprefix = dvi.getSpoolFolder();
 
     logfileprefix += PATH_SEPARATOR;
     logfileprefix += "PrintSCP_";
@@ -273,40 +240,16 @@ int main(int argc, char *argv[])
     DVPSHelper::currentTime(aString);
     logfileprefix += aString;
 
-    OFString logfilename;
-    if (opt_logFile)
-    {
-      logfilename = logfileprefix;
-      logfilename += ".log";
 
-      STD_NAMESPACE ofstream *newstream = new STD_NAMESPACE ofstream(logfilename.c_str());
-      if (newstream && (newstream->good()))
-      {
-        logstream=newstream;
-        ofConsole.setCout(logstream);
-        ofConsole.join();
-      }
-      else
-      {
-      	delete newstream;
-      	logfilename.clear();
-      }
-    }
-
-    *logstream << rcsid << OFendl << OFDateTime::getCurrentDateTime() << OFendl << "started" << OFendl;
-
-    dvi.setLog(&ofConsole, opt_verbose, opt_debugMode > 0);
+    OFLOG_WARN(dcmprscpLogger, rcsid << OFendl << OFDateTime::getCurrentDateTime() << OFendl << "started");
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-        *logstream << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+       OFLOG_WARN(dcmprscpLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
 
     /* check if we can get access to the database */
     const char *dbfolder = dvi.getDatabaseFolder();
-    if (opt_verbose)
-    {
-      *logstream << "Using database in directory '" << dbfolder << "'" << OFendl;
-    }
+    OFLOG_INFO(dcmprscpLogger, "Using database in directory '" << dbfolder << "'");
 
     OFCondition cond2 = EC_Normal;
     DcmQueryRetrieveIndexDatabaseHandle *dbhandle = new DcmQueryRetrieveIndexDatabaseHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, cond2);
@@ -314,7 +257,7 @@ int main(int argc, char *argv[])
 
     if (cond2.bad())
     {
-      CERR << "Unable to access database '" << dbfolder << "'" << OFendl;
+      OFLOG_FATAL(dcmprscpLogger, "Unable to access database '" << dbfolder << "'");
       return 10;
     }
 
@@ -325,8 +268,7 @@ int main(int argc, char *argv[])
 
     if (targetPort == 0)
     {
-        *logstream << "error: no or invalid port number for print scp '" << opt_printer << "'" << OFendl;
-        closeLog();
+        OFLOG_FATAL(dcmprscpLogger, "no or invalid port number for print scp '" << opt_printer << "'");
         return 10;
     }
 
@@ -417,11 +359,11 @@ int main(int argc, char *argv[])
       	dvi.getTargetCipherSuite(opt_printer, ui, currentSuite);
         if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
         {
-          CERR << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << OFendl;
+          OFLOG_WARN(dcmprscpLogger, "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:");
           unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
           for (unsigned long cs=0; cs < numSuites; cs++)
           {
-            CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
+            OFLOG_WARN(dcmprscpLogger, "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
           }
           return 1;
         } else {
@@ -437,37 +379,38 @@ int main(int argc, char *argv[])
       tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_ACCEPTOR, tlsRandomSeedFile.c_str());
       if (tLayer == NULL)
       {
-        app.printError("unable to create TLS transport layer");
+        OFLOG_FATAL(dcmprscpLogger, "unable to create TLS transport layer");
+        return 1;
       }
 
       if (tlsCACertificateFolder && (TCS_ok != tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat)))
       {
-        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << OFendl;
+        OFLOG_WARN(dcmprscpLogger, "unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring");
       }
       if ((tlsDHParametersFile.size() > 0) && ! (tLayer->setTempDHParameters(tlsDHParametersFile.c_str())))
       {
-        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << OFendl;
+        OFLOG_WARN(dcmprscpLogger, "unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring");
       }
       tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
 
       if (TCS_ok != tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat))
       {
-        CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << OFendl;
+        OFLOG_FATAL(dcmprscpLogger, "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'");
         return 1;
       }
       if (TCS_ok != tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat))
       {
-        CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << OFendl;
+        OFLOG_FATAL(dcmprscpLogger, "unable to load certificate from '" << tlsCertificateFile << "'");
         return 1;
       }
       if (! tLayer->checkPrivateKeyMatchesCertificate())
       {
-        CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << OFendl;
+        OFLOG_FATAL(dcmprscpLogger, "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match");
         return 1;
       }
       if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
       {
-        CERR << "unable to set selected cipher suites" << OFendl;
+        OFLOG_FATAL(dcmprscpLogger, "unable to set selected cipher suites");
         return 1;
       }
 
@@ -477,14 +420,19 @@ int main(int argc, char *argv[])
 #else
     if (targetUseTLS)
     {
-        CERR << "error: not compiled with OpenSSL, cannot use TLS." << OFendl;
+        OFLOG_FATAL(dcmprscpLogger, "not compiled with OpenSSL, cannot use TLS.");
         return 10;
     }
 #endif
 
     /* open listen socket */
     OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, targetPort, 30, &net);
-    if (errorCond(cond, "Error initialising network:")) return 1;
+    if (cond.bad())
+    {
+      OFString temp_str;
+      OFLOG_FATAL(dcmprscpLogger, "Error initialising network:\n" << DimseCondition::dump(temp_str, cond));
+      return 1;
+    }
 
 #ifdef WITH_OPENSSL
     if (tLayer)
@@ -492,7 +440,8 @@ int main(int argc, char *argv[])
       cond = ASC_setTransportLayer(net, tLayer, 0);
       if (cond.bad())
       {
-        DimseCondition::dump(cond);
+        OFString temp_str;
+        OFLOG_FATAL(dcmprscpLogger, DimseCondition::dump(temp_str, cond));
         return 1;
       }
     }
@@ -516,8 +465,6 @@ int main(int argc, char *argv[])
     while (!finished)
     {
       DVPSPrintSCP printSCP(dvi, opt_printer); // use new print SCP object for each association
-
-      printSCP.setLog(&ofConsole, opt_verbose, opt_debugMode > 0, opt_dumpMode);
 
       if (opt_binaryLog)
       {
@@ -543,10 +490,14 @@ int main(int argc, char *argv[])
         case DVPSJ_terminate:
           finished=OFTrue;
           cond = ASC_dropNetwork(&net);
-          if (errorCond(cond, "Error dropping network:")) return 10;
+          if (cond.bad())
+          {
+            OFString temp_str;
+            OFLOG_FATAL(dcmprscpLogger, "Error dropping network:\n" << DimseCondition::dump(temp_str, cond));
+            return 10;
+          }
           break;
         case DVPSJ_success:
-          haveHandledClients = OFTrue;
           printSCP.handleClient();
           break;
       }
@@ -561,14 +512,6 @@ int main(int argc, char *argv[])
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
 #endif
 
-    closeLog();
-    OFBool deleteUnusedLogs = OFTrue;
-    if (deleteUnusedLogs && (! haveHandledClients))
-    {
-      // log unused, attempt to delete file
-      if (logfilename.size() > 0) unlink(logfilename.c_str());
-    }
-
 #ifdef WITH_OPENSSL
     if (tLayer)
     {
@@ -576,10 +519,10 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
         {
-  	  CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << OFendl;
+          OFLOG_ERROR(dcmprscpLogger, "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring.");
         }
       } else {
-	CERR << "Warning: cannot write back random seed, ignoring." << OFendl;
+        OFLOG_WARN(dcmprscpLogger, "cannot write back random seed, ignoring.");
       }
     }
     delete tLayer;
@@ -591,6 +534,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
+ * Revision 1.24  2009-11-24 14:12:56  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.23  2008-09-25 16:30:24  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

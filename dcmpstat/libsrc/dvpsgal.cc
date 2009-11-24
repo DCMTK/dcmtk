@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSGraphicAnnotation_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:27 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,17 +41,11 @@
 
 DVPSGraphicAnnotation_PList::DVPSGraphicAnnotation_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSGraphicAnnotation_PList::DVPSGraphicAnnotation_PList(const DVPSGraphicAnnotation_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSGraphicAnnotation *) first = arg.list_.begin();
   OFListConstIterator(DVPSGraphicAnnotation *) last = arg.list_.end();
@@ -98,7 +92,6 @@ OFCondition DVPSGraphicAnnotation_PList::read(DcmItem &dset)
         newObject = new DVPSGraphicAnnotation();
         if (newObject && ditem)
         {
-          newObject->setLog(logstream, verboseMode, debugMode);
           result = newObject->read(*ditem);
           list_.push_back(newObject);
         } else result = EC_MemoryExhausted;
@@ -262,7 +255,6 @@ DVPSTextObject *DVPSGraphicAnnotation_PList::addTextObject(
   if (text==NULL)
   {
     text = new DVPSTextObject();
-    if (text) text->setLog(logstream, verboseMode, debugMode);
   }
   if (text==NULL) return NULL;
 
@@ -520,23 +512,12 @@ OFCondition DVPSGraphicAnnotation_PList::moveGraphicObject(
   return EC_IllegalCall;
 }
 
-void DVPSGraphicAnnotation_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
-  OFListIterator(DVPSGraphicAnnotation *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }
-}
-
 
 /*
  *  $Log: dvpsgal.cc,v $
+ *  Revision 1.16  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.15  2005-12-08 15:46:27  meichel
  *  Changed include path schema for all DCMTK header files
  *

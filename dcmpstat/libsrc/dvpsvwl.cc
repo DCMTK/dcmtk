@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSVOIWindow_PList
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:39 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,17 +42,11 @@
 
 DVPSVOIWindow_PList::DVPSVOIWindow_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSVOIWindow_PList::DVPSVOIWindow_PList(const DVPSVOIWindow_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSVOIWindow *) first = arg.list_.begin();
   OFListConstIterator(DVPSVOIWindow *) last = arg.list_.end();
@@ -102,7 +96,6 @@ OFCondition DVPSVOIWindow_PList::read(DcmItem &dset)
       newObject = new DVPSVOIWindow();
       if (newObject)
       {
-        newObject->setLog(logstream, verboseMode, debugMode);
         if (EC_Normal == newObject->read(i, windowCenter, windowWidth, expl)) list_.push_back(newObject);
         else delete(newObject);
       } else result = EC_MemoryExhausted;
@@ -124,22 +117,11 @@ DVPSVOIWindow *DVPSVOIWindow_PList::getVOIWindow(size_t idx)
   return NULL;
 }
 
-void DVPSVOIWindow_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSVOIWindow *) first = list_.begin();
-  OFListIterator(DVPSVOIWindow *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }
-}
-
 /*
  *  $Log: dvpsvwl.cc,v $
+ *  Revision 1.14  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.13  2009-09-30 10:42:39  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h

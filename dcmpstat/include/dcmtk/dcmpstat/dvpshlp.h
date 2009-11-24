@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSHelper
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:38 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2009-11-24 14:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,9 +87,8 @@ class DVPSHelper
 
     /** helper function that cleans up pending processes under Unix.
      *  No function if used on Windows.
-     *  @param logconsole console for error output. Default: quiet operation
      */ 
-    static void cleanChildren(OFConsole *logconsole=NULL);
+    static void cleanChildren();
 
     /** helper function that writes the current date in DICOM format (YYYYMMDD)
      *  @param str current date is written to this string
@@ -134,6 +133,9 @@ class DVPSHelper
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.h,v $
+ *  Revision 1.8  2009-11-24 14:12:57  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.7  2009-09-30 10:42:38  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h

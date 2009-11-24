@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintMessageHandler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,10 +44,6 @@ DVPSPrintMessageHandler::DVPSPrintMessageHandler()
 , eventHandler(NULL)
 , blockMode(DIMSE_BLOCKING)
 , timeout(0)
-, dumpStream(NULL)
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
@@ -58,16 +54,13 @@ DVPSPrintMessageHandler::~DVPSPrintMessageHandler()
 
 void DVPSPrintMessageHandler::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool outgoing)
 {
-    if (dumpStream == NULL) return;    
-    if (outgoing)
-    {
-      *dumpStream << "===================== OUTGOING DIMSE MESSAGE ====================" << OFendl;
+    OFString str;
+    if (outgoing) {
+        DIMSE_dumpMessage(str, msg, DIMSE_OUTGOING, dataset);
     } else {
-      *dumpStream << "===================== INCOMING DIMSE MESSAGE ====================" << OFendl;
+        DIMSE_dumpMessage(str, msg, DIMSE_INCOMING, dataset);
     }
-    DIMSE_printMessage(*dumpStream, msg, dataset);
-    *dumpStream << "======================= END DIMSE MESSAGE =======================" << OFendl << OFendl;  
-    return;
+    DCMPSTAT_DUMP(str);
 }
 
 OFCondition DVPSPrintMessageHandler::sendNRequest(
@@ -555,11 +548,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
   }
   
   /* create association */
-  if (verboseMode)
-  {
-    logstream->lockCerr() << "Requesting Association" << OFendl;
-    logstream->unlockCerr();
-  }
+  DCMPSTAT_INFO("Requesting Association");
     
   if (cond.good()) 
   {
@@ -567,14 +556,10 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
 
     if (cond == DUL_ASSOCIATIONREJECTED)
     {
+      OFString temp_str;
       T_ASC_RejectParameters rej;
       ASC_getRejectParameters(params, &rej);
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Association Rejected" << OFendl;
-        logstream->unlockCerr();
-        ASC_printRejectParameters(stderr, &rej);
-      }
+      DCMPSTAT_INFO("Association Rejected" << OFendl << ASC_printRejectParameters(temp_str, &rej));
     } else {
       if (cond.bad()) 
       {
@@ -593,22 +578,14 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
                         
   if ((cond.good()) && (0 == ASC_findAcceptedPresentationContextID(assoc, UID_BasicGrayscalePrintManagementMetaSOPClass)))
   {                     
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Peer does not support Basic Grayscale Print Management, aborting association." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("Peer does not support Basic Grayscale Print Management, aborting association.");
     abortAssociation();
     cond = DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
   
   if (cond.good())
   {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")");
   } else {
     // params is now an alias to assoc->params. Don't call ASC_destroyAssociationParameters.
     if (assoc) ASC_destroyAssociation(&assoc);
@@ -632,15 +609,11 @@ OFBool DVPSPrintMessageHandler::printerSupportsAnnotationBox()
   return OFFalse;
 }
 
-void DVPSPrintMessageHandler::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-}
-
 /*
  *  $Log: dvpspr.cc,v $
+ *  Revision 1.22  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.21  2006-08-15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

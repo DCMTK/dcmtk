@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSAnnotationContent
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:38 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2009-11-24 14:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,13 +117,6 @@ public:
    */
   OFCondition prepareBasicAnnotationBox(DcmItem &dset);
 
-  /** sets a new log stream
-   *  @param stream new log stream, NULL for default logstream
-   *  @param verbMode verbose mode flag
-   *  @param dbgMode debug mode flag
-   */
-  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
- 
 private:
   /// private undefined assignment operator
   DVPSAnnotationContent& operator=(const DVPSAnnotationContent&);
@@ -135,24 +128,15 @@ private:
   /// Module=Annotation_List, VR=LO, VM=1, Type 1(c)
   DcmLongString            textString;
 
-  /** output stream for error messages, never NULL
-   */
-  OFConsole *logstream;
-
-  /** flag indicating whether we're operating in verbose mode
-   */
-  OFBool verboseMode;
-   
-  /** flag indicating whether we're operating in debug mode
-   */
-  OFBool debugMode;
-  
 };
 
 #endif
 
 /*
  *  $Log: dvpsab.h,v $
+ *  Revision 1.8  2009-11-24 14:12:57  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.7  2009-09-30 10:42:38  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h

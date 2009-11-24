@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlay
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,9 +50,6 @@ DVPSOverlay::DVPSOverlay()
 , overlayData(DCM_OverlayData)
 , overlayDescription(DCM_OverlayDescription)
 , overlayLabel(DCM_OverlayLabel)
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
@@ -67,9 +64,6 @@ DVPSOverlay::DVPSOverlay(const DVPSOverlay& copy)
 , overlayData(copy.overlayData)
 , overlayDescription(copy.overlayDescription)
 , overlayLabel(copy.overlayLabel)
-, logstream(copy.logstream)
-, verboseMode(copy.verboseMode)
-, debugMode(copy.debugMode)
 {
 }
 
@@ -109,126 +103,74 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
   if (overlayRows.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayRows absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains an overlay with overlayRows absent or empty");
   }
   else if (overlayRows.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayRows VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains an overlay with overlayRows VM != 1");
   }
 
   if (overlayColumns.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayColumns absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains an overlay with overlayColumns absent or empty");
   }
   else if (overlayColumns.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayColumns VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains an overlay with overlayColumns VM != 1");
   }
 
   if (overlayType.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayType absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains an overlay with overlayType absent or empty");
   }
   else if (overlayType.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayType VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains an overlay with overlayType VM != 1");
   }
 
   if (overlayOrigin.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayOrigin absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains an overlay with overlayOrigin absent or empty");
   }
   else if (overlayOrigin.getVM() != 2)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayOrigin VM != 2" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains an overlay with overlayOrigin VM != 2");
   }
 
   if (overlayBitsAllocated.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayBitsAllocated absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains an overlay with overlayBitsAllocated absent or empty");
   }
   else if (overlayBitsAllocated.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayBitsAllocated VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains an overlay with overlayBitsAllocated VM != 1");
   }
 
   if (overlayBitPosition.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayBitPosition absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains an overlay with overlayBitPosition absent or empty");
   }
   else if (overlayBitPosition.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayBitPosition VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains an overlay with overlayBitPosition VM != 1");
   }
 
   /* in a presentation state object, the overlay data must always be present in this group */
   if (overlayData.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayData absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains an overlay with overlayData absent or empty");
   }
 
   return result;
@@ -321,16 +263,12 @@ OFCondition DVPSOverlay::getValues(
   return result;
 }
 
-void DVPSOverlay::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-}
-
 
 /*
  *  $Log: dvpsov.cc,v $
+ *  Revision 1.18  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.17  2006-08-15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

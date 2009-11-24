@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSSoftcopyVOI_PList
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:39 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,17 +44,11 @@
 
 DVPSSoftcopyVOI_PList::DVPSSoftcopyVOI_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSSoftcopyVOI_PList::DVPSSoftcopyVOI_PList(const DVPSSoftcopyVOI_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSSoftcopyVOI *) first = arg.list_.begin();
   OFListConstIterator(DVPSSoftcopyVOI *) last = arg.list_.end();
@@ -101,7 +95,6 @@ OFCondition DVPSSoftcopyVOI_PList::read(DcmItem &dset)
         newImage = new DVPSSoftcopyVOI();
         if (newImage && ditem)
         {
-          newImage->setLog(logstream, verboseMode, debugMode);
           result = newImage->read(*ditem);
           list_.push_back(newImage);
         } else result = EC_MemoryExhausted;
@@ -202,7 +195,6 @@ DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::createSoftcopyVOI(
 
   if (newArea)
   {
-    newArea->setLog(logstream, verboseMode, debugMode);
     if (applicability != DVPSB_allImages) newArea->addImageReference(sopclassUID, instanceUID, frame, applicability);
     list_.push_back(newArea);
   }
@@ -329,23 +321,11 @@ OFCondition DVPSSoftcopyVOI_PList::createFromImage(
   return result;
 }
 
-void DVPSSoftcopyVOI_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSSoftcopyVOI *) first = list_.begin();
-  OFListIterator(DVPSSoftcopyVOI *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }	
-}
-
-
 /*
  *  $Log: dvpssvl.cc,v $
+ *  Revision 1.15  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.14  2009-09-30 10:42:39  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h

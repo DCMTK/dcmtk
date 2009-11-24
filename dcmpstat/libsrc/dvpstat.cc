@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-17 06:56:54 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -560,20 +560,12 @@ OFCondition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
 
     if (EC_Normal != rescaleSlope.getFloat64(slope, 0))
     {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to evaluate Modality Rescale Slope, ignoring." << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("unable to evaluate Modality Rescale Slope, ignoring.");
       slope = 1.0;
     }
     if (EC_Normal != rescaleIntercept.getFloat64(intercept, 0))
     {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to evaluate Modality Rescale Slope, ignoring." << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("unable to evaluate Modality Rescale Slope, ignoring.");
       intercept = 0.0;
     }
     image = new DicomImage(dataset, dataset->getOriginalXfer(),
@@ -1547,11 +1539,8 @@ void DVPresentationState::renderPixelData(OFBool display)
        if (previewImage != NULL)
          previewImage->setNoVoiTransformation();
      }
-     if ((!result) && verboseMode)
-     {
-       logstream->lockCerr() << "warning: unable to set VOI transformation, ignoring." << OFendl;
-       logstream->unlockCerr();
-     }
+     if (!result)
+       DCMPSTAT_INFO("unable to set VOI transformation, ignoring.");
   } /* VOI transform */
 
   if (! currentImagePLUTValid)
@@ -1595,11 +1584,8 @@ void DVPresentationState::renderPixelData(OFBool display)
     {
       result = currentImage->flipImage();
       if (previewImage != NULL) previewImage->flipImage();
-      if ((!result) && verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to flip image horizontally, ignoring." << OFendl;
-        logstream->unlockCerr();
-      }
+      if (!result)
+        DCMPSTAT_INFO("unable to flip image horizontally, ignoring.");
       currentImageFlip = OFFalse;
     }
     signed int srot=0;
@@ -1615,21 +1601,15 @@ void DVPresentationState::renderPixelData(OFBool display)
       result = currentImage->rotateImage(srot);
       if (previewImage != NULL)
         previewImage->rotateImage(srot);
-      if ((!result) && verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to rotate image by " << srot << " degrees, ignoring." << OFendl;
-        logstream->unlockCerr();
-      }
+      if (!result)
+        DCMPSTAT_INFO("unable to rotate image by " << srot << " degrees, ignoring.");
     }
     currentImageRotation = DVPSR_0_deg;
 
     // deactivate all overlays first
     result = currentImage->removeAllOverlays();
-    if ((!result) && verboseMode)
-    {
-      logstream->lockCerr() << "warning: unable to disable external overlays, ignoring." << OFendl;
-      logstream->unlockCerr();
-    }
+    if (!result)
+      DCMPSTAT_INFO("unable to disable external overlays, ignoring.");
 
     size_t numOverlays = overlayList.size();
     DVPSOverlay *overlay = NULL;
@@ -1644,12 +1624,9 @@ void DVPresentationState::renderPixelData(OFBool display)
         {
           if (activateOverlayHelper(*overlay, *currentImage).bad())
           {
-            if ((!result) && verboseMode)
-            {
-              logstream->lockCerr() << "warning: unable to set external overlay group 0x"
-                << STD_NAMESPACE hex << ovgroup << STD_NAMESPACE dec << ", ignoring." << OFendl;
-              logstream->unlockCerr();
-            }
+            if (!result)
+              DCMPSTAT_INFO("unable to set external overlay group 0x"
+                << STD_NAMESPACE hex << ovgroup << STD_NAMESPACE dec << ", ignoring.");
           }
         }
         else if ((useShutterBitmap)&&(ovgroup == bitmapShutterGroup))
@@ -1657,12 +1634,9 @@ void DVPresentationState::renderPixelData(OFBool display)
           //activate bitmap overlay
           if (activateOverlayHelper(*overlay, *currentImage, OFTrue, bitmapShutterPValue).bad())
           {
-            if ((!result) && verboseMode)
-            {
-              logstream->lockCerr() << "warning: unable to activate bitmap shutter 0x"
-                << STD_NAMESPACE hex << ovgroup << STD_NAMESPACE dec << ", ignoring." << OFendl;
-              logstream->unlockCerr();
-            }
+            if (!result)
+              DCMPSTAT_INFO("unable to activate bitmap shutter 0x"
+                << STD_NAMESPACE hex << ovgroup << STD_NAMESPACE dec << ", ignoring.");
           }
         }
       }
@@ -1787,22 +1761,16 @@ void DVPresentationState::renderPixelData(OFBool display)
   {
     result = currentImage->rotateImage(rot);
     if (previewImage != NULL) previewImage->rotateImage(rot);
-    if ((!result) && verboseMode)
-    {
-      logstream->lockCerr() << "warning: unable to rotate image by " << rot << " degrees, ignoring." << OFendl;
-      logstream->unlockCerr();
-    }
+    if (!result)
+      DCMPSTAT_INFO("unable to rotate image by " << rot << " degrees, ignoring.");
   }
 
   if (flp)
   {
     result = currentImage->flipImage();
     if (previewImage != NULL) previewImage->flipImage();
-    if ((!result) && verboseMode)
-    {
-      logstream->lockCerr() << "warning: unable to flip image horizontally, ignoring." << OFendl;
-      logstream->unlockCerr();
-    }
+    if (!result)
+      DCMPSTAT_INFO("unable to flip image horizontally, ignoring.");
   }
 
   currentImageRotation = pstateRotation;
@@ -1964,11 +1932,7 @@ DVPSDisplayedArea *DVPresentationState::getDisplayedAreaSelection()
   DVPSDisplayedArea * area = displayedAreaSelectionList.findDisplayedArea(currentImageSOPInstanceUID, currentImageSelectedFrame);
   if (area==NULL)
   {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Warning: no displayed area selection item for current image found, creating default." << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("no displayed area selection item for current image found, creating default.");
       if ((currentImageDataset)&&(EC_Normal == createDefaultDisplayedArea(*currentImageDataset)))
       {
         area = displayedAreaSelectionList.findDisplayedArea(currentImageSOPInstanceUID, currentImageSelectedFrame);
@@ -2146,15 +2110,6 @@ const char *DVPresentationState::getCurrentImageModality()
   if (EC_Normal == currentImageModality.getString(c)) return c; else return NULL;
 }
 
-void DVPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  DcmPresentationState::setLog(stream, verbMode, dbgMode);
-  currentImageCurveList.setLog(logstream, verbMode, dbgMode);
-  currentImageVOILUTList.setLog(logstream, verbMode, dbgMode);
-  currentImageVOIWindowList.setLog(logstream, verbMode, dbgMode);
-}
-
-
 const char *DVPresentationState::getAttachedImageSOPClassUID()
 {
   return currentImageSOPClassUID;
@@ -2224,6 +2179,9 @@ OFCondition DVPresentationState::createFromImage(
 
 /*
  *  $Log: dvpstat.cc,v $
+ *  Revision 1.85  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.84  2009-09-17 06:56:54  joergr
  *  Added parentheses around && within || in order to avoid compiler warnings.
  *

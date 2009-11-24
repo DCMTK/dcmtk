@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSVOIWindow
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:57 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,9 +45,6 @@ DVPSVOIWindow::DVPSVOIWindow()
 : windowCenter(0.0)
 , windowWidth(0.0)
 , windowCenterWidthExplanation()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
@@ -55,9 +52,6 @@ DVPSVOIWindow::DVPSVOIWindow(const DVPSVOIWindow& copy)
 : windowCenter(copy.windowCenter)
 , windowWidth(copy.windowWidth)
 , windowCenterWidthExplanation(copy.windowCenterWidthExplanation)
-, logstream(copy.logstream)
-, verboseMode(copy.verboseMode)
-, debugMode(copy.debugMode)
 {
 }
 
@@ -105,16 +99,11 @@ const char *DVPSVOIWindow::getExplanation()
   return windowCenterWidthExplanation.c_str();
 }
 
-void DVPSVOIWindow::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-}
-
-
 /*
  *  $Log: dvpsvw.cc,v $
+ *  Revision 1.10  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.9  2005-12-08 15:46:57  meichel
  *  Changed include path schema for all DCMTK header files
  *

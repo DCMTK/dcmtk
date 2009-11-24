@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT 
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,39 +99,27 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image, OFBool printLUT)
       {
       	result = image->setPresentationLutShape(ESP_Identity);
       }
-      if ((!result) && verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to set identity presentation LUT shape, ignoring." << OFendl;
-        logstream->unlockCerr();
-      }
+      if (!result)
+        DCMPSTAT_INFO("unable to set identity presentation LUT shape, ignoring.");
       break;
     case DVPSP_inverse:
       if (!printLUT)
         result = image->setPresentationLutShape(ESP_Inverse);
-      if ((!result) && verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to set inverse presentation LUT shape, ignoring." << OFendl;
-        logstream->unlockCerr();
-      }
+      if (!result)
+        DCMPSTAT_INFO("unable to set inverse presentation LUT shape, ignoring.");
       break;      
     case DVPSP_lin_od:
       result = image->setPresentationLutShape(ESP_LinOD);
-      if ((!result) && verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to set linear optical density presentation LUT shape, ignoring." << OFendl;
-        logstream->unlockCerr();
-      }
+      if (!result)
+        DCMPSTAT_INFO("unable to set linear optical density presentation LUT shape, ignoring.");
       break;
     case DVPSP_table:
       if (printLUT)
         result = image->setVoiLut(presentationLUTData, presentationLUTDescriptor, &presentationLUTExplanation);
       else
         result = image->setPresentationLut(presentationLUTData, presentationLUTDescriptor, &presentationLUTExplanation);
-      if ((!result) && verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to set presentation LUT, ignoring." << OFendl;
-        logstream->unlockCerr();
-      }
+      if (!result)
+        DCMPSTAT_INFO("unable to set presentation LUT, ignoring.");
       break;
   }
   if (result) return OFTrue; else return OFFalse;
@@ -143,11 +131,8 @@ OFBool DVPSPresentationLUT::activateInverseLUT(DicomImage *image)
   if ((image != NULL) && (presentationLUT == DVPSP_table))
   {
       result = image->setInversePresentationLut(presentationLUTData, presentationLUTDescriptor);
-      if ((!result) && verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to set inverse presentation LUT, ignoring." << OFendl;
-        logstream->unlockCerr();
-      }
+      if (!result)
+        DCMPSTAT_INFO("unable to set inverse presentation LUT, ignoring.");
   }
   if (result) return OFTrue; else return OFFalse;
 }
@@ -177,6 +162,9 @@ OFBool DVPSPresentationLUT::isInverse()
 
 /*
  *  $Log: dvpspl2.cc,v $
+ *  Revision 1.5  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.4  2006-08-15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

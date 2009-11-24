@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2008, OFFIS
+ *  Copyright (C) 1999-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:41 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2009-11-24 14:12:56 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,6 @@ END_EXTERN_C
 #include "dcmtk/dcmpstat/dvpssp.h"
 #include "dcmtk/dcmpstat/dvpshlp.h"     /* for class DVPSHelper */
 #include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlstrans.h"
@@ -93,13 +92,12 @@ END_EXTERN_C
 
 #define OFFIS_CONSOLE_APPLICATION "dcmprscu"
 
+static OFLogger dcmprscuLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* command line options */
-static OFBool           opt_verbose         = OFFalse;             /* default: not verbose */
-static int              opt_debugMode       = 0;
-static OFBool           opt_dumpMode        = OFFalse;
 static OFBool           opt_spoolMode       = OFFalse;             /* default: file print mode */
 static OFBool           opt_noPrint         = OFFalse;
 static OFBool           opt_sessionPrint    = OFFalse;             /* Basic Film Session N-ACTION? */
@@ -115,7 +113,6 @@ static const char *     opt_ownerID         = NULL;
 static const char *     opt_spoolPrefix     = NULL;
 static OFCmdUnsignedInt opt_sleep           = (OFCmdUnsignedInt) 1;
 static OFCmdUnsignedInt opt_copies          = (OFCmdUnsignedInt) 0;
-static STD_NAMESPACE ostream *        logstream           = &CERR;
 
 /* print target data, taken from configuration file */
 static const char *   targetHostname        = NULL;
@@ -133,8 +130,6 @@ static OFBool         targetRequiresMatchingLUT   = OFTrue;
 static OFBool         targetPreferSCPLUTRendering = OFFalse;
 static OFBool         deletePrintJobs       = OFFalse;
 static OFBool         deleteTerminateJobs   = OFFalse;
-static OFBool         haveRenderedPrintJobs = OFFalse;
-static OFBool         deleteUnusedLogs      = OFTrue;
 static OFBool         useTLS                = OFFalse;
 
 /* helper class printJob */
@@ -209,21 +204,19 @@ static OFCondition spoolStoredPrintFile(
   DVInterface &dvi,
   DcmTransportLayer *tlayer)
 {
-  haveRenderedPrintJobs = OFTrue; // do not delete log when terminating
-
   DcmFileFormat *ffile = NULL;
   DcmDataset *dset = NULL;
 
   if (opt_spoolMode)
   {
-  	*logstream << OFendl << OFDateTime::getCurrentDateTime() << OFendl << "processing " << filename << OFendl;
+    OFLOG_WARN(dcmprscuLogger, OFDateTime::getCurrentDateTime() << OFendl << "processing " << filename);
   }
 
   if (filename==NULL) return EC_IllegalCall;
   OFCondition result = DVPSHelper::loadFileFormat(filename, ffile);
   if (EC_Normal != result)
   {
-    *logstream << "spooler: unable to load file '" << filename << "'" << OFendl;
+    OFLOG_ERROR(dcmprscuLogger, "spooler: unable to load file '" << filename << "'");
   }
   if (ffile) dset = ffile->getDataset();
 
@@ -235,7 +228,7 @@ static OFCondition spoolStoredPrintFile(
   }
   if (EC_Normal != result)
   {
-    *logstream << "spooler: file '" << filename << "' is not a valid Stored Print object" << OFendl;
+    OFLOG_ERROR(dcmprscuLogger, "spooler: file '" << filename << "' is not a valid Stored Print object");
   }
   delete ffile;
 
@@ -243,11 +236,6 @@ static OFCondition spoolStoredPrintFile(
   {
     // we have successfully read the Stored Print, now open connection to printer
     DVPSPrintMessageHandler printHandler;
-    if (opt_dumpMode)
-    {
-      printHandler.setDumpStream(logstream);
-      printHandler.setLog(&ofConsole, opt_verbose, opt_debugMode > 0);
-    }
 
     result = printHandler.negotiateAssociation(
       tlayer, dvi.getNetworkAETitle(),
@@ -256,25 +244,25 @@ static OFCondition spoolStoredPrintFile(
 
     if (result.bad())
     {
-      *logstream << "spooler: connection setup with printer failed." << OFendl;
-      DimseCondition::dump(result);
+      OFString temp_str;
+      OFLOG_ERROR(dcmprscuLogger, "spooler: connection setup with printer failed.\n" << DimseCondition::dump(temp_str, result));
     } else {
       if (EC_Normal != (result = stprint.printSCUgetPrinterInstance(printHandler)))
       {
-        *logstream << "spooler: printer communication failed, unable to request printer settings." << OFendl;
+        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to request printer settings.");
       }
       if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUpreparePresentationLUT(
         printHandler, targetRequiresMatchingLUT, targetPreferSCPLUTRendering, targetSupports12bit)))
       {
-        *logstream << "spooler: printer communication failed, unable to create presentation LUT." << OFendl;
+        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to create presentation LUT.");
       }
       if (EC_Normal==result) if (EC_Normal != (result = dvi.printSCUcreateBasicFilmSession(printHandler, targetPLUTinFilmSession)))
       {
-        *logstream << "spooler: printer communication failed, unable to create basic film session." << OFendl;
+        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to create basic film session.");
       }
       if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUcreateBasicFilmBox(printHandler, targetPLUTinFilmSession)))
       {
-        *logstream << "spooler: printer communication failed, unable to create basic film box." << OFendl;
+        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to create basic film box.");
       }
       // Process images
       size_t numberOfImages = stprint.getNumberOfImages();
@@ -300,16 +288,16 @@ static OFCondition spoolStoredPrintFile(
               // N-SET basic image box
               if (EC_Normal != (result = stprint.printSCUsetBasicImageBox(printHandler, currentImage, *dcmimage, opt_Monochrome1)))
               {
-                *logstream << "spooler: printer communication failed, unable to transmit basic grayscale image box." << OFendl;
+                OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to transmit basic grayscale image box.");
               }
             } else {
               result = EC_IllegalCall;
-              *logstream << "spooler: unable to load image file '" << theFilename.c_str() << "'" << OFendl;
+              OFLOG_ERROR(dcmprscuLogger, "spooler: unable to load image file '" << theFilename.c_str() << "'");
             }
             delete dcmimage;
           } else {
             result = EC_IllegalCall;
-            *logstream << "spooler: unable to locate image file in database." << OFendl;
+            OFLOG_ERROR(dcmprscuLogger, "spooler: unable to locate image file in database.");
           }
         } else result = EC_IllegalCall;
       }
@@ -322,7 +310,7 @@ static OFCondition spoolStoredPrintFile(
         {
           if (EC_Normal != (result = stprint.printSCUsetBasicAnnotationBox(printHandler, currentAnnotation)))
           {
-            *logstream << "spooler: printer communication failed, unable to transmit basic annotation box." << OFendl;
+            OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to transmit basic annotation box.");
           }
         }
       }
@@ -333,25 +321,25 @@ static OFCondition spoolStoredPrintFile(
         {
           if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUprintBasicFilmSession(printHandler)))
           {
-            *logstream << "spooler: printer communication failed, unable to print (at film session level)." << OFendl;
+            OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to print (at film session level).");
           }
         } else {
           if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUprintBasicFilmBox(printHandler)))
           {
-            *logstream << "spooler: printer communication failed, unable to print." << OFendl;
+            OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to print.");
           }
         }
       }
       if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUdelete(printHandler)))
       {
-        *logstream << "spooler: printer communication failed, unable to delete print objects." << OFendl;
+        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to delete print objects.");
       }
 
       result = printHandler.releaseAssociation();
       if (result.bad())
       {
-        *logstream << "spooler: release of connection to printer failed." << OFendl;
-        DimseCondition::dump(result);
+        OFString temp_str;
+        OFLOG_ERROR(dcmprscuLogger, "spooler: release of connection to printer failed." << DimseCondition::dump(temp_str, result));
         if (EC_Normal == result) result =  EC_IllegalCall;
       }
     }
@@ -396,11 +384,11 @@ static OFCondition spoolJobList(
       result2 = spoolStoredPrintFile(currentJob->storedPrintFilename.c_str(), dvi, tlayer);
       if (result2 != EC_Normal)
       {
-        *logstream << "spooler: error occured during spooling of Stored Print object '" << currentJob->storedPrintFilename.c_str() << "'" << OFendl;
+        OFLOG_ERROR(dcmprscuLogger, "spooler: error occured during spooling of Stored Print object '" << currentJob->storedPrintFilename << "'");
       }
       if (result == EC_Normal) result = result2; // forward error codes, but do not erase
     } else {
-      *logstream << "spooler: unable to find Stored Print object for print job in database" << OFendl;
+      OFLOG_ERROR(dcmprscuLogger, "spooler: unable to find Stored Print object for print job in database");
       result = EC_IllegalCall;
     }
     delete currentJob;
@@ -473,7 +461,7 @@ static OFCondition readJobFile(
     {
       if (1 != sscanf(value.c_str(),"%lu", &job.numberOfCopies))
       {
-        *logstream << "spooler: parse error for 'copies' in job file '" << infile << "'" << OFendl;
+        OFLOG_ERROR(dcmprscuLogger, "spooler: parse error for 'copies' in job file '" << infile << "'");
         result = EC_IllegalCall;
       }
     }
@@ -482,7 +470,7 @@ static OFCondition readJobFile(
     {
       if (1 != sscanf(value.c_str(),"%lu", &job.illumination))
       {
-        *logstream << "spooler: parse error for 'illumination' in job file '" << infile << "'" << OFendl;
+        OFLOG_ERROR(dcmprscuLogger, "spooler: parse error for 'illumination' in job file '" << infile << "'");
         result = EC_IllegalCall;
       }
     }
@@ -490,7 +478,7 @@ static OFCondition readJobFile(
     {
       if (1 != sscanf(value.c_str(),"%lu", &job.reflectedAmbientLight))
       {
-        *logstream << "spooler: parse error for 'reflection' in job file '" << infile << "'" << OFendl;
+        OFLOG_ERROR(dcmprscuLogger, "spooler: parse error for 'reflection' in job file '" << infile << "'");
         result = EC_IllegalCall;
       }
     }
@@ -510,7 +498,7 @@ static OFCondition readJobFile(
     }
     else
     {
-      *logstream << "spooler: unknown keyword '" << key.c_str() << "' in job file '" << infile << "'" << OFendl;
+      OFLOG_ERROR(dcmprscuLogger, "spooler: unknown keyword '" << key.c_str() << "' in job file '" << infile << "'");
       result = EC_IllegalCall;
     }
   }
@@ -520,7 +508,7 @@ static OFCondition readJobFile(
   {
     if (0 != unlink(infile))
     {
-      *logstream << "spooler: unable to delete job file '" << infile << "'" << OFendl;
+      OFLOG_ERROR(dcmprscuLogger, "spooler: unable to delete job file '" << infile << "'");
       result = EC_IllegalCall;
     }
   } else {
@@ -529,7 +517,7 @@ static OFCondition readJobFile(
       // if we can't rename, we delete to make sure we don't read the same file again next time.
       if (0 != unlink(infile))
       {
-        *logstream << "spooler: unable to delete job file '" << infile << "'" << OFendl;
+        OFLOG_ERROR(dcmprscuLogger, "spooler: unable to delete job file '" << infile << "'");
         result = EC_IllegalCall;
       }
     }
@@ -538,7 +526,7 @@ static OFCondition readJobFile(
   // make sure that either all mandatory parameters are set or "terminate" is defined.
   if ((EC_Normal==result)&&(! terminateFlag)&&((job.studyUID.size()==0)||(job.seriesUID.size()==0)||(job.instanceUID.size()==0)))
   {
-    *logstream << "spooler: UIDs missing in job file '" << infile << "'" << OFendl;
+    OFLOG_ERROR(dcmprscuLogger, "spooler: UIDs missing in job file '" << infile << "'");
     result = EC_IllegalCall;
   }
   return result;
@@ -612,7 +600,7 @@ static OFCondition updateJobList(
           else
           {
             delete currentJob;
-            *logstream << "spooler: parsing of job file '" << jobName.c_str() << "' failed." << OFendl;
+            OFLOG_ERROR(dcmprscuLogger, "spooler: parsing of job file '" << jobName.c_str() << "' failed.");
           }
         } else result = EC_MemoryExhausted;
       }
@@ -628,22 +616,10 @@ static OFCondition updateJobList(
     closedir(dirp);
 #endif
   } else {
-    *logstream << "error: unable to read spool directory '" << spoolFolder << "'" << OFendl;
+    OFLOG_ERROR(dcmprscuLogger, "unable to read spool directory '" << spoolFolder << "'");
     result = EC_IllegalCall;
   }
   return result;
-}
-
-void closeLog()
-{
-  ofConsole.setCout();
-  ofConsole.split();
-  if (logstream != &CERR)
-  {
-    *logstream << OFendl << OFDateTime::getCurrentDateTime() << OFendl << "terminating" << OFendl;
-    delete logstream;
-    logstream = &CERR;
-  }
 }
 
 #define SHORTCOL 2
@@ -664,8 +640,6 @@ int main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-    SetDebugLevel((0));
-
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Print spooler for presentation state viewer", rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
@@ -676,10 +650,8 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:");
      cmd.addOption("--help",        "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",              "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--arguments",            "print expanded command line arguments");
-     cmd.addOption("--verbose",     "-v",    "verbose mode, print actions");
-     cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
      cmd.addOption("--dump",        "+d",    "dump all DIMSE messages to stdout");
+     OFLog::addOptions(cmd);
      cmd.addOption("--noprint",              "do not create print-out (no n-action-rq)");
      cmd.addOption("--session-print",        "send film session n-action rq (instead of film box)");
      cmd.addOption("--monochrome1",          "transmit basic grayscale images in MONOCHROME1");
@@ -714,10 +686,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -741,9 +709,16 @@ int main(int argc, char *argv[])
       }
 
       /* options */
-      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug"))   opt_debugMode = 3;
-      if (cmd.findOption("--dump"))    opt_dumpMode = OFTrue;
+      if (cmd.findOption("--dump"))
+      {
+        // Messages to the "dump" logger are always written with the debug log
+        // level, thus enabling that logger for this level shows the dumps
+        log4cplus::Logger log = log4cplus::Logger::getInstance("dcmtk.dcmpstat.dump");
+        log.setLogLevel(OFLogger::DEBUG_LOG_LEVEL);
+      }
+
+      OFLog::configureFromCommandLine(cmd, app);
+
       if (cmd.findOption("--noprint")) opt_noPrint = OFTrue;
       if (cmd.findOption("--session-print")) opt_sessionPrint = OFTrue;
       if (cmd.findOption("--monochrome1")) opt_Monochrome1 = OFTrue;
@@ -798,19 +773,19 @@ int main(int argc, char *argv[])
       }
     }
 
-    SetDebugLevel((opt_debugMode));
-    //DicomImageClass::setDebugLevel(opt_debugMode);
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmprscuLogger, rcsid << OFendl);
 
     if (opt_cfgName)
     {
       FILE *cfgfile = fopen(opt_cfgName, "rb");
       if (cfgfile) fclose(cfgfile); else
       {
-        *logstream << "error: can't open configuration file '" << opt_cfgName << "'" << OFendl;
+        OFLOG_FATAL(dcmprscuLogger, "can't open configuration file '" << opt_cfgName << "'");
         return 10;
       }
     } else {
-        *logstream << "error: no configuration file specified" << OFendl;
+        OFLOG_FATAL(dcmprscuLogger, "no configuration file specified");
         return 10;
     }
 
@@ -819,51 +794,21 @@ int main(int argc, char *argv[])
     {
       if (EC_Normal != dvi.setCurrentPrinter(opt_printer))
       {
-        *logstream << "error: unable to select printer '" << opt_printer << "'." << OFendl;
+        OFLOG_FATAL(dcmprscuLogger, "unable to select printer '" << opt_printer << "'.");
         return 10;
       }
     } else {
       opt_printer = dvi.getCurrentPrinter(); // use default printer
       if (opt_printer==NULL)
       {
-        *logstream << "error: no default printer available - no config file?" << OFendl;
+        OFLOG_FATAL(dcmprscuLogger, "no default printer available - no config file?");
         return 10;
       }
     }
 
-    OFString logfilename;
-
-    if (opt_spoolMode)
-    {
-      if (dvi.getLogFolder() != NULL)
-          logfilename = dvi.getLogFolder();
-      else
-          logfilename = dvi.getSpoolFolder();
-      logfilename += PATH_SEPARATOR;
-      logfilename += opt_spoolPrefix;
-      logfilename += "_";
-      logfilename += opt_printer;
-      logfilename += ".log";
-      STD_NAMESPACE ofstream *newstream = new STD_NAMESPACE ofstream(logfilename.c_str());
-      if (newstream && (newstream->good()))
-      {
-        logstream=newstream;
-        ofConsole.setCout(logstream);
-        ofConsole.join();
-      }
-      else
-      {
-      	delete newstream;
-      	logfilename.clear();
-      }
-      *logstream << rcsid << OFendl << OFDateTime::getCurrentDateTime() << OFendl << "started" << OFendl;
-    }
-
-    dvi.setLog(&ofConsole, opt_verbose, opt_debugMode > 0);
-
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-        *logstream << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+      OFLOG_WARN(dcmprscuLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
 
     /* get print target from configuration file */
     targetHostname              = dvi.getTargetHostname(opt_printer);
@@ -963,11 +908,11 @@ int main(int argc, char *argv[])
         dvi.getTargetCipherSuite(opt_printer, ui, currentSuite);
         if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
         {
-          *logstream << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << OFendl;
+          OFLOG_FATAL(dcmprscuLogger, "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:");
           unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
           for (unsigned long cs=0; cs < numSuites; cs++)
           {
-            *logstream << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
+            OFLOG_FATAL(dcmprscuLogger, "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
           }
           return 1;
         } else {
@@ -983,16 +928,17 @@ int main(int argc, char *argv[])
       tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, tlsRandomSeedFile.c_str());
       if (tLayer == NULL)
       {
-        app.printError("unable to create TLS transport layer");
+        OFLOG_FATAL(dcmprscuLogger, "unable to create TLS transport layer");
+        return 1;
       }
 
       if (tlsCACertificateFolder && (TCS_ok != tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat)))
       {
-        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << OFendl;
+        OFLOG_WARN(dcmprscuLogger, "unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring");
       }
       if ((tlsDHParametersFile.size() > 0) && ! (tLayer->setTempDHParameters(tlsDHParametersFile.c_str())))
       {
-        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << OFendl;
+        OFLOG_WARN(dcmprscuLogger, "unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring");
       }
       tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
 
@@ -1000,23 +946,23 @@ int main(int argc, char *argv[])
       {
         if (TCS_ok != tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat))
         {
-          CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << OFendl;
+          OFLOG_FATAL(dcmprscuLogger, "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'");
           return 1;
         }
         if (TCS_ok != tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat))
         {
-          CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << OFendl;
+          OFLOG_FATAL(dcmprscuLogger, "unable to load certificate from '" << tlsCertificateFile << "'");
           return 1;
         }
         if (! tLayer->checkPrivateKeyMatchesCertificate())
         {
-          CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << OFendl;
+          OFLOG_FATAL(dcmprscuLogger, "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match");
           return 1;
         }
       }
       if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
       {
-        CERR << "unable to set selected cipher suites" << OFendl;
+        OFLOG_FATAL(dcmprscuLogger, "unable to set selected cipher suites");
         return 1;
       }
 
@@ -1033,35 +979,31 @@ int main(int argc, char *argv[])
     DcmTransportLayer *tLayer = NULL;
     if (useTLS)
     {
-        *logstream << "error: not compiled with OpenSSL, cannot use TLS." << OFendl;
-        closeLog();
+        OFLOG_FATAL(dcmprscuLogger, "not compiled with OpenSSL, cannot use TLS.");
         return 10;
     }
 #endif
 
     if (targetHostname == NULL)
     {
-        *logstream << "error: no hostname for print target '" << opt_printer << "' - no config file?" << OFendl;
-        closeLog();
+        OFLOG_FATAL(dcmprscuLogger, "no hostname for print target '" << opt_printer << "' - no config file?");
         return 10;
     }
     if (targetAETitle == NULL)
     {
-        *logstream << "error: no aetitle for print target '" << opt_printer << "'" << OFendl;
-        closeLog();
+        OFLOG_FATAL(dcmprscuLogger, "no aetitle for print target '" << opt_printer << "'");
         return 10;
     }
     if (targetPort == 0)
     {
-        *logstream << "error: no or invalid port number for print target '" << opt_printer << "'" << OFendl;
-        closeLog();
+        OFLOG_FATAL(dcmprscuLogger, "no or invalid port number for print target '" << opt_printer << "'");
         return 10;
     }
     if (targetMaxPDU == 0) targetMaxPDU = DEFAULT_MAXPDU;
     else if (targetMaxPDU > ASC_MAXIMUMPDUSIZE)
     {
-        *logstream << "warning: max PDU size " << targetMaxPDU << " too big for print target '"
-             << opt_printer << "', using default: " << DEFAULT_MAXPDU << OFendl;
+        OFLOG_WARN(dcmprscuLogger, "max PDU size " << targetMaxPDU << " too big for print target '"
+             << opt_printer << "', using default: " << DEFAULT_MAXPDU);
         targetMaxPDU = DEFAULT_MAXPDU;
     }
     if (targetDisableNewVRs)
@@ -1070,74 +1012,66 @@ int main(int argc, char *argv[])
         dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
     }
 
-    if (opt_verbose)
-    {
-       *logstream << "Printer parameters for '" <<  opt_printer << "':" << OFendl
-            << "  hostname      : " << targetHostname << OFendl
-            << "  port          : " << targetPort << OFendl
-            << "  description   : ";
-       if (targetDescription) *logstream << targetDescription; else *logstream << "(none)";
-       *logstream << OFendl
-            << "  aetitle       : " << targetAETitle << OFendl
-            << "  max pdu       : " << targetMaxPDU << OFendl
-            << "  timeout       : " << timeout << OFendl
-            << "  options       : ";
-       if (targetImplicitOnly && targetDisableNewVRs)
-         *logstream << "implicit xfer syntax only, disable post-1993 VRs" << OFendl;
-       else if (targetImplicitOnly)
-         *logstream << "implicit xfer syntax only" << OFendl;
-       else if (targetDisableNewVRs)
-         *logstream << "disable post-1993 VRs" << OFendl;
-       else
-         *logstream << "none." << OFendl;
-       *logstream << "  12-bit xfer   : " << (targetSupports12bit ? "supported" : "not supported") << OFendl
-            << "  present.lut   : " << (targetSupportsPLUT ? "supported" : "not supported") << OFendl
-            << "  annotation    : " << (targetSupportsAnnotation ? "supported" : "not supported") << OFendl;
-       *logstream << OFendl << "Spooler parameters:" << OFendl
-            << "  mode          : " << (opt_spoolMode ? "spooler mode" : "printer mode") << OFendl;
-       if (opt_spoolMode)
-       {
-         *logstream << "  sleep time    : " << opt_sleep << OFendl;
-       } else {
-         *logstream << "  copies        : " << opt_copies << OFendl;
-         *logstream << "  medium        : " << (opt_mediumtype ? opt_mediumtype : "printer default") << OFendl;
-         *logstream << "  destination   : " << (opt_destination ? opt_destination : "printer default") << OFendl;
-         *logstream << "  label         : " << (opt_sessionlabel ? opt_sessionlabel : "printer default") << OFendl;
-         *logstream << "  priority      : " << (opt_priority ? opt_priority : "printer default") << OFendl;
-         *logstream << "  owner ID      : " << (opt_ownerID ? opt_ownerID : "printer default") << OFendl;
-       }
-       *logstream << OFendl << "transport layer security parameters:" << OFendl
-                  << "  TLS           : ";
-       if (useTLS) *logstream << "enabled" << OFendl; else *logstream << "disabled" << OFendl;
+    OFLOG_INFO(dcmprscuLogger, "Printer parameters for '" <<  opt_printer << "':");
+    OFLOG_INFO(dcmprscuLogger, "  hostname      : " << targetHostname);
+    OFLOG_INFO(dcmprscuLogger, "  port          : " << targetPort);
+    OFLOG_INFO(dcmprscuLogger, "  description   : "
+        << (targetDescription ? targetDescription : "(none)"));
+    OFLOG_INFO(dcmprscuLogger, "  aetitle       : " << targetAETitle);
+    OFLOG_INFO(dcmprscuLogger, "  max pdu       : " << targetMaxPDU);
+    OFLOG_INFO(dcmprscuLogger, "  timeout       : " << timeout);
+    if (targetImplicitOnly && targetDisableNewVRs)
+      OFLOG_INFO(dcmprscuLogger, "  options       : implicit xfer syntax only, disable post-1993 VRs");
+    else if (targetImplicitOnly)
+      OFLOG_INFO(dcmprscuLogger, "  options       : implicit xfer syntax only");
+    else if (targetDisableNewVRs)
+      OFLOG_INFO(dcmprscuLogger, "  options       : disable post-1993 VRs");
+    else
+      OFLOG_INFO(dcmprscuLogger, "  options       : none.");
+    OFLOG_INFO(dcmprscuLogger, "  12-bit xfer   : " << (targetSupports12bit ? "supported" : "not supported"));
+    OFLOG_INFO(dcmprscuLogger, "  present.lut   : " << (targetSupportsPLUT ? "supported" : "not supported"));
+    OFLOG_INFO(dcmprscuLogger, "  annotation    : " << (targetSupportsAnnotation ? "supported" : "not supported"));
+    OFLOG_INFO(dcmprscuLogger, "Spooler parameters:");
+    OFLOG_INFO(dcmprscuLogger, "  mode          : " << (opt_spoolMode ? "spooler mode" : "printer mode"));
+    if (opt_spoolMode) {
+      OFLOG_INFO(dcmprscuLogger, "  sleep time    : " << opt_sleep);
+    } else {
+      OFLOG_INFO(dcmprscuLogger, "  copies        : " << opt_copies);
+      OFLOG_INFO(dcmprscuLogger, "  medium        : " << (opt_mediumtype ? opt_mediumtype : "printer default"));
+      OFLOG_INFO(dcmprscuLogger, "  destination   : " << (opt_destination ? opt_destination : "printer default"));
+      OFLOG_INFO(dcmprscuLogger, "  label         : " << (opt_sessionlabel ? opt_sessionlabel : "printer default"));
+      OFLOG_INFO(dcmprscuLogger, "  priority      : " << (opt_priority ? opt_priority : "printer default"));
+      OFLOG_INFO(dcmprscuLogger, "  owner ID      : " << (opt_ownerID ? opt_ownerID : "printer default"));
+    }
+    OFLOG_INFO(dcmprscuLogger, "transport layer security parameters:");
+    OFLOG_INFO(dcmprscuLogger, "  TLS           : " << (useTLS ? "enabled" : "disabled"));
 
 #ifdef WITH_OPENSSL
-       if (useTLS)
-       {
-         *logstream << "  certificate   : " << tlsCertificateFile << OFendl
-              << "  key file      : " << tlsPrivateKeyFile << OFendl
-              << "  DH params     : " << tlsDHParametersFile << OFendl
-              << "  PRNG seed     : " << tlsRandomSeedFile << OFendl
-              << "  CA directory  : " << tlsCACertificateFolder << OFendl
-              << "  ciphersuites  : " << tlsCiphersuites << OFendl
-              << "  key format    : ";
-         if (keyFileFormat == SSL_FILETYPE_PEM) *logstream << "PEM" << OFendl; else *logstream << "DER" << OFendl;
-         *logstream << "  cert verify   : ";
-         switch (tlsCertVerification)
-         {
-             case DCV_checkCertificate:
-               *logstream << "verify" << OFendl;
-               break;
-             case DCV_ignoreCertificate:
-               *logstream << "ignore" << OFendl;
-               break;
-             default:
-               *logstream << "require" << OFendl;
-               break;
-         }
-       }
-#endif
-       *logstream << OFendl;
+    if (useTLS)
+    {
+      OFLOG_INFO(dcmprscuLogger, "  certificate   : " << tlsCertificateFile);
+      OFLOG_INFO(dcmprscuLogger, "  key file      : " << tlsPrivateKeyFile);
+      OFLOG_INFO(dcmprscuLogger, "  DH params     : " << tlsDHParametersFile);
+      OFLOG_INFO(dcmprscuLogger, "  PRNG seed     : " << tlsRandomSeedFile);
+      OFLOG_INFO(dcmprscuLogger, "  CA directory  : " << tlsCACertificateFolder);
+      OFLOG_INFO(dcmprscuLogger, "  ciphersuites  : " << tlsCiphersuites);
+      OFLOG_INFO(dcmprscuLogger, "  key format    : " << (keyFileFormat == SSL_FILETYPE_PEM ? "PEM" : "DER"));
+      const char *verification;
+      switch (tlsCertVerification)
+      {
+        case DCV_checkCertificate:
+          verification = "verify";
+          break;
+        case DCV_ignoreCertificate:
+          verification = "ignore";
+          break;
+        default:
+          verification = "require";
+          break;
+      }
+      OFLOG_INFO(dcmprscuLogger, "  cert verify   : " << verification);;
     }
+#endif
 
    int paramCount = cmd.getParamCount();
    const char *currentParam = NULL;
@@ -1145,7 +1079,7 @@ int main(int argc, char *argv[])
    {
       if (paramCount > 0)
       {
-        *logstream << "warning: filenames specified on command line, will be ignored in spooler mode" << OFendl;
+        OFLOG_WARN(dcmprscuLogger, "filenames specified on command line, will be ignored in spooler mode");
       }
 
       OFString jobNamePrefix = opt_spoolPrefix;
@@ -1159,19 +1093,18 @@ int main(int argc, char *argv[])
         OFStandard::sleep((unsigned int)opt_sleep);
         if (EC_Normal != updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str()))
         {
-          *logstream << "spooler: non recoverable error occured, terminating." << OFendl;
-          closeLog();
+          OFLOG_FATAL(dcmprscuLogger, "spooler: non recoverable error occured, terminating.");
           return 10;
         }
         // static OFCondition updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str());
         if (EC_Normal != spoolJobList(jobList, dvi, tLayer)) { /* ignore */ }
       } while (! terminateFlag);
-      if (opt_verbose) *logstream << "spooler is terminating, goodbye!" << OFendl;
+      OFLOG_INFO(dcmprscuLogger, "spooler is terminating, goodbye!");
    } else {
       // printer mode
       if (paramCount == 0)
       {
-        *logstream << "spooler: no stored print files specified - nothing to do." << OFendl;
+        OFLOG_WARN(dcmprscuLogger, "spooler: no stored print files specified - nothing to do.");
       } else {
         dvi.clearFilmSessionSettings();
         if (opt_mediumtype) dvi.setPrinterMediumType(opt_mediumtype);
@@ -1183,18 +1116,18 @@ int main(int argc, char *argv[])
         for (int param=1; param <= paramCount; param++)
         {
           cmd.getParam(param, currentParam);
-          if (opt_verbose && currentParam)
+          if (currentParam)
           {
-            *logstream << "spooling file '" << currentParam << "'" << OFendl;
+            OFLOG_INFO(dcmprscuLogger, "spooling file '" << currentParam << "'");
           }
           if (currentParam)
           {
             if (EC_Normal != spoolStoredPrintFile(currentParam, dvi, tLayer))
             {
-              *logstream << "error: spooling of file '" << currentParam << "' failed." << OFendl;
+              OFLOG_ERROR(dcmprscuLogger, "spooling of file '" << currentParam << "' failed.");
             }
           } else {
-            *logstream << "error: empty file name" << OFendl;
+            OFLOG_ERROR(dcmprscuLogger, "empty file name");
           }
         }
       }
@@ -1207,10 +1140,10 @@ int main(int argc, char *argv[])
     {
       if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
       {
-        CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << OFendl;
+        OFLOG_ERROR(dcmprscuLogger, "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring.");
       }
     } else {
-      CERR << "Warning: cannot write back random seed, ignoring." << OFendl;
+      OFLOG_WARN(dcmprscuLogger, "cannot write back random seed, ignoring.");
     }
   }
   delete tLayer;
@@ -1223,13 +1156,6 @@ int main(int argc, char *argv[])
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
 #endif
-    closeLog();
-
-    if (deleteUnusedLogs && (! haveRenderedPrintJobs))
-    {
-      // log unused, attempt to delete file
-      unlink(logfilename.c_str());
-    }
 
     return 0;
 }
@@ -1237,6 +1163,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
+ * Revision 1.27  2009-11-24 14:12:56  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.26  2009-10-28 09:53:41  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

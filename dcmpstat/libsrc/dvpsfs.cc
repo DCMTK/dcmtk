@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSFilmSession
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,9 +76,6 @@ DVPSFilmSession::DVPSFilmSession(Uint16 illumin, Uint16 reflection)
 , reflectedAmbientLight(DCM_ReflectedAmbientLight)
 , referencedPresentationLUTInstanceUID(DCM_ReferencedSOPInstanceUID)
 , referencedPresentationLUTAlignment(DVPSK_other)
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
   illumination.putUint16(illumin, 0);
   reflectedAmbientLight.putUint16(reflection, 0);
@@ -96,9 +93,6 @@ DVPSFilmSession::DVPSFilmSession(const DVPSFilmSession& copy)
 , reflectedAmbientLight(copy.reflectedAmbientLight)
 , referencedPresentationLUTInstanceUID(copy.referencedPresentationLUTInstanceUID)
 , referencedPresentationLUTAlignment(copy.referencedPresentationLUTAlignment)
-, logstream(copy.logstream)
-, verboseMode(copy.verboseMode)
-, debugMode(copy.debugMode)
 {
 }
 
@@ -139,11 +133,7 @@ OFBool DVPSFilmSession::printSCPCreate(
       {
         numberOfCopies.getString(numCopiesString);
         if (numCopiesString==NULL) numCopiesString = (char *)"";
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Session: illegal number of copies: '" << numCopiesString << "'" << OFendl; 
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Session: illegal number of copies: '" << numCopiesString << "'");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
@@ -161,11 +151,7 @@ OFBool DVPSFilmSession::printSCPCreate(
       printPriority.getOFString(aString, 0, OFTrue);
       if ((aString != "HIGH")&&(aString != "MED")&&(aString != "LOW"))
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Session: illegal print priority: '" << aString.c_str() << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Session: illegal print priority: '" << aString.c_str() << "'");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
@@ -204,11 +190,7 @@ OFBool DVPSFilmSession::printSCPCreate(
       }
       if (! found)
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Session: illegal medium type: '" << theMedium.c_str() << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Session: illegal medium type: '" << theMedium.c_str() << "'");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
@@ -247,11 +229,7 @@ OFBool DVPSFilmSession::printSCPCreate(
       }
       if (! found)
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Session: illegal film destination: '" << theDestination.c_str() << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Session: illegal film destination: '" << theDestination.c_str() << "'");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
@@ -331,11 +309,7 @@ OFBool DVPSFilmSession::printSCPCreate(
              DVPSPresentationLUT *currentPLUT = globalPresentationLUTList.findPresentationLUT(aString.c_str());
              if (NULL == currentPLUT)
              {
-               if (verboseMode)
-               {
-                 logstream->lockCerr() << "cannot create Basic Film Session: presentation LUT reference cannot be resolved" << OFendl;
-                 logstream->unlockCerr();
-               }
+               DCMPSTAT_INFO("cannot create Basic Film Session: presentation LUT reference cannot be resolved");
                rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                result = OFFalse;
              } else {
@@ -349,13 +323,8 @@ OFBool DVPSFilmSession::printSCPCreate(
                   refClassUID.getOFString(aString,0, OFTrue);
                   if (aString != UID_PresentationLUTSOPClass)
                   {
-                    if (verboseMode)
-                    {
-                      STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-                      mycerr << "cannot create Basic Film Session: referenced SOP class UID in referenced presentation LUT sequence incorrect:" << OFendl;
-                      (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-                      logstream->unlockCerr();            
-                    }
+                    DCMPSTAT_INFO("cannot create Basic Film Session: referenced SOP class UID in referenced presentation LUT sequence incorrect:\n"
+                        << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
                     rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                     result = OFFalse;
                   } else {
@@ -363,30 +332,18 @@ OFBool DVPSFilmSession::printSCPCreate(
                     referencedPresentationLUTAlignment = currentPLUT->getAlignment();
                   }
                } else {
-                  if (verboseMode)
-                  {
-                    logstream->lockCerr() << "cannot create Basic Film Session: no referenced SOP class UID in referenced presentation LUT sequence" << OFendl;
-                    logstream->unlockCerr();
-                  }
+                  DCMPSTAT_INFO("cannot create Basic Film Session: no referenced SOP class UID in referenced presentation LUT sequence");
                   rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                   result = OFFalse;
                }
              }
            } else {
-             if (verboseMode)
-             {
-               logstream->lockCerr() << "cannot create Basic Film Session: no referenced SOP instance UID in referenced presentation LUT sequence" << OFendl;
-               logstream->unlockCerr();
-             }
+             DCMPSTAT_INFO("cannot create Basic Film Session: no referenced SOP instance UID in referenced presentation LUT sequence");
              rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
              result = OFFalse;
            }
         } else {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "cannot create Basic Film Session: referenced presentation LUT sequence number of items != 1" << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot create Basic Film Session: referenced presentation LUT sequence number of items != 1");
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }
@@ -413,26 +370,16 @@ OFBool DVPSFilmSession::printSCPCreate(
       else if (currentTag == DCM_OwnerID) /* OK */ ;
       else if (currentTag == DCM_MemoryAllocation)
       {
-        if (verboseMode)
-        {
-          STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-          mycerr << "warning while creating Basic Film Session: memory allocation not supported" << OFendl;
-          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-          logstream->unlockCerr();
-        }
-      	if (rsp.msg.NCreateRSP.DimseStatus == 0) rsp.msg.NCreateRSP.DimseStatus = STATUS_N_PRINT_BFS_Warn_MemoryAllocation;
+        DCMPSTAT_INFO("warning while creating Basic Film Session: memory allocation not supported:\n"
+            << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
+        if (rsp.msg.NCreateRSP.DimseStatus == 0) rsp.msg.NCreateRSP.DimseStatus = STATUS_N_PRINT_BFS_Warn_MemoryAllocation;
       }
       else if (currentTag == DCM_Illumination)
       {
         if (! presentationLUTnegotiated)
         {
-          if (verboseMode)
-          {
-            STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-            mycerr << "cannot create Basic Film Session: illumination received:" << OFendl;
-            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot create Basic Film Session: illumination received:\n"
+              << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
@@ -441,13 +388,8 @@ OFBool DVPSFilmSession::printSCPCreate(
       {
         if (! presentationLUTnegotiated)
         {
-          if (verboseMode)
-          {
-            STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-            mycerr << "cannot create Basic Film Session: reflected ambient light received:" << OFendl;
-            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot create Basic Film Session: reflected ambient light received:\n"
+              << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
@@ -456,26 +398,16 @@ OFBool DVPSFilmSession::printSCPCreate(
       {
         if (! presentationLUTnegotiated)
         {
-          if (verboseMode)
-          {
-            STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-            mycerr << "cannot create Basic Film Session: referenced presentation LUT sequence received:" << OFendl;
-            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot create Basic Film Session: referenced presentation LUT sequence received:\n"
+              << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
       else
       {
-        if (verboseMode)
-        {
-          STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-          mycerr << "cannot create Basic Film Session: unsupported attribute received:" << OFendl;
-          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Session: unsupported attribute received:\n"
+            << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
       	rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
@@ -571,11 +503,7 @@ OFBool DVPSFilmSession::printSCPSet(
       {
         numberOfCopies.getString(numCopiesString);
         if (numCopiesString==NULL) numCopiesString = (char *)"";
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot update Basic Film Session: illegal number of copies: '" << numCopiesString << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Session: illegal number of copies: '" << numCopiesString << "'");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
@@ -595,11 +523,7 @@ OFBool DVPSFilmSession::printSCPSet(
       printPriority.getOFString(aString, 0, OFTrue);
       if ((aString != "HIGH")&&(aString != "MED")&&(aString != "LOW"))
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot update Basic Film Session: illegal print priority: '" << aString.c_str() << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Session: illegal print priority: '" << aString.c_str() << "'");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
@@ -631,11 +555,7 @@ OFBool DVPSFilmSession::printSCPSet(
       }
       if (! found)
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot update Basic Film Session: illegal medium type: '" << theMedium.c_str() << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Session: illegal medium type: '" << theMedium.c_str() << "'");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
@@ -667,11 +587,7 @@ OFBool DVPSFilmSession::printSCPSet(
       }
       if (! found)
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot update Basic Film Session: illegal film destination: '" << theDestination.c_str() << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Session: illegal film destination: '" << theDestination.c_str() << "'");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
@@ -749,11 +665,7 @@ OFBool DVPSFilmSession::printSCPSet(
              DVPSPresentationLUT *currentPLUT = globalPresentationLUTList.findPresentationLUT(aString.c_str());
              if (NULL == currentPLUT)
              {
-               if (verboseMode)
-               {
-                 logstream->lockCerr() << "cannot update Basic Film Session: presentation LUT reference cannot be resolved" << OFendl;
-                 logstream->unlockCerr();
-               }
+               DCMPSTAT_INFO("cannot update Basic Film Session: presentation LUT reference cannot be resolved");
                rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                result = OFFalse;
              } else {
@@ -767,13 +679,8 @@ OFBool DVPSFilmSession::printSCPSet(
                   refClassUID.getOFString(aString,0, OFTrue);
                   if (aString != UID_PresentationLUTSOPClass)
                   {
-                    if (verboseMode)
-                    {
-                      STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-                      mycerr << "cannot update Basic Film Session: referenced SOP class UID in referenced presentation LUT sequence incorrect:" << OFendl;
-                      (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-                      logstream->unlockCerr();
-                    }
+                    DCMPSTAT_INFO("cannot update Basic Film Session: referenced SOP class UID in referenced presentation LUT sequence incorrect:\n"
+                        << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
                     rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                     result = OFFalse;
                   } else {
@@ -781,11 +688,7 @@ OFBool DVPSFilmSession::printSCPSet(
                     if ((cfg.getTargetPrinterPresentationLUTMatchRequired(cfgname)) &&
                         (! basicFilmBoxList.matchesPresentationLUT(referencedPresentationLUTAlignment)))
                     {
-                      if (verboseMode)
-                      {
-                        logstream->lockCerr() << "cannot update Basic Film Session: referenced presentation LUT number of entries does not match image bit depth." << OFendl;
-                        logstream->unlockCerr();
-                      }
+                      DCMPSTAT_INFO("cannot update Basic Film Session: referenced presentation LUT number of entries does not match image bit depth.");
                       rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                       result = OFFalse;
                     } else {
@@ -800,30 +703,18 @@ OFBool DVPSFilmSession::printSCPSet(
                     }
                   }
                } else {
-                  if (verboseMode)
-                  {
-                    logstream->lockCerr() << "cannot update Basic Film Session: no referenced SOP class UID in referenced presentation LUT sequence" << OFendl;
-                    logstream->unlockCerr();
-                  }
+                  DCMPSTAT_INFO("cannot update Basic Film Session: no referenced SOP class UID in referenced presentation LUT sequence");
                   rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                   result = OFFalse;
                }
              }
            } else {
-             if (verboseMode)
-             {
-               logstream->lockCerr() << "cannot update Basic Film Session: no referenced SOP instance UID in referenced presentation LUT sequence" << OFendl;
-               logstream->unlockCerr();
-             }
+             DCMPSTAT_INFO("cannot update Basic Film Session: no referenced SOP instance UID in referenced presentation LUT sequence");
              rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
              result = OFFalse;
            }
         } else {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "cannot update Basic Film Session: referenced presentation LUT sequence number of items != 1" << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot update Basic Film Session: referenced presentation LUT sequence number of items != 1");
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }
@@ -850,26 +741,16 @@ OFBool DVPSFilmSession::printSCPSet(
       else if (currentTag == DCM_OwnerID) /* OK */ ;
       else if (currentTag == DCM_MemoryAllocation)
       {
-        if (verboseMode)
-        {
-          STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-          mycerr << "warning while updating Basic Film Session: memory allocation not supported" << OFendl;
-          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("warning while updating Basic Film Session: memory allocation not supported\n"
+            << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
       	if (rsp.msg.NSetRSP.DimseStatus == 0) rsp.msg.NSetRSP.DimseStatus = STATUS_N_PRINT_BFS_Warn_MemoryAllocation;
       }
       else if (currentTag == DCM_Illumination)
       {
         if (! presentationLUTnegotiated)
         {
-          if (verboseMode)
-          {
-            STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-            mycerr << "cannot update Basic Film Session: illumination received:" << OFendl;
-            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot update Basic Film Session: illumination received:\n"
+              << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
@@ -878,13 +759,8 @@ OFBool DVPSFilmSession::printSCPSet(
       {
         if (! presentationLUTnegotiated)
         {
-          if (verboseMode)
-          {
-            STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-            mycerr << "cannot update Basic Film Session: reflected ambient light received:" << OFendl;
-            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-            logstream->unlockCerr();            
-          }
+          DCMPSTAT_INFO("cannot update Basic Film Session: reflected ambient light received:\n"
+              << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
@@ -893,26 +769,16 @@ OFBool DVPSFilmSession::printSCPSet(
       {
         if (! presentationLUTnegotiated)
         {
-          if (verboseMode)
-          {
-            STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-            mycerr << "cannot update Basic Film Session: referenced presentation LUT sequence received:" << OFendl;
-            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-            logstream->unlockCerr();            
-          }
+          DCMPSTAT_INFO("cannot update Basic Film Session: referenced presentation LUT sequence received:\n"
+              << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
       else
       {
-        if (verboseMode)
-        {
-          STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-          mycerr << "cannot update Basic Film Session: unsupported attribute received:" << OFendl;
-          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Session: unsupported attribute received:\n"
+            << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
       	rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
@@ -935,13 +801,6 @@ OFBool DVPSFilmSession::printSCPSet(
     result = OFFalse;
   }
   return result;
-}
-
-void DVPSFilmSession::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
 }
 
 OFCondition DVPSFilmSession::addPresentationLUTReference(DcmItem& dset)
@@ -987,6 +846,9 @@ void DVPSFilmSession::copyPresentationLUTSettings(DVPSStoredPrint& sp)
 
 /*
  *  $Log: dvpsfs.cc,v $
+ *  Revision 1.16  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.15  2006-08-15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

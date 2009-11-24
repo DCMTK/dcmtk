@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-05-28 10:55:38 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1179,13 +1179,6 @@ public:
     */
    DVPSSoftcopyVOI *getCurrentSoftcopyVOI();
 
-  /** sets a new log stream
-   *  @param stream new log stream, NULL for default logstream
-   *  @param verbMode verbose mode flag
-   *  @param dbgMode debug mode flag
-   */
-  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
-
 private:
 
    /** helper method that activates the given overlay in the given image
@@ -1343,6 +1336,9 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
+ *  Revision 1.46  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.45  2009-05-28 10:55:38  joergr
  *  Fixed various Doxygen API documentation issues.
  *

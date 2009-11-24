@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSGraphicObject_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:31 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,17 +38,11 @@
 
 DVPSGraphicObject_PList::DVPSGraphicObject_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSGraphicObject_PList::DVPSGraphicObject_PList(const DVPSGraphicObject_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSGraphicObject *) first = arg.list_.begin();
   OFListConstIterator(DVPSGraphicObject *) last = arg.list_.end();
@@ -95,7 +89,6 @@ OFCondition DVPSGraphicObject_PList::read(DcmItem &dset)
         newObject = new DVPSGraphicObject();
         if (newObject && ditem)
         {
-          newObject->setLog(logstream, verboseMode, debugMode);
           result = newObject->read(*ditem);
           list_.push_back(newObject);
         } else result = EC_MemoryExhausted;
@@ -174,22 +167,11 @@ DVPSGraphicObject *DVPSGraphicObject_PList::removeGraphicObject(size_t idx)
   return NULL;
 }
 
-void DVPSGraphicObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSGraphicObject *) first = list_.begin();
-  OFListIterator(DVPSGraphicObject *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }
-}
-
 /*
  *  $Log: dvpsgrl.cc,v $
+ *  Revision 1.13  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.12  2005-12-08 15:46:31  meichel
  *  Changed include path schema for all DCMTK header files
  *

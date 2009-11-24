@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,17 +55,11 @@
 
 DVPSStoredPrint_PList::DVPSStoredPrint_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSStoredPrint_PList::DVPSStoredPrint_PList(const DVPSStoredPrint_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSStoredPrint *) first = arg.list_.begin();
   OFListConstIterator(DVPSStoredPrint *) last = arg.list_.end();
@@ -124,20 +118,12 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxSet(
         list_.push_back(newSP);
       } else delete newSP;
     } else {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "error: cannot update film box, out of memory." << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("cannot update film box, out of memory.");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
     }
   } else {
     // film box does not exist or wrong instance UID
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot update film box, object not found." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot update film box, object not found.");
     rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
@@ -177,11 +163,7 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
         {
           delete rspDataset;
           rspDataset = NULL;
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "error: cannot update basic grayscale image box, image position collision." << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot update basic grayscale image box, image position collision.");
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         } else {
           if (EC_Normal == cfg.saveFileFormatToDB(imageFile))
@@ -196,21 +178,13 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
       } else {
         delete rspDataset;
         rspDataset = NULL;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "error: cannot update basic grayscale image box, out of memory." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update basic grayscale image box, out of memory.");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
       }
     }
   } else {
     // image box does not exist or wrong instance UID
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot update basic grayscale image box, object not found." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot update basic grayscale image box, object not found.");
     rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
@@ -242,11 +216,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxAction(
 
     if ((*first)->emptyPageWarning())
     {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "warning: empty page, will not be stored in database" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("empty page, will not be stored in database");
       if (STATUS_Success == rsp.msg.NActionRSP.DimseStatus) rsp.msg.NActionRSP.DimseStatus = STATUS_N_PRINT_BFB_Warn_EmptyPage;
     } else {
       if (EC_Normal == sp->write(*spDataset, writeRequestedImageSize, OFFalse, OFFalse, OFTrue))
@@ -258,21 +228,13 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxAction(
           rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
         }
       } else {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "error: cannot print basic film box, out of memory." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot print basic film box, out of memory.");
         rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
       }
     }
   } else {
     // film box does not exist or wrong instance UID
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot print film box, object not found." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot print film box, object not found.");
     rsp.msg.NActionRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
@@ -298,11 +260,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmSessionAction(
 
       if ((*first)->emptyPageWarning())
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "warning: empty page, will not be stored in database" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("empty page, will not be stored in database");
         if (STATUS_Success == rsp.msg.NActionRSP.DimseStatus) rsp.msg.NActionRSP.DimseStatus = STATUS_N_PRINT_BFS_Warn_EmptyPage;
       } else {
          if (EC_Normal == (*first)->write(*spDataset, writeRequestedImageSize, OFFalse, OFFalse, OFTrue))
@@ -314,11 +272,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmSessionAction(
              rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
            }
          } else {
-           if (verboseMode)
-           {
-             logstream->lockCerr() << "error: cannot print basic film session, out of memory." << OFendl;
-             logstream->unlockCerr();
-           }
+           DCMPSTAT_INFO("cannot print basic film session, out of memory.");
            rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
          }
       }
@@ -326,11 +280,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmSessionAction(
     }
   } else {
     // no film boxes to print
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot print film session, no film box." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot print film session, no film box.");
     rsp.msg.NActionRSP.DimseStatus = STATUS_N_PRINT_BFS_Fail_NoFilmBox;
   }
 }
@@ -353,11 +303,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxDelete(T_DIMSE_Message& rq, T_DI
     list_.erase(first);
   } else {
     // film box does not exist or wrong instance UID
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot delete film box with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot delete film box with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist.");
     rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
@@ -390,20 +336,6 @@ OFBool DVPSStoredPrint_PList::usesPresentationLUT(const char *uid)
   return OFFalse;
 }
 
-void DVPSStoredPrint_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSStoredPrint *) first = list_.begin();
-  OFListIterator(DVPSStoredPrint *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }	
-}
-
 OFBool DVPSStoredPrint_PList::matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align) const
 {
   OFBool result = OFTrue;
@@ -434,6 +366,9 @@ void DVPSStoredPrint_PList::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpsspl.cc,v $
+ *  Revision 1.13  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.12  2006-08-15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

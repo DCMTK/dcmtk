@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlay
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:03:53 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,13 +146,6 @@ public:
   /// return reference to overlay description
   DcmLongString& getDescription() { return overlayDescription; }
 
-  /** sets a new log stream
-   *  @param stream new log stream, NULL for default logstream
-   *  @param verbMode verbose mode flag
-   *  @param dbgMode debug mode flag
-   */
-  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
-  
 private:
 
   /// private undefined assignment operator
@@ -179,24 +172,15 @@ private:
   /// VR=LO, VM=1, Type=3
   DcmLongString            overlayLabel;
 
-  /** output stream for error messages, never NULL
-   */
-  OFConsole *logstream;
-
-  /** flag indicating whether we're operating in verbose mode
-   */
-  OFBool verboseMode;
-   
-  /** flag indicating whether we're operating in debug mode
-   */
-  OFBool debugMode;
-
 };
 
 #endif
 
 /*
  *  $Log: dvpsov.h,v $
+ *  Revision 1.11  2009-11-24 14:12:57  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.10  2005-12-08 16:03:53  meichel
  *  Changed include path schema for all DCMTK header files
  *

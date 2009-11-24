@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-05-28 10:40:20 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -762,13 +762,6 @@ public:
 
   /* print related methods */
 
-  /** sets a new log stream
-   *  @param stream new log stream, NULL for default logstream
-   *  @param verbMode verbose mode flag
-   *  @param dbgMode debug mode flag
-   */
-  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
-
 private:
 
   /** private undefined copy constructor
@@ -993,24 +986,15 @@ protected:
   /// Module=Softcopy_VOI_LUT, VR=SQ, Card=1-n, Type 1
   DVPSSoftcopyVOI_PList    softcopyVOIList;
 
-  /** output stream for error messages, never NULL
-   */
-  OFConsole *logstream;
-
-  /** flag indicating whether we're operating in verbose mode
-   */
-  OFBool verboseMode;
-
-  /** flag indicating whether we're operating in debug mode
-   */
-  OFBool debugMode;
-
 };
 
 #endif
 
 /*
  *  $Log: dcmpstat.h,v $
+ *  Revision 1.4  2009-11-24 14:12:57  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.3  2009-05-28 10:40:20  joergr
  *  Fixed various Doxygen API documentation issues.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries_PList
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:39 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,20 +37,15 @@
 #include "dcmtk/dcmpstat/dvpsrsl.h"
 #include "dcmtk/dcmpstat/dvpsrs.h"      /* for DVPSReferencedSeries */
 #include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsdef.h"
 
 DVPSReferencedSeries_PList::DVPSReferencedSeries_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSReferencedSeries_PList::DVPSReferencedSeries_PList(const DVPSReferencedSeries_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSReferencedSeries *) first = arg.list_.begin();
   OFListConstIterator(DVPSReferencedSeries *) last = arg.list_.end();
@@ -97,7 +92,6 @@ OFCondition DVPSReferencedSeries_PList::read(DcmItem &dset)
         newSeries = new DVPSReferencedSeries();
         if (newSeries && ditem)
         {
-          newSeries->setLog(logstream, verboseMode, debugMode);
           result = newSeries->read(*ditem);
           list_.push_back(newSeries);
         } else result = EC_MemoryExhausted;
@@ -141,11 +135,7 @@ OFBool DVPSReferencedSeries_PList::isValid()
 {
   if (list_.size() == 0)
   {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: referenced series SQ is empty in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("referenced series SQ is empty in presentation state");
     return OFFalse;
   }
 
@@ -292,22 +282,11 @@ OFCondition DVPSReferencedSeries_PList::getImageReference(
   return EC_IllegalCall;
 }
 
-void DVPSReferencedSeries_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSReferencedSeries *) first = list_.begin();
-  OFListIterator(DVPSReferencedSeries *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }
-}
-
 /*
  *  $Log: dvpsrsl.cc,v $
+ *  Revision 1.20  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.19  2009-09-30 10:42:39  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h

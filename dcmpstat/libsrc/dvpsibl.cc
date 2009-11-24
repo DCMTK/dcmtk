@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2008, OFFIS
+ *  Copyright (C) 1999-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:43 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,17 +40,11 @@
 
 DVPSImageBoxContent_PList::DVPSImageBoxContent_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSImageBoxContent_PList::DVPSImageBoxContent_PList(const DVPSImageBoxContent_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSImageBoxContent *) first = arg.list_.begin();
   OFListConstIterator(DVPSImageBoxContent *) last = arg.list_.end();
@@ -97,7 +91,6 @@ OFCondition DVPSImageBoxContent_PList::read(DcmItem &dset, DVPSPresentationLUT_P
         newImage = new DVPSImageBoxContent();
         if (newImage && ditem)
         {
-          newImage->setLog(logstream, verboseMode, debugMode);
           result = newImage->read(*ditem, presentationLUTList);
           list_.push_back(newImage);
         } else result = EC_MemoryExhausted;
@@ -203,7 +196,6 @@ OFCondition DVPSImageBoxContent_PList::addImageBox(
   DVPSImageBoxContent *newImage = new DVPSImageBoxContent();
   if (newImage)
   {
-    newImage->setLog(logstream, verboseMode, debugMode);  	
     result = newImage->setContent(instanceuid, retrieveaetitle, refstudyuid,
                refseriesuid, refsopclassuid, refsopinstanceuid,
                requestedimagesize, patientid, presentationlutuid);
@@ -397,21 +389,6 @@ OFCondition DVPSImageBoxContent_PList::prepareBasicImageBox(size_t idx, DcmItem 
   return EC_IllegalCall; 
 }
 
-
-void DVPSImageBoxContent_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
-  OFListIterator(DVPSImageBoxContent *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }	
-}
-
 OFBool DVPSImageBoxContent_PList::presentationLUTInstanceUIDisUsed(const char *uid)
 {
   OFString uidS;
@@ -484,7 +461,6 @@ OFBool DVPSImageBoxContent_PList::printSCPCreate(
       if ((EC_Normal == box->setSOPInstanceUID(dcmGenerateUniqueIdentifier(uid))) &&
           (EC_Normal == box->setUIDsAndAETitle(studyUID, seriesUID, aetitle)))
       {
-      	box->setLog(logstream, verboseMode, debugMode);
         list_.push_back(box);
       }
       else
@@ -618,6 +594,9 @@ OFBool DVPSImageBoxContent_PList::emptyPageWarning()
 
 /*
  *  $Log: dvpsibl.cc,v $
+ *  Revision 1.30  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.29  2008-04-30 12:38:43  meichel
  *  Fixed compile errors due to changes in attribute tag names
  *

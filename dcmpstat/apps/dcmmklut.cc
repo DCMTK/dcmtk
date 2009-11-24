@@ -24,9 +24,9 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-27 11:46:11 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:56 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,6 @@
 #include "dcmtk/dcmimgle/diutils.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -65,12 +64,10 @@
 
 #define OFFIS_CONSOLE_APPLICATION "dcmmklut"
 
+static OFLogger dcmmklutLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
-
-OFBool opt_verbose = OFFalse;
-OFBool opt_debug = OFFalse;
-
 
 // ********************************************
 
@@ -93,8 +90,7 @@ OFCondition readMapFile(const char *filename,
     OFCondition result = EC_IllegalCall;
     if ((filename != NULL) && (strlen(filename) > 0))
     {
-        if (opt_verbose)
-            CERR << "reading map file ..." << OFendl;
+        OFLOG_INFO(dcmmklutLogger, "reading map file ...");
         unsigned char buffer[1000];
         FILE *inf = fopen(filename, "rb");
         if (inf != NULL)
@@ -120,14 +116,14 @@ OFCondition readMapFile(const char *filename,
                             result = EC_Normal;
                         }
                     } else
-                        CERR << "Warning: magic word wrong, not a map file ... ignoring !" << OFendl;
+                        OFLOG_WARN(dcmmklutLogger, "magic word wrong, not a map file ... ignoring !");
                 } else
-                    CERR << "Warning: file too large, not a map file ... ignoring !" << OFendl;
+                    OFLOG_WARN(dcmmklutLogger, "file too large, not a map file ... ignoring !");
             } else
-                CERR << "Warning: read error in map file ... ignoring !" << OFendl;
+                OFLOG_WARN(dcmmklutLogger, "read error in map file ... ignoring !");
             fclose(inf);
         } else
-            CERR << "Warning: cannot open map file ... ignoring !" << OFendl;
+            OFLOG_WARN(dcmmklutLogger, "cannot open map file ... ignoring !");
     }
     return result;
 }
@@ -142,8 +138,7 @@ OFCondition readTextFile(const char *filename,
 {
     if ((filename != NULL) && (strlen(filename) > 0))
     {
-        if (opt_verbose)
-            CERR << "reading text file ..." << OFendl;
+        OFLOG_INFO(dcmmklutLogger, "reading text file ...");
 #ifdef HAVE_IOS_NOCREATE
         STD_NAMESPACE ifstream file(filename, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
 #else
@@ -181,11 +176,11 @@ OFCondition readTextFile(const char *filename,
                                 if ((inputXData == NULL) || (inputYData == NULL))
                                     return EC_IllegalCall;
                             } else {
-                                CERR << "Error: invalid or missing value for number of entries in text file ... ignoring !" << OFendl;
+                                OFLOG_ERROR(dcmmklutLogger, "invalid or missing value for number of entries in text file ... ignoring !");
                                 return EC_IllegalCall;                      // abort
                             }
                         } else {
-                            CERR << "Error: missing keyword 'count' for number of entries in text file ... ignoring !" << OFendl;
+                            OFLOG_ERROR(dcmmklutLogger, "missing keyword 'count' for number of entries in text file ... ignoring !");
                             return EC_IllegalCall;                          // abort
                         }
                     }
@@ -198,11 +193,10 @@ OFCondition readTextFile(const char *filename,
                             file >> inputXMax;
                             if (inputXMax <= 0)
                             {
-                                if (opt_debug)
-                                    CERR << "Warning: invalid value for xMax in text file ...ignoring !" << OFendl;
+                                OFLOG_DEBUG(dcmmklutLogger, "invalid value for xMax in text file ...ignoring !");
                             }
                         } else {
-                            CERR << "Error: invalid text file ... ignoring !" << OFendl;
+                            OFLOG_ERROR(dcmmklutLogger, "invalid text file ... ignoring !");
                             return EC_IllegalCall;                          // abort
                         }
                     }
@@ -215,11 +209,10 @@ OFCondition readTextFile(const char *filename,
                             file >> inputYMax;
                             if (inputYMax <= 0)
                             {
-                                if (opt_debug)
-                                    CERR << "Warning: invalid value for yMax in text file ...ignoring !" << OFendl;
+                                OFLOG_DEBUG(dcmmklutLogger, "invalid value for yMax in text file ...ignoring !");
                             }
                         } else {
-                            CERR << "Error: invalid text file ... ignoring !" << OFendl;
+                            OFLOG_ERROR(dcmmklutLogger, "invalid text file ... ignoring !");
                             return EC_IllegalCall;                          // abort
                         }
                     } else {
@@ -229,39 +222,30 @@ OFCondition readTextFile(const char *filename,
                             file >> inputYData[count];                      // read y value
                             if (file.fail())
                             {
-                                if (opt_debug)
-                                    CERR << "Warning: missing y value in text file ... ignoring last entry !" << OFendl;
+                                OFLOG_DEBUG(dcmmklutLogger, "missing y value in text file ... ignoring last entry !");
                             } else {
                                 if ((count > 0) && (inputXData[count] <= xmax))
                                 {
-                                    if (opt_debug)
-                                        CERR << "Warning: x values in text file not strictly monotonous ... ignoring entry #" << (count + 1) << " !" << OFendl;
+                                    OFLOG_DEBUG(dcmmklutLogger, "x values in text file not strictly monotonous ... ignoring entry #" << (count + 1) << " !");
                                 } else {
                                     xmax = inputXData[count];
                                     if (inputYData[count] > ymax)
                                         ymax = inputYData[count];
                                     if ((inputXMax != 0) && (inputXData[count] > inputXMax))
                                     {
-                                        if (opt_debug)
-                                        {
-                                            CERR << "Warning: x value (" << inputXData[count] << ") exceeds maximum value (";
-                                            CERR << inputXMax << ") in text file ..." << OFendl << "         ... ignoring value !" << OFendl;
-                                        }
+                                        OFLOG_DEBUG(dcmmklutLogger, "x value (" << inputXData[count] << ") exceeds maximum value ("
+                                                << inputXMax << ") in text file ..." << OFendl << "         ... ignoring value !");
                                     }
                                     else if ((inputYMax != 0) && (inputYData[count] > inputYMax))
                                     {
-                                        if (opt_debug)
-                                        {
-                                            CERR << "Warning: y value (" << inputYData[count] << ") exceeds maximum value (";
-                                            CERR << inputYMax << ") in text file ..." << OFendl << "         ... ignoring value !" << OFendl;
-                                        }
+                                        OFLOG_DEBUG(dcmmklutLogger, "y value (" << inputYData[count] << ") exceeds maximum value ("
+                                                << inputYMax << ") in text file ..." << OFendl << "         ... ignoring value !");
                                     } else
                                         count++;
                                 }
                             }
                         } else {
-                            if (opt_debug)
-                                CERR << "Warning: too many values in text file ... ignoring last line(s) !" << OFendl;
+                            OFLOG_DEBUG(dcmmklutLogger, "too many values in text file ... ignoring last line(s) !");
                             break;
                         }
                     }
@@ -270,8 +254,7 @@ OFCondition readTextFile(const char *filename,
             if (count  < inputEntries)
             {
                 inputEntries = count;
-                if (opt_debug)
-                    CERR << "Warning: automatically setting number of entries in text file to " << inputEntries << " !" << OFendl;
+                OFLOG_DEBUG(dcmmklutLogger, "automatically setting number of entries in text file to " << inputEntries << " !");
             }
             if (inputXMax == 0)                                             // automatic calculation
                 inputXMax = xmax;
@@ -280,9 +263,9 @@ OFCondition readTextFile(const char *filename,
             if (/*(inputXMax > 0) && (inputYMax > 0) &&*/ (inputEntries > 0) && (inputXData != NULL) && (inputYData != NULL))
                 return EC_Normal;
             else
-                CERR << "Warning: invalid text file ... ignoring !" << OFendl;
+                OFLOG_WARN(dcmmklutLogger, "invalid text file ... ignoring !");
         } else
-            CERR << "Warning: can't open text file ... ignoring !" << OFendl;
+            OFLOG_WARN(dcmmklutLogger, "can't open text file ... ignoring !");
     }
     return EC_IllegalCall;
 }
@@ -299,8 +282,7 @@ OFCondition writeTextOutput(const char *filename,
     {
         if ((outputData != NULL) && (numberOfEntries > 0))
         {
-            if (opt_verbose)
-                CERR << "writing text file ..." << OFendl;
+            OFLOG_INFO(dcmmklutLogger, "writing text file ...");
             STD_NAMESPACE ofstream file(filename);
             if (file)
             {
@@ -308,7 +290,7 @@ OFCondition writeTextOutput(const char *filename,
                 for (unsigned long i = 0; i < numberOfEntries; i++)
                     file << (firstMapped + (signed long)i) << "\t" << outputData[i] << OFendl;
             } else
-               CERR << "Warning: can't create output text file ... ignoring !" << OFendl;
+                OFLOG_WARN(dcmmklutLogger, "can't create output text file ... ignoring !");
         }
     }
     return result;
@@ -345,24 +327,19 @@ OFCondition convertInputLUT(const unsigned int numberOfBits,
         const double factor = (double)(DicomImageClass::maxval(numberOfBits)) / inputYMax;
         if (factor != 1.0)
         {
-            if (opt_verbose)
-            {
-                CERR.setf(STD_NAMESPACE ios::fixed, STD_NAMESPACE ios::floatfield);
-                CERR << "multiplying input values by " << factor << " ..." << OFendl;
-            }
+            OFLOG_INFO(dcmmklutLogger, "multiplying input values by "
+                    << STD_NAMESPACE fixed << factor << " ...");
             for (unsigned long i = 0; i < inputEntries; i++)
                 inputYData[i] *= factor;
         }
         if (numberOfEntries == inputEntries)
         {
-            if (opt_verbose)
-                CERR << "importing LUT data directly ..." << OFendl;
+            OFLOG_INFO(dcmmklutLogger, "importing LUT data directly ...");
             for (unsigned long i = 0; i < numberOfEntries; i++)
                 outputData[i] = (Uint16)inputYData[i];
             result = EC_Normal;
         } else {
-            if (opt_verbose)
-                CERR << "using polynomial curve fitting algorithm ..." << OFendl;
+            OFLOG_INFO(dcmmklutLogger, "using polynomial curve fitting algorithm ...");
             double *coeff = new double[order + 1];
             if (DiCurveFitting<double, double>::calculateCoefficients(inputXData, inputYData, (unsigned int)inputEntries, order, coeff))
             {
@@ -398,7 +375,7 @@ OFCondition convertInputLUT(const unsigned int numberOfBits,
             header += tmpString;
             OFSTRINGSTREAM_FREESTR(tmpString)
         } else
-            CERR << "Warning: can't create lookup table from text file ... ignoring !" << OFendl;
+            OFLOG_WARN(dcmmklutLogger, "can't create lookup table from text file ... ignoring !");
     }
     return result;
 }
@@ -415,8 +392,7 @@ void gammaLUT(const unsigned int numberOfBits,
 {
     if (outputData != NULL)
     {
-        if (opt_verbose)
-            CERR << "computing gamma function ..." << OFendl;
+        OFLOG_INFO(dcmmklutLogger, "computing gamma function ...");
         OFOStringStream oss;
         if (explanation != NULL)
         {
@@ -473,8 +449,7 @@ void applyInverseGSDF(const unsigned int numberOfBits,
 {
     if (outputData != NULL)
     {
-        if (opt_verbose)
-            CERR << "applying inverse GSDF ..." << OFendl;
+        OFLOG_INFO(dcmmklutLogger, "applying inverse GSDF ...");
         OFOStringStream oss;
         if ((explanation != NULL) && (strlen(explanation) > 0))
             strcat(explanation, ", inverse GSDF");
@@ -524,8 +499,7 @@ void mixingUpLUT(const unsigned long numberOfEntries,
 {
     if (outputData != NULL)
     {
-        if (opt_verbose)
-            CERR << "mixing up LUT entries ..." << OFendl;
+        OFLOG_INFO(dcmmklutLogger, "mixing up LUT entries ...");
         if ((explanation != NULL) && (strlen(explanation) > 0))
             strcat(explanation, ", mixed-up entries");
         srand(randomSeed);
@@ -577,17 +551,17 @@ OFCondition createLUT(const unsigned int numberOfBits,
     Uint16 numEntries16 = 0;
 
     if (numberOfEntries == 0)
-        CERR << "Warning: creating LUT without LUT data" << OFendl;
+        OFLOG_WARN(dcmmklutLogger, "creating LUT without LUT data");
     if (numberOfEntries > 65536)
     {
-        CERR << "Error: cannot create LUT with more than 65536 entries" << OFendl;
+        OFLOG_ERROR(dcmmklutLogger, "cannot create LUT with more than 65536 entries");
         return EC_IllegalCall;
     }
     if (numberOfEntries < 65536)
         numEntries16 = (Uint16)numberOfEntries;
     if ((numberOfBits < 8) || (numberOfBits > 16))
     {
-        CERR << "Error: cannot create LUT with " << numberOfBits << " bit entries, only 8..16" << OFendl;
+        OFLOG_ERROR(dcmmklutLogger, "cannot create LUT with " << numberOfBits << " bit entries, only 8..16");
         return EC_IllegalCall;
     }
 
@@ -597,7 +571,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
         // LUT Descriptor is SS
         if (firstMapped < -32768)
         {
-            CERR << "Error: cannot create LUT - first value mapped < -32768" << OFendl;
+            OFLOG_ERROR(dcmmklutLogger, "cannot create LUT - first value mapped < -32768");
             return EC_IllegalCall;
         }
         descriptor = new DcmSignedShort(DcmTag(DCM_LUTDescriptor, EVR_SS));
@@ -613,7 +587,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
         // LUT Descriptor is US
         if (firstMapped > 0xFFFF)
         {
-            CERR << "Error: cannot create LUT - first value mapped > 65535" << OFendl;
+            OFLOG_ERROR(dcmmklutLogger, "cannot create LUT - first value mapped > 65535");
             return EC_IllegalCall;
         }
         descriptor = new DcmUnsignedShort(DcmTag(DCM_LUTDescriptor, EVR_US));
@@ -637,7 +611,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
         wordsToWrite = numberOfEntries;
     if ((wordsToWrite > 32767) && (lutVR != EVR_OW))
     {
-        CERR << "Warning: LUT data >= 64K, writing as OW" << OFendl;
+        OFLOG_WARN(dcmmklutLogger, "LUT data >= 64K, writing as OW");
         lutVR = EVR_OW;
     }
 
@@ -673,7 +647,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
                 return EC_MemoryExhausted;
             break;
         default:
-            CERR << "Error: unsupported VR for LUT Data" << OFendl;
+            OFLOG_ERROR(dcmmklutLogger, "unsupported VR for LUT Data");
             return EC_IllegalCall;
             /* break; */
   }
@@ -701,7 +675,6 @@ OFCondition createLUT(const unsigned int numberOfBits,
 
 int main(int argc, char *argv[])
 {
-    int opt_debugMode = 0;
     const char *opt_inName = NULL;                     /* in file name */
     const char *opt_outName = NULL;                    /* out file name */
     const char *opt_outText = NULL;
@@ -725,8 +698,6 @@ int main(int argc, char *argv[])
     OFBool opt_replaceMode = OFTrue;
     DcmEVR opt_lutVR = EVR_OW;
 
-    SetDebugLevel(( 0 ));
-
     OFCommandLine cmd;
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Create DICOM look-up tables", rcsid);
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
@@ -737,9 +708,8 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",           "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",                  "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--arguments",                "print expanded command line arguments");
-     cmd.addOption("--verbose",        "-v",     "verbose mode, print processing details");
-     cmd.addOption("--debug",          "-d",     "debug mode, print debug information");
+     OFLog::addOptions(cmd);
+
     cmd.addGroup("LUT creation options:");
       cmd.addSubGroup("LUT type:");
        cmd.addOption("--modality",     "+Tm",    "create as Modality LUT");
@@ -797,10 +767,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-        /* check whether to print the command line arguments */
-        if (cmd.findOption("--arguments"))
-          app.printArguments();
-
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
@@ -820,10 +786,7 @@ int main(int argc, char *argv[])
         /* command line parameters */
         cmd.getParam(1, opt_outName);
 
-        if (cmd.findOption("--verbose"))
-            opt_verbose = OFTrue;
-        if (cmd.findOption("--debug"))
-            opt_debugMode = 3;
+        OFLog::configureFromCommandLine(cmd, app);
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--modality"))
@@ -909,31 +872,30 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_outText));
     }
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel(( opt_debugMode ));
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmmklutLogger, rcsid << OFendl);
 
     if ((opt_lutType == LUT_Modality) && (opt_bits != 8) && (opt_bits != 16))
     {
-        CERR << "Error: --modality cannot be used with --bits other than 8 or 16" << OFendl;
+        OFLOG_FATAL(dcmmklutLogger, "--modality cannot be used with --bits other than 8 or 16");
         return 1;
     }
     if ((opt_bits != 8) && opt_byteAlign)
     {
-        CERR << "Error: --byte-align cannot be used with --bits other than 8" << OFendl;
+        OFLOG_FATAL(dcmmklutLogger, "--byte-align cannot be used with --bits other than 8");
         return 1;
     }
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-        CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+        OFLOG_WARN(dcmmklutLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
 
     E_TransferSyntax Xfer= EXS_LittleEndianExplicit;
     OFCondition result = EC_Normal;
     DcmFileFormat *fileformat = new DcmFileFormat();
     if (!fileformat)
     {
-        CERR << "Error: memory exhausted" << OFendl;
+        OFLOG_FATAL(dcmmklutLogger, "memory exhausted");
         return 1;
     }
     DcmDataset *dataset = fileformat->getDataset();
@@ -943,7 +905,7 @@ int main(int argc, char *argv[])
         OFCondition cond = fileformat->loadFile(opt_inName);
         if (! cond.good())
         {
-            CERR << "Error: cannot open file: " << opt_inName << OFendl;
+            OFLOG_FATAL(dcmmklutLogger, "cannot open file: " << opt_inName);
             return 1;
         }
         Xfer = dataset->getOriginalXfer();
@@ -998,7 +960,7 @@ int main(int argc, char *argv[])
         delete[] outputData;
         if (EC_Normal != result)
         {
-            CERR << "Error: could not create LUT, bailing out." << OFendl;
+            OFLOG_FATAL(dcmmklutLogger, "could not create LUT, bailing out.");
             return 1;
         }
     } else
@@ -1084,17 +1046,16 @@ int main(int argc, char *argv[])
 
         if (result != EC_Normal)
         {
-            CERR << "error while adding LUT to image dataset. Bailing out."<< OFendl;
+            OFLOG_FATAL(dcmmklutLogger, "Error while adding LUT to image dataset. Bailing out.");
             return 1;
         }
 
-        if (opt_verbose)
-            CERR << "writing DICOM file ..." << OFendl;
+        OFLOG_INFO(dcmmklutLogger, "writing DICOM file ...");
 
         result = fileformat->saveFile(opt_outName, Xfer);
         if (result.bad())
         {
-            CERR << "Error: " << result.text() << ": writing file: " <<  opt_outName << OFendl;
+            OFLOG_FATAL(dcmmklutLogger, result.text() << ": writing file: " <<  opt_outName);
             return 1;
         }
     }
@@ -1106,6 +1067,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
+ * Revision 1.44  2009-11-24 14:12:56  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.43  2009-02-27 11:46:11  joergr
  * Added new command line option --word-align which was previously the default
  * for all bit values.

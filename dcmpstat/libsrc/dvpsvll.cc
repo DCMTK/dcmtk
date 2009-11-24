@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSVOILUT_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:56 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,17 +38,11 @@
 
 DVPSVOILUT_PList::DVPSVOILUT_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSVOILUT_PList::DVPSVOILUT_PList(const DVPSVOILUT_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSVOILUT *) first = arg.list_.begin();
   OFListConstIterator(DVPSVOILUT *) last = arg.list_.end();
@@ -95,7 +89,6 @@ OFCondition DVPSVOILUT_PList::read(DcmItem &dset)
         newObject = new DVPSVOILUT();
         if (newObject && ditem)
         {
-          newObject->setLog(logstream, verboseMode, debugMode);
           if (EC_Normal == newObject->read(*ditem)) list_.push_back(newObject); else delete(newObject);
         } else result = EC_MemoryExhausted;
       }
@@ -119,23 +112,11 @@ DVPSVOILUT *DVPSVOILUT_PList::getVOILUT(size_t idx)
   return NULL;
 }
 
-void DVPSVOILUT_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSVOILUT *) first = list_.begin();
-  OFListIterator(DVPSVOILUT *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }
-}
-
-
 /*
  *  $Log: dvpsvll.cc,v $
+ *  Revision 1.11  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.10  2005-12-08 15:46:56  meichel
  *  Changed include path schema for all DCMTK header files
  *

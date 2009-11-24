@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:39 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,9 +45,6 @@ DVPSReferencedSeries::DVPSReferencedSeries()
 , retrieveAETitle(DCM_RetrieveAETitle)
 , storageMediaFileSetID(DCM_StorageMediaFileSetID)
 , storageMediaFileSetUID(DCM_StorageMediaFileSetUID)
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
@@ -57,9 +54,6 @@ DVPSReferencedSeries::DVPSReferencedSeries(const DVPSReferencedSeries& copy)
 , retrieveAETitle(copy.retrieveAETitle)
 , storageMediaFileSetID(copy.storageMediaFileSetID)
 , storageMediaFileSetUID(copy.storageMediaFileSetUID)
-, logstream(copy.logstream)
-, verboseMode(copy.verboseMode)
-, debugMode(copy.debugMode)
 {
 }
 
@@ -83,47 +77,27 @@ OFCondition DVPSReferencedSeries::read(DcmItem &dset)
   if (seriesInstanceUID.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID absent or empty" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a referenced series SQ item with seriesInstanceUID absent or empty");
   }
   else if (seriesInstanceUID.getVM() != 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID VM != 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a referenced series SQ item with seriesInstanceUID VM != 1");
   }
   else if (retrieveAETitle.getVM() > 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with retrieveAETitle VM > 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a referenced series SQ item with retrieveAETitle VM > 1");
   }
   else if (storageMediaFileSetID.getVM() > 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetID VM > 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a referenced series SQ item with storageMediaFileSetID VM > 1");
   }
   else if (storageMediaFileSetUID.getVM() > 1)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetUID VM > 1" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("presentation state contains a referenced series SQ item with storageMediaFileSetUID VM > 1");
   }
 
   return result;
@@ -254,16 +228,11 @@ OFCondition DVPSReferencedSeries::getImageReference(
   return result;
 }
 
-void DVPSReferencedSeries::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  referencedImageList.setLog(logstream, verbMode, dbgMode);
-}
-
 /*
  *  $Log: dvpsrs.cc,v $
+ *  Revision 1.17  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.16  2009-09-30 10:42:39  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h

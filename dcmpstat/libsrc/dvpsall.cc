@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2008, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlayCurveActivationLayer_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:43 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,17 +44,11 @@
 
 DVPSOverlayCurveActivationLayer_PList::DVPSOverlayCurveActivationLayer_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSOverlayCurveActivationLayer_PList::DVPSOverlayCurveActivationLayer_PList(const DVPSOverlayCurveActivationLayer_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSOverlayCurveActivationLayer *) first = arg.list_.begin();
   OFListConstIterator(DVPSOverlayCurveActivationLayer *) last = arg.list_.end();
@@ -100,7 +94,6 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::read(DcmItem &dset)
         newLayer = new DVPSOverlayCurveActivationLayer();
         if (newLayer)
         {
-          newLayer->setLog(logstream, verboseMode, debugMode);
           result = newLayer->read(dset,i);
           list_.push_back(newLayer);
         } else result = EC_MemoryExhausted;
@@ -472,23 +465,12 @@ Uint16 DVPSOverlayCurveActivationLayer_PList::getActivationGroup(const char *lay
   return 0;
 }
 
-void DVPSOverlayCurveActivationLayer_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }
-}
-
 
 /*
  *  $Log: dvpsall.cc,v $
+ *  Revision 1.16  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.15  2008-04-30 12:38:43  meichel
  *  Fixed compile errors due to changes in attribute tag names
  *

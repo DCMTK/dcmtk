@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2008, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:43 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,9 +118,6 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection, const char *
 , transmitImagesIn12Bit(OFTrue)
 , renderPresentationLUTinSCP(OFFalse)
 , tempDensity()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
   illumination.putUint16(illumin, 0);
   reflectedAmbientLight.putUint16(reflection, 0);
@@ -183,9 +180,6 @@ DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
 , transmitImagesIn12Bit(copy.transmitImagesIn12Bit)
 , renderPresentationLUTinSCP(copy.renderPresentationLUTinSCP)
 , tempDensity(copy.tempDensity)
-, logstream(copy.logstream)
-, verboseMode(copy.verboseMode)
-, debugMode(copy.debugMode)
 {
 }
 
@@ -247,7 +241,6 @@ void DVPSStoredPrint::clear()
   transmitImagesIn12Bit = OFTrue;
   renderPresentationLUTinSCP = OFFalse;
   tempDensity.clear();
-  // we don't change the log stream and the verbose/debug mode flags
 }
 
 void DVPSStoredPrint::invalidateCache()
@@ -274,18 +267,10 @@ void DVPSStoredPrint::updateCache()
       currentNumRows = rows;
       if ((columns > 0)&&(rows > 0)) currentValuesValid = OFTrue;
     } else {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Warning: cannot parse image display format '" << aString.c_str() << "'" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("cannot parse image display format '" << aString.c_str() << "'");
     }
   } else {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Warning: unknown image display format '" << aString.c_str() << "'" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("unknown image display format '" << aString.c_str() << "'");
   }
   return;
 }
@@ -317,11 +302,7 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
   if (aString != UID_StoredPrintStorage)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: SOP Class UID does not match StoredPrintStorage" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("SOP Class UID does not match StoredPrintStorage");
   }
 
   DcmCodeString modality(DCM_Modality);
@@ -329,11 +310,7 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
   if (modality.getLength() == 0)
   {
     result=EC_IllegalCall;
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: Modality missing or empty in Stored Print" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("Modality missing or empty in Stored Print");
   }
 
   READ_FROM_DATASET(DcmPersonName, patientName)
@@ -408,29 +385,17 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
                 if (NULL == presentationLUTList.findPresentationLUT(aString.c_str()))
                 {
                   result=EC_IllegalCall;
-                  if (verboseMode)
-                  {
-                    logstream->lockCerr() << "Error: FilmBoxContentSequence presentation LUT reference cannot be resolved" << OFendl;
-                    logstream->unlockCerr();
-                  }
+                  DCMPSTAT_INFO("FilmBoxContentSequence presentation LUT reference cannot be resolved");
                 }
               }
            } else {
              result=EC_TagNotFound;
-             if (verboseMode)
-             {
-               logstream->lockCerr() << "Error: found FilmBoxContentSequence in Stored Print with ReferencedPresentationLUTSequence number of items != 1" << OFendl;
-               logstream->unlockCerr();
-             }
+             DCMPSTAT_INFO("found FilmBoxContentSequence in Stored Print with ReferencedPresentationLUTSequence number of items != 1");
            }
          }
       } else {
         result=EC_TagNotFound;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: found FilmBoxContentSequence in Stored Print with number of items != 1" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("found FilmBoxContentSequence in Stored Print with number of items != 1");
       } 
     }
   }
@@ -446,56 +411,32 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
     if ((studyInstanceUID.getLength() == 0)||(studyInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: StudyInstanceUID missing or incorrect in Stored Print" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("StudyInstanceUID missing or incorrect in Stored Print");
     }
     if ((seriesInstanceUID.getLength() == 0)||(seriesInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: SeriesInstanceUID missing or incorrect in Stored Print" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("SeriesInstanceUID missing or incorrect in Stored Print");
     }
     if ((sOPInstanceUID.getLength() == 0)||(sOPInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: SOPInstanceUID missing or incorrect in Stored Print" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("SOPInstanceUID missing or incorrect in Stored Print");
     }
     if ((patientName.getLength() == 0)||(patientName.getVM() != 1))
     {
        // result=EC_TagNotFound;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Warning: PatientsName missing or incorrect in Stored Print" << OFendl;
-          logstream->unlockCerr();
-        }
+      DCMPSTAT_INFO("PatientsName missing or incorrect in Stored Print");
     }
     if ((imageDisplayFormat.getLength() == 0)||(imageDisplayFormat.getVM() != 1))
     {
         result=EC_TagNotFound;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: ImageDisplayFormat missing or incorrect in Stored Print" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("ImageDisplayFormat missing or incorrect in Stored Print");
     }
     if (imageBoxContentList.size() == 0)
     {
         result=EC_TagNotFound;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Error: ImageBoxContentSequence missing or empty in Stored Print" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("ImageBoxContentSequence missing or empty in Stored Print");
     }
   }
 
@@ -541,14 +482,10 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
              else 
                if (isImageStorageSOPClass(aString)) 
                  haveImageStorage=OFTrue;
-               else 
-                 { 
+               else
+                 {
                    result=EC_IllegalCall;
-                   if (verboseMode)
-                   {
-                     logstream->lockCerr() << "Error: Unsupported SOP Class UID in PrintManagementCapabilitiesSequence" << OFendl;
-                     logstream->unlockCerr();
-                   }
+                   DCMPSTAT_INFO("Unsupported SOP Class UID in PrintManagementCapabilitiesSequence");
                  }
               
       }
@@ -557,38 +494,22 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
         if (! haveFilmBox)
         {
            result=EC_IllegalCall;
-           if (verboseMode)
-           {
-             logstream->lockCerr() << "Error: Film Box SOP Class not referenced in PrintManagementCapabilitiesSequence" << OFendl;
-             logstream->unlockCerr();
-           }
+           DCMPSTAT_INFO("Film Box SOP Class not referenced in PrintManagementCapabilitiesSequence");
         }
         if (! haveGrayscaleImageBox)
         {
            result=EC_IllegalCall;
-           if (verboseMode)
-           {
-             logstream->lockCerr() << "Error: Basic Grayscale Image Box SOP Class not referenced in PrintManagementCapabilitiesSequence" << OFendl;
-             logstream->unlockCerr();
-           }
+           DCMPSTAT_INFO("Basic Grayscale Image Box SOP Class not referenced in PrintManagementCapabilitiesSequence");
         }
         if (! haveImageStorage)
         {
            result=EC_IllegalCall;
-           if (verboseMode)
-           {
-             logstream->lockCerr() << "Error: No Image Storage SOP Class referenced in PrintManagementCapabilitiesSequence" << OFendl;
-             logstream->unlockCerr();
-           }
+           DCMPSTAT_INFO("No Image Storage SOP Class referenced in PrintManagementCapabilitiesSequence");
         }
       }
     } else {
       result=EC_TagNotFound;
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Error: PrintManagementCapabilitiesSequence not found" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("PrintManagementCapabilitiesSequence not found");
     }
   }
 
@@ -611,11 +532,8 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
          READ_FROM_DATASET2(DcmLongString, printerName)
       }
     }
-    if ((printerName.getLength() == 0)&&(verboseMode))
-    {
-      logstream->lockCerr() << "Warning: PrinterName missing or incorrect in PrinterCharacteristicsSequence" << OFendl;
-      logstream->unlockCerr();
-    }
+    if (printerName.getLength() == 0)
+      DCMPSTAT_INFO("PrinterName missing or incorrect in PrinterCharacteristicsSequence");
   }
 
   return result;
@@ -1404,12 +1322,8 @@ OFCondition DVPSStoredPrint::printSCUpreparePresentationLUT(
     } else transmitImagesIn12Bit = printerSupports12Bit;
   } else {
         transmitImagesIn12Bit = printerSupports12Bit;
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "spooler: warning: printer does not support Presentation LUT SOP Class," << OFendl
-             << "  presentation LUT related print job settings will be ignored." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("spooler: printer does not support Presentation LUT SOP Class,"
+             << "  presentation LUT related print job settings will be ignored.");
   }
 
   OFCondition result = EC_Normal;  
@@ -1767,18 +1681,10 @@ OFCondition DVPSStoredPrint::printSCUsetBasicImageBox(
       {
         if ((pLUT->getType() == DVPSP_table)&&(! transmitImagesIn12Bit))
         {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "Warning: rendering Presentation LUT into 8-bit bitmap, image quality loss possible." << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("rendering Presentation LUT into 8-bit bitmap, image quality loss possible.");
         }
       } else {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Warning: unable to activate Presentation LUT, using IDENTITY instead." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("unable to activate Presentation LUT, using IDENTITY instead.");
         image.setPresentationLutShape(ESP_Identity);
       }
     } /* else image.setPresentationLutShape(ESP_Identity); -- this does not make sense for MONO1 HG images */
@@ -1882,11 +1788,7 @@ OFCondition DVPSStoredPrint::printSCUsetBasicAnnotationBox(
     const char *annotationSopInstanceUID = annotationContentList.getSOPInstanceUID(idx);  
     if ((annotationSopInstanceUID==NULL)||(strlen(annotationSopInstanceUID)==0))
     {
-       if (verboseMode)
-       {
-         logstream->lockCerr() << "Warning: not enough Annotation Boxes created by printer, ignoring annotation." << OFendl;
-         logstream->unlockCerr();
-       }
+       DCMPSTAT_INFO("not enough Annotation Boxes created by printer, ignoring annotation.");
        return EC_Normal;
     }
 
@@ -1899,24 +1801,11 @@ OFCondition DVPSStoredPrint::printSCUsetBasicAnnotationBox(
     }
     delete attributeListOut;
   } else {
-     if (verboseMode)
-     {
-       logstream->lockCerr() << "Warning: printer does not support Annotation Box, ignoring annotation." << OFendl;
-       logstream->unlockCerr();
-     }
+    DCMPSTAT_INFO("printer does not support Annotation Box, ignoring annotation.");
   }
 
   return result;
 }    
-
-void DVPSStoredPrint::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  imageBoxContentList.setLog(logstream, verbMode, dbgMode);
-  presentationLUTList.setLog(logstream, verbMode, dbgMode);
-}
 
 const char *DVPSStoredPrint::getMaxDensity()
 {
@@ -2058,11 +1947,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
       filmOrientation.getOFString(aString, 0, OFTrue);
       if ((aString != "PORTRAIT")&&(aString != "LANDSCAPE"))
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: illegal film orientation: '" << aString.c_str() << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: illegal film orientation: '" << aString.c_str() << "'");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
@@ -2075,11 +1960,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
     READ_FROM_PDATASET(DcmShortText, imageDisplayFormat)
     if (imageDisplayFormat.getLength() == 0) 
     {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: image display format missing or empty" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: image display format missing or empty");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_MissingAttribute; 
         result = OFFalse;
     } else {
@@ -2118,11 +1999,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           {
             OFString aString;
             imageDisplayFormat.getOFStringArray(aString);
-            if (verboseMode)
-            {
-              logstream->lockCerr() << "cannot create Basic Film Box: unsupported image display format: '" << aString.c_str() << "'" << OFendl;
-              logstream->unlockCerr();
-            }
+            DCMPSTAT_INFO("cannot create Basic Film Box: unsupported image display format: '" << aString.c_str() << "'");
             rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
             result = OFFalse;
           }
@@ -2130,11 +2007,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
       } else {
         OFString aString;
         imageDisplayFormat.getOFStringArray(aString);
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: illegal image display format: '" << aString.c_str() << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: illegal image display format: '" << aString.c_str() << "'");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
@@ -2173,11 +2046,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
       }
       if (! found)
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: illegal film size ID: '" << theSizeID.c_str() << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: illegal film size ID: '" << theSizeID.c_str() << "'");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
@@ -2216,11 +2085,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
       }
       if (! found)
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: illegal magnification type: '" << theMagnification.c_str() << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: illegal magnification type: '" << theMagnification.c_str() << "'");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
@@ -2257,21 +2122,13 @@ OFBool DVPSStoredPrint::printSCPCreate(
       }
       if (numSmoothings == 0)
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: smoothing type requested but not supported." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: smoothing type requested but not supported.");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       } 
       else if (! found)
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: illegal smoothing type: '" << theSmoothing.c_str() << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: illegal smoothing type: '" << theSmoothing.c_str() << "'");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
@@ -2296,11 +2153,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
       // check whether we can accept the proposed border density
       if (numBorderDensities == 0) // we don't support border density
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: border density requested but not supported." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: border density requested but not supported.");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
@@ -2329,11 +2182,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           
         if (! found)
         {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "cannot create Basic Film Box: illegal border density: '" << theBorderDensity.c_str() << "'" << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot create Basic Film Box: illegal border density: '" << theBorderDensity.c_str() << "'");
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }        
@@ -2358,11 +2207,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
       // check whether we can accept the proposed empty image density
       if (numEmptyImageDensities == 0) // we don't support empty image density
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: empty image density requested but not supported." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: empty image density requested but not supported.");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
@@ -2391,11 +2236,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           
         if (! found)
         {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "cannot create Basic Film Box: illegal empty image density: '" << theEIDensity.c_str() << "'" << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot create Basic Film Box: illegal empty image density: '" << theEIDensity.c_str() << "'");
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }        
@@ -2435,11 +2276,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
     } else {
       if (numMinDensities == 0) // we don't support min density
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: min density requested but not supported." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: min density requested but not supported.");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       }
@@ -2463,20 +2300,12 @@ OFBool DVPSStoredPrint::printSCPCreate(
         trim.getOFString(aString, 0, OFTrue);
         if ((aString != "YES")&&(aString != "NO"))
         {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "cannot create Basic Film Box: illegal trim: '" << aString.c_str() << "'" << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot create Basic Film Box: illegal trim: '" << aString.c_str() << "'");
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }
       } else {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: trim requested but not supported." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: trim requested but not supported.");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       }
@@ -2493,11 +2322,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
       Uint32 numConfigurationInformation = cfg.getTargetPrinterNumberOfConfigurationSettings(cfgname);   
       if (numConfigurationInformation == 0) // we don't support configuration information
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: configuration information requested but not supported." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: configuration information requested but not supported.");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
@@ -2514,11 +2339,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
         }          
         if (! found)
         {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "cannot create Basic Film Box: illegal configuration information: '" << theConfiguration.c_str() << "'" << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot create Basic Film Box: illegal configuration information: '" << theConfiguration.c_str() << "'");
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }        
@@ -2543,11 +2364,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
       // check whether we can accept the requested resolution ID
       if (numResolutionIDs == 0) // we don't support requested resolution ID
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: requested resolution ID present but not supported." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: requested resolution ID present but not supported.");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
@@ -2566,11 +2383,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
         }          
         if (! found)
         {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "cannot create Basic Film Box: illegal requested resolution ID: '" << theResolutionID.c_str() << "'" << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot create Basic Film Box: illegal requested resolution ID: '" << theResolutionID.c_str() << "'");
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }        
@@ -2617,11 +2430,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
              DVPSPresentationLUT *currentPLUT = globalPresentationLUTList.findPresentationLUT(aString.c_str());
              if (NULL == currentPLUT)
              {
-               if (verboseMode)
-               {
-                 logstream->lockCerr() << "cannot create Basic Film Box: presentation LUT reference cannot be resolved" << OFendl;
-                 logstream->unlockCerr();
-               }
+               DCMPSTAT_INFO("cannot create Basic Film Box: presentation LUT reference cannot be resolved");
                rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                result = OFFalse;
              } else {
@@ -2635,13 +2444,8 @@ OFBool DVPSStoredPrint::printSCPCreate(
                   refClassUID.getOFString(aString,0, OFTrue);
                   if (aString != UID_PresentationLUTSOPClass)
                   {
-                    if (verboseMode)
-                    {
-                      STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-                      mycerr << "cannot create Basic Film Box: referenced SOP class UID in referenced presentation LUT sequence incorrect:" << OFendl;
-                      (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-                      logstream->unlockCerr();            
-                    }
+                    DCMPSTAT_INFO("cannot create Basic Film Box: referenced SOP class UID in referenced presentation LUT sequence incorrect:"
+                        << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
                     rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                     result = OFFalse;
                   } else {
@@ -2652,30 +2456,18 @@ OFBool DVPSStoredPrint::printSCPCreate(
                     referencedPresentationLUTAlignment = currentPLUT->getAlignment();
                   }
                } else {
-                  if (verboseMode)
-                  {
-                    logstream->lockCerr() << "cannot create Basic Film Box: no referenced SOP class UID in referenced presentation LUT sequence" << OFendl;
-                    logstream->unlockCerr();
-                  }
+                  DCMPSTAT_INFO("cannot create Basic Film Box: no referenced SOP class UID in referenced presentation LUT sequence");
                   rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                   result = OFFalse;
                }
              }
            } else {
-             if (verboseMode)
-             {
-               logstream->lockCerr() << "cannot create Basic Film Box: no referenced SOP instance UID in referenced presentation LUT sequence" << OFendl;
-               logstream->unlockCerr();
-             }
+             DCMPSTAT_INFO("cannot create Basic Film Box: no referenced SOP instance UID in referenced presentation LUT sequence");
              rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
              result = OFFalse;
            }
         } else {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "cannot create Basic Film Box: referenced presentation LUT sequence number of items != 1" << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot create Basic Film Box: referenced presentation LUT sequence number of items != 1");
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }
@@ -2707,11 +2499,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
            instanceUID.getOFString(aString,0);
            if (aString != filmSessionUID)
            {
-             if (verboseMode)
-             {
-               logstream->lockCerr() << "cannot create Basic Film Box: referenced film session instance UID incorrect" << OFendl;
-               logstream->unlockCerr();
-             }
+             DCMPSTAT_INFO("cannot create Basic Film Box: referenced film session instance UID incorrect");
              rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
              result = OFFalse;
            } else {
@@ -2724,50 +2512,29 @@ OFBool DVPSStoredPrint::printSCPCreate(
                 classUID.getOFString(aString,0, OFTrue);
                 if (aString != UID_BasicFilmSessionSOPClass)
                 {
-                  if (verboseMode)
-                  {
-                    STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-                    mycerr << "cannot create Basic Film Box: referenced SOP class UID in referenced film session sequence incorrect:" << OFendl;
-                    (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-                    logstream->unlockCerr();            
-                  }
+                  DCMPSTAT_INFO("cannot create Basic Film Box: referenced SOP class UID in referenced film session sequence incorrect:"
+                      << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
                   rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                   result = OFFalse;
                 }
              } else {
-                if (verboseMode)
-                {
-                  logstream->lockCerr() << "cannot create Basic Film Box: no referenced SOP class UID in referenced film session sequence" << OFendl;
-                  logstream->unlockCerr();
-                }
+                DCMPSTAT_INFO("cannot create Basic Film Box: no referenced SOP class UID in referenced film session sequence");
                 rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                 result = OFFalse;
              }
            }
          } else {
-           if (verboseMode)
-           {
-             logstream->lockCerr() << "cannot create Basic Film Box: no referenced SOP instance UID in referenced film session sequence" << OFendl;
-             logstream->unlockCerr();
-           }
+           DCMPSTAT_INFO("cannot create Basic Film Box: no referenced SOP instance UID in referenced film session sequence");
            rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
            result = OFFalse;
          }
       } else {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot create Basic Film Box: referenced film session sequence number of items != 1" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: referenced film session sequence number of items != 1");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "cannot create Basic Film Box: referenced film session sequence absent" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("cannot create Basic Film Box: referenced film session sequence absent");
       rsp.msg.NCreateRSP.DimseStatus = STATUS_N_MissingAttribute; 
       result = OFFalse;
     }
@@ -2800,14 +2567,9 @@ OFBool DVPSStoredPrint::printSCPCreate(
       {
         if (! presentationLUTnegotiated)
         {
-          if (verboseMode)
-          {
-            STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-            mycerr << "cannot create Basic Film Box: illumination received:" << OFendl;
-            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-            logstream->unlockCerr();
-          }
-          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
+          DCMPSTAT_INFO("cannot create Basic Film Box: illumination received:\n"
+               << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
+          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
           result = OFFalse;
         }
       }
@@ -2815,14 +2577,9 @@ OFBool DVPSStoredPrint::printSCPCreate(
       {
         if (! presentationLUTnegotiated)
         {
-          if (verboseMode)
-          {
-            STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-            mycerr << "cannot create Basic Film Box: reflected ambient light received:" << OFendl;
-            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-            logstream->unlockCerr();
-          }
-          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
+          DCMPSTAT_INFO("cannot create Basic Film Box: reflected ambient light received:\n"
+              << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
+          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
           result = OFFalse;
         }
       }
@@ -2830,26 +2587,16 @@ OFBool DVPSStoredPrint::printSCPCreate(
       {
         if (! presentationLUTnegotiated)
         {
-          if (verboseMode)
-          {
-            STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-            mycerr << "cannot create Basic Film Box: referenced presentation LUT sequence received:" << OFendl;
-            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot create Basic Film Box: referenced presentation LUT sequence received:\n"
+              << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
       else
       {
-        if (verboseMode)
-        {
-          STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-          mycerr << "cannot create Basic Film Box: unsupported attribute received:" << OFendl;
-          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create Basic Film Box: unsupported attribute received:\n"
+            << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
@@ -2974,11 +2721,7 @@ OFBool DVPSStoredPrint::printSCPSet(
       }
       if (! found)
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot update Basic Film Box: illegal magnification type: '" << theMagnification.c_str() << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Box: illegal magnification type: '" << theMagnification.c_str() << "'");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
@@ -3011,21 +2754,13 @@ OFBool DVPSStoredPrint::printSCPSet(
       }
       if (numSmoothings == 0)
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot update Basic Film Box: smoothing type requested but not supported." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Box: smoothing type requested but not supported.");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       } 
       else if (! found)
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot update Basic Film Box: illegal smoothing type: '" << theSmoothing.c_str() << "'" << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Box: illegal smoothing type: '" << theSmoothing.c_str() << "'");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
@@ -3048,11 +2783,7 @@ OFBool DVPSStoredPrint::printSCPSet(
       Uint32 numBorderDensities = cfg.getTargetPrinterNumberOfBorderDensities(cfgname);   
       if (numBorderDensities == 0) // we don't support border density
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot update Basic Film Box: border density requested but not supported." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Box: border density requested but not supported.");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
@@ -3081,11 +2812,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           
         if (! found)
         {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "cannot update Basic Film Box: illegal border density: '" << theBorderDensity.c_str() << "'" << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot update Basic Film Box: illegal border density: '" << theBorderDensity.c_str() << "'");
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }
@@ -3107,11 +2834,7 @@ OFBool DVPSStoredPrint::printSCPSet(
       Uint32 numEmptyImageDensities = cfg.getTargetPrinterNumberOfEmptyImageDensities(cfgname);   
       if (numEmptyImageDensities == 0) // we don't support empty image density
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot update Basic Film Box: empty image density requested but not supported." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Box: empty image density requested but not supported.");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
@@ -3140,11 +2863,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           
         if (! found)
         {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "cannot update Basic Film Box: illegal empty image density: '" << theEIDensity.c_str() << "'" << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot update Basic Film Box: illegal empty image density: '" << theEIDensity.c_str() << "'");
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }        
@@ -3178,11 +2897,7 @@ OFBool DVPSStoredPrint::printSCPSet(
       Uint32 numMinDensities = cfg.getTargetPrinterNumberOfMinDensities(cfgname);   
       if (numMinDensities == 0) // we don't support min density
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot update Basic Film Box: min density requested but not supported." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Box: min density requested but not supported.");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } 
@@ -3208,22 +2923,14 @@ OFBool DVPSStoredPrint::printSCPSet(
         trim.getOFString(aString, 0, OFTrue);
         if ((aString != "YES")&&(aString != "NO"))
         {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "cannot update Basic Film Box: illegal trim: '" << aString.c_str() << "'" << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot update Basic Film Box: illegal trim: '" << aString.c_str() << "'");
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         } else {
           ADD_TO_PDATASET(DcmCodeString, trim)
         }
       } else {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot update Basic Film Box: trim requested but not supported." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Box: trim requested but not supported.");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       }
@@ -3240,11 +2947,7 @@ OFBool DVPSStoredPrint::printSCPSet(
       Uint32 numConfigurationInformation = cfg.getTargetPrinterNumberOfConfigurationSettings(cfgname);   
       if (numConfigurationInformation == 0) // we don't support configuration information
       {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "cannot update Basic Film Box: configuration information requested but not supported." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Box: configuration information requested but not supported.");
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
@@ -3261,11 +2964,7 @@ OFBool DVPSStoredPrint::printSCPSet(
         }          
         if (! found)
         {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "cannot update Basic Film Box: illegal configuration information: '" << theConfiguration.c_str() << "'" << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot update Basic Film Box: illegal configuration information: '" << theConfiguration.c_str() << "'");
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }
@@ -3324,11 +3023,7 @@ OFBool DVPSStoredPrint::printSCPSet(
              DVPSPresentationLUT *currentPLUT = globalPresentationLUTList.findPresentationLUT(aString.c_str());
              if (NULL == currentPLUT)
              {
-               if (verboseMode)
-               {
-                 logstream->lockCerr() << "cannot update Basic Film Box: presentation LUT reference cannot be resolved" << OFendl;
-                 logstream->unlockCerr();
-               }
+               DCMPSTAT_INFO("cannot update Basic Film Box: presentation LUT reference cannot be resolved");
                rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                result = OFFalse;
              } else {
@@ -3342,13 +3037,8 @@ OFBool DVPSStoredPrint::printSCPSet(
                   refClassUID.getOFString(aString,0, OFTrue);
                   if (aString != UID_PresentationLUTSOPClass)
                   {
-                    if (verboseMode)
-                    {
-                      STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-                      mycerr << "cannot update Basic Film Box: referenced SOP class UID in referenced presentation LUT sequence incorrect:" << OFendl;
-                      (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-                      logstream->unlockCerr();
-                    }
+                    DCMPSTAT_INFO("cannot update Basic Film Box: referenced SOP class UID in referenced presentation LUT sequence incorrect:\n"
+                        << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
                     rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                     result = OFFalse;
                   } else {
@@ -3356,11 +3046,7 @@ OFBool DVPSStoredPrint::printSCPSet(
                     if ((cfg.getTargetPrinterPresentationLUTMatchRequired(cfgname)) &&
                         (! imageBoxContentList.matchesPresentationLUT(referencedPresentationLUTAlignment)))
                     {
-                      if (verboseMode)
-                      {
-                        logstream->lockCerr() << "cannot update Basic Film Box: referenced presentation LUT number of entries does not match image bit depth." << OFendl;
-                        logstream->unlockCerr();
-                      }
+                      DCMPSTAT_INFO("cannot update Basic Film Box: referenced presentation LUT number of entries does not match image bit depth.");
                       rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                       result = OFFalse;
                     } else {
@@ -3378,30 +3064,18 @@ OFBool DVPSStoredPrint::printSCPSet(
                     }
                   }
                } else {
-                  if (verboseMode)
-                  {
-                    logstream->lockCerr() << "cannot update Basic Film Box: no referenced SOP class UID in referenced presentation LUT sequence" << OFendl;
-                    logstream->unlockCerr();
-                  }
+                  DCMPSTAT_INFO("cannot update Basic Film Box: no referenced SOP class UID in referenced presentation LUT sequence");
                   rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
                   result = OFFalse;
                }
              }
            } else {
-             if (verboseMode)
-             {
-               logstream->lockCerr() << "cannot update Basic Film Box: no referenced SOP instance UID in referenced presentation LUT sequence" << OFendl;
-               logstream->unlockCerr();
-             }
+             DCMPSTAT_INFO("cannot update Basic Film Box: no referenced SOP instance UID in referenced presentation LUT sequence");
              rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
              result = OFFalse;
            }
         } else {
-          if (verboseMode)
-          {
-            logstream->lockCerr() << "cannot update Basic Film Box: referenced presentation LUT sequence number of items != 1" << OFendl;
-            logstream->unlockCerr();
-          }
+          DCMPSTAT_INFO("cannot update Basic Film Box: referenced presentation LUT sequence number of items != 1");
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }
@@ -3434,14 +3108,9 @@ OFBool DVPSStoredPrint::printSCPSet(
       {
         if (! presentationLUTnegotiated)
         {
-          if (verboseMode)
-          {
-            STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-            mycerr << "cannot update Basic Film Box: illumination received:" << OFendl;
-            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-            logstream->unlockCerr();
-          }
-          rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
+          DCMPSTAT_INFO("cannot update Basic Film Box: illumination received:\n"
+              << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
           result = OFFalse;
         }
       }
@@ -3449,14 +3118,9 @@ OFBool DVPSStoredPrint::printSCPSet(
       {
         if (! presentationLUTnegotiated)
         {
-          if (verboseMode)
-          {
-            STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-            mycerr << "cannot update Basic Film Box: reflected ambient light received:" << OFendl;
-            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-            logstream->unlockCerr();            
-          }
-          rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
+          DCMPSTAT_INFO("cannot update Basic Film Box: reflected ambient light received:\n"
+              << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
           result = OFFalse;
         }
       }
@@ -3464,26 +3128,16 @@ OFBool DVPSStoredPrint::printSCPSet(
       {
         if (! presentationLUTnegotiated)
         {
-          if (verboseMode)
-          {
-            STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-            mycerr << "cannot update Basic Film Box: referenced presentation LUT sequence received:" << OFendl;
-            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-            logstream->unlockCerr();            
-          }
-          rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
+          DCMPSTAT_INFO("cannot update Basic Film Box: referenced presentation LUT sequence received:\n"
+              << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
           result = OFFalse;
         }
       }
       else
       {
-        if (verboseMode)
-        {
-          STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-          mycerr << "cannot update Basic Film Box: unsupported attribute received:" << OFendl;
-          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
-          logstream->unlockCerr();            
-        }
+        DCMPSTAT_INFO("cannot update Basic Film Box: unsupported attribute received:"
+            << DcmObject::PrintHelper(*stack.top(), DCMTypes::PF_shortenLongTagValues));
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
@@ -3548,6 +3202,9 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
+ *  Revision 1.55  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.54  2008-04-30 12:38:43  meichel
  *  Fixed compile errors due to changes in attribute tag names
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintSCP
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,10 +73,6 @@ DVPSPrintSCP::DVPSPrintSCP(DVInterface &iface, const char *cfname)
 , logSequence(NULL)
 , acseSequence(NULL)
 , logPath()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
-, dumpMode(OFFalse)
 {
 }
 
@@ -90,12 +86,10 @@ DVPSPrintSCP::~DVPSPrintSCP()
 int DVPSPrintSCP::errorCond(OFCondition cond, const char *message)
 {
   int result = cond.bad();
-  if (result && verboseMode)
+  if (result)
   {
-    STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-    mycerr << message << OFendl;
-    logstream->unlockCerr();    
-    DimseCondition::dump(cond, *logstream); // performs it's own locking
+    OFString temp_str;
+    DCMPSTAT_INFO(message << OFendl << DimseCondition::dump(temp_str, cond));
   }
   return result;
 }
@@ -116,20 +110,12 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
   if (maxPDU == 0) maxPDU = DEFAULT_MAXPDU;
   else if (maxPDU > ASC_MAXIMUMPDUSIZE)
   {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "warning: max PDU size " << maxPDU << " too big, using default: " << DEFAULT_MAXPDU << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("max PDU size " << maxPDU << " too big, using default: " << DEFAULT_MAXPDU);
     maxPDU = DEFAULT_MAXPDU;
   }
   else if (maxPDU < ASC_MINIMUMPDUSIZE)
   {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "warning: max PDU size " << maxPDU << " too small, using default: " << DEFAULT_MAXPDU << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("max PDU size " << maxPDU << " too small, using default: " << DEFAULT_MAXPDU);
     maxPDU = DEFAULT_MAXPDU;
   }
 
@@ -153,24 +139,14 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
   }
   else
   {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Association Received (" 
+    DCMPSTAT_INFO("Association Received (" 
            << assoc->params->DULparams.callingPresentationAddress
            << ":" << assoc->params->DULparams.callingAPTitle << " -> "
            << assoc->params->DULparams.calledAPTitle
-           << ") " << OFDateTime::getCurrentDateTime() << OFendl;
-      logstream->unlockCerr();
-    }
+           << ") " << OFDateTime::getCurrentDateTime());
 
-    if (dumpMode)
-    {
-      STD_NAMESPACE ostream& outstream = logstream->lockCerr();
-      outstream << OFendl << "====================== BEGIN A-ASSOCIATE-RQ =====================" << OFendl;
-      ASC_dumpParameters(assoc->params, outstream);
-      outstream << "======================= END A-ASSOCIATE-RQ ======================" << OFendl << OFendl << STD_NAMESPACE flush;
-      logstream->unlockCerr();
-    }
+    OFString temp_str;
+    DCMPSTAT_DUMP(ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
 
     ASC_setAPTitles(assoc->params, NULL, NULL, aetitle);
 
@@ -179,11 +155,7 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
     if (cond.bad() || strcmp(buf, DICOM_STDAPPLICATIONCONTEXT) != 0)
     {
         /* reject: the application context name is not supported */
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "Bad AppContextName: " << buf << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("Bad AppContextName: " << buf);
         cond = refuseAssociation(OFTrue);
         dropAssoc = OFTrue;
         result = DVPSJ_error;
@@ -279,14 +251,8 @@ OFCondition DVPSPrintSCP::refuseAssociation(OFBool isBadContext)
 
   OFCondition cond = ASC_rejectAssociation(assoc, &rej, &associatePDU, &associatePDUlength);
 
-  if (dumpMode)
-  {
-    STD_NAMESPACE ostream& outstream = logstream->lockCerr();
-    outstream << OFendl << "====================== BEGIN A-ASSOCIATE-RJ =====================" << OFendl;
-    ASC_dumpParameters(assoc->params, outstream);
-    outstream << "======================= END A-ASSOCIATE-RJ ======================" << OFendl << OFendl << STD_NAMESPACE flush;
-    logstream->unlockCerr();
-  }
+  OFString temp_str;
+  DCMPSTAT_DUMP(ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RJ));
 
   if (acseSequence && associatePDU)
   {
@@ -325,16 +291,10 @@ void DVPSPrintSCP::handleClient()
 {
   void *associatePDU=NULL;
   unsigned long associatePDUlength=0;
+  OFString temp_str;
 
   OFCondition cond = ASC_acknowledgeAssociation(assoc, &associatePDU, &associatePDUlength);
-  if (dumpMode)
-  {
-    STD_NAMESPACE ostream& outstream = logstream->lockCerr();
-    outstream << OFendl << "====================== BEGIN A-ASSOCIATE-AC =====================" << OFendl;
-    ASC_dumpParameters(assoc->params, outstream);
-    outstream << "======================= END A-ASSOCIATE-AC ======================" << OFendl << OFendl << STD_NAMESPACE flush;
-    logstream->unlockCerr();
-  }  
+  DCMPSTAT_DUMP(ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
   if (acseSequence && associatePDU)
   {
     addLogEntry(acseSequence, "A_ASSOCIATE_AC");
@@ -355,13 +315,8 @@ void DVPSPrintSCP::handleClient()
   if (! errorCond(cond, "Cannot acknowledge association:"))
   {
 
-    if (verboseMode)
-    {
-      STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
-      mycerr << "Association Acknowledged (Max Send PDV: " << assoc->sendPDVLength << ")" << OFendl;
-      if (ASC_countAcceptedPresentationContexts(assoc->params) == 0) mycerr << "    (but no valid presentation contexts)" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("Association Acknowledged (Max Send PDV: " << assoc->sendPDVLength << ")"
+        << ((ASC_countAcceptedPresentationContexts(assoc->params) == 0) ? "\n    (but no valid presentation contexts)" : ""));
 
     T_DIMSE_Message msg;
     T_ASC_PresentationContextID presID;
@@ -414,11 +369,7 @@ void DVPSPrintSCP::handleClient()
             default:
               cond = DIMSE_BADCOMMANDTYPE; /* unsupported command */
               dumpNMessage(msg, NULL, OFFalse);
-              if (verboseMode)
-              {
-                logstream->lockCerr() << "Cannot handle command: 0x" << STD_NAMESPACE hex << (unsigned)msg.CommandField << STD_NAMESPACE dec << OFendl;
-                logstream->unlockCerr();
-              }
+              DCMPSTAT_INFO("Cannot handle command: 0x" << STD_NAMESPACE hex << (unsigned)msg.CommandField << STD_NAMESPACE dec);
               break;
           }
       }
@@ -433,21 +384,13 @@ void DVPSPrintSCP::handleClient()
     /* close association */
     if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Association Release" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("Association Release");
       cond = ASC_acknowledgeRelease(assoc);
       errorCond(cond, "Cannot release association:");
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "Association Aborted" << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("Association Aborted");
     }
     else
     {
@@ -504,11 +447,7 @@ OFCondition DVPSPrintSCP::handleNGet(T_DIMSE_Message& rq, T_ASC_PresentationCont
     // Print N-GET
     printerNGet(rq, rsp, rspDataset);
   } else {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: N-GET unsupported for SOP class '" << sopClass.c_str() << "'" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("N-GET unsupported for SOP class '" << sopClass << "'");
     rsp.msg.NGetRSP.DimseStatus = STATUS_N_NoSuchSOPClass;
   }
   DcmDataset *rspCommand = NULL;
@@ -566,11 +505,7 @@ OFCondition DVPSPrintSCP::handleNSet(T_DIMSE_Message& rq, T_ASC_PresentationCont
     // BGIB N-SET
     imageBoxNSet(rq, rqDataset, rsp, rspDataset);
   } else {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: N-SET unsupported for SOP class '" << sopClass.c_str() << "'" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("N-SET unsupported for SOP class '" << sopClass << "'");
     rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchSOPClass;
   }
 
@@ -626,11 +561,7 @@ OFCondition DVPSPrintSCP::handleNAction(T_DIMSE_Message& rq, T_ASC_PresentationC
     // BFB N-ACTION
     filmBoxNAction(rq, rsp);
   } else {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: N-ACTION unsupported for SOP class '" << sopClass.c_str() << "'" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("N-ACTION unsupported for SOP class '" << sopClass << "'");
     rsp.msg.NActionRSP.DimseStatus = STATUS_N_NoSuchSOPClass;
   }
 
@@ -702,11 +633,7 @@ OFCondition DVPSPrintSCP::handleNCreate(T_DIMSE_Message& rq, T_ASC_PresentationC
     // P-LUT N-CREATE
     presentationLUTNCreate(rqDataset, rsp, rspDataset);
   } else {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: N-CREATE unsupported for SOP class '" << sopClass.c_str() << "'" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("N-CREATE unsupported for SOP class '" << sopClass << "'");
     rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchSOPClass;
     rsp.msg.NCreateRSP.opts = 0;  // don't include affected SOP instance UID
   }
@@ -771,11 +698,7 @@ OFCondition DVPSPrintSCP::handleNDelete(T_DIMSE_Message& rq, T_ASC_PresentationC
     // P-LUT N-DELETE
     presentationLUTNDelete(rq, rsp);
   } else {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: N-DELETE unsupported for SOP class '" << sopClass.c_str() << "'" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("N-DELETE unsupported for SOP class '" << sopClass << "'");
     rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_NoSuchSOPClass;
   }
 
@@ -827,13 +750,10 @@ void DVPSPrintSCP::printerNGet(T_DIMSE_Message& rq, T_DIMSE_Message& rsp, DcmDat
       }
       else
       {
-        if (verboseMode)
-        {
-          char buf[20];
-          sprintf(buf, "(%04x,%04x)", (int)group, (int)element);
-          logstream->lockCerr() << "error: cannot retrieve printer information: unsupported attribute " << buf << " in attribute list." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot retrieve printer information: unsupported attribute ("
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << (int)group << ","
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << (int)element
+            << ") in attribute list.");
         rsp.msg.NGetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
@@ -855,11 +775,7 @@ void DVPSPrintSCP::printerNGet(T_DIMSE_Message& rq, T_DIMSE_Message& rsp, DcmDat
       result = OFFalse;
     }
   } else {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot retrieve printer information, instance UID is not well-known printer SOP instance UID." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot retrieve printer information, instance UID is not well-known printer SOP instance UID.");
     rsp.msg.NGetRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
@@ -883,20 +799,12 @@ void DVPSPrintSCP::filmSessionNSet(T_DIMSE_Message& rq, DcmDataset *rqDataset, T
         filmSession = newSession;
       } else delete newSession;
     } else {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "error: cannot update film session, out of memory." << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("cannot update film session, out of memory.");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
     }
   } else {
     // film session does not exist or wrong instance UID
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot update film session, object not found." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot update film session, object not found.");
     rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
@@ -918,11 +826,7 @@ void DVPSPrintSCP::filmSessionNAction(T_DIMSE_Message& rq, T_DIMSE_Message& rsp)
     storedPrintList.printSCPBasicFilmSessionAction(dviface, cfgname, rsp, presentationLUTList);
   } else {
     // film session does not exist or wrong instance UID
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot print film session, object not found." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot print film session, object not found.");
     rsp.msg.NActionRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
@@ -937,11 +841,7 @@ void DVPSPrintSCP::filmSessionNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rs
   if (filmSession)
   {
     // film session exists already, refuse n-create
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot create two film sessions concurrently." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot create two film sessions concurrently.");
     rsp.msg.NCreateRSP.DimseStatus = STATUS_N_DuplicateSOPInstance;
     rsp.msg.NCreateRSP.opts = 0;  // don't include affected SOP instance UID
   } else {
@@ -954,7 +854,6 @@ void DVPSPrintSCP::filmSessionNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rs
     DVPSFilmSession *newSession = new DVPSFilmSession(DEFAULT_illumination, DEFAULT_reflectedAmbientLight);
     if (newSession)
     {
-      newSession->setLog(logstream, verboseMode, debugMode);
       DIC_AE peerTitle;
       peerTitle[0]=0;
       ASC_getAPTitles(assoc->params, peerTitle, NULL, NULL);
@@ -966,11 +865,7 @@ void DVPSPrintSCP::filmSessionNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rs
       psSeriesInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
       imageSeriesInstanceUID.putString(dcmGenerateUniqueIdentifier(uid));
     } else {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "error: cannot create film session, out of memory." << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("cannot create film session, out of memory.");
       rsp.msg.NCreateRSP.DimseStatus = STATUS_N_ProcessingFailure;
       rsp.msg.NCreateRSP.opts = 0;  // don't include affected SOP instance UID
     }
@@ -983,19 +878,13 @@ void DVPSPrintSCP::filmBoxNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rsp, D
   {
     if (storedPrintList.haveFilmBoxInstance(rsp.msg.NCreateRSP.AffectedSOPInstanceUID))
     {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "error: cannot create film box, requested SOP instance UID already in use." << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("cannot create film box, requested SOP instance UID already in use.");
       rsp.msg.NCreateRSP.DimseStatus = STATUS_N_DuplicateSOPInstance;
       rsp.msg.NCreateRSP.opts = 0;  // don't include affected SOP instance UID
     } else {
       DVPSStoredPrint *newSPrint = new DVPSStoredPrint(DEFAULT_illumination, DEFAULT_reflectedAmbientLight);
       if (newSPrint)
       {
-        newSPrint->setLog(logstream, verboseMode, debugMode);
-
         if (assoc) newSPrint->setOriginator(assoc->params->DULparams.callingAPTitle);
 
         // get AETITLE from config file
@@ -1021,22 +910,14 @@ void DVPSPrintSCP::filmBoxNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rsp, D
           storedPrintList.insert(newSPrint);
         } else delete newSPrint;
       } else {
-        if (verboseMode)
-        {
-          logstream->lockCerr() << "error: cannot create film box, out of memory." << OFendl;
-          logstream->unlockCerr();
-        }
+        DCMPSTAT_INFO("cannot create film box, out of memory.");
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_ProcessingFailure;
         rsp.msg.NCreateRSP.opts = 0;  // don't include affected SOP instance UID
       }
     }
   } else {
     // no film session, refuse n-create
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot create film box without film session." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot create film box without film session.");
     rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidObjectInstance;
     rsp.msg.NCreateRSP.opts = 0;  // don't include affected SOP instance UID
   }
@@ -1046,28 +927,19 @@ void DVPSPrintSCP::presentationLUTNCreate(DcmDataset *rqDataset, T_DIMSE_Message
 {
   if ((assoc==NULL) || (0 == ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass)))
   {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot create presentation LUT, not negotiated." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot create presentation LUT, not negotiated.");
     rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchSOPClass;
     rsp.msg.NCreateRSP.opts = 0;  // don't include affected SOP instance UID
   }
   else if (presentationLUTList.findPresentationLUT(rsp.msg.NCreateRSP.AffectedSOPInstanceUID))
   {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot create presentation LUT, requested SOP instance UID already in use." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot create presentation LUT, requested SOP instance UID already in use.");
     rsp.msg.NCreateRSP.DimseStatus = STATUS_N_DuplicateSOPInstance;
     rsp.msg.NCreateRSP.opts = 0;  // don't include affected SOP instance UID
   } else {
     DVPSPresentationLUT *newPLut = new DVPSPresentationLUT();
     if (newPLut)
     {
-      newPLut->setLog(logstream, verboseMode, debugMode);
       OFBool matchRequired = dviface.getTargetPrinterPresentationLUTMatchRequired(cfgname);
       OFBool supports12Bit = dviface.getTargetPrinterSupports12BitTransmission(cfgname);
       if (newPLut->printSCPCreate(rqDataset, rsp, rspDataset, matchRequired, supports12Bit))
@@ -1075,11 +947,7 @@ void DVPSPrintSCP::presentationLUTNCreate(DcmDataset *rqDataset, T_DIMSE_Message
         presentationLUTList.insert(newPLut);
       } else delete newPLut;
     } else {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "error: cannot create presentation LUT, out of memory." << OFendl;
-        logstream->unlockCerr();
-      }
+      DCMPSTAT_INFO("cannot create presentation LUT, out of memory.");
       rsp.msg.NCreateRSP.DimseStatus = STATUS_N_ProcessingFailure;
       rsp.msg.NCreateRSP.opts = 0;  // don't include affected SOP instance UID
     }
@@ -1096,11 +964,7 @@ void DVPSPrintSCP::filmSessionNDelete(T_DIMSE_Message& rq, T_DIMSE_Message& rsp)
     filmSession = NULL;
   } else {
     // film session does not exist or wrong instance UID
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot delete film session with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot delete film session with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist.");
     rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
@@ -1115,11 +979,7 @@ void DVPSPrintSCP::presentationLUTNDelete(T_DIMSE_Message& rq, T_DIMSE_Message& 
   // check whether references to this object exist. In this case, don't delete
   if (storedPrintList.usesPresentationLUT(rq.msg.NDeleteRQ.RequestedSOPInstanceUID))
   {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "error: cannot delete presentation LUT '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object still in use." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("cannot delete presentation LUT '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object still in use.");
     rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_ProcessingFailure;
   } else {
     presentationLUTList.printSCPDelete(rq, rsp);
@@ -1132,19 +992,6 @@ void DVPSPrintSCP::imageBoxNSet(T_DIMSE_Message& rq, DcmDataset *rqDataset, T_DI
   if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass))) usePLUT = OFTrue;
   storedPrintList.printSCPBasicGrayscaleImageBoxSet(dviface, cfgname, rq, rqDataset, rsp, rspDataset, usePLUT);
 }
-
-void DVPSPrintSCP::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode, OFBool dmpMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  dumpMode = dmpMode;
-  dviface.setLog(logstream, verbMode, dbgMode);
-  presentationLUTList.setLog(logstream, verbMode, dbgMode);
-  storedPrintList.setLog(logstream, verbMode, dbgMode);
-  if (filmSession) filmSession->setLog(logstream, verbMode, dbgMode);
-}
-
 
 void DVPSPrintSCP::addLogEntry(DcmSequenceOfItems *seq, const char *text)
 {
@@ -1231,16 +1078,11 @@ void DVPSPrintSCP::saveDimseLog()
   DVPSHelper::putStringValue(dset, DCM_InstanceCreationTime, aString.c_str());
 
   OFCondition cond = DVPSHelper::saveFileFormat(logPath.c_str(), &fformat, OFTrue);
-  if (verboseMode)
+  if (cond == EC_Normal)
   {
-    if (cond == EC_Normal)
-    {
-      logstream->lockCerr() << "DIMSE communication log stored in in DICOM file '" << logPath.c_str() << "'." << OFendl;
-      logstream->unlockCerr();
-    } else {
-      logstream->lockCerr() << "warning: unable to store DIMSE communication log in file '" << logPath.c_str() << "'." << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("DIMSE communication log stored in in DICOM file '" << logPath << "'.");
+  } else {
+    DCMPSTAT_INFO("unable to store DIMSE communication log in file '" << logPath << "'.");
   }
 
   logPath.clear();
@@ -1248,23 +1090,20 @@ void DVPSPrintSCP::saveDimseLog()
 
 void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool outgoing)
 {
-    if (! dumpMode) return;
-
-    STD_NAMESPACE ostream& outstream = logstream->lockCerr();
-    if (outgoing)
-    {
-      outstream << OFendl << "===================== OUTGOING DIMSE MESSAGE ====================" << OFendl;
+    OFString str;
+    if (outgoing) {
+        DIMSE_dumpMessage(str, msg, DIMSE_OUTGOING, dataset);
     } else {
-      outstream << OFendl << "===================== INCOMING DIMSE MESSAGE ====================" << OFendl;
+        DIMSE_dumpMessage(str, msg, DIMSE_INCOMING, dataset);
     }
-    DIMSE_printMessage(outstream, msg, dataset);
-    outstream << "======================= END DIMSE MESSAGE =======================" << OFendl << OFendl << STD_NAMESPACE flush;
-    logstream->unlockCerr();
-    return;
+    DCMPSTAT_DUMP(str);
 }
 
 /*
  *  $Log: dvpsprt.cc,v $
+ *  Revision 1.21  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.20  2006-08-15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSDisplayedArea
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:03:39 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -227,13 +227,6 @@ public:
     Sint32 brhcX, Sint32 brhcY,
     double magnification=1.0);
 
-  /** sets a new log stream
-   *  @param stream new log stream, NULL for default logstream
-   *  @param verbMode verbose mode flag
-   *  @param dbgMode debug mode flag
-   */
-  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
-
   /** adjusts the displayed area coordinates for the rotation and flipping
    *  status of the image.
    *  @param rotationFrom previous rotation
@@ -281,24 +274,15 @@ private:
   /// VR=FL, VM=1, Type 1c (required if presentationSizeMode is "MAGNIFY")
   DcmFloatingPointSingle   presentationPixelMagnificationRatio;
 
-  /** output stream for error messages, never NULL
-   */
-  OFConsole *logstream;
-
-  /** flag indicating whether we're operating in verbose mode
-   */
-  OFBool verboseMode;
-   
-  /** flag indicating whether we're operating in debug mode
-   */
-  OFBool debugMode;
-
 };
 
 #endif
 
 /*
  *  $Log: dvpsda.h,v $
+ *  Revision 1.8  2009-11-24 14:12:57  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.7  2005-12-08 16:03:39  meichel
  *  Changed include path schema for all DCMTK header files
  *

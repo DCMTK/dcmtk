@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage_PList
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:39 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2009-11-24 14:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,22 +38,16 @@
 #include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage */
 #include "dcmtk/dcmpstat/dvpsrsl.h"     /* DVPSReferencedSeries_PList */
 #include "dcmtk/dcmpstat/dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsdef.h"
 
 
 DVPSReferencedImage_PList::DVPSReferencedImage_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
-
 {
 }
 
 DVPSReferencedImage_PList::DVPSReferencedImage_PList(const DVPSReferencedImage_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSReferencedImage *) first = arg.list_.begin();
   OFListConstIterator(DVPSReferencedImage *) last = arg.list_.end();
@@ -100,7 +94,6 @@ OFCondition DVPSReferencedImage_PList::read(DcmItem &dset)
         newImage = new DVPSReferencedImage();
         if (newImage && ditem)
         {
-          newImage->setLog(logstream, verboseMode, debugMode);
           result = newImage->read(*ditem);
           list_.push_back(newImage);
         } else result = EC_MemoryExhausted;
@@ -144,11 +137,7 @@ OFBool DVPSReferencedImage_PList::isValid(OFString& sopclassuid)
 {
   if (size() == 0)
   {
-    if (verboseMode)
-    {
-      logstream->lockCerr() << "Error: referenced image SQ contains empty item in presentation state" << OFendl;
-      logstream->unlockCerr();
-    }
+    DCMPSTAT_INFO("referenced image SQ contains empty item in presentation state");
     return OFFalse;
   }
   OFBool result = OFTrue;
@@ -355,22 +344,11 @@ OFBool DVPSReferencedImage_PList::matchesApplicability(const char *instanceUID, 
 }
 
 
-void DVPSReferencedImage_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSReferencedImage *) first = list_.begin();
-  OFListIterator(DVPSReferencedImage *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }
-}
-
 /*
  *  $Log: dvpsril.cc,v $
+ *  Revision 1.22  2009-11-24 14:12:59  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.21  2009-09-30 10:42:39  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h

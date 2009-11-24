@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:38 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2009-11-24 14:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -886,13 +886,6 @@ class DVPSStoredPrint
    */
   void updatePresentationLUTList(DVPSPresentationLUT_PList& globalPresentationLUTList);
 
-  /** sets a new log stream
-   *  @param stream new log stream, NULL for default logstream
-   *  @param verbMode verbose mode flag
-   *  @param dbgMode debug mode flag
-   */
-  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
-
   /** checks whether the given Presentation LUT type could be used together
    *  with all image boxes in this film box on a Print SCP that requires a matching
    *  alignment between a Presentation LUT and the image pixel data.
@@ -1130,24 +1123,15 @@ class DVPSStoredPrint
   /// temporary buffer for getMaxDensity and getMinDensity
   OFString tempDensity;
 
-  /** output stream for error messages, never NULL
-   */
-  OFConsole *logstream;
-
-  /** flag indicating whether we're operating in verbose mode
-   */
-  OFBool verboseMode;
-
-  /** flag indicating whether we're operating in debug mode
-   */
-  OFBool debugMode;
-
 };
 
 #endif
 
 /*
  *  $Log: dvpssp.h,v $
+ *  Revision 1.40  2009-11-24 14:12:57  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.39  2009-09-30 10:42:38  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h

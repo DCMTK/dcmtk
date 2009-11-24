@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSCurve_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:22 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:58 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,17 +38,11 @@
 
 DVPSCurve_PList::DVPSCurve_PList()
 : list_()
-, logstream(&ofConsole)
-, verboseMode(OFFalse)
-, debugMode(OFFalse)
 {
 }
 
 DVPSCurve_PList::DVPSCurve_PList(const DVPSCurve_PList &arg)
 : list_()
-, logstream(arg.logstream)
-, verboseMode(arg.verboseMode)
-, debugMode(arg.debugMode)
 {
   OFListConstIterator(DVPSCurve *) first = arg.list_.begin();
   OFListConstIterator(DVPSCurve *) last = arg.list_.end();
@@ -85,7 +79,6 @@ OFCondition DVPSCurve_PList::read(DcmItem &dset)
     newCurve = new DVPSCurve();
     if (newCurve)
     {
-      newCurve->setLog(logstream, verboseMode, debugMode);
       result = newCurve->read(dset,i);
       if (result==EC_Normal) list_.push_back(newCurve); else delete newCurve;
     } else return EC_MemoryExhausted;
@@ -126,22 +119,11 @@ DVPSCurve *DVPSCurve_PList::getCurve(size_t idx)
   return NULL;
 }
 
-void DVPSCurve_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
-{
-  if (stream) logstream = stream; else logstream = &ofConsole;
-  verboseMode = verbMode;
-  debugMode = dbgMode;
-  OFListIterator(DVPSCurve *) first = list_.begin();
-  OFListIterator(DVPSCurve *) last = list_.end();
-  while (first != last)
-  {
-    (*first)->setLog(logstream, verbMode, dbgMode);
-    ++first;
-  }
-}
-
 /*
  *  $Log: dvpscul.cc,v $
+ *  Revision 1.11  2009-11-24 14:12:58  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.10  2005-12-08 15:46:22  meichel
  *  Changed include path schema for all DCMTK header files
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSPrintSCP
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:38 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2009-11-24 14:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,15 +64,6 @@ class DVPSPrintSCP
 
   /// destructor
   virtual ~DVPSPrintSCP();
-
-  /** sets a new log stream and mode. This method should be called prior to
-   *  association negotiation with negotiateAssociation().
-   *  @param stream new log stream, NULL for default logstream
-   *  @param verbMode verbose mode flag
-   *  @param dbgMode debug mode flag
-   *  @param dmpMode DIMSE dump mode flag
-   */
-  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode, OFBool dmpMode);
 
   /** activates or deactivates dumping of the DIMSE communication
    *  in DICOM file format. This method should be called prior to
@@ -328,28 +319,15 @@ private:
   /// full path of the file into which the DIMSE log is written
   OFString logPath;
 
-  /** output stream for error messages, never NULL
-   */
-  OFConsole *logstream;
-
-  /** flag indicating whether we're operating in verbose mode
-   */
-  OFBool verboseMode;
-
-  /** flag indicating whether we're operating in debug mode
-   */
-  OFBool debugMode;
-
-  /** flag indicating whether we're operating in DIMSE dump mode
-   */
-  OFBool dumpMode;
-
 };
 
 #endif
 
 /*
  *  $Log: dvpsprt.h,v $
+ *  Revision 1.11  2009-11-24 14:12:57  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.10  2009-09-30 10:42:38  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h

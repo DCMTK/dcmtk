@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2008, OFFIS
+ *  Copyright (C) 1999-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:37 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2009-11-24 14:12:56 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,6 @@ END_EXTERN_C
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"    /* for LOCK_IMAGE_FILES */
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"    /* for DcmQueryRetrieveDatabaseStatus */
 #include "dcmtk/dcmpstat/dvpsmsg.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlstrans.h"
@@ -76,6 +75,8 @@ END_EXTERN_C
 
 #define OFFIS_CONSOLE_APPLICATION "dcmpssnd"
 
+static OFLogger dcmpssndLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
@@ -86,10 +87,9 @@ DVPSIPCClient *messageClient  = NULL; // global pointer to IPC message client, i
  *  @param sopClass SOP Class UID of the image (used for the C-Store-RQ)
  *  @param sopInstance SOP Instance UID of the image (used for the C-Store-RQ)
  *  @param imgFile path to the image file to be transmitted
- *  @param opt_verbose flag indicating whether "verbose mode" is active.
  *  @return EC_Normal if successful, a different DIMSE code otherwise.
  */
-static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, const char *sopInstance, const char *imgFile, int opt_verbose)
+static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, const char *sopInstance, const char *imgFile)
 {
     DcmDataset *statusDetail = NULL;
     T_ASC_PresentationContextID presId=0;
@@ -110,7 +110,7 @@ static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, con
 #endif
     if (lockfd < 0)
     {
-      if (opt_verbose) CERR << "error: unable to lock image file '" << imgFile << "'" << OFendl;
+      OFLOG_INFO(dcmpssndLogger, "unable to lock image file '" << imgFile << "'");
       return DIMSE_BADDATA;
     }
     dcmtk_flock(lockfd, LOCK_SH);
@@ -120,7 +120,7 @@ static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, con
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0)
     {
-      if (opt_verbose) CERR << "error: no presentation context for: (" << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass << OFendl;
+      OFLOG_INFO(dcmpssndLogger, "no presentation context for: (" << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass);
       if (messageClient)
       {
         OFString buf("unable to send image: no presentation context for ");
@@ -151,15 +151,12 @@ static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, con
 
     if (cond.good())
     {
-       if (opt_verbose) CERR << "[MsgID " << req.MessageID << "] Complete [Status: "
-          << DU_cstoreStatusString(rsp.DimseStatus) << "]" << OFendl;
+        OFLOG_INFO(dcmpssndLogger, "[MsgID " << req.MessageID << "] Complete [Status: "
+           << DU_cstoreStatusString(rsp.DimseStatus) << "]");
     } else {
-       if (opt_verbose)
-       {
-          CERR << "[MsgID " << req.MessageID << "] Failed [Status: "
-          << DU_cstoreStatusString(rsp.DimseStatus) << "]" << OFendl;
-          DimseCondition::dump(cond);
-       }
+        OFString temp_str;
+        OFLOG_INFO(dcmpssndLogger, "[MsgID " << req.MessageID << "] Failed [Status: "
+           << DU_cstoreStatusString(rsp.DimseStatus) << "]\n" << DimseCondition::dump(temp_str, cond));
     }
     if (statusDetail) delete statusDetail;
 
@@ -205,7 +202,6 @@ static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, con
  *    If NULL, a complete study is transmitted.
  *  @param instanceUID SOP Instance UID of the image to be transmitted.
  *    If NULL, a complete series is transmitted.
- *  @param opt_verbose flag indicating whether "verbose mode" is active.
  *  @return EC_Normal if successful, a different DIMSE code otherwise.
  */
 
@@ -214,8 +210,7 @@ static OFCondition sendStudy(
   T_ASC_Association *assoc,
   const char *studyUID,
   const char *seriesUID,
-  const char *instanceUID,
-  int opt_verbose)
+  const char *instanceUID)
 {
     if ((assoc==NULL)||(studyUID==NULL)) return DIMSE_NULLKEY;
 
@@ -231,13 +226,11 @@ static OFCondition sendStudy(
       if (cond.bad()) return cond;
       cond = DVPSHelper::putStringValue(&query, DCM_SOPInstanceUID, instanceUID);
       if (cond.bad()) return cond;
-      if (opt_verbose)
-      {
-        CERR << "Sending at IMAGE level:" << OFendl
-             << "  Study Instance UID : " << studyUID << OFendl
-             << "  Series Instance UID: " << seriesUID << OFendl
-             << "  SOP Instance UID   : " << instanceUID << OFendl << OFendl;
-      }
+
+      OFLOG_INFO(dcmpssndLogger, "Sending at IMAGE level:" << OFendl
+                              << "  Study Instance UID : " << studyUID << OFendl
+                              << "  Series Instance UID: " << seriesUID << OFendl
+                              << "  SOP Instance UID   : " << instanceUID);
     }
     else if (seriesUID)
     {
@@ -245,22 +238,18 @@ static OFCondition sendStudy(
       if (cond.bad()) return cond;
       cond = DVPSHelper::putStringValue(&query, DCM_SeriesInstanceUID, seriesUID);
       if (cond.bad()) return cond;
-      if (opt_verbose)
-      {
-        CERR << "Sending at SERIES level:" << OFendl
-             << "  Study Instance UID : " << studyUID << OFendl
-             << "  Series Instance UID: " << seriesUID << OFendl << OFendl;
-      }
+
+      OFLOG_INFO(dcmpssndLogger, "Sending at SERIES level:" << OFendl
+                              << "  Study Instance UID : " << studyUID << OFendl
+                              << "  Series Instance UID: " << seriesUID);
     }
     else
     {
       cond = DVPSHelper::putStringValue(&query, DCM_QueryRetrieveLevel, "STUDY");
       if (cond.bad()) return cond;
-      if (opt_verbose)
-      {
-        CERR << "Sending at STUDY level:" << OFendl
-             << "  Study Instance UID : " << studyUID << OFendl << OFendl;
-      }
+
+      OFLOG_INFO(dcmpssndLogger, "Sending at STUDY level:" << OFendl
+                              << "  Study Instance UID : " << studyUID);
     }
 
     DcmQueryRetrieveDatabaseStatus dbStatus(STATUS_Pending);
@@ -279,7 +268,7 @@ static OFCondition sendStudy(
 
       if (dbStatus.status() == STATUS_Pending)
       {
-        cond = sendImage(assoc, sopClass, sopInstance, imgFile, opt_verbose);
+        cond = sendImage(assoc, sopClass, sopInstance, imgFile);
         if (cond.bad())
         {
           handle.cancelMoveRequest(&dbStatus);
@@ -345,7 +334,7 @@ static OFCondition addAllStoragePresentationContexts(T_ASC_Parameters *params, i
 
 int main(int argc, char *argv[])
 {
-
+    OFString temp_str;
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
@@ -358,15 +347,11 @@ int main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-    int         opt_debugMode   = 0;                   /* default: no debug */
-    int         opt_verbose     = 0;                   /* default: not verbose */
     const char *opt_cfgName     = NULL;                /* config file name */
     const char *opt_target      = NULL;                /* send target name */
     const char *opt_studyUID    = NULL;                /* study instance UID */
     const char *opt_seriesUID   = NULL;                /* series instance UID */
     const char *opt_instanceUID = NULL;                /* instance instance UID */
-
-    SetDebugLevel(( 0 ));
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Network send for presentation state viewer", rcsid);
     OFCommandLine cmd;
@@ -382,18 +367,12 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",      "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--arguments",       "print expanded command line arguments");
-     cmd.addOption("--verbose",   "-v", "verbose mode, print processing details");
-     cmd.addOption("--debug",     "-d", "debug mode, print debug information");
+     OFLog::addOptions(cmd);
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -423,34 +402,29 @@ int main(int argc, char *argv[])
       if (cmd.getParamCount() >= 4) cmd.getParam(4, opt_seriesUID);
       if (cmd.getParamCount() >= 5) cmd.getParam(5, opt_instanceUID);
 
-      if (cmd.findOption("--verbose")) opt_verbose = 1;
-      if (cmd.findOption("--debug")) opt_debugMode = 3;
+      OFLog::configureFromCommandLine(cmd, app);
     }
 
-    if (opt_verbose || opt_debugMode)
-    {
-      app.printIdentifier();
-    }
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmpssndLogger, rcsid << OFendl);
 
     if (opt_cfgName)
     {
       FILE *cfgfile = fopen(opt_cfgName, "rb");
       if (cfgfile) fclose(cfgfile); else
       {
-        CERR << "error: can't open configuration file '" << opt_cfgName << "'" << OFendl;
+        OFLOG_FATAL(dcmpssndLogger, "can't open configuration file '" << opt_cfgName << "'");
         return 10;
       }
     } else {
-        CERR << "error: missing configuration file name" << OFendl;
+        OFLOG_FATAL(dcmpssndLogger, "missing configuration file name");
         return 10;
     }
-
-    SetDebugLevel((opt_debugMode));
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+        OFLOG_WARN(dcmpssndLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     DVConfiguration dvi(opt_cfgName);
@@ -548,11 +522,11 @@ int main(int argc, char *argv[])
         dvi.getTargetCipherSuite(opt_target, ui, currentSuite);
         if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
         {
-          CERR << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << OFendl;
+          OFLOG_FATAL(dcmpssndLogger, "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:");
           unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
           for (unsigned long cs=0; cs < numSuites; cs++)
           {
-            CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
+            OFLOG_FATAL(dcmpssndLogger, "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
           }
           return 1;
         } else {
@@ -564,34 +538,34 @@ int main(int argc, char *argv[])
 #else
     if (useTLS)
     {
-        CERR << "error: not compiled with OpenSSL, cannot use TLS." << OFendl;
+        OFLOG_FATAL(dcmpssndLogger, "not compiled with OpenSSL, cannot use TLS.");
         return 10;
     }
 #endif
 
     if (targetHostname==NULL)
     {
-        CERR << "error: no hostname for send target '" << opt_target << "'" << OFendl;
+        OFLOG_FATAL(dcmpssndLogger, "no hostname for send target '" << opt_target << "'");
         return 10;
     }
 
     if (targetAETitle==NULL)
     {
-        CERR << "error: no aetitle for send target '" << opt_target << "'" << OFendl;
+        OFLOG_FATAL(dcmpssndLogger, "no aetitle for send target '" << opt_target << "'");
         return 10;
     }
 
     if (targetPort==0)
     {
-        CERR << "error: no or invalid port number for send target '" << opt_target << "'" << OFendl;
+        OFLOG_FATAL(dcmpssndLogger, "no or invalid port number for send target '" << opt_target << "'");
         return 10;
     }
 
     if (targetMaxPDU==0) targetMaxPDU = DEFAULT_MAXPDU;
     else if (targetMaxPDU > ASC_MAXIMUMPDUSIZE)
     {
-        CERR << "warning: max PDU size " << targetMaxPDU << " too big for send target '"
-             << opt_target << "', using default: " << DEFAULT_MAXPDU << OFendl;
+        OFLOG_WARN(dcmpssndLogger, "max PDU size " << targetMaxPDU << " too big for send target '"
+             << opt_target << "', using default: " << DEFAULT_MAXPDU);
         targetMaxPDU = DEFAULT_MAXPDU;
     }
 
@@ -651,21 +625,18 @@ int main(int argc, char *argv[])
 
     verboseParameters << OFStringStream_ends;
     OFSTRINGSTREAM_GETOFSTRING(verboseParameters, verboseParametersString)
-    if (opt_verbose) CERR << verboseParametersString << OFendl;
+    OFLOG_INFO(dcmpssndLogger, verboseParametersString);
 
     /* open database */
     const char *dbfolder = dvi.getDatabaseFolder();
 
-    if (opt_verbose)
-    {
-      CERR << "Opening database in directory '" << dbfolder << "'" << OFendl;
-    }
+    OFLOG_INFO(dcmpssndLogger, "Opening database in directory '" << dbfolder << "'");
 
     OFCondition result;
     DcmQueryRetrieveIndexDatabaseHandle dbhandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, result);
     if (result.bad())
     {
-      CERR << "Unable to access database '" << dbfolder << "'" << OFendl;
+      OFLOG_FATAL(dcmpssndLogger, "Unable to access database '" << dbfolder << "'");
       return 1;
     }
 
@@ -677,16 +648,17 @@ int main(int argc, char *argv[])
       tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, tlsRandomSeedFile.c_str());
       if (tLayer == NULL)
       {
-        app.printError("unable to create TLS transport layer");
+        OFLOG_FATAL(dcmpssndLogger, "unable to create TLS transport layer");
+        return 1;
       }
 
       if (tlsCACertificateFolder && (TCS_ok != tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat)))
       {
-        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << OFendl;
+        OFLOG_WARN(dcmpssndLogger, "unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring");
       }
       if ((tlsDHParametersFile.size() > 0) && ! (tLayer->setTempDHParameters(tlsDHParametersFile.c_str())))
       {
-        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << OFendl;
+        OFLOG_WARN(dcmpssndLogger, "unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring");
       }
       tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
 
@@ -694,23 +666,23 @@ int main(int argc, char *argv[])
       {
         if (TCS_ok != tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat))
         {
-          CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << OFendl;
+          OFLOG_FATAL(dcmpssndLogger, "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'");
           return 1;
         }
         if (TCS_ok != tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat))
         {
-          CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << OFendl;
+          OFLOG_FATAL(dcmpssndLogger, "unable to load certificate from '" << tlsCertificateFile << "'");
           return 1;
         }
         if (! tLayer->checkPrivateKeyMatchesCertificate())
         {
-          CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << OFendl;
+          OFLOG_FATAL(dcmpssndLogger, "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match");
           return 1;
         }
       }
       if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
       {
-        CERR << "unable to set selected cipher suites" << OFendl;
+        OFLOG_FATAL(dcmpssndLogger, "unable to set selected cipher suites");
         return 1;
       }
 
@@ -735,7 +707,7 @@ int main(int argc, char *argv[])
     OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net);
     if (cond.bad())
     {
-      DimseCondition::dump(cond);
+      OFLOG_FATAL(dcmpssndLogger, DimseCondition::dump(temp_str, cond));
       return 1;
     }
 
@@ -745,7 +717,7 @@ int main(int argc, char *argv[])
       cond = ASC_setTransportLayer(net, tLayer, 0);
       if (cond.bad())
       {
-        DimseCondition::dump(cond);
+        OFLOG_FATAL(dcmpssndLogger, DimseCondition::dump(temp_str, cond));
         return 1;
       }
     }
@@ -754,14 +726,14 @@ int main(int argc, char *argv[])
     cond = ASC_createAssociationParameters(&params, targetMaxPDU);
     if (cond.bad())
     {
-      DimseCondition::dump(cond);
+      OFLOG_FATAL(dcmpssndLogger, DimseCondition::dump(temp_str, cond));
       return 1;
     }
 
     cond = ASC_setTransportLayerType(params, useTLS);
     if (cond.bad())
     {
-      DimseCondition::dump(cond);
+      OFLOG_FATAL(dcmpssndLogger, DimseCondition::dump(temp_str, cond));
       return 1;
     }
 
@@ -774,7 +746,7 @@ int main(int argc, char *argv[])
     cond = addAllStoragePresentationContexts(params, targetImplicitOnly);
     if (cond.bad())
     {
-      DimseCondition::dump(cond);
+      OFLOG_FATAL(dcmpssndLogger, DimseCondition::dump(temp_str, cond));
       return 1;
     }
 
@@ -783,12 +755,12 @@ int main(int argc, char *argv[])
       messageClient = new DVPSIPCClient(DVPSIPCMessage::clientStoreSCU, verboseParametersString.c_str(), messagePort, keepMessagePortOpen);
       if (! messageClient->isServerActive())
       {
-        CERR << "Warning: no IPC message server found at port " << messagePort << ", disabling IPC." << OFendl;
+        OFLOG_WARN(dcmpssndLogger, "no IPC message server found at port " << messagePort << ", disabling IPC.");
       }
     }
 
     /* create association */
-    if (opt_verbose) CERR << "Requesting Association" << OFendl;
+    OFLOG_INFO(dcmpssndLogger, "Requesting Association");
 
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond.bad())
@@ -796,21 +768,20 @@ int main(int argc, char *argv[])
         if (cond == DUL_ASSOCIATIONREJECTED)
         {
             T_ASC_RejectParameters rej;
+            OFString temp_str;
 
             ASC_getRejectParameters(params, &rej);
-            CERR << "Association Rejected" << OFendl;
-            ASC_printRejectParameters(stderr, &rej);
+            OFLOG_ERROR(dcmpssndLogger, "Association Rejected" << OFendl << ASC_printRejectParameters(temp_str, &rej));
             if (messageClient)
             {
               // notify about rejected association
               OFOStringStream out;
               out << "DIMSE Association Rejected:" << OFendl
-                  << "\t";
-              ASC_printRejectParameters(out, &rej);
+                  << "\t" << ASC_printRejectParameters(temp_str, &rej) << OFendl;
               out << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << OFendl
                   << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
                   << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << OFendl;
-              ASC_dumpConnectionParameters(assoc, out);
+              out << ASC_dumpConnectionParameters(temp_str, assoc) << OFendl;
               out << OFStringStream_ends;
               OFSTRINGSTREAM_GETSTR(out, theString)
               if (useTLS)
@@ -822,18 +793,17 @@ int main(int argc, char *argv[])
             }
             return 1;
         } else {
-            CERR << "Association Request Failed" << OFendl;
-            DimseCondition::dump(cond);
+          OFLOG_ERROR(dcmpssndLogger, "Association Request Failed " << DimseCondition::dump(temp_str, cond));
             if (messageClient)
             {
               // notify about rejected association
               OFOStringStream out;
-              out << "DIMSE Association Request Failed:" << OFendl;
-              out << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << OFendl
+              out << "DIMSE Association Request Failed:" << OFendl
+                  << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << OFendl
                   << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
-                  << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << OFendl;
-              ASC_dumpConnectionParameters(assoc, out);
-              out << cond.text() << OFendl << OFStringStream_ends;
+                  << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << OFendl
+                  << ASC_dumpConnectionParameters(temp_str, assoc) << OFendl
+                  << cond.text() << OFendl << OFStringStream_ends;
               OFSTRINGSTREAM_GETSTR(out, theString)
               if (useTLS)
                 messageClient->notifyRequestedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
@@ -848,12 +818,11 @@ int main(int argc, char *argv[])
 
     if (ASC_countAcceptedPresentationContexts(params) == 0)
     {
-      CERR << "No Acceptable Presentation Contexts" << OFendl;
+      OFLOG_ERROR(dcmpssndLogger, "No Acceptable Presentation Contexts");
       cond = ASC_abortAssociation(assoc);
       if (cond.bad())
       {
-        CERR << "Association Abort Failed" << OFendl;
-        DimseCondition::dump(cond);
+        OFLOG_ERROR(dcmpssndLogger, "Association Abort Failed\n" << DimseCondition::dump(temp_str, cond));
       }
       if (messageClient)
       {
@@ -862,9 +831,9 @@ int main(int argc, char *argv[])
         out << "DIMSE association accepted, but no acceptable presentation contexts - aborting." << OFendl
             << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << OFendl
             << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
-            << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << OFendl;
-        ASC_dumpConnectionParameters(assoc, out);
-        out << OFStringStream_ends;
+            << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << OFendl
+            << ASC_dumpConnectionParameters(temp_str, assoc) << OFendl
+            << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(out, theString)
         if (useTLS)
           messageClient->notifyRequestedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
@@ -876,7 +845,7 @@ int main(int argc, char *argv[])
       return 1;
     }
 
-    if (opt_verbose) CERR << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << OFendl;
+    OFLOG_INFO(dcmpssndLogger, "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")");
 
     if (messageClient)
     {
@@ -888,7 +857,7 @@ int main(int argc, char *argv[])
           << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << OFendl
           << "\tmax send PDV: " << assoc->sendPDVLength << OFendl
           << "\tpresentation contexts: " << ASC_countAcceptedPresentationContexts(assoc->params) << OFendl;
-      ASC_dumpConnectionParameters(assoc, out);
+      out << ASC_dumpConnectionParameters(temp_str, assoc) << OFendl;
       out << OFStringStream_ends;
       OFSTRINGSTREAM_GETSTR(out, theString)
       if (useTLS)
@@ -899,18 +868,17 @@ int main(int argc, char *argv[])
 
 
     /* do the real work */
-    cond = sendStudy(dbhandle, assoc, opt_studyUID, opt_seriesUID, opt_instanceUID, opt_verbose);
+    cond = sendStudy(dbhandle, assoc, opt_studyUID, opt_seriesUID, opt_instanceUID);
 
     /* tear down association */
     if (cond.good())
     {
         /* release association */
-        if (opt_verbose) CERR << "Releasing Association" << OFendl;
+        OFLOG_INFO(dcmpssndLogger, "Releasing Association");
         cond = ASC_releaseAssociation(assoc);
         if (cond.bad())
         {
-          CERR << "Association Release Failed" << OFendl;
-          DimseCondition::dump(cond);
+          OFLOG_ERROR(dcmpssndLogger, "Association Release Failed\n" << DimseCondition::dump(temp_str, cond));
           if (messageClient)
           {
             messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
@@ -922,13 +890,12 @@ int main(int argc, char *argv[])
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-        CERR << "Protocol Error: peer requested release (Aborting)" << OFendl;
-        if (opt_verbose) CERR << "Aborting Association" << OFendl;
+        OFLOG_ERROR(dcmpssndLogger, "Protocol Error: peer requested release (Aborting)");
+        OFLOG_INFO(dcmpssndLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad())
         {
-            CERR << "Association Abort Failed" << OFendl;
-            DimseCondition::dump(cond);
+            OFLOG_ERROR(dcmpssndLogger, "Association Abort Failed" << DimseCondition::dump(temp_str, cond));
             if (messageClient)
             {
               messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
@@ -940,19 +907,17 @@ int main(int argc, char *argv[])
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-        if (opt_verbose) CERR << "Peer Aborted Association" << OFendl;
+        OFLOG_INFO(dcmpssndLogger, "Peer Aborted Association");
         if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Peer aborted association.");
     }
     else
     {
-        CERR << "SCU Failed" << OFendl;
-        DimseCondition::dump(cond);
-        if (opt_verbose) CERR << "Aborting Association" << OFendl;
+        OFLOG_ERROR(dcmpssndLogger, "SCU Failed" << DimseCondition::dump(temp_str, cond));
+        OFLOG_INFO(dcmpssndLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad())
         {
-            CERR << "Association Abort Failed" << OFendl;
-            DimseCondition::dump(cond);
+            OFLOG_ERROR(dcmpssndLogger, "Association Abort Failed" << DimseCondition::dump(temp_str, cond));
             if (messageClient)
             {
               messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
@@ -966,7 +931,7 @@ int main(int argc, char *argv[])
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad())
     {
-      DimseCondition::dump(cond);
+      OFLOG_ERROR(dcmpssndLogger, DimseCondition::dump(temp_str, cond));
       if (messageClient)
       {
         messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
@@ -977,7 +942,7 @@ int main(int argc, char *argv[])
     cond = ASC_dropNetwork(&net);
     if (cond.bad())
     {
-      DimseCondition::dump(cond);
+      OFLOG_ERROR(dcmpssndLogger, DimseCondition::dump(temp_str, cond));
       if (messageClient)
       {
         messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
@@ -1005,10 +970,10 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
         {
-          CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << OFendl;
+          OFLOG_WARN(dcmpssndLogger, "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring.");
         }
       } else {
-        CERR << "Warning: cannot write back random seed, ignoring." << OFendl;
+        OFLOG_WARN(dcmpssndLogger, "cannot write back random seed, ignoring.");
       }
     }
     delete tLayer;
@@ -1025,6 +990,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
+ * Revision 1.43  2009-11-24 14:12:56  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.42  2009-09-30 10:42:37  uli
  * Make dcmpstat's include headers self-sufficient by including all
  * needed headers directly and stop using dctk.h

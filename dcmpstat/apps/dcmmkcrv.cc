@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2008, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 16:30:24 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 14:12:56 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,12 +38,11 @@
 #endif
 
 #include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -51,12 +50,12 @@
 
 #define OFFIS_CONSOLE_APPLICATION "dcmmkcrv"
 
+static OFLogger dcmmkcrvLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define MAX_POINTS 65535
-
-OFBool opt_verbose = OFFalse;
 
 // ********************************************
 
@@ -65,7 +64,6 @@ OFBool opt_verbose = OFFalse;
 
 int main(int argc, char *argv[])
 {
-    int opt_debugMode = 0;
     const char *opt_inName = NULL;                     /* in file name */
     const char *opt_outName = NULL;                    /* out file name */
     const char *opt_curveName = NULL;                  /* curve file name */
@@ -77,8 +75,6 @@ int main(int argc, char *argv[])
     const char *opt_axis_x = NULL;
     const char *opt_axis_y = NULL;
     OFCmdUnsignedInt opt_curve_vr = 0;
-
-    SetDebugLevel(( 0 ));
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Add 2D curve data to image", rcsid);
     OFCommandLine cmd;
@@ -92,9 +88,8 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",           "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",                 "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--arguments",               "print expanded command line arguments");
-     cmd.addOption("--verbose",        "-v",    "verbose mode, print processing details");
-     cmd.addOption("--debug",          "-d",    "debug mode, print debug information");
+     OFLog::addOptions(cmd);
+
     cmd.addGroup("curve creation options:");
       cmd.addSubGroup("curve type:");
         cmd.addOption("--poly",        "-r",    "create as POLY curve (default)");
@@ -121,10 +116,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -146,8 +137,8 @@ int main(int argc, char *argv[])
       cmd.getParam(2, opt_curveName);
       cmd.getParam(3, opt_outName);
 
-      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
-      if (cmd.findOption("--debug")) opt_debugMode = 3;
+      OFLog::configureFromCommandLine(cmd, app);
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--roi")) opt_poly = OFFalse;
       if (cmd.findOption("--poly")) opt_poly = OFTrue;
@@ -166,31 +157,28 @@ int main(int argc, char *argv[])
       }
     }
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmmkcrvLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-	CERR << "Warning: no data dictionary loaded, "
-	     << "check environment variable: "
-	     << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+        OFLOG_WARN(dcmmkcrvLogger, "no data dictionary loaded, "
+            << "check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     DcmFileFormat *fileformat = new DcmFileFormat;
     if (!fileformat)
     {
-      CERR << "memory exhausted\n";
+      OFLOG_FATAL(dcmmkcrvLogger, "memory exhausted");
       return 1;
     }
 
     OFCondition error = fileformat->loadFile(opt_inName);
     if (! error.good())
     {
-	CERR << "Error: "
-	     << error.text()
-	     << ": reading file: " <<  opt_inName << OFendl;
-	return 1;
+      OFLOG_FATAL(dcmmkcrvLogger, error.text() << ": reading file: " <<  opt_inName);
+      return 1;
     }
 
     DcmDataset *dataset = fileformat->getDataset();
@@ -200,14 +188,14 @@ int main(int argc, char *argv[])
     STD_NAMESPACE ifstream curvefile(opt_curveName);
     if (!curvefile)
     {
-      CERR << "cannot open curve file: " << opt_curveName << OFendl;
+      OFLOG_FATAL(dcmmkcrvLogger, "cannot open curve file: " << opt_curveName);
       return 1;
     }
 
     double *array = new double[MAX_POINTS*2];
     if (array==NULL)
     {
-      CERR << "out of memory" << OFendl;
+      OFLOG_FATAL(dcmmkcrvLogger, "out of memory");
       return 1;
     }
 
@@ -219,7 +207,7 @@ int main(int argc, char *argv[])
       curvefile >> d;
       if (idx == MAX_POINTS*2)
       {
-      	CERR << "warning: too many curve points, can only handle " << MAX_POINTS << "." << OFendl;
+        OFLOG_WARN(dcmmkcrvLogger, "too many curve points, can only handle " << MAX_POINTS << ".");
         done = OFTrue;
       } else {
       	if (curvefile.good()) array[idx++] = d;
@@ -238,7 +226,7 @@ int main(int argc, char *argv[])
     if ((!curveDimensions)||(!numberOfPoints)||(!typeOfData)||(!dataValueRepresentation)
        ||(!curveDescription)||(!axisUnits)||(!curveLabel))
     {
-      CERR << "out of memory" << OFendl;
+      OFLOG_FATAL(dcmmkcrvLogger, "out of memory");
       return 1;
     }
 
@@ -291,47 +279,47 @@ int main(int argc, char *argv[])
     switch (opt_data_vr)
     {
       case 0: // US
-        if (opt_verbose) CERR << "creating curve, VR=US, points=" << idx/2 << OFendl;
+        OFLOG_INFO(dcmmkcrvLogger, "creating curve, VR=US, points=" << idx/2);
         rawData = new Uint16[idx];
-        if (rawData==NULL) { CERR << "out of memory" << OFendl; return 1; }
+        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
         byteLength = sizeof(Uint16)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Uint16 *,rawData)[i] = OFstatic_cast(Uint16,array[i]);
         align = sizeof(Uint16);
         break;
       case 1: // SS
-        if (opt_verbose) CERR << "creating curve, VR=SS, points=" << idx/2 << OFendl;
+        OFLOG_INFO(dcmmkcrvLogger, "creating curve, VR=SS, points=" << idx/2);
         rawData = new Sint16[idx];
-        if (rawData==NULL) { CERR << "out of memory" << OFendl; return 1; }
+        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
         byteLength = sizeof(Sint16)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Sint16 *,rawData)[i] = OFstatic_cast(Sint16,array[i]);
         align = sizeof(Sint16);
         break;
       case 2: // FL
-        if (opt_verbose) CERR << "creating curve, VR=FL, points=" << idx/2 << OFendl;
+        OFLOG_INFO(dcmmkcrvLogger, "creating curve, VR=FL, points=" << idx/2);
         rawData = new Float32[idx];
-        if (rawData==NULL) { CERR << "out of memory" << OFendl; return 1; }
+        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
         byteLength = sizeof(Float32)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Float32 *,rawData)[i] = OFstatic_cast(Float32,array[i]);
         align = sizeof(Float32);
         break;
       case 3: // FD
-        if (opt_verbose) CERR << "creating curve, VR=FD, points=" << idx/2 << OFendl;
+        OFLOG_INFO(dcmmkcrvLogger, "creating curve, VR=FD, points=" << idx/2);
         rawData = new Float64[idx];
-        if (rawData==NULL) { CERR << "out of memory" << OFendl; return 1; }
+        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
         byteLength = sizeof(Float64)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Float64 *,rawData)[i] = OFstatic_cast(Float64,array[i]);
         align = sizeof(Float64);
         break;
       case 4: // SL
-        if (opt_verbose) CERR << "creating curve, VR=SL, points=" << idx/2 << OFendl;
+        OFLOG_INFO(dcmmkcrvLogger, "creating curve, VR=SL, points=" << idx/2);
         rawData = new Sint32[idx];
-        if (rawData==NULL) { CERR << "out of memory" << OFendl; return 1; }
+        if (rawData==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
         byteLength = sizeof(Sint32)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Sint32 *,rawData)[i] = OFstatic_cast(Sint32,array[i]);
         align = sizeof(Sint32);
         break;
       default:
-        CERR << "unknown data VR, bailing out" << OFendl;
+        OFLOG_FATAL(dcmmkcrvLogger, "unknown data VR, bailing out");
         return 1;
     }
 
@@ -342,37 +330,37 @@ int main(int argc, char *argv[])
         switch (opt_data_vr)
         {
           case 0: // US
-            if (opt_verbose) CERR << "encoding curve data element as VR=US" << OFendl;
+            OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=US");
             element = new DcmUnsignedShort(DcmTag(DCM_RETIRED_CurveData, EVR_US));
-            if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
+            if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
             element->putUint16Array(OFstatic_cast(Uint16 *,rawData), byteLength/sizeof(Uint16));
             break;
           case 1: // SS
-            if (opt_verbose) CERR << "encoding curve data element as VR=SS" << OFendl;
+            OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=SS");
             element = new DcmSignedShort(DcmTag(DCM_RETIRED_CurveData, EVR_SS));
-            if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
+            if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
             element->putSint16Array(OFstatic_cast(Sint16 *,rawData), byteLength/sizeof(Sint16));
             break;
           case 2: // FL
-            if (opt_verbose) CERR << "encoding curve data element as VR=FL" << OFendl;
+            OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=FL");
             element = new DcmFloatingPointSingle(DcmTag(DCM_RETIRED_CurveData, EVR_FL));
-            if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
+            if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
             element->putFloat32Array(OFstatic_cast(Float32 *,rawData), byteLength/sizeof(Float32));
             break;
           case 3: // FD
-            if (opt_verbose) CERR << "encoding curve data element as VR=FD" << OFendl;
+            OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=FD");
             element = new DcmFloatingPointDouble(DcmTag(DCM_RETIRED_CurveData, EVR_FD));
-            if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
+            if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
             element->putFloat64Array(OFstatic_cast(Float64 *,rawData), byteLength/sizeof(Float64));
             break;
           case 4: // SL
-            if (opt_verbose) CERR << "encoding curve data element as VR=SL" << OFendl;
+            OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=SL");
             element = new DcmSignedLong(DcmTag(DCM_RETIRED_CurveData, EVR_SL));
-            if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
+            if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
             element->putSint32Array(OFstatic_cast(Sint32 *,rawData), byteLength/sizeof(Sint32));
             break;
           default:
-            CERR << "unknown data VR, bailing out" << OFendl;
+            OFLOG_FATAL(dcmmkcrvLogger, "unknown data VR, bailing out");
             return 1;
         }
         element->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
@@ -380,10 +368,10 @@ int main(int argc, char *argv[])
         break;
       case 1: // OB
         // create little endian byte order
-        if (opt_verbose) CERR << "encoding curve data element as VR=OB" << OFendl;
+        OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=OB");
         swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, byteLength, align);
         element = new DcmOtherByteOtherWord(DCM_RETIRED_CurveData);
-        if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
+        if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
         element->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
         element->setVR(EVR_OB);
         element->putUint8Array(OFstatic_cast(Uint8 *,rawData), byteLength);
@@ -391,21 +379,21 @@ int main(int argc, char *argv[])
         break;
       case 2: // OW
         // create little endian byte order
-        if (opt_verbose) CERR << "encoding curve data element as VR=OW" << OFendl;
+        OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=OW");
         if (align != sizeof(Uint16))
         {
           swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, byteLength, align);
           swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rawData, byteLength, sizeof(Uint16));
         }
         element = new DcmOtherByteOtherWord(DCM_RETIRED_CurveData);
-        if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
+        if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
         element->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
         element->setVR(EVR_OW);
         element->putUint16Array(OFstatic_cast(Uint16 *,rawData), byteLength/sizeof(Uint16));
         dataset->insert(element, OFTrue);
         break;
       default:
-        CERR << "unsupported VR, bailing out" << OFendl;
+        OFLOG_FATAL(dcmmkcrvLogger, "unsupported VR, bailing out");
         return 1;
     }
     /* write back */
@@ -413,10 +401,9 @@ int main(int argc, char *argv[])
     error = fileformat->saveFile(opt_outName, dataset->getOriginalXfer());
     if (error != EC_Normal)
     {
-	CERR << "Error: "
-	     << error.text()
-	     << ": writing file: " <<  opt_outName << OFendl;
-	return 1;
+      OFLOG_FATAL(dcmmkcrvLogger, error.text()
+          << ": writing file: " <<  opt_outName);
+          return 1;
     }
 
     return 0;
@@ -427,6 +414,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
+** Revision 1.24  2009-11-24 14:12:56  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.23  2008-09-25 16:30:24  joergr
 ** Added support for printing the expanded command line arguments.
 ** Always output the resource identifier of the command line tool in debug mode.

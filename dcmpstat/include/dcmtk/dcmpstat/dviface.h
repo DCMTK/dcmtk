@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 10:42:37 $
- *  CVS/RCS Revision: $Revision: 1.93 $
+ *  Update Date:      $Date: 2009-11-24 14:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.94 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,6 @@
 #include "dcmtk/dcmpstat/dvcache.h"    /* for index file caching */
 
 
-class OFLogFile;
 class DicomImage;
 class DiDisplayFunction;
 class DVPSStoredPrint;
@@ -1488,37 +1487,6 @@ class DVInterface: public DVConfiguration
     OFCondition verifyAndSignStructuredReport(const char *userID, const char *passwd, DVPSVerifyAndSignMode mode);
 
 
-    /* log file interface */
-
-    /** sets a new log stream
-     *  @param stream new log stream, NULL for default logstream
-     *  @param verbMode verbose mode flag
-     *  @param dbgMode debug mode flag
-     */
-    virtual void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
-
-    /** sets a filter to specify which messages are actually written to the application
-     *  wide log file.
-     *  There are five different levels (in ascending order): none, informational, warning,
-     *  error, debug. All messages which belong to a 'lower' level are included in the
-     *  higher levels, i.e. the level debug includes all messages.
-     *  @param level status level specifying the filter
-     */
-    void setLogFilter(DVPSLogMessageLevel level);
-
-    /** writes a message into the application wide log file.
-     *  @param level status level of the message (also used to filter the messages),
-     *    DVPSM_none should only be used for setLogFilter() and not to write a log message
-     *    since it has no meaning for this method.
-     *  @param module name of the module which writes the message
-     *  @param message (free) text of the log message ('\n' for newline)
-     *  @return EC_Normal upon success, an error code otherwise.
-     */
-    OFCondition writeLogMessage(
-      DVPSLogMessageLevel level,
-      const char *module,
-      const char *message);
-
     /* digital signatures */
 
     /** returns a string containing a complete HTML page with the
@@ -1873,10 +1841,6 @@ private:
     /** annotation text (if any)
      */
     OFString annotationText;
-
-    /** general application log file
-     */
-    OFLogFile *logFile;
 };
 
 
@@ -1886,6 +1850,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
+ *  Revision 1.94  2009-11-24 14:12:57  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.93  2009-09-30 10:42:37  uli
  *  Make dcmpstat's include headers self-sufficient by including all
  *  needed headers directly and stop using dctk.h
