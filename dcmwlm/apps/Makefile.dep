@@ -115,12 +115,12 @@ wlcefs.o: wlcefs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdebug.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
   ../include/dcmtk/dcmwlm/wlds.h ../include/dcmtk/dcmwlm/wltypdef.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
   ../include/dcmtk/dcmwlm/wldsfs.h ../include/dcmtk/dcmwlm/wlds.h \
   ../include/dcmtk/dcmwlm/wlfsim.h \
@@ -247,6 +247,7 @@ wlmscpfs.o: wlmscpfs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h ../include/dcmtk/dcmwlm/wlds.h \
   ../include/dcmtk/dcmwlm/wltypdef.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
   ../include/dcmtk/dcmwlm/wldsfs.h ../include/dcmtk/dcmwlm/wlds.h \
   ../include/dcmtk/dcmwlm/wlfsim.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \

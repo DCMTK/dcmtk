@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2009-11-02 15:50:25 $
+*  Last Update:      $Author: uli $
+*  Update Date:      $Date: 2009-11-24 10:40:01 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.15 $
+*  CVS/RCS Revision: $Revision: 1.16 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -64,12 +64,6 @@ class WlmFileSystemInteractionManager
     WlmFileSystemInteractionManager &operator=(const WlmFileSystemInteractionManager &obj);
 
   protected:
-    /// indicates if the application is run in verbose mode
-    OFBool verboseMode;
-    /// indicates if the application is run in debug mode
-    OFBool debugMode;
-    /// stream logging information will be dumped to
-    OFConsole *logStream;
     /// path to database files
     OFString dfPath;
     /// indicates if wl-files which are lacking return type 1 attributes or information in such attributes shall be rejected or not
@@ -80,12 +74,6 @@ class WlmFileSystemInteractionManager
     DcmDataset **matchingRecords;
     /// number of array fields
     unsigned long numOfMatchingRecords;
-
-      /** This function dumps the given information on a stream.
-       *  Used for dumping information in normal, debug and verbose mode.
-       *  @param message The message to dump.
-       */
-    void DumpMessage( const char *message );
 
       /** This function determines all worklist files in the directory specified by
        *  dfPath and calledApplicationEntityTitle, and returns the complete path and
@@ -396,21 +384,6 @@ class WlmFileSystemInteractionManager
        */
     ~WlmFileSystemInteractionManager();
 
-      /** Set value in member variable.
-       *  @param value The value to set.
-       */
-    void SetLogStream( OFConsole *value );
-
-      /**  Set value in member variable.
-       *  @param value The value to set.
-       */
-    void SetVerbose( OFBool value );
-
-      /**  Set value in member variable.
-       *  @param value The value to set.
-       */
-    void SetDebug( OFBool value );
-
       /**  Set value in member variable.
        *  @param value The value to set.
        */
@@ -485,6 +458,9 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
+** Revision 1.16  2009-11-24 10:40:01  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.15  2009-11-02 15:50:25  joergr
 ** Changed forward declaration from "class" to "struct" in order to avoid
 ** warning messages reported by VisualStudio 2008.

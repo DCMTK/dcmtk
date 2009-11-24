@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 12:17:30 $
+ *  Update Date:      $Date: 2009-11-24 10:40:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,6 @@
 #include "dcmtk/dcmnet/assoc.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmnet/dimse.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcvrat.h"
 #include "dcmtk/dcmdata/dcvrlo.h"
 #include "dcmtk/dcmwlm/wlds.h"
@@ -63,6 +62,8 @@
 #define SHORTCOL 4
 #define LONGCOL 21
 
+static OFLogger wlcefsLogger = OFLog::getLogger("dcmtk.apps.wlcefs");
+
 // ----------------------------------------------------------------------------
 
 WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], const char *applicationName, WlmDataSource *dataSourcev )
@@ -80,7 +81,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     opt_dfPath( "" ), opt_port( 0 ), opt_refuseAssociation( OFFalse ),
     opt_rejectWithoutImplementationUID( OFFalse ), opt_sleepAfterFind( 0 ), opt_sleepDuringFind( 0 ),
     opt_maxPDU( ASC_DEFAULTMAXPDU ), opt_networkTransferSyntax( EXS_Unknown ),
-    opt_verbose( OFFalse ), opt_debug( OFFalse ), opt_failInvalidQuery( OFTrue ), opt_singleProcess( OFTrue ),
+    opt_failInvalidQuery( OFTrue ), opt_singleProcess( OFTrue ),
     opt_forkedChild( OFFalse ), opt_maxAssociations( 50 ), opt_noSequenceExpansion( OFFalse ),
     opt_enableRejectionOfIncompleteWlFiles( OFTrue ), opt_blockMode(DIMSE_BLOCKING),
     opt_dimse_timeout(0), opt_acse_timeout(30), app( NULL ), cmd( NULL ), command_argc( argc ),
@@ -112,9 +113,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   cmd->addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd->addOption("--help",                  "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd->addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
-    cmd->addOption("--arguments",                        "print expanded command line arguments");
-    cmd->addOption("--verbose",               "-v",      "verbose mode, print processing details");
-    cmd->addOption("--debug",                 "-d",      "debug mode, print debug information");
+    OFLog::addOptions(*cmd);
 
 #if defined(HAVE_FORK) || defined(_WIN32)
   cmd->addGroup("multi-process options:", LONGCOL, SHORTCOL + 2);
@@ -192,10 +191,6 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   prepareCmdLineArgs( argc, argv, applicationName );
   if( app->parseCommandLine( *cmd, argc, argv, OFCommandLine::PF_ExpandWildcards ) )
   {
-    /* check whether to print the command line arguments */
-    if (cmd->findOption("--arguments"))
-      app->printArguments();
-
     /* check exclusive options first */
     if (cmd->hasExclusiveOption())
     {
@@ -220,12 +215,8 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     }
     /* command line parameters and options */
     app->checkParam(cmd->getParamAndCheckMinMax(1, opt_port, 1, 65535));
-    if( cmd->findOption("--verbose") ) opt_verbose = OFTrue;
-    if( cmd->findOption("--debug") )
-    {
-      opt_debug = OFTrue;
-      SetDebugLevel(3);
-    }
+
+    OFLog::configureFromCommandLine(*cmd, *app);
 
 #if defined(HAVE_FORK) || defined(_WIN32)
     cmd->beginOptionBlock();
@@ -312,14 +303,11 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   // dump application information
   if (!opt_forkedChild)
   {
-    DumpMessage( rcsid );
-    DumpMessage( "" );
+    /* print resource identifier */
+    OFLOG_DEBUG(wlcefsLogger, rcsid << OFendl);
   }
 
   // set general parameters in data source object
-  dataSource->SetLogStream( &ofConsole );
-  dataSource->SetVerbose( opt_verbose );
-  dataSource->SetDebug( opt_debug );
   dataSource->SetNoSequenceExpansion( opt_noSequenceExpansion );
   dataSource->SetReturnedCharacterSet( opt_returnedCharacterSet );
 
@@ -359,7 +347,7 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
   if( cond.bad() )
   {
     // in case something unexpected happened, dump a corresponding message
-    DumpMessage( cond.text() );
+    OFLOG_ERROR(wlcefsLogger, cond.text());
 
     // return error
     return( 1 );
@@ -372,15 +360,15 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
       opt_rejectWithoutImplementationUID,
       opt_sleepAfterFind, opt_sleepDuringFind,
       opt_maxPDU, opt_networkTransferSyntax,
-      opt_verbose, opt_debug, opt_failInvalidQuery,
+      opt_failInvalidQuery,
       opt_singleProcess, opt_maxAssociations,
       opt_blockMode, opt_dimse_timeout, opt_acse_timeout,
-      &ofConsole, opt_forkedChild, command_argc, command_argv );
+      opt_forkedChild, command_argc, command_argv );
   cond = activityManager->StartProvidingService();
   if( cond.bad() )
   {
     // in case something unexpected happened, dump a corresponding message
-    DumpMessage( cond.text() );
+    OFLOG_ERROR(wlcefsLogger, cond.text());
 
     // disconnect from data source
     dataSource->DisconnectFromDataSource();
@@ -400,7 +388,7 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
   if( cond.bad() )
   {
     // in case something unexpected happened, dump a corresponding message
-    DumpMessage( cond.text() );
+    OFLOG_ERROR(wlcefsLogger, cond.text());
 
     // return error
     return( 1 );
@@ -412,27 +400,12 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
 
 // ----------------------------------------------------------------------------
 
-void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
-// Date         : August 6, 2002
-// Author       : Thomas Wilkens
-// Task         : This function dumps the given (runtime) information on the out stream.
-//                Used for dumping information in normal, debug and verbose mode.
-// Parameters   : message - [in] The message to dump.
-// Return Value : none.
-{
-  if( message != NULL )
-  {
-    ofConsole.lockCout();
-    ofConsole.getCout() << message << OFendl;
-    ofConsole.unlockCout();
-  }
-}
-
-// ----------------------------------------------------------------------------
-
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
+** Revision 1.26  2009-11-24 10:40:01  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.25  2009-11-18 12:17:30  uli
 ** Fix compiler errors due to removal of DUL_Debug() and DIMSE_Debug().
 **

@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 1996-2006, OFFIS
+*  Copyright (C) 1996-2009, OFFIS
 *
 *  This software and supporting documentation were developed by
 *
@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: onken $
-*  Update Date:      $Date: 2006-12-15 14:49:28 $
+*  Last Update:      $Author: uli $
+*  Update Date:      $Date: 2009-11-24 10:40:01 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.19 $
+*  CVS/RCS Revision: $Revision: 1.20 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -64,6 +64,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcvrda.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
 #include "dcmtk/dcmwlm/wltypdef.h"
+#include "dcmtk/dcmwlm/wlds.h"
 #include "dcmtk/dcmdata/dctk.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -78,7 +79,7 @@ WlmFileSystemInteractionManager::WlmFileSystemInteractionManager()
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : verboseMode( OFFalse ), debugMode( OFFalse ), logStream( NULL ), dfPath( "" ),
+  : dfPath( "" ),
     enableRejectionOfIncompleteWlFiles( OFTrue ), calledApplicationEntityTitle( "" ),
     matchingRecords( NULL ), numOfMatchingRecords( 0 )
 {
@@ -93,42 +94,6 @@ WlmFileSystemInteractionManager::~WlmFileSystemInteractionManager()
 // Parameters   : none.
 // Return Value : none.
 {
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmFileSystemInteractionManager::SetLogStream( OFConsole *value )
-// Date         : July 11, 2002
-// Author       : Thomas Wilkens
-// Task         : Set value in member variable.
-// Parameters   : value - [in] The value to set.
-// Return Value : none.
-{
-  logStream = value;
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmFileSystemInteractionManager::SetVerbose( OFBool value )
-// Date         : July 11, 2002
-// Author       : Thomas Wilkens
-// Task         : Set value in member variable.
-// Parameters   : value - [in] The value to set.
-// Return Value : none.
-{
-  verboseMode = value;
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmFileSystemInteractionManager::SetDebug( OFBool value )
-// Date         : July 11, 2002
-// Author       : Thomas Wilkens
-// Task         : Set value in member variable.
-// Parameters   : value - [in] The value to set.
-// Return Value : none.
-{
-  debugMode = value;
 }
 
 // ----------------------------------------------------------------------------
@@ -155,7 +120,7 @@ OFCondition WlmFileSystemInteractionManager::ConnectToFileSystem( const OFString
   // check parameter
   if( dfPathv.length() == 0 )
   {
-    DumpMessage("Invalid parameters, cannot connect to worklist file system database...");
+    DCMWLM_WARN("Invalid parameters, cannot connect to worklist file system database...");
     return( WLM_EC_CannotConnectToDataSource );
   }
 
@@ -179,24 +144,6 @@ OFCondition WlmFileSystemInteractionManager::DisconnectFromFileSystem()
 // Return Value : Indicates if the connection was disconnected successfully.
 {
   return( EC_Normal );
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmFileSystemInteractionManager::DumpMessage( const char *message )
-// Date         : July 11, 2002
-// Author       : Thomas Wilkens
-// Task         : This function dumps the given information on a stream.
-//                Used for dumping information in normal, debug and verbose mode.
-// Parameters   : message - [in] The message to dump.
-// Return Value : none.
-{
-  if( logStream != NULL && message != NULL )
-  {
-    logStream->lockCout();
-    logStream->getCout() << message << OFendl;
-    logStream->unlockCout();
-  }
 }
 
 // ----------------------------------------------------------------------------
@@ -241,7 +188,6 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
 // Return Value : Number of matching records.
 {
   OFOrderedSet<OFString> worklistFiles;
-  char msg[500];
 
   // initialize member variables
   matchingRecords = NULL;
@@ -257,11 +203,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
     DcmFileFormat fileform;
     if (fileform.loadFile(worklistFiles[i].c_str()).bad())
     {
-      if( verboseMode )
-      {
-        sprintf( msg, "Could not read worklist file %s properly. File will be ignored.", worklistFiles[i].c_str() );
-        DumpMessage( msg );
-      }
+      DCMWLM_INFO("Could not read worklist file " << worklistFiles[i] << " properly. File will be ignored.");
     }
     else
     {
@@ -269,11 +211,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
       DcmDataset *dataset = fileform.getDataset();
       if( dataset == NULL )
       {
-        if( verboseMode )
-        {
-          sprintf( msg, "Worklist file %s is empty. File will be ignored.", worklistFiles[i].c_str() );
-          DumpMessage( msg );
-        }
+        DCMWLM_INFO("Worklist file " << worklistFiles[i] << " is empty. File will be ignored.");
       }
       else
       {
@@ -284,30 +222,18 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
         // .wl-file shall be rejected
         if( enableRejectionOfIncompleteWlFiles && !DatasetIsComplete( dataset ) )
         {
-          if( verboseMode )
-          {
-            sprintf( msg, "Worklist file %s is incomplete. File will be ignored.", worklistFiles[i].c_str() );
-            DumpMessage( msg );
-          }
+          DCMWLM_INFO("Worklist file " << worklistFiles[i] << " is incomplete. File will be ignored.");
         }
         else
         {
           // check if the current dataset matches the matching key attribute values
           if( !DatasetMatchesSearchMask( dataset, searchMask ) )
           {
-            if( verboseMode )
-            {
-              sprintf( msg, "Information from worklist file %s does not match query.", worklistFiles[i].c_str() );
-              DumpMessage( msg );
-            }
+            DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " does not match query.");
           }
           else
           {
-            if( verboseMode )
-            {
-              sprintf( msg, "Information from worklist file %s matches query.", worklistFiles[i].c_str() );
-              DumpMessage( msg );
-            }
+            DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " matches query.");
 
             // since the dataset matches the matching key attribute values
             // we need to insert it into the matchingRecords array
@@ -593,22 +519,22 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFOrderedSet<OFStr
 #endif
 
   // in case we are running in verbose mode, dump all worklist file information
-  if( verboseMode )
+  if (DCM_dcmwlmGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL))
   {
-    DumpMessage("=============================");
-    DumpMessage("Worklist Database Files:");
+    DCMWLM_INFO("=============================");
+    DCMWLM_INFO("Worklist Database Files:");
     if( worklistFiles.NumberOfElements() == 0 )
-      DumpMessage("<no files found>");
+      DCMWLM_INFO("<no files found>");
     else
     {
       OFSetIterator<OFString> iter( worklistFiles );
       while( iter.Object() )
       {
-        DumpMessage( iter.Object()->c_str() );
+        DCMWLM_INFO(iter.Object());
         iter.Next();
       }
     }
-    DumpMessage("=============================");
+    DCMWLM_INFO("=============================");
   }
 }
 
@@ -756,12 +682,10 @@ OFBool WlmFileSystemInteractionManager::ReferencedStudyOrPatientSequenceIsAbsent
     // try to add it to the dataset and return OFFalse if successful
     if (dset->insertEmptyElement(sequenceTagKey).good())
     {
-      if( verboseMode )
-      {
-        char msg[500];
-        sprintf( msg, "Added missing type 2 sequence attribute (%4.4x,%4.4x) to the current record.", sequenceTagKey.getGroup(), sequenceTagKey.getElement() );
-        DumpMessage( msg );
-      }
+      DCMWLM_INFO("Added missing type 2 sequence attribute ("
+          << STD_NAMESPACE hex << STD_NAMESPACE setw(4) << STD_NAMESPACE setfill('0') << sequenceTagKey.getGroup() << ","
+          << STD_NAMESPACE hex << STD_NAMESPACE setw(4) << STD_NAMESPACE setfill('0') << sequenceTagKey.getElement()
+          << ") to the current record.");
       result = OFFalse;
     }
     else
@@ -2225,6 +2149,9 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
+** Revision 1.20  2009-11-24 10:40:01  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.19  2006-12-15 14:49:28  onken
 ** Removed excessive use char* and C-array in favour of OFString and
 ** OFList. Simplified some implementation details.

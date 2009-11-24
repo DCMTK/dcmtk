@@ -4,6 +4,25 @@ Changes between releases are documented here.
 **** Changes from 2009.11.24 (schlachter)
 
 - Switched to logging mechanism provided by the "new" oflog module.
+  Affects: dcmwlm/CMakeLists.txt
+           dcmwlm/apps/Makefile.dep
+           dcmwlm/apps/wlcefs.cc
+           dcmwlm/apps/wlcefs.h
+           dcmwlm/docs/wlmscpfs.man
+           dcmwlm/include/dcmtk/dcmwlm/wlds.h
+           dcmwlm/include/dcmtk/dcmwlm/wlfsim.h
+           dcmwlm/include/dcmtk/dcmwlm/wlmactmg.h
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlfsim.cc
+           dcmwlm/libsrc/wlmactmg.cc
+           dcmwlm/tests/Makefile.dep
+           dcmwlm/tests/wltest.cc
+           dcmwlm/wwwapps/Makefile.dep
+           dcmwlm/wwwapps/writwlst.cc
+
+- Switched to logging mechanism provided by the "new" oflog module.
   Affects: dcmqrdb/CMakeLists.txt
            dcmqrdb/apps/Makefile.dep
            dcmqrdb/apps/dcmqridx.cc

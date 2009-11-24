@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-12-15 14:44:09 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:40:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,10 +68,6 @@ class WlmConsoleEngineFileSystem
     OFCmdUnsignedInt opt_maxPDU;
     /// preferred network transfer syntax
     E_TransferSyntax opt_networkTransferSyntax;
-    /// indicates if this application is run in verbose mode
-    OFBool opt_verbose;
-    /// indicates if this application is run in debug mode
-    OFBool opt_debug;
     /// indicates if find shall fail on an invalid query or not
     OFBool opt_failInvalidQuery;
     /// indicates if this application is run in single process mode or not
@@ -100,12 +96,6 @@ class WlmConsoleEngineFileSystem
     char **command_argv;
     /// data source which shall be queried on incoming C-Find RQ messages
     WlmDataSource *dataSource;
-
-      /** This function dumps the given information on a stream.
-       *  Used for dumping information in normal, debug and verbose mode.
-       *  @param message The message to dump.
-       */
-    void DumpMessage( const char *message );
 
       /** Protected undefined copy-constructor. Shall never be called.
        *  @param Src Source object.

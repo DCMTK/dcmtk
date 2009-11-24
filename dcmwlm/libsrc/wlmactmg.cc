@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-07 17:21:34 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:40:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 //                                      status element (0000,0900) of the C-FIND-RSP message.
 // Return Value : OFCondition value denoting success or error.
 
-static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, OFConsole *logStream );
+static OFString AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem );
 // Task         : This function adds information to the status detail information container.
 // Parameters   : statusDetail - [inout] This variable can be used to capture detailed information
 //                               with regard to the status information which is captured in the
@@ -102,15 +102,12 @@ WlmActivityManager::WlmActivityManager(
     OFCmdUnsignedInt opt_sleepDuringFindv,
     OFCmdUnsignedInt opt_maxPDUv,
     E_TransferSyntax opt_networkTransferSyntaxv,
-    OFBool opt_verbosev,
-    OFBool opt_debugv,
     OFBool opt_failInvalidQueryv,
     OFBool opt_singleProcessv,
     int opt_maxAssociationsv,
     T_DIMSE_BlockingMode opt_blockModev,
     int opt_dimse_timeoutv,
     int opt_acse_timeoutv,
-    OFConsole *logStreamv,
     OFBool opt_forkedChildv,
     int argcv,
     char *argvv[] )
@@ -125,12 +122,9 @@ WlmActivityManager::WlmActivityManager(
 //                opt_sleepDuringFindv                - [in] Specifies how many seconds the application is supposed to sleep during the handling of a C-FIND-Rsp.
 //                opt_maxPDUv                         - [in] Maximum length of a PDU that can be received in bytes.
 //                opt_networkTransferSyntaxv          - [in] Specifies the preferred network transfer syntaxes.
-//                opt_verbosev                        - [in] Specifies if the application shall print processing details or not.
-//                opt_debugv                          - [in] Specifies if the application shall print debug information.
 //                opt_failInvalidQueryv               - [in] Specifies if the application shall fail on an invalid query.
 //                opt_singleProcessv                  - [in] Specifies if the application shall run in a single process.
 //                opt_maxAssociationsv                - [in] Specifies many concurrent associations the application shall be able to handle.
-//                logStreamv                          - [in] A stream information can be dumped to.
 //                opt_forkedChildv                    - [in] Indicates, whether this process was "forked" from a parent process, default: false
 //                argcv                               - [in] Number of arguments in command line
 //                argvv                               - [in/out] Holds complete commandline
@@ -139,12 +133,12 @@ WlmActivityManager::WlmActivityManager(
     opt_rejectWithoutImplementationUID( opt_rejectWithoutImplementationUIDv ),
     opt_sleepAfterFind( opt_sleepAfterFindv ), opt_sleepDuringFind( opt_sleepDuringFindv ),
     opt_maxPDU( opt_maxPDUv ), opt_networkTransferSyntax( opt_networkTransferSyntaxv ),
-    opt_verbose( opt_verbosev ), opt_debug( opt_debugv ), opt_failInvalidQuery( opt_failInvalidQueryv ),
+    opt_failInvalidQuery( opt_failInvalidQueryv ),
     opt_singleProcess( opt_singleProcessv ),  opt_forkedChild( opt_forkedChildv ), cmd_argc( argcv ),
     cmd_argv( argvv ), opt_maxAssociations( opt_maxAssociationsv ),
     opt_blockMode(opt_blockModev), opt_dimse_timeout(opt_dimse_timeoutv), opt_acse_timeout(opt_acse_timeoutv),
     supportedAbstractSyntaxes( NULL ), numberOfSupportedAbstractSyntaxes( 0 ),
-    logStream( logStreamv ), processTable( )
+    processTable( )
 {
   // initialize supported abstract transfer syntaxes.
   supportedAbstractSyntaxes = new char*[2];
@@ -158,7 +152,7 @@ WlmActivityManager::WlmActivityManager(
   // manipulations. We want to see the real data.
   dcmEnableAutomaticInputDataCorrection.set( OFFalse );
   if (!opt_forkedChild)
-    DumpMessage( "\n(notice: dcmdata auto correction disabled.)\n" );
+    DCMWLM_WARN("(notice: dcmdata auto correction disabled.)");
 
 #ifdef HAVE_GUSI_H
   // needed for Macintosh.
@@ -205,15 +199,13 @@ OFCondition WlmActivityManager::StartProvidingService()
 // Parameters   : none.
 // Return Value : Return value that is supposed to be returned from main().
 {
-  char msg[200];
   OFCondition cond = EC_Normal;
   T_ASC_Network *net = NULL;
 
   // Make sure data dictionary is loaded.
   if( !dcmDataDict.isDictionaryLoaded() )
   {
-    sprintf( msg, "Warning: no data dictionary loaded, check environment variable: %s\n", DCM_DICT_ENVIRONMENT_VARIABLE );
-    DumpMessage( msg );
+    DCMWLM_WARN("no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
 #ifdef HAVE_GETEUID
@@ -309,22 +301,17 @@ void WlmActivityManager::RefuseAssociation( T_ASC_Association **assoc, WlmRefuse
 // Return Value : none.
 {
   T_ASC_RejectParameters rej;
-  char msg[200];
 
   // Dump some information if required.
-  if( opt_verbose )
+  switch( reason )
   {
-    switch( reason )
-    {
-      case WLM_TOO_MANY_ASSOCIATIONS: sprintf( msg, "Refusing Association (too many associations)" ); break;
-      case WLM_CANNOT_FORK:           sprintf( msg, "Refusing Association (cannot fork)" ); break;
-      case WLM_BAD_APP_CONTEXT:       sprintf( msg, "Refusing Association (bad application context)" ); break;
-      case WLM_BAD_AE_SERVICE:        sprintf( msg, "Refusing Association (bad application entity service)" ); break;
-      case WLM_FORCED:                sprintf( msg, "Refusing Association (forced via command line)" ); break;
-      case WLM_NO_IC_UID:             sprintf( msg, "Refusing Association (no implementation class UID provided)" ); break;
-      default:                        sprintf( msg, "Refusing Association (unknown reason)" ); break;
-    }
-    DumpMessage( msg );
+    case WLM_TOO_MANY_ASSOCIATIONS: DCMWLM_INFO("Refusing Association (too many associations)"); break;
+    case WLM_CANNOT_FORK:           DCMWLM_INFO("Refusing Association (cannot fork)"); break;
+    case WLM_BAD_APP_CONTEXT:       DCMWLM_INFO("Refusing Association (bad application context)"); break;
+    case WLM_BAD_AE_SERVICE:        DCMWLM_INFO("Refusing Association (bad application entity service)"); break;
+    case WLM_FORCED:                DCMWLM_INFO("Refusing Association (forced via command line)"); break;
+    case WLM_NO_IC_UID:             DCMWLM_INFO("Refusing Association (no implementation class UID provided)"); break;
+    default:                        DCMWLM_INFO("Refusing Association (unknown reason)"); break;
   }
 
   // Set some values in the reject message depending on the reason.
@@ -381,7 +368,7 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
 // Return Value : Indicator which shows if function was executed successfully.
 {
   T_ASC_Association *assoc = NULL;
-  char buf[BUFSIZ], msg[200];
+  char buf[BUFSIZ];
   int timeout;
 
   // Depending on if the execution is limited to one single process
@@ -414,20 +401,12 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
     return EC_Normal;
   }
   // Dump some information if required
-  if( opt_verbose )
-  {
-    sprintf( msg, "Association Received (%s:%s -> %s)\n", assoc->params->DULparams.callingPresentationAddress, assoc->params->DULparams.callingAPTitle, assoc->params->DULparams.calledAPTitle );
-    DumpMessage( msg );
-  }
+  DCMWLM_INFO("Association Received (" << assoc->params->DULparams.callingPresentationAddress << ":" << assoc->params->DULparams.callingAPTitle
+      << " -> " << assoc->params->DULparams.calledAPTitle << ")");
 
   // Dump more information if required
-  if( opt_debug && logStream != NULL )
-  {
-    DumpMessage( "Parameters:\n" );
-    logStream->lockCout();
-    ASC_dumpParameters( assoc->params, logStream->getCout() );
-    logStream->unlockCout();
-  }
+  OFString temp_str;
+  DCMWLM_DEBUG("Parameters:\n" << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
 
   // Now we have to figure out if we might have to refuse the association request.
   // This is the case if at least one of five conditions is met:
@@ -535,22 +514,12 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
   }
 
   // Dump some information if required.
-  if( opt_verbose )
-  {
-    sprintf( msg, "Association Acknowledged (Max Send PDV: %lu)\n", assoc->sendPDVLength );
-    DumpMessage( msg );
-
-    if( ASC_countAcceptedPresentationContexts( assoc->params ) == 0 )
-      DumpMessage("    (but no valid presentation contexts)\n");
-  }
+  DCMWLM_INFO("Association Acknowledged (Max Send PDV: " << assoc->sendPDVLength << ")");
+  if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
+    DCMWLM_INFO("    (but no valid presentation contexts)");
 
   // Dump some more information if required.
-  if( opt_debug && logStream != NULL )
-  {
-    logStream->lockCout();
-    ASC_dumpParameters( assoc->params, logStream->getCout() );
-    logStream->unlockCout();
-  }
+  DCMWLM_DEBUG(ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
 
   // Depending on if this execution shall be limited to one process or not, spawn a sub-
   // process to handle the association or don't. (Note: For windows dcmnet is handling
@@ -677,17 +646,17 @@ void WlmActivityManager::HandleAssociation( T_ASC_Association *assoc )
   // Clean up on association termination.
   if( cond == DUL_PEERREQUESTEDRELEASE )
   {
-    if( opt_verbose ) DumpMessage("Association Release\n");
+    DCMWLM_INFO("Association Release");
     ASC_acknowledgeRelease( assoc );
     ASC_dropSCPAssociation( assoc );
   }
   else if( cond == DUL_PEERABORTEDASSOCIATION )
   {
-    if( opt_verbose ) DumpMessage("Association Aborted\n");
+    DCMWLM_INFO("Association Aborted");
   }
   else
   {
-    DumpMessage("DIMSE Failure. Aborting association.\n");
+    DCMWLM_WARN("DIMSE Failure. Aborting association.");
     ASC_abortAssociation( assoc );
   }
 
@@ -696,7 +665,7 @@ void WlmActivityManager::HandleAssociation( T_ASC_Association *assoc )
   ASC_destroyAssociation( &assoc );
 
   // Dump some information if required.
-  if( opt_verbose ) DumpMessage( "+++++++++++++++++++++++++++++\n" );
+  DCMWLM_INFO("+++++++++++++++++++++++++++++\n");
 }
 
 // ----------------------------------------------------------------------------
@@ -742,7 +711,7 @@ OFCondition WlmActivityManager::ReceiveAndHandleCommands( T_ASC_Association *ass
         case DIMSE_C_CANCEL_RQ:
           // Process C-CANCEL-Request
           // This is a late cancel request, just ignore it
-          if( opt_verbose ) DumpMessage("WARNING: late C-CANCEL-RQ, ignoring\n");
+          DCMWLM_INFO("late C-CANCEL-RQ, ignoring");
           break;
         default:
           // We cannot handle this kind of message.
@@ -770,18 +739,12 @@ OFCondition WlmActivityManager::HandleEchoSCP( T_ASC_Association *assoc, T_DIMSE
 //                               which contained the DIMSE command.
 // Return Value : OFCondition value denoting success or error.
 {
-  char msg[200];
-
   // Dump information if required
-  if( opt_verbose )
-  {
-    sprintf( msg, "Received C-ECHO Request, MessageID %d.\n", req->MessageID );
-    DumpMessage( msg );
-  }
+  DCMWLM_INFO("Received C-ECHO Request, MessageID " << req->MessageID << ".");
 
   // Send an echo response
   OFCondition cond = DIMSE_sendEchoResponse( assoc, presId, req, STATUS_Success, NULL );
-  if( cond.bad() ) DumpMessage( "Error while sending C-ECHO Response.\n" );
+  if( cond.bad() ) DCMWLM_ERROR("Error while sending C-ECHO Response.");
 
   // return return value
   return cond;
@@ -800,10 +763,7 @@ struct WlmFindContextType
   WlmDataSource *dataSource;
   WlmDataSourceStatusType priorStatus;
   DIC_AE ourAETitle;
-  OFBool opt_verbose;
-  OFBool opt_debug;
   OFCmdUnsignedInt opt_sleepDuringFind;
-  OFConsole *logStream;
 };
 
 // ----------------------------------------------------------------------------
@@ -819,24 +779,15 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
 //                                which contained the DIMSE command.
 // Return Value : OFCondition value denoting success or error.
 {
-  char msg[200];
-
   // Create callback data which needs to be passed to DIMSE_findProvider later.
   WlmFindContextType context;
   context.dataSource = dataSource;
   context.priorStatus = WLM_PENDING;
   ASC_getAPTitles( assoc->params, NULL, context.ourAETitle, NULL );
-  context.opt_verbose = opt_verbose;
-  context.opt_debug = opt_debug;
   context.opt_sleepDuringFind = opt_sleepDuringFind;
-  context.logStream = logStream;
 
   // Dump some information if required.
-  if( opt_verbose && logStream != NULL )
-  {
-    sprintf( msg, "Received C-FIND Request, MessageID %d.\n", request->MessageID );
-    DumpMessage( msg );
-  }
+  DCMWLM_INFO("Received C-FIND Request, MessageID " << request->MessageID << ".");
 
   // Handle a C-FIND-Request on the provider side: receive the data set that represents the search mask
   // over the network, try to select corresponding records that match the search mask from some data source
@@ -844,40 +795,18 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
   // C-FIND-RSP messages to the other DICOM application this application is connected with. In the end,
   // also send the C-FIND-RSP message that indicates that there are no more search results.
   OFCondition cond = DIMSE_findProvider( assoc, presID, request, FindCallback, &context, opt_blockMode, opt_dimse_timeout );
-  if( cond.bad() ) DumpMessage( "Find SCP Failed." );
+  if( cond.bad() ) DCMWLM_WARN("Find SCP Failed.");
 
   // If option "--sleep-after" is set we need to sleep opt_sleepAfterFind
   // seconds after having processed one C-FIND-Request message.
   if( opt_sleepAfterFind > 0 )
   {
-    if( opt_verbose )
-    {
-      sprintf( msg, "SLEEPING (after find): %ld secs\n", opt_sleepAfterFind );
-      DumpMessage( msg );
-    }
+    DCMWLM_INFO("SLEEPING (after find): " << opt_sleepAfterFind << " secs");
     OFStandard::sleep( (unsigned int)opt_sleepAfterFind );
   }
 
   // return result
   return cond;
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmActivityManager::DumpMessage( const char *message )
-// Date         : December 10, 2001
-// Author       : Thomas Wilkens
-// Task         : This function dumps the given information on a stream.
-//                Used for dumping information in normal, debug and verbose mode.
-// Parameters   : message - [in] The message to dump.
-// Return Value : none.
-{
-  if( logStream != NULL && message != NULL )
-  {
-    logStream->lockCout();
-    logStream->getCout() << message << OFendl;
-    logStream->unlockCout();
-  }
 }
 
 // ----------------------------------------------------------------------------
@@ -934,10 +863,7 @@ void WlmActivityManager::RemoveProcessFromTable( int pid )
   }
 
   // dump a warning if process could not be found in process table
-  char msg[200];
-  sprintf( msg, "WlmActivityManager::RemoveProcessFromTable : Could not find process %d.", pid );
-  DumpMessage( msg );
-
+  DCMWLM_WARN("WlmActivityManager::RemoveProcessFromTable : Could not find process " << pid << ".");
 }
 
 // ----------------------------------------------------------------------------
@@ -956,7 +882,6 @@ void WlmActivityManager::CleanChildren()
   int options = WNOHANG;
   int stat_loc;
   int child=1;
-  char msg[200];
 
   while( child > 0 )
   {
@@ -974,17 +899,13 @@ void WlmActivityManager::CleanChildren()
       }
       else
       {
-        DumpMessage("WlmActivityManager::CleanChildren : Wait for child failed.");
+        DCMWLM_WARN("WlmActivityManager::CleanChildren : Wait for child failed.");
       }
     }
     else if( child > 0 )
     {
       // dump some information if required
-      if( opt_verbose )
-      {
-        sprintf( msg, "Cleaned up after child (%d)\n", child );
-        DumpMessage( msg );
-      }
+      DCMWLM_INFO("Cleaned up after child (" << child << ")");
 
       // remove item from process table
       RemoveProcessFromTable( child );
@@ -1001,7 +922,6 @@ void WlmActivityManager::CleanChildren()
   int options = WNOHANG;
   struct rusage rusage;
   int child = 1;
-  char msg[200];
 
   while( child > 0 )
   {
@@ -1040,7 +960,7 @@ void WlmActivityManager::CleanChildren()
 
 // ----------------------------------------------------------------------------
 
-static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, OFConsole *logStream )
+static OFString AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : This function adds information to the status detail information container.
@@ -1049,16 +969,15 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
 //                               status element (0000,0900) of the C-FIND-RSP message.
 //                elem         - [in] Element that shall be added to the status detail information
 //                               container.
-//                logStream    - [in] A stream messages can be dumped to.
 // Return Value : none.
 {
   // If no element was passed, return to the caller.
   if( elem == NULL )
-    return;
+    return "";
 
+  OFOStringStream log;
   DcmAttributeTag *at;
   DcmLongString *lo;
-  char msg[200];
 
   // Create the container object if necessary
   if( *statusDetail == NULL )
@@ -1068,12 +987,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
   DcmVR vr( elem->ident() );
 
   // Dump some information
-  if( logStream != NULL )
-  {
-    logStream->lockCout();
-    logStream->getCout() << "  Status Detail: " << OFendl;
-    logStream->unlockCout();
-  }
+  log << "  Status Detail: " << OFendl;
 
   // Depending on the element's identification, insert different
   // types of objects into the container.
@@ -1081,49 +995,31 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
   {
     case EVR_LO:
       lo = new DcmLongString( *((DcmLongString*)elem) );
-      if( lo->getLength() > vr.getMaxValueLength() && logStream != NULL )
+      if( lo->getLength() > vr.getMaxValueLength() )
       {
-        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", (unsigned long)(vr.getMaxValueLength()), vr.getVRName() );
-        logStream->lockCout();
-        logStream->getCout() << msg << OFendl;
-        logStream->unlockCout();
+        log << "AddStatusDetail: INTERNAL ERROR: value too large (max " << (unsigned long)(vr.getMaxValueLength())
+            << ") for " << vr.getVRName() << ": " << OFendl;
       }
       (*statusDetail)->insert( lo, OFTrue /*replaceOld*/ );
-      if( logStream != NULL )
-      {
-        logStream->lockCout();
-        lo->print( logStream->getCout() );
-        logStream->unlockCout();
-      }
+      lo->print(log);
       break;
     case EVR_AT:
       at = new DcmAttributeTag( *((DcmAttributeTag*)elem) );
       if( at->getLength() > vr.getMaxValueLength() )
       {
-        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", (unsigned long)(vr.getMaxValueLength()), vr.getVRName() );
-        logStream->lockCout();
-        logStream->getCout() << msg << OFendl;
-        logStream->unlockCout();
+        log << "AddStatusDetail: INTERNAL ERROR: value too large (max " << (unsigned long)(vr.getMaxValueLength())
+            << ") for " << vr.getVRName() << ": " << OFendl;
       }
       (*statusDetail)->insert( at, OFTrue /*replaceOld*/ );
-      if( logStream != NULL )
-      {
-        logStream->lockCout();
-        at->print( logStream->getCout() );
-        logStream->unlockCout();
-      }
+      at->print(log);
       break;
     default:
       // other status detail is not supported
-      if( logStream != NULL )
-      {
-        sprintf( msg, "AddStatusDetail: unsupported status detail type: %s", vr.getVRName() );
-        logStream->lockCout();
-        logStream->getCout() << msg << OFendl;
-        logStream->unlockCout();
-      }
+      log << "AddStatusDetail: unsupported status detail type: " <<vr.getVRName() << OFendl;
       break;
   }
+  OFSTRINGSTREAM_GETOFSTRING(log, ret)
+  return ret;
 }
 
 // ----------------------------------------------------------------------------
@@ -1153,22 +1049,12 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   WlmDataSourceStatusType dbstatus;
   WlmFindContextType *context = NULL;
   WlmDataSource *dataSource = NULL;
-  OFBool opt_verbose = OFFalse;
-  OFBool opt_debug = OFFalse;
   OFCmdUnsignedInt opt_sleepDuringFind = 0;
-  OFConsole *logStream = NULL;
-  char msg[500];
 
   // Recover contents of context.
   context = (WlmFindContextType*)callbackData;
   dataSource = context->dataSource;
-  opt_verbose = context->opt_verbose;
-  opt_debug = context->opt_debug;
   opt_sleepDuringFind = context->opt_sleepDuringFind;
-  logStream = context->logStream;
-
-  // Set dataSource object to verbose mode
-  dataSource->SetVerbose( opt_verbose );
 
   // Determine the data source's current status.
   dbstatus = context->priorStatus;
@@ -1177,45 +1063,24 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   if( responseCount == 1 )
   {
     // Dump some information if required
-    if( opt_verbose && logStream != NULL )
-    {
-      logStream->lockCout();
-      logStream->getCout() << "Find SCP Request Identifiers:" << OFendl;
-      requestIdentifiers->print( logStream->getCout() );
-      logStream->getCout() << "=============================" << OFendl;
-      logStream->unlockCout();
-    }
+    DCMWLM_INFO("Find SCP Request Identifiers:" << OFendl
+            << DcmObject::PrintHelper(*requestIdentifiers) << OFendl
+            << "=============================");
 
     // Determine the records that match the search mask. After this call, the
     // matching records will be available through dataSource->nextFindResponse(...).)
     dbstatus = dataSource->StartFindRequest( *requestIdentifiers );
-    if( !( dbstatus == WLM_PENDING || dbstatus == WLM_PENDING_WARNING ) && opt_debug && logStream != NULL )
-    {
-      sprintf( msg, "findSCP: Worklist Database: StartFindRequest() Failed (%s).", DU_cfindStatusString( (Uint16)dbstatus ) );
-      logStream->lockCout();
-      logStream->getCout() << msg << OFendl;
-      logStream->unlockCout();
-    }
+    if( !( dbstatus == WLM_PENDING || dbstatus == WLM_PENDING_WARNING ) )
+      DCMWLM_DEBUG( "findSCP: Worklist Database: StartFindRequest() Failed (" << DU_cfindStatusString((Uint16)dbstatus) << ").");
 
-    if( opt_verbose && logStream != NULL )
-    {
-      logStream->lockCout();
-      logStream->getCout() << "=============================" << OFendl;
-      logStream->unlockCout();
-    }
+    DCMWLM_INFO("=============================");
   }
 
   // If opt_sleepDuringFind is set the application is supposed
   // to sleep n seconds during the find process.
   if( opt_sleepDuringFind > 0 )
   {
-    if( opt_verbose && logStream != NULL )
-    {
-      sprintf( msg, "SLEEPING (during find): %ld secs\n", opt_sleepDuringFind );
-      logStream->lockCout();
-      logStream->getCout() << msg << OFendl;
-      logStream->unlockCout();
-    }
+    DCMWLM_INFO("SLEEPING (during find): " << opt_sleepDuringFind << " secs");
     OFStandard::sleep((unsigned int)opt_sleepDuringFind);
   }
 
@@ -1232,19 +1097,15 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   }
 
   // Dump some information if required
-  if( opt_verbose && logStream != NULL )
+  if (DCM_dcmwlmGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL))
   {
-    logStream->lockCout();
-    sprintf( msg, "Worklist Find SCP Response %d [status: %s]", responseCount, DU_cfindStatusString( (Uint16)dbstatus ) );
-    logStream->getCout() << msg << OFendl;
+    DCMWLM_INFO("Worklist Find SCP Response " << responseCount << " [status: " << DU_cfindStatusString((Uint16)dbstatus) << "]");
     if( *responseIdentifiers != NULL && (*responseIdentifiers)->card() > 0 )
     {
-      sprintf( msg, "Response Identifiers (%d)", responseCount );
-      logStream->getCout() << msg << OFendl;
-      (*responseIdentifiers)->print( logStream->getCout() );
-      logStream->getCout() << "-------" << OFendl;
+      DCMWLM_INFO("Response Identifiers (" << responseCount << ")" << OFendl
+              << DcmObject::PrintHelper(**responseIdentifiers) << OFendl
+              << "-------");
     }
-    logStream->unlockCout();
   }
 
   // Set response status
@@ -1263,12 +1124,12 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   {
     case WLM_FAILED_IDENTIFIER_DOES_NOT_MATCH_SOP_CLASS:
     case WLM_FAILED_UNABLE_TO_PROCESS:
-      AddStatusDetail( statusDetail, dataSource->GetOffendingElements(), logStream );
-      AddStatusDetail( statusDetail, dataSource->GetErrorComments(), logStream );
+      DCMWLM_WARN(AddStatusDetail( statusDetail, dataSource->GetOffendingElements()));
+      DCMWLM_WARN(AddStatusDetail( statusDetail, dataSource->GetErrorComments()));
       break;
     case WLM_REFUSED_OUT_OF_RESOURCES:
       // out of resources may only have error comment detail
-      AddStatusDetail( statusDetail, dataSource->GetErrorComments(), logStream );
+      DCMWLM_WARN(AddStatusDetail( statusDetail, dataSource->GetErrorComments()));
       break;
     default:
       // other status codes may not have any status detail
@@ -1281,6 +1142,9 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.26  2009-11-24 10:40:01  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.25  2009-01-07 17:21:34  joergr
 ** Avoid double output of "auto correction" notice for forked children (Win32).
 **

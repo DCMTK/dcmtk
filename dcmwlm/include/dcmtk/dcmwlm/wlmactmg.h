@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *           class provider engines.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:40:34 $
+ *  Update Date:      $Date: 2009-11-24 10:40:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,10 +67,6 @@ class WlmActivityManager
     OFCmdUnsignedInt opt_maxPDU;
     /// preferred network transfer syntax
     E_TransferSyntax opt_networkTransferSyntax;
-    /// indicates if the application is run in verbose mode or not
-    OFBool opt_verbose;
-    /// indicates if the application is run in debug mode or not
-    OFBool opt_debug;
     /// indicates if the application shall fail on an invalid C-Find RQ message
     OFBool opt_failInvalidQuery;
     /// indicates if the application is run in single process mode or not
@@ -94,15 +90,8 @@ class WlmActivityManager
     char **supportedAbstractSyntaxes;
     /// number of array fields
     int numberOfSupportedAbstractSyntaxes;
-    /// stream log information will be dumped to
-    OFConsole *logStream;
     /// table of processes for non-single process mode
     OFList<WlmProcessSlotType*> processTable;
-
-      /** This function dumps the given information on a stream. Used for dumping information in normal, debug and verbose mode.
-       *  @param message The message to dump.
-       */
-    void DumpMessage( const char *message );
 
       /** This function takes care of receiving, negotiating and accepting/refusing an
        *  association request. Additionally, it handles the request the association
@@ -198,15 +187,12 @@ class WlmActivityManager
        *  @param opt_sleepDuringFindv                Specifies how many seconds the application is supposed to sleep during the handling of a C-FIND-Rsp.
        *  @param opt_maxPDUv                         Maximum length of a PDU that can be received in bytes.
        *  @param opt_networkTransferSyntaxv          Specifies the preferred network transfer syntaxes.
-       *  @param opt_verbosev                        Specifies if the application shall print processing details or not.
-       *  @param opt_debugv                          Specifies if the application shall print debug information.
        *  @param opt_failInvalidQueryv               Specifies if the application shall fail on an invalid query.
        *  @param opt_singleProcessv                  Specifies if the application shall run in a single process.
        *  @param opt_maxAssociationsv                Specifies many concurrent associations the application shall be able to handle.
        *  @param opt_blockModev                      Specifies the blocking mode for DIMSE operations
        *  @param opt_dimse_timeoutv                  Specifies the timeout for DIMSE operations
        *  @param opt_acse_timeoutv                   Specifies the timeout for ACSE operations
-       *  @param logStreamv                          A stream information can be dumped to.
        *  @param opt_forkedChildv                    Indicates, whether this process was "forked" from a parent process, default: false
 			 *  @param argcv															 Number of commandline arguments given
 			 *  @param argvv															 Complete command line
@@ -220,15 +206,12 @@ class WlmActivityManager
         OFCmdUnsignedInt opt_sleepDuringFindv, 
         OFCmdUnsignedInt opt_maxPDUv, 
         E_TransferSyntax opt_networkTransferSyntaxv, 
-        OFBool opt_verbosev, 
-        OFBool opt_debugv, 
         OFBool opt_failInvalidQueryv, 
         OFBool opt_singleProcessv, 
         int opt_maxAssociationsv, 
         T_DIMSE_BlockingMode opt_blockModev,
         int opt_dimse_timeoutv,
         int opt_acse_timeoutv,
-        OFConsole *logStreamv,
         OFBool opt_forkedChild = OFFalse,
         int argcv = 0,
         char *argvv[] = NULL );
@@ -250,6 +233,9 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
+** Revision 1.17  2009-11-24 10:40:01  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.16  2009-09-30 08:40:34  uli
 ** Make dcmwlm's include headers self-sufficient by including all
 ** needed headers directly.

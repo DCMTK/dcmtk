@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-08-10 14:25:21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:40:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,9 +91,6 @@ OFCondition WlmDataSourceFileSystem::ConnectToDataSource()
 // Return Value : Indicates if the connection was established succesfully.
 {
   // set variables in fileSystemInteractionManager object
-  fileSystemInteractionManager.SetLogStream( logStream );
-  fileSystemInteractionManager.SetVerbose( verbose );
-  fileSystemInteractionManager.SetDebug( debug );
   fileSystemInteractionManager.SetEnableRejectionOfIncompleteWlFiles( enableRejectionOfIncompleteWlFiles );
 
   // connect to file system
@@ -271,7 +268,6 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
 //                WLM_FAILED_IDENTIFIER_DOES_NOT_MATCH_SOP_CLASS - Error in the search mask encountered.
 {
   unsigned long i, j;
-  char msg[200];
   DcmElement *scheduledProcedureStepSequenceAttribute = NULL;
 
   // Initialize offending elements, error elements and error comment.
@@ -314,32 +310,20 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
   }
 
   // dump search mask (it might have been expanded)
-  if( verbose && logStream != NULL )
-  {
-    logStream->lockCout();
-    logStream->getCout() << "Expanded Find SCP Request Identifiers:" << OFendl;
-    identifiers->print( logStream->getCout() );
-    logStream->getCout() << "=============================" << OFendl;
-    logStream->unlockCout();
-  }
+  DCMWLM_INFO("Expanded Find SCP Request Identifiers:\n" << DcmObject::PrintHelper(*identifiers) << "\n=============================");
 
   // Set a read lock on the worklist files which shall be read from.
   if( !SetReadlock() )
     return( WLM_REFUSED_OUT_OF_RESOURCES );
 
   // dump some information if required
-  if( verbose )
-    DumpMessage( "Determining matching records from worklist files." );
+  DCMWLM_INFO("Determining matching records from worklist files.");
 
   // Determine records from worklist files which match the search mask
   unsigned long numOfMatchingRecords = fileSystemInteractionManager.DetermineMatchingRecords( identifiers );
 
   // dump some information if required
-  if( verbose )
-  {
-    sprintf( msg, "Matching results: %lu matching records found in worklist files.", numOfMatchingRecords );
-    DumpMessage( msg );
-  }
+  DCMWLM_INFO("Matching results: " << numOfMatchingRecords << " matching records found in worklist files.");
 
   // determine a correct return value. In case no matching records
   // were found, WLM_SUCCESS shall be returned. This is our assumption.
@@ -360,11 +344,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
       DcmElement *specificCharacterSetElement = NULL;
 
       // dump some information if required
-      if( verbose )
-      {
-        sprintf( msg, "  Processing matching result no. %lu.", i );
-        DumpMessage( msg );
-      }
+      DCMWLM_INFO("  Processing matching result no. " << i << ".");
 
       // Determine the number of elements in matchingDatasets[i].
       unsigned long numOfElementsInDataset = resultRecord->card();
@@ -408,7 +388,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
           {
             delete specificCharacterSetElement;
             specificCharacterSetElement = NULL;
-            DumpMessage( "WlmDataSourceDatabase::StartFindRequest: Could not insert specific character set element into dataset.\n" );
+            DCMWLM_WARN("WlmDataSourceDatabase::StartFindRequest: Could not insert specific character set element into dataset.");
           }
         }
         // and set the value of the attribute accordingly
@@ -416,7 +396,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
         {
             OFCondition cond = specificCharacterSetElement->putString( "ISO_IR 100" );
             if( cond.bad() )
-              DumpMessage( "WlmDataSourceDatabase::StartFindRequest: Could not set value in result element.\n" );
+              DCMWLM_WARN("WlmDataSourceDatabase::StartFindRequest: Could not set value in result element.");
         }
       }
       else
@@ -546,7 +526,7 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
     else
       cond = element->putString( value );
     if( cond.bad() )
-      DumpMessage( "WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset: Could not set value in result element.\n" );
+      DCMWLM_WARN("WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset: Could not set value in result element.");
 
     // free memory
     delete[] value;
@@ -580,7 +560,7 @@ void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *
   if( sequenceOfItemsElement->card() != 1 )
   {
     // if the sequence's cardinality does not equal 1, we want to dump a warning and do nothing here
-    DumpMessage( "    - Sequence with not exactly one item encountered in the search mask.\n      The corresponding sequence of the currently processed result data set will show the exact same structure as in the given search mask." );
+    DCMWLM_WARN( "    - Sequence with not exactly one item encountered in the search mask.\n      The corresponding sequence of the currently processed result data set will show the exact same structure as in the given search mask.");
   }
   else
   {
@@ -684,7 +664,6 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
 // Return Value : OFTrue - The read lock has been set successfully.
 //                OFFalse - The read lock has not been set successfully.
 {
-  char msg[2500];
 #ifndef _WIN32
   struct flock lockdata;
 #endif
@@ -693,14 +672,14 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
   // if no path or no calledApplicationEntityTitle is specified, return
   if( dfPath.length() == 0 || calledApplicationEntityTitle.length() == 0 )
   {
-    DumpMessage("WlmDataSourceFileSystem::SetReadlock : Path to data source files not specified.");
+    DCMWLM_WARN("WlmDataSourceFileSystem::SetReadlock : Path to data source files not specified.");
     return OFFalse;
   }
 
   // if a read lock has already been set, return
   if( readLockSetOnDataSource )
   {
-    DumpMessage("WlmDataSourceFileSystem::SetReadlock : Nested read locks not allowed!");
+    DCMWLM_WARN("WlmDataSourceFileSystem::SetReadlock : Nested read locks not allowed!");
     return OFFalse;
   }
 
@@ -722,8 +701,8 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
   if( handleToReadLockFile == -1 )
   {
     handleToReadLockFile = 0;
-    sprintf( msg, "WlmDataSourceFileSystem::SetReadlock : Cannot open file %s (return code: %s).", lockname.c_str(), strerror(errno) );
-    DumpMessage( msg );
+    DCMWLM_WARN("WlmDataSourceFileSystem::SetReadlock : Cannot open file " << lockname << " (return code: "
+        << strerror(errno)  << ").");
     return OFFalse;
   }
 
@@ -749,8 +728,7 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
 #endif
   if( result == -1 )
   {
-    sprintf( msg, "WlmDataSourceFileSystem::SetReadlock : Cannot set read lock on file %s.", lockname.c_str() );
-    DumpMessage( msg );
+    DCMWLM_WARN("WlmDataSourceFileSystem::SetReadlock : Cannot set read lock on file " <<  lockname << ".");
     dcmtk_plockerr("return code");
     close( handleToReadLockFile );
     handleToReadLockFile = 0;
@@ -782,7 +760,7 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
   // if no read lock is set, return
   if( !readLockSetOnDataSource )
   {
-    DumpMessage("WlmDataSourceFileSystem::ReleaseReadlock : No readlock to release.");
+    DCMWLM_WARN("WlmDataSourceFileSystem::ReleaseReadlock : No readlock to release.");
     return OFFalse;
   }
 
@@ -804,7 +782,7 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 #endif
   if( result == -1 )
   {
-    DumpMessage("WlmDataSourceFileSystem::ReleaseReadlock : Cannot release read lock");
+    DCMWLM_WARN("WlmDataSourceFileSystem::ReleaseReadlock : Cannot release read lock");
     dcmtk_plockerr("return code");
     return OFFalse;
   }
@@ -825,6 +803,9 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
+** Revision 1.23  2009-11-24 10:40:01  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.22  2007-08-10 14:25:21  meichel
 ** Added new command line option --keep-char-set that returns
 **   any specific character set as encoded in the worklist file.

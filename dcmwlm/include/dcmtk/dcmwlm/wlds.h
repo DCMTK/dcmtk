@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:40:34 $
+ *  Update Date:      $Date: 2009-11-24 10:40:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,16 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmwlm/wltypdef.h"
 #include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/oflog/oflog.h"
+
+OFLogger DCM_dcmwlmGetLogger();
+
+#define DCMWLM_TRACE(msg) OFLOG_TRACE(DCM_dcmwlmGetLogger(), msg)
+#define DCMWLM_DEBUG(msg) OFLOG_DEBUG(DCM_dcmwlmGetLogger(), msg)
+#define DCMWLM_INFO(msg)  OFLOG_INFO(DCM_dcmwlmGetLogger(), msg)
+#define DCMWLM_WARN(msg)  OFLOG_WARN(DCM_dcmwlmGetLogger(), msg)
+#define DCMWLM_ERROR(msg) OFLOG_ERROR(DCM_dcmwlmGetLogger(), msg)
+#define DCMWLM_FATAL(msg) OFLOG_FATAL(DCM_dcmwlmGetLogger(), msg)
 
 class DcmAttributeTag;
 class DcmLongString;
@@ -52,10 +62,6 @@ class WlmDataSource
     OFBool failOnInvalidQuery;
     /// called AE title
     OFString calledApplicationEntityTitle;
-    /// indicates if the application is run in verbose mode or not
-    OFBool verbose;
-    /// indicates if the application is run in debug mode or not
-    OFBool debug;
     /// the search mask which is contained in the C-Find RQ message
     DcmDataset *identifiers;
     /// list of error elements
@@ -68,8 +74,6 @@ class WlmDataSource
     OFBool foundUnsupportedOptionalKey;
     /// indicates if a read lock was set on the data source
     OFBool readLockSetOnDataSource;
-    /// stream logging information will be dumped to
-    OFConsole *logStream;
     /// indicates if the expansion of empty sequence attributes shall take place or not
     OFBool noSequenceExpansion;
     /// returned character set type
@@ -350,12 +354,6 @@ class WlmDataSource
     OFBool GetStringValue( const DcmElement *elem,
                            OFString& resultVal );
 
-      /** This function dumps the given information on a stream.
-       *  Used for dumping information in normal, debug and verbose mode.
-       *  @param message The message to dump.
-       */
-    void DumpMessage( const char *message );
-
       /** This function makes a copy of value without leading and trailing blanks.
        *  @param value The source string.
        *  @return A copy of the given string without leading and trailing blanks.
@@ -402,21 +400,6 @@ class WlmDataSource
        *  @param value The value to set.
        */
     void SetFailOnInvalidQuery( OFBool value );
-
-      /** Set value in member variable.
-       *  @param value The value to set.
-       */
-    void SetLogStream( OFConsole *value );
-
-      /** Set value in member variable.
-       *  @param value The value to set.
-       */
-    void SetVerbose( OFBool value );
-
-      /** Set value in member variable.
-       *  @param value The value to set.
-       */
-    void SetDebug( OFBool value );
 
       /** Set value in a member variable.
        *  @param value The value to set.
@@ -549,6 +532,9 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
+** Revision 1.26  2009-11-24 10:40:01  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.25  2009-09-30 08:40:34  uli
 ** Make dcmwlm's include headers self-sufficient by including all
 ** needed headers directly.

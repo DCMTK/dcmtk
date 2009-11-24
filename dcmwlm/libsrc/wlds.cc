@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-02 17:20:44 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:40:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,6 +53,12 @@
 #include "dcmtk/dcmdata/dcdicent.h"  // needed by MSVC5 with STL
 #include "dcmtk/dcmwlm/wlds.h"
 
+OFLogger DCM_dcmwlmGetLogger()
+{
+    static OFLogger DCM_dcmwlmLogger = OFLog::getLogger("dcmtk.dcmwlm");
+    return DCM_dcmwlmLogger;
+}
+
 // ----------------------------------------------------------------------------
 
 WlmDataSource::WlmDataSource()
@@ -61,20 +67,17 @@ WlmDataSource::WlmDataSource()
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : failOnInvalidQuery( OFTrue ), calledApplicationEntityTitle(""), verbose( OFFalse ), debug( OFFalse ),
+  : failOnInvalidQuery( OFTrue ), calledApplicationEntityTitle(""),
     identifiers( NULL ), errorElements( NULL ), offendingElements( NULL ), errorComment( NULL ),
-    foundUnsupportedOptionalKey( OFFalse ), readLockSetOnDataSource( OFFalse ), logStream( NULL ),
+    foundUnsupportedOptionalKey( OFFalse ), readLockSetOnDataSource( OFFalse ),
     noSequenceExpansion( OFFalse ), returnedCharacterSet( RETURN_NO_CHARACTER_SET ), matchingDatasets(),
     specificCharacterSet( "" ), superiorSequenceArray( NULL ),
     numOfSuperiorSequences( 0 )
 {
-  char msg[200];
-
   // Make sure data dictionary is loaded.
   if( !dcmDataDict.isDictionaryLoaded() )
   {
-    sprintf( msg, "Warning: no data dictionary loaded, check environment variable: %s\n", DCM_DICT_ENVIRONMENT_VARIABLE );
-    DumpMessage( msg );
+    DCMWLM_WARN("no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
   // Initialize member variables.
@@ -127,42 +130,6 @@ void WlmDataSource::SetFailOnInvalidQuery( OFBool value )
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSource::SetLogStream( OFConsole *value )
-// Date         : March 14, 2002
-// Author       : Thomas Wilkens
-// Task         : Set member variable.
-// Parameters   : value - Value for member variable.
-// Return Value : none.
-{
-  logStream = value;
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSource::SetVerbose( OFBool value )
-// Date         : December 10, 2001
-// Author       : Thomas Wilkens
-// Task         : Set member variable that determines if information shall be dumped at processing time or not.
-// Parameters   : value - Value for verbose.
-// Return Value : none.
-{
-  verbose = value;
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSource::SetDebug( OFBool value )
-// Date         : December 10, 2001
-// Author       : Thomas Wilkens
-// Task         : Set member variable that determines if information shall be dumped at processing time or not.
-// Parameters   : value - Value for verbose.
-// Return Value : none.
-{
-  debug = value;
-}
-
-// ----------------------------------------------------------------------------
-
 void WlmDataSource::SetNoSequenceExpansion( OFBool value )
 // Date         : May 8, 2002
 // Author       : Thomas Wilkens
@@ -207,8 +174,7 @@ OFBool WlmDataSource::CheckSearchMask( DcmDataset *searchMask )
   searchMask->findAndGetOFString( DCM_SpecificCharacterSet, specificCharacterSet );
 
   // dump some information if required
-  if( verbose )
-    DumpMessage( "Checking the search mask." );
+  DCMWLM_INFO("Checking the search mask.");
 
   // this member variable indicates if we encountered an unsupported
   // optional key attribute in the search mask; initialize it with false.
@@ -261,7 +227,6 @@ void WlmDataSource::CheckNonSequenceElementInSearchMask( DcmDataset *searchMask,
 //                                                   the currently processed element is an attribute.
 // Return Value : none.
 {
-  char msg[300];
   DcmElement *elem = NULL;
 
   // determine current element's tag
@@ -276,8 +241,8 @@ void WlmDataSource::CheckNonSequenceElementInSearchMask( DcmDataset *searchMask,
     {
       // if there is a problem with the current element, increase the corresponding counter and dump an error message.
       invalidMatchingKeyAttributeCount++;
-      sprintf( msg, "WlmDataSource::CheckNonSequenceElementInSearchMask : Error: Matching key attribute (%s) with invalid value encountered in the search mask.", tag.getTagName() );
-      DumpMessage( msg );
+      DCMWLM_WARN("WlmDataSource::CheckNonSequenceElementInSearchMask: Matching key attribute ("
+          << tag.getTagName() << ") with invalid value encountered in the search mask.");
     }
   }
   // if current element is not a supported matching key attribute, determine
@@ -295,11 +260,8 @@ void WlmDataSource::CheckNonSequenceElementInSearchMask( DcmDataset *searchMask,
       // i.e. if the current element's length does not equal 0, we want to dump a warning message.
       if( element->getLength() != 0 )
       {
-        if( verbose )
-        {
-          sprintf( msg, "  - Non-empty return key attribute (%s) encountered in the search mask.\n    The specified value will be overridden.", tag.getTagName() );
-          DumpMessage( msg );
-        }
+        DCMWLM_INFO("  - Non-empty return key attribute (" << tag.getTagName()
+            << ") encountered in the search mask.\n    The specified value will be overridden.");
       }
     }
   }
@@ -325,11 +287,8 @@ void WlmDataSource::CheckNonSequenceElementInSearchMask( DcmDataset *searchMask,
     }
 
     // dump a warning
-    if( verbose )
-    {
-      sprintf( msg, "  - Unsupported (non-sequence) attribute (%s) encountered in the search mask.\n    This attribute will not be existent in any result dataset.", tag.getTagName() );
-      DumpMessage( msg );
-    }
+    DCMWLM_INFO("  - Unsupported (non-sequence) attribute (" << tag.getTagName()
+        << ") encountered in the search mask.\n    This attribute will not be existent in any result dataset.");
 
     // remember this attribute's tag in the list of error elements
     foundUnsupportedOptionalKey = OFTrue;
@@ -359,7 +318,6 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
   // attributes from that particular sequence are in fact queried and shall be returned by the SCP.
   // This implementation accounts for this specification by expanding the search mask correspondingly.
 
-  char msg[300];
   DcmElement *elem = NULL;
 
   // determine current element's tag
@@ -378,8 +336,8 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
       // an empty sequence is not allowed in a C-FIND request
       if (element->getLength() == 0)
       {
-        sprintf( msg, "Warning: Empty sequence (%s) encountered within the query.\n  Treating as if an empty item within the sequence has been sent.", tag.getTagName() );
-        DumpMessage( msg );
+        DCMWLM_WARN("Empty sequence (" << tag.getTagName()
+            << ") encountered within the query.\n  Treating as if an empty item within the sequence has been sent.");
       }
       // if this is the case, we need to check the value of a variable
       // which pertains to a certain command line option
@@ -401,8 +359,8 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
         // we want to dump an error message and we want to increase the corresponding counter.
         PutOffendingElements(tag);
         errorComment->putString("More than 1 item in sequence.");
-        sprintf( msg, "Error: More than one item in sequence (%s) within the query encountered.\n  Discarding all items except for the first one.", tag.getTagName() );
-        DumpMessage( msg );
+        DCMWLM_ERROR("More than one item in sequence (" << tag.getTagName()
+            << ") within the query encountered.\n  Discarding all items except for the first one.");
         invalidMatchingKeyAttributeCount++;
 
         // also, we want to delete all items except the first one
@@ -469,11 +427,8 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
     }
 
     // dump a warning
-    if( verbose )
-    {
-      sprintf( msg, "  - Unsupported (sequence) attribute (%s) encountered in the search mask.\n    This attribute will not be existent in any result dataset.", tag.getTagName() );
-      DumpMessage( msg );
-    }
+    DCMWLM_INFO("  - Unsupported (sequence) attribute (" << tag.getTagName()
+        << ") encountered in the search mask.\n    This attribute will not be existent in any result dataset.");
 
     // remember this attribute's tag in the list of error elements
     foundUnsupportedOptionalKey = OFTrue;
@@ -583,13 +538,13 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
     {
       // this code should never be executed; if it is, there is a logical error
       // in the source code and we want to dump a warning message
-      DumpMessage( "WlmDataSource::ExpandEmptySequenceInSearchMask : Error: Unsupported sequence attribute encountered." );
+      DCMWLM_ERROR("WlmDataSource::ExpandEmptySequenceInSearchMask: Unsupported sequence attribute encountered.");
     }
   }
   else
   {
     // this code should never be executed. if it is, we want to dump a warning message
-    DumpMessage( "WlmDataSource::ExpandEmptySequenceInSearchMask : Error: Unable to find item in sequence." );
+    DCMWLM_ERROR("WlmDataSource::ExpandEmptySequenceInSearchMask: Unable to find item in sequence.");
   }
 }
 
@@ -1207,24 +1162,6 @@ WlmDataSourceStatusType WlmDataSource::CancelFindRequest()
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSource::DumpMessage( const char *message )
-// Date         : December 10, 2001
-// Author       : Thomas Wilkens
-// Task         : This function dumps the given information on a stream.
-//                Used for dumping information in normal, debug and verbose mode.
-// Parameters   : message - [in] The message to dump.
-// Return Value : none.
-{
-  if( logStream != NULL && message != NULL )
-  {
-    logStream->lockCout();
-    logStream->getCout() << message << OFendl;
-    logStream->unlockCout();
-  }
-}
-
-// ----------------------------------------------------------------------------
-
 OFBool WlmDataSource::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement )
 // Date         : December 12, 2001
 // Author       : Thomas Wilkens
@@ -1516,6 +1453,9 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
+** Revision 1.25  2009-11-24 10:40:01  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.24  2009-03-02 17:20:44  joergr
 ** Added attribute name to debug output / error messages where appropriate.
 **

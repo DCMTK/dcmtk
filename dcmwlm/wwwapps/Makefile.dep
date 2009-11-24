@@ -419,5 +419,4 @@ writwlst.o: writwlst.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdebug.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcuid.h

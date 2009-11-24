@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,10 @@
  *   Program to create a worklist file from a WWW CGI perl script generated 
  *   hexedecimal encoded string.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:43 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:40:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/wwwapps/writwlst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,6 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
 
 static char rcsid[] = "$dcmtk: writwlst v"
@@ -79,7 +78,7 @@ usage()
 	"  other test/debug options:\n"
 	"    +V    verbose mode, print actions\n"
 	"    +v    validate input data (currently almost useless)\n"
-	"    +dn   set debug level to n (n=1..9)\n";
+	"    +d    enable debug output\n";
 }
 
 
@@ -391,8 +390,6 @@ parseWorklist(FILE* f, DcmDataset& dset)
 
 int main(int argc, char *argv[])
 {
-    SetDebugLevel(( 0 ));
-
     if (argc < 3) {
 	usage();
         return 1;
@@ -408,8 +405,9 @@ int main(int argc, char *argv[])
     OFBool verifymode = OFFalse;
     OFBool verbosemode = OFFalse;
     // OFBool createFileFormat = OFTrue;
-    int localDebugLevel = 0;
     OFBool keepOverride = OFFalse;
+
+    OFLog::configure();
 
     for (int i=1; i<argc; i++) {
 	char* arg = argv[i];
@@ -485,10 +483,7 @@ int main(int argc, char *argv[])
 		}
 		break;
 	    case 'd':
-		if (sscanf(arg+2, "%d", &localDebugLevel) != 1) {
-		    CERR << "unknown option: " << arg << OFendl;
-		    return 1;
-		}
+		OFLog::configure(OFLogger::DEBUG_LOG_LEVEL);
 		break;
 	    default:
 		CERR << "unknown option: " << arg << OFendl;
@@ -521,8 +516,6 @@ int main(int argc, char *argv[])
 	     << "check environment variable: "
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
-    
-    SetDebugLevel(( localDebugLevel ));
 
     // create dicom metaheader and dataset
 
@@ -590,6 +583,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: writwlst.cc,v $
+ *   Revision 1.7  2009-11-24 10:40:01  uli
+ *   Switched to logging mechanism provided by the "new" oflog module.
+ *
  *   Revision 1.6  2008-04-30 12:38:43  meichel
  *   Fixed compile errors due to changes in attribute tag names
  *

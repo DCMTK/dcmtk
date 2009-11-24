@@ -116,7 +116,8 @@ wlds.o: wlds.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
   ../include/dcmtk/dcmwlm/wlds.h ../include/dcmtk/dcmwlm/wltypdef.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h
+  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h
 wldsfs.o: wldsfs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
@@ -225,6 +226,7 @@ wldsfs.o: wldsfs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
   ../include/dcmtk/dcmwlm/wlds.h ../include/dcmtk/dcmwlm/wltypdef.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
   ../include/dcmtk/dcmwlm/wlfsim.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -341,6 +343,7 @@ wlfsim.o: wlfsim.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -361,6 +364,9 @@ wlfsim.o: wlfsim.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
+  ../include/dcmtk/dcmwlm/wlds.h ../include/dcmtk/dcmwlm/wltypdef.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
@@ -526,6 +532,7 @@ wlmactmg.o: wlmactmg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../include/dcmtk/dcmwlm/wlds.h ../include/dcmtk/dcmwlm/wltypdef.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
@@ -544,6 +551,7 @@ wlmactmg.o: wlmactmg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../../dcmnet/include/dcmtk/dcmnet/diutil.h \
   ../../dcmnet/include/dcmtk/dcmnet/dimse.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \

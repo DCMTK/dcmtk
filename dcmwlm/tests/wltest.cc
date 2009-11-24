@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Worklist Database Test Program
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:37:31 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-24 10:40:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/tests/wltest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,6 @@
 #include "dcmtk/dcmdata/dcvrat.h"
 #include "dcmtk/dcmwlm/wldsfs.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofstd.h"
@@ -58,7 +57,6 @@ static char rcsid[] = "$dcmtk: wltest v"
 
 char* progname = NULL;
 OFBool verbose = OFFalse;
-int debug = 0;
 
 static void
 shortusage()
@@ -80,7 +78,7 @@ parameters:\n\
 options:\n\
     -k key  override query key (gggg,eeee=\"string\")\n\
     -v      verbose mode\n\
-    -d<n>   set debug level <n>\n");
+    -d      debug mode\n");
     exit(1);
 }
 
@@ -194,12 +192,7 @@ int main(int argc, char* argv[])
                 verbose = OFTrue;
                 break;
             case 'd':
-                if (((i + 1) < argc) && (argv[i + 1][0] != '-') &&
-                    (sscanf(argv[i + 1], "%d", &debug) == 1)) {
-                    i++;
-                } else {
-                    debug = 1;
-                }
+                OFLog::configure(OFLogger::DEBUG_LOG_LEVEL);
                 verbose = OFTrue;
                 break;
             case 'k':
@@ -231,8 +224,6 @@ int main(int argc, char* argv[])
             usage();
         }
     }
-
-    SetDebugLevel((debug)); /* dcmdata debugging */
 
     char* dbPath = argv[i];
     i++;
@@ -380,6 +371,9 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
 /*
 ** CVS Log
 ** $Log: wltest.cc,v $
+** Revision 1.8  2009-11-24 10:40:01  uli
+** Switched to logging mechanism provided by the "new" oflog module.
+**
 ** Revision 1.7  2007-02-19 15:37:31  meichel
 ** Removed calls to DcmObject::error()
 **
