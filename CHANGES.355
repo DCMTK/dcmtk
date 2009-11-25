@@ -58,6 +58,7 @@ Changes between releases are documented here.
 
 - Added new source and header file for the module logger.
   Added:   dcmimage/include/dcmtk/dcmimage/dilogger.h
+           dcmimage/libsrc/dilogger.cc
   Affects: dcmimage/include/dcmtk/dcmimage/dicopx.h
            dcmimage/include/dcmtk/dcmimage/diqttype.h
            dcmimage/libsrc/CMakeLists.txt
