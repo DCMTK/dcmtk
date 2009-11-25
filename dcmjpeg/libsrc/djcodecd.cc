@@ -22,8 +22,8 @@
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-17 16:45:21 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2009-11-25 13:36:27 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -540,7 +540,7 @@ OFCondition DJCodecDecoder::encode(
     const DcmCodecParameter * /* cp */,
     DcmStack & /* objStack */) const
 {
-  // we don't support re-coding for now.
+  // we don't support re-coding for now
   return EC_IllegalCall;
 }
 
@@ -565,6 +565,7 @@ OFCondition DJCodecDecoder::determineDecompressedColorModel(
       Uint8 *buffer = new Uint8[bufSize];
       if (buffer != NULL)
       {
+        DCMJPEG_DEBUG("decompressing first frame to determine the decompressed color model");
         // simple approach: decode first frame in order to determine the uncompressed color model
         result = decodeFrame(fromParam, fromPixSeq, cp, dataset, 0 /* frameNo */, startFragment,
           OFstatic_cast(void *, buffer), bufSize, decompressedColorModel);
@@ -573,6 +574,8 @@ OFCondition DJCodecDecoder::determineDecompressedColorModel(
       delete[] buffer;
     }
   }
+  if (result.bad())
+      DCMJPEG_ERROR("can't decompress first frame: " << result.text());
   return result;
 }
 
@@ -818,6 +821,9 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
+ * Revision 1.15  2009-11-25 13:36:27  joergr
+ * Added more logging messages.
+ *
  * Revision 1.14  2009-11-17 16:45:21  joergr
  * Added new method that allows for determining the color model of the
  * decompressed image.
