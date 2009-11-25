@@ -22,8 +22,8 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:38:17 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2009-11-25 15:49:25 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,8 +35,8 @@
 #define DISCALET_H
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofstream.h"
 
@@ -1197,6 +1197,9 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
+ * Revision 1.33  2009-11-25 15:49:25  joergr
+ * Removed inclusion of header file "ofconsol.h".
+ *
  * Revision 1.32  2009-10-28 14:38:17  joergr
  * Fixed minor issues in log output.
  *
