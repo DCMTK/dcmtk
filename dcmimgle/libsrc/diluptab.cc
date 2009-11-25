@@ -22,8 +22,8 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:26:02 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2009-11-25 16:38:19 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcvrus.h"
 
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofcast.h"
@@ -78,7 +79,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
     {
         DcmSequenceOfItems *seq = NULL;
         const unsigned long count = docu->getSequence(sequence, seq);
-        /* store number of items in the option return variable */
+        /* store number of items in the optional return variable */
         if (card != NULL)
             *card = count;
         if ((seq != NULL) && (pos < count))
@@ -101,29 +102,31 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
     OriginalData(NULL)
 {
     Uint16 us = 0;
-    if (DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &descriptor), us, 0) >= 3)     // number of LUT entries
+    const DcmElement *descElem = OFreinterpret_cast(const DcmElement *, &descriptor);
+    if (DiDocument::getElemValue(descElem, us, 0, OFTrue /*allowSigned*/) >= 3)         // number of LUT entries
     {
-        Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                                                // see DICOM supplement 5: "0" => 65536
-        DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &descriptor), FirstEntry, 1);  // can be SS or US (will be type casted later)
+        Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                                 // see DICOM supplement 5: "0" => 65536
+        DiDocument::getElemValue(descElem, FirstEntry, 1, OFTrue /*allowSigned*/);      // can be SS or US (will be type casted later)
         if ((first >= 0) && (FirstEntry != OFstatic_cast(Uint16, first)))
         {
             DCMIMGLE_WARN("invalid value for 'FirstInputValueMapped' in lookup table ("
                 << FirstEntry << ") ... assuming " << first);
             FirstEntry = OFstatic_cast(Uint16, first);
         }
-        DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &descriptor), us, 2);           // bits per entry (only informational)
+        DiDocument::getElemValue(descElem, us, 2, OFTrue /*allowSigned*/);              // bits per entry (only informational)
         unsigned long count = DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &data), Data);
-        OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));                             // store pointer to original data
+        OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));             // store pointer to original data
         if (explanation != NULL)
-            DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, explanation), Explanation); // explanation (free form text)
+            DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, explanation), Explanation);   // explanation (free form text)
         checkTable(count, us, descripMode, status);
      } else {
         if (status != NULL)
         {
             *status = EIS_MissingAttribute;
-            DCMIMGLE_ERROR("incomplete or missing 'LookupTableDescriptor'");
+            DCMIMGLE_ERROR("incomplete or missing 'LookupTableDescriptor' " << descriptor.getTag());
         } else {
-            DCMIMGLE_WARN("incomplete or missing 'LookupTableDescriptor' ... ignoring LUT");
+            DCMIMGLE_WARN("incomplete or missing 'LookupTableDescriptor' " << descriptor.getTag()
+                << " ... ignoring LUT");
         }
      }
 }
@@ -161,23 +164,24 @@ void DiLookupTable::Init(const DiDocument *docu,
                          EI_Status *status)
 {
     Uint16 us = 0;
-    if (docu->getValue(descriptor, us, 0, obj) >= 3)                         // number of LUT entries
+    if (docu->getValue(descriptor, us, 0, obj, OFTrue /*allowSigned*/) >= 3)    // number of LUT entries
     {
-        Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                      // see DICOM supplement 5: "0" => 65536
-        docu->getValue(descriptor, FirstEntry, 1, obj);                      // can be SS or US (will be type casted later)
-        docu->getValue(descriptor, us, 2, obj);                              // bits per entry (only informational)
+        Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                         // see DICOM supplement 5: "0" => 65536
+        docu->getValue(descriptor, FirstEntry, 1, obj, OFTrue /*allowSigned*/); // can be SS or US (will be type casted later)
+        docu->getValue(descriptor, us, 2, obj, OFTrue /*allowSigned*/);         // bits per entry (only informational)
         unsigned long count = docu->getValue(data, Data, obj);
-        OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));  // store pointer to original data
+        OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));     // store pointer to original data
         if (explanation != DcmTagKey(0, 0))
-            docu->getValue(explanation, Explanation, 0 /*vm pos*/, obj);     // explanation (free form text)
+            docu->getValue(explanation, Explanation, 0 /*vm pos*/, obj);        // explanation (free form text)
         checkTable(count, us, descripMode, status);
     } else {
         if (status != NULL)
         {
             *status = EIS_MissingAttribute;
-            DCMIMGLE_ERROR("incomplete or missing 'LookupTableDescriptor'");
+            DCMIMGLE_ERROR("incomplete or missing 'LookupTableDescriptor' " << descriptor);
         } else {
-            DCMIMGLE_WARN("incomplete or missing 'LookupTableDescriptor' ... ignoring LUT");
+            DCMIMGLE_WARN("incomplete or missing 'LookupTableDescriptor' " << descriptor
+                << " ... ignoring LUT");
         }
     }
 }
@@ -556,6 +560,10 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
+ * Revision 1.38  2009-11-25 16:38:19  joergr
+ * Fixed issue with LUT Descriptor elements using the value representation SS.
+ * Revised logging messages.
+ *
  * Revision 1.37  2009-10-28 14:26:02  joergr
  * Fixed minor issues in log output.
  *
