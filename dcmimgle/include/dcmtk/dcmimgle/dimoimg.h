@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-18 11:01:28 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2009-11-25 16:06:14 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #define DIMOIMG_H
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/ofstd/ofcast.h"
 
@@ -102,6 +103,14 @@ class DiMonoImage
     /** destructor
      */
     virtual ~DiMonoImage();
+
+    /** process next couple of frames
+     *
+     ** @param  fcount  number of frames to be processed (0 = same number as before)
+     *
+     ** @return status, true if successful, false otherwise
+     */
+    virtual int processNextFrames(const unsigned long fcount);
 
     /** get minimum and maximum pixel values.
      *  the resulting pixel values are stored in 'double' variables to avoid problems
@@ -1143,6 +1152,9 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
+ * Revision 1.53  2009-11-25 16:06:14  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ *
  * Revision 1.52  2008-11-18 11:01:28  joergr
  * Fixed issue with incorrectly encoded overlay planes (wrong values for
  * OverlayBitsAllocated and OverlayBitPosition).
