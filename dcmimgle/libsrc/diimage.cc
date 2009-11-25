@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:26:02 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2009-11-25 16:39:17 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcswap.h"
+#include "dcmtk/dcmdata/dcuid.h"
 
 #include "dcmtk/dcmimgle/diimage.h"
 #include "dcmtk/dcmimgle/diinpxt.h"
@@ -67,6 +68,7 @@ DiImage::DiImage(const DiDocument *docu,
     BitsStored(0),
     HighBit(0),
     BitsPerSample(0),
+    SamplesPerPixel(spp),
     Polarity(EPP_Normal),
     hasSignedRepresentation(0),
     hasPixelSpacing(0),
@@ -74,7 +76,9 @@ DiImage::DiImage(const DiDocument *docu,
     hasNominalScannedPixelSpacing(0),
     hasPixelAspectRatio(0),
     isOriginal(1),
-    InputData(NULL)
+    InputData(NULL),
+    FileCache(),
+    CurrentFragment(0)
 {
     if ((Document != NULL) && (ImageStatus == EIS_Normal))
     {
@@ -129,34 +133,26 @@ DiImage::DiImage(const DiDocument *docu,
             BitsPerSample = BitsStored;
             hasSignedRepresentation = (us == 1);
             if ((us != 0) && (us != 1))
-            {
                 DCMIMGLE_WARN("invalid value for 'PixelRepresentation' (" << us << ") ... assuming 'unsigned' (0)");
-            }
             if (!(Document->getFlags() & CIF_UsePresentationState))
             {
                 hasPixelSpacing = (Document->getValue(DCM_PixelSpacing, PixelHeight, 0) > 0);
                 if (hasPixelSpacing)
                 {
                     if (Document->getValue(DCM_PixelSpacing, PixelWidth, 1) < 2)
-                    {
                         DCMIMGLE_WARN("missing second value for 'PixelSpacing' ... assuming 'Width' = " << PixelWidth);
-                    }
                 } else {
                     hasImagerPixelSpacing = (Document->getValue(DCM_ImagerPixelSpacing, PixelHeight, 0) > 0);
                     if (hasImagerPixelSpacing)
                     {
                         if (Document->getValue(DCM_ImagerPixelSpacing, PixelWidth, 1) < 2)
-                        {
                             DCMIMGLE_WARN("missing second value for 'ImagerPixelSpacing' ... assuming 'Width' = " << PixelWidth);
-                        }
                     } else {
                         hasNominalScannedPixelSpacing = (Document->getValue(DCM_NominalScannedPixelSpacing, PixelHeight, 0) > 0);
                         if (hasNominalScannedPixelSpacing)
                         {
                             if (Document->getValue(DCM_NominalScannedPixelSpacing, PixelWidth, 1) < 2)
-                            {
                                 DCMIMGLE_WARN("missing second value for 'NominalScannedPixelSpacing' ... assuming 'Width' = " << PixelWidth);
-                            }
                         } else {
                             Sint32 sl2;
                             hasPixelAspectRatio = (Document->getValue(DCM_PixelAspectRatio, sl2, 0) > 0);
@@ -164,9 +160,8 @@ DiImage::DiImage(const DiDocument *docu,
                             {
                                 PixelHeight = sl2;
                                 if (Document->getValue(DCM_PixelAspectRatio, sl2, 1) < 2)
-                                {
                                     DCMIMGLE_WARN("missing second value for 'PixelAspectRatio' ... assuming 'Width' = " << PixelWidth);
-                                } else
+                                else
                                     PixelWidth = sl2;
                             } else {
                                 PixelWidth = 1;
@@ -177,16 +172,10 @@ DiImage::DiImage(const DiDocument *docu,
                 }
                 checkPixelExtension();
             }
-            DcmStack pstack;
-            // get pixel data (if present)
-            if (ok && Document->search(DCM_PixelData, pstack))
+            if (ok && (Document->getPixelData() != NULL))
             {
-                DcmPixelData *pixel = OFstatic_cast(DcmPixelData *, pstack.top());
-                // check whether pixel data exists unencapsulated (decompression already done in DiDocument)
-                if ((pixel != NULL) && (DcmXfer(Document->getTransferSyntax()).isNotEncapsulated()))
-                    convertPixelData(pixel, spp);
-                else
-                    ImageStatus = EIS_InvalidValue;
+                // convert pixel data (if present)
+                convertPixelData();
             } else {
                 ImageStatus = EIS_MissingAttribute;
                 DCMIMGLE_ERROR("one or more mandatory attributes are missing in image pixel module");
@@ -218,6 +207,7 @@ DiImage::DiImage(const DiDocument *docu,
     BitsStored(0),
     HighBit(0),
     BitsPerSample(0),
+    SamplesPerPixel(0),
     Polarity(EPP_Normal),
     hasSignedRepresentation(0),
     hasPixelSpacing(0),
@@ -225,7 +215,9 @@ DiImage::DiImage(const DiDocument *docu,
     hasNominalScannedPixelSpacing(0),
     hasPixelAspectRatio(0),
     isOriginal(1),
-    InputData(NULL)
+    InputData(NULL),
+    FileCache(),
+    CurrentFragment(0)
 {
 }
 
@@ -247,6 +239,7 @@ DiImage::DiImage(const DiImage *image,
     BitsStored(image->BitsStored),
     HighBit(image->HighBit),
     BitsPerSample(image->BitsPerSample),
+    SamplesPerPixel(image->SamplesPerPixel),
     Polarity(image->Polarity),
     hasSignedRepresentation(image->hasSignedRepresentation),
     hasPixelSpacing(image->hasPixelSpacing),
@@ -254,7 +247,9 @@ DiImage::DiImage(const DiImage *image,
     hasNominalScannedPixelSpacing(image->hasNominalScannedPixelSpacing),
     hasPixelAspectRatio(image->hasPixelAspectRatio),
     isOriginal(0),
-    InputData(NULL)
+    InputData(NULL),
+    FileCache(),
+    CurrentFragment(0)
 {
 }
 
@@ -279,6 +274,7 @@ DiImage::DiImage(const DiImage *image,
     BitsStored(image->BitsStored),
     HighBit(image->HighBit),
     BitsPerSample(image->BitsPerSample),
+    SamplesPerPixel(image->SamplesPerPixel),
     Polarity(image->Polarity),
     hasSignedRepresentation(image->hasSignedRepresentation),
     hasPixelSpacing(0),
@@ -286,7 +282,9 @@ DiImage::DiImage(const DiImage *image,
     hasNominalScannedPixelSpacing(0),
     hasPixelAspectRatio(0),
     isOriginal(0),
-    InputData(NULL)
+    InputData(NULL),
+    FileCache(),
+    CurrentFragment(0)
 {
     /* we do not check for "division by zero", this is already done somewhere else */
     const double xfactor = OFstatic_cast(double, Columns) / OFstatic_cast(double, image->Columns);
@@ -342,6 +340,7 @@ DiImage::DiImage(const DiImage *image,
     BitsStored(image->BitsStored),
     HighBit(image->HighBit),
     BitsPerSample(image->BitsPerSample),
+    SamplesPerPixel(image->SamplesPerPixel),
     Polarity(image->Polarity),
     hasSignedRepresentation(image->hasSignedRepresentation),
     hasPixelSpacing(image->hasPixelSpacing),
@@ -349,7 +348,9 @@ DiImage::DiImage(const DiImage *image,
     hasNominalScannedPixelSpacing(image->hasNominalScannedPixelSpacing),
     hasPixelAspectRatio(image->hasPixelAspectRatio),
     isOriginal(0),
-    InputData(NULL)
+    InputData(NULL),
+    FileCache(),
+    CurrentFragment(0)
 {
 }
 
@@ -372,6 +373,7 @@ DiImage::DiImage(const DiImage *image,
     BitsStored(stored),
     HighBit(stored - 1),
     BitsPerSample(image->BitsPerSample),
+    SamplesPerPixel(image->SamplesPerPixel),
     Polarity(image->Polarity),
     hasSignedRepresentation(0),
     hasPixelSpacing(image->hasPixelSpacing),
@@ -379,7 +381,9 @@ DiImage::DiImage(const DiImage *image,
     hasNominalScannedPixelSpacing(image->hasNominalScannedPixelSpacing),
     hasPixelAspectRatio(image->hasPixelAspectRatio),
     isOriginal(0),
-    InputData(NULL)
+    InputData(NULL),
+    FileCache(),
+    CurrentFragment(0)
 {
 }
 
@@ -391,6 +395,35 @@ DiImage::DiImage(const DiImage *image,
 DiImage::~DiImage()
 {
     delete InputData;
+}
+
+
+/*********************************************************************/
+
+
+int DiImage::processNextFrames(const unsigned long fcount)
+{
+    if ((ImageStatus == EIS_Normal) && (Document != NULL) && isOriginal)
+    {
+        if ((Document->getFlags() & CIF_UsePartialAccessToPixelData) && (Document->getPixelData() != NULL))
+        {
+            // check whether there are still any frames to be processed
+            if (FirstFrame + NumberOfFrames < TotalNumberOfFrames)
+            {
+                if (fcount > 0)
+                    NumberOfFrames = fcount;
+                FirstFrame += NumberOfFrames;
+                if (FirstFrame + NumberOfFrames > TotalNumberOfFrames)
+                    NumberOfFrames = TotalNumberOfFrames - FirstFrame;
+                // free memory of previously processed frames
+                deleteInputData();
+                // create new input data representation
+                convertPixelData();
+                return (ImageStatus == EIS_Normal);
+            }
+        }
+    }
+    return 0;
 }
 
 
@@ -453,16 +486,28 @@ void DiImage::checkPixelExtension()
 }
 
 
-void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
-                               const int spp /*samplePerPixel*/)
+void DiImage::convertPixelData()
 {
+    // pointer is already checked for not being NULL
+    DcmPixelData *pixel = Document->getPixelData();
+    const DcmEVR evr = pixel->getVR();
+    const OFBool compressed = Document->isCompressed();
+    const char *xferUID = DcmXfer(Document->getTransferSyntax()).getXferID();
+    const char *xferName = dcmFindNameOfUID(xferUID);
+    // output some useful information, e.g. for tracing purposes
+    DCMIMGLE_TRACE("Pixel Data VR: " << DcmVR(evr).getVRName() << ", " << (compressed ? "Compressed" : "Uncompressed")
+        << " (" << ((xferName != NULL) ? xferName : xferUID) << ")");
+    DCMIMGLE_TRACE("First frame: " << FirstFrame << ", Number of frames: " << NumberOfFrames
+        << ", Total number of frames: " << TotalNumberOfFrames);
+    DCMIMGLE_TRACE("Columns: " << Columns << ", Rows: " << Rows << ", Samples per Pixel: " << SamplesPerPixel
+        << ", Photometric Interpretation: " << Document->getPhotometricInterpretation());
+    DCMIMGLE_TRACE("Bits Allocated: " << BitsAllocated << ", Bits Stored: " << BitsStored << ", High Bit: " << HighBit
+        << ", " << (hasSignedRepresentation ? "Signed" : "Unsigned") << " integer");
     /* check for valid/supported pixel data encoding */
-    if ((pixel->getVR() == EVR_OW) || ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 16)))
+    if ((evr == EVR_OW) || ((evr == EVR_OB) && (compressed || (BitsAllocated <= 16))))
     {
-        const unsigned long start = FirstFrame * OFstatic_cast(unsigned long, Rows) *
-            OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, spp);
-        const unsigned long count = NumberOfFrames * OFstatic_cast(unsigned long, Rows) *
-            OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, spp);
+        const unsigned long fsize = OFstatic_cast(unsigned long, Rows) * OFstatic_cast(unsigned long, Columns) *
+            OFstatic_cast(unsigned long, SamplesPerPixel);
         if ((BitsAllocated < 1) || (BitsStored < 1) || (BitsAllocated < BitsStored) ||
             (BitsStored > OFstatic_cast(Uint16, HighBit + 1)))
         {
@@ -471,43 +516,53 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
                 << "'BitsStored' (" << BitsStored << ") and/or 'HighBit' (" << HighBit << ")");
             return;
         }
-        else if ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 8))
-        {
-            if (hasSignedRepresentation)
-                InputData = new DiInputPixelTemplate<Uint8, Sint8>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
-            else
-                InputData = new DiInputPixelTemplate<Uint8, Uint8>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
-        }
-        // allow non-standard encoding of pixel data
-        else if ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 16))
+        else if ((evr == EVR_OB) && (BitsStored <= 8))
         {
             // report a warning message on this standard violation
-            DCMIMGLE_WARN("invalid value for 'BitsAllocated' (" << BitsAllocated << "), > 8 for OB encoded 'PixelData'");
+            if (!compressed && (BitsAllocated > 8))
+                DCMIMGLE_WARN("invalid value for 'BitsAllocated' (" << BitsAllocated << "), > 8 for OB encoded uncompressed 'PixelData'");
             if (hasSignedRepresentation)
-                InputData = new DiInputPixelTemplate<Uint8, Sint16>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+                InputData = new DiInputPixelTemplate<Uint8, Sint8>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
             else
-                InputData = new DiInputPixelTemplate<Uint8, Uint16>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+                InputData = new DiInputPixelTemplate<Uint8, Uint8>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
         }
-        else if (BitsStored <= bitsof(Uint8))
+        else if ((evr == EVR_OB) && (BitsStored <= 16))
+        {
+            // report a warning message on this standard violation
+            if (!compressed && (BitsAllocated > 8))
+                DCMIMGLE_WARN("invalid value for 'BitsAllocated' (" << BitsAllocated << "), > 8 for OB encoded uncompressed 'PixelData'");
+            if (hasSignedRepresentation)
+                InputData = new DiInputPixelTemplate<Uint8, Sint16>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
+            else
+                InputData = new DiInputPixelTemplate<Uint8, Uint16>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
+        }
+        else if ((evr == EVR_OB) && compressed && (BitsStored <= 32))
         {
             if (hasSignedRepresentation)
-                InputData = new DiInputPixelTemplate<Uint16, Sint8>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+                InputData = new DiInputPixelTemplate<Uint8, Sint32>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
             else
-                InputData = new DiInputPixelTemplate<Uint16, Uint8>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+                InputData = new DiInputPixelTemplate<Uint8, Uint32>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
         }
-        else if (BitsStored <= bitsof(Uint16))
+        else if (BitsStored <= 8)
         {
             if (hasSignedRepresentation)
-                InputData = new DiInputPixelTemplate<Uint16, Sint16>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+                InputData = new DiInputPixelTemplate<Uint16, Sint8>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
             else
-                InputData = new DiInputPixelTemplate<Uint16, Uint16>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+                InputData = new DiInputPixelTemplate<Uint16, Uint8>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
         }
-        else if (BitsStored <= bitsof(Uint32))
+        else if (BitsStored <= 16)
         {
             if (hasSignedRepresentation)
-                InputData = new DiInputPixelTemplate<Uint16, Sint32>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+                InputData = new DiInputPixelTemplate<Uint16, Sint16>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
             else
-                InputData = new DiInputPixelTemplate<Uint16, Uint32>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+                InputData = new DiInputPixelTemplate<Uint16, Uint16>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
+        }
+        else if (BitsStored <= 32)
+        {
+            if (hasSignedRepresentation)
+                InputData = new DiInputPixelTemplate<Uint16, Sint32>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
+            else
+                InputData = new DiInputPixelTemplate<Uint16, Uint32>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
         }
         else    /* BitsStored > 32 !! */
         {
@@ -519,6 +574,11 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
         {
             ImageStatus = EIS_MemoryFailure;
             DCMIMGLE_ERROR("can't allocate memory for input-representation");
+        }
+        else if (InputData->getData() == NULL)
+        {
+            ImageStatus = EIS_InvalidImage;
+            DCMIMGLE_ERROR("can't convert input pixel data, probably unsupported compression");
         }
         else if (InputData->getPixelStart() >= InputData->getCount())
         {
@@ -537,16 +597,23 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
 
 int DiImage::detachPixelData()
 {
-    if ((Document != NULL) && (Document->getFlags() & CIF_MayDetachPixelData))
+    if ((Document != NULL) && isOriginal)
     {
-        /* get DICOM dataset */
-        DcmDataset *dataset = OFstatic_cast(DcmDataset *, Document->getDicomObject());
-        if (dataset != NULL)
+        if (Document->getFlags() & CIF_MayDetachPixelData)
         {
-            /* insert new, empty PixelData element */
-            dataset->putAndInsertUint16Array(DCM_PixelData, NULL, 0, OFTrue /*replaceOld*/);
-            DCMIMGLE_DEBUG("detach pixel data");
-            return 1;
+            /* do not detach if partial access is enabled */
+            if (!(Document->getFlags() & CIF_UsePartialAccessToPixelData) || (FirstFrame + NumberOfFrames >= TotalNumberOfFrames))
+            {
+                DcmPixelData *pixel = Document->getPixelData();
+                if (pixel != NULL)
+                {
+                    DCMIMGLE_DEBUG("detach pixel data");
+                    /* clear pixel data value */
+                    pixel->putUint16Array(NULL, 0);
+                    return 1;
+                }
+            } else
+                DCMIMGLE_DEBUG("do not detach pixel data because of partial access");
         }
     }
     return 0;
@@ -783,6 +850,9 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
+ * Revision 1.43  2009-11-25 16:39:17  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ *
  * Revision 1.42  2009-10-28 14:26:02  joergr
  * Fixed minor issues in log output.
  *
