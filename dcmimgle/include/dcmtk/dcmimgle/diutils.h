@@ -22,8 +22,8 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-17 17:55:47 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2009-11-25 14:59:11 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,9 +150,11 @@ enum EP_Interpretation
  */
 struct SP_Interpretation
 {
-    /// string
+    /// string (name of the color model without spaces and underscores)
     const char *Name;
-    /// constant
+    /// defined term according to the DICOM standard
+    const char *DefinedTerm;
+    /// integer constant
     EP_Interpretation Type;
 };
 
@@ -317,17 +319,17 @@ enum EL_BitsPerTableEntry
 
 const SP_Interpretation PhotometricInterpretationNames[] =
 {
-    {"MONOCHROME1",   EPI_Monochrome1},
-    {"MONOCHROME2",   EPI_Monochrome2},
-    {"PALETTECOLOR",  EPI_PaletteColor},        // space deleted to simplify detection
-    {"RGB",           EPI_RGB},
-    {"HSV",           EPI_HSV},
-    {"ARGB",          EPI_ARGB},
-    {"CMYK",          EPI_CMYK},
-    {"YBRFULL",       EPI_YBR_Full},            // underscore deleted to simplify detection
-    {"YBRFULL422",    EPI_YBR_Full_422},        // underscores deleted to simplify detection
-    {"YBRPARTIAL422", EPI_YBR_Partial_422},     // underscores deleted to simplify detection
-    {NULL,            EPI_Unknown}
+    {"MONOCHROME1",   "MONOCHROME1",     EPI_Monochrome1},
+    {"MONOCHROME2",   "MONOCHROME2",     EPI_Monochrome2},
+    {"PALETTECOLOR",  "PALETTE COLOR",   EPI_PaletteColor},        // space deleted to simplify detection
+    {"RGB",           "RGB",             EPI_RGB},
+    {"HSV",           "HSV",             EPI_HSV},
+    {"ARGB",          "ARGB",            EPI_ARGB},
+    {"CMYK",          "CMYK",            EPI_CMYK},
+    {"YBRFULL",       "YBR_FULL",        EPI_YBR_Full},            // underscore deleted to simplify detection
+    {"YBRFULL422",    "YBR_FULL_422",    EPI_YBR_Full_422},        // underscores deleted to simplify detection
+    {"YBRPARTIAL422", "YBR_PARTIAL_422", EPI_YBR_Partial_422},     // underscores deleted to simplify detection
+    {NULL,            NULL,              EPI_Unknown}
 };
 
 
@@ -431,6 +433,9 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
+ * Revision 1.38  2009-11-25 14:59:11  joergr
+ * Added list of Defined Terms for the attribute PhotometricInterpretation.
+ *
  * Revision 1.37  2009-11-17 17:55:47  joergr
  * Added new enum value for missing photometric interpretation value.
  * Added new configuration flags for the upcoming support of partial access to
