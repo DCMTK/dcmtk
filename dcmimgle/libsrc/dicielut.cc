@@ -22,8 +22,8 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:26:01 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2009-11-25 16:11:03 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,6 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmimgle/dicielut.h"
 
 #define INCLUDE_CMATH
@@ -214,6 +213,9 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
+ * Revision 1.26  2009-11-25 16:11:03  joergr
+ * Removed inclusion of header file "ofconsol.h".
+ *
  * Revision 1.25  2009-10-28 14:26:01  joergr
  * Fixed minor issues in log output.
  *

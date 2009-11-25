@@ -22,8 +22,8 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:26:01 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2009-11-25 16:11:03 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,7 @@
 
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofconsol.h"
+
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/dcmimgle/didispfn.h"
 #include "dcmtk/dcmimgle/displint.h"
@@ -693,6 +693,9 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
+ * Revision 1.48  2009-11-25 16:11:03  joergr
+ * Removed inclusion of header file "ofconsol.h".
+ *
  * Revision 1.47  2009-10-28 14:26:01  joergr
  * Fixed minor issues in log output.
  *

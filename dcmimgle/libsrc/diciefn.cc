@@ -22,8 +22,8 @@
  *  Purpose: DicomCIELABFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:26:01 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2009-11-25 16:11:03 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,7 @@
 
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofconsol.h"
+
 #include "dcmtk/dcmimgle/diciefn.h"
 #include "dcmtk/ofstd/ofstream.h"
 
@@ -255,6 +255,9 @@ int DiCIELABFunction::writeCurveData(const char *filename,
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
+ * Revision 1.25  2009-11-25 16:11:03  joergr
+ * Removed inclusion of header file "ofconsol.h".
+ *
  * Revision 1.24  2009-10-28 14:26:01  joergr
  * Fixed minor issues in log output.
  *

@@ -22,8 +22,8 @@
  *  Purpose: Utilities (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:26:02 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2009-11-25 16:09:50 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,15 +32,15 @@
 
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
-#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 #include "dcmtk/dcmimgle/diutils.h"
 
-#include "dcmtk/ofstd/ofstream.h"
-
 #define INCLUDE_CMATH
 #include "dcmtk/ofstd/ofstdinc.h"
+
 
 /*------------------------*
  *  function definitions  *
@@ -145,6 +145,9 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
  *
  * CVS/RCS Log:
  * $Log: diutils.cc,v $
+ * Revision 1.19  2009-11-25 16:09:50  joergr
+ * Removed inclusion of header file "ofconsol.h".
+ *
  * Revision 1.18  2009-10-28 14:26:02  joergr
  * Fixed minor issues in log output.
  *
