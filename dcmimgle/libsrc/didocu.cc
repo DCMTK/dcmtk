@@ -22,8 +22,8 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:26:01 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2009-11-25 16:35:42 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/ofstd/ofstring.h"
 
@@ -49,14 +50,15 @@ DiDocument::DiDocument(const char *filename,
                        const unsigned long fcount)
   : Object(NULL),
     FileFormat(new DcmFileFormat()),
+    PixelData(NULL),
     Xfer(EXS_Unknown),
     FrameStart(fstart),
     FrameCount(fcount),
-    Flags(flags)
+    Flags(flags),
+    PhotometricInterpretation()
 {
     if (FileFormat)
     {
-
         if (FileFormat->loadFile(filename).bad())
         {
             DCMIMGLE_ERROR("can't read file '" << filename << "'");
@@ -81,10 +83,12 @@ DiDocument::DiDocument(DcmObject *object,
                        const unsigned long fcount)
   : Object(NULL),
     FileFormat(NULL),
+    PixelData(NULL),
     Xfer(xfer),
     FrameStart(fstart),
     FrameCount(fcount),
-    Flags(flags)
+    Flags(flags),
+    PhotometricInterpretation()
 {
     if (object != NULL)
     {
@@ -109,26 +113,39 @@ DiDocument::DiDocument(DcmObject *object,
 void DiDocument::convertPixelData()
 {
     DcmStack pstack;
-    // convert pixel data to uncompressed format if required
+    DCMIMGLE_DEBUG("transfer syntax of DICOM dataset: " << DcmXfer(Xfer).getXferName());
     if (search(DCM_PixelData, pstack))
     {
-        DcmPixelData *pixel = OFstatic_cast(DcmPixelData *, pstack.top());
-        pstack.clear();
-        // push reference to DICOM dataset on the stack (required for decompression process)
-        pstack.push(Object);
-        // dummy stack entry
-        pstack.push(pixel);
-        if ((pixel != NULL) && pixel->chooseRepresentation(EXS_LittleEndianExplicit, NULL, pstack).good())
+        PixelData = OFstatic_cast(DcmPixelData *, pstack.top());
+        if (PixelData != NULL)
         {
-            // set transfer syntax to unencapsulated/uncompressed
-            if (DcmXfer(Xfer).isEncapsulated())
-                Xfer = EXS_LittleEndianExplicit;
-        } else {
-            DCMIMGLE_ERROR("cannot change to unencapsulated representation for pixel data");
-        }
-    } else {
+            // convert pixel data to uncompressed format (if required)
+            if ((Flags & CIF_DecompressCompletePixelData) || !(Flags & CIF_UsePartialAccessToPixelData))
+            {
+                pstack.clear();
+                // push reference to DICOM dataset on the stack (required for decompression process)
+                pstack.push(Object);
+                // dummy stack entry
+                pstack.push(PixelData);
+                if (PixelData->chooseRepresentation(EXS_LittleEndianExplicit, NULL, pstack).good())
+                {
+                    // set transfer syntax to unencapsulated/uncompressed
+                    if (DcmXfer(Xfer).isEncapsulated())
+                    {
+                        Xfer = EXS_LittleEndianExplicit;
+                        const Uint32 length = PixelData->getLength(Xfer);
+                        DCMIMGLE_DEBUG("decompressed complete pixel data in memory: " << length << " bytes");
+                    }
+                } else
+                    DCMIMGLE_ERROR("can't change to unencapsulated representation for pixel data");
+            }
+            // determine color model of the decompressed image
+            if (PixelData->getDecompressedColorModel(OFstatic_cast(DcmDataset *, Object), PhotometricInterpretation).bad())
+                DCMIMGLE_ERROR("can't determine 'PhotometricInterpretation' of decompressed image");
+        } else
+            DCMIMGLE_ERROR("invalid pixel data in DICOM dataset");
+    } else
         DCMIMGLE_ERROR("no pixel data found in DICOM dataset");
-    }
 }
 
 
@@ -196,9 +213,10 @@ unsigned long DiDocument::getVM(const DcmTagKey &tag) const
 unsigned long DiDocument::getValue(const DcmTagKey &tag,
                                    Uint16 &returnVal,
                                    const unsigned long pos,
-                                   DcmObject *item) const
+                                   DcmObject *item,
+                                   const OFBool allowSigned) const
 {
-    return getElemValue(search(tag, item), returnVal, pos);
+    return getElemValue(search(tag, item), returnVal, pos, allowSigned);
 }
 
 
@@ -270,7 +288,7 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
         {
             returnVal = val;
             const DcmEVR vr = elem->getVR();
-            if ((vr == EVR_OW) || (vr == EVR_lt))
+            if ((vr == EVR_OB) || (vr == EVR_OW) || (vr == EVR_lt))
                 return elem->getLength(Xfer) / sizeof(Uint16);
             return elem->getVM();
         }
@@ -308,13 +326,29 @@ unsigned long DiDocument::getSequence(const DcmTagKey &tag,
 
 unsigned long DiDocument::getElemValue(const DcmElement *elem,
                                        Uint16 &returnVal,
-                                       const unsigned long pos)
+                                       const unsigned long pos,
+                                       const OFBool allowSigned)
 {
     if (elem != NULL)
     {
         // remove 'const' to use non-const methods
         if (OFconst_cast(DcmElement *, elem)->getUint16(returnVal, pos).good())
             return OFconst_cast(DcmElement *, elem)->getVM();
+        else if (allowSigned)
+        {
+            // try to retrieve signed value ...
+            Sint16 value = 0;
+            if (OFconst_cast(DcmElement *, elem)->getSint16(value, pos).good())
+            {
+                // ... and cast to unsigned type
+                returnVal = OFstatic_cast(Uint16, value);
+                DCMIMGLE_TRACE("retrieved signed value (" << value << ") at position " << pos
+                    << " from element " << OFconst_cast(DcmElement *, elem)->getTag()
+                    << ", VR=" << DcmVR(OFconst_cast(DcmElement *, elem)->getVR()).getVRName()
+                    << ", VM=" << OFconst_cast(DcmElement *, elem)->getVM());
+                return OFconst_cast(DcmElement *, elem)->getVM();
+            }
+        }
     }
     return 0;
 }
@@ -375,6 +409,11 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
+ * Revision 1.23  2009-11-25 16:35:42  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ * Fixed issue with attributes that use a value representation of US or SS.
+ * Added more logging messages.
+ *
  * Revision 1.22  2009-10-28 14:26:01  joergr
  * Fixed minor issues in log output.
  *
