@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:07 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-25 13:31:05 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,6 +91,7 @@ class DicomDirImagePlugin
      *  @param frame index of the frame to be scaled (0..n-1)
      *  @param width width of the destination image
      *  @param height height of the destination image
+     *  @param decompressAll always decompress complete pixel data if true
      *  @return OFTrue if successful, OFFalse otherwise
      */
     virtual OFBool scaleImage(DcmItem *dataset,
@@ -98,7 +99,8 @@ class DicomDirImagePlugin
                               const unsigned long count,
                               const unsigned long frame,
                               const unsigned int width,
-                              const unsigned int height) const = 0;
+                              const unsigned int height,
+                              const OFBool decompressAll = OFFalse) const = 0;
 
   protected:
 
@@ -1440,6 +1442,9 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.16  2009-11-25 13:31:05  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ *
  * Revision 1.15  2009-11-04 09:58:07  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

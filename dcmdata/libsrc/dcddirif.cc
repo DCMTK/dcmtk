@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:11:20 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2009-11-25 13:30:51 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3573,53 +3573,9 @@ OFBool DicomDirInterface::getIconFromDataset(DcmItem *dataset,
                 frame = 1;
         } else if (frame > fCount)
             frame = fCount;
-        /* optimization for compressed multiframe images */
-        if (fCount > 1)
-        {
-            DcmElement *delem = NULL;
-            /* search for PixelData element on top-level */
-            if (dataset->findAndGetElement(DCM_PixelData, delem, OFFalse /*searchIntoSub*/).good())
-            {
-                DcmPixelData *dpix = OFstatic_cast(DcmPixelData *, delem);
-                /* get pixel data sequence (if available) */
-                E_TransferSyntax xfer = EXS_Unknown;
-                const DcmRepresentationParameter *param = NULL;
-                dpix->getOriginalRepresentationKey(xfer, param);
-                if ((xfer != EXS_Unknown) && DcmXfer(xfer).isEncapsulated())
-                {
-                    DcmPixelSequence *pixSeq = NULL;
-                    if (dpix->getEncapsulatedRepresentation(xfer, param, pixSeq).good() && (pixSeq != NULL))
-                    {
-                        /* check whether each frame is stored in a separate pixel item */
-                        if (pixSeq->card() == OFstatic_cast(unsigned long, fCount + 1))
-                        {
-                            DcmPixelItem *pixItem = NULL;
-                            long i;
-                            /* delete all pixel items (apart from item #0) before ... */
-                            for (i = 1; i < frame; i++)
-                            {
-                                if (pixSeq->remove(pixItem, 1).good())
-                                    delete pixItem;
-                            }
-                            /* ... and after representative frame/item */
-                            for (i = frame; i < fCount; i++)
-                            {
-                                if (pixSeq->remove(pixItem, 2).good())
-                                    delete pixItem;
-                            }
-                            /* and finally, only 1 frame remains */
-                            frame = 1;
-                            fCount = 1;
-                            /* adjust attributes in dataset to avoid errors in dcmimage */
-                            dataset->putAndInsertString(DCM_NumberOfFrames, "1");
-                            dataset->putAndInsertUint16(DCM_RepresentativeFrameNumber, 1);
-                        }
-                    }
-                }
-            }
-        }
         /* scale image (if required) and retrieve pixel data from dataset */
-        result = ImagePlugin->scaleImage(dataset, pixel, count, OFstatic_cast(unsigned long, frame), width, height);
+        result = ImagePlugin->scaleImage(dataset, pixel, count, OFstatic_cast(unsigned long, frame),
+            width, height, (fCount == 1) /*decompressAll*/);
     }
     return result;
 }
@@ -4918,6 +4874,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.33  2009-11-25 13:30:51  joergr
+ *  Adapted code for new approach to access individual frames of a DICOM image.
+ *
  *  Revision 1.32  2009-11-13 13:11:20  joergr
  *  Fixed minor issues in log output.
  *
