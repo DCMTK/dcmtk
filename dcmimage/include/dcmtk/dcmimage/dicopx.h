@@ -22,8 +22,8 @@
  *  Purpose: DicomColorPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-13 10:03:34 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2009-11-25 14:36:20 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "dcmtk/config/osconfig.h"
 
+#include "dcmtk/dcmimage/dilogger.h"
 #include "dcmtk/dcmimgle/dipixel.h"
 #include "dcmtk/dcmimgle/diutils.h"
 
@@ -182,6 +183,9 @@ class DiColorPixel
  *
  * CVS/RCS Log:
  * $Log: dicopx.h,v $
+ * Revision 1.18  2009-11-25 14:36:20  joergr
+ * Added new source and header file for the module logger.
+ *
  * Revision 1.17  2008-05-13 10:03:34  joergr
  * Fixed issue with multi-frame color images: writeImageToDataset() used wrong
  * format for color-by-plane output.

@@ -22,8 +22,8 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:23:56 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2009-11-25 14:43:36 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcpixel.h"
@@ -44,13 +45,8 @@
 #include "dcmtk/dcmimage/dicoflt.h"
 #include "dcmtk/dcmimage/dicorot.h"
 #include "dcmtk/dcmimage/dicoopxt.h"
+#include "dcmtk/dcmimage/dilogger.h"
 #include "dcmtk/dcmimgle/diutils.h"
-
-OFLogger DCM_dcmimageGetLogger()
-{
-    static OFLogger DCM_dcmdataLogger = OFLog::getLogger("dcmtk.dcmimage");
-    return DCM_dcmdataLogger;
-}
 
 
 /*----------------*
@@ -712,6 +708,9 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
+ * Revision 1.43  2009-11-25 14:43:36  joergr
+ * Added new source and header file for the module logger.
+ *
  * Revision 1.42  2009-10-14 10:23:56  joergr
  * Fixed minor issues in log output. Also updated copyright date (if required).
  *
