@@ -22,8 +22,8 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:38:16 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2009-11-25 16:05:40 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,7 @@
 #include "dcmtk/ofstd/ofcast.h"
 
 #include "dcmtk/dcmimgle/diinpx.h"
+#include "dcmtk/dcmimgle/didocu.h"
 #include "dcmtk/dcmimgle/dipxrept.h"
 #include "dcmtk/dcmimgle/diutils.h"
 
@@ -130,20 +131,26 @@ class DiInputPixelTemplate
 
     /** constructor
      *
-     ** @param  pixel   pointer to DICOM dataset element containing the pixel data
-     *  @param  alloc   number of bits allocated for each pixel
-     *  @param  stored  number of bits stored for each pixel
-     *  @param  high    position of bigh bit within bits allocated
-     *  @param  start   start position of pixel data to be processed
-     *  @param  count   number of pixels to be processed
+     ** @param  document   pointer to DICOM image object
+     *  @param  alloc      number of bits allocated for each pixel
+     *  @param  stored     number of bits stored for each pixel
+     *  @param  high       position of bigh bit within bits allocated
+     *  @param  first      first frame to be processed
+     *  @param  number     number of frames to be processed
+     *  @param  fsize      number of pixels per frame (frame size)
+     *  @param  fileCache  pointer to file cache object used for partial read
+     *  @param  fragment   current pixel item fragment (for encapsulated pixel data)
      */
-    DiInputPixelTemplate(/*const*/ DcmPixelData *pixel,
+    DiInputPixelTemplate(const DiDocument *document,
                          const Uint16 alloc,
                          const Uint16 stored,
                          const Uint16 high,
-                         const unsigned long start,
-                         const unsigned long count)
-      : DiInputPixel(stored, start, count),
+                         const unsigned long first,
+                         const unsigned long number,
+                         const unsigned long fsize,
+                         DcmFileCache *fileCache,
+                         Uint32 &fragment)
+      : DiInputPixel(stored, first, number, fsize),
         Data(NULL)
     {
         MinValue[0] = 0;
@@ -158,10 +165,13 @@ class DiInputPixelTemplate
             AbsMinimum = 0;
             AbsMaximum = OFstatic_cast(double, DicomImageClass::maxval(Bits));
         }
-        if (pixel != NULL)
-            convert(pixel, alloc, stored, high);
+        if ((document != NULL) && (document->getPixelData() != NULL))
+            convert(document, alloc, stored, high, fileCache, fragment);
         if ((PixelCount == 0) || (PixelStart + PixelCount > Count))         // check for corrupt pixel length
+        {
             PixelCount = Count - PixelStart;
+            DCMIMGLE_DEBUG("setting number of pixels to be processed (PixelCount) to: " << PixelCount);
+        }
     }
 
     /** destructor
@@ -179,6 +189,7 @@ class DiInputPixelTemplate
     {
         if (Data != NULL)
         {
+            DCMIMGLE_DEBUG("determining minimum and maximum pixel values for input data");
             register T2 *p = Data;
             register unsigned long i;
             const unsigned long ocnt = OFstatic_cast(unsigned long, getAbsMaxRange());
@@ -188,6 +199,7 @@ class DiInputPixelTemplate
                 lut = new Uint8[ocnt];
                 if (lut != NULL)
                 {
+                    DCMIMGLE_DEBUG("using optimized routine with additional LUT");
                     OFBitmanipTemplate<Uint8>::zeroMem(lut, ocnt);
                     register Uint8 *q = lut - OFstatic_cast(T2, getAbsMinimum());
                     for (i = Count; i != 0; --i)                       // fill lookup table
@@ -342,41 +354,114 @@ class DiInputPixelTemplate
 
     /** convert pixel data from DICOM dataset to input representation
      *
-     ** @param  pixelData      pointer to DICOM dataset element containing the pixel data
+     ** @param  document       pointer to DICOM image object
      *  @param  bitsAllocated  number of bits allocated for each pixel
      *  @param  bitsStored     number of bits stored for each pixel
      *  @param  highBit        position of bigh bit within bits allocated
+     *  @param  fileCache      pointer to file cache object used for partial read
+     *  @param  fragment       current pixel item fragment (for encapsulated pixel data)
      */
-    void convert(/*const*/ DcmPixelData *pixelData,
+    void convert(const DiDocument *document,
                  const Uint16 bitsAllocated,
                  const Uint16 bitsStored,
-                 const Uint16 highBit)
+                 const Uint16 highBit,
+                 DcmFileCache *fileCache,
+                 Uint32 &fragment)
     {
+        T1 *pixel = NULL;
+        OFBool deletePixel = OFFalse;
+        Uint32 lengthBytes = 0;
+        DcmPixelData *pixelData = document->getPixelData();
         const Uint16 bitsof_T1 = bitsof(T1);
         const Uint16 bitsof_T2 = bitsof(T2);
-        T1 *pixel;
-        const Uint32 length_Bytes = getPixelData(pixelData, pixel);
-        if (pixel != NULL)
+        const OFBool uncompressed = pixelData->canWriteXfer(EXS_LittleEndianExplicit, EXS_Unknown);
+        /* check whether to use partial read */
+        if ((document->getFlags() & CIF_UsePartialAccessToPixelData) && (PixelCount > 0) &&
+            (!uncompressed || !pixelData->valueLoaded()) && (bitsAllocated % 8 == 0))
         {
+            /* Bits Allocated is always a multiple of 8 (see above) */
+            const Uint32 byteFactor = (bitsAllocated / 8);
+            /* need to split the calculation in order to avoid integer overflow for large pixel data */
+            const Uint32 count_B1 = bitsAllocated / bitsof_T1;
+            const Uint32 count_B2 = bitsAllocated % bitsof_T1;
+            const Uint32 count_T1 = PixelCount * count_B1 + (PixelCount / bitsof_T1) * count_B2;
+#ifdef DEBUG
+            DCMIMGLE_TRACE("PixelCount: " << PixelCount << ", byteFactor: " << byteFactor << ", count_T1: " << count_T1);
+#endif
+            /* allocate temporary buffer */
+            pixel = new T1[count_T1];
+            if (pixel != NULL)
+            {
+                if (uncompressed)
+                {
+                    DCMIMGLE_DEBUG("using partial read access to uncompressed pixel data");
+                    const Uint32 offset = PixelStart * byteFactor;
+                    const Uint32 bufSize = PixelCount * byteFactor;
+                    const OFCondition status = pixelData->getPartialValue(pixel, offset, bufSize, fileCache);
+                    if (status.good())
+                    {
+                        PixelStart = 0;
+                        lengthBytes = bufSize;
+                    } else {
+                        DCMIMGLE_ERROR("can't access partial value from byte offset " << offset << " to "
+                            << (offset + bufSize - 1) << ": " << status.text());
+                    }
+                } else {
+                    DCMIMGLE_DEBUG("using partial read access to compressed pixel data");
+                    OFCondition status = EC_IllegalCall;
+                    OFString decompressedColorModel;
+                    const Uint32 fsize = FrameSize * byteFactor;
+                    for (Uint32 frame = 0; frame < NumberOfFrames; ++frame)
+                    {
+                        status = pixelData->getUncompressedFrame(document->getDataset(), FirstFrame + frame, fragment,
+                            OFreinterpret_cast(Uint8 *, pixel) + lengthBytes, fsize, decompressedColorModel, fileCache);
+                        if (status.good())
+                        {
+                            DCMIMGLE_TRACE("successfully decompressed frame " << FirstFrame + frame);
+                            lengthBytes += fsize;
+                        } else {
+                            DCMIMGLE_ERROR("can't decompress frame " << FirstFrame + frame << ": " << status.text());
+                            break;
+                        }
+                    }
+                    if (status.good())
+                        PixelStart = 0;
+                    /* check whether color model changed during decompression */
+                    if (!decompressedColorModel.empty() && (decompressedColorModel != document->getPhotometricInterpretation()))
+                    {
+                        DCMIMGLE_WARN("Photometric Interpretation of decompressed pixel data deviates from original image: "
+                            << decompressedColorModel);
+                    }
+                }
+                deletePixel = OFTrue;
+            }
+        } else {
+            DCMIMGLE_DEBUG("reading uncompressed pixel data completely into memory");
+            /* always access complete pixel data */
+            lengthBytes = getPixelData(pixelData, pixel);
+        }
+        if ((pixel != NULL) && (lengthBytes > 0))
+        {
+            const Uint32 length_T1 = lengthBytes / sizeof(T1);
             /* need to split 'length' in order to avoid integer overflow for large pixel data */
-            const Uint32 length_B1 = length_Bytes / bitsAllocated;
-            const Uint32 length_B2 = length_Bytes % bitsAllocated;
-            const Uint32 length_T1 = length_Bytes / sizeof(T1);
-//          # old code: Count = ((length_Bytes * 8) + bitsAllocated - 1) / bitsAllocated;
+            const Uint32 length_B1 = lengthBytes / bitsAllocated;
+            const Uint32 length_B2 = lengthBytes % bitsAllocated;
+//          # old code: Count = ((lengthBytes * 8) + bitsAllocated - 1) / bitsAllocated;
             Count = 8 * length_B1 + (8 * length_B2 + bitsAllocated - 1) / bitsAllocated;
             register unsigned long i;
             Data = new T2[Count];
             if (Data != NULL)
             {
-                DCMIMGLE_TRACE("Bits Allocated: " << bitsAllocated << ", Bits Stored: " << bitsStored
-                    << ", High Bit: " << highBit << ", " << (this->isSigned() ? "signed" : "unsigned"));
+                DCMIMGLE_TRACE("Input length: " << lengthBytes << " bytes, Pixel count: " << Count
+                    << " (" << PixelCount << "), In: " << bitsof_T1 << " bits, Out: " << bitsof_T2
+                    << " bits (" << (this->isSigned() ? "signed" : "unsigned") << ")");
                 register const T1 *p = pixel;
                 register T2 *q = Data;
                 if (bitsof_T1 == bitsAllocated)                                             // case 1: equal 8/16 bit
                 {
                     if (bitsStored == bitsAllocated)
                     {
-                        DCMIMGLE_DEBUG("convert pixelData: case 1a (single copy)");
+                        DCMIMGLE_DEBUG("convert input pixel data: case 1a (single copy)");
                         for (i = Count; i != 0; --i)
                             *(q++) = OFstatic_cast(T2, *(p++));
                     }
@@ -392,13 +477,13 @@ class DiInputPixelTemplate
                         const Uint16 shift = highBit + 1 - bitsStored;
                         if (shift == 0)
                         {
-                            DCMIMGLE_DEBUG("convert pixelData: case 1b (mask & sign)");
+                            DCMIMGLE_DEBUG("convert input pixel data: case 1b (mask & sign)");
                             for (i = length_T1; i != 0; --i)
                                 *(q++) = expandSign(OFstatic_cast(T2, *(p++) & mask), sign, smask);
                         }
                         else /* shift > 0 */
                         {
-                            DCMIMGLE_DEBUG("convert pixelData: case 1c (shift & mask & sign)");
+                            DCMIMGLE_DEBUG("convert input pixel data: case 1c (shift & mask & sign)");
                             for (i = length_T1; i != 0; --i)
                                 *(q++) = expandSign(OFstatic_cast(T2, (*(p++) >> shift) & mask), sign, smask);
                         }
@@ -416,7 +501,7 @@ class DiInputPixelTemplate
                     {
                         if (times == 2)
                         {
-                            DCMIMGLE_DEBUG("convert pixelData: case 2a (simple mask)");
+                            DCMIMGLE_DEBUG("convert input pixel data: case 2a (simple mask)");
                             for (i = length_T1; i != 0; --i, ++p)
                             {
                                 *(q++) = OFstatic_cast(T2, *p & mask);
@@ -425,7 +510,7 @@ class DiInputPixelTemplate
                         }
                         else
                         {
-                            DCMIMGLE_DEBUG("convert pixelData: case 2b (mask)");
+                            DCMIMGLE_DEBUG("convert input pixel data: case 2b (mask)");
                             for (i = length_T1; i != 0; --i)
                             {
                                 value = *(p++);
@@ -439,7 +524,7 @@ class DiInputPixelTemplate
                     }
                     else
                     {
-                        DCMIMGLE_DEBUG("convert pixelData: case 2c (shift & mask & sign)");
+                        DCMIMGLE_DEBUG("convert input pixel data: case 2c (shift & mask & sign)");
                         const T2 sign = 1 << (bitsStored - 1);
                         T2 smask = 0;
                         for (i = bitsStored; i < bitsof_T2; ++i)
@@ -459,7 +544,7 @@ class DiInputPixelTemplate
                 else if ((bitsof_T1 < bitsAllocated) && (bitsAllocated % bitsof_T1 == 0)    // case 3: multiplicant of 8/16
                     && (bitsStored == bitsAllocated))
                 {
-                    DCMIMGLE_DEBUG("convert pixelData: case 3 (multi copy)");
+                    DCMIMGLE_DEBUG("convert input pixel data: case 3 (multi copy)");
                     const Uint16 times = bitsAllocated / bitsof_T1;
                     register Uint16 j;
                     register Uint16 shift;
@@ -478,7 +563,7 @@ class DiInputPixelTemplate
                 }
                 else                                                                        // case 4: anything else
                 {
-                    DCMIMGLE_DEBUG("convert pixelData: case 4 (general)");
+                    DCMIMGLE_DEBUG("convert input pixel data: case 4 (general)");
                     register T2 value = 0;
                     register Uint16 bits = 0;
                     register Uint32 skip = highBit + 1 - bitsStored;
@@ -528,6 +613,14 @@ class DiInputPixelTemplate
                     }
                 }
             }
+        } else {
+            // in case of error, reset pixel count variable
+            Count = 0;
+        }
+        if (deletePixel)
+        {
+            // delete temporary buffer
+            delete[] pixel;
         }
     }
 
@@ -553,6 +646,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
+ * Revision 1.37  2009-11-25 16:05:40  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ * Added more logging messages. Revised logging messages.
+ *
  * Revision 1.36  2009-10-28 14:38:16  joergr
  * Fixed minor issues in log output.
  *
