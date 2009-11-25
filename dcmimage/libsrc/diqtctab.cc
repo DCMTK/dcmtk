@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQuantColorTable
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:28 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-25 14:44:52 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,9 +31,8 @@
  */
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmimage/diqtctab.h"
 
-#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/dcmimage/diqtctab.h"
 #include "dcmtk/dcmimage/diqtpbox.h"
 #include "dcmtk/dcmdata/dcerror.h"   /* for EC_IllegalCall */
 #include "dcmtk/dcmdata/dcelem.h"    /* for DcmElement */
@@ -562,7 +561,10 @@ void DcmQuantColorTable::setDescriptionString(OFString& str) const
  *
  * CVS/RCS Log:
  * $Log: diqtctab.cc,v $
- * Revision 1.8  2005-12-08 15:42:28  meichel
+ * Revision 1.9  2009-11-25 14:44:52  joergr
+ * Removed inclusion of header file "ofconsol.h".
+ *
+ * Revision 1.8  2005/12/08 15:42:28  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.7  2003/12/17 16:34:57  joergr
