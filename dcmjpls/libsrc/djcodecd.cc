@@ -22,8 +22,8 @@
  *  Purpose: codec classes for JPEG-LS decoders.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-17 16:56:35 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2009-11-25 13:56:33 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -400,33 +400,8 @@ OFCondition DJLSDecoderBase::determineDecompressedColorModel(
     DcmItem *dataset,
     OFString &decompressedColorModel) const
 {
-#if 1
   // decodeFrame() is not yet implemented for this class
   return EC_IllegalCall;
-#else
-  OFCondition result = EC_CorruptedData;
-  if ((dataset != NULL) && (fromPixSeq != NULL))
-  {
-    // the first frame always starts with the second fragment
-    Uint32 startFragment = 1;
-    Uint32 bufSize = 0;
-    // determine size of uncompressed frame
-    if ((fromPixSeq->getUncompressedFrameSize(dataset, bufSize).good()) && (bufSize > 0))
-    {
-      // allocate temporary buffer for a single frame
-      Uint8 *buffer = new Uint8[bufSize];
-      if (buffer != NULL)
-      {
-        // simple approach: decode first frame in order to determine the uncompressed color model
-        result = decodeFrame(fromParam, fromPixSeq, cp, dataset, 0 /* frameNo */, startFragment,
-          OFstatic_cast(void *, buffer), bufSize, decompressedColorModel);
-      } else
-        result = EC_MemoryExhausted;
-      delete[] buffer;
-    }
-  }
-  return result;
-#endif
 }
 
 
@@ -689,6 +664,9 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.7  2009-11-25 13:56:33  joergr
+ * Removed unused implementation of method determineDecompressedColorModel().
+ *
  * Revision 1.6  2009-11-17 16:56:35  joergr
  * Added new method that allows for determining the color model of the
  * decompressed image.

@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.25 (riesmeier)
+
+- Removed unused implementation of method determineDecompressedColorModel().
+  Affects: dcmjpls/libsrc/djcodecd.cc
+
 **** Changes from 2009.11.17 (riesmeier)
 
 - Added new method that allows for determining the color model of the
