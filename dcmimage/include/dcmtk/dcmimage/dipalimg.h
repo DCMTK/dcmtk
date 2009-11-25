@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomPaletteImage (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:01:40 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-25 14:38:55 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,13 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/dcmimage/dicoimg.h"
+
+
+/*------------------------*
+ *  forward declarations  *
+ *------------------------*/
+
+class DiLookupTable;
 
 
 /*---------------------*
@@ -62,6 +69,27 @@ class DiPaletteImage
     /** destructor
      */
     virtual ~DiPaletteImage();
+
+    /** process next couple of frames
+     *
+     ** @param  fcount  number of frames to be processed (0 = same number as before)
+     *
+     ** @return status, true if successful, false otherwise
+     */
+    virtual int processNextFrames(const unsigned long fcount);
+
+
+ protected:
+
+    /** initialize internal data structures and member variables
+     */
+    void Init();
+
+
+ private:
+    
+    /// three color palettes for R, G and B
+    DiLookupTable *Palette[3];
 };
 
 
@@ -72,7 +100,10 @@ class DiPaletteImage
  *
  * CVS/RCS Log:
  * $Log: dipalimg.h,v $
- * Revision 1.9  2005-12-08 16:01:40  meichel
+ * Revision 1.10  2009-11-25 14:38:55  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ *
+ * Revision 1.9  2005/12/08 16:01:40  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.8  2003/12/17 18:11:36  joergr
