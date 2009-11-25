@@ -22,8 +22,8 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:26:02 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2009-11-25 16:30:21 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,10 +32,11 @@
 
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofconsol.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dctagkey.h"
+#include "dcmtk/dcmdata/dcpixel.h"
 #include "dcmtk/ofstd/ofbmanip.h"
 
 #include "dcmtk/dcmimgle/diovpln.h"
@@ -108,19 +109,17 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         Valid = (docu->getValue(tag, Left, 0) > 0);
         if (Valid)
         {
+            DCMIMGLE_DEBUG("processing overlay plane in group 0x" << STD_NAMESPACE hex << group);
             if (docu->getValue(tag, Top, 1) < 2)
-            {
                 DCMIMGLE_WARN("missing second value for 'OverlayOrigin' ... assuming 'Top' = " << Top);
-            }
         }
 #else
         Valid = (docu->getValue(tag, Top, 0) > 0);
         if (Valid)
         {
+            DCMIMGLE_DEBUG("processing overlay plane in group 0x" << STD_NAMESPACE hex << group);
             if (docu->getValue(tag, Left, 1) < 2)
-            {
                 DCMIMGLE_WARN("missing second value for 'OverlayOrigin' ... assuming 'Left' = " << Left);
-            }
         }
 #endif
         /* overlay origin is numbered from 1 */
@@ -142,12 +141,32 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         /* final validity checks */
         if (Valid)
         {
+            /* separate overlay data? */
             unsigned long length = docu->getValue(tag, Data) * 2 /* bytes */;
             if (length == 0)
             {
-                ImageFrameOrigin = 0;                               // see supplement 4
-                length = docu->getValue(DCM_PixelData, Data) * 2 /* bytes */;
-                EmbeddedData = (Data != NULL);
+                if (!(docu->getFlags() & CIF_NeverAccessEmbeddedOverlays))
+                {
+                    if (!docu->isCompressed())
+                    {
+                        /* if not, check for embedded overlay data */
+                        DcmPixelData *pixelData = docu->getPixelData();
+                        if (pixelData != NULL)
+                        {
+                            ImageFrameOrigin = 0;                           // see supplement 4
+                            const OFBool loaded = pixelData->valueLoaded();
+                            if (pixelData->getUint16Array(OFconst_cast(Uint16 *&, Data)).good())
+                            {
+                                length = pixelData->getLength(docu->getTransferSyntax());
+                                EmbeddedData = (Data != NULL);
+                                if (!loaded)
+                                    DCMIMGLE_DEBUG("loaded complete pixel data into memory for embedded overlay data: " << length << " bytes");
+                            }
+                        }
+                    } else
+                        DCMIMGLE_ERROR("embedded overlay data cannot be accessed since pixel data is still compressed");
+                } else
+                    DCMIMGLE_WARN("ignoring possibly embedded overlay data by configuration");
             } else
                 alloc = 1;                                          // separately stored overlay data
             /* check for correct value of BitsAllocated */
@@ -172,7 +191,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
                                           OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, BitsAllocated) + 7) / 8;
             if ((Data != NULL) && ((length == 0) || (length < expLen)))
             {
-                DCMIMGLE_ERROR("overlay data length is too short");
+                DCMIMGLE_ERROR("overlay data length is too short, " << expLen << " bytes expected but " << length << " bytes found");
                 Valid = 0;
                 Data = NULL;
             } else
@@ -229,7 +248,7 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
         const unsigned long expLen = (OFstatic_cast(unsigned long, Rows) * OFstatic_cast(unsigned long, Columns) + 7) / 8;
         if ((length == 0) || (length < expLen))
         {
-            DCMIMGLE_ERROR("overlay data length is too short");
+            DCMIMGLE_ERROR("overlay data length is too short, " << expLen << " bytes expected but " << length << " bytes found");
             /* Valid = 0;  =>  This is the default. */
             Data = NULL;
         } else
@@ -588,6 +607,11 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
+ * Revision 1.35  2009-11-25 16:30:21  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ * Removed inclusion of header file "ofconsol.h".
+ * Revised logging messages. Added more logging messages.
+ *
  * Revision 1.34  2009-10-28 14:26:02  joergr
  * Fixed minor issues in log output.
  *
