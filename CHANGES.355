@@ -1,6 +1,119 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.25 (riesmeier)
+
+- Adapted code for new approach to access individual frames of a DICOM image.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmimage/apps/dcm2pnm.cc
+           dcmimage/include/dcmtk/dcmimage/diargimg.h
+           dcmimage/include/dcmtk/dcmimage/dicmyimg.h
+           dcmimage/include/dcmtk/dcmimage/dihsvimg.h
+           dcmimage/include/dcmtk/dcmimage/dipalimg.h
+           dcmimage/include/dcmtk/dcmimage/dirgbimg.h
+           dcmimage/include/dcmtk/dcmimage/diybrimg.h
+           dcmimage/include/dcmtk/dcmimage/diyf2img.h
+           dcmimage/include/dcmtk/dcmimage/diyp2img.h
+           dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/dicmyimg.cc
+           dcmimage/libsrc/dihsvimg.cc
+           dcmimage/libsrc/dipalimg.cc
+           dcmimage/libsrc/dirgbimg.cc
+           dcmimage/libsrc/diybrimg.cc
+           dcmimage/libsrc/diyf2img.cc
+           dcmimage/libsrc/diyp2img.cc
+           dcmimgle/include/dcmtk/dcmimgle/didocu.h
+           dcmimgle/include/dcmtk/dcmimgle/diimage.h
+           dcmimgle/include/dcmtk/dcmimgle/diinpx.h
+           dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoimg.h
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/didocu.cc
+           dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/diinpx.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovpln.cc
+           dcmjpeg/include/dcmtk/dcmjpeg/ddpiimpl.h
+           dcmjpeg/libsrc/ddpiimpl.cc
+
+- Added new method which allows for processing the frames of a multi-frame
+  image successively.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+
+- Fixed issue with attributes that use a value representation of US or SS.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/didocu.h
+           dcmimgle/libsrc/didocu.cc
+
+- Fixed issue with LUT Descriptor elements using the value representation SS.
+  Affects: dcmimgle/libsrc/diluptab.cc
+
+- The getString() method now returns the Defined Term of the attribute
+  PhotometricInterpretation.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+           dcmimgle/libsrc/dcmimage.cc
+
+- Added list of Defined Terms for the attribute PhotometricInterpretation.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diutils.h
+
+- Added new source and header file for the module logger.
+  Added:   dcmimage/include/dcmtk/dcmimage/dilogger.h
+  Affects: dcmimage/include/dcmtk/dcmimage/dicopx.h
+           dcmimage/include/dcmtk/dcmimage/diqttype.h
+           dcmimage/libsrc/CMakeLists.txt
+           dcmimage/libsrc/dicoimg.cc
+           dcmimage/libsrc/diquant.cc
+           dcmimage/libsrc/Makefile.in
+
+- Removed inclusion of header file "ofconsol.h".
+  Affects: dcmimage/include/dcmtk/dcmimage/dihsvpxt.h
+           dcmimage/include/dcmtk/dcmimage/dipalpxt.h
+           dcmimage/include/dcmtk/dcmimage/diyf2pxt.h
+           dcmimage/include/dcmtk/dcmimage/diyp2pxt.h
+           dcmimage/libsrc/diqtctab.cc
+           dcmimage/libsrc/diquant.cc
+           dcmimgle/include/dcmtk/dcmimgle/dimoipxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/discalet.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoipxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimopxt.h
+           dcmimgle/apps/dconvlum.cc
+           dcmimgle/libsrc/diciefn.cc
+           dcmimgle/libsrc/dicielut.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/digsdfn.cc
+           dcmimgle/libsrc/digsdlut.cc
+           dcmimgle/libsrc/diovpln.cc
+           dcmimgle/libsrc/diutils.cc
+
+- Revised logging messages.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoipxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Added more logging messages.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimopxt.h
+           dcmjpeg/libsrc/djcodecd.cc
+           dcmimgle/libsrc/didocu.cc
+           dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/apps/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+           dcmjpeg/apps/Makefile.dep
+           dcmjpeg/libsrc/Makefile.dep
+
 **** Changes from 2009.11.24 (schlachter)
 
 - Switched to logging mechanism provided by the "new" oflog module.
