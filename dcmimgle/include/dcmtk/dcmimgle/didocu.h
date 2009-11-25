@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2007, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomDocument (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-07-25 15:11:43 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2009-11-25 15:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,11 +35,12 @@
 #define DIDOCU_H
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmimgle/diobjcou.h"
-#include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
+#include "dcmtk/ofstd/ofstring.h"
 
 #define INCLUDE_CSTDDEF
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -53,6 +54,7 @@ class DcmStack;
 class DcmObject;
 class DcmTagKey;
 class DcmElement;
+class DcmPixelData;
 class DcmSequenceOfItems;
 
 
@@ -85,7 +87,7 @@ class DiDocument
 
     /** constructor, use a given DcmObject
      *
-     ** @param  object  pointer to dicom data structures
+     ** @param  object  pointer to DICOM data structures
      *  @param  xfer    transfer syntax
      *  @param  flags   configuration flags (only stored for later use)
      *  @param  fstart  first frame to be processed (only stored for later use)
@@ -117,6 +119,15 @@ class DiDocument
     inline DcmObject *getDicomObject() const
     {
         return Object;
+    }
+
+    /** get current DICOM dataset
+     *
+     ** @return pointer to DICOM dataset
+     */
+    inline DcmDataset *getDataset() const
+    {
+        return OFstatic_cast(DcmDataset *, Object);
     }
 
     /** get first frame to be processed
@@ -155,6 +166,35 @@ class DiDocument
         return Xfer;
     }
 
+    /** get photometric interpretation (color model).
+     *  Please note that this is the color model of the decompressed image which might
+     *  deviate from the color model of the original compressed image.
+     *
+     ** @return photometric interpretation of the DICOM object
+     */
+    inline const char *getPhotometricInterpretation() const
+    {
+        return PhotometricInterpretation.c_str();
+    }
+
+    /** get pixel data object
+     *
+     ** @return reference to pixel data object (might be NULL)
+     */
+    inline DcmPixelData *getPixelData() const
+    {
+        return PixelData;
+    }
+
+    /** check whether pixel data only exist in compressed format
+     *
+     ** @return true if pixel data is compressed, false if an uncompressed version exists
+     */
+    inline OFBool isCompressed() const
+    {
+        return DcmXfer(Xfer).isEncapsulated();
+    }
+
     /** search for given tag
      *
      ** @param  tag  tag to search for
@@ -186,17 +226,19 @@ class DiDocument
 
     /** get value of given tag (Uint16)
      *
-     ** @param  tag        tag to search for
-     *  @param  returnVal  reference to the storage area for the resulting value
-     *  @param  pos        position in muti-valued elements (starting with 0)
-     *  @param  item       element in the dataset where the search should start (default: root)
+     ** @param  tag          tag to search for
+     *  @param  returnVal    reference to the storage area for the resulting value
+     *  @param  pos          position in muti-valued elements (starting with 0)
+     *  @param  item         element in the dataset where the search should start (default: root)
+     *  @param  allowSigned  also allow signed value (Sint16) if true
      *
      ** @return VM if successful, 0 otherwise
      */
     unsigned long getValue(const DcmTagKey &tag,
                            Uint16 &returnVal,
                            const unsigned long pos = 0,
-                           DcmObject *item = NULL) const;
+                           DcmObject *item = NULL,
+                           const OFBool allowSigned = OFFalse) const;
 
     /** get value of given tag (Sint16)
      *
@@ -294,17 +336,21 @@ class DiDocument
     unsigned long getSequence(const DcmTagKey &tag,
                               DcmSequenceOfItems *&seq) const;
 
+  // --- static helper functions ---
+
     /** get value of given element (Uint16)
      *
-     ** @param  elem       element where the value is stored
-     *  @param  returnVal  reference to the storage area for the resulting value
-     *  @param  pos        position in muti-valued elements (starting with 0)
+     ** @param  elem         element where the value is stored
+     *  @param  returnVal    reference to the storage area for the resulting value
+     *  @param  pos          position in muti-valued elements (starting with 0)
+     *  @param  allowSigned  also allow signed value (Sint16) if true
      *
      ** @return VM if successful, 0 otherwise
      */
     static unsigned long getElemValue(const DcmElement *elem,
                                       Uint16 &returnVal,
-                                      const unsigned long pos = 0);
+                                      const unsigned long pos = 0,
+                                      const OFBool allowSigned = OFFalse);
 
     /** get value of given element (Uint16 array)
      *
@@ -338,6 +384,7 @@ class DiDocument
                                       OFString &returnVal,
                                       const unsigned long pos = 0);
 
+
  protected:
 
     /** convert pixel data to uncompressed representation (if required)
@@ -351,6 +398,8 @@ class DiDocument
     DcmObject *Object;
     /// reference to DICOM fileformat (read from file, maybe NULL)
     DcmFileFormat *FileFormat;
+    /// reference to pixel data object
+    DcmPixelData *PixelData;
     /// transfer syntax used for reading the dataset
     E_TransferSyntax Xfer;
 
@@ -361,6 +410,9 @@ class DiDocument
 
     /// configuration flags
     unsigned long Flags;
+
+    /// photometric interpretation (color model)
+    OFString PhotometricInterpretation;
 
  // --- declarations to avoid compiler warnings
 
@@ -376,7 +428,11 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.20  2007-07-25 15:11:43  joergr
+ * Revision 1.21  2009-11-25 15:53:40  joergr
+ * dapted code for new approach to access individual frames of a DICOM image.
+ * Fixed issue with attributes that use a value representation of US or SS.
+ *
+ * Revision 1.20  2007/07/25 15:11:43  joergr
  * Enhanced misleading documentation.
  *
  * Revision 1.19  2005/12/08 16:47:38  meichel
