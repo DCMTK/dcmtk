@@ -22,8 +22,8 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:26:02 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2009-11-25 16:31:48 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,6 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmimgle/digsdfn.h"
 #include "dcmtk/dcmimgle/displint.h"
 
@@ -444,6 +443,9 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
+ * Revision 1.35  2009-11-25 16:31:48  joergr
+ * Removed inclusion of header file "ofconsol.h".
+ *
  * Revision 1.34  2009-10-28 14:26:02  joergr
  * Fixed minor issues in log output.
  *

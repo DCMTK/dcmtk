@@ -22,8 +22,8 @@
  *  Purpose: DicomGSDFLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:26:02 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2009-11-25 16:31:48 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,6 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmimgle/digsdlut.h"
 #include "dcmtk/dcmimgle/displint.h"
 
@@ -234,6 +233,9 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
+ * Revision 1.25  2009-11-25 16:31:48  joergr
+ * Removed inclusion of header file "ofconsol.h".
+ *
  * Revision 1.24  2009-10-28 14:26:02  joergr
  * Fixed minor issues in log output.
  *
