@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-12 12:01:17 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2009-11-25 15:59:10 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,8 +35,10 @@
 #define DIIMAGE_H
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcfcache.h"
 
 #ifdef SUNCC
 #include "dcmtk/dcmimgle/didocu.h"
@@ -93,6 +95,14 @@ class DiImage
     /** destructor
      */
     virtual ~DiImage();
+
+    /** process next couple of frames
+     *
+     ** @param  fcount  number of frames to be processed (0 = same number as before)
+     *
+     ** @return status, true if successful, false otherwise
+     */
+    virtual int processNextFrames(const unsigned long fcount);
 
     /** get status of the image object
      *
@@ -575,12 +585,8 @@ class DiImage
     void checkPixelExtension();
 
     /** create input pixel data representation from DICOM dataset structures
-     *
-     ** @param  pixel  pointer to DICOM dataset structure storing the pixel data
-     *  @param  spp    samples per pixel
      */
-    void convertPixelData(/*const*/ DcmPixelData *pixel,
-                          const int spp);
+    void convertPixelData();
 
     /** update Image Pixel Module attributes in the given dataset.
      *  Removes smallest/largest pixel value and updates pixel aspect ratio as well
@@ -598,7 +604,7 @@ class DiImage
 
     /// copy of status variable declared in class 'DicomImage'
     EI_Status ImageStatus;
-    /// points to special object, which capsulates the DCMtk/DCMdata
+    /// points to special object, which capsulates the dcmdata module
     const DiDocument *Document;
 
     /// first frame to be processed
@@ -626,6 +632,8 @@ class DiImage
 
     /// actual number of bits per sample (depth)
     int BitsPerSample;
+    /// number of samples per pixel (1, 3 or 4)
+    int SamplesPerPixel;
 
     /// polarity (normal or reverse)
     EP_Polarity Polarity;
@@ -645,6 +653,10 @@ class DiImage
 
     /// points to intermediate pixel representation (template object)
     DiInputPixel *InputData;
+    /// file cache object used for partial read
+    DcmFileCache FileCache;
+    /// current pixel item fragment (for encapsulated pixel data)
+    Uint32 CurrentFragment;
 
  // --- declarations to avoid compiler warnings
 
@@ -660,6 +672,9 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
+ * Revision 1.44  2009-11-25 15:59:10  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ *
  * Revision 1.43  2009-02-12 12:01:17  joergr
  * Added support for NominalScannedPixelSpacing in order to determine the pixel
  * aspect ratio (used for the new SC image IODs).

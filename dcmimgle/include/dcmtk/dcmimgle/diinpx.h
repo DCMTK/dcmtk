@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomInputPixel (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:43 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-25 15:59:51 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *   CVS/RCS Log at end of file
@@ -35,8 +35,9 @@
 #define DIINPX_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofconsol.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/dcmdata/dcfcache.h"
 
 #include "dcmtk/dcmimgle/diutils.h"
 
@@ -54,13 +55,15 @@ class DiInputPixel
 
     /** constructor
      *
-     ** @param  bits   number of bits stored for each pixel (depth)
-     *  @param  start  start position of pixel data to be processed
-     *  @param  count  number of pixels to be processed
+     ** @param  bits    number of bits stored for each pixel (depth)
+     *  @param  first   first frame to be processed
+     *  @param  number  number of frames to be processed
+     *  @param  fsize   number of pixels per frame (frame size)
      */
     DiInputPixel(const unsigned int bits,
-                 const unsigned long start,
-                 const unsigned long count);
+                 const unsigned long first,
+                 const unsigned long number,
+                 const unsigned long fsize);
 
     /** destructor
      */
@@ -194,6 +197,13 @@ class DiInputPixel
     /// bits per pixel/sample
     unsigned int Bits;
 
+    /// first frame to be processed
+    unsigned long FirstFrame;
+    /// number of frames to be processed
+    unsigned long NumberOfFrames;
+    /// number of pixels per frame
+    unsigned long FrameSize;
+
     /// first pixel to be processed
     unsigned long PixelStart;
     /// number of pixels to be processed
@@ -216,7 +226,10 @@ class DiInputPixel
  *
  * CVS/RCS Log:
  * $Log: diinpx.h,v $
- * Revision 1.17  2005-12-08 16:47:43  meichel
+ * Revision 1.18  2009-11-25 15:59:51  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ *
+ * Revision 1.17  2005/12/08 16:47:43  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.16  2004/02/06 11:07:50  joergr
