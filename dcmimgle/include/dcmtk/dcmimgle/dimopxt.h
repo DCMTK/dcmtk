@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:38:17 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2009-11-25 16:09:22 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 #define DIMOPXT_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofconsol.h"
+
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofcast.h"
 
@@ -346,7 +346,7 @@ class DiMonoPixelTemplate
         MaxValue[1] = 0;
     }
 
-    /** determine minimum and maximum pixelvalues
+    /** determine minimum and maximum pixel values
      *
      ** @param  minvalue  starting global minimum value (0 = invalid)
      *  @param  maxvalue  starting global maximum value (0 = invalid)
@@ -363,6 +363,7 @@ class DiMonoPixelTemplate
             {
                 if ((minvalue == 0) && (maxvalue == 0))
                 {
+                    DCMIMGLE_DEBUG("determining global minimum and maximum pixel values for monochrome image");
                     register T *p = Data;
                     register T value = *p;
                     register unsigned long i;
@@ -387,6 +388,7 @@ class DiMonoPixelTemplate
             }
             if (mode & 0x2)
             {
+                DCMIMGLE_DEBUG("determining next minimum and maximum pixel values for monochrome image");
                 register T *p = Data;
                 register T value;
                 register int firstmin = 1;
@@ -435,6 +437,9 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
+ * Revision 1.32  2009-11-25 16:09:22  joergr
+ * Removed inclusion of header file "ofconsol.h". Added more logging messages.
+ *
  * Revision 1.31  2009-10-28 14:38:17  joergr
  * Fixed minor issues in log output.
  *
