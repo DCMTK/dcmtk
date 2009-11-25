@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomInputPixel (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:52 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-25 16:31:18 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,13 +41,17 @@
  *----------------*/
 
 DiInputPixel::DiInputPixel(const unsigned int bits,
-                           const unsigned long start,
-                           const unsigned long count)
+                           const unsigned long first,
+                           const unsigned long number,
+                           const unsigned long fsize)
   : Count(0),
     Bits(bits),
-    PixelStart(start),
-    PixelCount(count),
-    ComputedCount(count),
+    FirstFrame(first),
+    NumberOfFrames(number),
+    FrameSize(fsize),
+    PixelStart(first * fsize),
+    PixelCount(number * fsize),
+    ComputedCount(number * fsize),
     AbsMinimum(0),
     AbsMaximum(0)
 {
@@ -67,7 +71,10 @@ DiInputPixel::~DiInputPixel()
  *
  * CVS/RCS Log:
  * $Log: diinpx.cc,v $
- * Revision 1.8  2005-12-08 15:42:52  meichel
+ * Revision 1.9  2009-11-25 16:31:18  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ *
+ * Revision 1.8  2005/12/08 15:42:52  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.7  2003/12/08 17:43:04  joergr

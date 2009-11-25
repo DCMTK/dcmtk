@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:26:02 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Update Date:      $Date: 2009-11-25 16:30:54 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -646,6 +646,22 @@ DiMonoImage::~DiMonoImage()
 /*********************************************************************/
 
 
+int DiMonoImage::processNextFrames(const unsigned long fcount)
+{
+    if (DiImage::processNextFrames(fcount))
+    {
+        delete InterData;
+        InterData = NULL;
+        DiMonoModality *modality = new DiMonoModality(Document, InputData);
+        Init(modality);
+        return (ImageStatus == EIS_Normal);
+    }
+    return 0;
+}
+
+/*********************************************************************/
+
+
 void DiMonoImage::Init(DiMonoModality *modality)
 {
     if (modality != NULL)
@@ -699,9 +715,7 @@ void DiMonoImage::Init(DiMonoModality *modality)
                 else if (str == "INVERSE")
                     PresLutShape = ESP_Inverse;
                 else
-                {
                     DCMIMGLE_WARN("unknown value for 'PresentationLUTShape' (" << str << ") ... ignoring");
-                }
             }
         }
     } else
@@ -2117,6 +2131,9 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.79  2009-11-25 16:30:54  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ *
  * Revision 1.78  2009-10-28 14:26:02  joergr
  * Fixed minor issues in log output.
  *
