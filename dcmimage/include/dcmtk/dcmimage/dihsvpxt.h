@@ -22,8 +22,8 @@
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:25:14 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2009-11-25 14:31:21 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,6 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/ofstd/ofconsol.h"    /* for ofConsole */
 #include "dcmtk/dcmimage/dicopxt.h"
 #include "dcmtk/dcmimage/diqttype.h"
 #include "dcmtk/dcmimgle/diinpx.h"  /* gcc 3.4 needs this */
@@ -227,6 +226,9 @@ class DiHSVPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dihsvpxt.h,v $
+ * Revision 1.23  2009-11-25 14:31:21  joergr
+ * Removed inclusion of header file "ofconsol.h".
+ *
  * Revision 1.22  2009-10-14 10:25:14  joergr
  * Fixed minor issues in log output. Also updated copyright date (if required).
  *
