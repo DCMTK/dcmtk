@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DcmQuant
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:08:33 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-25 14:44:03 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,22 +32,22 @@
 
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmimage/diquant.h"
 
-#include "dcmtk/ofstd/ofconsol.h"  /* for ofConsole */
+#include "dcmtk/dcmimage/diquant.h"
 #include "dcmtk/dcmimage/diqtid.h"    /* for DcmQuantIdent */
 #include "dcmtk/dcmimage/diqtcmap.h"  /* for DcmQuantColorMapping */
 #include "dcmtk/dcmimage/diqtpix.h"   /* for DcmQuantPixel */
 #include "dcmtk/dcmimage/diqthash.h"  /* for DcmQuantColorHashTable */
 #include "dcmtk/dcmimage/diqtctab.h"  /* for DcmQuantColorTable */
 #include "dcmtk/dcmimage/diqtfs.h"    /* for DcmQuantFloydSteinberg */
-#include "dcmtk/dcmdata/dcswap.h"    /* for swapIfNecessary() */
-#include "dcmtk/dcmdata/dcitem.h"    /* for DcmItem */
+#include "dcmtk/dcmimage/dilogger.h"  /* for logging macros */
+#include "dcmtk/dcmdata/dcswap.h"     /* for swapIfNecessary() */
+#include "dcmtk/dcmdata/dcitem.h"     /* for DcmItem */
 #include "dcmtk/dcmimgle/dcmimage.h"  /* for DicomImage */
-#include "dcmtk/dcmdata/dcdeftag.h"  /* for tag constants */
-#include "dcmtk/dcmdata/dcpixel.h"   /* for DcmPixelData */
-#include "dcmtk/dcmdata/dcsequen.h"  /* for DcmSequenceOfItems */
-#include "dcmtk/dcmdata/dcuid.h"     /* for dcmGenerateUniqueIdentifier() */
+#include "dcmtk/dcmdata/dcdeftag.h"   /* for tag constants */
+#include "dcmtk/dcmdata/dcpixel.h"    /* for DcmPixelData */
+#include "dcmtk/dcmdata/dcsequen.h"   /* for DcmSequenceOfItems */
+#include "dcmtk/dcmdata/dcuid.h"      /* for dcmGenerateUniqueIdentifier() */
 
 
 OFCondition DcmQuant::createPaletteColorImage(
@@ -235,6 +235,10 @@ OFCondition DcmQuant::updateDerivationDescription(DcmItem *dataset, const char *
  *
  * CVS/RCS Log:
  * $Log: diquant.cc,v $
+ * Revision 1.7  2009-11-25 14:44:03  joergr
+ * Added new source and header file for the module logger.
+ * Removed inclusion of header file "ofconsol.h".
+ *
  * Revision 1.6  2009-10-13 14:08:33  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *
