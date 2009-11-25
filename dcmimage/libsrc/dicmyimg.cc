@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomCMYKImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:20 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-25 14:48:46 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,10 +32,12 @@
 
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
 
 #include "dcmtk/dcmimage/dicmyimg.h"
 #include "dcmtk/dcmimage/dicmypxt.h"
+#include "dcmtk/dcmimage/dilogger.h"
 #include "dcmtk/dcmimgle/diinpx.h"
 
 
@@ -49,31 +51,7 @@ DiCMYKImage::DiCMYKImage(const DiDocument *docu,
 {
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
-        /* number of pixels per plane */
-        const unsigned long planeSize = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
-        switch (InputData->getRepresentation())
-        {
-            case EPR_Uint8:
-                InterData = new DiCMYKPixelTemplate<Uint8, Uint8>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
-                break;
-            case EPR_Sint8:
-                InterData = new DiCMYKPixelTemplate<Sint8, Uint8>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
-                break;
-            case EPR_Uint16:
-                InterData = new DiCMYKPixelTemplate<Uint16, Uint16>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
-                break;
-            case EPR_Sint16:
-                InterData = new DiCMYKPixelTemplate<Sint16, Uint16>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
-                break;
-            case EPR_Uint32:
-                InterData = new DiCMYKPixelTemplate<Uint32, Uint32>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
-                break;
-            case EPR_Sint32:
-                InterData = new DiCMYKPixelTemplate<Sint32, Uint32>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
-                break;
-        }
-        deleteInputData();
-        checkInterData();
+        Init();                                                 // create intermediate representation
     }
 }
 
@@ -87,11 +65,63 @@ DiCMYKImage::~DiCMYKImage()
 }
 
 
+/*********************************************************************/
+
+
+void DiCMYKImage::Init()
+{
+    /* number of pixels per plane */
+    const unsigned long planeSize = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
+    switch (InputData->getRepresentation())
+    {
+        case EPR_Uint8:
+            InterData = new DiCMYKPixelTemplate<Uint8, Uint8>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
+            break;
+        case EPR_Sint8:
+            InterData = new DiCMYKPixelTemplate<Sint8, Uint8>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
+            break;
+        case EPR_Uint16:
+            InterData = new DiCMYKPixelTemplate<Uint16, Uint16>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
+            break;
+        case EPR_Sint16:
+            InterData = new DiCMYKPixelTemplate<Sint16, Uint16>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
+            break;
+        case EPR_Uint32:
+            InterData = new DiCMYKPixelTemplate<Uint32, Uint32>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
+            break;
+        case EPR_Sint32:
+            InterData = new DiCMYKPixelTemplate<Sint32, Uint32>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
+            break;
+    }
+    deleteInputData();
+    checkInterData();
+}
+
+
+/*********************************************************************/
+
+
+int DiCMYKImage::processNextFrames(const unsigned long fcount)
+{
+    if (DiImage::processNextFrames(fcount))
+    {
+        delete InterData;
+        InterData = NULL;
+        Init();
+        return (ImageStatus == EIS_Normal);
+    }
+    return 0;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: dicmyimg.cc,v $
- * Revision 1.10  2005-12-08 15:42:20  meichel
+ * Revision 1.11  2009-11-25 14:48:46  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ *
+ * Revision 1.10  2005/12/08 15:42:20  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.9  2003/12/17 16:34:57  joergr

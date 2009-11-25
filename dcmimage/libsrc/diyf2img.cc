@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomYBR422Image (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:37 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-25 14:48:46 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,10 +32,12 @@
 
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
 
 #include "dcmtk/dcmimage/diyf2img.h"
 #include "dcmtk/dcmimage/diyf2pxt.h"
+#include "dcmtk/dcmimage/dilogger.h"
 #include "dcmtk/dcmimgle/diinpx.h"
 #include "dcmtk/dcmimgle/didocu.h"
 
@@ -50,31 +52,9 @@ DiYBR422Image::DiYBR422Image(const DiDocument *docu,
 {
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
-        switch (InputData->getRepresentation())
-        {
-            case EPR_Uint8:
-                InterData = new DiYBR422PixelTemplate<Uint8, Uint8>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
-                break;
-            case EPR_Sint8:
-                InterData = new DiYBR422PixelTemplate<Sint8, Uint8>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
-                break;
-            case EPR_Uint16:
-                InterData = new DiYBR422PixelTemplate<Uint16, Uint16>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
-                break;
-            case EPR_Sint16:
-                InterData = new DiYBR422PixelTemplate<Sint16, Uint16>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
-                break;
-            case EPR_Uint32:
-                InterData = new DiYBR422PixelTemplate<Uint32, Uint32>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
-                break;
-            case EPR_Sint32:
-                InterData = new DiYBR422PixelTemplate<Sint32, Uint32>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
-                break;
-        }
-        deleteInputData();
-        checkInterData();
+        Init();                                                 // create intermediate representation
     }
-} 
+}
 
 
 /*--------------*
@@ -86,11 +66,61 @@ DiYBR422Image::~DiYBR422Image()
 }
 
 
+/*********************************************************************/
+
+
+void DiYBR422Image::Init()
+{
+    switch (InputData->getRepresentation())
+    {
+        case EPR_Uint8:
+            InterData = new DiYBR422PixelTemplate<Uint8, Uint8>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
+            break;
+        case EPR_Sint8:
+            InterData = new DiYBR422PixelTemplate<Sint8, Uint8>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
+            break;
+        case EPR_Uint16:
+            InterData = new DiYBR422PixelTemplate<Uint16, Uint16>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
+            break;
+        case EPR_Sint16:
+            InterData = new DiYBR422PixelTemplate<Sint16, Uint16>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
+            break;
+        case EPR_Uint32:
+            InterData = new DiYBR422PixelTemplate<Uint32, Uint32>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
+            break;
+        case EPR_Sint32:
+            InterData = new DiYBR422PixelTemplate<Sint32, Uint32>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
+            break;
+    }
+    deleteInputData();
+    checkInterData();
+}
+
+
+/*********************************************************************/
+
+
+int DiYBR422Image::processNextFrames(const unsigned long fcount)
+{
+    if (DiImage::processNextFrames(fcount))
+    {
+        delete InterData;
+        InterData = NULL;
+        Init();
+        return (ImageStatus == EIS_Normal);
+    }
+    return 0;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: diyf2img.cc,v $
- * Revision 1.9  2005-12-08 15:42:37  meichel
+ * Revision 1.10  2009-11-25 14:48:46  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ *
+ * Revision 1.9  2005/12/08 15:42:37  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.8  2003/12/23 10:54:28  joergr

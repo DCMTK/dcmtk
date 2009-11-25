@@ -22,8 +22,8 @@
  *  Purpose: DiARGBImage (Source) - UNTESTED !!!
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:23:56 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2009-11-25 14:48:46 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,12 +32,14 @@
 
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 
 #include "dcmtk/dcmimage/diargimg.h"
 #include "dcmtk/dcmimage/diargpxt.h"
 #include "dcmtk/dcmimage/diqttype.h"
+#include "dcmtk/dcmimage/dilogger.h"
 #include "dcmtk/dcmimgle/diluptab.h"
 #include "dcmtk/dcmimgle/diinpx.h"
 #include "dcmtk/dcmimgle/didocu.h"
@@ -55,69 +57,25 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
     {
         if (BitsStored <= MAX_TABLE_ENTRY_SIZE)                         // color depth <= 16
         {
-            DiLookupTable *palette[3];                                  // create color luts
-            const EL_BitsPerTableEntry descMode = (docu->getFlags() & CIF_CheckLutBitDepth) ? ELM_CheckValue : ELM_UseValue;
-            palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
-                DCM_RedPaletteColorLookupTableData, DcmTagKey(0,0), descMode, &ImageStatus);
-            palette[1] = new DiLookupTable(Document, DCM_GreenPaletteColorLookupTableDescriptor,
-                DCM_GreenPaletteColorLookupTableData, DcmTagKey(0,0), descMode, &ImageStatus);
-            palette[2] = new DiLookupTable(Document, DCM_BluePaletteColorLookupTableDescriptor,
-                DCM_BluePaletteColorLookupTableData, DcmTagKey(0,0), descMode, &ImageStatus);
-            if ((ImageStatus == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
+            const EL_BitsPerTableEntry descMode = (Document->getFlags() & CIF_CheckLutBitDepth) ? ELM_CheckValue : ELM_UseValue;
+            Palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
+                DCM_RedPaletteColorLookupTableData, DcmTagKey(0, 0), descMode, &ImageStatus);
+            Palette[1] = new DiLookupTable(Document, DCM_GreenPaletteColorLookupTableDescriptor,
+                DCM_GreenPaletteColorLookupTableData, DcmTagKey(0, 0), descMode, &ImageStatus);
+            Palette[2] = new DiLookupTable(Document, DCM_BluePaletteColorLookupTableDescriptor,
+                DCM_BluePaletteColorLookupTableData, DcmTagKey(0, 0), descMode, &ImageStatus);
+            if ((ImageStatus == EIS_Normal) && (Palette[0] != NULL) && (Palette[1] != NULL) && (Palette[2] != NULL))
             {
                 BitsPerSample = BitsStored;
                 for (int jj = 0; jj < 3; jj++)                          // determine maximum bit count
                 {
-                    if (palette[jj]->getBits() > OFstatic_cast(Uint16, BitsPerSample))
-                        BitsPerSample = palette[jj]->getBits();
+                    if (Palette[jj]->getBits() > OFstatic_cast(Uint16, BitsPerSample))
+                        BitsPerSample = Palette[jj]->getBits();
                 }
-                /* number of pixels per plane */
-                const unsigned long planeSize = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
-                switch (InputData->getRepresentation())
-                {
-                    case EPR_Uint8:
-                        if (BitsPerSample <= 8)
-                            InterData = new DiARGBPixelTemplate<Uint8, Uint32, Uint8>(Document, InputData, palette, ImageStatus,
-                                planeSize, BitsStored);
-                        else
-                            InterData = new DiARGBPixelTemplate<Uint8, Uint32, Uint16>(Document, InputData, palette, ImageStatus,
-                                planeSize, BitsStored);
-                        break;
-                    case EPR_Sint8:
-                        if (BitsPerSample <= 8)
-                            InterData = new DiARGBPixelTemplate<Sint8, Sint32, Uint8>(Document, InputData, palette, ImageStatus,
-                                planeSize, BitsStored);
-                        else
-                            InterData = new DiARGBPixelTemplate<Sint8, Sint32, Uint16>(Document, InputData, palette, ImageStatus,
-                                planeSize, BitsStored);
-                        break;
-                    case EPR_Uint16:
-                        if (BitsPerSample <= 8)
-                            InterData = new DiARGBPixelTemplate<Uint16, Uint32, Uint8>(Document, InputData, palette, ImageStatus,
-                                planeSize, BitsStored);
-                        else
-                            InterData = new DiARGBPixelTemplate<Uint16, Uint32, Uint16>(Document, InputData, palette, ImageStatus,
-                                planeSize, BitsStored);
-                        break;
-                    case EPR_Sint16:
-                        if (BitsPerSample <= 8)
-                            InterData = new DiARGBPixelTemplate<Sint16, Sint32, Uint8>(Document, InputData, palette, ImageStatus,
-                                planeSize, BitsStored);
-                        else
-                            InterData = new DiARGBPixelTemplate<Sint16, Sint32, Uint16>(Document, InputData, palette, ImageStatus,
-                                planeSize, BitsStored);
-                        break;
-                    default:
-                        DCMIMAGE_WARN("invalid value for inter-representation");
-                }
-                deleteInputData();                          // input data is no longer needed
-                checkInterData();
+                Init();                                                 // create intermediate representation
             }
-            delete palette[0];                              // color luts are no longer needed
-            delete palette[1];
-            delete palette[2];
         }
-        else                                                // color depth > 16
+        else                                                            // color depth > 16
         {
             ImageStatus = EIS_InvalidValue;
             DCMIMAGE_ERROR("invalid value for 'BitsStored' (" << BitsStored << ") "
@@ -133,6 +91,74 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
 
 DiARGBImage::~DiARGBImage()
 {
+    delete Palette[0];
+    delete Palette[1];
+    delete Palette[2];
+}
+
+
+/*********************************************************************/
+
+
+void DiARGBImage::Init()
+{
+    /* number of pixels per plane */
+    const unsigned long planeSize = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
+    switch (InputData->getRepresentation())
+    {
+        case EPR_Uint8:
+            if (BitsPerSample <= 8)
+                InterData = new DiARGBPixelTemplate<Uint8, Uint32, Uint8>(Document, InputData, Palette, ImageStatus,
+                    planeSize, BitsStored);
+            else
+                InterData = new DiARGBPixelTemplate<Uint8, Uint32, Uint16>(Document, InputData, Palette, ImageStatus,
+                    planeSize, BitsStored);
+            break;
+        case EPR_Sint8:
+            if (BitsPerSample <= 8)
+                InterData = new DiARGBPixelTemplate<Sint8, Sint32, Uint8>(Document, InputData, Palette, ImageStatus,
+                    planeSize, BitsStored);
+            else
+                InterData = new DiARGBPixelTemplate<Sint8, Sint32, Uint16>(Document, InputData, Palette, ImageStatus,
+                    planeSize, BitsStored);
+            break;
+        case EPR_Uint16:
+            if (BitsPerSample <= 8)
+                InterData = new DiARGBPixelTemplate<Uint16, Uint32, Uint8>(Document, InputData, Palette, ImageStatus,
+                    planeSize, BitsStored);
+            else
+                InterData = new DiARGBPixelTemplate<Uint16, Uint32, Uint16>(Document, InputData, Palette, ImageStatus,
+                    planeSize, BitsStored);
+            break;
+        case EPR_Sint16:
+            if (BitsPerSample <= 8)
+                InterData = new DiARGBPixelTemplate<Sint16, Sint32, Uint8>(Document, InputData, Palette, ImageStatus,
+                    planeSize, BitsStored);
+            else
+                InterData = new DiARGBPixelTemplate<Sint16, Sint32, Uint16>(Document, InputData, Palette, ImageStatus,
+                    planeSize, BitsStored);
+            break;
+        default:
+            DCMIMAGE_WARN("invalid value for inter-representation");
+    }
+    deleteInputData();                          // input data is no longer needed
+    checkInterData();
+}
+
+
+/*********************************************************************/
+
+
+int DiARGBImage::processNextFrames(const unsigned long fcount)
+{
+    if (DiImage::processNextFrames(fcount))
+    {
+        delete InterData;
+        InterData = NULL;
+        Init();
+        return (ImageStatus == EIS_Normal);
+    }
+    return 0;
 }
 
 
@@ -140,6 +166,9 @@ DiARGBImage::~DiARGBImage()
  *
  * CVS/RCS Log:
  * $Log: diargimg.cc,v $
+ * Revision 1.22  2009-11-25 14:48:46  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ *
  * Revision 1.21  2009-10-14 10:23:56  joergr
  * Fixed minor issues in log output. Also updated copyright date (if required).
  *

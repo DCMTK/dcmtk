@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:26:37 $
- *  CVS/RCS Revision: $Revision: 1.96 $
+ *  Update Date:      $Date: 2009-11-25 14:52:33 $
+ *  CVS/RCS Revision: $Revision: 1.97 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -162,6 +162,7 @@ int main(int argc, char *argv[])
     ES_PresentationLut  opt_presShape = ESP_Default;
     OFString            opt_displayFile;
     int                 opt_displayFunction = 0;          /* default: GSDF */
+                        /* 0=GSDF, 1=CIELAB */
     OFCmdFloat          opt_ambientLight = -1;            /* default: not set */
     OFCmdFloat          opt_illumination = -1;            /* default: not set */
     OFCmdFloat          opt_minDensity = -1;              /* default: not set */
@@ -883,7 +884,22 @@ int main(int argc, char *argv[])
 
     OFLOG_INFO(dcm2pnmLogger, "preparing pixel data");
 
-    E_TransferSyntax xfer = dfile->getDataset()->getOriginalXfer();
+    DcmDataset *dataset = dfile->getDataset();
+    E_TransferSyntax xfer = dataset->getOriginalXfer();
+
+    Sint32 frameCount;
+    if (dataset->findAndGetSint32(DCM_NumberOfFrames, frameCount).bad())
+        frameCount = 1;
+    if ((opt_frameCount == 0) || ((opt_frame == 1) && (opt_frameCount == OFstatic_cast(Uint32, frameCount))))
+    {
+        // since we process all frames anyway, decompress the complete pixel data (if required)
+        opt_compatibilityMode |= CIF_DecompressCompletePixelData;
+    }
+    if (frameCount > 1)
+    {
+        // use partial read access to pixel data (only in case of multiple frames)
+        opt_compatibilityMode |= CIF_UsePartialAccessToPixelData;
+    }
 
     DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode, opt_frame - 1, opt_frameCount);
     if (di == NULL)
@@ -947,8 +963,8 @@ int main(int argc, char *argv[])
         if (colorModel == NULL)
             colorModel = "unknown";
 
-        dfile->getDataset()->findAndGetString(DCM_SOPClassUID, SOPClassUID);
-        dfile->getDataset()->findAndGetString(DCM_SOPInstanceUID, SOPInstanceUID);
+        dataset->findAndGetString(DCM_SOPClassUID, SOPClassUID);
+        dataset->findAndGetString(DCM_SOPInstanceUID, SOPInstanceUID);
 
         if (SOPInstanceUID == NULL)
             SOPInstanceUID = "not present";
@@ -1013,7 +1029,7 @@ int main(int argc, char *argv[])
         /* try to select frame */
         if (opt_frame != di->getFirstFrame() + 1)
         {
-            OFLOG_FATAL(dcm2pnmLogger, "cannot select frame no. " << opt_frame << ", invalid frame no.");
+            OFLOG_FATAL(dcm2pnmLogger, "cannot select frame no. " << opt_frame << ", invalid frame number");
             return 1;
         }
 
@@ -1432,6 +1448,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.97  2009-11-25 14:52:33  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ *
  * Revision 1.96  2009-10-14 10:26:37  joergr
  * Fixed minor issues in log output.
  *
@@ -1454,7 +1473,7 @@ int main(int argc, char *argv[])
  *
  * Revision 1.90  2008-09-25 12:47:58  joergr
  * Added support for printing the expanded command line arguments.
- * iAlways output the resource identifier of the command line tool in debug mode.
+ * Always output the resource identifier of the command line tool in debug mode.
  *
  * Revision 1.89  2008-05-20 09:57:53  joergr
  * Added new bilinear and bicubic scaling algorithms for image magnification.
