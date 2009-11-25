@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005, OFFIS
+ *  Copyright (C) 2003-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation of DICOMDIR image support (plugin)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:59:09 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/dcmtk/dcmjpeg/ddpiimpl.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-25 13:36:47 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,6 +84,7 @@ class DicomDirImageImplementation
      *  @param frame index of the frame to be scaled (1..n)
      *  @param width width of the scaled image (in pixels)
      *  @param height height of the scaled image (in pixels)
+     *  @param decompressAll always decompress complete pixel data if true
      *  @return OFTrue if successful, OFFalse otherwise
      */
     virtual OFBool scaleImage(DcmItem *dataset,
@@ -92,7 +92,8 @@ class DicomDirImageImplementation
                               const unsigned long count,
                               const unsigned long frame,
                               const unsigned int width,
-                              const unsigned int height) const;
+                              const unsigned int height,
+                              const OFBool decompressAll = OFFalse) const;
 };
 
 
@@ -103,12 +104,14 @@ class DicomDirImageImplementation
  *
  * CVS/RCS Log:
  * $Log: ddpiimpl.h,v $
+ * Revision 1.3  2009-11-25 13:36:47  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ *
  * Revision 1.2  2005-12-08 16:59:09  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.1  2003/08/12 13:15:27  joergr
  * Added plugable image support for the new DICOMDIR class.
- *
  *
  *
  */

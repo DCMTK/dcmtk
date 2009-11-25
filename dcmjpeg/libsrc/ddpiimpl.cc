@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of DICOMDIR image support (plugin)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:24 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-25 13:36:05 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +34,8 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmjpeg/ddpiimpl.h"
-#include "dcmtk/dcmimgle/dcmimage.h"    /* for class DicomImage */
-#include "dcmtk/dcmimgle/discalet.h"    /* for direct image scaling */
+#include "dcmtk/dcmimgle/dcmimage.h"  /* for class DicomImage */
+#include "dcmtk/dcmimgle/discalet.h"  /* for direct image scaling */
 
 #include "dcmtk/ofstd/ofcast.h"
 
@@ -83,14 +83,18 @@ OFBool DicomDirImageImplementation::scaleImage(DcmItem *dataset,
                                                const unsigned long count,
                                                const unsigned long frame,
                                                const unsigned int width,
-                                               const unsigned int height) const
+                                               const unsigned int height,
+                                               const OFBool decompressAll) const
 {
     OFBool result = OFFalse;
     /* check parameters (at least the pointers) */
     if ((dataset != NULL) && (pixel != NULL) && (frame > 0))
     {
+        unsigned long flags = CIF_UsePartialAccessToPixelData | CIF_NeverAccessEmbeddedOverlays;
+        if (decompressAll)
+            flags |= CIF_DecompressCompletePixelData;
         /* open referenced image */
-        DicomImage *image = new DicomImage(dataset, EXS_Unknown, 0 /*flags*/, frame - 1 /*fstart*/, 1 /*fcount*/);
+        DicomImage *image = new DicomImage(dataset, EXS_Unknown, flags, frame - 1 /*fstart*/, 1 /*fcount*/);
         if ((image != NULL) && (image->getStatus() == EIS_Normal))
         {
             /* check if image is monochrome */
@@ -129,12 +133,14 @@ OFBool DicomDirImageImplementation::scaleImage(DcmItem *dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: ddpiimpl.cc,v $
+ *  Revision 1.3  2009-11-25 13:36:05  joergr
+ *  Adapted code for new approach to access individual frames of a DICOM image.
+ *
  *  Revision 1.2  2005-12-08 15:43:24  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.1  2003/08/12 13:14:54  joergr
  *  Added plugable image support for the new DICOMDIR class.
- *
  *
  *
  */
