@@ -22,8 +22,8 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:38:16 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2009-11-25 16:08:26 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 #define DIMOOPXT_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofconsol.h"
+
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/dcmdata/dctypes.h"
 
@@ -118,9 +118,7 @@ class DiMonoOutputPixelTemplate
 #ifdef PASTEL_COLOR_OUTPUT
                 color(buffer, pixel, frame, frames);
 #else
-            {
                 DCMIMGLE_ERROR("pastel color output not supported");
-            }
 #endif
             else
             {
@@ -309,10 +307,7 @@ class DiMonoOutputPixelTemplate
     {
         ColorData = new DiMonoColorOutputPixelTemplate<T1, T3>(buffer, inter, frame, frames);
         if (ColorData != NULL)
-        {
-            ofConsole.lockCout() << "COLOR" << OFendl;
-            ofConsole.unlockCout();
-        }
+            DCMIMGLE_DEBUG(">>> COLOR <<<");
     }
 #endif
 
@@ -341,7 +336,7 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[FrameSize];
             if (Data != NULL)
             {
-                DCMIMGLE_DEBUG("using VOI routine 'voilut()'");
+                DCMIMGLE_DEBUG("applying VOI transformation with LUT (" << vlut->getCount() << " entries)");
                 const DiDisplayLUT *dlut = NULL;
                 const double minvalue = vlut->getMinValue();
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;
@@ -351,7 +346,7 @@ class DiMonoOutputPixelTemplate
                     T3 value;
                     if ((plut != NULL) && (plut->isValid()))                            // has presentation LUT
                     {
-                        DCMIMGLE_DEBUG("using presentation LUT transformation");
+                        DCMIMGLE_DEBUG("applying presentation LUT transformation");
                         createDisplayLUT(dlut, disp, plut->getBits());
                         const Uint32 value2 = OFstatic_cast(Uint32, (minvalue / OFstatic_cast(double, vlut->getAbsMaxRange())) * plut->getCount());
                         if (dlut != NULL)                                               // perform display transformation
@@ -388,7 +383,7 @@ class DiMonoOutputPixelTemplate
                     T3 *lut = NULL;
                     if ((plut != NULL) && (plut->isValid()))                            // has presentation LUT
                     {
-                        DCMIMGLE_DEBUG("using presentation LUT transformation");
+                        DCMIMGLE_DEBUG("applying presentation LUT transformation");
                         createDisplayLUT(dlut, disp, plut->getBits());
                         register Uint32 value2;                                         // presentation LUT is always unsigned
                         const Uint32 pcnt = plut->getCount();
@@ -616,7 +611,7 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[FrameSize];
             if (Data != NULL)
             {
-                DCMIMGLE_DEBUG("using VOI routine 'nowindow()'");
+                DCMIMGLE_DEBUG("applying no VOI transformation (linear scaling)");
                 const double absmin = inter->getAbsMinimum();
                 const double absmax = inter->getAbsMaximum();
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;
@@ -627,7 +622,7 @@ class DiMonoOutputPixelTemplate
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
-                    DCMIMGLE_DEBUG("using presentation LUT transformation");
+                    DCMIMGLE_DEBUG("applying presentation LUT transformation");
                     createDisplayLUT(dlut, disp, plut->getBits());
                     register Uint32 value;                                            // presentation LUT is always unsigned
                     const double gradient1 = OFstatic_cast(double, plut->getCount()) / inter->getAbsMaxRange();
@@ -770,7 +765,7 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[FrameSize];                                             // create new output buffer
             if (Data != NULL)
             {
-                DCMIMGLE_DEBUG("using VOI routine 'window()'");
+                DCMIMGLE_DEBUG("applying VOI transformation with window center = " << center << ", width = " << width);
                 const DiDisplayLUT *dlut = NULL;
                 const double absmin = inter->getAbsMinimum();
                 const double width_1 = width - 1;
@@ -785,7 +780,7 @@ class DiMonoOutputPixelTemplate
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
-                    DCMIMGLE_DEBUG("using presentation LUT transformation");
+                    DCMIMGLE_DEBUG("applying presentation LUT transformation");
                     createDisplayLUT(dlut, disp, plut->getBits());
                     register Uint32 value2;                                           // presentation LUT is always unsigned
                     const Uint32 pcnt = plut->getCount();
@@ -961,6 +956,8 @@ class DiMonoOutputPixelTemplate
             {
                 if (overlays[j] != NULL)
                 {
+                    if (overlays[j]->getCount() > 0)
+                        DCMIMGLE_DEBUG("applying " << ((j == 0) ? "built-in" : "additional") << " overlay planes");
                     const signed long left_pos = overlays[j]->getLeft();
                     const signed long top_pos = overlays[j]->getTop();
                     register DiOverlayPlane *plane;
@@ -1113,6 +1110,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
+ * Revision 1.50  2009-11-25 16:08:26  joergr
+ * Removed inclusion of header file "ofconsol.h".
+ * Revised logging messages. Added more logging messages.
+ *
  * Revision 1.49  2009-10-28 14:38:16  joergr
  * Fixed minor issues in log output.
  *
