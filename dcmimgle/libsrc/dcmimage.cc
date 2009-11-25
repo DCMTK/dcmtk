@@ -22,8 +22,8 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:26:01 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2009-11-25 16:33:23 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcobject.h"
@@ -189,7 +190,6 @@ DicomImage::~DicomImage()
 
 /*********************************************************************/
 
-
 // --- initialize 'DicomImage' object (same procedure for every 'real' constructor)
 
 void DicomImage::Init()
@@ -207,8 +207,9 @@ void DicomImage::Init()
             PhotometricInterpretation = EPI_Monochrome2;            // default for presentation states
             Image = new DiMono2Image(Document, ImageStatus);
         }
-        else if (Document->getValue(DCM_PhotometricInterpretation, str))
+        else if (strlen(str = Document->getPhotometricInterpretation()) > 0)
         {
+            const SP_Interpretation *pin = PhotometricInterpretationNames;
             char *cstr = new char[strlen(str) + 1];
             if (cstr != NULL)
             {
@@ -220,15 +221,16 @@ void DicomImage::Init()
                     else if (isdigit(*p))
                         *(q++) = *p;
                 }
-                *q = '\0';                                          // end of c-string
-            }
-            else
-                cstr = OFconst_cast(char *, str);
-            const SP_Interpretation *pin = PhotometricInterpretationNames;
-            while ((pin->Name != NULL) && (strcmp(pin->Name, cstr) != 0))
-                ++pin;
-            if (cstr != str)
+                *q = '\0';                                          // end of C string
+                while ((pin->Name != NULL) && (strcmp(pin->Name, cstr) != 0))
+                    ++pin;
                 delete[] cstr;
+            } else {
+                DCMIMGLE_WARN("can't create filtered version of 'PhotometricInterpretation' (" << str << ")");
+                cstr = OFconst_cast(char *, str);                   // just reference the original string
+                while ((pin->DefinedTerm != NULL) && (strcmp(pin->DefinedTerm, cstr) != 0))
+                    ++pin;
+            }
             PhotometricInterpretation = pin->Type;                  // unknown if last entry
             switch (PhotometricInterpretation)
             {
@@ -254,15 +256,15 @@ void DicomImage::Init()
                     }
             }
         }
-        else if (Document->getFlags() & CIF_AcrNemaCompatibility)    // ACR-NEMA has no 'photometric interpretation'
+        else if (Document->getFlags() & CIF_AcrNemaCompatibility)   // ACR-NEMA has no 'photometric interpretation'
         {
             PhotometricInterpretation = EPI_Monochrome2;
             Image = new DiMono2Image(Document, ImageStatus);
-        }
-        else
-        {
+        } else {
             ImageStatus = EIS_MissingAttribute;
-            DCMIMGLE_ERROR("mandatory attribute 'PhotometricInterpretation' is missing");
+            PhotometricInterpretation = EPI_Missing;
+            if (Document->getPixelData() != NULL)
+                DCMIMGLE_ERROR("mandatory attribute 'PhotometricInterpretation' is missing or can't be determined");
         }
     }
     else
@@ -299,9 +301,9 @@ const char *DicomImage::getString(const EI_Status status)
       case EIS_MissingAttribute:
         return "Missing attribute";
       case EIS_InvalidValue:
-        return "Invalid data value";
+        return "Invalid element value";
       case EIS_NotSupportedValue:
-        return "Unsupported data value";
+        return "Unsupported element value";
       case EIS_MemoryFailure:
         return "Out of memory";
       case EIS_InvalidImage:
@@ -316,9 +318,9 @@ const char *DicomImage::getString(const EI_Status status)
 const char *DicomImage::getString(const EP_Interpretation interpret)
 {
     const SP_Interpretation *pin = PhotometricInterpretationNames;
-    while ((pin->Name != NULL) && (pin->Type != interpret))
+    while ((pin->DefinedTerm != NULL) && (pin->Type != interpret))
         ++pin;
-    return pin->Name;
+    return pin->DefinedTerm;
 }
 
 
@@ -806,6 +808,11 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
+ * Revision 1.33  2009-11-25 16:33:23  joergr
+ * Adapted code for new approach to access individual frames of a DICOM image.
+ * The getString() method now returns the Defined Term of the attribute
+ * PhotometricInterpretation.
+ *
  * Revision 1.32  2009-10-28 14:26:01  joergr
  * Fixed minor issues in log output.
  *
