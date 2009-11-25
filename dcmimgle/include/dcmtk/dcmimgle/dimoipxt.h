@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:38:16 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2009-11-25 16:07:12 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 #define DIMOIPXT_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofconsol.h"
+
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofcast.h"
 
@@ -134,13 +134,14 @@ class DiMonoInputPixelTemplate
                 const int useInputBuffer = (sizeof(T1) == sizeof(T3)) && (this->Count <= input->getCount());
                 if (useInputBuffer)                            // do not copy pixel data, reference them!
                 {
+                    DCMIMGLE_DEBUG("re-using input buffer, do not copy pixel data");
                     this->Data = OFstatic_cast(T3 *, input->getDataPtr());
                     input->removeDataReference();              // avoid double deletion
                 } else
                     this->Data = new T3[this->Count];
                 if (this->Data != NULL)
                 {
-                    DCMIMGLE_DEBUG("using modality routine 'modlut()'");
+                    DCMIMGLE_DEBUG("applying modality tranformation with LUT (" << mlut->getCount() << " entries)");
                     register T2 value = 0;
                     const T2 firstentry = mlut->getFirstEntry(value);                     // choose signed/unsigned method
                     const T2 lastentry = mlut->getLastEntry(value);
@@ -205,6 +206,7 @@ class DiMonoInputPixelTemplate
             const int useInputBuffer = (sizeof(T1) == sizeof(T3)) && (this->Count <= input->getCount()) && (input->getPixelStart() == 0);
             if (useInputBuffer)
             {                                              // do not copy pixel data, reference them!
+                DCMIMGLE_DEBUG("re-using input buffer, do not copy pixel data");
                 this->Data = OFstatic_cast(T3 *, input->getDataPtr());
                 input->removeDataReference();              // avoid double deletion
             } else
@@ -222,7 +224,7 @@ class DiMonoInputPixelTemplate
                             *(q++) = OFstatic_cast(T3, *(p++));
                     }
                 } else {
-                    DCMIMGLE_DEBUG("using modality routine 'rescale()'");
+                    DCMIMGLE_DEBUG("applying modality transformation with rescale slope = " << slope << ", intercept = " << intercept);
                     T3 *lut = NULL;
                     register const T1 *p = pixel + input->getPixelStart();
                     const unsigned long ocnt = OFstatic_cast(unsigned long, input->getAbsMaxRange());  // number of LUT entries
@@ -281,6 +283,9 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
+ * Revision 1.38  2009-11-25 16:07:12  joergr
+ * Removed inclusion of header file "ofconsol.h". Revised logging messages.
+ *
  * Revision 1.37  2009-10-28 14:38:16  joergr
  * Fixed minor issues in log output.
  *
