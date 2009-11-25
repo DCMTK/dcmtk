@@ -22,8 +22,8 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-12 12:03:56 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2009-11-25 15:07:00 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,8 +73,8 @@ class DicomImage
  // --- constructors and destructor
 
     /** constructor, open a DICOM file.
-     *  opens specified file and reads image related data, creates internal representation
-     *  of image data. use getStatus() to obtain detailed information about any errors.
+     *  Opens specified file and reads image related data, creates internal representation
+     *  of image data. Use getStatus() to obtain detailed information about any errors.
      *
      ** @param  filename  the DICOM file
      *  @param  flags     configuration flags (see diutils.h, CIF_MayDetachPixelData is set automatically)
@@ -162,6 +162,25 @@ class DicomImage
     virtual ~DicomImage();
 
 
+ // --- multi-frame handling
+
+    /** process next couple of frames. If the image object has been created with less than the number
+     *  of frames stored in the DICOM image, this function allows for accessing the subsequent frames.
+     *  Multiple calls to this function allow for successively processing all frames stored in the
+     *  file or dataset. See parameters 'fstart' and 'fcount' of the constructor for how to initially
+     *  create an instance of this class.
+     *
+     ** @param  fcount  number of frames to be processed (0 = same number as before)
+     *
+     ** @return status, true if successful, false otherwise
+     */
+    inline int processNextFrames(const unsigned long fcount = 0)
+    {
+        return (Image != NULL) ?
+            Image->processNextFrames(fcount) : 0;
+    }
+
+
  // --- information: return requested value if successful
 
     /** convert status code to status string
@@ -172,7 +191,7 @@ class DicomImage
      */
     static const char *getString(const EI_Status status);
 
-    /** convert photometric interpretation code to interpretation string
+    /** convert photometric interpretation code to interpretation string (defined term)
      *
      ** @param  interpret  code of image's photometric interpretation
      *
@@ -1816,7 +1835,7 @@ class DicomImage
 
     /// current state of converting progress (error level)
     EI_Status ImageStatus;
-    /// dicom color model (enumeration)
+    /// DICOM color model (enumeration)
     EP_Interpretation PhotometricInterpretation;
 
     /// points to document object
@@ -1838,6 +1857,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
+ * Revision 1.62  2009-11-25 15:07:00  joergr
+ * Added new method which allows for processing the frames of a multi-frame
+ * image successively. The getString() method now returns the Defined Term of
+ * the attribute PhotometricInterpretation.
+ *
  * Revision 1.61  2009-02-12 12:03:56  joergr
  * Never update value of ImagerPixelSpacing when image is scaled, use
  * PixelSpacing instead.
