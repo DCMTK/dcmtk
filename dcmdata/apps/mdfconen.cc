@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:06 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-11-26 13:10:56 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -537,14 +537,14 @@ int MdfConsoleEngine::startProvidingService()
                                           itempad_option, output_dataset_option);
                 if (result.bad())
                 {
-                    OFLOG_ERROR(mdfconenLogger, "couldn't save file: " << result.text());
+                    OFLOG_ERROR(mdfconenLogger, "Couldn't save file: " << result.text());
                     errors++;
                     if (!no_backup_option)
                     {
                       result=restoreFile(filename);
                       if (result.bad())
                       {
-                          OFLOG_ERROR(mdfconenLogger, "couldn't restore file!");
+                        OFLOG_ERROR(mdfconenLogger, "Couldn't restore file: " << result.text());
                           errors++;
                       }
                     }
@@ -565,7 +565,7 @@ int MdfConsoleEngine::startProvidingService()
         else
         {
             errors++;
-            OFLOG_ERROR(mdfconenLogger, "unable to load file " << filename);
+            OFLOG_ERROR(mdfconenLogger, "unable to load file " << filename <<": " << result.text());
         }
         file_it++;
         // output separator line if required
@@ -604,19 +604,21 @@ OFCondition MdfConsoleEngine::backupFile(const char *file_name)
         int del_result = remove(backup.c_str());
         if (del_result!=0)
         {
-            backup_result=makeOFCondition(0,0,OF_error,"Couldn't delete previous backup file, unable to backup!\n");
+            OFLOG_ERROR(mdfconenLogger, "Couldn't delete previous backup file, unable to backup!");
+            return EC_IllegalCall;
         }
     }
-    //if backup file could be removed:
-    if (backup_result.good())
+
+    //if backup file could be removed, backup original file
+    result=rename(file_name,backup.c_str());
+    //set return value
+    if (result!=0)
     {
-        //backup original file!
-        result=rename(file_name,backup.c_str());
-        //set return value
-        if (result!=0)
-            backup_result=makeOFCondition(0,0,OF_error,"Unable to backup!\n");
+        OFLOG_ERROR(mdfconenLogger, "Unable to backup! No write permission?");
+        return EC_IllegalCall;
     }
-    return backup_result;
+
+    return EC_Normal;
 }
 
 
@@ -631,7 +633,7 @@ OFCondition MdfConsoleEngine::restoreFile(const char *filename)
         result=remove(filename);
         if (result!=0)
         {
-            OFLOG_ERROR(mdfconenLogger, "unable to delete original filename for restoring backup!");
+            OFLOG_ERROR(mdfconenLogger, "Unable to delete original filename for restoring backup!");
             return EC_IllegalCall;
         }
     }
@@ -664,6 +666,10 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.33  2009-11-26 13:10:56  onken
+** Added better error message to dcmodify in case write permissions for creating
+** the backup file are missing.
+**
 ** Revision 1.32  2009-11-04 09:58:06  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

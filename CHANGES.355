@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.26 (onken)
+
+- Added better error message to dcmodify in case write permissions for creating
+  the backup file are missing.
+  Thanks to Karen Rei Pease <karen-pease@uiowa.edu> for reporting.
+  Affects: dcmdata/apps/mdfconen.cc
+
 **** Changes from 2009.11.25 (riesmeier)
 
 - Adapted code for new approach to access individual frames of a DICOM image.
