@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.26 (riesmeier)
+
+- Moved some log messages from debug to trace level.
+  Affects: dcmnet/libsrc/dimse.cc
+
 **** Changes from 2009.11.26 (onken)
 
 - Added better error message to dcmodify in case write permissions for creating

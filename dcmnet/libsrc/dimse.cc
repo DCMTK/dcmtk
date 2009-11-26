@@ -56,9 +56,9 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: uli $
-** Update Date:         $Date: 2009-11-18 11:53:59 $
-** CVS/RCS Revision:    $Revision: 1.53 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2009-11-26 14:46:31 $
+** CVS/RCS Revision:    $Revision: 1.54 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -453,8 +453,8 @@ validateMessage(
      * data set. If the specified conditions are not met, return an error.
      *
      * Parameters:
-     *   assoc                - [in] The association (network connection to another DICOM application).
-     *   msg                  - [in] Structure that represents a certain DIMSE message.
+     *   assoc - [in] The association (network connection to another DICOM application).
+     *   msg   - [in] Structure that represents a certain DIMSE message.
      */
 {
     OFCondition cond = EC_Normal;
@@ -613,13 +613,8 @@ sendStraightFileData(
         pdvList.count = 1;
         pdvList.pdv = &pdv;
 
-#ifdef DEBUG
-        if (debug) {
-            COUT << "DIMSE sendStraightFileData: sending "
-                 << pdv.fragmentLength << " bytes (last: "
-                 << ((last)?("YES"):("NO")) << ")" << OFendl;
-        }
-#endif
+        DCMNET_TRACE("DIMSE sendStraightFileData: sending " << pdv.fragmentLength << " bytes (last: "
+            << ((last)?("YES"):("NO")) << ")");
 
         dulCond = DUL_WritePDVs(&assoc->DULassociation, &pdvList);
         if (dulCond.bad())
@@ -785,8 +780,7 @@ sendDcmDataset(
             pdvList.pdv = &pdv;
 
             /* dump some information if required */
-            DCMNET_DEBUG("DIMSE sendDcmDataset: sending " << pdv.fragmentLength
-                     << " bytes");
+            DCMNET_TRACE("DIMSE sendDcmDataset: sending " << pdv.fragmentLength << " bytes");
 
             /* send information over the network to the other DICOM application */
             dulCond = DUL_WritePDVs(&assoc->DULassociation, &pdvList);
@@ -898,7 +892,7 @@ DIMSE_sendMessage(
       /* if a data object and a file name were passed, something is fishy */
       if ((dataObject != NULL)&&(dataFileName != NULL))
       {
-            DCMNET_WARN(DIMSE_warn_str(assoc) << "sendData: both object and file specified (sending object only)");
+        DCMNET_WARN(DIMSE_warn_str(assoc) << "sendData: both object and file specified (sending object only)");
       }
       /* if there is no data object but a file name, we need to read data from the specified file */
       /* to create a data object with the actual instance data that shall be sent */
@@ -906,9 +900,9 @@ DIMSE_sendMessage(
       {
         if (! dcmff.loadFile(dataFileName, EXS_Unknown).good())
         {
-             DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: cannot open DICOM file ("
-               << dataFileName << "): " << strerror(errno));
-             cond = DIMSE_SENDFAILED;
+          DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: cannot open DICOM file ("
+            << dataFileName << "): " << strerror(errno));
+          cond = DIMSE_SENDFAILED;
         } else {
           dataObject = dcmff.getDataset();
           fromFile = 1;
@@ -926,21 +920,21 @@ DIMSE_sendMessage(
           DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
           if (fromFile && dataFileName)
           {
-              DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert DICOM file '"
-                      << dataFileName << "'\nfrom '" << originalXferSyntax.getXferName()
-                      << "' transfer syntax to '" << writeXferSyntax.getXferName() << "'.");
+            DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert DICOM file '"
+              << dataFileName << "'\nfrom '" << originalXferSyntax.getXferName()
+              << "' transfer syntax to '" << writeXferSyntax.getXferName() << "'");
           } else {
-              DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert dataset\nfrom '"
-                      << originalXferSyntax.getXferName() << "' transfer syntax to '"
-                      << writeXferSyntax.getXferName() << "'.");
+            DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert dataset\nfrom '"
+              << originalXferSyntax.getXferName() << "' transfer syntax to '"
+              << writeXferSyntax.getXferName() << "'");
           }
-              cond = DIMSE_SENDFAILED;
+          cond = DIMSE_SENDFAILED;
         }
       } else {
-            /* if there is neither a data object nor a file name, create a warning, since */
-            /* the information in msg specified that instance data should be present. */
-            DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: no dataset to send\n");
-            cond = DIMSE_SENDFAILED;
+          /* if there is neither a data object nor a file name, create a warning, since */
+          /* the information in msg specified that instance data should be present. */
+          DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: no dataset to send\n");
+          cond = DIMSE_SENDFAILED;
       }
     }
 
@@ -959,9 +953,7 @@ DIMSE_sendMessage(
       DCMNET_DEBUG("DIMSE Command to Send:" << OFendl << DcmObject::PrintHelper(*cmdObj));
 
       /* Send the DIMSE command. DIMSE commands are always little endian implicit. */
-      cond = sendDcmDataset(assoc, cmdObj, presID,
-            EXS_LittleEndianImplicit, DUL_COMMANDPDV,
-            NULL, NULL);
+      cond = sendDcmDataset(assoc, cmdObj, presID, EXS_LittleEndianImplicit, DUL_COMMANDPDV, NULL, NULL);
     }
 
     /* Then we still have to send the actual instance data if the DIMSE command information variable */
@@ -1241,7 +1233,7 @@ DIMSE_receiveCommand(
 
     /* dump information if required */
     DCMNET_DEBUG("DIMSE receiveCommand: " << pdvCount << " PDVs ("
-             << bytesRead << " bytes), PresID=" << (int) pid);
+        << bytesRead << " bytes), PresID=" << (int) pid);
 
     /* check if this is a valid presentation context */
     cond = getTransferSyntax(assoc, pid, &xferSyntax);
@@ -1519,8 +1511,8 @@ DIMSE_receiveDataSetInFile(
           pdvCount++;
           last = pdv.lastPDV;
 
-          DCMNET_DEBUG("DIMSE receiveDataSetInFile: " << pdv.fragmentLength
-                  << " bytes read (last: " << ((last)?("YES"):("NO")) << ")");
+          DCMNET_TRACE("DIMSE receiveDataSetInFile: " << pdv.fragmentLength
+              << " bytes read (last: " << ((last)?("YES"):("NO")) << ")");
 
           if (callback)
           { /* execute callback function */
@@ -1545,7 +1537,7 @@ DIMSE_receiveDataSetInMemory(
         DIMSE_ProgressCallback callback,
         void *callbackData)
     /*
-     * This function revceives one data set (of instance data) via network from another DICOM application.
+     * This function receives one data set (of instance data) via network from another DICOM application.
      *
      * Parameters:
      *   assoc           - [in] The association (network connection to another DICOM application).
@@ -1691,7 +1683,7 @@ DIMSE_receiveDataSetInMemory(
             if (econd != EC_Normal && econd != EC_StreamNotifyClient)
             {
                 DCMNET_WARN(DIMSE_warn_str(assoc) << "DIMSE receiveDataSetInMemory: dset->read() Failed ("
-                        << econd.text() << ")");
+                    << econd.text() << ")");
                 cond = DIMSE_RECEIVEFAILED;
                 last = OFTrue;
             }
@@ -1713,7 +1705,7 @@ DIMSE_receiveDataSetInMemory(
 
             /* dump information if required */
             DCMNET_TRACE("DIMSE receiveDataSetInMemory: " << pdv.fragmentLength
-                      << " bytes read (last: " << ((last)?("YES"):("NO")) << ")");
+                << " bytes read (last: " << ((last)?("YES"):("NO")) << ")");
 
             /* execute callback function after each received PDV */
             if (callback)
@@ -1765,6 +1757,9 @@ OFString DIMSE_warn_str(T_ASC_Association *assoc)
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.54  2009-11-26 14:46:31  joergr
+** Moved some log messages from debug to trace level.
+**
 ** Revision 1.53  2009-11-18 11:53:59  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
