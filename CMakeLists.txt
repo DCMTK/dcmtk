@@ -13,9 +13,9 @@ ENDIF(NOT MSVC)
 
 # check required version of CMake
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4.8)
-IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.6.4)
-  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.6.4 CACHE STRING "Latest version of CMake when this project was released." FORCE)
-ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.6.4)
+IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.0)
+  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.8.0 CACHE STRING "Latest version of CMake when this project was released." FORCE)
+ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.0)
 
 IF(COMMAND CMAKE_POLICY)
   # Works around warnings about libraries linked against that don't have absolute paths
@@ -227,4 +227,5 @@ INCLUDE_DIRECTORIES(${dcmtk_SOURCE_DIR}/config/include)
 # recurse into subdirectories
 SUBDIRS(config ofstd oflog dcmdata dcmtls dcmnet dcmqrdb dcmimgle dcmimage dcmjpeg dcmsign dcmsr dcmpstat dcmwlm doxygen)
 # add non-public modules
+SUBDIRS(dcmavi)
 #SUBDIRS(dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmjpls dcmloco dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmrt dcmwave)
