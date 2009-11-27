@@ -1,6 +1,42 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.27 (riesmeier)
+
+- Sightly modifed log messages.
+  Affects: dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+
+- Fixed various issues with syntax usage (e.g. layout and formatting).
+  Affects: dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/apps/dcmpschk.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/docs/dcmp2pgm.man
+           dcmpstat/docs/dcmprscp.man
+           dcmpstat/docs/dcmprscu.man
+
+- Added settings for and documentation on ".progress" loggers.
+  Affects: oflog/etc/logger.cfg
+
+- Replaced remaining tabs by spaces.
+  Affects: dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmpssnd.cc
+
+- Updated latest tested CMake version to 2.8.0.
+  Affects: CMakeLists.txt
+
+- Removed unused subdirectory "tests" from CMake project file.
+  Affects: dcmimgle/CMakeLists.txt
+           dcmpstat/CMakeLists.txt
+
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2009.11.26 (riesmeier)
 
 - Moved some log messages from debug to trace level.
