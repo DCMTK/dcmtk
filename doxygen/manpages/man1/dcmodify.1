@@ -1,4 +1,4 @@
-.TH "dcmodify" 1 "11 Aug 2009" "Version 3.5.5 CVS" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmodify" 1 "27 Nov 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmodify \- Modify DICOM files
@@ -57,11 +57,21 @@ dcmfile-in  DICOM input filename(s) to be modified
         --arguments
           print expanded command line arguments
 
+  -q    --quiet
+          quiet mode, print no warnings and errors
+
   -v    --verbose
-          verbose mode, print verbose output
+          verbose mode, print processing details
 
   -d    --debug
           debug mode, print debug information
+
+  -ll   --log-level  [l]evel: string constant
+          (fatal, error, warn, info, debug, trace)
+          use level l for the logger
+
+  -lc   --log-config  [f]ilename: string
+          use config file f for the logger
 
   -ie   --ignore-errors
           continue with file, if modify error occurs
@@ -279,7 +289,7 @@ If you generate new UID's with \fI-gst\fP, \fI-gse\fP or \fI-gin\fP, this will o
 When choosing the \fI-gin\fP option, the related metaheader tag ('Media Storage SOP Instance UID') is updated automatically. This behaviour cannot be disabled.
 .SH "WILDCARDS"
 .PP
-\fBdcmodify\fP also permits the usage of a wildcard character '*' for item numbers in path expressions, e.g. 'ContentSequence[*].CodeValue' selects all 'Code Value' attributes in all items of the ContentSequence. Using a wildcard is possible for all basic operations, i.e . modifying \fI-m\fP, inserting \fI-i\fP and \fI-e\fP options which makes it, together with the automatic creation of intermediate path nodes a powerful tool for construction and processing complex datasets. The options \fI-ma\fP and \fI-ea\fP for modifying or deleting all occurences of a DICOM element based on its tag does not except any wildcards but only works on single elements (i.e. a single dictionary name or tag key).
+\fBdcmodify\fP also permits the usage of a wildcard character '*' for item numbers in path expressions, e.g. 'ContentSequence[*].CodeValue' selects all 'Code Value' attributes in all items of the ContentSequence. Using a wildcard is possible for all basic operations, i.e . modifying \fI-m\fP, inserting \fI-i\fP and \fI-e\fP options which makes it, together with the automatic creation of intermediate path nodes a powerful tool for construction and processing complex datasets. The options \fI-ma\fP and \fI-ea\fP for modifying or deleting all occurences of a DICOM element based on its tag does not accept any wildcards but only works on single elements (i.e. a single dictionary name or tag key).
 .SH "EXAMPLES"
 .PP
 .PP
@@ -301,7 +311,7 @@ When choosing the \fI-gin\fP option, the related metaheader tag ('Media Storage 
        does not exist, it is automatically inserted by dcmodify.
 
        dcmodify -i "(0008,1111)[*].PatientsName=Another Name" *.dcm
-       Inserts PatientsName tag into the _every_ item of sequence
+       Inserts PatientsName tag into _every_ item of sequence
        (0008,1111).  Note that the use of wildcards for files is
        possible.  You can specify longer tag paths, too (e.g.
        "(0008,1111)[*].(0008,1111)[*].(0010,0010)=A Third One").
@@ -382,6 +392,11 @@ When choosing the \fI-gin\fP option, the related metaheader tag ('Media Storage 
 \fBdcmodify\fP tries executing each modify operation given on command line: If one returns an error, the others are being performed anyway. However in case of any error, the modified file is not saved, unless the \fI--ignore-errors\fP option is specified. If that option is selected, \fBdcmodify\fP also continues modifying further files specified on commandline; otherwise \fBdcmodify\fP exits after the first file that had modification errors.
 .PP
 If the \fI--ignore-missing-tags\fP option is enabled, any modify or erase operations (i.e. not \fI--insert\fP) that fails because of a non-existing tag is treated as being successful. That does make sense if someone wants to be sure that specific tags are not present in the file or that - if they exist - that they are set to a specific value.
+.SH "LOGGING"
+.PP
+The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+.PP
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.

@@ -1,4 +1,4 @@
-.TH "storescp" 1 "11 Aug 2009" "Version 3.5.5 CVS" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescp" 1 "27 Nov 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescp \- DICOM storage (C-STORE) SCP
@@ -37,11 +37,21 @@ port  tcp/ip port number to listen on
         --arguments
           print expanded command line arguments
 
+  -q    --quiet
+          quiet mode, print no warnings and errors
+
   -v    --verbose
           verbose mode, print processing details
 
   -d    --debug
           debug mode, print debug information
+
+  -ll   --log-level  [l]evel: string constant
+          (fatal, error, warn, info, debug, trace)
+          use level l for the logger
+
+  -lc   --log-config  [f]ilename: string
+          use config file f for the logger
 .fi
 .PP
 .SS "multi-process options"
@@ -601,6 +611,11 @@ where \fI-id\fP (\fI--inetd\fP) activates the inetd mode in which the DICOM asso
 Please note that when run through inetd, \fBstorescp\fP is executed with root privileges, which may be a security risk.
 .SS "Association Negotiation Profiles and Configuration Files"
 \fBstorescp\fP supports a flexible mechanism for specifying the DICOM network association negotiation behaviour, based on so-called 'association negotiation profiles' which may be read from a configuration file. The format and semantics of this configuration file are documented in \fIasconfig.txt\fP.
+.SH "LOGGING"
+.PP
+The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+.PP
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.

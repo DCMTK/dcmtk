@@ -1,4 +1,4 @@
-.TH "img2dcm" 1 "11 Aug 2009" "Version 3.5.5 CVS" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "img2dcm" 1 "27 Nov 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 img2dcm \- Convert standard image formats into DICOM format
@@ -38,11 +38,21 @@ dcmfile-out  DICOM output file
         --arguments
           print expanded command line arguments
 
+  -q    --quiet
+          quiet mode, print no warnings and errors
+
   -v    --verbose
           verbose mode, print processing details
 
   -d    --debug
           debug mode, print debug information
+
+  -ll   --log-level  [l]evel: string constant
+          (fatal, error, warn, info, debug, trace)
+          use level l for the logger
+
+  -lc   --log-config  [f]ilename: string
+          use config file f for the logger
 .fi
 .PP
 .SS "input options"
@@ -254,7 +264,7 @@ JFIF (JPEG File Interchange Format) information facilitates optional APPn marker
 .PP
 For DICOM it is kind of a 'gray zone', whether the integration of JFIF (or any other APPn) data into the DICOM object's internal JPEG stream is allowed or not. However, the most reliable approach is to cut those markers and their information off the JPEG stream. This approach is also taken by the \fBimg2dcm\fP application. By default, all APPn markers are cut off from the original JPEG stream. However, if you want to keep other APPn markers than JFIF (e. g. EXIF information) inside the DICOM stream, the option \fI--keep-appn\fP does the trick. It should also be slightly faster than cutting off APPn information, because it is not necessary to scan the whole JPEG stream for such data. JFIF information is \fBalways\fP removed by \fBimg2dcm\fP.
 .SS "Output Plugins"
-The desired output SOP Class can be selected on the command line. Currently, an export plugin for the Secondary Capture Image SOP class (default, option \fI-sc\fP), the new Secondary Capture Image SOP classes (option \fI-nsc\fP) and Visible Light Photographic Image SOP class (option \fI-vl\fP) are available. Please note that the first one is retired in the DICOM standard but is selected as default because it is widely supported. Future versions of \fBimg2dcm\fP might provide further output plugins for other SOP Classes.
+The desired output SOP Class can be selected on the command line. Currently, an export plugin for the Secondary Capture Image SOP class (default, option \fI-sc\fP), the new Secondary Capture Image SOP classes (option \fI-nsc\fP) and Visible Light Photographic Image SOP class (option \fI-vl\fP) are available. Please note that the first one is deprecated according to the DICOM standard but is selected as a default because it is widely supported. Future versions of \fBimg2dcm\fP might provide further output plugins for other SOP Classes.
 .PP
 For the new Secondary Capture SOP classes, it is not possible to specifiy which specific SOP class should be used for output. That is because these new SOP classes are differentiated from each other by colour depth (1/8/16) and the fact whether the image is black/white or colour. That is why \fBimg2dcm\fP decides during conversion, which output SOP class is suitable for a given source image.
 .SH "EXAMPLES"
@@ -299,6 +309,11 @@ Same as 1), but takes over APPn information like EXIF into the DICOM object's re
 .PP
 
 .PP
+.SH "LOGGING"
+.PP
+The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+.PP
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
