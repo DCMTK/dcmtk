@@ -66,29 +66,29 @@ bitmap-out   output DICOM image or PGM bitmap
 
 \subsection processing_options processing options
 \verbatim
-  -p  --pstate  [f]ilename: string
-        process using presentation state file
+  -p   --pstate  [f]ilename: string
+         process using presentation state file
 
-  -c  --config  [f]ilename: string
-        process using settings from configuration file
+  -c   --config  [f]ilename: string
+         process using settings from configuration file
 
-  -f  --frame  [f]rame: integer
-        process using image frame f (default: 1)
+  -f   --frame  [f]rame: integer
+         process using image frame f (default: 1)
 \endverbatim
 
 \subsection output_format output format
 \verbatim
-  -D  --pgm
-        save image as PGM (default)
+  -D   --pgm
+         save image as PGM (default)
 
-  +D  --dicom
-        save image as DICOM secondary capture
+  +D   --dicom
+         save image as DICOM secondary capture
 \endverbatim
 
 \subsection output_options output options
 \verbatim
-  +S  --save-pstate  [f]ilename: string
-        save presentation state to file
+  +S   --save-pstate  [f]ilename: string
+         save presentation state to file
 \endverbatim
 
 \section logging LOGGING

@@ -61,8 +61,8 @@ the printer to be emulated from the configuration file.
   -c  --config  [f]ilename: string
         process using settings from configuration file
 
-  -p  --printer  [n]ame: string (default: 1st printer in cfg file)
-        select printer with identifier [n] from cfg file
+  -p  --printer  [n]ame: string (default: 1st printer in config file)
+        select printer with identifier n from config file
 
   +d  --dump
         print all DIMSE messages

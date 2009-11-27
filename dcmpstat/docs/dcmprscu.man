@@ -76,11 +76,13 @@ dcmfile-in  stored print file(s) to be spooled
   +d   --dump
          dump all DIMSE messages to stdout
 
+\subsection print_options print options
+\verbatim
        --noprint
          do not create print-out (no n-action-rq)
 
        --session-print
-         send film session n-action rq (instead of film box)
+         send film session n-action-rq (instead of film box)
 
        --monochrome1
          transmit basic grayscale images in MONOCHROME1
@@ -92,7 +94,7 @@ dcmfile-in  stored print file(s) to be spooled
         printer mode, print file(s) and terminate (default)
 
   +s  --spool  [n]ame: string
-        spooler mode, use job prefix [n]
+        spooler mode, use job prefix n
 \endverbatim
 
 \subsection processing_options processing options
@@ -101,34 +103,34 @@ dcmfile-in  stored print file(s) to be spooled
         process using settings from configuration file
 
   -p  --printer  [n]ame: string (default: 1st printer in cfg file)
-        select printer with identifier [n] from cfg file
+        select printer with identifier n from cfg file
 \endverbatim
 
 \subsection spooler_options spooler options (only with --spool)
 \verbatim
       --sleep  [d]elay: integer (default: 1)
-        sleep [d] seconds between spooler checks
+        sleep d seconds between spooler checks
 \endverbatim
 
 \subsection film_session_options basic film session options (not with --spool):
 \verbatim
       --copies  [v]alue: integer (1..100, default: 1)
-        set number of copies to [v]
+        set number of copies to v
 
       --medium-type  [v]alue: string
-        set medium type to [v]
+        set medium type to v
 
       --destination  [v]alue: string
-        set film destination to [v]
+        set film destination to v
 
       --label  [v]alue: string
-        set film session label to [v]
+        set film session label to v
 
       --priority  [v]alue: string
-        set print priority to [v]
+        set print priority to v
 
       --owner  [v]alue: string
-        set film session owner ID to [v]
+        set film session owner ID to v
 \endverbatim
 
 \section logging LOGGING

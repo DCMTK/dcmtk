@@ -23,9 +23,9 @@
  *    VR and IOD checker for Presentation States
  *
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:56 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-27 10:51:16 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -937,8 +937,8 @@ int checkfile(const char *filename)
     return numberOfErrors;
 }
 
-#define SHORTCOL 2
-#define LONGCOL 11
+#define SHORTCOL 3
+#define LONGCOL 12
 
 int main(int argc, char *argv[])
 {
@@ -1017,6 +1017,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
+ * Revision 1.30  2009-11-27 10:51:16  joergr
+ * Fixed various issues with syntax usage (e.g. layout and formatting).
+ *
  * Revision 1.29  2009-11-24 14:12:56  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
