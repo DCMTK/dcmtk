@@ -37,6 +37,9 @@ Changes between releases are documented here.
 - Updated man pages.
   Affects: doxygen/manpages/man1/*
 
+- Removed "dcmavi" module from list of public DCMTK modules.
+  Affects: CMakeLists.txt
+
 **** Changes from 2009.11.26 (riesmeier)
 
 - Moved some log messages from debug to trace level.
