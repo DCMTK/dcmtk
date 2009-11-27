@@ -22,8 +22,8 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-27 10:47:24 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2009-11-27 10:50:32 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,10 +124,10 @@ static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, con
       if (messageClient)
       {
         OFString buf("unable to send image: no presentation context for ");
-      	const char *sopClassName = dcmFindNameOfUID(sopClass);
+        const char *sopClassName = dcmFindNameOfUID(sopClass);
         if (sopClassName == NULL) buf.append(sopClass); else buf.append(sopClassName);
         buf.append("\n");
-      	messageClient->notifySentDICOMObject(DVPSIPCMessage::statusWarning, buf.c_str());
+        messageClient->notifySentDICOMObject(DVPSIPCMessage::statusWarning, buf.c_str());
       }
       return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
@@ -990,6 +990,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
+ * Revision 1.45  2009-11-27 10:50:32  joergr
+ * Replaced remaining tabs by spaces.
+ *
  * Revision 1.44  2009-11-27 10:47:24  joergr
  * Fixed various issues with syntax usage (e.g. layout and formatting).
  * Sightly modifed log messages.
