@@ -21,9 +21,9 @@
  *
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:56 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-27 10:47:24 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -329,8 +329,8 @@ static OFCondition addAllStoragePresentationContexts(T_ASC_Parameters *params, i
 
 // ********************************************
 
-#define SHORTCOL 2
-#define LONGCOL 11
+#define SHORTCOL 3
+#define LONGCOL 12
 
 int main(int argc, char *argv[])
 {
@@ -356,7 +356,7 @@ int main(int argc, char *argv[])
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Network send for presentation state viewer", rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
-    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
     cmd.addParam("config-file", "configuration file to be read");
     cmd.addParam("target",      "symbolic identifier of send target in config file");
@@ -364,9 +364,9 @@ int main(int argc, char *argv[])
     cmd.addParam("series",      "series instance UID (default: send complete study)", OFCmdParam::PM_Optional);
     cmd.addParam("instance",    "SOP instance UID (default: send complete series)", OFCmdParam::PM_Optional);
 
-    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",      "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
+    cmd.addGroup("general options:");
+     cmd.addOption("--help",    "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",       "print version information and exit", OFCommandLine::AF_Exclusive);
      OFLog::addOptions(cmd);
 
     /* evaluate command line */
@@ -538,7 +538,7 @@ int main(int argc, char *argv[])
 #else
     if (useTLS)
     {
-        OFLOG_FATAL(dcmpssndLogger, "not compiled with OpenSSL, cannot use TLS.");
+        OFLOG_FATAL(dcmpssndLogger, "not compiled with OpenSSL, cannot use TLS");
         return 10;
     }
 #endif
@@ -590,7 +590,7 @@ int main(int argc, char *argv[])
     if (targetImplicitOnly && targetDisableNewVRs) verboseParameters << "implicit xfer syntax only, disable post-1993 VRs";
     else if (targetImplicitOnly) verboseParameters << "implicit xfer syntax only";
     else if (targetDisableNewVRs) verboseParameters << "disable post-1993 VRs";
-    else verboseParameters << "none.";
+    else verboseParameters << "none";
     verboseParameters << OFendl;
 
     verboseParameters << "\tTLS             : ";
@@ -755,7 +755,7 @@ int main(int argc, char *argv[])
       messageClient = new DVPSIPCClient(DVPSIPCMessage::clientStoreSCU, verboseParametersString.c_str(), messagePort, keepMessagePortOpen);
       if (! messageClient->isServerActive())
       {
-        OFLOG_WARN(dcmpssndLogger, "no IPC message server found at port " << messagePort << ", disabling IPC.");
+        OFLOG_WARN(dcmpssndLogger, "no IPC message server found at port " << messagePort << ", disabling IPC");
       }
     }
 
@@ -828,7 +828,7 @@ int main(int argc, char *argv[])
       {
         // notify about rejected association
         OFOStringStream out;
-        out << "DIMSE association accepted, but no acceptable presentation contexts - aborting." << OFendl
+        out << "DIMSE association accepted, but no acceptable presentation contexts - aborting" << OFendl
             << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << OFendl
             << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
             << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << OFendl
@@ -903,12 +903,12 @@ int main(int argc, char *argv[])
             }
             return 1;
         }
-        if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Protocol error: peer requested release, aborting association.");
+        if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Protocol error: peer requested release, aborting association");
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
         OFLOG_INFO(dcmpssndLogger, "Peer Aborted Association");
-        if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Peer aborted association.");
+        if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Peer aborted association");
     }
     else
     {
@@ -925,7 +925,7 @@ int main(int argc, char *argv[])
             }
             return 1;
         }
-        if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Storage SCU failed, aborting association.");
+        if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Storage SCU failed, aborting association");
     }
 
     cond = ASC_destroyAssociation(&assoc);
@@ -970,10 +970,10 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
         {
-          OFLOG_WARN(dcmpssndLogger, "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring.");
+          OFLOG_WARN(dcmpssndLogger, "cannot write back random seed file '" << tlsRandomSeedFile << "', ignoring");
         }
       } else {
-        OFLOG_WARN(dcmpssndLogger, "cannot write back random seed, ignoring.");
+        OFLOG_WARN(dcmpssndLogger, "cannot write back random seed, ignoring");
       }
     }
     delete tLayer;
@@ -990,6 +990,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
+ * Revision 1.44  2009-11-27 10:47:24  joergr
+ * Fixed various issues with syntax usage (e.g. layout and formatting).
+ * Sightly modifed log messages.
+ *
  * Revision 1.43  2009-11-24 14:12:56  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

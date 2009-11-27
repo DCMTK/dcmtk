@@ -21,9 +21,9 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:56 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-27 10:50:57 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,13 +50,13 @@ END_EXTERN_C
 
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants */
 #include "dcmtk/dcmpstat/dvpscf.h"      /* for class DVConfiguration */
-#include "dcmtk/ofstd/ofbmanip.h"    /* for OFBitmanipTemplate */
-#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/ofstd/ofbmanip.h"       /* for OFBitmanipTemplate */
+#include "dcmtk/dcmdata/dcuid.h"        /* for dcmtk version name */
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmqrdb/dcmqrdbi.h"    /* for LOCK_IMAGE_FILES */
-#include "dcmtk/dcmqrdb/dcmqrdbs.h"    /* for DcmQueryRetrieveDatabaseStatus */
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"     /* for LOCK_IMAGE_FILES */
+#include "dcmtk/dcmqrdb/dcmqrdbs.h"     /* for DcmQueryRetrieveDatabaseStatus */
 #include "dcmtk/dcmpstat/dvpsmsg.h"     /* for class DVPSIPCClient */
 #include "dcmtk/dcmnet/dcmlayer.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
@@ -317,7 +317,7 @@ static associationType negotiateAssociation(
       /* check if we have negotiated the private "shutdown" SOP Class */
       if (0 != ASC_findAcceptedPresentationContextID(*assoc, UID_PrivateShutdownSOPClass))
       {
-      	// we don't notify the IPC server about this incoming connection
+        // we don't notify the IPC server about this incoming connection
         cond = refuseAssociation(*assoc, ref_NoReason);
         dropAssoc = OFTrue;
         result = assoc_terminate;
@@ -396,7 +396,7 @@ checkRequestAgainstDataset(
       DcmPresentationState pstate;
       if (EC_Normal != pstate.read(*dataSet))
       {
-        OFLOG_ERROR(dcmpsrcvLogger, "Grayscale softcopy presentation state object cannot be displayed - rejected.");
+        OFLOG_ERROR(dcmpsrcvLogger, "Grayscale softcopy presentation state object cannot be displayed - rejected");
         rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
       }
     }
@@ -708,14 +708,14 @@ static void handleClient(
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
       OFLOG_INFO(dcmpsrcvLogger, "Association Aborted");
-      if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusWarning, "DIMSE association aborted by remote peer.");
+      if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusWarning, "DIMSE association aborted by remote peer");
     }
     else
     {
       errorCond(cond, "DIMSE Failure (aborting association):");
       cond = ASC_abortAssociation(*assoc);
       errorCond(cond, "Cannot abort association:");
-      if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "DIMSE failure, aborting association.");
+      if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "DIMSE failure, aborting association");
     }
   }
   dropAssociation(assoc);
@@ -870,8 +870,8 @@ static void terminateAllReceivers(DVConfiguration& dvi)
 
 // ********************************************
 
-#define SHORTCOL 2
-#define LONGCOL 11
+#define SHORTCOL 3
+#define LONGCOL 12
 
 int main(int argc, char *argv[])
 {
@@ -897,12 +897,12 @@ int main(int argc, char *argv[])
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Network receive for presentation state viewer", rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
-    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
     cmd.addParam("config-file",  "configuration file to be read");
     cmd.addParam("receiver-id",  "identifier of receiver in config file", OFCmdParam::PM_Optional);
 
-    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
+    cmd.addGroup("general options:");
      cmd.addOption("--help",      "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
      OFLog::addOptions(cmd);
@@ -947,7 +947,7 @@ int main(int argc, char *argv[])
 
     if ((opt_cfgID == 0)&&(! opt_terminate))
     {
-        OFLOG_FATAL(dcmpsrcvLogger, "paramter receiver-id required unless --terminate is specified.");
+        OFLOG_FATAL(dcmpsrcvLogger, "paramter receiver-id required unless --terminate is specified");
         return 10;
     }
 
@@ -1064,7 +1064,7 @@ int main(int argc, char *argv[])
       const char *currentOpenSSL;
       for (Uint32 ui=0; ui<tlsNumberOfCiphersuites; ui++)
       {
-      	dvi.getTargetCipherSuite(opt_cfgID, ui, currentSuite);
+        dvi.getTargetCipherSuite(opt_cfgID, ui, currentSuite);
         if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
         {
           OFLOG_FATAL(dcmpsrcvLogger, "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:");
@@ -1083,7 +1083,7 @@ int main(int argc, char *argv[])
 #else
     if (useTLS)
     {
-        OFLOG_FATAL(dcmpsrcvLogger, "not compiled with OpenSSL, cannot use TLS.");
+        OFLOG_FATAL(dcmpsrcvLogger, "not compiled with OpenSSL, cannot use TLS");
         return 10;
     }
 #endif
@@ -1258,7 +1258,7 @@ int main(int argc, char *argv[])
       cond = ASC_initializeNetwork(NET_ACCEPTOR, networkPort, 30, &net);
       if (errorCond(cond, "Error initialising network:"))
       {
-      	return 1;
+        return 1;
       }
 
 #ifdef WITH_OPENSSL
@@ -1301,7 +1301,7 @@ int main(int argc, char *argv[])
           messageClient = new DVPSIPCClient(DVPSIPCMessage::clientStoreSCP, verboseParametersString, messagePort, keepMessagePortOpen);
           if (! messageClient->isServerActive())
           {
-            OFLOG_WARN(dcmpsrcvLogger, "no IPC message server found at port " << messagePort << ", disabling IPC.");
+            OFLOG_WARN(dcmpsrcvLogger, "no IPC message server found at port " << messagePort << ", disabling IPC");
           }
         }
         connected = 0;
@@ -1378,7 +1378,7 @@ int main(int argc, char *argv[])
             {
               if (messageClient)
               {
-              	messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
+                messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
                 delete messageClient;
               }
               return 1;
@@ -1458,10 +1458,10 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
         {
-          OFLOG_WARN(dcmpsrcvLogger, "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring.");
+          OFLOG_WARN(dcmpsrcvLogger, "cannot write back random seed file '" << tlsRandomSeedFile << "', ignoring");
         }
       } else {
-        OFLOG_WARN(dcmpsrcvLogger, "cannot write back random seed, ignoring.");
+        OFLOG_WARN(dcmpsrcvLogger, "cannot write back random seed, ignoring");
       }
     }
     delete tLayer;
@@ -1480,6 +1480,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
+ * Revision 1.57  2009-11-27 10:50:57  joergr
+ * Fixed various issues with syntax usage (e.g. layout and formatting).
+ * Sightly modifed log messages.
+ *
  * Revision 1.56  2009-11-24 14:12:56  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

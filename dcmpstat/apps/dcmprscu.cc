@@ -1,5 +1,4 @@
 /*
- *
  *  Copyright (C) 1999-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +20,9 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:56 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-27 10:51:39 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -245,24 +244,24 @@ static OFCondition spoolStoredPrintFile(
     if (result.bad())
     {
       OFString temp_str;
-      OFLOG_ERROR(dcmprscuLogger, "spooler: connection setup with printer failed.\n" << DimseCondition::dump(temp_str, result));
+      OFLOG_ERROR(dcmprscuLogger, "spooler: connection setup with printer failed\n" << DimseCondition::dump(temp_str, result));
     } else {
       if (EC_Normal != (result = stprint.printSCUgetPrinterInstance(printHandler)))
       {
-        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to request printer settings.");
+        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to request printer settings");
       }
       if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUpreparePresentationLUT(
         printHandler, targetRequiresMatchingLUT, targetPreferSCPLUTRendering, targetSupports12bit)))
       {
-        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to create presentation LUT.");
+        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to create presentation LUT");
       }
       if (EC_Normal==result) if (EC_Normal != (result = dvi.printSCUcreateBasicFilmSession(printHandler, targetPLUTinFilmSession)))
       {
-        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to create basic film session.");
+        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to create basic film session");
       }
       if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUcreateBasicFilmBox(printHandler, targetPLUTinFilmSession)))
       {
-        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to create basic film box.");
+        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to create basic film box");
       }
       // Process images
       size_t numberOfImages = stprint.getNumberOfImages();
@@ -288,7 +287,7 @@ static OFCondition spoolStoredPrintFile(
               // N-SET basic image box
               if (EC_Normal != (result = stprint.printSCUsetBasicImageBox(printHandler, currentImage, *dcmimage, opt_Monochrome1)))
               {
-                OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to transmit basic grayscale image box.");
+                OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to transmit basic grayscale image box");
               }
             } else {
               result = EC_IllegalCall;
@@ -297,7 +296,7 @@ static OFCondition spoolStoredPrintFile(
             delete dcmimage;
           } else {
             result = EC_IllegalCall;
-            OFLOG_ERROR(dcmprscuLogger, "spooler: unable to locate image file in database.");
+            OFLOG_ERROR(dcmprscuLogger, "spooler: unable to locate image file in database");
           }
         } else result = EC_IllegalCall;
       }
@@ -310,7 +309,7 @@ static OFCondition spoolStoredPrintFile(
         {
           if (EC_Normal != (result = stprint.printSCUsetBasicAnnotationBox(printHandler, currentAnnotation)))
           {
-            OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to transmit basic annotation box.");
+            OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to transmit basic annotation box");
           }
         }
       }
@@ -321,26 +320,26 @@ static OFCondition spoolStoredPrintFile(
         {
           if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUprintBasicFilmSession(printHandler)))
           {
-            OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to print (at film session level).");
+            OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to print (at film session level)");
           }
         } else {
           if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUprintBasicFilmBox(printHandler)))
           {
-            OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to print.");
+            OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to print");
           }
         }
       }
       if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUdelete(printHandler)))
       {
-        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to delete print objects.");
+        OFLOG_ERROR(dcmprscuLogger, "spooler: printer communication failed, unable to delete print objects");
       }
 
       result = printHandler.releaseAssociation();
       if (result.bad())
       {
         OFString temp_str;
-        OFLOG_ERROR(dcmprscuLogger, "spooler: release of connection to printer failed." << DimseCondition::dump(temp_str, result));
-        if (EC_Normal == result) result =  EC_IllegalCall;
+        OFLOG_ERROR(dcmprscuLogger, "spooler: release of connection to printer failed\n" << DimseCondition::dump(temp_str, result));
+        if (EC_Normal == result) result = EC_IllegalCall;
       }
     }
   }
@@ -454,7 +453,7 @@ static OFCondition readJobFile(
   OFCondition result = EC_Normal;
   while (!eofFound)
   {
-  	thisIsTerminate = OFFalse;
+      thisIsTerminate = OFFalse;
     eofFound = readValuePair(inf, key, value);
     if ((key.size()==0)||(key[0] == '#')) { /* ignore comments and empty lines */ }
     else if (key == "copies")
@@ -600,7 +599,7 @@ static OFCondition updateJobList(
           else
           {
             delete currentJob;
-            OFLOG_ERROR(dcmprscuLogger, "spooler: parsing of job file '" << jobName.c_str() << "' failed.");
+            OFLOG_ERROR(dcmprscuLogger, "spooler: parsing of job file '" << jobName.c_str() << "' failed");
           }
         } else result = EC_MemoryExhausted;
       }
@@ -622,8 +621,8 @@ static OFCondition updateJobList(
   return result;
 }
 
-#define SHORTCOL 2
-#define LONGCOL 14
+#define SHORTCOL 3
+#define LONGCOL 15
 
 int main(int argc, char *argv[])
 {
@@ -652,35 +651,35 @@ int main(int argc, char *argv[])
      cmd.addOption("--version",              "print version information and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--dump",        "+d",    "dump all DIMSE messages to stdout");
      OFLog::addOptions(cmd);
+    cmd.addGroup("print options:");
      cmd.addOption("--noprint",              "do not create print-out (no n-action-rq)");
-     cmd.addOption("--session-print",        "send film session n-action rq (instead of film box)");
+     cmd.addOption("--session-print",        "send film session n-action-rq (instead of film box)");
      cmd.addOption("--monochrome1",          "transmit basic grayscale images in MONOCHROME1");
-
     cmd.addGroup("mode options:");
      cmd.addOption("--print",       "+p",    "printer mode, print file(s) and terminate (default)");
      cmd.addOption("--spool",       "+s", 1, "[n]ame: string",
-                                             "spooler mode, use job prefix [n]");
+                                             "spooler mode, use job prefix n");
     cmd.addGroup("processing options:");
      cmd.addOption("--config",      "-c", 1, "[f]ilename: string",
                                              "process using settings from configuration file");
      cmd.addOption("--printer",     "-p", 1, "[n]ame: string (default: 1st printer in cfg file)",
-                                             "select printer with identifier [n] from cfg file");
+                                             "select printer with identifier n from cfg file");
     cmd.addGroup("spooler options (only with --spool):");
      cmd.addOption("--sleep",             1, "[d]elay: integer (default: 1)",
-                                             "sleep [d] seconds between spooler checks");
+                                             "sleep d seconds between spooler checks");
     cmd.addGroup("basic film session options (not with --spool):");
      cmd.addOption("--copies",            1, "[v]alue: integer (1..100, default: 1)",
-                                             "set number of copies to [v]");
+                                             "set number of copies to v");
      cmd.addOption("--medium-type",       1, "[v]alue: string",
-                                             "set medium type to [v]");
+                                             "set medium type to v");
      cmd.addOption("--destination",       1, "[v]alue: string",
-                                             "set film destination to [v]");
+                                             "set film destination to v");
      cmd.addOption("--label",             1, "[v]alue: string",
-                                             "set film session label to [v]");
+                                             "set film session label to v");
      cmd.addOption("--priority",          1, "[v]alue: string",
-                                             "set print priority to [v]");
+                                             "set print priority to v");
      cmd.addOption("--owner",             1, "[v]alue: string",
-                                             "set film session owner ID to [v]");
+                                             "set film session owner ID to v");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -724,7 +723,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--monochrome1")) opt_Monochrome1 = OFTrue;
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--print"))   opt_spoolMode = OFFalse;
+      if (cmd.findOption("--print")) opt_spoolMode = OFFalse;
       if (cmd.findOption("--spool"))
       {
         opt_spoolMode=OFTrue;
@@ -732,8 +731,8 @@ int main(int argc, char *argv[])
       }
       cmd.endOptionBlock();
 
-      if (cmd.findOption("--config"))        app.checkValue(cmd.getValue(opt_cfgName));
-      if (cmd.findOption("--printer"))       app.checkValue(cmd.getValue(opt_printer));
+      if (cmd.findOption("--config")) app.checkValue(cmd.getValue(opt_cfgName));
+      if (cmd.findOption("--printer")) app.checkValue(cmd.getValue(opt_printer));
 
       if (cmd.findOption("--medium-type"))
       {
@@ -794,7 +793,7 @@ int main(int argc, char *argv[])
     {
       if (EC_Normal != dvi.setCurrentPrinter(opt_printer))
       {
-        OFLOG_FATAL(dcmprscuLogger, "unable to select printer '" << opt_printer << "'.");
+        OFLOG_FATAL(dcmprscuLogger, "unable to select printer '" << opt_printer << "'");
         return 10;
       }
     } else {
@@ -979,7 +978,7 @@ int main(int argc, char *argv[])
     DcmTransportLayer *tLayer = NULL;
     if (useTLS)
     {
-        OFLOG_FATAL(dcmprscuLogger, "not compiled with OpenSSL, cannot use TLS.");
+        OFLOG_FATAL(dcmprscuLogger, "not compiled with OpenSSL, cannot use TLS");
         return 10;
     }
 #endif
@@ -1027,7 +1026,7 @@ int main(int argc, char *argv[])
     else if (targetDisableNewVRs)
       OFLOG_INFO(dcmprscuLogger, "  options       : disable post-1993 VRs");
     else
-      OFLOG_INFO(dcmprscuLogger, "  options       : none.");
+      OFLOG_INFO(dcmprscuLogger, "  options       : none");
     OFLOG_INFO(dcmprscuLogger, "  12-bit xfer   : " << (targetSupports12bit ? "supported" : "not supported"));
     OFLOG_INFO(dcmprscuLogger, "  present.lut   : " << (targetSupportsPLUT ? "supported" : "not supported"));
     OFLOG_INFO(dcmprscuLogger, "  annotation    : " << (targetSupportsAnnotation ? "supported" : "not supported"));
@@ -1093,7 +1092,7 @@ int main(int argc, char *argv[])
         OFStandard::sleep((unsigned int)opt_sleep);
         if (EC_Normal != updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str()))
         {
-          OFLOG_FATAL(dcmprscuLogger, "spooler: non recoverable error occured, terminating.");
+          OFLOG_FATAL(dcmprscuLogger, "spooler: non recoverable error occured, terminating");
           return 10;
         }
         // static OFCondition updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str());
@@ -1104,7 +1103,7 @@ int main(int argc, char *argv[])
       // printer mode
       if (paramCount == 0)
       {
-        OFLOG_WARN(dcmprscuLogger, "spooler: no stored print files specified - nothing to do.");
+        OFLOG_WARN(dcmprscuLogger, "spooler: no stored print files specified - nothing to do");
       } else {
         dvi.clearFilmSessionSettings();
         if (opt_mediumtype) dvi.setPrinterMediumType(opt_mediumtype);
@@ -1124,7 +1123,7 @@ int main(int argc, char *argv[])
           {
             if (EC_Normal != spoolStoredPrintFile(currentParam, dvi, tLayer))
             {
-              OFLOG_ERROR(dcmprscuLogger, "spooling of file '" << currentParam << "' failed.");
+              OFLOG_ERROR(dcmprscuLogger, "spooling of file '" << currentParam << "' failed");
             }
           } else {
             OFLOG_ERROR(dcmprscuLogger, "empty file name");
@@ -1140,10 +1139,10 @@ int main(int argc, char *argv[])
     {
       if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
       {
-        OFLOG_ERROR(dcmprscuLogger, "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring.");
+        OFLOG_ERROR(dcmprscuLogger, "cannot write back random seed file '" << tlsRandomSeedFile << "', ignoring");
       }
     } else {
-      OFLOG_WARN(dcmprscuLogger, "cannot write back random seed, ignoring.");
+      OFLOG_WARN(dcmprscuLogger, "cannot write back random seed, ignoring");
     }
   }
   delete tLayer;
@@ -1163,6 +1162,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
+ * Revision 1.28  2009-11-27 10:51:39  joergr
+ * Fixed various issues with syntax usage (e.g. layout and formatting).
+ * Sightly modifed log messages.
+ *
  * Revision 1.27  2009-11-24 14:12:56  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

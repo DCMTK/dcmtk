@@ -21,9 +21,9 @@
  *
  *  Purpose: Presentation State Viewer - Print Server
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:56 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-27 10:52:01 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,8 +109,8 @@ static void cleanChildren()
 }
 
 
-#define SHORTCOL 2
-#define LONGCOL 14
+#define SHORTCOL 3
+#define LONGCOL 12
 
 int main(int argc, char *argv[])
 {
@@ -142,8 +142,8 @@ int main(int argc, char *argv[])
     cmd.addGroup("processing options:");
      cmd.addOption("--config",  "-c", 1, "[f]ilename: string",
                                          "process using settings from configuration file");
-     cmd.addOption("--printer", "-p", 1, "[n]ame: string (default: 1st printer in cfg file)",
-                                         "select printer with identifier [n] from cfg file");
+     cmd.addOption("--printer", "-p", 1, "[n]ame: string (default: 1st printer in config file)",
+                                         "select printer with identifier n from config file");
      cmd.addOption("--dump",    "+d",    "print all DIMSE messages");
 
     /* evaluate command line */
@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
     {
       if (DVPSE_printLocal != dvi.getTargetType(opt_printer))
       {
-        OFLOG_FATAL(dcmprscpLogger, "no print scp definition for '" << opt_printer << "' found in config file.");
+        OFLOG_FATAL(dcmprscpLogger, "no print scp definition for '" << opt_printer << "' found in config file");
         return 10;
       }
     } else {
@@ -356,7 +356,7 @@ int main(int argc, char *argv[])
       const char *currentOpenSSL;
       for (Uint32 ui=0; ui<tlsNumberOfCiphersuites; ui++)
       {
-      	dvi.getTargetCipherSuite(opt_printer, ui, currentSuite);
+        dvi.getTargetCipherSuite(opt_printer, ui, currentSuite);
         if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
         {
           OFLOG_WARN(dcmprscpLogger, "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:");
@@ -420,7 +420,7 @@ int main(int argc, char *argv[])
 #else
     if (targetUseTLS)
     {
-        OFLOG_FATAL(dcmprscpLogger, "not compiled with OpenSSL, cannot use TLS.");
+        OFLOG_FATAL(dcmprscpLogger, "not compiled with OpenSSL, cannot use TLS");
         return 10;
     }
 #endif
@@ -430,7 +430,7 @@ int main(int argc, char *argv[])
     if (cond.bad())
     {
       OFString temp_str;
-      OFLOG_FATAL(dcmprscpLogger, "Error initialising network:\n" << DimseCondition::dump(temp_str, cond));
+      OFLOG_FATAL(dcmprscpLogger, "cannot initialise network:\n" << DimseCondition::dump(temp_str, cond));
       return 1;
     }
 
@@ -493,7 +493,7 @@ int main(int argc, char *argv[])
           if (cond.bad())
           {
             OFString temp_str;
-            OFLOG_FATAL(dcmprscpLogger, "Error dropping network:\n" << DimseCondition::dump(temp_str, cond));
+            OFLOG_FATAL(dcmprscpLogger, "cannot drop network:\n" << DimseCondition::dump(temp_str, cond));
             return 10;
           }
           break;
@@ -519,7 +519,7 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
         {
-          OFLOG_ERROR(dcmprscpLogger, "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring.");
+          OFLOG_ERROR(dcmprscpLogger, "cannot write back random seed file '" << tlsRandomSeedFile << "', ignoring");
         }
       } else {
         OFLOG_WARN(dcmprscpLogger, "cannot write back random seed, ignoring.");
@@ -534,6 +534,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
+ * Revision 1.25  2009-11-27 10:52:01  joergr
+ * Fixed various issues with syntax usage (e.g. layout and formatting).
+ * Sightly modifed log messages.
+ *
  * Revision 1.24  2009-11-24 14:12:56  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
