@@ -25,9 +25,9 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:56 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-27 10:52:54 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,14 +43,14 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmpstat/dviface.h"
-#include "dcmtk/dcmpstat/dvpstx.h"  /* for DVPSTextObject */
-#include "dcmtk/dcmpstat/dvpsgr.h"  /* for DVPSGraphicObject */
-#include "dcmtk/dcmpstat/dvpscu.h"  /* for DVPSCurve */
+#include "dcmtk/dcmpstat/dvpstx.h"    /* for DVPSTextObject */
+#include "dcmtk/dcmpstat/dvpsgr.h"    /* for DVPSGraphicObject */
+#include "dcmtk/dcmpstat/dvpscu.h"    /* for DVPSCurve */
 #include "dcmtk/dcmimgle/dcmimage.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofcmdln.h"
 #include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -175,10 +175,10 @@ void dumpPresentationState(DVPresentationState &ps)
      Sint32 polyX, polyY;
      for (i=0; i<j; i++)
      {
-     	if (EC_Normal == ps.getPolyShutterVertex(i, polyX, polyY))
-     	{
-     	  oss << polyX << "\\" << polyY << ", ";
-     	} else oss << "???\\???,";
+        if (EC_Normal == ps.getPolyShutterVertex(i, polyX, polyY))
+        {
+          oss << polyX << "\\" << polyY << ", ";
+        } else oss << "???\\???,";
      }
      oss << OFendl;
   } else oss << "none" << OFendl;
@@ -205,12 +205,12 @@ void dumpPresentationState(DVPresentationState &ps)
       oss << "gray ";
       if (EC_Normal == ps.getGraphicLayerRecommendedDisplayValueGray(layer, g))
       {
-      	  oss << "0x" << STD_NAMESPACE hex << g << STD_NAMESPACE dec << OFendl;
+        oss << "0x" << STD_NAMESPACE hex << g << STD_NAMESPACE dec << OFendl;
       } else oss << "error" << OFendl;
       oss << "color ";
       if (EC_Normal == ps.getGraphicLayerRecommendedDisplayValueRGB(layer, r, g, b))
       {
-      	  oss << "0x" << STD_NAMESPACE hex << r << "\\0x" << g << "\\0x" << b << STD_NAMESPACE dec << OFendl;
+        oss << "0x" << STD_NAMESPACE hex << r << "\\0x" << g << "\\0x" << b << STD_NAMESPACE dec << OFendl;
       } else oss << "error" << OFendl;
     } else oss << "none" << OFendl;
 
@@ -223,7 +223,7 @@ void dumpPresentationState(DVPresentationState &ps)
       ptext = ps.getTextObject(layer, textidx);
       if (ptext)
       {
-      	// display contents of text object
+        // display contents of text object
         oss << "      text " << textidx+1 << ": \"" << ptext->getText() << "\"" << OFendl;
         oss << "        anchor point: ";
         if (ptext->haveAnchorPoint())
@@ -271,7 +271,7 @@ void dumpPresentationState(DVPresentationState &ps)
       pgraphic = ps.getGraphicObject(layer, graphicidx);
       if (pgraphic)
       {
-      	// display contents of graphic object
+        // display contents of graphic object
         oss << "      graphic " << graphicidx+1 << ": points=" << pgraphic->getNumberOfPoints()
              << " type=";
         switch (pgraphic->getGraphicType())
@@ -307,9 +307,9 @@ void dumpPresentationState(DVPresentationState &ps)
       pcurve = ps.getCurve(layer, curveidx);
       if (pcurve)
       {
-      	// display contents of curve
+        // display contents of curve
         oss << "      curve " << curveidx+1 << ": points=" << pcurve->getNumberOfPoints()
-             << " type=";
+            << " type=";
         switch (pcurve->getTypeOfData())
         {
           case DVPSL_roiCurve: oss << "roi units="; break;
@@ -365,10 +365,10 @@ void dumpPresentationState(DVPresentationState &ps)
       if (EC_Normal == ps.getOverlayData(layer, ovlidx, overlayData, overlayWidth, overlayHeight,
           overlayLeft, overlayTop, overlayROI, overlayTransp))
       {
-      	oss << "        columns=" << overlayWidth << " rows=" << overlayHeight << " left="
-      	<< overlayLeft << " top=" << overlayTop << OFendl;
-      	sprintf(overlayfile, "ovl_%02d%02d.pgm", (int)layer+1, (int)ovlidx+1);
-      	oss << "        filename=\"" << overlayfile << "\"";
+        oss << "        columns=" << overlayWidth << " rows=" << overlayHeight << " left="
+            << overlayLeft << " top=" << overlayTop << OFendl;
+        sprintf(overlayfile, "ovl_%02d%02d.pgm", (int)layer+1, (int)ovlidx+1);
+        oss << "        filename=\"" << overlayfile << "\"";
 
         ofile = fopen(overlayfile, "wb");
         if (ofile)
@@ -379,7 +379,7 @@ void dumpPresentationState(DVPresentationState &ps)
            oss << " - written." << OFendl;
         } else oss << " -write error-" << OFendl;
       } else {
-      	oss << "        unable to access overlay data!" << OFendl;
+        oss << "        unable to access overlay data!" << OFendl;
       }
     }
   }
@@ -426,7 +426,7 @@ void dumpPresentationState(DVPresentationState &ps)
 }
 
 
-#define SHORTCOL 2
+#define SHORTCOL 3
 #define LONGCOL 13
 
 int main(int argc, char *argv[])
@@ -532,7 +532,7 @@ int main(int argc, char *argv[])
 
     if (status == EC_Normal)
     {
-    	if (opt_dump_pstate) dumpPresentationState(dvi.getCurrentPState());
+        if (opt_dump_pstate) dumpPresentationState(dvi.getCurrentPState());
         if (opt_pgmName != NULL)
         {
             const void *pixelData = NULL;
@@ -594,6 +594,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
+ * Revision 1.42  2009-11-27 10:52:54  joergr
+ * Fixed various issues with syntax usage (e.g. layout and formatting).
+ * Replaced remaining tabs by spaces.
+ *
  * Revision 1.41  2009-11-24 14:12:56  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
