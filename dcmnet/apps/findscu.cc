@@ -21,9 +21,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 11:53:58 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-01 11:26:19 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define PEERAPPLICATIONTITLE    "ANY-SCP"
 
 #define SHORTCOL 4
-#define LONGCOL 18
+#define LONGCOL 19
 
 int main(int argc, char *argv[])
 {
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
-      cmd.addOption("--key",               "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dictionary name=\"str\"",
+      cmd.addOption("--key",               "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
                                                       "override matching key");
     cmd.addSubGroup("query information model:");
       cmd.addOption("--worklist",          "-W",      "use modality worklist information model (default)");
@@ -269,8 +269,10 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--study"))    opt_abstractSyntax = UID_FINDStudyRootQueryRetrieveInformationModel;
       if (cmd.findOption("--psonly"))   opt_abstractSyntax = UID_FINDPatientStudyOnlyQueryRetrieveInformationModel;
       cmd.endOptionBlock();
+
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-new-vr"))
       {
@@ -317,7 +319,7 @@ int main(int argc, char *argv[])
       const char *currentFilename = NULL;
       OFString errormsg;
 
-      for (int i=3; i <= paramCount; i++)
+      for (int i = 3; i <= paramCount; i++)
       {
         cmd.getParam(i, currentFilename);
         if (access(currentFilename, R_OK) < 0)
@@ -329,7 +331,7 @@ int main(int argc, char *argv[])
         fileNameList.push_back(currentFilename);
       }
 
-      if ((fileNameList.empty()) && (overrideKeys.empty()))
+      if (fileNameList.empty() && overrideKeys.empty())
       {
           app.printError("either query file or override keys (or both) must be specified");
       }
@@ -354,17 +356,17 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--std-passwd"))
       {
-        if (! opt_doAuthenticate) app.printError("--std-passwd only with --enable-tls");
+        app.checkDependence("--std-passwd", "--enable-tls", opt_doAuthenticate);
         opt_passwd = NULL;
       }
       if (cmd.findOption("--use-passwd"))
       {
-        if (! opt_doAuthenticate) app.printError("--use-passwd only with --enable-tls");
+        app.checkDependence("--use-passwd", "--enable-tls", opt_doAuthenticate);
         app.checkValue(cmd.getValue(opt_passwd));
       }
       if (cmd.findOption("--null-passwd"))
       {
-        if (! opt_doAuthenticate) app.printError("--null-passwd only with --enable-tls");
+        app.checkDependence("--null-passwd", "--enable-tls", opt_doAuthenticate);
         opt_passwd = "";
       }
       cmd.endOptionBlock();
@@ -387,12 +389,12 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--write-seed"))
       {
-        if (opt_readSeedFile == NULL) app.printError("--write-seed only with --seed");
+        app.checkDependence("--write-seed", "--seed", opt_readSeedFile != NULL);
         opt_writeSeedFile = opt_readSeedFile;
       }
       if (cmd.findOption("--write-seed-file"))
       {
-        if (opt_readSeedFile == NULL) app.printError("--write-seed-file only with --seed");
+        app.checkDependence("--write-seed-file", "--seed", opt_readSeedFile != NULL);
         app.checkValue(cmd.getValue(opt_writeSeedFile));
       }
       cmd.endOptionBlock();
@@ -435,9 +437,10 @@ int main(int argc, char *argv[])
     OFLOG_DEBUG(findscuLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) {
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
         OFLOG_WARN(findscuLogger, "no data dictionary loaded, check environment variable: "
-                << DCM_DICT_ENVIRONMENT_VARIABLE);
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // declare findSCU handler and initialize network
@@ -520,7 +523,6 @@ int main(int argc, char *argv[])
 
       tLayer->setCertificateVerification(opt_certVerification);
 
-
       cond = findscu.setTransportLayer(tLayer);
       if (cond.bad())
       {
@@ -569,10 +571,10 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
         {
-          OFLOG_ERROR(findscuLogger, "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring.");
+          OFLOG_ERROR(findscuLogger, "cannot write random seed file '" << opt_writeSeedFile << "', ignoring");
         }
       } else {
-        OFLOG_ERROR(findscuLogger, "cannot write random seed, ignoring.");
+        OFLOG_ERROR(findscuLogger, "cannot write random seed, ignoring");
       }
     }
     delete tLayer;
@@ -585,6 +587,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
+** Revision 1.59  2009-12-01 11:26:19  joergr
+** Use helper function checkDependence() where appropriate.
+** Fixed issue with syntax usage (e.g. layout and formatting).
+** Sightly modified log messages.
+**
 ** Revision 1.58  2009-11-18 11:53:58  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
