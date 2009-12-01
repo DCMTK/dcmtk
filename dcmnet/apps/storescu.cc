@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 11:53:58 $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-01 09:52:08 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -400,7 +400,10 @@ int main(int argc, char *argv[])
 
       OFLog::configureFromCommandLine(cmd, app);
       if (cmd.findOption("--verbose-pc"))
+      {
+        app.checkDependence("--verbose-pc", "verbose mode", storescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL));
         opt_showPresentationContexts = OFTrue;
+      }
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
@@ -706,7 +709,7 @@ int main(int argc, char *argv[])
           if (opt_scanDir)
             OFStandard::searchDirectoryRecursively(paramString, inputFiles, opt_scanPattern, "" /*dirPrefix*/, opt_recurse);
           else
-            OFLOG_DEBUG(storescuLogger, "ignoring directory because option --scan-directories is not set: " << paramString);
+            OFLOG_WARN(storescuLogger, "ignoring directory because option --scan-directories is not set: " << paramString);
         } else
           inputFiles.push_back(paramString);
       }
@@ -806,9 +809,10 @@ int main(int argc, char *argv[])
 #endif
 
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) {
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
       OFLOG_WARN(storescuLogger, "no data dictionary loaded, check environment variable: "
-           << DCM_DICT_ENVIRONMENT_VARIABLE);
+          << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* initialize network, i.e. create an instance of T_ASC_Network*. */
@@ -888,8 +892,8 @@ int main(int argc, char *argv[])
       cond = ASC_setTransportLayer(net, tLayer, 0);
       if (cond.bad())
       {
-          OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
-          return 1;
+        OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
+        return 1;
       }
     }
 
@@ -898,8 +902,8 @@ int main(int argc, char *argv[])
     /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
     cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
     if (cond.bad()) {
-        OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
-        return 1;
+      OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
+      return 1;
     }
     /* sets this application's title and the called application's title in the params */
     /* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
@@ -1052,7 +1056,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-      OFLOG_ERROR(storescuLogger, "SCU Failed: " << DimseCondition::dump(temp_str, cond));
+      OFLOG_ERROR(storescuLogger, "Store SCU Failed: " << DimseCondition::dump(temp_str, cond));
       OFLOG_INFO(storescuLogger, "Aborting Association");
       cond = ASC_abortAssociation(assoc);
       if (cond.bad()) {
@@ -1086,9 +1090,9 @@ int main(int argc, char *argv[])
       if (tLayer->canWriteRandomSeed())
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
-          OFLOG_WARN(storescuLogger, "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring.");
+          OFLOG_WARN(storescuLogger, "cannot write random seed file '" << opt_writeSeedFile << "', ignoring");
       } else
-        OFLOG_WARN(storescuLogger, "cannot write random seed, ignoring.");
+        OFLOG_WARN(storescuLogger, "cannot write random seed, ignoring");
     }
     delete tLayer;
 #endif
@@ -1475,7 +1479,6 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
 
   unsuccessfulStoreEncountered = OFTrue; // assumption
 
-  OFLOG_INFO(storescuLogger, "--------------------------");
   OFLOG_INFO(storescuLogger, "Sending file: " << fname);
 
   /* read information from file. After the call to DcmFileFormat::loadFile(...) the information */
@@ -1499,7 +1502,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   /* figure out which SOP class and SOP instance is encapsulated in the file */
   if (!DU_findSOPClassAndInstanceInDataSet(dcmff.getDataset(),
     sopClass, sopInstance, opt_correctUIDPadding)) {
-      OFLOG_ERROR(storescuLogger, "No SOP Class or Instance UIDs in file: " << fname);
+      OFLOG_ERROR(storescuLogger, "No SOP Class or Instance UID in file: " << fname);
       return DIMSE_BADDATA;
   }
 
@@ -1532,8 +1535,8 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
     T_ASC_PresentationContext pc;
     ASC_findAcceptedPresentationContext(assoc->params, presID, &pc);
     DcmXfer netTransfer(pc.acceptedTransferSyntax);
-    OFLOG_INFO(storescuLogger, "Transfer: " << dcmFindNameOfUID(fileTransfer.getXferID())
-         << " -> " << dcmFindNameOfUID(netTransfer.getXferID()));
+    OFLOG_INFO(storescuLogger, "Transfer Syntax: " << dcmFindNameOfUID(fileTransfer.getXferID())
+        << " -> " << dcmFindNameOfUID(netTransfer.getXferID()));
   }
 
   /* prepare the transmission of data */
@@ -1545,7 +1548,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   req.Priority = DIMSE_PRIORITY_LOW;
 
   /* if required, dump some more general information */
-  OFLOG_INFO(storescuLogger, "Store SCU RQ: MsgID " << msgId << ", (" << dcmSOPClassUIDToModality(sopClass) << ")");
+  OFLOG_INFO(storescuLogger, "Sending Store Request: MsgID " << msgId << ", (" << dcmSOPClassUIDToModality(sopClass) << ")");
 
   /* finally conduct transmission of data */
   cond = DIMSE_storeUser(assoc, presID, &req,
@@ -1568,7 +1571,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   if (cond == EC_Normal)
   {
     OFString str;
-    OFLOG_INFO(storescuLogger, "Received store response");
+    OFLOG_INFO(storescuLogger, "Received Store Response");
     OFLOG_DEBUG(storescuLogger, DIMSE_dumpMessage(str, rsp, DIMSE_INCOMING, NULL, presID));
   }
   else
@@ -1738,6 +1741,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.84  2009-12-01 09:52:08  joergr
+** Sightly modified log messages.
+**
 ** Revision 1.83  2009-11-18 11:53:58  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
