@@ -10,15 +10,21 @@ Changes between releases are documented here.
 
 - Sightly modified log messages.
   Affects: dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
            dcmnet/apps/movescu.cc
            dcmnet/apps/storescp.cc
            dcmnet/apps/storescu.cc
 
 - Fixed wrong documentation of command line option.
-  Affects: dcmnet/docs/storescu.man
+  Affects: dcmnet/docs/findscu.man
+           dcmnet/docs/storescu.man
 
 - Use helper function checkDependence() where appropriate.
   Affects: dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+
+- Fixed issue with syntax usage (e.g. layout and formatting).
+  Affects: dcmnet/apps/findscu.cc
 
 **** Changes from 2009.11.27 (riesmeier)
 
