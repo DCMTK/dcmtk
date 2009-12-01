@@ -55,6 +55,9 @@ port  tcp/ip port number to listen on
 
   -lc   --log-config  [f]ilename: string
           use config file f for the logger
+
+  +v    --show-pc
+          show presentation contexts in verbose mode
 \endverbatim
 
 \subsection multi_process_options multi-process options
