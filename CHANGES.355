@@ -9,7 +9,8 @@ Changes between releases are documented here.
            dcmnet/docs/storescp.man
 
 - Sightly modified log messages.
-  Affects: dcmnet/apps/storescp.cc
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
            dcmnet/apps/storescu.cc
 
 - Fixed wrong documentation of command line option.

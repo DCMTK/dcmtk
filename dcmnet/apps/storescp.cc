@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-01 09:53:01 $
- *  CVS/RCS Revision: $Revision: 1.118 $
+ *  Update Date:      $Date: 2009-12-01 10:16:07 $
+ *  CVS/RCS Revision: $Revision: 1.119 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1759,7 +1759,7 @@ static OFCondition echoSCP( T_ASC_Association * assoc, T_DIMSE_Message * msg, T_
   OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, STATUS_Success, NULL);
   if (cond.bad())
   {
-    OFLOG_ERROR(storescpLogger, "Echo SCP failed: " << DimseCondition::dump(temp_str, cond));
+    OFLOG_ERROR(storescpLogger, "Echo SCP Failed: " << DimseCondition::dump(temp_str, cond));
   }
   return cond;
 }
@@ -1856,7 +1856,7 @@ storeSCPCallback(
     switch (progress->state)
     {
       case DIMSE_StoreBegin:
-        COUT << "RECV:";
+        COUT << "RECV: ";
         break;
       case DIMSE_StoreEnd:
         COUT << OFendl;
@@ -2714,6 +2714,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.119  2009-12-01 10:16:07  joergr
+** Sightly modified log messages.
+**
 ** Revision 1.118  2009-12-01 09:53:01  joergr
 ** Added new command line option --verbose-pc that allows for showing the
 ** presentation contexts in verbose mode. Sightly modified log messages.

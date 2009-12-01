@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-01 09:52:08 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Update Date:      $Date: 2009-12-01 10:16:07 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1042,7 +1042,7 @@ int main(int argc, char *argv[])
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-      OFLOG_ERROR(storescuLogger, "Protocol Error: peer requested release (Aborting)");
+      OFLOG_ERROR(storescuLogger, "Protocol Error: Peer requested release (Aborting)");
       OFLOG_INFO(storescuLogger, "Aborting Association");
       cond = ASC_abortAssociation(assoc);
       if (cond.bad()) {
@@ -1582,7 +1582,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
 
   /* dump status detail information if there is some */
   if (statusDetail != NULL) {
-    OFLOG_WARN(storescuLogger, "  Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+    OFLOG_WARN(storescuLogger, "Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
     delete statusDetail;
   }
   /* return */
@@ -1741,6 +1741,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.85  2009-12-01 10:16:07  joergr
+** Sightly modified log messages.
+**
 ** Revision 1.84  2009-12-01 09:52:08  joergr
 ** Sightly modified log messages.
 **

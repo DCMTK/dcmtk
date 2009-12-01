@@ -21,9 +21,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 11:53:58 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-01 10:16:06 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -692,7 +692,8 @@ main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(movescuLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(movescuLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* make sure output directory exists and is writeable */
@@ -828,7 +829,7 @@ main(int argc, char *argv[])
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-        OFLOG_ERROR(movescuLogger, "Protocol Error: peer requested release (Aborting)");
+        OFLOG_ERROR(movescuLogger, "Protocol Error: Peer requested release (Aborting)");
         OFLOG_INFO(movescuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
@@ -842,7 +843,7 @@ main(int argc, char *argv[])
     }
     else
     {
-        OFLOG_ERROR(movescuLogger, "movescu: Move SCU failed:" << DimseCondition::dump(temp_str, cond));
+        OFLOG_ERROR(movescuLogger, "Move SCU Failed:" << DimseCondition::dump(temp_str, cond));
         OFLOG_INFO(movescuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
@@ -1125,14 +1126,14 @@ static OFCondition echoSCP(
   T_ASC_PresentationContextID presID)
 {
   OFString temp_str;
-  OFLOG_INFO(movescuLogger, "Received echo request");
+  OFLOG_INFO(movescuLogger, "Received Echo Request");
   OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, msg->msg.CEchoRQ, DIMSE_INCOMING));
 
   /* the echo succeeded !! */
   OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, STATUS_Success, NULL);
   if (cond.bad())
   {
-    OFLOG_ERROR(movescuLogger, "storescp: Echo SCP failed: " << DimseCondition::dump(temp_str, cond));
+    OFLOG_ERROR(movescuLogger, "Echo SCP Failed: " << DimseCondition::dump(temp_str, cond));
   }
   return cond;
 }
@@ -1182,7 +1183,7 @@ storeSCPCallback(
       switch (progress->state)
       {
         case DIMSE_StoreBegin:
-          COUT << "RECV:";
+          COUT << "RECV: ";
           break;
         case DIMSE_StoreEnd:
           COUT << OFendl;
@@ -1275,8 +1276,8 @@ static OFCondition storeSCP(
     }
 
     OFString temp_str;
-    OFLOG_INFO(movescuLogger, "Received store request");
-    OFLOG_DEBUG(movescuLogger, "Received\n" << DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
+    OFLOG_INFO(movescuLogger, "Received Store Request: MsgID " << req->MessageID << ", (" << dcmSOPClassUIDToModality(req->AffectedSOPClassUID) << ")");
+    OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
 
     StoreCallbackData callbackData;
     callbackData.assoc = assoc;
@@ -1304,7 +1305,7 @@ static OFCondition storeSCP(
 
     if (cond.bad())
     {
-      OFLOG_ERROR(movescuLogger, "storescp: Store SCP failed: " << DimseCondition::dump(temp_str, cond));
+      OFLOG_ERROR(movescuLogger, "Store SCP Failed: " << DimseCondition::dump(temp_str, cond));
       /* remove file */
       if (!opt_ignore)
       {
@@ -1346,7 +1347,7 @@ subOpSCP(T_ASC_Association **subAssoc)
           break;
         default:
           cond = DIMSE_BADCOMMANDTYPE;
-          OFLOG_ERROR(movescuLogger, "movescu: cannot handle command: 0x"
+          OFLOG_ERROR(movescuLogger, "cannot handle command: 0x"
                << STD_NAMESPACE hex << OFstatic_cast(unsigned, msg.CommandField));
           break;
       }
@@ -1365,7 +1366,7 @@ subOpSCP(T_ASC_Association **subAssoc)
     else if (cond != EC_Normal)
     {
         OFString temp_str;
-        OFLOG_ERROR(movescuLogger, "movescu: DIMSE failure (aborting sub-association): " << DimseCondition::dump(temp_str, cond));
+        OFLOG_ERROR(movescuLogger, "DIMSE failure (aborting sub-association): " << DimseCondition::dump(temp_str, cond));
         /* some kind of error so abort the association */
         cond = ASC_abortAssociation(*subAssoc);
     }
@@ -1408,12 +1409,12 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 
     /* should we send a cancel back ?? */
     if (opt_cancelAfterNResponses == responseCount) {
-        OFLOG_INFO(movescuLogger, "Sending C-Cancel RQ: MsgID " << request->MessageID
+        OFLOG_INFO(movescuLogger, "Sending Cancel Request: MsgID " << request->MessageID
                  << ", PresID " << myCallbackData->presId);
         cond = DIMSE_sendCancelRequest(myCallbackData->assoc,
             myCallbackData->presId, request->MessageID);
         if (cond != EC_Normal) {
-            OFLOG_ERROR(movescuLogger, "movescu: C-Cancel RQ failed: " << DimseCondition::dump(temp_str, cond));
+            OFLOG_ERROR(movescuLogger, "Cancel Request Failed: " << DimseCondition::dump(temp_str, cond));
         }
     }
 }
@@ -1451,8 +1452,6 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     DcmDataset          *statusDetail = NULL;
     MyCallbackInfo      callbackData;
 
-    OFLOG_INFO(movescuLogger, "================================");
-
     DcmFileFormat dcmff;
 
     if (fname != NULL) {
@@ -1472,7 +1471,7 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
 
     if (movescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
-        OFLOG_INFO(movescuLogger, "Sending C-Move RQ: MsgID " << msgId);
+        OFLOG_INFO(movescuLogger, "Sending Move Request: MsgID " << msgId);
         OFLOG_INFO(movescuLogger, "Request:" << OFendl << DcmObject::PrintHelper(*dcmff.getDataset()));
     }
 
@@ -1504,7 +1503,7 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
         }
     } else {
         OFString temp_str;
-        OFLOG_ERROR(movescuLogger, "movescu: C-Move RQ failed: " << DimseCondition::dump(temp_str, cond));
+        OFLOG_ERROR(movescuLogger, "Move Request Failed: " << DimseCondition::dump(temp_str, cond));
     }
     if (statusDetail != NULL) {
         OFLOG_WARN(movescuLogger, "Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
@@ -1532,6 +1531,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.79  2009-12-01 10:16:06  joergr
+** Sightly modified log messages.
+**
 ** Revision 1.78  2009-11-18 11:53:58  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
