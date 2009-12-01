@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 11:53:58 $
- *  CVS/RCS Revision: $Revision: 1.117 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-01 09:53:01 $
+ *  CVS/RCS Revision: $Revision: 1.118 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,6 +148,7 @@ enum E_SortStudyMode
     ESM_PatientsName
 };
 
+OFBool             opt_showPresentationContexts = OFFalse;
 OFBool             opt_uniqueFilenames = OFFalse;
 OFString           opt_fileNameExtension;
 OFBool             opt_timeNames = OFFalse;
@@ -278,6 +279,7 @@ int main(int argc, char *argv[])
     cmd.addOption("--help",                     "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--version",                             "print version information and exit", OFCommandLine::AF_Exclusive);
     OFLog::addOptions(cmd);
+    cmd.addOption("--verbose-pc",               "+v",      "show presentation contexts in verbose mode");
 
 #if defined(HAVE_FORK) || defined(_WIN32)
   cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL + 2);
@@ -549,12 +551,17 @@ int main(int argc, char *argv[])
     }
 
     OFLog::configureFromCommandLine(cmd, app);
+    if (cmd.findOption("--verbose-pc"))
+    {
+      app.checkDependence("--verbose-pc", "verbose mode", storescpLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL));
+      opt_showPresentationContexts = OFTrue;
+    }
 
     cmd.beginOptionBlock();
     if (cmd.findOption("--prefer-uncompr"))
     {
-        opt_acceptAllXfers = OFFalse;
-        opt_networkTransferSyntax = EXS_Unknown;
+      opt_acceptAllXfers = OFFalse;
+      opt_networkTransferSyntax = EXS_Unknown;
     }
     if (cmd.findOption("--prefer-little")) opt_networkTransferSyntax = EXS_LittleEndianExplicit;
     if (cmd.findOption("--prefer-big")) opt_networkTransferSyntax = EXS_BigEndianExplicit;
@@ -573,8 +580,8 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--implicit")) opt_networkTransferSyntax = EXS_LittleEndianImplicit;
     if (cmd.findOption("--accept-all"))
     {
-        opt_acceptAllXfers = OFTrue;
-        opt_networkTransferSyntax = EXS_Unknown;
+      opt_acceptAllXfers = OFTrue;
+      opt_networkTransferSyntax = EXS_Unknown;
     }
     cmd.endOptionBlock();
     if (opt_networkTransferSyntax != EXS_Unknown) opt_acceptAllXfers = OFFalse;
@@ -634,7 +641,7 @@ int main(int argc, char *argv[])
       OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, opt_configFile);
       if (cond.bad())
       {
-        OFLOG_FATAL(storescpLogger, "Error while reading config file: " << cond.text());
+        OFLOG_FATAL(storescpLogger, "cannot read config file: " << cond.text());
         return 1;
       }
 
@@ -985,7 +992,10 @@ int main(int argc, char *argv[])
 
   /* make sure data dictionary is loaded */
   if (!dcmDataDict.isDictionaryLoaded())
-    OFLOG_WARN(storescpLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
+  {
+    OFLOG_WARN(storescpLogger, "no data dictionary loaded, check environment variable: "
+        << DCM_DICT_ENVIRONMENT_VARIABLE);
+  }
 
   /* if the output directory does not equal "." (default directory) */
   if (opt_outputDirectory != ".")
@@ -1027,7 +1037,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-      OFLOG_ERROR(storescpLogger, "Error while reading socket handle: " << GetLastError());
+      OFLOG_ERROR(storescpLogger, "cannot read socket handle: " << GetLastError());
       return 1;
     }
   }
@@ -1122,7 +1132,6 @@ int main(int argc, char *argv[])
 
     tLayer->setCertificateVerification(opt_certVerification);
 
-
     cond = ASC_setTransportLayer(net, tLayer, 0);
     if (cond.bad())
     {
@@ -1154,7 +1163,7 @@ int main(int argc, char *argv[])
       if (tLayer->canWriteRandomSeed())
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
-          OFLOG_WARN(storescpLogger, "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring");
+          OFLOG_WARN(storescpLogger, "cannot write random seed file '" << opt_writeSeedFile << "', ignoring");
       }
       else
       {
@@ -1273,12 +1282,16 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 #if defined(HAVE_FORK) || defined(_WIN32)
   if (opt_forkMode)
     OFLOG_INFO(storescpLogger, "Association Received in " << (DUL_processIsForkedChild() ? "child" : "parent")
-           << " process (pid: " << OFstatic_cast(long, getpid()) << ")");
+        << " process (pid: " << OFstatic_cast(long, getpid()) << ")");
   else
 #endif
     OFLOG_INFO(storescpLogger, "Association Received");
 
-  OFLOG_DEBUG(storescpLogger, "Parameters:\n" << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
+  /* dump presentation contexts if required */
+  if (opt_showPresentationContexts)
+    OFLOG_INFO(storescpLogger, "Parameters:\n" << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
+  else
+    OFLOG_DEBUG(storescpLogger, "Parameters:\n" << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
 
   if (opt_refuseAssociation)
   {
@@ -1512,7 +1525,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED
     };
 
-    OFLOG_INFO(storescpLogger, "Association Rejected: bad application context name: " << buf);
+    OFLOG_INFO(storescpLogger, "Association Rejected: Bad Application Context Name: " << buf);
     cond = ASC_rejectAssociation(assoc, &rej);
     if (cond.bad())
     {
@@ -1553,7 +1566,11 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     OFLOG_INFO(storescpLogger, "Association Acknowledged (Max Send PDV: " << assoc->sendPDVLength << ")");
     if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
       OFLOG_INFO(storescpLogger, "    (but no valid presentation contexts)");
-    OFLOG_DEBUG(storescpLogger, ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
+    /* dump the presentation contexts which have been accepted/refused */
+    if (opt_showPresentationContexts)
+      OFLOG_INFO(storescpLogger, ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
+    else
+      OFLOG_DEBUG(storescpLogger, ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
   }
 
 #ifdef BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX
@@ -1610,7 +1627,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   }
   else
   {
-    OFLOG_ERROR(storescpLogger, "storescp: DIMSE failure (aborting association):" << DimseCondition::dump(temp_str, cond));
+    OFLOG_ERROR(storescpLogger, "DIMSE failure (aborting association):" << DimseCondition::dump(temp_str, cond));
     /* some kind of error so abort the association */
     cond = ASC_abortAssociation(assoc);
   }
@@ -1722,7 +1739,7 @@ processCommands(T_ASC_Association * assoc)
         default:
           // we cannot handle this kind of message
           cond = DIMSE_BADCOMMANDTYPE;
-          OFLOG_ERROR(storescpLogger, "storescp: cannot handle command: 0x"
+          OFLOG_ERROR(storescpLogger, "cannot handle command: 0x"
                << STD_NAMESPACE hex << OFstatic_cast(unsigned, msg.CommandField));
           break;
       }
@@ -1735,14 +1752,14 @@ processCommands(T_ASC_Association * assoc)
 static OFCondition echoSCP( T_ASC_Association * assoc, T_DIMSE_Message * msg, T_ASC_PresentationContextID presID)
 {
   OFString temp_str;
-  OFLOG_INFO(storescpLogger, "Received echo request");
+  OFLOG_INFO(storescpLogger, "Received Echo Request");
   OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(temp_str, msg->msg.CEchoRQ, DIMSE_INCOMING, NULL, presID));
 
   /* the echo succeeded !! */
   OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, STATUS_Success, NULL);
   if (cond.bad())
   {
-    OFLOG_ERROR(storescpLogger, "storescp: Echo SCP failed: " << DimseCondition::dump(temp_str, cond));
+    OFLOG_ERROR(storescpLogger, "Echo SCP failed: " << DimseCondition::dump(temp_str, cond));
   }
   return cond;
 }
@@ -1973,7 +1990,7 @@ storeSCPCallback(
           else
           {
             // if it does not exist create it
-            OFLOG_INFO(storescpLogger, "Creating new subdirectory for study: " << subdirectoryPathAndName);
+            OFLOG_INFO(storescpLogger, "creating new subdirectory for study: " << subdirectoryPathAndName);
 #ifdef HAVE_WINDOWS_H
             if( _mkdir( subdirectoryPathAndName.c_str() ) == -1 )
 #else
@@ -2161,7 +2178,7 @@ static OFCondition storeSCP(
 
   // dump some information if required
   OFString str;
-  OFLOG_INFO(storescpLogger, "Received store request");
+  OFLOG_INFO(storescpLogger, "Received Store Request: MsgID " << req->MessageID << ", (" << dcmSOPClassUIDToModality(req->AffectedSOPClassUID) << ")");
   OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(str, *req, DIMSE_INCOMING, NULL, presID));
 
   // intialize some variables
@@ -2199,7 +2216,7 @@ static OFCondition storeSCP(
   if (cond.bad())
   {
     OFString temp_str;
-    OFLOG_ERROR(storescpLogger, "storescp: Store SCP failed: " << DimseCondition::dump(temp_str, cond));
+    OFLOG_ERROR(storescpLogger, "Store SCP Failed: " << DimseCondition::dump(temp_str, cond));
     // remove file
     if (!opt_ignore)
     {
@@ -2697,6 +2714,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.118  2009-12-01 09:53:01  joergr
+** Added new command line option --verbose-pc that allows for showing the
+** presentation contexts in verbose mode. Sightly modified log messages.
+**
 ** Revision 1.117  2009-11-18 11:53:58  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
