@@ -63,7 +63,7 @@ dcmfile-in  DICOM file or directory to be transmitted
           use config file f for the logger
 
   +v    --show-pc
-          and show presentation contexts
+          show presentation contexts in verbose mode
 \endverbatim
 
 \subsection input_options input options
