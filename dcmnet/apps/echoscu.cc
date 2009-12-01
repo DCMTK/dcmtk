@@ -21,9 +21,9 @@
  *
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 11:53:58 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-01 10:59:38 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@
 #endif
 
 #ifdef WITH_ZLIB
-#include <zlib.h>     				  /* for zlibVersion() */
+#include <zlib.h>                     /* for zlibVersion() */
 #endif
 
 #ifdef PRIVATE_ECHOSCU_DECLARATIONS
@@ -172,12 +172,12 @@ main(int argc, char *argv[])
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM verification (C-ECHO) SCU", rcsid);
   OFCommandLine cmd;
 
-  cmd.setParamColumn(LONGCOL+SHORTCOL+4);
+  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("peer", "hostname of DICOM peer");
   cmd.addParam("port", "tcp/ip port number of peer");
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                 "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
    OFLog::addOptions(cmd);
@@ -341,17 +341,17 @@ main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--std-passwd"))
       {
-        if (! opt_doAuthenticate) app.printError("--std-passwd only with --enable-tls");
+        app.checkDependence("--std-passwd", "--enable-tls", opt_doAuthenticate);
         opt_passwd = NULL;
       }
       if (cmd.findOption("--use-passwd"))
       {
-        if (! opt_doAuthenticate) app.printError("--use-passwd only with --enable-tls");
+        app.checkDependence("--use-passwd", "--enable-tls", opt_doAuthenticate);
         app.checkValue(cmd.getValue(opt_passwd));
       }
       if (cmd.findOption("--null-passwd"))
       {
-        if (! opt_doAuthenticate) app.printError("--null-passwd only with --enable-tls");
+        app.checkDependence("--null-passwd", "--enable-tls", opt_doAuthenticate);
         opt_passwd = "";
       }
       cmd.endOptionBlock();
@@ -374,12 +374,12 @@ main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--write-seed"))
       {
-        if (opt_readSeedFile == NULL) app.printError("--write-seed only with --seed");
+        app.checkDependence("--write-seed", "--seed", opt_readSeedFile != NULL);
         opt_writeSeedFile = opt_readSeedFile;
       }
       if (cmd.findOption("--write-seed-file"))
       {
-        if (opt_readSeedFile == NULL) app.printError("--write-seed-file only with --seed");
+        app.checkDependence("--write-seed-file", "--seed", opt_readSeedFile != NULL);
         app.checkValue(cmd.getValue(opt_writeSeedFile));
       }
       cmd.endOptionBlock();
@@ -404,7 +404,7 @@ main(int argc, char *argv[])
             unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
             for (unsigned long cs=0; cs < numSuites; cs++)
             {
-                OFLOG_FATAL(echoscuLogger, "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
+              OFLOG_FATAL(echoscuLogger, "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
             }
             return 1;
           } else {
@@ -421,9 +421,10 @@ main(int argc, char *argv[])
     OFLOG_DEBUG(echoscuLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) {
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
         OFLOG_WARN(echoscuLogger, "no data dictionary loaded, check environment variable: "
-                << DCM_DICT_ENVIRONMENT_VARIABLE);
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* initialize network, i.e. create an instance of T_ASC_Network*. */
@@ -574,7 +575,7 @@ main(int argc, char *argv[])
             T_ASC_RejectParameters rej;
 
             ASC_getRejectParameters(params, &rej);
-            OFLOG_FATAL(echoscuLogger, "Association Rejected: " << OFendl << ASC_printRejectParameters(temp_str, &rej));
+            OFLOG_FATAL(echoscuLogger, "Association Rejected:" << OFendl << ASC_printRejectParameters(temp_str, &rej));
             exit(1);
         } else {
             OFLOG_FATAL(echoscuLogger, "Association Request Failed: " << DimseCondition::dump(temp_str, cond));
@@ -623,7 +624,7 @@ main(int argc, char *argv[])
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-        OFLOG_FATAL(echoscuLogger, "Protocol Error: peer requested release (Aborting)");
+        OFLOG_FATAL(echoscuLogger, "Protocol Error: Peer requested release (Aborting)");
         OFLOG_INFO(echoscuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
@@ -637,7 +638,7 @@ main(int argc, char *argv[])
     }
     else
     {
-        OFLOG_FATAL(echoscuLogger, "SCU Failed:" << DimseCondition::dump(temp_str, cond));
+        OFLOG_ERROR(echoscuLogger, "Echo SCU Failed:" << DimseCondition::dump(temp_str, cond));
         OFLOG_INFO(echoscuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
@@ -673,10 +674,10 @@ main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
         {
-          OFLOG_ERROR(echoscuLogger, "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring.");
+          OFLOG_ERROR(echoscuLogger, "cannot write random seed file '" << opt_writeSeedFile << "', ignoring");
         }
       } else {
-        OFLOG_ERROR(echoscuLogger, "cannot write random seed, ignoring.");
+        OFLOG_ERROR(echoscuLogger, "cannot write random seed, ignoring");
       }
     }
     delete tLayer;
@@ -700,22 +701,22 @@ echoSCU(T_ASC_Association * assoc)
     DcmDataset *statusDetail = NULL;
 
     /* dump information if required */
-    OFLOG_INFO(echoscuLogger, "Echo [" << msgId << "], ");
+    OFLOG_INFO(echoscuLogger, "Sending Echo Request: MsgID " << msgId);
 
     /* send C-ECHO-RQ and handle response */
     OFCondition cond = DIMSE_echoUser(assoc, msgId, opt_blockMode, opt_dimse_timeout, &status, &statusDetail);
 
     /* depending on if a response was received, dump some information */
     if (cond.good()) {
-        OFLOG_INFO(echoscuLogger, "Complete [Status: " << DU_cstoreStatusString(status) << "]");
+        OFLOG_INFO(echoscuLogger, "Received Echo Response (Status: " << DU_cstoreStatusString(status) << ")");
     } else {
         OFString temp_str;
-        OFLOG_ERROR(echoscuLogger, "Failed: " << DimseCondition::dump(temp_str, cond));
+        OFLOG_ERROR(echoscuLogger, "Echo Failed: " << DimseCondition::dump(temp_str, cond));
     }
 
     /* check for status detail information, there should never be any */
     if (statusDetail != NULL) {
-        OFLOG_INFO(echoscuLogger, "  Status Detail (should never be any):" << OFendl << DcmObject::PrintHelper(*statusDetail));
+        OFLOG_INFO(echoscuLogger, "Status Detail (should never be any):" << OFendl << DcmObject::PrintHelper(*statusDetail));
         delete statusDetail;
     }
 
@@ -739,7 +740,7 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 
     /* as long as no error occured and the counter does not equal 0 */
     /* send an C-ECHO-RQ and handle the response */
-    while (cond.good() && n--) cond = echoSCU(assoc); 
+    while (cond.good() && n--) cond = echoSCU(assoc);
 
     return cond;
 }
@@ -747,6 +748,10 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
+** Revision 1.49  2009-12-01 10:59:38  joergr
+** Use helper function checkDependence() where appropriate.
+** Sightly modified log messages.
+**
 ** Revision 1.48  2009-11-18 11:53:58  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
