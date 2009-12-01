@@ -1,9 +1,23 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.01 (riesmeier)
+
+- Added new command line option --verbose-pc that allows for showing the
+  presentation contexts in verbose mode.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+
+- Sightly modified log messages.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+
+- Fixed wrong documentation of command line option.
+  Affects: dcmnet/docs/storescu.man
+
 **** Changes from 2009.11.27 (riesmeier)
 
-- Sightly modifed log messages.
+- Sightly modified log messages.
   Affects: dcmpstat/apps/dcmprscp.cc
            dcmpstat/apps/dcmprscu.cc
            dcmpstat/apps/dcmpsrcv.cc
