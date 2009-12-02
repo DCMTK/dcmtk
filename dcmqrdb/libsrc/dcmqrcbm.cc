@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:42 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-02 16:22:40 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ static void moveSubOpProgressCallback(void *callbackData,
     switch (progress->state)
     {
       case DIMSE_StoreBegin:
-        printf("XMIT:");
+        printf("XMIT: ");
         break;
       case DIMSE_StoreEnd:
         printf("\n");
@@ -95,7 +95,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
         request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         if (dbcond.bad()) {
             DCMQRDB_ERROR("moveSCP: Database: startMoveRequest Failed ("
-                    << DU_cmoveStatusString(dbStatus.status()) << "):");
+                << DU_cmoveStatusString(dbStatus.status()) << "):");
         }
 
         if (dbStatus.status() == STATUS_Pending) {
@@ -169,7 +169,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
         DCMQRDB_DEBUG("Move SCP Response Identifiers:\n" << DcmObject::PrintHelper(**responseIdentifiers));
     }
     if (*stDetail) {
-        DCMQRDB_DEBUG("Status detail:\n" << DcmObject::PrintHelper(**stDetail));
+        DCMQRDB_DEBUG("  Status detail:\n" << DcmObject::PrintHelper(**stDetail));
     }
 }
 
@@ -232,7 +232,7 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
         nFailed++;
         addFailedUIDInstance(sopInstance);
         DCMQRDB_ERROR("Move SCP: storeSCU: [file: " << fname << "] No presentation context for: ("
-            << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass);
+            << dcmSOPClassUIDToModality(sopClass, "OT") << ") " << sopClass);
         return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
 
@@ -246,7 +246,7 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     req.MoveOriginatorID = origMsgId;
 
     DCMQRDB_INFO("Store SCU RQ: MsgID " << msgId << ", ("
-            << dcmSOPClassUIDToModality(sopClass) << ")");
+        << dcmSOPClassUIDToModality(sopClass, "OT") << ")");
 
     cond = DIMSE_storeUser(subAssoc, presId, &req,
         fname, NULL, moveSubOpProgressCallback, this,
@@ -261,7 +261,7 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
 
     if (cond.good()) {
         DCMQRDB_INFO("Move SCP: Received Store SCU RSP [Status="
-                << DU_cstoreStatusString(rsp.DimseStatus) << "]");
+            << DU_cstoreStatusString(rsp.DimseStatus) << "]");
         if (rsp.DimseStatus == STATUS_Success) {
             /* everything ok */
             nCompleted++;
@@ -275,7 +275,7 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
             addFailedUIDInstance(sopInstance);
             /* print a status message */
             DCMQRDB_ERROR("Move SCP: Store Failed: Response Status: " <<
-                    DU_cstoreStatusString(rsp.DimseStatus));
+                DU_cstoreStatusString(rsp.DimseStatus));
         }
     } else {
         nFailed++;
@@ -324,7 +324,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
         if (cond.bad()) {
             OFString temp_str;
             DCMQRDB_ERROR("moveSCP: Cannot create Association-params for sub-ops:\n"
-                    << DimseCondition::dump(temp_str, cond));
+                << DimseCondition::dump(temp_str, cond));
         }
     }
     if (cond.good()) {
@@ -677,6 +677,11 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
+ * Revision 1.13  2009-12-02 16:22:40  joergr
+ * Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
+ * the log stream in order to avoid an application crash.
+ * Slightly modified output of progress bar.
+ *
  * Revision 1.12  2009-11-24 10:10:42  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

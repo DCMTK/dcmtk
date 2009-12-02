@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveGetContext
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:42 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-02 16:22:13 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,7 +62,7 @@ static void getSubOpProgressCallback(void * callbackData,
     switch (progress->state)
     {
       case DIMSE_StoreBegin:
-        printf("XMIT:");
+        printf("XMIT: ");
         break;
       case DIMSE_StoreEnd:
         printf("\n");
@@ -93,7 +93,7 @@ void DcmQueryRetrieveGetContext::callbackHandler(
             request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         if (dbcond.bad()) {
             DCMQRDB_ERROR("getSCP: Database: startMoveRequest Failed ("
-                    << DU_cmoveStatusString(dbStatus.status()) << "):");
+                << DU_cmoveStatusString(dbStatus.status()) << "):");
         }
     }
 
@@ -206,7 +206,7 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
         nFailed++;
         addFailedUIDInstance(sopInstance);
         DCMQRDB_ERROR("Get SCP: storeSCU: [file: " << fname << "] No presentation context for: ("
-                << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass);
+            << dcmSOPClassUIDToModality(sopClass, "OT") << ") " << sopClass);
         return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     } else {
         /* make sure that we can send images in this presentation context */
@@ -218,7 +218,7 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
             nFailed++;
             addFailedUIDInstance(sopInstance);
             DCMQRDB_ERROR("Get SCP: storeSCU: [file: " << fname << "] No presentation context with requestor SCP role for: ("
-                << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass);
+                << dcmSOPClassUIDToModality(sopClass, "OT") << ") " << sopClass);
             return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
         }
     }
@@ -231,7 +231,7 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
     req.opts = 0;
 
     DCMQRDB_INFO("Store SCU RQ: MsgID " << msgId << ", ("
-            << dcmSOPClassUIDToModality(sopClass) << ")");
+        << dcmSOPClassUIDToModality(sopClass, "OT") << ")");
 
     T_DIMSE_DetectedCancelParameters cancelParameters;
 
@@ -252,11 +252,11 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
                 getCancelled = OFTrue;
             } else {
                 DCMQRDB_ERROR("Get SCP: Unexpected C-Cancel-RQ encountered: pid=" << (int)cancelParameters.presId
-                        << ", mid=" << (int)cancelParameters.req.MessageIDBeingRespondedTo);
+                    << ", mid=" << (int)cancelParameters.req.MessageIDBeingRespondedTo);
             }
         }
         DCMQRDB_INFO("Get SCP: Received Store SCU RSP [Status="
-                << DU_cstoreStatusString(rsp.DimseStatus) << "]");
+            << DU_cstoreStatusString(rsp.DimseStatus) << "]");
         if (rsp.DimseStatus == STATUS_Success) {
             /* everything ok */
             nCompleted++;
@@ -342,6 +342,11 @@ void DcmQueryRetrieveGetContext::buildFailedInstanceList(DcmDataset ** rspIds)
 /*
  * CVS Log
  * $Log: dcmqrcbg.cc,v $
+ * Revision 1.8  2009-12-02 16:22:13  joergr
+ * Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
+ * the log stream in order to avoid an application crash.
+ * Slightly modified output of progress bar.
+ *
  * Revision 1.7  2009-11-24 10:10:42  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
