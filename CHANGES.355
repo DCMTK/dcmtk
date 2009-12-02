@@ -1,6 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.02 (riesmeier)
+
+- Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
+  the log stream in order to avoid an application crash.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmqrdb/libsrc/dcmqrcbg.cc
+           dcmqrdb/libsrc/dcmqrcbm.cc
+           dcmqrdb/libsrc/dcmqrtis.cc
+
+- Slightly modified output of progress bar.
+  Affects: dcmqrdb/libsrc/dcmqrcbg.cc
+           dcmqrdb/libsrc/dcmqrcbm.cc
+           dcmqrdb/libsrc/dcmqrcbs.cc
+
+- Sightly modified source code formatting.
+  Affects: dcmqrdb/libsrc/dcmqrdbi.cc
+
 **** Changes from 2009.12.02 (schlachter)
 
 - Completely removed the old dcmdata debug mechanism.
