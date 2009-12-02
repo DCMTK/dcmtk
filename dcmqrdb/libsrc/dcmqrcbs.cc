@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveStoreContext
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:42 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-02 16:21:18 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ void DcmQueryRetrieveStoreContext::updateDisplay(T_DIMSE_StoreProgress * progres
     switch (progress->state)
     {
       case DIMSE_StoreBegin:
-        printf("RECV:");
+        printf("RECV: ");
         break;
       case DIMSE_StoreEnd:
         printf("\n");
@@ -196,6 +196,9 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
 /*
  * CVS Log
  * $Log: dcmqrcbs.cc,v $
+ * Revision 1.6  2009-12-02 16:21:18  joergr
+ * Slightly modified output of progress bar.
+ *
  * Revision 1.5  2009-11-24 10:10:42  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
