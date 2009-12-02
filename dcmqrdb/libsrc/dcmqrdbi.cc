@@ -21,9 +21,9 @@
  *
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:42 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-02 16:27:05 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -390,7 +390,6 @@ static long DB_lseek(int fildes, long offset, int whence)
     long curpos;
     long endpos;
 
-
     /*
     ** we should not be seeking to an offset < 0
     */
@@ -440,7 +439,7 @@ static long DB_lseek(int fildes, long offset, int whence)
      */
     if ((endpos > 0) && (pos > endpos)) {
         DCMQRDB_ERROR("*** DB ALERT: attempt to seek beyond end of file" << OFendl
-                   << "              offset=" << offset << " filesize=" << endpos);
+            << "              offset=" << offset << " filesize=" << endpos);
     }
 
     return pos;
@@ -596,7 +595,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRemove(int idx)
     rec. filename [0] = '\0' ;
     if (write (handle_ -> pidx, (char *) &rec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD)
         cond = EC_Normal ;
-
     else
         cond = DcmQRIndexDatabaseError ;
 
@@ -640,13 +638,13 @@ static OFCondition DB_FreeUidList (DB_UidList *lst)
 
     OFCondition cond = DB_FreeUidList (lst -> next);
     if (lst -> patient)
-    free (lst -> patient);
+        free (lst -> patient);
     if (lst -> study)
-    free (lst -> study);
+        free (lst -> study);
     if (lst -> serie)
-    free (lst -> serie);
+        free (lst -> serie);
     if (lst -> image)
-    free (lst -> image);
+        free (lst -> image);
     free (lst);
     return (cond);
 }
@@ -662,7 +660,7 @@ static OFCondition DB_FreeElementList (DB_ElementList *lst)
 
     OFCondition cond = DB_FreeElementList (lst -> next);
     if (lst->elem.PValueField != NULL) {
-    free ((char *) lst -> elem. PValueField);
+        free ((char *) lst -> elem. PValueField);
     }
     free (lst);
     return (cond);
@@ -676,7 +674,6 @@ static OFCondition DB_FreeElementList (DB_ElementList *lst)
 static int DB_StringUnify  (char *pmod, char *pstr)
 {
     int uni;
-
 
     if (*pmod == '\0')
     return (*pstr == '\0');
@@ -730,8 +727,8 @@ static OFCondition DB_GetUIDTag (DB_LEVEL level, DcmTagKey *tag)
         break;
 
     if (i < NbFindAttr) {
-    *tag = TbFindAttr[i].tag;
-    return (EC_Normal);
+        *tag = TbFindAttr[i].tag;
+        return (EC_Normal);
     }
     else
     return (DcmQRIndexDatabaseError);
@@ -751,8 +748,8 @@ static OFCondition DB_GetTagLevel (DcmTagKey tag, DB_LEVEL *level)
         break;
 
     if (i < NbFindAttr) {
-    *level = TbFindAttr[i]. level;
-    return (EC_Normal);
+        *level = TbFindAttr[i]. level;
+        return (EC_Normal);
     }
     else
     return (DcmQRIndexDatabaseError);
@@ -771,8 +768,8 @@ static OFCondition DB_GetTagKeyAttr (DcmTagKey tag, DB_KEY_TYPE *keyAttr)
         break;
 
     if (i < NbFindAttr) {
-    *keyAttr = TbFindAttr[i]. keyAttr;
-    return (EC_Normal);
+        *keyAttr = TbFindAttr[i]. keyAttr;
+        return (EC_Normal);
     }
     else
     return (DcmQRIndexDatabaseError);
@@ -791,8 +788,8 @@ static OFCondition DB_GetTagKeyClass (DcmTagKey tag, DB_KEY_CLASS *keyAttr)
         break;
 
     if (i < NbFindAttr) {
-    *keyAttr = TbFindAttr[i]. keyClass;
-    return (EC_Normal);
+        *keyAttr = TbFindAttr[i]. keyClass;
+        return (EC_Normal);
     }
     else
     return (DcmQRIndexDatabaseError);
@@ -808,10 +805,10 @@ static void DB_RemoveSpaces (char *string)
     char *pc1, *pc2;
 
     for (pc1 = pc2 = string; *pc2; pc2++) {
-    if (*pc2 != ' ') {
-        *pc1 = *pc2;
-        pc1++;
-    }
+        if (*pc2 != ' ') {
+            *pc1 = *pc2;
+            pc1++;
+        }
     }
     *pc1 = '\0';
 }
@@ -830,24 +827,24 @@ static void DB_RemoveEnclosingSpaces (char *string)
 
     for (pc2 = string; (*pc2 != '\0') && (*pc2 == ' '); pc2++);
     if (*pc2 == '\0') {
-    string [0] = '\0';
-    return;
+        string [0] = '\0';
+        return;
     }
 
     /** Shift the string if necessary
      */
 
     if (pc2 != string) {
-    for (pc1 = string; *pc2; pc1++, pc2++)
-        *pc1 = *pc2;
-    *pc1 = '\0';
+        for (pc1 = string; *pc2; pc1++, pc2++)
+            *pc1 = *pc2;
+        *pc1 = '\0';
     }
 
     /** Ship trailing spaces
      */
 
     for (pc2 = string + strlen (string) - 1; *pc2 == ' '; pc2--);
-    pc2++;
+        pc2++;
     *pc2 = '\0';
 }
 
@@ -890,13 +887,13 @@ static double DB_TimeToDouble (char *thetime)
 
     strcpy (t, thetime);
     if ((pc = strchr (t, '.')) != NULL) {
-    double f;
+        double f;
 
-    *pc = '\0';
-    for (pc++, f = 1.; (*pc) && (isdigit (*pc)); pc++) {
-        f /= 10.;
-        result += (*pc - '0') * f;
-    }
+        *pc = '\0';
+        for (pc++, f = 1.; (*pc) && (isdigit (*pc)); pc++) {
+            f /= 10.;
+            result += (*pc - '0') * f;
+        }
     }
 
     /*** Add default values (mm ss) if necessary
@@ -960,7 +957,7 @@ extern "C" int DB_Compare(const void *ve1, const void *ve2)
     ImagesofStudyArray *e1 = (ImagesofStudyArray *)ve1;
     ImagesofStudyArray *e2 = (ImagesofStudyArray *)ve2;
     if ( e1 -> RecordedDate > e2 -> RecordedDate )
-    return (1);
+        return (1);
     else
     if ( e1 -> RecordedDate == e2 -> RecordedDate )
         return (0);
@@ -1122,7 +1119,6 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchUID (DB_SmallDcmElmt *mod, DB_Smal
     memcpy (modl, mod->PValueField, (size_t)(mod->ValueLength)) ;
     modl [mod->ValueLength] = '\0' ;
 
-
     /*** If no '\' in model
     *** return strict comparison result
     **/
@@ -1184,8 +1180,8 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchUID (DB_SmallDcmElmt *mod, DB_Smal
 int DcmQueryRetrieveIndexDatabaseHandle::matchStrings (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
 {
     int match ;
-    char *string  ;
-    char *modl  ;
+    char *string ;
+    char *modl ;
 
     /*** Get elt and model data in strings
     **/
@@ -1363,7 +1359,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
 {
     DB_ElementList *plist ;
     DB_LEVEL    XTagLevel ;
-    DB_KEY_TYPE         XTagType ;
+    DB_KEY_TYPE XTagType ;
     int level ;
 
     /**** Query level must be at least the infLevel
@@ -1952,7 +1948,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
                               DCM_QueryRetrieveLevel, queryLevelString);
 #ifdef DEBUG
         DCMQRDB_DEBUG("DB: findResponseIdentifiers:" << OFendl
-                << DcmObject::PrintHelper(**findResponseIdentifiers));
+            << DcmObject::PrintHelper(**findResponseIdentifiers));
 #endif
     }
     else {
@@ -2023,7 +2019,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
         return (cond) ;
     }
 
-
     /**** If a matching image has been found
     ****    add index records UIDs in found UID list
     ****    prepare Response List in handle
@@ -2051,7 +2046,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
         DB_FreeUidList (handle_->uidList) ;
         handle_->uidList = NULL ;
     }
-
 
 #ifdef DEBUG
     DCMQRDB_DEBUG("DB_nextFindResponse () : STATUS_Pending");
@@ -2370,7 +2364,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 
     if (doCheckMoveIdentifier) {
         cond = testMoveRequestList (handle_->findRequestList,
-                                       handle_->queryLevel, qLevel, lLevel) ;
+                                    handle_->queryLevel, qLevel, lLevel) ;
         if (cond != EC_Normal) {
             handle_->idxCounter = -1 ;
             DB_FreeElementList (handle_->findRequestList) ;
@@ -2425,7 +2419,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
                 lastidxlist->next = pidxlist ;
                 lastidxlist = pidxlist ;
             }
-
         }
     }
 
@@ -2506,7 +2499,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
 
     *numberOfRemainingSubOperations = --handle_->NumberRemainOperations ;
 
-
     nextlist = handle_->moveCounterList->next ;
     free (handle_->moveCounterList) ;
     handle_->moveCounterList = nextlist ;
@@ -2521,7 +2513,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::cancelMoveRequest (DcmQueryRetrieveDatabaseStatus *status)
 {
-    DB_CounterList              *plist ;
+    DB_CounterList *plist ;
 
     while (handle_->moveCounterList) {
         plist  = handle_->moveCounterList ;
@@ -2617,11 +2609,11 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(StudyDescRecord *pStu
 #endif
 
     for ( s = 0 ; s < handle_ -> maxStudiesAllowed ; s++ ) {
-    if ( ( pStudyDesc[s]. NumberofRegistratedImages != 0 ) &&
-        ( ( OldestDate == 0.0 ) || ( pStudyDesc[s]. LastRecordedDate < OldestDate ) ) ) {
-        OldestDate = pStudyDesc[s]. LastRecordedDate ;
-        oldestStudy = s ;
-    }
+        if ( ( pStudyDesc[s]. NumberofRegistratedImages != 0 ) &&
+            ( ( OldestDate == 0.0 ) || ( pStudyDesc[s]. LastRecordedDate < OldestDate ) ) ) {
+            OldestDate = pStudyDesc[s]. LastRecordedDate ;
+            oldestStudy = s ;
+        }
     }
 
 #ifdef DEBUG
@@ -2688,13 +2680,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
 
 #ifdef DEBUG
     {
-    int i ;
-    DCMQRDB_DEBUG("deleteOldestImages : Sorted images ref array");
-    for (i = 0 ; i < nbimages ; i++)
-        DCMQRDB_DEBUG("[" << STD_NAMESPACE setw(2) << i << "] :   Size " << StudyArray[i].ImageSize
+        int i ;
+        DCMQRDB_DEBUG("deleteOldestImages : Sorted images ref array");
+        for (i = 0 ; i < nbimages ; i++)
+            DCMQRDB_DEBUG("[" << STD_NAMESPACE setw(2) << i << "] :   Size " << StudyArray[i].ImageSize
                 << "   Date " << STD_NAMESPACE setw(20) << STD_NAMESPACE setprecision(3) << StudyArray[i].RecordedDate
                 << "   Ref " << StudyArray[i].idxCounter);
-    DCMQRDB_DEBUG("deleteOldestImages : end of ref array");
+        DCMQRDB_DEBUG("deleteOldestImages : end of ref array");
     }
 #endif
 
@@ -2778,15 +2770,14 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
          > handle_ -> maxBytesPerStudy ) {
         if ( imageSize > handle_ -> maxBytesPerStudy ) {
 #ifdef DEBUG
-        DCMQRDB_DEBUG("checkupinStudyDesc: imageSize = " << imageSize << " too large");
+            DCMQRDB_DEBUG("checkupinStudyDesc: imageSize = " << imageSize << " too large");
 #endif
-        return ( DcmQRIndexDatabaseError ) ;
+            return ( DcmQRIndexDatabaseError ) ;
         }
 
         RequiredSize = imageSize -
-        ( handle_ -> maxBytesPerStudy - pStudyDesc[s]. StudySize ) ;
-        deleteOldestImages(pStudyDesc, s,
-                  StudyUID, RequiredSize) ;
+            ( handle_ -> maxBytesPerStudy - pStudyDesc[s]. StudySize ) ;
+        deleteOldestImages(pStudyDesc, s, StudyUID, RequiredSize) ;
     }
 
 
@@ -2818,11 +2809,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
     strcpy(pStudyDesc[s].StudyInstanceUID,StudyUID) ;
 
     if ( DB_StudyDescChange (pStudyDesc) == EC_Normal)
-    return ( EC_Normal ) ;
+        return ( EC_Normal ) ;
     else
-    return ( DcmQRIndexDatabaseError ) ;
-
-
+        return ( DcmQRIndexDatabaseError ) ;
 }
 
 /*
@@ -2835,7 +2824,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(
 {
 
     int idx = 0;
-    IdxRecord       idxRec ;
+    IdxRecord idxRec ;
     int studyIdx = 0;
 
     studyIdx = matchStudyUIDInStudyDesc (pStudyDesc, (char*)StudyInstanceUID,
@@ -2859,7 +2848,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(
          * being entered into the database.
          */
         if (strcmp(idxRec.filename, newImageFileName) != 0) {
-        deleteImageFile(idxRec.filename);
+            deleteImageFile(idxRec.filename);
         }
         /* update the study info */
         pStudyDesc[studyIdx].NumberofRegistratedImages--;
@@ -2887,7 +2876,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     StudyDescRecord     *pStudyDesc ;
     int                 i ;
     struct stat         buf ;
-
 
     /**** Initialize an IdxRecord
     ***/
@@ -3013,11 +3001,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
 #ifdef DEBUG
     DCMQRDB_DEBUG("-- BEGIN Parameters to Register in DB");
     for (i = 0 ; i < NBPARAMETERS ; i++) {  /* new definition */
-    DB_SmallDcmElmt *se = idxRec.param + i;
-    const char* value = "";
-    if (se->PValueField != NULL) value = se->PValueField;
-    DcmTag tag(se->XTag);
-    DCMQRDB_DEBUG(" " << tag.getTagName() << ": \"" << value << "\"");
+        DB_SmallDcmElmt *se = idxRec.param + i;
+        const char* value = "";
+        if (se->PValueField != NULL) value = se->PValueField;
+        DcmTag tag(se->XTag);
+        DCMQRDB_DEBUG(" " << tag.getTagName() << ": \"" << value << "\"");
     }
     DCMQRDB_DEBUG("-- END Parameters to Register in DB");
 #endif
@@ -3055,26 +3043,26 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
 
 
     if ( checkupinStudyDesc(pStudyDesc, idxRec. StudyInstanceUID, idxRec. ImageSize) != EC_Normal ) {
-    free (pStudyDesc) ;
-    status->setStatus(STATUS_STORE_Refused_OutOfResources);
+        free (pStudyDesc) ;
+        status->setStatus(STATUS_STORE_Refused_OutOfResources);
 
-    DB_unlock();
+        DB_unlock();
 
-    return (DcmQRIndexDatabaseError) ;
+        return (DcmQRIndexDatabaseError) ;
     }
 
     free (pStudyDesc) ;
 
     if (DB_IdxAdd (handle_, &i, &idxRec) == EC_Normal)
     {
-    status->setStatus(STATUS_Success);
-    DB_unlock();
-    return (EC_Normal) ;
+        status->setStatus(STATUS_Success);
+        DB_unlock();
+        return (EC_Normal) ;
     }
     else
     {
-    status->setStatus(STATUS_STORE_Refused_OutOfResources);
-    DB_unlock();
+        status->setStatus(STATUS_STORE_Refused_OutOfResources);
+        DB_unlock();
     }
     return DcmQRIndexDatabaseError;
 }
@@ -3201,7 +3189,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
             DcmTag tag(se->XTag);
             COUT << "    " << tag.getTagName() << ": \"" << value << "\"" << OFendl;
         }
-            COUT << "  InstanceDescription: \"" << idxRec.InstanceDescription << "\"" << OFendl;
+        COUT << "  InstanceDescription: \"" << idxRec.InstanceDescription << "\"" << OFendl;
     }
     COUT << "*******************************************************" << OFendl
          << "RECORDS IN THIS INDEXFILE: " << j << OFendl;
@@ -3216,12 +3204,12 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
 
 const char *DcmQueryRetrieveIndexDatabaseHandle::getStorageArea() const
 {
-  return handle_->storageArea;
+    return handle_->storageArea;
 }
 
 const char *DcmQueryRetrieveIndexDatabaseHandle::getIndexFilename() const
 {
-  return handle_->indexFilename;
+    return handle_->indexFilename;
 }
 
 void DcmQueryRetrieveIndexDatabaseHandle::setIdentifierChecking(OFBool checkFind, OFBool checkMove)
@@ -3257,7 +3245,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
 
     if (maxStudiesPerStorageArea > DB_UpperMaxStudies) {
         DCMQRDB_WARN("maxStudiesPerStorageArea too large" << OFendl
-                  << "        setting to " << DB_UpperMaxStudies);
+            << "        setting to " << DB_UpperMaxStudies);
         maxStudiesPerStorageArea = DB_UpperMaxStudies;
     }
     if (maxStudiesPerStorageArea < 0) {
@@ -3434,6 +3422,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.18  2009-12-02 16:27:05  joergr
+ * Sightly modified source code formatting.
+ *
  * Revision 1.17  2009-11-24 10:10:42  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
