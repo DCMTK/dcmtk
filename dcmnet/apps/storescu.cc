@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-01 10:16:07 $
- *  CVS/RCS Revision: $Revision: 1.85 $
+ *  Update Date:      $Date: 2009-12-02 16:13:23 $
+ *  CVS/RCS Revision: $Revision: 1.86 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1548,7 +1548,8 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   req.Priority = DIMSE_PRIORITY_LOW;
 
   /* if required, dump some more general information */
-  OFLOG_INFO(storescuLogger, "Sending Store Request: MsgID " << msgId << ", (" << dcmSOPClassUIDToModality(sopClass) << ")");
+  OFLOG_INFO(storescuLogger, "Sending Store Request: MsgID " << msgId << ", ("
+    << dcmSOPClassUIDToModality(sopClass, "OT") << ")");
 
   /* finally conduct transmission of data */
   cond = DIMSE_storeUser(assoc, presID, &req,
@@ -1741,6 +1742,10 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.86  2009-12-02 16:13:23  joergr
+** Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
+** the log stream in order to avoid an application crash.
+**
 ** Revision 1.85  2009-12-01 10:16:07  joergr
 ** Sightly modified log messages.
 **

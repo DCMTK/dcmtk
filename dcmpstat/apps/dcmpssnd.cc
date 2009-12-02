@@ -22,8 +22,8 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-27 10:50:32 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2009-12-02 16:15:10 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,16 +50,16 @@ END_EXTERN_C
 
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants */
 #include "dcmtk/dcmpstat/dvpscf.h"      /* for class DVConfiguration */
-#include "dcmtk/ofstd/ofbmanip.h"    /* for OFBitmanipTemplate */
-#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/ofstd/ofbmanip.h"       /* for OFBitmanipTemplate */
+#include "dcmtk/dcmdata/dcuid.h"        /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmpstat/dvpshlp.h"     /* for class DVPSHelper */
-#include "dcmtk/dcmqrdb/dcmqrdbi.h"    /* for LOCK_IMAGE_FILES */
-#include "dcmtk/dcmqrdb/dcmqrdbs.h"    /* for DcmQueryRetrieveDatabaseStatus */
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"     /* for LOCK_IMAGE_FILES */
+#include "dcmtk/dcmqrdb/dcmqrdbs.h"     /* for DcmQueryRetrieveDatabaseStatus */
 #include "dcmtk/dcmpstat/dvpsmsg.h"
 
 #ifdef WITH_OPENSSL
@@ -120,7 +120,8 @@ static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, con
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0)
     {
-      OFLOG_INFO(dcmpssndLogger, "no presentation context for: (" << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass);
+      OFLOG_INFO(dcmpssndLogger, "no presentation context for: ("
+        << dcmSOPClassUIDToModality(sopClass, "OT") << ") " << sopClass);
       if (messageClient)
       {
         OFString buf("unable to send image: no presentation context for ");
@@ -424,7 +425,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dcmpssndLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(dcmpssndLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     DVConfiguration dvi(opt_cfgName);
@@ -565,7 +567,7 @@ int main(int argc, char *argv[])
     else if (targetMaxPDU > ASC_MAXIMUMPDUSIZE)
     {
         OFLOG_WARN(dcmpssndLogger, "max PDU size " << targetMaxPDU << " too big for send target '"
-             << opt_target << "', using default: " << DEFAULT_MAXPDU);
+            << opt_target << "', using default: " << DEFAULT_MAXPDU);
         targetMaxPDU = DEFAULT_MAXPDU;
     }
 
@@ -578,15 +580,15 @@ int main(int argc, char *argv[])
     OFOStringStream verboseParameters;
 
     verboseParameters << "Send target parameters:" << OFendl
-         << "\thostname        : " << targetHostname << OFendl
-         << "\tport            : " << targetPort << OFendl
-         << "\tdescription     : ";
+        << "\thostname        : " << targetHostname << OFendl
+        << "\tport            : " << targetPort << OFendl
+        << "\tdescription     : ";
     if (targetDescription) verboseParameters << targetDescription; else verboseParameters << "(none)";
     verboseParameters << OFendl
-         << "\taetitle         : " << targetAETitle << OFendl
-         << "\tmax pdu         : " << targetMaxPDU << OFendl
-         << "\ttimeout         : " << timeout << OFendl
-         << "\toptions         : ";
+        << "\taetitle         : " << targetAETitle << OFendl
+        << "\tmax pdu         : " << targetMaxPDU << OFendl
+        << "\ttimeout         : " << timeout << OFendl
+        << "\toptions         : ";
     if (targetImplicitOnly && targetDisableNewVRs) verboseParameters << "implicit xfer syntax only, disable post-1993 VRs";
     else if (targetImplicitOnly) verboseParameters << "implicit xfer syntax only";
     else if (targetDisableNewVRs) verboseParameters << "disable post-1993 VRs";
@@ -990,6 +992,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
+ * Revision 1.46  2009-12-02 16:15:10  joergr
+ * Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
+ * the log stream in order to avoid an application crash.
+ *
  * Revision 1.45  2009-11-27 10:50:32  joergr
  * Replaced remaining tabs by spaces.
  *

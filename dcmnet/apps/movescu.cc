@@ -22,8 +22,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-01 10:16:06 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Update Date:      $Date: 2009-12-02 16:13:23 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1276,7 +1276,8 @@ static OFCondition storeSCP(
     }
 
     OFString temp_str;
-    OFLOG_INFO(movescuLogger, "Received Store Request: MsgID " << req->MessageID << ", (" << dcmSOPClassUIDToModality(req->AffectedSOPClassUID) << ")");
+    OFLOG_INFO(movescuLogger, "Received Store Request: MsgID " << req->MessageID << ", ("
+        << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
     OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
 
     StoreCallbackData callbackData;
@@ -1531,6 +1532,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.80  2009-12-02 16:13:23  joergr
+** Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
+** the log stream in order to avoid an application crash.
+**
 ** Revision 1.79  2009-12-01 10:16:06  joergr
 ** Sightly modified log messages.
 **

@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-01 10:16:07 $
- *  CVS/RCS Revision: $Revision: 1.119 $
+ *  Update Date:      $Date: 2009-12-02 16:13:23 $
+ *  CVS/RCS Revision: $Revision: 1.120 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2178,7 +2178,8 @@ static OFCondition storeSCP(
 
   // dump some information if required
   OFString str;
-  OFLOG_INFO(storescpLogger, "Received Store Request: MsgID " << req->MessageID << ", (" << dcmSOPClassUIDToModality(req->AffectedSOPClassUID) << ")");
+  OFLOG_INFO(storescpLogger, "Received Store Request: MsgID " << req->MessageID << ", ("
+    << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
   OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(str, *req, DIMSE_INCOMING, NULL, presID));
 
   // intialize some variables
@@ -2714,6 +2715,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.120  2009-12-02 16:13:23  joergr
+** Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
+** the log stream in order to avoid an application crash.
+**
 ** Revision 1.119  2009-12-01 10:16:07  joergr
 ** Sightly modified log messages.
 **
