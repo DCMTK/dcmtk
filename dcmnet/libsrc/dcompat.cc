@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: uli $
-** Update Date:		$Date: 2009-11-18 11:53:59 $
+** Update Date:		$Date: 2009-12-02 13:16:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.30 $
+** CVS/RCS Revision:	$Revision: 1.31 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -78,6 +78,7 @@
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/dcmnet/diutil.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -463,6 +464,9 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
+** Revision 1.31  2009-12-02 13:16:16  uli
+** Corrected build failures on windows.
+**
 ** Revision 1.30  2009-11-18 11:53:59  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **

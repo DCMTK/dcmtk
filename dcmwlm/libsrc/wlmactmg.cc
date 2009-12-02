@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:40:01 $
+ *  Update Date:      $Date: 2009-12-02 13:16:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -935,17 +935,13 @@ void WlmActivityManager::CleanChildren()
       }
       else
       {
-        DumpMessage("WlmActivityManager::CleanChildren : Wait for child failed.");
+        DCMWLM_WARN("WlmActivityManager::CleanChildren : Wait for child failed.");
       }
     }
     else if( child > 0 )
     {
       // dump some information if required
-      if( opt_verbose )
-      {
-        sprinf( msg, "Cleaned up after child (%d)\n", child );
-        DumpMessage( msg );
-      }
+      DCMWLM_INFO("Cleaned up after child (" << child << ")");
 
       // remove item from process table
       RemoveProcessFromTable( child );
@@ -954,7 +950,7 @@ void WlmActivityManager::CleanChildren()
 #else                                                         // OTHER PLATFORMS
 // for other platforms without waitpid() and without wait3() we
 // don't know how to cleanup after children. Dump an error message.
-  DumpMessage("WlmActivityManager::CleanChildren : cannot wait for child processes.\n");
+  DCMWLM_WARN("WlmActivityManager::CleanChildren : cannot wait for child processes.");
 #endif
 }
 
@@ -1142,6 +1138,9 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.27  2009-12-02 13:16:16  uli
+** Corrected build failures on windows.
+**
 ** Revision 1.26  2009-11-24 10:40:01  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **

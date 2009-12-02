@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.02 (schlachter)
+
+- Corrected build failures on windows.
+  Affects: dcmnet/libsrc/dcompat.cc
+           dcmwlm/libsrc/wlmactmg.cc
+
 **** Changes from 2009.12.01 (riesmeier)
 
 - Added new command line option --verbose-pc that allows for showing the
