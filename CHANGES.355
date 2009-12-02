@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2009.12.02 (schlachter)
 
+- Completely removed the old dcmdata debug mechanism.
+  Removed: dcmdata/include/dcmtk/dcmdata/dcdebug.h
+  Affects: dcmsign/apps/dcmsign.cc
+           dcmsign/apps/Makefile.dep
+
 - Corrected build failures on windows.
   Affects: dcmnet/libsrc/dcompat.cc
            dcmwlm/libsrc/wlmactmg.cc

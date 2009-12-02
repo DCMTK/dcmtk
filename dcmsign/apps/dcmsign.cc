@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-15 16:39:21 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-12-02 14:13:13 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,6 @@
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
-#include "dcmtk/oflog/oflog.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>                     /* for zlibVersion() */
@@ -75,7 +74,6 @@ static OFLogger dcmsignLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APP
 #include "dcmtk/dcmsign/siprivat.h"
 #include "dcmtk/dcmsign/sicert.h"
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 
 BEGIN_EXTERN_C
@@ -1176,6 +1174,9 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
+ *  Revision 1.35  2009-12-02 14:13:13  uli
+ *  Completely removed the old dcmdata debug mechanism.
+ *
  *  Revision 1.34  2009-09-15 16:39:21  joergr
  *  Removed redundant output of log message prefix "Error: " and "Warning: ".
  *  Fixed incorrect output of public key bits (expected string instead of int).
