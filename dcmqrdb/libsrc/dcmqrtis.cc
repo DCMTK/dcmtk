@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveOptions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:42 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-02 16:20:53 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,9 +190,9 @@ static void findCallback(
 
     OFString res;
     DCMQRDB_INFO("Find Response " << responseCount << ":" << OFendl
-            << DIMSE_dumpMessage(res, *response, DIMSE_INCOMING) << OFendl
-            << "Identifiers " << responseCount << ":" << OFendl
-            << DcmObject::PrintHelper(*responseIdentifiers));
+        << DIMSE_dumpMessage(res, *response, DIMSE_INCOMING) << OFendl
+        << "Identifiers " << responseCount << ":" << OFendl
+        << DcmObject::PrintHelper(*responseIdentifiers));
 
     /* call the callback function */
     cbd->cbf(cbd->cbs, responseIdentifiers);
@@ -207,7 +207,7 @@ static OFBool TI_welcome()
     printf("\n");
     printf("This program allows you to list the contents of the CTN databases, send\n");
     printf("images to peer Application Entities (AEs), and to verify connectivity with\n");
-    printf("peer AEs..\n");
+    printf("peer AEs.\n");
     printf("The databases can only be viewed using a Study/Series/Image\n");
     printf("information model.\n");
     printf("\n");
@@ -242,7 +242,7 @@ static OFBool TI_detachDB(TI_DBEntry *db)
 static void printStudyEntry(TI_StudyEntry *study)
 {
     printf(STUDYFORMAT, study->patientsName, study->patientID,
-      study->studyID);
+        study->studyID);
 }
 
 #define SERIESFORMAT "%-6s %-8s %-s\n"
@@ -535,10 +535,10 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_detachAssociation(OFBool abortFlag)
 
     if (abortFlag) {
         printf("Aborted Association (%s,%s)\n",
-              presentationAddress, peerTitle);
+            presentationAddress, peerTitle);
     } else {
         printf("Released Association (%s,%s)\n",
-              presentationAddress, peerTitle);
+            presentationAddress, peerTitle);
     }
 
     return OFTrue;
@@ -653,7 +653,6 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
     if (cond.bad()) {
         DCMQRDB_ERROR("Help, cannot add presentation contexts:\n" << DimseCondition::dump(temp_str, cond));
         ASC_destroyAssociationParameters(&params);
-
         return OFFalse;
     }
     DCMQRDB_DEBUG("Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
@@ -685,7 +684,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
 
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
         DCMQRDB_ERROR("All Presentation Contexts Refused: Peer (" << presentationAddress << ","
-                << currentPeerTitle << ")");
+            << currentPeerTitle << ")");
         ASC_abortAssociation(assoc);
         ASC_dropAssociation(assoc);
         ASC_destroyAssociation(&assoc);
@@ -694,7 +693,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
     }
 
     DCMQRDB_INFO("Association Accepted (Max Send PDV: "
-          << assoc->sendPDVLength << ")");
+        << assoc->sendPDVLength << ")");
 
     printf("New Association Started (%s,%s)\n", presentationAddress,
         currentPeerTitle);
@@ -777,7 +776,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_storeImage(char *sopClass, char *sopI
 
     if (strlen(sopClass) == 0) {
         DCMQRDB_WARN("CTN has deleted image, giving up (no sopClass): "
-                << ((imgFile)?(imgFile):("(nil)")));
+            << ((imgFile)?(imgFile):("(nil)")));
         /* give up because if this image is gone, then others are also
          * very likely to have disappeared.  The user should restart
          * the operation when other activities have finished.
@@ -809,7 +808,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_storeImage(char *sopClass, char *sopI
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) {
         DCMQRDB_ERROR("No presentation context for: ("
-            << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass);
+            << dcmSOPClassUIDToModality(sopClass, "OT") << ") " << sopClass);
         return OFFalse;
     }
 
@@ -873,7 +872,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_remoteFindQuery(TI_DBEntry *db, DcmDa
 {
     OFBool ok = OFTrue;
     TI_LocalFindCallbackData cbd;
-    OFCondition           cond = EC_Normal;
+    OFCondition   cond = EC_Normal;
     T_ASC_PresentationContextID presId;
     DIC_US        msgId;
     T_DIMSE_C_FindRQ  req;
@@ -897,7 +896,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_remoteFindQuery(TI_DBEntry *db, DcmDa
         return OFFalse;
     }
 
-    msgId =  assoc->nextMsgID++;
+    msgId = assoc->nextMsgID++;
 
     DCMQRDB_INFO("Sending Find SCU RQ: MsgID " << msgId << ":\n" << DcmObject::PrintHelper(*query));
 
@@ -1084,7 +1083,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_database(int arg, const char * /*cmdb
 
             if (!TI_attachDB(dbEntries[currentdb]))
             {
-                DCMQRDB_FATAL("unable to open database, bailing out.\n");
+                DCMQRDB_FATAL("unable to open database, bailing out.");
                 exit(10);
             }
         }
@@ -1645,13 +1644,12 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendImage(int arg, const char * /*cmd
      */
     while (ok && dbStatus.status() == STATUS_Pending) {
         dbcond = db->dbHandle->nextMoveResponse(sopClass, sopInstance,
-      imgFile, &nRemaining, &dbStatus);
+            imgFile, &nRemaining, &dbStatus);
         if (dbcond.bad()) {
             DCMQRDB_ERROR("TI_sendImage: database error");
             return OFFalse;
         }
         if (dbStatus.status() == STATUS_Pending) {
-
             ok = TI_storeImage(sopClass, sopInstance, imgFile);
             if (!ok) {
                 db->dbHandle->cancelMoveRequest(&dbStatus);
@@ -1724,16 +1722,16 @@ void DcmQueryRetrieveTelnetInitiator::TI_userInput()
         }
 
         /* find command parser */
-        if      (strncmp("h",  cmdBuf, strlen("h"))  == 0) TI_help(arg, cmdBuf);
-        else if (strncmp("?",  cmdBuf, strlen("?"))  == 0) TI_shortHelp(arg, cmdBuf);
-        else if (strncmp("t",  cmdBuf, strlen("t"))  == 0) TI_title(arg, cmdBuf);
-        else if (strncmp("da", cmdBuf, strlen("da")) == 0) TI_database(arg, cmdBuf);
-        else if (strncmp("st", cmdBuf, strlen("st")) == 0) TI_study(arg, cmdBuf);
-        else if (strncmp("ser",cmdBuf, strlen("ser"))== 0) TI_series(arg, cmdBuf);
-        else if (strncmp("i",  cmdBuf, strlen("i"))  == 0) TI_image(arg, cmdBuf);
+        if      (strncmp("h",    cmdBuf, strlen("h"))  == 0)   TI_help(arg, cmdBuf);
+        else if (strncmp("?",    cmdBuf, strlen("?"))  == 0)   TI_shortHelp(arg, cmdBuf);
+        else if (strncmp("t",    cmdBuf, strlen("t"))  == 0)   TI_title(arg, cmdBuf);
+        else if (strncmp("da",   cmdBuf, strlen("da")) == 0)   TI_database(arg, cmdBuf);
+        else if (strncmp("st",   cmdBuf, strlen("st")) == 0)   TI_study(arg, cmdBuf);
+        else if (strncmp("ser",  cmdBuf, strlen("ser"))== 0)   TI_series(arg, cmdBuf);
+        else if (strncmp("i",    cmdBuf, strlen("i"))  == 0)   TI_image(arg, cmdBuf);
         else if (strncmp("send", cmdBuf, strlen("send")) == 0) TI_send(arg, cmdBuf);
-        else if (strncmp("ec", cmdBuf, strlen("ec")) == 0) TI_echo(arg, cmdBuf);
-        else if (strncmp("q",  cmdBuf, strlen("q"))  == 0) TI_quit(arg, cmdBuf);
+        else if (strncmp("ec",   cmdBuf, strlen("ec")) == 0)   TI_echo(arg, cmdBuf);
+        else if (strncmp("q",    cmdBuf, strlen("q"))  == 0)   TI_quit(arg, cmdBuf);
         else if (strncmp("exit", cmdBuf, strlen("exit")) == 0) TI_quit(arg, cmdBuf);
         else {
             printf("What do you want to do? Type help for help\n");
@@ -2013,7 +2011,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildImages(TI_DBEntry *db, TI_StudyE
     if (series->imageCount > 0) {
         /* sort the images into assending image number order */
         qsort(series->images, series->imageCount, sizeof(series->images[0]),
-              TI_imageCompare);
+            TI_imageCompare);
     }
 
     return OFTrue;
@@ -2210,6 +2208,10 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
+ * Revision 1.13  2009-12-02 16:20:53  joergr
+ * Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
+ * the log stream in order to avoid an application crash.
+ *
  * Revision 1.12  2009-11-24 10:10:42  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
