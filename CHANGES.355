@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.04 (riesmeier)
+
+- Updated copyright date as well as the name of the OFFIS institute and
+  department.
+  Affects: COPYRIGHT
+
 **** Changes from 2009.12.02 (riesmeier)
 
 - Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
