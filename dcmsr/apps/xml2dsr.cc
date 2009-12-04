@@ -23,8 +23,8 @@
  *            reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:51:56 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2009-12-04 16:27:04 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -309,11 +309,12 @@ int main(int argc, char *argv[])
         if (dsrdoc != NULL)
         {
             DcmFileFormat fileformat;
-            OFLOG_INFO(xml2dsrLogger, "reading "
 #ifdef LIBXML_SCHEMAS_ENABLED
-                << ((opt_readFlags & DSRTypes::XF_validateSchema) ? "and validating " : "")
+			if (opt_readFlags & DSRTypes::XF_validateSchema)
+				OFLOG_INFO(xml2dsrLogger, "reading and validating XML input file: " << opt_ifname);
+			else
 #endif
-                << "XML input file: " << opt_ifname);
+				OFLOG_INFO(xml2dsrLogger, "reading XML input file: " << opt_ifname);
             /* read XML file and feed data into DICOM fileformat */
             result = dsrdoc->readXML(opt_ifname, opt_readFlags);
             if (result.good())
@@ -379,6 +380,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
+ * Revision 1.15  2009-12-04 16:27:04  joergr
+ * Restructured log output in order to avoid compiler errors with VisualStudio.
+ *
  * Revision 1.14  2009-10-14 10:51:56  joergr
  * Fixed minor issues in log output. Also updated copyright date (if required).
  *
