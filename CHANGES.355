@@ -7,6 +7,25 @@ Changes between releases are documented here.
   department.
   Affects: COPYRIGHT
 
+- Restructured log output in order to avoid compiler errors with VisualStudio.
+  Affects: dcmsr/apps/xml2dsr.cc
+
+- Moved some log messages from debug to trace level.
+  Affects: dcmdata/libsrc/dcsequen.cc
+
+- Slightly modified some log messages.
+  Affects: dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcostrmb.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcvr.cc
+           dcmdata/libsrc/dcvrobow.cc
+
 **** Changes from 2009.12.02 (riesmeier)
 
 - Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
