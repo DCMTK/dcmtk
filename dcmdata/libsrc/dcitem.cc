@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:11:20 $
- *  CVS/RCS Revision: $Revision: 1.141 $
+ *  Update Date:      $Date: 2009-12-04 16:54:54 $
+ *  CVS/RCS Revision: $Revision: 1.142 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -296,7 +296,8 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
         }
     }
     /* dump information on a certain debug level */
-    DCMDATA_DEBUG("DcmItem::checkTransferSyntax() found transfer syntax [" << DcmXfer(transferSyntax).getXferName() << "]");
+    DCMDATA_DEBUG("DcmItem::checkTransferSyntax() Found transfer syntax ["
+        << DcmXfer(transferSyntax).getXferName() << "]");
 
     /* return determined transfer syntax */
     return transferSyntax;
@@ -478,14 +479,15 @@ Uint32 DcmItem::getLength(const E_TransferSyntax xfer,
              */
             if ( (enctype == EET_ExplicitLength) && OFStandard::check32BitAddOverflow(sublen, itemlen) )
             {
-                DCMDATA_WARN("DcmItem: Explicit length of item exceeds 32-Bit length field");
                 if (dcmWriteOversizedSeqsAndItemsUndefined.get())
                 {
-                    DCMDATA_WARN("trying to encode with undefined length");
+                    DCMDATA_WARN("DcmItem: Explicit length of item exceeds 32-Bit length field, "
+                        << "trying to encode with undefined length");
                 }
                 else
                 {
-                    DCMDATA_WARN("aborting write");
+                    DCMDATA_WARN("DcmItem: Explicit length of item exceeds 32-Bit length field, "
+                        << "aborting write");
                     errorFlag = EC_SeqOrItemContentOverflow;
                 }
                 return DCM_UndefinedLength;
@@ -797,7 +799,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     DcmXfer xferSyn(xfer);
 
     /* dump some information if required */
-    DCMDATA_TRACE("DcmItem::readTagAndLength() read transfer syntax " << xferSyn.getXferName());
+    DCMDATA_TRACE("DcmItem::readTagAndLength() Read transfer syntax " << xferSyn.getXferName());
 
     /* bail out if at end of stream */
     if (inStream.eos())
@@ -844,26 +846,29 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         /* if the VR which was read is not a standard VR, print a warning */
         if (!vr.isStandard())
         {
-            DCMDATA_WARN("DcmItem: Non-standard VR '"
+            OFOStringStream oss;
+            oss << "DcmItem: Non-standard VR '"
                 << ((OFstatic_cast(unsigned char, vrstr[0]) < 32) ? ' ' : vrstr[0])
                 << ((OFstatic_cast(unsigned char, vrstr[1]) < 32) ? ' ' : vrstr[1]) << "' ("
                 << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                 << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[0] & 0xff) << "\\"
                 << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[1] & 0xff)
-                << ") encountered while parsing element " << newTag.getXTag());
+                << ") encountered while parsing element " << newTag.getXTag() << OFStringStream_ends;
+            OFSTRINGSTREAM_GETSTR(oss, tmpString)
             /* encoding of this data element might be wrong, try to correct it */
             if (dcmAcceptUnexpectedImplicitEncoding.get())
             {
-                DCMDATA_WARN("trying again with Implicit VR Little Endian");
+                DCMDATA_WARN(tmpString << ", trying again with Implicit VR Little Endian");
                 /* put back read bytes to input stream ... */
                 inStream.putback();
                 bytesRead = 0;
                 /* ... and retry with Implicit VR Little Endian transfer syntax */
                 return readTagAndLength(inStream, EXS_LittleEndianImplicit, tag, length, bytesRead);
             } else {
-                DCMDATA_WARN("assuming " << (vr.usesExtendedLengthEncoding() ? "4" : "2")
+                DCMDATA_WARN(tmpString << ", assuming " << (vr.usesExtendedLengthEncoding() ? "4" : "2")
                     << " byte length field");
             }
+            OFSTRINGSTREAM_FREESTR(tmpString)
         }
 
         /* set the VR which was read in the above created tag object. */
@@ -1390,7 +1395,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                   }
                 }
                 /* dump some information if required */
-                DCMDATA_TRACE("DcmItem::Insert() element ("
+                DCMDATA_TRACE("DcmItem::insert() Element ("
                     << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                     << STD_NAMESPACE setw(4) << elem->getGTag() << ","
                     << STD_NAMESPACE setw(4) << elem->getETag() << ") / VR=\""
@@ -1414,7 +1419,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                   }
                 }
                 /* dump some information if required */
-                DCMDATA_TRACE("DcmItem::Insert() element ("
+                DCMDATA_TRACE("DcmItem::insert() Element ("
                     << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                     << STD_NAMESPACE setw(4) << elem->getGTag() << ","
                     << STD_NAMESPACE setw(4) << elem->getETag() << ") / VR=\""
@@ -1438,7 +1443,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                         /* points to the element after the former current element. */
 
                         /* dump some information if required */
-                        DCMDATA_TRACE("DcmItem::insert:element ("
+                        DCMDATA_TRACE("DcmItem::insert() Element ("
                             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                             << STD_NAMESPACE setw(4) << remObj->getGTag() << ","
                             << STD_NAMESPACE setw(4) << remObj->getETag()
@@ -1451,12 +1456,12 @@ OFCondition DcmItem::insert(DcmElement *elem,
                         if (remObj != NULL)
                         {
                             delete remObj;
-                            DCMDATA_TRACE("DcmItem::insert:element p=" << OFstatic_cast(void *, remObj) << " deleted");
+                            DCMDATA_TRACE("DcmItem::insert() Element p=" << OFstatic_cast(void *, remObj) << " deleted");
                         }
                         /* insert the new element before the current element */
                         elementList->insert(elem, ELP_prev);
                         /* dump some information if required */
-                        DCMDATA_TRACE("DcmItem::insert() element ("
+                        DCMDATA_TRACE("DcmItem::insert() Element ("
                             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                             << STD_NAMESPACE setw(4) << elem->getGTag() << ","
                             << STD_NAMESPACE setw(4) << elem->getETag()
@@ -3648,6 +3653,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.142  2009-12-04 16:54:54  joergr
+** Sightly modified some log messages.
+**
 ** Revision 1.141  2009-11-13 13:11:20  joergr
 ** Fixed minor issues in log output.
 **

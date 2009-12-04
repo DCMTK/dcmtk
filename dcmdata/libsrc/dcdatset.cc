@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:11:20 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2009-12-04 16:55:33 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -263,8 +263,8 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
                     case EXS_BigEndianExplicit:
                     case EXS_BigEndianImplicit:
                         Xfer = checkTransferSyntax(inStream);
-                        if( xfer != EXS_Unknown && Xfer != xfer )
-                            DCMDATA_WARN("dcdatset: wrong transfer syntax specified, detecting from dataset");
+                        if ((xfer != EXS_Unknown) && (Xfer != xfer))
+                            DCMDATA_WARN("DcmDataset: Wrong transfer syntax specified, detecting from dataset");
                         break;
                     default:
                         Xfer = xfer;
@@ -321,7 +321,7 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
     }
 
     /* dump information if required */
-    DCMDATA_TRACE("DcmDataset::read: At End: errorFlag = " << errorFlag.text());
+    DCMDATA_TRACE("DcmDataset::read() returns error = " << errorFlag.text());
 
     /* return result flag */
     return errorFlag;
@@ -641,6 +641,9 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
+** Revision 1.48  2009-12-04 16:55:33  joergr
+** Sightly modified some log messages.
+**
 ** Revision 1.47  2009-11-13 13:11:20  joergr
 ** Fixed minor issues in log output.
 **
