@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:11:20 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Update Date:      $Date: 2009-12-04 17:10:31 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -964,7 +964,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
     {
         if (refFile == NULL)
         {
-            DCMDATA_ERROR("internal Error in DcmDirectoryRecord::fillElementsAndReadSOP()");
+            DCMDATA_ERROR("Internal ERROR in DcmDirectoryRecord::fillElementsAndReadSOP()");
         }
         uiP = new DcmUniqueIdentifier(refSOPClassTag);    // (0004,1510)
         if (refFile->search(DCM_SOPClassUID, stack).good())
@@ -1520,6 +1520,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.69  2009-12-04 17:10:31  joergr
+ * Slightly modified some log messages.
+ *
  * Revision 1.68  2009-11-13 13:11:20  joergr
  * Fixed minor issues in log output.
  *

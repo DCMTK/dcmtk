@@ -22,8 +22,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:11:20 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2009-12-04 17:14:34 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -234,7 +234,7 @@ DcmDataset& DcmDicomDir::getDataset()
     if ( localDataset == NULL )
     {
         errorFlag = EC_CorruptedData;
-        DCMDATA_ERROR("DcmDicomDir::getDataset(): missing Dataset in DICOMDIR File. Must create new DICOMDIR file.");
+        DCMDATA_ERROR("DcmDicomDir::getDataset() Missing Dataset in DICOMDIR File. Must create new DICOMDIR file.");
         if ( DirFile != NULL )
             delete DirFile;
         DirFile = new DcmFileFormat();
@@ -262,7 +262,7 @@ DcmSequenceOfItems& DcmDicomDir::getDirRecSeq( DcmDataset &dset )
         errorFlag = EC_CorruptedData;
         if ( !mustCreateNewDir )
         {
-            DCMDATA_WARN("DcmDicomDir::getDirRecSeq(): missing Directory Record Sequence. Must create new one.");
+            DCMDATA_WARN("DcmDicomDir::getDirRecSeq() Missing Directory Record Sequence. Must create new one.");
         }
         DcmTag dirSeqTag( DCM_DirectoryRecordSequence );    // (0004,1220)
         localDirRecSeq = new DcmSequenceOfItems( dirSeqTag );
@@ -446,7 +446,7 @@ OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
         }
         else
         {
-            DCMDATA_ERROR("DcmDicomDir::moveRecordToTree() cannot insert DirRecord (=NULL?)");
+            DCMDATA_ERROR("DcmDicomDir::moveRecordToTree() Cannot insert DirRecord (=NULL?)");
         }
         moveRecordToTree( lowerRec, fromDirSQ, startRec );
         moveRecordToTree( nextRec, fromDirSQ, toRecord );
@@ -534,7 +534,7 @@ Uint32 DcmDicomDir::lengthUntilSQ(DcmDataset &dset,
         if ( sublength==DCM_UndefinedLength )
         {
             DcmVR subvr( dO->getVR() );
-            DCMDATA_WARN("DcmDicomDir::lengthUntilSQ() subelem \"" << subvr.getVRName() << "\" has undefined Length");
+            DCMDATA_WARN("DcmDicomDir::lengthUntilSQ() Sub element \"" << subvr.getVRName() << "\" has undefined Length");
         }
 
         if ( dO->getVR() == EVR_SQ  && enctype == EET_UndefinedLength )
@@ -658,7 +658,7 @@ OFCondition DcmDicomDir::copyRecordPtrToSQ( DcmDirectoryRecord *record,
         unsigned long lastIndex = record->cardSub();
         for (unsigned long i = lastIndex; i > 0; i-- )
         {
-            DCMDATA_DEBUG("DcmDicomDir::copyRecordPtrToSQ() testing sub record no " << i << " of " << lastIndex);
+            DCMDATA_DEBUG("DcmDicomDir::copyRecordPtrToSQ() Testing sub record no. " << i << " of " << lastIndex);
 
             DcmDirectoryRecord *subRecord = record->getSub( i-1 );
 
@@ -736,7 +736,7 @@ OFCondition DcmDicomDir::convertTreeToLinear(Uint32 beginOfDataSet,
     unsigned long numUnresItems = localDirRecSeq.card();
     for (unsigned long i = numUnresItems; i > 0; i-- )
     {
-        DCMDATA_DEBUG("DcmDicomDir::convertTreeToLinear() copy pointer of unresolved Record no "
+        DCMDATA_DEBUG("DcmDicomDir::convertTreeToLinear() Copy pointer of unresolved Record no. "
             << i << " of " << numUnresItems << " to unresRecsSeq:");
         unresRecs.insert( localDirRecSeq.getItem(i-1), 0 );
     }
@@ -759,7 +759,7 @@ OFCondition DcmDicomDir::convertTreeToLinear(Uint32 beginOfDataSet,
     unsigned long numMRDRItems = getMRDRSequence().card();
     for (unsigned long j = numMRDRItems; j > 0; j-- )
     {
-        DCMDATA_DEBUG("DcmDicomDir::convertTreeToLinear() copy pointer of MRDR no " << j << " of "
+        DCMDATA_DEBUG("DcmDicomDir::convertTreeToLinear() Copy pointer of MRDR no. " << j << " of "
             << numUnresItems << " to localDirRecSeq:");
         localDirRecSeq.insert( getMRDRSequence().getItem(j-1), 0 );
     }
@@ -771,7 +771,7 @@ OFCondition DcmDicomDir::convertTreeToLinear(Uint32 beginOfDataSet,
     if ( convertAllPointer( dset, beginOfDataSet, oxfer, enctype ) == EC_InvalidVR )
         if ( convertAllPointer( dset, beginOfDataSet, oxfer, enctype ) == EC_InvalidVR )
         {
-            DCMDATA_ERROR("dcdicdir: there are some Offsets incorrect in file " << dicomDirFileName);
+            DCMDATA_ERROR("DcmDicomDir: There are some incorrect Offsets in file " << dicomDirFileName);
             l_error = EC_CorruptedData;
         }
     return l_error;
@@ -980,7 +980,7 @@ DcmDirectoryRecord* DcmDicomDir::matchOrCreateMRDR( char *filename )
             {
                 delete newMRDR;
                 newMRDR = NULL;
-                DCMDATA_ERROR("Internal error, can't Create MRDR");
+                DCMDATA_ERROR("DcmDicomDir: Internal ERROR: Can't Create MRDR");
             }
             if (newMRDR != NULL)
             {
@@ -1008,7 +1008,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 {
     if ( oxfer != DICOMDIR_DEFAULT_TRANSFERSYNTAX )
     {
-        DCMDATA_ERROR("DcmDicomDir::write(): wrong TransferSyntax used, only LittleEndianExplicit allowed");
+        DCMDATA_ERROR("DcmDicomDir::write() Wrong TransferSyntax used, only LittleEndianExplicit allowed");
     }
     errorFlag = EC_Normal;
     E_TransferSyntax outxfer = DICOMDIR_DEFAULT_TRANSFERSYNTAX;
@@ -1031,7 +1031,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     int tempfilefd = mkstemp(tempfile);
     if (tempfilefd < 0)
     {
-        DCMDATA_ERROR("cannot create DICOMDIR temporary file: " << tempfile);
+        DCMDATA_ERROR("DcmDicomDir: Cannot create DICOMDIR temporary file: " << tempfile);
         delete[] tempfile;
         const char *text = strerror(errno);
         if (text == NULL) text = "(unknown error code)";
@@ -1042,7 +1042,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     FILE *f = fdopen(tempfilefd, "wb");
     if (f == NULL)
     {
-        DCMDATA_ERROR("cannot create DICOMDIR temporary file: " << tempfile);
+        DCMDATA_ERROR("DcmDicomDir: Cannot create DICOMDIR temporary file: " << tempfile);
         delete[] tempfile;
         const char *text = strerror(errno);
         if (text == NULL) text = "(unknown error code)";
@@ -1062,7 +1062,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     if (! outStream->good())
     {
-        DCMDATA_ERROR("cannot create DICOMDIR temporary file: " << tempfile);
+        DCMDATA_ERROR("DcmDicomDir: Cannot create DICOMDIR temporary file: " << tempfile);
         errorFlag = outStream->status();
         delete[] tempfile;
         delete outStream;
@@ -1310,7 +1310,7 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
         Uint32 refNum = refMRDR->lookForNumberOfReferences();   // friend
         if ( refCounter[k].fileOffset != refNum )
         {
-            DCMDATA_ERROR("DcmDicomDir::verify() Error: Refcounter of MRDR p=" << OFstatic_cast(void *, refMRDR)
+            DCMDATA_ERROR("DcmDicomDir::verify() Reference counter of MRDR p=" << OFstatic_cast(void *, refMRDR)
                 << " has incorrect value=" << refNum << " (must be " << refCounter[k].fileOffset << ")");
             if (refCounter[k].fileOffset==refMRDR->numberOfReferences)
                 DCMDATA_ERROR("but internal record class value numberOfReferences is correct");
@@ -1340,6 +1340,9 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.57  2009-12-04 17:14:34  joergr
+** Slightly modified some log messages.
+**
 ** Revision 1.56  2009-11-13 13:11:20  joergr
 ** Fixed minor issues in log output.
 **

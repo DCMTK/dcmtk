@@ -22,9 +22,9 @@
  *  Purpose: DcmOutputBufferStream and related classes,
  *    implements output to blocks of memory as needed in the dcmnet module.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-04 17:10:00 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ DcmOutputBufferStream::~DcmOutputBufferStream()
 #ifdef DEBUG
   if (! isFlushed())
   {
-    DCMDATA_WARN("closing unflushed DcmOutputBufferStream, loss of data!");
+    DCMDATA_WARN("DcmOutputBufferStream: Closing unflushed DcmOutputBufferStream, loss of data!");
   }
 #endif
 }
@@ -123,6 +123,9 @@ void DcmOutputBufferStream::flushBuffer(void *& buffer, offile_off_t& length)
 /*
  * CVS/RCS Log:
  * $Log: dcostrmb.cc,v $
+ * Revision 1.8  2009-12-04 17:10:00  joergr
+ * Slightly modified some log messages.
+ *
  * Revision 1.7  2009-11-04 09:58:10  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

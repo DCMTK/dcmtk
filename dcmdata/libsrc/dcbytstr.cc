@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:11:20 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2009-12-04 17:13:30 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -400,14 +400,14 @@ Uint8 *DcmByteString::newValueField()
     {
         if (lengthField == DCM_UndefinedLength)
         {
-              /* Print an error message when private attribute states to have an odd length
-               * equal to the maximum length, because we are not able then to make this value even (+1)
-               * which would an overflow on some systems as well as being illegal in DICOM
-               */
-                DCMDATA_WARN("DcmByteString: " << getTagName() << " " << getTag().getXTag()
-                    << " has odd, maximum length (" << DCM_UndefinedLength << ") and therefore is not loaded");
-                errorFlag = EC_CorruptedData;
-                return NULL;
+            /* Print an error message when private attribute states to have an odd length
+             * equal to the maximum length, because we are not able then to make this value even (+1)
+             * which would an overflow on some systems as well as being illegal in DICOM
+             */
+            DCMDATA_WARN("DcmByteString: " << getTagName() << " " << getTag().getXTag()
+                << " has odd, maximum length (" << DCM_UndefinedLength << ") and therefore is not loaded");
+            errorFlag = EC_CorruptedData;
+            return NULL;
         }
         /* allocate space for extra padding character (required for the DICOM representation of the string) */
 #ifdef HAVE_STD__NOTHROW
@@ -516,7 +516,7 @@ OFCondition DcmByteString::verify(const OFBool autocorrect)
     /* report a debug message if an error occurred */
     if (errorFlag.bad())
     {
-        DCMDATA_DEBUG("DcmByteString::verify: Illegal values in Tag ("
+        DCMDATA_DEBUG("DcmByteString::verify() Illegal values in Tag ("
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
             << STD_NAMESPACE setw(4) << getGTag() << ","
             << STD_NAMESPACE setw(4) << getETag() << ") VM=" << getVM());
@@ -730,6 +730,9 @@ OFCondition DcmByteString::checkValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.57  2009-12-04 17:13:30  joergr
+** Slightly modified some log messages.
+**
 ** Revision 1.56  2009-11-13 13:11:20  joergr
 ** Fixed minor issues in log output.
 **

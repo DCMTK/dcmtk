@@ -22,8 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:11:20 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2009-12-04 17:11:48 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -268,7 +268,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
             } else {
                 currVers[0] = OFstatic_cast(Uint8, currVers[0] | version[0]); // direct manipulation
                 currVers[1] = OFstatic_cast(Uint8, currVers[1] | version[1]); // of data
-                DCMDATA_WARN ("dcfilefo: unknown Version of MetaHeader detected: 0x"
+                DCMDATA_WARN ("DcmFileFormat: Unknown Version of MetaHeader detected: 0x"
                     << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                     << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
                     << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0])
@@ -382,7 +382,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 elem = new DcmApplicationEntity(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            DCMDATA_ERROR("dcfilefo: don't know how to handle SourceApplicationEntityTitle");
+            DCMDATA_ERROR("DcmFileFormat: Don't know how to handle SourceApplicationEntityTitle");
         }
         else if (xtag == DCM_PrivateInformationCreatorUID)  // (0002,0100)
         {
@@ -391,7 +391,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 elem = new DcmUniqueIdentifier(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            DCMDATA_ERROR("dcfilefo: don't know how to handle PrivateInformationCreatorUID");
+            DCMDATA_ERROR("DcmFileFormat: Don't know how to handle PrivateInformationCreatorUID");
         }
         else if (xtag == DCM_PrivateInformation)            // (0002,0102)
         {
@@ -400,9 +400,9 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 elem = new DcmOtherByteOtherWord(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            DCMDATA_WARN("dcfilefo: don't know how to handle PrivateInformation");
+            DCMDATA_WARN("DcmFileFormat: Don't know how to handle PrivateInformation");
         } else {
-            DCMDATA_WARN("dcfilefo: don't know how to handle " << tag.getTagName());
+            DCMDATA_WARN("DcmFileFormat: Don't know how to handle " << tag.getTagName());
         }
 
         /* if at this point elem still equals NULL, something is fishy */
@@ -481,13 +481,13 @@ OFCondition DcmFileFormat::validateMetaInfo(const E_TransferSyntax oxfer,
             checkValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer, writeMode);
 
             /* dump some information if required */
-            DCMDATA_DEBUG("DcmFileFormat: found " << metinf->card() << " Elements in DcmMetaInfo 'metinf'");
+            DCMDATA_DEBUG("DcmFileFormat: Found " << metinf->card() << " Elements in DcmMetaInfo 'metinf'");
 
             /* calculate new GroupLength for meta header */
             if (metinf->computeGroupLengthAndPadding(EGL_withGL, EPD_noChange,
                 META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_UndefinedLength).bad())
             {
-                DCMDATA_ERROR("DcmFileFormat::validateMetaInfo(): group length of Meta Information Header not adapted");
+                DCMDATA_ERROR("DcmFileFormat::validateMetaInfo() Group length of Meta Information Header not adapted");
             }
         }
     } else {
@@ -517,8 +517,8 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo *metainfo)
             xferUI->getString(xferid);
             DcmXfer localXfer(xferid);      // decode to E_TransferSyntax
             newxfer = localXfer.getXfer();
-            DCMDATA_TRACE("DcmFileFormat::lookForXfer() detected transfer syntax = " << newxfer << " ["
-                << localXfer.getXferName() << "] in MetaInfo");
+            DCMDATA_TRACE("DcmFileFormat::lookForXfer() Detected transfer syntax = "
+                << newxfer << " [" << localXfer.getXferName() << "] in MetaInfo");
         }
     }
     return newxfer;
@@ -720,7 +720,7 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
         /* in case the transfer syntax which shall be used is indeed the */
         /* BigEndianImplicit transfer syntax dump some error information */
         if (outxfer == EXS_BigEndianImplicit)
-            DCMDATA_ERROR("DcmFileFormat::write() illegal TransferSyntax (BigEndianImplicit) used");
+            DCMDATA_ERROR("DcmFileFormat::write() Illegal TransferSyntax (BigEndianImplicit) used");
     }
     /* return result value */
     return errorFlag;
@@ -814,7 +814,7 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
 OFCondition DcmFileFormat::insertItem(DcmItem * /*item*/,
                                       const unsigned long /*where*/)
 {
-    DCMDATA_WARN("illegal call of DcmFileFormat::insert(DcmItem*,Uin32)");
+    DCMDATA_WARN("Illegal call of DcmFileFormat::insert(DcmItem *, unsigned long)");
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
@@ -835,7 +835,7 @@ void DcmFileFormat::removeInvalidGroups()
 
 DcmItem *DcmFileFormat::remove(const unsigned long /*num*/)
 {
-    DCMDATA_WARN("illegal call of DcmFileFormat::remove(Uint32)");
+    DCMDATA_WARN("Illegal call of DcmFileFormat::remove(unsigned long)");
     errorFlag = EC_IllegalCall;
     return NULL;
 }
@@ -846,7 +846,7 @@ DcmItem *DcmFileFormat::remove(const unsigned long /*num*/)
 
 DcmItem *DcmFileFormat::remove(DcmItem* /*item*/)
 {
-    DCMDATA_WARN("illegal call of DcmFileFormat::remove(DcmItem*)");
+    DCMDATA_WARN("Illegal call of DcmFileFormat::remove(DcmItem *)");
     errorFlag = EC_IllegalCall;
     return NULL;
 }
@@ -914,6 +914,9 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.57  2009-12-04 17:11:48  joergr
+** Slightly modified some log messages.
+**
 ** Revision 1.56  2009-11-13 13:11:20  joergr
 ** Fixed minor issues in log output.
 **
