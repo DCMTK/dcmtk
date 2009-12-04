@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:11:21 $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  Update Date:      $Date: 2009-12-04 16:54:17 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -365,8 +365,8 @@ Uint32 DcmSequenceOfItems::getLength(const E_TransferSyntax xfer,
                     tmp = "Writing with explicit length will not be possible";
                     errorFlag = EC_SeqOrItemContentOverflow;
                 }
-                DCMDATA_WARN("DcmSequence: Explicit length of sequence " << getTagName() << " " << getTag()
-                    << " exceeds 32-Bit length field - " << tmp);
+                DCMDATA_WARN("DcmSequenceOfItems: Explicit length of sequence " << getTagName()
+                    << " " << getTag() << " exceeds 32-Bit length field - " << tmp);
                 return DCM_UndefinedLength;
             }
             seqlen += sublen;
@@ -482,7 +482,7 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmInputStream &inStream,
         tag = newTag; // return value: assignment-operator
     }
 
-    DCMDATA_TRACE("in Sequ.readTag errorFlag = " << l_error.text());
+    DCMDATA_TRACE("DcmSequenceOfItems::readTagAndLength() returns error = " << l_error.text());
     return l_error;
 }
 
@@ -511,7 +511,8 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmInputStream &inStream,
     else if (l_error == EC_InvalidTag)  // try to recover parsing
     {
         inStream.putback();
-        DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found " << newTag << " instead of item tag");
+        DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found "
+            << newTag << " instead of item tag");
         DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem(): parse error occurred: ("
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
             << STD_NAMESPACE setw(4) << newTag.getGTag() << ","
@@ -519,7 +520,8 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmInputStream &inStream,
     }
     else if (l_error != EC_SequEnd)
     {
-        DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found " << newTag << " instead of a sequence delimiter");
+        DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found "
+            << newTag << " instead of a sequence delimiter");
         DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem(): cannot create Sub Item ("
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
             << STD_NAMESPACE setw(4) << newTag.getGTag() << ","
@@ -875,10 +877,10 @@ OFCondition DcmSequenceOfItems::insert(DcmItem *item,
         itemList->insert(item, whichSide);
         if (where == DCM_EndOfListIndex)
         {
-            DCMDATA_DEBUG("DcmSequenceOfItems::insert() item inserted "
+            DCMDATA_TRACE("DcmSequenceOfItems::insert() Item inserted "
                 << (before ? "before" : "after") << " last position");
         } else {
-            DCMDATA_DEBUG("DcmSequenceOfItems::insert() item inserted "
+            DCMDATA_TRACE("DcmSequenceOfItems::insert() Item inserted "
                 << (before ? "before" : "after") << " position " << where);
         }
     } else
@@ -1313,6 +1315,10 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.87  2009-12-04 16:54:17  joergr
+** Moved some log messages from debug to trace level.
+** Sightly modified some log messages.
+**
 ** Revision 1.86  2009-11-13 13:11:21  joergr
 ** Fixed minor issues in log output.
 **
