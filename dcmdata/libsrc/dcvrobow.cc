@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-04 17:07:51 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,10 +226,10 @@ void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream&out,
                 }
                 fclose(file);
             } else {
-                DCMDATA_WARN("can't open output file for pixel data: " << fname);
+                DCMDATA_WARN("DcmOtherByteOtherWord: Can't open output file for pixel data: " << fname);
             }
         } else {
-            DCMDATA_WARN("output file for pixel data already exists: " << fname);
+            DCMDATA_WARN("DcmOtherByteOtherWord: Output file for pixel data already exists: " << fname);
         }
     } else
         DcmOtherByteOtherWord::print(out, flags, level, pixelFileName, pixelCounter);
@@ -731,6 +731,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.59  2009-12-04 17:07:51  joergr
+** Sightly modified some log messages.
+**
 ** Revision 1.58  2009-11-04 09:58:10  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

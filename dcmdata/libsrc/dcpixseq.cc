@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmPixelSequence
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-04 17:08:52 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -204,9 +204,9 @@ OFCondition DcmPixelSequence::insert(DcmPixelItem *item,
         itemList->seek_to(where);
         itemList->insert(item);
         if (where < itemList->card())
-            DCMDATA_DEBUG("DcmPixelSequence::insert() item at position " << where << " inserted");
+            DCMDATA_TRACE("DcmPixelSequence::insert() Item at position " << where << " inserted");
         if (where >= itemList->card())
-            DCMDATA_DEBUG("DcmPixelSequence::insert() item at last position inserted");
+            DCMDATA_TRACE("DcmPixelSequence::insert() Item at last position inserted");
     } else
         errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -393,6 +393,9 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
+** Revision 1.46  2009-12-04 17:08:52  joergr
+** Sightly modified some log messages.
+**
 ** Revision 1.45  2009-11-04 09:58:10  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

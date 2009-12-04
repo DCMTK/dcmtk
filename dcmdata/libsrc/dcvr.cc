@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-04 17:08:11 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,7 +163,7 @@ DcmVRDict_checker::DcmVRDict_checker()
             error_found = OFTrue;
             // we can't use ofConsole here because this piece of code
             // might be called before ofConsole is initialized.
-            DCMDATA_FATAL("DcmVRDict:: Internal ERROR: inconsistent indexing: " << DcmVRDict[i].vrName);
+            DCMDATA_FATAL("DcmVRDict: Internal ERROR: inconsistent indexing: " << DcmVRDict[i].vrName);
             abort();
         }
     }
@@ -370,6 +370,9 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
+ * Revision 1.36  2009-12-04 17:08:11  joergr
+ * Sightly modified some log messages.
+ *
  * Revision 1.35  2009-11-04 09:58:10  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *
