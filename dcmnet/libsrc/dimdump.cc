@@ -56,10 +56,10 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: uli $
-** Update Date:         $Date: 2009-11-18 11:53:59 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2009-12-08 16:44:25 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimdump.cc,v $
-** CVS/RCS Revision:    $Revision: 1.12 $
+** CVS/RCS Revision:    $Revision: 1.13 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -90,9 +90,9 @@
 static void DIMSE_dumpMessage_start(OFString &str, enum DIMSE_direction dir)
 {
     if (dir == DIMSE_INCOMING)
-        str = "===================== INCOMING DIMSE MESSAGE ====================\n";
+      str = "===================== INCOMING DIMSE MESSAGE ====================\n";
     else
-        str = "===================== OUTGOING DIMSE MESSAGE ====================\n";
+      str = "===================== OUTGOING DIMSE MESSAGE ====================\n";
 }
 
 static void DIMSE_dumpMessage_end(OFString &str, DcmItem *dataset = NULL)
@@ -176,25 +176,25 @@ static void DIMSE_printNStatusString(STD_NAMESPACE ostream& dumpStream, int stat
       dumpStream << "0x0211: Unrecognized operation";
       break;
     case STATUS_N_PRINT_BFS_Warn_MemoryAllocation:
-      dumpStream << "0xB600: Basic film session warning - memory allocation";
+      dumpStream << "0xB600: Basic film session warning - Memory allocation";
       break;
     case STATUS_N_PRINT_BFS_Warn_NoSessionPrinting:
-      dumpStream << "0xB601: Basic film session warning - no session printing";
+      dumpStream << "0xB601: Basic film session warning - No session printing";
       break;
     case STATUS_N_PRINT_BFS_Warn_EmptyPage:
-      dumpStream << "0xB602: Basic film session warning - empty page";
+      dumpStream << "0xB602: Basic film session warning - Empty page";
       break;
     case STATUS_N_PRINT_BFB_Warn_EmptyPage:
-      dumpStream << "0xB603: Basic film box warning - empty page";
+      dumpStream << "0xB603: Basic film box warning - Empty page";
       break;
     case STATUS_N_PRINT_BFS_Fail_NoFilmBox:
-      dumpStream << "0xC600: Basic film session failure - no film box";
+      dumpStream << "0xC600: Basic film session failure - No film box";
       break;
     case STATUS_N_PRINT_BFS_Fail_PrintQueueFull:
-      dumpStream << "0xC601: Basic film session failure - print queue full";
+      dumpStream << "0xC601: Basic film session failure - Print queue full";
       break;
     case STATUS_N_PRINT_BSB_Fail_PrintQueueFull:
-      dumpStream << "0xC602: Basic film box failure - print queue full";
+      dumpStream << "0xC602: Basic film box failure - Print queue full";
       break;
     case STATUS_N_PRINT_BFS_BFB_Fail_ImageSize:
       dumpStream << "0xC603: Basic film session/box failure - Image size";
@@ -246,7 +246,7 @@ static void DIMSE_printCStoreStatusString(STD_NAMESPACE ostream& dumpStream, int
   }
   else if (status == STATUS_STORE_Warning_ElementsDiscarded)
   {
-    dumpStream << ": Warning: elements discarded";
+    dumpStream << ": Warning: Elements discarded";
   }
   else if (DICOM_WARNING_STATUS(status))
   {
@@ -293,7 +293,7 @@ static void DIMSE_printCFindStatusString(STD_NAMESPACE ostream& dumpStream, int 
   }
   else if (status == STATUS_FIND_Pending_WarningUnsupportedOptionalKeys)
   {
-    dumpStream << ": Pending: Warning - unsupported optional keys";
+    dumpStream << ": Pending: Warning - Unsupported optional keys";
   }
   else if (DICOM_WARNING_STATUS(status))
   {
@@ -324,11 +324,11 @@ static void DIMSE_printCGetMoveStatusString(STD_NAMESPACE ostream& dumpStream, i
   }
   else if (status == STATUS_MOVE_Refused_OutOfResourcesNumberOfMatches)
   {
-    dumpStream << ": Error: Refused - out of resources - number of matches";
+    dumpStream << ": Error: Refused - Out of resources - Number of matches";
   }
   else if (status == STATUS_MOVE_Refused_OutOfResourcesSubOperations)
   {
-    dumpStream << ": Error: Refused - out of resources - suboperations";
+    dumpStream << ": Error: Refused - Out of resources - Suboperations";
   }
   else if (status == STATUS_MOVE_Failed_SOPClassNotSupported)
   {
@@ -400,7 +400,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_EchoRQ &msg, enum DIMSE_dir
         stream << "Presentation Context ID       : " << OFstatic_cast(int, presID) << OFendl;
     }
     stream << "Message ID                    : " << msg.MessageID << OFendl
-           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" );
+           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present");
 
     OFSTRINGSTREAM_GETSTR(stream, result)
     str += result;
@@ -428,7 +428,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_EchoRSP &msg, enum DIMSE_di
     if (msg.opts & O_ECHO_AFFECTEDSOPCLASSUID) stream << (uid ? uid : msg.AffectedSOPClassUID) << OFendl;
     else stream << "none" << OFendl;
 
-    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "DIMSE Status                  : ";
     DIMSE_printCEchoStatusString(stream, msg.DimseStatus);
 
@@ -455,26 +455,28 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_StoreRQ &msg, enum DIMSE_di
     stream << "Message ID                    : " << msg.MessageID << OFendl
            << "Affected SOP Class UID        : " << (uid ? uid : msg.AffectedSOPClassUID) << OFendl
            << "Affected SOP Instance UID     : " << msg.AffectedSOPInstanceUID << OFendl
-           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "Priority                      : ";
     switch (msg.Priority)
     {
       case DIMSE_PRIORITY_LOW:
-        stream << "low" << OFendl;
+        stream << "low";
         break;
       case DIMSE_PRIORITY_MEDIUM:
-        stream << "medium" << OFendl;
+        stream << "medium";
         break;
       case DIMSE_PRIORITY_HIGH:
-        stream << "high" << OFendl;
+        stream << "high";
         break;
     }
-    stream << "Move Originator AE Title      : ";
-    if (msg.opts & O_STORE_MOVEORIGINATORAETITLE) stream << msg.MoveOriginatorApplicationEntityTitle << OFendl;
-    else stream << "none" << OFendl;
-    stream << "Move Originator ID            : ";
-    if (msg.opts & O_STORE_MOVEORIGINATORID) stream << msg.MoveOriginatorID;
-    else stream << "none";
+    if (msg.opts & O_STORE_MOVEORIGINATORAETITLE)
+    {
+        stream  << OFendl << "Move Originator AE Title      : " << msg.MoveOriginatorApplicationEntityTitle;
+    }
+    if (msg.opts & O_STORE_MOVEORIGINATORID)
+    {
+        stream  << OFendl << "Move Originator ID            : " << msg.MoveOriginatorID;
+    }
 
     OFSTRINGSTREAM_GETSTR(stream, result)
     str += result;
@@ -504,8 +506,8 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_StoreRSP &msg, enum DIMSE_d
     stream << "Affected SOP Instance UID     : ";
     if (msg.opts & O_STORE_AFFECTEDSOPINSTANCEUID) stream << msg.AffectedSOPInstanceUID << OFendl;
     else stream << "none" << OFendl;
-    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
-          << "DIMSE Status                  : ";
+    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
+           << "DIMSE Status                  : ";
     DIMSE_printCStoreStatusString(stream, msg.DimseStatus);
 
     OFSTRINGSTREAM_GETSTR(stream, result)
@@ -529,7 +531,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_GetRQ &msg, enum DIMSE_dire
     }
     stream << "Message ID                    : " << msg.MessageID << OFendl
            << "Affected SOP Class UID        : " << (uid ? uid : msg.AffectedSOPClassUID) << OFendl
-           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "Priority                      : ";
     switch (msg.Priority)
     {
@@ -581,7 +583,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_GetRSP &msg, enum DIMSE_dir
     stream << "Warning Suboperations         : ";
     if (msg.opts & O_GET_NUMBEROFWARNINGSUBOPERATIONS) stream << msg.NumberOfWarningSubOperations << OFendl;
     else stream << "none" << OFendl;
-    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "DIMSE Status                  : ";
     DIMSE_printCGetMoveStatusString(stream, msg.DimseStatus);
 
@@ -607,21 +609,21 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_MoveRQ &msg, enum DIMSE_dir
     }
     stream << "Message ID                    : " << msg.MessageID << OFendl
            << "Affected SOP Class UID        : " << (uid ? uid : msg.AffectedSOPClassUID) << OFendl
-           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "Priority                      : ";
     switch (msg.Priority)
     {
       case DIMSE_PRIORITY_LOW:
-        stream << "low" << OFendl;
+        stream << "low";
         break;
       case DIMSE_PRIORITY_MEDIUM:
-        stream << "medium" << OFendl;
+        stream << "medium";
         break;
       case DIMSE_PRIORITY_HIGH:
-        stream << "high" << OFendl;
+        stream << "high";
         break;
     }
-    stream << "Move Destination              : " << msg.MoveDestination;
+    stream << OFendl << "Move Destination              : " << msg.MoveDestination;
 
     OFSTRINGSTREAM_GETSTR(stream, result)
     str += result;
@@ -660,7 +662,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_MoveRSP &msg, enum DIMSE_di
     stream << "Warning Suboperations         : ";
     if (msg.opts & O_MOVE_NUMBEROFWARNINGSUBOPERATIONS) stream << msg.NumberOfWarningSubOperations << OFendl;
     else stream << "none" << OFendl;
-    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "DIMSE Status                  : ";
     DIMSE_printCGetMoveStatusString(stream, msg.DimseStatus);
 
@@ -686,7 +688,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_FindRQ &msg, enum DIMSE_dir
     }
     stream << "Message ID                    : " << msg.MessageID << OFendl
            << "Affected SOP Class UID        : " << (uid ? uid : msg.AffectedSOPClassUID) << OFendl
-           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "Priority                      : ";
     switch (msg.Priority)
     {
@@ -726,7 +728,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_FindRSP &msg, enum DIMSE_di
            << "Affected SOP Class UID        : ";
     if (msg.opts & O_FIND_AFFECTEDSOPCLASSUID) stream << (uid ? uid : msg.AffectedSOPClassUID) << OFendl;
     else stream << "none" << OFendl;
-    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "DIMSE Status                  : ";
     DIMSE_printCFindStatusString(stream, msg.DimseStatus);
 
@@ -750,7 +752,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_CancelRQ &msg, enum DIMSE_d
         stream << "Presentation Context ID       : " << OFstatic_cast(int, presID) << OFendl;
     }
     stream << "Message ID Being Responded To : " << msg.MessageIDBeingRespondedTo << OFendl
-           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" );
+           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present");
 
     OFSTRINGSTREAM_GETSTR(stream, result)
     str += result;
@@ -775,7 +777,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_EventReportRQ &msg, enum DI
     stream << "Message ID                    : " << msg.MessageID << OFendl
            << "Affected SOP Class UID        : " << (uid ? uid : msg.AffectedSOPClassUID) << OFendl
            << "Affected SOP Instance UID     : " << msg.AffectedSOPInstanceUID << OFendl
-           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "Event Type ID                 : " << msg.EventTypeID;
 
     OFSTRINGSTREAM_GETSTR(stream, result)
@@ -806,7 +808,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_EventReportRSP &msg, enum D
     stream << "Affected SOP Instance UID     : ";
     if (msg.opts & O_NEVENTREPORT_AFFECTEDSOPINSTANCEUID) stream << msg.AffectedSOPInstanceUID << OFendl;
     else stream << "none" << OFendl;
-    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "Event Type ID                 : ";
     if (msg.opts & O_NEVENTREPORT_EVENTTYPEID) stream << msg.EventTypeID << OFendl;
     else stream << "none" << OFendl;
@@ -836,15 +838,15 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_GetRQ &msg, enum DIMSE_dire
     stream << "Message ID                    : " << msg.MessageID << OFendl
            << "Requested SOP Class UID       : " << (uid ? uid : msg.RequestedSOPClassUID) << OFendl
            << "Requested SOP Instance UID    : " << msg.RequestedSOPInstanceUID << OFendl
-           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "Attribute Identifier List     : ";
-    if (msg.ListCount==0) stream << "none";
-    else for (int cList=0; cList<msg.ListCount; cList += 2)
+    if (msg.ListCount == 0) stream << "none";
+    else for (int cList = 0; cList < msg.ListCount; cList += 2)
     {
       stream << "(" << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
              << msg.AttributeIdentifierList[cList]
              << "," << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-             << msg.AttributeIdentifierList[cList+1] << ") ";
+             << msg.AttributeIdentifierList[cList + 1] << ") ";
     }
 
     OFSTRINGSTREAM_GETSTR(stream, result)
@@ -875,7 +877,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_GetRSP &msg, enum DIMSE_dir
     stream << "Affected SOP Instance UID     : ";
     if (msg.opts & O_NGET_AFFECTEDSOPINSTANCEUID) stream << msg.AffectedSOPInstanceUID << OFendl;
     else stream << "none" << OFendl;
-    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "DIMSE Status                  : ";
     DIMSE_printNStatusString(stream, msg.DimseStatus);
 
@@ -902,7 +904,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_SetRQ &msg, enum DIMSE_dire
     stream << "Message ID                    : " << msg.MessageID << OFendl
            << "Requested SOP Class UID       : " << (uid ? uid : msg.RequestedSOPClassUID) << OFendl
            << "Requested SOP Instance UID    : " << msg.RequestedSOPInstanceUID << OFendl
-           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" );
+           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present");
 
     OFSTRINGSTREAM_GETSTR(stream, result)
     str += result;
@@ -932,7 +934,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_SetRSP &msg, enum DIMSE_dir
     stream << "Affected SOP Instance UID     : ";
     if (msg.opts & O_NSET_AFFECTEDSOPINSTANCEUID) stream << msg.AffectedSOPInstanceUID << OFendl;
     else stream << "none" << OFendl;
-    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "DIMSE Status                  : ";
     DIMSE_printNStatusString(stream, msg.DimseStatus);
 
@@ -960,7 +962,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_ActionRQ &msg, enum DIMSE_d
            << "Requested SOP Class UID       : " << (uid ? uid : msg.RequestedSOPClassUID) << OFendl
            << "Requested SOP Instance UID    : " << msg.RequestedSOPInstanceUID << OFendl
            << "Action Type ID                : " << msg.ActionTypeID << OFendl
-           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" );
+           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present");
 
     OFSTRINGSTREAM_GETSTR(stream, result)
     str += result;
@@ -990,7 +992,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_ActionRSP &msg, enum DIMSE_
     stream << "Affected SOP Instance UID     : ";
     if (msg.opts & O_NACTION_AFFECTEDSOPINSTANCEUID) stream << msg.AffectedSOPInstanceUID << OFendl;
     else stream << "none" << OFendl;
-    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "Action Type ID                : ";
     if (msg.opts & O_NACTION_ACTIONTYPEID) stream << msg.ActionTypeID << OFendl;
     else stream << "none" << OFendl;
@@ -1022,7 +1024,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_CreateRQ &msg, enum DIMSE_d
            << "Affected SOP Instance UID     : ";
     if (msg.opts & O_NCREATE_AFFECTEDSOPINSTANCEUID) stream << msg.AffectedSOPInstanceUID << OFendl;
     else stream << "none" << OFendl;
-    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" );
+    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present");
 
     OFSTRINGSTREAM_GETSTR(stream, result)
     str += result;
@@ -1052,7 +1054,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_CreateRSP &msg, enum DIMSE_
     stream << "Affected SOP Instance UID     : ";
     if (msg.opts & O_NCREATE_AFFECTEDSOPINSTANCEUID) stream << msg.AffectedSOPInstanceUID << OFendl;
     else stream << "none" << OFendl;
-    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "DIMSE Status                  : ";
     DIMSE_printNStatusString(stream, msg.DimseStatus);
 
@@ -1079,7 +1081,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_DeleteRQ &msg, enum DIMSE_d
     stream << "Message ID                    : " << msg.MessageID << OFendl
            << "Requested SOP Class UID       : " << (uid ? uid : msg.RequestedSOPClassUID) << OFendl
            << "Requested SOP Instance UID    : " << msg.RequestedSOPInstanceUID << OFendl
-           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" );
+           << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present");
 
     OFSTRINGSTREAM_GETSTR(stream, result)
     str += result;
@@ -1109,7 +1111,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_DeleteRSP &msg, enum DIMSE_
     stream << "Affected SOP Instance UID     : ";
     if (msg.opts & O_NDELETE_AFFECTEDSOPINSTANCEUID) stream << msg.AffectedSOPInstanceUID << OFendl;
     else stream << "none" << OFendl;
-    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << OFendl
+    stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "DIMSE Status                  : ";
     DIMSE_printNStatusString(stream, msg.DimseStatus);
 
@@ -1212,6 +1214,9 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_Message &msg, enum DIMSE_dire
 /*
 ** CVS Log
 ** $Log: dimdump.cc,v $
+** Revision 1.13  2009-12-08 16:44:25  joergr
+** Slightly modified some log messages.
+**
 ** Revision 1.12  2009-11-18 11:53:59  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
