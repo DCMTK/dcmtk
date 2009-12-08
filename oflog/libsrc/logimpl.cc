@@ -11,12 +11,12 @@
 // distribution in the LICENSE.APL file.
 //
 
-#include "dcmtk/oflog/spi/loggerimpl.h"
+#include "dcmtk/oflog/spi/logimpl.h"
 #include "dcmtk/oflog/appender.h"
 #include "dcmtk/oflog/hierarchy.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/spi/loggingevent.h"
-#include "dcmtk/oflog/spi/rootlogger.h"
+#include "dcmtk/oflog/spi/logevent.h"
+#include "dcmtk/oflog/spi/rootlog.h"
 //#include <stdexcept>
 
 using namespace log4cplus;

@@ -13,8 +13,8 @@
 
 #include "dcmtk/oflog/hierarchy.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/spi/loggerimpl.h"
-#include "dcmtk/oflog/spi/rootlogger.h"
+#include "dcmtk/oflog/spi/logimpl.h"
+#include "dcmtk/oflog/spi/rootlog.h"
 //#include <utility>
 
 using namespace log4cplus;

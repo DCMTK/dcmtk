@@ -16,7 +16,7 @@
 #include <algorithm>
 #include "dcmtk/oflog/helpers/socket.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/spi/loggingevent.h"
+#include "dcmtk/oflog/spi/logevent.h"
 
 #if defined(__hpux__)
 # ifndef _XOPEN_SOURCE_EXTENDED

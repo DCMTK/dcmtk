@@ -21,9 +21,9 @@
  *
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-17 14:33:57 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-12-08 15:38:59 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +34,8 @@
 
 #include "dcmtk/oflog/oflog.h"
 #include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/oflog/configurator.h"
-#include "dcmtk/oflog/consoleappender.h"
+#include "dcmtk/oflog/configrt.h"
+#include "dcmtk/oflog/consap.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 
 OFLogger::OFLogger(const log4cplus::Logger &base)
@@ -220,6 +220,9 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.9  2009-12-08 15:38:59  uli
+ * Renaming files to make them fit into 8.3 format
+ *
  * Revision 1.8  2009-09-17 14:33:57  joergr
  * Made sure that log4cplus' internal quiet mode is always set appropriately.
  *

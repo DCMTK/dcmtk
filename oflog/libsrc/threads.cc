@@ -36,8 +36,8 @@
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/ndc.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/helpers/stringhelper.h"
-#include "dcmtk/oflog/helpers/timehelper.h"
+#include "dcmtk/oflog/helpers/strhelp.h"
+#include "dcmtk/oflog/helpers/timehelp.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 
 #include "dcmtk/oflog/helpers/syncprims.h"

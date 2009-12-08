@@ -20,7 +20,7 @@
 #include "dcmtk/oflog/layout.h"
 #include "dcmtk/oflog/loglevel.h"
 #include "dcmtk/oflog/tstring.h"
-#include "dcmtk/oflog/helpers/logloguser.h"
+#include "dcmtk/oflog/helpers/lloguser.h"
 #include "dcmtk/oflog/helpers/pointer.h"
 #include "dcmtk/oflog/helpers/property.h"
 #include "dcmtk/oflog/spi/filter.h"

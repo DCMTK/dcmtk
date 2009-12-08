@@ -16,7 +16,7 @@
 //#include <limits>
 #define INCLUDE_CLIMITS
 #include "dcmtk/ofstd/ofstdinc.h"
-#include "dcmtk/oflog/helpers/socketbuffer.h"
+#include "dcmtk/oflog/helpers/sockbuff.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 
 #if !defined(_WIN32)

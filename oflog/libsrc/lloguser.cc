@@ -12,7 +12,7 @@
 //
 
 #include "dcmtk/oflog/streams.h"
-#include "dcmtk/oflog/helpers/logloguser.h"
+#include "dcmtk/oflog/helpers/lloguser.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 
 using namespace std;

@@ -23,7 +23,7 @@
 #include "dcmtk/oflog/helpers/property.h"
 #include "dcmtk/oflog/helpers/threads.h"
 #include "dcmtk/oflog/spi/filter.h"
-#include "dcmtk/oflog/spi/objectregistry.h"
+#include "dcmtk/oflog/spi/objreg.h"
 //#include <map>
 //#include <memory>
 //#include <vector>

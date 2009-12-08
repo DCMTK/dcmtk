@@ -11,9 +11,9 @@
 // distribution in the LICENSE.APL file.
 //
 
-#include "dcmtk/oflog/helpers/stringhelper.h"
+#include "dcmtk/oflog/helpers/strhelp.h"
 #include "dcmtk/oflog/streams.h"
-#include "dcmtk/oflog/loggingmacros.h"
+#include "dcmtk/oflog/logmacro.h"
 //#include <iterator>
 #include "dcmtk/ofstd/ofstd.h"
 

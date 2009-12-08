@@ -18,7 +18,7 @@
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/logger.h"
-#include "dcmtk/oflog/helpers/logloguser.h"
+#include "dcmtk/oflog/helpers/lloguser.h"
 #include "dcmtk/oflog/helpers/pointer.h"
 #include "dcmtk/oflog/helpers/threads.h"
 //#include <map>

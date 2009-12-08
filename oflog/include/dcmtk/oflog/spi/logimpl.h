@@ -18,9 +18,9 @@
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
-#include "dcmtk/oflog/helpers/appenderattachableimpl.h"
+#include "dcmtk/oflog/helpers/apndimpl.h"
 #include "dcmtk/oflog/helpers/pointer.h"
-#include "dcmtk/oflog/spi/loggerfactory.h"
+#include "dcmtk/oflog/spi/logfact.h"
 //#include <memory>
 //#include <vector>
 

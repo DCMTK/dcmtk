@@ -17,12 +17,12 @@ ofstddir = $(top_srcdir)/../ofstd
 LOCALINCLUDES = -I$(ofstddir)/include
 LOCALDEFS =
 
-objs = oflog.o appenderattachableimpl.o appender.o configurator.o consoleappender.o \
-	factory.o fileappender.o filter.o global-init.o hierarchy.o hierarchylocker.o \
-	layout.o logger.o loggerimpl.o loggingevent.o loglevel.o loglog.o logloguser.o \
-	ndc.o nullappender.o objectregistry.o patternlayout.o pointer.o property.o \
-	rootlogger.o sleep.o socketappender.o socketbuffer.o socket.o stringhelper.o \
-	syncprims.o syslogappender.o threads.o timehelper.o socket-unix.o
+objs = oflog.o apndimpl.o appender.o config.o consap.o \
+	factory.o fileap.o filter.o globinit.o hierarchy.o hierlock.o \
+	layout.o logger.o logimpl.o logevent.o loglevel.o loglog.o lloguser.o \
+	ndc.o nullap.o objreg.o patlay.o pointer.o property.o \
+	rootlog.o sleep.o socketap.o sockbuff.o socket.o strhelp.o \
+	syncprims.o syslogap.o threads.o timehelp.o unixsock.o
 
 library = liboflog.$(LIBEXT)
 

@@ -21,8 +21,8 @@
 #include "dcmtk/oflog/loglevel.h"
 #include "dcmtk/oflog/tstring.h"
 #include "dcmtk/oflog/streams.h"
-#include "dcmtk/oflog/spi/appenderattachable.h"
-#include "dcmtk/oflog/spi/loggerfactory.h"
+#include "dcmtk/oflog/spi/apndatch.h"
+#include "dcmtk/oflog/spi/logfact.h"
 
 //#include <vector>
 
@@ -332,7 +332,7 @@ namespace log4cplus
 } // end namespace log4cplus
 
 
-#include "dcmtk/oflog/loggingmacros.h"
+#include "dcmtk/oflog/logmacro.h"
 
 
 #endif // _LOG4CPLUS_LOGGERHEADER_

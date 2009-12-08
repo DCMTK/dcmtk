@@ -11,7 +11,7 @@
 // distribution in the LICENSE.APL file.
 //
 
-#include "dcmtk/oflog/spi/rootlogger.h"
+#include "dcmtk/oflog/spi/rootlog.h"
 
 using namespace log4cplus;
 using namespace log4cplus::helpers;

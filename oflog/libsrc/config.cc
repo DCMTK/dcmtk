@@ -10,15 +10,15 @@
 // distribution in the LICENSE.APL file.
 //
 
-#include "dcmtk/oflog/configurator.h"
-#include "dcmtk/oflog/hierarchylocker.h"
+#include "dcmtk/oflog/configrt.h"
+#include "dcmtk/oflog/hierlock.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/sleep.h"
-#include "dcmtk/oflog/helpers/stringhelper.h"
+#include "dcmtk/oflog/helpers/strhelp.h"
 #include "dcmtk/oflog/helpers/property.h"
 #include "dcmtk/oflog/helpers/syncprims.h"
 #include "dcmtk/oflog/spi/factory.h"
-#include "dcmtk/oflog/spi/loggerimpl.h"
+#include "dcmtk/oflog/spi/logimpl.h"
 
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>

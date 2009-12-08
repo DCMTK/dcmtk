@@ -11,7 +11,7 @@
 // distribution in the LICENSE.APL file.
 //
 
-#include "dcmtk/oflog/win32debugappender.h"
+#include "dcmtk/oflog/windebap.h"
 
 
 using namespace std;

@@ -11,7 +11,7 @@
 // distribution in the LICENSE.APL file.
 //
 
-#include "dcmtk/oflog/spi/loggingevent.h"
+#include "dcmtk/oflog/spi/logevent.h"
 
 
 using namespace log4cplus;

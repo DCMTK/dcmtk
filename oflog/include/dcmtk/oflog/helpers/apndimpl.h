@@ -19,10 +19,10 @@
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/layout.h"
 #include "dcmtk/oflog/tstring.h"
-#include "dcmtk/oflog/helpers/logloguser.h"
+#include "dcmtk/oflog/helpers/lloguser.h"
 #include "dcmtk/oflog/helpers/pointer.h"
 #include "dcmtk/oflog/helpers/threads.h"
-#include "dcmtk/oflog/spi/appenderattachable.h"
+#include "dcmtk/oflog/spi/apndatch.h"
 
 //#include <memory>
 //#include <vector>

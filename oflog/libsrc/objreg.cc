@@ -11,7 +11,7 @@
 // distribution in the LICENSE.APL file.
 //
 
-#include "dcmtk/oflog/spi/objectregistry.h"
+#include "dcmtk/oflog/spi/objreg.h"
 
 using namespace std;
 using namespace log4cplus::spi;

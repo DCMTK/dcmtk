@@ -20,10 +20,10 @@
 #include "dcmtk/oflog/loglevel.h"
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/tstring.h"
-#include "dcmtk/oflog/helpers/logloguser.h"
+#include "dcmtk/oflog/helpers/lloguser.h"
 #include "dcmtk/oflog/helpers/property.h"
-#include "dcmtk/oflog/helpers/timehelper.h"
-#include "dcmtk/oflog/spi/loggingevent.h"
+#include "dcmtk/oflog/helpers/timehelp.h"
+#include "dcmtk/oflog/spi/logevent.h"
 
 //#include <vector>
 

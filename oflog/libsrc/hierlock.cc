@@ -11,9 +11,9 @@
 // distribution in the LICENSE.APL file.
 //
 
-#include "dcmtk/oflog/hierarchylocker.h"
+#include "dcmtk/oflog/hierlock.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/spi/loggerimpl.h"
+#include "dcmtk/oflog/spi/logimpl.h"
 
 
 using namespace log4cplus;

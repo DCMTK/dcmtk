@@ -12,20 +12,20 @@
 //
 
 #include "dcmtk/oflog/spi/factory.h"
-#include "dcmtk/oflog/spi/loggerfactory.h"
-#include "dcmtk/oflog/consoleappender.h"
-#include "dcmtk/oflog/fileappender.h"
-#include "dcmtk/oflog/nullappender.h"
-#include "dcmtk/oflog/socketappender.h"
-#include "dcmtk/oflog/syslogappender.h"
+#include "dcmtk/oflog/spi/logfact.h"
+#include "dcmtk/oflog/consap.h"
+#include "dcmtk/oflog/fileap.h"
+#include "dcmtk/oflog/nullap.h"
+#include "dcmtk/oflog/socketap.h"
+#include "dcmtk/oflog/syslogap.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/threads.h"
 
 #if defined (_WIN32)
 #  if defined (LOG4CPLUS_HAVE_NT_EVENT_LOG)
-#    include "dcmtk/oflog/nteventlogappender.h"
+#    include "dcmtk/oflog/ntelogap.h"
 #  endif
-#  include "dcmtk/oflog/Win32DebugAppender.h"
+#  include "dcmtk/oflog/windebap.h"
 #endif
 
 

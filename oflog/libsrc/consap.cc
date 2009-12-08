@@ -12,11 +12,11 @@
 //
 
 #include "dcmtk/oflog/layout.h"
-#include "dcmtk/oflog/consoleappender.h"
+#include "dcmtk/oflog/consap.h"
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/helpers/stringhelper.h"
-#include "dcmtk/oflog/spi/loggingevent.h"
+#include "dcmtk/oflog/helpers/strhelp.h"
+#include "dcmtk/oflog/spi/logevent.h"
 
 using namespace std;
 using namespace log4cplus::helpers;

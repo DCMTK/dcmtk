@@ -18,7 +18,7 @@
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/spi/loggerimpl.h"
+#include "dcmtk/oflog/spi/logimpl.h"
 
 namespace log4cplus {
     namespace spi {

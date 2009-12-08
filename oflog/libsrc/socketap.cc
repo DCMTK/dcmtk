@@ -14,10 +14,10 @@
 //#include <cstdlib>
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
-#include "dcmtk/oflog/socketappender.h"
+#include "dcmtk/oflog/socketap.h"
 #include "dcmtk/oflog/layout.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/spi/loggingevent.h"
+#include "dcmtk/oflog/spi/logevent.h"
 
 using namespace std;
 using namespace log4cplus;

@@ -10,12 +10,12 @@
 // distribution in the LICENSE.APL file.
 //
 
-#include "dcmtk/oflog/syslogappender.h"
+#include "dcmtk/oflog/syslogap.h"
 #if defined(LOG4CPLUS_HAVE_SYSLOG_H) && !defined(_WIN32)
 
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/spi/loggingevent.h"
+#include "dcmtk/oflog/spi/logevent.h"
 
 #include <syslog.h>
 

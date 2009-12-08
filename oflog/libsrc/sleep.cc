@@ -12,7 +12,7 @@
 //
 
 #include "dcmtk/oflog/helpers/sleep.h"
-#include "dcmtk/oflog/helpers/timehelper.h"
+#include "dcmtk/oflog/helpers/timehelp.h"
 
 //#include <errno.h>
 #define INCLUDE_CERRNO

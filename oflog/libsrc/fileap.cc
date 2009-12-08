@@ -11,13 +11,13 @@
 // distribution in the LICENSE.APL file.
 //
 
-#include "dcmtk/oflog/fileappender.h"
+#include "dcmtk/oflog/fileap.h"
 #include "dcmtk/oflog/layout.h"
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/helpers/stringhelper.h"
-#include "dcmtk/oflog/helpers/timehelper.h"
-#include "dcmtk/oflog/spi/loggingevent.h"
+#include "dcmtk/oflog/helpers/strhelp.h"
+#include "dcmtk/oflog/helpers/timehelp.h"
+#include "dcmtk/oflog/spi/logevent.h"
 //#include <algorithm>
 
 #if defined (__BORLANDC__)

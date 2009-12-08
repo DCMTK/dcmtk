@@ -15,7 +15,7 @@
 #include "dcmtk/oflog/appender.h"
 #include "dcmtk/oflog/hierarchy.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/spi/loggerimpl.h"
+#include "dcmtk/oflog/spi/logimpl.h"
 
 
 namespace log4cplus

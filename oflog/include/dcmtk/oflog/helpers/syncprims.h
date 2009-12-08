@@ -30,7 +30,7 @@
 //#  include <errno.h>
 #  include <pthread.h>
 #  include <semaphore.h>
-#  include "dcmtk/oflog/helpers/timehelper.h"
+#  include "dcmtk/oflog/helpers/timehelp.h"
 
 #  define INCLUDE_CERRNO
 #  include "dcmtk/ofstd/ofstdinc.h"
@@ -160,9 +160,9 @@ private:
 // above.
 
 #if defined (LOG4CPLUS_USE_PTHREADS)
-#  include "dcmtk/oflog/helpers/syncprims-pthreads.h"
+#  include "dcmtk/oflog/helpers/syncppth.h"
 #elif defined (LOG4CPLUS_USE_WIN32_THREADS)
-#  include "dcmtk/oflog/helpers/syncprims-win32.h"
+#  include "dcmtk/oflog/helpers/syncpwin.h"
 #endif
 
 

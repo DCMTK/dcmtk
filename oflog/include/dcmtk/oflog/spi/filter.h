@@ -20,7 +20,7 @@
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/helpers/pointer.h"
 #include "dcmtk/oflog/helpers/property.h"
-#include "dcmtk/oflog/spi/loggingevent.h"
+#include "dcmtk/oflog/spi/logevent.h"
 
 
 namespace log4cplus {

@@ -10,11 +10,11 @@
 // distribution in the LICENSE.APL file.
 //
 
-#include "dcmtk/oflog/nteventlogappender.h"
+#include "dcmtk/oflog/ntelogap.h"
 #include "dcmtk/oflog/loglevel.h"
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/spi/loggingevent.h"
+#include "dcmtk/oflog/spi/logevent.h"
 
 
 #if defined (LOG4CPLUS_HAVE_NT_EVENT_LOG)

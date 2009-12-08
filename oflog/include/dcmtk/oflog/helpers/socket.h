@@ -18,7 +18,7 @@
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
-#include "dcmtk/oflog/helpers/socketbuffer.h"
+#include "dcmtk/oflog/helpers/sockbuff.h"
 #if defined(_WIN32)
 #include <winsock.h>
 #endif

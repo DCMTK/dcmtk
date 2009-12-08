@@ -13,7 +13,7 @@
 
 #include "dcmtk/oflog/spi/filter.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/helpers/stringhelper.h"
+#include "dcmtk/oflog/helpers/strhelp.h"
 
 using namespace log4cplus;
 using namespace log4cplus::spi;

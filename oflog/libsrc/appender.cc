@@ -15,9 +15,9 @@
 #include "dcmtk/oflog/layout.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/pointer.h"
-#include "dcmtk/oflog/helpers/stringhelper.h"
+#include "dcmtk/oflog/helpers/strhelp.h"
 #include "dcmtk/oflog/spi/factory.h"
-#include "dcmtk/oflog/spi/loggingevent.h"
+#include "dcmtk/oflog/spi/logevent.h"
 
 using namespace log4cplus;
 using namespace log4cplus::helpers;

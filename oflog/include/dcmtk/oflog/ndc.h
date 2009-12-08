@@ -20,7 +20,7 @@
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
-#include "dcmtk/oflog/helpers/logloguser.h"
+#include "dcmtk/oflog/helpers/lloguser.h"
 #include "dcmtk/oflog/helpers/threads.h"
 
 //#include <map>

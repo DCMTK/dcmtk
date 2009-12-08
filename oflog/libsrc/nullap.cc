@@ -11,7 +11,7 @@
 // distribution in the LICENSE.APL file.
 //
 
-#include "dcmtk/oflog/nullappender.h"
+#include "dcmtk/oflog/nullap.h"
 
 using namespace std;
 using namespace log4cplus;

@@ -13,7 +13,7 @@
 
 #include "dcmtk/oflog/loglevel.h"
 #include "dcmtk/oflog/helpers/loglog.h"
-#include "dcmtk/oflog/helpers/stringhelper.h"
+#include "dcmtk/oflog/helpers/strhelp.h"
 //#include <algorithm>
 
 using namespace log4cplus;
