@@ -40,24 +40,24 @@
 **              Washington University School of Medicine
 **
 ** Module Name(s):
-**                      DUL_InitializeNetwork
-**                      DUL_DropNetwork
-**                      DUL_RequestAssociation
-**                      DUL_ReceiveAssociationRQ
-**                      DUL_AcknowledgeAssociateRQ
-**                      DUL_RejectAssociateRQ
-**                      DUL_ReleaseAssociation
-**                      DUL_AbortAssociation
-**                      DUL_DropAssociation
-**                      DUL_WritePDVs
-**                      DUL_ReadPDVs
-** Author, Date:        Stephen M. Moore, 14-Apr-93
-** Intent:              This module contains the public entry points for the
-**                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: uli $, $Date: 2009-11-18 11:53:59 $
-** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.83 $
-** Status:              $State: Exp $
+**                DUL_InitializeNetwork
+**                DUL_DropNetwork
+**                DUL_RequestAssociation
+**                DUL_ReceiveAssociationRQ
+**                DUL_AcknowledgeAssociateRQ
+**                DUL_RejectAssociateRQ
+**                DUL_ReleaseAssociation
+**                DUL_AbortAssociation
+**                DUL_DropAssociation
+**                DUL_WritePDVs
+**                DUL_ReadPDVs
+** Author, Date:  Stephen M. Moore, 14-Apr-93
+** Intent:        This module contains the public entry points for the
+**                DICOM Upper Layer (DUL) protocol package.
+** Last Update:   $Author: joergr $, $Date: 2009-12-08 16:39:21 $
+** Source File:   $RCSfile: dul.cc,v $
+** Revision:      $Revision: 1.84 $
+** Status:        $State: Exp $
 */
 
 
@@ -613,7 +613,7 @@ DUL_ReceiveAssociationRQ(
     if (cond.bad())
         return cond;
 
-    cond = PRV_NextPDUType(association, block, timeout, &pduType); 
+    cond = PRV_NextPDUType(association, block, timeout, &pduType);
 
     if (cond == DUL_NETWORKCLOSED)
         event = TRANS_CONN_CLOSED;
@@ -2261,9 +2261,9 @@ setTCPBufferLength(int sock)
     (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen, sizeof(bufLen));
     (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen, sizeof(bufLen));
 #else
-    OFLOG_WARN("DULFSM: setTCPBufferLength: "
-            "cannot set TCP buffer length socket option: "
-            "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown");
+    DCMNET_WARN("DULFSM: setTCPBufferLength: "
+        "cannot set TCP buffer length socket option: "
+        "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown");
 #endif // SO_SNDBUF and SO_RCVBUF
 #endif // HAVE_GUSI_H
 }
@@ -2330,6 +2330,7 @@ typedef struct {
     DUL_SC_ROLE role;
     const char *text;
 }   SC_MAP;
+
 static SC_MAP scMap[] = {
     {DUL_SC_ROLE_DEFAULT, "Default"},
     {DUL_SC_ROLE_SCU, "SCU"},
@@ -2663,6 +2664,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.84  2009-12-08 16:39:21  joergr
+** Fixed use of wrong logging macro. Fixed inconsistent source code formatting.
+**
 ** Revision 1.83  2009-11-18 11:53:59  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
