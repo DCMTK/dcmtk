@@ -49,9 +49,6 @@ dcmfile-in  DICOM file or directory to be transmitted
   -v    --verbose
           verbose mode, print processing details
 
-  +v    --verbose-pc
-          show presentation contexts in verbose mode
-
   -d    --debug
           debug mode, print debug information
 
@@ -62,7 +59,7 @@ dcmfile-in  DICOM file or directory to be transmitted
   -lc   --log-config  [f]ilename: string
           use config file f for the logger
 
-  +v    --show-pc
+  +v    --verbose-pc
           show presentation contexts in verbose mode
 \endverbatim
 

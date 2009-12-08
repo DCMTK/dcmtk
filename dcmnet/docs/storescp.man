@@ -56,7 +56,7 @@ port  tcp/ip port number to listen on
   -lc   --log-config  [f]ilename: string
           use config file f for the logger
 
-  +v    --show-pc
+  +v    --verbose-pc
           show presentation contexts in verbose mode
 \endverbatim
 
