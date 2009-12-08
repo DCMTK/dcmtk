@@ -41,13 +41,13 @@
 **
 ** Module Name(s):
 ** Author, Date:  Stephen M. Moore, 14-Apr-1993
-** Intent:    This file defines the public structures and constants
-**      and the function prototypes for the DUL (DICOM Upper
-**      Layer) facility.
-** Last Update:   $Author: uli $, $Date: 2009-11-18 11:53:58 $
+** Intent:        This file defines the public structures and constants
+**                and the function prototypes for the DUL (DICOM Upper
+**                Layer) facility.
+** Last Update:   $Author: joergr $, $Date: 2009-12-08 16:37:52 $
 ** Source File:   $RCSfile: dul.h,v $
-** Revision:    $Revision: 1.27 $
-** Status:    $State: Exp $
+** Revision:      $Revision: 1.28 $
+** Status:        $State: Exp $
 */
 
 
@@ -117,23 +117,23 @@ typedef unsigned char DUL_PRESENTATIONCONTEXTID;
  *  about node names, but the DUL_ package needs them.
  */
 
-#define DUL_LEN_TITLE  OFstatic_cast(size_t, 16)  /* required by DICOM protocol  */
-#define DUL_LEN_NAME   OFstatic_cast(size_t, 64)  /* required by DICOM protocol  */
-#define DUL_LEN_UID    OFstatic_cast(size_t, 64)  /* required by DICOM protocol  */
-#define DUL_LEN_NODE   OFstatic_cast(size_t, 127) /* should be "big enough"  */
+#define DUL_LEN_TITLE  OFstatic_cast(size_t, 16)  /* required by DICOM protocol */
+#define DUL_LEN_NAME   OFstatic_cast(size_t, 64)  /* required by DICOM protocol */
+#define DUL_LEN_UID    OFstatic_cast(size_t, 64)  /* required by DICOM protocol */
+#define DUL_LEN_NODE   OFstatic_cast(size_t, 127) /* should be "big enough" */
 
 
 /* DICOM PDU Types */
 
-#define DUL_TYPEASSOCIATERQ   OFstatic_cast(unsigned char, 0x01)
-#define DUL_TYPEASSOCIATEAC   OFstatic_cast(unsigned char, 0x02)
-#define DUL_TYPEASSOCIATERJ   OFstatic_cast(unsigned char, 0x03)
-#define DUL_TYPEDATA      OFstatic_cast(unsigned char, 0x04)
-#define DUL_TYPERELEASERQ   OFstatic_cast(unsigned char, 0x05)
-#define DUL_TYPERELEASERP   OFstatic_cast(unsigned char, 0x06)
-#define DUL_TYPEABORT     OFstatic_cast(unsigned char, 0x07)
+#define DUL_TYPEASSOCIATERQ  OFstatic_cast(unsigned char, 0x01)
+#define DUL_TYPEASSOCIATEAC  OFstatic_cast(unsigned char, 0x02)
+#define DUL_TYPEASSOCIATERJ  OFstatic_cast(unsigned char, 0x03)
+#define DUL_TYPEDATA         OFstatic_cast(unsigned char, 0x04)
+#define DUL_TYPERELEASERQ    OFstatic_cast(unsigned char, 0x05)
+#define DUL_TYPERELEASERP    OFstatic_cast(unsigned char, 0x06)
+#define DUL_TYPEABORT        OFstatic_cast(unsigned char, 0x07)
 
-#define DUL_MAXTYPE     OFstatic_cast(unsigned char, 0x07)
+#define DUL_MAXTYPE          OFstatic_cast(unsigned char, 0x07)
 
 class DUL_ModeCallback
 {
@@ -216,13 +216,13 @@ typedef struct dul_abortitems {
 typedef enum {
     DUL_COMMANDPDV,   /* A command PDV inside a data PDU */
     DUL_DATASETPDV
-}       /* A data set PDV inside a data PDU */
+}   /* A data set PDV inside a data PDU */
     DUL_DATAPDV;
 
 typedef enum {
     DUL_BLOCK,      /* Block on an operation (read, request) */
     DUL_NOBLOCK
-}       /* Or return immediately if nothing avail */
+}   /* Or return immediately if nothing avail */
     DUL_BLOCKOPTIONS;
 
 typedef struct {
@@ -248,71 +248,70 @@ typedef struct {
 **  DICOM PDU.
 */
 
-#define DUL_ORDERMASK   0x03  /* The bottom two bits */
-#define DUL_ORDERLITTLEENDIAN 0x01
-#define DUL_ORDERBIGENDIAN  0x02
+#define DUL_ORDERMASK          0x03  /* The bottom two bits */
+#define DUL_ORDERLITTLEENDIAN  0x01
+#define DUL_ORDERBIGENDIAN     0x02
 
-#define DUL_DOMAINMASK    0x04
-#define DUL_FULLDOMAINNAME  0x04
+#define DUL_DOMAINMASK         0x04
+#define DUL_FULLDOMAINNAME     0x04
 
-#define DUL_AEREQUESTOR   "AE REQUESTOR"
-#define DUL_AEACCEPTOR    "AE ACCEPTOR"
-#define DUL_AEBOTH    "AE BOTH"
+#define DUL_AEREQUESTOR        "AE REQUESTOR"
+#define DUL_AEACCEPTOR         "AE ACCEPTOR"
+#define DUL_AEBOTH             "AE BOTH"
 
 /*  These macros define results and reasons for rejecting an association
 **  request.  Result is permanent or transient.  There are a number of
 **  different reasons for rejecting requests that occur at different layers
  */
-#define DUL_REJ_RSLTPERMANENT   0x01
-#define DUL_REJ_RSLTTRANSIENT   0x02
+#define DUL_REJ_RSLTPERMANENT  0x01
+#define DUL_REJ_RSLTTRANSIENT  0x02
 
 /*  These macros define parameters used to construct an ABORT PDU.
 **  These include the source of the abort (SCU or SCP) and the
 **  reason for the abort.
 */
 
-#define DUL_SCU_INITIATED_ABORT 0x00
-#define DUL_SCP_INITIATED_ABORT 0x02
-
-#define DUL_ABORTSERVICEUSER    0x00
-#define DUL_ABORTSERVICEPROVIDER  0x02
-
-
-#define DUL_ABORTNOREASON   0x00
-#define DUL_ABORTUNRECOGNIZEDPDU  0x01
-#define DUL_ABORTUNEXPECTEDPDU    0x02
-#define DUL_ABORTUNRECOGNIZEDPDUPARAM 0x04
-#define DUL_ABORTUNEXPECTEDPDUPARAM 0x05
-#define DUL_ABORTINVALIDPDUPARAM  0x06
+#define DUL_SCU_INITIATED_ABORT           0x00
+#define DUL_SCP_INITIATED_ABORT           0x02
+                                          
+#define DUL_ABORTSERVICEUSER              0x00
+#define DUL_ABORTSERVICEPROVIDER          0x02
+                                          
+#define DUL_ABORTNOREASON                 0x00
+#define DUL_ABORTUNRECOGNIZEDPDU          0x01
+#define DUL_ABORTUNEXPECTEDPDU            0x02
+#define DUL_ABORTUNRECOGNIZEDPDUPARAM     0x04
+#define DUL_ABORTUNEXPECTEDPDUPARAM       0x05
+#define DUL_ABORTINVALIDPDUPARAM          0x06
 
 /*  These macros define parameters used to construct a REJECT PDU.
 **  These include the source of the reject (DICOM UL service-user,
 **  (DICOM UL service-provider) and the reason for the reject.
 */
-#define DUL_REJECT_PERMANENT    0x01
-#define DUL_REJECT_TRANSIENT    0x02
+#define DUL_REJECT_PERMANENT              0x01
+#define DUL_REJECT_TRANSIENT              0x02
 
-#define DUL_ULSU_REJECT     0x01
-#define DUL_ULSP_ACSE_REJECT    0x02
-#define DUL_ULSP_PRESENTATION_REJECT  0x03
+#define DUL_ULSU_REJECT                   0x01
+#define DUL_ULSP_ACSE_REJECT              0x02
+#define DUL_ULSP_PRESENTATION_REJECT      0x03
 
-#define DUL_ULSU_REJ_NOREASON   0x01
-#define DUL_ULSU_REJ_UNSUP_APP_CTX_NAME 0x02
-#define DUL_ULSU_REJ_UNREC_CALLING_TITLE 0x03
-#define DUL_ULSU_REJ_UNREC_CALLED_TITLE 0x07
+#define DUL_ULSU_REJ_NOREASON             0x01
+#define DUL_ULSU_REJ_UNSUP_APP_CTX_NAME   0x02
+#define DUL_ULSU_REJ_UNREC_CALLING_TITLE  0x03
+#define DUL_ULSU_REJ_UNREC_CALLED_TITLE   0x07
 
-#define DUL_ULSP_ACSE_REJ_NOREASON  0x01
-#define DUL_ULSP_ACSE_UNSUP_PROTOCOL  0x02
+#define DUL_ULSP_ACSE_REJ_NOREASON        0x01
+#define DUL_ULSP_ACSE_UNSUP_PROTOCOL      0x02
 
-#define DUL_ULSP_PRES_REJ_TEMP_CONGEST  0x01
-#define DUL_ULSP_PRES_REJ_LIMIT   0x02
+#define DUL_ULSP_PRES_REJ_TEMP_CONGEST    0x01
+#define DUL_ULSP_PRES_REJ_LIMIT           0x02
 
-#define DUL_ABORTNOREASON   0x00
-#define DUL_ABORTUNRECOGNIZEDPDU  0x01
-#define DUL_ABORTUNEXPECTEDPDU    0x02
-#define DUL_ABORTUNRECOGNIZEDPDUPARAM 0x04
-#define DUL_ABORTUNEXPECTEDPDUPARAM 0x05
-#define DUL_ABORTINVALIDPDUPARAM  0x06
+#define DUL_ABORTNOREASON                 0x00
+#define DUL_ABORTUNRECOGNIZEDPDU          0x01
+#define DUL_ABORTUNEXPECTEDPDU            0x02
+#define DUL_ABORTUNRECOGNIZEDPDUPARAM     0x04
+#define DUL_ABORTUNEXPECTEDPDUPARAM       0x05
+#define DUL_ABORTINVALIDPDUPARAM          0x06
 
 /* Define a set of constants and types that let the user get information
 ** about the Association
@@ -320,7 +319,7 @@ typedef struct {
 
 typedef enum {
     DUL_K_INTEGER,    /* An integer type */
-    DUL_K_STRING    /* A string type */
+    DUL_K_STRING      /* A string type */
 }   DUL_DATA_TYPE;
 typedef enum {
     DUL_K_MAX_PDV_XMIT
@@ -333,9 +332,9 @@ typedef enum {
 ** (and possibly older CTN releases).
 */
 
-#define DUL_DULCOMPAT          2768240730UL
-#define DUL_DIMSECOMPAT        262144UL
-#define DUL_MAXPDUCOMPAT       4278190335UL
+#define DUL_DULCOMPAT     2768240730UL
+#define DUL_DIMSECOMPAT   327680UL
+#define DUL_MAXPDUCOMPAT  4278190335UL
 
 /* Define the function prototypes for this facility.
 **
@@ -495,6 +494,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
+** Revision 1.28  2009-12-08 16:37:52  joergr
+** Fixed inconsistent source code formatting.
+**
 ** Revision 1.27  2009-11-18 11:53:58  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
