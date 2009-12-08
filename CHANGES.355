@@ -1,6 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.08 (riesmeier)
+
+- Removed unused command line option --show-pc.
+  Affects: dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+
+- Slightly modified some log messages.
+  Affects: dcmnet/libsrc/dimdump.cc
+
+- Fixed use of wrong logging macro.
+  Affects: dcmnet/libsrc/dul.cc
+
+- Fixed inconsistent source code formatting.
+  Affects: dcmnet/include/dcmtk/dcmnet/dul.h
+           dcmnet/libsrc/dul.cc
+
 **** Changes from 2009.12.04 (riesmeier)
 
 - Updated copyright date as well as the name of the OFFIS institute and
