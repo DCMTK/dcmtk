@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:58 $
- *  CVS/RCS Revision: $Revision: 1.158 $
+ *  Update Date:      $Date: 2009-12-09 13:10:55 $
+ *  CVS/RCS Revision: $Revision: 1.159 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@
 #include "dcmtk/dcmsign/dcsignat.h"    /* for class DcmSignature */
 #include "dcmtk/dcmsr/dsrdoc.h"      /* for class DSRDocument */
 #include "dcmtk/dcmsr/dsrcodvl.h"    /* for class DSRCodedEntryValue */
-#include "dcmtk/oflog/fileappender.h"  /* for log4cplus::FileAppender */
+#include "dcmtk/oflog/fileap.h"      /* for log4cplus::FileAppender */
 
 #include "dcmtk/dcmpstat/dvpsib.h"      /* for DVPSImageBoxContent, needed by MSVC5 with STL */
 #include "dcmtk/dcmpstat/dvpsab.h"      /* for DVPSAnnotationContent, needed by MSVC5 with STL */
@@ -4235,6 +4235,9 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
+ *  Revision 1.159  2009-12-09 13:10:55  uli
+ *  Fixed include path which was still using an old file name.
+ *
  *  Revision 1.158  2009-11-24 14:12:58  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

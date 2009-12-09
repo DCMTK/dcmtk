@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2009.12.09 (schlachter)
 
+- Fixed include path which was still using an old file name.
+  Affects: dcmpstat/libsrc/dviface.cc
+
 - Rebuilt Makefile dependencies.
   Affects: oflog/libsrc/Makefile.dep
            dcmdata/apps/Makefile.dep
