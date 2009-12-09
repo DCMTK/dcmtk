@@ -1,10 +1,42 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.09 (schlachter)
+
+- Rebuilt Makefile dependencies.
+  Affects: oflog/libsrc/Makefile.dep
+           dcmdata/apps/Makefile.dep
+           dcmdata/libi2d/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/tests/Makefile.dep
+           dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/apps/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+           dcmjpeg/apps/Makefile.dep
+           dcmjpeg/libsrc/Makefile.dep
+           dcmnet/apps/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/tests/Makefile.dep
+           dcmqrdb/apps/Makefile.dep
+           dcmqrdb/libsrc/Makefile.dep
+           dcmsign/apps/Makefile.dep
+           dcmsign/libsrc/Makefile.dep
+           dcmsr/apps/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/tests/Makefile.dep
+           dcmtls/libsrc/Makefile.dep
+           dcmwlm/apps/Makefile.dep
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/tests/Makefile.dep
+           dcmwlm/wwwapps/Makefile.dep
+
 **** Changes from 2009.12.08 (schlachter)
 
 - Renaming files to make them fit into 8.3 format.
-
   Affects: oflog/include/dcmtk/oflog/appender.h
            oflog/include/dcmtk/oflog/config.h
            oflog/include/dcmtk/oflog/factory.h
