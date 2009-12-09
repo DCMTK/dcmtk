@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.09 (schlachter)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmjpls/apps/Makefile.dep
+           dcmjpls/libsrc/Makefile.dep
+
 **** Changes from 2009.11.25 (riesmeier)
 
 - Removed unused implementation of method determineDecompressedColorModel().
