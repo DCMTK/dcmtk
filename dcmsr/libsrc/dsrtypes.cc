@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 09:45:31 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2009-12-10 15:18:41 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -869,7 +869,7 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
         if ((type == "1") || (type == "2"))
         {
             const OFString tagName = DcmTag(tagKey).getTagName();
-            const OFString module = (moduleName == NULL) ? "RT object" : moduleName;
+            const OFString module = (moduleName == NULL) ? "SR document" : moduleName;
             DCMSR_WARN(tagName << " absent in " << module << " (type " << type << ")");
         }
     }
@@ -1424,6 +1424,9 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.61  2009-12-10 15:18:41  joergr
+ *  Fixed small issue in log output.
+ *
  *  Revision 1.60  2009-10-14 09:45:31  joergr
  *  Slightly modified output of some log messages (avoid creation of temporary
  *  strings).

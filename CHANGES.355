@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.10 (riesmeier)
+
+- Fixed small issue in log output.
+  Affects: dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2009.12.09 (schlachter)
 
 - Fixed include path which was still using an old file name.
