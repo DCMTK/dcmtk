@@ -21,9 +21,9 @@
  *
  *  Purpose: This test program registers image files in the image database.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:41 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-11 15:36:28 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,8 +64,8 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 
-#define SHORTCOL 2
-#define LONGCOL  11
+#define SHORTCOL 3
+#define LONGCOL  12
 
 
 int main (int argc, char *argv[])
@@ -97,11 +97,11 @@ int main (int argc, char *argv[])
     cmd.addParam("dcmfile-in", "DICOM image file to be registered in the index file", OFCmdParam::PM_MultiOptional);
 
     cmd.addGroup("options:", LONGCOL, SHORTCOL);
-     cmd.addOption("--help",      "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--help",    "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",       "print version information and exit", OFCommandLine::AF_Exclusive);
      OFLog::addOptions(cmd);
-     cmd.addOption("--print",     "-p", "list contents of database index file");
-     cmd.addOption("--not-new",   "-n", "set instance reviewed status to 'not new'");
+     cmd.addOption("--print",   "-p", "list contents of database index file");
+     cmd.addOption("--not-new", "-n", "set instance reviewed status to 'not new'");
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -152,7 +152,10 @@ int main (int argc, char *argv[])
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-        OFLOG_WARN(dcmqridxLogger, "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
+    {
+        OFLOG_WARN(dcmqridxLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
+    }
 
     OFCondition cond;
     DcmQueryRetrieveIndexDatabaseHandle hdl(opt_storageArea, DB_UpperMaxStudies, DB_UpperMaxBytesPerStudy, cond);
@@ -178,12 +181,12 @@ int main (int argc, char *argv[])
 #endif
                     hdl.storeRequest(sclass, sinst, opt_imageFile, &status, opt_isNewFlag) ;
                 } else
-                    OFLOG_ERROR(dcmqridxLogger, OFFIS_CONSOLE_APPLICATION << ": cannot load dicom file: " << opt_imageFile);
+                    OFLOG_ERROR(dcmqridxLogger, "cannot load dicom file: " << opt_imageFile);
             }
         }
         if (opt_print)
         {
-            OFLOG_WARN(dcmqridxLogger, "-- DB Index File --");
+            COUT << "-- DB Index File --" << OFendl;
             hdl.printIndexFile((char *)opt_storageArea);
         }
         return 0;
@@ -196,6 +199,9 @@ int main (int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqridx.cc,v $
+ * Revision 1.13  2009-12-11 15:36:28  joergr
+ * Fixed small inconsistencies in syntax usage and log output.
+ *
  * Revision 1.12  2009-11-24 10:10:41  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
