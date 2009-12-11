@@ -21,8 +21,8 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-27 10:51:39 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2009-12-11 15:24:46 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -649,7 +649,6 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:");
      cmd.addOption("--help",        "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",              "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--dump",        "+d",    "dump all DIMSE messages to stdout");
      OFLog::addOptions(cmd);
     cmd.addGroup("print options:");
      cmd.addOption("--noprint",              "do not create print-out (no n-action-rq)");
@@ -664,6 +663,7 @@ int main(int argc, char *argv[])
                                              "process using settings from configuration file");
      cmd.addOption("--printer",     "-p", 1, "[n]ame: string (default: 1st printer in cfg file)",
                                              "select printer with identifier n from cfg file");
+     cmd.addOption("--dump",        "+d",    "dump all DIMSE messages");
     cmd.addGroup("spooler options (only with --spool):");
      cmd.addOption("--sleep",             1, "[d]elay: integer (default: 1)",
                                              "sleep d seconds between spooler checks");
@@ -708,14 +708,6 @@ int main(int argc, char *argv[])
       }
 
       /* options */
-      if (cmd.findOption("--dump"))
-      {
-        // Messages to the "dump" logger are always written with the debug log
-        // level, thus enabling that logger for this level shows the dumps
-        log4cplus::Logger log = log4cplus::Logger::getInstance("dcmtk.dcmpstat.dump");
-        log.setLogLevel(OFLogger::DEBUG_LOG_LEVEL);
-      }
-
       OFLog::configureFromCommandLine(cmd, app);
 
       if (cmd.findOption("--noprint")) opt_noPrint = OFTrue;
@@ -733,6 +725,13 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--config")) app.checkValue(cmd.getValue(opt_cfgName));
       if (cmd.findOption("--printer")) app.checkValue(cmd.getValue(opt_printer));
+      if (cmd.findOption("--dump"))
+      {
+        // Messages to the "dump" logger are always written with the debug log
+        // level, thus enabling that logger for this level shows the dumps
+        log4cplus::Logger log = log4cplus::Logger::getInstance("dcmtk.dcmpstat.dump");
+        log.setLogLevel(OFLogger::DEBUG_LOG_LEVEL);
+      }
 
       if (cmd.findOption("--medium-type"))
       {
@@ -1162,6 +1161,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
+ * Revision 1.29  2009-12-11 15:24:46  joergr
+ * Moved command line option --dump to another section.
+ * Changed description of command line option --dump.
+ *
  * Revision 1.28  2009-11-27 10:51:39  joergr
  * Fixed various issues with syntax usage (e.g. layout and formatting).
  * Sightly modifed log messages.
