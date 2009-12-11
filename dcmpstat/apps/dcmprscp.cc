@@ -22,8 +22,8 @@
  *  Purpose: Presentation State Viewer - Print Server
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-27 10:52:01 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2009-12-11 15:23:25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
                                          "process using settings from configuration file");
      cmd.addOption("--printer", "-p", 1, "[n]ame: string (default: 1st printer in config file)",
                                          "select printer with identifier n from config file");
-     cmd.addOption("--dump",    "+d",    "print all DIMSE messages");
+     cmd.addOption("--dump",    "+d",    "dump all DIMSE messages");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -534,6 +534,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
+ * Revision 1.26  2009-12-11 15:23:25  joergr
+ * Changed description of command line option --dump.
+ *
  * Revision 1.25  2009-11-27 10:52:01  joergr
  * Fixed various issues with syntax usage (e.g. layout and formatting).
  * Sightly modifed log messages.
