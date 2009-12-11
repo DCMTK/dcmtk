@@ -6,6 +6,22 @@ Changes between releases are documented here.
 - Fixed small issue in log output.
   Affects: dcmsr/libsrc/dsrtypes.cc
 
+- Changed description of command line option --dump.
+  Affects: dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/docs/dcmprscp.man
+           dcmpstat/docs/dcmprscu.man
+
+- Moved command line option --dump to another section.
+  Affects: dcmpstat/apps/dcmprscu.cc
+           dcmpstat/docs/dcmprscu.man
+
+- Removed old command line option --logfile.
+  Affects: dcmpstat/docs/dcmprscp.man
+
+- Fixed small inconsistencies in syntax usage and log output.
+  Affects: dcmqrdb/apps/dcmqridx.cc
+
 **** Changes from 2009.12.09 (schlachter)
 
 - Fixed include path which was still using an old file name.
