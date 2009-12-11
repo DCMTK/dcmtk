@@ -65,10 +65,7 @@ the printer to be emulated from the configuration file.
         select printer with identifier n from config file
 
   +d  --dump
-        print all DIMSE messages
-
-  -l  --logfile
-        print to log file instead of stdout
+        dump all DIMSE messages
 \endverbatim
 
 \section logging LOGGING
