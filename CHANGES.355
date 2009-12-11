@@ -22,6 +22,12 @@ Changes between releases are documented here.
 - Fixed small inconsistencies in syntax usage and log output.
   Affects: dcmqrdb/apps/dcmqridx.cc
 
+- Removed old command line option --logfile when executing external processes.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Slightly modified log messages and log levels.
+  Affects: dcmpstat/libsrc/dviface.cc
+
 **** Changes from 2009.12.09 (schlachter)
 
 - Fixed include path which was still using an old file name.
