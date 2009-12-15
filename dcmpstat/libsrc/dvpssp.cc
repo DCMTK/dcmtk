@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:59 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2009-12-15 14:39:37 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -259,8 +259,8 @@ void DVPSStoredPrint::updateCache()
   {
     unsigned long columns=0;
     unsigned long rows=0;
-    char format[30];
-    aString.copy(format,OFString_npos,9);
+    const char *format = aString.c_str() + 9;
+
     if (2==sscanf(format, "%lu,%lu", &columns, &rows))
     {
       currentNumCols = columns;
@@ -3202,6 +3202,9 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
+ *  Revision 1.56  2009-12-15 14:39:37  uli
+ *  Fixed an unsafe usage of OFString.
+ *
  *  Revision 1.55  2009-11-24 14:12:59  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
