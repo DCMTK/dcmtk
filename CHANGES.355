@@ -11,6 +11,12 @@ Changes between releases are documented here.
 - Fixed an unsafe usage of OFString.
   Affects: dcmpstat/libsrc/dvpssp.cc
 
+- Fixes some issues with --logfile and the config's log options.
+  Affects: dcmpstat/apps/dcmprscp.cc
+           dcmpstat/include/dcmtk/dcmpstat/dvpsdef.h
+           dcmpstat/libsrc/dcmpstat.cc
+           dcmpstat/libsrc/dviface.cc
+
 **** Changes from 2009.12.11 (riesmeier)
 
 - Changed description of command line option --dump.

@@ -22,8 +22,8 @@
  *  Purpose: Presentation State Viewer - Print Server
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-12-15 12:34:40 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2009-12-15 14:50:49 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,15 +246,18 @@ int main(int argc, char *argv[])
 
     if (opt_logFile)
     {
+      app.checkConflict("--logfile", "--log-config", cmd.findOption("--log-config"));
+
+      const char *pattern = "%m%n";
       OFString logfilename = logfileprefix;
       logfilename += ".log";
 
-      const char *pattern = "%5p %m%n";
       OFauto_ptr<log4cplus::Layout> layout(new log4cplus::PatternLayout(pattern));
       log4cplus::SharedAppenderPtr logfile(new log4cplus::FileAppender(logfilename));
       log4cplus::Logger log = log4cplus::Logger::getRoot();
 
       logfile->setLayout(layout);
+      log.removeAllAppenders();
       log.addAppender(logfile);
     }
 
@@ -551,6 +554,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
+ * Revision 1.28  2009-12-15 14:50:49  uli
+ * Fixes some issues with --logfile and the config's log options.
+ *
  * Revision 1.27  2009-12-15 12:34:40  uli
  * Re-added and fixed the command line option --logfile.
  *

@@ -23,8 +23,8 @@
  *    classes: DcmPresentationState
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:58 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2009-12-15 14:50:49 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,6 +72,12 @@ OFLogger DCM_dcmpstatGetLogger()
 OFLogger DCM_dcmpstatDumpGetLogger()
 {
     static OFLogger DCM_dcmpstatLogger = OFLog::getLogger("dcmtk.dcmpstat.dump");
+    return DCM_dcmpstatLogger;
+}
+
+OFLogger DCM_dcmpstatLogfileGetLogger()
+{
+    static OFLogger DCM_dcmpstatLogger = OFLog::getLogger("dcmtk.dcmpstat.logfile");
     return DCM_dcmpstatLogger;
 }
 
@@ -1956,6 +1962,9 @@ OFCondition DcmPresentationState::moveOverlay(size_t old_layer, size_t idx, size
 
 /*
  *  $Log: dcmpstat.cc,v $
+ *  Revision 1.11  2009-12-15 14:50:49  uli
+ *  Fixes some issues with --logfile and the config's log options.
+ *
  *  Revision 1.10  2009-11-24 14:12:58  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

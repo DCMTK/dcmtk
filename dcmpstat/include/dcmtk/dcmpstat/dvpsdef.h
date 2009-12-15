@@ -23,8 +23,8 @@
  *    definitions of constants and macros for pstat module
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2009-12-15 14:50:49 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 
 OFLogger DCM_dcmpstatGetLogger();
 OFLogger DCM_dcmpstatDumpGetLogger();
+OFLogger DCM_dcmpstatLogfileGetLogger();
 
 #define DCMPSTAT_TRACE(msg) OFLOG_TRACE(DCM_dcmpstatGetLogger(), msg)
 #define DCMPSTAT_DEBUG(msg) OFLOG_DEBUG(DCM_dcmpstatGetLogger(), msg)
@@ -49,6 +50,7 @@ OFLogger DCM_dcmpstatDumpGetLogger();
 #define DCMPSTAT_FATAL(msg) OFLOG_FATAL(DCM_dcmpstatGetLogger(), msg)
 
 #define DCMPSTAT_DUMP(msg) OFLOG_DEBUG(DCM_dcmpstatDumpGetLogger(), msg)
+#define DCMPSTAT_LOGFILE(msg) OFLOG_DEBUG(DCM_dcmpstatLogfileGetLogger(), msg)
 
 /* default for max PDU size */
 #define DEFAULT_MAXPDU 16384
@@ -195,6 +197,9 @@ if (result==EC_Normal)                                              \
 
 /*
  *  $Log: dvpsdef.h,v $
+ *  Revision 1.10  2009-12-15 14:50:49  uli
+ *  Fixes some issues with --logfile and the config's log options.
+ *
  *  Revision 1.9  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
