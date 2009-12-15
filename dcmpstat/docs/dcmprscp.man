@@ -54,6 +54,9 @@ the printer to be emulated from the configuration file.
 
   -lc  --log-config  [f]ilename: string
          use config file f for the logger
+
+  -l   --logfile
+         print to log file instead of stdout
 \endverbatim
 
 \subsection processing_options processing options

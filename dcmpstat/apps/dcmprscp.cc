@@ -21,9 +21,9 @@
  *
  *  Purpose: Presentation State Viewer - Print Server
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-11 15:23:25 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-12-15 12:34:40 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,6 +53,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmpstat/dvpsprt.h"
 #include "dcmtk/dcmpstat/dvpshlp.h"
+#include "dcmtk/oflog/fileap.h"
 
 #ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlstrans.h"
@@ -72,6 +73,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 /* command line options */
 static OFBool           opt_binaryLog       = OFFalse;
+static OFBool           opt_logFile         = OFFalse;
 static const char *     opt_cfgName         = NULL;                /* config file name */
 static const char *     opt_printer         = NULL;                /* printer name */
 
@@ -138,6 +140,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--help",    "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",          "print version information and exit", OFCommandLine::AF_Exclusive);
      OFLog::addOptions(cmd);
+     cmd.addOption("--logfile", "-l",    "write a log file");
 
     cmd.addGroup("processing options:");
      cmd.addOption("--config",  "-c", 1, "[f]ilename: string",
@@ -183,6 +186,7 @@ int main(int argc, char *argv[])
 
       OFLog::configureFromCommandLine(cmd, app);
 
+      if (cmd.findOption("--logfile")) opt_logFile = OFTrue;
       if (cmd.findOption("--config"))  app.checkValue(cmd.getValue(opt_cfgName));
       if (cmd.findOption("--printer")) app.checkValue(cmd.getValue(opt_printer));
     }
@@ -240,6 +244,19 @@ int main(int argc, char *argv[])
     DVPSHelper::currentTime(aString);
     logfileprefix += aString;
 
+    if (opt_logFile)
+    {
+      OFString logfilename = logfileprefix;
+      logfilename += ".log";
+
+      const char *pattern = "%5p %m%n";
+      OFauto_ptr<log4cplus::Layout> layout(new log4cplus::PatternLayout(pattern));
+      log4cplus::SharedAppenderPtr logfile(new log4cplus::FileAppender(logfilename));
+      log4cplus::Logger log = log4cplus::Logger::getRoot();
+
+      logfile->setLayout(layout);
+      log.addAppender(logfile);
+    }
 
     OFLOG_WARN(dcmprscpLogger, rcsid << OFendl << OFDateTime::getCurrentDateTime() << OFendl << "started");
 
@@ -534,6 +551,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
+ * Revision 1.27  2009-12-15 12:34:40  uli
+ * Re-added and fixed the command line option --logfile.
+ *
  * Revision 1.26  2009-12-11 15:23:25  joergr
  * Changed description of command line option --dump.
  *

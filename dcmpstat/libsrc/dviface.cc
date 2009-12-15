@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-11 16:16:59 $
- *  CVS/RCS Revision: $Revision: 1.160 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-12-15 12:34:40 $
+ *  CVS/RCS Revision: $Revision: 1.161 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3569,13 +3569,13 @@ OFCondition DVInterface::startPrintServer()
 
       if (detailedLog)
       {
-        if (execl(application, application, "--verbose", "--dump", "--printer", printer, "--config",
+        if (execl(application, application, "--logfile", "--verbose", "--dump", "--printer", printer, "--config",
             configPath.c_str(), NULL) < 0)
         {
           DCMPSTAT_ERROR("Unable to execute '" << application << "'");
         }
       } else {
-        if (execl(application, application, "--printer", printer, "--config", configPath.c_str(), NULL) < 0)
+        if (execl(application, application, "--logfile", "--printer", printer, "--config", configPath.c_str(), NULL) < 0)
         {
           DCMPSTAT_ERROR("Unable to execute '" << application << "'");
         }
@@ -3595,9 +3595,9 @@ OFCondition DVInterface::startPrintServer()
     char commandline[4096];
     if (detailedLog)
     {
-      sprintf(commandline, "%s --verbose --dump --printer %s --config %s", application, printer, configPath.c_str());
+      sprintf(commandline, "%s --logfile --verbose --dump --printer %s --config %s", application, printer, configPath.c_str());
     } else {
-      sprintf(commandline, "%s --printer %s --config %s", application, printer, configPath.c_str());
+      sprintf(commandline, "%s --logfile --printer %s --config %s", application, printer, configPath.c_str());
     }
 #ifdef DEBUG
     if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
@@ -4237,6 +4237,9 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
+ *  Revision 1.161  2009-12-15 12:34:40  uli
+ *  Re-added and fixed the command line option --logfile.
+ *
  *  Revision 1.160  2009-12-11 16:16:59  joergr
  *  Removed old command line option --logfile when executing external processes.
  *  Slightly modified log messages and log levels.
