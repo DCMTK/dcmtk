@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.16 (onken)
+
+- Added base classes for SCU and SCP implementation.
+  Affects: dcmnet/CMakeLists.txt
+           dcmnet/libsrc/CMakeLists.txt
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/libsrc/Makefile.in
+           
+- Fixed bug in scu/scp role negotation. Thanks to Evgeny Sabelskiy
+  <evgeny.sabelskiy@gmail.com> for the report and suggested fix.
+  Affects: dcmnet/libsrc/dulconst.cc  
+
 **** Changes from 2009.12.16 (riesmeier)
 
 - Slightly modified description of command line option --logfile.
