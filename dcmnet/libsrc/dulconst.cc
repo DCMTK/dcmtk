@@ -49,9 +49,9 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-1993
 ** Intent:    This file contains functions for construction of
 **      DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:   $Author: uli $, $Date: 2009-11-18 11:53:59 $
+** Last Update:   $Author: onken $, $Date: 2009-12-16 16:56:52 $
 ** Source File:   $RCSfile: dulconst.cc,v $
-** Revision:    $Revision: 1.21 $
+** Revision:    $Revision: 1.22 $
 ** Status:    $State: Exp $
 */
 
@@ -1000,9 +1000,7 @@ constructSCUSCPRoles(unsigned char type,
         cond = LST_Enqueue(lst, (LST_NODE*)scuscpItem);
         if (cond.bad()) return cond;
       }
-      presentationCtx = params->acceptedPresentationContext != NULL ?
-        (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext) :
-        (DUL_PRESENTATIONCONTEXT*)NULL;
+      presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->requestedPresentationContext); 
     }
   } else {
     presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext);
@@ -1512,6 +1510,9 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
+** Revision 1.22  2009-12-16 16:56:52  onken
+** Fixed bug in scu/scp role negotation.
+**
 ** Revision 1.21  2009-11-18 11:53:59  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
