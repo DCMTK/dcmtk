@@ -56,7 +56,10 @@ the printer to be emulated from the configuration file.
          use config file f for the logger
 
   -l   --logfile
-         print to log file instead of stdout
+         write a log file (not with --log-config)
+
+         # this option is available for reasons of backward
+         # compatibility only
 \endverbatim
 
 \subsection processing_options processing options

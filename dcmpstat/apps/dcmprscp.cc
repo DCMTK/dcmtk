@@ -21,9 +21,9 @@
  *
  *  Purpose: Presentation State Viewer - Print Server
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-12-15 14:50:49 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-16 14:12:18 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,9 +45,9 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
 #include "dcmtk/dcmpstat/dviface.h"
-#include "dcmtk/ofstd/ofbmanip.h"    /* for OFBitmanipTemplate */
-#include "dcmtk/ofstd/ofdatime.h"    /* for OFDateTime */
-#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/ofstd/ofbmanip.h"       /* for OFBitmanipTemplate */
+#include "dcmtk/ofstd/ofdatime.h"       /* for OFDateTime */
+#include "dcmtk/dcmdata/dcuid.h"        /* for dcmtk version name */
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
@@ -72,10 +72,10 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* command line options */
-static OFBool           opt_binaryLog       = OFFalse;
-static OFBool           opt_logFile         = OFFalse;
-static const char *     opt_cfgName         = NULL;                /* config file name */
-static const char *     opt_printer         = NULL;                /* printer name */
+static OFBool      opt_binaryLog = OFFalse;
+static OFBool      opt_logFile   = OFFalse;
+static const char *opt_cfgName   = NULL;                /* config file name */
+static const char *opt_printer   = NULL;                /* printer name */
 
 static void cleanChildren()
 {
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--help",    "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",          "print version information and exit", OFCommandLine::AF_Exclusive);
      OFLog::addOptions(cmd);
-     cmd.addOption("--logfile", "-l",    "write a log file");
+     cmd.addOption("--logfile", "-l",    "write a log file (not with --log-config)");
 
     cmd.addGroup("processing options:");
      cmd.addOption("--config",  "-c", 1, "[f]ilename: string",
@@ -186,7 +186,11 @@ int main(int argc, char *argv[])
 
       OFLog::configureFromCommandLine(cmd, app);
 
-      if (cmd.findOption("--logfile")) opt_logFile = OFTrue;
+      if (cmd.findOption("--logfile"))
+      {
+        app.checkConflict("--logfile", "--log-config", cmd.findOption("--log-config"));
+        opt_logFile = OFTrue;
+      }
       if (cmd.findOption("--config"))  app.checkValue(cmd.getValue(opt_cfgName));
       if (cmd.findOption("--printer")) app.checkValue(cmd.getValue(opt_printer));
     }
@@ -246,8 +250,6 @@ int main(int argc, char *argv[])
 
     if (opt_logFile)
     {
-      app.checkConflict("--logfile", "--log-config", cmd.findOption("--log-config"));
-
       const char *pattern = "%m%n";
       OFString logfilename = logfileprefix;
       logfilename += ".log";
@@ -554,6 +556,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
+ * Revision 1.29  2009-12-16 14:12:18  joergr
+ * Slightly modified description of command line option --logfile.
+ *
  * Revision 1.28  2009-12-15 14:50:49  uli
  * Fixes some issues with --logfile and the config's log options.
  *

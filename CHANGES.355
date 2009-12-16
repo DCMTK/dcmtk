@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.16 (riesmeier)
+
+- Slightly modified description of command line option --logfile.
+  Affects: dcmpstat/apps/dcmprscp.cc
+           dcmpstat/docs/dcmprscp.man
+
 **** Changes from 2009.12.15 (schlachter)
 
 - Re-added and fixed the command line option --logfile.
