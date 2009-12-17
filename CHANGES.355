@@ -3,13 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2009.12.16 (onken)
 
-- Added base classes for SCU and SCP implementation.
+- Added base classes for SCU and SCP implementations.
   Affects: dcmnet/CMakeLists.txt
            dcmnet/libsrc/CMakeLists.txt
            dcmnet/libsrc/Makefile.dep
            dcmnet/libsrc/Makefile.in
+  Added:   dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+           dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
            
-- Fixed bug in scu/scp role negotation. Thanks to Evgeny Sabelskiy
+- Fixed bug in SCU/SCP role negotation. Thanks to Evgeny Sabelskiy
   <evgeny.sabelskiy@gmail.com> for the report and suggested fix.
   Affects: dcmnet/libsrc/dulconst.cc  
 
