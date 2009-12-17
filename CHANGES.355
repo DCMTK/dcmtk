@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.17 (riesmeier)
+
+- Enhanced CMake project file by disabling external support libraries if
+  corresponding header files could not be found.
+  Affects: CMakeLists.txt
+
 **** Changes from 2009.12.17 (onken)
 
 - Fixed scu and scp base class compile issues.
@@ -21,7 +27,7 @@ Changes between releases are documented here.
 
 - Fixed bug in SCU/SCP role negotation. Thanks to Evgeny Sabelskiy
   <evgeny.sabelskiy@gmail.com> for the report and suggested fix.
-  Affects: dcmnet/libsrc/dulconst.cc  
+  Affects: dcmnet/libsrc/dulconst.cc
 
 **** Changes from 2009.12.16 (riesmeier)
 
