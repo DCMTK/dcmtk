@@ -22,9 +22,9 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-12-17 09:05:15 $
+ *  Update Date:      $Date: 2009-12-17 09:12:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/scu.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,8 @@
 #include "dcmtk/dcmtls/tlslayer.h"
 #endif
 
+class DcmSCU
+{
 
 public:
 
@@ -535,6 +537,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.3  2009-12-17 09:12:10  onken
+** Fixed other scu and scp base class compile issues.
+**
 ** Revision 1.2  2009-12-17 09:05:15  onken
 ** Fixed typo resulting in build failure.
 **

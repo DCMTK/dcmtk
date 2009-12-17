@@ -22,9 +22,9 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-12-16 17:05:35 $
+ *  Update Date:      $Date: 2009-12-17 09:12:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/scu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,6 @@ DcmSCU::DcmSCU() :
   m_presContexts(),
   m_currPresID(1),
   m_openDIMSERequest(NULL),
-  m_abortAssociation(OFFalse),
   m_maxReceivePDULength(ASC_DEFAULTMAXPDU),
   m_secureConnection(OFFalse),
   m_blockMode(DIMSE_BLOCKING),
@@ -429,25 +428,13 @@ void DcmSCU::closeAssociation(const OFCondition& abortOrReleaseRequested)
   /* tear down association, i.e. terminate network connection to SCP */
   if (abortOrReleaseRequested == EC_Normal)
   {
-    if (m_abortAssociation)
+    /* release association */
+    DCMNET_DEBUG("Releasing association");
+    cond = ASC_releaseAssociation(m_assoc);
+    if (cond.bad())
     {
-      DCMNET_DEBUG("Aborting association");
-      cond = ASC_abortAssociation(m_assoc);
-      if (cond.bad())
-      {
-        DCMNET_ERROR("Association abort failed:\n" << DimseCondition::dump(msg, cond));
-      }
-    }
-    else
-    {
-      /* release association */
-      DCMNET_DEBUG("Releasing association");
-      cond = ASC_releaseAssociation(m_assoc);
-      if (cond.bad())
-      {
-        DCMNET_ERROR("Association release failed :\n" << DimseCondition::dump(msg, cond));
-        return;
-      }
+      DCMNET_ERROR("Association release failed :\n" << DimseCondition::dump(msg, cond));
+      return;
     }
   }
   else if (abortOrReleaseRequested == DUL_PEERREQUESTEDRELEASE)
@@ -645,12 +632,6 @@ OFCondition DcmSCU::receiveDIMSEDataset( T_ASC_PresentationContextID *presID,
 }
 
 
-void DcmSCU::setAssociationAbort(const OFBool& abortAssociation)
-{
-  m_abortAssociation = abortAssociation;
-}
-
-
 void DcmSCU::setMaxReceivePDULength(const unsigned long& maxRecPDU)
 {
   m_maxReceivePDULength = maxRecPDU;
@@ -713,12 +694,6 @@ OFBool DcmSCU::isConnected() const
 {
   return (m_assoc != NULL);
 }
-
-OFBool DcmSCU::getAssociationAbort() const
-{
-  return m_abortAssociation;
-}
-
 
 Uint32 DcmSCU::getMaxReceivePDULength() const
 {
@@ -952,6 +927,9 @@ int DcmSCU::getACSETimeout() const
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.2  2009-12-17 09:12:27  onken
+** Fixed other scu and scp base class compile issues.
+**
 ** Revision 1.1  2009-12-16 17:05:35  onken
 ** Added base classes for SCU and SCP implementation.
 **
