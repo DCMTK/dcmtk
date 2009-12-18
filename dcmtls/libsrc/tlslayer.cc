@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSTransportLayer
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 12:11:19 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-18 13:15:45 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -162,13 +162,13 @@ unsigned long DcmTLSTransportLayer::getNumberOfCipherSuites()
 const char *DcmTLSTransportLayer::getTLSCipherSuiteName(unsigned long idx)
 {
   if (idx < sizeof(cipherSuiteList)/sizeof(DcmCipherSuiteList)) return cipherSuiteList[idx].TLSname;
-  return NULL;  
+  return NULL;
 }
 
 const char *DcmTLSTransportLayer::getOpenSSLCipherSuiteName(unsigned long idx)
 {
   if (idx < sizeof(cipherSuiteList)/sizeof(DcmCipherSuiteList)) return cipherSuiteList[idx].openSSLName;
-  return NULL;  
+  return NULL;
 }
 
 const char *DcmTLSTransportLayer::findOpenSSLCipherSuiteName(const char *tlsCipherSuiteName)
@@ -196,20 +196,14 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile
    SSLeay_add_all_algorithms();
    seedPRNG(randFile);
 
-   SSL_METHOD *method = NULL;
-   switch (networkRole)
+   if (networkRole == DICOM_APPLICATION_ACCEPTOR)
    {
-     case DICOM_APPLICATION_ACCEPTOR: 
-       method = TLSv1_server_method();
-       break;
-     case DICOM_APPLICATION_REQUESTOR:
-       method = TLSv1_client_method();
-       break;
-     default:
-       method = TLSv1_method();
-       break;
+     transportLayerContext = SSL_CTX_new(TLSv1_server_method());
+   } else if (networkRole == DICOM_APPLICATION_REQUESTOR) {
+     transportLayerContext = SSL_CTX_new(TLSv1_client_method());
+   } else {
+     transportLayerContext = SSL_CTX_new(TLSv1_method());
    }
-   transportLayerContext = SSL_CTX_new(method);
 
 #ifdef DEBUG
    if (transportLayerContext == NULL)
@@ -356,7 +350,7 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateDir(const cha
   } else return TCS_illegalCall;
   return TCS_ok;
 }
-      
+
 DcmTransportConnection *DcmTLSTransportLayer::createConnection(int openSocket, OFBool useSecureLayer)
 {
   if (useSecureLayer)
@@ -387,7 +381,7 @@ void DcmTLSTransportLayer::seedPRNG(const char *randFile)
       RAND_load_file(randFile ,-1);
     }
   }
-  if (RAND_status()) canWriteRandseed = OFTrue; 
+  if (RAND_status()) canWriteRandseed = OFTrue;
   else
   {
     /* warn user */
@@ -484,7 +478,7 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
 
 #else  /* WITH_OPENSSL */
 
-/* make sure that the object file is not completely empty if compiled 
+/* make sure that the object file is not completely empty if compiled
  * without OpenSSL because some linkers might fail otherwise.
  */
 void tlslayer_dummy_function()
@@ -496,6 +490,9 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
+ *  Revision 1.15  2009-12-18 13:15:45  joergr
+ *  Fixed issue with beta version of OpenSSL 1.0 (const declaration changed).
+ *
  *  Revision 1.14  2009-11-18 12:11:19  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

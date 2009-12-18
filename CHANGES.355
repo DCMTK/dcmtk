@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.18 (riesmeier)
+
+- Fixed issue with beta version of OpenSSL 1.0 (const declaration changed).
+  Thanks to forum user "Vrenn" for the report and suggested fix.
+  Affects: dcmtls/libsrc/tlslayer.cc
+
 **** Changes from 2009.12.17 (riesmeier)
 
 - Enhanced CMake project file by disabling external support libraries if
