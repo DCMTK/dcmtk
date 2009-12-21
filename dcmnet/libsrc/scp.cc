@@ -22,9 +22,9 @@
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-12-16 17:05:35 $
+ *  Update Date:      $Date: 2009-12-21 15:33:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/scp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,21 +94,18 @@ DcmSCP::DcmSCP() :
   m_assocConfig(NULL),
   m_assocCfgProfileName("Default"),
   m_port( 104 ),
-  m_aetitle(""),
+  m_aetitle("DCMTK_SCP"),
   m_refuseAssociation( OFFalse ),
   m_maxPDU( ASC_DEFAULTMAXPDU ), 
   m_singleProcess( OFTrue ),
   m_forkedChild( OFFalse ),
   m_maxAssociations( 1 ),
   m_blockMode(DIMSE_BLOCKING),
-  m_dimse_timeout(0),
-  m_acse_timeout(30),
+  m_DIMSETimeout(0),
+  m_ACSETimeout(30),
   m_processTable(),
   m_respondWithCalledAETitle( OFTrue ),
-  m_pcInfo(),
-  DCMSCP_TS_KEY("DCMSCP_GEN_TS_KEY"),
-  DCMSCP_PC_KEY("DCMSCP_GEN_PC_KEY"), 
-  DCMSCP_PROFILE_KEY("DCMSCP_GEN_PROFILE_KEY")
+  m_pcInfo()
 {
   // make sure not to let dcmdata remove tailing blank padding or perform other
   // manipulations. We want to see the real data.
@@ -179,7 +176,6 @@ OFCondition DcmSCP::markAsForkedChild()
    */
   if ( m_singleProcess || (m_assoc != NULL) )
     return EC_IllegalCall;
-  COUT << "TODO remove OFCondition DcmSCP::markAsForkedChild(): Called" << OFendl;
   m_forkedChild = OFTrue;
   return EC_Normal;
 }
@@ -237,7 +233,7 @@ OFCondition DcmSCP::listen()
 #endif
     // Initialize network, i.e. create an instance of T_ASC_Network*.
   T_ASC_Network *m_net = NULL;
-  cond = ASC_initializeNetwork( NET_ACCEPTOR, (int)m_port, m_acse_timeout, &m_net );
+  cond = ASC_initializeNetwork( NET_ACCEPTOR, (int)m_port, m_ACSETimeout, &m_net );
   if( cond.bad() ) return( cond );
 
 #if defined(HAVE_SETUID) && defined(HAVE_GETUID)
@@ -354,7 +350,7 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
   if (network == NULL) return ASC_NULLKEY; // TODO specific error
   if (m_assoc != NULL) return EC_IllegalCall;
   char buf[BUFSIZ];
-  int timeout;
+  Uint16 timeout;
 
   // Depending on if the execution is limited to one single process
   // or not we need to set the timeout value correspondingly.
@@ -370,7 +366,7 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
   }
 
   // Listen to a socket for timeout seconds and wait for an association request.
-  OFCondition cond = ASC_receiveAssociation( network, &m_assoc, m_maxPDU, NULL, NULL, OFFalse, DUL_NOBLOCK, timeout );
+  OFCondition cond = ASC_receiveAssociation( network, &m_assoc, m_maxPDU, NULL, NULL, OFFalse, DUL_NOBLOCK, OFstatic_cast(int,timeout) );
 
   // just return, if timeout occured (DUL_NOASSOCIATIONREQUEST)
   // or (WIN32) if dcmnet has started a child for us, to handle this
@@ -430,7 +426,7 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
 
   // Condition 3: if there are too many concurrent associations
   // we want to refuse the association request
-  if( (int)m_processTable.size() >= m_maxAssociations )
+  if( m_processTable.size() >= m_maxAssociations )
   {
     refuseAssociation( DCMSCP_TOO_MANY_ASSOCIATIONS );
     if( !m_singleProcess )
@@ -454,7 +450,11 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
     return( EC_Normal );
   }
 
-  // If we get to this point the association shall be negotiated.
+  /* If we get to this point the association shall be negotiated.
+     Thus, for every presentation context it is checked whether
+     it can be accepdted. However, this is only a "dry" run, i.e. there
+     is not yet sent a response message to the SCU
+   */
   cond = negotiateAssociation();
   if( cond.bad() )
   {
@@ -685,7 +685,7 @@ OFCondition DcmSCP::receiveDataset(DcmDataset **dataObject,
   T_ASC_PresentationContextID presID;
   return DIMSE_receiveDataSetInMemory(m_assoc, 
     m_blockMode, 
-    m_dimse_timeout, 
+    m_DIMSETimeout, 
     &presID, 
     dataObject, 
     callback, 
@@ -885,7 +885,7 @@ void DcmSCP::cleanChildren()
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::setRefuseAssociation(const OFBool doRefuse)
+void DcmSCP::forceAssociationRefuse(const OFBool doRefuse)
 {
   m_refuseAssociation = doRefuse;
 }
@@ -933,16 +933,16 @@ void DcmSCP::setDIMSEBlockingMode(const T_DIMSE_BlockingMode blockingMode)
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::setDIMSETimeout(const int dimseTimeout)
+void DcmSCP::setDIMSETimeout(const Uint16 dimseTimeout)
 {
-  m_dimse_timeout = dimseTimeout;
+  m_DIMSETimeout = dimseTimeout;
 }
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::setACSETimeout(const int acseTimeout)
+void DcmSCP::setACSETimeout(const Uint16 acseTimeout)
 {
-  m_acse_timeout = acseTimeout;
+  m_ACSETimeout = acseTimeout;
 }
 
 // ----------------------------------------------------------------------------
@@ -1012,16 +1012,16 @@ T_DIMSE_BlockingMode DcmSCP::getDIMSEBlockingMode() const
 
 // ----------------------------------------------------------------------------
 
-int DcmSCP::getDIMSETimeout () const
+Uint16 DcmSCP::getDIMSETimeout () const
 {
-  return m_dimse_timeout;
+  return m_DIMSETimeout;
 }
 
 // ----------------------------------------------------------------------------
 
-int DcmSCP::getACSETimeout () const
+Uint16 DcmSCP::getACSETimeout () const
 {
-  return m_acse_timeout;
+  return m_ACSETimeout;
 }
 
 // ----------------------------------------------------------------------------
@@ -1033,42 +1033,38 @@ OFBool DcmSCP::isConnected() const
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::getPeerAETitle(OFString &aetitle) const
+OFString DcmSCP::getPeerAETitle() const
 {
   if  (m_assoc == NULL)
-    return ASC_NULLKEY;
-  aetitle = m_assoc->params->DULparams.callingAPTitle;
-  return EC_Normal;
+    return "";
+  return m_assoc->params->DULparams.callingAPTitle;
 }
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::getCalledAETitle(OFString& calledAE) const
+OFString DcmSCP::getCalledAETitle() const
 {
   if  (m_assoc == NULL)
-    return ASC_NULLKEY;
-  calledAE = m_assoc->params->DULparams.calledAPTitle;
-  return EC_Normal;
+    return "";
+  return m_assoc->params->DULparams.calledAPTitle;
 }
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::getPeerMaxPDU(Uint32 &maxPeerPDU) const
+Uint32 DcmSCP::getPeerMaxPDU() const
 {
   if (m_assoc == NULL)
-    return ASC_NULLKEY;
-  maxPeerPDU = m_assoc->params->theirMaxPDUReceiveSize;
-  return EC_Normal;
+    return 0;
+  return m_assoc->params->theirMaxPDUReceiveSize;
 }
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::getPeerIP(OFString &ipOrHostname) const
+OFString DcmSCP::getPeerIP() const
 {
   if (m_assoc == NULL)
-    return ASC_NULLKEY;
-  ipOrHostname = m_assoc->params->DULparams.callingPresentationAddress;
-  return EC_Normal;  
+    return "";
+  return m_assoc->params->DULparams.callingPresentationAddress;
 }
 
 // ----------------------------------------------------------------------------
@@ -1078,7 +1074,6 @@ OFBool DcmSCP::calledAETitleAccepted(const OFString& callingAE,
 {
   if (m_respondWithCalledAETitle)  // default is to use the called AE title
   {
-    m_aetitle = calledAE;
     return OFTrue;
   }
   if (calledAE != m_aetitle)
@@ -1155,6 +1150,9 @@ OFCondition DcmSCP::addAbstractSyntax(const OFString& abstractSyntaxUID,
   if (profile.empty())
     return EC_IllegalParameter;
 
+
+  const OFString DCMSCP_TS_KEY("DCMSCP_GEN_TS_KEY");
+  const OFString DCMSCP_PC_KEY("DCMSCP_GEN_PC_KEY");
   // create new association configuration if not already existing
   OFBool newlyCreated = OFFalse;
   if (!m_assocConfig)
@@ -1269,6 +1267,9 @@ void DcmSCP::notifyDIMSEError(const OFCondition& cond)
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.2  2009-12-21 15:33:58  onken
+** Added documentation and refactored / enhanced some code.
+**
 ** Revision 1.1  2009-12-16 17:05:35  onken
 ** Added base classes for SCU and SCP implementation.
 **

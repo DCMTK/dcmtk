@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.21 (onken)
+
+- Added documentation and refactored / enhanced some code.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/dcmtk/scp.cc
+           dcmnet/libsrc/dcmtk/scu.cc
+
 **** Changes from 2009.12.21 (schlachter)
 
 - Removed class OFLogFile which is no longer used.

@@ -22,9 +22,9 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-12-17 09:12:10 $
+ *  Update Date:      $Date: 2009-12-21 15:33:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/scu.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,11 @@
 #include "dcmtk/dcmtls/tlslayer.h"
 #endif
 
+/** Base class for implementing DICOM Service Class User functionality.
+ *  The class offers support for negotiating associations and sending
+ *  and receiving arbitrary DIMSE messages on that connection. An ECHO
+ *  
+  */
 class DcmSCU
 {
 
@@ -209,7 +214,7 @@ public:
   /** Set SCP's port number to connect to for association negotiation.
    *  @param peerAETitle [in] The SCP's port number.
    */  
-  void setPeerPort(const unsigned long& peerPort);
+  void setPeerPort(const Uint16 peerPort);
 
   /** Set timeout for receiving DIMSE messages.
    *  @param dimseTimeout [in] DIMSE Timeout for receiving data. If the
@@ -217,13 +222,13 @@ public:
    *                      trying to read data from the incoming socket
    *                      stream and no data has been received.
    */  
-  void setDIMSETimeout(const int& dimseTimeout);
+  void setDIMSETimeout(const Uint16 dimseTimeout);
 
   /** Set timeout for receiving ACSE messages.
    *  @param dimseTimeout [in] ACSE Timeout used by timer for message timeouts
    *                      during association negotiation(?). Defined in seconds.
    */    
-  void setACSETimeout(const int& acseTimeout);
+  void setACSETimeout(const Uint16 acseTimeout);
 
   /** Set an association configuration file and profile to be used.
    *  @param filename [in] File name of the association configuration file
@@ -270,19 +275,19 @@ public:
   /** Returns the SCP's (peer's) TCP/IP port configured.
    *  @return The port configured to talked to.
    */ 
-  unsigned int getPeerPort() const;
+  Uint16 getPeerPort() const;
 
   /** Returns the DIMSE timeout configured defining how long SCU will wait
    *  for DIMSE responses.
    *  @return The DIMSE timeout configured.
    */ 
-  int getDIMSETimeout() const;
+  Uint16 getDIMSETimeout() const;
 
   /** Returns the timeout configured defining how long SCU will wait
    *  for messages during ACSE messaging (association negotiation).
    *  @return The ACSE timeout configured.
    */ 
-  int getACSETimeout() const;
+  Uint16 getACSETimeout() const;
 
   /** Returns whether SCU is configured to create a TLS connection
    *  with the SCP.
@@ -300,123 +305,123 @@ public:
    */
   void setSecureConnectionMode(const OFBool& secureMode);
 
-  /** XXX
-   *  @param XXX
+  /**   
+   *  @param Not documented yet
    */
   void addTrustedCertFile(const OFString& str);
   
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   void addTrustedCertDir(const OFString& certDir);
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   void setKeyFileFormat(const int& keyFileFormat);
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */  
   void setAuthenticationEnabled(const OFBool& authMode);
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */  
   void setPrivateKeyFile(const OFString& keyFile);
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */  
   void setCertificateFile(const OFString& certFile);
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */  
   void setPassword(const char* passwd);
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */  
   void setCiphersuites(const OFString& cs);
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   void setReadSeedFile(const OFString& seedFile);
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   void setWriteSeedFile(const OFString& seedFile);
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   void setCertVerification(const DcmCertificateVerification& cert);
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   void setDHParam(const OFString& dhParam);
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */  
   int getKeyFileFormat() const;
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   OFBool getAuthenticationEnabled() const;
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   OFString getPrivateKeyFile() const;
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   void getTrustedCertFiles(OFList<OFString>& files /*out*/) const;
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   void getTrustedCertDirs(OFList<OFString>& trustedDirs /*out*/) const;
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   OFString getCertificateFile() const;
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   OFBool getPassword(OFString& passwd /*out*/) const;
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   OFString getCiphersuites() const;
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   OFString getReadSeedFile() const;
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   OFString getWriteSeedFile() const;
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   DcmCertificateVerification getCertVerification() const;
 
-  /** XXX
-   *  @param XXX
+  /** Not documented yet
+   *  @param Not documented yet
    */
   OFString getDHParam() const;
 #endif
@@ -424,6 +429,17 @@ public:
 protected:
 
 private:
+
+  /** Private undefined copy-constructor. Shall never be called.
+   *  @param src Source object.
+   */
+  DcmSCU( const DcmSCU &src );
+
+  /** Private undefined operator=. Shall never be called.
+   *  @param src Source object.
+   *  @return Reference to this.
+   */
+  DcmSCU &operator=( const DcmSCU &src );
 
   /// The DICOM network the association is based on
   T_ASC_Network* m_net;
@@ -443,7 +459,9 @@ private:
   /// Defines presentation context, consisting of one abstract syntax name
   /// and a list of transfer syntaxes for this abstract syntax
   struct DcmSCUPresContext {
+    /// Abstract Syntax Name of Presentation Context
     OFString abstractSyntaxName;
+    /// List of Transfer Syntaxes for Presentation Context
     OFList<OFString> transferSyntaxes;
   };
 
@@ -478,65 +496,68 @@ private:
   OFString m_peerAETitle;
 
   /// port of remote application entity
-  Uint32 m_peerPort;
+  Uint16 m_peerPort;
 
   /// DIMSE timeout
-  int m_dimse_timeout;
+  Uint16 m_dimse_timeout;
 
   /// ACSE timeout
-  int m_acse_timeout;
+  Uint16 m_acse_timeout;
 
 #ifdef WITH_OPENSSL
-    /// TODO
-    DcmTLSTransportLayer *m_tLayer;
+  /// TODO
+  DcmTLSTransportLayer *m_tLayer;
 
-    /// TODO
-    int m_keyFileFormat;
+  /// TODO
+  int m_keyFileFormat;
 
-    /// TODO
-    OFBool m_doAuthenticate;
+  /// TODO
+  OFBool m_doAuthenticate;
 
-    /// TODO
-    OFList<OFString> m_trustedCertDirs;
+  /// TODO
+  OFList<OFString> m_trustedCertDirs;
 
-    /// TODO
-    OFList<OFString> m_trustedCertFiles;
+  /// TODO
+  OFList<OFString> m_trustedCertFiles;
 
-    /// TODO
-    OFString m_privateKeyFile ;
+  /// TODO
+  OFString m_privateKeyFile ;
 
-    /// TODO
-    OFString m_certificateFile;
+  /// TODO
+  OFString m_certificateFile;
 
-    /// TODO
-    char* m_passwd;
+  /// TODO
+  char* m_passwd;
 
-    /// TODO
-    OFString m_ciphersuites;;
+  /// TODO
+  OFString m_ciphersuites;;
 
-    /// TODO
-    OFString m_readSeedFile;
+  /// TODO
+  OFString m_readSeedFile;
 
-    /// TODO
-    OFString m_writeSeedFile;
+  /// TODO
+  OFString m_writeSeedFile;
 
-    /// TODO
-    DcmCertificateVerification m_certVerification;
+  /// TODO
+  DcmCertificateVerification m_certVerification;
 
-    /// TODO
-    OFString m_dhparam;
+  /// TODO
+  OFString m_dhparam;
 #endif
 
   /** Returns next available message ID free to be used by SCU.
    *  @return Next free message ID
    */
-  unsigned short nextMessageID();
+  Uint16 nextMessageID();
 
 };
 
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.4  2009-12-21 15:33:55  onken
+** Added documentation and refactored / enhanced some code.
+**
 ** Revision 1.3  2009-12-17 09:12:10  onken
 ** Fixed other scu and scp base class compile issues.
 **

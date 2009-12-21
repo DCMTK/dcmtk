@@ -22,9 +22,9 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-12-17 09:12:27 $
+ *  Update Date:      $Date: 2009-12-21 15:33:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/scu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,9 +52,9 @@ DcmSCU::DcmSCU() :
   m_peerAETitle("ANY-SCP"),
   m_peerPort(104),
   m_dimse_timeout(0),
-  m_acse_timeout(30),
+  m_acse_timeout(30)
 #ifdef WITH_OPENSSL
-  m_tLayer(NULL),
+  ,m_tLayer(NULL),
   m_keyFileFormat(SSL_FILETYPE_PEM),
   m_doAuthenticate(OFFalse),
   m_trustedCertDirs(),
@@ -206,7 +206,20 @@ OFCondition DcmSCU::initNetwork()
   DIC_NODENAME localHost;
   DIC_NODENAME peerHost;
   gethostname(localHost, sizeof(localHost) - 1);
-  sprintf(peerHost, "%s:%d", m_peer.c_str(), (int)m_peerPort);
+  /* Since the underlying dcmnet structures reserve only 64 bytes for peer
+     as well as local host name, we check here for buffer overflow.
+   */
+  if ( (strlen(peerHost) + 5 /* max 65535 */) +1 /* for ":" */ > 63)
+  {
+    DCMNET_ERROR("Maximum length of peer host name '" << peerHost << "' is longer than maximum of 57 characters");
+    return EC_IllegalCall;
+  }
+  if ( strlen(localHost) + 1 > 63 )
+  {
+    DCMNET_ERROR("Maximum length of local host name '" << localHost << " is longer than maximum of 62 characters");
+    return EC_IllegalCall;
+  }
+  sprintf(peerHost, "%s:%d", m_peer.c_str(), OFstatic_cast(int, m_peerPort) );
   ASC_setPresentationAddresses(m_params, localHost, peerHost);
 
   /* Add presentation contexts */
@@ -248,7 +261,7 @@ OFCondition DcmSCU::initNetwork()
 
   // Adapt presentation context ID to existing presentation contexts
   // It's important that presentation context ids are numerated 1,3,5,7...!
-  int numContexts = ASC_countPresentationContexts(m_params);
+  Uint32 numContexts = ASC_countPresentationContexts(m_params);
   if (numContexts < 127)
   {
     // need Uint16 to avoid overflow in currPresID (unsigned char)
@@ -268,7 +281,7 @@ OFCondition DcmSCU::initNetwork()
   while ( (contIt != m_presContexts.end()) && (m_currPresID <= 253) )
   {
     m_currPresID += 2;
-    const unsigned int numTransferSyntaxes = (*contIt).transferSyntaxes.size();
+    const Uint16 numTransferSyntaxes = (*contIt).transferSyntaxes.size();
     const char** transferSyntaxes = new const char*[numTransferSyntaxes];
 
     // Iterate over transfer syntaxes within one presentation context
@@ -345,7 +358,7 @@ OFCondition DcmSCU::negotiateAssociation()
   }
 
   /* dump general information concerning the establishment of the network connection if required */
-  DCMNET_DEBUG("Association Accepted (Max Send PDV: " << (unsigned int)(m_assoc->sendPDVLength));
+  DCMNET_DEBUG("Association Accepted (Max Send PDV: " << (unsigned long)(m_assoc->sendPDVLength));
   return EC_Normal;
 }
 
@@ -411,7 +424,7 @@ T_ASC_PresentationContextID DcmSCU::findPresContID(const OFString& abstractSynta
 }
 
 
-unsigned short DcmSCU::nextMessageID()
+Uint16 DcmSCU::nextMessageID()
 {
   if (m_assoc == NULL)
     return 0;
@@ -662,19 +675,19 @@ void DcmSCU::setPeerAETitle(const OFString& peerAETitle)
 }
 
 
-void DcmSCU::setPeerPort(const unsigned long& peerPort)
+void DcmSCU::setPeerPort(const Uint16 peerPort)
 {
   m_peerPort = peerPort;
 }
 
 
-void DcmSCU::setDIMSETimeout(const int& dimseTimeout)
+void DcmSCU::setDIMSETimeout(const Uint16 dimseTimeout)
 {
   m_dimse_timeout = dimseTimeout;
 }
 
 
-void DcmSCU::setACSETimeout(const int& acseTimeout)
+void DcmSCU::setACSETimeout(const Uint16 acseTimeout)
 {
   m_acse_timeout = acseTimeout;
 }
@@ -731,19 +744,19 @@ OFString DcmSCU::getPeerAETitle() const
 }
 
 
-unsigned int DcmSCU::getPeerPort() const
+Uint16 DcmSCU::getPeerPort() const
 {
   return m_peerPort;
 }
 
 
-int DcmSCU::getDIMSETimeout() const
+Uint16 DcmSCU::getDIMSETimeout() const
 {
   return m_dimse_timeout;
 }
 
 
-int DcmSCU::getACSETimeout() const
+Uint16 DcmSCU::getACSETimeout() const
 {
   return m_acse_timeout;
 }
@@ -927,6 +940,9 @@ int DcmSCU::getACSETimeout() const
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.3  2009-12-21 15:33:58  onken
+** Added documentation and refactored / enhanced some code.
+**
 ** Revision 1.2  2009-12-17 09:12:27  onken
 ** Fixed other scu and scp base class compile issues.
 **
