@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2009.12.21 (schlachter)
 
+- Removed class OFLogFile which is no longer used.
+  Affects: ofstd/libsrc/Makefile.in
+  Removed: ofstd/include/dcmtk/ofstd/oflogfil.h
+           ofstd/libsrc/oflogfil.cc
+
 - Removed unwanted libxml2 header files.
   Affects: dcmdata/apps/Makefile.dep
            dcmsr/apps/Makefile.dep
