@@ -5,6 +5,7 @@ Changes between releases are documented here.
 
 - Removed class OFLogFile which is no longer used.
   Affects: ofstd/libsrc/Makefile.in
+           ofstd/libsrc/CMakeLists.txt
   Removed: ofstd/include/dcmtk/ofstd/oflogfil.h
            ofstd/libsrc/oflogfil.cc
 
