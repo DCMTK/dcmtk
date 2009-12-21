@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.21 (riesmeier)
+
+- Rebuilt Makefile dependencies since the files "oflogfil.cc" and "oflogfil.h"
+  were removed.
+  Affects: ofstd/libsrc/Makefile.dep
+
 **** Changes from 2009.12.21 (onken)
 
 - Added documentation and refactored / enhanced some code.
