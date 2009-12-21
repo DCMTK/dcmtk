@@ -606,25 +606,7 @@ dsrcodtn.o: dsrcodtn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrcodvl.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrcodvl.o: dsrcodvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrtypes.h \
@@ -771,25 +753,7 @@ dsrcodvl.o: dsrcodvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrcodvl.h ../include/dcmtk/dcmsr/dsrtypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrcomcc.o: dsrcomcc.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrcomcc.h \
@@ -1096,24 +1060,6 @@ dsrcomtn.o: dsrcomtn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
 dsrcomvl.o: dsrcomvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
@@ -1261,25 +1207,7 @@ dsrcomvl.o: dsrcomvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrcomvl.h ../include/dcmtk/dcmsr/dsrtypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrcontn.o: dsrcontn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrtypes.h \
@@ -1441,25 +1369,7 @@ dsrcontn.o: dsrcontn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrimgfr.h ../include/dcmtk/dcmsr/dsrwavvl.h \
   ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrcsidl.o: dsrcsidl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrcsidl.h \
@@ -1607,25 +1517,7 @@ dsrcsidl.o: dsrcsidl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrdattn.o: dsrdattn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrtypes.h \
@@ -1779,25 +1671,7 @@ dsrdattn.o: dsrdattn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../include/dcmtk/dcmsr/dsrstrvl.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrdoc.o: dsrdoc.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrdoc.h \
@@ -1963,26 +1837,9 @@ dsrdoc.o: dsrdoc.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrcsidl.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h ../include/dcmtk/dcmsr/dsrpnmtn.h \
-  ../include/dcmtk/dcmsr/dsrstrvl.h ../include/dcmtk/dcmsr/dsrdattn.h \
-  ../include/dcmtk/dcmsr/dsrdtitn.h ../include/dcmtk/dcmsr/dsrtimtn.h
+  ../include/dcmtk/dcmsr/dsrpnmtn.h ../include/dcmtk/dcmsr/dsrstrvl.h \
+  ../include/dcmtk/dcmsr/dsrdattn.h ../include/dcmtk/dcmsr/dsrdtitn.h \
+  ../include/dcmtk/dcmsr/dsrtimtn.h
 dsrdoctn.o: dsrdoctn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrdoctn.h \
@@ -2137,24 +1994,7 @@ dsrdoctn.o: dsrdoctn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrstrvl.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h ../include/dcmtk/dcmsr/dsriodcc.h \
+  ../include/dcmtk/dcmsr/dsriodcc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h
 dsrdoctr.o: dsrdoctr.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -2319,24 +2159,7 @@ dsrdoctr.o: dsrdoctr.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrdoctr.h ../include/dcmtk/dcmsr/dsrreftn.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h ../include/dcmtk/dcmsr/dsriodcc.h
+  ../include/dcmtk/dcmsr/dsriodcc.h
 dsrdtitn.o: dsrdtitn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrtypes.h \
@@ -2490,25 +2313,7 @@ dsrdtitn.o: dsrdtitn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../include/dcmtk/dcmsr/dsrstrvl.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrenhcc.o: dsrenhcc.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrenhcc.h \
@@ -2956,25 +2761,7 @@ dsrimgtn.o: dsrimgtn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrimgfr.h ../include/dcmtk/dcmsr/dsrtlist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrimgvl.o: dsrimgvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrimgvl.h \
@@ -3125,25 +2912,7 @@ dsrimgvl.o: dsrimgvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsriodcc.o: dsriodcc.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsriodcc.h \
@@ -3729,25 +3498,7 @@ dsrnumtn.o: dsrnumtn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../include/dcmtk/dcmsr/dsrnumvl.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrnumvl.o: dsrnumvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrtypes.h \
@@ -3895,25 +3646,7 @@ dsrnumvl.o: dsrnumvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrtypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrpnmtn.o: dsrpnmtn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrtypes.h \
@@ -4067,25 +3800,7 @@ dsrpnmtn.o: dsrpnmtn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../include/dcmtk/dcmsr/dsrstrvl.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrprocc.o: dsrprocc.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrprocc.h \
@@ -4391,25 +4106,7 @@ dsrreftn.o: dsrreftn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrimgfr.h ../include/dcmtk/dcmsr/dsrwavvl.h \
   ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrscogr.o: dsrscogr.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrscogr.h \
@@ -4720,25 +4417,7 @@ dsrscotn.o: dsrscotn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrimgfr.h ../include/dcmtk/dcmsr/dsrwavvl.h \
   ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrscovl.o: dsrscovl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrscovl.h \
@@ -4887,25 +4566,7 @@ dsrscovl.o: dsrscovl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrsoprf.o: dsrsoprf.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrsoprf.h \
@@ -5057,24 +4718,6 @@ dsrsoprf.o: dsrsoprf.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h
 dsrstrvl.o: dsrstrvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
@@ -5222,25 +4865,7 @@ dsrstrvl.o: dsrstrvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrtcodt.o: dsrtcodt.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrtcodt.h \
@@ -5698,25 +5323,7 @@ dsrtcotn.o: dsrtcotn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrimgfr.h ../include/dcmtk/dcmsr/dsrwavvl.h \
   ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrtcoto.o: dsrtcoto.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrtcoto.h \
@@ -6017,25 +5624,7 @@ dsrtcovl.o: dsrtcovl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmsr/dsrtcosp.h ../include/dcmtk/dcmsr/dsrtcoto.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrtextn.o: dsrtextn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrtypes.h \
@@ -6189,25 +5778,7 @@ dsrtextn.o: dsrtextn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../include/dcmtk/dcmsr/dsrstrvl.h ../include/dcmtk/dcmsr/dsrstrvl.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrtimtn.o: dsrtimtn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrtypes.h \
@@ -6361,25 +5932,7 @@ dsrtimtn.o: dsrtimtn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../include/dcmtk/dcmsr/dsrstrvl.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrtncsr.o: dsrtncsr.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrtncsr.h \
@@ -7004,25 +6557,7 @@ dsruidtn.o: dsruidtn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../include/dcmtk/dcmsr/dsrstrvl.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrwavch.o: dsrwavch.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrwavch.h \
@@ -7172,24 +6707,6 @@ dsrwavch.o: dsrwavch.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrwavtn.o: dsrwavtn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
@@ -7352,25 +6869,7 @@ dsrwavtn.o: dsrwavtn.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrimgfr.h ../include/dcmtk/dcmsr/dsrwavvl.h \
   ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrxmld.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrwavvl.o: dsrwavvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrwavvl.h \
@@ -7521,50 +7020,14 @@ dsrwavvl.o: dsrwavvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../include/dcmtk/dcmsr/dsrxmld.h ../include/dcmtk/dcmsr/dsrxmlc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrxmlc.o: dsrxmlc.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrxmld.o: dsrxmld.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrxmld.h \
@@ -7711,26 +7174,7 @@ dsrxmld.o: dsrxmld.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
   ../include/dcmtk/dcmsr/dsrxmlc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/parser.h \
-  /usr/include/libxml2/libxml/xmlversion.h \
-  /usr/include/libxml2/libxml/xmlexports.h \
-  /usr/include/libxml2/libxml/tree.h \
-  /usr/include/libxml2/libxml/xmlstring.h \
-  /usr/include/libxml2/libxml/xmlregexp.h \
-  /usr/include/libxml2/libxml/dict.h /usr/include/libxml2/libxml/hash.h \
-  /usr/include/libxml2/libxml/valid.h \
-  /usr/include/libxml2/libxml/xmlerror.h \
-  /usr/include/libxml2/libxml/list.h \
-  /usr/include/libxml2/libxml/xmlautomata.h \
-  /usr/include/libxml2/libxml/entities.h \
-  /usr/include/libxml2/libxml/encoding.h \
-  /usr/include/libxml2/libxml/xmlIO.h \
-  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
-  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
-  /usr/include/libxml2/libxml/xmlmemory.h \
-  /usr/include/libxml2/libxml/threads.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  /usr/include/libxml2/libxml/xmlschemas.h
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dsrxrdcc.o: dsrxrdcc.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmsr/dsrxrdcc.h \

@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.21 (schlachter)
+
+- Removed unwanted libxml2 header files.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmsr/apps/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+
 **** Changes from 2009.12.18 (riesmeier)
 
 - Fixed issue with beta version of OpenSSL 1.0 (const declaration changed).
