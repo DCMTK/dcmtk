@@ -9,6 +9,10 @@ Changes between releases are documented here.
 
 **** Changes from 2009.12.21 (onken)
 
+- Fixed API documentation to keep doxygen quiet.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+
 - Added documentation and refactored / enhanced some code.
   Affects: dcmnet/include/dcmtk/dcmnet/scp.h
            dcmnet/include/dcmtk/dcmnet/scu.h

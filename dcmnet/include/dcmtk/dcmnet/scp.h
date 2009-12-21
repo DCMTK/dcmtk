@@ -23,9 +23,9 @@
  *           applications.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-12-21 15:33:55 $
+ *  Update Date:      $Date: 2009-12-21 17:00:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/scp.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,6 +132,8 @@ struct DcmPresentationContextInfo
  *  and DIMSE messages, a derived class can define the behaviour of the
  *  server. The DcmSCP base class is capable to respond to C-ECHO requests
  *  (Verification SOP Class).
+ *  @warning This class is EXPERIMENTAL. Be careful to use it in production
+ *           environment.
  */
 class DcmSCP
 {
@@ -455,8 +457,11 @@ protected:
 		                                 void *callbackContext);
 
   /** Standard handler for Verification Service Class (DICOM Echo). Returns
-   *  echo response (ie. success).
-   *  @param req    The DIMSE C-ECHO-RQ message that was received.
+   *  echo response (ie. whether C-ECHO could be responded to with status
+   *  success).
+   *  @param req [in] The DIMSE C-ECHO-RQ message that was received.
+   *  @param presId [in] The presentation context to be used. Per default
+   *         the presentation context of the request is used.
    *  @return OFCondition value denoting success or error.
    */
   virtual OFCondition handleEchoRequest(T_DIMSE_C_EchoRQ *req, 
@@ -492,7 +497,7 @@ protected:
    *  refusing an association because of wrong application context
    *  name or no common presentation contexts with the SCU
    *  does NOT lead to an error.
-   *  @param [in] net Contains network parameters.
+   *  @param network [in] Contains network parameters.
    *  @return EC_Normal, if everything went fine, error code otherwise.
    */
   virtual OFCondition waitForAssociation(T_ASC_Network* network);
@@ -665,8 +670,8 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
- *  Revision 1.2  2009-12-21 15:33:55  onken
- *  Added documentation and refactored / enhanced some code.
+ *  Revision 1.3  2009-12-21 17:00:32  onken
+ *  Fixed API documentation to keep doxygen quiet.
  *
  *  Revision 1.1  2009-12-17 09:02:43  onken
  *  Added base classes for SCU and SCP implementations.

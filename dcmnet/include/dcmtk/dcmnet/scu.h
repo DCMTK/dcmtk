@@ -22,9 +22,9 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-12-21 15:33:55 $
+ *  Update Date:      $Date: 2009-12-21 17:00:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/scu.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,9 +49,12 @@
 
 /** Base class for implementing DICOM Service Class User functionality.
  *  The class offers support for negotiating associations and sending
- *  and receiving arbitrary DIMSE messages on that connection. An ECHO
- *  
-  */
+ *  and receiving arbitrary DIMSE messages on that connection. DcmSCU
+ *  has built-in C-ECHO support so derived classes do not have to
+ *  implement that capability on their own.
+ *  @warning This class is EXPERIMENTAL. Be careful to use it in production
+ *           environment.
+ */
 class DcmSCU
 {
 
@@ -133,20 +136,20 @@ public:
 
   /** Receive DIMSE command (excluding dataset!) over the currently
    *  open association.
-   *  @param presId [out] Contains in the end the ID of the presentation
+   *  @param presID [out] Contains in the end the ID of the presentation
    *                context which was specified in the DIMSE command.
    *  @param msg [out] Contains in the end information which represents the DIMSE
    *             command which was received.
    *  @param statusDetail [out] If a non-NULL value is passed this variable
-   *                            will in the end contain detailed information
-   *                            with regard to the status information which
-   *                            is captured in the status element (0000,0900).
-   *                            Note that the value for element (0000,0900)
-   *                            is not contained in this return value but in
-   *                            msg. For details on the structure of this
-   *                            object, see DICOM standard (year 2000) part
-   *                            7, annex C) (or the corresponding section in a
-   *                            later version of the standard.)
+   *                      will in the end contain detailed information
+   *                      with regard to the status information which
+   *                      is captured in the status element (0000,0900).
+   *                      Note that the value for element (0000,0900)
+   *                      is not contained in this return value but in
+   *                      msg. For details on the structure of this
+   *                      object, see DICOM standard (year 2000) part 7,
+   *                      annex C) (or the corresponding section in a
+   *                      later version of the standard.)
    *  @param commandSet [out] If this parameter is not NULL
    *                          it will return a copy of the DIMSE command which
    *                          was received from the other DICOM application.
@@ -212,7 +215,7 @@ public:
   void setPeerAETitle(const OFString& peerAETitle);
 
   /** Set SCP's port number to connect to for association negotiation.
-   *  @param peerAETitle [in] The SCP's port number.
+   *  @param peerPort [in] The SCP's port number.
    */  
   void setPeerPort(const Uint16 peerPort);
 
@@ -225,8 +228,8 @@ public:
   void setDIMSETimeout(const Uint16 dimseTimeout);
 
   /** Set timeout for receiving ACSE messages.
-   *  @param dimseTimeout [in] ACSE Timeout used by timer for message timeouts
-   *                      during association negotiation(?). Defined in seconds.
+   *  @param acseTimeout [in] ACSE Timeout used by timer for message timeouts
+   *                     during association negotiation(?). Defined in seconds.
    */    
   void setACSETimeout(const Uint16 acseTimeout);
 
@@ -305,123 +308,123 @@ public:
    */
   void setSecureConnectionMode(const OFBool& secureMode);
 
-  /**   
-   *  @param Not documented yet
+  /** Not documented yet  
+   *  @param str [in] Not documented yet
    */
   void addTrustedCertFile(const OFString& str);
   
   /** Not documented yet
-   *  @param Not documented yet
+   *  @param certDir [in] Not documented yet
    */
   void addTrustedCertDir(const OFString& certDir);
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @param keyFileFormat [in] Not documented yet
    */
   void setKeyFileFormat(const int& keyFileFormat);
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @param authMode [in] Not documented yet
    */  
   void setAuthenticationEnabled(const OFBool& authMode);
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @param keyFile [in] Not documented yet
    */  
   void setPrivateKeyFile(const OFString& keyFile);
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @param certFile [in] Not documented yet
    */  
   void setCertificateFile(const OFString& certFile);
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @param passwd [in] Not documented yet
    */  
   void setPassword(const char* passwd);
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @param cs [in] Not documented yet
    */  
   void setCiphersuites(const OFString& cs);
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @param seedFile [in] Not documented yet
    */
   void setReadSeedFile(const OFString& seedFile);
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @param seedFile [in] Not documented yet
    */
   void setWriteSeedFile(const OFString& seedFile);
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @param cert [in] Not documented yet
    */
   void setCertVerification(const DcmCertificateVerification& cert);
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @param dhParam [in] Not documented yet
    */
   void setDHParam(const OFString& dhParam);
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @return Not documented yet
    */  
   int getKeyFileFormat() const;
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @return Not documented yet
    */
   OFBool getAuthenticationEnabled() const;
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @return Not documented yet
    */
   OFString getPrivateKeyFile() const;
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @param files [out] Not documented yet
    */
   void getTrustedCertFiles(OFList<OFString>& files /*out*/) const;
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @param trustedDirs [out] Not documented yet
    */
   void getTrustedCertDirs(OFList<OFString>& trustedDirs /*out*/) const;
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @return Not documented yet
    */
   OFString getCertificateFile() const;
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @return Not documented yet
    */
   OFBool getPassword(OFString& passwd /*out*/) const;
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @return Not documented yet
    */
   OFString getCiphersuites() const;
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @return Not documented yet
    */
   OFString getReadSeedFile() const;
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @return Not documented yet
    */
   OFString getWriteSeedFile() const;
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @return Not documented yet
    */
   DcmCertificateVerification getCertVerification() const;
 
   /** Not documented yet
-   *  @param Not documented yet
+   *  @return Not documented yet
    */
   OFString getDHParam() const;
 #endif
@@ -555,6 +558,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.5  2009-12-21 17:00:32  onken
+** Fixed API documentation to keep doxygen quiet.
+**
 ** Revision 1.4  2009-12-21 15:33:55  onken
 ** Added documentation and refactored / enhanced some code.
 **
