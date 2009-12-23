@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.12.23 (riesmeier)
+
+- Changed output of option --arguments.
+  Affects: oflog/libsrc/oflog.cc
+
+- Added support for getting the name of the program, i.e. the value of argv[0].
+  Affects: ofstd/include/dcmtk/ofstd/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
 **** Changes from 2009.12.21 (riesmeier)
 
 - Rebuilt Makefile dependencies since the files "oflogfil.cc" and "oflogfil.h"
