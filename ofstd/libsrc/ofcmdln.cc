@@ -22,8 +22,8 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 09:52:31 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2009-12-23 12:19:02 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,7 +176,8 @@ private:
  *------------------*/
 
 OFCommandLine::OFCommandLine()
-  : ValidOptionList(),
+  : ProgramName(),
+    ValidOptionList(),
     ValidParamList(),
     ArgumentList(),
     ArgumentIterator(),
@@ -1157,6 +1158,10 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
     ParamPosList.clear();
     OptionPosList.clear();
     ExclusiveOption = OFFalse;
+    if (argCount > 0)                                                    // determine program name
+        ProgramName = argValue[0];
+    else
+        ProgramName.clear();
     if (argCount > startPos)                                             // any command line arguments?
     {
         int i;
@@ -1552,6 +1557,9 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
+ * Revision 1.48  2009-12-23 12:19:02  joergr
+ * Added support for getting the name of the program, i.e. the value of argv[0].
+ *
  * Revision 1.47  2009-06-04 09:52:31  joergr
  * Added new flag that can be used to avoid wrong warning messages (in debug
  * mode) that an option has possibly never been checked.

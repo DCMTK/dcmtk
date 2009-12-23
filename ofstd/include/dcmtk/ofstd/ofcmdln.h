@@ -22,8 +22,8 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 09:53:00 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2009-12-23 12:15:51 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -360,6 +360,15 @@ class OFCommandLine
 
  // --- get information
 
+    /** get the name of the program (i.e. the value of argv[0])
+     *
+     ** @return name of the program
+     */
+    const OFString &getProgramName() const
+    {
+        return ProgramName;
+    }
+
     /** gets number of command line arguments.
      *  (options and parameters)
      *
@@ -452,7 +461,6 @@ class OFCommandLine
      ** @return OFTrue if parameter exists, false otherwise
      */
     OFBool findParam(const int pos);
-
 
     /** gets value of specified parameter as signed integer.
      *
@@ -921,6 +929,9 @@ class OFCommandLine
 
  private:
 
+    /// program name, i.e. the value of argv[0]
+    OFString ProgramName;
+
     /// list of valid/defined command line options
     OFList<OFCmdOption *> ValidOptionList;
     /// list of valid/defined command line parameters
@@ -978,6 +989,9 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
+ * Revision 1.41  2009-12-23 12:15:51  joergr
+ * Added support for getting the name of the program, i.e. the value of argv[0].
+ *
  * Revision 1.40  2009-06-04 09:53:00  joergr
  * Added new flag that can be used to avoid wrong warning messages (in debug
  * mode) that an option has possibly never been checked.
