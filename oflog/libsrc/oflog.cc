@@ -21,9 +21,9 @@
  *
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-12-08 15:38:59 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-12-23 12:14:49 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -187,7 +187,7 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
     if (cmd.findOption("--arguments"))
     {
         OFStringStream stream;
-        stream << "expanded command line to " << cmd.getArgCount() << " arguments:" << OFendl;
+        stream << "calling '" << cmd.getProgramName() << "' with " << cmd.getArgCount() << " arguments: ";
         const char *arg;
         // iterate over all command line arguments
         if (cmd.gotoFirstArg())
@@ -197,7 +197,7 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
                     stream << "'" << arg << "' ";
             } while (cmd.gotoNextArg());
         }
-        stream << OFendl << OFendl;
+        stream << OFendl << OFStringStream_ends;
         OFSTRINGSTREAM_GETOFSTRING(stream, tmpString)
         // always output this message, i.e. without checking the log level
         rootLogger.forcedLog(OFLogger::INFO_LOG_LEVEL, tmpString);
@@ -220,6 +220,9 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.10  2009-12-23 12:14:49  joergr
+ * Changed output of option --arguments.
+ *
  * Revision 1.9  2009-12-08 15:38:59  uli
  * Renaming files to make them fit into 8.3 format
  *
