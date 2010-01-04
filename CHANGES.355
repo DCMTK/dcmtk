@@ -1,6 +1,21 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.01.04 (riesmeier)
+
+- Added new method getDirNameFromPath() and enhanced existing method
+  getFilenameFromPath().
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
+- Fixed issue with --sort-conc-studies option by slightly reworking the file
+  and directory name string handling (use helper functions from "ofstd").
+  Thanks to forum user "semi-newbie" for the bug report.
+  Affects: dcmnet/apps/storescp.cc
+
+- Added info log message that shows the name of the stored DICOM file.
+  Affects: dcmnet/apps/storescp.cc
+
 **** Changes from 2009.12.23 (riesmeier)
 
 - Changed output of option --arguments.
