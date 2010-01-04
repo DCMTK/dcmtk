@@ -22,8 +22,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-19 10:43:37 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2010-01-04 16:02:23 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,17 +203,35 @@ class OFStandard
      */
     static OFBool isWriteable(const OFString &pathName);
 
+    /** get directory name component from given path name.
+     *  Extracts the substring before the last path separator. If there is no path
+     *  separator in the given path name, the value of 'pathName' is returned by
+     *  default; if 'assumeDirName' is OFFalse, an empty string is returned.
+     *  NB: This function neither checks whether the given 'pathName' exists nor
+     *      whether the resulting name points to a valid or existing directory.
+     *  @param result string variable in which the resulting directory name is stored
+     *  @param pathName path name from which the directory name should be extracted
+     *  @param assumeDirName assume that there always is a directory name in 'pathName'
+     *  @return reference to the resulting directory name (same as 'result')
+     */
+    static OFString &getDirNameFromPath(OFString &result,
+                                        const OFString &pathName,
+                                        const OFBool assumeDirName = OFTrue);
+
     /** get file name component from given path name.
      *  Extracts the substring after the last path separator. If there is no path
-     *  separator in the given path name, the value of 'pathName' is returned.
+     *  separator in the given path name, the value of 'pathName' is returned by
+     *  default; if 'assumeFilename' is OFFalse, an empty string is returned.
      *  NB: This function neither checks whether the given 'pathName' exists nor
-     *      whether the resulting file name points to a valid or existing file name.
+     *      whether the resulting name points to a valid or existing file.
      *  @param result string variable in which the resulting file name is stored
      *  @param pathName path name from which the file name should be extracted
+     *  @param assumeFilename assume that there always is a file name in 'pathName'
      *  @return reference to the resulting file name (same as 'result')
      */
     static OFString &getFilenameFromPath(OFString &result,
-                                         const OFString &pathName);
+                                         const OFString &pathName,
+                                         const OFBool assumeFilename = OFTrue);
 
     /** normalize the given directory name.
      *  Removes trailing path separators from the directory name. If the resulting
@@ -535,6 +553,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.36  2010-01-04 16:02:23  joergr
+ * Added new method getDirNameFromPath() and enhanced existing method
+ * getFilenameFromPath().
+ *
  * Revision 1.35  2009-08-19 10:43:37  joergr
  * Added new string helper functions toUpper() and toLower().
  *

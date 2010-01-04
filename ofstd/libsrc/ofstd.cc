@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-15 10:48:37 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2010-01-04 16:02:46 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -443,14 +443,37 @@ OFBool OFStandard::isWriteable(const OFString &pathName)
 }
 
 
-OFString &OFStandard::getFilenameFromPath(OFString &result,
-                                          const OFString &pathName)
+OFString &OFStandard::getDirNameFromPath(OFString &result,
+                                         const OFString &pathName,
+                                         const OFBool assumeDirName)
 {
     const size_t pos = pathName.find_last_of(PATH_SEPARATOR);
     /* path separator found? */
     if (pos == OFString_npos)
-        result = pathName;
-    else
+    {
+        if (assumeDirName)
+            result = pathName;
+        else
+            result.clear();
+    } else
+        result = pathName.substr(0, pos);
+    return result;
+}
+
+
+OFString &OFStandard::getFilenameFromPath(OFString &result,
+                                          const OFString &pathName,
+                                          const OFBool assumeFilename)
+{
+    const size_t pos = pathName.find_last_of(PATH_SEPARATOR);
+    /* path separator found? */
+    if (pos == OFString_npos)
+    {
+        if (assumeFilename)
+            result = pathName;
+        else
+            result.clear();
+    } else
         result = pathName.substr(pos + 1);
     return result;
 }
@@ -1768,6 +1791,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.54  2010-01-04 16:02:46  joergr
+ *  Added new method getDirNameFromPath() and enhanced existing method
+ *  getFilenameFromPath().
+ *
  *  Revision 1.53  2009-09-15 10:48:37  joergr
  *  Changed implementation of string variant of encodeBase64(). This helper
  *  function is now based on the stream variant of encodeBase64() because the
