@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-02 16:13:23 $
- *  CVS/RCS Revision: $Revision: 1.120 $
+ *  Update Date:      $Date: 2010-01-04 16:14:40 $
+ *  CVS/RCS Revision: $Revision: 1.121 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1872,6 +1872,8 @@ storeSCPCallback(
   // (note that we could also save the image somewhere else, put it in database, etc.)
   if (progress->state == DIMSE_StoreEnd)
   {
+    OFString tmpStr;
+
     // do not send status detail information
     *statusDetail = NULL;
 
@@ -1977,11 +1979,7 @@ storeSCPCallback(
           }
 
           // create subdirectoryPathAndName (string with full path to new subdirectory)
-          subdirectoryPathAndName = cbdata->imageFileName;
-          size_t position = subdirectoryPathAndName.rfind(PATH_SEPARATOR);
-          if (position != OFString_npos)
-            subdirectoryPathAndName.erase(position + 1);
-          subdirectoryPathAndName += subdirectoryName;
+          OFStandard::combineDirAndFilename(subdirectoryPathAndName, OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName), subdirectoryName);
 
           // check if the subdirectory already exists
           // if it already exists dump a warning
@@ -2011,13 +2009,11 @@ storeSCPCallback(
 
         // integrate subdirectory name into file name (note that cbdata->imageFileName currently contains both
         // path and file name; however, the path refers to the output directory captured in opt_outputDirectory)
-        char *tmpstr = strrchr( cbdata->imageFileName, PATH_SEPARATOR );
-        fileName = subdirectoryPathAndName;
-        fileName += tmpstr;
+        OFStandard::combineDirAndFilename(fileName, subdirectoryPathAndName, OFStandard::getFilenameFromPath(tmpStr, cbdata->imageFileName));
 
         // update global variable outputFileNameArray
         // (might be used in executeOnReception() and renameOnEndOfStudy)
-        outputFileNameArray.push_back(++tmpstr);
+        outputFileNameArray.push_back(tmpStr);
       }
       // if no --sort-xxx option is set, the determination of the output file name is simple
       else
@@ -2026,8 +2022,7 @@ storeSCPCallback(
 
         // update global variables outputFileNameArray
         // (might be used in executeOnReception() and renameOnEndOfStudy)
-        const char *tmpstr = strrchr( fileName.c_str(), PATH_SEPARATOR );
-        outputFileNameArray.push_back(++tmpstr);
+        outputFileNameArray.push_back(OFStandard::getFilenameFromPath(tmpStr, fileName));
       }
 
       // determine the transfer syntax which shall be used to write the information to the file
@@ -2035,6 +2030,7 @@ storeSCPCallback(
       if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
 
       // store file either with meta header or as pure dataset
+      OFLOG_INFO(storescpLogger, "storing DICOM file: " << fileName);
       OFCondition cond = cbdata->dcmff->saveFile(fileName.c_str(), xfer, opt_sequenceType, opt_groupLength,
           opt_paddingType, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad),
           (opt_useMetaheader) ? EWM_fileformat : EWM_dataset);
@@ -2070,8 +2066,7 @@ storeSCPCallback(
     {
       // we need to set outputFileNameArray and outputFileNameArrayCnt to be
       // able to perform the placeholder substitution in executeOnReception()
-      char *tmpstr = strrchr( cbdata->imageFileName, PATH_SEPARATOR );
-      outputFileNameArray.push_back(++tmpstr);
+      outputFileNameArray.push_back(OFStandard::getFilenameFromPath(tmpStr, cbdata->imageFileName));
     }
   }
 }
@@ -2715,6 +2710,11 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.121  2010-01-04 16:14:40  joergr
+** Fixed issue with --sort-conc-studies option by slightly reworking the file
+** and directory name string handling (use helper functions from "ofstd").
+** Added info log message that shows the name of the stored DICOM file.
+**
 ** Revision 1.120  2009-12-02 16:13:23  joergr
 ** Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
 ** the log stream in order to avoid an application crash.
