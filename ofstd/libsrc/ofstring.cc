@@ -21,9 +21,9 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-28 14:18:36 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-01-05 14:05:34 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,8 +178,10 @@ OFString::append (const OFString& str, size_t pos, size_t n)
     OFString b(str, pos, n);
     this->reserve(this->size() + b.size());
     // We can't use strcat() because some string could contain NULL bytes
-    OFBitmanipTemplate<char>::copyMem(b.theCString, this->theCString + this->size(), b.size());
+    // We need size() + 1 so that the EOS mark is copied over, too
+    OFBitmanipTemplate<char>::copyMem(b.theCString, this->theCString + this->size(), b.size() + 1);
     this->theSize += b.size();
+
     return *this;
 }
 
@@ -417,7 +419,9 @@ size_t
 OFString::copy (char* s, size_t n, size_t pos) const
 {
     OFString sub(this->substr(pos, n));
-    const size_t result = sub.size();
+    // String length *including* the trailing EOS
+    const size_t result = sub.size() + 1;
+
     // The string could have NULL bytes so no strncpy()
     OFBitmanipTemplate<char>::copyMem(this->theCString, s, result);
     return result;
@@ -1047,6 +1051,9 @@ int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
+** Revision 1.26  2010-01-05 14:05:34  uli
+** Made sure OFString always null-terminates its C-Strings.
+**
 ** Revision 1.25  2009-09-28 14:18:36  joergr
 ** Introduced new member variable that stores the current length of the string.
 ** This yields in a significant performance improvement when compiled in debug

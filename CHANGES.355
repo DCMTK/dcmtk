@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.01.05 (schlachter)
+
+- Made sure OFString always null-terminates its C-Strings.
+  Affects: ofstd/libsrc/ofstring.cc
+
 **** Changes from 2010.01.05 (riesmeier)
 
 - Moved determination of pixel data length to the body of a logging macro
