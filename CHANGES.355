@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.01.05 (riesmeier)
+
+- Moved determination of pixel data length to the body of a logging macro
+  (since the length value is only used for logging purposes).
+  Affects: dcmimgle/libsrc/didocu.cc
+
 **** Changes from 2010.01.04 (riesmeier)
 
 - Added new method getDirNameFromPath() and enhanced existing method

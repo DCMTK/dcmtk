@@ -22,8 +22,8 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:35:42 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2010-01-05 11:35:33 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,8 +133,7 @@ void DiDocument::convertPixelData()
                     if (DcmXfer(Xfer).isEncapsulated())
                     {
                         Xfer = EXS_LittleEndianExplicit;
-                        const Uint32 length = PixelData->getLength(Xfer);
-                        DCMIMGLE_DEBUG("decompressed complete pixel data in memory: " << length << " bytes");
+                        DCMIMGLE_DEBUG("decompressed complete pixel data in memory: " << PixelData->getLength(Xfer) << " bytes");
                     }
                 } else
                     DCMIMGLE_ERROR("can't change to unencapsulated representation for pixel data");
@@ -409,6 +408,10 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
+ * Revision 1.24  2010-01-05 11:35:33  joergr
+ * Moved determination of pixel data length to the body of a logging macro
+ * (since the length value is only used for logging purposes).
+ *
  * Revision 1.23  2009-11-25 16:35:42  joergr
  * Adapted code for new approach to access individual frames of a DICOM image.
  * Fixed issue with attributes that use a value representation of US or SS.
