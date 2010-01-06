@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.01.06 (schlachter)
+
+- Fix a use-after-free bug in OFConfigFile on invalid config files.
+  Affects: ofstd/libsrc/ofconfig.cc
+
 **** Changes from 2010.01.05 (schlachter)
 
 - Made sure OFString always null-terminates its C-Strings.

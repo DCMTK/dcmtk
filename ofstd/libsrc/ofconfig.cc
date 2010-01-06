@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2009, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: OFConfigFileNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-13 13:11:23 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-01-06 14:58:37 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -319,6 +319,7 @@ void OFConfigFileCursor::insert(
       // this should never happen unless the caller passes the wrong level, in which case
       // we at least avoid a memory leak
       delete newnode;
+      newnode = NULL;
     }
 
   }
@@ -648,6 +649,9 @@ OFConfigFile::~OFConfigFile()
 
 /*
  *  $Log: ofconfig.cc,v $
+ *  Revision 1.8  2010-01-06 14:58:37  uli
+ *  Fix a use-after-free bug in OFConfigFile on invalid config files.
+ *
  *  Revision 1.7  2009-02-13 13:11:23  joergr
  *  Added initialization of member variables to class OFConfigFileCursor in order
  *  to avoid compiler warnings (reported by gcc with additional flags).
