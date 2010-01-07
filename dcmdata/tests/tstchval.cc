@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009, OFFIS
+ *  Copyright (C) 2009-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: test program for checkValue() methods
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:07:59 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2010-01-07 17:49:31 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -215,6 +215,9 @@ int main(int , char *[])
   CHECK_BAD ( "TM-09", DcmTime::checkValue("12 15", "1") )
   CHECK_BAD ( "TM-10", DcmTime::checkValue("235959.987654    ", "1") )
   CHECK_GOOD( "TM-11", DcmTime::checkValue("0000   \\010101  \\020202.02 \\030303.0303", "4") )
+  CHECK_BAD ( "TM-12", DcmTime::checkValue("12:30:00.123456", "1", OFFalse) )
+  CHECK_GOOD( "TM-13", DcmTime::checkValue("12:30:00.123456", "1", OFTrue) )
+  CHECK_BAD ( "TM-14", DcmTime::checkValue("12:30", "1", OFTrue) )
   COUT << OFendl;
 
   /* test "Unique Identifier" */
@@ -244,10 +247,12 @@ int main(int , char *[])
  *
  * CVS/RCS Log:
  * $Log: tstchval.cc,v $
+ * Revision 1.2  2010-01-07 17:49:31  joergr
+ * Added tests for old time format "HH:MM:SS.FFFFFF".
+ *
  * Revision 1.1  2009-08-03 09:07:59  joergr
  * Added methods that check whether a given string value conforms to the VR and
  * VM definitions of the DICOM standards.
- *
  *
  *
  */

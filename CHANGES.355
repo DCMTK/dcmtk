@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.01.07 (riesmeier)
+
+- Added tests for old time format "HH:MM:SS.FFFFFF".
+  Affects: dcmdata/tests/tstchval.cc
+
 **** Changes from 2010.01.06 (schlachter)
 
 - Fix a use-after-free bug in OFConfigFile on invalid config files.
