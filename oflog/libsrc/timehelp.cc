@@ -286,11 +286,7 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
     size_t len;
     do
     {
-#ifdef UNICODE
-        len = ::wcsftime(buffer, buffer_size, fmt.c_str(), &time);
-#else
         len = ::strftime(buffer, buffer_size, fmt.c_str(), &time);
-#endif
         if (len == 0)
         {
             buffer_size *= 2;

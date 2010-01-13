@@ -28,16 +28,9 @@
 #endif
 
 
-#ifdef UNICODE
-    namespace log4cplus {
-        typedef LOG4CPLUS_FSTREAM_NAMESPACE::wofstream tofstream;
-        typedef LOG4CPLUS_FSTREAM_NAMESPACE::wifstream tifstream;
-    }
-#else
-    namespace log4cplus {
-        typedef LOG4CPLUS_FSTREAM_NAMESPACE::ofstream tofstream;
-        typedef LOG4CPLUS_FSTREAM_NAMESPACE::ifstream tifstream;
-    }
-#endif // UNICODE
+namespace log4cplus {
+    typedef LOG4CPLUS_FSTREAM_NAMESPACE::ofstream tofstream;
+    typedef LOG4CPLUS_FSTREAM_NAMESPACE::ifstream tifstream;
+}
 
 #endif // LOG4CPLUS_FSTREAMS_HEADER_

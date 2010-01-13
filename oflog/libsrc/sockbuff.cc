@@ -182,7 +182,6 @@ log4cplus::helpers::SocketBuffer::readString(unsigned char sizeOfChar)
         strlen = bufferLen / sizeOfChar;
     }
 
-#ifndef UNICODE
     if(sizeOfChar == 1) {
         tstring ret(&buffer[pos], strlen);
         pos += strlen;
@@ -200,23 +199,6 @@ log4cplus::helpers::SocketBuffer::readString(unsigned char sizeOfChar)
         getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::readString()- Invalid sizeOfChar!!!!"));
     }
 
-#else /* UNICODE */
-    if(sizeOfChar == 1) {
-        STD_NAMESPACE string ret(&buffer[pos], strlen);
-        pos += strlen;
-        return towstring(ret);
-    }
-    else if(sizeOfChar == 2) {
-        tstring ret;
-        for(tstring::size_type i=0; i<strlen; ++i) {
-            ret += static_cast<tchar>(readShort());
-        }
-        return ret;
-    }
-    else {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::readString()- Invalid sizeOfChar!!!!"));
-    }
-#endif
 
     return tstring();
 }
@@ -299,7 +281,6 @@ log4cplus::helpers::SocketBuffer::appendSize_t(size_t val)
 void
 log4cplus::helpers::SocketBuffer::appendString(const tstring& str)
 {
-#ifndef UNICODE
     size_t strlen = str.length();
 
     if((pos + sizeof(unsigned int) + strlen) > maxsize) {
@@ -311,19 +292,6 @@ log4cplus::helpers::SocketBuffer::appendString(const tstring& str)
     STD_NAMESPACE memcpy(&buffer[pos], str.data(), strlen);
     pos += strlen;
     size = pos;
-#else
-    size_t strlen = str.length();
-
-    if((pos + sizeof(unsigned int) + (strlen * 2)) > maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::appendString()- Attempt to write beyond end of buffer"));
-        return;
-    }
-
-    appendInt(strlen);
-    for(tstring::size_type i=0; i<str.length(); ++i) {
-        appendShort(static_cast<unsigned short>(str[i]));
-    }
-#endif
 }
 
 

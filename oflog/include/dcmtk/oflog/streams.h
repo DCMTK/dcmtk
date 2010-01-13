@@ -22,18 +22,6 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconsol.h"
 
-#ifdef UNICODE
-    namespace log4cplus {
-        typedef LOG4CPLUS_STREAM_NAMESPACE::wostream tostream;
-        typedef LOG4CPLUS_STREAM_NAMESPACE::wistream tistream;
-        typedef LOG4CPLUS_STREAM_NAMESPACE::wostringstream tostringstream;
-        //static tostream &tcout = LOG4CPLUS_STREAM_NAMESPACE::wcout;
-        //static tostream &tcerr = LOG4CPLUS_STREAM_NAMESPACE::wcerr;
-    }
-
-LOG4CPLUS_EXPORT log4cplus::tostream& operator <<(log4cplus::tostream&, const char* psz );
-
-#else
     namespace log4cplus {
 #if 0
 /* this block contains the original log4cplus definitions */
@@ -48,6 +36,5 @@ LOG4CPLUS_EXPORT log4cplus::tostream& operator <<(log4cplus::tostream&, const ch
         typedef OFStringStream        tostringstream;
 #endif
     }
-#endif // UNICODE
 
 #endif // LOG4CPLUS_STREAMS_HEADER_

@@ -11,15 +11,8 @@
 // distribution in the LICENSE.APL file.
 //
 
-//#include <cstring>
 #define INCLUDE_CSTRING
-#if defined (UNICODE)
-//#  include <cwctype>
-#  define INCLUDE_CWCTYPE
-#else
-//#  include <cctype>
-#  define INCLUDE_CCTYPE
-#endif
+#define INCLUDE_CCTYPE
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/oflog/helpers/property.h"
 #include "dcmtk/oflog/fstreams.h"
@@ -40,11 +33,7 @@ static
 int
 is_space (tchar ch)
 {
-#if defined (UNICODE)
-    return STD_NAMESPACE iswspace (ch);
-#else
     return STD_NAMESPACE isspace (ch);
-#endif
 }
 
 

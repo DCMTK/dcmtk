@@ -56,12 +56,8 @@ static
 int
 file_rename (tstring const & src, tstring const & target)
 {
-#if defined (UNICODE) && defined (WIN32)
-    return _wrename (src.c_str (), target.c_str ()) == 0 ? 0 : -1;
-#else
     return STD_NAMESPACE rename (LOG4CPLUS_TSTRING_TO_STRING (src).c_str (),
         LOG4CPLUS_TSTRING_TO_STRING (target).c_str ()) == 0 ? 0 : -1;
-#endif
 }
 
 
@@ -69,12 +65,8 @@ static
 int
 file_remove (tstring const & src)
 {
-#if defined (UNICODE) && defined (WIN32)
-    return _wremove (src.c_str ()) == 0 ? 0 : -1;
-#else
     return STD_NAMESPACE remove (LOG4CPLUS_TSTRING_TO_STRING (src).c_str ()) == 0
         ? 0 : -1;
-#endif
 }
 
 

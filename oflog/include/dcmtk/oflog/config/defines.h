@@ -99,7 +99,4 @@
 #define LOG4CPLUS_HAVE_ENAMETOOLONG
 #endif
 
-/* No idea when to define this one, always undef it */
-#undef UNICODE
-
 #endif // LOG4CPLUS_CONFIG_DEFINES_HXX

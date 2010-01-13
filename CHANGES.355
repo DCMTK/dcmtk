@@ -1,6 +1,21 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.01.13 (schlachter)
+
+- Removed use of UNICODE define, it caused more problems than it solved.
+  Affects: oflog/include/dcmtk/oflog/config/defines.h
+           oflog/include/dcmtk/oflog/fstreams.h
+           oflog/include/dcmtk/oflog/socketap.h
+           oflog/include/dcmtk/oflog/streams.h
+           oflog/include/dcmtk/oflog/tstring.h
+           oflog/libsrc/fileap.cc
+           oflog/libsrc/property.cc
+           oflog/libsrc/sockbuff.cc
+           oflog/libsrc/socketap.cc
+           oflog/libsrc/strhelp.cc
+           oflog/libsrc/timehelp.cc
+
 **** Changes from 2010.01.07 (riesmeier)
 
 - Added tests for old time format "HH:MM:SS.FFFFFF".

@@ -127,11 +127,7 @@ log4cplus::helpers::convertToBuffer(const log4cplus::spi::InternalLoggingEvent& 
     SocketBuffer buffer(LOG4CPLUS_MAX_MESSAGE_SIZE - sizeof(unsigned int));
 
     buffer.appendByte(LOG4CPLUS_MESSAGE_VERSION);
-#ifndef UNICODE
-    buffer.appendByte(1);
-#else
-    buffer.appendByte(2);
-#endif
+    buffer.appendByte(1); // We use 1-byte-wide characters
 
     buffer.appendString(serverName);
     buffer.appendString(event.getLoggerName());

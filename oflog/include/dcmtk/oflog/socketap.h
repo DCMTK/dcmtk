@@ -20,11 +20,7 @@
 #include "dcmtk/oflog/appender.h"
 #include "dcmtk/oflog/helpers/socket.h"
 
-#ifndef UNICODE
-#  define LOG4CPLUS_MAX_MESSAGE_SIZE (8*1024)
-#else
-#  define LOG4CPLUS_MAX_MESSAGE_SIZE (2*8*1024)
-#endif
+#define LOG4CPLUS_MAX_MESSAGE_SIZE (8*1024)
 
 
 namespace log4cplus {
