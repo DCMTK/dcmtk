@@ -2,7 +2,6 @@
 // (C) Jan de Vaan 2007-2009, all rights reserved. See the accompanying "License.txt" for licensed use.
 //
 
-#include "stdafx.h"
 #include "streams.h"
 #include "header.h"
 
@@ -12,8 +11,6 @@
 #include <vector>
 #include <stdio.h>
 #include <iostream>
-
-#include "util.h"
 
 #include "decoderstrategy.h"
 #include "encoderstrategy.h"

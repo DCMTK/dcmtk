@@ -6,6 +6,7 @@
 #ifndef JLS_INTERFACE
 #define JLS_INTERFACE
 
+#include <stdlib.h>
 
 enum JLS_ERROR
 {

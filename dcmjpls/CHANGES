@@ -3,6 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2010.01.13 (schlachter)
 
+- Removed pointless stdafx files.
+  Affects: dcmjpls/libcharls/CMakeLists.txt
+           dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libcharls/Makefile.in
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/interface.cc
+           dcmjpls/libcharls/interface.h
+           dcmjpls/libcharls/jpegls.cc
+  Removed: dcmjpls/libcharls/stdafx.cc
+           dcmjpls/libcharls/stdafx.h
+
 - Fix build on windows.
   Affects: dcmjpls/libcharls/config.h
            dcmjpls/libcharls/interface.h

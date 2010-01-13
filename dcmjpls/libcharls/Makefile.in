@@ -15,7 +15,7 @@ include $(configdir)/@common_makefile@
 LOCALINCLUDES =
 LOCALDEFS =
 
-objs = header.o interface.o jpegls.o stdafx.o
+objs = header.o interface.o jpegls.o
 
 library = libcharls.$(LIBEXT)
 

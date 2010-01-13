@@ -1,10 +1,7 @@
-header.o: header.cc stdafx.h util.h config.h interface.h header.h \
-  streams.h decoderstrategy.h processline.h colortransform.h \
-  encoderstrategy.h
-interface.o: interface.cc stdafx.h util.h config.h interface.h header.h \
-  streams.h
-jpegls.o: jpegls.cc stdafx.h util.h config.h interface.h streams.h \
-  header.h decoderstrategy.h processline.h colortransform.h \
-  encoderstrategy.h context.h contextrunmode.h lookuptable.h \
-  losslesstraits.h defaulttraits.h scan.h
-stdafx.o: stdafx.cc stdafx.h util.h config.h interface.h
+header.o: header.cc header.h streams.h util.h config.h interface.h \
+  decoderstrategy.h processline.h colortransform.h encoderstrategy.h
+interface.o: interface.cc interface.h header.h streams.h util.h config.h
+jpegls.o: jpegls.cc streams.h util.h config.h interface.h header.h \
+  decoderstrategy.h processline.h colortransform.h encoderstrategy.h \
+  context.h contextrunmode.h lookuptable.h losslesstraits.h \
+  defaulttraits.h scan.h
