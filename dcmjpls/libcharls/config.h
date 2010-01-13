@@ -14,14 +14,9 @@
 #endif
 
 #if defined(_WIN32)
-#ifndef CHARLS_IMEXPORT
-#  define CHARLS_IMEXPORT __declspec(dllexport)
-#endif
-
 #ifdef _MSC_VER
 #pragma warning (disable:4512)
 #endif
-
 #endif
 
 // Typedef used by Charls for the default integral type.

@@ -65,16 +65,9 @@ struct JlsParamaters
 };
 
 
-#if defined(_WIN32)
-#ifndef CHARLS_IMEXPORT
-#define CHARLS_IMEXPORT __declspec(dllimport)
-#pragma comment (lib,"charls.lib")
-#endif
-#else
 #ifndef CHARLS_IMEXPORT
 #define CHARLS_IMEXPORT
 #endif
-#endif /* _WIN32 */
 
 
 extern "C"

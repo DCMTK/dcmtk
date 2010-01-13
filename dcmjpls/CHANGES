@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.01.13 (schlachter)
+
+- Fix build on windows.
+  Affects: dcmjpls/libcharls/config.h
+           dcmjpls/libcharls/interface.h
+
 **** Changes from 2009.12.09 (schlachter)
 
 - Rebuilt Makefile dependencies.
