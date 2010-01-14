@@ -1,4 +1,4 @@
-.TH "dcmprscp" 1 "27 Nov 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmprscp" 1 "14 Jan 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmprscp \- DICOM basic grayscale print management SCP
@@ -45,6 +45,12 @@ The \fBdcmprscp\fP utility accepts print jobs from a remote Print SCU. It does n
 
   -lc  --log-config  [f]ilename: string
          use config file f for the logger
+
+  -l   --logfile
+         write a log file (not with --log-config)
+
+         # this option is available for reasons of backward
+         # compatibility only
 .fi
 .PP
 .SS "processing options"
@@ -58,10 +64,7 @@ The \fBdcmprscp\fP utility accepts print jobs from a remote Print SCU. It does n
         select printer with identifier n from config file
 
   +d  --dump
-        print all DIMSE messages
-
-  -l  --logfile
-        print to log file instead of stdout
+        dump all DIMSE messages
 .fi
 .PP
 .SH "LOGGING"

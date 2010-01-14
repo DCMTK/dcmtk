@@ -1,4 +1,4 @@
-.TH "dcmprscu" 1 "27 Nov 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmprscu" 1 "14 Jan 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmprscu \- Print spooler for presentation state viewer
@@ -58,9 +58,6 @@ dcmfile-in  stored print file(s) to be spooled
   -lc  --log-config  [f]ilename: string
          use config file f for the logger
 
-  +d   --dump
-         dump all DIMSE messages to stdout
-
 \subsection print_options print options
 \verbatim
        --noprint
@@ -77,53 +74,56 @@ dcmfile-in  stored print file(s) to be spooled
 .PP
 .nf
 
-  +p  --print
-        printer mode, print file(s) and terminate (default)
+  +p   --print
+         printer mode, print file(s) and terminate (default)
 
-  +s  --spool  [n]ame: string
-        spooler mode, use job prefix n
+  +s   --spool  [n]ame: string
+         spooler mode, use job prefix n
 .fi
 .PP
 .SS "processing options"
 .PP
 .nf
 
-  -c  --config  [f]ilename: string
-        process using settings from configuration file
+  -c   --config  [f]ilename: string
+         process using settings from configuration file
 
-  -p  --printer  [n]ame: string (default: 1st printer in cfg file)
-        select printer with identifier n from cfg file
+  -p   --printer  [n]ame: string (default: 1st printer in cfg file)
+         select printer with identifier n from cfg file
+
+  +d   --dump
+         dump all DIMSE messages
 .fi
 .PP
 .SS "spooler options (only with --spool)"
 .PP
 .nf
 
-      --sleep  [d]elay: integer (default: 1)
-        sleep d seconds between spooler checks
+       --sleep  [d]elay: integer (default: 1)
+         sleep d seconds between spooler checks
 .fi
 .PP
 .SS "basic film session options (not with --spool):"
 .PP
 .nf
 
-      --copies  [v]alue: integer (1..100, default: 1)
-        set number of copies to v
+       --copies  [v]alue: integer (1..100, default: 1)
+         set number of copies to v
 
-      --medium-type  [v]alue: string
-        set medium type to v
+       --medium-type  [v]alue: string
+         set medium type to v
 
-      --destination  [v]alue: string
-        set film destination to v
+       --destination  [v]alue: string
+         set film destination to v
 
-      --label  [v]alue: string
-        set film session label to v
+       --label  [v]alue: string
+         set film session label to v
 
-      --priority  [v]alue: string
-        set print priority to v
+       --priority  [v]alue: string
+         set print priority to v
 
-      --owner  [v]alue: string
-        set film session owner ID to v
+       --owner  [v]alue: string
+         set film session owner ID to v
 .fi
 .PP
 .SH "LOGGING"

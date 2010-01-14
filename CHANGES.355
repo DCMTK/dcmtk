@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.01.14 (riesmeier)
+
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2010.01.13 (schlachter)
 
 - Removed use of UNICODE define, it caused more problems than it solved.
