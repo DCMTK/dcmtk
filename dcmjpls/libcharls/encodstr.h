@@ -5,8 +5,8 @@
 #ifndef CHARLS_ENCODERSTRATEGY
 #define CHARLS_ENCODERSTRATEGY
 
-#include "processline.h"
-#include "decoderstrategy.h"
+#include "procline.h"
+#include "decodstr.h"
 
 // Implements encoding to stream of bits. In encoding mode JpegLsCodec inherits from EncoderStrategy
 

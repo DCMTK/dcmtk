@@ -1,6 +1,40 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.01.19 (schlachter)
+
+- Made file names fit into 8.3 format.
+  Affects: dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libcharls/Makefile.in
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/jpegls.cc
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libcharls/util.h
+           dcmjpls/libsrc/Makefile.dep
+           dcmjpls/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodece.cc
+           dcmjpls/libsrc/djerror.h
+  Added:   dcmjpls/libcharls/clrtrans.h
+           dcmjpls/libcharls/ctxtrmod.h
+           dcmjpls/libcharls/decodstr.h
+           dcmjpls/libcharls/deftrait.h
+           dcmjpls/libcharls/encodstr.h
+           dcmjpls/libcharls/intrface.cc
+           dcmjpls/libcharls/intrface.h
+           dcmjpls/libcharls/lltraits.h
+           dcmjpls/libcharls/lokuptbl.h
+           dcmjpls/libcharls/procline.h
+  Removed: dcmjpls/libcharls/colortransform.h
+           dcmjpls/libcharls/contextrunmode.h
+           dcmjpls/libcharls/decoderstrategy.h
+           dcmjpls/libcharls/defaulttraits.h
+           dcmjpls/libcharls/encoderstrategy.h
+           dcmjpls/libcharls/interface.cc
+           dcmjpls/libcharls/interface.h
+           dcmjpls/libcharls/lookuptable.h
+           dcmjpls/libcharls/losslesstraits.h
+           dcmjpls/libcharls/processline.h
+
 **** Changes from 2010.01.13 (schlachter)
 
 - Removed pointless stdafx files.

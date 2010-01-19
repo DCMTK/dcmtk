@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2009, OFFIS
+ *  Copyright (C) 2007-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: codec classes for JPEG-LS decoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 13:56:33 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-01-19 15:19:06 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@
 #include "djerror.h"                 /* for private class DJLSError */
 
 // JPEG-LS library (CharLS) includes
-#include "interface.h"
+#include "intrface.h"
 
 E_TransferSyntax DJLSLosslessDecoder::supportedTransferSyntax() const
 {
@@ -664,6 +664,9 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.8  2010-01-19 15:19:06  uli
+ * Made file names fit into 8.3 format.
+ *
  * Revision 1.7  2009-11-25 13:56:33  joergr
  * Removed unused implementation of method determineDecompressedColorModel().
  *

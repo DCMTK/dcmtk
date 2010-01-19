@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2009, OFFIS
+ *  Copyright (C) 2007-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: codec classes for JPEG-LS encoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-17 16:56:35 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-01-19 15:19:06 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@
 #include "dcmtk/dcmimgle/dcmimage.h"  /* for class DicomImage */
 
 // JPEG-LS library (CharLS) includes
-#include "interface.h"
+#include "intrface.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
@@ -1139,6 +1139,9 @@ OFCondition DJLSEncoderBase::convertToSampleInterleaved(
 /*
  * CVS/RCS Log:
  * $Log: djcodece.cc,v $
+ * Revision 1.8  2010-01-19 15:19:06  uli
+ * Made file names fit into 8.3 format.
+ *
  * Revision 1.7  2009-11-17 16:56:35  joergr
  * Added new method that allows for determining the color model of the
  * decompressed image.

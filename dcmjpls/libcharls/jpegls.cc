@@ -12,11 +12,11 @@
 #include <stdio.h>
 #include <iostream>
 
-#include "decoderstrategy.h"
-#include "encoderstrategy.h"
+#include "decodstr.h"
+#include "encodstr.h"
 #include "context.h"
-#include "contextrunmode.h"
-#include "lookuptable.h"
+#include "ctxtrmod.h"
+#include "lokuptbl.h"
 
 
 signed char* JlsContext::_tableC = CreateTableC();
@@ -29,8 +29,8 @@ const int BASIC_T1		= 3;
 const int BASIC_T2		= 7;
 const int BASIC_T3		= 21;
 
-#include "losslesstraits.h"
-#include "defaulttraits.h"
+#include "lltraits.h"
+#include "deftrait.h"
 
 #include "scan.h"
 

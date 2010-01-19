@@ -5,7 +5,7 @@
 #ifndef CHARLS_SCAN
 #define CHARLS_SCAN
 
-#include "lookuptable.h"
+#include "lokuptbl.h"
 
 // This file contains the code for handling a "scan". Usually an image is encoded as a single scan.
 

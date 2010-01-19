@@ -22,8 +22,8 @@
  *  Purpose: Helper function than converts between CharLS and dcmjpgls errors
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 13:16:47 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2010-01-19 15:19:06 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmjpls/djlsutil.h" /* For the OFCondition codes */
-#include "interface.h" /* CharLS include */
+#include "intrface.h" /* CharLS include */
 
 /** Helper class for converting between dcmjpls and CharLS error codes
  */
@@ -84,6 +84,9 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: djerror.h,v $
+ * Revision 1.3  2010-01-19 15:19:06  uli
+ * Made file names fit into 8.3 format.
+ *
  * Revision 1.2  2009-10-07 13:16:47  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

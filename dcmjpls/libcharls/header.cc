@@ -4,8 +4,8 @@
 
 #include "header.h"
 #include "streams.h"
-#include "decoderstrategy.h"
-#include "encoderstrategy.h"
+#include "decodstr.h"
+#include "encodstr.h"
 #include <memory>
 
 bool IsDefault(const JlsCustomParameters* pcustom)

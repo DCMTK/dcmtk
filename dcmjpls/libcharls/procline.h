@@ -4,7 +4,7 @@
 #ifndef CHARLS_PROCESSLINE
 #define CHARLS_PROCESSLINE
 
-#include "colortransform.h"
+#include "clrtrans.h"
 
 //
 // This file defines the ProcessLine base class, its derivitives and helper functions.

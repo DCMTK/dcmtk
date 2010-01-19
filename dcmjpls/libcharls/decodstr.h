@@ -6,7 +6,7 @@
 #define CHARLS_DECODERSTATEGY
 
 #include "streams.h"
-#include "processline.h"
+#include "procline.h"
 #include "config.h"
 #include "util.h"
 
