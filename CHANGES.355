@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.01.20 (riesmeier)
+
+- Made sure that the calling and called AE title strings are always
+  null-terminated.
+  Thanks to Per Inge Mathisen <perim@sonowand.com> for the report and
+  suggested fix.
+  Affects: dcmnet/libsrc/dulparse.cc
+
 **** Changes from 2010.01.14 (riesmeier)
 
 - Updated man pages.

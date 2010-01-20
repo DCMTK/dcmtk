@@ -45,9 +45,9 @@
 ** Intent:          This file contains functions for parsing Dicom
 **                  Upper Layer (DUL) Protocol Data Units (PDUs)
 **                  into logical in-memory structures.
-** Last Update:     $Author: uli $, $Date: 2009-11-18 11:53:59 $
+** Last Update:     $Author: joergr $, $Date: 2010-01-20 10:01:01 $
 ** Source File:     $RCSfile: dulparse.cc,v $
-** Revision:        $Revision: 1.29 $
+** Revision:        $Revision: 1.30 $
 ** Status:          $State: Exp $
 */
 
@@ -150,11 +150,13 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
     assoc->rsv2[1] = *buf++;
     pduLength--;
     (void) strncpy(assoc->calledAPTitle, (char *) buf, 16);
+    assoc->calledAPTitle[16] = '\0';
     trim_trailing_spaces(assoc->calledAPTitle);
 
     buf += 16;
     pduLength -= 16;
     (void) strncpy(assoc->callingAPTitle, (char *) buf, 16);
+    assoc->callingAPTitle[16] = '\0';
     trim_trailing_spaces(assoc->callingAPTitle);
     buf += 16;
     pduLength -= 16;
@@ -213,7 +215,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             pduLength -= itemLength;
             cond = LST_Enqueue(&assoc->presentationContextList, (LST_NODE*)context);
             if (cond.bad()) return cond;
-            DCMNET_TRACE("Successfully parsed Presentation Context ");
+            DCMNET_TRACE("Successfully parsed Presentation Context");
             break;
         case DUL_TYPEUSERINFO:
             cond = parseUserInfo(&assoc->userInfo, buf, &itemLength, assoc->type);
@@ -333,7 +335,7 @@ parsePresentationContext(unsigned char type,
     if (!((type == DUL_TYPEPRESENTATIONCONTEXTAC) &&
           (context->result != DUL_PRESENTATION_ACCEPT))) {
         while (presentationLength > 0) {
-            DCMNET_TRACE("Parsing remaining " << presentationLength << " bytes of Presentation Ctx" << OFendl
+            DCMNET_TRACE("Parsing remaining " << presentationLength << " bytes of Presentation Context" << OFendl
                     << "Next item type: "
                     << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)*buf);
             switch (*buf) {
@@ -710,6 +712,10 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
+** Revision 1.30  2010-01-20 10:01:01  joergr
+** Made sure that the calling and called AE title strings are always
+** null-terminated.
+**
 ** Revision 1.29  2009-11-18 11:53:59  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
