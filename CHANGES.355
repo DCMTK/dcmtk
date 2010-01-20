@@ -24,6 +24,9 @@ Changes between releases are documented here.
   suggested fix.
   Affects: dcmnet/libsrc/dulparse.cc
 
+- Fixed minor typos and manually added missing CVS log entries.
+  Affects: oflog/etc/logger.cfg
+
 **** Changes from 2010.01.14 (riesmeier)
 
 - Updated man pages.
