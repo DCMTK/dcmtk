@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: uli $
-** Update Date:		$Date: 2009-12-02 13:16:16 $
+** Update Date:		$Date: 2010-01-20 13:49:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.31 $
+** CVS/RCS Revision:	$Revision: 1.32 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -78,6 +78,7 @@
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmnet/diutil.h"
 
 #define INCLUDE_CSTDLIB
@@ -453,7 +454,7 @@ tempnam(char *dir, char *pfx)
     mix++;	/* will recycle */    
 
     sprintf(name, "%s%c%s%04x%05d", tmpdir, PATH_SEPARATOR, prefix, 
-	(unsigned int)mix, getpid());
+	(unsigned int)mix, (int)OFStandard::getProcessID());
 
     return name;    
 } 
@@ -464,6 +465,9 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
+** Revision 1.32  2010-01-20 13:49:47  uli
+** Added OFStandard::getProcessID().
+**
 ** Revision 1.31  2009-12-02 13:16:16  uli
 ** Corrected build failures on windows.
 **

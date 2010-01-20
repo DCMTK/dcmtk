@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Update Date:      $Date: 2010-01-20 13:49:47 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,10 +40,6 @@
 #ifdef HAVE_WINSOCK_H
 #include <winsock.h>     /* include winsock.h directly i.e. on MacOS */
 #endif
-#endif
-
-#ifdef _WIN32
-#include <process.h>     /* needed for declaration of getpid() */
 #endif
 
 #define INCLUDE_CSTDLIB
@@ -1301,10 +1297,6 @@ long gethostid(void);
 #endif // !HAVE_PROTOTYPE_GETHOSTID
 #endif // HAVE_GETHOSTID
 
-#ifndef HAVE_GETPID
-static int getpid(void) { return 0; }   // workaround for MAC
-#endif // !HAVE_GETPID
-
 // ********************************
 
 /*
@@ -1413,7 +1405,7 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
     sprintf(buf, ".%lu", hostIdentifier);
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%lu", forcePositive(getpid()));
+    sprintf(buf, ".%lu", forcePositive(OFStandard::getProcessID()));
     addUIDComponent(uid, buf);
 
     sprintf(buf, ".%lu", forcePositive(OFstatic_cast(long, time(NULL))));
@@ -1430,6 +1422,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.73  2010-01-20 13:49:47  uli
+** Added OFStandard::getProcessID().
+**
 ** Revision 1.72  2009-11-04 09:58:10  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

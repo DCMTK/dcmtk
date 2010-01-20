@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2009, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-01-04 16:02:23 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-01-20 13:49:47 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -509,6 +509,11 @@ class OFStandard
 #endif
     }
 
+    /** Determines the identification of the running process.
+     *  @return the process ID of the currently running process.
+     */
+    static long getProcessID();
+
     static inline OFBool check32BitAddOverflow(const Uint32 summand1,
                                                const Uint32 summand2)
     {
@@ -553,6 +558,9 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.37  2010-01-20 13:49:47  uli
+ * Added OFStandard::getProcessID().
+ *
  * Revision 1.36  2010-01-04 16:02:23  joergr
  * Added new method getDirNameFromPath() and enhanced existing method
  * getFilenameFromPath().

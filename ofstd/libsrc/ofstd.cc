@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2009, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-01-04 16:02:46 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-01-20 13:49:47 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,6 +158,9 @@ END_EXTERN_C
 
 #endif /* HAVE_WINDOWS_H */
 
+#ifdef _WIN32
+#include <process.h>     /* needed for declaration of getpid() */
+#endif
 
 // --- ftoa() processing flags ---
 
@@ -1788,9 +1791,23 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 #endif
 }
 
+long OFStandard::getProcessID()
+{
+#ifdef _WIN32
+  return _getpid();
+#elif defined(HAVE_GETPID)
+  return getpid();
+#else
+  return 0; // Workaround for MAC
+#endif
+}
+
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.55  2010-01-20 13:49:47  uli
+ *  Added OFStandard::getProcessID().
+ *
  *  Revision 1.54  2010-01-04 16:02:46  joergr
  *  Added new method getDirNameFromPath() and enhanced existing method
  *  getFilenameFromPath().

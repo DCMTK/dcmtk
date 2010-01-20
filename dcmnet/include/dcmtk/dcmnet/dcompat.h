@@ -61,10 +61,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2005-12-08 16:02:19 $
+** Last Update:		$Author: uli $
+** Update Date:		$Date: 2010-01-20 13:49:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.23 $
+** CVS/RCS Revision:	$Revision: 1.24 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -341,16 +341,6 @@ END_EXTERN_C
 #endif
 #endif
 
-#ifndef HAVE_GETPID
-#ifndef getpid
-#ifdef _WIN32
-#define getpid()	(_getpid())
-#else
-#define getpid()	((int) 9000)
-#endif
-#endif
-#endif
-
 #ifndef HAVE_ACCESS
 
 #ifndef R_OK
@@ -395,6 +385,9 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
+** Revision 1.24  2010-01-20 13:49:47  uli
+** Added OFStandard::getProcessID().
+**
 ** Revision 1.23  2005-12-08 16:02:19  meichel
 ** Changed include path schema for all DCMTK header files
 **

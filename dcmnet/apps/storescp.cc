@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-01-04 16:14:40 $
- *  CVS/RCS Revision: $Revision: 1.121 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-01-20 13:49:47 $
+ *  CVS/RCS Revision: $Revision: 1.122 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,10 +38,6 @@
 #define INCLUDE_CCTYPE
 #define INCLUDE_CSIGNAL
 #include "dcmtk/ofstd/ofstdinc.h"
-
-#ifdef _WIN32
-#include <process.h>     /* needed for declaration of getpid() */
-#endif
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
@@ -1282,7 +1278,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 #if defined(HAVE_FORK) || defined(_WIN32)
   if (opt_forkMode)
     OFLOG_INFO(storescpLogger, "Association Received in " << (DUL_processIsForkedChild() ? "child" : "parent")
-        << " process (pid: " << OFstatic_cast(long, getpid()) << ")");
+        << " process (pid: " << OFStandard::getProcessID() << ")");
   else
 #endif
     OFLOG_INFO(storescpLogger, "Association Received");
@@ -2710,6 +2706,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.122  2010-01-20 13:49:47  uli
+** Added OFStandard::getProcessID().
+**
 ** Revision 1.121  2010-01-04 16:14:40  joergr
 ** Fixed issue with --sort-conc-studies option by slightly reworking the file
 ** and directory name string handling (use helper functions from "ofstd").

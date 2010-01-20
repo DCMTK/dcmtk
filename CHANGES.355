@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.01.20 (schlachter)
+
+- Added OFStandard::getProcessID().
+  Affects: dcmdata/libsrc/dcuid.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/include/dcmtk/dcmnet/dcompat.h
+           dcmnet/libsrc/dcompat.cc
+           ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2010.01.20 (riesmeier)
 
 - Made sure that the calling and called AE title strings are always
