@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009, OFFIS
+ *  Copyright (C) 2009-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-23 12:14:49 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-01-20 15:18:05 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +32,16 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/oflog/oflog.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofdate.h"
+#include "dcmtk/ofstd/oftime.h"
+
+#include "dcmtk/oflog/oflog.h"
 #include "dcmtk/oflog/configrt.h"
 #include "dcmtk/oflog/consap.h"
 #include "dcmtk/oflog/helpers/loglog.h"
+#include "dcmtk/oflog/helpers/socket.h"
+#include "dcmtk/oflog/helpers/strhelp.h"
 
 OFLogger::OFLogger(const log4cplus::Logger &base)
     : log4cplus::Logger(base)
@@ -63,7 +68,7 @@ static void OFLog_init()
     // we default to a really simple pattern: loglevel_prefix: message\n
     const char *pattern = "%P: %m%n";
     OFauto_ptr<log4cplus::Layout> layout(new log4cplus::PatternLayout(pattern));
-    log4cplus::SharedAppenderPtr console(new log4cplus::ConsoleAppender(true /* logToStrErr */, true /* immediateFlush */));
+    log4cplus::SharedAppenderPtr console(new log4cplus::ConsoleAppender(OFTrue /* logToStrErr */, OFTrue /* immediateFlush */));
     log4cplus::Logger rootLogger = log4cplus::Logger::getRoot();
 
     console->setLayout(layout);
@@ -102,6 +107,24 @@ OFLogger OFLog::getLogger(const char *loggerName)
     // logger objects have a reference counting copy-constructor, so returning by-value is cheap
     return log4cplus::Logger::getInstance(loggerName);
 }
+
+static void addVariables(log4cplus::helpers::Properties &props, OFCommandLine& cmd)
+{
+    OFString date;
+    OFString time;
+    OFString app;
+
+    OFDate::getCurrentDate().getISOFormattedDate(date, OFFalse);
+    OFTime::getCurrentTime().getISOFormattedTime(time, OFTrue, OFFalse, OFFalse, OFFalse);
+    OFStandard::getFilenameFromPath(app, cmd.getProgramName());
+
+    props.setProperty("hostname", log4cplus::helpers::getHostname(OFFalse));
+    props.setProperty("pid", log4cplus::helpers::convertIntegerToString(OFStandard::getProcessID()));
+    props.setProperty("date", date);
+    props.setProperty("time", time);
+    props.setProperty("appname", app);
+}
+
 
 void OFLog::configure(OFLogger::LogLevel level)
 {
@@ -159,7 +182,15 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
         if (!props.exists("log4cplus.rootLogger"))
             app.printError("Specified --log-config file does not set up log4cplus.rootLogger");
 
-        log4cplus::PropertyConfigurator conf(props);
+        addVariables(props, cmd);
+
+        unsigned int flags = 0;
+        // Recursively expand ${vars}
+        flags |= log4cplus::PropertyConfigurator::fRecursiveExpansion;
+        // Try to look up ${vars} internally before asking the environment
+        flags |= log4cplus::PropertyConfigurator::fShadowEnvironment;
+
+        log4cplus::PropertyConfigurator conf(props, log4cplus::Logger::getDefaultHierarchy(), flags);
         conf.configure();
     }
     else
@@ -176,11 +207,11 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
     if (!rootLogger.isEnabledFor(OFLogger::ERROR_LOG_LEVEL))
     {
         app.setQuietMode();
-        log4cplus::helpers::LogLog::getLogLog()->setQuietMode(true);
+        log4cplus::helpers::LogLog::getLogLog()->setQuietMode(OFTrue);
     }
     else
     {
-        log4cplus::helpers::LogLog::getLogLog()->setQuietMode(false);
+        log4cplus::helpers::LogLog::getLogLog()->setQuietMode(OFFalse);
     }
 
     // print command line arguments
@@ -220,6 +251,9 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.11  2010-01-20 15:18:05  uli
+ * Added variables for the appname, date, time, hostname and pid to logger.cfg.
+ *
  * Revision 1.10  2009-12-23 12:14:49  joergr
  * Changed output of option --arguments.
  *

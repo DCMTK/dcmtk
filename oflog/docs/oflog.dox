@@ -8,6 +8,9 @@ is based on <a href="http://log4cplus.sourceforge.net/">log4cplus</a>.
 The main classes are (in alphabetical order):
 \li \b OFLog
 \li \b OFLogger
+\li \b log4cplus::ConsoleAppender
+\li \b log4cplus::FileAppender
+\li \b log4cplus::PatternLayout
 
 \section Files
 
