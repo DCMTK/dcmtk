@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-01-20 13:49:47 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-01-21 14:38:38 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -713,47 +713,43 @@ OFBool OFStandard::checkForMarkupConversion(const OFString &sourceString,
 }
 
 
-const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
-                                                  OFString &markupString,
-                                                  const OFBool convertNonASCII,
-                                                  const E_MarkupMode markupMode,
-                                                  const OFBool newlineAllowed)
+OFCondition OFStandard::convertToMarkupStream(STD_NAMESPACE ostream &out,
+                                              const OFString &sourceString,
+                                              const OFBool convertNonASCII,
+                                              const E_MarkupMode markupMode,
+                                              const OFBool newlineAllowed)
 {
     /* char pointer allows faster access to the string */
     const char *str = sourceString.c_str();
-    /* start with empty string */
-    markupString.clear();
-    /* avoid to resize the string too often */
-    markupString.reserve(strlen(str));
     /* replace HTML/XHTML/XML reserved characters */
     while (*str != 0)
     {
         /* less than */
         if (*str == '<')
-            markupString += "&lt;";
+            out << "&lt;";
         /* greater than */
         else if (*str == '>')
-            markupString += "&gt;";
+            out << "&gt;";
         /* ampers and */
         else if (*str == '&')
-            markupString += "&amp;";
+            out << "&amp;";
         /* quotation mark */
         else if (*str == '"')
         {
             /* entity "&quot;" is not defined in HTML 3.2 */
             if (markupMode == MM_HTML32)
-                markupString += "&#34;";
+                out << "&#34;";
             else
-                markupString += "&quot;";
+                out << "&quot;";
         }
         /* apostrophe */
         else if (*str == '\'')
         {
             /* entity "&apos;" is not defined in HTML */
             if ((markupMode == MM_HTML) || (markupMode == MM_HTML32))
-                markupString += "&#39;";
+                out << "&#39;";
             else
-                markupString += "&apos;";
+                out << "&apos;";
         }
         /* newline: LF, CR, LF CR, CR LF */
         else if ((*str == '\012') || (*str == '\015'))
@@ -762,9 +758,9 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
             {
                 /* encode CR and LF exactly as specified */
                 if (*str == '\012')
-                    markupString += "&#10;";    // '\n'
+                    out << "&#10;";    // '\n'
                 else
-                    markupString += "&#13;";    // '\r'
+                    out << "&#13;";    // '\r'
             } else {  /* HTML/XHTML mode */
                 /* skip next character if it belongs to the newline sequence */
                 if (((*str == '\012') && (*(str + 1) == '\015')) || ((*str == '\015') && (*(str + 1) == '\012')))
@@ -772,30 +768,46 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
                 if (newlineAllowed)
                 {
                     if (markupMode == MM_XHTML)
-                        markupString += "<br />\n";
+                        out << "<br />\n";
                     else
-                        markupString += "<br>\n";
+                        out << "<br>\n";
                 } else
-                    markupString += "&para;";
+                    out << "&para;";
             }
         } else {
             /* other character: ... */
             const size_t charValue = OFstatic_cast(unsigned char, *str);
             if ((convertNonASCII || (markupMode == MM_HTML32)) && ((charValue < 32) || (charValue >= 127)))
             {
-                char buffer[16];
-                sprintf(buffer, "%lu", OFstatic_cast(unsigned long, charValue));
                 /* convert < #32 and >= #127 to Unicode (ISO Latin-1) */
-                markupString += "&#";
-                markupString += buffer;
-                markupString += ";";
+                out << "&#" << charValue << ";";
             } else {
                 /* just append */
-                markupString += *str;
+                out << *str;
             }
         }
         ++str;
     }
+    return EC_Normal;
+}
+
+
+const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
+                                                  OFString &markupString,
+                                                  const OFBool convertNonASCII,
+                                                  const E_MarkupMode markupMode,
+                                                  const OFBool newlineAllowed)
+{
+    OFStringStream stream;
+    /* call stream variant of convert to markup */
+    if (OFStandard::convertToMarkupStream(stream, sourceString, convertNonASCII, markupMode, newlineAllowed).good())
+    {
+        /* convert string stream into a character string */
+        OFSTRINGSTREAM_GETSTR(stream, buffer_str)
+        markupString.assign(buffer_str);
+        OFSTRINGSTREAM_FREESTR(buffer_str)
+    } else
+        markupString.clear();
     return markupString;
 }
 
@@ -1805,6 +1817,12 @@ long OFStandard::getProcessID()
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.56  2010-01-21 14:38:38  joergr
+ *  Added stream variant of method convertToMarkupString().
+ *  Changed implementation of convertToMarkupString(). This helper function is
+ *  now based on the new stream variant which is much more efficient when
+ *  converting large text strings with many special characters.
+ *
  *  Revision 1.55  2010-01-20 13:49:47  uli
  *  Added OFStandard::getProcessID().
  *
