@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-01-20 13:49:47 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-01-21 14:43:27 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -310,8 +310,8 @@ class OFStandard
     // --- other functions ---
 
     /** check whether conversion to HTML/XML mnenonic string is required.
-     *  This check can be performed before convertToMarkupString() is called in order to
-     *  speed up the process in case the conversion it not required.
+     *  This check can be performed before convertToMarkupStream() or convertToMarkupString()
+     *  is called in order to speed up the process in case the conversion is not required.
      ** @param sourceString source string to be checked
      *  @param convertNonASCII convert non-ASCII characters (< #32 and >= #127) to numeric
      *    value (&#nnn;) if OFTrue
@@ -319,6 +319,32 @@ class OFStandard
      */
     static OFBool checkForMarkupConversion(const OFString &sourceString,
                                            const OFBool convertNonASCII = OFFalse);
+
+    /** convert character string to HTML/XHTML/XML mnenonic stream.
+     *  Characters with special meaning for HTML/XHTML/XML (e.g. '<' and '&') are replaced by the
+     *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'convertNonASCII' is OFTrue,
+     *  all characters < #32 and >= #127 are also converted (useful if only HTML 3.2 is supported
+     *  which does not allow to specify the character set).  In HTML 3.2 mode, the quotation mark
+     *  (") is converted to "&#34;" instead of "&quot;" because the latter entity is not defined.
+     *  In HTML mode, the apostrophe sign (') is converted to "&#39;" instead of "&apos;" for the
+     *  same reason.
+     ** @param out stream used for the HTML/XHTML/XML mnenonic output
+     *  @param sourceString source string to be converted
+     *  @param convertNonASCII convert non-ASCII characters (< # 32 and >= #127) to numeric value
+     *    (&#nnn;) if OFTrue
+     *  @param markupMode convert to HTML, HTML 3.2, XHTML or XML markup.
+     *    LF and CR are encoded as "&#10;" and "&#13;" in XML mode, the flag 'newlineAllowed'
+     *    has no meaning in this case.
+     *  @param newlineAllowed optional flag indicating whether newlines are allowed or not.
+     *    If they are allowed the text "<br>" (HTML) or "<br />" (XHTML) is used, "&para;" otherwise.
+     *    The following combinations are accepted: LF, CR, LF CR, CF LF.
+     ** @return status, always returns EC_Normal
+     */
+    static OFCondition convertToMarkupStream(STD_NAMESPACE ostream &out,
+                                             const OFString &sourceString,
+                                             const OFBool convertNonASCII = OFFalse,
+                                             const E_MarkupMode markupMode = MM_XML,
+                                             const OFBool newlineAllowed = OFFalse);
 
     /** convert character string to HTML/XHTML/XML mnenonic string.
      *  Characters with special meaning for HTML/XHTML/XML (e.g. '<' and '&') are replaced by the
@@ -558,6 +584,9 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.38  2010-01-21 14:43:27  joergr
+ * Added stream variant of method convertToMarkupString().
+ *
  * Revision 1.37  2010-01-20 13:49:47  uli
  * Added OFStandard::getProcessID().
  *
