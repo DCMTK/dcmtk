@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-17 16:41:26 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Update Date:      $Date: 2010-01-21 15:05:59 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1294,12 +1294,12 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
     /* write element value (if loaded) */
     if (valueLoaded())
     {
-        OFString value, xmlString;
+        OFString value;
         if (getOFStringArray(value).good())
         {
             /* check whether conversion to XML markup string is required */
             if (OFStandard::checkForMarkupConversion(value))
-                out << OFStandard::convertToMarkupString(value, xmlString);
+                OFStandard::convertToMarkupStream(out, value);
             else
                 out << value;
         }
@@ -1682,6 +1682,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.79  2010-01-21 15:05:59  joergr
+** Switched to new stream variant of method convertToMarkupString() where
+** appropriate.
+**
 ** Revision 1.78  2009-11-17 16:41:26  joergr
 ** Added new method that allows for determining the color model of the
 ** decompressed image.

@@ -14,7 +14,9 @@ Changes between releases are documented here.
 
 - Switched to new stream variant of method convertToMarkupString() where
   appropriate.
-  Affects: dcmsr/libsrc/dsrtypes.cc
+  Affects: dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmsr/libsrc/dsrtypes.cc
 
 **** Changes from 2010.01.20 (schlachter)
 

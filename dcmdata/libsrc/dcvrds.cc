@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDecimalString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:35:49 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2010-01-21 15:05:59 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,10 +146,8 @@ OFCondition DcmDecimalString::writeXML(STD_NAMESPACE ostream &out,
         {
             /* check whether conversion to XML markup string is required */
             if (OFStandard::checkForMarkupConversion(value))
-            {
-                OFString xmlString;
-                out << OFStandard::convertToMarkupString(value, xmlString);
-            } else
+                OFStandard::convertToMarkupStream(out, value);
+            else
                 out << value;
         }
     }
@@ -173,6 +171,10 @@ OFCondition DcmDecimalString::checkValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
+** Revision 1.24  2010-01-21 15:05:59  joergr
+** Switched to new stream variant of method convertToMarkupString() where
+** appropriate.
+**
 ** Revision 1.23  2009-08-07 14:35:49  joergr
 ** Enhanced isEmpty() method by checking whether the data element value consists
 ** of non-significant characters only.
