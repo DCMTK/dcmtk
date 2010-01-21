@@ -12,6 +12,10 @@ Changes between releases are documented here.
   converting large text strings with many special characters.
   Affects: ofstd/libsrc/ofstd.cc
 
+- Switched to new stream variant of method convertToMarkupString() where
+  appropriate.
+  Affects: dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2010.01.20 (schlachter)
 
 - Added OFStandard::getProcessID().

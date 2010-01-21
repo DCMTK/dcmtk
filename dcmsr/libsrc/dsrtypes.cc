@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2009, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-10 15:18:41 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2010-01-21 14:51:30 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1307,9 +1307,8 @@ OFBool DSRTypes::writeStringValueToXML(STD_NAMESPACE ostream &stream,
     OFBool result = OFFalse;
     if (!stringValue.empty() || writeEmptyValue)
     {
-        OFString tmpString;
         stream << "<" << tagName << ">";
-        stream << convertToXMLString(stringValue, tmpString);
+        OFStandard::convertToMarkupStream(stream, stringValue, OFFalse /*convertNonASCII*/, OFStandard::MM_XML, OFFalse /*newlineAllowed*/);
         stream << "</" << tagName << ">" << OFendl;
         result = OFTrue;
     }
@@ -1325,14 +1324,14 @@ OFBool DSRTypes::writeStringFromElementToXML(STD_NAMESPACE ostream &stream,
     OFBool result = OFFalse;
     if ((delem.getLength() > 0) || writeEmptyValue)
     {
-        OFString tmpString;
+        OFString tempString;
         stream << "<" << tagName << ">";
         if (delem.getVR() == EVR_PN)        // special formatting for person names
         {
             OFString xmlString;
-            stream << OFendl << dicomToXMLPersonName(getStringValueFromElement(delem, tmpString), xmlString, writeEmptyValue) << OFendl;
+            stream << OFendl << dicomToXMLPersonName(getStringValueFromElement(delem, tempString), xmlString, writeEmptyValue) << OFendl;
         } else
-            stream << getMarkupStringFromElement(delem, tmpString);
+            OFStandard::convertToMarkupStream(stream, getStringValueFromElement(delem, tempString), OFFalse /*convertNonASCII*/);
         stream << "</" << tagName << ">" << OFendl;
         result = OFTrue;
     }
@@ -1424,6 +1423,10 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.62  2010-01-21 14:51:30  joergr
+ *  Switched to new stream variant of method convertToMarkupString() where
+ *  appropriate.
+ *
  *  Revision 1.61  2009-12-10 15:18:41  joergr
  *  Fixed small issue in log output.
  *
