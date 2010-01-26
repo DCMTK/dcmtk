@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-12-02 13:16:16 $
+ *  Update Date:      $Date: 2010-01-26 13:39:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -780,6 +780,7 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
 // Return Value : OFCondition value denoting success or error.
 {
   // Create callback data which needs to be passed to DIMSE_findProvider later.
+  OFString str;
   WlmFindContextType context;
   context.dataSource = dataSource;
   context.priorStatus = WLM_PENDING;
@@ -787,7 +788,7 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
   context.opt_sleepDuringFind = opt_sleepDuringFind;
 
   // Dump some information if required.
-  DCMWLM_INFO("Received C-FIND Request, MessageID " << request->MessageID << ".");
+  DCMWLM_INFO(DIMSE_dumpMessage(str, *request, DIMSE_INCOMING));
 
   // Handle a C-FIND-Request on the provider side: receive the data set that represents the search mask
   // over the network, try to select corresponding records that match the search mask from some data source
@@ -1138,6 +1139,9 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.28  2010-01-26 13:39:13  uli
+** Use DIMSE_dumpMessage() for some more log messages.
+**
 ** Revision 1.27  2009-12-02 13:16:16  uli
 ** Corrected build failures on windows.
 **

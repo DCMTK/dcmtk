@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 11:53:59 $
+ *  Update Date:      $Date: 2010-01-26 13:39:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dfindscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -499,13 +499,8 @@ OFCondition DcmFindSCU::findSCU(
         req.MessageID = assoc->nextMsgID++;
         
         /* if required, dump some more general information */
-        if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
-            DCMNET_INFO("Find SCU RQ: MsgID " << req.MessageID << "\nREQUEST:\n");
+        DCMNET_INFO(DIMSE_dumpMessage(temp_str, req, DIMSE_OUTGOING, dset));
 
-            DCMNET_INFO(DcmObject::PrintHelper(*dset));
-            DCMNET_INFO("--------");
-        }
-        
         /* finally conduct transmission of data */
         OFCondition cond = DIMSE_findUser(assoc, presId, &req, dset,
             progressCallback, callback, blockMode, dimse_timeout,
@@ -548,6 +543,9 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.9  2010-01-26 13:39:13  uli
+ * Use DIMSE_dumpMessage() for some more log messages.
+ *
  * Revision 1.8  2009-11-18 11:53:59  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

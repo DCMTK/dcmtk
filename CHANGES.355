@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.01.26 (schlachter)
+
+- Use DIMSE_dumpMessage() for some more log messages.
+  Affects: dcmnet/libsrc/dfindscu.cc
+           dcmwlm/libsrc/wlmactmg.cc
+
 **** Changes from 2010.01.21 (riesmeier)
 
 - Added stream variant of method convertToMarkupString().
