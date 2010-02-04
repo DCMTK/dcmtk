@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.02.04 (riesmeier)
+
+- Fixed issue with experimental macro ON_THE_FLY_COMPRESSION.
+  Thanks to Henning Meyer <henning.meyer@uhn.on.ca> for reporting this.
+  Affects: dcmnet/apps/storescu.cc
+
+- Fixed minor issues with log output, e.g. redundant line breaks.
+  Affects: dcmnet/libsrc/dimse.cc
+
 **** Changes from 2010.01.26 (schlachter)
 
 - Use DIMSE_dumpMessage() for some more log messages.
