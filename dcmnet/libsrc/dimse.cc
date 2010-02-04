@@ -57,8 +57,8 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2009-11-26 14:46:31 $
-** CVS/RCS Revision:    $Revision: 1.54 $
+** Update Date:         $Date: 2010-02-04 14:01:33 $
+** CVS/RCS Revision:    $Revision: 1.55 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -597,7 +597,7 @@ sendStraightFileData(
     f = fopen(dataFileName, "rb");
     if (f == NULL) {
         DIMSE_warning(assoc,
-            "sendStraightFileData: cannot open DICOM file (%s): %s\n",
+            "sendStraightFileData: cannot open DICOM file (%s): %s",
             dataFileName, strerror(errno));
         cond = DIMSE_SENDFAILED;
     }
@@ -921,10 +921,10 @@ DIMSE_sendMessage(
           if (fromFile && dataFileName)
           {
             DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert DICOM file '"
-              << dataFileName << "'\nfrom '" << originalXferSyntax.getXferName()
+              << dataFileName << "' from '" << originalXferSyntax.getXferName()
               << "' transfer syntax to '" << writeXferSyntax.getXferName() << "'");
           } else {
-            DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert dataset\nfrom '"
+            DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert dataset from '"
               << originalXferSyntax.getXferName() << "' transfer syntax to '"
               << writeXferSyntax.getXferName() << "'");
           }
@@ -933,7 +933,7 @@ DIMSE_sendMessage(
       } else {
           /* if there is neither a data object nor a file name, create a warning, since */
           /* the information in msg specified that instance data should be present. */
-          DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: no dataset to send\n");
+          DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: no dataset to send");
           cond = DIMSE_SENDFAILED;
       }
     }
@@ -1757,6 +1757,9 @@ OFString DIMSE_warn_str(T_ASC_Association *assoc)
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.55  2010-02-04 14:01:33  joergr
+** Fixed minor issues with log output, e.g. redundant line breaks.
+**
 ** Revision 1.54  2009-11-26 14:46:31  joergr
 ** Moved some log messages from debug to trace level.
 **
