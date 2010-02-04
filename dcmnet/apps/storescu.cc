@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-02 16:13:23 $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  Update Date:      $Date: 2010-02-04 13:54:13 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,6 +71,7 @@ END_EXTERN_C
 #include "dcmtk/dcmjpeg/djencode.h"  /* for dcmjpeg encoders */
 #include "dcmtk/dcmdata/dcrledrg.h"  /* for DcmRLEDecoderRegistration */
 #include "dcmtk/dcmdata/dcrleerg.h"  /* for DcmRLEEncoderRegistration */
+#include "dcmtk/dcmjpeg/dipijpeg.h"  /* for dcmimage JPEG plugin */
 #endif
 
 #ifdef WITH_OPENSSL
@@ -378,13 +379,16 @@ int main(int argc, char *argv[])
         {
           app.printHeader(OFTrue /*print host identifier*/);
           COUT << OFendl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
+#if !defined(WITH_ZLIB) && !(ON_THE_FLY_COMPRESSION) && !defined(WITH_OPENSSL)
           COUT << " none" << OFendl;
 #else
           COUT << OFendl;
 #endif
 #ifdef WITH_ZLIB
           COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
+#endif
+#ifdef ON_THE_FLY_COMPRESSION
+          COUT << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
           COUT << "- " << OPENSSL_VERSION_TEXT << OFendl;
@@ -1529,15 +1533,20 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
 
+  T_ASC_PresentationContext pc;
+  ASC_findAcceptedPresentationContext(assoc->params, presID, &pc);
+  DcmXfer netTransfer(pc.acceptedTransferSyntax);
+
   /* if required, dump general information concerning transfer syntaxes */
   if (storescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
     DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
-    T_ASC_PresentationContext pc;
-    ASC_findAcceptedPresentationContext(assoc->params, presID, &pc);
-    DcmXfer netTransfer(pc.acceptedTransferSyntax);
     OFLOG_INFO(storescuLogger, "Transfer Syntax: " << dcmFindNameOfUID(fileTransfer.getXferID())
         << " -> " << dcmFindNameOfUID(netTransfer.getXferID()));
   }
+
+#ifdef ON_THE_FLY_COMPRESSION
+  dcmff.getDataset()->chooseRepresentation(netTransfer.getXfer(), NULL);
+#endif
 
   /* prepare the transmission of data */
   bzero((char *)&req, sizeof(req));
@@ -1742,6 +1751,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.87  2010-02-04 13:54:13  joergr
+** Fixed issue with experimental macro ON_THE_FLY_COMPRESSION.
+**
 ** Revision 1.86  2009-12-02 16:13:23  joergr
 ** Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
 ** the log stream in order to avoid an application crash.
