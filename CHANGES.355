@@ -9,6 +9,10 @@ Changes between releases are documented here.
 - Fixed inconsistent source code formatting.
   Affects: dcmdata/apps/mdfconen.cc
 
+- Updated reference to row numbers in comments (based on the current edition
+  of the DICOM standard). Added missing "else" statement.
+  Affects: dcmsr/libsrc/dsrxrdcc.cc
+
 **** Changes from 2010.02.04 (riesmeier)
 
 - Fixed issue with experimental macro ON_THE_FLY_COMPRESSION.

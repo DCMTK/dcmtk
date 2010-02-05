@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2008, OFFIS
+ *  Copyright (C) 2005-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRXRayRadiationDoseSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-03-11 11:10:17 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-02-05 15:18:36 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,13 +89,13 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
                      (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef)    || (targetValueType == VT_PName) ||
                      (targetValueType == VT_Image)    || (targetValueType == VT_Composite) || (targetValueType == VT_Container);
         }
-        /* row added by Supplement 127 (CT Radiation Dose Reporting) */
-        if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
+        /* row 2 of the table */
+        else if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
         {
             result = (targetValueType == VT_Text)   || (targetValueType == VT_Code)      || (targetValueType == VT_DateTime) ||
                      (targetValueType == VT_UIDRef) || (targetValueType == VT_PName);
         }
-        /* row 2 of the table */
+        /* row 3 of the table */
         else if ((relationshipType == RT_hasObsContext) && ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) ||
             (sourceValueType == VT_Num)))
         {
@@ -103,7 +103,7 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
                      (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef) || (targetValueType == VT_PName) ||
                      (targetValueType == VT_Composite);
         }
-        /* row 3 of the table */
+        /* row 4 of the table */
         else if ((relationshipType == RT_hasAcqContext) && ((sourceValueType == VT_Container) || (sourceValueType == VT_Image) ||
             (sourceValueType == VT_Composite)))
         {
@@ -111,12 +111,12 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
                      (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef) || (targetValueType == VT_PName) ||
                      (targetValueType == VT_Container);
         }
-        /* row 4 of the table */
+        /* row 5 of the table */
         else if (relationshipType == RT_hasConceptMod)
         {
             result = (targetValueType == VT_Text) || (targetValueType == VT_Code);
         }
-        /* row 5 of the table */
+        /* row 6 of the table */
         else if ((relationshipType == RT_hasProperties) && ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) ||
             (sourceValueType == VT_Num)))
         {
@@ -124,7 +124,7 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
                      (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef)    || (targetValueType == VT_PName) ||
                      (targetValueType == VT_Image)    || (targetValueType == VT_Composite) || (targetValueType == VT_Container);
         }
-        /* row 6 of the table */
+        /* row 7 of the table */
         else if ((relationshipType == RT_inferredFrom) && ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) ||
             (sourceValueType == VT_Num)))
         {
@@ -140,6 +140,10 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxrdcc.cc,v $
+ *  Revision 1.5  2010-02-05 15:18:36  joergr
+ *  Updated reference to row numbers in comments (based on the current edition
+ *  of the DICOM standard). Added missing "else" statement.
+ *
  *  Revision 1.4  2008-03-11 11:10:17  joergr
  *  Fixed wrong CVS log entry.
  *
