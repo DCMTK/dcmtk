@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.02.05 (riesmeier)
+
+- Fixed issue with double locking of ofConsole.
+  Affects: dcmdata/apps/mdfconen.cc
+
+- Fixed inconsistent source code formatting.
+  Affects: dcmdata/apps/mdfconen.cc
+
 **** Changes from 2010.02.04 (riesmeier)
 
 - Fixed issue with experimental macro ON_THE_FLY_COMPRESSION.
