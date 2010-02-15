@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 1996-2009, OFFIS
+*  Copyright (C) 1996-2010, OFFIS
 *
 *  This software and supporting documentation were developed by
 *
@@ -21,10 +21,9 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: uli $
-*  Update Date:      $Date: 2009-11-24 10:40:01 $
-*  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.20 $
+*  Last Update:      $Author: joergr $
+*  Update Date:      $Date: 2010-02-15 13:11:13 $
+*  CVS/RCS Revision: $Revision: 1.21 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -530,7 +529,7 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFOrderedSet<OFStr
       OFSetIterator<OFString> iter( worklistFiles );
       while( iter.Object() )
       {
-        DCMWLM_INFO(iter.Object());
+        DCMWLM_INFO(*iter.Object());
         iter.Next();
       }
     }
@@ -2149,6 +2148,9 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
+** Revision 1.21  2010-02-15 13:11:13  joergr
+** Fixed wrong output in verbose mode (string pointer instead of string value).
+**
 ** Revision 1.20  2009-11-24 10:40:01  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
