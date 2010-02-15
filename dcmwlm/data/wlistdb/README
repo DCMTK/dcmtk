@@ -20,7 +20,7 @@ have a very simple format.  Each database consists of zero
 or more dicom files.  Each dicom file represents a single
 worklist entity.
 
-wlmscpfs locks the worklist database while peforming a search
+wlmscpfs locks the worklist database while performing a search
 to indicate that other processes should not update the database. 
 Locking is achieved by locking a lockfile within each worklist
 database.  A file "lockfile" must exist within each worklist
