@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-01-26 13:39:13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-02-15 13:23:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -235,7 +235,7 @@ OFCondition WlmActivityManager::StartProvidingService()
     }
     else
     {
-      CERR << "Error while reading socket handle: " << GetLastError() << OFendl;
+      DCMWLM_ERROR("cannot read socket handle: " << GetLastError());
       exit(0);
     }
   }
@@ -665,7 +665,7 @@ void WlmActivityManager::HandleAssociation( T_ASC_Association *assoc )
   ASC_destroyAssociation( &assoc );
 
   // Dump some information if required.
-  DCMWLM_INFO("+++++++++++++++++++++++++++++\n");
+  DCMWLM_INFO("+++++++++++++++++++++++++++++");
 }
 
 // ----------------------------------------------------------------------------
@@ -1067,8 +1067,8 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
     // Determine the records that match the search mask. After this call, the
     // matching records will be available through dataSource->nextFindResponse(...).)
     dbstatus = dataSource->StartFindRequest( *requestIdentifiers );
-    if( !( dbstatus == WLM_PENDING || dbstatus == WLM_PENDING_WARNING ) )
-      DCMWLM_DEBUG( "findSCP: Worklist Database: StartFindRequest() Failed (" << DU_cfindStatusString((Uint16)dbstatus) << ").");
+    if( !( dbstatus == WLM_PENDING || dbstatus == WLM_PENDING_WARNING || dbstatus == WLM_SUCCESS) )
+      DCMWLM_DEBUG("findSCP: Worklist Database: StartFindRequest() Failed (" << DU_cfindStatusString((Uint16)dbstatus) << ").");
 
     DCMWLM_INFO("=============================");
   }
@@ -1139,6 +1139,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.29  2010-02-15 13:23:30  joergr
+** Fixed wrong output in debug mode (error message when status is "success").
+** Replaced remaining CERR output by DCMWLM_ERROR() macro.
+**
 ** Revision 1.28  2010-01-26 13:39:13  uli
 ** Use DIMSE_dumpMessage() for some more log messages.
 **
