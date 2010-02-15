@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.02.15 (riesmeier)
+
+- Fixed wrong output in debug mode (error message when status is "success").
+  Affects: dcmwlm/libsrc/wlmactmg.cc
+
+- Fixed wrong output in verbose mode (string pointer instead of string value).
+  Affects: dcmwlm/libsrc/wlfsim.cc
+
+- Replaced remaining CERR output by DCMWLM_ERROR() macro.
+  Affects: dcmwlm/libsrc/wlmactmg.cc
+
+- Fixed typo.
+  Affects: dcmwlm/data/wlistdb/README
+
 **** Changes from 2010.02.05 (riesmeier)
 
 - Fixed issue with double locking of ofConsole.
