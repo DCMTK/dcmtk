@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.02.18 (riesmeier)
+
+- Added preliminary version of a DICONDE (Digital Imaging and Communication in
+  Nondestructive Evaluation) data dictionary. Currently, only the standard tags
+  are included. The private ASTM tags will be added later.
+  Added:   dcmdata/data/diconde.dic
+  Affects: dcmdata/data/CMakeLists.txt
+           dcmdata/data/Makefile.in
+
 **** Changes from 2010.02.15 (riesmeier)
 
 - Fixed wrong output in debug mode (error message when status is "success").

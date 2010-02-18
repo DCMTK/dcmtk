@@ -1,0 +1,73 @@
+#
+#  Copyright (C) 2010, OFFIS
+#
+#  This software and supporting documentation were developed by
+#
+#    Kuratorium OFFIS e.V.
+#    Healthcare Information and Communication Systems
+#    Escherweg 2
+#    D-26121 Oldenburg, Germany
+#
+#  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+#  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+#  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+#  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+#  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+#
+#  Module:  dcmdata
+#
+#  Author:  Joerg Riesmeier
+#
+#  Purpose: DICONDE data dictionary for the dcmtk class library
+#
+#  Last Update:      $Author: joergr $
+#  Update Date:      $Date: 2010-02-18 16:24:02 $
+#  CVS/RCS Revision: $Revision: 1.1 $
+#  Status:           $State: Exp $
+#
+#
+# Dictionary of Digital Imaging and Communication in Nondestructive
+# Evaluation (DICONDE) Tags
+#
+# NOTE: Currently, the private ASTM tags are still missing.
+#
+# Each line represents an entry in the data dictionary.  Each line
+# has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
+# in ascending tag order.
+#
+# Entries may override existing entries.
+#
+# Each field must be separated by a single tab.
+# The tag value may take one of three forms:
+#   (gggg,eeee)
+#   (gggg,"CREATOR",ee)
+#   (gggg,"CREATOR",eeee) [eeee >= 1000]
+# The first form represents a standard tag with group and element number.
+# The second form describes a private tag that may be used with different
+# element numbers as reserved by the private creator element.  The third
+# form describes a private tag that may only occur with a certain fixed
+# element number.  In all cases, the tag values must be in hexadecimal.
+#
+# Comments have a '#' at the beginning of the line.
+#
+# Tag		VR	Name			VM	Version
+#
+(0008,0080)	LO	CompanyName	1	DICONDE10
+(0008,0081)	ST	CompanyAddress	1	DICONDE10
+(0008,0090)	PN	ComponentOwnerName	1	DICONDE10
+(0008,1040)	LO	DepartmentName	1	DICONDE10
+(0008,1048)	PN	InspectingCompanyName	1-n	DICONDE10
+(0008,1050)	PN	InspectorName	1-n	DICONDE10
+(0008,1060)	PN	CertifyingInspectorName	1-n	DICONDE10
+(0010,0010)	PN	ComponentName	1	DICONDE10
+(0010,0020)	LO	ComponentIDNumber	1	DICONDE10
+(0010,0030)	DA	ComponentManufacturingDate	1	DICONDE10
+(0010,1000)	LO	OtherComponentIDs	1-n	DICONDE10
+(0010,1001)	PN	OtherComponentNames	1-n	DICONDE10
+(0010,2160)	SH	MaterialName	1	DICONDE10
+(0010,4000)	LT	ComponentNotes	1	DICONDE10
+(0018,1008)	LO	ScannerID	1	DICONDE10
+(0032,4000)	LT	ExaminationNotes	1	DICONDE10
+#
+# end of diconde.dic
+#
