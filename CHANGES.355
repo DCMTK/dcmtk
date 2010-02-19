@@ -7,6 +7,9 @@ Changes between releases are documented here.
   Thanks to Peter Klotz <peter.klotz@ith-icoserve.com> for the original report.
   Affects: dcmnet/apps/movescu.cc
 
+- Added private ASTM tags for DICONDE (including CT and DR).
+  Affects: dcmdata/data/diconde.dic
+
 **** Changes from 2010.02.18 (riesmeier)
 
 - Added preliminary version of a DICONDE (Digital Imaging and Communication in

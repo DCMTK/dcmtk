@@ -21,15 +21,13 @@
 #  Purpose: DICONDE data dictionary for the dcmtk class library
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2010-02-18 16:24:02 $
-#  CVS/RCS Revision: $Revision: 1.1 $
+#  Update Date:      $Date: 2010-02-19 15:24:19 $
+#  CVS/RCS Revision: $Revision: 1.2 $
 #  Status:           $State: Exp $
 #
 #
 # Dictionary of Digital Imaging and Communication in Nondestructive
 # Evaluation (DICONDE) Tags
-#
-# NOTE: Currently, the private ASTM tags are still missing.
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -68,6 +66,115 @@
 (0010,4000)	LT	ComponentNotes	1	DICONDE10
 (0018,1008)	LO	ScannerID	1	DICONDE10
 (0032,4000)	LT	ExaminationNotes	1	DICONDE10
+
+(0009,"astm.org/diconde/iod/ComponentStudy",20)	DA	ExpiryDate	1	DICONDE10
+
+(0009,"astm.org/diconde/iod/ComponentSeries",10)	ST	ActualEnvironmentalConditions	1	DICONDE10
+(0009,"astm.org/diconde/iod/ComponentSeries",40)	ST	EnvironmentalConditions	1	DICONDE10
+
+(0011,"astm.org/diconde/iod/Component",23)	ST	CADFileFormat	1-n	DICONDE10
+(0011,"astm.org/diconde/iod/Component",24)	ST	ComponentRefSystem	1-n	DICONDE10
+(0011,"astm.org/diconde/iod/Component",25)	ST	ComponentManufacturingProcedure	1-n	DICONDE10
+(0011,"astm.org/diconde/iod/Component",28)	ST	ComponentManufacturer	1-n	DICONDE10
+(0011,"astm.org/diconde/iod/Component",30)	DS	Thickness	1-n	DICONDE10
+(0011,"astm.org/diconde/iod/Component",32)	DS	MaterialPipeDiameter	1-n	DICONDE10
+(0011,"astm.org/diconde/iod/Component",34)	DS	MaterialIsolationDiameter	1-n	DICONDE10
+(0011,"astm.org/diconde/iod/Component",42)	ST	MaterialGrade	1-n	DICONDE10
+(0011,"astm.org/diconde/iod/Component",44)	ST	MaterialPropertiesFileID	1-n	DICONDE10
+(0011,"astm.org/diconde/iod/Component",45)	ST	MaterialPropertiesFileFormat	1-n	DICONDE10
+(0011,"astm.org/diconde/iod/Component",46)	LT	MaterialNotes	1	DICONDE10
+(0011,"astm.org/diconde/iod/Component",50)	CS	Shape	1	DICONDE10
+(0011,"astm.org/diconde/iod/Component",52)	CS	CurvatureType	1	DICONDE10
+(0011,"astm.org/diconde/iod/Component",54)	DS	OuterDiameter	1	DICONDE10
+(0011,"astm.org/diconde/iod/Component",56)	DS	InnerDiameter	1	DICONDE10
+
+(0021,"astm.org/diconde/iod/NdeIndication",02)	SQ	EvaluatorSequence	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",04)	IS	EvaluatorNumber	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",06)	PN	EvaluatorName	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",08)	IS	EvaluationAttempt	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",12)	SQ	IndicationSequence	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",14)	IS	IndicationNumber	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",16)	SH	IndicationLabel	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",18)	ST	IndicationDesription	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",1A)	CS	IndicationType	1-n	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",1C)	CS	IndicationDisposition	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",1E)	SQ	IndicationROISequence	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",20)	CS	IndicationROIGeometricType	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",22)	IS	NumberOfROIContourPoints	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",24)	DS	IndicationROIContourData	3-3n	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",26)	CS	IndicationROIContourPointUnits	3	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",28)	IS	IndicationROIDimensionality	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",30)	SQ	IndicationPhysicalPropertySequence	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",32)	SH	PropertyLabel	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",34)	DS	PropertyValue	1	DICONDE10
+(0021,"astm.org/diconde/iod/NdeIndication",36)	CS	PropertyUnits	1	DICONDE10
+
+(0021,"astm.org/diconde/iod/NDEGeometry",02)	IS	NumberOfAxes	1	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",04)	SQ	AxesSequence	1	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",06)	ST	AxisDescription	1	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",08)	CS	DataSetMapping	1	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",0A)	IS	AxisNumber	1	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",0C)	CS	AxisType	1	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",0E)	CS	AxisUnits	1	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",10)	OB	AxisValues	1	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",20)	SQ	TransformSequence	1	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",22)	ST	TransformDescription	1	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",24)	IS	NumberOfAxes	1	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",26)	IS	OrderOfAxes	1-n	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",28)	CS	TransformedAxisUnits	1	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",2A)	DS	RotationAndScaleMatrix	1-n	DICONDE10
+(0021,"astm.org/diconde/iod/NDEGeometry",2C)	DS	TranslationMatrix	11	DICONDE10
+
+# X-ray Computed Tomography (CT)
+
+(0009,"astm.org/diconde/iod/NdeCTImage",02)	IS	LINACEnergy	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCTImage",04)	IS	LINACOutput	1	DICONDE10_CT
+
+(0009,"astm.org/diconde/iod/NdeCtDetector",11)	DS	InternalDetectorFrameTime	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtDetector",12)	DS	NumberOfFramesIntegrated	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtDetector",20)	SQ	DetectorTemperatureSequence	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtDetector",22)	DS	SensorName	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtDetector",24)	DS	HorizontalOffset	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtDetector",26)	DS	VerticalOffset	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtDetector",28)	DS	Temperature	1	DICONDE10_CT
+
+(0009,"astm.org/diconde/iod/NdeCtCalibrationData",40)	SQ	DarkCurrentSequence	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtCalibrationData",50)	ox	DarkCurrentCounts	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtCalibrationData",60)	SQ	GainCorrectionReferenceSequence	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtCalibrationData",70)	ox	AirCounts	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtCalibrationData",71)	DS	KVUsedinGainCalibration	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtCalibrationData",72)	DS	MAsUsedInGainCalibration	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtCalibrationData",73)	DS	NumberOfFrames	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtCalibrationData",74)	LO	FilterMaterialUsedInGainCalibration	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtCalibrationData",75)	DS	FilterThicknessUsedInGainCalibration	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtCalibrationData",76)	DA	DateOfGainCalibration	1-n	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtCalibrationData",77)	TM	TimeOfGainCalibration	1-n	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtCalibrationData",80)	OB	BadPixelImage	1	DICONDE10_CT
+(0009,"astm.org/diconde/iod/NdeCtCalibrationData",99)	LT	CalibrationNotes	1	DICONDE10_CT
+
+# Digital Radiographic (DR)
+
+(0009,"astm.org/diconde/iod/NdeDxDetector",11)	DS	InternalDetectorFrameTime	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxDetector",12)	DS	NumberOfFramesIntegrated	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxDetector",20)	SQ	DetectorTemperatureSequence	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxDetector",22)	DS	SensorName	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxDetector",24)	DS	HorizontalOffset	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxDetector",26)	DS	VerticalOffset	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxDetector",28)	DS	Temperature	1	DICONDE10_DR
+
+(0009,"astm.org/diconde/iod/NdeDxCalibrationData",40)	SQ	DarkCurrentSequence	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxCalibrationData",50)	ox	DarkCurrentCounts	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxCalibrationData",60)	SQ	GainCorrectionReferenceSequence	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxCalibrationData",70)	ox	AirCounts	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxCalibrationData",71)	DS	KVUsedinGainCalibration	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxCalibrationData",72)	DS	MAsUsedInGainCalibration	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxCalibrationData",73)	DS	NumberOfFrames	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxCalibrationData",74)	LO	FilterMaterialUsedInGainCalibration	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxCalibrationData",75)	DS	FilterThicknessUsedInGainCalibration	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxCalibrationData",76)	DA	DateOfGainCalibration	1-n	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxCalibrationData",77)	TM	TimeOfGainCalibration	1-n	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxCalibrationData",80)	OB	BadPixelImage	1	DICONDE10_DR
+(0009,"astm.org/diconde/iod/NdeDxCalibrationData",99)	LT	CalibrationNotes	1	DICONDE10_DR
 #
 # end of diconde.dic
 #
