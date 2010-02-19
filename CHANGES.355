@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.02.19 (riesmeier)
+
+- Fixed wrong log output (error message when status is "normal").
+  Thanks to Peter Klotz <peter.klotz@ith-icoserve.com> for the original report.
+  Affects: dcmnet/apps/movescu.cc
+
 **** Changes from 2010.02.18 (riesmeier)
 
 - Added preliminary version of a DICONDE (Digital Imaging and Communication in

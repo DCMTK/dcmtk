@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-02 16:13:23 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Update Date:      $Date: 2010-02-19 14:13:45 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -812,7 +812,7 @@ main(int argc, char *argv[])
             OFLOG_INFO(movescuLogger, "Aborting Association");
             cond = ASC_abortAssociation(assoc);
             if (cond.bad()) {
-                OFLOG_FATAL(movescuLogger, "Association Abort Failed:" << DimseCondition::dump(temp_str, cond));
+                OFLOG_FATAL(movescuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
                 exit(1);
             }
         } else {
@@ -843,11 +843,11 @@ main(int argc, char *argv[])
     }
     else
     {
-        OFLOG_ERROR(movescuLogger, "Move SCU Failed:" << DimseCondition::dump(temp_str, cond));
+        OFLOG_ERROR(movescuLogger, "Move SCU Failed: " << DimseCondition::dump(temp_str, cond));
         OFLOG_INFO(movescuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
-            OFLOG_FATAL(movescuLogger, "Association Abort Failed:" << DimseCondition::dump(temp_str, cond));
+            OFLOG_FATAL(movescuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
             exit(1);
         }
     }
@@ -1495,11 +1495,10 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
         moveCallback, &callbackData, opt_blockMode, opt_dimse_timeout, net, subOpCallback,
         NULL, &rsp, &statusDetail, &rspIds, opt_ignorePendingDatasets);
 
-    if (cond == EC_Normal && movescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+    if (cond == EC_Normal) {
         OFString temp_str;
         OFLOG_INFO(movescuLogger, DIMSE_dumpMessage(temp_str, rsp, DIMSE_INCOMING));
-        if (rspIds != NULL)
-        {
+        if (rspIds != NULL) {
             OFLOG_INFO(movescuLogger, "Response Identifiers:" << OFendl << DcmObject::PrintHelper(*rspIds));
         }
     } else {
@@ -1532,6 +1531,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.81  2010-02-19 14:13:45  joergr
+** Fixed wrong log output (error message when status is "normal").
+**
 ** Revision 1.80  2009-12-02 16:13:23  joergr
 ** Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
 ** the log stream in order to avoid an application crash.
