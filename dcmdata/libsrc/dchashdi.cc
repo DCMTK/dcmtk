@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-10 12:38:29 $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,10 +38,6 @@
 #define INCLUDE_CSTDIO
 #define INCLUDE_CASSERT
 #include "dcmtk/ofstd/ofstdinc.h"
-
-#ifdef PRINT_REPLACED_DICTIONARY_ENTRIES
-#include "dcmtk/ofstd/ofconsol.h"   /* for ofConsole */
-#endif
 
 /*
 ** DcmDictEntryList
@@ -536,6 +532,9 @@ DcmHashDict::loadSummary(STD_NAMESPACE ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
+** Revision 1.24  2010-02-22 11:39:54  uli
+** Remove some unneeded includes.
+**
 ** Revision 1.23  2009-11-10 12:38:29  uli
 ** Fix compilation on windows.
 **

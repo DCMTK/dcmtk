@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSTransportLayer
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-18 13:15:45 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-22 11:39:55 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,6 @@ END_EXTERN_C
 #include "dcmtk/dcmtls/tlslayer.h"
 #include "dcmtk/dcmtls/tlstrans.h"
 #include "dcmtk/dcmnet/dicom.h"
-#include "dcmtk/ofstd/ofconsol.h"    /* for ofConsole */
 
 extern "C" int DcmTLSTransportLayer_certificateValidationCallback(int ok, X509_STORE_CTX *storeContext);
 
@@ -490,6 +489,9 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
+ *  Revision 1.16  2010-02-22 11:39:55  uli
+ *  Remove some unneeded includes.
+ *
  *  Revision 1.15  2009-12-18 13:15:45  joergr
  *  Fixed issue with beta version of OpenSSL 1.0 (const declaration changed).
  *

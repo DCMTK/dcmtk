@@ -22,9 +22,9 @@
  *  Purpose: zlib compression filter for input streams
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:09 $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmz.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,6 @@
 
 #include "dcmtk/dcmdata/dcistrmz.h"
 #include "dcmtk/dcmdata/dcerror.h"
-#include "dcmtk/ofstd/ofconsol.h"
 
 #define DCMZLIBINPUTFILTER_BUFSIZE 4096
 #define DCMZLIBINPUTFILTER_PUTBACKSIZE 1024
@@ -434,6 +433,9 @@ void dcistrmz_dummy_function()
 /*
  * CVS/RCS Log:
  * $Log: dcistrmz.cc,v $
+ * Revision 1.10  2010-02-22 11:39:54  uli
+ * Remove some unneeded includes.
+ *
  * Revision 1.9  2009-11-04 09:58:09  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

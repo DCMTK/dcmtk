@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: SiCertificate
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:33 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,6 @@
 
 #ifdef WITH_OPENSSL
 
-#include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 
 class DcmItem;
@@ -157,6 +156,9 @@ private:
 
 /*
  *  $Log: sicert.h,v $
+ *  Revision 1.7  2010-02-22 11:39:54  uli
+ *  Remove some unneeded includes.
+ *
  *  Revision 1.6  2005-12-08 16:04:33  meichel
  *  Changed include path schema for all DCMTK header files
  *

@@ -1,6 +1,48 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.01.27 (schlachter)
+
+- Remove some unneeded includes.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/include/dcmtk/dcmdata/dcdicdir.h
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dclist.h
+           dcmdata/include/dcmtk/dcmdata/dcmetinf.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcpixel.h
+           dcmdata/include/dcmtk/dcmdata/dcpixseq.h
+           dcmdata/include/dcmtk/dcmdata/dcpxitem.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dimgs.h
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dchashdi.cc
+           dcmdata/libsrc/dcistrmb.cc
+           dcmdata/libsrc/dcistrmz.cc
+           dcmdata/libsrc/dcostrmb.cc
+           dcmdata/libsrc/dcostrmf.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dcvr.cc
+           dcmjpeg/libsrc/dipijpeg.cc
+           dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+           dcmjpeg/libsrc/djeijg12.cc
+           dcmjpeg/libsrc/djeijg16.cc
+           dcmjpeg/libsrc/djeijg8.cc
+           dcmsign/include/dcmtk/dcmsign/sicert.h
+           dcmsign/include/dcmtk/dcmsign/sitstamp.h
+           dcmsr/include/dcmtk/dcmsr/dsrcsidl.h
+           dcmsr/include/dcmtk/dcmsr/dsrsoprf.h
+           dcmtls/libsrc/tlslayer.cc
+           dcmtls/libsrc/tlstrans.cc
+           oflog/include/dcmtk/oflog/streams.h
+           oflog/libsrc/consap.cc
+           oflog/libsrc/loglog.cc
+
 **** Changes from 2010.02.19 (riesmeier)
 
 - Fixed wrong log output (error message when status is "normal").

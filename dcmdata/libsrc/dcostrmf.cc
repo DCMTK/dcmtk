@@ -23,8 +23,8 @@
  *    implements streamed output to files.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,6 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcostrmf.h"
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dcerror.h"
 
 #define INCLUDE_CSTDIO
@@ -162,6 +161,9 @@ DcmOutputFileStream::~DcmOutputFileStream()
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.cc,v $
+ * Revision 1.12  2010-02-22 11:39:54  uli
+ * Remove some unneeded includes.
+ *
  * Revision 1.11  2009-11-04 09:58:10  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

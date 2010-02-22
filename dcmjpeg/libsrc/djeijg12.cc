@@ -22,9 +22,9 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 12 bits/sample. 
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 16:17:54 $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg12.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,6 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmjpeg/djeijg12.h"
 #include "dcmtk/dcmjpeg/djcparam.h"
-#include "dcmtk/ofstd/ofconsol.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSETJMP
@@ -574,6 +573,9 @@ void DJCompressIJG12Bit::emitMessage(void *arg, int msg_level) const
 /*
  * CVS/RCS Log
  * $Log: djeijg12.cc,v $
+ * Revision 1.13  2010-02-22 11:39:54  uli
+ * Remove some unneeded includes.
+ *
  * Revision 1.12  2009-11-18 16:17:54  uli
  * Use more than just the INFO log level.
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmPixelSequence
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 17:54:30 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,10 +35,8 @@
 #define DCPIXSEQ_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcsequen.h"
-#include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dcofsetl.h"   /* for class DcmOffsetList */
 
 class DcmPixelItem;
@@ -286,6 +284,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
+** Revision 1.35  2010-02-22 11:39:54  uli
+** Remove some unneeded includes.
+**
 ** Revision 1.34  2009-02-04 17:54:30  joergr
 ** Fixed various layout and formatting issues.
 **

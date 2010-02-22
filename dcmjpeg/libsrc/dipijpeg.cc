@@ -22,9 +22,9 @@
  *  Purpose: Implements JPEG interface for plugable image formats
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 12:44:33 $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/dipijpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,6 @@
 
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmimgle/diimage.h"
 #include "dcmtk/dcmjpeg/dipijpeg.h"
@@ -262,6 +261,9 @@ OFString DiJPEGPlugin::getLibraryVersionString()
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.cc,v $
+ * Revision 1.13  2010-02-22 11:39:54  uli
+ * Remove some unneeded includes.
+ *
  * Revision 1.12  2009-10-07 12:44:33  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

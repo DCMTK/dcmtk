@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-01-20 13:49:47 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,6 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofcrc32.h"
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/ofstd/ofconsol.h"
 
 struct UIDNameMap {
     const char* uid;
@@ -1422,6 +1421,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.74  2010-02-22 11:39:54  uli
+** Remove some unneeded includes.
+**
 ** Revision 1.73  2010-01-20 13:49:47  uli
 ** Added OFStandard::getProcessID().
 **

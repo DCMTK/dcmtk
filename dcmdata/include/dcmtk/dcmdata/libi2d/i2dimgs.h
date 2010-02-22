@@ -23,8 +23,8 @@
  *           image files
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:08 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,6 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/ofcond.h"
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 
 class I2DImgSource
@@ -132,6 +131,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dimgs.h,v $
+ * Revision 1.8  2010-02-22 11:39:54  uli
+ * Remove some unneeded includes.
+ *
  * Revision 1.7  2009-11-04 09:58:08  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

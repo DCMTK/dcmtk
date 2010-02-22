@@ -24,8 +24,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:07 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofglobal.h"
 #include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dctypes.h"
@@ -694,6 +693,9 @@ static inline STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream &stream, D
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.66  2010-02-22 11:39:54  uli
+ * Remove some unneeded includes.
+ *
  * Revision 1.65  2009-11-04 09:58:07  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

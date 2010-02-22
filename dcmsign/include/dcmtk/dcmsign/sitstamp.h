@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: SiTimeStamp
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:46 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,8 +38,6 @@
 #include "dcmtk/dcmsign/sitypes.h"
 
 #ifdef WITH_OPENSSL
-
-#include "dcmtk/dcmdata/dcerror.h"
 
 class DcmItem;
  
@@ -80,6 +78,9 @@ public:
 
 /*
  *  $Log: sitstamp.h,v $
+ *  Revision 1.6  2010-02-22 11:39:54  uli
+ *  Remove some unneeded includes.
+ *
  *  Revision 1.5  2005-12-08 16:04:46  meichel
  *  Changed include path schema for all DCMTK header files
  *

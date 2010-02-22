@@ -23,8 +23,8 @@
  *    implements input to blocks of memory as needed in the dcmnet module.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:09 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,6 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcistrmb.h"
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dcerror.h"
 
 #define DCMBUFFERPRODUCER_BUFSIZE 1024
@@ -341,6 +340,9 @@ void DcmInputBufferStream::setEos()
 /*
  * CVS/RCS Log:
  * $Log: dcistrmb.cc,v $
+ * Revision 1.8  2010-02-22 11:39:54  uli
+ * Remove some unneeded includes.
+ *
  * Revision 1.7  2009-11-04 09:58:09  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

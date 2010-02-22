@@ -24,8 +24,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:50 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2010-02-22 11:39:55 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,6 @@
 
 #include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/ofstd/ofstring.h"
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofcond.h"
 
 #include "dcmtk/dcmdata/dcitem.h"
@@ -542,6 +541,9 @@ class DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
+ *  Revision 1.14  2010-02-22 11:39:55  uli
+ *  Remove some unneeded includes.
+ *
  *  Revision 1.13  2009-10-13 14:57:50  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

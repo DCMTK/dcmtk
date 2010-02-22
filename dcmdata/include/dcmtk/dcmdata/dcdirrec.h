@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:48 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-22 11:39:53 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,8 +35,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofconsol.h"
-#include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcsequen.h"
@@ -444,6 +442,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
+** Revision 1.41  2010-02-22 11:39:53  uli
+** Remove some unneeded includes.
+**
 ** Revision 1.40  2008-07-17 11:19:48  onken
 ** Updated copyFrom() documentation.
 **

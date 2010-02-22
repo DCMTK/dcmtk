@@ -22,9 +22,9 @@
  *  Purpose: generic list class
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  Update Date:      $Date: 2010-02-22 11:39:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dclist.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #define DCLIST_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dctypes.h"
 
 #define INCLUDE_CSTDDEF
@@ -198,6 +197,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dclist.h,v $
+ * Revision 1.19  2010-02-22 11:39:53  uli
+ * Remove some unneeded includes.
+ *
  * Revision 1.18  2009-11-04 09:58:07  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

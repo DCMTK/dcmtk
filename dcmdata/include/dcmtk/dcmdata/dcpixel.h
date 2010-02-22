@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmPixelData
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-17 16:36:51 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,6 @@
 #define DCPIXEL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dcvrpobw.h"
 #include "dcmtk/ofstd/oflist.h"
 
@@ -613,6 +612,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
+** Revision 1.38  2010-02-22 11:39:54  uli
+** Remove some unneeded includes.
+**
 ** Revision 1.37  2009-11-17 16:36:51  joergr
 ** Added new method that allows for determining the color model of the
 ** decompressed image.

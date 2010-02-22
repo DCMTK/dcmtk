@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of the class DcmDataset
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-25 13:00:52 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-22 11:39:53 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofconsol.h"
-#include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcitem.h"
 
@@ -323,6 +321,9 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.32  2010-02-22 11:39:53  uli
+** Remove some unneeded includes.
+**
 ** Revision 1.31  2009-08-25 13:00:52  joergr
 ** Added new methods which remove all data elements with an invalid group number
 ** from the meta information header, dataset and/or fileformat.

@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:40:39 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofconsol.h"
-#include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcobject.h"
 #include "dcmtk/dcmdata/dcitem.h"
@@ -579,6 +577,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.53  2010-02-22 11:39:54  uli
+** Remove some unneeded includes.
+**
 ** Revision 1.52  2009-08-07 14:40:39  joergr
 ** Enhanced isEmpty() method by checking whether the data element value consists
 ** of non-significant characters only.

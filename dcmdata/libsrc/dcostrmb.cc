@@ -22,9 +22,9 @@
  *  Purpose: DcmOutputBufferStream and related classes,
  *    implements output to blocks of memory as needed in the dcmnet module.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-04 17:10:00 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,6 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcostrmb.h"
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dcerror.h"
 
 
@@ -123,6 +122,9 @@ void DcmOutputBufferStream::flushBuffer(void *& buffer, offile_off_t& length)
 /*
  * CVS/RCS Log:
  * $Log: dcostrmb.cc,v $
+ * Revision 1.9  2010-02-22 11:39:54  uli
+ * Remove some unneeded includes.
+ *
  * Revision 1.8  2009-12-04 17:10:00  joergr
  * Slightly modified some log messages.
  *

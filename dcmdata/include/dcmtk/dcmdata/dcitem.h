@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-02 09:58:21 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-22 11:39:53 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcobject.h"
 #include "dcmtk/dcmdata/dcvrui.h"
@@ -1151,6 +1150,9 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.79  2010-02-22 11:39:53  uli
+** Remove some unneeded includes.
+**
 ** Revision 1.78  2009-09-02 09:58:21  joergr
 ** Revised documentation of parameter "pos" for some putAndInsertXXX() functions
 ** in order to make clear what the possible range of values is.

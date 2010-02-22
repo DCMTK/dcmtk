@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmDicomDir
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  Update Date:      $Date: 2010-02-22 11:39:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcdicdir.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
@@ -242,6 +241,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
+** Revision 1.24  2010-02-22 11:39:53  uli
+** Remove some unneeded includes.
+**
 ** Revision 1.23  2009-11-04 09:58:07  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

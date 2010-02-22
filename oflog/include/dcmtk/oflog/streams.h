@@ -20,7 +20,6 @@
 #include "dcmtk/oflog/tstring.h"
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/ofstd/ofconsol.h"
 
     namespace log4cplus {
 #if 0

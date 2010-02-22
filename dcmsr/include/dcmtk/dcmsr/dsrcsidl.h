@@ -23,8 +23,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:50 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2010-02-22 11:39:55 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,6 @@
 #include "dcmtk/dcmsr/dsrtypes.h"
 
 #include "dcmtk/ofstd/oflist.h"
-#include "dcmtk/ofstd/ofconsol.h"
 
 
 /*---------------------*
@@ -327,6 +326,9 @@ class DSRCodingSchemeIdentificationList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.h,v $
+ *  Revision 1.11  2010-02-22 11:39:55  uli
+ *  Remove some unneeded includes.
+ *
  *  Revision 1.10  2009-10-13 14:57:50  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

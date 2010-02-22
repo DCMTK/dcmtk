@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-04 17:08:11 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,6 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dcvr.h"
 
 #define INCLUDE_CSTDLIB
@@ -370,6 +369,9 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
+ * Revision 1.37  2010-02-22 11:39:54  uli
+ * Remove some unneeded includes.
+ *
  * Revision 1.36  2009-12-04 17:08:11  joergr
  * Sightly modified some log messages.
  *

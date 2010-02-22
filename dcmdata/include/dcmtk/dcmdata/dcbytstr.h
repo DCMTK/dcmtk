@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmByteString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:40:38 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-22 11:39:53 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofconsol.h"
-#include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcelem.h"
 #include "dcmtk/ofstd/ofstring.h"
@@ -366,6 +364,9 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
+** Revision 1.42  2010-02-22 11:39:53  uli
+** Remove some unneeded includes.
+**
 ** Revision 1.41  2009-08-07 14:40:38  joergr
 ** Enhanced isEmpty() method by checking whether the data element value consists
 ** of non-significant characters only.

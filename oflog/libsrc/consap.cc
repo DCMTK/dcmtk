@@ -17,6 +17,7 @@
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
 #include "dcmtk/oflog/spi/logevent.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 using namespace std;
 using namespace log4cplus::helpers;

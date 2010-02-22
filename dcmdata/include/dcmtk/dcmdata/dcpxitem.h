@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmPixelItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 17:54:31 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #define DCPXITEM_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcofsetl.h"   /* for class DcmOffsetList */
@@ -159,6 +158,9 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
+** Revision 1.28  2010-02-22 11:39:54  uli
+** Remove some unneeded includes.
+**
 ** Revision 1.27  2009-02-04 17:54:31  joergr
 ** Fixed various layout and formatting issues.
 **

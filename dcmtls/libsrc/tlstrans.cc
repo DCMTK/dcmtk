@@ -23,8 +23,8 @@
  *    classes: DcmTLSConnection
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 12:11:19 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2010-02-22 11:39:55 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,6 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/dcmtls/tlstrans.h"
 #include "dcmtk/dcmtls/tlslayer.h"
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmnet/dcompat.h"    /* to make sure we have a select prototype */
 
 
@@ -346,6 +345,9 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
+ *  Revision 1.13  2010-02-22 11:39:55  uli
+ *  Remove some unneeded includes.
+ *
  *  Revision 1.12  2009-11-18 12:11:19  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

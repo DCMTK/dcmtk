@@ -22,8 +22,8 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-10 12:38:29 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/ofstd/ofdefine.h"
@@ -842,6 +841,9 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
+** Revision 1.43  2010-02-22 11:39:54  uli
+** Remove some unneeded includes.
+**
 ** Revision 1.42  2009-11-10 12:38:29  uli
 ** Fix compilation on windows.
 **
