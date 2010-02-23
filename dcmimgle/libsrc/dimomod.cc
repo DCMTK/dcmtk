@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-28 14:26:02 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2010-02-23 16:52:22 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -260,6 +260,9 @@ void DiMonoModality::determineRepresentation(const DiDocument *docu)
         Representation = DicomImageClass::determineRepresentation(AbsMinimum, AbsMaximum);
     else
         Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
+    DCMIMGLE_TRACE("internal representation for monochrome images: "
+        << DicomImageClass::getRepresentationBits(Representation) << " bits ("
+        << (DicomImageClass::isRepresentationSigned(Representation) ? "signed" : "unsigned") << ")");
 }
 
 
@@ -267,6 +270,10 @@ void DiMonoModality::determineRepresentation(const DiDocument *docu)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
+ * Revision 1.28  2010-02-23 16:52:22  joergr
+ * Added trace log message which outputs the internal representation for
+ * monochrome images (number of bits and signed/unsigned).
+ *
  * Revision 1.27  2009-10-28 14:26:02  joergr
  * Fixed minor issues in log output.
  *
