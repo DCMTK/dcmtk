@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 14:59:11 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2010-02-23 16:31:34 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -405,6 +405,14 @@ class DicomImageClass
     static unsigned int rangeToBits(double minvalue,
                                     double maxvalue);
 
+    /** determine whether integer representation is signed or unsigned
+     *
+     ** @param  repres  integer representation (enum) to be checked
+     *
+     ** @return true if representation is signed, false if unsigned
+     */
+    static int isRepresentationSigned(EP_Representation repres);
+
     /** determine number of bits used for a particular integer representation
      *
      ** @param  repres  integer representation (enum) to be checked
@@ -433,6 +441,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
+ * Revision 1.39  2010-02-23 16:31:34  joergr
+ * Added new helper function which determines whether an integer representation
+ * is signed or unsigned.
+ *
  * Revision 1.38  2009-11-25 14:59:11  joergr
  * Added list of Defined Terms for the attribute PhotometricInterpretation.
  *
