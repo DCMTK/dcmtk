@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Utilities (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:09:50 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2010-02-23 16:42:15 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,6 +71,13 @@ unsigned int DicomImageClass::rangeToBits(double minvalue,
             return tobits(OFstatic_cast(unsigned long, fabs(maxvalue)), 0) + 1;
     }
     return tobits(OFstatic_cast(unsigned long, maxvalue), 0);
+}
+
+
+int DicomImageClass::isRepresentationSigned(EP_Representation repres)
+{
+    /* determine whether integer representation is signed or unsigned */
+    return (repres == EPR_Sint8) || (repres == EPR_Sint16) || (repres == EPR_Sint32);
 }
 
 
@@ -145,6 +152,10 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
  *
  * CVS/RCS Log:
  * $Log: diutils.cc,v $
+ * Revision 1.20  2010-02-23 16:42:15  joergr
+ * Added new helper function which determines whether an integer representation
+ * is signed or unsigned.
+ *
  * Revision 1.19  2009-11-25 16:09:50  joergr
  * Removed inclusion of header file "ofconsol.h".
  *
