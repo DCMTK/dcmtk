@@ -1,7 +1,18 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2010.01.27 (schlachter)
+**** Changes from 2010.02.23 (riesmeier)
+
+- Added new helper function which determines whether an integer representation
+  is signed or unsigned.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diutils.h
+           dcmimgle/libsrc/diutils.cc
+
+- Added trace log message which outputs the internal representation for
+  monochrome images (number of bits and signed/unsigned).
+  Affects: dcmimgle/libsrc/dimomod.cc
+
+**** Changes from 2010.02.22 (schlachter)
 
 - Remove some unneeded includes.
   Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
