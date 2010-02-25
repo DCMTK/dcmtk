@@ -4,6 +4,8 @@ Changes between releases are documented here.
 **** Changes from 2010.02.25 (riesmeier)
 
 - Added "dcmjpls" to the list of public modules and merged CHANGES file.
+  Added:   doxygen/manpages/man1/dcmcjpls.1
+           doxygen/manpages/man1/dcmdjpls.1
   Removed: dcmjpls/CHANGES
   Affects: CMakeLists.txt
            config/modules
