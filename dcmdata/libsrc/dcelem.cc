@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-01-21 15:05:59 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Update Date:      $Date: 2010-02-25 13:50:15 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -259,7 +259,22 @@ Uint32 DcmElement::calcElementLength(const E_TransferSyntax xfer,
 OFBool DcmElement::canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax /*oldXfer*/)
 {
-    return newXfer != EXS_Unknown;
+    OFBool canWrite = (newXfer != EXS_Unknown);
+    if (canWrite)
+    {
+        /* check whether element value exceeds length field (in case of 16 bit) */
+        if (DcmXfer(newXfer).isExplicitVR() && !DcmVR(getVR()).usesExtendedLengthEncoding())
+        {
+            const Uint32 length = getLength(newXfer);
+            if (length > 0xffff)
+            {
+                DCMDATA_DEBUG("DcmElement::canWriteXfer() Length of element " << getTagName() << " " << getTag()
+                    << " exceeds maximum of 16-bit length field (" << length << " > 65535 bytes)");
+                canWrite = OFFalse;
+            }
+        }
+    }
+    return canWrite;
 }
 
 
@@ -566,7 +581,7 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
                     else if (readStream->eos())
                     {
                         errorFlag = EC_InvalidStream; // premature end of stream
-                        DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag().getXTag()
+                        DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
                             << " larger (" << getLengthField() << ") than remaining bytes ("
                             << getTransferredBytes() << ") in file, premature end of stream");
                     }
@@ -601,9 +616,9 @@ Uint8 *DcmElement::newValueField()
              * equal to the maximum length, because we are not able then to make this value even (+1)
              * which would an overflow on some systems as well as being illegal in DICOM
              */
-              DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag().getXTag()
-                         << " has odd, maximum length (" << DCM_UndefinedLength
-                         << ") and therefore is not loaded");
+              DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
+                  << " has odd, maximum length (" << DCM_UndefinedLength
+                  << ") and therefore is not loaded");
               errorFlag = EC_CorruptedData;
               return NULL;
         }
@@ -1013,8 +1028,8 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                                 errorFlag = EC_StreamNotifyClient;
                             /* Print an error message when too few bytes are available in the file in order to
                              * distinguish this problem from any other generic "InvalidStream" problem. */
-                            DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag().getXTag()
-                                       << " larger (" << getLengthField() << ") than remaining bytes in file");
+                            DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
+                                << " larger (" << getLengthField() << ") than remaining bytes in file");
                         }
                     }
                 }
@@ -1682,6 +1697,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.80  2010-02-25 13:50:15  joergr
+** Fixed issue with element values which exceed the maximum of a 16-bit length
+** field.
+**
 ** Revision 1.79  2010-01-21 15:05:59  joergr
 ** Switched to new stream variant of method convertToMarkupString() where
 ** appropriate.

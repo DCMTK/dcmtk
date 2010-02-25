@@ -17,6 +17,13 @@ Changes between releases are documented here.
   Affects: dcmjpls/docs/dcmcjpls.man
            dcmjpls/docs/dcmdjpls.man
 
+- Fixed issue with element values which exceed the maximum of a 16-bit length
+  field. Thanks to Peter Klotz <peter.klotz@ith-icoserve.com> for the report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcobject.cc
+
 **** Changes from 2010.02.25 (schlachter)
 
 - Added manpages for the apps and documentation for the whole module.

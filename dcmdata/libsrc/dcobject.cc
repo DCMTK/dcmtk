@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:11:21 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2010-02-25 13:50:15 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,15 +94,15 @@ DcmObject::~DcmObject()
 
 DcmObject &DcmObject::operator=(const DcmObject &obj)
 {
-  if (this != &obj)
-  {
-    Tag = obj.Tag;
-    Length = obj.Length;
-    errorFlag = obj.errorFlag;
-    fTransferState = obj.fTransferState;
-    fTransferredBytes = obj.fTransferredBytes;
-  }
-  return *this;
+    if (this != &obj)
+    {
+        Tag = obj.Tag;
+        Length = obj.Length;
+        errorFlag = obj.errorFlag;
+        fTransferState = obj.fTransferState;
+        fTransferredBytes = obj.fTransferredBytes;
+    }
+    return *this;
 }
 
 
@@ -330,7 +330,7 @@ Uint32 DcmObject::getTagAndLengthSize(const E_TransferSyntax oxfer) const
 
        if (outvr.usesExtendedLengthEncoding())
        {
-         return 12;
+           return 12;
        }
     }
     return 8;
@@ -345,9 +345,8 @@ OFCondition DcmObject::writeTagAndLength(DcmOutputStream &outStream,
      * writing information, the transfer syntax which was passed is accounted for. If the transfer
      * syntax shows an explicit value representation, the data type of this object is also written
      * to the stream. In general, this function follows the rules which are specified in the DICOM
-     * standard (see DICOM standard (year 2000) part 5, section 7) (or the corresponding section
-     * in a later version of the standard) concerning the encoding of a data set which shall be
-     * transmitted.
+     * standard (see DICOM standard part 5, section 7) concerning the encoding of a data set which
+     * shall be transmitted.
      *
      * Parameters:
      *   outStream    - [out] The stream that the information will be written to.
@@ -400,11 +399,10 @@ OFCondition DcmObject::writeTagAndLength(DcmOutputStream &outStream,
             DcmVR outvr(vr);
 
             /* in case we are dealing with a transfer syntax with explicit VR (see if above) */
-            /* and the actual VR uses extended length encoding (see DICOM standard (year 2000) */
-            /* part 5, section 7.1.2) (or the corresponding section in a later version of the */
-            /* standard) we have to add 2 reserved bytes (set to a value of 00H) to the data */
-            /* type field and the actual length field is 4 bytes wide. Write the corresponding */
-            /* information to the stream. */
+            /* and the actual VR uses extended length encoding (see DICOM standard part 5, */
+            /* section 7.1.2) we have to add 2 reserved bytes (set to a value of 00H) to the */
+            /* data type field and the actual length field is 4 bytes wide. Write the */
+            /* corresponding information to the stream. */
             if (outvr.usesExtendedLengthEncoding())
             {
                 Uint16 reserved = 0;
@@ -415,22 +413,29 @@ OFCondition DcmObject::writeTagAndLength(DcmOutputStream &outStream,
                 writtenBytes += 6;                                                  // remember that 6 bytes were written in total
             }
             /* in case that we are dealing with a transfer syntax with explicit VR (see if above) and */
-            /* the actual VR does not use extended length encoding (see DICOM standard (year 2000) */
-            /* part 5, section 7.1.2) (or the corresponding section in a later version of the standard) */
-            /* we do not have to add reserved bytes to the data type field and the actual length field */
-            /* is 2 bytes wide. Write the corresponding information to the stream. */
-            else {
-                Uint16 valueLength = OFstatic_cast(Uint16, Length);                 // determine length
+            /* the actual VR does not use extended length encoding (see DICOM standard part 5, section */
+            /* 7.1.2) we do not have to add reserved bytes to the data type field and the actual length */
+            /* is 2 bytes wide. Write the corresponding information to the stream. But, make sure that */
+            /* the length really fits into the 2-byte field ... */
+            else if (Length <= 0xffff)
+            {
+                Uint16 valueLength = OFstatic_cast(Uint16, Length);                 // determine length (cast to 16 bit)
                 swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 2, 2);   // mind transfer syntax
                 outStream.write(&valueLength, 2);                                   // write length, 2 bytes wide
                 writtenBytes += 2;                                                  // remember that 2 bytes were written in total
+            }
+            /* ... if not, report an error message and return an error code. */
+            else {
+                DcmTag tag(Tag);
+                DCMDATA_ERROR("DcmObject: Length of element " << tag.getTagName() << " " << tag
+                    << " exceeds maximum of 16-bit length field");
+                l_error = EC_ElemLengthExceeds16BitField;
             }
          }
          /* if the transfer syntax is one with implicit value representation this value's data type */
          /* does not have to be written to the stream. Only the length information has to be written */
          /* to the stream. According to the DICOM standard the length field is in this case always 4 */
-         /* byte wide. (see DICOM standard (year 2000) part 5, section 7.1.2) (or the corresponding */
-         /* section in a later version of the standard) */
+         /* byte wide. (see DICOM standard part 5, section 7.1.2) */
          else {
             Uint32 valueLength = Length;                                          // determine length
             swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);     // mind transfer syntax
@@ -477,6 +482,10 @@ OFBool DcmObject::isEmpty(const OFBool /*normalize*/)
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.66  2010-02-25 13:50:15  joergr
+ * Fixed issue with element values which exceed the maximum of a 16-bit length
+ * field.
+ *
  * Revision 1.65  2009-11-13 13:11:21  joergr
  * Fixed minor issues in log output.
  *

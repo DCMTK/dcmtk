@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:05:29 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2010-02-25 13:50:50 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,6 +122,8 @@ extern const OFCondition EC_ValueRepresentationViolated;
 extern const OFCondition EC_ValueMultiplicityViolated;
 /// Maximum VR length violated
 extern const OFCondition EC_MaximumLengthViolated;
+/// Element length is larger than 16-bit length field permits
+extern const OFCondition EC_ElemLengthExceeds16BitField;
 
 #ifndef OFCONDITION_STRICT_MODE
 
@@ -141,6 +143,10 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.33  2010-02-25 13:50:50  joergr
+** Fixed issue with element values which exceed the maximum of a 16-bit length
+** field.
+**
 ** Revision 1.32  2009-08-03 09:05:29  joergr
 ** Added methods that check whether a given string value conforms to the VR and
 ** VM definitions of the DICOM standards.
