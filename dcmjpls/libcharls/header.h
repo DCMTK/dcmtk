@@ -35,6 +35,8 @@ private:
 	STRATEGY* GetCodecImpl(const JlsParamaters& info);
 };
 
+JLS_ERROR CheckParameterCoherent(const JlsParamaters* pparams);
+
 
 //
 // JpegSegment

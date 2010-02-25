@@ -384,7 +384,7 @@ inlinehint void JlsCodec<TRAITS,STRATEGY>::EncodeMappedValue(LONG k, LONG mapped
 template<class TRAITS, class STRATEGY>
 void JlsCodec<TRAITS,STRATEGY>::InitQuantizationLUT()
 {
-	// for lossless mode with default paramaters, we have precomputed te luts for bitcounts 8,10,12 and 16
+	// for lossless mode with default parameters, we have precomputed te luts for bitcounts 8,10,12 and 16
 	if (traits.NEAR == 0 && traits.MAXVAL == (1 << traits.bpp) - 1)
 	{
 		Presets presets = ComputeDefault(traits.MAXVAL, traits.NEAR);
@@ -587,7 +587,11 @@ LONG JlsCodec<TRAITS,STRATEGY>::DecodeRunPixels(PIXEL Ra, PIXEL* ptype, LONG cpi
 	{
 		// incomplete run
 		ipixel += (J[RUNindex] > 0) ? STRATEGY::ReadValue(J[RUNindex]) : 0;
+
 	}
+	if (ipixel > cpixelMac)
+		throw JlsException(InvalidCompressedData);
+
 
 	for (LONG i = 0; i < ipixel; ++i)
 	{
@@ -850,6 +854,9 @@ size_t JlsCodec<TRAITS,STRATEGY>::DecodeScan(void* pvoidOut, const Size& size, c
 
 	LONG cbyteScanheader = rgbyte[3] - 2;
 
+	if (cbyteScanheader > sizeof(rgbyte))
+		throw JlsException(InvalidCompressedData);
+
 	::memcpy(rgbyte, pbyteCompressed, cbyteScanheader);
 	cbyteRead += cbyteScanheader;
 
@@ -857,6 +864,8 @@ size_t JlsCodec<TRAITS,STRATEGY>::DecodeScan(void* pvoidOut, const Size& size, c
 
 	STRATEGY::_ptypeUncompressed = ptypeOut;
 	DoScan(pbyteCompressed + cbyteRead, cbyte - cbyteRead);
+
+	STRATEGY::CheckEndOfStream();
 
 	return STRATEGY::GetCurBytePos() - pbyteCompressed;
 }

@@ -16,6 +16,7 @@ enum JLS_ERROR
 	UncompressedBufferTooSmall,
 	CompressedBufferTooSmall,
 	InvalidCompressedData,
+	TooMuchCompressedData,
 	ImageTypeNotSupported,
 	UnsupportedBitDepthForTransform,
 	UnsupportedColorTransform
@@ -39,7 +40,7 @@ struct JlsCustomParameters
 	int RESET;
 };
 
-struct JfifParamaters
+struct JfifParameters
 {
 	int   Ver;
 	char  units;
@@ -62,23 +63,27 @@ struct JlsParamaters
 	int colorTransform;
 	bool outputBgr;
 	JlsCustomParameters custom;
-	JfifParamaters jfif;
+	JfifParameters jfif;
 };
 
 
+#if defined(_WIN32)
 #ifndef CHARLS_IMEXPORT
-#define CHARLS_IMEXPORT
+#define CHARLS_IMEXPORT(returntype) __declspec(dllimport) returntype __stdcall
 #endif
+#else
+#ifndef CHARLS_IMEXPORT
+#define CHARLS_IMEXPORT(returntype) returntype
+#endif
+#endif /* _WIN32 */
 
 
 extern "C"
 {
-  CHARLS_IMEXPORT JLS_ERROR JpegLsEncode(void* pdataCompressed, size_t cbyteBuffer, size_t* pcbyteWritten, const void* pdataUncompressed, size_t cbyteUncompressed, const JlsParamaters* pparams);
-  CHARLS_IMEXPORT JLS_ERROR JpegLsDecode(void* pdataUncompressed, size_t cbyteUncompressed, const void* pdataCompressed, size_t cbyteCompressed, JlsParamaters* info = NULL);
-  CHARLS_IMEXPORT JLS_ERROR JpegLsReadHeader(const void* pdataUncompressed, size_t cbyteUncompressed, JlsParamaters* pparams);
-  CHARLS_IMEXPORT JLS_ERROR JpegLsVerifyEncode(const void* pdataUncompressed, size_t cbyteUncompressed, const void* pdataCompressed, size_t cbyteCompressed);
-//CHARLS_IMEXPORT	JLS_ERROR JpegLsCanEncode(JlsParamaters*);
-  //CHARLS_IMEXPORT   JLS_ERROR JpegLsCanDecode(JlsParamaters*);
+  CHARLS_IMEXPORT(JLS_ERROR) JpegLsEncode(void* pdataCompressed, size_t cbyteBuffer, size_t* pcbyteWritten, const void* pdataUncompressed, size_t cbyteUncompressed, const JlsParamaters* pparams);
+  CHARLS_IMEXPORT(JLS_ERROR) JpegLsDecode(void* pdataUncompressed, size_t cbyteUncompressed, const void* pdataCompressed, size_t cbyteCompressed, JlsParamaters* info = NULL);
+  CHARLS_IMEXPORT(JLS_ERROR) JpegLsReadHeader(const void* pdataUncompressed, size_t cbyteUncompressed, JlsParamaters* pparams);
+  CHARLS_IMEXPORT(JLS_ERROR) JpegLsVerifyEncode(const void* pdataUncompressed, size_t cbyteUncompressed, const void* pdataCompressed, size_t cbyteCompressed);
 }
 
 

@@ -60,11 +60,20 @@ public:
 	  		_processLine->NewLineDecoded(ptypeBuffer, cpixel, pixelStride);
 	  }
 
+	  void CheckEndOfStream()
+	  {
+		  if ((*_pbyteCompressed) != 0xFF)
+			throw JlsException(TooMuchCompressedData);
+
+		  if (_readCache != 0)
+		     throw JlsException(TooMuchCompressedData);
+	  }
+
 
 	  inlinehint bool OptimizedRead()
 	  {
 		  // Easy & fast: if there is no 0xFF byte in sight, we can read without bitstuffing
-		  if (_pbyteCompressed < _pbyteNextFF)
+		  if (_pbyteCompressed < _pbyteNextFF - (sizeof(bufType)-1))
 		  {
 			  _readCache		 |= FromBigEndian<sizeof(bufType)>::Read(_pbyteCompressed) >> _validBits;
 			  int bytesToRead = (bufferbits - _validBits) >> 3;
@@ -144,7 +153,7 @@ public:
 		  }
 
 
-		  return pbyteNextFF - (sizeof(bufType)-1);
+		  return pbyteNextFF;
 	  }
 
 
@@ -171,6 +180,8 @@ public:
 		  if (_validBits < length)
 		  {
 			  MakeValid();
+			  if (_validBits < length)
+				  throw JlsException(InvalidCompressedData);
 		  }
 
 		  ASSERT(length != 0 && length <= _validBits);

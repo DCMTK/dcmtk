@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <iostream>
 
+#include "util.h"
+
 #include "decodstr.h"
 #include "encodstr.h"
 #include "context.h"

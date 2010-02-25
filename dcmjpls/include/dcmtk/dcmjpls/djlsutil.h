@@ -22,8 +22,8 @@
  *  Purpose: enumerations, error constants and helper functions for dcmjp2k
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 13:16:47 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2010-02-25 08:50:38 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,14 +37,18 @@
 #include "dcmtk/ofstd/ofcond.h"   /* for class OFCondition */
 #include "dcmtk/oflog/oflog.h"
 
-extern OFLogger DCM_dcmjplsLogger;
 
-#define DCMJPLS_TRACE(msg) OFLOG_TRACE(DCM_dcmjplsLogger, msg)
-#define DCMJPLS_DEBUG(msg) OFLOG_DEBUG(DCM_dcmjplsLogger, msg)
-#define DCMJPLS_INFO(msg)  OFLOG_INFO(DCM_dcmjplsLogger, msg)
-#define DCMJPLS_WARN(msg)  OFLOG_WARN(DCM_dcmjplsLogger, msg)
-#define DCMJPLS_ERROR(msg) OFLOG_ERROR(DCM_dcmjplsLogger, msg)
-#define DCMJPLS_FATAL(msg) OFLOG_FATAL(DCM_dcmjplsLogger, msg)
+// global definitions for logging mechanism provided by the oflog module
+
+OFLogger DCM_dcmjplsGetLogger();
+
+#define DCMJPLS_TRACE(msg) OFLOG_TRACE(DCM_dcmjplsGetLogger(), msg)
+#define DCMJPLS_DEBUG(msg) OFLOG_DEBUG(DCM_dcmjplsGetLogger(), msg)
+#define DCMJPLS_INFO(msg)  OFLOG_INFO(DCM_dcmjplsGetLogger(), msg)
+#define DCMJPLS_WARN(msg)  OFLOG_WARN(DCM_dcmjplsGetLogger(), msg)
+#define DCMJPLS_ERROR(msg) OFLOG_ERROR(DCM_dcmjplsGetLogger(), msg)
+#define DCMJPLS_FATAL(msg) OFLOG_FATAL(DCM_dcmjplsGetLogger(), msg)
+
 
 /** describes the condition under which a compressed or decompressed image
  *  receives a new SOP instance UID.
@@ -148,11 +152,17 @@ extern const OFCondition EC_JLSUnsupportedPixelRepresentation;
 /// error condition constant: Unsupported type of image for JPEG-LS compression
 extern const OFCondition EC_JLSUnsupportedImageType;
 
+/// error condition constant: Trailing data after image
+extern const OFCondition EC_JLSTooMuchCompressedData;
+
 #endif
 
 /*
  * CVS/RCS Log:
  * $Log: djlsutil.h,v $
+ * Revision 1.4  2010-02-25 08:50:38  uli
+ * Updated to latest CharLS version.
+ *
  * Revision 1.3  2009-10-07 13:16:47  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

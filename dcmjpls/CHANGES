@@ -1,6 +1,27 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.02.25 (schlachter)
+
+- Updated to latest CharLS version.
+  Affects: dcmjpls/docs/charls-readme.txt
+           dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/libcharls/clrtrans.h
+           dcmjpls/libcharls/decodstr.h
+           dcmjpls/libcharls/deftrait.h
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/header.h
+           dcmjpls/libcharls/intrface.cc
+           dcmjpls/libcharls/intrface.h
+           dcmjpls/libcharls/jpegls.cc
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libsrc/djerror.h
+           dcmjpls/libsrc/djutils.cc
+
+- Removed outdated patch.
+  Affects: dcmjpls/docs/charls-readme.txt
+  Removed: dcmjpls/docs/charls.patch
+
 **** Changes from 2010.01.19 (schlachter)
 
 - Made file names fit into 8.3 format.

@@ -22,8 +22,8 @@
  *  Purpose: Helper function than converts between CharLS and dcmjpgls errors
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-01-19 15:19:06 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2010-02-25 08:50:38 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,6 +73,8 @@ public:
         return EC_JLSUnsupportedBitDepthForTransform;
       case UnsupportedColorTransform:
         return EC_JLSUnsupportedColorTransform;
+      case TooMuchCompressedData:
+        return EC_JLSTooMuchCompressedData;
       default:
         return EC_IllegalParameter;
     }
@@ -84,6 +86,9 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: djerror.h,v $
+ * Revision 1.4  2010-02-25 08:50:38  uli
+ * Updated to latest CharLS version.
+ *
  * Revision 1.3  2010-01-19 15:19:06  uli
  * Made file names fit into 8.3 format.
  *

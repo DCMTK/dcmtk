@@ -28,6 +28,29 @@ bool IsDefault(const JlsCustomParameters* pcustom)
 	return true;
 }
 
+
+JLS_ERROR CheckParameterCoherent(const JlsParamaters* pparams)
+{
+	if (pparams->bitspersample < 6 || pparams->bitspersample > 16)
+		return ParameterValueNotSupported;
+
+	if (pparams->ilv < 0 || pparams->ilv > 2)
+		throw JlsException(InvalidCompressedData);
+
+	if (pparams->bitspersample < 6 || pparams->bitspersample > 16)
+		return ParameterValueNotSupported;
+
+	switch (pparams->components)
+	{
+		case 4: return pparams->ilv == ILV_SAMPLE ? ParameterValueNotSupported : OK;
+		case 3: return OK;
+		case 1: return pparams->ilv != ILV_NONE ? ParameterValueNotSupported : OK;
+		case 0: return InvalidJlsParameters;
+
+		default: return pparams->ilv != ILV_NONE ? ParameterValueNotSupported : OK;
+	}
+}
+
 //
 // JpegMarkerSegment
 //
@@ -182,6 +205,11 @@ JLSInputStream::JLSInputStream(const BYTE* pdata, LONG cbyteLength) :
 void JLSInputStream::Read(void* pvoid, LONG cbyteAvailable)
 {
 	ReadHeader();
+
+	JLS_ERROR error = CheckParameterCoherent(&_info);
+	if (error != OK)
+		throw JlsException(error);
+
 	ReadPixels(pvoid, cbyteAvailable);
 }
 
@@ -194,7 +222,7 @@ void JLSInputStream::Read(void* pvoid, LONG cbyteAvailable)
 //
 void JLSInputStream::ReadPixels(void* pvoid, LONG cbyteAvailable)
 {
-	LONG cbytePlane = _info.width * _info.height * ((_info.bitspersample + 7)/8);
+	long long cbytePlane = (long long)(_info.width) * _info.height * ((_info.bitspersample + 7)/8);
 
 	if (cbyteAvailable < cbytePlane * _info.components)
 		throw JlsException(UncompressedBufferTooSmall);
@@ -352,6 +380,8 @@ void JLSInputStream::ReadStartOfScan()
 	}
 	_info.allowedlossyerror = ReadByte();
 	_info.ilv = interleavemode(ReadByte());
+
+
 	if(_info.bytesperline == 0)
 	{
 		int components = _info.ilv == ILV_NONE ? 1 : _info.components;
@@ -399,7 +429,7 @@ void JLSInputStream::ReadJfif()
 //
 // CreateJFIF()
 //
-JpegMarkerSegment* CreateJFIF(const JfifParamaters* jfif)
+JpegMarkerSegment* CreateJFIF(const JfifParameters* jfif)
 {
 	const BYTE jfifID[] = {'J','F','I','F','\0'};
 	std::vector<BYTE> rgbyte;

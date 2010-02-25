@@ -6,6 +6,7 @@
 #include "header.h"
 
 
+
 JLS_ERROR CheckInput(const void* pdataCompressed, size_t cbyteCompressed, const void* pdataUncompressed, size_t cbyteUncompressed, const JlsParamaters* pparams)
 {
 	if (pparams == NULL)
@@ -20,9 +21,6 @@ JLS_ERROR CheckInput(const void* pdataCompressed, size_t cbyteCompressed, const 
 	if (pdataUncompressed == NULL)
 		return InvalidJlsParameters;
 
-	if (pparams->bitspersample < 6 || pparams->bitspersample > 16)
-		return ParameterValueNotSupported;
-
 	if (pparams->width < 1 || pparams->width > 65535)
 		return ParameterValueNotSupported;
 
@@ -34,22 +32,15 @@ JLS_ERROR CheckInput(const void* pdataCompressed, size_t cbyteCompressed, const 
 	if (cbyteUncompressed < size_t(bytesperline * pparams->height))
 		return InvalidJlsParameters;
 
-	switch (pparams->components)
-	{
-		case 4: return pparams->ilv == ILV_SAMPLE ? ParameterValueNotSupported : OK;
-		case 3: return OK;
-		case 1: return pparams->ilv != ILV_NONE ? ParameterValueNotSupported : OK;
-		case 0: return InvalidJlsParameters;
-
-		default: return pparams->ilv != ILV_NONE ? ParameterValueNotSupported : OK;
-	}
+	return CheckParameterCoherent(pparams);
 }
+
 
 
 extern "C"
 {
 
-CHARLS_IMEXPORT JLS_ERROR JpegLsEncode(void* pdataCompressed, size_t cbyteBuffer, size_t* pcbyteWritten, const void* pdataUncompressed, size_t cbyteUncompressed, const JlsParamaters* pparams)
+CHARLS_IMEXPORT(JLS_ERROR) JpegLsEncode(void* pdataCompressed, size_t cbyteBuffer, size_t* pcbyteWritten, const void* pdataUncompressed, size_t cbyteUncompressed, const JlsParamaters* pparams)
 {
 	JlsParamaters info = *pparams;
 	if(info.bytesperline == 0)
@@ -101,7 +92,7 @@ CHARLS_IMEXPORT JLS_ERROR JpegLsEncode(void* pdataCompressed, size_t cbyteBuffer
 	return OK;
 }
 
-CHARLS_IMEXPORT JLS_ERROR JpegLsDecode(void* pdataUncompressed, size_t cbyteUncompressed, const void* pdataCompressed, size_t cbyteCompressed, JlsParamaters* info)
+CHARLS_IMEXPORT(JLS_ERROR) JpegLsDecode(void* pdataUncompressed, size_t cbyteUncompressed, const void* pdataCompressed, size_t cbyteCompressed, JlsParamaters* info)
 {
 	JLSInputStream reader((BYTE*)pdataCompressed, cbyteCompressed);
 
@@ -122,7 +113,7 @@ CHARLS_IMEXPORT JLS_ERROR JpegLsDecode(void* pdataUncompressed, size_t cbyteUnco
 }
 
 
-CHARLS_IMEXPORT JLS_ERROR JpegLsVerifyEncode(const void* pdataUncompressed, size_t cbyteUncompressed, const void* pdataCompressed, size_t cbyteBuffer)
+CHARLS_IMEXPORT(JLS_ERROR) JpegLsVerifyEncode(const void* pdataUncompressed, size_t cbyteUncompressed, const void* pdataCompressed, size_t cbyteBuffer)
 {
 	JlsParamaters params = JlsParamaters();
 
@@ -168,7 +159,7 @@ CHARLS_IMEXPORT JLS_ERROR JpegLsVerifyEncode(const void* pdataUncompressed, size
 }
 
 
-CHARLS_IMEXPORT JLS_ERROR JpegLsReadHeader(const void* pdataCompressed, size_t cbyteCompressed, JlsParamaters* pparams)
+CHARLS_IMEXPORT(JLS_ERROR) JpegLsReadHeader(const void* pdataCompressed, size_t cbyteCompressed, JlsParamaters* pparams)
 {
 	try
 	{

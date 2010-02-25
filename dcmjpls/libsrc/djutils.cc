@@ -22,8 +22,8 @@
  *  Purpose: Support code for dcmjpls
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 13:16:47 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2010-02-25 08:50:38 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,14 @@
 #include "dcmtk/dcmjpls/djlsutil.h"
 #include "dcmtk/dcmdata/dcerror.h"
 
-OFLogger DCM_dcmjplsLogger = OFLog::getLogger("dcmtk.dcmjpls");
+OFLogger DCM_dcmjplsGetLogger()
+{
+    // We don't just use a global variable, because constructors of globals are
+    // executed in random order. This guarantees that the OFLogger is constructed
+    // before first use.
+    static OFLogger DCM_dcmjplsLogger = OFLog::getLogger("dcmtk.dcmjpls");
+    return DCM_dcmjplsLogger;
+}
 
 #define MAKE_DCMJPLS_ERROR(number, name, description)  \
 const OFConditionConst ECC_ ## name (OFM_dcmjpls, number, OF_error, description); \
@@ -54,10 +61,14 @@ MAKE_DCMJPLS_ERROR(11, JLSImageDataMismatch, "Image data mismatch between DICOM 
 MAKE_DCMJPLS_ERROR(12, JLSUnsupportedPhotometricInterpretation, "Unsupported photometric interpretation for near-lossless JPEG-LS compression");
 MAKE_DCMJPLS_ERROR(13, JLSUnsupportedPixelRepresentation, "Unsupported pixel representation for near-lossless JPEG-LS compression");
 MAKE_DCMJPLS_ERROR(14, JLSUnsupportedImageType, "Unsupported type of image for JPEG-LS compression");
+MAKE_DCMJPLS_ERROR(15, JLSTooMuchCompressedData, "Too much compressed data, trailing data after image");
 
 /*
  * CVS/RCS Log:
  * $Log: djutils.cc,v $
+ * Revision 1.4  2010-02-25 08:50:38  uli
+ * Updated to latest CharLS version.
+ *
  * Revision 1.3  2009-10-07 13:16:47  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

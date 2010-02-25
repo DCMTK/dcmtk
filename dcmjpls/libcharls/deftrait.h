@@ -6,7 +6,7 @@
 #ifndef CHARLS_DEFAULTTRAITS
 #define CHARLS_DEFAULTTRAITS
 
-// Default traits that support all JPEG LS paramaters: custom limit, near, maxval (not power of 2)
+// Default traits that support all JPEG LS parameters: custom limit, near, maxval (not power of 2)
 
 // This traits class is used to initialize a coder/decoder.
 // The coder/decoder also delegates some functions to the traits class.
