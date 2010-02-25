@@ -15,8 +15,8 @@ dcmdjpls [options] dcmfile-in dcmfile-out
 \section description DESCRIPTION
 
 The \b dcmdjpls utility reads a JPEG-ls compressed DICOM image (\e dcmfile-in),
-decompresses the JPEG-LS data (i. e. conversion to a native DICOM transfer syntax)
-and writes the converted image to an output file (\e dcmfile-out).
+decompresses the JPEG-LS data (i. e. conversion to a native DICOM transfer
+syntax) and writes the converted image to an output file (\e dcmfile-out).
 
 \section parameters PARAMETERS
 
@@ -57,7 +57,6 @@ dcmfile-out  DICOM output filename
 \endverbatim
 
 \subsection input_options input options
-
 \verbatim
 input file format:
 
@@ -77,7 +76,6 @@ input file format:
 \endverbatim
 
 \subsection processing_options processing options
-
 \verbatim
 planar configuration:
 
@@ -120,7 +118,7 @@ SOP Instance UID:
   +ua  --uid-always
          always assign new UID
 
-  # Always assigns a new SOP instance UID
+  # Always assigns a new SOP instance UID.
 
 other processing options:
 
@@ -129,7 +127,6 @@ other processing options:
 \endverbatim
 
 \subsection output_options output options
-
 \verbatim
 output file format:
 

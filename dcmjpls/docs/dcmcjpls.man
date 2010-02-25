@@ -15,8 +15,9 @@ dcmcjpls [options] dcmfile-in dcmfile-out
 \section description DESCRIPTION
 
 The \b dcmcjpls utility reads an uncompressed DICOM image (\e dcmfile-in),
-performs a JPEG-LS compression (i. e. conversion to an encapsulated DICOM transfer
-syntax) and writes the converted image to an output file (\e dcmfile-out).
+performs a JPEG-LS compression (i. e. conversion to an encapsulated DICOM
+transfer syntax) and writes the converted image to an output file
+(\e dcmfile-out).
 
 \section parameters PARAMETERS
 
@@ -95,23 +96,24 @@ JPEG-LS process:
          encode JPEG-LS lossless only TS (default)
 
   # This options selects the JPEG-LS lossless only transfer syntax
-  # and performs a lossless compression
+  # and performs a lossless compression.
 
   +en  --encode-nearlossless
          encode JPEG-LS near-lossless TS (NEAR: 2)
 
   # This options selects the JPEG-LS lossy transfer syntax
-  # and performs a near-lossless compression
+  # and performs a near-lossless compression.
 
 JPEG-LS bit rate (near-lossless only):
 
-  +md  --max-deviation    [d]eviation: integer (default: 2)
+  +md  --max-deviation  [d]eviation: integer (default: 2)
          defines maximum deviation for an encoded pixel
 
   # This option specifies the maximum deviation for a single pixel from
   # the original pixel value.
 
 lossless compression:
+
   +pr  --prefer-raw
          prefer raw encoder mode (default)
 
@@ -128,51 +130,50 @@ lossless compression:
 
 JPEG-LS compression:
 
-   +t1  --threshold1           [t]hreshhold: integer (default for 8 bpp: 3)
-        set JPEG-LS encoding parameter threshold 1
+  +t1  --threshold1  [t]hreshhold: integer (default for 8 bpp: 3)
+         set JPEG-LS encoding parameter threshold 1
 
-   +t2  --threshold2           [t]hreshhold: integer (default for 8 bpp: 7)
-        set JPEG-LS encoding parameter threshold 2
+  +t2  --threshold2  [t]hreshhold: integer (default for 8 bpp: 7)
+         set JPEG-LS encoding parameter threshold 2
 
-   +t3  --threshold3           [t]hreshhold: integer (default for 8 bpp: 21)
-        set JPEG-LS encoding parameter threshold 3
+  +t3  --threshold3  [t]hreshhold: integer (default for 8 bpp: 21)
+         set JPEG-LS encoding parameter threshold 3
 
-   +rs  --reset                [r]eset: integer (default: 64)
-        set JPEG-LS encoding parameter reset
+  +rs  --reset  [r]eset: integer (default: 64)
+         set JPEG-LS encoding parameter reset
 
-   +lm  --limit                [l]imit: integer (default: 0)
-        set JPEG-LS encoding parameter limit
+  +lm  --limit  [l]imit: integer (default: 0)
+         set JPEG-LS encoding parameter limit
 
 JPEG-LS interleave:
 
-   +il  --interleave-line
-          force line-interleaved JPEG-LS images (default)
+  +il  --interleave-line
+         force line-interleaved JPEG-LS images (default)
 
-   # This flag forces line-interleaved mode for the resulting image.
-   # In line-interleave mode each line from the source image is
-   # compressed separately for each component and then the next line
-   # is encoded.
+  # This flag forces line-interleaved mode for the resulting image.
+  # In line-interleave mode each line from the source image is
+  # compressed separately for each component and then the next line
+  # is encoded.
 
-   +is  --interleave-sample
-          force sample-interleaved JPEG-LS images
+  +is  --interleave-sample
+         force sample-interleaved JPEG-LS images
 
-   # This flag forces sample-interleaved mode for the resulting image.
-   # In sample-interleave mode each pixel's components are encoded before
-   # the next pixe is encoded.
+  # This flag forces sample-interleaved mode for the resulting image.
+  # In sample-interleave mode each pixel's components are encoded before
+  # the next pixe is encoded.
 
-   +in  --interleave-none
-          force uninterleaved JPEG-LS images
+  +in  --interleave-none
+         force uninterleaved JPEG-LS images
 
-   # This flag forces uninterleaved mode for the resulting image.
-   # In this mode, each of the image's components are completely encoded
-   # before the next component is handled.
+  # This flag forces uninterleaved mode for the resulting image.
+  # In this mode, each of the image's components are completely encoded
+  # before the next component is handled.
 
-   +iv  --interleave-default
-          use the fastest possible interleave mode
+  +iv  --interleave-default
+         use the fastest possible interleave mode
 
-   # This flag selects an interleave mode based on the source image's mode.
-   # If possible, the image is not converted to a different interleave mode.
-
+  # This flag selects an interleave mode based on the source image's mode.
+  # If possible, the image is not converted to a different interleave mode.
 \endverbatim
 
 \subsection enc_pix_data_encoding_opt encapsulated pixel data encoding options
@@ -279,7 +280,6 @@ data set trailing padding:
          and items on multiple of i bytes
 \endverbatim
 
-
 \section notes NOTES
 
 The \b dcmcjpls utility compresses DICOM images of all SOP classes. However,
@@ -287,7 +287,7 @@ The \b dcmcjpls utility compresses DICOM images of all SOP classes. However,
 complies with all restrictions of the object's IOD.
 
 The user is responsible for making sure that the compressed images he creates
-are compliant with the DICOM standard.  If in question, the \b dcmcjlsk utility
+are compliant with the DICOM standard.  If in question, the \b dcmcjpls utility
 allows to convert an image to secondary capture - this SOP class does not pose
 restrictions as the ones mentioned above.
 
