@@ -1,0 +1,76 @@
+/*!
+
+\page mod_dcmjpls dcmjpls: a compression/decompression library and utility apps
+
+This module contains classes that convert between uncompressed and
+JPEG-LS compressed representations (transfer syntaxes) of a DICOM
+image object. Both lossless and near-lossless JPEG-LS processes are
+supported. This module implements a family of codecs that are derived
+from class DcmCodec and can be registered in the codec list maintained
+in module dcmdata.
+
+The main interface classes are:
+\li \b DJLSEncoderRegistration
+\li \b DJLSDecoderRegistration
+\li \b DJLSEncoderBase
+\li \b DJLSDecoderBase
+
+\section Tools
+
+This module contains the following command line tools:
+\li \ref dcmcjpls
+\li \ref dcmdjpls
+
+\section Examples
+
+The following example shows how to compress a DICOM image file with lossless JPEG-LS:
+
+\code
+DJLSEncoderRegistration::registerCodecs(); // register JPEG codecs
+DcmFileFormat fileformat;
+if (fileformat.loadFile("test.dcm").good())
+{
+  DcmDataset *dataset = fileformat.getDataset();
+  DcmItem *metaInfo = fileformat.getMetaInfo();
+  DJLSRepresentationParameter rp(0, OFTrue); // parameters for lossless
+
+  // this causes the lossless JPEG-LS version of the dataset to be created
+  dataset->chooseRepresentation(EXS_JPEGLSLossless, &params);
+
+  // check if everything went well
+  if (dataset->canWriteXfer(EXS_JPEGLSLossless))
+  {
+    // force the meta-header UIDs to be re-generated when storing the file
+    // since the UIDs in the data set may have changed
+    delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+    delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+
+    // store in lossless JPEG format
+    fileformat.saveFile("test_jpls.dcm", EXS_JPEGLSLossless);
+  }
+}
+DJLSEncoderRegistration::cleanup(); // deregister JPEG-LS codecs
+\endcode
+
+The following example shows how to decompress a JPEG-LS compressed DICOM image file:
+
+\code
+DJLSDecoderRegistration::registerCodecs(); // register JPEG-LS codecs
+DcmFileFormat fileformat;
+if (fileformat.loadFile("test_jpls.dcm").good())
+{
+  DcmDataset *dataset = fileformat.getDataset();
+
+  // decompress data set if compressed
+  dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+
+  // check if everything went well
+  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+  {
+    fileformat.saveFile("test_decompressed.dcm", EXS_LittleEndianExplicit);
+  }
+}
+DJLSDecoderRegistration::cleanup(); // deregister JPEG-LS codecs
+\endcode
+
+*/

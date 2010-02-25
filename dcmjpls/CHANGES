@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.02.25 (schlachter)
 
+- Added manpages for the apps and documentation for the whole module.
+  Added: dcmjpls/docs/dcmcjpls.man
+         dcmjpls/docs/dcmdjpls.man
+         dcmjpls/docs/dcmjpls.dox
+
 - Fix doxygen comments in a couple of places.
   Affects: dcmjpls/include/dcmtk/dcmjpls/djcodece.h
            dcmjpls/include/dcmtk/dcmjpls/djcparam.h
