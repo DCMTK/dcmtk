@@ -13,6 +13,7 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 \li \ref mod_dcmimage
 \li \ref mod_dcmimgle
 \li \ref mod_dcmjpeg
+\li \ref mod_dcmjpls
 \li \ref mod_dcmnet
 \li \ref mod_dcmpstat
 \li \ref mod_dcmsign

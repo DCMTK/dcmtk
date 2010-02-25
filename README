@@ -12,6 +12,7 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
     dcmimage - adds support for color images to dcmimgle
     dcmimgle - an image processing library and utility apps
     dcmjpeg  - a compression/decompression library and utility apps
+    dcmjpls  - a compression/decompression library and utility apps
     dcmnet   - a networking library and utility apps
     dcmpstat - a presentation state library and utility apps
     dcmqrdb  - an image database server

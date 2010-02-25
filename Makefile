@@ -7,27 +7,27 @@ configdir = config
 
 include $(configdir)/Makefile.def
 
-all:  config-all ofstd-all oflog-all dcmdata-all dcmtls-all dcmnet-all dcmqrdb-all dcmwlm-all dcmimgle-all dcmsr-all dcmsign-all dcmpstat-all dcmimage-all dcmjpeg-all
+all:  config-all ofstd-all oflog-all dcmdata-all dcmtls-all dcmnet-all dcmqrdb-all dcmwlm-all dcmimgle-all dcmsr-all dcmsign-all dcmpstat-all dcmimage-all dcmjpeg-all dcmjpls-all
 
-libsrc-all:  ofstd-libsrc-all oflog-libsrc-all dcmdata-libsrc-all dcmtls-libsrc-all dcmnet-libsrc-all dcmqrdb-libsrc-all dcmwlm-libsrc-all dcmimgle-libsrc-all dcmsr-libsrc-all dcmsign-libsrc-all dcmpstat-libsrc-all dcmimage-libsrc-all dcmjpeg-libsrc-all
+libsrc-all:  ofstd-libsrc-all oflog-libsrc-all dcmdata-libsrc-all dcmtls-libsrc-all dcmnet-libsrc-all dcmqrdb-libsrc-all dcmwlm-libsrc-all dcmimgle-libsrc-all dcmsr-libsrc-all dcmsign-libsrc-all dcmpstat-libsrc-all dcmimage-libsrc-all dcmjpeg-libsrc-all dcmjpls-libsrc-all
 
-install:  config-install ofstd-install oflog-install dcmdata-install dcmtls-install dcmnet-install dcmqrdb-install dcmwlm-install dcmimgle-install dcmsr-install dcmsign-install dcmpstat-install dcmimage-install dcmjpeg-install dcmtk-install-doc install-man
+install:  config-install ofstd-install oflog-install dcmdata-install dcmtls-install dcmnet-install dcmqrdb-install dcmwlm-install dcmimgle-install dcmsr-install dcmsign-install dcmpstat-install dcmimage-install dcmjpeg-install dcmjpls-install dcmtk-install-doc install-man
 
 install-all: install install-lib install-html
 
-install-bin:  config-install-bin ofstd-install-bin oflog-install-bin dcmdata-install-bin dcmtls-install-bin dcmnet-install-bin dcmqrdb-install-bin dcmwlm-install-bin dcmimgle-install-bin dcmsr-install-bin dcmsign-install-bin dcmpstat-install-bin dcmimage-install-bin dcmjpeg-install-bin
+install-bin:  config-install-bin ofstd-install-bin oflog-install-bin dcmdata-install-bin dcmtls-install-bin dcmnet-install-bin dcmqrdb-install-bin dcmwlm-install-bin dcmimgle-install-bin dcmsr-install-bin dcmsign-install-bin dcmpstat-install-bin dcmimage-install-bin dcmjpeg-install-bin dcmjpls-install-bin
 
-install-doc:  config-install-doc ofstd-install-doc oflog-install-doc dcmdata-install-doc dcmtls-install-doc dcmnet-install-doc dcmqrdb-install-doc dcmwlm-install-doc dcmimgle-install-doc dcmsr-install-doc dcmsign-install-doc dcmpstat-install-doc dcmimage-install-doc dcmjpeg-install-doc
+install-doc:  config-install-doc ofstd-install-doc oflog-install-doc dcmdata-install-doc dcmtls-install-doc dcmnet-install-doc dcmqrdb-install-doc dcmwlm-install-doc dcmimgle-install-doc dcmsr-install-doc dcmsign-install-doc dcmpstat-install-doc dcmimage-install-doc dcmjpeg-install-doc dcmjpls-install-doc
 
-install-data:  config-install-data ofstd-install-data oflog-install-data dcmdata-install-data dcmtls-install-data dcmnet-install-data dcmqrdb-install-data dcmwlm-install-data dcmimgle-install-data dcmsr-install-data dcmsign-install-data dcmpstat-install-data dcmimage-install-data dcmjpeg-install-data
+install-data:  config-install-data ofstd-install-data oflog-install-data dcmdata-install-data dcmtls-install-data dcmnet-install-data dcmqrdb-install-data dcmwlm-install-data dcmimgle-install-data dcmsr-install-data dcmsign-install-data dcmpstat-install-data dcmimage-install-data dcmjpeg-install-data dcmjpls-install-data
 
-install-etc:  config-install-etc ofstd-install-etc oflog-install-etc dcmdata-install-etc dcmtls-install-etc dcmnet-install-etc dcmqrdb-install-etc dcmwlm-install-etc dcmimgle-install-etc dcmsr-install-etc dcmsign-install-etc dcmpstat-install-etc dcmimage-install-etc dcmjpeg-install-etc
+install-etc:  config-install-etc ofstd-install-etc oflog-install-etc dcmdata-install-etc dcmtls-install-etc dcmnet-install-etc dcmqrdb-install-etc dcmwlm-install-etc dcmimgle-install-etc dcmsr-install-etc dcmsign-install-etc dcmpstat-install-etc dcmimage-install-etc dcmjpeg-install-etc dcmjpls-install-etc
 
-install-lib:  config-install-lib ofstd-install-lib oflog-install-lib dcmdata-install-lib dcmtls-install-lib dcmnet-install-lib dcmqrdb-install-lib dcmwlm-install-lib dcmimgle-install-lib dcmsr-install-lib dcmsign-install-lib dcmpstat-install-lib dcmimage-install-lib dcmjpeg-install-lib
+install-lib:  config-install-lib ofstd-install-lib oflog-install-lib dcmdata-install-lib dcmtls-install-lib dcmnet-install-lib dcmqrdb-install-lib dcmwlm-install-lib dcmimgle-install-lib dcmsr-install-lib dcmsign-install-lib dcmpstat-install-lib dcmimage-install-lib dcmjpeg-install-lib dcmjpls-install-lib
 
-install-include:  config-install-include ofstd-install-include oflog-install-include dcmdata-install-include dcmtls-install-include dcmnet-install-include dcmqrdb-install-include dcmwlm-install-include dcmimgle-install-include dcmsr-install-include dcmsign-install-include dcmpstat-install-include dcmimage-install-include dcmjpeg-install-include
+install-include:  config-install-include ofstd-install-include oflog-install-include dcmdata-install-include dcmtls-install-include dcmnet-install-include dcmqrdb-install-include dcmwlm-install-include dcmimgle-install-include dcmsr-install-include dcmsign-install-include dcmpstat-install-include dcmimage-install-include dcmjpeg-install-include dcmjpls-install-include
 
-install-support:  config-install-support ofstd-install-support oflog-install-support dcmdata-install-support dcmtls-install-support dcmnet-install-support dcmqrdb-install-support dcmwlm-install-support dcmimgle-install-support dcmsr-install-support dcmsign-install-support dcmpstat-install-support dcmimage-install-support dcmjpeg-install-support
+install-support:  config-install-support ofstd-install-support oflog-install-support dcmdata-install-support dcmtls-install-support dcmnet-install-support dcmqrdb-install-support dcmwlm-install-support dcmimgle-install-support dcmsr-install-support dcmsign-install-support dcmpstat-install-support dcmimage-install-support dcmjpeg-install-support dcmjpls-install-support
 
 dcmtk-install-doc:
 	$(configdir)/mkinstalldirs $(DESTDIR)$(docdir)
@@ -467,6 +467,36 @@ dcmjpeg-install-include:
 dcmjpeg-install-support:
 	(cd dcmjpeg && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
 
+dcmjpls-all:
+	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
+
+dcmjpls-libsrc-all:
+	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmjpls-install:
+	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
+
+dcmjpls-install-bin:
+	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
+
+dcmjpls-install-doc:
+	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmjpls-install-data:
+	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
+dcmjpls-install-etc:
+	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
+
+dcmjpls-install-lib:
+	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
+
+dcmjpls-install-include:
+	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
+
+dcmjpls-install-support:
+	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
 dependencies:
 	(cd ofstd && $(MAKE) dependencies)
 	(cd oflog && $(MAKE) dependencies)
@@ -481,6 +511,7 @@ dependencies:
 	(cd dcmpstat && $(MAKE) dependencies)
 	(cd dcmimage && $(MAKE) dependencies)
 	(cd dcmjpeg && $(MAKE) dependencies)
+	(cd dcmjpls && $(MAKE) dependencies)
 	-(cd config && $(MAKE) dependencies)
 
 clean:
@@ -497,6 +528,7 @@ clean:
 	(cd dcmpstat && $(MAKE) clean)
 	(cd dcmimage && $(MAKE) clean)
 	(cd dcmjpeg && $(MAKE) clean)
+	(cd dcmjpls && $(MAKE) clean)
 	(cd doxygen && $(MAKE) clean)
 	-(cd config && $(MAKE) clean)
 	rm -f $(TRASH)
@@ -515,6 +547,7 @@ distclean:
 	(cd dcmpstat && $(MAKE) distclean)
 	(cd dcmimage && $(MAKE) distclean)
 	(cd dcmjpeg && $(MAKE) distclean)
+	(cd dcmjpls && $(MAKE) distclean)
 	(cd doxygen && $(MAKE) distclean)
 	-(cd config && $(MAKE) distclean)
 	rm -f $(TRASH)
