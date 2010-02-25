@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.02.25 (schlachter)
 
+- Fix doxygen comments in a couple of places.
+  Affects: dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/include/dcmtk/dcmjpls/djcparam.h
+           dcmjpls/include/dcmtk/dcmjpls/djdecode.h
+
 - Updated to latest CharLS version.
   Affects: dcmjpls/docs/charls-readme.txt
            dcmjpls/include/dcmtk/dcmjpls/djlsutil.h

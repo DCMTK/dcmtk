@@ -22,8 +22,8 @@
  *  Purpose: singleton class that registers the decoder for all supported JPEG-LS processes.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 13:16:47 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2010-02-25 10:17:14 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ private:
   /// pointer to losslessdecoder
   static DJLSLosslessDecoder *losslessdecoder_;
 
-  // pointer to near-lossless encoder
+  /// pointer to near-lossless encoder
   static DJLSNearLosslessDecoder *nearlosslessdecoder_;
 
 };
@@ -89,6 +89,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djdecode.h,v $
+ * Revision 1.3  2010-02-25 10:17:14  uli
+ * Fix doxygen comments in a couple of places.
+ *
  * Revision 1.2  2009-10-07 13:16:47  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

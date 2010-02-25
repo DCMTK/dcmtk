@@ -22,8 +22,8 @@
  *  Purpose: codec parameter class JPEG-LS codecs
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 13:16:47 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-02-25 10:17:14 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,6 +125,9 @@ public:
     return convertToSC_;
   }
 
+  /** returns create offset table flag
+   *  @return create offset table flag
+   */
   OFBool getCreateOffsetTable() const
   {
    return createOffsetTable_;
@@ -156,7 +159,7 @@ public:
   }
 
   /** returns maximum fragment size (in kbytes) for compression, 0 for unlimited.
-   *  @returnmaximum fragment size for compression
+   *  @return maximum fragment size for compression
    */
   Uint32 getFragmentSize() const
   {
@@ -288,6 +291,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djcparam.h,v $
+ * Revision 1.5  2010-02-25 10:17:14  uli
+ * Fix doxygen comments in a couple of places.
+ *
  * Revision 1.4  2009-10-07 13:16:47  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

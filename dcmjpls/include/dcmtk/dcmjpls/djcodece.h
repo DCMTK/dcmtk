@@ -21,9 +21,9 @@
  *
  *  Purpose: codec classes for JPEG-LS encoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-17 16:57:14 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-02-25 10:17:14 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -261,7 +261,7 @@ private:
 
   /** create Derivation Description.
    *  @param dataset dataset to be modified
-   *  @param toRepParam representation parameter passed to encode()
+   *  @param djrp representation parameter passed to encode()
    *  @param ratio image compression ratio > 1. This is the real effective ratio
    *    between compressed and uncompressed image,
    *    i. e. 30 means a 30:1 lossy compression.
@@ -283,13 +283,7 @@ private:
    *  @param pixelSequence object in which the compressed frame is stored
    *  @param offsetList list of frame offsets updated in this parameter
    *  @param compressedSize size of compressed frame returned in this parameter
-   *  @param fragmentSize maximum size of compressed DICOM fragment
-   *  @param opt_use_custom_options
-   *  @param opt_t1
-   *  @param opt_t2
-   *  @param opt_t3
-   *  @param opt_reset
-   *  @param keep_files
+   *  @param djcp parameters for the codec
    *  @return EC_Normal if successful, an error code otherwise
    */
   OFCondition compressRawFrame(
@@ -311,6 +305,7 @@ private:
    *  @param photometricInterpretation photometric interpretation of the DICOM dataset
    *  @param offsetList list of frame offsets updated in this parameter
    *  @param compressedSize size of compressed frame returned in this parameter
+   *  @param djcp parameters for the codec
    *  @param frame frame index
    *  @param nearLosslessDeviation maximum deviation for near-lossless encoding
    *  @return EC_Normal if successful, an error code otherwise
@@ -346,7 +341,8 @@ private:
    *  @param target A buffer where the converted image will be stored
    *  @param source The image buffer to be converted
    *  @param components Color components used in the image
-   *  @param size The size of one plane of the buffers
+   *  @param width The width of the image.
+   *  @param height The height of the image.
    *  @param bitsAllocated The number of bits allocated in the image.
    *  @return EC_Normal if succesful, an error code otherwise
    */
@@ -387,6 +383,9 @@ class DJLSNearLosslessEncoder : public DJLSEncoderBase
 /*
  * CVS/RCS Log:
  * $Log: djcodece.h,v $
+ * Revision 1.5  2010-02-25 10:17:14  uli
+ * Fix doxygen comments in a couple of places.
+ *
  * Revision 1.4  2009-11-17 16:57:14  joergr
  * Added new method that allows for determining the color model of the
  * decompressed image.
