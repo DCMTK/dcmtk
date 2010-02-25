@@ -1,6 +1,51 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.02.25 (riesmeier)
+
+- Added "dcmjpls" to the list of public modules and merged CHANGES file.
+  Removed: dcmjpls/CHANGES
+  Affects: CMakeLists.txt
+           config/modules
+           doxygen/htmldocs.dox
+           Makefile
+           README
+
+- Fixed minor layout and formatting issues.
+  Affects: dcmjpls/docs/dcmcjpls.man
+           dcmjpls/docs/dcmdjpls.man
+
+**** Changes from 2010.02.25 (schlachter)
+
+- Added manpages for the apps and documentation for the whole module.
+  Added:   dcmjpls/docs/dcmcjpls.man
+           dcmjpls/docs/dcmdjpls.man
+           dcmjpls/docs/dcmjpls.dox
+
+- Fix doxygen comments in a couple of places.
+  Affects: dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/include/dcmtk/dcmjpls/djcparam.h
+           dcmjpls/include/dcmtk/dcmjpls/djdecode.h
+
+- Updated to latest CharLS version.
+  Affects: dcmjpls/docs/charls-readme.txt
+           dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/libcharls/clrtrans.h
+           dcmjpls/libcharls/decodstr.h
+           dcmjpls/libcharls/deftrait.h
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/header.h
+           dcmjpls/libcharls/intrface.cc
+           dcmjpls/libcharls/intrface.h
+           dcmjpls/libcharls/jpegls.cc
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libsrc/djerror.h
+           dcmjpls/libsrc/djutils.cc
+
+- Removed outdated patch.
+  Affects: dcmjpls/docs/charls-readme.txt
+  Removed: dcmjpls/docs/charls.patch
+
 **** Changes from 2010.02.23 (riesmeier)
 
 - Added new helper function which determines whether an integer representation
@@ -156,6 +201,40 @@ Changes between releases are documented here.
 - Fixed minor typos and manually added missing CVS log entries.
   Affects: oflog/etc/logger.cfg
 
+**** Changes from 2010.01.19 (schlachter)
+
+- Made file names fit into 8.3 format.
+  Affects: dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libcharls/Makefile.in
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/jpegls.cc
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libcharls/util.h
+           dcmjpls/libsrc/Makefile.dep
+           dcmjpls/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodece.cc
+           dcmjpls/libsrc/djerror.h
+  Added:   dcmjpls/libcharls/clrtrans.h
+           dcmjpls/libcharls/ctxtrmod.h
+           dcmjpls/libcharls/decodstr.h
+           dcmjpls/libcharls/deftrait.h
+           dcmjpls/libcharls/encodstr.h
+           dcmjpls/libcharls/intrface.cc
+           dcmjpls/libcharls/intrface.h
+           dcmjpls/libcharls/lltraits.h
+           dcmjpls/libcharls/lokuptbl.h
+           dcmjpls/libcharls/procline.h
+  Removed: dcmjpls/libcharls/colortransform.h
+           dcmjpls/libcharls/contextrunmode.h
+           dcmjpls/libcharls/decoderstrategy.h
+           dcmjpls/libcharls/defaulttraits.h
+           dcmjpls/libcharls/encoderstrategy.h
+           dcmjpls/libcharls/interface.cc
+           dcmjpls/libcharls/interface.h
+           dcmjpls/libcharls/lookuptable.h
+           dcmjpls/libcharls/losslesstraits.h
+           dcmjpls/libcharls/processline.h
+
 **** Changes from 2010.01.14 (riesmeier)
 
 - Updated man pages.
@@ -175,6 +254,21 @@ Changes between releases are documented here.
            oflog/libsrc/socketap.cc
            oflog/libsrc/strhelp.cc
            oflog/libsrc/timehelp.cc
+
+- Removed pointless stdafx files.
+  Affects: dcmjpls/libcharls/CMakeLists.txt
+           dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libcharls/Makefile.in
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/interface.cc
+           dcmjpls/libcharls/interface.h
+           dcmjpls/libcharls/jpegls.cc
+  Removed: dcmjpls/libcharls/stdafx.cc
+           dcmjpls/libcharls/stdafx.h
+
+- Fix build on windows.
+  Affects: dcmjpls/libcharls/config.h
+           dcmjpls/libcharls/interface.h
 
 **** Changes from 2010.01.07 (riesmeier)
 
@@ -354,6 +448,8 @@ Changes between releases are documented here.
            dcmimgle/libsrc/Makefile.dep
            dcmjpeg/apps/Makefile.dep
            dcmjpeg/libsrc/Makefile.dep
+           dcmjpls/apps/Makefile.dep
+           dcmjpls/libsrc/Makefile.dep
            dcmnet/apps/Makefile.dep
            dcmnet/libsrc/Makefile.dep
            dcmpstat/apps/Makefile.dep
@@ -753,6 +849,9 @@ Changes between releases are documented here.
            dcmjpeg/apps/Makefile.dep
            dcmjpeg/libsrc/Makefile.dep
 
+- Removed unused implementation of method determineDecompressedColorModel().
+  Affects: dcmjpls/libsrc/djcodecd.cc
+
 **** Changes from 2009.11.24 (schlachter)
 
 - Switched to logging mechanism provided by the "new" oflog module.
@@ -1014,6 +1113,10 @@ Changes between releases are documented here.
            dcmjpeg/include/dcmtk/dcmjpeg/djcodece.h
            dcmjpeg/libsrc/djcodecd.cc
            dcmjpeg/libsrc/djcodece.cc
+           dcmjpls/include/dcmtk/dcmjpls/djcodecd.h
+           dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodece.cc
 
 - Added new enum value for missing photometric interpretation value.
   Affects: dcmimgle/include/dcmtk/dcmimgle/diutils.h
@@ -1600,6 +1703,29 @@ Changes between releases are documented here.
            dcmjpeg/libsrc/djeijg8.cc
            dcmjpeg/libsrc/djencode.cc
            dcmjpeg/libsrc/djutils.cc
+           dcmjpls/apps/CMakeLists.txt
+           dcmjpls/apps/Makefile.dep
+           dcmjpls/apps/Makefile.in
+           dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmjpls/include/dcmtk/dcmjpls/djcodecd.h
+           dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/include/dcmtk/dcmjpls/djcparam.h
+           dcmjpls/include/dcmtk/dcmjpls/djdecode.h
+           dcmjpls/include/dcmtk/dcmjpls/djencode.h
+           dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/include/dcmtk/dcmjpls/djrparam.h
+           dcmjpls/libsrc/CMakeLists.txt
+           dcmjpls/libsrc/Makefile.dep
+           dcmjpls/libsrc/Makefile.in
+           dcmjpls/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodece.cc
+           dcmjpls/libsrc/djcparam.cc
+           dcmjpls/libsrc/djdecode.cc
+           dcmjpls/libsrc/djencode.cc
+           dcmjpls/libsrc/djerror.h
+           dcmjpls/libsrc/djrparam.cc
+           dcmjpls/libsrc/djutils.cc
 
 **** Changes from 2009.10.07 (riesmeier)
 
@@ -1782,6 +1908,7 @@ Changes between releases are documented here.
            dcmimgle/libsrc/Makefile.dep
            dcmjpeg/apps/Makefile.dep
            dcmjpeg/libsrc/Makefile.dep
+           dcmjpls/apps/Makefile.dep
            dcmnet/apps/Makefile.dep
            dcmnet/libsrc/dccfenmp.cc
            dcmnet/libsrc/Makefile.dep
@@ -1804,6 +1931,10 @@ Changes between releases are documented here.
 
 - Simplified code based on the new header file "ofdefine.h".
   Affects: ofstd/include/dcmtk/ofstd/ofbmanip.h
+
+- Updated makefile dependencies.
+  Affects: dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libsrc/Makefile.dep
 
 **** Changes from 2009.09.25 (riesmeier)
 
@@ -1966,6 +2097,12 @@ Changes between releases are documented here.
            oflog/include/dcmtk/oflog/oflog.h
            oflog/libsrc/oflog.cc
 
+**** Changes from 2009.09.08 (eichelberg)
+
+- Fixed bug affecting decompression of images with 8 bits/sample on big
+  endian machines
+  Affects: dcmjpls/libsrc/djcodecd.cc
+
 **** Changes from 2009.09.07 (riesmeier)
 
 - Moved --arguments option and corresponding output to oflog module in order
@@ -2010,6 +2147,30 @@ Changes between releases are documented here.
            dcmpstat/include/dcmtk/dcmpstat/dvcache.h
            dcmsr/libsrc/dsrcsidl.cc
            dcmsr/libsrc/dsrsoprf.cc
+
+- Updated libcharls in module dcmjpls to CharLS revision 27770.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmjpls/docs/charls-readme.txt
+           dcmjpls/docs/charls.patch
+           dcmjpls/libcharls/colortransform.h
+           dcmjpls/libcharls/config.h
+           dcmjpls/libcharls/context.h
+           dcmjpls/libcharls/contextrunmode.h
+           dcmjpls/libcharls/decoderstrategy.h
+           dcmjpls/libcharls/encoderstrategy.h
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/interface.cc
+           dcmjpls/libcharls/interface.h
+           dcmjpls/libcharls/jpegls.cc
+           dcmjpls/libcharls/lookuptable.h
+           dcmjpls/libcharls/losslesstraits.h
+           dcmjpls/libcharls/processline.h
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libcharls/stdafx.h
+           dcmjpls/libcharls/streams.h
+           dcmjpls/libcharls/util.h
+           dcmjpls/libsrc/djcodece.cc
 
 **** Changes from 2009.09.04 (riesmeier)
 
@@ -2220,6 +2381,8 @@ Changes between releases are documented here.
            dcmimage/apps/dcmscale.cc
            dcmjpeg/apps/dcmcjpeg.cc
            dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
            dcmnet/apps/movescu.cc
            dcmnet/apps/storescp.cc
            dcmqrdb/libsrc/dcmqrcbs.cc
@@ -2235,6 +2398,7 @@ Changes between releases are documented here.
 - Added check making sure that a DICOMDIR file is never compressed.
   Affects: dcmdata/apps/dcmcrle.cc
            dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpls/apps/dcmcjpls.cc
 
 - Use helper function checkDependence() and checkConflict() where appropriate.
   Affects: dcmdata/apps/dcmcrle.cc
@@ -2242,10 +2406,12 @@ Changes between releases are documented here.
            dcmimage/apps/dcmquant.cc
            dcmjpeg/apps/dcmcjpeg.cc
            dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpls/apps/dcmdjpls.cc
 
 - Made error messages more consistent with other compression tools.
   Affects: dcmdata/apps/dcmcrle.cc
            dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpls/apps/dcmcjpls.cc
 
 - Replaced tabs by spaces and updated copyright date.
   Affects: dcmqrdb/apps/dcmqridx.cc
@@ -2272,6 +2438,30 @@ Changes between releases are documented here.
            dcmqrdb/libsrc/dcmqrptb.cc
            dcmqrdb/libsrc/dcmqrsrv.cc
            dcmqrdb/libsrc/dcmqrtis.cc
+
+- Added type cast to integer variable in order to avoid compiler warnings
+  reported by MSVC.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+
+**** Changes from 2009.08.20 (eichelberg)
+
+- Fixed include files needed on Solaris, removed unneeded compiler pragmas
+  Affects: dcmjpls/libcharls/util.h
+
+- Updated libcharls in module dcmjpls to CharLS revision 26807.
+  Added:   dcmjpls/libcharls/config.h
+  Affects: dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmjpls/docs/charls-readme.txt
+           dcmjpls/docs/charls.patch
+           dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libcharls/decoderstrategy.h
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/interface.cc
+           dcmjpls/libcharls/jpegls.cc
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libcharls/util.h
+           dcmjpls/libsrc/Makefile.dep
 
 **** Changes from 2009.08.20 (riesmeier)
 
@@ -2342,6 +2532,15 @@ Changes between releases are documented here.
 - Fixed parameter that was declared as const in the implementation and
   as non-const in the class declaration.
   Affects: dcmdata/libsrc/dcpath.cc
+
+- Removed trailing commata in lists to avoid warnings on Sun Studio 11.
+  Affects: dcmjpls/libcharls/decoderstrategy.h
+           dcmjpls/libcharls/interface.h
+           dcmjpls/libcharls/losslesstraits.h
+
+- Removed static string constant which causes a compile error on Sun Studio 11
+  due to the specific way template expansions are handled on this compiler.
+  Affects: dcmjpls/libcharls/header.cc
 
 **** Changes from 2009.08.19 (riesmeier)
 
@@ -2542,6 +2741,7 @@ Changes between releases are documented here.
   or present in the original image.
   Affects: dcmdata/libsrc/dcrleccd.cc
            dcmjpeg/libsrc/djcodecd.cc
+  Affects: dcmjpls/libsrc/djcodecd.cc
 
 - Cleaned up Makefile dependencies: Some files contained dependencies
   from the libxml include files which cause compilation to file when compiling
@@ -2728,6 +2928,14 @@ Changes between releases are documented here.
            dcmjpeg/docs/dcmcjpeg.man
            dcmjpeg/docs/dcmdjpeg.man
 
+- Made syntax usage more consistent with other DCMTK compression tools.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+
+- Fixed wrong reference to JPEG-LS implementation and added revision number.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+
 **** Changes from 2009.08.04 (riesmeier)
 
 - Consistently use non-throwing version of "new" and "delete[]" (if available)
@@ -2846,10 +3054,106 @@ Changes between releases are documented here.
 - Added non-public modules "dcmjpls" and "dcmloco".
   Affects: CMakeLists.txt
 
+- Replaced checking of macro WIN32 by _WIN32.
+  Affects: dcmjpls/libcharls/interface.h
+           dcmjpls/libcharls/stdafx.h
+           dcmjpls/libcharls/util.h
+
+- Fixed various issues and inconsistencies in the CMake project files.
+  Affects: dcmjpls/apps/CMakeLists.txt
+           dcmjpls/libsrc/CMakeLists.txt
+
+**** Changes from 2009.07.31 (eichelberg)
+
+- Line interleaved JPEG-LS mode now default. This mode works correctly
+  when decompressing images with the LOCO-I reference implementation.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/include/dcmtk/dcmjpls/djcparam.h
+           dcmjpls/libsrc/djcodece.cc
+
+- Updated makefile dependencies
+  Affects: dcmjpls/apps/Makefile.dep
+           dcmjpls/libsrc/Makefile.dep
+
+- Added codec parameter and command line options that allow to control
+  the interleave mode used in the JPEG-LS bitstream when compressing
+  color images.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/include/dcmtk/dcmjpls/djcparam.h
+           dcmjpls/include/dcmtk/dcmjpls/djencode.h
+           dcmjpls/libsrc/djcodece.cc
+           dcmjpls/libsrc/djcparam.cc
+           dcmjpls/libsrc/djencode.cc
+
+- Added more detailed error messages, minor code clean-up
+  Added:   dcmjpls/libsrc/djerror.h
+  Affects: dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodece.cc
+           dcmjpls/libsrc/djutils.cc
+
 **** Changes from 2009.07.29 (eichelberg)
 
 - Defined new constant OFM_dcmloco
   Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+
+- Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
+  Added:   dcmjpls/CMakeLists.txt
+           dcmjpls/Makefile.in
+           dcmjpls/configure
+           dcmjpls/apps/CMakeLists.txt
+           dcmjpls/apps/Makefile.dep
+           dcmjpls/apps/Makefile.in
+           dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmjpls/data/Makefile.in
+           dcmjpls/docs/Makefile.in
+           dcmjpls/docs/charls-readme.txt
+           dcmjpls/docs/charls.patch
+           dcmjpls/etc/Makefile.in
+           dcmjpls/include/Makefile.in
+           dcmjpls/include/dcmtk/dcmjpls/CMakeLists.txt
+           dcmjpls/include/dcmtk/dcmjpls/djcodecd.h
+           dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/include/dcmtk/dcmjpls/djcparam.h
+           dcmjpls/include/dcmtk/dcmjpls/djdecode.h
+           dcmjpls/include/dcmtk/dcmjpls/djencode.h
+           dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/include/dcmtk/dcmjpls/djrparam.h
+           dcmjpls/libcharls/CMakeLists.txt
+           dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libcharls/Makefile.in
+           dcmjpls/libcharls/colortransform.h
+           dcmjpls/libcharls/context.h
+           dcmjpls/libcharls/contextrunmode.h
+           dcmjpls/libcharls/decoderstrategy.h
+           dcmjpls/libcharls/defaulttraits.h
+           dcmjpls/libcharls/encoderstrategy.h
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/header.h
+           dcmjpls/libcharls/interface.cc
+           dcmjpls/libcharls/interface.h
+           dcmjpls/libcharls/jpegls.cc
+           dcmjpls/libcharls/lookuptable.h
+           dcmjpls/libcharls/losslesstraits.h
+           dcmjpls/libcharls/processline.h
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libcharls/stdafx.cc
+           dcmjpls/libcharls/stdafx.h
+           dcmjpls/libcharls/streams.h
+           dcmjpls/libcharls/util.h
+           dcmjpls/libsrc/CMakeLists.txt
+           dcmjpls/libsrc/Makefile.dep
+           dcmjpls/libsrc/Makefile.in
+           dcmjpls/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodece.cc
+           dcmjpls/libsrc/djcparam.cc
+           dcmjpls/libsrc/djdecode.cc
+           dcmjpls/libsrc/djencode.cc
+           dcmjpls/libsrc/djrparam.cc
+           dcmjpls/libsrc/djutils.cc
+           dcmjpls/tests/Makefile.in
 
 **** Changes from 2009.07.28 (riesmeier)
 
