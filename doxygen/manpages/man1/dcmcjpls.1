@@ -1,0 +1,341 @@
+.TH "dcmcjpls" 1 "25 Feb 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.nh
+.SH NAME
+dcmcjpls \- Encode DICOM file to JPEG-LS transfer syntax
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+dcmcjpls [options] dcmfile-in dcmfile-out
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBdcmcjpls\fP utility reads an uncompressed DICOM image (\fIdcmfile-in\fP), performs a JPEG-LS compression (i. e. conversion to an encapsulated DICOM transfer syntax) and writes the converted image to an output file (\fIdcmfile-out\fP).
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+dcmfile-in   DICOM input filename to be converted
+
+dcmfile-out  DICOM output filename
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+       --arguments
+         print expanded command line arguments
+
+  -q   --quiet
+         quiet mode, print no warnings and errors
+
+  -v   --verbose
+         verbose mode, print processing details
+
+  -d   --debug
+         debug mode, print debug information
+
+  -ll  --log-level  [l]evel: string constant
+         (fatal, error, warn, info, debug, trace)
+         use level l for the logger
+
+  -lc  --log-config  [f]ilename: string
+         use config file f for the logger
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f   --read-file
+         read file format or data set (default)
+
+  +fo  --read-file-only
+         read file format only
+
+  -f   --read-dataset
+         read data set without file meta information
+
+input transfer syntax:
+
+  -t=  --read-xfer-auto
+         use TS recognition (default)
+
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
+
+  -te  --read-xfer-little
+         read with explicit VR little endian TS
+
+  -tb  --read-xfer-big
+         read with explicit VR big endian TS
+
+  -ti  --read-xfer-implicit
+         read with implicit VR little endian TS
+.fi
+.PP
+.SS "JPEG-LS encoding options"
+.PP
+.nf
+
+JPEG-LS process:
+
+  +el  --encode-lossless
+         encode JPEG-LS lossless only TS (default)
+
+  # This options selects the JPEG-LS lossless only transfer syntax
+  # and performs a lossless compression.
+
+  +en  --encode-nearlossless
+         encode JPEG-LS near-lossless TS (NEAR: 2)
+
+  # This options selects the JPEG-LS lossy transfer syntax
+  # and performs a near-lossless compression.
+
+JPEG-LS bit rate (near-lossless only):
+
+  +md  --max-deviation  [d]eviation: integer (default: 2)
+         defines maximum deviation for an encoded pixel
+
+  # This option specifies the maximum deviation for a single pixel from
+  # the original pixel value.
+
+lossless compression:
+
+  +pr  --prefer-raw
+         prefer raw encoder mode (default)
+
+  # This option enables the raw encoder. The raw encoder encodes the
+  # complete pixel cell as it was read from the source image without
+  # performing any modifications.
+
+  +pc  --prefer-cooked
+         prefer cooked encoder mode
+
+  # This option enables the cooked encoder. The cooked encoder moves
+  # overlay data to separate tags (60xx,3000) and only encodes the
+  # stored bits in each pixel.
+
+JPEG-LS compression:
+
+  +t1  --threshold1  [t]hreshhold: integer (default for 8 bpp: 3)
+         set JPEG-LS encoding parameter threshold 1
+
+  +t2  --threshold2  [t]hreshhold: integer (default for 8 bpp: 7)
+         set JPEG-LS encoding parameter threshold 2
+
+  +t3  --threshold3  [t]hreshhold: integer (default for 8 bpp: 21)
+         set JPEG-LS encoding parameter threshold 3
+
+  +rs  --reset  [r]eset: integer (default: 64)
+         set JPEG-LS encoding parameter reset
+
+  +lm  --limit  [l]imit: integer (default: 0)
+         set JPEG-LS encoding parameter limit
+
+JPEG-LS interleave:
+
+  +il  --interleave-line
+         force line-interleaved JPEG-LS images (default)
+
+  # This flag forces line-interleaved mode for the resulting image.
+  # In line-interleave mode each line from the source image is
+  # compressed separately for each component and then the next line
+  # is encoded.
+
+  +is  --interleave-sample
+         force sample-interleaved JPEG-LS images
+
+  # This flag forces sample-interleaved mode for the resulting image.
+  # In sample-interleave mode each pixel's components are encoded before
+  # the next pixe is encoded.
+
+  +in  --interleave-none
+         force uninterleaved JPEG-LS images
+
+  # This flag forces uninterleaved mode for the resulting image.
+  # In this mode, each of the image's components are completely encoded
+  # before the next component is handled.
+
+  +iv  --interleave-default
+         use the fastest possible interleave mode
+
+  # This flag selects an interleave mode based on the source image's mode.
+  # If possible, the image is not converted to a different interleave mode.
+.fi
+.PP
+.SS "encapsulated pixel data encoding options"
+.PP
+.nf
+
+encapsulated pixel data fragmentation:
+
+  +ff  --fragment-per-frame
+         encode each frame as one fragment (default)
+
+  # This option causes the creation of one compressed fragment for each
+  # frame (recommended).
+
+  +fs  --fragment-size  [s]ize: integer
+         limit fragment size to s kbytes
+
+  # This option limits the fragment size which may cause the creation of
+  # multiple fragments per frame.
+
+basic offset table encoding:
+
+  +ot  --offset-table-create
+         create offset table (default)
+
+  # This option causes the creation of a valid offset table for the
+  # compressed JPEG fragments.
+
+  -ot  --offset-table-empty
+         leave offset table empty
+
+  # This option causes the creation of an empty offset table
+  # for the compressed JPEG fragments.
+
+SOP Class UID:
+
+  +cd  --class-default
+         keep SOP Class UID (default)
+
+  # Keep the SOP Class UID of the source image.
+
+  +cs  --class-sc
+         convert to Secondary Capture Image (implies --uid-always)
+
+  # Convert the image to Secondary Capture.  In addition to the SOP Class
+  # UID, all attributes required for a valid secondary capture image are
+  # added. A new SOP instance UID is always assigned.
+
+SOP Instance UID:
+
+  +ud  --uid-default
+         assign new UID if lossy compression (default)
+
+  # Assigns a new SOP instance UID if the compression is lossy JPEG.
+
+  +ua  --uid-always
+         always assign new UID
+
+  # Unconditionally assigns a new SOP instance UID.
+
+  +un  --uid-never
+         never assign new UID
+
+  # Never assigns a new SOP instance UID.
+.fi
+.PP
+.SS "output options"
+.PP
+.nf
+
+post-1993 value representations:
+
+  +u   --enable-new-vr
+         enable support for new VRs (UN/UT) (default)
+
+  -u   --disable-new-vr
+         disable support for new VRs, convert to OB
+
+group length encoding:
+
+  +g=  --group-length-recalc
+         recalculate group lengths if present (default)
+
+  +g   --group-length-create
+         always write with group length elements
+
+  -g   --group-length-remove
+         always write without group length elements
+
+length encoding in sequences and items:
+
+  +e   --length-explicit
+         write with explicit lengths (default)
+
+  -e   --length-undefined
+         write with undefined lengths
+
+data set trailing padding:
+
+  -p=  --padding-retain
+         do not change padding (default)
+
+  -p   --padding-off
+         no padding
+
+  +p   --padding-create  [f]ile-pad [i]tem-pad: integer
+         align file on multiple of f bytes
+         and items on multiple of i bytes
+.fi
+.PP
+.SH "NOTES"
+.PP
+The \fBdcmcjpls\fP utility compresses DICOM images of all SOP classes. However, \fBdcmcjpls\fP does not attempt to ensure that the compressed image still complies with all restrictions of the object's IOD.
+.PP
+The user is responsible for making sure that the compressed images he creates are compliant with the DICOM standard. If in question, the \fBdcmcjpls\fP utility allows to convert an image to secondary capture - this SOP class does not pose restrictions as the ones mentioned above.
+.SH "TRANSFER SYNTAXES"
+.PP
+\fBdcmcjpls\fP supports the following transfer syntaxes for input (\fIdcmfile-in\fP):
+.PP
+.PP
+.nf
+
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+.fi
+.PP
+.PP
+(*) if compiled with zlib support enabled
+.PP
+\fBdcmcjpls\fP supports the following transfer syntaxes for output (\fIdcmfile-out\fP):
+.PP
+.PP
+.nf
+
+JPEGLSLosslessTransferSyntax                   1.2.840.10008.1.2.4.80
+JPEGLSLossyTransferSyntax                      1.2.840.10008.1.2.4.81
+.fi
+.PP
+.SH "LOGGING"
+.PP
+The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+.PP
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBdcmcjpls\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "SEE ALSO"
+.PP
+\fBdcmdjpls\fP(1)
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2009-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

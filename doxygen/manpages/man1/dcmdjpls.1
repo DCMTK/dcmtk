@@ -1,0 +1,245 @@
+.TH "dcmdjpls" 1 "25 Feb 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.nh
+.SH NAME
+dcmdjpls \- Decode JPEG-LS compressed DICOM file
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+dcmdjpls [options] dcmfile-in dcmfile-out
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBdcmdjpls\fP utility reads a JPEG-ls compressed DICOM image (\fIdcmfile-in\fP), decompresses the JPEG-LS data (i. e. conversion to a native DICOM transfer syntax) and writes the converted image to an output file (\fIdcmfile-out\fP).
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+dcmfile-in   DICOM input filename to be converted
+
+dcmfile-out  DICOM output filename
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+       --arguments
+         print expanded command line arguments
+
+  -q   --quiet
+         quiet mode, print no warnings and errors
+
+  -v   --verbose
+         verbose mode, print processing details
+
+  -d   --debug
+         debug mode, print debug information
+
+  -ll  --log-level  [l]evel: string constant
+         (fatal, error, warn, info, debug, trace)
+         use level l for the logger
+
+  -lc  --log-config  [f]ilename: string
+         use config file f for the logger
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f   --read-file
+         read file format or data set (default)
+
+  +fo  --read-file-only
+         read file format only
+
+  -f   --read-dataset
+         read data set without file meta information
+
+  # This option allows to decompress JPEG-LS compressed DICOM objects that have
+  # been stored as dataset without meta-header. Such a thing should not exist
+  # since the transfer syntax cannot be reliably determined without meta-header,
+  # but unfortunately it does.
+.fi
+.PP
+.SS "processing options"
+.PP
+.nf
+
+planar configuration:
+
+  +pr  --planar-restore
+         restore original planar configuration (default)
+
+  # If the compressed image is a color image, restore the planar
+  # configuration as described in the Planar Configuration attribute.
+
+  +pa  --planar-auto
+         automatically determine planar configuration
+         from SOP class and color space
+
+  # If the compressed image is a color image, store in color-by-plane
+  # planar configuration if required by the SOP class and photometric
+  # interpretation. Hardcopy Color images are always stored color-by-
+  # plane, and the revised Ultrasound image objects are stored color-by-
+  # plane if the color model is YBR_FULL.  Everything else is stored
+  # color-by-pixel.
+
+  +px  --color-by-pixel
+         always store color-by-pixel
+
+  # If the compressed image is a color image, store in color-by-pixel
+  # planar configuration.
+
+  +pl  --color-by-plane
+         always store color-by-plane
+
+  # If the compressed image is a color image, store in color-by-plane
+  # planar configuration.
+
+SOP Instance UID:
+
+  +ud  --uid-default
+         keep same SOP Instance UID (default)
+
+  #  Never assigns a new SOP instance UID.
+
+  +ua  --uid-always
+         always assign new UID
+
+  # Always assigns a new SOP instance UID.
+
+other processing options:
+
+  +io  --ignore-offsettable
+         ignore offset table when decompressing
+.fi
+.PP
+.SS "output options"
+.PP
+.nf
+
+output file format:
+
+  +F   --write-file
+         write file format (default)
+
+  -F   --write-dataset
+         write data set without file meta information
+
+output transfer syntax:
+
+  +te  --write-xfer-little
+         write with explicit VR little endian (default)
+
+  +tb  --write-xfer-big
+         write with explicit VR big endian TS
+
+  +ti  --write-xfer-implicit
+         write with implicit VR little endian TS
+
+post-1993 value representations:
+
+  +u   --enable-new-vr
+         enable support for new VRs (UN/UT) (default)
+
+  -u   --disable-new-vr
+         disable support for new VRs, convert to OB
+
+group length encoding:
+
+  +g=  --group-length-recalc
+         recalculate group lengths if present (default)
+
+  +g   --group-length-create
+         always write with group length elements
+
+  -g   --group-length-remove
+         always write without group length elements
+
+length encoding in sequences and items:
+
+  +e   --length-explicit
+         write with explicit lengths (default)
+
+  -e   --length-undefined
+         write with undefined lengths
+
+data set trailing padding (not with --write-dataset):
+
+  -p=  --padding-retain
+         do not change padding (default if not --write-dataset)
+
+  -p   --padding-off
+         no padding (implicit if --write-dataset)
+
+  +p   --padding-create  [f]ile-pad [i]tem-pad: integer
+         align file on multiple of f bytes
+         and items on multiple of i bytes
+.fi
+.PP
+.SH "TRANSFER SYNTAXES"
+.PP
+\fBdcmdjpls\fP supports the following transfer syntaxes for input (\fIdcmfile-in\fP):
+.PP
+.PP
+.nf
+
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+JPEGLSLosslessTransferSyntax                   1.2.840.10008.1.2.4.80
+JPEGLSLossyTransferSyntax                      1.2.840.10008.1.2.4.81
+.fi
+.PP
+.PP
+(*) if compiled with zlib support enabled
+.PP
+\fBdcmdjpls\fP supports the following transfer syntaxes for output (\fIdcmfile-out\fP):
+.PP
+.PP
+.nf
+
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+.fi
+.PP
+.SH "LOGGING"
+.PP
+The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
+.PP
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated. An example configuration file is provided in \fI<etcdir>/logger.cfg\fP).
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBdcmdjpls\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "SEE ALSO"
+.PP
+\fBdcmcjpls\fP(1)
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2009-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
