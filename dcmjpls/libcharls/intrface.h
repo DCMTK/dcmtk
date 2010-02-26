@@ -66,17 +66,10 @@ struct JlsParamaters
 	JfifParameters jfif;
 };
 
-
-#if defined(_WIN32)
-#ifndef CHARLS_IMEXPORT
-#define CHARLS_IMEXPORT(returntype) __declspec(dllimport) returntype __stdcall
-#endif
-#else
+// CharLS wants to use dllimport here, dcmjpls doesn't
 #ifndef CHARLS_IMEXPORT
 #define CHARLS_IMEXPORT(returntype) returntype
 #endif
-#endif /* _WIN32 */
-
 
 extern "C"
 {

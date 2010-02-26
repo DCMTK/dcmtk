@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.02.26 (schlachter)
+
+- Fixed compilation on windows. We don't want dllimport.
+  Affects: dcmjpls/libcharls/intrface.h
+
 **** Changes from 2010.02.25 (riesmeier)
 
 - Added "dcmjpls" to the list of public modules and merged CHANGES file.
