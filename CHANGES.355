@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Fixed compilation on windows. We don't want dllimport.
   Affects: dcmjpls/libcharls/intrface.h
 
+- Fixed a minor compiler warning with gcc 4.1.1.
+  Affects: dcmjpls/libcharls/scan.h
+
 **** Changes from 2010.02.25 (riesmeier)
 
 - Added "dcmjpls" to the list of public modules and merged CHANGES file.

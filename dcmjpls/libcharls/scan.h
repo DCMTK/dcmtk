@@ -852,7 +852,7 @@ size_t JlsCodec<TRAITS,STRATEGY>::DecodeScan(void* pvoidOut, const Size& size, c
 	::memcpy(rgbyte, pbyteCompressed, 4);
 	cbyteRead += 4;
 
-	LONG cbyteScanheader = rgbyte[3] - 2;
+	size_t cbyteScanheader = rgbyte[3] - 2;
 
 	if (cbyteScanheader > sizeof(rgbyte))
 		throw JlsException(InvalidCompressedData);
