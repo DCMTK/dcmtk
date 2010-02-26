@@ -9,6 +9,10 @@ Changes between releases are documented here.
 - Fixed a minor compiler warning with gcc 4.1.1.
   Affects: dcmjpls/libcharls/scan.h
 
+- Fixed a compiler warning with MSVC about unsafe casts.
+  Affects: dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/libsrc/djcodece.cc
+
 **** Changes from 2010.02.25 (riesmeier)
 
 - Added "dcmjpls" to the list of public modules and merged CHANGES file.

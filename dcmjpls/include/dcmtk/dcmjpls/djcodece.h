@@ -22,8 +22,8 @@
  *  Purpose: codec classes for JPEG-LS encoders.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-25 10:17:14 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2010-02-26 10:54:41 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -332,10 +332,10 @@ private:
   OFCondition convertToUninterleaved(
     Uint8 *target,
     const Uint8 *source,
-    Uint8 components,
+    Uint16 components,
     Uint32 width,
     Uint32 height,
-    Uint8 bitsAllocated) const;
+    Uint16 bitsAllocated) const;
 
   /** Convert an image from uninterleaved to sample interleaved.
    *  @param target A buffer where the converted image will be stored
@@ -349,10 +349,10 @@ private:
   OFCondition convertToSampleInterleaved(
     Uint8 *target,
     const Uint8 *source,
-    Uint8 components,
+    Uint16 components,
     Uint32 width,
     Uint32 height,
-    Uint8 bitsAllocated) const;
+    Uint16 bitsAllocated) const;
 };
 
 
@@ -383,6 +383,9 @@ class DJLSNearLosslessEncoder : public DJLSEncoderBase
 /*
  * CVS/RCS Log:
  * $Log: djcodece.h,v $
+ * Revision 1.6  2010-02-26 10:54:41  uli
+ * Fixed a compiler warning with MSVC about unsafe casts.
+ *
  * Revision 1.5  2010-02-25 10:17:14  uli
  * Fix doxygen comments in a couple of places.
  *

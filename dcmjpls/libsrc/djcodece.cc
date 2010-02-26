@@ -22,8 +22,8 @@
  *  Purpose: codec classes for JPEG-LS encoders.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-01-19 15:19:06 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2010-02-26 10:54:42 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1089,10 +1089,10 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
 OFCondition DJLSEncoderBase::convertToUninterleaved(
     Uint8 *target,
     const Uint8 *source,
-    Uint8 components,
+    Uint16 components,
     Uint32 width,
     Uint32 height,
-    Uint8 bitsAllocated) const
+    Uint16 bitsAllocated) const
 {
   Uint8 bytesAllocated = bitsAllocated / 8;
   Uint32 planeSize = width * height * bytesAllocated;
@@ -1114,10 +1114,10 @@ OFCondition DJLSEncoderBase::convertToUninterleaved(
 OFCondition DJLSEncoderBase::convertToSampleInterleaved(
     Uint8 *target,
     const Uint8 *source,
-    Uint8 components,
+    Uint16 components,
     Uint32 width,
     Uint32 height,
-    Uint8 bitsAllocated) const
+    Uint16 bitsAllocated) const
 {
   Uint8 bytesAllocated = bitsAllocated / 8;
   Uint32 planeSize = width * height * bytesAllocated;
@@ -1139,6 +1139,9 @@ OFCondition DJLSEncoderBase::convertToSampleInterleaved(
 /*
  * CVS/RCS Log:
  * $Log: djcodece.cc,v $
+ * Revision 1.9  2010-02-26 10:54:42  uli
+ * Fixed a compiler warning with MSVC about unsafe casts.
+ *
  * Revision 1.8  2010-01-19 15:19:06  uli
  * Made file names fit into 8.3 format.
  *
