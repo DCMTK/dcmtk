@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.01 (riesmeier)
+
+- Updated copyright date of DCMTK and CharLS library section.
+  Affects: COPYRIGHT
+
 **** Changes from 2010.03.01 (schlachter)
 
 - Renamed include guards to avoid name clash with e.g. dcmjpeg.
