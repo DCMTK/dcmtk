@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: stack class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:42 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:44 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,7 @@
 #define DCSTACK_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/ofstd/oftypes.h"
 
 class DcmObject;    // forward declaration
 
@@ -165,6 +165,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcstack.h,v $
+ * Revision 1.13  2010-03-01 09:08:44  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.12  2005-12-08 16:28:42  meichel
  * Changed include path schema for all DCMTK header files
  *

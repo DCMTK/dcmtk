@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorPixel (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 14:36:20 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:46 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,6 @@
 
 #include "dcmtk/dcmimage/dilogger.h"
 #include "dcmtk/dcmimgle/dipixel.h"
-#include "dcmtk/dcmimgle/diutils.h"
 
 
 /*------------------------*
@@ -183,6 +182,9 @@ class DiColorPixel
  *
  * CVS/RCS Log:
  * $Log: dicopx.h,v $
+ * Revision 1.19  2010-03-01 09:08:46  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.18  2009-11-25 14:36:20  joergr
  * Added new source and header file for the module logger.
  *

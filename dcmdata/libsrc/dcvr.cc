@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmVR: Value Representation
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-22 11:39:54 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2010-03-01 09:08:45 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcvr.h"
+#include "dcmtk/dcmdata/dctypes.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
@@ -369,6 +370,9 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
+ * Revision 1.38  2010-03-01 09:08:45  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.37  2010-02-22 11:39:54  uli
  * Remove some unneeded includes.
  *

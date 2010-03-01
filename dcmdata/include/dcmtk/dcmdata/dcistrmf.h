@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    implements streamed input from files.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  Update Date:      $Date: 2010-03-01 09:08:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcistrmf.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +37,6 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcistrma.h"
-
-#define INCLUDE_CSTDIO
-#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /** producer class that reads data from a plain file.
@@ -314,6 +311,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.h,v $
+ * Revision 1.7  2010-03-01 09:08:44  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.6  2009-11-04 09:58:07  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

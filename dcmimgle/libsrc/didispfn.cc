@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2009, OFFIS
+ *  Copyright (C) 1999-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomDisplayFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:11:03 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "dcmtk/dcmimgle/didispfn.h"
 #include "dcmtk/dcmimgle/displint.h"
 #include "dcmtk/dcmimgle/dicrvfit.h"
+#include "dcmtk/dcmimgle/didislut.h"
 #include "dcmtk/ofstd/ofstream.h"
 
 #define INCLUDE_CCTYPE
@@ -693,6 +694,9 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
+ * Revision 1.49  2010-03-01 09:08:47  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.48  2009-11-25 16:11:03  joergr
  * Removed inclusion of header file "ofconsol.h".
  *

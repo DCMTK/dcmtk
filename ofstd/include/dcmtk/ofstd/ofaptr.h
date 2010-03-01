@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009, OFFIS
+ *  Copyright (C) 2009-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Template class for automatically deleting pointers when they go out
  *           of scope.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-15 15:20:51 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:50 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,8 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/oftypes.h"
+#define INCLUDE_CSTDDEF               /* For NULL */
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /** internal class, don't ever use this directly!
@@ -191,6 +192,9 @@ template <class T> class OFauto_ptr
 /*
 ** CVS/RCS Log:
 ** $Log: ofaptr.h,v $
+** Revision 1.3  2010-03-01 09:08:50  uli
+** Removed some unnecessary include directives in the headers.
+**
 ** Revision 1.2  2009-09-15 15:20:51  joergr
 ** Fixed issue with class OFauto_ptr: Default copy constructor and assignment
 ** operator could lead to double deletion of objects.

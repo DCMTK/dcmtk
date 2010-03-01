@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Basis class for dicom tags.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-20 16:00:08 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:44 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,6 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/ofstd/ofstring.h"
 
 /*
@@ -416,6 +415,9 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
+** Revision 1.21  2010-03-01 09:08:44  uli
+** Removed some unnecessary include directives in the headers.
+**
 ** Revision 1.20  2009-04-20 16:00:08  joergr
 ** Added method that checks whether the tag key is a valid group length element.
 **

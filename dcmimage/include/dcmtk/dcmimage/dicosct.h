@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorScaleTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:25:13 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:46 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,10 +35,8 @@
 #define DICOSCT_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctypes.h"
 
-#include "dcmtk/dcmimage/dicopx.h"
-#include "dcmtk/dcmimage/diqttype.h"
+#include "dcmtk/dcmimage/dicopxt.h"
 #include "dcmtk/dcmimgle/discalet.h"
 
 
@@ -126,6 +124,9 @@ class DiColorScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dicosct.h,v $
+ * Revision 1.20  2010-03-01 09:08:46  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.19  2009-10-14 10:25:13  joergr
  * Fixed minor issues in log output. Also updated copyright date (if required).
  *

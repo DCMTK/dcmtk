@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomTransTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 10:07:31 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,11 +35,12 @@
 #define DITRANST_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcast.h"
 
-#include "dcmtk/dcmimgle/diutils.h"
 #include "dcmtk/ofstd/ofbmanip.h"
+
+#include "dcmtk/dcmimgle/diutils.h"
 
 
 /*---------------------*
@@ -152,6 +153,9 @@ class DiTransTemplate
  *
  * CVS/RCS Log:
  * $Log: ditranst.h,v $
+ * Revision 1.16  2010-03-01 09:08:47  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.15  2008-05-20 10:07:31  joergr
  * Added new method that clears the destination image (set pixel values to 0).
  *

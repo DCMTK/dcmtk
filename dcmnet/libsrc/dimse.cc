@@ -56,9 +56,9 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-02-04 14:01:33 $
-** CVS/RCS Revision:    $Revision: 1.55 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2010-03-01 09:08:49 $
+** CVS/RCS Revision:    $Revision: 1.56 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -107,6 +107,7 @@
 #include "dcmtk/dcmdata/dcvrae.h"      /* for class Dcm */
 #include "dcmtk/dcmdata/dcdicent.h"    /* for DcmDictEntry, needed for MSVC5 */
 #include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
+#include "dcmtk/dcmdata/dcvrui.h"      /* for class DcmUniqueIdentifier */
 
 
 /*
@@ -1757,6 +1758,9 @@ OFString DIMSE_warn_str(T_ASC_Association *assoc)
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.56  2010-03-01 09:08:49  uli
+** Removed some unnecessary include directives in the headers.
+**
 ** Revision 1.55  2010-02-04 14:01:33  joergr
 ** Fixed minor issues with log output, e.g. redundant line breaks.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:35:01 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:46 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,12 +35,12 @@
 #define DICOOPXT_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctypes.h"
 
 #include "dcmtk/dcmimage/dicoopx.h"
 #include "dcmtk/dcmimage/dicopx.h"
 #include "dcmtk/dcmimgle/dipxrept.h"
-#include "dcmtk/dcmimgle/diutils.h"
+
+#include "dcmtk/ofstd/ofbmanip.h"
 
 
 /*---------------------*
@@ -431,6 +431,9 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
+ * Revision 1.26  2010-03-01 09:08:46  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.25  2006-08-15 16:35:01  meichel
  * Updated the code in module dcmimage to correctly compile when
  *   all standard C++ classes remain in namespace std.

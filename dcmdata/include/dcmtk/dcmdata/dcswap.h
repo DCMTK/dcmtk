@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: byte order functions
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  Update Date:      $Date: 2010-03-01 09:08:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcswap.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,12 +35,8 @@
 #define DCSWAP_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcerror.h"
-#include "dcmtk/dcmdata/dcxfer.h"
-
-#define INCLUDE_CSTDLIB
-#include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/dcmdata/dcxfer.h"     /* for E_ByteOrder */
 
 /** swap block of data from big-endian to little-endian or back if neccessary
  *  @param newByteOrder desired byte order of data block
@@ -103,6 +99,9 @@ inline void swap4Bytes(Uint8 * toSwap)
 /*
  * CVS/RCS Log:
  * $Log: dcswap.h,v $
+ * Revision 1.18  2010-03-01 09:08:44  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.17  2009-11-04 09:58:07  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: generic list class
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-22 11:39:53 $
+ *  Update Date:      $Date: 2010-03-01 09:08:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dclist.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,9 @@
 #define DCLIST_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dctypes.h"
+
+#include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/oftypes.h"
 
 #define INCLUDE_CSTDDEF
 #define INCLUDE_CSTDLIB
@@ -197,6 +199,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dclist.h,v $
+ * Revision 1.20  2010-03-01 09:08:44  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.19  2010-02-22 11:39:53  uli
  * Remove some unneeded includes.
  *

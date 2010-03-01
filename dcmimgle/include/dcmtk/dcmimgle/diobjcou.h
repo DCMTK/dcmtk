@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomObjectCounter (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:59 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,9 @@
 
 #include "dcmtk/config/osconfig.h"
 
+#ifdef _REENTRANT
 #include "dcmtk/ofstd/ofthread.h"
+#endif
 
 
 /*---------------------*
@@ -128,6 +130,9 @@ class DiObjectCounter
  *
  * CVS/RCS Log:
  * $Log: diobjcou.h,v $
+ * Revision 1.12  2010-03-01 09:08:47  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.11  2005-12-08 16:47:59  meichel
  * Changed include path schema for all DCMTK header files
  *

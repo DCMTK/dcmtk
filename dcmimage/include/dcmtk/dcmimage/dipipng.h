@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2005, OFFIS
+ *  Copyright (C) 2003-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements PNG interface for plugable image formats
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:01:42 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:46 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,8 @@
 #include "dcmtk/config/osconfig.h"
 
 #ifdef WITH_LIBPNG
+
+#include "dcmtk/ofstd/ofstring.h"
 
 #include "dcmtk/dcmimgle/diplugin.h"
 
@@ -141,6 +143,9 @@ class DiPNGPlugin
 /*
  * CVS/RCS Log:
  * $Log: dipipng.h,v $
+ * Revision 1.6  2010-03-01 09:08:46  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.5  2005-12-08 16:01:42  meichel
  * Changed include path schema for all DCMTK header files
  *

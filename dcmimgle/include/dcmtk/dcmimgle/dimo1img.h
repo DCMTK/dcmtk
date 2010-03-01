@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochrome1Image (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 10:03:53 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:46 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #define DIMO1IMG_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctypes.h"
 
 #include "dcmtk/dcmimgle/dimoimg.h"
 
@@ -243,6 +242,9 @@ class DiMono1Image
  *
  * CVS/RCS Log:
  * $Log: dimo1img.h,v $
+ * Revision 1.16  2010-03-01 09:08:46  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.15  2008-05-20 10:03:53  joergr
  * Added new bilinear and bicubic scaling algorithms for image magnification.
  *

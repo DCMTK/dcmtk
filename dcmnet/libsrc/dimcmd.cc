@@ -55,10 +55,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2008-04-30 12:38:42 $
+** Last Update:		$Author: uli $
+** Update Date:		$Date: 2010-03-01 09:08:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -85,6 +85,7 @@
 
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcelem.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/dimse.h"		
 #include "dimcmd.h"
@@ -2057,6 +2058,9 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
+** Revision 1.21  2010-03-01 09:08:48  uli
+** Removed some unnecessary include directives in the headers.
+**
 ** Revision 1.20  2008-04-30 12:38:42  meichel
 ** Fixed compile errors due to changes in attribute tag names
 **

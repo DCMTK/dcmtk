@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2009, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 8 bits/sample.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  Update Date:      $Date: 2010-03-01 09:08:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg8.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmjpeg/djdijg8.h"
 #include "dcmtk/dcmjpeg/djcparam.h"
+#include "dcmtk/dcmdata/dcerror.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSETJMP
@@ -468,6 +469,9 @@ void DJDecompressIJG8Bit::emitMessage(int msg_level) const
 /*
  * CVS/RCS Log
  * $Log: djdijg8.cc,v $
+ * Revision 1.18  2010-03-01 09:08:48  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.17  2010-02-22 11:39:54  uli
  * Remove some unneeded includes.
  *

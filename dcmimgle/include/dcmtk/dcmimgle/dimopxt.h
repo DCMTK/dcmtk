@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:09:22 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,13 +39,8 @@
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofcast.h"
 
-#include "dcmtk/dcmdata/dctypes.h"
-#include "dcmtk/ofstd/ofdefine.h"
-
-#include "dcmtk/dcmimgle/dimopx.h"
 #include "dcmtk/dcmimgle/dipxrept.h"
-#include "dcmtk/dcmimgle/dimomod.h"
-#include "dcmtk/dcmimgle/diinpx.h"
+#include "dcmtk/dcmimgle/dimopx.h"
 #include "dcmtk/dcmimgle/dimoopx.h"
 
 
@@ -437,6 +432,9 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
+ * Revision 1.33  2010-03-01 09:08:47  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.32  2009-11-25 16:09:22  joergr
  * Removed inclusion of header file "ofconsol.h". Added more logging messages.
  *

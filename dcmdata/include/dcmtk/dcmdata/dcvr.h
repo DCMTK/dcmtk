@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Definition of the DcmVR class for Value Representation
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-06-23 12:09:13 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:45 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,11 +34,7 @@
 #define DCMVR_H 1
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/ofstd/ofglobal.h"
-
-#define INCLUDE_CSTDLIB
-#include "dcmtk/ofstd/ofstdinc.h"
 
 /** Global flag to enable/disable the generation of VR=UN
  */
@@ -347,6 +343,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcvr.h,v $
+ * Revision 1.27  2010-03-01 09:08:45  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.26  2008-06-23 12:09:13  joergr
  * Fixed inconsistencies in Doxygen API documentation.
  *

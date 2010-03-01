@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers RLE encoder.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  Update Date:      $Date: 2010-03-01 09:08:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcrleerg.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oftypes.h"  /* for OFBool */
-#include "dcmtk/dcmdata/dctypes.h"  /* for Uint32 */
+#include "dcmtk/ofstd/oftypes.h"  /* for Uint32 */
 
 class DcmRLECodecParameter;
 class DcmRLECodecEncoder;
@@ -98,6 +98,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleerg.h,v $
+ * Revision 1.6  2010-03-01 09:08:44  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.5  2009-11-04 09:58:07  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

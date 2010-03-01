@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2009, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmSignature
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-29 12:21:42 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:50 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@
 #include "dcmtk/dcmdata/dcvrat.h"
 #include "dcmtk/dcmdata/dcvrcs.h"
 #include "dcmtk/dcmdata/dcvrdt.h"
+#include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcvrus.h"
 #include "dcmtk/dcmdata/dcuid.h"
@@ -828,6 +829,9 @@ int dcmsign_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: dcsignat.cc,v $
+ *  Revision 1.5  2010-03-01 09:08:50  uli
+ *  Removed some unnecessary include directives in the headers.
+ *
  *  Revision 1.4  2009-04-29 12:21:42  joergr
  *  Fixed memory leak in method verifyCurrent().
  *

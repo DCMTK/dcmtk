@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2009, OFFIS
+ *  Copyright (C) 1999-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomGSDFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:31:48 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 
 #include "dcmtk/dcmimgle/digsdfn.h"
 #include "dcmtk/dcmimgle/displint.h"
+#include "dcmtk/dcmimgle/digsdlut.h"
 
 #include "dcmtk/ofstd/ofstream.h"
 
@@ -443,6 +444,9 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
+ * Revision 1.36  2010-03-01 09:08:47  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.35  2009-11-25 16:31:48  joergr
  * Removed inclusion of header file "ofconsol.h".
  *

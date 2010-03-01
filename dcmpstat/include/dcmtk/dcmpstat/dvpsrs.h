@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2010-03-01 09:08:49 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dcmtk/dcmpstat/dvpsril.h"   /* for DVPSReferencedImage_PList */
 #include "dcmtk/dcmdata/dcvrae.h"
 #include "dcmtk/dcmdata/dcvrsh.h"
+#include "dcmtk/dcmdata/dcvrui.h"
 
 /** an item of the referenced series sequence in a presentation state (internal use only).
  *  This class manages the data structures comprising one item
@@ -206,6 +207,9 @@ private:
 
 /*
  *  $Log: dvpsrs.h,v $
+ *  Revision 1.12  2010-03-01 09:08:49  uli
+ *  Removed some unnecessary include directives in the headers.
+ *
  *  Revision 1.11  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

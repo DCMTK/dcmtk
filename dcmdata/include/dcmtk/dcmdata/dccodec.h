@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2009, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-17 16:36:51 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:44 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +34,8 @@
 #define DCCODEC_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/dcmdata/dctypes.h"
-#include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/ofstd/oflist.h"
 
@@ -529,6 +529,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
+** Revision 1.22  2010-03-01 09:08:44  uli
+** Removed some unnecessary include directives in the headers.
+**
 ** Revision 1.21  2009-11-17 16:36:51  joergr
 ** Added new method that allows for determining the color model of the
 ** decompressed image.

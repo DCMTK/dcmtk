@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomInputPixel (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 15:59:51 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:46 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *   CVS/RCS Log at end of file
@@ -35,9 +35,6 @@
 #define DIINPX_H
 
 #include "dcmtk/config/osconfig.h"
-
-#include "dcmtk/dcmdata/dctypes.h"
-#include "dcmtk/dcmdata/dcfcache.h"
 
 #include "dcmtk/dcmimgle/diutils.h"
 
@@ -226,6 +223,9 @@ class DiInputPixel
  *
  * CVS/RCS Log:
  * $Log: diinpx.h,v $
+ * Revision 1.19  2010-03-01 09:08:46  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.18  2009-11-25 15:59:51  joergr
  * Adapted code for new approach to access individual frames of a DICOM image.
  *

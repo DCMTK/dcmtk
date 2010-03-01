@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomScaleTemplates (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 15:49:25 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,13 +36,10 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/ofstd/ofcast.h"
-#include "dcmtk/ofstd/ofstream.h"
 
 #include "dcmtk/dcmimgle/ditranst.h"
 #include "dcmtk/dcmimgle/dipxrept.h"
-#include "dcmtk/dcmimgle/diutils.h"
 
 
 /*---------------------*
@@ -1197,6 +1194,9 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
+ * Revision 1.34  2010-03-01 09:08:47  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.33  2009-11-25 15:49:25  joergr
  * Removed inclusion of header file "ofconsol.h".
  *

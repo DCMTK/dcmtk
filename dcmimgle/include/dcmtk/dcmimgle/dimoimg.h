@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeImage (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:06:14 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,14 +36,11 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/ofstd/ofcast.h"
 
 #include "dcmtk/dcmimgle/diimage.h"
 #include "dcmtk/dcmimgle/dimopx.h"
 #include "dcmtk/dcmimgle/dimoopx.h"
-#include "dcmtk/dcmimgle/diovlay.h"
-#include "dcmtk/dcmimgle/diluptab.h"
 #include "dcmtk/dcmimgle/didispfn.h"
 
 
@@ -1152,6 +1149,9 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
+ * Revision 1.54  2010-03-01 09:08:47  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.53  2009-11-25 16:06:14  joergr
  * Adapted code for new approach to access individual frames of a DICOM image.
  *

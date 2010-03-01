@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2006, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVSignatureHandler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:49 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dcmtk/dcmdata/dcobject.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcvrat.h"
+#include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmpstat/dvpscf.h"
 #include "dcmtk/dcmsign/sicert.h"
 #include "dcmtk/dcmsign/sitypes.h"
@@ -877,6 +878,9 @@ OFCondition DVSignatureHandler::createSignature(
 
 /*
  *  $Log: dvsighdl.cc,v $
+ *  Revision 1.16  2010-03-01 09:08:49  uli
+ *  Removed some unnecessary include directives in the headers.
+ *
  *  Revision 1.15  2006-08-15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

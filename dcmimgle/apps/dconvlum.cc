@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2009, OFFIS
+ *  Copyright (C) 1999-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:22:36 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:46 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
 
 
@@ -123,6 +124,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
+ * Revision 1.25  2010-03-01 09:08:46  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.24  2009-11-25 16:22:36  joergr
  * Removed inclusion of header file "ofconsol.h".
  *

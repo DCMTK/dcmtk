@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: uli $
-** Update Date:		$Date: 2009-11-18 11:53:59 $
+** Update Date:		$Date: 2010-03-01 09:08:49 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.25 $
+** CVS/RCS Revision:	$Revision: 1.26 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -100,6 +100,7 @@
 #include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcbytstr.h"
 
 static char staticBuf[256];
 
@@ -807,6 +808,9 @@ DU_neventReportStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
+** Revision 1.26  2010-03-01 09:08:49  uli
+** Removed some unnecessary include directives in the headers.
+**
 ** Revision 1.25  2009-11-18 11:53:59  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **

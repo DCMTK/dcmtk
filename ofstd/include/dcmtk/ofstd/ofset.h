@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Template class for administrating a set of elements of an
  *           arbitrary type.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:06:01 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/ofset.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,9 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oftypes.h"
+
+#define INCLUDE_CSTDDEF               /* For NULL */
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #define STARTING_SIZE 8
 
@@ -260,6 +263,9 @@ template <class T> class OFSet
 /*
 ** CVS/RCS Log:
 ** $Log: ofset.h,v $
+** Revision 1.11  2010-03-01 09:08:51  uli
+** Removed some unnecessary include directives in the headers.
+**
 ** Revision 1.10  2005-12-08 16:06:01  meichel
 ** Changed include path schema for all DCMTK header files
 **

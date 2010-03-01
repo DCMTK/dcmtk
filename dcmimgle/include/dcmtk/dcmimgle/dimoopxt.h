@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:08:26 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,13 +37,13 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/ofstd/ofcast.h"
-#include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/ofstd/ofbmanip.h"
 
 #include "dcmtk/dcmimgle/dimoopx.h"
+#include "dcmtk/dcmimgle/dimopx.h"
 #include "dcmtk/dcmimgle/diluptab.h"
 #include "dcmtk/dcmimgle/diovlay.h"
 #include "dcmtk/dcmimgle/dipxrept.h"
-#include "dcmtk/dcmimgle/diutils.h"
 #include "dcmtk/dcmimgle/didispfn.h"
 #include "dcmtk/dcmimgle/didislut.h"
 
@@ -1110,6 +1110,9 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
+ * Revision 1.51  2010-03-01 09:08:47  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.50  2009-11-25 16:08:26  joergr
  * Removed inclusion of header file "ofconsol.h".
  * Revised logging messages. Added more logging messages.

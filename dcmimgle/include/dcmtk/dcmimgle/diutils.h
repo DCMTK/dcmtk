@@ -21,9 +21,9 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-02-23 16:31:34 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,14 +36,8 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/dcmdata/dctypes.h"
-#include "dcmtk/ofstd/ofglobal.h"
+#include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcast.h"
-
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_LIBC
-#include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/oflog/oflog.h"
 
@@ -441,6 +435,9 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
+ * Revision 1.40  2010-03-01 09:08:47  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.39  2010-02-23 16:31:34  joergr
  * Added new helper function which determines whether an integer representation
  * is signed or unsigned.

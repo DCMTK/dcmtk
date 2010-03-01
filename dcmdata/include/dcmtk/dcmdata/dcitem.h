@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-22 11:39:53 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Update Date:      $Date: 2010-03-01 09:08:44 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,16 +36,16 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcmtk/ofstd/offile.h"       /* for offile_off_t */
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcobject.h"
-#include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmdata/dclist.h"
-#include "dcmtk/dcmdata/dcstack.h"
 #include "dcmtk/dcmdata/dcpcache.h"
 
 
 // forward declaration
 class DcmSequenceOfItems;
+class DcmElement;
 
 
 /** a class representing a list of DICOM elements in which each
@@ -1150,6 +1150,9 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.80  2010-03-01 09:08:44  uli
+** Removed some unnecessary include directives in the headers.
+**
 ** Revision 1.79  2010-02-22 11:39:53  uli
 ** Remove some unneeded includes.
 **

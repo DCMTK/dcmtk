@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-22 11:39:54 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Update Date:      $Date: 2010-03-01 09:08:45 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,6 +85,7 @@ END_EXTERN_C
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/ofstd/ofthread.h"
 #include "dcmtk/ofstd/ofcrc32.h"
 #include "dcmtk/ofstd/ofdefine.h"
@@ -1421,6 +1422,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.75  2010-03-01 09:08:45  uli
+** Removed some unnecessary include directives in the headers.
+**
 ** Revision 1.74  2010-02-22 11:39:54  uli
 ** Remove some unneeded includes.
 **

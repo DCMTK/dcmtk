@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for measurement of time (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:06:10 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:51 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,9 @@
 #else /* UNIX */
 #include <sys/time.h>
 #endif
+
+#define INCLUDE_CSTDDEF               /* For NULL */
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /*---------------------*
@@ -121,6 +124,9 @@ class OFTimer
  *
  * CVS/RCS Log:
  * $Log: oftimer.h,v $
+ * Revision 1.12  2010-03-01 09:08:51  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.11  2005-12-08 16:06:10  meichel
  * Changed include path schema for all DCMTK header files
  *

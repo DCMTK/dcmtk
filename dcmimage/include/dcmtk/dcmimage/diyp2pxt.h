@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomYBRPart422PixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 14:31:21 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:46 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,6 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/dcmimage/dicopxt.h"
-#include "dcmtk/dcmimage/diqttype.h"
 #include "dcmtk/dcmimgle/diinpx.h"  /* gcc 3.4 needs this */
 
 
@@ -152,6 +151,9 @@ class DiYBRPart422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyp2pxt.h,v $
+ * Revision 1.22  2010-03-01 09:08:46  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.21  2009-11-25 14:31:21  joergr
  * Removed inclusion of header file "ofconsol.h".
  *

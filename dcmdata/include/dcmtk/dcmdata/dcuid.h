@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:37:33 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:45 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,8 @@
 #define DCUID_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dctypes.h"
+
+#include "dcmtk/ofstd/oftypes.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_UNISTD
@@ -611,6 +612,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.77  2010-03-01 09:08:45  uli
+** Removed some unnecessary include directives in the headers.
+**
 ** Revision 1.76  2009-08-07 14:37:33  joergr
 ** Removed package version suffix "+" from development snapshots.
 **

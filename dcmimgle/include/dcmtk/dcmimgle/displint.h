@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:48:10 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,9 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofcast.h"
+
+#define INCLUDE_CSTDDEF               /* For NULL */
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /*--------------------*
@@ -199,6 +202,9 @@ class DiCubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
+ * Revision 1.20  2010-03-01 09:08:47  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.19  2005-12-08 16:48:10  meichel
  * Changed include path schema for all DCMTK header files
  *

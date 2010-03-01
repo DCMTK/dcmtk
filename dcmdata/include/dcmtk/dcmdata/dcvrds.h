@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmDecimalString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:05:30 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:45 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcbytstr.h"
 
 
@@ -144,6 +143,9 @@ class DcmDecimalString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.h,v $
+** Revision 1.20  2010-03-01 09:08:45  uli
+** Removed some unnecessary include directives in the headers.
+**
 ** Revision 1.19  2009-08-03 09:05:30  joergr
 ** Added methods that check whether a given string value conforms to the VR and
 ** VM definitions of the DICOM standards.

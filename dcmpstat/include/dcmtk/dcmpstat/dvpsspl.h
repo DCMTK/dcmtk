@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint_PList
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2010-03-01 09:08:49 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/dcmdata/dcvrus.h"
+#include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmpstat/dvpstyp.h"
 
@@ -226,6 +227,9 @@ private:
 
 /*
  *  $Log: dvpsspl.h,v $
+ *  Revision 1.9  2010-03-01 09:08:49  uli
+ *  Removed some unnecessary include directives in the headers.
+ *
  *  Revision 1.8  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2009, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-12-02 14:13:13 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2010-03-01 09:08:49 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,6 +43,7 @@
 #endif
 
 #include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/oflog/oflog.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 
@@ -1174,6 +1175,9 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
+ *  Revision 1.36  2010-03-01 09:08:49  uli
+ *  Removed some unnecessary include directives in the headers.
+ *
  *  Revision 1.35  2009-12-02 14:13:13  uli
  *  Completely removed the old dcmdata debug mechanism.
  *

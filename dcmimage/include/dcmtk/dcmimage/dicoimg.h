@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorImage (Header)
  *
- *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2008-07-11 08:36:05 $
- *  CVS/RCS Revision:    $Revision: 1.28 $
+ *  Last Update:         $Author: uli $
+ *  Update Date:         $Date: 2010-03-01 09:08:46 $
+ *  CVS/RCS Revision:    $Revision: 1.29 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,11 +35,9 @@
 #define DICOIMG_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctypes.h"
 
 #include "dcmtk/dcmimgle/diimage.h"
 #include "dcmtk/dcmimage/dicopx.h"
-#include "dcmtk/dcmimgle/diutils.h"
 
 
 /*------------------------*
@@ -463,6 +461,9 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
+ * Revision 1.29  2010-03-01 09:08:46  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.28  2008-07-11 08:36:05  joergr
  * Fixed typo in API documentation.
  *

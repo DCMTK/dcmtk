@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:05:40 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:46 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #define DIINPXT_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcpixel.h"
 
 #include "dcmtk/ofstd/ofbmanip.h"
@@ -44,7 +43,6 @@
 #include "dcmtk/dcmimgle/diinpx.h"
 #include "dcmtk/dcmimgle/didocu.h"
 #include "dcmtk/dcmimgle/dipxrept.h"
-#include "dcmtk/dcmimgle/diutils.h"
 
 
 /*--------------------*
@@ -646,6 +644,9 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
+ * Revision 1.38  2010-03-01 09:08:46  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.37  2009-11-25 16:05:40  joergr
  * Adapted code for new approach to access individual frames of a DICOM image.
  * Added more logging messages. Revised logging messages.

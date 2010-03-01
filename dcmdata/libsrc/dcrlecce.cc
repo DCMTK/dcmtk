@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2009, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: encoder codec class for RLE
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-17 16:41:26 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:45 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 #include "dcmtk/dcmdata/dcpixseq.h"  /* for class DcmPixelSequence */
 #include "dcmtk/dcmdata/dcpxitem.h"  /* for class DcmPixelItem */
 #include "dcmtk/dcmdata/dcswap.h"    /* for swapIfNecessary */
+#include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/ofstd/ofstd.h"
 
 #define INCLUDE_CSTDIO
@@ -445,6 +446,9 @@ OFCondition DcmRLECodecEncoder::determineDecompressedColorModel(
 /*
  * CVS/RCS Log
  * $Log: dcrlecce.cc,v $
+ * Revision 1.15  2010-03-01 09:08:45  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.14  2009-11-17 16:41:26  joergr
  * Added new method that allows for determining the color model of the
  * decompressed image.

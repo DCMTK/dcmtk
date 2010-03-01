@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomOverlay (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-18 11:01:28 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #define DIOVLAY_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/ofstd/ofcast.h"
 
 #include "dcmtk/dcmimgle/diobjcou.h"
@@ -493,6 +492,9 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
+ * Revision 1.26  2010-03-01 09:08:47  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.25  2008-11-18 11:01:28  joergr
  * Fixed issue with incorrectly encoded overlay planes (wrong values for
  * OverlayBitsAllocated and OverlayBitPosition).

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2009, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: decoder codec class for RLE
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-17 16:36:51 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:44 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,6 @@
 #define DCRLECCD_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/dcmdata/dccodec.h"  /* for class DcmCodec */
 
 /** decoder class for RLE.
@@ -194,6 +193,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.h,v $
+ * Revision 1.7  2010-03-01 09:08:44  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.6  2009-11-17 16:36:51  joergr
  * Added new method that allows for determining the color model of the
  * decompressed image.

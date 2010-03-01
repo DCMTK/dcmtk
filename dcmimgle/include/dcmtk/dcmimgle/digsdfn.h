@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomGSDFunction (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:40 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 09:08:46 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,9 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/dcmimgle/didispfn.h"
-#include "dcmtk/dcmimgle/digsdlut.h"
+
+#define INCLUDE_CSTDDEF               /* For NULL */
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /*---------------------*
@@ -240,6 +242,9 @@ class DiGSDFunction
  *
  * CVS/RCS Log:
  * $Log: digsdfn.h,v $
+ * Revision 1.16  2010-03-01 09:08:46  uli
+ * Removed some unnecessary include directives in the headers.
+ *
  * Revision 1.15  2005-12-08 16:47:40  meichel
  * Changed include path schema for all DCMTK header files
  *
