@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2009, OFFIS
+ *  Copyright (C) 2007-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,17 +21,17 @@
  *
  *  Purpose: codec classes for JPEG-LS decoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-17 16:57:14 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-01 10:35:28 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef DJCODECD_H
-#define DJCODECD_H
+#ifndef DCMJPLS_DJCODECD_H
+#define DCMJPLS_DJCODECD_H
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dccodec.h"  /* for class DcmCodec */
@@ -305,6 +305,9 @@ class DJLSNearLosslessDecoder : public DJLSDecoderBase
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.h,v $
+ * Revision 1.4  2010-03-01 10:35:28  uli
+ * Renamed include guards to avoid name clash with e.g. dcmjpeg.
+ *
  * Revision 1.3  2009-11-17 16:57:14  joergr
  * Added new method that allows for determining the color model of the
  * decompressed image.

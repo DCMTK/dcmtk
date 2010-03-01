@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2009, OFFIS
+ *  Copyright (C) 2007-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,16 +22,16 @@
  *  Purpose: codec classes for JPEG-LS encoders.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-26 10:54:41 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2010-03-01 10:35:28 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef DJCODEC_H
-#define DJCODEC_H
+#ifndef DCMJPLS_DJCODEC_H
+#define DCMJPLS_DJCODEC_H
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dccodec.h"  /* for class DcmCodec */
@@ -383,6 +383,9 @@ class DJLSNearLosslessEncoder : public DJLSEncoderBase
 /*
  * CVS/RCS Log:
  * $Log: djcodece.h,v $
+ * Revision 1.7  2010-03-01 10:35:28  uli
+ * Renamed include guards to avoid name clash with e.g. dcmjpeg.
+ *
  * Revision 1.6  2010-02-26 10:54:41  uli
  * Fixed a compiler warning with MSVC about unsafe casts.
  *

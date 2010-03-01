@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2007, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,16 +22,16 @@
  *  Purpose: singleton class that registers the decoder for all supported JPEG-LS processes.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-25 10:17:14 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2010-03-01 10:35:28 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef DJDECODE_H
-#define DJDECODE_H
+#ifndef DCMJPLS_DJDECODE_H
+#define DCMJPLS_DJDECODE_H
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oftypes.h"      /* for OFBool */
@@ -89,6 +89,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djdecode.h,v $
+ * Revision 1.4  2010-03-01 10:35:28  uli
+ * Renamed include guards to avoid name clash with e.g. dcmjpeg.
+ *
  * Revision 1.3  2010-02-25 10:17:14  uli
  * Fix doxygen comments in a couple of places.
  *

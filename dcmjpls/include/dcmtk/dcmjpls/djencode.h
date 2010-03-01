@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2009, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,16 +22,16 @@
  *  Purpose: singleton class that registers encoders for all supported JPEG-LS processes.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 13:16:47 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2010-03-01 10:35:28 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef DJENCODE_H
-#define DJENCODE_H
+#ifndef DCMJPLS_DJENCODE_H
+#define DCMJPLS_DJENCODE_H
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oftypes.h"  /* for OFBool */
@@ -107,6 +107,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djencode.h,v $
+ * Revision 1.4  2010-03-01 10:35:28  uli
+ * Renamed include guards to avoid name clash with e.g. dcmjpeg.
+ *
  * Revision 1.3  2009-10-07 13:16:47  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

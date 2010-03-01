@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2009, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,16 +22,16 @@
  *  Purpose: codec parameter class JPEG-LS codecs
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-25 10:17:14 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2010-03-01 10:35:28 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef DJCPARAM_H
-#define DJCPARAM_H
+#ifndef DCMJPLS_DJCPARAM_H
+#define DCMJPLS_DJCPARAM_H
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dccodec.h" /* for DcmCodecParameter */
@@ -291,6 +291,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djcparam.h,v $
+ * Revision 1.6  2010-03-01 10:35:28  uli
+ * Renamed include guards to avoid name clash with e.g. dcmjpeg.
+ *
  * Revision 1.5  2010-02-25 10:17:14  uli
  * Fix doxygen comments in a couple of places.
  *

@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2010.03.01 (schlachter)
 
+- Renamed include guards to avoid name clash with e.g. dcmjpeg.
+  Affects: dcmjpls/include/dcmtk/dcmjpls/djcodecd.h
+           dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/include/dcmtk/dcmjpls/djcparam.h
+           dcmjpls/include/dcmtk/dcmjpls/djdecode.h
+           dcmjpls/include/dcmtk/dcmjpls/djencode.h
+           dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/include/dcmtk/dcmjpls/djrparam.h
+
 - Removed some unnecessary include directives in the headers.
   Affects: dcmdata/apps/Makefile.dep
            dcmdata/include/dcmtk/dcmdata/dccodec.h

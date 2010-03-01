@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2009, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,16 +22,16 @@
  *  Purpose: enumerations, error constants and helper functions for dcmjp2k
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-25 08:50:38 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-03-01 10:35:28 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef DJLSUTILS_H
-#define DJLSUTILS_H
+#ifndef DCMJPLS_DJLSUTILS_H
+#define DCMJPLS_DJLSUTILS_H
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofcond.h"   /* for class OFCondition */
@@ -160,6 +160,9 @@ extern const OFCondition EC_JLSTooMuchCompressedData;
 /*
  * CVS/RCS Log:
  * $Log: djlsutil.h,v $
+ * Revision 1.5  2010-03-01 10:35:28  uli
+ * Renamed include guards to avoid name clash with e.g. dcmjpeg.
+ *
  * Revision 1.4  2010-02-25 08:50:38  uli
  * Updated to latest CharLS version.
  *

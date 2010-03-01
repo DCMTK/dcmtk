@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2007, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,16 +22,16 @@
  *  Purpose: representation parameters for JPEG-LS
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 13:16:47 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2010-03-01 10:35:28 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef DJRPARAM_H
-#define DJRPARAM_H
+#ifndef DCMJPLS_DJRPARAM_H
+#define DCMJPLS_DJRPARAM_H
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcpixel.h" /* for class DcmRepresentationParameter */
@@ -109,6 +109,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djrparam.h,v $
+ * Revision 1.3  2010-03-01 10:35:28  uli
+ * Renamed include guards to avoid name clash with e.g. dcmjpeg.
+ *
  * Revision 1.2  2009-10-07 13:16:47  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
