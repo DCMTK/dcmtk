@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.02 (riesmeier)
+
+- Enhanced comments of some methods, e.g. processNextFrames().
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+
 **** Changes from 2010.03.01 (riesmeier)
 
 - Updated copyright date of DCMTK and CharLS library section.

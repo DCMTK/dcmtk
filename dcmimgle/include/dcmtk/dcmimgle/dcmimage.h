@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 15:07:00 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2010-03-02 09:23:32 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ class DicomImage
 
     /** constructor, open a DICOM file.
      *  Opens specified file and reads image related data, creates internal representation
-     *  of image data. Use getStatus() to obtain detailed information about any errors.
+     *  of image data.  Use getStatus() to obtain detailed information about any errors.
      *
      ** @param  filename  the DICOM file
      *  @param  flags     configuration flags (see diutils.h, CIF_MayDetachPixelData is set automatically)
@@ -164,11 +164,15 @@ class DicomImage
 
  // --- multi-frame handling
 
-    /** process next couple of frames. If the image object has been created with less than the number
+    /** process next couple of frames.  If the image object has been created with less than the number
      *  of frames stored in the DICOM image, this function allows for accessing the subsequent frames.
      *  Multiple calls to this function allow for successively processing all frames stored in the
-     *  file or dataset. See parameters 'fstart' and 'fcount' of the constructor for how to initially
+     *  file or dataset.  See parameters 'fstart' and 'fcount' of the constructor for how to initially
      *  create an instance of this class.
+     *  NB: Only "original" images can be processed in this way, i.e. images that were created by one
+     *      of the above constructors.  Images that were created by one of the createXXX() methods can
+     *      not be processed since they are derived from original image data in a certain way, e.g.
+     *      scaled.
      *
      ** @param  fcount  number of frames to be processed (0 = same number as before)
      *
@@ -211,7 +215,7 @@ class DicomImage
 
     /** get number of frames.
      *  Please note that this function does not return the number of frames stored in the
-     *  DICOM file/dataset. It rather refers to the number of frames processed by this class
+     *  DICOM file/dataset.  It rather refers to the number of frames processed by this class
      *  (see constructors for details).
      *
      ** @return number of frames
@@ -381,7 +385,7 @@ class DicomImage
      *  internal memory buffer will be delete for the next getBitmap/Output operation.
      *  output data is always padded to 8, 16, 32, ... bits (bits allocated).
      *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
-     *  CIF_KeepYCbCrColorModel set). The rendered pixel data is alway unsigned.
+     *  CIF_KeepYCbCrColorModel set).  The rendered pixel data is alway unsigned.
      *
      ** @param  bits    number of bits per sample used to render the pixel data
      *                  (image depth, 1..MAX_BITS, 0 means 'bits stored' in the image)
@@ -406,7 +410,7 @@ class DicomImage
      *  apply VOI/PLUT transformation and (visible) overlay planes.
      *  output data is always padded to 8, 16, 32, ... bits (bits allocated).
      *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
-     *  CIF_KeepYCbCrColorModel set). The rendered pixel data is alway unsigned.
+     *  CIF_KeepYCbCrColorModel set).  The rendered pixel data is alway unsigned.
      *
      ** @param  buffer  pointer to memory buffer (must already be allocated)
      *  @param  size    size of memory buffer (will be checked whether it is sufficient)
@@ -434,7 +438,7 @@ class DicomImage
      *  apply VOI/PLUT transformation and (visible) overlay planes
      *  internal memory buffer will be delete for the next getBitmap/Output operation.
      *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
-     *  CIF_KeepYCbCrColorModel set). The rendered pixel data is alway unsigned.
+     *  CIF_KeepYCbCrColorModel set).  The rendered pixel data is alway unsigned.
      *
      ** @param  plane  number of plane to be rendered
      *
@@ -488,6 +492,8 @@ class DicomImage
      *  (if present and not disabled).  Please note that for monochrome images the
      *  internal representation might be signed whereas color images are automatically
      *  converted to unsigned RGB format.  Pixels are aligned to 8, 16 or 32 bits.
+     *  Always use DiPixel::getRepresentation() in order to determine the integer
+     *  representation of the internally stored pixel data.
      *
      ** @return pointer to intermediate pixel data representation
      */
@@ -526,7 +532,7 @@ class DicomImage
      *  disables display function transformation, object is not deleted!
      *
      ** @return true if successful (1 = disabled current function,
-     *                              2 = there was no function to disable)
+     *                              2 = there was no function to disable),
      *          false otherwise
      */
     inline int setNoDisplayFunction()
@@ -614,7 +620,7 @@ class DicomImage
     }
 
     /** set automatically calculated VOI window for the specified Region of Interest (ROI).
-     *  The ROI is specified by means of a rectangle (left, top, width, height). Only the part
+     *  The ROI is specified by means of a rectangle (left, top, width, height).  Only the part
      *  of the ROI that overlaps with the image is regarded - if the overlapping area is empty
      *  this method returns false (0).
      *  Possibly active VOI LUT is implicitly disabled.
@@ -808,7 +814,7 @@ class DicomImage
      ** @param  polarity  polarity (normal or reverse)
      *
      ** @return true if successful (1 = polarity has changed,
-     *                              2 = polarity has not changed)
+     *                              2 = polarity has not changed),
      *          false otherwise
      */
     inline int setPolarity(const EP_Polarity polarity)
@@ -820,13 +826,14 @@ class DicomImage
     /** set hardcopy parameters. only applicable to monochrome images.
      *  used to display LinOD images
      *
-     ** @param  min      minimum density of the print-out (in hundreds of Optical Density, e.g. 150 means 1.5 OD)
+     ** @param  min      minimum density of the print-out (in hundreds of Optical Density,
+     *                   e.g. 150 means 1.5 OD)
      *  @param  max      maximum density of the print-out (ditto)
      *  @param  reflect  reflected ambient light (in candela per square meter - cd/m^2)
      *  @param  illumin  illumination (ditto)
      *
      ** @return true if successful (1 = at least one of the parameters has changed,
-     *                              2 = no parameter has changed)
+     *                              2 = no parameter has changed),
      *          false otherwise
      */
     inline int setHardcopyParameters(const unsigned int min,
@@ -860,7 +867,7 @@ class DicomImage
      *                 and maxvalue for white (i.e. monochrome2 data is created for output).
      *
      ** @return true if successful (1 = shape has changed,
-     *                              2 = shape has not changed)
+     *                              2 = shape has not changed),
      *          false otherwise
      */
     inline int setPresentationLutShape(const ES_PresentationLut shape)
@@ -902,7 +909,7 @@ class DicomImage
 
     /** set inverse LUT for presentation transformation.
      *  this LUT transform is e.g. used for DICOM print (12->8, 8->12 bit)
-     *  possibly active presentation LUT will not be considered !
+     *  possibly active presentation LUT will not be considered!
      *
      ** @param  data         contains LUT data
      *  @param  descriptor   describes LUT structure
@@ -1497,9 +1504,9 @@ class DicomImage
      *  32-bit address (if 'padding' is true); 32 bit images store 32 bits per pixel (ARGB), but only
      *  use the lower 24 bits (-RGB).
      *  The memory buffer can be allocated both externally (from the calling program) and internally
-     *  (inside this class/module). If the 'data' parameter is not NULL and the 'size' parameter, which
+     *  (inside this class/module).  If the 'data' parameter is not NULL and the 'size' parameter, which
      *  describes the size (in bytes) of the allocated buffer, is suffiently large, the bitmap is stored
-     *  in this buffer. Otherwise (i.e. 'data' is NULL) the memory is allocated internally. Please note
+     *  in this buffer.  Otherwise (i.e. 'data' is NULL) the memory is allocated internally.  Please note
      *  that in both cases the memory is not handled internally after this method has finished and,
      *  therefore, must be deleted from the calling program.
      *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
@@ -1526,7 +1533,7 @@ class DicomImage
     }
 
     /** create true color (32 bit) or palette (8 bit) bitmap for Java (AWT default format).
-     *  32 bit images allocate 32 bits per pixel (RGB), but only use the upper 24 bits. The sample
+     *  32 bit images allocate 32 bits per pixel (RGB), but only use the upper 24 bits.  The sample
      *  order for color images is: Red, Green, Blue.
      *  Memory is not handled internally - must be deleted from calling program.
      *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
@@ -1822,7 +1829,7 @@ class DicomImage
 
     /** normalize given degree value (for internal use).
      *  negative value are mapped to positive range (-360 -> 0, -270 -> 90, -180 -> 180, -90 -> 270),
-     *  360 is set to 0, all other value are rejected
+     *  360 is set to 0, all other values are rejected
      *
      ** @param  degree  value to be normalized, valid values are: 0, 90, 180, 270
      *
@@ -1857,6 +1864,9 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
+ * Revision 1.63  2010-03-02 09:23:32  joergr
+ * Enhanced comments of some methods, e.g. processNextFrames().
+ *
  * Revision 1.62  2009-11-25 15:07:00  joergr
  * Added new method which allows for processing the frames of a multi-frame
  * image successively. The getString() method now returns the Defined Term of
