@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.03 (riesmeier)
+
+- Fixed compilation issue with call to getlogin_r().
+  Thanks to forum user "parameter" for the report.
+  Affects: dcmdata/libsrc/mkdeftag.cc
+           dcmdata/libsrc/mkdictbi.cc
+
+- Fixed issue with linkage of "mkdeftag" and "mkdictbi" introduced with change
+  to new logging mechanism.
+  Affects: dcmdata/libsrc/Makefile.in
+
 **** Changes from 2010.03.02 (riesmeier)
 
 - Enhanced comments of some methods, e.g. processNextFrames().
@@ -3156,13 +3167,13 @@ Changes between releases are documented here.
   Affects: dcmdata/libsrc/dcuid.cc
 
 - Fixed resource leak in the code creating forked child processes.
-  Thanks to forum user <rhinojunk> for the bug report and fix.
+  Thanks to forum user "rhinojunk" for the bug report and fix.
   Affects: dcmnet/libsrc/assoc.cc
            dcmnet/libsrc/dul.cc
 
 - Fixed application crash due to dereferenced NULL pointer that affected
   some SCP applications when connected by a non-DICOM tool such as nmap.
-  Thanks to forum user <parigaud> for the bug report.
+  Thanks to forum user "parigaud" for the bug report.
   Affects: dcmnet/libsrc/assoc.cc
 
 **** Changes from 2009.08.03 (riesmeier)
@@ -3662,7 +3673,7 @@ Changes between releases are documented here.
 **** Changes from 2009.04.29 (riesmeier)
 
 - Fixed memory leak in method verifyCurrent().
-  Thanks to forum user "yeganeh" <yeganeh135@yahoo.com> for the report.
+  Thanks to forum user "yeganeh" for the report.
   Affects: dcmsign/libsrc/dcsignat.cc
 
 - Load all data into memory before signing the document, otherwise the pixel
@@ -3961,7 +3972,7 @@ Changes between releases are documented here.
 
 - Removed doubled result variable declaration in true lossless encoder which may
   have led the function to return success even in case of errors.
-  Thanks to forum user "popu" <cristian_ro2000@yahoo.com> for the bug report.
+  Thanks to forum user "popu" for the bug report.
   Affects: dcmjpeg/libsrc/djcodece.cc
 
 **** Changes from 2009.03.19 (riesmeier)
@@ -4013,7 +4024,7 @@ Changes between releases are documented here.
 
 - Added support for option --write-pixel when --search is used to print
   selected tags only.
-  Thanks to forum user "spasmous" <spasmous@gmail.com> for pointing this out.
+  Thanks to forum user "spasmous" for pointing this out.
   Affects: dcmdata/apps/dcmdump.cc
 
 **** Changes from 2009.03.12 (riesmeier)
@@ -8523,7 +8534,7 @@ Changes between releases are documented here.
 **** Changes from 2006.04.05 (riesmeier)
 
 - Fixed issue with initialization of OFString member variables.
-  Thanks to DCMTK Forum user Aaron1 <Yibing_d@163.com> for the report.
+  Thanks to forum user "Aaron1" for the report.
   Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbg.h
            dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbm.h
 
@@ -8552,8 +8563,7 @@ Changes between releases are documented here.
 **** Changes from 2006.03.23 (riesmeier)
 
 - Added missing fclose() statement at the end of main().
-  Thanks to DCMTK Forum user ecoto <ecoto@tutopia.com> for the bug report and
-  suggested fix.
+  Thanks to forum user "ecoto" for the bug report and suggested fix.
   Affects: dcmdata/apps/dump2dcm.cc
 
 **** Changes from 2006.03.23 (eichelberg)
