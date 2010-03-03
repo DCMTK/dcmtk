@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Generate a C++ header defining symbolic names for DICOM Tags.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:11 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-03-03 08:50:30 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,7 +155,9 @@ getUserName(char* userString, int maxLen)
 {
 #if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
     // use getlogin_r instead of getlogin
-    return getlogin_r(userString, int maxLen)
+    if (getlogin_r(userString, maxLen) != 0)
+        strncpy(userString, "<no-utmp-entry>", maxLen);
+    return userString;
 #else
     char* s;
     s = getlogin(); // thread unsafe
@@ -188,8 +189,7 @@ getUserName(char* userString, int maxLen)
 static char*
 getUserName(char* userString, int maxLen)
 {
-    char* s = "<unknown-user>";
-    return strncpy(userString, s, maxLen);
+    return strncpy(userString, "<unknown-user>", maxLen);
 }
 #endif
 
@@ -352,6 +352,9 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
+** Revision 1.28  2010-03-03 08:50:30  joergr
+** Fixed compilation issue with call to getlogin_r().
+**
 ** Revision 1.27  2009-11-04 09:58:11  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **
