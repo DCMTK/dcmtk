@@ -50,7 +50,7 @@ support_objs = mkdeftag.o mkdictbi.o dcdictzz.o
 support_progs = mkdeftag mkdictbi
 
 # Extra objects needed by support_progs
-support_progs_objs = cmdlnarg.o dcdebug.o
+support_progs_objs = cmdlnarg.o dctypes.o
 
 library = libdcmdata.$(LIBEXT)
 
@@ -69,10 +69,10 @@ $(library): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
 
-mkdeftag: mkdeftag.o $(dictobjs) cmdlnarg.o
+mkdeftag: mkdeftag.o $(dictobjs) $(support_progs_objs)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) $(support_progs_objs) $(LOCALLIBS) $(LIBS)
 
-mkdictbi: mkdictbi.o $(dictobjs) cmdlnarg.o
+mkdictbi: mkdictbi.o $(dictobjs) $(support_progs_objs)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) $(support_progs_objs) $(LOCALLIBS) $(LIBS)
 
 
