@@ -12,6 +12,12 @@ Changes between releases are documented here.
   to new logging mechanism.
   Affects: dcmdata/libsrc/Makefile.in
 
+- Output return value of readTagAndLength() to the log only in case of error.
+  Affects: dcmdata/libsrc/dcsequen.cc
+
+- Use return value of getTag() for stream output where possible.
+  Affects: dcmdata/libsrc/dcsequen.cc
+
 **** Changes from 2010.03.02 (riesmeier)
 
 - Enhanced comments of some methods, e.g. processNextFrames().

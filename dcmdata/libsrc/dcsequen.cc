@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-04 16:54:17 $
- *  CVS/RCS Revision: $Revision: 1.87 $
+ *  Update Date:      $Date: 2010-03-03 14:30:28 $
+ *  CVS/RCS Revision: $Revision: 1.88 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,10 +151,7 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
                                 break;
                             default:
                                 newDO = new DcmItem(oldDO->getTag());
-                                DCMDATA_WARN("DcmSequenceOfItems: Non-item element ("
-                                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                                    << STD_NAMESPACE setw(4) << oldDO->getGTag() << ","
-                                    << STD_NAMESPACE setw(4) << oldDO->getETag() << ") found");
+                                DCMDATA_WARN("DcmSequenceOfItems: Non-item element " << oldDO->getTag() << " found");
                                 break;
                         }
                         newList->insert(newDO, ELP_next);
@@ -178,8 +175,8 @@ OFCondition DcmSequenceOfItems::copyFrom(const DcmObject& rhs)
 {
   if (this != &rhs)
   {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = (DcmSequenceOfItems&) rhs;
+      if (rhs.ident() != ident()) return EC_IllegalCall;
+      *this = (DcmSequenceOfItems&) rhs;
   }
   return EC_Normal;
 }
@@ -321,13 +318,13 @@ Uint32 DcmSequenceOfItems::calcElementLength(const E_TransferSyntax xfer,
     /* Get length of sequence header + sequence content (will call DcmSequenceOfItems::getLength()) */
     Uint32 seqlen = DcmElement::calcElementLength(xfer, enctype);
     if (seqlen == DCM_UndefinedLength)
-      return DCM_UndefinedLength;
+        return DCM_UndefinedLength;
     if (enctype == EET_UndefinedLength)
     {
-      if (OFStandard::check32BitAddOverflow(seqlen, 8))
-        return DCM_UndefinedLength;
-      else
-        seqlen += 8;     // for Sequence Delimitation Tag
+        if (OFStandard::check32BitAddOverflow(seqlen, 8))
+            return DCM_UndefinedLength;
+        else
+            seqlen += 8;     // for Sequence Delimitation Tag
     }
     return seqlen;
 }
@@ -355,18 +352,17 @@ Uint32 DcmSequenceOfItems::getLength(const E_TransferSyntax xfer,
              */
             if ( (enctype == EET_ExplicitLength) && OFStandard::check32BitAddOverflow(seqlen, sublen) )
             {
-                OFString tmp;
                 if (dcmWriteOversizedSeqsAndItemsUndefined.get())
                 {
-                    tmp = "Trying to treat it as undefined length instead.";
+                    DCMDATA_WARN("DcmSequenceOfItems: Explicit length of sequence " << getTagName() << " " << getTag()
+                        << " exceeds 32-bit length field, trying to treat it as undefined length instead");
                 }
                 else
                 {
-                    tmp = "Writing with explicit length will not be possible";
+                    DCMDATA_WARN("DcmSequenceOfItems: Explicit length of sequence " << getTagName() << " " << getTag()
+                        << " exceeds 32-bit length field, writing with explicit length will not be possible");
                     errorFlag = EC_SeqOrItemContentOverflow;
                 }
-                DCMDATA_WARN("DcmSequenceOfItems: Explicit length of sequence " << getTagName()
-                    << " " << getTag() << " exceeds 32-Bit length field - " << tmp);
                 return DCM_UndefinedLength;
             }
             seqlen += sublen;
@@ -476,13 +472,15 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmInputStream &inStream,
         swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
         if ((valueLength & 1) && (valueLength != DCM_UndefinedLength))
         {
-            DCMDATA_WARN("DcmSequenceOfItems: Length of item in sequence " << getTag() << " is odd");
+            DCMDATA_WARN("DcmSequenceOfItems: Length of item in sequence "
+                << getTagName() << " " << getTag() << " is odd");
         }
         length = valueLength;
         tag = newTag; // return value: assignment-operator
     }
 
-    DCMDATA_TRACE("DcmSequenceOfItems::readTagAndLength() returns error = " << l_error.text());
+    if (l_error.bad())
+        DCMDATA_TRACE("DcmSequenceOfItems::readTagAndLength() returns error = " << l_error.text());
     return l_error;
 }
 
@@ -511,21 +509,15 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmInputStream &inStream,
     else if (l_error == EC_InvalidTag)  // try to recover parsing
     {
         inStream.putback();
-        DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found "
-            << newTag << " instead of item tag");
-        DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem(): parse error occurred: ("
-            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-            << STD_NAMESPACE setw(4) << newTag.getGTag() << ","
-            << STD_NAMESPACE setw(4) << newTag.getETag() << ")");
+        DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found " << newTag
+            << " instead of item tag");
+        DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem(): parse error occurred: " << newTag);
     }
     else if (l_error != EC_SequEnd)
     {
-        DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found "
-            << newTag << " instead of a sequence delimiter");
-        DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem(): cannot create Sub Item ("
-            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-            << STD_NAMESPACE setw(4) << newTag.getGTag() << ","
-            << STD_NAMESPACE setw(4) << newTag.getETag() << ")");
+        DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found " << newTag
+            << " instead of a sequence delimiter");
+        DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem(): cannot create Sub Item " << newTag);
     } else {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
     }
@@ -1307,14 +1299,18 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
                                                 DcmFileCache * /* cache */,
                                                 E_ByteOrder /* byteOrder */)
 {
-  // cannot use getPartialValue() with class DcmSequenceOfItems or derived classes
-  return EC_IllegalCall;
+    // cannot use getPartialValue() with class DcmSequenceOfItems or derived classes
+    return EC_IllegalCall;
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.88  2010-03-03 14:30:28  joergr
+** Output return value of readTagAndLength() to the log only in case of error.
+** Use return value of getTag() for stream output where possible.
+**
 ** Revision 1.87  2009-12-04 16:54:17  joergr
 ** Moved some log messages from debug to trace level.
 ** Sightly modified some log messages.
