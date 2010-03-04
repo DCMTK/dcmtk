@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:20:23 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Update Date:      $Date: 2010-03-04 09:34:16 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,22 +71,22 @@ static DcmTagKey parseTagKey(const char *tagName)
   unsigned int elem = 0xffff;
   if (sscanf(tagName, "%x,%x", &group, &elem) != 2)
   {
+    DcmTagKey tagKey;
     /* it is a name */
     const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
     const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
     if (dicent == NULL)
     {
       OFLOG_ERROR(dcmconvLogger, "unrecognised tag name: '" << tagName << "'");
-      dcmDataDict.unlock();
-      return DCM_UndefinedTagKey;
+      tagKey = DCM_UndefinedTagKey;
     } else {
-      return dicent->getKey();
+      tagKey = dicent->getKey();
     }
     dcmDataDict.unlock();
+    return tagKey;
   } else     /* tag name has format "gggg,eeee" */
   {
-    DcmTagKey tagKey(group,elem);
-    return tagKey;
+    return DcmTagKey(group,elem);
   }
 }
 
@@ -348,7 +348,7 @@ int main(int argc, char *argv[])
         if (key != DCM_UndefinedTagKey)
           dcmStopParsingAfterElement.set(key);
         else
-          app.printError("No valid key given for option --stop-after-elem");
+          app.printError("no valid key given for option --stop-after-elem");
       }
 
       cmd.beginOptionBlock();
@@ -528,6 +528,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.71  2010-03-04 09:34:16  joergr
+** Fixed possible issue with read locks on global data dictionary.
+**
 ** Revision 1.70  2009-11-13 13:20:23  joergr
 ** Fixed minor issues in log output.
 **
