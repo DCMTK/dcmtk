@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.04 (riesmeier)
+
+- Fixed possible issue with read locks on global data dictionary.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+
+- Use return value of getTag() for stream output where possible.
+  Affects: dcmdata/apps/dcmdump.cc
+
 **** Changes from 2010.03.03 (riesmeier)
 
 - Fixed compilation issue with call to getlogin_r().

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:20:23 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Update Date:      $Date: 2010-03-04 09:42:42 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,13 +66,13 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #endif
 
 static int dumpFile(STD_NAMESPACE ostream &out,
-            const char *ifname,
-            const E_FileReadMode readMode,
-            const E_TransferSyntax xfer,
-            const size_t printFlags,
-            const OFBool loadIntoMemory,
-            const OFBool stopOnErrors,
-            const char *pixelDirectory);
+                    const char *ifname,
+                    const E_FileReadMode readMode,
+                    const E_TransferSyntax xfer,
+                    const size_t printFlags,
+                    const OFBool loadIntoMemory,
+                    const OFBool stopOnErrors,
+                    const char *pixelDirectory);
 
 // ********************************************
 
@@ -94,56 +94,56 @@ static DcmTagKey parseTagKey(const char *tagName)
     unsigned int elem = 0xffff;
     if (sscanf(tagName, "%x,%x", &group, &elem) != 2)
     {
-      /* it is a name */
-      const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
-      const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
-      if (dicent == NULL) {
-        OFLOG_WARN(dcmdumpLogger, "unrecognized tag name: '" << tagName << "'");
+        DcmTagKey tagKey;
+        /* it is a name */
+        const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
+        const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
+        if (dicent == NULL) {
+            OFLOG_WARN(dcmdumpLogger, "unrecognized tag name: '" << tagName << "'");
+            tagKey = DCM_UndefinedTagKey;
+        } else {
+            tagKey = dicent->getKey();
+        }
         dcmDataDict.unlock();
-        return DCM_UndefinedTagKey;
-      } else {
-        return dicent->getKey();
-      }
-      dcmDataDict.unlock();
+        return tagKey;
     } else     /* tag name has format "gggg,eeee" */
     {
-      DcmTagKey tagKey(group,elem);
-      return tagKey;
+        return DcmTagKey(group,elem);
     }
 }
 
 static OFBool addPrintTagName(const char *tagName)
 {
-  if (printTagCount >= MAX_PRINT_TAG_NAMES) {
-    OFLOG_WARN(dcmdumpLogger, "too many print tag options (max: " << MAX_PRINT_TAG_NAMES << ")");
-    return OFFalse;
-  }
-
-  unsigned int group = 0xffff;
-  unsigned int elem = 0xffff;
-  if (sscanf(tagName, "%x,%x", &group, &elem) != 2)
-  {
-    /* it is a name */
-    const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
-    const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
-    if (dicent == NULL) {
-      OFLOG_WARN(dcmdumpLogger, "unrecognized tag name: '" << tagName << "'");
-      dcmDataDict.unlock();
-      return OFFalse;
-    } else {
-      /* note for later */
-      printTagKeys[printTagCount] = new DcmTagKey(dicent->getKey());
+    if (printTagCount >= MAX_PRINT_TAG_NAMES) {
+        OFLOG_WARN(dcmdumpLogger, "too many print tag options (max: " << MAX_PRINT_TAG_NAMES << ")");
+        return OFFalse;
     }
-    dcmDataDict.unlock();
-  } else {
-    /* tag name has format xxxx,xxxx */
-    /* do not lookup in dictionary, tag could be private */
-    printTagKeys[printTagCount] = NULL;
-  }
 
-  printTagNames[printTagCount] = strcpy(OFstatic_cast(char*, malloc(strlen(tagName)+1)), tagName);
-  printTagCount++;
-  return OFTrue;
+    unsigned int group = 0xffff;
+    unsigned int elem = 0xffff;
+    if (sscanf(tagName, "%x,%x", &group, &elem) != 2)
+    {
+        /* it is a name */
+        const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
+        const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
+        if (dicent == NULL) {
+            OFLOG_WARN(dcmdumpLogger, "unrecognized tag name: '" << tagName << "'");
+            dcmDataDict.unlock();
+            return OFFalse;
+        } else {
+            /* note for later */
+            printTagKeys[printTagCount] = new DcmTagKey(dicent->getKey());
+        }
+        dcmDataDict.unlock();
+    } else {
+        /* tag name has format xxxx,xxxx */
+        /* do not lookup in dictionary, tag could be private */
+        printTagKeys[printTagCount] = NULL;
+    }
+
+    printTagNames[printTagCount] = strcpy(OFstatic_cast(char*, malloc(strlen(tagName)+1)), tagName);
+    printTagCount++;
+    return OFTrue;
 }
 
 
@@ -442,8 +442,8 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--max-read-length"))
       {
-          app.checkValue(cmd.getValueAndCheckMinMax(maxReadLength, 4, 4194302));
-          maxReadLength *= 1024; // convert kbytes to bytes
+        app.checkValue(cmd.getValueAndCheckMinMax(maxReadLength, 4, 4194302));
+        maxReadLength *= 1024; // convert kbytes to bytes
       }
       cmd.beginOptionBlock();
       if (cmd.findOption("--load-all")) loadIntoMemory = OFTrue;
@@ -496,7 +496,7 @@ int main(int argc, char *argv[])
         if (key != DCM_UndefinedTagKey)
           dcmStopParsingAfterElement.set(key);
         else
-          app.printError("No valid key given for option --stop-after-elem");
+          app.printError("no valid key given for option --stop-after-elem");
       }
 
       if (cmd.findOption("--search", 0, OFCommandLine::FOM_FirstFromLeft))
@@ -548,8 +548,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dcmdumpLogger, "no data dictionary loaded, check environment variable: "
-            << DCM_DICT_ENVIRONMENT_VARIABLE);
+      OFLOG_WARN(dcmdumpLogger, "no data dictionary loaded, check environment variable: "
+        << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* make sure the pixel data directory exists and is writable */
@@ -632,10 +632,7 @@ static void printResult(STD_NAMESPACE ostream &out,
              * very helpful to distinguish instances.
              */
             if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item) {
-                out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << "(" 
-                    << STD_NAMESPACE setw(4) << OFstatic_cast(unsigned, dobj->getGTag()) << ","
-                    << STD_NAMESPACE setw(4) << OFstatic_cast(unsigned, dobj->getETag()) << ")."
-                    << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                out << dobj->getTag() << ".";
             }
         }
     }
@@ -743,6 +740,10 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.81  2010-03-04 09:42:42  joergr
+ * Fixed possible issue with read locks on global data dictionary.
+ * Use return value of getTag() for stream output where possible.
+ *
  * Revision 1.80  2009-11-13 13:20:23  joergr
  * Fixed minor issues in log output.
  *
