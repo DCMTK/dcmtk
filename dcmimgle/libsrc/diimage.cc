@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:39:17 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2010-03-05 13:33:08 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -410,9 +410,9 @@ int DiImage::processNextFrames(const unsigned long fcount)
             // check whether there are still any frames to be processed
             if (FirstFrame + NumberOfFrames < TotalNumberOfFrames)
             {
+                FirstFrame += NumberOfFrames;
                 if (fcount > 0)
                     NumberOfFrames = fcount;
-                FirstFrame += NumberOfFrames;
                 if (FirstFrame + NumberOfFrames > TotalNumberOfFrames)
                     NumberOfFrames = TotalNumberOfFrames - FirstFrame;
                 // free memory of previously processed frames
@@ -850,6 +850,9 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
+ * Revision 1.44  2010-03-05 13:33:08  joergr
+ * Fixed issue with processNextFrames() when called with non-default parameter.
+ *
  * Revision 1.43  2009-11-25 16:39:17  joergr
  * Adapted code for new approach to access individual frames of a DICOM image.
  *

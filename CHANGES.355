@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.05 (riesmeier)
+
+- Fixed issue with processNextFrames() when called with non-default parameter.
+  Thanks to Michael Doppler <m.doppler@synedra.com> for the bug report and fix.
+  Affects: dcmimgle/libsrc/diimage.cc
+
 **** Changes from 2010.03.05 (schlachter)
 
 - Fixed possible memory leak in case of error during construction
@@ -8,7 +14,7 @@ Changes between releases are documented here.
   Affects: dcmnet/libsrc/dulconst.cc
 
 - Remove some pointless uses of STD_NAMESPACE where they caused issues
-  with MSVC6. Thanks to forum user liuxinming for finding these.
+  with MSVC6. Thanks to forum user "liuxinming" for finding these.
   Affects: oflog/libsrc/config.cc
            oflog/libsrc/fileap.cc
            oflog/libsrc/property.cc
