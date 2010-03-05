@@ -49,9 +49,9 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-1993
 ** Intent:    This file contains functions for construction of
 **      DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:   $Author: onken $, $Date: 2009-12-16 16:56:52 $
+** Last Update:   $Author: uli $, $Date: 2010-03-05 08:37:23 $
 ** Source File:   $RCSfile: dulconst.cc,v $
-** Revision:    $Revision: 1.22 $
+** Revision:    $Revision: 1.23 $
 ** Status:    $State: Exp $
 */
 
@@ -771,7 +771,10 @@ constructPresentationContext(unsigned char associateType,
   if (subItem == NULL) return EC_MemoryExhausted;
   cond = constructSubItem(acceptedTransferSyntax,
         DUL_TYPETRANSFERSYNTAX, subItem, &length);
-  if (cond.bad()) return cond;
+  if (cond.bad()) {
+    free(subItem);
+    return cond;
+  }
 
         OFCondition cond2 = LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem);
         if (cond2.bad()) return cond2;
@@ -1019,8 +1022,10 @@ constructSCUSCPRoles(unsigned char type,
         }
         cond = constructSCUSCPSubItem(presentationCtx->abstractSyntax,
           DUL_TYPESCUSCPROLE, scuRole, scpRole, scuscpItem, &length);
-        if (cond.bad())
+        if (cond.bad()) {
+          free(scuscpItem);
           return cond;
+        }
         *rtnLength += length;
         cond = LST_Enqueue(lst, (LST_NODE*)scuscpItem);
         if (cond.bad()) return cond;
@@ -1510,6 +1515,10 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
+** Revision 1.23  2010-03-05 08:37:23  uli
+** Fixed possible memory leak in case of error during construction
+** of sub-items. This was found with cppcheck.
+**
 ** Revision 1.22  2009-12-16 16:56:52  onken
 ** Fixed bug in scu/scp role negotation.
 **

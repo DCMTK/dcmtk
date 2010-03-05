@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.05 (schlachter)
+
+- Fixed possible memory leak in case of error during construction
+  of sub-items. This was found with cppcheck.
+  Affects: dcmnet/libsrc/dulconst.cc
+
 **** Changes from 2010.03.04 (riesmeier)
 
 - Fixed possible issue with read locks on global data dictionary.
