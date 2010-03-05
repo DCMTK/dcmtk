@@ -56,7 +56,7 @@ static
 int
 file_rename (tstring const & src, tstring const & target)
 {
-    return STD_NAMESPACE rename (LOG4CPLUS_TSTRING_TO_STRING (src).c_str (),
+    return rename (LOG4CPLUS_TSTRING_TO_STRING (src).c_str (),
         LOG4CPLUS_TSTRING_TO_STRING (target).c_str ()) == 0 ? 0 : -1;
 }
 
@@ -65,7 +65,7 @@ static
 int
 file_remove (tstring const & src)
 {
-    return STD_NAMESPACE remove (LOG4CPLUS_TSTRING_TO_STRING (src).c_str ()) == 0
+    return remove (LOG4CPLUS_TSTRING_TO_STRING (src).c_str ()) == 0
         ? 0 : -1;
 }
 
@@ -269,7 +269,7 @@ RollingFileAppender::RollingFileAppender(const Properties& properties)
     if(properties.exists( LOG4CPLUS_TEXT("MaxFileSize") )) {
         tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("MaxFileSize") );
         tmp = helpers::toUpper(tmp);
-        maxFileSize_ = STD_NAMESPACE atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
+        maxFileSize_ = atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
         if(tmp.find( LOG4CPLUS_TEXT("MB") ) == (tmp.length() - 2)) {
             maxFileSize_ *= (1024 * 1024); // convert to megabytes
         }
@@ -280,7 +280,7 @@ RollingFileAppender::RollingFileAppender(const Properties& properties)
 
     if(properties.exists( LOG4CPLUS_TEXT("MaxBackupIndex") )) {
         tstring tmp = properties.getProperty(LOG4CPLUS_TEXT("MaxBackupIndex"));
-        maxBackupIndex_ = STD_NAMESPACE atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
+        maxBackupIndex_ = atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
     }
 
     init(maxFileSize_, maxBackupIndex_);
@@ -420,7 +420,7 @@ DailyRollingFileAppender::DailyRollingFileAppender(
 
     if(properties.exists( LOG4CPLUS_TEXT("MaxBackupIndex") )) {
         tstring tmp = properties.getProperty(LOG4CPLUS_TEXT("MaxBackupIndex"));
-        maxBackupIndex = STD_NAMESPACE atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
+        maxBackupIndex = atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
     }
 
     init(theSchedule);

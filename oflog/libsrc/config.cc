@@ -125,13 +125,15 @@ namespace
             replacement.clear ();
             if (shadow_env)
                 replacement = props.getProperty (key);
+#ifdef HAVE_GETENV
             if (! shadow_env || (! empty_vars && replacement.empty ()))
             {
                 char const * env_var
-                    = STD_NAMESPACE getenv(LOG4CPLUS_TSTRING_TO_STRING(key).c_str());
+                    = getenv(LOG4CPLUS_TSTRING_TO_STRING(key).c_str());
                 if (env_var)
                     replacement = LOG4CPLUS_STRING_TO_TSTRING (env_var);
             }
+#endif
 
             if (empty_vars || ! replacement.empty ())
             {

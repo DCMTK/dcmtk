@@ -7,6 +7,13 @@ Changes between releases are documented here.
   of sub-items. This was found with cppcheck.
   Affects: dcmnet/libsrc/dulconst.cc
 
+- Remove some pointless uses of STD_NAMESPACE where they caused issues
+  with MSVC6. Thanks to forum user liuxinming for finding these.
+  Affects: oflog/libsrc/config.cc
+           oflog/libsrc/fileap.cc
+           oflog/libsrc/property.cc
+           oflog/libsrc/sockbuff.cc
+
 **** Changes from 2010.03.04 (riesmeier)
 
 - Fixed possible issue with read locks on global data dictionary.

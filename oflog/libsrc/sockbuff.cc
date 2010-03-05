@@ -132,7 +132,7 @@ log4cplus::helpers::SocketBuffer::readShort()
     }
 
     unsigned short ret;
-    STD_NAMESPACE memcpy(&ret, buffer + pos, sizeof(ret));
+    memcpy(&ret, buffer + pos, sizeof(ret));
     ret = ntohs(ret);
     pos += sizeof(unsigned short);
 
@@ -154,7 +154,7 @@ log4cplus::helpers::SocketBuffer::readInt()
     }
 
     unsigned int ret;
-    STD_NAMESPACE memcpy (&ret, buffer + pos, sizeof(ret));
+    memcpy (&ret, buffer + pos, sizeof(ret));
     ret = ntohl(ret);
     pos += sizeof(unsigned int);
 
@@ -229,7 +229,7 @@ log4cplus::helpers::SocketBuffer::appendShort(unsigned short val)
     }
 
     unsigned short s = htons(val);
-    STD_NAMESPACE memcpy(buffer + pos, &s, sizeof (s));
+    memcpy(buffer + pos, &s, sizeof (s));
     pos += sizeof(s);
     size = pos;
 }
@@ -245,7 +245,7 @@ log4cplus::helpers::SocketBuffer::appendInt(unsigned int val)
     }
 
     int i = htonl(val);
-    STD_NAMESPACE memcpy(buffer + pos, &i, sizeof (i));
+    memcpy(buffer + pos, &i, sizeof (i));
     pos += sizeof(i);
     size = pos;
 }
@@ -272,7 +272,7 @@ log4cplus::helpers::SocketBuffer::appendSize_t(size_t val)
     }
 
     unsigned st = htonl(static_cast<unsigned>(val));
-    STD_NAMESPACE memcpy(buffer + pos, &st, sizeof(st));
+    memcpy(buffer + pos, &st, sizeof(st));
     pos += sizeof(st);
     size = pos;
 }
@@ -289,7 +289,7 @@ log4cplus::helpers::SocketBuffer::appendString(const tstring& str)
     }
 
     appendInt(strlen);
-    STD_NAMESPACE memcpy(&buffer[pos], str.data(), strlen);
+    memcpy(&buffer[pos], str.data(), strlen);
     pos += strlen;
     size = pos;
 }
@@ -304,7 +304,7 @@ log4cplus::helpers::SocketBuffer::appendBuffer(const SocketBuffer& buf)
         return;
     }
 
-    STD_NAMESPACE memcpy(&buffer[pos], buf.buffer, buf.getSize());
+    memcpy(&buffer[pos], buf.buffer, buf.getSize());
     pos += buf.getSize();
     size = pos;
 }

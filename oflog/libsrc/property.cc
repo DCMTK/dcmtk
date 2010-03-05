@@ -33,7 +33,7 @@ static
 int
 is_space (tchar ch)
 {
-    return STD_NAMESPACE isspace (ch);
+    return isspace (ch);
 }
 
 
