@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Don't use "using" to fix compilation with MSVC6.
   Affects: oflog/include/dcmtk/oflog/oflog.h
 
+- Use the correct variable for checking left-align mode.
+  Affects: oflog/libsrc/patlay.cc
+
 **** Changes from 2010.03.05 (riesmeier)
 
 - Fixed issue with processNextFrames() when called with non-default parameter.
