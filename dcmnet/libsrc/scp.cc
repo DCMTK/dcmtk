@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009, OFFIS
+ *  Copyright (C) 2009-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-12-21 15:33:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-03-08 12:59:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/scp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,12 +53,12 @@ static DUL_PRESENTATIONCONTEXT* findPresentationContextID(LST_HEAD * head,
   pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
   (void)LST_Position(l, (LST_NODE*)pc);
 
-  while (pc && !found) 
+  while (pc && !found)
   {
-    if (pc->presentationContextID == presentationContextID) 
+    if (pc->presentationContextID == presentationContextID)
     {
         found = OFTrue;
-    } else 
+    } else
     {
         pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
     }
@@ -90,13 +90,13 @@ static void getPresentationContextInfo(const T_ASC_Association *assoc,
 // ----------------------------------------------------------------------------
 
 DcmSCP::DcmSCP() :
-  m_assoc(NULL), 
+  m_assoc(NULL),
   m_assocConfig(NULL),
   m_assocCfgProfileName("Default"),
   m_port( 104 ),
   m_aetitle("DCMTK_SCP"),
   m_refuseAssociation( OFFalse ),
-  m_maxPDU( ASC_DEFAULTMAXPDU ), 
+  m_maxPDU( ASC_DEFAULTMAXPDU ),
   m_singleProcess( OFTrue ),
   m_forkedChild( OFFalse ),
   m_maxAssociations( 1 ),
@@ -111,7 +111,7 @@ DcmSCP::DcmSCP() :
   // manipulations. We want to see the real data.
   dcmEnableAutomaticInputDataCorrection.set( OFFalse );
   if (!m_forkedChild)
-    DCMDATA_DEBUG("\n(notice: dcmdata auto correction disabled.)\n" );
+    DCMDATA_DEBUG(OFendl << "(notice: dcmdata auto correction disabled.)" << OFendl);
 
 #ifdef HAVE_GUSI_H
   // needed for Macintosh.
@@ -151,7 +151,7 @@ DcmSCP::~DcmSCP()
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::enableMultiProcessMode(int argc, 
+OFCondition DcmSCP::enableMultiProcessMode(int argc,
                                            char *argv[])
 {
   if ( m_assoc != NULL )
@@ -188,7 +188,7 @@ OFCondition DcmSCP::listen()
   OFCondition cond = EC_Normal;
   // Make sure data dictionary is loaded.
   if( !dcmDataDict.isDictionaryLoaded() )
-    DCMDATA_WARN("Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE );
+    DCMDATA_WARN("Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
 
 #ifdef HAVE_GETEUID
   // If port is privileged we must be as well.
@@ -270,7 +270,7 @@ OFCondition DcmSCP::listen()
   // is the counterpart of ASC_initializeNetwork(...) which was called above.
   cond = ASC_dropNetwork( &m_net );
   m_net = NULL;
-  if( cond.bad() ) return( cond ); 
+  if( cond.bad() ) return( cond );
 
   // return ok
   return( EC_Normal );
@@ -294,14 +294,14 @@ void DcmSCP::refuseAssociation( DcmRefuseReasonType reason )
     switch( reason )
     {
       case DCMSCP_TOO_MANY_ASSOCIATIONS: DCMNET_ERROR("Refusing Association (too many associations)"); break;
-      case DCMSCP_CANNOT_FORK:           DCMNET_ERROR("Refusing Association (cannot fork)" ); break;
-      case DCMSCP_BAD_APP_CONTEXT:       DCMNET_ERROR("Refusing Association (bad application context)" ); break;
-      case DCMSCP_BAD_AE_SERVICE:        DCMNET_ERROR("Refusing Association (bad application entity service)" ); break;
-      case DCMSCP_FORCED:                DCMNET_WARN ("Refusing Association (forced via command line)" ); break;
-      case DCMSCP_NO_IC_UID:             DCMNET_ERROR("Refusing Association (no implementation class UID provided)" ); break;
+      case DCMSCP_CANNOT_FORK:           DCMNET_ERROR("Refusing Association (cannot fork)"); break;
+      case DCMSCP_BAD_APP_CONTEXT:       DCMNET_ERROR("Refusing Association (bad application context)"); break;
+      case DCMSCP_BAD_AE_SERVICE:        DCMNET_ERROR("Refusing Association (bad application entity service)"); break;
+      case DCMSCP_FORCED:                DCMNET_WARN ("Refusing Association (forced via command line)"); break;
+      case DCMSCP_NO_IC_UID:             DCMNET_ERROR("Refusing Association (no implementation class UID provided)"); break;
       case DCMSCP_NO_PRES_CONTEXTS:      DCMNET_ERROR("Refusing Association (no acceptable presentation contexts)"); break;
       case DCMSCP_INTERNAL_ERROR:        DCMNET_ERROR("Refusing Association (internal error)"); break;
-      default:                           DCMNET_ERROR("Refusing Association (unknown reason)" ); break;
+      default:                           DCMNET_ERROR("Refusing Association (unknown reason)"); break;
     }
   }
 
@@ -396,7 +396,7 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
     }
     else desiredAction = DCMSCP_ACTION_UNDEFINED; // reset for later use
   }
-  
+
   // Now we have to figure out if we might have to refuse the association request.
   // This is the case if at least one of five conditions is met:
 
@@ -656,7 +656,7 @@ OFCondition DcmSCP::handleIncomingCommand(T_DIMSE_Message* msg,
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::handleEchoRequest(T_DIMSE_C_EchoRQ *req, 
+OFCondition DcmSCP::handleEchoRequest(T_DIMSE_C_EchoRQ *req,
                                       T_ASC_PresentationContextID presId)
 {
   // Dump debug information
@@ -665,7 +665,7 @@ OFCondition DcmSCP::handleEchoRequest(T_DIMSE_C_EchoRQ *req,
 
   // Send an echo response
   OFCondition cond = DIMSE_sendEchoResponse( m_assoc, presId, req, STATUS_Success, NULL );
-  if( cond.bad() ) 
+  if( cond.bad() )
     DCMNET_ERROR("Error while sending C-ECHO Response: " << cond.text());
   else
     DCMNET_DEBUG("C-ECHO successfully sent");
@@ -678,17 +678,17 @@ OFCondition DcmSCP::handleEchoRequest(T_DIMSE_C_EchoRQ *req,
 
 // Receive dataset over existing association.
 OFCondition DcmSCP::receiveDataset(DcmDataset **dataObject,
-	                                 DIMSE_ProgressCallback callback,
-	                                 void *callbackContext)
+                                   DIMSE_ProgressCallback callback,
+                                   void *callbackContext)
 {
   if ( (m_assoc == NULL) ) return ASC_NULLKEY;
   T_ASC_PresentationContextID presID;
-  return DIMSE_receiveDataSetInMemory(m_assoc, 
-    m_blockMode, 
-    m_DIMSETimeout, 
-    &presID, 
-    dataObject, 
-    callback, 
+  return DIMSE_receiveDataSetInMemory(m_assoc,
+    m_blockMode,
+    m_DIMSETimeout,
+    &presID,
+    dataObject,
+    callback,
     callbackContext);
 }
 
@@ -764,13 +764,13 @@ void DcmSCP::cleanChildren()
       }
       else
       {
-        DCMNET_WARN("Wait for child failed while cleaning child process (ignored).");
+        DCMNET_WARN("Wait for child failed while cleaning child process (ignored)");
       }
     }
     else if( child > 0 )
     {
       // dump some debug information
-      DCMNET_DEBUG("Cleaned up after child " << child );
+      DCMNET_DEBUG("Cleaned up after child " << child);
       // remove item from process table
       removeProcessFromTable( child );
     }
@@ -800,12 +800,12 @@ void DcmSCP::cleanChildren()
       }
       else
       {
-        DCMNET_WARN("Wait for child failed while cleaning child process (ignored.");
+        DCMNET_WARN("Wait for child failed while cleaning child process (ignored)");
       }
     }
     else if( child > 0 )
     {
-      DCMNET_DEBUG("Cleaned up after child " << child );
+      DCMNET_DEBUG("Cleaned up after child " << child);
       // remove item from process table
       RemoveProcessFromTable( child );
     }
@@ -813,14 +813,14 @@ void DcmSCP::cleanChildren()
 #else                                                         // OTHER PLATFORMS
 // for other platforms without waitpid() and without wait3() we
 // don't know how to cleanup after children. Dump an error message.
-  DCMNET_WARN("Don't know how to wait for child processes on this platform (ignoring).");
+  DCMNET_WARN("Don't know how to wait for child processes on this platform (ignoring)");
 #endif
 }
 
 
 // ----------------------------------------------------------------------------
 
-// static void addStatusDetail(DcmDataset **statusDetail, 
+// static void addStatusDetail(DcmDataset **statusDetail,
 //                            const DcmElement *elem)
 //{
 //  DCMNET_TRACE("Add element to status detail");
@@ -846,7 +846,7 @@ void DcmSCP::cleanChildren()
 //      lo = new DcmLongString( *((DcmLongString*)elem) );
 //      if( lo->getLength() > vr.getMaxValueLength() )
 //      {
-//        DCMNET_WARN("Value inside given LO attriute too large for status detail (max " << OFstatic_cast(Uint32, vr.getMaxValueLength()) << ") for " << vr.getVRName() );
+//        DCMNET_WARN("Value inside given LO attribute too large for status detail (max " << OFstatic_cast(Uint32, vr.getMaxValueLength()) << ") for " << vr.getVRName());
 //      }
 //      (*statusDetail)->insert( lo, OFTrue /*replaceOld*/ );
 //      // Print debug information
@@ -856,14 +856,14 @@ void DcmSCP::cleanChildren()
 //        lo->print(oss);
 //        OFSTRINGSTREAM_GETSTR(oss, strtemp);
 //        DCMNET_DEBUG("Adding AT status detail information: " << strtemp);
-//        OFSTRINGSTREAM_FREESTR(tmpString)        
+//        OFSTRINGSTREAM_FREESTR(tmpString)
 //      }
 //      break;
 //    case EVR_AT:
 //      at = new DcmAttributeTag( *((DcmAttributeTag*)elem) );
 //      if( at->getLength() > vr.getMaxValueLength() )
 //      {
-//        DCMNET_WARN("Value inside given AT attribute too large for status detail (max " << OFstatic_cast(Uint32, vr.getMaxValueLength()) << ") for " << vr.getVRName() );
+//        DCMNET_WARN("Value inside given AT attribute too large for status detail (max " << OFstatic_cast(Uint32, vr.getMaxValueLength()) << ") for " << vr.getVRName());
 //      }
 //      (*statusDetail)->insert( at, OFTrue /*replaceOld*/ );
 //      // Print debug information
@@ -873,11 +873,11 @@ void DcmSCP::cleanChildren()
 //        at->print(oss);
 //        OFSTRINGSTREAM_GETSTR(oss, strtemp);
 //        DCMNET_DEBUG("Adding AT status detail information: " << strtemp);
-//        OFSTRINGSTREAM_FREESTR(tmpString)    
+//        OFSTRINGSTREAM_FREESTR(tmpString)
 //      }
 //      break;
 //    default:  // other status detail is not supported
-//      DCMNET_ERROR("Cannot add status detail, unsupported detail attribute type: %s" << vr.getVRName() );
+//      DCMNET_ERROR("Cannot add status detail, unsupported detail attribute type: " << vr.getVRName());
 //      break;
 //  }
 //}
@@ -1160,8 +1160,8 @@ OFCondition DcmSCP::addAbstractSyntax(const OFString& abstractSyntaxUID,
     m_assocConfig = new DcmAssociationConfiguration();
     newlyCreated = OFTrue;
   }
-  OFListIterator(OFString) it = transferSyntaxUIDs.begin();
-  OFListIterator(OFString) endOfList = transferSyntaxUIDs.end();
+  OFListConstIterator(OFString) it = transferSyntaxUIDs.begin();
+  OFListConstIterator(OFString) endOfList = transferSyntaxUIDs.end();
   OFCondition result;
   // the association configuration needs key names for transfer syntaxes and
   // presentation contexts. Use predefined key names.
@@ -1189,7 +1189,7 @@ OFCondition DcmSCP::addAbstractSyntax(const OFString& abstractSyntaxUID,
   if (result.bad() && newlyCreated)
   {
     // in case of error clear association configuration if it was newly created
-    delete m_assocConfig; 
+    delete m_assocConfig;
     m_assocConfig = NULL;
   }
 
@@ -1204,7 +1204,7 @@ void DcmSCP::dropAndDestroyAssociation()
   {
     notifyAssociatonTermination();
     ASC_dropAssociation( m_assoc );
-    ASC_destroyAssociation( &m_assoc );  
+    ASC_destroyAssociation( &m_assoc );
   }
 }
 
@@ -1218,15 +1218,15 @@ void DcmSCP::notifyAssociationRequest(const T_ASC_Parameters& params,
                                       DcmSCPActionType& desiredAction)
 {
   // Dump some information if required
-  DCMNET_DEBUG("++++++++++++++++++++++++++++++++++++++++\n"
-                << "Association Received " 
+  DCMNET_DEBUG("++++++++++++++++++++++++++++++++++++++++" << OFendl
+                << "Association Received "
                 << params.DULparams.callingPresentationAddress << ": "
-                << params.DULparams.callingAPTitle << " -> " 
+                << params.DULparams.callingAPTitle << " -> "
                 << params.DULparams.calledAPTitle);
 
     // Dump more information if required
-  OFString msg; 
-  DCMNET_DEBUG("Incoming Association Request:\n" << ASC_dumpParameters(msg, m_assoc->params, ASC_ASSOC_RQ));
+  OFString msg;
+  DCMNET_DEBUG("Incoming Association Request:" << OFendl << ASC_dumpParameters(msg, m_assoc->params, ASC_ASSOC_RQ));
 }
 
 // ----------------------------------------------------------------------------
@@ -1267,6 +1267,10 @@ void DcmSCP::notifyDIMSEError(const OFCondition& cond)
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.3  2010-03-08 12:59:53  joergr
+** Changed OFListIterator to OFListConstIterator in order to compile when
+** HAVE_STL is defined.
+**
 ** Revision 1.2  2009-12-21 15:33:58  onken
 ** Added documentation and refactored / enhanced some code.
 **

@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.08 (riesmeier)
+
+- Changed OFListIterator to OFListConstIterator in order to compile when
+  HAVE_STL is defined.
+  Affects: dcmnet/libsrc/dcmtk/scp.cc
+
 **** Changes from 2010.03.08 (schlachter)
 
 - Don't use "using" to fix compilation with MSVC6.
