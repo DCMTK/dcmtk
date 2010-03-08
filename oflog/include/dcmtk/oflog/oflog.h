@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009, OFFIS
+ *  Copyright (C) 2009-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-17 14:26:21 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2010-03-08 10:50:40 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,10 +83,15 @@ public:
      *  @param level the log level to check for
      *  @return true if messages on this level won't be discarded
      */
-    using log4cplus::Logger::isEnabledFor;
+    bool isEnabledFor(log4cplus::LogLevel ll) const {
+        return Logger::isEnabledFor(ll);
+    }
 
     /// this function is only used internally by OFLOG_FATAL and friends
-    using log4cplus::Logger::forcedLog;
+    void forcedLog(log4cplus::LogLevel ll, const log4cplus::tstring& message,
+                   const char* file=NULL, int line=-1) const {
+        Logger::forcedLog(ll, message, file, line);
+    }
 
     /** Get the logger's log level.
      *  One of the checks that isEnabledFor() does looks like this:
@@ -94,7 +99,9 @@ public:
      *        return false;
      *  @return the log level to which this logger is set.
      */
-    using log4cplus::Logger::getChainedLogLevel;
+    LogLevel getChainedLogLevel() const {
+        return (LogLevel) Logger::getChainedLogLevel();
+    }
 };
 
 /** functions for initializing the logging system
@@ -143,6 +150,9 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.7  2010-03-08 10:50:40  uli
+ * Don't use "using" to fix compilation with MSVC6.
+ *
  * Revision 1.6  2009-11-17 14:26:21  uli
  * Make OFLogger::getChainedLogLevel() accessible.
  *

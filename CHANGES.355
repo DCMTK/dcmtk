@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.08 (schlachter)
+
+- Don't use "using" to fix compilation with MSVC6.
+  Affects: oflog/include/dcmtk/oflog/oflog.h
+
 **** Changes from 2010.03.05 (riesmeier)
 
 - Fixed issue with processNextFrames() when called with non-default parameter.
