@@ -40,6 +40,18 @@ enum WSInitStates
 static WSADATA wsa;
 static LONG volatile winsock_state = WS_UNINITIALIZED;
 
+static LONG DoInterlockedCompareExchange(LPLONG p, LONG comp, LONG set)
+{
+    LONG ret;
+#ifdef HAVE_OLD_INTERLOCKEDCOMPAREEXCHANGE
+    void *tmp = ::InterlockedCompareExchange(OFreinterpret_cast(void **, p),
+            OFreinterpret_cast(void *, comp), OFreinterpret_cast(void *, set));
+    ret = OFreinterpret_cast(LONG, tmp);
+#else
+    ret = ::InterlockedCompareExchange(p, comp, set);
+#endif
+    return ret;
+}
 
 static
 void
@@ -51,7 +63,7 @@ init_winsock ()
         return;
 
     // Try to change the state to WS_INITIALIZING.
-    LONG val = ::InterlockedCompareExchange (
+    LONG val = DoInterlockedCompareExchange (
         const_cast<LPLONG>(&winsock_state), WS_INITIALIZING, WS_UNINITIALIZED);
     switch (val)
     {
@@ -62,7 +74,7 @@ init_winsock ()
         {
             // Revert the state back to WS_UNINITIALIZED to unblock other
             // threads and let them throw exception.
-            val = ::InterlockedCompareExchange (
+            val = DoInterlockedCompareExchange (
                 const_cast<LPLONG>(&winsock_state), WS_UNINITIALIZED,
                 WS_INITIALIZING);
             assert (val == WS_INITIALIZING);
@@ -70,7 +82,7 @@ init_winsock ()
         }
 
         // WinSock is initialized, change the state to WS_INITIALIZED.
-        val = ::InterlockedCompareExchange (
+        val = DoInterlockedCompareExchange (
             const_cast<LPLONG>(&winsock_state), WS_INITIALIZED,
             WS_INITIALIZING);
         assert (val == WS_INITIALIZING);

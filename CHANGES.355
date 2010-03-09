@@ -7,6 +7,10 @@ Changes between releases are documented here.
   on older windows versions.
   Affects: oflog/libsrc/threads.cc
 
+- Added a workaround for an API change to InterlockedCompareExchange().
+  Affects: config/include/dcmtk/config/cfwin32.h.in
+           oflog/libsrc/winsock.cc
+
 **** Changes from 2010.03.08 (riesmeier)
 
 - Changed OFListIterator to OFListConstIterator in order to compile when
