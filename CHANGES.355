@@ -15,6 +15,9 @@ Changes between releases are documented here.
   where everything else requires it.
   Affects: oflog/libsrc/factory.cc
 
+- Added Sint64 and Uint64 typedefs.
+  Affects: ofstd/include/dcmtk/ofstd/oftypes.h
+
 **** Changes from 2010.03.08 (riesmeier)
 
 - Changed OFListIterator to OFListConstIterator in order to compile when

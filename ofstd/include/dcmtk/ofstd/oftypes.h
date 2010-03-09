@@ -23,10 +23,10 @@
  *      Defines some C++ standard types that are not consistently 
  *      supported by all C++ Compilers
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:06:11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-09 12:14:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/oftypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,6 @@
 #define OFTYPES_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
 
 #ifdef __CHAR_UNSIGNED__
 typedef signed char     Sint8;
@@ -61,6 +60,50 @@ typedef unsigned short  Uint16;
 typedef float           Float32;    /* 32 Bit Floating Point Single */
 typedef double          Float64;    /* 64 Bit Floating Point Double */
 
+#ifdef HAVE_LONGLONG
+typedef longlong        Sint64;
+#elif defined(__GNUC__)
+/* GNU C defines long long */
+typedef long long       Sint64;
+#elif defined(_WIN32)
+/* Win32 (MSVC) defines __int64 */
+typedef __int64         Sint64;
+#elif defined(HAVE_INT64_T)
+/* many platforms define int64_t in <stdint.h> */
+typedef int64_t         Sint64;
+#elif SIZEOF_LONG == 8
+/* on some platforms, long is 64 bits */
+typedef long            Sint64;
+#else
+/* again on some other platforms (including gcc), long long is defined
+ * this is our last resort - if this breaks, we have not found any
+ * 64-bit int type and there is not much we can do anyway.
+ */
+typedef long long       Sint64;
+#endif
+
+#ifdef HAVE_ULONGLONG
+typedef ulonglong       Uint64;
+#endif
+#ifdef __GNUC__
+/* GNU C defines long long */
+typedef unsigned long long Uint64;
+#elif defined(_WIN32)
+/* Win32 (MSVC) defines __int64 */
+typedef unsigned __int64 Uint64;
+#elif defined(HAVE_INT64_T)
+/* many platforms define uint64_t in <stdint.h> */
+typedef uint64_t        Uint64;
+#elif SIZEOF_LONG == 8
+/* on some platforms, long is 64 bits */
+typedef unsigned long   Uint64;
+#else
+/* again on some other platforms (including gcc), long long is defined
+ * this is our last resort - if this breaks, we have not found any
+ * 64-bit int type and there is not much we can do anyway.
+ */
+typedef unsigned long long Uint64;
+#endif
 
 // Definition of type OFBool
 
@@ -92,6 +135,9 @@ typedef int OFBool;
 /*
  * CVS/RCS Log:
  * $Log: oftypes.h,v $
+ * Revision 1.8  2010-03-09 12:14:20  uli
+ * Added Sint64 and Uint64 typedefs.
+ *
  * Revision 1.7  2005-12-08 16:06:11  meichel
  * Changed include path schema for all DCMTK header files
  *
