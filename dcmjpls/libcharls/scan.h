@@ -5,6 +5,8 @@
 #ifndef CHARLS_SCAN
 #define CHARLS_SCAN
 
+#include "dcmtk/ofstd/ofmap.h"  /* For OFPair */
+
 #include "lokuptbl.h"
 
 // This file contains the code for handling a "scan". Usually an image is encoded as a single scan.
@@ -293,10 +295,10 @@ typename TRAITS::SAMPLE JlsCodec<TRAITS,STRATEGY>::DoRegular(LONG Qs, LONG x, LO
 
 // Functions to build tables used to decode short golomb codes.
 
-inlinehint std::pair<LONG, LONG> CreateEncodedValue(LONG k, LONG mappederval)
+inlinehint OFPair<LONG, LONG> CreateEncodedValue(LONG k, LONG mappederval)
 {
 	LONG highbits = mappederval >> k;
-	return std::make_pair(highbits + k + 1, (LONG(1) << k) | (mappederval & ((LONG(1) << k) - 1)));
+	return OFMake_pair(highbits + k + 1, (LONG(1) << k) | (mappederval & ((LONG(1) << k) - 1)));
 }
 
 
@@ -307,7 +309,7 @@ CTable InitTable(LONG k)
 	{
 		// Q is not used when k != 0
 		LONG merrval = GetMappedErrVal(nerr);//, k, -1);
-		std::pair<LONG, LONG> paircode = CreateEncodedValue(k, merrval);
+		OFPair<LONG, LONG> paircode = CreateEncodedValue(k, merrval);
 		if (paircode.first > CTable::cbit)
 			break;
 
@@ -319,7 +321,7 @@ CTable InitTable(LONG k)
 	{
 		// Q is not used when k != 0
 		LONG merrval = GetMappedErrVal(nerr);//, k, -1);
-		std::pair<LONG, LONG> paircode = CreateEncodedValue(k, merrval);
+		OFPair<LONG, LONG> paircode = CreateEncodedValue(k, merrval);
 		if (paircode.first > CTable::cbit)
 			break;
 

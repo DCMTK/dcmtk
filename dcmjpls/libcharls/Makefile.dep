@@ -12,4 +12,8 @@ jpegls.o: jpegls.cc streams.h util.h config.h intrface.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h header.h decodstr.h \
   procline.h clrtrans.h encodstr.h context.h ctxtrmod.h lokuptbl.h \
-  lltraits.h deftrait.h scan.h
+  lltraits.h deftrait.h scan.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h

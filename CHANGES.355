@@ -25,6 +25,10 @@ Changes between releases are documented here.
            dcmjpls/libcharls/header.cc
            dcmjpls/libcharls/util.h
 
+- Use OFPair instead of directly std::pair.
+  Affects: dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libcharls/scan.h
+
 **** Changes from 2010.03.08 (riesmeier)
 
 - Changed OFListIterator to OFListConstIterator in order to compile when
