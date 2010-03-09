@@ -310,7 +310,13 @@ template <typename Fac, typename Reg>
 static void
 reg_factory (Reg & reg)
 {
-    reg.put (OFauto_ptr<typename Reg::product_type> (new Fac));
+    // MSVC6 doesn't like the following "typename", GCC requires it
+#if !defined(_MSC_VER) || _MSC_VER > 1200
+#define MY_TYPENAME typename
+#else
+#define MY_TYPENAME
+#endif
+    reg.put (OFauto_ptr<MY_TYPENAME Reg::product_type> (new Fac));
 }
 
 } // namespace

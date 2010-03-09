@@ -11,6 +11,10 @@ Changes between releases are documented here.
   Affects: config/include/dcmtk/config/cfwin32.h.in
            oflog/libsrc/winsock.cc
 
+- Added a workaround of MSVC6 which doesn't like "typename" in a place
+  where everything else requires it.
+  Affects: oflog/libsrc/factory.cc
+
 **** Changes from 2010.03.08 (riesmeier)
 
 - Changed OFListIterator to OFListConstIterator in order to compile when
