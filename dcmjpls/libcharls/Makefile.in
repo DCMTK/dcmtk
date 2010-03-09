@@ -12,7 +12,9 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-LOCALINCLUDES =
+ofstddir = $(top_srcdir)/../ofstd
+
+LOCALINCLUDES = -I$(ofstddir)/include
 LOCALDEFS =
 
 objs = header.o intrface.o jpegls.o

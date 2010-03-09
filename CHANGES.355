@@ -18,6 +18,13 @@ Changes between releases are documented here.
 - Added Sint64 and Uint64 typedefs.
   Affects: ofstd/include/dcmtk/ofstd/oftypes.h
 
+- Use Sint64 and Uint64 instead of long long.
+  Affects: dcmjpls/libcharls/CMakeLists.txt
+           dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libcharls/Makefile.in
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/util.h
+
 **** Changes from 2010.03.08 (riesmeier)
 
 - Changed OFListIterator to OFListConstIterator in order to compile when

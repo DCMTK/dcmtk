@@ -11,6 +11,8 @@
 #include "config.h"
 #include "intrface.h"
 
+#include "dcmtk/ofstd/oftypes.h"
+
 
 #ifndef MAX
 #define MAX(a,b)            (((a) > (b)) ? (a) : (b))
@@ -130,7 +132,7 @@ struct FromBigEndian<4>
 template <>
 struct FromBigEndian<8>
 {
-	typedef unsigned long long UINT64;
+	typedef Uint64 UINT64;
 
 	inlinehint static UINT64 Read(BYTE* pbyte)
 	{

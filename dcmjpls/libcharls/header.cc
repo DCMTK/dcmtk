@@ -222,7 +222,7 @@ void JLSInputStream::Read(void* pvoid, LONG cbyteAvailable)
 //
 void JLSInputStream::ReadPixels(void* pvoid, LONG cbyteAvailable)
 {
-	long long cbytePlane = (long long)(_info.width) * _info.height * ((_info.bitspersample + 7)/8);
+	Sint64 cbytePlane = (Sint64)(_info.width) * _info.height * ((_info.bitspersample + 7)/8);
 
 	if (cbyteAvailable < cbytePlane * _info.components)
 		throw JlsException(UncompressedBufferTooSmall);
