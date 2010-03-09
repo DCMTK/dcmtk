@@ -216,11 +216,13 @@ AbstractThread::start()
         abort();
     }
 #elif defined(LOG4CPLUS_USE_WIN32_THREADS)
-    HANDLE h = InterlockedExchangePointer (&handle, INVALID_HANDLE_VALUE);
-    if (h != INVALID_HANDLE_VALUE)
-        ::CloseHandle (h);
+    if (handle != INVALID_HANDLE_VALUE)
+    {
+        ::CloseHandle (handle);
+        handle = INVALID_HANDLE_VALUE;
+    }
 
-    h = reinterpret_cast<HANDLE>(
+    HANDLE h = reinterpret_cast<HANDLE>(
         ::_beginthreadex (0, 0, threadStartFunc, this, 0, &thread_id));
     if (! h)
     {
@@ -231,8 +233,7 @@ AbstractThread::start()
         //throw STD_NAMESPACE runtime_error("Thread creation was not successful");
         abort();
     }
-    h = InterlockedExchangePointer (&handle, h);
-    assert (h == INVALID_HANDLE_VALUE);
+    handle = h;
 #endif
 }
 

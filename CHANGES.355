@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.09 (schlachter)
+
+- Don't use InterlockedExchangePointer() which is not available
+  on older windows versions.
+  Affects: oflog/libsrc/threads.cc
+
 **** Changes from 2010.03.08 (riesmeier)
 
 - Changed OFListIterator to OFListConstIterator in order to compile when
