@@ -21,10 +21,10 @@
  *
  *  Purpose: encapsulation of old style vs. ISO C++ standard includes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:16:16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-03-11 08:37:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/ofstdinc.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -266,6 +266,10 @@ BEGIN_EXTERN_C
 #include <stdio.h>
 END_EXTERN_C
 #endif
+// MSVC6 doesn't know vsnprintf(), but it does know _vsnprintf()
+#if defined(_WIN32) && !defined(HAVE_VSNPRINTF)
+#define vsnprintf _vsnprintf
+#endif
 #endif
 
 // define INCLUDE_CSTDLIB to include <cstdlib> or <stdlib.h> if available
@@ -355,6 +359,9 @@ END_EXTERN_C
 /*
  * CVS/RCS Log:
  * $Log: ofstdinc.h,v $
+ * Revision 1.14  2010-03-11 08:37:24  uli
+ * Use _vsnprintf() on MSVC6 since it doesn't know vsnprintf().
+ *
  * Revision 1.13  2007-02-19 15:16:16  meichel
  * Namespace std is not imported into the default namespace anymore,
  *   unless DCMTK is compiled with macro USING_STD_NAMESPACE defined.

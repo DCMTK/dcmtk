@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.11 (schlachter)
+
+- Use _vsnprintf() on MSVC6 since it doesn't know vsnprintf().
+  Affects: config/include/dcmtk/config/cfwin32.h.in
+           ofstd/include/dcmtk/ofstd/ofstdinc.h
+
 **** Changes from 2010.03.09 (schlachter)
 
 - Don't use InterlockedExchangePointer() which is not available

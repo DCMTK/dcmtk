@@ -761,7 +761,8 @@ typedef unsigned short ushort;
 #define HAVE_VPRINTF 1
 
 /* Define to 1 if you have the `vsnprintf' function. */
-#define HAVE_VSNPRINTF 1
+/* This is defined below for MSVC7 or newer */
+/* #define HAVE_VSNPRINTF 1 */
 
 /* Define to 1 if you have the `wait3' system call. Deprecated, you should no
    longer depend upon `wait3'. */
@@ -989,6 +990,8 @@ typedef unsigned short ushort;
 #pragma warning( disable : 4284 )
 
 #define HAVE_OLD_INTERLOCKEDCOMPAREEXCHANGE
+#else
+#define HAVE_VSNPRINTF 1
 #endif
 
 #if _MSC_VER >= 1400  /* Additional settings for Visual Studio 2005 and newer */
