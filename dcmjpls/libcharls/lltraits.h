@@ -52,6 +52,13 @@ struct LosslessTraitsImplT
 
 };
 
+// For some weird reason MSVC6 doesn't like these templates
+#if defined(_MSC_VER) && _MSC_VER <= 1200
+
+#  define DISABLE_SPECIALIZATIONS
+
+#else
+
 template <class SAMPLE, LONG bpp>
 struct LosslessTraitsT : public LosslessTraitsImplT<SAMPLE, bpp>
 {
@@ -114,5 +121,6 @@ struct LosslessTraitsT<Triplet<SAMPLE>,bpp> : public LosslessTraitsImplT<SAMPLE,
 
 
 };
+#endif
 
 #endif

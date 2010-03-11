@@ -7,6 +7,10 @@ Changes between releases are documented here.
   Affects: config/include/dcmtk/config/cfwin32.h.in
            ofstd/include/dcmtk/ofstd/ofstdinc.h
 
+- Add a couple of workarounds for MSVC6 weirdnesses.
+  Affects: dcmjpls/libcharls/lltraits.h
+           dcmjpls/libcharls/scan.h
+
 **** Changes from 2010.03.09 (schlachter)
 
 - Don't use InterlockedExchangePointer() which is not available

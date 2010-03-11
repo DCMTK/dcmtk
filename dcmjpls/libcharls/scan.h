@@ -298,14 +298,15 @@ typename TRAITS::SAMPLE JlsCodec<TRAITS,STRATEGY>::DoRegular(LONG Qs, LONG x, LO
 inlinehint OFPair<LONG, LONG> CreateEncodedValue(LONG k, LONG mappederval)
 {
 	LONG highbits = mappederval >> k;
-	return OFMake_pair(highbits + k + 1, (LONG(1) << k) | (mappederval & ((LONG(1) << k) - 1)));
+	return OFMake_pair<LONG, LONG>(highbits + k + 1, (LONG(1) << k) | (mappederval & ((LONG(1) << k) - 1)));
 }
 
 
 CTable InitTable(LONG k)
 {
 	CTable table;
-	for (short nerr = 0; ; nerr++)
+	short nerr;
+	for (nerr = 0; ; nerr++)
 	{
 		// Q is not used when k != 0
 		LONG merrval = GetMappedErrVal(nerr);//, k, -1);
@@ -317,7 +318,7 @@ CTable InitTable(LONG k)
 		table.AddEntry(BYTE(paircode.second), code);
 	}
 
-	for (short nerr = -1; ; nerr--)
+	for (nerr = -1; ; nerr--)
 	{
 		// Q is not used when k != 0
 		LONG merrval = GetMappedErrVal(nerr);//, k, -1);
