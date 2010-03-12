@@ -1,6 +1,29 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.12 (riesmeier)
+
+- Enhanced log output on incomplete worklist files (in debug mode).
+  Affects: dcmwlm/libsrc/wlfsim.cc
+
+- Changed some log messages from level "info" to "warn".
+  Affects: dcmwlm/libsrc/wlfsim.cc
+
+- Use return value of getTag() for stream output where possible.
+  Affects: dcmwlm/libsrc/wlfsim.cc
+
+- Replaced tab characters by spaces and removed redundant space characters.
+  Affects:  dcmwlm/data/wlistdb/OFFIS/wklist1.dump
+            dcmwlm/data/wlistdb/OFFIS/wklist10.dump
+            dcmwlm/data/wlistdb/OFFIS/wklist2.dump
+            dcmwlm/data/wlistdb/OFFIS/wklist3.dump
+            dcmwlm/data/wlistdb/OFFIS/wklist4.dump
+            dcmwlm/data/wlistdb/OFFIS/wklist5.dump
+            dcmwlm/data/wlistdb/OFFIS/wklist6.dump
+            dcmwlm/data/wlistdb/OFFIS/wklist7.dump
+            dcmwlm/data/wlistdb/OFFIS/wklist8.dump
+            dcmwlm/data/wlistdb/OFFIS/wklist9.dump
+
 **** Changes from 2010.03.11 (schlachter)
 
 - Use _vsnprintf() on MSVC6 since it doesn't know vsnprintf().
