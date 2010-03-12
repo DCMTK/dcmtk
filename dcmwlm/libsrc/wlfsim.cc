@@ -22,8 +22,8 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2010-02-15 13:11:13 $
-*  CVS/RCS Revision: $Revision: 1.21 $
+*  Update Date:      $Date: 2010-03-12 12:12:34 $
+*  CVS/RCS Revision: $Revision: 1.22 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -119,7 +119,7 @@ OFCondition WlmFileSystemInteractionManager::ConnectToFileSystem( const OFString
   // check parameter
   if( dfPathv.length() == 0 )
   {
-    DCMWLM_WARN("Invalid parameters, cannot connect to worklist file system database...");
+    DCMWLM_WARN("Invalid parameters, cannot connect to worklist file system database.");
     return( WLM_EC_CannotConnectToDataSource );
   }
 
@@ -202,7 +202,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
     DcmFileFormat fileform;
     if (fileform.loadFile(worklistFiles[i].c_str()).bad())
     {
-      DCMWLM_INFO("Could not read worklist file " << worklistFiles[i] << " properly. File will be ignored.");
+      DCMWLM_WARN("Could not read worklist file " << worklistFiles[i] << " properly. File will be ignored.");
     }
     else
     {
@@ -210,10 +210,12 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
       DcmDataset *dataset = fileform.getDataset();
       if( dataset == NULL )
       {
-        DCMWLM_INFO("Worklist file " << worklistFiles[i] << " is empty. File will be ignored.");
+        DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is empty. File will be ignored.");
       }
       else
       {
+        if( enableRejectionOfIncompleteWlFiles )
+          DCMWLM_INFO("Checking whether worklist file " << worklistFiles[i] << " is complete.");
         // in case option --enable-file-reject is set, we have to check if the current
         // .wl-file meets certain conditions; in detail, the file's dataset has to be
         // checked whether it contains all necessary return type 1 attributes and contains
@@ -221,7 +223,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
         // .wl-file shall be rejected
         if( enableRejectionOfIncompleteWlFiles && !DatasetIsComplete( dataset ) )
         {
-          DCMWLM_INFO("Worklist file " << worklistFiles[i] << " is incomplete. File will be ignored.");
+          DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is incomplete. File will be ignored.");
         }
         else
         {
@@ -611,11 +613,16 @@ OFBool WlmFileSystemInteractionManager::DatasetIsComplete( DcmDataset *dataset )
   // intialize returnValue
   OFBool complete = OFTrue;
 
+  DCMWLM_DEBUG("Checking whether dataset is complete ...");
+
   // the dataset is considered to be incomplete...
   // ...if the ScheduledProcedureStepSequence is missing or
   // ...if the ScheduledProcedureStepSequence does not have exactly one item
   if( dataset->findAndGetElement( DCM_ScheduledProcedureStepSequence, scheduledProcedureStepSequence ).bad() || ((DcmSequenceOfItems*)scheduledProcedureStepSequence)->card() != 1 )
+  {
+    DCMWLM_DEBUG("- ScheduledProcedureStepSequence " << DCM_ScheduledProcedureStepSequence << " is missing or does not have exactly one item");
     complete = OFFalse;
+  }
   else
   {
     // so the ScheduledProcedureStepSequence is existent and has exactly one item;
@@ -655,7 +662,6 @@ OFBool WlmFileSystemInteractionManager::DatasetIsComplete( DcmDataset *dataset )
         ReferencedStudyOrPatientSequenceIsAbsentOrExistentButNonEmptyAndIncomplete( DCM_ReferencedPatientSequence, dataset ) )
       complete = OFFalse;
   }
-
   // return result
   return( complete );
 }
@@ -678,13 +684,11 @@ OFBool WlmFileSystemInteractionManager::ReferencedStudyOrPatientSequenceIsAbsent
   // check whether the type 2 sequence attribute is absent
   if( dset->findAndGetElement( sequenceTagKey, sequence ).bad() )
   {
+    DCMWLM_DEBUG("- " << DcmTag(sequenceTagKey).getTagName() << " " << sequenceTagKey << " is missing");
     // try to add it to the dataset and return OFFalse if successful
-    if (dset->insertEmptyElement(sequenceTagKey).good())
+    if ( dset->insertEmptyElement( sequenceTagKey ).good() )
     {
-      DCMWLM_INFO("Added missing type 2 sequence attribute ("
-          << STD_NAMESPACE hex << STD_NAMESPACE setw(4) << STD_NAMESPACE setfill('0') << sequenceTagKey.getGroup() << ","
-          << STD_NAMESPACE hex << STD_NAMESPACE setw(4) << STD_NAMESPACE setfill('0') << sequenceTagKey.getElement()
-          << ") to the current record.");
+      DCMWLM_INFO("Added missing type 2 sequence attribute " << sequenceTagKey << " to the current record.");
       result = OFFalse;
     }
     else
@@ -707,6 +711,8 @@ OFBool WlmFileSystemInteractionManager::ReferencedStudyOrPatientSequenceIsAbsent
             AttributeIsAbsentOrEmpty( DCM_ReferencedSOPInstanceUID, ((DcmSequenceOfItems*)sequence)->getItem(i) ) )
           result = OFTrue;
       }
+      if ( result )
+        DCMWLM_DEBUG("- " << DcmTag(sequenceTagKey).getTagName() << " " << sequenceTagKey << " is incomplete");
     }
   }
 
@@ -733,7 +739,10 @@ OFBool WlmFileSystemInteractionManager::DescriptionAndCodeSequenceAttributesAreI
   // if the attribute is not existent or has no items, we consider it incomplete
   OFBool codeSequenceComplete = OFTrue;
   if( dset->findAndGetElement( codeSequenceTagKey, codeSequence ).bad() || ((DcmSequenceOfItems*)codeSequence)->card() == 0 )
+  {
+    DCMWLM_DEBUG("- " << DcmTag(codeSequenceTagKey).getTagName() << " " << codeSequenceTagKey << " is missing or empty");
     codeSequenceComplete = OFFalse;
+  }
   else
   {
     // if it is existent and has items, check every item for completeness
@@ -743,6 +752,8 @@ OFBool WlmFileSystemInteractionManager::DescriptionAndCodeSequenceAttributesAreI
           AttributeIsAbsentOrEmpty( DCM_CodingSchemeDesignator, ((DcmSequenceOfItems*)codeSequence)->getItem(i) ) )
         codeSequenceComplete = OFFalse;
     }
+    if( !codeSequenceComplete )
+      DCMWLM_DEBUG("- " << DcmTag(codeSequenceTagKey).getTagName() << " " << codeSequenceTagKey << " is incomplete");
   }
 
   // now check the above condition
@@ -765,7 +776,10 @@ OFBool WlmFileSystemInteractionManager::AttributeIsAbsentOrEmpty( DcmTagKey elem
   DcmElement *elem = NULL;
 
   if( dset->findAndGetElement( elemTagKey, elem ).bad() || elem->getLength() == 0 )
+  {
+    DCMWLM_DEBUG("- " << DcmTag(elemTagKey).getTagName() << " " << elemTagKey << " is missing or empty");
     return( OFTrue );
+  }
   else
     return( OFFalse );
 }
@@ -2148,6 +2162,11 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
+** Revision 1.22  2010-03-12 12:12:34  joergr
+** Enhanced log output on incomplete worklist files (in debug mode).
+** Changed some log messages from level "info" to "warn".
+** Use return value of getTag() for stream output where possible.
+**
 ** Revision 1.21  2010-02-15 13:11:13  joergr
 ** Fixed wrong output in verbose mode (string pointer instead of string value).
 **
