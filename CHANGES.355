@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.23 (onken)
+
+- Fixed compilation under Mac OS X when not using standard includes by adding
+  a _DARWIN_C_SOURCE define. Thanks to Guido Lorenz for the suggested patch.
+  Affects: config/configure.in
+  
+- Fixed compilation on Mac OS X with threads being enabled.
+  Affects: oflog/libsrc/threads.cc
+
 **** Changes from 2010.03.23 (riesmeier)
 
 - Use printError() method for command line parsing errors only. After the
