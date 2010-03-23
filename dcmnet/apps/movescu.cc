@@ -22,8 +22,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-02-19 14:13:45 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Update Date:      $Date: 2010-03-23 15:20:13 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -682,7 +682,7 @@ main(int argc, char *argv[])
 
       if ((fileNameList.empty()) && (overrideKeys == NULL))
       {
-          app.printError("either query file or override keys (or both) must be specified");
+        app.printError("either query file or override keys (or both) must be specified");
       }
     }
 
@@ -700,9 +700,15 @@ main(int argc, char *argv[])
     if (opt_retrievePort > 0)
     {
         if (!OFStandard::dirExists(opt_outputDirectory))
-          app.printError("specified output directory does not exist");
+        {
+          OFLOG_FATAL(movescuLogger, "specified output directory does not exist");
+          return 1;
+        }
         else if (!OFStandard::isWriteable(opt_outputDirectory))
-          app.printError("specified output directory is not writeable");
+        {
+          OFLOG_FATAL(movescuLogger, "specified output directory is not writeable");
+          return 1;
+        }
     }
 
 #ifdef HAVE_GETEUID
@@ -1531,6 +1537,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.82  2010-03-23 15:20:13  joergr
+** Use printError() method for command line parsing errors only. After the
+** resource identifier has been printed to the log stream use "oflog" instead.
+**
 ** Revision 1.81  2010-02-19 14:13:45  joergr
 ** Fixed wrong log output (error message when status is "normal").
 **

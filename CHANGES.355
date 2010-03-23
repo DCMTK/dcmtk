@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.23 (riesmeier)
+
+- Use printError() method for command line parsing errors only. After the
+  resource identifier has been printed to the log stream use "oflog" instead.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+
 **** Changes from 2010.03.12 (riesmeier)
 
 - Enhanced log output on incomplete worklist files (in debug mode).

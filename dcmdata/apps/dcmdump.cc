@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-04 09:42:42 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Update Date:      $Date: 2010-03-23 15:17:24 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -589,7 +589,10 @@ int main(int argc, char *argv[])
     }
     /* check whether there are any input files at all */
     if (inputFiles.empty())
-      app.printError("no input files to be dumped");
+    {
+      OFLOG_FATAL(dcmdumpLogger, "no input files to be dumped");
+      return 1;
+    }
 
     const size_t count = inputFiles.size();
     const char *current = NULL;
@@ -740,6 +743,10 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.82  2010-03-23 15:17:24  joergr
+ * Use printError() method for command line parsing errors only. After the
+ * resource identifier has been printed to the log stream use "oflog" instead.
+ *
  * Revision 1.81  2010-03-04 09:42:42  joergr
  * Fixed possible issue with read locks on global data dictionary.
  * Use return value of getTag() for stream output where possible.

@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-01-20 13:49:47 $
- *  CVS/RCS Revision: $Revision: 1.122 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-03-23 15:20:13 $
+ *  CVS/RCS Revision: $Revision: 1.123 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1003,12 +1003,18 @@ int main(int argc, char *argv[])
      * If the output directory is invalid, dump an error message and terminate execution.
      */
     if (!OFStandard::dirExists(opt_outputDirectory))
-      app.printError("specified output directory does not exist");
+    {
+      OFLOG_FATAL(storescpLogger, "specified output directory does not exist");
+      return 1;
+    }
   }
 
   /* check if the output directory is writeable */
   if (!OFStandard::isWriteable(opt_outputDirectory))
-    app.printError("specified output directory is not writeable");
+  {
+    OFLOG_FATAL(storescpLogger, "specified output directory is not writeable");
+    return 1;
+  }
 
 #ifdef HAVE_FORK
   if (opt_forkMode)
@@ -2706,6 +2712,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.123  2010-03-23 15:20:13  joergr
+** Use printError() method for command line parsing errors only. After the
+** resource identifier has been printed to the log stream use "oflog" instead.
+**
 ** Revision 1.122  2010-01-20 13:49:47  uli
 ** Added OFStandard::getProcessID().
 **

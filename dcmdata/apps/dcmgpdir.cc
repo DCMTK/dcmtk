@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -45,9 +45,9 @@
  *  There should be no need to set this compiler flag manually, just compile
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:06 $
- *  CVS/RCS Revision: $Revision: 1.90 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-03-23 15:17:24 $
+ *  CVS/RCS Revision: $Revision: 1.91 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -462,13 +462,9 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFOStringStream oss;
-        oss << "no data dictionary loaded, check environment variable: "
-            << DCM_DICT_ENVIRONMENT_VARIABLE << OFStringStream_ends;
-        OFSTRINGSTREAM_GETSTR(oss, tmpString)
-        app.printError(tmpString);  /* calls exit(1) */
-        OFSTRINGSTREAM_FREESTR(tmpString)
-        return 1;  /* DcmDicomDir class dumps core when no data dictionary */
+        OFLOG_FATAL(dcmgpdirLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
+        return 1;  /* DcmDicomDir class dumps core when no data dictionary present */
     }
 
     /* create list of input files */
@@ -483,8 +479,10 @@ int main(int argc, char *argv[])
     {
         if (opt_recurse)
             OFStandard::searchDirectoryRecursively("", fileNames, opt_pattern, opt_directory);
-        else
-            app.printError("Missing parameter dcmfile-in");
+        else {
+            OFLOG_FATAL(dcmgpdirLogger, "missing parameter dcmfile-in");
+            return 1;
+        }
     } else {
         /* iterate over all input filenames */
         for (int i = 1; i <= count; i++)
@@ -501,7 +499,10 @@ int main(int argc, char *argv[])
     }
     /* check whether there are any input files */
     if (fileNames.empty())
-        app.printError("no input files: DICOMDIR not created");
+    {
+        OFLOG_FATAL(dcmgpdirLogger, "no input files: DICOMDIR not created");
+        return 1;
+    }
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
     // add image support to DICOMDIR class
@@ -595,6 +596,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
+ * Revision 1.91  2010-03-23 15:17:24  joergr
+ * Use printError() method for command line parsing errors only. After the
+ * resource identifier has been printed to the log stream use "oflog" instead.
+ *
  * Revision 1.90  2009-11-04 09:58:06  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *
