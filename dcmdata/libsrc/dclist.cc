@@ -21,9 +21,9 @@
  *
  *  Purpose: generic list class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-03-24 11:52:46 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -273,9 +273,45 @@ DcmObject *DcmList::seek_to(unsigned long absolute_position)
 }
 
 
+// ********************************
+
+
+void DcmList::deleteAllElements()
+{
+    unsigned long numElements = cardinality;
+    DcmObject* tmpObject = NULL;
+    // delete all elements
+    for (unsigned long i=0; i < numElements; i++)
+    {
+        // always select first node so no search is necessary
+        DcmListNode* tmpNode = firstNode;
+        // clear value of node
+        DcmObject* tmpObject = tmpNode->value();
+        if (tmpObject != NULL)
+        {
+          // delete load of selected list node
+          delete tmpObject;
+          tmpObject = NULL;
+        }    
+        firstNode = tmpNode->nextNode;
+        // delete the list node itself
+        delete tmpNode;
+    }
+    // reset all attributes for later use
+    firstNode = NULL;
+    lastNode = NULL;
+    currentNode = NULL;
+    cardinality = 0;
+}
+
+
 /*
  * CVS/RCS Log:
  * $Log: dclist.cc,v $
+ * Revision 1.16  2010-03-24 11:52:46  onken
+ * Introduced new function to delete all elements (including memory de-allocation)
+ * from DcmList.
+ *
  * Revision 1.15  2009-11-04 09:58:10  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

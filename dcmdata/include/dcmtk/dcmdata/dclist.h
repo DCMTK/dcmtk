@@ -21,10 +21,10 @@
  *
  *  Purpose: generic list class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:44 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-03-24 11:52:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dclist.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,13 +42,10 @@
 #define INCLUDE_CSTDDEF
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/dcmdata/dcobject.h"
 
 /// index indicating "end of list"
 const unsigned long DCM_EndOfListIndex = OFstatic_cast(unsigned long, -1L);
-
-
-class DcmObject;    // forward declaration
-
 
 /** helper class maintaining an entry in a DcmList double-linked list
  */
@@ -164,6 +161,12 @@ public:
      */
     DcmObject *seek_to(unsigned long absolute_position);
 
+    /** Remove and delete all elements from list. Thus, the 
+     *  elements' memory is also freed by this operation. The list
+     *  is empty after calling this function.
+     */  
+    void deleteAllElements();
+
     /// return cardinality of list
     inline unsigned long card() const { return cardinality; }
 
@@ -199,6 +202,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dclist.h,v $
+ * Revision 1.21  2010-03-24 11:52:55  onken
+ * Introduced new function to delete all elements (including memory de-allocation)
+ * from DcmList.
+ *
  * Revision 1.20  2010-03-01 09:08:44  uli
  * Removed some unnecessary include directives in the headers.
  *
