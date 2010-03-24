@@ -3,6 +3,19 @@ Changes between releases are documented here.
 
 **** Changes from 2010.03.23 (onken)
 
+- Fixed memory leak in assignment operators of DcmItem and DcmSequenceOfItems.
+  Replaced all code occurences of cleaning all elements from internal lists to
+  newly introduced function in DcmList.
+  Affects: dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcsequen.cc
+
+- Introduced new function to delete all elements (including memory de-allocation)
+  from DcmList.
+  Affects: dcmdata/include/dcmtk/dcmdata/dclist.h
+           dcmdata/libsrc/dclist.cc
+
+**** Changes from 2010.03.23 (onken)
+
 - Fixed compilation under Mac OS X when not using standard includes by adding
   a _DARWIN_C_SOURCE define. Thanks to Guido Lorenz for the suggested patch.
   Affects: config/configure.in
