@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-03-24 11:56:36 $
- *  CVS/RCS Revision: $Revision: 1.143 $
+ *  Update Date:      $Date: 2010-03-24 14:11:54 $
+ *  CVS/RCS Revision: $Revision: 1.144 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,7 +135,7 @@ DcmItem& DcmItem::operator=(const DcmItem& obj)
     DcmObject::operator=(obj);
 
     // delete any existing elements
-    freeElements();
+    elementList->deleteAllElements();
     
     // copy DcmItem's member variables
     lastElementComplete = obj.lastElementComplete;
@@ -167,7 +167,7 @@ OFCondition DcmItem::copyFrom(const DcmObject& rhs)
 
 DcmItem::~DcmItem()
 {
-    freeElements();
+    elementList->deleteAllElements();
     delete elementList;
 }
 
@@ -3641,15 +3641,12 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 }
 
 
-void DcmItem::freeElements()
-{
-  elementList->deleteAllElements();
-}
-
-
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.144  2010-03-24 14:11:54  onken
+** Fixed compilation problem introduced with recent assignment operator changes.
+**
 ** Revision 1.143  2010-03-24 11:56:36  onken
 ** Fixed memory leak in assignment operators of DcmItem and DcmSequenceOfItems.
 ** Replaced all code occurences of cleaning all elements from internal lists to

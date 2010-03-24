@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.03.23 (onken)
 
+- Fixed compilation problem introduced with recent assignment operator changes.
+  Affects: dcmdata/libsrc/dcitem.cc
+
 - Fixed memory leak in assignment operators of DcmItem and DcmSequenceOfItems.
   Replaced all code occurences of cleaning all elements from internal lists to
   newly introduced function in DcmList.
