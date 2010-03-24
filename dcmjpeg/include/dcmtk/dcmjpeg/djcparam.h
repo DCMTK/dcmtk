@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2006, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 12:44:33 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/dcmtk/dcmjpeg/djcparam.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-03-24 15:01:34 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +50,7 @@ public:
    *  @param pPlanarConfiguration flag describing how planar configuration of
    *    decompressed color images should be handled
    *  @param predictor6WorkaroundEnable enable workaround for buggy lossless compressed images with
-   *           overflow in predictor 6 for images with 16 bits/pixel
+   *    overflow in predictor 6 for images with 16 bits/pixel
    *  @param pOptimizeHuffman perform huffman table optimization for 8 bits/pixel compression?
    *  @param pSmoothingFactor smoothing factor for image compression, 0..100
    *  @param pForcedBitDepth forced bit depth for image compression, 0 (auto) or 8/12/16
@@ -70,11 +69,11 @@ public:
    *  @param pRoiTop    Region of Interest upper corner for for VOI transform of monochrome images, mode 7
    *  @param pRoiWidth  Region of Interest width for for VOI transform of monochrome images, mode 7
    *  @param pRoiHeight Region of Interest height for for VOI transform of monochrome images, mode 7
-   *  @param pUsePixelValues Check smallest and largest pixel value and optimize compression, mode 0 only
-   *  @param pUseModalityRescale Create Rescale Slope/Intercept to scale back
-   *                             to original pixel range, mode 0 only
-   *  @param pAcceptWrongPaletteTags Accept wrong palette attribute tags (only "pseudo lossless" encoder)
-   *  @param pAcrNemaCompatibility Accept old ACR-NEMA images without photometric interpretation (only "pseudo" lossless encoder)
+   *  @param pUsePixelValues check smallest and largest pixel value and optimize compression, mode 0 only
+   *  @param pUseModalityRescale create Rescale Slope/Intercept to scale back to original pixel range, mode 0 only
+   *  @param pAcceptWrongPaletteTags accept wrong palette attribute tags (only "pseudo lossless" encoder)
+   *  @param pAcrNemaCompatibility accept old ACR-NEMA images without photometric interpretation
+   *    (only "pseudo" lossless encoder)
    *  @param pTrueLosslessMode Enables true lossless compression (replaces old "pseudo lossless" encoder)
    */
   DJCodecParameter(
@@ -312,7 +311,7 @@ public:
   {
     return predictor6WorkaroundEnabled_;
   }
-  
+
 private:
 
   /// private undefined copy assignment operator
@@ -406,6 +405,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcparam.h,v $
+ * Revision 1.10  2010-03-24 15:01:34  joergr
+ * Fixed minor formatting issues in API documentation.
+ *
  * Revision 1.9  2009-10-07 12:44:33  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
