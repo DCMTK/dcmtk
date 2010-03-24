@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: enumerations, error constants and helper functions for dcmjpeg
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 12:44:33 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/dcmtk/dcmjpeg/djutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-03-24 14:58:48 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +34,7 @@
 #define DJUTILS_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofcond.h"   /* for class OFCondition */
+#include "dcmtk/ofstd/ofcond.h"      /* for class OFCondition */
 #include "dcmtk/dcmimgle/diutils.h"  /* for EP_Interpretation */
 #include "dcmtk/oflog/oflog.h"
 
@@ -166,7 +165,20 @@ enum E_DecompressionColorSpaceConversion
 
   /** never perform any color space conversion.
    */
-  EDC_never
+  EDC_never,
+
+  /** perform color space conversion from YCbCr to RGB if
+   *  JPEG data is color image, compression is lossy, and
+   *  the underlying JPEG library "guesses" the color space
+   *  to be YCbCr.
+   */
+  EDC_guessLossyOnly,
+
+  /** perform color space conversion from YCbCr to RGB if
+   *  JPEG data is color image, and the underlying JPEG
+   *  library "guesses" the color space to be YCbCr.
+   */
+  EDC_guess
 };
 
 
@@ -213,6 +225,10 @@ public:
 /*
  * CVS/RCS Log
  * $Log: djutils.h,v $
+ * Revision 1.5  2010-03-24 14:58:48  joergr
+ * Added new options for the color space conversion during decompression based
+ * on the color model that is "guessed" by the underlying JPEG library (IJG).
+ *
  * Revision 1.4  2009-10-07 12:44:33  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

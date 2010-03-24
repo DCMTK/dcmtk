@@ -1,7 +1,34 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2010.03.23 (onken)
+**** Changes from 2010.03.24 (riesmeier)
+
+- Added new options for the color space conversion during decompression based
+  on the color model that is "guessed" by the underlying JPEG library (IJG).
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpeg/docs/dcmcjpeg.man
+           dcmjpeg/docs/dcmdjpeg.man
+           dcmjpeg/include/dcmtk/dcmjpeg/djutils.h
+           dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+
+- Added missing command line options for color space conversion.
+  Affects: dcmimage/apps/dcmquant.cc
+           dcmimage/apps/dcmscale.cc
+           dcmjpeg/docs/dcmj2pnm.man
+
+- Removed macro DETERMINE_OUTPUT_COLOR_SPACE_FROM_IJG_GUESS which is now
+  obsolete because of new options for color space conversion during
+  decompression.
+  Affects: config/docs/macros.txt
+
+- Fixed minor formatting issues in API documentation.
+  Affects: dcmjpeg/include/dcmtk/dcmjpeg/djcparam.h
+
+**** Changes from 2010.03.24 (onken)
 
 - Fixed compilation problem introduced with recent assignment operator changes.
   Affects: dcmdata/libsrc/dcitem.cc
@@ -22,7 +49,7 @@ Changes between releases are documented here.
 - Fixed compilation under Mac OS X when not using standard includes by adding
   a _DARWIN_C_SOURCE define. Thanks to Guido Lorenz for the suggested patch.
   Affects: config/configure.in
-  
+
 - Fixed compilation on Mac OS X with threads being enabled.
   Affects: oflog/libsrc/threads.cc
 

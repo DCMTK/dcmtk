@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 14:52:33 $
- *  CVS/RCS Revision: $Revision: 1.97 $
+ *  Update Date:      $Date: 2010-03-24 15:06:53 $
+ *  CVS/RCS Revision: $Revision: 1.98 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -273,8 +273,10 @@ int main(int argc, char *argv[])
                                                        "scale y axis to n pixels, auto-compute x axis");
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
      cmd.addSubGroup("color space conversion (compressed images only):");
-      cmd.addOption("--conv-photometric",   "+cp",     "convert if YCbCr photom. interpr. (default)");
+      cmd.addOption("--conv-photometric",   "+cp",     "convert if YCbCr photometric interpr. (default)");
       cmd.addOption("--conv-lossy",         "+cl",     "convert YCbCr to RGB if lossy JPEG");
+      cmd.addOption("--conv-guess",         "+cg",     "convert to RGB if YCbCr is guessed by library");
+      cmd.addOption("--conv-guess-lossy",   "+cgl",    "convert to RGB if lossy JPEG and YCbCr is\nguessed by the underlying JPEG library");
       cmd.addOption("--conv-always",        "+ca",     "always convert YCbCr to RGB");
       cmd.addOption("--conv-never",         "+cn",     "never convert color space");
 #endif
@@ -601,6 +603,10 @@ int main(int argc, char *argv[])
             opt_decompCSconversion = EDC_photometricInterpretation;
         if (cmd.findOption("--conv-lossy"))
             opt_decompCSconversion = EDC_lossyOnly;
+        if (cmd.findOption("--conv-guess"))
+            opt_decompCSconversion = EDC_guess;
+        if (cmd.findOption("--conv-guess-lossy"))
+            opt_decompCSconversion = EDC_guessLossyOnly;
         if (cmd.findOption("--conv-always"))
             opt_decompCSconversion = EDC_always;
         if (cmd.findOption("--conv-never"))
@@ -1448,6 +1454,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.98  2010-03-24 15:06:53  joergr
+ * Added new options for the color space conversion during decompression based
+ * on the color model that is "guessed" by the underlying JPEG library (IJG).
+ *
  * Revision 1.97  2009-11-25 14:52:33  joergr
  * Adapted code for new approach to access individual frames of a DICOM image.
  *

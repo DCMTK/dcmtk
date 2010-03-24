@@ -21,10 +21,10 @@
  *
  *  Purpose: decompression routines of the IJG JPEG library configured for 12 bits/sample.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:48 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-03-24 14:57:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg12.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -296,18 +296,18 @@ OFCondition DJDecompressIJG12Bit::decode(
 
   if (setjmp(((DJDIJG12ErrorStruct *)(cinfo->err))->setjmp_buffer))
   {
-     // the IJG error handler will cause the following code to be executed
-     char buffer[JMSG_LENGTH_MAX];
-     (*cinfo->err->format_message)((jpeg_common_struct *)cinfo, buffer); /* Create the message */
-     cleanup();
-     return makeOFCondition(OFM_dcmjpeg, EJCode_IJG12_Decompression, OF_error, buffer);
+    // the IJG error handler will cause the following code to be executed
+    char buffer[JMSG_LENGTH_MAX];
+    (*cinfo->err->format_message)((jpeg_common_struct *)cinfo, buffer); /* Create the message */
+    cleanup();
+    return makeOFCondition(OFM_dcmjpeg, EJCode_IJG12_Decompression, OF_error, buffer);
   }
 
   // feed compressed buffer into cinfo structure.
   // The buffer will be activated by the next call to DJDIJG12fillInputBuffer.
   DJDIJG12SourceManagerStruct *src = (DJDIJG12SourceManagerStruct *)(cinfo->src);
-  src->next_buffer            = compressedFrameBuffer;
-  src->next_buffer_size       = compressedFrameBufferSize;
+  src->next_buffer = compressedFrameBuffer;
+  src->next_buffer_size = compressedFrameBufferSize;
 
   // Obtain image info
   if (suspension < 2)
@@ -320,26 +320,65 @@ OFCondition DJDecompressIJG12Bit::decode(
 
     // check if color space conversion is enabled
     OFBool colorSpaceConversion = OFFalse;
-    switch(cparam->getDecompressionColorSpaceConversion())
+    // check whether to use the IJG library guess for the JPEG color space
+    OFBool colorSpaceGuess = OFFalse;
+    switch (cparam->getDecompressionColorSpaceConversion())
     {
-        case EDC_photometricInterpretation: // color space conversion if DICOM photometric interpretation is YCbCr
-          colorSpaceConversion = dicomPhotometricInterpretationIsYCbCr;
-          break;
-        case EDC_lossyOnly: // color space conversion if lossy JPEG
-          if (cinfo->process != JPROC_LOSSLESS) colorSpaceConversion = OFTrue;
-          break;
-        case EDC_always: // always do color space conversion
+      case EDC_photometricInterpretation: // color space conversion if DICOM photometric interpretation is YCbCr
+        colorSpaceConversion = dicomPhotometricInterpretationIsYCbCr;
+        break;
+      case EDC_lossyOnly: // color space conversion if lossy JPEG
+        if (cinfo->process != JPROC_LOSSLESS)
           colorSpaceConversion = OFTrue;
-          break;
-        case EDC_never: // never do color space conversion
-          break;
+        break;
+      case EDC_always: // always do color space conversion
+        colorSpaceConversion = OFTrue;
+        break;
+      case EDC_never: // never do color space conversion
+        break;
+      case EDC_guessLossyOnly: // use color space guess by IJG library if lossy JPEG
+        if (cinfo->process != JPROC_LOSSLESS)
+        {
+          colorSpaceGuess = OFTrue;
+          if (cinfo->jpeg_color_space == JCS_YCbCr)
+            colorSpaceConversion = OFTrue;
+        }
+        break;
+      case EDC_guess: // always use color space guess by IJG library
+        colorSpaceGuess = OFTrue;
+        if (cinfo->jpeg_color_space == JCS_YCbCr)
+          colorSpaceConversion = OFTrue;
+        break;
     }
-    // Decline color space conversion to RGB for signed pixel data, because IJG can handle only unsigned
-    if ( colorSpaceConversion && isSigned )
+    // decline color space conversion to RGB for signed pixel data,
+    // because IJG can handle only unsigned
+    if (colorSpaceConversion && isSigned)
       return EJ_UnsupportedColorConversion;
 
-    // Set color space for decompression
-    if (colorSpaceConversion)
+   // let the IJG library guess the JPEG color space
+    if (colorSpaceGuess)
+    {
+      switch (cinfo->jpeg_color_space)
+      {
+        case JCS_GRAYSCALE:
+          // cinfo->out_color_space = JCS_GRAYSCALE;
+          decompressedColorModel = EPI_Monochrome2;
+          break;
+        case JCS_YCbCr: // enforce conversion YCbCr to RGB
+          cinfo->out_color_space = JCS_RGB;
+          decompressedColorModel = EPI_RGB;
+          break;
+        case JCS_RGB:
+          // cinfo->out_color_space = JCS_RGB;
+          decompressedColorModel = EPI_RGB;
+          break;
+        default:
+          decompressedColorModel = EPI_Unknown;
+          break;
+      }
+    }
+    // set color space for decompression
+    else if (colorSpaceConversion)
     {
       switch (cinfo->out_color_space)
       {
@@ -362,28 +401,7 @@ OFCondition DJDecompressIJG12Bit::decode(
     }
     else
     {
-#ifdef DETERMINE_OUTPUT_COLOR_SPACE_FROM_IJG_GUESS
-      // let the IJG library guess the JPEG color space
-      // and use it as the value for decompressedColorModel.
-      switch (cinfo->jpeg_color_space)
-      {
-        case JCS_GRAYSCALE:
-          decompressedColorModel = EPI_Monochrome2;
-          break;
-        case JCS_YCbCr:
-          decompressedColorModel = EPI_YBR_Full;
-          break;
-        case JCS_RGB:
-          decompressedColorModel = EPI_RGB;
-          break;
-        default:
-          decompressedColorModel = EPI_Unknown;
-          break;
-      }
-#else
       decompressedColorModel = EPI_Unknown;
-#endif
-
       // prevent the library from performing any color space conversion
       cinfo->jpeg_color_space = JCS_UNKNOWN;
       cinfo->out_color_space = JCS_UNKNOWN;
@@ -469,6 +487,10 @@ void DJDecompressIJG12Bit::emitMessage(int msg_level) const
 /*
  * CVS/RCS Log
  * $Log: djdijg12.cc,v $
+ * Revision 1.19  2010-03-24 14:57:40  joergr
+ * Added new options for the color space conversion during decompression based
+ * on the color model that is "guessed" by the underlying JPEG library (IJG).
+ *
  * Revision 1.18  2010-03-01 09:08:48  uli
  * Removed some unnecessary include directives in the headers.
  *

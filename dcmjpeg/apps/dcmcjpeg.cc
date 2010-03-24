@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2009, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 12:44:33 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-03-24 15:05:32 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 
-#define SHORTCOL 3
+#define SHORTCOL 4
 #define LONGCOL 21
 
 int main(int argc, char *argv[])
@@ -183,8 +183,10 @@ int main(int argc, char *argv[])
       cmd.addOption("--monochrome",          "+cm",    "convert color images to monochrome");
 
     cmd.addSubGroup("decompr. color space conversion (if input is compressed; always +cn with +tl):");
-      cmd.addOption("--conv-photometric",    "+cp",    "convert if YCbCr photom. interpr. (default)");
+      cmd.addOption("--conv-photometric",    "+cp",    "convert if YCbCr photometric interpr. (default)");
       cmd.addOption("--conv-lossy",          "+cl",    "convert YCbCr to RGB if lossy JPEG");
+      cmd.addOption("--conv-guess",          "+cg",    "convert to RGB if YCbCr is guessed by library");
+      cmd.addOption("--conv-guess-lossy",    "+cgl",   "convert to RGB if lossy JPEG and YCbCr is\nguessed by the underlying JPEG library");
       cmd.addOption("--conv-always",         "+ca",    "always convert YCbCr to RGB");
       cmd.addOption("--conv-never",          "+cn",    "never convert color space");
 
@@ -426,6 +428,16 @@ int main(int argc, char *argv[])
         app.checkConflict("--conv-lossy", "--true-lossless", opt_trueLossless);
         opt_decompCSconversion = EDC_lossyOnly;
       }
+      if (cmd.findOption("--conv-guess"))
+      {
+        app.checkConflict("--conv-guess", "--true-lossless", opt_trueLossless);
+        opt_decompCSconversion = EDC_guess;
+      }
+      if (cmd.findOption("--conv-guess-lossy"))
+      {
+        app.checkConflict("--conv-guess-lossy", "--true-lossless", opt_trueLossless);
+        opt_decompCSconversion = EDC_guessLossyOnly;
+      }
       if (cmd.findOption("--conv-always"))
       {
         app.checkConflict("--conv-always", "--true-lossless", opt_trueLossless);
@@ -624,9 +636,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-      OFLOG_WARN(dcmcjpegLogger, "no data dictionary loaded, "
-           << "check environment variable: "
-           << DCM_DICT_ENVIRONMENT_VARIABLE);
+      OFLOG_WARN(dcmcjpegLogger, "no data dictionary loaded, check environment variable: "
+          << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // open inputfile
@@ -716,6 +727,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
+ * Revision 1.27  2010-03-24 15:05:32  joergr
+ * Added new options for the color space conversion during decompression based
+ * on the color model that is "guessed" by the underlying JPEG library (IJG).
+ *
  * Revision 1.26  2009-10-07 12:44:33  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
