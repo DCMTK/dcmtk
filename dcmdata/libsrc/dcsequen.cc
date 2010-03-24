@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-03 14:30:28 $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-03-24 11:56:36 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,13 +96,7 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems &old)
 
 DcmSequenceOfItems::~DcmSequenceOfItems()
 {
-    DcmObject *dO;
-    itemList->seek(ELP_first);
-    while (!itemList->empty())
-    {
-        dO = itemList->remove();
-        delete dO;
-    }
+    itemList->deleteAllElements();
     delete itemList;
 }
 
@@ -119,7 +113,8 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
     fStartPosition = obj.fStartPosition;
     readAsUN_ = obj.readAsUN_;
 
-    DcmList *newList = new DcmList; // DcmList has no copy constructor. Need to copy ourselves.
+    // DcmList has no copy constructor. Need to copy ourselves.
+    DcmList *newList = new DcmList;
     if (newList)
     {
         switch (obj.ident())
@@ -163,9 +158,11 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
                 break;
         }
     }
+    // be sure to clear memory of former elements not in use any more...
+    itemList->deleteAllElements();
+    // ...and delete the list itself
     delete itemList;
     itemList = newList;
-
   }
   return *this;
 }
@@ -1039,17 +1036,8 @@ DcmItem *DcmSequenceOfItems::remove(DcmItem *item)
 OFCondition DcmSequenceOfItems::clear()
 {
     errorFlag = EC_Normal;
-    DcmObject *dO;
-    itemList->seek(ELP_first);
-    while (!itemList->empty())
-    {
-        dO = itemList->remove();
-        if (dO != NULL)
-        {
-            delete dO;
-            dO = NULL;
-        }
-    }
+    // remove all items from sequence and delete them from memory
+    itemList->deleteAllElements();
     setLengthField(0);
     return errorFlag;
 }
@@ -1307,6 +1295,11 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.89  2010-03-24 11:56:36  onken
+** Fixed memory leak in assignment operators of DcmItem and DcmSequenceOfItems.
+** Replaced all code occurences of cleaning all elements from internal lists to
+** newly introduced function in DcmList.
+**
 ** Revision 1.88  2010-03-03 14:30:28  joergr
 ** Output return value of readTagAndLength() to the log only in case of error.
 ** Use return value of getTag() for stream output where possible.

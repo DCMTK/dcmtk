@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-04 16:54:54 $
- *  CVS/RCS Revision: $Revision: 1.142 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-03-24 11:56:36 $
+ *  CVS/RCS Revision: $Revision: 1.143 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,10 +134,12 @@ DcmItem& DcmItem::operator=(const DcmItem& obj)
     // copy parent's member variables
     DcmObject::operator=(obj);
 
+    // delete any existing elements
+    freeElements();
+    
     // copy DcmItem's member variables
     lastElementComplete = obj.lastElementComplete;
     fStartPosition = obj.fStartPosition;
-    elementList = new DcmList();
     if (!obj.elementList->empty())
     {
       elementList->seek(ELP_first);
@@ -165,13 +167,7 @@ OFCondition DcmItem::copyFrom(const DcmObject& rhs)
 
 DcmItem::~DcmItem()
 {
-    DcmObject *dO;
-    elementList->seek(ELP_first);
-    while (!elementList->empty())
-    {
-        dO = elementList->remove();
-        delete dO;
-    }
+    freeElements();
     delete elementList;
 }
 
@@ -1653,13 +1649,8 @@ DcmElement *DcmItem::remove(const DcmTagKey &tag)
 OFCondition DcmItem::clear()
 {
     errorFlag = EC_Normal;
-    DcmObject *dO;
-    elementList->seek(ELP_first);
-    while (!elementList->empty())
-    {
-        dO = elementList->remove();
-        delete dO;                          // also delete sub elements
-    }
+    // remove all elements from item and delete them from memory
+    elementList->deleteAllElements();
     setLengthField(0);
 
     return errorFlag;
@@ -3650,9 +3641,20 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 }
 
 
+void DcmItem::freeElements()
+{
+  elementList->deleteAllElements();
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.143  2010-03-24 11:56:36  onken
+** Fixed memory leak in assignment operators of DcmItem and DcmSequenceOfItems.
+** Replaced all code occurences of cleaning all elements from internal lists to
+** newly introduced function in DcmList.
+**
 ** Revision 1.142  2009-12-04 16:54:54  joergr
 ** Sightly modified some log messages.
 **
