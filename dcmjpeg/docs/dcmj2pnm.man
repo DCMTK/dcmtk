@@ -153,6 +153,27 @@ scaling:
   +Syv  --scale-y-size  [n]umber: integer
           scale y axis to n pixels, auto-compute x axis
 
+color space conversion (compressed images only):
+
+  +cp   --conv-photometric
+          convert if YCbCr photometric interpretation (default)
+
+  +cl   --conv-lossy
+          convert YCbCr to RGB if lossy JPEG
+
+  +cg   --conv-guess
+          convert to RGB if YCbCr is guessed by library
+
+  +cgl  --conv-guess-lossy
+          convert to RGB if lossy JPEG and YCbCr is
+          guessed by the underlying JPEG library
+
+  +ca   --conv-always
+          always convert YCbCr to RGB
+
+  +cn   --conv-never
+          never convert color space
+
 modality LUT transformation:
 
   -M    --no-modality
@@ -484,6 +505,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2001-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

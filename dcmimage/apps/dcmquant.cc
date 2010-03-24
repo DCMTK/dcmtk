@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2009, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM color images palette color
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:26:37 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2010-03-24 15:07:25 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,9 +113,11 @@ int main(int argc, char *argv[])
     OFBool              opt_uidcreation = OFTrue;
 
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
-    // JPEG parameters
+    // JPEG parameters, currently not used
+# if 0
     OFCmdUnsignedInt    opt_quality = 90;                 /* default: 90% JPEG quality */
     E_SubSampling       opt_sampling = ESS_422;           /* default: 4:2:2 sub-sampling */
+# endif
     E_DecompressionColorSpaceConversion opt_decompCSconversion = EDC_photometricInterpretation;
 #endif
 
@@ -155,8 +157,10 @@ int main(int argc, char *argv[])
 
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
      cmd.addSubGroup("color space conversion options (compressed images only):");
-      cmd.addOption("--conv-photometric",    "+cp",    "convert if YCbCr photom. interpr. (default)");
+      cmd.addOption("--conv-photometric",    "+cp",    "convert if YCbCr photometric interpr. (default)");
       cmd.addOption("--conv-lossy",          "+cl",    "convert YCbCr to RGB if lossy JPEG");
+      cmd.addOption("--conv-guess",          "+cg",    "convert to RGB if YCbCr is guessed by library");
+      cmd.addOption("--conv-guess-lossy",    "+cgl",   "convert to RGB if lossy JPEG and YCbCr is\nguessed by the underlying JPEG library");
       cmd.addOption("--conv-always",         "+ca",    "always convert YCbCr to RGB");
       cmd.addOption("--conv-never",          "+cn",    "never convert color space");
 #endif
@@ -287,6 +291,23 @@ int main(int argc, char *argv[])
           opt_frameCount = 0;
       }
       cmd.endOptionBlock();
+
+#ifdef BUILD_WITH_DCMJPEG_SUPPORT
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--conv-photometric"))
+          opt_decompCSconversion = EDC_photometricInterpretation;
+      if (cmd.findOption("--conv-lossy"))
+          opt_decompCSconversion = EDC_lossyOnly;
+      if (cmd.findOption("--conv-guess"))
+          opt_decompCSconversion = EDC_guess;
+      if (cmd.findOption("--conv-guess-lossy"))
+          opt_decompCSconversion = EDC_guessLossyOnly;
+      if (cmd.findOption("--conv-always"))
+          opt_decompCSconversion = EDC_always;
+      if (cmd.findOption("--conv-never"))
+          opt_decompCSconversion = EDC_never;
+      cmd.endOptionBlock();
+#endif
 
       if (cmd.findOption("--write-ow")) opt_palette_ow = OFTrue;
       if (cmd.findOption("--lut-entries-word")) opt_entries_word = OFTrue;
@@ -509,6 +530,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
+ * Revision 1.21  2010-03-24 15:07:25  joergr
+ * Added missing command line options for the color space conversion.
+ *
  * Revision 1.20  2009-10-14 10:26:37  joergr
  * Fixed minor issues in log output.
  *

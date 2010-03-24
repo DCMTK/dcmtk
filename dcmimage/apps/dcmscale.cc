@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2009, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:26:37 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2010-03-24 15:07:25 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,8 +147,10 @@ int main(int argc, char *argv[])
     cmd.addGroup("image processing and encoding options:");
 #ifdef BUILD_DCMSCALE_AS_DCMJSCAL
      cmd.addSubGroup("color space conversion options (compressed images only):");
-      cmd.addOption("--conv-photometric",   "+cp",      "convert if YCbCr photom. interpr. (default)");
+      cmd.addOption("--conv-photometric",   "+cp",      "convert if YCbCr photometric interpr. (default)");
       cmd.addOption("--conv-lossy",         "+cl",      "convert YCbCr to RGB if lossy JPEG");
+      cmd.addOption("--conv-guess",         "+cg",      "convert to RGB if YCbCr is guessed by library");
+      cmd.addOption("--conv-guess-lossy",   "+cgl",     "convert to RGB if lossy JPEG and YCbCr is\nguessed by the underlying JPEG library");
       cmd.addOption("--conv-always",        "+ca",      "always convert YCbCr to RGB");
       cmd.addOption("--conv-never",         "+cn",      "never convert color space");
 #endif
@@ -261,6 +263,25 @@ int main(int argc, char *argv[])
           opt_ixfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
+
+      /* image processing options: color space conversion */
+
+#ifdef BUILD_DCMSCALE_AS_DCMJSCAL
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--conv-photometric"))
+          opt_decompCSconversion = EDC_photometricInterpretation;
+      if (cmd.findOption("--conv-lossy"))
+          opt_decompCSconversion = EDC_lossyOnly;
+      if (cmd.findOption("--conv-guess"))
+          opt_decompCSconversion = EDC_guess;
+      if (cmd.findOption("--conv-guess-lossy"))
+          opt_decompCSconversion = EDC_guessLossyOnly;
+      if (cmd.findOption("--conv-always"))
+          opt_decompCSconversion = EDC_always;
+      if (cmd.findOption("--conv-never"))
+          opt_decompCSconversion = EDC_never;
+      cmd.endOptionBlock();
+#endif
 
       /* image processing options: scaling */
 
@@ -654,6 +675,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
+ * Revision 1.25  2010-03-24 15:07:25  joergr
+ * Added missing command line options for the color space conversion.
+ *
  * Revision 1.24  2009-10-14 10:26:37  joergr
  * Fixed minor issues in log output.
  *
