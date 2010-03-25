@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-03-24 14:11:54 $
- *  CVS/RCS Revision: $Revision: 1.144 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-03-25 16:31:42 $
+ *  CVS/RCS Revision: $Revision: 1.145 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,7 +136,7 @@ DcmItem& DcmItem::operator=(const DcmItem& obj)
 
     // delete any existing elements
     elementList->deleteAllElements();
-    
+
     // copy DcmItem's member variables
     lastElementComplete = obj.lastElementComplete;
     fStartPosition = obj.fStartPosition;
@@ -292,8 +292,8 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
         }
     }
     /* dump information on a certain debug level */
-    DCMDATA_DEBUG("DcmItem::checkTransferSyntax() Found transfer syntax ["
-        << DcmXfer(transferSyntax).getXferName() << "]");
+    DCMDATA_DEBUG("DcmItem::checkTransferSyntax() TransferSyntax=\""
+        << DcmXfer(transferSyntax).getXferName() << "\"");
 
     /* return determined transfer syntax */
     return transferSyntax;
@@ -556,11 +556,9 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
             {
                 // add size of sequence header
                 Uint32 templen = instanceLength + xferSyn.sizeofTagHeader(EVR_SQ);
-                // call computeGroupLengthAndPadding for all contained items.
-                l_error =
-                    OFstatic_cast(DcmSequenceOfItems *, dO)->computeGroupLengthAndPadding
-                    (glenc, padenc, xfer, enctype, subPadlen, subPadlen,
-                     templen);
+                // call computeGroupLengthAndPadding for all contained items
+                l_error = OFstatic_cast(DcmSequenceOfItems *, dO)->computeGroupLengthAndPadding
+                    (glenc, padenc, xfer, enctype, subPadlen, subPadlen, templen);
             }
 
             /* if everything is ok so far */
@@ -794,8 +792,10 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     /* create a DcmXfer object based on the transfer syntax which was passed */
     DcmXfer xferSyn(xfer);
 
+#ifdef DEBUG
     /* dump some information if required */
-    DCMDATA_TRACE("DcmItem::readTagAndLength() Read transfer syntax " << xferSyn.getXferName());
+    DCMDATA_TRACE("DcmItem::readTagAndLength() TransferSyntax=\"" << xferSyn.getXferName() << "\"");
+#endif
 
     /* bail out if at end of stream */
     if (inStream.eos())
@@ -849,7 +849,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
                 << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                 << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[0] & 0xff) << "\\"
                 << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[1] & 0xff)
-                << ") encountered while parsing element " << newTag.getXTag() << OFStringStream_ends;
+                << ") encountered while parsing element " << newTag << OFStringStream_ends;
             OFSTRINGSTREAM_GETSTR(oss, tmpString)
             /* encoding of this data element might be wrong, try to correct it */
             if (dcmAcceptUnexpectedImplicitEncoding.get())
@@ -1391,11 +1391,8 @@ OFCondition DcmItem::insert(DcmElement *elem,
                   }
                 }
                 /* dump some information if required */
-                DCMDATA_TRACE("DcmItem::insert() Element ("
-                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                    << STD_NAMESPACE setw(4) << elem->getGTag() << ","
-                    << STD_NAMESPACE setw(4) << elem->getETag() << ") / VR=\""
-                    << DcmVR(elem->getVR()).getVRName() << "\" at beginning inserted");
+                DCMDATA_TRACE("DcmItem::insert() Element " << elem->getTag()
+                    << " VR=\"" << DcmVR(elem->getVR()).getVRName() << "\" at beginning inserted");
                 /* terminate do-while-loop */
                 break;
             }
@@ -1415,11 +1412,8 @@ OFCondition DcmItem::insert(DcmElement *elem,
                   }
                 }
                 /* dump some information if required */
-                DCMDATA_TRACE("DcmItem::insert() Element ("
-                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                    << STD_NAMESPACE setw(4) << elem->getGTag() << ","
-                    << STD_NAMESPACE setw(4) << elem->getETag() << ") / VR=\""
-                    << DcmVR(elem->getVR()).getVRName() << "\" inserted");
+                DCMDATA_TRACE("DcmItem::insert() Element " << elem->getTag()
+                    << " VR=\"" << DcmVR(elem->getVR()).getVRName() << "\" inserted");
                 /* terminate do-while-loop */
                 break;
             }
@@ -1439,11 +1433,8 @@ OFCondition DcmItem::insert(DcmElement *elem,
                         /* points to the element after the former current element. */
 
                         /* dump some information if required */
-                        DCMDATA_TRACE("DcmItem::insert() Element ("
-                            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                            << STD_NAMESPACE setw(4) << remObj->getGTag() << ","
-                            << STD_NAMESPACE setw(4) << remObj->getETag()
-                            << ") VR=\"" << DcmVR(remObj->getVR()).getVRName()
+                        DCMDATA_TRACE("DcmItem::insert() Element " << remObj->getTag()
+                            << " VR=\"" << DcmVR(remObj->getVR()).getVRName()
                             << "\" p=" << OFstatic_cast(void *, remObj) << " removed");
 
                         /* if the pointer to the removed object does not */
@@ -1457,11 +1448,8 @@ OFCondition DcmItem::insert(DcmElement *elem,
                         /* insert the new element before the current element */
                         elementList->insert(elem, ELP_prev);
                         /* dump some information if required */
-                        DCMDATA_TRACE("DcmItem::insert() Element ("
-                            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                            << STD_NAMESPACE setw(4) << elem->getGTag() << ","
-                            << STD_NAMESPACE setw(4) << elem->getETag()
-                            << ") VR=\"" << DcmVR(elem->getVR()).getVRName()
+                        DCMDATA_TRACE("DcmItem::insert() Element " << elem->getTag()
+                            << " VR=\"" << DcmVR(elem->getVR()).getVRName()
                             << "\" p=" << OFstatic_cast(void *, elem) << " replaced older one");
 
                     }   // if (replaceOld)
@@ -1668,12 +1656,8 @@ OFBool DcmItem::isEmpty(const OFBool /*normalize*/)
 
 OFCondition DcmItem::verify(const OFBool autocorrect)
 {
-    DCMDATA_TRACE("DcmItem::verify() Tag = ("
-        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-        << STD_NAMESPACE setw(4) << getGTag() << ","
-        << STD_NAMESPACE setw(4) << getETag()
-        << ") \"" << DcmVR(getVR()).getVRName()
-        << "\" \"" << getTagName() << "\"");
+    DCMDATA_TRACE("DcmItem::verify() Element " << getTag()
+        << " VR=\"" << DcmVR(getVR()).getVRName() << "\"");
 
     errorFlag = EC_Normal;
     if (!elementList->empty())
@@ -1686,7 +1670,7 @@ OFCondition DcmItem::verify(const OFBool autocorrect)
                 errorFlag = EC_CorruptedData;
         } while (elementList->seek(ELP_next));
     }
-    if (autocorrect == OFTrue)
+    if (autocorrect)
         setLengthField(getLength());
     return errorFlag;
 }
@@ -1732,10 +1716,7 @@ OFCondition DcmItem::searchSubFromHere(const DcmTagKey &tag,
         } while (l_error.bad() && elementList->seek(ELP_next));
         if (l_error==EC_Normal && dO->getTag()==tag)
         {
-            DCMDATA_TRACE("DcmItem::searchSubFromHere() Search Tag = ("
-                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                << STD_NAMESPACE setw(4) << tag.getGroup() << ","
-                << STD_NAMESPACE setw(4) << tag.getElement() << ") found");
+            DCMDATA_TRACE("DcmItem::searchSubFromHere() Element " << tag << " found");
         }
     }
     return l_error;
@@ -3644,6 +3625,10 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.145  2010-03-25 16:31:42  joergr
+** Use return value of getTag() for stream output where possible.
+** Made log messages more consistent within this module.
+**
 ** Revision 1.144  2010-03-24 14:11:54  onken
 ** Fixed compilation problem introduced with recent assignment operator changes.
 **
