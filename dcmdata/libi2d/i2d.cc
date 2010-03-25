@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:08 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-03-25 09:26:58 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,6 +211,7 @@ void Image2Dcm::cleanupTemplate(DcmDataset *targetDset)
   targetDset->findAndDeleteElement(DCM_SOPInstanceUID);
 
 }
+
 
 OFCondition Image2Dcm::applyStudyOrSeriesFromFile(DcmDataset *targetDset)
 {
@@ -408,21 +409,26 @@ OFCondition Image2Dcm::generateUIDs(DcmDataset *dset)
   return EC_Normal;
 }
 
+
 void Image2Dcm::setISOLatin1(OFBool insertLatin1)
 {
   m_insertLatin1 = insertLatin1;
 }
 
-OFCondition Image2Dcm::insertEncapsulatedPixelData(DcmDataset* dset, char *pixData, Uint32 length) const
+
+OFCondition Image2Dcm::insertEncapsulatedPixelData(DcmDataset* dset, 
+                                                   char *pixData, 
+                                                   Uint32 length,
+                                                   const E_TransferSyntax& outputTS) const
 {
   OFCondition cond;
-  DcmPixelSequence *pixelSequence = NULL;
 
-  DCMDATA_LIBI2D_DEBUG("Image2Dcm: Store imported pixel data to DICOM file");
+  DCMDATA_LIBI2D_DEBUG("Image2Dcm: Storing imported pixel data to DICOM file");
   // create initial pixel sequence
-  pixelSequence = new DcmPixelSequence(DcmTag(DCM_PixelData, EVR_OB));
+  DcmPixelSequence* pixelSequence = new DcmPixelSequence(DcmTag(DCM_PixelData, EVR_OB));
   if (pixelSequence == NULL)
     return EC_MemoryExhausted;
+
   // insert empty offset table into sequence
   DcmPixelItem *offsetTable = new DcmPixelItem(DcmTag(DCM_Item, EVR_OB));
   if (offsetTable == NULL)
@@ -438,25 +444,38 @@ OFCondition Image2Dcm::insertEncapsulatedPixelData(DcmDataset* dset, char *pixDa
     return cond;
   }
 
-  // insert frame into pixel sequence
+  // store compressed frame into pixel seqeuence
   DcmOffsetList dummyList;
   cond = pixelSequence->storeCompressedFrame(dummyList, OFreinterpret_cast(Uint8*,pixData), length, 0);
   // storeCompressedFrame(..) does a deep copy, so the pixdata memory can be freed now
   delete[] pixData;
   if (cond.bad())
   {
-    delete pixelSequence;
+    delete pixelSequence; pixelSequence = NULL;
     return cond;
   }
-  cond = dset->insert(pixelSequence);
+
+  // insert pixel data attribute incorporating pixel sequence into dataset
+  DcmPixelData *pixelData = new DcmPixelData(DCM_PixelData); 
+  if (pixelData == NULL)
+  {
+    delete pixelSequence; pixelSequence = NULL;
+    return EC_MemoryExhausted;
+  }
+  /* tell pixel data element that this is the original presentation of the pixel data
+   * pixel data and how it compressed
+   */
+  pixelData->putOriginalRepresentation(outputTS, NULL, pixelSequence);
+  cond = dset->insert(pixelData);
   if (cond.bad())
   {
-    delete pixelSequence;
+    delete pixelData; pixelData = NULL; // also deletes contained pixel sequence
     return cond;
   }
 
   return EC_Normal;
 }
+
 
 OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
                                               DcmDataset* dset,
@@ -478,7 +497,7 @@ OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
 
   DcmXfer transport(outputTS);
   if (transport.isEncapsulated())
-    insertEncapsulatedPixelData(dset, pixData, length);
+    insertEncapsulatedPixelData(dset, pixData, length, outputTS);
   else
   {
     /* Not encapsulated */
@@ -735,6 +754,12 @@ Image2Dcm::~Image2Dcm()
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
+ * Revision 1.12  2010-03-25 09:26:58  onken
+ * Pixel data is now already marked with the correct transfer syntax in
+ * memory not only when writing to disk. This permits conversion in
+ * memory, e. g. for sending the converted DICOM images directly over
+ * the network.
+ *
  * Revision 1.11  2009-11-04 09:58:08  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *
