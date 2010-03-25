@@ -7,6 +7,7 @@ Changes between releases are documented here.
   not only when writing to disk. This permits conversion in memory, e. g. for
   sending the converted DICOM images directly over the network.
   Affects: dcmdata/libi2d/i2d.cc
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
 
 **** Changes from 2010.03.24 (riesmeier)
 

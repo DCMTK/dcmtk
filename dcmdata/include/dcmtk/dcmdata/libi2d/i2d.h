@@ -21,9 +21,9 @@
  *
  *  Purpose: Class to control conversion of image format to DICOM
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:08 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-03-25 09:44:07 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dcmtk/dcmdata/libi2d/i2dplvlp.h"
 #include "dcmtk/dcmdata/libi2d/i2dplsc.h"
 #include "dcmtk/dcmdata/libi2d/i2djpgs.h"
+#include "dcmtk/dcmdata/dcpixel.h"
 
 class Image2Dcm
 {
@@ -223,9 +224,13 @@ private:
    *  @param dset [in] - The dataset to which we should add this.
    *  @param pixData [in] - The data to add.
    *  @param length [in] - The length of pixData.
+   *  @param outputTS [in] - The output transfer syntax to be used
    *  @return EC_Normal, if successfull, error otherwise.
    */
-  OFCondition insertEncapsulatedPixelData(DcmDataset* dset, char *pixData, Uint32 length) const;
+  OFCondition insertEncapsulatedPixelData(DcmDataset* dset, 
+                                          char *pixData, 
+                                          Uint32 length,
+                                          const E_TransferSyntax& outputTS) const;
 
   /* Attributes for writing DICOM dataset */
 
@@ -273,6 +278,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: i2d.h,v $
+ * Revision 1.11  2010-03-25 09:44:07  onken
+ * Pixel data is now already marked with the correct transfer syntax in memory
+ * not only when writing to disk. This permits conversion in memory, e. g. for
+ * sending the converted DICOM images directly over the network.
+ *
  * Revision 1.10  2009-11-04 09:58:08  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *
