@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: generic list class
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-03-24 11:52:46 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-03-25 16:24:59 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -279,20 +279,21 @@ DcmObject *DcmList::seek_to(unsigned long absolute_position)
 void DcmList::deleteAllElements()
 {
     unsigned long numElements = cardinality;
+    DcmListNode* tmpNode = NULL;
     DcmObject* tmpObject = NULL;
     // delete all elements
-    for (unsigned long i=0; i < numElements; i++)
+    for (unsigned long i = 0; i < numElements; i++)
     {
         // always select first node so no search is necessary
-        DcmListNode* tmpNode = firstNode;
+        tmpNode = firstNode;
         // clear value of node
-        DcmObject* tmpObject = tmpNode->value();
+        tmpObject = tmpNode->value();
         if (tmpObject != NULL)
         {
           // delete load of selected list node
           delete tmpObject;
           tmpObject = NULL;
-        }    
+        }
         firstNode = tmpNode->nextNode;
         // delete the list node itself
         delete tmpNode;
@@ -308,6 +309,10 @@ void DcmList::deleteAllElements()
 /*
  * CVS/RCS Log:
  * $Log: dclist.cc,v $
+ * Revision 1.17  2010-03-25 16:24:59  joergr
+ * Removed redundant variable declaration in order to avoid a warning message
+ * reported by gcc 4.1.2.
+ *
  * Revision 1.16  2010-03-24 11:52:46  onken
  * Introduced new function to delete all elements (including memory de-allocation)
  * from DcmList.
