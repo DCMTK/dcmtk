@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-03-24 11:56:36 $
- *  CVS/RCS Revision: $Revision: 1.89 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-03-25 16:28:40 $
+ *  CVS/RCS Revision: $Revision: 1.90 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -388,9 +388,8 @@ OFCondition DcmSequenceOfItems::computeGroupLengthAndPadding(const E_GrpLenEncod
         do {
             DcmItem *dO = OFstatic_cast(DcmItem *, itemList->get());
             l_error = dO->computeGroupLengthAndPadding
-                (glenc, padenc, xfer, enctype, padlen,
-                 subPadlen, instanceLength);
-        } while (itemList->seek(ELP_next));
+                (glenc, padenc, xfer, enctype, padlen, subPadlen, instanceLength);
+        } while (l_error.good() && itemList->seek(ELP_next));
     }
     return l_error;
 }
@@ -1295,6 +1294,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.90  2010-03-25 16:28:40  joergr
+** Added check for errors during while loop in computeGroupLengthAndPadding().
+**
 ** Revision 1.89  2010-03-24 11:56:36  onken
 ** Fixed memory leak in assignment operators of DcmItem and DcmSequenceOfItems.
 ** Replaced all code occurences of cleaning all elements from internal lists to
