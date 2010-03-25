@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:11:21 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2010-03-25 16:30:17 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -274,7 +274,9 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
             << STD_NAMESPACE setw(4) << OFstatic_cast(Uint32, *filePreamble));
     } else
         DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() No Preambel found");
-    DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() TransferSyntax = " << DcmXfer(newxfer).getXferName());
+
+    DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() TransferSyntax=\""
+        << DcmXfer(newxfer).getXferName() << "\"");
     return retval;
 } // DcmMetaInfo::checkAndReadPreamble
 
@@ -343,6 +345,7 @@ OFCondition DcmMetaInfo::readGroupLength(DcmInputStream &inStream,
             }
         }
     }
+
     DCMDATA_TRACE("DcmMetaInfo::readGroupLength() returns error = " << l_error.text());
     return l_error;
 }
@@ -582,6 +585,9 @@ OFCondition DcmMetaInfo::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.51  2010-03-25 16:30:17  joergr
+** Made log messages more consistent within this module.
+**
 ** Revision 1.50  2009-11-13 13:11:21  joergr
 ** Fixed minor issues in log output.
 **

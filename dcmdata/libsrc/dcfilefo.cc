@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-04 17:11:48 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2010-03-25 16:30:17 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -517,8 +517,8 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo *metainfo)
             xferUI->getString(xferid);
             DcmXfer localXfer(xferid);      // decode to E_TransferSyntax
             newxfer = localXfer.getXfer();
-            DCMDATA_TRACE("DcmFileFormat::lookForXfer() Detected transfer syntax = "
-                << newxfer << " [" << localXfer.getXferName() << "] in MetaInfo");
+            DCMDATA_TRACE("DcmFileFormat::lookForXfer() TransferSyntax=\""
+                << localXfer.getXferName() << "\" in MetaInfo");
         }
     }
     return newxfer;
@@ -914,6 +914,9 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.58  2010-03-25 16:30:17  joergr
+** Made log messages more consistent within this module.
+**
 ** Revision 1.57  2009-12-04 17:11:48  joergr
 ** Slightly modified some log messages.
 **
