@@ -1,6 +1,24 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.25 (riesmeier)
+
+- Added check for errors during while loop in computeGroupLengthAndPadding().
+  Thanks to Peter Klotz <peter.klotz@ith-icoserve.com> for the report.
+  Affects: dcmdata/libsrc/dcsequen.cc
+
+- Removed redundant variable declaration in order to avoid a warning message
+  reported by gcc 4.1.2.
+  Affects: dcmdata/libsrc/dclist.cc
+
+- Use return value of getTag() for stream output where possible.
+  Affects: dcmdata/libsrc/dcitem.cc
+
+- Made log messages more consistent within this module.
+  Affects: dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcmetinf.cc
+
 **** Changes from 2010.03.25 (onken)
 
 - Pixel data is now already marked with the correct transfer syntax in memory
