@@ -9,6 +9,9 @@ Changes between releases are documented here.
   Affects: dcmimage/libsrc/diargimg.cc
            dcmimage/libsrc/dipalimg.cc
 
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2010.03.25 (riesmeier)
 
 - Added check for errors during while loop in computeGroupLengthAndPadding().
