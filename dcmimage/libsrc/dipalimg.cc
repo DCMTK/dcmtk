@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomPaletteImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 14:48:46 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2010-03-26 14:12:02 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,8 @@
 
 DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                                const EI_Status status)
-  : DiColorImage(docu, status, 1)
+  : DiColorImage(docu, status, 1),
+    Palette()  // initializes the three color palettes to NULL
 {
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
@@ -183,6 +184,10 @@ int DiPaletteImage::processNextFrames(const unsigned long fcount)
  *
  * CVS/RCS Log:
  * $Log: dipalimg.cc,v $
+ * Revision 1.24  2010-03-26 14:12:02  joergr
+ * Fixed missing initialization of color palette LUTs in case of invalid
+ * images.
+ *
  * Revision 1.23  2009-11-25 14:48:46  joergr
  * Adapted code for new approach to access individual frames of a DICOM image.
  *

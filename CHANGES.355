@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.26 (riesmeier)
+
+- Fixed missing initialization of color palette LUTs in case of invalid
+  images. Thanks to Niels Dekker <dicomrelatedmail@xs4all.nl> for the bug
+  report and suggested fix.
+  Affects: dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/dipalimg.cc
+
 **** Changes from 2010.03.25 (riesmeier)
 
 - Added check for errors during while loop in computeGroupLengthAndPadding().
