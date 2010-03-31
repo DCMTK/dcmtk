@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.03.31 (onken)
+
+- Make configure script reflect the recent changes to configure.in regarding
+  compilation under Mac OS X.
+  Affects: config/configure
+
 **** Changes from 2010.03.26 (riesmeier)
 
 - Fixed missing initialization of color palette LUTs in case of invalid
