@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Fix some warnings abort variables shadowing other variables.
   Affects: oflog/include/dcmtk/oflog/spi/logevent.h
 
+- Don't initialize our string twice in OFString::reserve().
+  Affects: ofstd/libsrc/ofstring.cc
+
 **** Changes from 2010.03.31 (onken)
 
 - Make configure script reflect the recent changes to configure.in regarding

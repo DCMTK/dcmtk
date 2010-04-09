@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2009, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-01-05 14:05:34 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2010-04-09 09:48:23 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -391,17 +391,15 @@ OFString::reserve (size_t res_arg)
     if (this->theCapacity < res_arg) {
         char* newstr = new char[res_arg];
         if (newstr) {
-            for (size_t i = 0; i < res_arg; i++) {
-                newstr[i] = '\0';
-            }
+            size_t usedSpace = 0;
             this->theCapacity = res_arg - 1; /* not the eos */
             if (this->size() > 0) {
-                const size_t len = size() + 1; /* including the eos */
+                const size_t len = size();
                 // copyMem() because theCString could have null bytes
                 OFBitmanipTemplate<char>::copyMem(this->theCString, newstr, len);
-            } else {
-                newstr[0] = '\0';
+                usedSpace = len;
             }
+            OFBitmanipTemplate<char>::zeroMem(newstr + usedSpace, res_arg - usedSpace);
             char* oldstr = this->theCString;
             this->theCString = newstr;
             delete[] oldstr;
@@ -1051,6 +1049,9 @@ int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
+** Revision 1.27  2010-04-09 09:48:23  uli
+** Don't initialize our string twice in OFString::reserve().
+**
 ** Revision 1.26  2010-01-05 14:05:34  uli
 ** Made sure OFString always null-terminates its C-Strings.
 **
