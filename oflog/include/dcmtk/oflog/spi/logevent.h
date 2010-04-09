@@ -41,49 +41,49 @@ namespace log4cplus {
              /**
               * Instantiate a LoggingEvent from the supplied parameters.
               *
-              * @param logger   The logger of this event.
-              * @param ll       The LogLevel of this event.
-              * @param message  The message of this event.
-              * @param filename Name of file where this event has occurred, can be NULL.
-              * @param line     Line number in file specified by
-              *                 the <code>filename</code> parameter.
+              * @param logger_arg   The logger of this event.
+              * @param ll_arg       The LogLevel of this event.
+              * @param message_arg  The message of this event.
+              * @param filename_arg Name of file where this event has occurred, can be NULL.
+              * @param line_arg     Line number in file specified by
+              *                     the <code>filename</code> parameter.
               */
-             InternalLoggingEvent(const log4cplus::tstring& logger,
-                                  LogLevel ll,
-                                  const log4cplus::tstring& message,
-                                  const char* filename,
-                                  int line)
-              : message(message),
-                loggerName(logger),
-                ll(ll),
+             InternalLoggingEvent(const log4cplus::tstring& logger_arg,
+                                  LogLevel ll_arg,
+                                  const log4cplus::tstring& message_arg,
+                                  const char* filename_arg,
+                                  int line_arg)
+              : message(message_arg),
+                loggerName(logger_arg),
+                ll(ll_arg),
                 ndc(),
                 thread(),
                 timestamp(log4cplus::helpers::Time::gettimeofday()),
-                file( (  filename
-                       ? LOG4CPLUS_C_STR_TO_TSTRING(filename)
+                file( (  filename_arg
+                       ? LOG4CPLUS_C_STR_TO_TSTRING(filename_arg)
                        : log4cplus::tstring()) ),
-                line(line),
+                line(line_arg),
                 threadCached(false),
                 ndcCached(false)
              {
              }
 
-             InternalLoggingEvent(const log4cplus::tstring& logger,
-                                  LogLevel ll,
-                                  const log4cplus::tstring& ndc,
-                                  const log4cplus::tstring& message,
-                                  const log4cplus::tstring& thread,
-                                  log4cplus::helpers::Time time,
-                                  const log4cplus::tstring& file,
-                                  int line)
-              : message(message),
-                loggerName(logger),
-                ll(ll),
-                ndc(ndc),
-                thread(thread),
-                timestamp(time),
-                file(file),
-                line(line),
+             InternalLoggingEvent(const log4cplus::tstring& logger_arg,
+                                  LogLevel ll_arg,
+                                  const log4cplus::tstring& ndc_arg,
+                                  const log4cplus::tstring& message_arg,
+                                  const log4cplus::tstring& thread_arg,
+                                  log4cplus::helpers::Time time_arg,
+                                  const log4cplus::tstring& file_arg,
+                                  int line_arg)
+              : message(message_arg),
+                loggerName(logger_arg),
+                ll(ll_arg),
+                ndc(ndc_arg),
+                thread(thread_arg),
+                timestamp(time_arg),
+                file(file_arg),
+                line(line_arg),
                 threadCached(true),
                 ndcCached(true)
              {

@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.04.09 (schlachter)
+
+- Fix some warnings abort variables shadowing other variables.
+  Affects: oflog/include/dcmtk/oflog/spi/logevent.h
+
 **** Changes from 2010.03.31 (onken)
 
 - Make configure script reflect the recent changes to configure.in regarding
