@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:46 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-15 14:18:36 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -380,11 +380,10 @@ class DiInputPixelTemplate
             /* Bits Allocated is always a multiple of 8 (see above) */
             const Uint32 byteFactor = (bitsAllocated / 8);
             /* need to split the calculation in order to avoid integer overflow for large pixel data */
-            const Uint32 count_B1 = bitsAllocated / bitsof_T1;
-            const Uint32 count_B2 = bitsAllocated % bitsof_T1;
-            const Uint32 count_T1 = PixelCount * count_B1 + (PixelCount / bitsof_T1) * count_B2;
+            const Uint32 count_B1 = bitsof_T1 / bitsAllocated;
+            const Uint32 count_T1 = (count_B1 > 0) ? PixelCount / count_B1 : PixelCount * (bitsAllocated / bitsof_T1);
 #ifdef DEBUG
-            DCMIMGLE_TRACE("PixelCount: " << PixelCount << ", byteFactor: " << byteFactor << ", count_T1: " << count_T1);
+            DCMIMGLE_TRACE("PixelCount: " << PixelCount << ", byteFactor: " << byteFactor << ", count_B1: " << count_B1 << ", count_T1: " << count_T1);
 #endif
             /* allocate temporary buffer */
             pixel = new T1[count_T1];
@@ -644,6 +643,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
+ * Revision 1.39  2010-04-15 14:18:36  joergr
+ * Fixed possibly wrong computation of a buffer size when using partial read
+ * access to pixel data. This could lead to a crash under certain conditions.
+ *
  * Revision 1.38  2010-03-01 09:08:46  uli
  * Removed some unnecessary include directives in the headers.
  *

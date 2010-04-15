@@ -1,9 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.04.15 (riesmeier)
+
+- Fixed possibly wrong computation of a buffer size when using partial read
+  access to pixel data. This could lead to a crash under certain conditions.
+  Thanks to Jeroen Eggermont <j.eggermont@lumc.nl> for the bug report.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+
 **** Changes from 2010.04.09 (schlachter)
 
-- Fix some warnings abort variables shadowing other variables.
+- Fix some warnings about variables shadowing other variables.
   Affects: oflog/include/dcmtk/oflog/spi/logevent.h
 
 - Don't initialize our string twice in OFString::reserve().
