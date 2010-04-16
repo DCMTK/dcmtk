@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.04.16 (riesmeier)
+
+- Further enhanced computation of buffer size when using partial read access
+  to pixel data. Now also some rare cases of BitsAllocated are supported.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+
 **** Changes from 2010.04.15 (riesmeier)
 
 - Fixed possibly wrong computation of a buffer size when using partial read
