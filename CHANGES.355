@@ -7,6 +7,9 @@ Changes between releases are documented here.
   to pixel data. Now also some rare cases of BitsAllocated are supported.
   Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
 
+- Updated latest tested CMake version to 2.8.1.
+  Affects: CMakeLists.txt
+
 **** Changes from 2010.04.15 (riesmeier)
 
 - Fixed possibly wrong computation of a buffer size when using partial read
