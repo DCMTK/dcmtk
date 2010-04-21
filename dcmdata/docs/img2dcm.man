@@ -15,7 +15,7 @@ img2dcm [options] imgfile-in dcmfile-out
 \section description DESCRIPTION
 
 The \b img2dcm tool serves as a conversion tool from a standard image format
-like JPEG to DICOM. Different output SOP Classes can be selected. The
+like JPEG or BMP to DICOM. Different output SOP Classes can be selected. The
 additional information (regarding patients, series, etc.) stored in the DICOM
 output file can be extracted from other DICOM files which serve as a "template"
 for the resulting DICOM object. \b img2dcm can also be configured to invent
@@ -271,14 +271,18 @@ Rows, Columns etc.) are not copied but replaced by \b img2dcm during conversion.
 
 \subsection inputplugins Input Plugins
 
-The \b img2dcm application currently only supports the JPEG image format as
-input. The JPEG data from the source file is not decoded but extracted and
-slightly transformed (e. g. JFIF header is cut off) to allow fast conversion
-of even big JPEG files without the need of decoding and re-encoding. The JPEG
-plugin chooses the necessary output transfer syntax automatically depending on
-the actual encoding of the data inside the JPEG file. Therefore, the following
-Transfer Syntaxes (and their corresponding JPEG encodings) are used by the
-JPEG plugin:
+The \b img2dcm application currently supports the JPEG and the BMP image format
+as input. 
+
+\subsubsection jpeginputplugin JPEG Input Plugin
+
+For JPEG, the original JPEG from the source file is not decoded but extracted
+and slightly transformed (e. g. JFIF header is cut off) to allow fast
+conversion of even big JPEG files without the need of decoding and re-encoding.
+The JPEG plugin chooses the necessary output transfer syntax automatically
+depending on the actual encoding of the data inside the JPEG file. Therefore,
+the following Transfer Syntaxes (and their corresponding JPEG encodings) are used
+by the JPEG plugin:
 
 \li JPEG Coding Process 1
     Baseline, Lossy, Non-Hierarchical, Sequential, DCT, Huffman, 8 Bit
@@ -320,6 +324,14 @@ does the trick. It should also be slightly faster than cutting off APPn
 information, because it is not necessary to scan the whole JPEG stream for
 such data. JFIF information is \b always removed by \b img2dcm.
 
+\subsubsection bmpinputplugin BMP Input Plugin
+
+\b img2dcm supports BMP as input format. However, so far only 24 bit RGB
+(i.e. 8 bit per color channel) images are accepted for conversion while
+grayscale images are rejected. For color, also images stored in BMPs
+upside-down fashion can be converted to DICOM. There are no specific options
+for fine-tuning BMP format conversion.
+
 \subsection outputplugins Output Plugins
 
 The desired output SOP Class can be selected on the command line. Currently,
@@ -351,10 +363,15 @@ of this SOP class are inserted automatically.
 </li>
 
 <li>
+img2dcm -i BMP image.bmp out.dcm
+<br>Same as above but tells img2dcm to read a BMP file instead of JPEG.
+</li>
+
+<li>
 img2dcm image.jpg out.dcm -vlp -k "PatientsName=Bond^James"
-<br>Same as above, but writes Visible Light Photographic Image object to
-"out.dcm" and sets PatientsName to "Bond^James" which otherwise would be left
-empty.
+<br>Same as first example, but writes Visible Light Photographic Image object
+to "out.dcm" and sets PatientsName to "Bond^James" which otherwise would be
+left empty.
 </li>
 
 <li>

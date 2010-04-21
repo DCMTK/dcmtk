@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.04.21 (onken)
+
+- Extended img2dcm documentation to also reflect ability to read BMP data.
+  Affects: dcmdata/docs/img2dcm.man
+
 **** Changes from 2010.04.16 (riesmeier)
 
 - Further enhanced computation of buffer size when using partial read access
