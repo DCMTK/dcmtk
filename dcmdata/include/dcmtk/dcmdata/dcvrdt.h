@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-22 08:59:10 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2010-04-22 09:31:30 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -303,7 +303,7 @@ class DcmDateTime
      *  @param value string value to be checked (possibly multi-valued)
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
      *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                   "3", "3-n", "3-3n", "4", "6", "16", "32" or "" for no check)
+     *                   "3", "3-n", "3-3n", "4", "6", "16", "32")
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
     static OFCondition checkValue(const OFString &value,
@@ -317,6 +317,9 @@ class DcmDateTime
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.h,v $
+** Revision 1.25  2010-04-22 09:31:30  joergr
+** Revised misleading parameter documentation for the checkValue() method.
+**
 ** Revision 1.24  2010-04-22 08:59:10  joergr
 ** Added support for further VM values ("1-8", "1-99", "16", "32") to be checked.
 **
