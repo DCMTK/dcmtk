@@ -1,6 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.04.22 (riesmeier)
+
+- Added support for further VM values ("1-8", "1-99", "16", "32") to be
+  checked.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/include/dcmtk/dcmdata/dcvrae.h
+           dcmdata/include/dcmtk/dcmdata/dcvras.h
+           dcmdata/include/dcmtk/dcmdata/dcvrcs.h
+           dcmdata/include/dcmtk/dcmdata/dcvrda.h
+           dcmdata/include/dcmtk/dcmdata/dcvrds.h
+           dcmdata/include/dcmtk/dcmdata/dcvrdt.h
+           dcmdata/include/dcmtk/dcmdata/dcvris.h
+           dcmdata/include/dcmtk/dcmdata/dcvrlo.h
+           dcmdata/include/dcmtk/dcmdata/dcvrpn.h
+           dcmdata/include/dcmtk/dcmdata/dcvrsh.h
+           dcmdata/include/dcmtk/dcmdata/dcvrtm.h
+           dcmdata/include/dcmtk/dcmdata/dcvrui.h
+           dcmdata/libsrc/dcelem.cc
+
 **** Changes from 2010.04.21 (onken)
 
 - Extended img2dcm documentation to also reflect ability to read BMP data.

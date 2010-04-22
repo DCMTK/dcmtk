@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-02-25 13:50:15 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Update Date:      $Date: 2010-04-22 09:02:10 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1652,6 +1652,14 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     {
       if (vmNum > 3) result = EC_ValueMultiplicityViolated;
     }
+    else if (vmStr == "1-8")
+    {
+      if (vmNum > 8) result = EC_ValueMultiplicityViolated;
+    }
+    else if (vmStr == "1-99")
+    {
+      if (vmNum > 99) result = EC_ValueMultiplicityViolated;
+    }
     else if (vmStr == "2")
     {
       if (vmNum != 2) result = EC_ValueMultiplicityViolated;
@@ -1684,6 +1692,14 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     {
       if (vmNum != 6) result = EC_ValueMultiplicityViolated;
     }
+    else if (vmStr == "16")
+    {
+      if (vmNum != 16) result = EC_ValueMultiplicityViolated;
+    }
+    else if (vmStr == "32")
+    {
+      if (vmNum != 32) result = EC_ValueMultiplicityViolated;
+    }
     else if (vmStr != "1-n")
     {
       // given value of 'vmStr' not (yet) supported
@@ -1697,6 +1713,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.81  2010-04-22 09:02:10  joergr
+** Added support for further VM values ("1-8", "1-99", "16", "32") to be
+** checked.
+**
 ** Revision 1.80  2010-02-25 13:50:15  joergr
 ** Fixed issue with element values which exceed the maximum of a 16-bit length
 ** field.
