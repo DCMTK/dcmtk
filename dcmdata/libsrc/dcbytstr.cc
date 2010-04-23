@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-04 17:13:30 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2010-04-23 14:33:28 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -672,11 +672,11 @@ void normalizeString(OFString &string,
 // ********************************
 
 
-OFCondition DcmByteString::checkValue(const OFString &value,
-                                      const OFString &vm,
-                                      const OFString &vr,
-                                      const int vrID,
-                                      const size_t maxLen)
+OFCondition DcmByteString::checkStringValue(const OFString &value,
+                                            const OFString &vm,
+                                            const OFString &vr,
+                                            const int vrID,
+                                            const size_t maxLen)
 {
     OFCondition result = EC_Normal;
     const size_t valLen = value.length();
@@ -730,6 +730,9 @@ OFCondition DcmByteString::checkValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.58  2010-04-23 14:33:28  joergr
+** Renamed static helper function checkValue() to checkStringValue().
+**
 ** Revision 1.57  2009-12-04 17:13:30  joergr
 ** Slightly modified some log messages.
 **
