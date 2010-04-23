@@ -166,6 +166,9 @@
 /* Define if your C++ compiler can work with function templates */
 #undef HAVE_FUNCTION_TEMPLATE
 
+/* Define to 1 if you have the `getaddrinfo' function. */
+#undef HAVE_GETADDRINFO
+
 /* Define to 1 if you have the `getenv' function. */
 #undef HAVE_GETENV
 

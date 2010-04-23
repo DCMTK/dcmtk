@@ -7410,7 +7410,8 @@ done
 
 
 
-for ac_func in bind accept getsockname
+
+for ac_func in bind accept getsockname getaddrinfo
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 { echo "$as_me:$LINENO: checking for $ac_func" >&5
@@ -28256,7 +28257,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 28259 "configure"
+#line 28260 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -28989,7 +28990,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 28992 "configure"
+#line 28993 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -29062,7 +29063,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 29065 "configure"
+#line 29066 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -29135,7 +29136,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 29138 "configure"
+#line 29139 "configure"
 #include "confdefs.h"
 
 template <class T>

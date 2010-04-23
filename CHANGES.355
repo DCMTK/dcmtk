@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.04.23 (schlachter)
+
+- Added configure checks for getaddrinfo().
+  Affects: config/configure
+           config/configure.in
+           config/include/dcmtk/config/cfunix.h.in
+           config/include/dcmtk/config/cfwin32.h.in
+
 **** Changes from 2010.04.23 (riesmeier)
 
 - Disable compiler warnings about "new behavior" when initializing the elements
