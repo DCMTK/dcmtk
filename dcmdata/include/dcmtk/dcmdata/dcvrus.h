@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmUnsignedShort
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-23 14:25:27 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2010-04-23 15:26:13 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ class DcmUnsignedShort
      *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
-    virtual OFCondition checkValue(const OFString &vm,
+    virtual OFCondition checkValue(const OFString &vm = "1-n",
                                    const OFBool oldFormat = OFFalse);
 
     /** get value multiplicity
@@ -189,6 +189,9 @@ class DcmUnsignedShort
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.h,v $
+** Revision 1.25  2010-04-23 15:26:13  joergr
+** Specify an appropriate default value for the "vm" parameter of checkValue().
+**
 ** Revision 1.24  2010-04-23 14:25:27  joergr
 ** Added new method to all VR classes which checks whether the stored value
 ** conforms to the VR definition and to the specified VM.

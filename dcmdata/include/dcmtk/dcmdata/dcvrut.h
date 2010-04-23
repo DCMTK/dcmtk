@@ -23,8 +23,8 @@
  *           Value Representation UT is defined in Correction Proposal 101
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-23 14:25:27 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2010-04-23 15:26:13 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ class DcmUnlimitedText
      *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
-    virtual OFCondition checkValue(const OFString &vm,
+    virtual OFCondition checkValue(const OFString &vm = "",
                                    const OFBool oldFormat = OFFalse);
 
     /** get the value multiplicity.
@@ -148,6 +148,9 @@ class DcmUnlimitedText
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.h,v $
+** Revision 1.15  2010-04-23 15:26:13  joergr
+** Specify an appropriate default value for the "vm" parameter of checkValue().
+**
 ** Revision 1.14  2010-04-23 14:25:27  joergr
 ** Added new method to all VR classes which checks whether the stored value
 ** conforms to the VR definition and to the specified VM.

@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-23 14:28:00 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2010-04-23 15:28:17 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -221,7 +221,7 @@ class DcmElement
      *  @param oldFormat support old ACR/NEMA format for certain VRs (DA, TM, PN) if OFTrue
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
-    virtual OFCondition checkValue(const OFString &vm,
+    virtual OFCondition checkValue(const OFString &vm = "1-n",
                                    const OFBool oldFormat = OFFalse);
 
     /** this method loads all attribute values maintained by this object and
@@ -817,6 +817,9 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
+** Revision 1.47  2010-04-23 15:28:17  joergr
+** Specify an appropriate default value for the "vm" parameter of checkValue().
+**
 ** Revision 1.46  2010-04-23 14:28:00  joergr
 ** Added new method to all VR classes which checks whether the stored value
 ** conforms to the VR definition and to the specified VM.

@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmDate
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-23 14:25:27 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2010-04-23 15:26:13 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ class DcmDate
      *  @param oldFormat support old ACR/NEMA format if OFTrue ('.' as a separator)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
-    virtual OFCondition checkValue(const OFString &vm,
+    virtual OFCondition checkValue(const OFString &vm = "1-n",
                                    const OFBool oldFormat = OFFalse);
 
     /** get a copy of a particular string component
@@ -227,6 +227,9 @@ class DcmDate
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.h,v $
+** Revision 1.21  2010-04-23 15:26:13  joergr
+** Specify an appropriate default value for the "vm" parameter of checkValue().
+**
 ** Revision 1.20  2010-04-23 14:25:27  joergr
 ** Added new method to all VR classes which checks whether the stored value
 ** conforms to the VR definition and to the specified VM.

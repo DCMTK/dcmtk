@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-23 14:27:30 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2010-04-23 15:28:02 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,7 +137,7 @@ public:
      *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
-    virtual OFCondition checkValue(const OFString &card,
+    virtual OFCondition checkValue(const OFString &card = "1-n",
                                    const OFBool oldFormat = OFFalse);
 
     /** get value multiplicity
@@ -587,6 +587,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.56  2010-04-23 15:28:02  joergr
+** Specify an appropriate default value for the "vm" parameter of checkValue().
+**
 ** Revision 1.55  2010-04-23 14:27:30  joergr
 ** Added new method to all VR classes which checks whether the stored value
 ** conforms to the VR definition and to the specified VM.

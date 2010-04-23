@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-23 14:25:27 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2010-04-23 15:26:13 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,7 +102,7 @@ class DcmOtherByteOtherWord
      *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
      *  @return always returns EC_Normal, i.e. currently no checks are performed
      */
-    virtual OFCondition checkValue(const OFString &vm,
+    virtual OFCondition checkValue(const OFString &vm = "",
                                    const OFBool oldFormat = OFFalse);
 
     /** get value multiplicity
@@ -329,6 +329,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
+** Revision 1.34  2010-04-23 15:26:13  joergr
+** Specify an appropriate default value for the "vm" parameter of checkValue().
+**
 ** Revision 1.33  2010-04-23 14:25:27  joergr
 ** Added new method to all VR classes which checks whether the stored value
 ** conforms to the VR definition and to the specified VM.
