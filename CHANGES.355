@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.04.23 (riesmeier)
+
+- Disable compiler warnings about "new behavior" when initializing the elements
+  of an array (reported by VisualStudio 2005 and newer).
+  Affects: config/include/dcmtk/config/cfwin32.h.in
+
+- On Windows systems, use binary mode for stdout in order to be more consistent
+  with common Unix behavior, e.g. useful for command line tools like dcm2pnm.
+  Thanks to forum user "gurbuz" for the hint.
+  Affects: dcmdata/libsrc/cmdlnarg.cc
+
 **** Changes from 2010.04.22 (riesmeier)
 
 - Added support for further VM values ("1-8", "1-99", "16", "32") to be
