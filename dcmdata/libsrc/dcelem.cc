@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-22 09:02:10 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Update Date:      $Date: 2010-04-23 14:33:57 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -237,6 +237,13 @@ OFCondition DcmElement::clear()
     fLoadValue = NULL;
     setLengthField(0);
     return errorFlag;
+}
+
+
+OFCondition DcmElement::checkValue(const OFString & /*vm*/,
+                                   const OFBool /*oldFormat*/)
+{
+    return EC_IllegalCall;
 }
 
 
@@ -1713,6 +1720,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.82  2010-04-23 14:33:57  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.81  2010-04-22 09:02:10  joergr
 ** Added support for further VM values ("1-8", "1-99", "16", "32") to be
 ** checked.

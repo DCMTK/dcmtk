@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-25 16:28:40 $
- *  CVS/RCS Revision: $Revision: 1.90 $
+ *  Update Date:      $Date: 2010-04-23 14:33:57 $
+ *  CVS/RCS Revision: $Revision: 1.91 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,6 +176,17 @@ OFCondition DcmSequenceOfItems::copyFrom(const DcmObject& rhs)
       *this = (DcmSequenceOfItems&) rhs;
   }
   return EC_Normal;
+}
+
+
+// ********************************
+
+
+OFCondition DcmSequenceOfItems::checkValue(const OFString &card,
+                                           const OFBool /*oldFormat*/)
+{
+    /* check cardinality (number of items) only */
+    return DcmElement::checkVM(this->card(), card);
 }
 
 
@@ -1294,6 +1305,10 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.91  2010-04-23 14:33:57  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.90  2010-03-25 16:28:40  joergr
 ** Added check for errors during while loop in computeGroupLengthAndPadding().
 **
