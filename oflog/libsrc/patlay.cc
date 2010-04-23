@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2001-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include "dcmtk/oflog/layout.h"
 #include "dcmtk/oflog/helpers/loglog.h"
@@ -18,23 +25,52 @@
 #include "dcmtk/oflog/helpers/socket.h"
 #include "dcmtk/oflog/spi/logevent.h"
 
-//#include <exception>
 //#include <stdlib.h>
+//#include <exception>
+
 #define INCLUDE_CSTDLIB
 #define INCLUDE_UNISTD              /* needed for declaration of getpid() */
 #include "dcmtk/ofstd/ofstdinc.h"
 
+#ifdef LOG4CPLUS_HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifdef LOG4CPLUS_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #ifdef _WIN32
 #include <process.h>                /* needed for declaration of getpid() */
 #endif
 
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>              /* needed for declaration of getpid() */
+namespace
+{
+
+static
+#if defined (_WIN32)
+DWORD
+get_process_id ()
+{
+    return GetCurrentProcessId ();
+}
+
+#elif defined (LOG4CPLUS_HAVE_GETPID)
+pid_t
+get_process_id ()
+{
+    return getpid ();
+}
+
+#else
+int
+get_process_id ()
+{
+    return 0;
+}
+
 #endif
 
-#ifndef HAVE_GETPID
-static int getpid(void) { return 0; }   // workaround for MAC
-#endif // !HAVE_GETPID
+} // namespace
+
 
 using namespace std;
 using namespace log4cplus;
@@ -111,6 +147,7 @@ namespace log4cplus {
         class BasicPatternConverter : public PatternConverter {
         public:
             enum Type { THREAD_CONVERTER,
+                        PROCESS_CONVERTER,
                         LOGLEVEL_CONVERTER,
                         LOGLEVEL_PREFIX_CONVERTER,
                         NDC_CONVERTER,
@@ -119,7 +156,7 @@ namespace log4cplus {
                         FILE_CONVERTER,
                         LINE_CONVERTER,
                         FULL_LOCATION_CONVERTER,
-                        PROCESS_ID_CONVERTER };
+                        FUNCTION_CONVERTER };
             BasicPatternConverter(const FormattingInfo& info, Type type);
             virtual log4cplus::tstring convert(const InternalLoggingEvent& event);
 
@@ -293,9 +330,9 @@ log4cplus::pattern::PatternConverter::formatAndAppend
 ////////////////////////////////////////////////
 
 log4cplus::pattern::LiteralPatternConverter::LiteralPatternConverter
-                                                      (const log4cplus::tstring& str)
+                                                      (const log4cplus::tstring& str_)
 : PatternConverter(FormattingInfo()),
-  str(str)
+  str(str_)
 {
 }
 
@@ -306,10 +343,10 @@ log4cplus::pattern::LiteralPatternConverter::LiteralPatternConverter
 ////////////////////////////////////////////////
 
 log4cplus::pattern::BasicPatternConverter::BasicPatternConverter
-                                        (const FormattingInfo& info, Type type)
+                                        (const FormattingInfo& info, Type type_)
 : PatternConverter(info),
   llmCache(getLogLevelManager()),
-  type(type)
+  type(type_)
 {
 }
 
@@ -327,12 +364,14 @@ log4cplus::pattern::BasicPatternConverter::convert
     case NEWLINE_CONVERTER:         return LOG4CPLUS_TEXT("\n");
     case FILE_CONVERTER:            return event.getFile();
     case THREAD_CONVERTER:          return event.getThread();
-    case PROCESS_ID_CONVERTER:      return convertIntegerToString(getpid());
+    case PROCESS_CONVERTER:         return convertIntegerToString(get_process_id ());
+    case FUNCTION_CONVERTER:        return event.getFunction ();
 
     case LINE_CONVERTER:
         {
-            if(event.getLine() != -1) {
-                return convertIntegerToString(event.getLine());
+            int line = event.getLine();
+            if(line != -1) {
+                return convertIntegerToString(line);
             }
             else {
                 return log4cplus::tstring();
@@ -341,8 +380,9 @@ log4cplus::pattern::BasicPatternConverter::convert
 
     case FULL_LOCATION_CONVERTER:
         {
-            if(event.getFile().length() > 0) {
-                return   event.getFile()
+            tstring const & filename = event.getFile();
+            if(! filename.empty ()) {
+                return   filename
                        + LOG4CPLUS_TEXT(":")
                        + convertIntegerToString(event.getLine());
             }
@@ -362,9 +402,9 @@ log4cplus::pattern::BasicPatternConverter::convert
 ////////////////////////////////////////////////
 
 log4cplus::pattern::LoggerPatternConverter::LoggerPatternConverter
-                                    (const FormattingInfo& info, int precision)
+                                    (const FormattingInfo& info, int precision_)
 : PatternConverter(info),
-  precision(precision)
+  precision(precision_)
 {
 }
 
@@ -405,9 +445,9 @@ log4cplus::pattern::LoggerPatternConverter::convert
 log4cplus::pattern::DatePatternConverter::DatePatternConverter
                                                (const FormattingInfo& info,
                                                 const log4cplus::tstring& pattern,
-                                                bool use_gmtime)
+                                                bool use_gmtime_)
 : PatternConverter(info),
-  use_gmtime(use_gmtime),
+  use_gmtime(use_gmtime_),
   format(pattern)
 {
 }
@@ -448,8 +488,8 @@ log4cplus::pattern::HostnamePatternConverter::convert (
 // PatternParser methods:
 ////////////////////////////////////////////////
 
-log4cplus::pattern::PatternParser::PatternParser(const log4cplus::tstring& pattern)
-: pattern(pattern),
+log4cplus::pattern::PatternParser::PatternParser(const log4cplus::tstring& pattern_)
+: pattern(pattern_),
   list(new OFList<PatternConverter*>),
   state(LITERAL_STATE),
   pos(0)
@@ -633,6 +673,14 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
             }
             break;
 
+        case LOG4CPLUS_TEXT('f'):
+            pc = new BasicPatternConverter
+                          (formattingInfo,
+                           BasicPatternConverter::FUNCTION_CONVERTER);
+            //getLogLog().debug("FUNCTION NAME converter.");
+            //formattingInfo.dump(getLogLog());
+            break;
+
         case LOG4CPLUS_TEXT('F'):
             pc = new BasicPatternConverter
                           (formattingInfo,
@@ -646,7 +694,7 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
             {
                 bool fqdn = (c == LOG4CPLUS_TEXT('H'));
                 pc = new HostnamePatternConverter(formattingInfo, fqdn);
-                // getLogLog().debug("HOSTNAME converter.");
+                // getLogLog().debug( LOG4CPLUS_TEXT("HOSTNAME converter.") );
                 // formattingInfo.dump(getLogLog());
             }
             break;
@@ -707,19 +755,19 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
             //formattingInfo.dump(getLogLog());
             break;
 
+        case LOG4CPLUS_TEXT('i'):
+            pc = new BasicPatternConverter
+                          (formattingInfo,
+                           BasicPatternConverter::PROCESS_CONVERTER);
+            //getLogLog().debug("PROCESS_CONVERTER converter.");
+            //formattingInfo.dump(getLogLog());
+            break;
+
         case LOG4CPLUS_TEXT('x'):
             pc = new BasicPatternConverter
                           (formattingInfo,
                            BasicPatternConverter::NDC_CONVERTER);
             //getLogLog().debug("NDC converter.");
-            break;
-
-        case LOG4CPLUS_TEXT('i'):
-            pc = new BasicPatternConverter
-                          (formattingInfo,
-                           BasicPatternConverter::PROCESS_ID_CONVERTER);
-            //getLogLog().debug("PID converter.");
-            //formattingInfo.dump(getLogLog());
             break;
 
         default:
@@ -788,10 +836,10 @@ PatternLayout::PatternLayout(const log4cplus::helpers::Properties& properties, l
 
 
 void
-PatternLayout::init(const log4cplus::tstring& pattern_, bool formatEachLine)
+PatternLayout::init(const log4cplus::tstring& pattern_, bool formatEachLine_)
 {
     this->pattern = pattern_;
-    this->formatEachLine = formatEachLine;
+    this->formatEachLine = formatEachLine_;
     this->parsedPattern = PatternParser(pattern).parse();
 
     // Let's validate that our parser didn't give us any NULLs.  If it did,
@@ -849,7 +897,7 @@ PatternLayout::formatAndAppend(log4cplus::tostream& output,
             // Then create a temporary InternalLoggingEvent for this one line
             InternalLoggingEvent tmp_event(event.getLoggerName(), event.getLogLevel(),
                 event.getNDC(), tmp_message, event.getThread(), event.getTimestamp(),
-                event.getFile(), event.getLine());
+                event.getFile(), event.getLine(), event.getFunction());
             // And finally, log this single line
             formatAndAppend(output, tmp_event);
 
@@ -867,3 +915,5 @@ PatternLayout::formatAndAppend(log4cplus::tostream& output,
         }
     }
 }
+
+

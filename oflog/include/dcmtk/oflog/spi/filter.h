@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 1999-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /** @file
  * This header defines Filter and all of it's subclasses. */
@@ -126,6 +133,9 @@ namespace log4cplus {
          */
         class LOG4CPLUS_EXPORT DenyAllFilter : public Filter {
         public:
+            DenyAllFilter ();
+            DenyAllFilter (const log4cplus::helpers::Properties&, log4cplus::tstring& error);
+
             /**
              * Always returns the {@link #DENY} regardless of the
              * {@link InternalLoggingEvent} parameter.
@@ -148,7 +158,7 @@ namespace log4cplus {
         class LOG4CPLUS_EXPORT LogLevelMatchFilter : public Filter {
         public:
             LogLevelMatchFilter();
-            LogLevelMatchFilter(const log4cplus::helpers::Properties& p);
+            LogLevelMatchFilter(const log4cplus::helpers::Properties& p, log4cplus::tstring&);
 
             /**
              * Return the decision of this filter.
@@ -203,7 +213,7 @@ namespace log4cplus {
         public:
           // ctors
             LogLevelRangeFilter();
-            LogLevelRangeFilter(const log4cplus::helpers::Properties& p);
+            LogLevelRangeFilter(const log4cplus::helpers::Properties& p, log4cplus::tstring& error);
 
             /**
              * Return the decision of this filter.
@@ -238,7 +248,7 @@ namespace log4cplus {
         public:
           // ctors
             StringMatchFilter();
-            StringMatchFilter(const log4cplus::helpers::Properties& p);
+            StringMatchFilter(const log4cplus::helpers::Properties& p, log4cplus::tstring& error);
 
             /**
              * Returns {@link #NEUTRAL} is there is no string match.
@@ -259,3 +269,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif /* LOG4CPLUS_SPI_FILTER_HEADER_ */
+
+

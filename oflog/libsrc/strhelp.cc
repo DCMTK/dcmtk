@@ -4,30 +4,31 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2003-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include "dcmtk/oflog/helpers/strhelp.h"
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/logmacro.h"
-//#include <iterator>
 #include "dcmtk/ofstd/ofstd.h"
 
-//#include <cwchar>
-
+//#include <iterator>
 //#include <algorithm>
 //#include <cstring>
-#define INCLUDE_CSTRING
+//#include <cwchar>
 //#include <cwctype>
-#define INCLUDE_CWCTYPE
 //#include <cctype>
-#define INCLUDE_CCTYPE
-
-#include "dcmtk/ofstd/ofstdinc.h"
 
 using namespace log4cplus;
 
@@ -42,14 +43,14 @@ namespace
 {
 
 static tostringstream const _macros_oss_defaults;
-//static tstring const _empty_str;
+static tstring const _empty_str;
 
 } // namespace
 
 void _clear_tostringstream (tostringstream & os)
 {
     os.clear ();
-    os.str ("");
+    os.str (_empty_str);
     os.setf (_macros_oss_defaults.flags ());
     os.fill (_macros_oss_defaults.fill ());
     os.precision (_macros_oss_defaults.precision ());
@@ -69,7 +70,6 @@ void _clear_tostringstream (tostringstream & os)
 //////////////////////////////////////////////////////////////////////////////
 // Global Methods
 //////////////////////////////////////////////////////////////////////////////
-
 
 log4cplus::tstring
 log4cplus::helpers::toUpper(const log4cplus::tstring& s)

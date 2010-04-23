@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2002-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include "dcmtk/oflog/spi/factory.h"
 #include "dcmtk/oflog/spi/logfact.h"
@@ -24,6 +31,9 @@
 #if defined (_WIN32)
 #  if defined (LOG4CPLUS_HAVE_NT_EVENT_LOG)
 #    include "dcmtk/oflog/ntelogap.h"
+#  endif
+#  if defined (LOG4CPLUS_HAVE_WIN32_CONSOLE)
+#    include "dcmtk/oflog/winconap.h"
 #  endif
 #  include "dcmtk/oflog/windebap.h"
 #endif
@@ -74,282 +84,100 @@ namespace spi {
 } // namespace spi
 
 
-namespace {
-
-    class ConsoleAppenderFactory : public AppenderFactory {
-    public:
-        SharedAppenderPtr createObject(const Properties& props)
-        {
-            return SharedAppenderPtr(new log4cplus::ConsoleAppender(props));
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::ConsoleAppender");
-        }
-    };
-
-
-
-    class NullAppenderFactory : public AppenderFactory {
-    public:
-        SharedAppenderPtr createObject(const Properties& props)
-        {
-            return SharedAppenderPtr(new log4cplus::NullAppender(props));
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::NullAppender");
-        }
-    };
-
-
-
-    class FileAppenderFactory : public AppenderFactory {
-    public:
-        SharedAppenderPtr createObject(const Properties& props)
-        {
-            return SharedAppenderPtr(new log4cplus::FileAppender(props));
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::FileAppender");
-        }
-    };
-
-
-
-    class RollingFileAppenderFactory : public AppenderFactory {
-    public:
-        SharedAppenderPtr createObject(const Properties& props)
-        {
-            return SharedAppenderPtr(new log4cplus::RollingFileAppender(props));
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::RollingFileAppender");
-        }
-    };
-
-
-    class DailyRollingFileAppenderFactory : public AppenderFactory {
-    public:
-        SharedAppenderPtr createObject(const Properties& props)
-        {
-            return SharedAppenderPtr(new log4cplus::DailyRollingFileAppender(props));
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::DailyRollingFileAppender");
-        }
-    };
-
-
-    class SocketAppenderFactory : public AppenderFactory {
-    public:
-        SharedAppenderPtr createObject(const Properties& props)
-        {
-            return SharedAppenderPtr(new log4cplus::SocketAppender(props));
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::SocketAppender");
-        }
-    };
-
-
-#if defined(_WIN32)
-#  if defined (LOG4CPLUS_HAVE_NT_EVENT_LOG)
-    class NTEventLogAppenderFactory : public AppenderFactory {
-    public:
-        SharedAppenderPtr createObject(const Properties& props)
-        {
-            return SharedAppenderPtr(new log4cplus::NTEventLogAppender(props));
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::NTEventLogAppender");
-        }
-    };
-#  endif
-
-    class Win32DebugAppenderFactory : public AppenderFactory {
-    public:
-        SharedAppenderPtr createObject(const Properties& props)
-        {
-            return SharedAppenderPtr(new log4cplus::Win32DebugAppender(props));
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::Win32DebugAppender");
-        }
-    };
-
-#elif defined(LOG4CPLUS_HAVE_SYSLOG_H)
-    class SysLogAppenderFactory : public AppenderFactory {
-    public:
-        SharedAppenderPtr createObject(const Properties& props)
-        {
-            return SharedAppenderPtr(new log4cplus::SysLogAppender(props));
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::SysLogAppender");
-        }
-    };
-#endif
-
-    class SimpleLayoutFactory : public LayoutFactory {
-    public:
-        OFauto_ptr<Layout> createObject(const Properties& props, log4cplus::tstring& error)
-        {
-             error.clear();
-             OFauto_ptr<Layout> tmp(new log4cplus::SimpleLayout(props));
-             return tmp;
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::SimpleLayout");
-        }
-    };
-
-
-    class TTCCLayoutFactory : public LayoutFactory {
-    public:
-        OFauto_ptr<Layout> createObject(const Properties& props, log4cplus::tstring& error)
-        {
-            error.clear();
-            OFauto_ptr<Layout> tmp(new log4cplus::TTCCLayout(props));
-            return tmp;
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::TTCCLayout");
-        }
-    };
-
-
-    class PatternLayoutFactory : public LayoutFactory {
-    public:
-        OFauto_ptr<Layout> createObject(const Properties& props, log4cplus::tstring& error)
-        {
-            OFauto_ptr<Layout> tmp(new log4cplus::PatternLayout(props, error));
-            if (!error.empty())
-                return OFauto_ptr<Layout>(NULL);
-            return tmp;
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::PatternLayout");
-        }
-    };
-
-
-
-    class DenyAllFilterFactory : public FilterFactory {
-    public:
-        FilterPtr createObject(const Properties&)
-        {
-            return FilterPtr(new log4cplus::spi::DenyAllFilter());
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::spi::DenyAllFilter");
-        }
-    };
-
-
-    class LogLevelMatchFilterFactory : public FilterFactory {
-    public:
-        FilterPtr createObject(const Properties& props)
-        {
-            return FilterPtr(new log4cplus::spi::LogLevelMatchFilter(props));
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::spi::LogLevelMatchFilter");
-        }
-    };
-
-
-    class LogLevelRangeFilterFactory : public FilterFactory {
-    public:
-        FilterPtr createObject(const Properties& props)
-        {
-            return FilterPtr(new log4cplus::spi::LogLevelRangeFilter(props));
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::spi::LogLevelRangeFilter");
-        }
-    };
-
-
-    class StringMatchFilterFactory : public FilterFactory {
-    public:
-        FilterPtr createObject(const Properties& props)
-        {
-            return FilterPtr(new log4cplus::spi::StringMatchFilter(props));
-        }
-
-        tstring getTypeName() {
-            return LOG4CPLUS_TEXT("log4cplus::spi::StringMatchFilter");
-        }
-    };
-
-} // namespace
-
-
-///////////////////////////////////////////////////////////////////////////////
-// LOCAL file methods
-///////////////////////////////////////////////////////////////////////////////
-
 namespace
 {
 
-template <typename Fac, typename Reg>
-static void
-reg_factory (Reg & reg)
+
+template <typename ProductFactoryBase>
+class LocalFactoryBase
+    : public ProductFactoryBase
 {
-    // MSVC6 doesn't like the following "typename", GCC requires it
-#if !defined(_MSC_VER) || _MSC_VER > 1200
-#define MY_TYPENAME typename
-#else
-#define MY_TYPENAME
-#endif
-    reg.put (OFauto_ptr<MY_TYPENAME Reg::product_type> (new Fac));
-}
+public:
+    LocalFactoryBase (tchar const * n)
+        : name (n)
+    { }
+
+    virtual log4cplus::tstring getTypeName()
+    {
+        return name;
+    }
+
+private:
+    log4cplus::tstring name;
+};
+
+
+template <typename LocalProduct, typename ProductFactoryBase>
+class FactoryTempl
+    : public LocalFactoryBase<ProductFactoryBase>
+{
+public:
+    typedef typename ProductFactoryBase::ProductPtr ProductPtr;
+
+    FactoryTempl (tchar const * n)
+        : LocalFactoryBase<ProductFactoryBase> (n)
+    { }
+
+    virtual ProductPtr createObject (Properties const & props, log4cplus::tstring& error)
+    {
+        error.clear();
+        return ProductPtr (new LocalProduct (props, error));
+    }
+};
+
 
 } // namespace
+
+
+#define REG_PRODUCT(reg, productprefix, productname, productns, productfact) \
+reg.put (                                                               \
+    OFauto_ptr<productfact> (                                        \
+        new FactoryTempl<productns productname, productfact> (          \
+            LOG4CPLUS_TEXT(productprefix)                               \
+            LOG4CPLUS_TEXT(#productname))))
+
+
+#define REG_APPENDER(reg, appendername)                             \
+REG_PRODUCT (reg, "log4cplus::", appendername, log4cplus::, AppenderFactory)
+
+#define REG_LAYOUT(reg, layoutname)                                 \
+REG_PRODUCT (reg, "log4cplus::", layoutname, log4cplus::, LayoutFactory)
+
+#define REG_FILTER(reg, filtername)                                 \
+REG_PRODUCT (reg, "log4cplus::spi::", filtername, spi::, FilterFactory)
 
 
 void initializeFactoryRegistry()
 {
     AppenderFactoryRegistry& reg = getAppenderFactoryRegistry();
-    reg_factory<ConsoleAppenderFactory> (reg);
-    reg_factory<NullAppenderFactory> (reg);
-    reg_factory<FileAppenderFactory> (reg);
-    reg_factory<RollingFileAppenderFactory> (reg);
-    reg_factory<DailyRollingFileAppenderFactory> (reg);
-    reg_factory<SocketAppenderFactory> (reg);
+    REG_APPENDER (reg, ConsoleAppender);
+    REG_APPENDER (reg, NullAppender);
+    REG_APPENDER (reg, FileAppender);
+    REG_APPENDER (reg, RollingFileAppender);
+    REG_APPENDER (reg, DailyRollingFileAppender);
+    REG_APPENDER (reg, SocketAppender);
 #if defined(_WIN32)
 #  if defined(LOG4CPLUS_HAVE_NT_EVENT_LOG)
-    reg_factory<NTEventLogAppenderFactory> (reg);
+    REG_APPENDER (reg, NTEventLogAppender);
 #  endif
-    reg_factory<Win32DebugAppenderFactory> (reg);
+#  if defined(LOG4CPLUS_HAVE_WIN32_CONSOLE)
+    REG_APPENDER (reg, Win32ConsoleAppender);
+#  endif
+    REG_APPENDER (reg, Win32DebugAppender);
 #elif defined(LOG4CPLUS_HAVE_SYSLOG_H)
-    reg_factory<SysLogAppenderFactory> (reg);
+    REG_APPENDER (reg, SysLogAppender);
 #endif
 
     LayoutFactoryRegistry& reg2 = getLayoutFactoryRegistry();
-    reg_factory<SimpleLayoutFactory> (reg2);
-    reg_factory<TTCCLayoutFactory> (reg2);
-    reg_factory<PatternLayoutFactory> (reg2);
+    REG_LAYOUT (reg2, SimpleLayout);
+    REG_LAYOUT (reg2, TTCCLayout);
+    REG_LAYOUT (reg2, PatternLayout);
 
     FilterFactoryRegistry& reg3 = getFilterFactoryRegistry();
-    reg_factory<DenyAllFilterFactory> (reg3);
-    reg_factory<LogLevelMatchFilterFactory> (reg3);
-    reg_factory<LogLevelRangeFilterFactory> (reg3);
-    reg_factory<StringMatchFilterFactory> (reg3);
+    REG_FILTER (reg3, DenyAllFilter);
+    REG_FILTER (reg3, LogLevelMatchFilter);
+    REG_FILTER (reg3, LogLevelRangeFilter);
+    REG_FILTER (reg3, StringMatchFilter);
 }
 
 

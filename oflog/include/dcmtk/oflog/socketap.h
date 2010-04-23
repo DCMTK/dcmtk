@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2003-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /** @file */
 
@@ -19,6 +26,8 @@
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/appender.h"
 #include "dcmtk/oflog/helpers/socket.h"
+#include "dcmtk/oflog/helpers/syncprims.h"
+
 
 #define LOG4CPLUS_MAX_MESSAGE_SIZE (8*1024)
 
@@ -62,13 +71,26 @@ namespace log4cplus {
      *   is down, the client will not be blocked when making log requests
      *   but the log events will be lost due to server unavailability.
      * </ul>
+     *
+     * <h3>Properties</h3>
+     * <dl>
+     * <dt><tt>host</tt></dt>
+     * <dd>Remote host name to connect and send events to.</dd>
+     *
+     * <dt><tt>port</tt></dt>
+     * <dd>Port on remote host to send events to.</dd>
+     *
+     * <dt><tt>ServerName</tt></dt>
+     * <dd>Host name of event's origin prepended to each event.</dd>
+     *
+     * </dl>
      */
     class LOG4CPLUS_EXPORT SocketAppender : public Appender {
     public:
       // Ctors
         SocketAppender(const log4cplus::tstring& host, int port,
                        const log4cplus::tstring& serverName = tstring());
-        SocketAppender(const log4cplus::helpers::Properties properties);
+        SocketAppender(const log4cplus::helpers::Properties & properties, log4cplus::tstring& error);
 
       // Dtor
         ~SocketAppender();
@@ -78,6 +100,7 @@ namespace log4cplus {
 
     protected:
         void openSocket();
+        void initConnector ();
         virtual void append(const spi::InternalLoggingEvent& event);
 
       // Data
@@ -85,6 +108,33 @@ namespace log4cplus {
         log4cplus::tstring host;
         int port;
         log4cplus::tstring serverName;
+
+#if ! defined (LOG4CPLUS_SINGLE_THREADED)
+        class LOG4CPLUS_EXPORT ConnectorThread;
+        friend class ConnectorThread;
+
+        class LOG4CPLUS_EXPORT ConnectorThread
+            : public thread::AbstractThread
+            , public helpers::LogLogUser
+        {
+        public:
+            ConnectorThread (SocketAppender &);
+            virtual ~ConnectorThread ();
+
+            virtual void run();
+
+            void terminate ();
+            void trigger ();
+
+        protected:
+            SocketAppender & sa;
+            thread::ManualResetEvent trigger_ev;
+            bool exit_flag;
+        };
+
+        volatile bool connected;
+        helpers::SharedObjectPtr<ConnectorThread> connector;
+#endif
 
     private:
       // Disallow copying of instances of this class
@@ -104,3 +154,4 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // _LOG4CPLUS_SOCKET_APPENDER_HEADER_
+

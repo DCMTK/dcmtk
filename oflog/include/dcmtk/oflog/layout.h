@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2001-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /** @file */
 
@@ -73,7 +80,7 @@ namespace log4cplus {
     class LOG4CPLUS_EXPORT SimpleLayout : public Layout {
     public:
         SimpleLayout() {}
-        SimpleLayout(const log4cplus::helpers::Properties& properties) : Layout(properties) {}
+        SimpleLayout(const log4cplus::helpers::Properties& properties, log4cplus::tstring&) : Layout(properties) {}
 
         virtual void formatAndAppend(log4cplus::tostream& output,
                                      const log4cplus::spi::InternalLoggingEvent& event);
@@ -126,7 +133,7 @@ namespace log4cplus {
     public:
       // Ctor and dtor
         TTCCLayout(bool use_gmtime = false);
-        TTCCLayout(const log4cplus::helpers::Properties& properties);
+        TTCCLayout(const log4cplus::helpers::Properties& properties, log4cplus::tstring& error);
         virtual ~TTCCLayout();
 
         virtual void formatAndAppend(log4cplus::tostream& output,
@@ -218,7 +225,7 @@ namespace log4cplus {
      * <tr>
      *   <td align=center><b>d</b></td>
      *
-     *   <td>Used to output the date of the logging event in <b>localtime</b>.
+     *   <td>Used to output the date of the logging event in <b>UTC</b>.
      *
      *   The date conversion specifier may be followed by a <em>date format
      *   specifier</em> enclosed between braces. For example, <b>%%d{%%H:%%M:%%s}</b>
@@ -262,10 +269,18 @@ namespace log4cplus {
      * <tr>
      *   <td align=center><b>D</b></td>
      *
-     *   <td>Used to output the date of the logging event in <b>Local</b> time.
+     *   <td>Used to output the date of the logging event in <b>local</b> time.
      *
      *   All of the above information applies.
      * </td>
+     * </tr>
+     *
+     * <tr>
+     *   <td align=center><b>f</b></td>
+     *
+     *   <td>Used to output the function name where the logging request was
+     *   issued.
+     *
      * </tr>
      *
      * <tr>
@@ -276,7 +291,7 @@ namespace log4cplus {
      *
      *   <b>NOTE</b> Unlike log4j, there is no performance penalty for
      *   calling this method.
-     * </td>
+     *
      * </tr>
      *
      * <tr>
@@ -287,6 +302,7 @@ namespace log4cplus {
      *
      *   <b>NOTE</b> The hostname is only retrieved once at
      *   initialization.
+     *
      * </td>
      * </tr>
      *
@@ -299,15 +315,7 @@ namespace log4cplus {
      *
      *   <b>NOTE</b> The hostname is only retrieved once at
      *   initialization.
-     * </td>
-     * </tr>
      *
-     * <tr>
-     *   <td align=center><b>i</b></td>
-     *
-     *   <td>The process ID of the process generating the log entry.
-     *
-     *   <b>NOTE:</b> This pattern has been added to log4cplus.
      * </td>
      * </tr>
      *
@@ -318,6 +326,7 @@ namespace log4cplus {
      *
      *   <b>NOTE:</b> Unlike log4j, there is no performance penalty for
      *   calling this method.
+     *
      * </td>
      * </tr>
      *
@@ -329,13 +338,12 @@ namespace log4cplus {
      *
      *   <b>NOTE:</b> Unlike log4j, there is no performance penalty for
      *   calling this method.
-     * </td>
+     *
      * </tr>
      *
      *
      * <tr>
      *   <td align=center><b>m</b></td>
-     *
      *   <td>Used to output the application supplied message associated with
      *   the logging event.</td>
      * </tr>
@@ -344,12 +352,11 @@ namespace log4cplus {
      *   <td align=center><b>n</b></td>
      *
      *   <td>Outputs the platform dependent line separator character or
-     *   characters.</td>
+     *   characters.
      * </tr>
      *
      * <tr>
      *   <td align=center><b>p</b></td>
-     *
      *   <td>Used to output the LogLevel of the logging event.</td>
      * </tr>
      *
@@ -357,9 +364,8 @@ namespace log4cplus {
      *   <td align=center><b>P</b></td>
      *
      *   <td>Used to output the first character of the LogLevel only.
-     *
-     *   <b>NOTE:</b> This pattern has been added to log4cplus.
-     * </td>
+     *      <b>NOTE:</b> This pattern has been added to log4cplus.
+     *    </td>
      * </tr>
      *
      * <tr>
@@ -370,17 +376,25 @@ namespace log4cplus {
      * </tr>
      *
      * <tr>
+     *   <td align=center><b>i</b></td>
+     *
+     *   <td>Used to output the process ID of the process that generated the
+     *   logging event.</td>
+     * </tr>
+     *
+     * <tr>
      *
      *   <td align=center><b>x</b></td>
      *
      *   <td>Used to output the NDC (nested diagnostic context) associated
-     *   with the thread that generated the logging event.</td>
+     *   with the thread that generated the logging event.
+     *   </td>
      * </tr>
      *
      * <tr>
      *   <td align=center><b>"%%"</b></td>
-     *
-     *   <td>The sequence "%%" outputs a single percent sign.</td>
+     *   <td>The sequence "%%" outputs a single percent sign.
+     *   </td>
      * </tr>
      *
      * </table>
@@ -512,8 +526,8 @@ namespace log4cplus {
 
       // Data
         log4cplus::tstring pattern;
-        OFauto_ptr<OFList<pattern::PatternConverter*> > parsedPattern;
         bool formatEachLine;
+        OFauto_ptr<OFList<pattern::PatternConverter*> > parsedPattern;
 
     private:
       // Disallow copying of instances of this class
@@ -526,3 +540,4 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // _LOG4CPLUS_LAYOUT_HEADER_
+

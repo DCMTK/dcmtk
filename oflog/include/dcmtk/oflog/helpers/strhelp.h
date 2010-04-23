@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2003-2010 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /** @file */
 
@@ -19,7 +26,6 @@
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
 #include "dcmtk/ofstd/oflist.h"
-#include "dcmtk/ofstd/ofstdinc.h"
 
 //#include <algorithm>
 //#include <limits>
@@ -55,12 +61,15 @@ namespace log4cplus {
          * </pre>
          */
         template <class StringType>
-        void tokenize(const StringType& s, typename StringType::value_type c,
-                      OFList<tstring>& result , bool collapseTokens = true)
+        inline
+        void
+        tokenize(const StringType& s, typename StringType::value_type c,
+            OFList<StringType>& result, bool collapseTokens = true)
         {
-            size_t const slen = s.length();
-            size_t first = 0;
-            size_t i = 0;
+            typedef typename StringType::size_type size_type;
+            size_type const slen = s.length();
+            size_type first = 0;
+            size_type i = 0;
             for (i=0; i < slen; ++i)
             {
                 if (s[i] == c)
@@ -77,32 +86,13 @@ namespace log4cplus {
         }
 
 
-        template<class intType>
-        inline
-        tstring
-        convertIntegerToString (intType value)
+        template <typename intType>
+        struct ConvertIntegerToStringHelper
         {
-            if (value == 0)
-                return LOG4CPLUS_TEXT("0");
-            bool const negative = value < 0;
-
-            static const size_t buffer_size
-                //= STD_NAMESPACE numeric_limits<intType>::digits10 + 2;
-                = 30; // More than enough space, even for 64 bit integers
-            tchar buffer[buffer_size];
-            tchar * it = &buffer[buffer_size];
-            tchar const * const buf_end = it;
-
-            // The sign of the result of the modulo operator is implementation
-            // defined. That's why we work with positive counterpart instead.
-            // Also, in twos complement arithmetic the smallest negative number
-            // does not have positive counterpart; the range is asymetric.
-            // That's why we handle the case of value == min() specially here.
-            if (negative)
+            static inline
+            void
+            step1 (tchar * & it, intType & value)
             {
-                // The modulo operator on
-                //if (value == (STD_NAMESPACE numeric_limits<intType>::min) ())
-
                 // This code assumes two-compliments'. The problem here is that
                 // integer overflow of an signed type is undefined behavior :(
                 // This code is based upon http://www.fefe.de/intof.html
@@ -122,18 +112,40 @@ namespace log4cplus {
                 // This is the minimum value that intType can represent;
                 const intType minVal = isUnsigned ? 0 : minSigned;
 
+                //if (value == (STD_NAMESPACE numeric_limits<intType>::min) ())
                 if (value == minVal)
                 {
                     intType const r = value / 10;
                     intType const a = (-r) * 10;
                     intType const mod = -(a + value);
                     value = -r;
+
                     *(it - 1) = LOG4CPLUS_TEXT('0') + static_cast<tchar>(mod);
                     --it;
                 }
                 else
                     value = -value;
             }
+        };
+
+
+        template<class intType>
+        inline
+        void
+        convertIntegerToString (tstring & str, intType value)
+        {
+            if (value == 0)
+                str = LOG4CPLUS_TEXT("0");
+            bool const negative = value < 0;
+
+            const size_t buffer_size = 30; // More than enough space, even for 64 bit integers
+                // = intTypeLimits::digits10 + 2;
+            tchar buffer[buffer_size];
+            tchar * it = &buffer[buffer_size];
+            tchar const * const buf_end = it;
+
+            if (negative)
+                ConvertIntegerToStringHelper<intType>::step1(it, value);
 
             for (; value != 0; --it)
             {
@@ -148,13 +160,22 @@ namespace log4cplus {
                 *it = LOG4CPLUS_TEXT('-');
             }
 
-            // return the string from it to buf_end
-            return tstring (static_cast<tchar const *>(it), static_cast<size_t>(buf_end - it));
+            str.assign (static_cast<tchar const *>(it), buf_end - it);
+        }
+
+
+        template<class intType>
+        inline
+        tstring
+        convertIntegerToString (intType value)
+        {
+            tstring result;
+            convertIntegerToString (result, value);
+            return result;
         }
 
     } // namespace helpers
 
-} //namespace log4cplus
-
+} // namespace log4cplus
 
 #endif // LOG4CPLUS_HELPERS_STRINGHELPER_HEADER_

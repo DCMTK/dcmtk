@@ -4,26 +4,31 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2003-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include "dcmtk/oflog/helpers/timehelp.h"
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
 
 //#include <vector>
+//#include <iomanip>
+#include "dcmtk/ofstd/ofstream.h"
 //#include <cassert>
 #define INCLUDE_CASSERT
 #define INCLUDE_CTIME
 #include "dcmtk/ofstd/ofstdinc.h"
-
-//#include <iomanip>
-// ofstrea.h includes either iomanip or iomanip.h
-#include "dcmtk/ofstd/ofstream.h"
 
 #if defined(LOG4CPLUS_HAVE_FTIME)
 #include <sys/timeb.h>
@@ -58,9 +63,9 @@ Time::Time()
 }
 
 
-Time::Time(time_t tv_sec, long tv_usec)
-: tv_sec(tv_sec),
-  tv_usec(tv_usec)
+Time::Time(time_t tv_sec_, long tv_usec_)
+: tv_sec(tv_sec_),
+  tv_usec(tv_usec_)
 {
     assert (tv_usec < ONE_SEC_IN_USEC);
 }
@@ -294,7 +299,6 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
         }
     }
     while (len == 0);
-
     ret.assign (&buffer[0], len);
     free(buffer);
 

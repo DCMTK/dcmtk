@@ -21,31 +21,57 @@
 //   (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
 //   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef LOG4CPLUS_CONFIG_HXX
-#define LOG4CPLUS_CONFIG_HXX
+#ifndef LOG4CPLUS_WIN32CONSOLEAPPENDER_H
+#define LOG4CPLUS_WIN32CONSOLEAPPENDER_H
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#if defined (_WIN32)
-#  include "dcmtk/oflog/config/win32.h"
-#elif (defined(__MWERKS__) && defined(__MACOS__))
-#  include "dcmtk/oflog/config/macosx.h"
-#else
-#  include "dcmtk/oflog/config/defines.h"
+#include "dcmtk/oflog/config.h"
+#if defined(_WIN32) && defined (LOG4CPLUS_HAVE_WIN32_CONSOLE)
+
+#include "dcmtk/oflog/appender.h"
+#include "dcmtk/oflog/helpers/property.h"
+
+
+namespace log4cplus
+{
+
+   /**
+    * Prints events to Win32 console.
+    *
+    * <h3>Properties</h3>
+    * <dl>
+    * <dt><tt>AllocConsole</tt></dt>
+    * <dd>This boolean property specifies whether or not this appender
+    * will try to allocate new console using the
+    * <code>AllocConsole()</code> Win32 function.</dd>
+    *
+    * </dl>
+    */
+    class LOG4CPLUS_EXPORT Win32ConsoleAppender
+        : public Appender
+    {
+    public:
+        explicit Win32ConsoleAppender (bool allocConsole = true);
+        Win32ConsoleAppender (helpers::Properties const & properties, tstring& error);
+        virtual ~Win32ConsoleAppender ();
+
+        virtual void close ();
+
+    protected:
+        virtual void append (spi::InternalLoggingEvent const &);
+
+        void write_handle (HANDLE, tchar const *, size_t);
+        void write_console (HANDLE, tchar const *, size_t);
+
+        bool alloc_console;
+
+    private:
+        Win32ConsoleAppender (Win32ConsoleAppender const &);
+        Win32ConsoleAppender & operator = (Win32ConsoleAppender const &);
+    };
+
+} // namespace log4cplus
+
 #endif
 
-#if !defined(_WIN32)
-#  if !defined(LOG4CPLUS_SINGLE_THREADED)
-#    define LOG4CPLUS_USE_PTHREADS
-#  endif
-#  if defined (INSIDE_LOG4CPLUS)
-#    define LOG4CPLUS_EXPORT LOG4CPLUS_DECLSPEC_EXPORT
-#  else
-#    define LOG4CPLUS_EXPORT LOG4CPLUS_DECLSPEC_IMPORT
-#  endif // defined (INSIDE_LOG4CPLUS)
-#endif // !_WIN32
-
-#include "dcmtk/oflog/helpers/threadcf.h"
-
-
-#endif // LOG4CPLUS_CONFIG_HXX
+#endif // LOG4CPLUS_WIN32CONSOLEAPPENDER_H

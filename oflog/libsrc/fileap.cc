@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2001-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include "dcmtk/oflog/fileap.h"
 #include "dcmtk/oflog/layout.h"
@@ -19,11 +26,6 @@
 #include "dcmtk/oflog/helpers/timehelp.h"
 #include "dcmtk/oflog/spi/logevent.h"
 //#include <algorithm>
-
-#if defined (__BORLANDC__)
-// For _wrename() and _wremove() on Windows.
-#  include <stdio.h>
-#endif
 
 //#include <cstdio>
 #define INCLUDE_CSTDIO
@@ -155,19 +157,26 @@ rolloverFiles(const tstring& filename, unsigned int maxBackupIndex)
 ///////////////////////////////////////////////////////////////////////////////
 
 FileAppender::FileAppender(const tstring& filename_,
-    LOG4CPLUS_OPEN_MODE_TYPE mode, bool immediateFlush)
-    : immediateFlush(immediateFlush)
+    LOG4CPLUS_OPEN_MODE_TYPE mode, bool immediateFlush_)
+    : immediateFlush(immediateFlush_)
+    , reopenDelay(1)
+    , bufferSize (0)
+    , buffer (0)
 {
     init(filename_, mode);
 }
 
 
 FileAppender::FileAppender(const Properties& properties,
+                           log4cplus::tstring&,
                            LOG4CPLUS_OPEN_MODE_TYPE mode)
     : Appender(properties)
     , immediateFlush(true)
+    , reopenDelay(1)
+    , bufferSize (0)
+    , buffer (0)
 {
-    bool append = (mode == STD_NAMESPACE ios::app);
+    bool append_ = (mode == STD_NAMESPACE ios::app);
     tstring filename_ = properties.getProperty( LOG4CPLUS_TEXT("File") );
     if (filename_.empty())
     {
@@ -180,10 +189,18 @@ FileAppender::FileAppender(const Properties& properties,
     }
     if(properties.exists( LOG4CPLUS_TEXT("Append") )) {
         tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("Append") );
-        append = (helpers::toLower(tmp) == LOG4CPLUS_TEXT("true"));
+        append_ = (helpers::toLower(tmp) == LOG4CPLUS_TEXT("true"));
+    }
+    if(properties.exists( LOG4CPLUS_TEXT("ReopenDelay") )) {
+        tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("ReopenDelay") );
+        reopenDelay = atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
+    }
+    if(properties.exists( LOG4CPLUS_TEXT("BufferSize") )) {
+        tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("BufferSize") );
+        bufferSize = atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
     }
 
-    init(filename_, (append ? STD_NAMESPACE ios::app : STD_NAMESPACE ios::trunc));
+    init(filename_, (append_ ? STD_NAMESPACE ios::app : STD_NAMESPACE ios::trunc));
 }
 
 
@@ -193,7 +210,14 @@ FileAppender::init(const tstring& filename_,
                    LOG4CPLUS_OPEN_MODE_TYPE mode)
 {
     this->filename = filename_;
-    out.open(LOG4CPLUS_TSTRING_TO_STRING(filename).c_str(), mode);
+    open(mode);
+
+    if (bufferSize != 0)
+    {
+        delete buffer;
+        buffer = new tchar[bufferSize];
+        out.rdbuf ()->pubsetbuf (buffer, bufferSize);
+    }
 
     if(!out.good()) {
         getErrorHandler()->error(  LOG4CPLUS_TEXT("Unable to open file: ")
@@ -221,6 +245,8 @@ FileAppender::close()
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
         out.close();
+        delete buffer;
+        buffer = 0;
         closed = true;
     LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
@@ -237,9 +263,15 @@ void
 FileAppender::append(const spi::InternalLoggingEvent& event)
 {
     if(!out.good()) {
-        getErrorHandler()->error(  LOG4CPLUS_TEXT("file is not open: ")
-                                 + filename);
-        return;
+        if(!reopen()) {
+            getErrorHandler()->error(  LOG4CPLUS_TEXT("file is not open: ")
+                                     + filename);
+            return;
+        }
+        // Resets the error handler to make it
+        // ready to handle a future append error.
+        else
+            getErrorHandler()->reset();
     }
 
     layout->formatAndAppend(out, event);
@@ -248,21 +280,59 @@ FileAppender::append(const spi::InternalLoggingEvent& event)
     }
 }
 
+void
+FileAppender::open(STD_NAMESPACE ios::openmode mode)
+{
+    out.open(LOG4CPLUS_TSTRING_TO_STRING(filename).c_str(), mode);
+}
+
+bool
+FileAppender::reopen()
+{
+    // When append never failed and the file re-open attempt must
+    // be delayed, set the time when reopen should take place.
+    if (reopen_time == log4cplus::helpers::Time () && reopenDelay != 0)
+        reopen_time = log4cplus::helpers::Time::gettimeofday()
+			+ log4cplus::helpers::Time(reopenDelay);
+    else
+	{
+        // Otherwise, check for end of the delay (or absence of delay) to re-open the file.
+        if (reopen_time <= log4cplus::helpers::Time::gettimeofday()
+			|| reopenDelay == 0)
+		{
+            // Close the current file
+            out.close();
+            out.clear(); // reset flags since the C++ standard specified that all the
+                         // flags should remain unchanged on a close
+
+            // Re-open the file.
+            open(STD_NAMESPACE ios::app);
+
+            // Reset last fail time.
+            reopen_time = log4cplus::helpers::Time ();
+
+            // Succeed if no errors are found.
+            if(out.good())
+                return true;
+        }
+    }
+    return false;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // RollingFileAppender ctors and dtor
 ///////////////////////////////////////////////////////////////////////////////
 
-RollingFileAppender::RollingFileAppender(const tstring& filename,
-    long maxFileSize_, int maxBackupIndex_, bool immediateFlush)
-    : FileAppender(filename, STD_NAMESPACE ios::app, immediateFlush)
+RollingFileAppender::RollingFileAppender(const tstring& filename_,
+    long maxFileSize_, int maxBackupIndex_, bool immediateFlush_)
+    : FileAppender(filename_, STD_NAMESPACE ios::app, immediateFlush_)
 {
     init(maxFileSize_, maxBackupIndex_);
 }
 
 
-RollingFileAppender::RollingFileAppender(const Properties& properties)
-    : FileAppender(properties, STD_NAMESPACE ios::app)
+RollingFileAppender::RollingFileAppender(const Properties& properties, tstring& error)
+    : FileAppender(properties, error, STD_NAMESPACE ios::app)
 {
     int maxFileSize_ = 10*1024*1024;
     int maxBackupIndex_ = 1;
@@ -285,6 +355,7 @@ RollingFileAppender::RollingFileAppender(const Properties& properties)
 
     init(maxFileSize_, maxBackupIndex_);
 }
+
 
 void
 RollingFileAppender::init(long maxFileSize_, int maxBackupIndex_)
@@ -314,9 +385,15 @@ void
 RollingFileAppender::append(const spi::InternalLoggingEvent& event)
 {
     if(!out.good()) {
-        getErrorHandler()->error(  LOG4CPLUS_TEXT("file is not open: ")
-                                 + filename);
-        return;
+        if(!reopen()) {
+            getErrorHandler()->error(  LOG4CPLUS_TEXT("file is not open: ")
+                                     + filename);
+            return;
+        }
+        // Resets the error handler to make it
+        // ready to handle a future append error.
+        else
+            getErrorHandler()->reset();
     }
 
     layout->formatAndAppend(out, event);
@@ -370,8 +447,7 @@ RollingFileAppender::rollover()
     }
 
     // Open it up again in truncation mode
-    out.open(LOG4CPLUS_TSTRING_TO_STRING(filename).c_str(),
-        STD_NAMESPACE ios::out | STD_NAMESPACE ios::trunc);
+    open(STD_NAMESPACE ios::out | STD_NAMESPACE ios::trunc);
     loglog_opening_result (loglog, out, filename);
 }
 
@@ -381,10 +457,10 @@ RollingFileAppender::rollover()
 ///////////////////////////////////////////////////////////////////////////////
 
 DailyRollingFileAppender::DailyRollingFileAppender(
-    const tstring& filename, DailyRollingFileSchedule schedule_,
-    bool immediateFlush, int maxBackupIndex)
-    : FileAppender(filename, STD_NAMESPACE ios::app, immediateFlush)
-    , maxBackupIndex(maxBackupIndex)
+    const tstring& filename_, DailyRollingFileSchedule schedule_,
+    bool immediateFlush_, int maxBackupIndex_)
+    : FileAppender(filename_, STD_NAMESPACE ios::app, immediateFlush_)
+    , maxBackupIndex(maxBackupIndex_)
 {
     init(schedule_);
 }
@@ -392,8 +468,8 @@ DailyRollingFileAppender::DailyRollingFileAppender(
 
 
 DailyRollingFileAppender::DailyRollingFileAppender(
-    const Properties& properties)
-    : FileAppender(properties, STD_NAMESPACE ios::app)
+    const Properties& properties, tstring& error)
+    : FileAppender(properties, error, STD_NAMESPACE ios::app)
     , maxBackupIndex(10)
 {
     DailyRollingFileSchedule theSchedule = DAILY;
@@ -514,9 +590,15 @@ void
 DailyRollingFileAppender::append(const spi::InternalLoggingEvent& event)
 {
     if(!out.good()) {
-        getErrorHandler()->error(  LOG4CPLUS_TEXT("file is not open: ")
-                                 + filename);
-        return;
+        if(!reopen()) {
+            getErrorHandler()->error(  LOG4CPLUS_TEXT("file is not open: ")
+                                     + filename);
+            return;
+        }
+        // Resets the error handler to make it
+        // ready to handle a future append error.
+        else
+            getErrorHandler()->reset();
     }
 
     if(event.getTimestamp() >= nextRolloverTime) {
@@ -541,7 +623,12 @@ DailyRollingFileAppender::rollover()
 
     // If we've already rolled over this time period, we'll make sure that we
     // don't overwrite any of those previous files.
+    // E.g. if "log.2009-11-07.1" already exists we rename it
+    // to "log.2009-11-07.2", etc.
     rolloverFiles(scheduledFilename, maxBackupIndex);
+
+    // Do not overwriet the newest file either, e.g. if "log.2009-11-07"
+    // already exists rename it to "log.2009-11-07.1"
     tostringstream backup_target_oss;
     backup_target_oss << scheduledFilename << LOG4CPLUS_TEXT(".") << 1;
     OFSTRINGSTREAM_GETOFSTRING(backup_target_oss, backupTarget)
@@ -551,14 +638,22 @@ DailyRollingFileAppender::rollover()
 
 #if defined (WIN32)
     // Try to remove the target first. It seems it is not
-    // possible to rename over existing file.
+    // possible to rename over existing file, e.g. "log.2009-11-07.1".
     ret = file_remove (backupTarget);
 #endif
 
+    // Rename e.g. "log.2009-11-07" to "log.2009-11-07.1".
     ret = file_rename (scheduledFilename, backupTarget);
     loglog_renaming_result (loglog, scheduledFilename, backupTarget, ret);
 
-    // Rename filename to scheduledFilename
+#if defined (WIN32)
+    // Try to remove the target first. It seems it is not
+    // possible to rename over existing file, e.g. "log.2009-11-07".
+    ret = file_remove (scheduledFilename);
+#endif
+
+    // Rename filename to scheduledFilename,
+    // e.g. rename "log" to "log.2009-11-07".
     loglog.debug(
         LOG4CPLUS_TEXT("Renaming file ")
         + filename
@@ -567,16 +662,16 @@ DailyRollingFileAppender::rollover()
     ret = file_rename (filename, scheduledFilename);
     loglog_renaming_result (loglog, filename, scheduledFilename, ret);
 
-    // Open a new file
-    out.open(LOG4CPLUS_TSTRING_TO_STRING(filename).c_str(),
-        STD_NAMESPACE ios::out | STD_NAMESPACE ios::trunc);
+    // Open a new file, e.g. "log".
+    open(STD_NAMESPACE ios::out | STD_NAMESPACE ios::trunc);
     loglog_opening_result (loglog, out, filename);
 
     // Calculate the next rollover time
-    if (Time::gettimeofday() >= nextRolloverTime)
+    log4cplus::helpers::Time now = Time::gettimeofday();
+    if (now >= nextRolloverTime)
     {
-        scheduledFilename = getFilename(nextRolloverTime);
-        nextRolloverTime = calculateNextRolloverTime(nextRolloverTime);
+        scheduledFilename = getFilename(now);
+        nextRolloverTime = calculateNextRolloverTime(now);
     }
 }
 
@@ -596,7 +691,10 @@ DailyRollingFileAppender::calculateNextRolloverTime(const Time& t) const
 
         Time ret;
         if(ret.setTime(&nextMonthTime) == -1) {
-            getLogLog().error(LOG4CPLUS_TEXT("DailyRollingFileAppender::calculateNextRolloverTime()- setTime() returned error"));
+            getLogLog().error(
+                LOG4CPLUS_TEXT("DailyRollingFileAppender::calculateNextRolloverTime()-")
+                LOG4CPLUS_TEXT(" setTime() returned error"));
+            // Set next rollover to 31 days in future.
             ret = (t + Time(2678400));
         }
 
@@ -604,7 +702,7 @@ DailyRollingFileAppender::calculateNextRolloverTime(const Time& t) const
     }
 
     case WEEKLY:
-        return (t + Time(604800)); // 7 * 24 * 60 * 60 seconds
+        return (t + Time(7 * 24 * 60 * 60));
 
     default:
         getLogLog ().error (
@@ -613,16 +711,16 @@ DailyRollingFileAppender::calculateNextRolloverTime(const Time& t) const
         // Fall through.
 
     case DAILY:
-        return (t + Time(86400)); //      24 * 60 * 60 seconds
+        return (t + Time(24 * 60 * 60));
 
     case TWICE_DAILY:
-        return (t + Time(43200)); //      12 * 60 * 60 seconds
+        return (t + Time(12 * 60 * 60));
 
     case HOURLY:
-        return (t + Time(3600));  //           60 * 60 seconds
+        return (t + Time(60 * 60));
 
     case MINUTELY:
-        return (t + Time(60));    //                60 seconds
+        return (t + Time(60));
     };
 }
 
@@ -665,7 +763,10 @@ DailyRollingFileAppender::getFilename(const Time& t) const
         break;
     };
 
-    return filename + LOG4CPLUS_TEXT(".") + t.getFormattedTime(pattern, false);
+    tstring result (filename);
+    result += LOG4CPLUS_TEXT(".");
+    result += t.getFormattedTime(pattern, false);
+    return result;
 }
 
 } // namespace log4cplus

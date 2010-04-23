@@ -3,12 +3,19 @@
 // Created: 4/2003
 // Author:  Michael CATANZARITI
 //
-// Copyright (C) Michael CATANZARITI  All rights reserved.
+// Copyright 2003-2009 Michael CATANZARITI
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include "dcmtk/oflog/ntelogap.h"
 #include "dcmtk/oflog/loglevel.h"
@@ -151,7 +158,7 @@ NTEventLogAppender::NTEventLogAppender(const log4cplus::tstring& server,
 
 
 
-NTEventLogAppender::NTEventLogAppender(const Properties properties)
+NTEventLogAppender::NTEventLogAppender(const Properties properties, tstring& error)
 : Appender(properties),
   hEventLog(NULL),
   pCurrentUserSID(NULL)
@@ -227,6 +234,8 @@ NTEventLogAppender::close()
 void
 NTEventLogAppender::append(const InternalLoggingEvent& event)
 {
+    BOOL bSuccess;
+
     if(hEventLog == NULL) {
         getLogLog().warn(LOG4CPLUS_TEXT("NT EventLog not opened."));
         return;
@@ -234,23 +243,23 @@ NTEventLogAppender::append(const InternalLoggingEvent& event)
 
     tostringstream buf;
     layout->formatAndAppend(buf, event);
-    OFSTRINGSTREAM_GETSTR(buf, sz)
+    OFSTRINGSTREAM_GETSTR(buf, s);
 
-    BOOL bSuccess = ::ReportEvent(hEventLog,
+    bSuccess = ::ReportEvent(hEventLog,
                                   getEventType(event),
                                   getEventCategory(event),
                                   0x1000,
                                   pCurrentUserSID,
                                   1,
                                   0,
-                                  &sz,
+                                  &s,
                                   NULL);
+
+    OFSTRINGSTREAM_FREESTR(s);
 
     if(!bSuccess) {
         getLogLog().error(LOG4CPLUS_TEXT("Cannot report event in NT EventLog."));
     }
-
-    OFSTRINGSTREAM_FREESTR(sz)
 }
 
 

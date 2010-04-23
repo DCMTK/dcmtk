@@ -269,8 +269,8 @@ from an implementation which carries the following copyright notice:
  *  provided the authors copyright notice remains intact.
  */
 
-The oflog sub-package is based on the log4cplus library which carries the
-following copyright notice (for details see oflog/docs/LICENSE):
+The oflog sub-package is based on the log4cplus library which is covered by the
+following two copyright notices (for details see oflog/docs/LICENSE):
 
 /*
  *     Copyright (C) 1999-2009 Contributors to log4cplus project.
@@ -298,6 +298,26 @@ following copyright notice (for details see oflog/docs/LICENSE):
  *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
+// Module:  Log4CPLUS
+// File:    appender.h
+// Created: 6/2001
+// Author:  Tad E. Smith
+//
+//
+// Copyright 2001-2009 Tad E. Smith
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 The dcmjpls sub-package is based on the CharLS library, which is contained
 in dcmjpls/libcharls. This toolkit is covered by the following copyright:

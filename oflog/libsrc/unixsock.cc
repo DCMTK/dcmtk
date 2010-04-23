@@ -4,42 +4,124 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2003-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-#include <cstring>
+//#include <cstring>
 //#include <vector>
-#include <algorithm>
+//#include <algorithm>
 #include "dcmtk/oflog/helpers/socket.h"
 #include "dcmtk/oflog/helpers/loglog.h"
+#include "dcmtk/oflog/helpers/threads.h"
 #include "dcmtk/oflog/spi/logevent.h"
 
 #if defined(__hpux__)
 # ifndef _XOPEN_SOURCE_EXTENDED
 # define _XOPEN_SOURCE_EXTENDED
 # endif
-# include <arpa/inet.h>
 #endif
+#include <arpa/inet.h>
 
-
-#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__hpux__) || defined (__CYGWIN__)
+#ifdef LOG4CPLUS_HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #endif
 
+#ifdef LOG4CPLUS_HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <errno.h>
-#include <netdb.h>
-#include <unistd.h>
+#endif
 
-#include <algorithm>
+#ifdef LOG4CPLUS_HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+
+#ifdef LOG4CPLUS_HAVE_NETDB_H
+#include <netdb.h>
+#endif
+
+#define INCLUDE_CERRNO
+//#include <unistd.h>
+#include "dcmtk/ofstd/ofstdinc.h"
+
+//#include <algorithm>
 
 using namespace log4cplus;
 using namespace log4cplus::helpers;
+
+
+namespace
+{
+
+
+static LOG4CPLUS_MUTEX_PTR_DECLARE ghbn_mutex = LOG4CPLUS_MUTEX_CREATE;
+
+
+static
+int
+get_host_by_name (char const * hostname, OFString* name,
+    struct sockaddr_in * addr)
+{
+#if defined (LOG4CPLUS_HAVE_GETADDRINFO)
+    struct addrinfo hints;
+    STD_NAMESPACE memset (&hints, 0, sizeof (hints));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+    hints.ai_flags = AI_CANONNAME;
+
+    if (inet_addr (hostname) != static_cast<in_addr_t>(-1))
+	hints.ai_flags |= AI_NUMERICHOST;
+
+    struct addrinfo * res = 0;
+    int ret = getaddrinfo (hostname, 0, &hints, &res);
+    if (ret != 0)
+        return ret;
+
+    struct addrinfo const & ai = *res;
+    assert (ai.ai_family == AF_INET);
+
+    if (name)
+        *name = ai.ai_canonname;
+
+    if (addr)
+        STD_NAMESPACE memcpy (addr, ai.ai_addr, ai.ai_addrlen);
+
+    freeaddrinfo (res);
+
+#else
+    thread::Guard guard (ghbn_mutex);
+
+    struct hostent * hp = gethostbyname (hostname);
+    if (! hp)
+        return 1;
+    assert (hp->h_addrtype == AF_INET);
+
+    if (name)
+        *name = hp->h_name;
+
+    if (addr)
+    {
+	assert (hp->h_length <= (int) sizeof (addr->sin_addr));
+        STD_NAMESPACE memcpy (&addr->sin_addr, hp->h_addr_list[0], hp->h_length);
+    }
+
+#endif
+
+    return 0;
+}
+
+
+} // namespace
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -80,25 +162,25 @@ log4cplus::helpers::connectSocket(const log4cplus::tstring& hostn,
                                   unsigned short port, SocketState& state)
 {
     struct sockaddr_in server;
-    struct hostent *hp;
     SOCKET_TYPE sock;
     int retval;
 
-    hp = ::gethostbyname(LOG4CPLUS_TSTRING_TO_STRING(hostn).c_str());
-    if(hp == 0) {
+    STD_NAMESPACE memset (&server, 0, sizeof (server));
+    retval = get_host_by_name (LOG4CPLUS_TSTRING_TO_STRING(hostn).c_str(),
+        0, &server);
+    if (retval != 0)
         return INVALID_SOCKET;
-    }
+
+    server.sin_port = htons(port);
+    server.sin_family = AF_INET;
 
     sock = ::socket(AF_INET, SOCK_STREAM, 0);
     if(sock < 0) {
         return INVALID_SOCKET;
     }
 
-    STD_NAMESPACE memcpy((char*)&server.sin_addr, hp->h_addr_list[0], hp->h_length);
-    server.sin_port = htons(port);
-    server.sin_family = AF_INET;
-
-    while(   (retval = ::connect(sock, (struct sockaddr*)&server, sizeof(server))) == -1
+    while ((retval = ::connect(sock,
+                reinterpret_cast<struct sockaddr *>(&server), sizeof (server))) == -1
           && (errno == EINTR))
         ;
     if(retval == INVALID_SOCKET) {
@@ -118,13 +200,11 @@ log4cplus::helpers::acceptSocket(SOCKET_TYPE sock, SocketState& state)
     struct sockaddr_in net_client;
     socklen_t len = sizeof(struct sockaddr);
     SOCKET_TYPE clientSock;
-//    struct hostent *hostptr;
 
     while(   (clientSock = ::accept(sock, (struct sockaddr*)&net_client, &len)) == -1
           && (errno == EINTR))
         ;
 
-//    hostptr = gethostbyaddr((char*)&(net_client.sin_addr.s_addr), 4, AF_INET);
     if(clientSock != INVALID_SOCKET) {
         state = ok;
     }
@@ -145,11 +225,12 @@ log4cplus::helpers::closeSocket(SOCKET_TYPE sock)
 long
 log4cplus::helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
 {
-    long res, read = 0;
+    long read = 0;
 
     do
     {
-        res = ::read(sock, buffer.getBuffer() + read, buffer.getMaxSize() - read);
+        long res = ::read(sock, buffer.getBuffer() + read,
+            buffer.getMaxSize() - read);
         if( res <= 0 ) {
             return res;
         }
@@ -169,8 +250,7 @@ log4cplus::helpers::write(SOCKET_TYPE sock, const SocketBuffer& buffer)
 #else
     int flags = 0;
 #endif
-     return ::send( sock, buffer.getBuffer(), buffer.getSize(), flags );
-     // return ::write(sock, buffer.getBuffer(), buffer.getSize());
+    return ::send( sock, buffer.getBuffer(), buffer.getSize(), flags );
 }
 
 
@@ -178,18 +258,16 @@ tstring
 log4cplus::helpers::getHostname (bool fqdn)
 {
     char const * hostname = "unknown";
-
-#if defined (HAVE_GETHOSTNAME)
     int ret;
     size_t hn_size = 1024;
     char *hn = OFstatic_cast(char *, malloc(hn_size));
 
     while (true)
     {
-        ret = ::gethostname (hn, hn_size - 1);
+        ret = ::gethostname (&hn[0], static_cast<int>(hn_size) - 1);
         if (ret == 0)
         {
-            hostname = hn;
+            hostname = &hn[0];
             break;
         }
 #if defined (LOG4CPLUS_HAVE_ENAMETOOLONG)
@@ -210,15 +288,14 @@ log4cplus::helpers::getHostname (bool fqdn)
         free(hn);
         return res;
     }
-#endif
 
-#if defined (HAVE_GETHOSTBYNAME)
-    struct ::hostent * hp = ::gethostbyname (hostname);
-    if (hp)
-        hostname = hp->h_name;
-#endif
+    OFString full_hostname;
+    ret = get_host_by_name (hostname, &full_hostname, 0);
+    if (ret == 0)
+        hostname = full_hostname.c_str ();
 
     tstring res = LOG4CPLUS_STRING_TO_TSTRING (hostname);
     free(hn);
     return res;
 }
+

@@ -4,20 +4,27 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2003-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
+#include "dcmtk/oflog/helpers/sockbuff.h"
+#include "dcmtk/oflog/helpers/loglog.h"
 //#include <cstring>
 #define INCLUDE_CSTRING
 //#include <limits>
 #define INCLUDE_CLIMITS
 #include "dcmtk/ofstd/ofstdinc.h"
-#include "dcmtk/oflog/helpers/sockbuff.h"
-#include "dcmtk/oflog/helpers/loglog.h"
 
 #if !defined(_WIN32)
 #  ifdef HAVE_NETDB_H
@@ -39,11 +46,11 @@ using namespace log4cplus::helpers;
 // SocketBuffer ctors and dtor
 //////////////////////////////////////////////////////////////////////////////
 
-log4cplus::helpers::SocketBuffer::SocketBuffer(size_t maxsize)
-: maxsize(maxsize),
+log4cplus::helpers::SocketBuffer::SocketBuffer(size_t maxsize_)
+: maxsize(maxsize_),
   size(0),
   pos(0),
-  buffer(new char[maxsize])
+  buffer(new char[maxsize_])
 {
 }
 
@@ -288,7 +295,7 @@ log4cplus::helpers::SocketBuffer::appendString(const tstring& str)
         return;
     }
 
-    appendInt(strlen);
+    appendInt(static_cast<unsigned>(strlen));
     memcpy(&buffer[pos], str.data(), strlen);
     pos += strlen;
     size = pos;
@@ -308,3 +315,6 @@ log4cplus::helpers::SocketBuffer::appendBuffer(const SocketBuffer& buf)
     pos += buf.getSize();
     size = pos;
 }
+
+
+

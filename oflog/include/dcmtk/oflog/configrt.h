@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2003-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /** @file */
 
@@ -221,9 +228,27 @@ namespace log4cplus
          * Refer to the <b>setOption</b> method in each Appender and
          * Layout for class specific options.
          *
-         * Use the <code>#</code> character at the beginning of a line for comments.
+         * Use the <code>#</code> character at the beginning of a line
+         * for comments.
          */
         virtual void configure();
+
+        /**
+         * \return The return value is reference to Properties
+         * container of properties with the <code>"log4cplus."</code>
+         * prefix removed and references to other properties and/or
+         * environment variables expanded.
+         */
+        log4cplus::helpers::Properties const & getProperties () const;
+
+        /**
+         * \return The return value is a reference to log4cplus::tstring
+         * containing filename of properties source file. It will be
+         * string "UNAVAILABLE" if the PropertyConfigurator instance has been
+         * constructed using one of the other constructors that do not take
+         * filename as parameter.
+         */
+        log4cplus::tstring const & getPropertyFilename () const;
 
     protected:
       // Methods
@@ -258,7 +283,10 @@ namespace log4cplus
 
     /**
      * Use this class to quickly configure the package. For file based
-     * configuration see PropertyConfigurator.
+     * configuration see PropertyConfigurator. BasicConfigurator
+     * automatically attaches ConsoleAppender to
+     * <code>rootLogger</code>, with output going to standard output,
+     * using DEBUG LogLevel value.
      */
     class LOG4CPLUS_EXPORT BasicConfigurator : public PropertyConfigurator {
     public:
@@ -270,10 +298,10 @@ namespace log4cplus
          * This method eliminates the need to create a temporary
          * <code>BasicConfigurator</code> object to configure log4cplus.
          * It is equivalent to the following:<br>
-         * <code>
-         * BasicConfigurator config();
+         * <code><pre>
+         * BasicConfigurator config;
          * config.configure();
-         * </code>
+         * </pre></code>
          */
         static void doConfigure(Hierarchy& h = Logger::getDefaultHierarchy());
 
@@ -309,3 +337,4 @@ namespace log4cplus
 } // end namespace log4cplus
 
 #endif // _CONFIGURATOR_HEADER_
+

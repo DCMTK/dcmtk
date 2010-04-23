@@ -12,22 +12,20 @@ apndimpl.o: apndimpl.cc ../include/dcmtk/oflog/appender.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -60,22 +58,20 @@ appender.o: appender.cc ../include/dcmtk/oflog/appender.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -112,22 +108,20 @@ config.o: config.cc ../include/dcmtk/oflog/configrt.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -176,22 +170,20 @@ consap.o: consap.cc ../include/dcmtk/oflog/layout.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -228,21 +220,19 @@ factory.o: factory.cc ../include/dcmtk/oflog/spi/factory.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/loglevel.h \
   ../include/dcmtk/oflog/ndc.h ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -265,6 +255,9 @@ factory.o: factory.cc ../include/dcmtk/oflog/spi/factory.h \
   ../include/dcmtk/oflog/helpers/socket.h \
   ../include/dcmtk/oflog/helpers/sockbuff.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
+  ../include/dcmtk/oflog/helpers/syncprims.h \
+  ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../include/dcmtk/oflog/helpers/syncppth.h \
   ../include/dcmtk/oflog/syslogap.h \
   ../include/dcmtk/oflog/helpers/loglog.h \
   ../include/dcmtk/oflog/helpers/threads.h \
@@ -284,22 +277,20 @@ fileap.o: fileap.cc ../include/dcmtk/oflog/fileap.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -337,17 +328,15 @@ filter.o: filter.cc ../include/dcmtk/oflog/spi/filter.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/loglevel.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
@@ -371,7 +360,6 @@ globinit.o: globinit.cc ../include/dcmtk/oflog/config.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/spi/apndatch.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/appender.h ../include/dcmtk/oflog/layout.h \
@@ -379,15 +367,14 @@ globinit.o: globinit.cc ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/loglevel.h \
   ../include/dcmtk/oflog/ndc.h ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -416,7 +403,6 @@ hierarchy.o: hierarchy.cc ../include/dcmtk/oflog/hierarchy.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/spi/apndatch.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/appender.h ../include/dcmtk/oflog/layout.h \
@@ -424,15 +410,14 @@ hierarchy.o: hierarchy.cc ../include/dcmtk/oflog/hierarchy.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/loglevel.h \
   ../include/dcmtk/oflog/ndc.h ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -470,7 +455,6 @@ hierlock.o: hierlock.cc ../include/dcmtk/oflog/hierlock.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/spi/apndatch.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/appender.h ../include/dcmtk/oflog/layout.h \
@@ -478,15 +462,14 @@ hierlock.o: hierlock.cc ../include/dcmtk/oflog/hierlock.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/loglevel.h \
   ../include/dcmtk/oflog/ndc.h ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -521,22 +504,20 @@ layout.o: layout.cc ../include/dcmtk/oflog/layout.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -558,15 +539,13 @@ lloguser.o: lloguser.cc ../include/dcmtk/oflog/streams.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h ../include/dcmtk/oflog/helpers/loglog.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h
+  ../include/dcmtk/oflog/helpers/threads.h
 logevent.o: logevent.cc ../include/dcmtk/oflog/spi/logevent.h \
   ../include/dcmtk/oflog/config.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -581,12 +560,11 @@ logevent.o: logevent.cc ../include/dcmtk/oflog/spi/logevent.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/tstring.h ../include/dcmtk/oflog/helpers/sleep.h \
+  ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
@@ -608,7 +586,6 @@ logger.o: logger.cc ../include/dcmtk/oflog/logger.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/spi/apndatch.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/appender.h ../include/dcmtk/oflog/layout.h \
@@ -616,15 +593,14 @@ logger.o: logger.cc ../include/dcmtk/oflog/logger.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/loglevel.h \
   ../include/dcmtk/oflog/ndc.h ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -663,20 +639,18 @@ logimpl.o: logimpl.cc ../include/dcmtk/oflog/spi/logimpl.h \
   ../include/dcmtk/oflog/config.h ../include/dcmtk/oflog/layout.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/streams.h \
   ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/loglevel.h \
   ../include/dcmtk/oflog/ndc.h ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
   ../include/dcmtk/oflog/helpers/threads.h \
@@ -713,14 +687,12 @@ loglevel.o: loglevel.cc ../include/dcmtk/oflog/loglevel.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/loglog.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/strhelp.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h
 loglog.o: loglog.cc ../include/dcmtk/oflog/streams.h \
@@ -736,14 +708,12 @@ loglog.o: loglog.cc ../include/dcmtk/oflog/streams.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/loglog.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h
@@ -762,7 +732,7 @@ ndc.o: ndc.cc ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/tstring.h ../include/dcmtk/oflog/helpers/sleep.h \
+  ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
@@ -784,22 +754,20 @@ ntelogap.o: ntelogap.cc ../include/dcmtk/oflog/ntelogap.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -830,22 +798,20 @@ nullap.o: nullap.cc ../include/dcmtk/oflog/nullap.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -872,7 +838,6 @@ objreg.o: objreg.cc ../include/dcmtk/oflog/spi/objreg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/threads.h \
   ../include/dcmtk/oflog/config.h ../include/dcmtk/oflog/tstring.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -898,7 +863,6 @@ oflog.o: oflog.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/streams.h \
   ../include/dcmtk/oflog/tstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/spi/apndatch.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/appender.h ../include/dcmtk/oflog/layout.h \
@@ -906,14 +870,13 @@ oflog.o: oflog.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/loglevel.h \
   ../include/dcmtk/oflog/ndc.h ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -953,22 +916,20 @@ patlay.o: patlay.cc ../include/dcmtk/oflog/layout.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -996,35 +957,31 @@ pointer.o: pointer.cc ../include/dcmtk/oflog/streams.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../include/dcmtk/oflog/config.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/tstring.h ../include/dcmtk/oflog/helpers/sleep.h \
-  ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
-property.o: property.cc ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
-  ../include/dcmtk/oflog/helpers/property.h \
+  ../include/dcmtk/oflog/tstring.h \
+  ../include/dcmtk/oflog/helpers/pointer.h
+property.o: property.cc ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/config.h \
   ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/oflog/config/defines.h \
   ../include/dcmtk/oflog/helpers/threadcf.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/tstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/fstreams.h
 rootlog.o: rootlog.cc ../include/dcmtk/oflog/spi/rootlog.h \
@@ -1044,18 +1001,16 @@ rootlog.o: rootlog.cc ../include/dcmtk/oflog/spi/rootlog.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/spi/logimpl.h ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/apndimpl.h \
   ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/loglevel.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/loglevel.h \
@@ -1088,17 +1043,17 @@ sleep.o: sleep.cc ../include/dcmtk/oflog/helpers/sleep.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
-sockbuff.o: sockbuff.cc ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
-  ../include/dcmtk/oflog/helpers/sockbuff.h \
+sockbuff.o: sockbuff.cc ../include/dcmtk/oflog/helpers/sockbuff.h \
   ../include/dcmtk/oflog/config.h \
   ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/oflog/config/defines.h \
   ../include/dcmtk/oflog/helpers/threadcf.h \
   ../include/dcmtk/oflog/tstring.h ../include/dcmtk/oflog/config.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -1108,38 +1063,36 @@ sockbuff.o: sockbuff.cc ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h
-socketap.o: socketap.cc ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
+socketap.o: socketap.cc ../include/dcmtk/oflog/socketap.h \
+  ../include/dcmtk/oflog/config.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
-  ../include/dcmtk/oflog/socketap.h ../include/dcmtk/oflog/config.h \
-  ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/oflog/config/defines.h \
   ../include/dcmtk/oflog/helpers/threadcf.h \
   ../include/dcmtk/oflog/appender.h ../include/dcmtk/oflog/layout.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/streams.h \
   ../include/dcmtk/oflog/tstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -1154,9 +1107,13 @@ socketap.o: socketap.cc ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/helpers/socket.h \
   ../include/dcmtk/oflog/helpers/sockbuff.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
+  ../include/dcmtk/oflog/helpers/syncprims.h \
+  ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../include/dcmtk/oflog/helpers/syncppth.h \
   ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/helpers/loglog.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/spi/logevent.h
+  ../include/dcmtk/oflog/spi/logevent.h \
+  ../include/dcmtk/oflog/helpers/sleep.h
 socket.o: socket.cc ../include/dcmtk/oflog/helpers/socket.h \
   ../include/dcmtk/oflog/config.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -1176,7 +1133,6 @@ socket.o: socket.cc ../include/dcmtk/oflog/helpers/socket.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 strhelp.o: strhelp.cc ../include/dcmtk/oflog/helpers/strhelp.h \
   ../include/dcmtk/oflog/config.h \
@@ -1192,31 +1148,28 @@ strhelp.o: strhelp.cc ../include/dcmtk/oflog/helpers/strhelp.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/logmacro.h ../include/dcmtk/oflog/streams.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h
 syncprims.o: syncprims.cc ../include/dcmtk/oflog/helpers/syncprims.h \
   ../include/dcmtk/oflog/config.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/oflog/config/defines.h \
   ../include/dcmtk/oflog/helpers/threadcf.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
   ../include/dcmtk/oflog/tstring.h ../include/dcmtk/oflog/config.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/helpers/syncppth.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
@@ -1236,22 +1189,20 @@ syslogap.o: syslogap.cc ../include/dcmtk/oflog/syslogap.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/helpers/property.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstack.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -1282,11 +1233,9 @@ threads.o: threads.cc ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/helpers/threads.h \
@@ -1312,14 +1261,13 @@ timehelp.o: timehelp.cc ../include/dcmtk/oflog/helpers/timehelp.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/strhelp.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 unixsock.o: unixsock.cc ../include/dcmtk/oflog/helpers/socket.h \
   ../include/dcmtk/oflog/config.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -1339,11 +1287,10 @@ unixsock.o: unixsock.cc ../include/dcmtk/oflog/helpers/socket.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h \
+  ../include/dcmtk/oflog/helpers/threads.h \
   ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/config.h \
   ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/streams.h \
   ../include/dcmtk/oflog/tstring.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h ../include/dcmtk/oflog/ndc.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/helpers/threads.h \
@@ -1351,30 +1298,49 @@ unixsock.o: unixsock.cc ../include/dcmtk/oflog/helpers/socket.h \
   ../include/dcmtk/oflog/tstring.h \
   ../include/dcmtk/oflog/helpers/timehelp.h \
   ../include/dcmtk/oflog/helpers/threads.h \
-  ../../ofstd/include/dcmtk/ofstd/ofaptr.h
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
+winconap.o: winconap.cc ../include/dcmtk/oflog/winconap.h \
+  ../include/dcmtk/oflog/config.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/oflog/config/defines.h \
+  ../include/dcmtk/oflog/helpers/threadcf.h \
+  ../include/dcmtk/oflog/helpers/loglog.h ../include/dcmtk/oflog/config.h \
+  ../include/dcmtk/oflog/tstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../include/dcmtk/oflog/helpers/pointer.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/oflog/helpers/threads.h \
+  ../include/dcmtk/oflog/helpers/strhelp.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h
 windebap.o: windebap.cc ../include/dcmtk/oflog/windebap.h \
   ../include/dcmtk/oflog/config.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/oflog/config/defines.h \
   ../include/dcmtk/oflog/helpers/threadcf.h
-winsock.o: winsock.cc ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+winsock.o: winsock.cc ../include/dcmtk/oflog/helpers/socket.h \
+  ../include/dcmtk/oflog/config.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../include/dcmtk/oflog/helpers/socket.h ../include/dcmtk/oflog/config.h \
-  ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/oflog/config/defines.h \
   ../include/dcmtk/oflog/helpers/threadcf.h \
   ../include/dcmtk/oflog/tstring.h ../include/dcmtk/oflog/config.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/oflog/helpers/sockbuff.h \
   ../include/dcmtk/oflog/helpers/lloguser.h \
   ../include/dcmtk/oflog/helpers/loglog.h \
   ../include/dcmtk/oflog/helpers/pointer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../include/dcmtk/oflog/helpers/threads.h \
-  ../include/dcmtk/oflog/helpers/sleep.h
+  ../include/dcmtk/oflog/helpers/threads.h

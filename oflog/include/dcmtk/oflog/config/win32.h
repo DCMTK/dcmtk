@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2003-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /** @file */
 
@@ -19,11 +26,8 @@
 #ifdef _WIN32
 #include <windows.h>
 
-/* Define to 1 if you have the `ftime' function. */
+/* Define if you have the ftime function.  */
 #define LOG4CPLUS_HAVE_FTIME 1
-
-/* Use static linking. */
-#define LOG4CPLUS_STATIC
 
 #if defined (_WIN32_WCE)
 #  define LOG4CPLUS_DLLMAIN_HINSTANCE HANDLE
@@ -31,16 +35,33 @@
 #else
 #  define LOG4CPLUS_DLLMAIN_HINSTANCE HINSTANCE
 #  define LOG4CPLUS_HAVE_NT_EVENT_LOG
+#  define LOG4CPLUS_HAVE_WIN32_CONSOLE
 #endif
 
-#ifdef LOG4CPLUS_STATIC
-#  define LOG4CPLUS_EXPORT
-#else
-#  if defined (LOG4CPLUS_BUILD_DLL) || defined (log4cplus_EXPORTS)
+// log4cplus_EXPORTS is used by the CMake build system.  DLL_EXPORT is
+// used by the autotools build system.
+#if defined (log4cplus_EXPORTS) || defined (DLL_EXPORT)
+#  undef LOG4CPLUS_BUILD_DLL
+#  define LOG4CPLUS_BUILD_DLL
+#endif
+
+#if ! defined (LOG4CPLUS_BUILD_DLL)
+#  undef LOG4CPLUS_STATIC
+#  define LOG4CPLUS_STATIC
+#endif
+
+#if defined (LOG4CPLUS_STATIC) && defined (LOG4CPLUS_BUILD_DLL)
+#  error LOG4CPLUS_STATIC and LOG4CPLUS_BUILD_DLL cannot be defined both.
+#endif
+
+#if defined (LOG4CPLUS_BUILD_DLL)
+#  if defined (INSIDE_LOG4CPLUS)
 #    define LOG4CPLUS_EXPORT __declspec(dllexport)
 #  else
 #    define LOG4CPLUS_EXPORT __declspec(dllimport)
 #  endif
+#else
+#  define LOG4CPLUS_EXPORT
 #endif
 
 #ifndef LOG4CPLUS_SINGLE_THREADED
@@ -62,3 +83,4 @@
 
 #endif // _WIN32
 #endif // LOG4CPLUS_CONFIG_WIN32_HEADER_
+

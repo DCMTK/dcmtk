@@ -4,16 +4,26 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2002-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-#define INCLUDE_CSTRING
-#define INCLUDE_CCTYPE
-#include "dcmtk/ofstd/ofstdinc.h"
+//#include <cstring>
+#if defined (UNICODE)
+//#  include <cwctype>
+#else
+//#  include <cctype>
+#endif
 #include "dcmtk/oflog/helpers/property.h"
 #include "dcmtk/oflog/fstreams.h"
 
@@ -57,10 +67,10 @@ trim_trailing_ws (tstring & str)
 {
     tstring::iterator it = str.end();
     for (; it != str.begin(); --it)
-    {
+     {
         if (! is_space (*(it - 1)))
-            break;
-    }
+             break;
+     }
     str.resize(it - str.begin());
 }
 
@@ -116,23 +126,22 @@ Properties::init(tistream& input)
         return;
 
     // FIXME
-    //tstring buffer;
-    STD_NAMESPACE string _buffer;
-    while (STD_NAMESPACE getline (input, _buffer))
+    STD_NAMESPACE string buffer_;
+    while (STD_NAMESPACE getline (input, buffer_))
     {
-        tstring buffer(_buffer.c_str());
+        tstring buffer(buffer_.c_str());
         trim_leading_ws (buffer);
+
+        tstring::size_type const buffLen = buffer.size ();
+        if (buffLen == 0 || buffer[0] == PROPERTIES_COMMENT_CHAR)
+            continue;
 
         // Check if we have a trailing \r because we are
         // reading a properties file produced on Windows.
-        tstring::size_type const buffLen = buffer.size ();
-
-        if (buffLen > 0 && buffer[0] == PROPERTIES_COMMENT_CHAR)
-            continue;
-
-        if (buffLen > 0 && buffer[buffLen-1] == LOG4CPLUS_TEXT('\r'))
+        if (buffer[buffLen-1] == LOG4CPLUS_TEXT('\r'))
             // Remove trailing 'Windows' \r.
             buffer.resize (buffLen - 1);
+
         tstring::size_type const idx = buffer.find('=');
         if (idx != OFString_npos)
         {

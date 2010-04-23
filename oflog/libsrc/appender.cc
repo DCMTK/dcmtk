@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2003-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include "dcmtk/oflog/appender.h"
 #include "dcmtk/oflog/layout.h"
@@ -22,24 +29,6 @@
 using namespace log4cplus;
 using namespace log4cplus::helpers;
 using namespace log4cplus::spi;
-
-
-template class log4cplus::helpers::SharedObjectPtr<Appender>;
-
-
-///////////////////////////////////////////////////////////////////////////////
-// file LOCAL methods
-///////////////////////////////////////////////////////////////////////////////
-
-namespace {
-    static
-    log4cplus::tstring asString(int i) {
-        log4cplus::tostringstream tmp;
-        tmp << i;
-        OFSTRINGSTREAM_GETOFSTRING(tmp, ret)
-        return ret;
-    }
-}
 
 
 
@@ -68,6 +57,14 @@ OnlyOnceErrorHandler::error(const log4cplus::tstring& err)
 
 
 
+void
+OnlyOnceErrorHandler::reset()
+{
+    firstTime = true;
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////////
 // log4cplus::Appender ctors
 ///////////////////////////////////////////////////////////////////////////////
@@ -91,7 +88,7 @@ Appender::Appender(const log4cplus::helpers::Properties properties)
    closed(false)
 {
     if(properties.exists( LOG4CPLUS_TEXT("layout") )) {
-       log4cplus::tstring factoryName = properties.getProperty( LOG4CPLUS_TEXT("layout") );
+        log4cplus::tstring factoryName = properties.getProperty( LOG4CPLUS_TEXT("layout") );
         LayoutFactory* factory = getLayoutFactoryRegistry().get(factoryName);
         if(factory == 0) {
             getLogLog().error(  LOG4CPLUS_TEXT("Cannot find LayoutFactory: \"")
@@ -103,7 +100,7 @@ Appender::Appender(const log4cplus::helpers::Properties properties)
         Properties layoutProperties =
                 properties.getPropertySubset( LOG4CPLUS_TEXT("layout.") );
         try {
-            log4cplus::tstring error = "";
+            tstring error;
             OFauto_ptr<Layout> newLayout(factory->createObject(layoutProperties, error));
             if(newLayout.get() == 0) {
                 getLogLog().error(  LOG4CPLUS_TEXT("Failed to create appender: ")
@@ -132,9 +129,9 @@ Appender::Appender(const log4cplus::helpers::Properties properties)
     Properties filterProps = properties.getPropertySubset( LOG4CPLUS_TEXT("filters.") );
     int filterCount = 0;
     FilterPtr filterChain;
-    while( filterProps.exists(asString(++filterCount)) ) {
-        tstring filterName = asString(filterCount);
-        tstring factoryName = filterProps.getProperty(filterName);
+    tstring filterName, factoryName;
+    while( filterProps.exists(filterName = convertIntegerToString(++filterCount)) ) {
+        factoryName = filterProps.getProperty(filterName);
         FilterFactory* factory = getFilterFactoryRegistry().get(factoryName);
 
         if(factory == 0) {
@@ -142,17 +139,18 @@ Appender::Appender(const log4cplus::helpers::Properties properties)
             getLogLog().error(err + factoryName);
             continue;
         }
-        FilterPtr filter_ = factory->createObject
-                      (filterProps.getPropertySubset(filterName + LOG4CPLUS_TEXT(".")));
-        if(filter_.get() == 0) {
+        tstring error;
+        FilterPtr tmp_filter = factory->createObject
+                      (filterProps.getPropertySubset(filterName + LOG4CPLUS_TEXT(".")), error);
+        if(tmp_filter.get() == 0) {
             tstring err = LOG4CPLUS_TEXT("Appender::ctor()- Failed to create filter: ");
-            getLogLog().error(err + filterName);
+            getLogLog().error(err + filterName + " " + error);
         }
         if(filterChain.get() == 0) {
-            filterChain = filter_;
+            filterChain = tmp_filter;
         }
         else {
-            filterChain->appendFilter(filter_);
+            filterChain->appendFilter(tmp_filter);
         }
     }
     setFilter(filterChain);
@@ -266,3 +264,5 @@ Appender::getLayout()
 {
     return layout.get();
 }
+
+

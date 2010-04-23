@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-08 10:50:40 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2010-04-23 11:04:46 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,8 +89,8 @@ public:
 
     /// this function is only used internally by OFLOG_FATAL and friends
     void forcedLog(log4cplus::LogLevel ll, const log4cplus::tstring& message,
-                   const char* file=NULL, int line=-1) const {
-        Logger::forcedLog(ll, message, file, line);
+                   const char* file=NULL, int line=-1, const char* function=NULL) const {
+        Logger::forcedLog(ll, message, file, line, function);
     }
 
     /** Get the logger's log level.
@@ -150,6 +150,9 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.8  2010-04-23 11:04:46  uli
+ * Updated oflog to log4cplus revision 1200 from PRODUCTION_1_0_x branch.
+ *
  * Revision 1.7  2010-03-08 10:50:40  uli
  * Don't use "using" to fix compilation with MSVC6.
  *

@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2001-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include "dcmtk/oflog/layout.h"
 #include "dcmtk/oflog/consap.h"
@@ -27,15 +34,15 @@ using namespace log4cplus::helpers;
 // log4cplus::ConsoleAppender ctors and dtor
 //////////////////////////////////////////////////////////////////////////////
 
-log4cplus::ConsoleAppender::ConsoleAppender(bool logToStdErr, bool immediateFlush)
-: logToStdErr(logToStdErr),
-  immediateFlush(immediateFlush)
+log4cplus::ConsoleAppender::ConsoleAppender(bool logToStdErr_, bool immediateFlush_)
+: logToStdErr(logToStdErr_),
+  immediateFlush(immediateFlush_)
 {
 }
 
 
 
-log4cplus::ConsoleAppender::ConsoleAppender(const log4cplus::helpers::Properties properties)
+log4cplus::ConsoleAppender::ConsoleAppender(const log4cplus::helpers::Properties properties, log4cplus::tstring&)
 : Appender(properties),
   logToStdErr(false),
   immediateFlush(false)
@@ -76,6 +83,10 @@ log4cplus::ConsoleAppender::close()
 // log4cplus::ConsoleAppender protected methods
 //////////////////////////////////////////////////////////////////////////////
 
+// Normally, append() methods do not need to be locked since they are
+// called by doAppend() which performs the locking.  However, this locks
+// on the LogLog instance, so we don't have multiple threads writing to
+// tcout and tcerr
 void
 log4cplus::ConsoleAppender::append(const spi::InternalLoggingEvent& event)
 {
@@ -92,3 +103,5 @@ log4cplus::ConsoleAppender::append(const spi::InternalLoggingEvent& event)
         }
     LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
+
+

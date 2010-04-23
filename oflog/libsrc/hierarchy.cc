@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2001-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include "dcmtk/oflog/hierarchy.h"
 #include "dcmtk/oflog/helpers/loglog.h"
@@ -25,18 +32,21 @@ using namespace log4cplus::helpers;
 // File "Local" methods
 //////////////////////////////////////////////////////////////////////////////
 
-namespace {
-    static
-    bool startsWith(log4cplus::tstring teststr, log4cplus::tstring substr) {
-        bool val = false;
-        if(teststr.length() > substr.length()) {
-            val =  teststr.substr(0, substr.length()) == substr;
-        }
+namespace
+{
 
-        return val;
-    }
+static
+bool startsWith(tstring const & teststr, tstring const & substr)
+{
+    bool val = false;
+    tstring::size_type const len = substr.length();
+    if (teststr.length() > len)
+        val = teststr.compare (0, len, substr) == 0;
+
+    return val;
 }
 
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -239,7 +249,7 @@ Hierarchy::shutdown()
 Logger
 Hierarchy::getInstanceImpl(const log4cplus::tstring& name, spi::LoggerFactory& factory)
 {
-     LoggerMap::iterator it = loggerPtrs.find(name);
+    LoggerMap::iterator it = loggerPtrs.find(name);
      if(it != loggerPtrs.end()) {
          return (*it).second;
      }
@@ -342,3 +352,4 @@ Hierarchy::updateChildren(ProvisionNode& pn, Logger logger)
         }
     }
 }
+

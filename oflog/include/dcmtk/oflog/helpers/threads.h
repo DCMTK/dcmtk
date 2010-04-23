@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2001-2010 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /** @file */
 
@@ -18,9 +25,7 @@
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
-#include "dcmtk/oflog/helpers/sleep.h"
 #include "dcmtk/oflog/helpers/pointer.h"
-//#include <memory>
 
 
 namespace log4cplus { namespace thread {
@@ -56,16 +61,12 @@ private:
 #ifndef LOG4CPLUS_SINGLE_THREADED
 
 LOG4CPLUS_EXPORT void blockAllSignals();
-
-#  ifdef LOG4CPLUS_USE_PTHREADS
-extern "C" void* threadStartFunc(void*);
-#  elif defined(LOG4CPLUS_USE_WIN32_THREADS)
-unsigned WINAPI threadStartFunc(void *);
-#  endif
-
-
 LOG4CPLUS_EXPORT void yield();
 LOG4CPLUS_EXPORT tstring getCurrentThreadName();
+
+
+struct ThreadStart;
+
 
 /**
  * There are many cross-platform C++ Threading libraries.  The goal of
@@ -93,14 +94,14 @@ private:
     bool running;
 
     // Friends.
+    friend struct ThreadStart;
+
 #  ifdef LOG4CPLUS_USE_PTHREADS
-    friend void* threadStartFunc(void*);
     pthread_t handle;
 
 #  elif defined(LOG4CPLUS_USE_WIN32_THREADS)
     HANDLE handle;
     unsigned thread_id;
-    friend unsigned WINAPI threadStartFunc(void *);
 
 #  endif
 
@@ -119,3 +120,4 @@ typedef helpers::SharedObjectPtr<AbstractThread> AbstractThreadPtr;
 
 
 #endif // _LOG4CPLUS_THREADS_HEADER_
+

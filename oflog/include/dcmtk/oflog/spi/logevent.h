@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2001-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /** @file */
 
@@ -41,49 +48,54 @@ namespace log4cplus {
              /**
               * Instantiate a LoggingEvent from the supplied parameters.
               *
-              * @param logger_arg   The logger of this event.
-              * @param ll_arg       The LogLevel of this event.
-              * @param message_arg  The message of this event.
-              * @param filename_arg Name of file where this event has occurred, can be NULL.
-              * @param line_arg     Line number in file specified by
-              *                     the <code>filename</code> parameter.
+              * @param logger   The logger of this event.
+              * @param ll_      The LogLevel of this event.
+              * @param message_ The message of this event.
+              * @param filename Name of file where this event has occurred,
+              * can be NULL.
+              * @param line_    Line number in file specified by
+              *                 the <code>filename</code> parameter.
               */
-             InternalLoggingEvent(const log4cplus::tstring& logger_arg,
-                                  LogLevel ll_arg,
-                                  const log4cplus::tstring& message_arg,
-                                  const char* filename_arg,
-                                  int line_arg)
-              : message(message_arg),
-                loggerName(logger_arg),
-                ll(ll_arg),
+             InternalLoggingEvent(const log4cplus::tstring& logger,
+                                  LogLevel ll_,
+                                  const log4cplus::tstring& message_,
+                                  const char* filename,
+                                  int line_,
+                                  const char* function_)
+              : message(message_),
+                loggerName(logger),
+                ll(ll_),
                 ndc(),
                 thread(),
                 timestamp(log4cplus::helpers::Time::gettimeofday()),
-                file( (  filename_arg
-                       ? LOG4CPLUS_C_STR_TO_TSTRING(filename_arg)
+                file( (  filename
+                       ? LOG4CPLUS_C_STR_TO_TSTRING(filename)
                        : log4cplus::tstring()) ),
-                line(line_arg),
+                line(line_),
+                function(function_),
                 threadCached(false),
                 ndcCached(false)
              {
              }
 
-             InternalLoggingEvent(const log4cplus::tstring& logger_arg,
-                                  LogLevel ll_arg,
-                                  const log4cplus::tstring& ndc_arg,
-                                  const log4cplus::tstring& message_arg,
-                                  const log4cplus::tstring& thread_arg,
-                                  log4cplus::helpers::Time time_arg,
-                                  const log4cplus::tstring& file_arg,
-                                  int line_arg)
-              : message(message_arg),
-                loggerName(logger_arg),
-                ll(ll_arg),
-                ndc(ndc_arg),
-                thread(thread_arg),
-                timestamp(time_arg),
-                file(file_arg),
-                line(line_arg),
+             InternalLoggingEvent(const log4cplus::tstring& logger,
+                                  LogLevel ll_,
+                                  const log4cplus::tstring& ndc_,
+                                  const log4cplus::tstring& message_,
+                                  const log4cplus::tstring& thread_,
+                                  log4cplus::helpers::Time time,
+                                  const log4cplus::tstring& file_,
+                                  int line_,
+                                  const log4cplus::tstring& function_)
+              : message(message_),
+                loggerName(logger),
+                ll(ll_),
+                ndc(ndc_),
+                thread(thread_),
+                timestamp(time),
+                file(file_),
+                line(line_),
+                function(function_),
                 threadCached(true),
                 ndcCached(true)
              {
@@ -98,6 +110,7 @@ namespace log4cplus {
                 timestamp(rhs.getTimestamp()),
                 file(rhs.getFile()),
                 line(rhs.getLine()),
+                function(rhs.getFunction()),
                 threadCached(true),
                 ndcCached(true)
              {
@@ -160,6 +173,9 @@ namespace log4cplus {
             /** The is the line where this log statement was written */
             int getLine() const { return line; }
 
+            /** The is the function where this log statement was written */
+            const log4cplus::tstring& getFunction() const { return function; }
+
           // public operators
             log4cplus::spi::InternalLoggingEvent&
             operator=(const log4cplus::spi::InternalLoggingEvent& rhs);
@@ -179,6 +195,7 @@ namespace log4cplus {
             log4cplus::helpers::Time timestamp;
             log4cplus::tstring file;
             int line;
+            log4cplus::tstring function;
             /** Indicates whether or not the Threadname has been retrieved. */
             mutable bool threadCached;
             /** Indicates whether or not the NDC has been retrieved. */
@@ -189,3 +206,4 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // _LOG4CPLUS_SPI_INTERNAL_LOGGING_EVENT_HEADER_
+

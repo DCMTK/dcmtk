@@ -12,8 +12,44 @@
 #endif
 
 /* */
+#ifdef HAVE_SYS_TYPES_H
+#define LOG4CPLUS_HAVE_SYS_TYPES_H
+#endif
+
+/* */
+#ifdef HAVE_SYS_SOCKET_H
+#define LOG4CPLUS_HAVE_SYS_SOCKET_H
+#endif
+
+/* */
+#ifdef HAVE_NETDB_H
+#define LOG4CPLUS_HAVE_NETDB_H
+#endif
+
+/* */
+#ifdef HAVE_UNISTD_H
+#define LOG4CPLUS_HAVE_UNISTD_H
+#endif
+
+/* */
 #ifdef HAVE_FTIME
 #define LOG4CPLUS_HAVE_FTIME
+#endif
+
+/* */
+#ifdef HAVE_GETADDRINFO
+#define LOG4CPLUS_HAVE_GETADDRINFO
+#endif
+
+/* */
+// This is from dcuid.cc
+#if defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME) && defined(_REENTRANT)
+#define LOG4CPLUS_HAVE_GETHOSTBYNAME_R
+#endif
+
+/* */
+#ifdef HAVE_GETPID
+#define LOG4CPLUS_HAVE_GETPID
 #endif
 
 /* */
@@ -71,7 +107,6 @@
 
 /* Define for compilers/standard libraries that support more than just the "C"
    locale. */
-// No idea when to define this one
 #undef LOG4CPLUS_WORKING_LOCALE
 
 /* Define to int if undefined. */

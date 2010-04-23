@@ -4,13 +4,21 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2001-2010 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
+#ifndef LOG4CPLUS_SINGLE_THREADED
 
 //#include <cassert>
 #define INCLUDE_CASSERT
@@ -23,12 +31,10 @@
 
 #include "dcmtk/oflog/config.h"
 
-#ifndef LOG4CPLUS_SINGLE_THREADED
-
 #if defined(LOG4CPLUS_USE_PTHREADS)
 #  include <sched.h>
 #  include <signal.h>
-#elif defined (LOG4CPLUS_USE_WIN32_THREADS)
+#elif defined (LOG4CPLUS_USE_WIN32_THREADS) && ! defined (_WIN32_WCE)
 #  include <process.h>
 #endif
 
@@ -38,9 +44,38 @@
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
 #include "dcmtk/oflog/helpers/timehelp.h"
-#include "dcmtk/oflog/helpers/loglog.h"
-
 #include "dcmtk/oflog/helpers/syncprims.h"
+
+
+namespace log4cplus { namespace thread {
+
+
+struct ThreadStart
+{
+#  ifdef LOG4CPLUS_USE_PTHREADS
+static void* threadStartFuncWorker(void *);
+#  elif defined(LOG4CPLUS_USE_WIN32_THREADS)
+static unsigned threadStartFuncWorker(void *);
+#  endif
+};
+
+
+} } // namespace log4cplus { namespace thread {
+
+
+namespace
+{
+
+#  ifdef LOG4CPLUS_USE_PTHREADS
+extern "C" void * threadStartFunc(void * param)
+#  elif defined(LOG4CPLUS_USE_WIN32_THREADS)
+static unsigned WINAPI threadStartFunc(void * param)
+#  endif
+{
+    return log4cplus::thread::ThreadStart::threadStartFuncWorker (param);
+}
+
+} // namespace
 
 
 namespace log4cplus { namespace thread {
@@ -79,10 +114,10 @@ deleteMutex(LOG4CPLUS_MUTEX_PTR_DECLARE m)
 
 #if defined(LOG4CPLUS_USE_PTHREADS)
 pthread_key_t*
-createPthreadKey()
+createPthreadKey(void (*cleanupfunc)(void *))
 {
     ::pthread_key_t* key = new ::pthread_key_t;
-    ::pthread_key_create(key, NULL);
+    ::pthread_key_create(key, cleanupfunc);
     return key;
 }
 #endif
@@ -95,11 +130,7 @@ blockAllSignals()
 #if defined (LOG4CPLUS_USE_PTHREADS)
     // Block all signals.
     ::sigset_t signal_set;
-#if defined (_DARWIN_C_SOURCE)
-    sigfillset (&signal_set);
-#else
     ::sigfillset (&signal_set);
-#endif // _DARWIN_C_SOURCE
     ::pthread_sigmask (SIG_BLOCK, &signal_set, 0);
 #endif
 }
@@ -128,12 +159,11 @@ getCurrentThreadName()
 
 
 #if defined(LOG4CPLUS_USE_PTHREADS)
-extern "C"
-    void*
-    threadStartFunc(void* arg)
+void*
+ThreadStart::threadStartFuncWorker(void * arg)
 #elif defined(LOG4CPLUS_USE_WIN32_THREADS)
-    unsigned WINAPI
-    threadStartFunc(void * arg)
+unsigned
+ThreadStart::threadStartFuncWorker(void * arg)
 #endif
 {
     blockAllSignals ();
@@ -225,9 +255,13 @@ AbstractThread::start()
         ::CloseHandle (handle);
         handle = INVALID_HANDLE_VALUE;
     }
-
-    HANDLE h = reinterpret_cast<HANDLE>(
+    HANDLE h;
+#if defined (_WIN32_WCE)
+    h = ::CreateThread  (0, 0, threadStartFunc, this, 0, &thread_id);
+#else
+    h = reinterpret_cast<HANDLE>(
         ::_beginthreadex (0, 0, threadStartFunc, this, 0, &thread_id));
+#endif
     if (! h)
     {
         removeReference ();

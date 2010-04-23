@@ -4,12 +4,19 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2002-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /** @file */
 
@@ -39,6 +46,9 @@ namespace log4cplus {
         public:
             virtual ~BaseFactory() = 0;
 
+            /**
+             * Returns the typename of the objects this factory creates.
+             */
             virtual log4cplus::tstring getTypeName() = 0;
         };
 
@@ -49,18 +59,16 @@ namespace log4cplus {
          */
         class LOG4CPLUS_EXPORT AppenderFactory : public BaseFactory {
         public:
+            typedef Appender ProductType;
+            typedef SharedAppenderPtr ProductPtr;
+
             AppenderFactory();
             virtual ~AppenderFactory() = 0;
 
             /**
              * Create an "Appender" object.
              */
-            virtual SharedAppenderPtr createObject(const log4cplus::helpers::Properties& props) = 0;
-
-            /**
-             * Returns the typename of the "Appender" objects this factory creates.
-             */
-            virtual log4cplus::tstring getTypeName() = 0;
+            virtual SharedAppenderPtr createObject(const log4cplus::helpers::Properties& props, log4cplus::tstring& error) = 0;
         };
 
 
@@ -71,6 +79,9 @@ namespace log4cplus {
          */
         class LOG4CPLUS_EXPORT LayoutFactory : public BaseFactory {
         public:
+            typedef Layout ProductType;
+            typedef OFauto_ptr<Layout> ProductPtr;
+
             LayoutFactory();
             virtual ~LayoutFactory() = 0;
 
@@ -78,11 +89,6 @@ namespace log4cplus {
              * Create a "Layout" object.
              */
             virtual OFauto_ptr<Layout> createObject(const log4cplus::helpers::Properties& props, log4cplus::tstring& error) = 0;
-
-            /**
-             * Returns the typename of the "Layout" objects this factory creates.
-             */
-            virtual log4cplus::tstring getTypeName() = 0;
         };
 
 
@@ -93,18 +99,16 @@ namespace log4cplus {
          */
         class LOG4CPLUS_EXPORT FilterFactory : public BaseFactory {
         public:
+            typedef Filter ProductType;
+            typedef FilterPtr ProductPtr;
+
             FilterFactory();
             virtual ~FilterFactory() = 0;
 
             /**
              * Create a "Filter" object.
              */
-            virtual FilterPtr createObject(const log4cplus::helpers::Properties& props) = 0;
-
-            /**
-             * Returns the typename of the "Filter" objects this factory creates.
-             */
-            virtual log4cplus::tstring getTypeName() = 0;
+            virtual FilterPtr createObject(const log4cplus::helpers::Properties& props, log4cplus::tstring& error) = 0;
         };
 
 
@@ -178,3 +182,4 @@ namespace log4cplus {
 
 
 #endif // LOG4CPLUS_SPI_FACTORY_HEADER_
+

@@ -4,16 +4,22 @@
 // Author:  Tad E. Smith
 //
 //
-// Copyright (C) Tad E. Smith  All rights reserved.
+// Copyright 2003-2009 Tad E. Smith
 //
-// This software is published under the terms of the Apache Software
-// License version 1.1, a copy of which has been included with this
-// distribution in the LICENSE.APL file.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-#include <cassert>
+//#include <cassert>
 //#include <vector>
-#include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/oflog/helpers/socket.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 
@@ -242,14 +248,12 @@ log4cplus::helpers::closeSocket(SOCKET_TYPE sock)
 long
 log4cplus::helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
 {
-    long res, read = 0;
+    long read = 0;
 
     do
     {
-        res = ::recv(sock,
-                     buffer.getBuffer() + read,
-                     static_cast<int>(buffer.getMaxSize() - read),
-                     0);
+        long res = ::recv(sock, buffer.getBuffer() + read,
+            static_cast<int>(buffer.getMaxSize() - read), 0);
         if( res <= 0 ) {
             return res;
         }
@@ -278,10 +282,10 @@ log4cplus::helpers::getHostname (bool fqdn)
 
     while (true)
     {
-        ret = ::gethostname (hn, hn_size - 1);
+        ret = ::gethostname (&hn[0], static_cast<int>(hn_size) - 1);
         if (ret == 0)
         {
-            hostname = hn;
+            hostname = &hn[0];
             break;
         }
         else if (ret != 0 && WSAGetLastError () == WSAEFAULT)

@@ -27,13 +27,12 @@
 //#include <stdexcept>
 #include "dcmtk/oflog/config.h"
 #if defined (LOG4CPLUS_USE_PTHREADS)
-//#  include <errno.h>
+#  define INCLUDE_CERRNO
+#  include "dcmtk/ofstd/ofstdinc.h"
+
 #  include <pthread.h>
 #  include <semaphore.h>
 #  include "dcmtk/oflog/helpers/timehelp.h"
-
-#  define INCLUDE_CERRNO
-#  include "dcmtk/ofstd/ofstdinc.h"
 
 #elif defined (LOG4CPLUS_USE_WIN32_THREADS)
 #  undef WIN32_LEAN_AND_MEAN
