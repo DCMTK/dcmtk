@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2009, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:50 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-23 14:38:34 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1040,8 +1040,10 @@ class DSRTypes
 
     /** check element value for correct value multipicity and type.
      ** @param  delem       DICOM element to be checked
-     *  @param  vm          value multiplicity (valid value: "1", "1-n", "2", "2-2n"),
-     *                      interpreted as cardinality (number of items) for sequences
+     *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
+     *                      (valid value: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                                    "3", "3-n", "3-3n", "4", "6", "16", "32"),
+     *                      interpreted as cardinality (number of items) for sequence attributes
      *  @param  type        value type (valid value: "1", "1C", "2", something else)
      *  @param  searchCond  optional flag indicating the status of a previous 'search' function call
      *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
@@ -1057,8 +1059,10 @@ class DSRTypes
      ** @param  dataset     reference to DICOM dataset from which the element should be retrieved.
      *                      (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
      *  @param  delem       DICOM element used to store the value
-     *  @param  vm          value multiplicity (valid value: "1", "1-n", "2", "2-2n"),
-     *                      interpreted as cardinality (number of items) for sequences
+     *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
+     *                      (valid value: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                                    "3", "3-n", "3-3n", "4", "6", "16", "32"),
+     *                      interpreted as cardinality (number of items) for sequence attributes
      *  @param  type        value type (valid value: "1", "1C", "2", something else which is not checked)
      *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
      ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
@@ -1075,8 +1079,10 @@ class DSRTypes
      *  @param  tagKey       DICOM tag specifying the attribute from which the string should be retrieved
      *  @param  stringValue  reference to character string in which the result should be stored.
      *                       (This parameter is automatically cleared if the tag could not be found.)
-     *  @param  vm           value multiplicity (valid value: "1", "1-n", "2", "2-2n"),
-     *                       interpreted as cardinality (number of items) for sequences
+     *  @param  vm           value multiplicity (according to the data dictionary) to be checked for.
+     *                       (valid value: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                                     "3", "3-n", "3-3n", "4", "6", "16", "32"),
+     *                       interpreted as cardinality (number of items) for sequence attributes
      *  @param  type         value type (valid value: "1", "1C", "2", something else which is not checked)
      *  @param  moduleName   optional module name to be printed (default: "SR document" if NULL)
      ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
@@ -1200,6 +1206,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.58  2010-04-23 14:38:34  joergr
+ *  Enhanced checking of element values using the new DcmElement::checkValue()
+ *  method.
+ *
  *  Revision 1.57  2009-10-13 14:57:50  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

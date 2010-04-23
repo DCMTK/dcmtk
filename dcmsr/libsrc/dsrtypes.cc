@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-01-21 14:51:30 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2010-04-23 14:38:39 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -810,7 +810,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
     /* NB: type 1C and 2C cannot be checked, assuming to be optional = type 3 */
     if (((type == "1") || (type == "2")) && searchCond.bad())
     {
-        DCMSR_WARN(tagName << " absent in " << module << " (type " << type << ")");
+        DCMSR_WARN(tagName << " " << tag << " absent in " << module << " (type " << type << ")");
         result = OFFalse;
     }
     else if (delem.isEmpty(OFTrue /*normalize*/))
@@ -818,15 +818,30 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
         /* however, type 1C should never be present with empty value */
         if (((type == "1") || (type == "1C")) && searchCond.good())
         {
-            DCMSR_WARN(tagName << " empty in " << module << " (type " << type << ")");
+            DCMSR_WARN(tagName << " " << tag << " empty in " << module << " (type " << type << ")");
             result = OFFalse;
         }
-    }
-    else if (((vm == "1") && (vmNum != 1)) ||
-             ((vm == "2") && (vmNum != 2)) || ((vm == "2-2n") && ((vmNum % 2) != 0)))
-    {
-        DCMSR_WARN(tagName << vmText << " != " << vm << " in " << module);
-        result = OFFalse;
+    } else {
+        const OFCondition checkResult = delem.checkValue(vm, OFTrue /*oldFormat*/);
+        if (checkResult == EC_ValueRepresentationViolated)
+        {
+            DCMSR_WARN(tagName << " " << tag << " violates VR definition in " << module);
+            result = OFFalse;
+        }
+        else if (checkResult == EC_ValueMultiplicityViolated)
+        {
+            DCMSR_WARN(tagName << " " << tag << vmText << " != " << vm << " in " << module);
+            result = OFFalse;
+        }
+        else if (checkResult == EC_MaximumLengthViolated)
+        {
+            DCMSR_WARN(tagName << " " << tag << " violates maximum VR length in " << module);
+            result = OFFalse;
+        }
+        else if (checkResult.bad())
+        {
+            DCMSR_DEBUG("INTERNAL ERROR while checking value of " << tagName << " " << tag << " in " << module);
+        }
     }
     return result;
 }
@@ -870,7 +885,7 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
         {
             const OFString tagName = DcmTag(tagKey).getTagName();
             const OFString module = (moduleName == NULL) ? "SR document" : moduleName;
-            DCMSR_WARN(tagName << " absent in " << module << " (type " << type << ")");
+            DCMSR_WARN(tagName << " " << tagKey << " absent in " << module << " (type " << type << ")");
         }
     }
     if (result.bad())
@@ -1423,6 +1438,10 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.63  2010-04-23 14:38:39  joergr
+ *  Enhanced checking of element values using the new DcmElement::checkValue()
+ *  method.
+ *
  *  Revision 1.62  2010-01-21 14:51:30  joergr
  *  Switched to new stream variant of method convertToMarkupString() where
  *  appropriate.
