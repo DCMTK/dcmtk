@@ -103,6 +103,71 @@ Changes between releases are documented here.
 
 **** Changes from 2010.04.23 (riesmeier)
 
+- Added new method to all VR classes which checks whether the stored value
+  conforms to the VR definition and to the specified VM.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/include/dcmtk/dcmdata/dcvrae.h
+           dcmdata/include/dcmtk/dcmdata/dcvras.h
+           dcmdata/include/dcmtk/dcmdata/dcvrat.h
+           dcmdata/include/dcmtk/dcmdata/dcvrcs.h
+           dcmdata/include/dcmtk/dcmdata/dcvrda.h
+           dcmdata/include/dcmtk/dcmdata/dcvrds.h
+           dcmdata/include/dcmtk/dcmdata/dcvrdt.h
+           dcmdata/include/dcmtk/dcmdata/dcvrfd.h
+           dcmdata/include/dcmtk/dcmdata/dcvrfl.h
+           dcmdata/include/dcmtk/dcmdata/dcvris.h
+           dcmdata/include/dcmtk/dcmdata/dcvrlo.h
+           dcmdata/include/dcmtk/dcmdata/dcvrlt.h
+           dcmdata/include/dcmtk/dcmdata/dcvrobow.h
+           dcmdata/include/dcmtk/dcmdata/dcvrof.h
+           dcmdata/include/dcmtk/dcmdata/dcvrpn.h
+           dcmdata/include/dcmtk/dcmdata/dcvrsh.h
+           dcmdata/include/dcmtk/dcmdata/dcvrsl.h
+           dcmdata/include/dcmtk/dcmdata/dcvrss.h
+           dcmdata/include/dcmtk/dcmdata/dcvrst.h
+           dcmdata/include/dcmtk/dcmdata/dcvrtm.h
+           dcmdata/include/dcmtk/dcmdata/dcvrui.h
+           dcmdata/include/dcmtk/dcmdata/dcvrul.h
+           dcmdata/include/dcmtk/dcmdata/dcvrus.h
+           dcmdata/include/dcmtk/dcmdata/dcvrut.h
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcvrae.cc
+           dcmdata/libsrc/dcvras.cc
+           dcmdata/libsrc/dcvrat.cc
+           dcmdata/libsrc/dcvrcs.cc
+           dcmdata/libsrc/dcvrda.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmdata/libsrc/dcvrdt.cc
+           dcmdata/libsrc/dcvrfd.cc
+           dcmdata/libsrc/dcvrfl.cc
+           dcmdata/libsrc/dcvris.cc
+           dcmdata/libsrc/dcvrlo.cc
+           dcmdata/libsrc/dcvrlt.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrof.cc
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/libsrc/dcvrsh.cc
+           dcmdata/libsrc/dcvrsl.cc
+           dcmdata/libsrc/dcvrss.cc
+           dcmdata/libsrc/dcvrst.cc
+           dcmdata/libsrc/dcvrtm.cc
+           dcmdata/libsrc/dcvrui.cc
+           dcmdata/libsrc/dcvrul.cc
+           dcmdata/libsrc/dcvrus.cc
+           dcmdata/libsrc/dcvrut.cc
+
+- Enhanced checking of element values using the new DcmElement::checkValue()
+  method.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrtypes.cc
+
+- Renamed static helper function checkValue() to checkStringValue().
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/tests/tstchval.cc
+
 - Disable compiler warnings about "new behavior" when initializing the elements
   of an array (reported by VisualStudio 2005 and newer).
   Affects: config/include/dcmtk/config/cfwin32.h.in
