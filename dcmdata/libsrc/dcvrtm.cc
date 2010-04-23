@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:35:49 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2010-04-23 14:30:35 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,6 +90,18 @@ OFCondition DcmTime::copyFrom(const DcmObject& rhs)
 DcmEVR DcmTime::ident() const
 {
     return EVR_TM;
+}
+
+
+OFCondition DcmTime::checkValue(const OFString &vm,
+                                const OFBool oldFormat)
+{
+    OFString strVal;
+    /* get "raw value" without any modifications (if possible) */
+    OFCondition l_error = getStringValue(strVal);
+    if (l_error.good())
+        l_error = DcmTime::checkStringValue(strVal, vm, oldFormat);
+    return l_error;
 }
 
 
@@ -346,9 +358,9 @@ OFCondition DcmTime::getTimeZoneFromString(const OFString &dicomTimeZone,
 // ********************************
 
 
-OFCondition DcmTime::checkValue(const OFString &value,
-                                const OFString &vm,
-                                const OFBool oldFormat)
+OFCondition DcmTime::checkStringValue(const OFString &value,
+                                      const OFString &vm,
+                                      const OFBool oldFormat)
 {
     OFCondition result = EC_Normal;
     const size_t valLen = value.length();
@@ -392,6 +404,10 @@ OFCondition DcmTime::checkValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
+** Revision 1.32  2010-04-23 14:30:35  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.31  2009-08-07 14:35:49  joergr
 ** Enhanced isEmpty() method by checking whether the data element value consists
 ** of non-significant characters only.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:35:49 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2010-04-23 14:30:35 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,6 +96,18 @@ OFCondition DcmUniqueIdentifier::copyFrom(const DcmObject& rhs)
 DcmEVR DcmUniqueIdentifier::ident() const
 {
     return EVR_UI;
+}
+
+
+OFCondition DcmUniqueIdentifier::checkValue(const OFString &vm,
+                                            const OFBool /*oldFormat*/)
+{
+    OFString strVal;
+    /* get "raw value" without any modifications (if possible) */
+    OFCondition l_error = getStringValue(strVal);
+    if (l_error.good())
+        l_error = DcmUniqueIdentifier::checkStringValue(strVal, vm);
+    return l_error;
 }
 
 
@@ -194,16 +206,20 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
 // ********************************
 
 
-OFCondition DcmUniqueIdentifier::checkValue(const OFString &value,
-                                            const OFString &vm)
+OFCondition DcmUniqueIdentifier::checkStringValue(const OFString &value,
+                                                  const OFString &vm)
 {
-    return DcmByteString::checkValue(value, vm, "ui", 9, MAX_UI_LENGTH);
+    return DcmByteString::checkStringValue(value, vm, "ui", 9, MAX_UI_LENGTH);
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
+** Revision 1.31  2010-04-23 14:30:35  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.30  2009-08-07 14:35:49  joergr
 ** Enhanced isEmpty() method by checking whether the data element value consists
 ** of non-significant characters only.

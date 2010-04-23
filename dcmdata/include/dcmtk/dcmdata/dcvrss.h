@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmSignedShort
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:07 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrss.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-23 14:25:27 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +77,7 @@ class DcmSignedShort
     {
       return new DcmSignedShort(*this);
     }
-    
+
     /** Virtual object copying. This method can be used for DcmObject
      *  and derived classes to get a deep copy of an object. Internally
      *  the assignment operator is called if the given DcmObject parameter
@@ -91,12 +90,22 @@ class DcmSignedShort
      *                class type as "this" object
      *  @return EC_Normal if copying was successful, error otherwise
      */
-    virtual OFCondition copyFrom(const DcmObject& rhs);    
+    virtual OFCondition copyFrom(const DcmObject& rhs);
 
     /** get element type identifier
      *  @return type identifier of this class (EVR_SS)
      */
     virtual DcmEVR ident() const;
+
+    /** check whether stored value conforms to the VR and to the specified VM
+     *  @param vm value multiplicity (according to the data dictionary) to be checked for.
+     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                   "3", "3-n", "3-3n", "4", "6", "16", "32")
+     *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    virtual OFCondition checkValue(const OFString &vm,
+                                   const OFBool oldFormat = OFFalse);
 
     /** get value multiplicity.
      *  The number of entries can be determined by "getVM()".
@@ -180,6 +189,10 @@ class DcmSignedShort
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrss.h,v $
+** Revision 1.24  2010-04-23 14:25:27  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.23  2009-11-04 09:58:07  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

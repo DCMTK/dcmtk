@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmDecimalString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-22 09:31:30 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2010-04-23 14:25:27 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,6 +97,16 @@ class DcmDecimalString
      */
     virtual DcmEVR ident() const;
 
+    /** check whether stored value conforms to the VR and to the specified VM
+     *  @param vm value multiplicity (according to the data dictionary) to be checked for.
+     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                   "3", "3-n", "3-3n", "4", "6", "16", "32")
+     *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    virtual OFCondition checkValue(const OFString &vm,
+                                   const OFBool oldFormat = OFFalse);
+
     /** get particular float value
      *  @param doubleVal reference to result variable
      *  @param pos index of the value to be retrieved (0..vm-1)
@@ -133,8 +143,8 @@ class DcmDecimalString
      *                   "3", "3-n", "3-3n", "4", "6", "16", "32")
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
-    static OFCondition checkValue(const OFString &value,
-                                  const OFString &vm = "1-n");
+    static OFCondition checkStringValue(const OFString &value,
+                                        const OFString &vm = "1-n");
 };
 
 
@@ -144,6 +154,10 @@ class DcmDecimalString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.h,v $
+** Revision 1.23  2010-04-23 14:25:27  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.22  2010-04-22 09:31:30  joergr
 ** Revised misleading parameter documentation for the checkValue() method.
 **

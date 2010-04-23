@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSignedLong
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-23 14:30:34 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,6 +86,14 @@ OFCondition DcmSignedLong::copyFrom(const DcmObject& rhs)
 DcmEVR DcmSignedLong::ident() const
 {
     return EVR_SL;
+}
+
+
+OFCondition DcmSignedLong::checkValue(const OFString &vm,
+                                      const OFBool /*oldFormat*/)
+{
+    /* check VM only */
+    return DcmElement::checkVM(getVM(), vm);
 }
 
 
@@ -311,6 +319,10 @@ OFCondition DcmSignedLong::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.cc,v $
+** Revision 1.31  2010-04-23 14:30:34  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.30  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

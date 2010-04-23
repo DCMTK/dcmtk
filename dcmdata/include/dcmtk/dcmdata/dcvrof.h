@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmOtherFloat
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:07 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrof.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-23 14:25:27 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,6 +97,14 @@ class DcmOtherFloat
      */
     virtual DcmEVR ident() const;
 
+    /** check whether stored value conforms to the VR and to the specified VM
+     *  @param vm parameter not used for this VR
+     *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
+     *  @return always returns EC_Normal, i.e. currently no checks are performed
+     */
+    virtual OFCondition checkValue(const OFString &vm,
+                                   const OFBool oldFormat = OFFalse);
+
     /** get value multiplicity
      *  @return always returns 1 (according to the DICOM standard)
      */
@@ -111,6 +118,10 @@ class DcmOtherFloat
 /*
  * CVS/RCS Log:
  * $Log: dcvrof.h,v $
+ * Revision 1.7  2010-04-23 14:25:27  joergr
+ * Added new method to all VR classes which checks whether the stored value
+ * conforms to the VR definition and to the specified VM.
+ *
  * Revision 1.6  2009-11-04 09:58:07  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

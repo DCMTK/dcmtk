@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmFloatingPointSingle
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-23 14:30:34 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,6 +88,14 @@ OFCondition DcmFloatingPointSingle::copyFrom(const DcmObject& rhs)
 DcmEVR DcmFloatingPointSingle::ident() const
 {
     return EVR_FL;
+}
+
+
+OFCondition DcmFloatingPointSingle::checkValue(const OFString &vm,
+                                               const OFBool /*oldFormat*/)
+{
+    /* check VM only, further checks on the floating point values could be added later */
+    return DcmElement::checkVM(getVM(), vm);
 }
 
 
@@ -308,6 +316,10 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
+** Revision 1.34  2010-04-23 14:30:34  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.33  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

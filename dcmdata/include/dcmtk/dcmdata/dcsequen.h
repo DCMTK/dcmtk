@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:44 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-23 14:27:30 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,6 +128,17 @@ public:
                        const int level = 0,
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
+
+    /** check whether stored value conforms to the VR and to the specified VM
+     *  @param card cardinality (number of items) to be checked for.
+     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                   "3", "3-n", "3-3n", "4", "6", "16", "32"),
+     *     parameter used to specify the value multiplicity for non-sequence attributes
+     *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    virtual OFCondition checkValue(const OFString &card,
+                                   const OFBool oldFormat = OFFalse);
 
     /** get value multiplicity
      *  @return always returns 1 (according to the DICOM standard)
@@ -576,6 +587,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.55  2010-04-23 14:27:30  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.54  2010-03-01 09:08:44  uli
 ** Removed some unnecessary include directives in the headers.
 **

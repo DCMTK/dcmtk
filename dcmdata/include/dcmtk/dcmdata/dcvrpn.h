@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmPersonName
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-22 09:31:30 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2010-04-23 14:25:27 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,6 +96,16 @@ class DcmPersonName
      *  @return type identifier of this class (EVR_PN)
      */
     virtual DcmEVR ident() const;
+
+    /** check whether stored value conforms to the VR and to the specified VM
+     *  @param vm value multiplicity (according to the data dictionary) to be checked for.
+     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                   "3", "3-n", "3-3n", "4", "6", "16", "32")
+     *  @param oldFormat support old ACR/NEMA format if OFTrue (no '^' separator)
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    virtual OFCondition checkValue(const OFString &vm,
+                                   const OFBool oldFormat = OFFalse);
 
     /** get a copy of a particular string component
      *  @param stringVal variable in which the result value is stored
@@ -258,9 +268,9 @@ class DcmPersonName
      *  @param oldFormat support old ACR/NEMA name format if OFTrue (i.e. without "^" delimiters)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
-    static OFCondition checkValue(const OFString &value,
-                                  const OFString &vm = "1-n",
-                                  const OFBool oldFormat = OFTrue);
+    static OFCondition checkStringValue(const OFString &value,
+                                        const OFString &vm = "1-n",
+                                        const OFBool oldFormat = OFTrue);
 };
 
 
@@ -270,6 +280,10 @@ class DcmPersonName
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.h,v $
+** Revision 1.23  2010-04-23 14:25:27  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.22  2010-04-22 09:31:30  joergr
 ** Revised misleading parameter documentation for the checkValue() method.
 **

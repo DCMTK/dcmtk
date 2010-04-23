@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-04 17:07:51 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2010-04-23 14:30:34 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,6 +95,14 @@ OFCondition DcmOtherByteOtherWord::copyFrom(const DcmObject& rhs)
 DcmEVR DcmOtherByteOtherWord::ident() const
 {
     return getTag().getEVR();
+}
+
+
+OFCondition DcmOtherByteOtherWord::checkValue(const OFString & /*vm*/,
+                                              const OFBool /*oldFormat*/)
+{
+    /* currently no checks are performed */
+    return EC_Normal;
 }
 
 
@@ -731,6 +739,10 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.60  2010-04-23 14:30:34  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.59  2009-12-04 17:07:51  joergr
 ** Sightly modified some log messages.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSignedShort
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-23 14:30:35 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,6 +86,14 @@ OFCondition DcmSignedShort::copyFrom(const DcmObject& rhs)
 DcmEVR DcmSignedShort::ident() const
 {
     return EVR_SS;
+}
+
+
+OFCondition DcmSignedShort::checkValue(const OFString &vm,
+                                       const OFBool /*oldFormat*/)
+{
+    /* check VM only */
+    return DcmElement::checkVM(getVM(), vm);
 }
 
 
@@ -296,6 +304,10 @@ OFCondition DcmSignedShort::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrss.cc,v $
+** Revision 1.29  2010-04-23 14:30:35  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.28  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

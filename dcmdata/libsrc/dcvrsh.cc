@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmShortString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:35:49 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2010-04-23 14:30:34 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,6 +86,18 @@ DcmEVR DcmShortString::ident() const
 }
 
 
+OFCondition DcmShortString::checkValue(const OFString &vm,
+                                       const OFBool /*oldFormat*/)
+{
+    OFString strVal;
+    /* get "raw value" without any modifications (if possible) */
+    OFCondition l_error = getStringValue(strVal);
+    if (l_error.good())
+        l_error = DcmShortString::checkStringValue(strVal, vm);
+    return l_error;
+}
+
+
 // ********************************
 
 
@@ -103,16 +115,20 @@ OFCondition DcmShortString::getOFString(OFString &stringVal,
 // ********************************
 
 
-OFCondition DcmShortString::checkValue(const OFString &value,
-                                       const OFString &vm)
+OFCondition DcmShortString::checkStringValue(const OFString &value,
+                                             const OFString &vm)
 {
-    return DcmByteString::checkValue(value, vm, "lo", 12 /*, maxLength: 16 characters */);
+    return DcmByteString::checkStringValue(value, vm, "lo", 12 /*, maxLength: 16 characters */);
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsh.cc,v $
+** Revision 1.19  2010-04-23 14:30:34  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.18  2009-08-07 14:35:49  joergr
 ** Enhanced isEmpty() method by checking whether the data element value consists
 ** of non-significant characters only.

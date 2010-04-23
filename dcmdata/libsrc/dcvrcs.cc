@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmCodeString
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrcs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-23 14:30:34 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,6 +92,18 @@ DcmEVR DcmCodeString::ident() const
 }
 
 
+OFCondition DcmCodeString::checkValue(const OFString &vm,
+                                      const OFBool /*oldFormat*/)
+{
+    OFString strVal;
+    /* get "raw value" without any modifications (if possible) */
+    OFCondition l_error = getStringValue(strVal);
+    if (l_error.good())
+        l_error = DcmCodeString::checkStringValue(strVal, vm);
+    return l_error;
+}
+
+
 // ********************************
 
 
@@ -137,16 +148,20 @@ OFBool DcmCodeString::checkVR(const OFString &value,
 // ********************************
 
 
-OFCondition DcmCodeString::checkValue(const OFString &value,
-                                      const OFString &vm)
+OFCondition DcmCodeString::checkStringValue(const OFString &value,
+                                            const OFString &vm)
 {
-    return DcmByteString::checkValue(value, vm, "cs", 10, MAX_CS_LENGTH);
+    return DcmByteString::checkStringValue(value, vm, "cs", 10, MAX_CS_LENGTH);
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.cc,v $
+** Revision 1.21  2010-04-23 14:30:34  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.20  2009-11-04 09:58:10  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

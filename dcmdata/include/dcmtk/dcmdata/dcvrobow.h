@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-08-15 09:26:31 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-23 14:25:27 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,6 +96,14 @@ class DcmOtherByteOtherWord
      *  @return type identifier of this class
      */
     virtual DcmEVR ident() const;
+
+    /** check whether stored value conforms to the VR and to the specified VM
+     *  @param vm parameter not used for this VR
+     *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
+     *  @return always returns EC_Normal, i.e. currently no checks are performed
+     */
+    virtual OFCondition checkValue(const OFString &vm,
+                                   const OFBool oldFormat = OFFalse);
 
     /** get value multiplicity
      *  @return always returns 1 (according to the DICOM standard)
@@ -321,6 +329,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
+** Revision 1.33  2010-04-23 14:25:27  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.32  2008-08-15 09:26:31  meichel
 ** Under certain conditions (odd length compressed pixel data fragments)
 **   class DcmOtherByteOtherWord needs to load the attribute value into main

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *           Value Representation UT is defined in Correction Proposal 101
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:03:00 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2010-04-23 14:30:35 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,6 +86,18 @@ DcmEVR DcmUnlimitedText::ident() const
 }
 
 
+OFCondition DcmUnlimitedText::checkValue(const OFString & /*vm*/,
+                                         const OFBool /*oldFormat*/)
+{
+    OFString strVal;
+    /* get "raw value" without any modifications (if possible) */
+    OFCondition l_error = getStringValue(strVal);
+    if (l_error.good())
+        l_error = DcmUnlimitedText::checkStringValue(strVal);
+    return l_error;
+}
+
+
 unsigned long DcmUnlimitedText::getVM()
 {
     /* value multiplicity is 1 for non-empty string, 0 otherwise */
@@ -120,15 +132,19 @@ OFCondition DcmUnlimitedText::getOFStringArray(OFString &strValue,
 // ********************************
 
 
-OFCondition DcmUnlimitedText::checkValue(const OFString &value)
+OFCondition DcmUnlimitedText::checkStringValue(const OFString &value)
 {
-    return DcmByteString::checkValue(value, "" /* vm */, "lt", 14 /*, maxLength: 4294967295 characters */);
+    return DcmByteString::checkStringValue(value, "" /* vm */, "lt", 14 /*, maxLength: 4294967295 characters */);
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.cc,v $
+** Revision 1.14  2010-04-23 14:30:35  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.13  2009-08-03 09:03:00  joergr
 ** Added methods that check whether a given string value conforms to the VR and
 ** VM definitions of the DICOM standards.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmShortText
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:03:00 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2010-04-23 14:30:35 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,6 +85,18 @@ DcmEVR DcmShortText::ident() const
 }
 
 
+OFCondition DcmShortText::checkValue(const OFString & /*vm*/,
+                                     const OFBool /*oldFormat*/)
+{
+    OFString strVal;
+    /* get "raw value" without any modifications (if possible) */
+    OFCondition l_error = getStringValue(strVal);
+    if (l_error.good())
+        l_error = DcmShortText::checkStringValue(strVal);
+    return l_error;
+}
+
+
 unsigned long DcmShortText::getVM()
 {
     /* value multiplicity is 1 for non-empty string, 0 otherwise */
@@ -118,15 +130,19 @@ OFCondition DcmShortText::getOFStringArray(OFString &stringVal,
 // ********************************
 
 
-OFCondition DcmShortText::checkValue(const OFString &value)
+OFCondition DcmShortText::checkStringValue(const OFString &value)
 {
-    return DcmByteString::checkValue(value, "" /* vm */, "lt", 14 /*, maxLength: 1024 characters */);
+    return DcmByteString::checkStringValue(value, "" /* vm */, "lt", 14 /*, maxLength: 1024 characters */);
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrst.cc,v $
+** Revision 1.19  2010-04-23 14:30:35  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.18  2009-08-03 09:03:00  joergr
 ** Added methods that check whether a given string value conforms to the VR and
 ** VM definitions of the DICOM standards.

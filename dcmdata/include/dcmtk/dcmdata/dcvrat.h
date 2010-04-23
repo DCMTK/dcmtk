@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmAttributeTag
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-23 14:25:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrat.h,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,6 +97,16 @@ class DcmAttributeTag
      *  @return type identifier of this class (EVR_AT)
      */
     virtual DcmEVR ident() const;
+
+    /** check whether stored value conforms to the VR and to the specified VM
+     *  @param vm value multiplicity (according to the data dictionary) to be checked for.
+     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                   "3", "3-n", "3-3n", "4", "6", "16", "32")
+     *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    virtual OFCondition checkValue(const OFString &vm,
+                                   const OFBool oldFormat = OFFalse);
 
     /** get value multiplicity
      *  @return number of tag value pairs (group,element)
@@ -181,6 +191,19 @@ class DcmAttributeTag
      *  @return status, EC_Normal if value length is correct, an error code otherwise
      */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
+
+    /* --- static helper functions --- */
+
+    /** check whether given string value conforms to the VR "AT" (Attribute Tag)
+     *  and to the specified VM.
+     *  @param value string value to be checked (possibly multi-valued)
+     *  @param vm value multiplicity (according to the data dictionary) to be checked for.
+     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                   "3", "3-n", "3-3n", "4", "6", "16", "32")
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    static OFCondition checkStringValue(const OFString &value,
+                                        const OFString &vm = "1-n");
 };
 
 
@@ -190,6 +213,10 @@ class DcmAttributeTag
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.h,v $
+** Revision 1.27  2010-04-23 14:25:27  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.26  2009-11-04 09:58:07  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

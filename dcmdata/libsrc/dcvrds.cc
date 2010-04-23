@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDecimalString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-01-21 15:05:59 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2010-04-23 14:30:34 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,6 +88,18 @@ OFCondition DcmDecimalString::copyFrom(const DcmObject& rhs)
 DcmEVR DcmDecimalString::ident() const
 {
     return EVR_DS;
+}
+
+
+OFCondition DcmDecimalString::checkValue(const OFString &vm,
+                                         const OFBool /*oldFormat*/)
+{
+    OFString strVal;
+    /* get "raw value" without any modifications (if possible) */
+    OFCondition l_error = getStringValue(strVal);
+    if (l_error.good())
+        l_error = DcmDecimalString::checkStringValue(strVal, vm);
+    return l_error;
 }
 
 
@@ -161,16 +173,20 @@ OFCondition DcmDecimalString::writeXML(STD_NAMESPACE ostream &out,
 // ********************************
 
 
-OFCondition DcmDecimalString::checkValue(const OFString &value,
-                                         const OFString &vm)
+OFCondition DcmDecimalString::checkStringValue(const OFString &value,
+                                               const OFString &vm)
 {
-    return DcmByteString::checkValue(value, vm, "ds", 6, MAX_DS_LENGTH);
+    return DcmByteString::checkStringValue(value, vm, "ds", 6, MAX_DS_LENGTH);
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
+** Revision 1.25  2010-04-23 14:30:34  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.24  2010-01-21 15:05:59  joergr
 ** Switched to new stream variant of method convertToMarkupString() where
 ** appropriate.

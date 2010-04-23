@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmShortText
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:05:30 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2010-04-23 14:25:27 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,6 +96,14 @@ class DcmShortText
      */
     virtual DcmEVR ident() const;
 
+    /** check whether stored value conforms to the VR and to the specified VM
+     *  @param vm parameter not used for this VR
+     *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    virtual OFCondition checkValue(const OFString &vm,
+                                   const OFBool oldFormat = OFFalse);
+
     /** get the value multiplicity.
      *  Since the backslash "\" is not regarded as a separator the value
      *  multiplicity is always 1.
@@ -127,7 +135,7 @@ class DcmShortText
      *  @param value string value to be checked (possibly multi-valued)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
-    static OFCondition checkValue(const OFString &value);
+    static OFCondition checkStringValue(const OFString &value);
 };
 
 
@@ -136,6 +144,10 @@ class DcmShortText
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrst.h,v $
+** Revision 1.17  2010-04-23 14:25:27  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.16  2009-08-03 09:05:30  joergr
 ** Added methods that check whether a given string value conforms to the VR and
 ** VM definitions of the DICOM standards.

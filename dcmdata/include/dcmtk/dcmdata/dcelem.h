@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-22 09:01:18 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2010-04-23 14:28:00 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -213,6 +213,17 @@ class DcmElement
      */
     virtual OFCondition clear();
 
+    /** check whether stored value conforms to the VR and to the specified VM
+     *  @param vm value multiplicity (according to the data dictionary) to be checked for.
+     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                   "3", "3-n", "3-3n", "4", "6", "16", "32"),
+     *    interpreted as cardinality (number of items) for sequence attributes
+     *  @param oldFormat support old ACR/NEMA format for certain VRs (DA, TM, PN) if OFTrue
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    virtual OFCondition checkValue(const OFString &vm,
+                                   const OFBool oldFormat = OFFalse);
+
     /** this method loads all attribute values maintained by this object and
      *  all sub-objects (in case of a container such as DcmDataset) into memory.
      *  After a call to this method, the file from which a dataset was read may safely
@@ -222,9 +233,7 @@ class DcmElement
      */
     virtual OFCondition loadAllDataIntoMemory();
 
-    // GET-Operations
-
-    // get copies of individual components
+    // GET operations
 
     /** retrieve a single value of type Uint8. Requires element to be of corresponding VR,
      *  otherwise an error is returned.
@@ -403,10 +412,7 @@ class DcmElement
      */
     OFCondition detachValueField(OFBool copy = OFFalse);
 
-
-// PUT-Operations
-
-    // Sets the value of a complete (possibly multi-valued) string attribute.
+    // PUT operations
 
     /** replace the element value by a copy of the given string (which is possibly multi-valued).
      *  Requires element to be of corresponding VR, otherwise an error is returned.
@@ -811,6 +817,10 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
+** Revision 1.46  2010-04-23 14:28:00  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.45  2010-04-22 09:01:18  joergr
 ** Added support for further VM values ("1-8", "1-99", "16", "32") to be checked.
 **

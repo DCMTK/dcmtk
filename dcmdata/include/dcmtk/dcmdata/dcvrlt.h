@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmLongText
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:45 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-23 14:25:27 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,6 +95,14 @@ class DcmLongText
      */
     virtual DcmEVR ident() const;
 
+    /** check whether stored value conforms to the VR and to the specified VM
+     *  @param vm parameter not used for this VR
+     *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    virtual OFCondition checkValue(const OFString &vm,
+                                   const OFBool oldFormat = OFFalse);
+
     /** get the value multiplicity.
      *  Since the backslash "\" is not regarded as a separator the value
      *  multiplicity is always 1.
@@ -126,7 +134,7 @@ class DcmLongText
      *  @param value string value to be checked (possibly multi-valued)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
-    static OFCondition checkValue(const OFString &value);
+    static OFCondition checkStringValue(const OFString &value);
 };
 
 
@@ -136,6 +144,10 @@ class DcmLongText
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlt.h,v $
+** Revision 1.18  2010-04-23 14:25:27  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.17  2010-03-01 09:08:45  uli
 ** Removed some unnecessary include directives in the headers.
 **

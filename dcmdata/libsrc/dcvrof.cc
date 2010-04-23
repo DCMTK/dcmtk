@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation of class DcmOtherFloat
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:11 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrof.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-23 14:30:34 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,6 +84,14 @@ DcmEVR DcmOtherFloat::ident() const
 }
 
 
+OFCondition DcmOtherFloat::checkValue(const OFString & /*vm*/,
+                                      const OFBool /*oldFormat*/)
+{
+    /* currently no checks are performed */
+    return EC_Normal;
+}
+
+
 unsigned long DcmOtherFloat::getVM()
 {
     /* value multiplicity for OF is defined as 1 */
@@ -95,6 +102,10 @@ unsigned long DcmOtherFloat::getVM()
 /*
  * CVS/RCS Log:
  * $Log: dcvrof.cc,v $
+ * Revision 1.5  2010-04-23 14:30:34  joergr
+ * Added new method to all VR classes which checks whether the stored value
+ * conforms to the VR definition and to the specified VM.
+ *
  * Revision 1.4  2009-11-04 09:58:11  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

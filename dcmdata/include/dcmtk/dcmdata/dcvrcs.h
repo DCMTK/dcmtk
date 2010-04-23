@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmCodeString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-22 09:31:30 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2010-04-23 14:25:27 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,6 +97,16 @@ class DcmCodeString
      */
     virtual DcmEVR ident() const;
 
+    /** check whether stored value conforms to the VR and to the specified VM
+     *  @param vm value multiplicity (according to the data dictionary) to be checked for.
+     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                   "3", "3-n", "3-3n", "4", "6", "16", "32")
+     *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    virtual OFCondition checkValue(const OFString &vm,
+                                   const OFBool oldFormat = OFFalse);
+
     /** get a copy of a particular string component
      *  @param stringVal variable in which the result value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -112,7 +122,7 @@ class DcmCodeString
     /** check whether given value conforms to value representation CS (Code String).
      *  Valid characters are: A-Z, 0-9, _ and ' ' (space).  The maximum length is 16.
      *  NB: This method is only used by the DicomDirInterface class and might be
-     *      replaced by the following method (checkValue) in the future.
+     *      replaced by the following method (checkStringValue) in the future.
      *  @param value string value to be checked (single value only)
      *  @param pos returns index of first invalid character (0..n-1) if not NULL.
      *    Points to trailing zero byte (eos) if value is valid.
@@ -131,8 +141,8 @@ class DcmCodeString
      *                   "3", "3-n", "3-3n", "4", "6", "16", "32")
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
-    static OFCondition checkValue(const OFString &value,
-                                  const OFString &vm = "1-n");
+    static OFCondition checkStringValue(const OFString &value,
+                                        const OFString &vm = "1-n");
 };
 
 
@@ -142,6 +152,10 @@ class DcmCodeString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.h,v $
+** Revision 1.22  2010-04-23 14:25:27  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
 ** Revision 1.21  2010-04-22 09:31:30  joergr
 ** Revised misleading parameter documentation for the checkValue() method.
 **
