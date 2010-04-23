@@ -995,8 +995,8 @@ typedef unsigned short ushort;
 #endif
 
 #if _MSC_VER >= 1400  /* Additional settings for Visual Studio 2005 and newer */
-/* disable warnings about "deprecated" C runtime functions  */
-#pragma warning( disable : 4996 )
+#pragma warning( disable : 4996 )  // disable warnings about "deprecated" C runtime functions
+#pragma warning( disable : 4351 )  // disable warnings about "new behavior" when initializing the elements of an array
 #endif
 
 #endif /* _MSC_VER */
