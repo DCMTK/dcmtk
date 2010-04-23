@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *  for OS environments which cannot pass arguments on the command line.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 14:41:54 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2010-04-23 08:11:02 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 #include "dcmtk/dcmdata/dctypes.h"
 
 /*
-** prepareCmdLineArgs 
+** prepareCmdLineArgs
 **
 ** Should do nothing on Unix OS's.
 ** On other OS's (e.g. MacOS with CW6) allows command line arguments
@@ -52,8 +52,8 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 
-void prepareCmdLineArgs(int& argc, char* argv[], 
-			const char* progname)
+void prepareCmdLineArgs(int& argc, char* argv[],
+                        const char* progname)
 {
     const int bufsize = 2024;
     char buf[bufsize];
@@ -64,11 +64,11 @@ void prepareCmdLineArgs(int& argc, char* argv[],
     argc = 1;
 
     ofConsole.lockCout() << "CmdLineArgs-> ";
-    ofConsole.unlockCout();	
+    ofConsole.unlockCout();
     cin.getline(buf, bufsize);
 
     istringstream is(buf);
-    
+
     arg[0] = '\0';
     while (is.good()) {
         is >> arg;
@@ -79,7 +79,6 @@ void prepareCmdLineArgs(int& argc, char* argv[],
         }
         arg[0] = '\0';
     }
-	
 }
 
 #else
@@ -93,21 +92,27 @@ void prepareCmdLineArgs(int& argc, char* argv[],
 #include <io.h>
 #endif
 
+BEGIN_EXTERN_C
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>       /* for O_BINARY */
+#endif
+END_EXTERN_C
+
 #include "dcmtk/ofstd/ofstream.h"
 
-void prepareCmdLineArgs(int& /* argc */, char** /* argv */, 
-			const char* /* progname */)
+void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
+                        const char* /* progname */)
 {
 #ifdef _WIN32
 #ifndef DCMTK_GUI
 #ifndef __CYGWIN__
     /* Map stderr onto stdout (cannot redirect stderr under windows).
      * Remove any buffering (windows uses a 2k buffer for stdout when not
-     * writing to the console.  since dcmtk uses mixed stdout, stderr 
+     * writing to the console.  since dcmtk uses mixed stdout, stderr
      * cout and cerr, this results in _very_ mixed up output).
      */
 
-    /* duplicate the stderr file descriptor be the same as stdout */ 
+    /* duplicate the stderr file descriptor be the same as stdout */
     close(fileno(stderr));
     int fderr = dup(fileno(stdout));
     if (fderr != fileno(stderr))
@@ -115,13 +120,16 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
         DCMDATA_ERROR("INTERNAL ERROR: cannot map stderr to stdout: " << strerror(errno));
     }
 
-#ifndef NO_IOS_BASE_ASSIGN    
+#ifndef NO_IOS_BASE_ASSIGN
     /* make cout refer to cerr. This does not work with all iostream implementations :-( */
     cout = cerr;
 #endif
-    
+
     /* make stdout the same as stderr */
     *stdout = *stderr;
+
+    /* use binary mode for stdout in order to be more consistent with common Unix behavior */
+    setmode(fileno(stdout), O_BINARY);
 
 #ifndef __BORLANDC__  /* setvbuf on stdout/stderr does not work with Borland C++ */
     /* make sure the buffering is removed */
@@ -147,6 +155,10 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
+** Revision 1.23  2010-04-23 08:11:02  joergr
+** On Windows systems, use binary mode for stdout in order to be more consistent
+** with common Unix behavior, e.g. useful for command line tools like dcm2pnm.
+**
 ** Revision 1.22  2009-11-13 14:41:54  joergr
 ** Fixed wrong header include (now, "oflog.h" instead of "ofconsol.h" required).
 **
