@@ -21,9 +21,9 @@
  *
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-09-24 07:10:52 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-04-26 12:22:30 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -469,7 +469,7 @@ public:
 
   /** reads in at most one less than n characters from stream and stores them
    *  into the buffer pointed to by s. Reading stops after an EOF or a newline.
-   *  If a newline is read, it is stored into the buffer. A '\0' is stored after
+   *  If a newline is read, it is stored into the buffer. A '@\0' is stored after
    *  the last character in the buffer.
    *  @param s pointer to buffer of size n
    *  @param n buffer size
@@ -477,7 +477,7 @@ public:
    */
   char *fgets(char *s, int n) { return STDIO_NAMESPACE fgets(s, n, file_); }
 
-  /** writes the string s to stream, without its trailing '\0'.
+  /** writes the string s to stream, without its trailing '@\0'.
    *  @param s string to be written
    *  @return a non-negative number on success, or EOF on error.
    */
@@ -854,6 +854,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.11  2010-04-26 12:22:30  uli
+ * Fixed a some minor doxygen warnings.
+ *
  * Revision 1.10  2009-09-24 07:10:52  meichel
  * Fixed bug in class OFFile that caused undefined behaviour
  *   once fclose() failed

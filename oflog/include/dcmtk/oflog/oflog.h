@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-04-23 11:04:46 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2010-04-26 12:22:30 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ public:
      *  this automatically, so you should never do something like:
      *     if (myLogger.isEnabledFor(INFO_LOG_LEVEL))
      *         OFLOG_INFO("Doing it like this is pointless);
-     *  @param level the log level to check for
+     *  @param ll the log level to check for
      *  @return true if messages on this level won't be discarded
      */
     bool isEnabledFor(log4cplus::LogLevel ll) const {
@@ -150,6 +150,9 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.9  2010-04-26 12:22:30  uli
+ * Fixed a some minor doxygen warnings.
+ *
  * Revision 1.8  2010-04-23 11:04:46  uli
  * Updated oflog to log4cplus revision 1200 from PRODUCTION_1_0_x branch.
  *

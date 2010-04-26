@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: OFConfigFile
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-16 09:37:27 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-04-26 12:22:30 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -323,8 +323,8 @@ private:
   *  to insert a new node at a given tree level (i.e. within a list
   *  of nodes that share the same parent node) in alphabetical order,
   *  replacing any older node with identical keyword.
-  *  @param parent parent node of new new to be inserted
-  *  @param newnde pointer to new node to be inserted
+  *  @param parent  parent node of new new to be inserted
+  *  @param newnode pointer to new node to be inserted
   */
   void orderedInsert(
     OFConfigFileNode *parent,
@@ -563,6 +563,9 @@ private:
 
 /*
  *  $Log: ofconfig.h,v $
+ *  Revision 1.7  2010-04-26 12:22:30  uli
+ *  Fixed a some minor doxygen warnings.
+ *
  *  Revision 1.6  2008-04-16 09:37:27  meichel
  *  class OFConfigFile now supports an ordered mode where multiple
  *    configuration files can be loaded and can replace entries of other.

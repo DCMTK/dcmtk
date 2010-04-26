@@ -55,6 +55,7 @@ namespace log4cplus {
               * can be NULL.
               * @param line_    Line number in file specified by
               *                 the <code>filename</code> parameter.
+              * @param function_ Function where this event has occurred
               */
              InternalLoggingEvent(const log4cplus::tstring& logger,
                                   LogLevel ll_,

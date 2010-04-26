@@ -21,9 +21,9 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-28 14:07:34 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-04-26 12:22:30 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -351,7 +351,7 @@ public:
     }
 
     /** returns the element at position pos of the current string. Returns
-     *  '\0' if pos == size().
+     *  '@\0' if pos == size().
      *  @param pos position in string
      *  @return character in string at pos (by value)
      */
@@ -1104,6 +1104,9 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
+** Revision 1.26  2010-04-26 12:22:30  uli
+** Fixed a some minor doxygen warnings.
+**
 ** Revision 1.25  2009-09-28 14:07:34  joergr
 ** Introduced new member variable that stores the current length of the string.
 ** This yields in a significant performance improvement when compiled in debug

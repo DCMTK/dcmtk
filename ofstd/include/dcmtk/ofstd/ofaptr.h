@@ -23,8 +23,8 @@
  *           of scope.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:50 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2010-04-26 12:22:30 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,8 +144,8 @@ template <class T> class OFauto_ptr
         return OFauto_ptr_ref<T>(release());
     }
 
-    /** assigns the other pointer to this OFauto_ptr
-     *  @param other our new pointer
+    /** assigns a new pointer to this OFauto_ptr
+     *  @param p our new pointer
      *  @return reference to this object
      */
     OFauto_ptr& operator=(T* p)
@@ -192,6 +192,9 @@ template <class T> class OFauto_ptr
 /*
 ** CVS/RCS Log:
 ** $Log: ofaptr.h,v $
+** Revision 1.4  2010-04-26 12:22:30  uli
+** Fixed a some minor doxygen warnings.
+**
 ** Revision 1.3  2010-03-01 09:08:50  uli
 ** Removed some unnecessary include directives in the headers.
 **

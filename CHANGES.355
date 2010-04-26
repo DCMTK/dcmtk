@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.04.26 (schlachter)
+
+- Fixed a some minor doxygen warnings.
+  Affects: oflog/include/dcmtk/oflog/fileap.h
+           oflog/include/dcmtk/oflog/loglevel.h
+           oflog/include/dcmtk/oflog/oflog.h
+           oflog/include/dcmtk/oflog/spi/logevent.h
+           ofstd/include/dcmtk/ofstd/ofaptr.h
+           ofstd/include/dcmtk/ofstd/ofconfig.h
+           ofstd/include/dcmtk/ofstd/offile.h
+           ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/include/dcmtk/ofstd/ofstring.h
+
 **** Changes from 2010.04.26 (riesmeier)
 
 - Added initial definitions for using the STL vector class. Please note that

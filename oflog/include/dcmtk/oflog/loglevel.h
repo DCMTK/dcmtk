@@ -36,9 +36,9 @@ namespace log4cplus {
     /**
      * \typedef int LogLevel
      * Defines the minimum set of priorities recognized by the system,
-     * that is {@link #FATAL_LOG_LEVEL}, {@link #ERROR_LOG_LEVEL}, {@link
-     * #WARN_LOG_LEVEL}, {@link #INFO_LOG_LEVEL}, {@link #DEBUG_LOG_LEVEL},
-     * and {@link #TRACE_LOG_LEVEL}.
+     * that is {@link FATAL_LOG_LEVEL}, {@link ERROR_LOG_LEVEL}, {@link
+     * WARN_LOG_LEVEL}, {@link INFO_LOG_LEVEL}, {@link DEBUG_LOG_LEVEL},
+     * and {@link TRACE_LOG_LEVEL}.
      */
     typedef int LogLevel;
 

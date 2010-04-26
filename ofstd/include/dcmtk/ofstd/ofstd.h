@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-01-21 14:43:27 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-04-26 12:22:30 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -314,7 +314,7 @@ class OFStandard
      *  is called in order to speed up the process in case the conversion is not required.
      ** @param sourceString source string to be checked
      *  @param convertNonASCII convert non-ASCII characters (< #32 and >= #127) to numeric
-     *    value (&#nnn;) if OFTrue
+     *    value (@&@#nnn;) if OFTrue
      ** @return OFTrue if markup conversion is required, OFFalse otherwise
      */
     static OFBool checkForMarkupConversion(const OFString &sourceString,
@@ -331,7 +331,7 @@ class OFStandard
      ** @param out stream used for the HTML/XHTML/XML mnenonic output
      *  @param sourceString source string to be converted
      *  @param convertNonASCII convert non-ASCII characters (< # 32 and >= #127) to numeric value
-     *    (&#nnn;) if OFTrue
+     *    (@&@#nnn;) if OFTrue
      *  @param markupMode convert to HTML, HTML 3.2, XHTML or XML markup.
      *    LF and CR are encoded as "&#10;" and "&#13;" in XML mode, the flag 'newlineAllowed'
      *    has no meaning in this case.
@@ -357,9 +357,9 @@ class OFStandard
      ** @param sourceString source string to be converted
      *  @param markupString reference to character string where the result should be stored
      *  @param convertNonASCII convert non-ASCII characters (< # 32 and >= #127) to numeric value
-     *    (&#nnn;) if OFTrue
+     *    (@&@#nnn;) if OFTrue
      *  @param markupMode convert to HTML, HTML 3.2, XHTML or XML markup string.
-     *    LF and CR are encoded as "&#10;" and "&#13;" in XML mode, the flag 'newlineAllowed'
+     *    LF and CR are encoded as "@&@#10;" and "@&@#13;" in XML mode, the flag 'newlineAllowed'
      *    has no meaning in this case.
      *  @param newlineAllowed optional flag indicating whether newlines are allowed or not.
      *    If they are allowed the text "<br>" (HTML) or "<br />" (XHTML) is used, "&para;" otherwise.
@@ -584,6 +584,9 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.39  2010-04-26 12:22:30  uli
+ * Fixed a some minor doxygen warnings.
+ *
  * Revision 1.38  2010-01-21 14:43:27  joergr
  * Added stream variant of method convertToMarkupString().
  *
