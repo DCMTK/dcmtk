@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.04.26 (riesmeier)
+
+- Added initial definitions for using the STL vector class. Please note that
+  there is currently no alternative implementation to this standard class.
+  Added:   ofstd/include/dcmtk/ofstd/ofvector.h
+  Affects: config/docs/macros.txt
+
 **** Changes from 2010.04.23 (schlachter)
 
 - Added configure checks for getaddrinfo().
