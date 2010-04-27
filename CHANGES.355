@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.04.27 (schlachter)
+
+- Worked around various compiler warnings with convertIntegerToString() and
+  unsigned integer types.
+  Affects: oflog/include/dcmtk/oflog/helpers/strhelp.h
+
 **** Changes from 2010.04.26 (schlachter)
 
 - Fixed a some minor doxygen warnings.

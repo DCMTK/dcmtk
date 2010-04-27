@@ -107,7 +107,7 @@ namespace log4cplus {
                 const intType maxSigned = halfMaxSigned - 1 + halfMaxSigned;
 
                 // if intType is a signed type, MinSigned is its intType_MIN
-                const intType minSigned = -1 - maxSigned;
+                const intType minSigned = OFstatic_cast(intType, -1) - maxSigned;
 
                 // This is the minimum value that intType can represent;
                 const intType minVal = isUnsigned ? 0 : minSigned;
@@ -116,15 +116,15 @@ namespace log4cplus {
                 if (value == minVal)
                 {
                     intType const r = value / 10;
-                    intType const a = (-r) * 10;
-                    intType const mod = -(a + value);
-                    value = -r;
+                    intType const a = (0-r) * 10;
+                    intType const mod = 0-(a + value);
+                    value = 0-r;
 
                     *(it - 1) = LOG4CPLUS_TEXT('0') + static_cast<tchar>(mod);
                     --it;
                 }
                 else
-                    value = -value;
+                    value = 0-value;
             }
         };
 
@@ -136,7 +136,9 @@ namespace log4cplus {
         {
             if (value == 0)
                 str = LOG4CPLUS_TEXT("0");
-            bool const negative = value < 0;
+            // We can't use (value < 0) because that could cause a compiler
+            // warning for unsigned types.
+            bool const negative = !(value > 0 || value == 0);
 
             const size_t buffer_size = 30; // More than enough space, even for 64 bit integers
                 // = intTypeLimits::digits10 + 2;
