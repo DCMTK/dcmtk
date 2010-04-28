@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.04.28 (riesmeier)
+
+- Added type cast to integer variable in order to avoid compiler warnings
+  reported by VisualStudio 2005.
+  Affects: ofstd/include/dcmtk/ofstd/ofcmdln.h
+           ofstd/libsrc/ofstd.cc
+
+- Fixed wrong use of comparison operator in if statement.
+  Affects: ofstd/libsrc/ofstd.cc
+
 **** Changes from 2010.04.27 (schlachter)
 
 - Worked around various compiler warnings with convertIntegerToString() and

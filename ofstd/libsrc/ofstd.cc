@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-01-21 14:38:38 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2010-04-28 13:27:38 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -310,7 +310,7 @@ OFString &OFStandard::toUpper(OFString &value)
 {
     const size_t length = value.length();
     for (size_t i = 0; i < length; i++)
-        value.at(i) = toupper(value.at(i));
+        value.at(i) = OFstatic_cast(char, toupper(value.at(i)));
     return value;
 }
 
@@ -327,7 +327,7 @@ OFString &OFStandard::toLower(OFString &value)
 {
     const size_t length = value.length();
     for (size_t i = 0; i < length; i++)
-        value.at(i) = tolower(value.at(i));
+        value.at(i) = OFstatic_cast(char, tolower(value.at(i)));
     return value;
 }
 
@@ -568,7 +568,7 @@ OFCondition OFStandard::removeRootDirFromPathname(OFString &result,
             if (!allowLeadingPathSeparator)
             {
                 /* remove leading path separator (if present) */
-                if (!result.empty() && (result.at(0) = PATH_SEPARATOR))
+                if (!result.empty() && (result.at(0) == PATH_SEPARATOR))
                     result.erase(0, 1);
             }
             status = EC_Normal;
@@ -1817,6 +1817,11 @@ long OFStandard::getProcessID()
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.57  2010-04-28 13:27:38  joergr
+ *  Added type cast to integer variable in order to avoid compiler warnings
+ *  reported by VisualStudio 2005.
+ *  Fixed wrong use of comparison operator in if statement.
+ *
  *  Revision 1.56  2010-01-21 14:38:38  joergr
  *  Added stream variant of method convertToMarkupString().
  *  Changed implementation of convertToMarkupString(). This helper function is
