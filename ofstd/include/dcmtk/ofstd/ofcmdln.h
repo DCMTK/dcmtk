@@ -22,8 +22,8 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-23 12:15:51 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2010-04-28 13:23:18 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -376,7 +376,7 @@ class OFCommandLine
      */
     int getArgCount() const
     {
-        return ArgumentList.size();
+        return OFstatic_cast(int, ArgumentList.size());
     }
 
     /** sets first command line argument as the current one.
@@ -419,7 +419,7 @@ class OFCommandLine
      */
     int getParamCount() const
     {
-        return ParamPosList.size();
+        return OFstatic_cast(int, ParamPosList.size());
     }
 
     /** gets minimum number of parameters which should be accepted.
@@ -989,6 +989,10 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
+ * Revision 1.42  2010-04-28 13:23:18  joergr
+ * Added type cast to integer variable in order to avoid compiler warnings
+ * reported by VisualStudio 2005.
+ *
  * Revision 1.41  2009-12-23 12:15:51  joergr
  * Added support for getting the name of the program, i.e. the value of argv[0].
  *
