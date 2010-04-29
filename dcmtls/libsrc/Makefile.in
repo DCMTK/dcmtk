@@ -20,7 +20,7 @@ dcmnetdir = $(top_srcdir)/../dcmnet
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include -I$(dcmnetdir)/include
 LOCALDEFS =
 
-objs = tlstrans.o tlslayer.o
+objs = tlstrans.o tlslayer.o tlsscu.o
 library = libdcmtls.$(LIBEXT)
 
 
