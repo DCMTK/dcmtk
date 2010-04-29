@@ -46,9 +46,9 @@
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
 ** Intent:        Define tables and provide functions that implement
 **                the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:   $Author: uli $, $Date: 2009-11-18 11:53:59 $
+** Last Update:   $Author: onken $, $Date: 2010-04-29 16:16:12 $
 ** Source File:   $RCSfile: dulfsm.cc,v $
-** Revision:      $Revision: 1.66 $
+** Revision:      $Revision: 1.67 $
 ** Status:        $State: Exp $
 */
 
@@ -2433,6 +2433,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
        DcmTransportLayerStatus tcsStatus;
        if (TCS_ok != (tcsStatus = (*association)->connection->clientSideHandshake()))
        {
+         DCMNET_ERROR("TLS client handshake failed");
          char buf[4096]; // error message could be long
          sprintf(buf, "DUL secure transport layer: %s", (*association)->connection->errorString(tcsStatus));
          return makeDcmnetCondition(DULC_TLSERROR, OF_error, buf);
@@ -3917,6 +3918,9 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.67  2010-04-29 16:16:12  onken
+** Added debug message on client side noting failed TLS client handshake.
+**
 ** Revision 1.66  2009-11-18 11:53:59  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
