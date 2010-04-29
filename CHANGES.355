@@ -1,6 +1,37 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.04.29 (onken)
+
+- Made SCU class independent from dcmtls, i.e. outsourced TLS API. Added
+  direct API support for sending C-STORE requests. Further API changes and
+  some bugs fixed.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+           
+- Made dcmnet classes independent from dcmtls module for linking.
+  Affects: dcmnet/libsrc/Makefile.dep
+
+- Added function for responding to storage requests to SCP class.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
+- Added debug message noting the presentation context a command set is sent on.
+  Affects: dcmnet/libsrc/dimse.cc
+  
+- Added debug message on client side noting failed TLS client handshake.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+- Added new class DcmTLSSCU as base class for developing TLS-enabled SCUs.
+  Added:   dcmtls/include/dcmtk/dcmtls/tlsscu.h
+           dcmtls/libsrc/tlsscu.cc
+  Affects: dcmtls/libsrc/CMakeLists.txt
+           dcmtls/libsrc/Makefile.dep
+           dcmtls/libsrc/Makefile.in
+
+- Added debug message noting the initiation of a TLS client handshake.
+  Affects: dcmtls/libsrc/tlstrans.cc
+         
 **** Changes from 2010.04.29 (riesmeier)
 
 - Use printError() method for command line parsing errors only. In all other
