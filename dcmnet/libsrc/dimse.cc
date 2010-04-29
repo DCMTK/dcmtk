@@ -56,9 +56,9 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: uli $
-** Update Date:         $Date: 2010-03-01 09:08:49 $
-** CVS/RCS Revision:    $Revision: 1.56 $
+** Last Update:         $Author: onken $
+** Update Date:         $Date: 2010-04-29 16:15:14 $
+** CVS/RCS Revision:    $Revision: 1.57 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -951,6 +951,7 @@ DIMSE_sendMessage(
       if (commandSet) *commandSet = new DcmDataset(*cmdObj);
 
       /* dump information if required */
+      DCMNET_TRACE("DIMSE Command to be sent on Presentation Context ID:" << OFstatic_cast(Uint16, presID));
       DCMNET_DEBUG("DIMSE Command to Send:" << OFendl << DcmObject::PrintHelper(*cmdObj));
 
       /* Send the DIMSE command. DIMSE commands are always little endian implicit. */
@@ -1758,6 +1759,9 @@ OFString DIMSE_warn_str(T_ASC_Association *assoc)
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.57  2010-04-29 16:15:14  onken
+** Added debug message noting the presentation context a command set is sent on.
+**
 ** Revision 1.56  2010-03-01 09:08:49  uli
 ** Removed some unnecessary include directives in the headers.
 **
