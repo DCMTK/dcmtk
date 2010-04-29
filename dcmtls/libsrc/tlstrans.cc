@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSConnection
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-22 11:39:55 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-04-29 16:18:51 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,6 +116,7 @@ DcmTransportLayerStatus DcmTLSConnection::serverSideHandshake()
 
 DcmTransportLayerStatus DcmTLSConnection::clientSideHandshake()
 {
+  DCMTLS_TRACE("Starting TLS client handshake");
   if (tlsConnection == NULL) return TCS_noConnection;
   lastError = 0;
   DcmTransportLayerStatus result = TCS_ok;
@@ -345,6 +346,9 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
+ *  Revision 1.14  2010-04-29 16:18:51  onken
+ *  Added debug message noting the initiation of a TLS client handshake.
+ *
  *  Revision 1.13  2010-02-22 11:39:55  uli
  *  Remove some unneeded includes.
  *
