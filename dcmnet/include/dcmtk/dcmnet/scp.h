@@ -23,9 +23,9 @@
  *           applications.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-12-21 17:00:32 $
+ *  Update Date:      $Date: 2010-04-29 16:14:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/scp.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -456,6 +456,18 @@ protected:
 		                                 DIMSE_ProgressCallback callback,
 		                                 void *callbackContext);
 
+  /** Respond to storage request.
+   *  @param presID The presentation context ID to respond to
+   *  @param request The request that is responded to
+   *  @param response The actual response
+   *  @param statusDetail The status detail to be sent.
+   *  @return EC_Normal, if responding was successful, error code otherwise
+   */
+  virtual OFCondition sendCStoreResponse(T_ASC_PresentationContextID presID,
+	                                       T_DIMSE_C_StoreRQ *request,
+	                                       T_DIMSE_C_StoreRSP *response,
+	                                       DcmDataset *statusDetail);
+
   /** Standard handler for Verification Service Class (DICOM Echo). Returns
    *  echo response (ie. whether C-ECHO could be responded to with status
    *  success).
@@ -670,6 +682,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.4  2010-04-29 16:14:59  onken
+ *  Added function for responding to storage requests to SCP class.
+ *
  *  Revision 1.3  2009-12-21 17:00:32  onken
  *  Fixed API documentation to keep doxygen quiet.
  *

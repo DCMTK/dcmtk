@@ -21,10 +21,10 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-08 12:59:53 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-04-29 16:14:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/scp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -694,6 +694,17 @@ OFCondition DcmSCP::receiveDataset(DcmDataset **dataObject,
 
 // ----------------------------------------------------------------------------
 
+// Send response to former storage request
+OFCondition DcmSCP::sendCStoreResponse(T_ASC_PresentationContextID presID,
+                                       T_DIMSE_C_StoreRQ *request,
+                                       T_DIMSE_C_StoreRSP *response,
+                                       DcmDataset *statusDetail)
+{
+  return DIMSE_sendStoreResponse(m_assoc, presID, request, response, statusDetail);
+}
+
+// ----------------------------------------------------------------------------
+
 void DcmSCP::addProcessToTable( int pid )
 {
   DcmProcessSlotType *ps;
@@ -1267,6 +1278,9 @@ void DcmSCP::notifyDIMSEError(const OFCondition& cond)
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.4  2010-04-29 16:14:56  onken
+** Added function for responding to storage requests to SCP class.
+**
 ** Revision 1.3  2010-03-08 12:59:53  joergr
 ** Changed OFListIterator to OFListConstIterator in order to compile when
 ** HAVE_STL is defined.
