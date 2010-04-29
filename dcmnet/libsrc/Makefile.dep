@@ -2913,14 +2913,5 @@ scu.o: scu.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmnet/dccftsmp.h ../include/dcmtk/dcmnet/dcmsmap.h \
   ../include/dcmtk/dcmnet/dccfuidh.h ../include/dcmtk/dcmnet/dccfpcmp.h \
   ../include/dcmtk/dcmnet/dccfrsmp.h ../include/dcmtk/dcmnet/dccfenmp.h \
-  ../include/dcmtk/dcmnet/dccfprmp.h \
-  ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../include/dcmtk/dcmnet/dcmtrans.h ../include/dcmtk/dcmnet/dcmlayer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h \
-  ../include/dcmtk/dcmnet/dcmlayer.h \
-  ../../oflog/include/dcmtk/oflog/oflog.h \
-  ../include/dcmtk/dcmnet/diutil.h \
+  ../include/dcmtk/dcmnet/dccfprmp.h ../include/dcmtk/dcmnet/diutil.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
