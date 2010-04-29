@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2010.04.29 (riesmeier)
 
+- Use printError() method for command line parsing errors only. In all other
+  cases use log output.
+  Affects: dcmpstat/tests/msgserv.cc
+
+- Fixed issue with syntax usage (e.g. layout and formatting).
+  Affects: dcmpstat/tests/msgserv.cc
+
+- Added flag for exclusive options to --help.
+  Affects: dcmpstat/tests/msgserv.cc
+
 - Fixed typo in log message.
   Affects: dcmpstat/apps/dcmprscp.cc
            dcmpstat/libsrc/dcmpstat.cc

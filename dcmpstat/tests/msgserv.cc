@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2009, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Sample message server for class DVPSIPCClient
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:59 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/tests/msgserv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-29 10:44:56 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,8 +97,8 @@ static const char *applicationType(Uint32 i)
   return "unknown application type";
 }
 
-#define SHORTCOL 2
-#define LONGCOL 9
+#define SHORTCOL 3
+#define LONGCOL 12
 
 int main(int argc, char *argv[])
 {
@@ -129,13 +128,13 @@ int main(int argc, char *argv[])
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Sample message server for class DVPSIPCClient", rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
-    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
     cmd.addParam("port", "port number to listen at");
 
-    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",    "-h", "print this help text and exit");
-     OFLog::addOptions(cmd);
+    cmd.addGroup("general options:", LONGCOL, SHORTCOL);
+      cmd.addOption("--help", "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+      OFLog::addOptions(cmd);
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -150,7 +149,7 @@ int main(int argc, char *argv[])
     unsigned short networkPort = (unsigned short) opt_port;
     if (networkPort==0)
     {
-      app.printError("error: no or invalid port number");
+      OFLOG_FATAL(msgservLogger, "no or invalid port number");
       return 10;
     }
 
@@ -167,7 +166,7 @@ int main(int argc, char *argv[])
     int s = socket(AF_INET, SOCK_STREAM, 0);
     if (s < 0)
     {
-      OFLOG_FATAL(msgservLogger, "failed to create socket.");
+      OFLOG_FATAL(msgservLogger, "failed to create socket");
       return 10;
     }
 
@@ -177,7 +176,7 @@ int main(int argc, char *argv[])
     int reuse = 1;
     if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
     {
-      OFLOG_FATAL(msgservLogger, "failed to set socket options.");
+      OFLOG_FATAL(msgservLogger, "failed to set socket options");
       return 10;
     }
 #endif
@@ -250,7 +249,7 @@ int main(int argc, char *argv[])
         reuse = 1;
         if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
         {
-          OFLOG_FATAL(msgservLogger, "failed to set socket options.");
+          OFLOG_FATAL(msgservLogger, "failed to set socket options");
           return 10;
         }
 #endif
@@ -345,7 +344,7 @@ int main(int argc, char *argv[])
             }
             if (! msg.send(connection))
             {
-              OFLOG_WARN(msgservLogger, "unable to send response message, closing connection.");
+              OFLOG_WARN(msgservLogger, "unable to send response message, closing connection");
               finished = OFTrue;
             }
           } else finished = OFTrue;
@@ -367,6 +366,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
+ * Revision 1.16  2010-04-29 10:44:56  joergr
+ * Use printError() method for command line parsing errors only. In all other
+ * cases use log output. Added flag for exclusive options to --help.
+ * Fixed issue with syntax usage (e.g. layout and formatting).
+ *
  * Revision 1.15  2009-11-24 14:12:59  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
