@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.04.29 (riesmeier)
+
+- Fixed typo in log message.
+  Affects: dcmpstat/apps/dcmprscp.cc
+           dcmpstat/libsrc/dcmpstat.cc
+
 **** Changes from 2010.04.28 (riesmeier)
 
 - Added type cast to integer variable in order to avoid compiler warnings

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2009, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Presentation State Viewer - Print Server
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-16 14:12:18 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2010-04-29 10:36:52 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -544,7 +544,7 @@ int main(int argc, char *argv[])
           OFLOG_ERROR(dcmprscpLogger, "cannot write back random seed file '" << tlsRandomSeedFile << "', ignoring");
         }
       } else {
-        OFLOG_WARN(dcmprscpLogger, "cannot write back random seed, ignoring.");
+        OFLOG_WARN(dcmprscpLogger, "cannot write back random seed, ignoring");
       }
     }
     delete tLayer;
@@ -556,6 +556,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
+ * Revision 1.30  2010-04-29 10:36:52  joergr
+ * Fixed typo in log message.
+ *
  * Revision 1.29  2009-12-16 14:12:18  joergr
  * Slightly modified description of command line option --logfile.
  *

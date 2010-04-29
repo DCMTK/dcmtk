@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmPresentationState
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-12-15 14:50:49 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-04-29 10:36:20 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -999,7 +999,7 @@ OFCondition DcmPresentationState::createFromImage(
       if (aString == "INVERSE") presentationLUT.setType(DVPSP_inverse);
       if (aString == "LIN OD")
       {
-        DCMPSTAT_INFO("LIN OD found in prsentation state; set to IDENTITY");
+        DCMPSTAT_INFO("LIN OD found in presentation state; set to IDENTITY");
         presentationLUT.setType(DVPSP_identity);
       }
     }
@@ -1962,6 +1962,9 @@ OFCondition DcmPresentationState::moveOverlay(size_t old_layer, size_t idx, size
 
 /*
  *  $Log: dcmpstat.cc,v $
+ *  Revision 1.12  2010-04-29 10:36:20  joergr
+ *  Fixed typo in log message.
+ *
  *  Revision 1.11  2009-12-15 14:50:49  uli
  *  Fixes some issues with --logfile and the config's log options.
  *
