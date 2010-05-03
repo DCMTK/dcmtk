@@ -21,9 +21,9 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-04-09 09:48:23 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-05-03 07:50:18 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -799,7 +799,7 @@ STD_NAMESPACE istream& operator>> (STD_NAMESPACE istream& i, OFString& s)
     char c = '\0';
     size_t n = s.max_size();
     if (i.width() > 0) {
-        n = i.width();
+        n = OFstatic_cast(size_t, i.width());
     }
     // skip white space before word
     i.get(c);
@@ -1049,6 +1049,10 @@ int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
+** Revision 1.28  2010-05-03 07:50:18  joergr
+** Added type cast to integer variable in order to avoid compiler warnings
+** reported by VisualStudio 2010.
+**
 ** Revision 1.27  2010-04-09 09:48:23  uli
 ** Don't initialize our string twice in OFString::reserve().
 **

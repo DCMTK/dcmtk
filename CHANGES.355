@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.03 (riesmeier)
+
+- Added type cast to integer variable in order to avoid compiler warnings
+  reported by VisualStudio 2010.
+  Affects: ofstd/libsrc/ofstring.cc
+
 **** Changes from 2010.04.29 (onken)
 
 - Made SCU class independent from dcmtls, i.e. outsourced TLS API. Added
@@ -8,7 +14,7 @@ Changes between releases are documented here.
   some bugs fixed.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
            dcmnet/libsrc/scu.cc
-           
+
 - Made dcmnet classes independent from dcmtls module for linking.
   Affects: dcmnet/libsrc/Makefile.dep
 
@@ -18,7 +24,7 @@ Changes between releases are documented here.
 
 - Added debug message noting the presentation context a command set is sent on.
   Affects: dcmnet/libsrc/dimse.cc
-  
+
 - Added debug message on client side noting failed TLS client handshake.
   Affects: dcmnet/libsrc/dulfsm.cc
 
@@ -31,7 +37,7 @@ Changes between releases are documented here.
 
 - Added debug message noting the initiation of a TLS client handshake.
   Affects: dcmtls/libsrc/tlstrans.cc
-         
+
 **** Changes from 2010.04.29 (riesmeier)
 
 - Use printError() method for command line parsing errors only. In all other
