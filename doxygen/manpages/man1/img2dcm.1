@@ -1,4 +1,4 @@
-.TH "img2dcm" 1 "26 Mar 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "img2dcm" 1 "4 May 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 img2dcm \- Convert standard image formats into DICOM format
@@ -12,7 +12,7 @@ img2dcm [options] imgfile-in dcmfile-out
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBimg2dcm\fP tool serves as a conversion tool from a standard image format like JPEG to DICOM. Different output SOP Classes can be selected. The additional information (regarding patients, series, etc.) stored in the DICOM output file can be extracted from other DICOM files which serve as a 'template' for the resulting DICOM object. \fBimg2dcm\fP can also be configured to invent missing DICOM type 1 and type 2 attributes to work even without any template dataset.
+The \fBimg2dcm\fP tool serves as a conversion tool from a standard image format like JPEG or BMP to DICOM. Different output SOP Classes can be selected. The additional information (regarding patients, series, etc.) stored in the DICOM output file can be extracted from other DICOM files which serve as a 'template' for the resulting DICOM object. \fBimg2dcm\fP can also be configured to invent missing DICOM type 1 and type 2 attributes to work even without any template dataset.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -240,7 +240,9 @@ For supporting the conversion into DICOM, \fBimg2dcm\fP comes with some pre-defi
 .PP
 It is possible to use any DICOM file as a template. Please note that the complete DICOM dataset is imported; hence, it should be assured that only attributes are present which should be part of the constructed DICOM object. The SOP Class UID and the Pixel Data attributes (including attributes like Rows, Columns etc.) are not copied but replaced by \fBimg2dcm\fP during conversion.
 .SS "Input Plugins"
-The \fBimg2dcm\fP application currently only supports the JPEG image format as input. The JPEG data from the source file is not decoded but extracted and slightly transformed (e. g. JFIF header is cut off) to allow fast conversion of even big JPEG files without the need of decoding and re-encoding. The JPEG plugin chooses the necessary output transfer syntax automatically depending on the actual encoding of the data inside the JPEG file. Therefore, the following Transfer Syntaxes (and their corresponding JPEG encodings) are used by the JPEG plugin:
+The \fBimg2dcm\fP application currently supports the JPEG and the BMP image format as input.
+.SS "JPEG Input Plugin"
+For JPEG, the original JPEG from the source file is not decoded but extracted and slightly transformed (e. g. JFIF header is cut off) to allow fast conversion of even big JPEG files without the need of decoding and re-encoding. The JPEG plugin chooses the necessary output transfer syntax automatically depending on the actual encoding of the data inside the JPEG file. Therefore, the following Transfer Syntaxes (and their corresponding JPEG encodings) are used by the JPEG plugin:
 .PP
 .PD 0
 .IP "\(bu" 2
@@ -263,6 +265,8 @@ JPEG lossless encoding as well as any arithmethic or hierarchical JPEG encoding 
 JFIF (JPEG File Interchange Format) information facilitates optional APPn markers in a JPEG file. Many digital cameras do not integrate such JFIF information into the JPEG output they create. For example, JFIF contains information about the pixel aspect ratio of the compressed image. If you want the \fBimg2dcm\fP application to insist on a JFIF header in the JPEG stream, you can use the option \fI--insist-on-jfif\fP which will abort if no JFIF information can be found. By default, missing JFIF information is ignored.
 .PP
 For DICOM it is kind of a 'gray zone', whether the integration of JFIF (or any other APPn) data into the DICOM object's internal JPEG stream is allowed or not. However, the most reliable approach is to cut those markers and their information off the JPEG stream. This approach is also taken by the \fBimg2dcm\fP application. By default, all APPn markers are cut off from the original JPEG stream. However, if you want to keep other APPn markers than JFIF (e. g. EXIF information) inside the DICOM stream, the option \fI--keep-appn\fP does the trick. It should also be slightly faster than cutting off APPn information, because it is not necessary to scan the whole JPEG stream for such data. JFIF information is \fBalways\fP removed by \fBimg2dcm\fP.
+.SS "BMP Input Plugin"
+\fBimg2dcm\fP supports BMP as input format. However, so far only 24 bit RGB (i.e. 8 bit per color channel) images are accepted for conversion while grayscale images are rejected. For color, also images stored in BMPs upside-down fashion can be converted to DICOM. There are no specific options for fine-tuning BMP format conversion.
 .SS "Output Plugins"
 The desired output SOP Class can be selected on the command line. Currently, an export plugin for the Secondary Capture Image SOP class (default, option \fI-sc\fP), the new Secondary Capture Image SOP classes (option \fI-nsc\fP) and Visible Light Photographic Image SOP class (option \fI-vl\fP) are available. Please note that the first one is deprecated according to the DICOM standard but is selected as a default because it is widely supported. Future versions of \fBimg2dcm\fP might provide further output plugins for other SOP Classes.
 .PP
@@ -279,30 +283,36 @@ Read JPEG file 'image.jpg', convert to the old Secondary Capture SOP class and s
 .PP
 
 .IP "2." 4
-img2dcm image.jpg out.dcm -vlp -k 'PatientsName=Bond^James' 
+img2dcm -i BMP image.bmp out.dcm 
 .br
-Same as above, but writes Visible Light Photographic Image object to 'out.dcm' and sets PatientsName to 'Bond^James' which otherwise would be left empty. 
+Same as above but tells img2dcm to read a BMP file instead of JPEG. 
 .PP
 
 .IP "3." 4
+img2dcm image.jpg out.dcm -vlp -k 'PatientsName=Bond^James' 
+.br
+Same as first example, but writes Visible Light Photographic Image object to 'out.dcm' and sets PatientsName to 'Bond^James' which otherwise would be left empty. 
+.PP
+
+.IP "4." 4
 img2dcm image.jpg out.dcm --series-from template.dcm -k 'PatientsName=Bond^James' 
 .br
 Same as 1), but imports patient/study/series infomation from DICOM file 'template.dcm'. Please note that attribute PatientsName will contain 'Bond^James' at the end, any value from 'template.dcm' will be overwritten. That is, because the -k option is applied at the very end of the conversion pipeline (see above). 
 .PP
 
-.IP "4." 4
+.IP "5." 4
 img2dcm image.jpg out.dcm --no-checks 
 .br
 Same as 1), but does not perform any attribute checking and no type 1 and type 2 attribute insertion! So in this case, an invalid DICOM object would be generated. This can be interesting if the output file is not meant to be completed but will undergo further transformations, e. g. adding attributes using \fBdcmodify\fP. Only use option \fI--no-checks\fP if you know what you are doing! 
 .PP
 
-.IP "5." 4
+.IP "6." 4
 img2dcm image.jpg out.dcm --no-type1-invent 
 .br
 Same as 1), but does not insert missing type 1 attributes and/or their values. Type 2 attributes will be inserted. Note that in this case it must be assured that all type 1 attributes are provided by other means, i. e. by adding them with the \fI--key\fP option. Otherwise, \fBimg2dcm\fP will report an error and will stop converting. 
 .PP
 
-.IP "6." 4
+.IP "7." 4
 img2dcm image.jpg out.dcm --keep-appn --insist-on-jfif 
 .br
 Same as 1), but takes over APPn information like EXIF into the DICOM object's resulting JPEG stream. Further, \fI--insist-on-jfif\fP will force \fBimg2dcm\fP to abort if no JFIF information is existent in the source file. 

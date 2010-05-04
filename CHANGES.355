@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.04 (riesmeier)
+
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2010.05.03 (riesmeier)
 
 - Added type cast to integer variable in order to avoid compiler warnings
