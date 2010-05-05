@@ -22,8 +22,8 @@
  *  Purpose: Compress DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-24 15:05:32 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2010-05-05 15:35:04 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,6 +114,7 @@ int main(int argc, char *argv[])
   OFBool           opt_usePixelValues = OFTrue;
   OFBool           opt_useModalityRescale = OFFalse;
   OFBool           opt_trueLossless = OFTrue;
+  OFBool           lossless = OFTrue;  /* see opt_oxfer */
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Encode DICOM file to JPEG transfer syntax", rcsid);
   OFCommandLine cmd;
@@ -329,38 +330,43 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--encode-progressive")) opt_oxfer = EXS_JPEGProcess10_12TransferSyntax;
       cmd.endOptionBlock();
 
+      // check for JPEG lossless output transfer syntaxes
+      lossless = (opt_oxfer == EXS_JPEGProcess14SV1TransferSyntax) || (opt_oxfer == EXS_JPEGProcess14TransferSyntax);
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--true-lossless"))
       {
         // true lossless explicitely requested but selected TS denotes lossy process
-        app.checkDependence("--true-lossless", "--encode-lossless-sv1 or --encode-lossless", (opt_oxfer == EXS_JPEGProcess14SV1TransferSyntax) || (opt_oxfer == EXS_JPEGProcess14TransferSyntax));
+        app.checkDependence("--true-lossless", "--encode-lossless-sv1 or --encode-lossless", lossless);
         opt_trueLossless = OFTrue;
       }
-      if (cmd.findOption("--pseudo-lossless") )
+      if (cmd.findOption("--pseudo-lossless"))
       {
         // pseudo lossless explicitely requested but selected TS denotes lossy process
-        app.checkDependence("--pseudo-lossless", "--encode-lossless-sv1 or --encode-lossless", (opt_oxfer == EXS_JPEGProcess14SV1TransferSyntax) || (opt_oxfer == EXS_JPEGProcess14TransferSyntax));
+        app.checkDependence("--pseudo-lossless", "--encode-lossless-sv1 or --encode-lossless", lossless);
         opt_trueLossless = OFFalse;
       }
-      // now opt_trueLossless defines, that true lossless encoder should be used and harmonization with TS is lossless, too
       cmd.endOptionBlock();
+
+      // disable true lossless mode since we are not encoding with JPEG lossless
+      if (!lossless) opt_trueLossless = OFFalse;
 
       if (cmd.findOption("--selection-value"))
       {
         app.checkDependence("--selection-value", "--encode-lossless", opt_oxfer == EXS_JPEGProcess14TransferSyntax);
-        app.checkValue(cmd.getValueAndCheckMinMax(opt_selection_value, (OFCmdUnsignedInt)1, (OFCmdUnsignedInt)7));
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_selection_value, OFstatic_cast(OFCmdUnsignedInt, 1), OFstatic_cast(OFCmdUnsignedInt, 7)));
       }
 
       if (cmd.findOption("--point-transform"))
       {
-        app.checkDependence("--point-transform", "lossless JPEG", (opt_oxfer == EXS_JPEGProcess14SV1TransferSyntax) || (opt_oxfer == EXS_JPEGProcess14TransferSyntax));
-        app.checkValue(cmd.getValueAndCheckMinMax(opt_point_transform, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)15));
+        app.checkDependence("--point-transform", "lossless JPEG", lossless);
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_point_transform, OFstatic_cast(OFCmdUnsignedInt, 0), OFstatic_cast(OFCmdUnsignedInt, 15)));
       }
 
       if (cmd.findOption("--quality"))
       {
-        app.checkDependence("--quality", "lossy JPEG", (opt_oxfer != EXS_JPEGProcess14SV1TransferSyntax) && (opt_oxfer != EXS_JPEGProcess14TransferSyntax));
-        app.checkValue(cmd.getValueAndCheckMinMax(opt_quality, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)100));
+        app.checkDependence("--quality", "lossy JPEG", !lossless);
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_quality, OFstatic_cast(OFCmdUnsignedInt, 0), OFstatic_cast(OFCmdUnsignedInt, 100)));
       }
 
       cmd.beginOptionBlock();
@@ -371,7 +377,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--smooth"))
       {
         app.checkConflict("--smooth", "--true-lossless", opt_trueLossless);
-        app.checkValue(cmd.getValueAndCheckMinMax(opt_smoothing, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)100));
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_smoothing, OFstatic_cast(OFCmdUnsignedInt, 0), OFstatic_cast(OFCmdUnsignedInt, 100)));
       }
 
       cmd.beginOptionBlock();
@@ -484,7 +490,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--fragment-per-frame")) opt_fragmentSize = 0;
       if (cmd.findOption("--fragment-size"))
       {
-        app.checkValue(cmd.getValueAndCheckMin(opt_fragmentSize, (OFCmdUnsignedInt)1));
+        app.checkValue(cmd.getValueAndCheckMin(opt_fragmentSize, OFstatic_cast(OFCmdUnsignedInt, 1)));
       }
       cmd.endOptionBlock();
 
@@ -612,9 +618,9 @@ int main(int argc, char *argv[])
       opt_compCSconversion,
       opt_uidcreation,
       opt_huffmanOptimize,
-      (int) opt_smoothing,
+      OFstatic_cast(int, opt_smoothing),
       opt_compressedBits,
-      (Uint32) opt_fragmentSize,
+      OFstatic_cast(Uint32, opt_fragmentSize),
       opt_createOffsetTable,
       opt_sampleFactors,
       opt_useYBR422,
@@ -685,12 +691,11 @@ int main(int argc, char *argv[])
     DcmXfer opt_oxferSyn(opt_oxfer);
 
     // create representation parameters for lossy and lossless
-    DJ_RPLossless rp_lossless((int)opt_selection_value, (int)opt_point_transform);
-    DJ_RPLossy rp_lossy((int)opt_quality);
+    DJ_RPLossless rp_lossless(OFstatic_cast(int, opt_selection_value), OFstatic_cast(int, opt_point_transform));
+    DJ_RPLossy rp_lossy(OFstatic_cast(int, opt_quality));
 
     const DcmRepresentationParameter *rp = &rp_lossy;
-    if ((opt_oxfer == EXS_JPEGProcess14SV1TransferSyntax)||
-        (opt_oxfer == EXS_JPEGProcess14TransferSyntax))
+    if (lossless)
         rp = &rp_lossless;
 
     dataset->chooseRepresentation(opt_oxfer, rp);
@@ -706,7 +711,7 @@ int main(int argc, char *argv[])
 
     fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
-              opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, EWM_updateMeta);
+              opt_opadenc, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), EWM_updateMeta);
 
     if (error.bad())
     {
@@ -727,6 +732,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
+ * Revision 1.28  2010-05-05 15:35:04  joergr
+ * Fixed wrong conflict check of command line options: now --true-lossless is
+ * only enabled by default for JPEG lossless output transfer syntaxes.
+ * Use type cast macros (e.g. OFstatic_cast) where appropriate.
+ *
  * Revision 1.27  2010-03-24 15:05:32  joergr
  * Added new options for the color space conversion during decompression based
  * on the color model that is "guessed" by the underlying JPEG library (IJG).

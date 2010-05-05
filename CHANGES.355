@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.05 (riesmeier)
+
+- Fixed wrong conflict check of command line options: now --true-lossless is
+  only enabled by default for JPEG lossless output transfer syntaxes.
+  Affects: dcmjpeg/apps/dcmcjpeg.cc
+
+- Use type cast macros (e.g. OFstatic_cast) where appropriate.
+  Affects: dcmjpeg/apps/dcmcjpeg.cc
+
 **** Changes from 2010.05.04 (riesmeier)
 
 - Updated man pages.
