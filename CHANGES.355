@@ -7,6 +7,9 @@ Changes between releases are documented here.
   if "HAVE_TYPENAME" is defined.
   Affects: ofstd/include/dcmtk/ofstd/oftypes.h
 
+- Use OFTypename for OFLIST_TYPENAME.
+  Affects: ofstd/include/dcmtk/ofstd/oflist.h
+
 **** Changes from 2010.05.05 (riesmeier)
 
 - Fixed wrong conflict check of command line options: now --true-lossless is

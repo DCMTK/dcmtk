@@ -22,9 +22,9 @@
  *  Purpose:
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-19 11:55:45 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-05-07 11:13:42 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,11 +79,7 @@
 #define OFListRemoveIf(Predicate, T, c, pred) (c).remove_if((pred))
 
 // workaround for "implicit typename" warning on gcc 3.x
-#if defined(HAVE_TYPENAME)
-#define OFLIST_TYPENAME typename
-#else
-#define OFLIST_TYPENAME
-#endif
+#define OFLIST_TYPENAME OFTypename
 
 #else
 
@@ -569,6 +565,9 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
+** Revision 1.25  2010-05-07 11:13:42  uli
+** Use OFTypename for OFLIST_TYPENAME.
+**
 ** Revision 1.24  2009-08-19 11:55:45  meichel
 ** Added additional includes needed for Sun Studio 11 on Solaris.
 **
