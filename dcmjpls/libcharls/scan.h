@@ -5,7 +5,8 @@
 #ifndef CHARLS_SCAN
 #define CHARLS_SCAN
 
-#include "dcmtk/ofstd/ofmap.h"  /* For OFPair */
+#include "dcmtk/ofstd/ofmap.h"   /* For OFPair */
+#include "dcmtk/ofstd/oftypes.h" /* For OFTypename */
 
 #include "lokuptbl.h"
 
@@ -195,18 +196,87 @@ public:
 
 	  LONG		DecodeRIError(CContextRunMode& ctx);
 	  Triplet<SAMPLE> DecodeRIPixel(Triplet<SAMPLE> Ra, Triplet<SAMPLE> Rb);
-	  SAMPLE   DecodeRIPixel(LONG Ra, LONG Rb);
+	  SAMPLE   DecodeRIPixel(LONG Ra, LONG Rb)
+	  {
+		  if (abs(Ra - Rb) <= traits.NEAR)
+		  {
+			  LONG ErrVal		= DecodeRIError(_contextRunmode[1]);
+			  return static_cast<SAMPLE>(traits.ComputeReconstructedSample(Ra, ErrVal));
+		  }
+		  else
+		  {
+			  LONG ErrVal		= DecodeRIError(_contextRunmode[0]);
+			  return static_cast<SAMPLE>(traits.ComputeReconstructedSample(Rb, ErrVal * Sign(Rb - Ra)));
+		  }
+	  }
+
+
 	  LONG		DecodeRunPixels(PIXEL Ra, PIXEL* ptype, LONG cpixelMac);
 	  LONG		DoRunMode(LONG ipixel, DecoderStrategy*);
 
 	  void	EncodeRIError(CContextRunMode& ctx, LONG Errval);
-	  SAMPLE	EncodeRIPixel(LONG x, LONG Ra, LONG Rb);
+	  SAMPLE	EncodeRIPixel(LONG x, LONG Ra, LONG Rb)
+	  {
+		  if (abs(Ra - Rb) <= traits.NEAR)
+		  {
+			  LONG ErrVal	= traits.ComputeErrVal(x - Ra);
+			  EncodeRIError(_contextRunmode[1], ErrVal);
+			  return static_cast<SAMPLE>(traits.ComputeReconstructedSample(Ra, ErrVal));
+		  }
+		  else
+		  {
+			  LONG ErrVal	= traits.ComputeErrVal((x - Rb) * Sign(Rb - Ra));
+			  EncodeRIError(_contextRunmode[0], ErrVal);
+			  return static_cast<SAMPLE>(traits.ComputeReconstructedSample(Rb, ErrVal * Sign(Rb - Ra)));
+		  }
+	  }
+
+
 	  Triplet<SAMPLE> EncodeRIPixel(Triplet<SAMPLE> x, Triplet<SAMPLE> Ra, Triplet<SAMPLE> Rb);
 	  void	EncodeRunPixels(LONG runLength, bool bEndofline);
 	  LONG		DoRunMode(LONG ipixel, EncoderStrategy*);
 
-	  inlinehint SAMPLE DoRegular(LONG Qs, LONG, LONG pred, DecoderStrategy*);
-	  inlinehint SAMPLE DoRegular(LONG Qs, LONG x, LONG pred, EncoderStrategy*);
+	  inlinehint SAMPLE DoRegular(LONG Qs, LONG, LONG pred, DecoderStrategy*)
+	  {
+		  LONG sign		= BitWiseSign(Qs);
+		  JlsContext& ctx	= _contexts[ApplySign(Qs, sign)];
+		  LONG k			= ctx.GetGolomb();
+		  LONG Px			= traits.CorrectPrediction(pred + ApplySign(ctx.C, sign));
+
+		  LONG ErrVal;
+		  const Code& code		= rgtableShared[k].Get(STRATEGY::PeekByte());
+		  if (code.GetLength() != 0)
+		  {
+			  STRATEGY::Skip(code.GetLength());
+			  ErrVal = code.GetValue();
+			  ASSERT(abs(ErrVal) < 65535);
+		  }
+		  else
+		  {
+			  ErrVal = UnMapErrVal(DecodeValue(k, traits.LIMIT, traits.qbpp));
+			  if (abs(ErrVal) > 65535)
+				  throw JlsException(InvalidCompressedData);
+		  }
+		  ErrVal = ErrVal ^ ((traits.NEAR == 0) ? ctx.GetErrorCorrection(k) : 0);
+		  ctx.UpdateVariables(ErrVal, traits.NEAR, traits.RESET);
+		  ErrVal = ApplySign(ErrVal, sign);
+		  return traits.ComputeReconstructedSample(Px, ErrVal);
+	  }
+
+	  inlinehint SAMPLE DoRegular(LONG Qs, LONG x, LONG pred, EncoderStrategy*)
+	  {
+		  LONG sign		= BitWiseSign(Qs);
+		  JlsContext& ctx	= _contexts[ApplySign(Qs, sign)];
+		  LONG k			= ctx.GetGolomb();
+		  LONG Px			= traits.CorrectPrediction(pred + ApplySign(ctx.C, sign));
+
+		  LONG ErrVal		= traits.ComputeErrVal(ApplySign(x - Px, sign));
+
+		  EncodeMappedValue(k, GetMappedErrVal(ctx.GetErrorCorrection(k | traits.NEAR) ^ ErrVal), traits.LIMIT);
+		  ctx.UpdateVariables(ErrVal, traits.NEAR, traits.RESET);
+		  ASSERT(traits.IsNear(traits.ComputeReconstructedSample(Px, ApplySign(ErrVal, sign)), x));
+		  return static_cast<SAMPLE>(traits.ComputeReconstructedSample(Px, ApplySign(ErrVal, sign)));
+	  }
 
 	  void DoLine(SAMPLE* pdummy);
 	  void DoLine(Triplet<SAMPLE>* pdummy);
@@ -244,53 +314,6 @@ protected:
 	bool _bCompare;
 };
 
-
-// Encode/decode a single sample. Performancewise the #1 important functions
-
-template<class TRAITS, class STRATEGY>
-typename TRAITS::SAMPLE JlsCodec<TRAITS,STRATEGY>::DoRegular(LONG Qs, LONG, LONG pred, DecoderStrategy*)
-{
-	LONG sign		= BitWiseSign(Qs);
-	JlsContext& ctx	= _contexts[ApplySign(Qs, sign)];
-	LONG k			= ctx.GetGolomb();
-	LONG Px			= traits.CorrectPrediction(pred + ApplySign(ctx.C, sign));
-
-	LONG ErrVal;
-	const Code& code		= rgtableShared[k].Get(STRATEGY::PeekByte());
-	if (code.GetLength() != 0)
-	{
-		STRATEGY::Skip(code.GetLength());
-		ErrVal = code.GetValue();
-		ASSERT(abs(ErrVal) < 65535);
-	}
-	else
-	{
-		ErrVal = UnMapErrVal(DecodeValue(k, traits.LIMIT, traits.qbpp));
-		if (abs(ErrVal) > 65535)
-			throw JlsException(InvalidCompressedData);
-	}
-	ErrVal = ErrVal ^ ((traits.NEAR == 0) ? ctx.GetErrorCorrection(k) : 0);
-	ctx.UpdateVariables(ErrVal, traits.NEAR, traits.RESET);
-	ErrVal = ApplySign(ErrVal, sign);
-	return traits.ComputeReconstructedSample(Px, ErrVal);
-}
-
-
-template<class TRAITS, class STRATEGY>
-typename TRAITS::SAMPLE JlsCodec<TRAITS,STRATEGY>::DoRegular(LONG Qs, LONG x, LONG pred, EncoderStrategy*)
-{
-	LONG sign		= BitWiseSign(Qs);
-	JlsContext& ctx	= _contexts[ApplySign(Qs, sign)];
-	LONG k			= ctx.GetGolomb();
-	LONG Px			= traits.CorrectPrediction(pred + ApplySign(ctx.C, sign));
-
-	LONG ErrVal		= traits.ComputeErrVal(ApplySign(x - Px, sign));
-
-	EncodeMappedValue(k, GetMappedErrVal(ctx.GetErrorCorrection(k | traits.NEAR) ^ ErrVal), traits.LIMIT);
-	ctx.UpdateVariables(ErrVal, traits.NEAR, traits.RESET);
-	ASSERT(traits.IsNear(traits.ComputeReconstructedSample(Px, ApplySign(ErrVal, sign)), x));
-	return static_cast<SAMPLE>(traits.ComputeReconstructedSample(Px, ApplySign(ErrVal, sign)));
-}
 
 
 // Functions to build tables used to decode short golomb codes.
@@ -473,7 +496,7 @@ void JlsCodec<TRAITS,STRATEGY>::EncodeRIError(CContextRunMode& ctx, LONG Errval)
 
 
 template<class TRAITS, class STRATEGY>
-Triplet<typename TRAITS::SAMPLE> JlsCodec<TRAITS,STRATEGY>::DecodeRIPixel(Triplet<SAMPLE> Ra, Triplet<SAMPLE> Rb)
+Triplet<OFTypename TRAITS::SAMPLE> JlsCodec<TRAITS,STRATEGY>::DecodeRIPixel(Triplet<SAMPLE> Ra, Triplet<SAMPLE> Rb)
 {
 	LONG Errval1 = DecodeRIError(_contextRunmode[0]);
 	LONG Errval2 = DecodeRIError(_contextRunmode[0]);
@@ -487,7 +510,7 @@ Triplet<typename TRAITS::SAMPLE> JlsCodec<TRAITS,STRATEGY>::DecodeRIPixel(Triple
 
 
 template<class TRAITS, class STRATEGY>
-Triplet<typename TRAITS::SAMPLE> JlsCodec<TRAITS,STRATEGY>::EncodeRIPixel(Triplet<SAMPLE> x, Triplet<SAMPLE> Ra, Triplet<SAMPLE> Rb)
+Triplet<OFTypename TRAITS::SAMPLE> JlsCodec<TRAITS,STRATEGY>::EncodeRIPixel(Triplet<SAMPLE> x, Triplet<SAMPLE> Ra, Triplet<SAMPLE> Rb)
 {
 	LONG errval1	= traits.ComputeErrVal(Sign(Rb.v1 - Ra.v1) * (x.v1 - Rb.v1));
 	EncodeRIError(_contextRunmode[0], errval1);
@@ -504,40 +527,6 @@ Triplet<typename TRAITS::SAMPLE> JlsCodec<TRAITS,STRATEGY>::EncodeRIPixel(Triple
 		traits.ComputeReconstructedSample(Rb.v3, errval3 * Sign(Rb.v3  - Ra.v3)));
 }
 
-
-
-template<class TRAITS, class STRATEGY>
-typename TRAITS::SAMPLE JlsCodec<TRAITS,STRATEGY>::DecodeRIPixel(LONG Ra, LONG Rb)
-{
-	if (abs(Ra - Rb) <= traits.NEAR)
-	{
-		LONG ErrVal		= DecodeRIError(_contextRunmode[1]);
-		return static_cast<SAMPLE>(traits.ComputeReconstructedSample(Ra, ErrVal));
-	}
-	else
-	{
-		LONG ErrVal		= DecodeRIError(_contextRunmode[0]);
-		return static_cast<SAMPLE>(traits.ComputeReconstructedSample(Rb, ErrVal * Sign(Rb - Ra)));
-	}
-}
-
-
-template<class TRAITS, class STRATEGY>
-typename TRAITS::SAMPLE JlsCodec<TRAITS,STRATEGY>::EncodeRIPixel(LONG x, LONG Ra, LONG Rb)
-{
-	if (abs(Ra - Rb) <= traits.NEAR)
-	{
-		LONG ErrVal	= traits.ComputeErrVal(x - Ra);
-		EncodeRIError(_contextRunmode[1], ErrVal);
-		return static_cast<SAMPLE>(traits.ComputeReconstructedSample(Ra, ErrVal));
-	}
-	else
-	{
-		LONG ErrVal	= traits.ComputeErrVal((x - Rb) * Sign(Rb - Ra));
-		EncodeRIError(_contextRunmode[0], ErrVal);
-		return static_cast<SAMPLE>(traits.ComputeReconstructedSample(Rb, ErrVal * Sign(Rb - Ra)));
-	}
-}
 
 
 // RunMode: Functions that handle run-length encoding
@@ -811,7 +800,7 @@ ProcessLine* JlsCodec<TRAITS,STRATEGY>::InitProcess(void* pvoidOut)
 		return new PostProcesSingleComponent(pvoidOut, STRATEGY::_info, sizeof(typename TRAITS::PIXEL));
 
 	if (STRATEGY::_info.colorTransform == 0)
-		return new ProcessTransformed<TransformNone<typename TRAITS::SAMPLE> >(pvoidOut, STRATEGY::_info, TransformNone<SAMPLE>());
+		return new ProcessTransformed<TransformNone<OFTypename TRAITS::SAMPLE> >(pvoidOut, STRATEGY::_info, TransformNone<SAMPLE>());
 
 	if ((STRATEGY::_info.bitspersample == sizeof(SAMPLE)*8))
 	{

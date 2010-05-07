@@ -10,6 +10,9 @@ Changes between releases are documented here.
 - Use OFTypename for OFLIST_TYPENAME.
   Affects: ofstd/include/dcmtk/ofstd/oflist.h
 
+- Work around some problem with MSC6.
+  Affects: dcmjpls/libcharls/scan.h
+
 **** Changes from 2010.05.05 (riesmeier)
 
 - Fixed wrong conflict check of command line options: now --true-lossless is
