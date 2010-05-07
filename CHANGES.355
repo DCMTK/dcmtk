@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.07 (schlachter)
+
+- Add new define OFTypename which only expands to "typename"
+  if "HAVE_TYPENAME" is defined.
+  Affects: ofstd/include/dcmtk/ofstd/oftypes.h
+
 **** Changes from 2010.05.05 (riesmeier)
 
 - Fixed wrong conflict check of command line options: now --true-lossless is

@@ -24,9 +24,9 @@
  *      supported by all C++ Compilers
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-09 12:14:20 $
+ *  Update Date:      $Date: 2010-05-07 11:12:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/oftypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,11 +130,22 @@ typedef int OFBool;
 #endif
 
 #endif
+
+#if defined(HAVE_TYPENAME)
+#define OFTypename typename
+#else
+#define OFTypename
+#endif
+
 #endif
 
 /*
  * CVS/RCS Log:
  * $Log: oftypes.h,v $
+ * Revision 1.9  2010-05-07 11:12:29  uli
+ * Add new define OFTypename which only expands to "typename"
+ * if "HAVE_TYPENAME" is defined.
+ *
  * Revision 1.8  2010-03-09 12:14:20  uli
  * Added Sint64 and Uint64 typedefs.
  *
