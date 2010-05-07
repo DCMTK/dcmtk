@@ -86,6 +86,10 @@ FIND_PATH(WITH_SNDFILEINC "sndfile.h" "${SNDFILE_DIR}" NO_DEFAULT_PATH)
 
 # set project wide flags for compiler and linker
 
+OPTION(OVERWRITE_COMPILER_FLAGS "Overwrite compiler flags with package default values." ON)
+
+IF(OVERWRITE_COMPILER_FLAGS)
+
 # settings for Microsoft Visual C
 IF(CMAKE_C_COMPILER MATCHES "CL|cl")
   IF(NOT WITH_SHARED_LIBS)
@@ -145,6 +149,8 @@ IF(CMAKE_CXX_COMPILER MATCHES "BCC32|bcc32")
   # further settings required?
   SET(CMAKE_STANDARD_LIBRARIES "import32.lib cw32mt.lib")
 ENDIF(CMAKE_CXX_COMPILER MATCHES "BCC32|bcc32")
+
+ENDIF(OVERWRITE_COMPILER_FLAGS)
 
 # set general compiler flags
 ADD_DEFINITIONS(-D_REENTRANT)
