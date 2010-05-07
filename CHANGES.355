@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.07 (riesmeier)
+
+- Added new option that allows to disable the overwriting of compiler flags.
+  Thanks to Niels Dekker <dicomrelatedmail@xs4all.nl> for the suggestion.
+  Affects: CMakeLists.txt
+
 **** Changes from 2010.05.07 (schlachter)
 
 - Add new define OFTypename which only expands to "typename"
@@ -10,7 +16,7 @@ Changes between releases are documented here.
 - Use OFTypename for OFLIST_TYPENAME.
   Affects: ofstd/include/dcmtk/ofstd/oflist.h
 
-- Work around some problem with MSC6.
+- Work around some problem with MSVC6.
   Affects: dcmjpls/libcharls/scan.h
 
 **** Changes from 2010.05.05 (riesmeier)
@@ -98,7 +104,7 @@ Changes between releases are documented here.
 
 **** Changes from 2010.04.26 (schlachter)
 
-- Fixed a some minor doxygen warnings.
+- Fixed some minor doxygen warnings.
   Affects: oflog/include/dcmtk/oflog/fileap.h
            oflog/include/dcmtk/oflog/loglevel.h
            oflog/include/dcmtk/oflog/oflog.h
