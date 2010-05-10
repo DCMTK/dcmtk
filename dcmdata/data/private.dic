@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2009, OFFIS
+#  Copyright (C) 1994-2010, OFFIS
 #
 #  This software and supporting documentation were developed by
 #
@@ -21,9 +21,9 @@
 #  Purpose:
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: uli $
-#  Update Date:      $Date: 2009-11-04 09:58:06 $
-#  CVS/RCS Revision: $Revision: 1.5 $
+#  Last Update:      $Author: joergr $
+#  Update Date:      $Date: 2010-05-10 10:13:29 $
+#  CVS/RCS Revision: $Revision: 1.6 $
 #  Status:           $State: Exp $
 #
 #
@@ -35,6 +35,7 @@
 #   - David Clunie's dicom3tools package, 2002-04-20 snapshot
 #   - Fuji CR console, 3rd release
 #   - Intelerad Medical Systems Inc., Image Server
+#   - OCULUS Pentacam 1.17 conformance statement
 #   - Philips Digital Diagnost 1.3 conformance statement
 #   - Philips Integris H, catheterization laboratory, RIS-interface
 #   - Philips Intera Achieva Conformance Statement
@@ -1058,6 +1059,9 @@
 (0009,"ISI",01)	UN	SIENETGeneralPurposeIMGEF	1
 
 (0009,"MERGE TECHNOLOGIES, INC.",00)	OB	Unknown	1
+
+(0029,"OCULUS Optikgeraete GmbH",1010)	OB	OriginalMeasuringData	1
+(0029,"OCULUS Optikgeraete GmbH",1020)	OB	OriginalMeasuringRawData	1
 
 (0041,"PAPYRUS 3.0",00)	LT	PapyrusComments	1
 (0041,"PAPYRUS 3.0",10)	SQ	PointerSequence	1

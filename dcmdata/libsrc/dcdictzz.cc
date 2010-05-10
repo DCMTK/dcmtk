@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2009-09-18 12:56:17
+**   Date: 2010-05-10 12:10:12
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2009-09-18 12:56:17";
+const char* dcmBuiltinDictBuildDate = "2010-05-10 12:10:12";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -11661,10 +11661,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0010, 0x0025, 0x0010,
-      EVR_LO, "WorkspaceID", 1, 1, "DICOM",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CMR42 CIRCLECVI" }
-  , { 0x0025, 0x0010, 0x0025, 0x0010,
       EVR_US, "RelativeLightEmissionAmountSk", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
@@ -11737,10 +11733,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_SERS_01" }
   , { 0x0025, 0x0020, 0x0025, 0x0020,
-      EVR_LO, "WorkspaceTimeString", 1, 1, "DICOM",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CMR42 CIRCLECVI" }
-  , { 0x0025, 0x0020, 0x0025, 0x0020,
       EVR_US, "Unknown", 2, 2, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
@@ -11756,10 +11748,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UI, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0025, 0x0030, 0x0025, 0x0030,
-      EVR_OB, "WorkspaceStream", 1, 1, "DICOM",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CMR42 CIRCLECVI" }
   , { 0x0025, 0x0030, 0x0025, 0x0030,
       EVR_US, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11912,6 +11900,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
+  , { 0x0025, 0x1010, 0x0025, 0x1010,
+      EVR_LO, "WorkspaceID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CMR42 CIRCLECVI" }
+  , { 0x0025, 0x1020, 0x0025, 0x1020,
+      EVR_LO, "WorkspaceTimeString", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CMR42 CIRCLECVI" }
+  , { 0x0025, 0x1030, 0x0025, 0x1030,
+      EVR_OB, "WorkspaceStream", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CMR42 CIRCLECVI" }
   , { 0x0027, 0x0000, 0x0027, 0x0000,
       EVR_US, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -14322,6 +14322,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1;4" }
+  , { 0x0029, 0x1010, 0x0029, 0x1010,
+      EVR_OB, "OriginalMeasuringData", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "OCULUS Optikgeraete GmbH" }
+  , { 0x0029, 0x1020, 0x0029, 0x1020,
+      EVR_OB, "OriginalMeasuringRawData", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "OCULUS Optikgeraete GmbH" }
   , { 0x0031, 0x0010, 0x0031, 0x0010,
       EVR_LT, "RequestUID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,

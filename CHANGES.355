@@ -7,6 +7,10 @@ Changes between releases are documented here.
   error condition if output file cannot be written.
   Affects: dcmnet/apps/storescp.cc
 
+- Added private tags from OCULUS Pentacam 1.17 conformance statement.
+  Affects: dcmdata/data/private.dic
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2010.05.07 (riesmeier)
 
 - Added new option that allows to disable the overwriting of compiler flags.
