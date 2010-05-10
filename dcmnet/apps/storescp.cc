@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-23 15:20:13 $
- *  CVS/RCS Revision: $Revision: 1.123 $
+ *  Update Date:      $Date: 2010-05-10 09:47:53 $
+ *  CVS/RCS Revision: $Revision: 1.124 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2033,12 +2033,16 @@ storeSCPCallback(
 
       // store file either with meta header or as pure dataset
       OFLOG_INFO(storescpLogger, "storing DICOM file: " << fileName);
+      if (OFStandard::fileExists(fileName))
+      {
+        OFLOG_WARN(storescpLogger, "DICOM file already exists: " << fileName);
+      }
       OFCondition cond = cbdata->dcmff->saveFile(fileName.c_str(), xfer, opt_sequenceType, opt_groupLength,
           opt_paddingType, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad),
           (opt_useMetaheader) ? EWM_fileformat : EWM_dataset);
       if (cond.bad())
       {
-        OFLOG_ERROR(storescpLogger, "cannot write DICOM file: " << fileName);
+        OFLOG_ERROR(storescpLogger, "cannot write DICOM file: " << fileName << ": " << cond.text());
         rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
       }
 
@@ -2712,6 +2716,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.124  2010-05-10 09:47:53  joergr
+** Added warning message when output file already exists. Output details on
+** error condition if output file cannot be written.
+**
 ** Revision 1.123  2010-03-23 15:20:13  joergr
 ** Use printError() method for command line parsing errors only. After the
 ** resource identifier has been printed to the log stream use "oflog" instead.

@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.10 (riesmeier)
+
+- Added warning message when output file already exists. Output details on
+  error condition if output file cannot be written.
+  Affects: dcmnet/apps/storescp.cc
+
 **** Changes from 2010.05.07 (riesmeier)
 
 - Added new option that allows to disable the overwriting of compiler flags.
