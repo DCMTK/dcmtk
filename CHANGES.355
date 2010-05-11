@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Made error output in source code examples more consistent with new RT module.
   Affects: dcmsr/docs/dcmsr.dox
 
+- Removed unused directory settings for the PNG and TIFF library.
+  Affects: dcmjpls/apps/CMakeLists.txt
+
 **** Changes from 2010.05.10 (riesmeier)
 
 - Added warning message when output file already exists. Output details on
