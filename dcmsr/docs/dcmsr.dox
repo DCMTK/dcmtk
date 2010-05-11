@@ -38,9 +38,9 @@ if (status.good())
     if (status.bad())
       cerr << "Error: cannot render SR document (" << status.text() << ")" << endl;
   } else
-    cerr << "Error: cannot parse SR document (" << status.text() << ")" << endl;
+    cerr << "Error: cannot read SR document (" << status.text() << ")" << endl;
 } else
-  cerr << "Error: cannot read DICOM file (" << status.text() << ")" << endl;
+  cerr << "Error: cannot load DICOM file (" << status.text() << ")" << endl;
 \endcode
 
 The following example shows how to create a DICOM Structured Report and save
@@ -60,7 +60,7 @@ if (status.good())
 {
   status = fileformat.saveFile("test.dcm", EXS_LittleEndianExplicit);
   if (status.bad())
-    cerr << "Error: cannot write DICOM file (" << status.text() << ")" << endl;
+    cerr << "Error: cannot save DICOM file (" << status.text() << ")" << endl;
 } else
   cerr << "Error: cannot write SR document (" << status.text() << ")" << endl;
 \endcode
