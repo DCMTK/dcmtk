@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.11 (riesmeier)
+
+- Made error output in source code examples more consistent with new RT module.
+  Affects: dcmsr/docs/dcmsr.dox
+
 **** Changes from 2010.05.10 (riesmeier)
 
 - Added warning message when output file already exists. Output details on
