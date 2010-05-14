@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-01-20 15:18:05 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2010-05-14 12:29:55 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,8 @@
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/socket.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
+
+OFauto_ptr<log4cplus::helpers::Properties> OFLog::configProperties_;
 
 OFLogger::OFLogger(const log4cplus::Logger &base)
     : log4cplus::Logger(base)
@@ -108,23 +110,56 @@ OFLogger OFLog::getLogger(const char *loggerName)
     return log4cplus::Logger::getInstance(loggerName);
 }
 
-static void addVariables(log4cplus::helpers::Properties &props, OFCommandLine& cmd)
+/** Adds our known variables to the Properties instance
+ *  @param props instance to add the variables to
+ *  @param cmd command line which we use for getting the program name,
+ *             may be NULL
+ */
+static void addVariables(log4cplus::helpers::Properties &props, OFCommandLine* cmd)
 {
     OFString date;
     OFString time;
-    OFString app;
+
+    // Set ${appname}, if possible
+    if (cmd) {
+        OFString app;
+        OFStandard::getFilenameFromPath(app, cmd->getProgramName());
+        props.setProperty("appname", app);
+    }
 
     OFDate::getCurrentDate().getISOFormattedDate(date, OFFalse);
     OFTime::getCurrentTime().getISOFormattedTime(time, OFTrue, OFFalse, OFFalse, OFFalse);
-    OFStandard::getFilenameFromPath(app, cmd.getProgramName());
 
+    // Set some other useful variables
     props.setProperty("hostname", log4cplus::helpers::getHostname(OFFalse));
     props.setProperty("pid", log4cplus::helpers::convertIntegerToString(OFStandard::getProcessID()));
     props.setProperty("date", date);
     props.setProperty("time", time);
-    props.setProperty("appname", app);
 }
 
+void OFLog::reconfigure(OFCommandLine *cmd)
+{
+    log4cplus::helpers::Properties *props = configProperties_.get();
+
+    // If configProperties_ is a NULL pointer, --log-config was never used and
+    // there is nothing we could parse again.
+    if (!props)
+        return;
+
+    // Add some useful variables to the properties, this really just pretends
+    // the user wrote "variable = value" in the config.
+    addVariables(*props, cmd);
+
+    unsigned int flags = 0;
+    // Recursively expand ${vars}
+    flags |= log4cplus::PropertyConfigurator::fRecursiveExpansion;
+    // Try to look up ${vars} internally before asking the environment
+    flags |= log4cplus::PropertyConfigurator::fShadowEnvironment;
+
+    // Configure log4cplus based on our settings
+    log4cplus::PropertyConfigurator conf(*props, log4cplus::Logger::getDefaultHierarchy(), flags);
+    conf.configure();
+}
 
 void OFLog::configure(OFLogger::LogLevel level)
 {
@@ -174,24 +209,15 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
 
         // This does the same stuff that line above would have done, but it also
         // does some sanity checks on the config file.
-        log4cplus::helpers::Properties props(logConfig);
-        if (props.size() == 0)
+        configProperties_ = new log4cplus::helpers::Properties(logConfig);
+        if (configProperties_->size() == 0)
             app.printError("Specified --log-config file does not contain any settings");
-        if (props.getPropertySubset("log4cplus.").size() == 0)
+        if (configProperties_->getPropertySubset("log4cplus.").size() == 0)
             app.printError("Specified --log-config file does not contain any valid settings");
-        if (!props.exists("log4cplus.rootLogger"))
+        if (!configProperties_->exists("log4cplus.rootLogger"))
             app.printError("Specified --log-config file does not set up log4cplus.rootLogger");
 
-        addVariables(props, cmd);
-
-        unsigned int flags = 0;
-        // Recursively expand ${vars}
-        flags |= log4cplus::PropertyConfigurator::fRecursiveExpansion;
-        // Try to look up ${vars} internally before asking the environment
-        flags |= log4cplus::PropertyConfigurator::fShadowEnvironment;
-
-        log4cplus::PropertyConfigurator conf(props, log4cplus::Logger::getDefaultHierarchy(), flags);
-        conf.configure();
+        reconfigure(&cmd);
     }
     else
     {
@@ -251,6 +277,10 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.12  2010-05-14 12:29:55  uli
+ * Added new function OFLog::reconfigure() which reinterprets the logger config
+ * file. This can e.g. be useful for logging to a different file after fork().
+ *
  * Revision 1.11  2010-01-20 15:18:05  uli
  * Added variables for the appname, date, time, hostname and pid to logger.cfg.
  *

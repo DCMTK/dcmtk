@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.14 (schlachter)
+
+- Added new function OFLog::reconfigure() which reinterprets the logger config
+  file. This can e.g. be useful for logging to a different file after fork().
+
 **** Changes from 2010.05.11 (riesmeier)
 
 - Made error output in source code examples more consistent with new RT module.

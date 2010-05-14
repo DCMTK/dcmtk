@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-04-26 12:22:30 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2010-05-14 12:29:55 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,6 +141,18 @@ class OFLog
      *  @param cmd the command line to which these options should be added
      */
     static void addOptions(OFCommandLine &cmd);
+
+    /** if there was a config file loaded in configureFromCommandLine(), the
+     *  in-memory copy will be parsed again, but all variables will be updated
+     *  first (current time, process id, ....)
+     *  @param cmd command line from which the application name will be retrieved
+     */
+    static void reconfigure(OFCommandLine *cmd = NULL);
+
+ private:
+
+    /// If we loaded a config file in configureFromCommandLine(), this is it
+    static OFauto_ptr<log4cplus::helpers::Properties> configProperties_;
 };
 
 #endif
@@ -150,6 +162,10 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.10  2010-05-14 12:29:55  uli
+ * Added new function OFLog::reconfigure() which reinterprets the logger config
+ * file. This can e.g. be useful for logging to a different file after fork().
+ *
  * Revision 1.9  2010-04-26 12:22:30  uli
  * Fixed a some minor doxygen warnings.
  *
