@@ -5,6 +5,8 @@ Changes between releases are documented here.
 
 - Added new function OFLog::reconfigure() which reinterprets the logger config
   file. This can e.g. be useful for logging to a different file after fork().
+  Affects: oflog/include/dcmtk/oflog/oflog.h
+           oflog/libsrc/oflog.cc
 
 **** Changes from 2010.05.11 (riesmeier)
 
