@@ -1,6 +1,25 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.18 (riesmeier)
+
+- Slightly modified log messages and log levels in order to be more consistent.
+  Affects: dcmnet/libsrc/dfindscu.cc
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlfsim.cc
+           dcmwlm/libsrc/wlmactmg.cc
+
+- Replaced '\n' by OFendl in log messages.
+  Affects: dcmnet/apps/echoscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/apps/termscu.cc
+           dcmnet/libsrc/dfindscu.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlmactmg.cc
+
 **** Changes from 2010.05.18 (schlachter)
 
 - Use OFStringStream_ends at the end of a OFStringStream.

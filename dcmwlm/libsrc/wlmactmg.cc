@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-02-15 13:23:30 $
+ *  Update Date:      $Date: 2010-05-18 16:43:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -401,12 +401,14 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
     return EC_Normal;
   }
   // Dump some information if required
-  DCMWLM_INFO("Association Received (" << assoc->params->DULparams.callingPresentationAddress << ":" << assoc->params->DULparams.callingAPTitle
-      << " -> " << assoc->params->DULparams.calledAPTitle << ")");
+  DCMWLM_INFO("Association Received ("
+    << assoc->params->DULparams.callingPresentationAddress
+    << ":" << assoc->params->DULparams.callingAPTitle
+    << " -> " << assoc->params->DULparams.calledAPTitle << ")");
 
   // Dump more information if required
   OFString temp_str;
-  DCMWLM_DEBUG("Parameters:\n" << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
+  DCMWLM_DEBUG("Parameters:" << OFendl << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
 
   // Now we have to figure out if we might have to refuse the association request.
   // This is the case if at least one of five conditions is met:
@@ -656,7 +658,8 @@ void WlmActivityManager::HandleAssociation( T_ASC_Association *assoc )
   }
   else
   {
-    DCMWLM_WARN("DIMSE Failure. Aborting association.");
+    OFString temp_str;
+    DCMWLM_ERROR("DIMSE failure (aborting association): " << DimseCondition::dump(temp_str, cond));
     ASC_abortAssociation( assoc );
   }
 
@@ -711,7 +714,7 @@ OFCondition WlmActivityManager::ReceiveAndHandleCommands( T_ASC_Association *ass
         case DIMSE_C_CANCEL_RQ:
           // Process C-CANCEL-Request
           // This is a late cancel request, just ignore it
-          DCMWLM_INFO("late C-CANCEL-RQ, ignoring");
+          DCMWLM_WARN("Received late Cancel Request, ignoring");
           break;
         default:
           // We cannot handle this kind of message.
@@ -739,12 +742,16 @@ OFCondition WlmActivityManager::HandleEchoSCP( T_ASC_Association *assoc, T_DIMSE
 //                               which contained the DIMSE command.
 // Return Value : OFCondition value denoting success or error.
 {
+  OFString temp_str;
+
   // Dump information if required
-  DCMWLM_INFO("Received C-ECHO Request, MessageID " << req->MessageID << ".");
+  DCMWLM_INFO("Received Echo Request");
+  DCMWLM_DEBUG(DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presId));
 
   // Send an echo response
   OFCondition cond = DIMSE_sendEchoResponse( assoc, presId, req, STATUS_Success, NULL );
-  if( cond.bad() ) DCMWLM_ERROR("Error while sending C-ECHO Response.");
+  if( cond.bad() )
+    DCMWLM_ERROR("Echo SCP Failed: " << DimseCondition::dump(temp_str, cond));
 
   // return return value
   return cond;
@@ -780,7 +787,7 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
 // Return Value : OFCondition value denoting success or error.
 {
   // Create callback data which needs to be passed to DIMSE_findProvider later.
-  OFString str;
+  OFString temp_str;
   WlmFindContextType context;
   context.dataSource = dataSource;
   context.priorStatus = WLM_PENDING;
@@ -788,7 +795,7 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
   context.opt_sleepDuringFind = opt_sleepDuringFind;
 
   // Dump some information if required.
-  DCMWLM_INFO(DIMSE_dumpMessage(str, *request, DIMSE_INCOMING));
+  DCMWLM_INFO(DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING, NULL, presID));
 
   // Handle a C-FIND-Request on the provider side: receive the data set that represents the search mask
   // over the network, try to select corresponding records that match the search mask from some data source
@@ -796,13 +803,14 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
   // C-FIND-RSP messages to the other DICOM application this application is connected with. In the end,
   // also send the C-FIND-RSP message that indicates that there are no more search results.
   OFCondition cond = DIMSE_findProvider( assoc, presID, request, FindCallback, &context, opt_blockMode, opt_dimse_timeout );
-  if( cond.bad() ) DCMWLM_WARN("Find SCP Failed.");
+  if( cond.bad() )
+    DCMWLM_ERROR("Find SCP Failed: " << DimseCondition::dump(temp_str, cond));
 
   // If option "--sleep-after" is set we need to sleep opt_sleepAfterFind
   // seconds after having processed one C-FIND-Request message.
   if( opt_sleepAfterFind > 0 )
   {
-    DCMWLM_INFO("SLEEPING (after find): " << opt_sleepAfterFind << " secs");
+    DCMWLM_INFO("Sleeping (after find): " << opt_sleepAfterFind << " secs");
     OFStandard::sleep( (unsigned int)opt_sleepAfterFind );
   }
 
@@ -864,7 +872,7 @@ void WlmActivityManager::RemoveProcessFromTable( int pid )
   }
 
   // dump a warning if process could not be found in process table
-  DCMWLM_WARN("WlmActivityManager::RemoveProcessFromTable : Could not find process " << pid << ".");
+  DCMWLM_WARN("WlmActivityManager::RemoveProcessFromTable: Could not find process " << pid);
 }
 
 // ----------------------------------------------------------------------------
@@ -900,7 +908,7 @@ void WlmActivityManager::CleanChildren()
       }
       else
       {
-        DCMWLM_WARN("WlmActivityManager::CleanChildren : Wait for child failed.");
+        DCMWLM_WARN("WlmActivityManager::CleanChildren: Wait for child failed");
       }
     }
     else if( child > 0 )
@@ -936,7 +944,7 @@ void WlmActivityManager::CleanChildren()
       }
       else
       {
-        DCMWLM_WARN("WlmActivityManager::CleanChildren : Wait for child failed.");
+        DCMWLM_WARN("WlmActivityManager::CleanChildren: Wait for child failed");
       }
     }
     else if( child > 0 )
@@ -951,7 +959,7 @@ void WlmActivityManager::CleanChildren()
 #else                                                         // OTHER PLATFORMS
 // for other platforms without waitpid() and without wait3() we
 // don't know how to cleanup after children. Dump an error message.
-  DCMWLM_WARN("WlmActivityManager::CleanChildren : cannot wait for child processes.");
+  DCMWLM_WARN("WlmActivityManager::CleanChildren: Cannot wait for child processes");
 #endif
 }
 
@@ -984,7 +992,7 @@ static OFString AddStatusDetail( DcmDataset **statusDetail, const DcmElement *el
   DcmVR vr( elem->ident() );
 
   // Dump some information
-  log << "  Status Detail: " << OFendl;
+  log << "Status Detail:" << OFendl;
 
   // Depending on the element's identification, insert different
   // types of objects into the container.
@@ -1012,7 +1020,7 @@ static OFString AddStatusDetail( DcmDataset **statusDetail, const DcmElement *el
       break;
     default:
       // other status detail is not supported
-      log << "AddStatusDetail: unsupported status detail type: " <<vr.getVRName() << OFendl;
+      log << "AddStatusDetail: unsupported status detail type: " << vr.getVRName() << OFendl;
       break;
   }
   OFSTRINGSTREAM_GETOFSTRING(log, ret)
@@ -1061,14 +1069,14 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   {
     // Dump some information if required
     DCMWLM_INFO("Find SCP Request Identifiers:" << OFendl
-            << DcmObject::PrintHelper(*requestIdentifiers) << OFendl
-            << "=============================");
+      << DcmObject::PrintHelper(*requestIdentifiers) << OFendl
+      << "=============================");
 
     // Determine the records that match the search mask. After this call, the
     // matching records will be available through dataSource->nextFindResponse(...).)
     dbstatus = dataSource->StartFindRequest( *requestIdentifiers );
     if( !( dbstatus == WLM_PENDING || dbstatus == WLM_PENDING_WARNING || dbstatus == WLM_SUCCESS) )
-      DCMWLM_DEBUG("findSCP: Worklist Database: StartFindRequest() Failed (" << DU_cfindStatusString((Uint16)dbstatus) << ").");
+      DCMWLM_DEBUG("Worklist Database: StartFindRequest() Failed (" << DU_cfindStatusString((Uint16)dbstatus) << ")");
 
     DCMWLM_INFO("=============================");
   }
@@ -1096,12 +1104,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   // Dump some information if required
   if (DCM_dcmwlmGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL))
   {
-    DCMWLM_INFO("Worklist Find SCP Response " << responseCount << " [status: " << DU_cfindStatusString((Uint16)dbstatus) << "]");
+    DCMWLM_INFO("Worklist Find SCP Response " << responseCount << " (" << DU_cfindStatusString((Uint16)dbstatus) << ")");
     if( *responseIdentifiers != NULL && (*responseIdentifiers)->card() > 0 )
     {
-      DCMWLM_INFO("Response Identifiers (" << responseCount << ")" << OFendl
-              << DcmObject::PrintHelper(**responseIdentifiers) << OFendl
-              << "-------");
+      DCMWLM_INFO(DcmObject::PrintHelper(**responseIdentifiers) << OFendl << "-----------------------------");
     }
   }
 
@@ -1139,6 +1145,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.30  2010-05-18 16:43:01  joergr
+** Slightly modified log messages and log levels in order to be more consistent.
+** Replaced '\n' by OFendl in log messages.
+**
 ** Revision 1.29  2010-02-15 13:23:30  joergr
 ** Fixed wrong output in debug mode (error message when status is "success").
 ** Replaced remaining CERR output by DCMWLM_ERROR() macro.

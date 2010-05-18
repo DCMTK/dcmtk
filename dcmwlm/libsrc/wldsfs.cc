@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:40:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-05-18 16:43:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -310,20 +310,22 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
   }
 
   // dump search mask (it might have been expanded)
-  DCMWLM_INFO("Expanded Find SCP Request Identifiers:\n" << DcmObject::PrintHelper(*identifiers) << "\n=============================");
+  DCMWLM_INFO("Expanded Find SCP Request Identifiers:" << OFendl
+    << DcmObject::PrintHelper(*identifiers) << OFendl
+    << "=============================");
 
   // Set a read lock on the worklist files which shall be read from.
   if( !SetReadlock() )
     return( WLM_REFUSED_OUT_OF_RESOURCES );
 
   // dump some information if required
-  DCMWLM_INFO("Determining matching records from worklist files.");
+  DCMWLM_INFO("Determining matching records from worklist files");
 
   // Determine records from worklist files which match the search mask
   unsigned long numOfMatchingRecords = fileSystemInteractionManager.DetermineMatchingRecords( identifiers );
 
   // dump some information if required
-  DCMWLM_INFO("Matching results: " << numOfMatchingRecords << " matching records found in worklist files.");
+  DCMWLM_INFO("Matching results: " << numOfMatchingRecords << " matching records found in worklist files");
 
   // determine a correct return value. In case no matching records
   // were found, WLM_SUCCESS shall be returned. This is our assumption.
@@ -344,7 +346,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
       DcmElement *specificCharacterSetElement = NULL;
 
       // dump some information if required
-      DCMWLM_INFO("  Processing matching result no. " << i << ".");
+      DCMWLM_INFO("  Processing matching result no. " << i);
 
       // Determine the number of elements in matchingDatasets[i].
       unsigned long numOfElementsInDataset = resultRecord->card();
@@ -388,7 +390,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
           {
             delete specificCharacterSetElement;
             specificCharacterSetElement = NULL;
-            DCMWLM_WARN("WlmDataSourceDatabase::StartFindRequest: Could not insert specific character set element into dataset.");
+            DCMWLM_WARN("WlmDataSourceDatabase::StartFindRequest: Could not insert specific character set element into dataset");
           }
         }
         // and set the value of the attribute accordingly
@@ -396,7 +398,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
         {
             OFCondition cond = specificCharacterSetElement->putString( "ISO_IR 100" );
             if( cond.bad() )
-              DCMWLM_WARN("WlmDataSourceDatabase::StartFindRequest: Could not set value in result element.");
+              DCMWLM_WARN("WlmDataSourceDatabase::StartFindRequest: Could not set value in result element");
         }
       }
       else
@@ -526,7 +528,7 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
     else
       cond = element->putString( value );
     if( cond.bad() )
-      DCMWLM_WARN("WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset: Could not set value in result element.");
+      DCMWLM_WARN("WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset: Could not set value in result element");
 
     // free memory
     delete[] value;
@@ -560,7 +562,8 @@ void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *
   if( sequenceOfItemsElement->card() != 1 )
   {
     // if the sequence's cardinality does not equal 1, we want to dump a warning and do nothing here
-    DCMWLM_WARN( "    - Sequence with not exactly one item encountered in the search mask.\n      The corresponding sequence of the currently processed result data set will show the exact same structure as in the given search mask.");
+    DCMWLM_WARN( "    - Sequence with not exactly one item encountered in the search mask" << OFendl
+      << "      The corresponding sequence of the currently processed result data set will show the exact same structure as in the given search mask" );
   }
   else
   {
@@ -672,14 +675,14 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
   // if no path or no calledApplicationEntityTitle is specified, return
   if( dfPath.length() == 0 || calledApplicationEntityTitle.length() == 0 )
   {
-    DCMWLM_WARN("WlmDataSourceFileSystem::SetReadlock : Path to data source files not specified.");
+    DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Path to data source files not specified");
     return OFFalse;
   }
 
   // if a read lock has already been set, return
   if( readLockSetOnDataSource )
   {
-    DCMWLM_WARN("WlmDataSourceFileSystem::SetReadlock : Nested read locks not allowed!");
+    DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Nested read locks not allowed!");
     return OFFalse;
   }
 
@@ -701,8 +704,8 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
   if( handleToReadLockFile == -1 )
   {
     handleToReadLockFile = 0;
-    DCMWLM_WARN("WlmDataSourceFileSystem::SetReadlock : Cannot open file " << lockname << " (return code: "
-        << strerror(errno)  << ").");
+    DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Cannot open file " << lockname
+      << " (return code: " << strerror(errno) << ")");
     return OFFalse;
   }
 
@@ -728,7 +731,7 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
 #endif
   if( result == -1 )
   {
-    DCMWLM_WARN("WlmDataSourceFileSystem::SetReadlock : Cannot set read lock on file " <<  lockname << ".");
+    DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Cannot set read lock on file " << lockname);
     dcmtk_plockerr("return code");
     close( handleToReadLockFile );
     handleToReadLockFile = 0;
@@ -760,7 +763,7 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
   // if no read lock is set, return
   if( !readLockSetOnDataSource )
   {
-    DCMWLM_WARN("WlmDataSourceFileSystem::ReleaseReadlock : No readlock to release.");
+    DCMWLM_WARN("WlmDataSourceFileSystem::ReleaseReadlock: No readlock to release");
     return OFFalse;
   }
 
@@ -782,7 +785,7 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 #endif
   if( result == -1 )
   {
-    DCMWLM_WARN("WlmDataSourceFileSystem::ReleaseReadlock : Cannot release read lock");
+    DCMWLM_WARN("WlmDataSourceFileSystem::ReleaseReadlock: Cannot release read lock");
     dcmtk_plockerr("return code");
     return OFFalse;
   }
@@ -803,6 +806,10 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
+** Revision 1.24  2010-05-18 16:43:01  joergr
+** Slightly modified log messages and log levels in order to be more consistent.
+** Replaced '\n' by OFendl in log messages.
+**
 ** Revision 1.23  2009-11-24 10:40:01  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
