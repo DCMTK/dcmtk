@@ -22,8 +22,8 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-01 10:59:38 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2010-05-18 16:10:25 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -563,7 +563,7 @@ main(int argc, char *argv[])
     }
 
     /* dump presentation contexts if required */
-    OFLOG_DEBUG(echoscuLogger, "Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
+    OFLOG_DEBUG(echoscuLogger, "Request Parameters:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
 
     /* create association, i.e. try to establish a network connection to another */
     /* DICOM application. This call creates an instance of T_ASC_Association*. */
@@ -584,7 +584,7 @@ main(int argc, char *argv[])
     }
 
     /* dump the presentation contexts which have been accepted/refused */
-    OFLOG_DEBUG(echoscuLogger, "Association Parameters Negotiated:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
+    OFLOG_DEBUG(echoscuLogger, "Association Parameters Negotiated:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
 
     /* count the presentation contexts which have been accepted by the SCP */
     /* If there are none, finish the execution */
@@ -638,7 +638,7 @@ main(int argc, char *argv[])
     }
     else
     {
-        OFLOG_ERROR(echoscuLogger, "Echo SCU Failed:" << DimseCondition::dump(temp_str, cond));
+        OFLOG_ERROR(echoscuLogger, "Echo SCU Failed: " << DimseCondition::dump(temp_str, cond));
         OFLOG_INFO(echoscuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
@@ -748,6 +748,9 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
+** Revision 1.50  2010-05-18 16:10:25  joergr
+** Replaced '\n' by OFendl in log messages.
+**
 ** Revision 1.49  2009-12-01 10:59:38  joergr
 ** Use helper function checkDependence() where appropriate.
 ** Sightly modified log messages.

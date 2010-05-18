@@ -22,8 +22,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-23 15:20:13 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Update Date:      $Date: 2010-05-18 16:10:25 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -766,7 +766,7 @@ main(int argc, char *argv[])
         exit(1);
     }
 
-    OFLOG_DEBUG(movescuLogger, "Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
+    OFLOG_DEBUG(movescuLogger, "Request Parameters:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
 
     /* create association */
     OFLOG_INFO(movescuLogger, "Requesting Association");
@@ -786,7 +786,7 @@ main(int argc, char *argv[])
         }
     }
     /* what has been accepted/refused ? */
-    OFLOG_DEBUG(movescuLogger, "Association Parameters Negotiated:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
+    OFLOG_DEBUG(movescuLogger, "Association Parameters Negotiated:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
 
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
         OFLOG_FATAL(movescuLogger, "No Acceptable Presentation Contexts");
@@ -1412,7 +1412,7 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
     myCallbackData = (MyCallbackInfo*)callbackData;
 
     OFString temp_str;
-    OFLOG_INFO(movescuLogger, "Move Response " << responseCount << ":\n" << DIMSE_dumpMessage(temp_str, *response, DIMSE_INCOMING));
+    OFLOG_INFO(movescuLogger, "Move Response " << responseCount << ":" << OFendl << DIMSE_dumpMessage(temp_str, *response, DIMSE_INCOMING));
 
     /* should we send a cancel back ?? */
     if (opt_cancelAfterNResponses == responseCount) {
@@ -1537,6 +1537,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.83  2010-05-18 16:10:25  joergr
+** Replaced '\n' by OFendl in log messages.
+**
 ** Revision 1.82  2010-03-23 15:20:13  joergr
 ** Use printError() method for command line parsing errors only. After the
 ** resource identifier has been printed to the log stream use "oflog" instead.

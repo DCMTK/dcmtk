@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-02-04 13:54:13 $
- *  CVS/RCS Revision: $Revision: 1.87 $
+ *  Update Date:      $Date: 2010-05-18 16:10:25 $
+ *  CVS/RCS Revision: $Revision: 1.88 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -964,9 +964,9 @@ int main(int argc, char *argv[])
 
     /* dump presentation contexts if required */
     if (opt_showPresentationContexts)
-      OFLOG_INFO(storescuLogger, "Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
+      OFLOG_INFO(storescuLogger, "Request Parameters:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
     else
-      OFLOG_DEBUG(storescuLogger, "Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
+      OFLOG_DEBUG(storescuLogger, "Request Parameters:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
 
     /* create association, i.e. try to establish a network connection to another */
     /* DICOM application. This call creates an instance of T_ASC_Association*. */
@@ -980,7 +980,7 @@ int main(int argc, char *argv[])
         OFLOG_FATAL(storescuLogger, "Association Rejected:" << OFendl << ASC_printRejectParameters(temp_str, &rej));
         return 1;
       } else {
-        OFLOG_FATAL(storescuLogger, "Association Request Failed:" << DimseCondition::dump(temp_str, cond));
+        OFLOG_FATAL(storescuLogger, "Association Request Failed: " << DimseCondition::dump(temp_str, cond));
         return 1;
       }
     }
@@ -990,9 +990,9 @@ int main(int argc, char *argv[])
 
     /* dump the presentation contexts which have been accepted/refused */
     if (opt_showPresentationContexts)
-      OFLOG_INFO(storescuLogger, "Association Parameters Negotiated:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
+      OFLOG_INFO(storescuLogger, "Association Parameters Negotiated:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
     else
-      OFLOG_DEBUG(storescuLogger, "Association Parameters Negotiated:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
+      OFLOG_DEBUG(storescuLogger, "Association Parameters Negotiated:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
 
     /* count the presentation contexts which have been accepted by the SCP */
     /* If there are none, finish the execution */
@@ -1751,6 +1751,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.88  2010-05-18 16:10:25  joergr
+** Replaced '\n' by OFendl in log messages.
+**
 ** Revision 1.87  2010-02-04 13:54:13  joergr
 ** Fixed issue with experimental macro ON_THE_FLY_COMPRESSION.
 **

@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-10 09:47:53 $
- *  CVS/RCS Revision: $Revision: 1.124 $
+ *  Update Date:      $Date: 2010-05-18 16:10:25 $
+ *  CVS/RCS Revision: $Revision: 1.125 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1230,7 +1230,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 
   if (cond.code() == DULC_FORKEDCHILD)
   {
-    // if (opt_debug) DimseCondition::dump(temp_str, cond);
+    // OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));
     goto cleanup;
   }
 
@@ -1291,9 +1291,9 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 
   /* dump presentation contexts if required */
   if (opt_showPresentationContexts)
-    OFLOG_INFO(storescpLogger, "Parameters:\n" << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
+    OFLOG_INFO(storescpLogger, "Parameters:" << OFendl << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
   else
-    OFLOG_DEBUG(storescpLogger, "Parameters:\n" << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
+    OFLOG_DEBUG(storescpLogger, "Parameters:" << OFendl << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
 
   if (opt_refuseAssociation)
   {
@@ -1629,7 +1629,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   }
   else
   {
-    OFLOG_ERROR(storescpLogger, "DIMSE failure (aborting association):" << DimseCondition::dump(temp_str, cond));
+    OFLOG_ERROR(storescpLogger, "DIMSE failure (aborting association): " << DimseCondition::dump(temp_str, cond));
     /* some kind of error so abort the association */
     cond = ASC_abortAssociation(assoc);
   }
@@ -2716,6 +2716,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.125  2010-05-18 16:10:25  joergr
+** Replaced '\n' by OFendl in log messages.
+**
 ** Revision 1.124  2010-05-10 09:47:53  joergr
 ** Added warning message when output file already exists. Output details on
 ** error condition if output file cannot be written.

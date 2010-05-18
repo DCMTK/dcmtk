@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2009, OFFIS
+ *  Copyright (C) 2005-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Termination Service Class User (negotiates the private shutdown
  *           SOP class in order to shutdown server applications)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 11:53:58 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-05-18 16:10:25 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -222,7 +222,7 @@ int main( int argc, char *argv[] )
   }
 
   // dump presentation contexts
-  OFLOG_DEBUG(termscuLogger, "Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
+  OFLOG_DEBUG(termscuLogger, "Request Parameters:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
 
   // dump information
   OFLOG_INFO(termscuLogger, "Requesting Association");
@@ -246,7 +246,7 @@ int main( int argc, char *argv[] )
   }
 
   // dump the presentation contexts which have been accepted/refused
-  OFLOG_DEBUG(termscuLogger, "Association Parameters Negotiated:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
+  OFLOG_DEBUG(termscuLogger, "Association Parameters Negotiated:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
 
   // count the presentation contexts which have been accepted by the SCP
   // If there are none, finish the execution
@@ -310,6 +310,9 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: termscu.cc,v $
+** Revision 1.12  2010-05-18 16:10:25  joergr
+** Replaced '\n' by OFendl in log messages.
+**
 ** Revision 1.11  2009-11-18 11:53:58  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
