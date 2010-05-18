@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-05-18 16:37:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -175,7 +175,7 @@ OFBool WlmDataSource::CheckSearchMask( DcmDataset *searchMask )
   searchMask->findAndGetOFString( DCM_SpecificCharacterSet, specificCharacterSet );
 
   // dump some information if required
-  DCMWLM_INFO("Checking the search mask.");
+  DCMWLM_INFO("Checking the search mask");
 
   // this member variable indicates if we encountered an unsupported
   // optional key attribute in the search mask; initialize it with false.
@@ -243,7 +243,7 @@ void WlmDataSource::CheckNonSequenceElementInSearchMask( DcmDataset *searchMask,
       // if there is a problem with the current element, increase the corresponding counter and dump an error message.
       invalidMatchingKeyAttributeCount++;
       DCMWLM_WARN("WlmDataSource::CheckNonSequenceElementInSearchMask: Matching key attribute ("
-          << tag.getTagName() << ") with invalid value encountered in the search mask.");
+          << tag.getTagName() << ") with invalid value encountered in the search mask");
     }
   }
   // if current element is not a supported matching key attribute, determine
@@ -1454,6 +1454,9 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
+** Revision 1.27  2010-05-18 16:37:04  joergr
+** Slightly modified log messages and log levels in order to be more consistent.
+**
 ** Revision 1.26  2010-03-01 09:08:50  uli
 ** Removed some unnecessary include directives in the headers.
 **

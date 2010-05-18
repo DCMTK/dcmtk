@@ -22,8 +22,8 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2010-03-12 12:12:34 $
-*  CVS/RCS Revision: $Revision: 1.22 $
+*  Update Date:      $Date: 2010-05-18 16:37:04 $
+*  CVS/RCS Revision: $Revision: 1.23 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -119,7 +119,7 @@ OFCondition WlmFileSystemInteractionManager::ConnectToFileSystem( const OFString
   // check parameter
   if( dfPathv.length() == 0 )
   {
-    DCMWLM_WARN("Invalid parameters, cannot connect to worklist file system database.");
+    DCMWLM_ERROR("Invalid parameters, cannot connect to worklist file system database");
     return( WLM_EC_CannotConnectToDataSource );
   }
 
@@ -202,7 +202,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
     DcmFileFormat fileform;
     if (fileform.loadFile(worklistFiles[i].c_str()).bad())
     {
-      DCMWLM_WARN("Could not read worklist file " << worklistFiles[i] << " properly. File will be ignored.");
+      DCMWLM_WARN("Could not read worklist file " << worklistFiles[i] << " properly, file will be ignored");
     }
     else
     {
@@ -210,12 +210,12 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
       DcmDataset *dataset = fileform.getDataset();
       if( dataset == NULL )
       {
-        DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is empty. File will be ignored.");
+        DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is empty, file will be ignored");
       }
       else
       {
         if( enableRejectionOfIncompleteWlFiles )
-          DCMWLM_INFO("Checking whether worklist file " << worklistFiles[i] << " is complete.");
+          DCMWLM_INFO("Checking whether worklist file " << worklistFiles[i] << " is complete");
         // in case option --enable-file-reject is set, we have to check if the current
         // .wl-file meets certain conditions; in detail, the file's dataset has to be
         // checked whether it contains all necessary return type 1 attributes and contains
@@ -223,18 +223,18 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
         // .wl-file shall be rejected
         if( enableRejectionOfIncompleteWlFiles && !DatasetIsComplete( dataset ) )
         {
-          DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is incomplete. File will be ignored.");
+          DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is incomplete, file will be ignored");
         }
         else
         {
           // check if the current dataset matches the matching key attribute values
           if( !DatasetMatchesSearchMask( dataset, searchMask ) )
           {
-            DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " does not match query.");
+            DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " does not match query");
           }
           else
           {
-            DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " matches query.");
+            DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " matches query");
 
             // since the dataset matches the matching key attribute values
             // we need to insert it into the matchingRecords array
@@ -688,7 +688,7 @@ OFBool WlmFileSystemInteractionManager::ReferencedStudyOrPatientSequenceIsAbsent
     // try to add it to the dataset and return OFFalse if successful
     if ( dset->insertEmptyElement( sequenceTagKey ).good() )
     {
-      DCMWLM_INFO("Added missing type 2 sequence attribute " << sequenceTagKey << " to the current record.");
+      DCMWLM_WARN("Added missing type 2 sequence attribute " << sequenceTagKey << " to the current record");
       result = OFFalse;
     }
     else
@@ -2162,6 +2162,9 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
+** Revision 1.23  2010-05-18 16:37:04  joergr
+** Slightly modified log messages and log levels in order to be more consistent.
+**
 ** Revision 1.22  2010-03-12 12:12:34  joergr
 ** Enhanced log output on incomplete worklist files (in debug mode).
 ** Changed some log messages from level "info" to "warn".
