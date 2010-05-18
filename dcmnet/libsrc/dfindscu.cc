@@ -21,10 +21,10 @@
  *
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-01-26 13:39:13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-05-18 16:15:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dfindscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,14 +53,14 @@
 #define OFFIS_CONSOLE_APPLICATION "findscu"
 
 static void progressCallback(
-  void *callbackData,
-  T_DIMSE_C_FindRQ *request,
-  int responseCount,
-  T_DIMSE_C_FindRSP *rsp,
-  DcmDataset *responseIdentifiers)
+    void *callbackData,
+    T_DIMSE_C_FindRQ *request,
+    int responseCount,
+    T_DIMSE_C_FindRSP *rsp,
+    DcmDataset *responseIdentifiers)
 {
-  DcmFindSCUDefaultCallback *callback = OFreinterpret_cast(DcmFindSCUDefaultCallback *, callbackData);
-  if (callback) callback->callback(request, responseCount, rsp, responseIdentifiers);
+    DcmFindSCUDefaultCallback *callback = OFreinterpret_cast(DcmFindSCUDefaultCallback *, callbackData);
+    if (callback) callback->callback(request, responseCount, rsp, responseIdentifiers);
 }
 
 /* ---------------- class DcmFindSCUCallback ---------------- */
@@ -70,15 +70,15 @@ DcmFindSCUCallback::DcmFindSCUCallback()
 , presId_(0)
 {
 }
-  
+
 void DcmFindSCUCallback::setAssociation(T_ASC_Association *assoc)
 {
-  assoc_ = assoc;
+    assoc_ = assoc;
 }
 
 void DcmFindSCUCallback::setPresentationContextID(T_ASC_PresentationContextID presId)
 {
-  presId_ = presId;
+    presId_ = presId;
 }
 
 /* ---------------- class DcmFindSCUCallback ---------------- */
@@ -93,19 +93,19 @@ DcmFindSCUDefaultCallback::DcmFindSCUDefaultCallback(
 }
 
 void DcmFindSCUDefaultCallback::callback(
-        T_DIMSE_C_FindRQ *request,
-        int responseCount,
-        T_DIMSE_C_FindRSP *rsp,
-        DcmDataset *responseIdentifiers)
+    T_DIMSE_C_FindRQ *request,
+    int responseCount,
+    T_DIMSE_C_FindRSP *rsp,
+    DcmDataset *responseIdentifiers)
  {
+    /* dump delimiter */
+    DCMNET_WARN("---------------------------");
+
     /* dump response number */
-    DCMNET_WARN("RESPONSE: " << responseCount << " (" << DU_cfindStatusString(rsp->DimseStatus) << ")");
+    DCMNET_WARN("Find Response: " << responseCount << " (" << DU_cfindStatusString(rsp->DimseStatus) << ")");
 
     /* dump data set which was received */
     DCMNET_WARN(DcmObject::PrintHelper(*responseIdentifiers));
-
-    /* dump delimiter */
-    DCMNET_WARN("--------");
 
     /* in case extractResponsesToFile is set the responses shall be extracted to a certain file */
     if (extractResponsesToFile_) {
@@ -117,12 +117,12 @@ void DcmFindSCUDefaultCallback::callback(
     /* should we send a cancel back ?? */
     if (cancelAfterNResponses_ == responseCount)
     {
-        DCMNET_INFO("Sending Cancel RQ, MsgId: " << request->MessageID << ", PresId: " << presId_);
+        DCMNET_INFO("Sending Cancel Request, MsgID: " << request->MessageID << ", PresID: " << presId_);
         OFCondition cond = DIMSE_sendCancelRequest(assoc_, presId_, request->MessageID);
         if (cond.bad())
         {
             OFString temp_str;
-            DCMNET_ERROR("Cancel RQ Failed: " << DimseCondition::dump(temp_str, cond));
+            DCMNET_ERROR("Cancel Request Failed: " << DimseCondition::dump(temp_str, cond));
         }
     }
 }
@@ -136,23 +136,23 @@ DcmFindSCU::DcmFindSCU()
 }
 
 DcmFindSCU::~DcmFindSCU()
-{ 
-  dropNetwork(); 
+{
+    dropNetwork();
 }
 
 OFCondition DcmFindSCU::initializeNetwork(int acse_timeout)
 {
-  return ASC_initializeNetwork(NET_REQUESTOR, 0, acse_timeout, &net_);
+    return ASC_initializeNetwork(NET_REQUESTOR, 0, acse_timeout, &net_);
 }
 
 OFCondition DcmFindSCU::setTransportLayer(DcmTransportLayer *tLayer)
 {
-  return ASC_setTransportLayer(net_, tLayer, 0);
+    return ASC_setTransportLayer(net_, tLayer, 0);
 }
 
 OFCondition DcmFindSCU::dropNetwork()
 {
-  if (net_) return ASC_dropNetwork(&net_); else return EC_Normal;
+    if (net_) return ASC_dropNetwork(&net_); else return EC_Normal;
 }
 
 OFCondition DcmFindSCU::performQuery(
@@ -207,7 +207,7 @@ OFCondition DcmFindSCU::performQuery(
     if (cond.bad()) return cond;
 
     /* dump presentation contexts if required */
-    DCMNET_DEBUG("Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
+    DCMNET_DEBUG("Request Parameters:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
 
     /* create association, i.e. try to establish a network connection to another */
     /* DICOM application. This call creates an instance of T_ASC_Association*. */
@@ -223,13 +223,13 @@ OFCondition DcmFindSCU::performQuery(
             DCMNET_ERROR("Association Rejected:" << OFendl << ASC_printRejectParameters(temp_str, &rej));
             return cond;
         } else {
-            DCMNET_ERROR("Association Request Failed");
+            DCMNET_ERROR("Association Request Failed: " << DimseCondition::dump(temp_str, cond));
             return cond;
         }
     }
 
     /* dump the presentation contexts which have been accepted/refused */
-    DCMNET_DEBUG("Association Parameters Negotiated:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
+    DCMNET_DEBUG("Association Parameters Negotiated:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
 
     /* count the presentation contexts which have been accepted by the SCP */
     /* If there are none, finish the execution */
@@ -251,7 +251,7 @@ OFCondition DcmFindSCU::performQuery(
     } else {
       OFListIterator(OFString) iter = fileNameList->begin();
       OFListIterator(OFString) enditer = fileNameList->end();
-      while ((iter != enditer) && cond.good()) 
+      while ((iter != enditer) && cond.good())
       {
           cond = findSCU(assoc, (*iter).c_str(), repeatCount, abstractSyntax, blockMode, dimse_timeout, extractResponsesToFile, cancelAfterNResponses, overrideKeys, callback);
           ++iter;
@@ -265,7 +265,7 @@ OFCondition DcmFindSCU::performQuery(
             DCMNET_INFO("Aborting Association");
             cond = ASC_abortAssociation(assoc);
             if (cond.bad()) {
-                DCMNET_ERROR("Association Abort Failed:");
+                DCMNET_ERROR("Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
                 return cond;
             }
         } else {
@@ -274,18 +274,18 @@ OFCondition DcmFindSCU::performQuery(
             cond = ASC_releaseAssociation(assoc);
             if (cond.bad())
             {
-                DCMNET_ERROR("Association Release Failed:");
+                DCMNET_ERROR("Association Release Failed: " << DimseCondition::dump(temp_str, cond));
                 return cond;
             }
         }
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-        DCMNET_ERROR("Protocol Error: peer requested release (Aborting)");
+        DCMNET_ERROR("Protocol Error: Peer requested release (Aborting)");
         DCMNET_INFO("Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
-            DCMNET_ERROR("Association Abort Failed:");
+            DCMNET_ERROR("Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
             return cond;
         }
     }
@@ -295,11 +295,11 @@ OFCondition DcmFindSCU::performQuery(
     }
     else
     {
-        DCMNET_ERROR("SCU Failed:" << DimseCondition::dump(temp_str, cond));
+        DCMNET_ERROR("Find SCU Failed: " << DimseCondition::dump(temp_str, cond));
         DCMNET_INFO("Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
-            DCMNET_ERROR("Association Abort Failed:");
+            DCMNET_ERROR("Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
             return cond;
         }
     }
@@ -311,9 +311,9 @@ OFCondition DcmFindSCU::performQuery(
 }
 
 OFCondition DcmFindSCU::addPresentationContext(
-  T_ASC_Parameters *params, 
-  const char *abstractSyntax,
-  E_TransferSyntax preferredTransferSyntax)
+    T_ASC_Parameters *params,
+    const char *abstractSyntax,
+    E_TransferSyntax preferredTransferSyntax)
 {
     /*
     ** We prefer to use Explicitly encoded transfer syntaxes.
@@ -383,13 +383,13 @@ OFBool DcmFindSCU::writeToFile(const char* ofname, DcmDataset *dataset)
     DcmFileFormat fileformat(dataset); // copies dataset
     OFCondition ec = fileformat.error();
     if (ec.bad()) {
-        DCMNET_ERROR("writing file: " << ofname << ": " << ec.text());
+        DCMNET_ERROR("Writing file: " << ofname << ": " << ec.text());
         return OFFalse;
     }
 
     ec = fileformat.saveFile(ofname, dataset->getOriginalXfer());
     if (ec.bad()) {
-        DCMNET_ERROR("writing file: " << ofname << ": " << ec.text());
+        DCMNET_ERROR("Writing file: " << ofname << ": " << ec.text());
         return OFFalse;
     }
 
@@ -398,16 +398,16 @@ OFBool DcmFindSCU::writeToFile(const char* ofname, DcmDataset *dataset)
 
 
 OFCondition DcmFindSCU::findSCU(
-  T_ASC_Association * assoc, 
-  const char *fname, 
-  int repeatCount,  
-  const char *abstractSyntax,
-  T_DIMSE_BlockingMode blockMode, 
-  int dimse_timeout, 
-  OFBool extractResponsesToFile,
-  int cancelAfterNResponses,
-  OFList<OFString> *overrideKeys,
-  DcmFindSCUCallback *callback) const
+    T_ASC_Association * assoc,
+    const char *fname,
+    int repeatCount,
+    const char *abstractSyntax,
+    T_DIMSE_BlockingMode blockMode,
+    int dimse_timeout,
+    OFBool extractResponsesToFile,
+    int cancelAfterNResponses,
+    OFList<OFString> *overrideKeys,
+    DcmFindSCUCallback *callback) const
     /*
      * This function will read all the information from the given file
      * (this information specifies a search mask), figure out a corresponding
@@ -458,7 +458,7 @@ OFCondition DcmFindSCU::findSCU(
     while (path != endOfList)
     {
         cond = proc.applyPathWithValue(dset, *path);
-        if (cond.bad()) 
+        if (cond.bad())
         {
             DCMNET_ERROR("Bad override key/path: " << *path << ": " << cond.text());
             return cond;
@@ -491,46 +491,44 @@ OFCondition DcmFindSCU::findSCU(
 
     /* as long as no error occured and the counter does not equal 0 */
     cond = EC_Normal;
-    while (cond.good() && n--) 
+    while (cond.good() && n--)
     {
         DcmDataset *statusDetail = NULL;
 
         /* complete preparation of C-FIND-RQ message */
         req.MessageID = assoc->nextMsgID++;
-        
+
         /* if required, dump some more general information */
-        DCMNET_INFO(DIMSE_dumpMessage(temp_str, req, DIMSE_OUTGOING, dset));
+        DCMNET_INFO(DIMSE_dumpMessage(temp_str, req, DIMSE_OUTGOING, NULL, presId));
+        DCMNET_INFO("Find SCU Request Identifiers:" << OFendl << DcmObject::PrintHelper(*dset));
 
         /* finally conduct transmission of data */
         OFCondition cond = DIMSE_findUser(assoc, presId, &req, dset,
             progressCallback, callback, blockMode, dimse_timeout,
             &rsp, &statusDetail);
-        
+
         /* dump some more general information */
         if (cond.good()) {
             if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
                 DCMNET_INFO(DIMSE_dumpMessage(temp_str, rsp, DIMSE_INCOMING));
             } else {
                 if (rsp.DimseStatus != STATUS_Success) {
-                    DCMNET_ERROR("Response: " <<  DU_cfindStatusString(rsp.DimseStatus));
+                    DCMNET_ERROR("Find Response: " << DU_cfindStatusString(rsp.DimseStatus));
                 }
             }
         } else {
             if (fname) {
                 DCMNET_ERROR("Find Failed, file: " << fname << ":");
             } else {
-                DCMNET_ERROR("Find Failed, query keys");
-
+                DCMNET_ERROR("Find Failed, query keys:");
                 DCMNET_ERROR(DcmObject::PrintHelper(dcmff));
             }
             DCMNET_ERROR(DimseCondition::dump(temp_str, cond));
         }
-        
+
         /* dump status detail information if there is some */
         if (statusDetail != NULL) {
-            DCMNET_ERROR("  Status Detail:");
-
-            DCMNET_ERROR(DcmObject::PrintHelper(*statusDetail));
+            DCMNET_WARN("Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
             delete statusDetail;
         }
     }
@@ -543,6 +541,10 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.10  2010-05-18 16:15:43  joergr
+ * Slightly modified log messages and log levels in order to be more consistent.
+ * Replaced '\n' by OFendl in log messages.
+ *
  * Revision 1.9  2010-01-26 13:39:13  uli
  * Use DIMSE_dumpMessage() for some more log messages.
  *
