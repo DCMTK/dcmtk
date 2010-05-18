@@ -32,7 +32,7 @@
 namespace log4cplus {
     typedef STD_NAMESPACE ostream tostream;
     typedef STD_NAMESPACE istream tistream;
-    typedef OFStringStream        tostringstream;
+    typedef OFOStringStream        tostringstream;
 }
 
 #endif // LOG4CPLUS_STREAMS_HEADER_

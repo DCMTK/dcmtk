@@ -71,7 +71,7 @@ LOG4CPLUS_EXPORT void _clear_tostringstream (tostringstream &);
     do {                                                                \
         if((logger).isEnabledFor(log4cplus::logLevel##_LOG_LEVEL)) {    \
             log4cplus::_clear_tostringstream (log4cplus::_macros_oss);  \
-            log4cplus::_macros_oss << logEvent;                         \
+            log4cplus::_macros_oss << logEvent << OFStringStream_ends;  \
             OFSTRINGSTREAM_GETOFSTRING(log4cplus::_macros_oss, _macros_string) \
             (logger).forcedLog(log4cplus::logLevel##_LOG_LEVEL,         \
                 _macros_string, __FILE__, __LINE__,                     \
@@ -86,7 +86,7 @@ LOG4CPLUS_EXPORT void _clear_tostringstream (tostringstream &);
     do {                                                                \
         if((logger).isEnabledFor(log4cplus::logLevel##_LOG_LEVEL)) {    \
             log4cplus::tostringstream _log4cplus_buf;                   \
-            _log4cplus_buf << logEvent;                                 \
+            _log4cplus_buf << logEvent << OFStringStream_ends;          \
             OFSTRINGSTREAM_GETOFSTRING(_log4cplus_buf, _macro_string)   \
             (logger).forcedLog(log4cplus::logLevel##_LOG_LEVEL,         \
                 _macro_string, __FILE__, __LINE__,                      \

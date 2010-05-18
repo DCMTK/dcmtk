@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.18 (schlachter)
+
+- Use OFStringStream_ends at the end of a OFStringStream.
+  Affects: oflog/include/dcmtk/oflog/logmacro.h
+           oflog/include/dcmtk/oflog/streams.h
+
 **** Changes from 2010.05.14 (schlachter)
 
 - Added new function OFLog::reconfigure() which reinterprets the logger config
