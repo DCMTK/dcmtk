@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.19 (riesmeier)
+
+- Revised explanatory text on development snapshot (aka version 3.5.5).
+  Affects: INSTALL
+
 **** Changes from 2010.05.18 (riesmeier)
 
 - Slightly modified log messages and log levels in order to be more consistent.

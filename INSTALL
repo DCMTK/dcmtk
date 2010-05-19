@@ -3,9 +3,16 @@
 DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
 
-Please note that most sections of this document refer to the official release
-DCMTK 3.5.4, i.e. they are not yet updated for the changes of the latest
-development snapshot (version 3.5.5).
+-------------------------------------------------------------------------------
+ Please note that most sections of this document refer to the official release
+ DCMTK 3.5.4, i.e. they are not yet updated for the changes of the latest
+ development snapshot (version 3.5.5).  This will be done for the next release.
+
+ The toolkit should compile on Linux systems with gcc 4.1 since this is our
+ main development platform.  Also on Windows systems it usually works with VS
+ 2005/2008.  However, there is no guarantee that the software also compiles
+ on your system.
+-------------------------------------------------------------------------------
 
 
 PRE-REQUISITES
@@ -337,7 +344,7 @@ Step 3:
 
 Step 3 will install the executables and some support files (data dictionary,
 configuration and documentation files).  If you also wish to install the
-libraries and include files then use the "make install-lib".  For the HTML
+libraries and include files then use "make install-lib".  For the HTML
 documentation (see below) use "make install-html" (requires Doxygen to be
 installed); "make install-all" installs all of the above.
 In case the files should be installed in a temporary directory, e.g. in order
@@ -587,4 +594,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2009-08-07 (Riesmeier).
+Last revised: 2010-05-19 (Riesmeier).
