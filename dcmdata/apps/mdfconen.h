@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2009, OFFIS
+ *  Copyright (C) 2003-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:06 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-05-20 15:45:21 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,12 +34,15 @@
 #define MDFCONEN_H
 
 #include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
-#include "mdfdsman.h"
-#include "dcmtk/ofstd/oftypes.h"
-#include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/ofstd/oflist.h"
+
 #include "dcmtk/ofstd/ofcond.h"
-#include "dcmtk/dcmdata/dctagkey.h"
+#include "dcmtk/dcmdata/dcxfer.h"
+
+
+// forward declarations
+class MdfDatasetManager;
+class OFConsoleApplication;
+class OFCommandLine;
 
 
 /** class reflecting a modify operation (called Job in this context)
@@ -54,13 +57,13 @@ public :
 
     /** Comparison operator between Jobs
      */
-    OFBool operator==(const MdfJob& j) const;
+    OFBool operator==(const MdfJob &j) const;
 
 private :
 
     /** private undefined copy constructor
      */
-    MdfJob &operator=(const MdfJob& j);
+    MdfJob &operator=(const MdfJob &j);
 };
 
 
@@ -77,8 +80,9 @@ public:
      *  @param appl_name Name of calling application, that instantiates
      *                   this class
      */
-    MdfConsoleEngine(int argc, char *argv[],
-                     const char* appl_name);
+    MdfConsoleEngine(int argc,
+                     char *argv[],
+                     const char *appl_name);
 
     /** Destructor
      */
@@ -92,6 +96,7 @@ public:
     int startProvidingService();
 
 protected:
+
     /** Checks for non-job commandline options like --debug etc. and
      *  sets corresponding internal flags
      */
@@ -108,7 +113,7 @@ protected:
      *  @param job [in] The job option to check (e. g. "i", "m", "ma"...)
      *  @return OFTrue, if a value is expected.
      */
-    static OFBool jobOptionExpectsParameters(const OFString& job);
+    static OFBool jobOptionExpectsParameters(const OFString &job);
 
     /** This function splits a modify option (inclusive value) as
      *  found on commandline into to parts (path and value)
@@ -127,14 +132,14 @@ protected:
      *  @return returns 0 if no error occured, else the number of errors
      */
     int executeJob(const MdfJob &job,
-                   const char* filename = NULL);
+                   const char *filename = NULL);
 
     /** Backup and load file into internal MdfDatasetManager
      *  @param filename name of file to load
      *  @return OFCondition, whether loading/backuping was successful including
      *          error description
      */
-    OFCondition loadFile(const char* filename);
+    OFCondition loadFile(const char *filename);
 
     /** Backup given file from file to file.bak
      *  @param file_name filename of file, that should be backuped
@@ -226,6 +231,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
+** Revision 1.18  2010-05-20 15:45:21  joergr
+** Removed some unnecessary include directives.
+**
 ** Revision 1.17  2009-11-04 09:58:06  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **
