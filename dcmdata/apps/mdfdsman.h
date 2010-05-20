@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2009, OFFIS
+ *  Copyright (C) 2003-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:06 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-05-20 15:44:55 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,12 +34,16 @@
 #define MDFDSMAN_H
 
 #include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
-#include "dcmtk/dcmdata/dctagkey.h"
-#include "dcmtk/dcmdata/dcfilefo.h"
+
 #include "dcmtk/ofstd/ofcond.h"
-#include "dcmtk/ofstd/oflist.h"
-#include "dcmtk/ofstd/ofcmdln.h"
-#include "dcmtk/dcmdata/dcvrat.h"
+#include "dcmtk/dcmdata/dctagkey.h"
+#include "dcmtk/dcmdata/dcxfer.h"
+
+
+// forward declarations
+class DcmDataset;
+class DcmFileFormat;
+class DcmElement;
 
 
 /** This class encapsulates data structures and operations for modifying
@@ -49,6 +53,7 @@
 class MdfDatasetManager
 {
 public:
+
     /** Constructor, initializes member-variables
      */
     MdfDatasetManager();
@@ -64,15 +69,14 @@ public:
      *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition loadFile(const char *file_name,
-                         const E_FileReadMode readMode=ERM_autoDetect,
-                         const E_TransferSyntax xfer=EXS_Unknown);
+                         const E_FileReadMode readMode = ERM_autoDetect,
+                         const E_TransferSyntax xfer = EXS_Unknown);
 
     /** Modifies/Inserts a path (with a specific value if desired).
      *  @param tag_path path to item/element
      *  @param value denotes new value of tag
      *  @param only_modify if true, only existing tags are processed. If false,
      *                     any not existing tag is inserted
-     *
      *  @param update_metaheader updates metaheader UIDs, if related UIDs in
      *                           dataset are changed (default=true)
      *  @param ignore_missing_tags if true, tags that could not be found
@@ -89,6 +93,28 @@ public:
                                    const OFBool update_metaheader = OFTrue,
                                    const OFBool ignore_missing_tags = OFFalse,
                                    const OFBool no_reservation_checks = OFFalse);
+
+    /** Modifies/Inserts a path with a specific value read from file
+     *  @param tag_path path to item/element
+     *  @param filename name of the file from which the value should be read
+     *  @param only_modify if true, only existing tags are processed. If false,
+     *                     any not existing tag is inserted
+     *  @param update_metaheader updates metaheader UIDs, if related UIDs in
+     *                           dataset are changed (default=true)
+     *  @param ignore_missing_tags if true, tags that could not be found
+     *                             while modifying (only_modify must be true)
+     *                             are handled as non-errors
+     *  @param no_reservation_checks if true, any missing private reservation
+     *                               tags are ignored when inserting private
+     *                               tags. Only makes sense w/o only_modify
+     *  @return returns EC_normal if everything is ok, else an error
+     */
+    OFCondition modifyOrInsertFromFile(OFString tag_path,
+                                       const OFString &filename,
+                                       const OFBool &only_modify,
+                                       const OFBool update_metaheader = OFTrue,
+                                       const OFBool ignore_missing_tags = OFFalse,
+                                       const OFBool no_reservation_checks = OFFalse);
 
     /** Modifies all matching tags in dataset to a new value
      *  @param tag_path denotes, which tag to modify
@@ -133,7 +159,7 @@ public:
      *                instance UID key permitted).
      *  @return EC_Normal, if insertion was successful, error otherwise
      */
-    OFCondition generateAndInsertUID(const DcmTagKey& uidKey);
+    OFCondition generateAndInsertUID(const DcmTagKey &uidKey);
 
      /** Saves current dataset back to a file. Caution: After saving
      *  MdfDatasetManager keeps working on old filename.
@@ -190,7 +216,6 @@ public:
      */
     void setModifyUNValues(OFBool modifyUNValues);
 
-
 protected:
 
     /** modifies element to a specific value
@@ -245,6 +270,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
+** Revision 1.21  2010-05-20 15:44:55  joergr
+** Added support for reading the value of insert/modify statements from a file.
+** Removed some unnecessary include directives.
+**
 ** Revision 1.20  2009-11-04 09:58:06  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **
