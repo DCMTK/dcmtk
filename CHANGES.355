@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.20 (riesmeier)
+
+- Added new method for determining the size of a given file (in bytes).
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2010.05.19 (riesmeier)
 
 - Revised explanatory text on development snapshot (aka version 3.5.5).

@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-04-26 12:22:30 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-05-20 09:20:13 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -302,10 +302,16 @@ class OFStandard
                                              const OFBool recurse = OFTrue);
 
     /** delete given file from filesystem
-     *  @param filename (including directory) to delete
+     *  @param filename name of the file (including directory) to delete
      *  @return OFTrue if deletion was successul, OFFalse otherwise
      */
     static OFBool deleteFile(const OFString &filename);
+
+    /** determine size of given file (in bytes)
+     *  @param filename name of the file to be checked
+     *  @return size of the file in bytes (0 in case of error)
+     */
+    static size_t getFileSize(const OFString &filename);
 
     // --- other functions ---
 
@@ -584,6 +590,9 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.40  2010-05-20 09:20:13  joergr
+ * Added new method for determining the size of a given file (in bytes).
+ *
  * Revision 1.39  2010-04-26 12:22:30  uli
  * Fixed a some minor doxygen warnings.
  *

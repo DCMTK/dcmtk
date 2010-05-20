@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-28 13:27:38 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2010-05-20 09:20:32 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -689,6 +689,16 @@ OFBool OFStandard::deleteFile(const OFString &filename)
 {
   int err = unlink(filename.c_str());
   return (err == 0);
+}
+
+
+size_t OFStandard::getFileSize(const OFString &filename)
+{
+    size_t fileSize = 0;
+    struct stat fileStat;
+    if (stat(filename.c_str(), &fileStat) == 0)
+        fileSize = OFstatic_cast(size_t, fileStat.st_size);
+    return fileSize;
 }
 
 
@@ -1817,6 +1827,9 @@ long OFStandard::getProcessID()
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.58  2010-05-20 09:20:32  joergr
+ *  Added new method for determining the size of a given file (in bytes).
+ *
  *  Revision 1.57  2010-04-28 13:27:38  joergr
  *  Added type cast to integer variable in order to avoid compiler warnings
  *  reported by VisualStudio 2005.
