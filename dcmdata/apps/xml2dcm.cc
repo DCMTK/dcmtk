@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2009, OFFIS
+ *  Copyright (C) 2003-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:20:23 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2010-05-20 09:22:31 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -274,10 +274,7 @@ static OFCondition putElementContent(xmlNodePtr current,
                 if (f != NULL)
                 {
                     /* determine filesize */
-                    size_t fileSize = 0;
-                    struct stat fileStat;
-                    if (stat(filename, &fileStat) == 0)
-                        fileSize = OFstatic_cast(size_t, fileStat.st_size);
+                    const size_t fileSize = OFStandard::getFileSize(filename);
                     unsigned long buflen = fileSize;
                     /* if odd then make even (DICOM requires even length values) */
                     if (buflen & 1)
@@ -1001,6 +998,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.30  2010-05-20 09:22:31  joergr
+ * Use new OFStandard::getFileSize() method where appropriate.
+ *
  * Revision 1.29  2009-11-13 13:20:23  joergr
  * Fixed minor issues in log output.
  *

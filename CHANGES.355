@@ -7,6 +7,10 @@ Changes between releases are documented here.
   Affects: ofstd/include/dcmtk/ofstd/ofstd.h
            ofstd/libsrc/ofstd.cc
 
+- Use new OFStandard::getFileSize() method where appropriate.
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+
 **** Changes from 2010.05.19 (riesmeier)
 
 - Revised explanatory text on development snapshot (aka version 3.5.5).

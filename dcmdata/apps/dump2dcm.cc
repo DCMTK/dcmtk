@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:20:23 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Update Date:      $Date: 2010-05-20 09:23:45 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,12 +97,6 @@
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_STAT_H
-#include <sys/stat.h>
-#endif
-#ifdef HAVE_STAT_H
-#include <stat.h>
 #endif
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
@@ -437,18 +431,6 @@ parseValue(char *&s, char *&value, DcmEVR &vr, const DcmTagKey &tagkey)
     return ok;
 }
 
-static unsigned long
-fileSize(const char *fname)
-{
-    struct stat s;
-    unsigned long nbytes = 0;
-
-    if (stat(fname, &s) == 0)
-        nbytes = s.st_size;
-
-    return nbytes;
-}
-
 static OFCondition
 putFileContentsIntoElement(DcmElement *elem, const char *filename)
 {
@@ -460,7 +442,7 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
     if (ec.good())
     {
         /* NB: if size is odd file will be rejected */
-        const unsigned long fileLen = fileSize(filename);
+        const size_t fileLen = OFStandard::getFileSize(filename);
         /* read element value from binary file (requires even length) */
         ec = elem->createValueFromTempFile(fileStream.newFactory(), fileLen, EBO_LittleEndian);
         if (ec.bad())
@@ -477,7 +459,7 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
         return EC_InvalidTag;
     }
 
-    const unsigned long len = fileSize(filename);
+    const size_t len = OFStandard::getFileSize(filename);
     unsigned long buflen = len;
     if (buflen & 1)
         buflen++; /* if odd then make even (DICOM requires even length values) */
@@ -1137,6 +1119,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
+** Revision 1.67  2010-05-20 09:23:45  joergr
+** Use new OFStandard::getFileSize() method where appropriate.
+**
 ** Revision 1.66  2009-11-13 13:20:23  joergr
 ** Fixed minor issues in log output.
 **
