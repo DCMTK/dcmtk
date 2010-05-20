@@ -172,6 +172,9 @@ insert mode:
   -i    --insert  "[t]ag-path=[v]alue"
           insert (or overwrite) path at position t with value v
 
+  -if   --insert-from-file  "[t]ag-path=[f]ilename"
+          insert (or overwrite) path at position t with value from file f
+
   -nrc  --no-reserv-check
           do not check private reservations
 
@@ -179,6 +182,9 @@ modify mode:
 
   -m    --modify  "[t]ag-path=[v]alue"
           modify tag at position t to value v
+
+  -mf   --modify-from-file  "[t]ag-path=[f]ilename"
+          modify tag at position t to value from file f
 
   -ma   --modify-all  "[t]ag=[v]alue"
           modify ALL matching tags t in file to value v
@@ -206,9 +212,8 @@ unique identifier:
           generate new SOP Instance UID
 
   -nmu  --no-meta-uid
-          don't update metaheader UIDs;
-          UIDs in the metaheader won't be changed, if related UIDs in
-          the dataset are modified via options -m, -i or -ma
+          do not update metaheader UIDs if related
+          UIDs in the dataset are modified
 
 other processing options:
 
@@ -333,7 +338,7 @@ pending private tags.
 
 For the deletion of private non-reservation tags there are no special issues.
 
-\section changing_uids CHANGING UIDs
+\section changing_uids CHANGING UIDS
 
 \b dcmodify will automatically correct 'Media Storage SOP Class UID' and
 'Media Storage SOP Instance UID' in the metaheader, if you make changes to the
@@ -354,17 +359,27 @@ When choosing the \e -gin option, the related metaheader tag ('Media Storage
 SOP Instance UID') is updated automatically.  This behaviour cannot be
 disabled.
 
+\section element_values_from_file ELEMENT VALUES FROM FILE
+
+In order to read the element value from a file instead of specifying it on the
+command line, option \e -mf and \e -if can be used.  Please note that for OW
+elements, the data is expected to be little endian ordered and will be swapped
+if necessary.  The file size should always be an even number of bytes, i.e. no
+automatic padding is performed.
+
 \section wildcards WILDCARDS
 
 \b dcmodify also permits the usage of a wildcard character "*" for item numbers
 in path expressions, e.g. "ContentSequence[*].CodeValue" selects all "Code
 Value" attributes in all items of the ContentSequence.  Using a wildcard is
-possible for all basic operations, i.e . modifying \e -m, inserting \e -i and
+possible for all basic operations, i.e. modifying \e -m, inserting \e -i and
 \e -e options which makes it, together with the automatic creation of
 intermediate path nodes a powerful tool for construction and processing complex
-datasets.  The options \e -ma and \e -ea for modifying or deleting all
-occurences of a DICOM element based on its tag does not accept any wildcards
-but only works on single elements (i.e. a single dictionary name or tag key).
+datasets.
+
+The options \e -ma and \e -ea for modifying or deleting all occurences of a
+DICOM element based on its tag do not accept any wildcards but only work on
+single elements (i.e. a single dictionary name or tag key).
 
 \section examples EXAMPLES
 
@@ -390,6 +405,15 @@ but only works on single elements (i.e. a single dictionary name or tag key).
        possible.  You can specify longer tag paths, too (e.g.
        "(0008,1111)[*].(0008,1111)[*].(0010,0010)=A Third One").
 
+-if  --insert-from-file:
+       dcmodify -if "PixelData=pixel.raw" file.dcm
+       Inserts the content of file 'pixel.raw' into the PixelData element
+       of 'file.dcm'.  The contents of the file will be read as is.
+       OW data is expected to be little endian ordered and will be
+       swapped if necessary.  No checks will be made to ensure that the
+       amount of data is reasonable in terms of other attributes such as
+       Rows or Columns.
+
 -m   --modify:
        dcmodify -m "(0010,0010)=A Name" file.dcm
        Changes tag (0010,0010) on 1st level to "A Name".
@@ -407,6 +431,11 @@ but only works on single elements (i.e. a single dictionary name or tag key).
 
        Note that for the '-m' option the last node in the path must be
        a leaf element, i.e. not a sequence or an item.
+
+-mf  --modify-from-file:
+       dcmodify -mf "PixelData=pixel.raw" file.dcm
+       Does the same as -if in case there was already a PixelData element
+       in 'file.dcm'.  Otherwise nothing is changed.
 
 -ma  --modify-all:
        dcmodify -ma "(0010,0010)=New Name" file.dcm
@@ -535,6 +564,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2003-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
