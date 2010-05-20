@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-02-05 09:56:58 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2010-05-20 15:53:58 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,15 +31,11 @@
  */
 
 #include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
+
 #include "mdfconen.h"
-#include "dcmtk/ofstd/oftypes.h"
-#include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
-#include "dcmtk/ofstd/oflist.h"
-#include "dcmtk/ofstd/ofstring.h"
+#include "mdfdsman.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
 #define SHORTCOL 4
@@ -119,11 +115,15 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         cmd->addSubGroup("insert mode:");
             cmd->addOption("--insert",              "-i",   1, "\"[t]ag-path=[v]alue\"",
                                                                "insert (or overwrite) path at position t\nwith value v", OFCommandLine::AF_NoWarning);
+            cmd->addOption("--insert-from-file",    "-if",  1, "\"[t]ag-path=[f]ilename\"",
+                                                               "insert (or overwrite) path at position t\nwith value from file f", OFCommandLine::AF_NoWarning);
             cmd->addOption("--no-reserv-check",     "-nrc",    "do not check private reservations\nwhen inserting private tags");
         cmd->addSubGroup("modify mode:");
             cmd->addOption("--modify",              "-m",   1, "\"[t]ag-path=[v]alue\"",
                                                                "modify tag at position t to value v", OFCommandLine::AF_NoWarning);
-            cmd->addOption("--modify-all",          "-ma",  1, "\"[t]ag=[v]value\"",
+            cmd->addOption("--modify-from-file",    "-mf",  1, "\"[t]ag-path=[f]ilename\"",
+                                                               "modify tag at position t to value from file f", OFCommandLine::AF_NoWarning);
+            cmd->addOption("--modify-all",          "-ma",  1, "\"[t]ag=[v]alue\"",
                                                                "modify ALL matching tags t in file to value v", OFCommandLine::AF_NoWarning);
         cmd->addSubGroup("erase mode:");
             cmd->addOption("--erase",               "-e",   1, "\"[t]ag-path\"",
@@ -135,7 +135,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
             cmd->addOption("--gen-stud-uid",        "-gst",    "generate new Study Instance UID", OFCommandLine::AF_NoWarning);
             cmd->addOption("--gen-ser-uid",         "-gse",    "generate new Series Instance UID", OFCommandLine::AF_NoWarning);
             cmd->addOption("--gen-inst-uid",        "-gin",    "generate new SOP Instance UID", OFCommandLine::AF_NoWarning);
-            cmd->addOption("--no-meta-uid",         "-nmu",    "don't update metaheader UIDs\nUIDs in the metaheader won't be changed,\nif related UIDs in dataset are modified\nvia options -m, -i or -ma");
+            cmd->addOption("--no-meta-uid",         "-nmu",    "do not update metaheader UIDs if related\nUIDs in the dataset are modified");
         cmd->addSubGroup("other processing options:");
             cmd->addOption("--ignore-missing-tags", "-imt",    "treat 'tag not found' as success\nwhen modifying or erasing in datasets");
             cmd->addOption("--ignore-un-values",    "-iun",    "do not try writing any values\nto elements having VR of UN");
@@ -392,12 +392,16 @@ void MdfConsoleEngine::parseCommandLine()
             OFString option_value, tag_path, tag_value;
             if (option_string == "--insert")
                 aJob.option = "i";
+            if (option_string == "--insert-from-file")
+                aJob.option = "if";
             else if (option_string == "--modify")
                 aJob.option = "m";
-            else if (option_string == "--erase")
-                aJob.option = "e";
+            else if (option_string == "--modify-from-file")
+                aJob.option = "mf";
             else if (option_string == "--modify-all")
                 aJob.option = "ma";
+            else if (option_string == "--erase")
+                aJob.option = "e";
             else if (option_string == "--erase-all")
                 aJob.option = "ea";
             else if (option_string == "--erase-private")
@@ -454,11 +458,15 @@ int MdfConsoleEngine::executeJob(const MdfJob &job,
     int error_count = 0;
     OFLOG_INFO(mdfconenLogger, "Executing (option|path|value): "
         << job.option << "|" << job.path << "|" << job.value);
-    //start modify operation based on job option
+    // start modify operation based on job option
     if (job.option=="i")
         result = ds_man->modifyOrInsertPath(job.path, job.value, OFFalse, update_metaheader_uids_option, ignore_missing_tags_option, no_reservation_checks);
+    else if (job.option == "if")
+        result = ds_man->modifyOrInsertFromFile(job.path, job.value /*filename*/, OFFalse, update_metaheader_uids_option, ignore_missing_tags_option, no_reservation_checks);
     else if (job.option == "m")
         result = ds_man->modifyOrInsertPath(job.path, job.value, OFTrue, update_metaheader_uids_option, ignore_missing_tags_option, no_reservation_checks);
+    else if (job.option == "mf")
+        result = ds_man->modifyOrInsertFromFile(job.path, job.value /*filename*/, OFTrue, update_metaheader_uids_option, ignore_missing_tags_option, no_reservation_checks);
     else if (job.option == "ma")
         result = ds_man->modifyAllTags(job.path, job.value, update_metaheader_uids_option, count);
     else if (job.option == "e")
@@ -473,14 +481,13 @@ int MdfConsoleEngine::executeJob(const MdfJob &job,
         result = ds_man->generateAndInsertUID(DCM_SeriesInstanceUID);
     else if (job.option == "gin")
         result = ds_man->generateAndInsertUID(DCM_SOPInstanceUID);
-
-    //no valid job option found:
+    // no valid job option found:
     else
     {
         error_count++;
         OFLOG_ERROR(mdfconenLogger, "no valid option: " << job.option);
     }
-    //if modify operation failed
+    // if modify operation failed
     if (result.bad() && error_count == 0)
     {
         if (filename != NULL)
@@ -531,16 +538,16 @@ int MdfConsoleEngine::startProvidingService()
                                           itempad_option, output_dataset_option);
                 if (result.bad())
                 {
-                    OFLOG_ERROR(mdfconenLogger, "Couldn't save file: " << result.text());
+                    OFLOG_ERROR(mdfconenLogger, "couldn't save file: " << result.text());
                     errors++;
                     if (!no_backup_option)
                     {
-                      result = restoreFile(filename);
-                      if (result.bad())
-                      {
-                        OFLOG_ERROR(mdfconenLogger, "Couldn't restore file: " << result.text());
-                          errors++;
-                      }
+                        result = restoreFile(filename);
+                        if (result.bad())
+                        {
+                            OFLOG_ERROR(mdfconenLogger, "couldn't restore file: " << result.text());
+                            errors++;
+                        }
                     }
                 }
             }
@@ -592,23 +599,22 @@ OFCondition MdfConsoleEngine::backupFile(const char *file_name)
     int result;
     OFString backup = file_name;
     backup += ".bak";
-    // delete backup file, if it already exists:
+    // delete backup file, if it already exists
     if (OFStandard::fileExists(backup.c_str()))
     {
         int del_result = remove(backup.c_str());
         if (del_result != 0)
         {
-            OFLOG_ERROR(mdfconenLogger, "Couldn't delete previous backup file, unable to backup!");
+            OFLOG_ERROR(mdfconenLogger, "couldn't delete previous backup file, unable to backup!");
             return EC_IllegalCall;
         }
     }
-
     // if backup file could be removed, backup original file
     result = rename(file_name, backup.c_str());
     // set return value
     if (result != 0)
     {
-        OFLOG_ERROR(mdfconenLogger, "Unable to backup! No write permission?");
+        OFLOG_ERROR(mdfconenLogger, "unable to backup, no write permission?");
         return EC_IllegalCall;
     }
 
@@ -621,25 +627,25 @@ OFCondition MdfConsoleEngine::restoreFile(const char *filename)
     int result;
     OFString backup = filename;
     backup += ".bak";
-    // delete the (original) file, that dcmodify couldn't modify
+    // delete the (original) file that dcmodify couldn't modify
     if (OFStandard::fileExists(filename))
     {
         result = remove(filename);
         if (result != 0)
         {
-            OFLOG_ERROR(mdfconenLogger, "Unable to delete original filename for restoring backup!");
+            OFLOG_ERROR(mdfconenLogger, "unable to delete original file for restoring backup!");
             return EC_IllegalCall;
         }
     }
-    // and rename backup file back to original filename:
+    // and rename backup file back to original filename
     result = rename(backup.c_str(), filename);
     // error renaming backup file
     if (result != 0)
     {
-        OFLOG_ERROR(mdfconenLogger, "renaming backup file to original");
+        OFLOG_ERROR(mdfconenLogger, "unable to rename backup file to original filename!");
         return EC_IllegalCall;
     }
-    // successfully restored, throw out message:
+    // successfully restored, throw out message
     else
         OFLOG_INFO(mdfconenLogger, "Renamed backup file to original");
     // you only get to this point, if restoring was completely successful
@@ -660,6 +666,11 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.35  2010-05-20 15:53:58  joergr
+** Added support for reading the value of insert/modify statements from a file.
+** Slightly modified log messages and log levels in order to be more consistent.
+** Removed some unnecessary include directives.
+**
 ** Revision 1.34  2010-02-05 09:56:58  joergr
 ** Fixed issue with double locking of ofConsole.
 ** Fixed inconsistent source code formatting.

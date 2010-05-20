@@ -11,6 +11,23 @@ Changes between releases are documented here.
   Affects: dcmdata/apps/dump2dcm.cc
            dcmdata/apps/xml2dcm.cc
 
+- Added support for reading the value of insert/modify statements from a file.
+  Affects: dcmdata/apps/mdfconen.cc
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/mdfdsman.h
+           dcmdata/docs/dcmodify.man
+
+- Slightly modified log messages and log levels in order to be more consistent.
+  Affects: dcmdata/apps/mdfconen.cc
+           dcmdata/apps/mdfdsman.cc
+
+- Removed some unnecessary include directives.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/apps/mdfconen.cc
+           dcmdata/apps/mdfconen.h
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/mdfdsman.h
+
 **** Changes from 2010.05.19 (riesmeier)
 
 - Revised explanatory text on development snapshot (aka version 3.5.5).

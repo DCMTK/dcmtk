@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2009, OFFIS
+ *  Copyright (C) 2003-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:06 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-05-20 15:53:58 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,16 +32,16 @@
 
 
 #include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
+
 #include "mdfdsman.h"
-#include "dcmtk/dcmdata/dcvrsl.h"
-#include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcpath.h"
+#include "dcmtk/dcmdata/dcistrmf.h"  /* for class DcmInputFileStream */
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
+
 
 static OFLogger mdfdsmanLogger = OFLog::getLogger("dcmtk.dcmdata.mdfdsman");
 
@@ -59,34 +59,34 @@ OFCondition MdfDatasetManager::loadFile(const char *file_name,
                                         const E_TransferSyntax xfer)
 {
     OFCondition cond;
-    //delete old dfile and free memory and reset current_file
+    // delete old dfile and free memory and reset current_file
     delete dfile;
-    current_file="";
+    current_file = "";
     dfile = new DcmFileFormat();
     dset = dfile->getDataset();
 
-    //load file into attribute dfile
+    // load file into dfile
     OFLOG_INFO(mdfdsmanLogger, "Loading file into dataset manager: " << file_name);
-    cond=dfile->loadFile(file_name, xfer, EGL_noChange, DCM_MaxReadLength, readMode);
-    //if there are errors:
+    cond = dfile->loadFile(file_name, xfer, EGL_noChange, DCM_MaxReadLength, readMode);
+    // if there are errors:
     if (cond.bad())
     {
-        dset=NULL;
+        dset = NULL;
     }
-    //file susccessfully loaded into dfile
+    // file successfully loaded into dfile
     else
     {
-        //get dataset from file
+        // get dataset from file
         OFLOG_INFO(mdfdsmanLogger, "Getting dataset from loaded file: " << file_name);
         dset=dfile->getDataset();
-        /*load also pixeldata into memory:
-         *Without this command pixeldata wouldn't be included into the file,
-         *that's saved after modifying, because original filename was renamed
-         *meanwhile
+        /* load also pixeldata into memory:
+         * Without this command pixeldata wouldn't be included into the file,
+         * that's saved after modifying, because original filename was renamed
+         * meanwhile
          */
         dset->loadAllDataIntoMemory();
-        //save filename to member variable
-        current_file=file_name;
+        // save filename to member variable
+        current_file = file_name;
     }
     return cond;
 }
@@ -97,13 +97,13 @@ static DcmTagKey getTagKeyFromDictionary(OFString tag)
     DcmTagKey key(0xffff,0xffff);
     const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
     const DcmDictEntry *dicent = globalDataDict.findEntry(tag.c_str());
-    //successfull lookup in dictionary -> translate to tag and return
+    // successfull lookup in dictionary -> translate to tag and return
     if (dicent)
     {
         key = dicent->getKey();
-     }
-     dcmDataDict.unlock();
-     return key;
+    }
+    dcmDataDict.unlock();
+    return key;
 }
 
 
@@ -112,13 +112,13 @@ static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
   OFString aString;
   int lpos = pos;
   int spos = 0;
-  if (c[lpos]=='\0') return -1;// EOF
+  if (c[lpos]=='\0') return -1; // EOF
   if (c[lpos]=='.')
   {
     ++pos;
     return 3; // period
   }
-  //look for item index between []
+  // look for item index between []
   if (c[lpos]=='[')
   {
     spos = ++lpos;
@@ -130,7 +130,7 @@ static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
     pos = ++lpos;
     return 2; // index
   }
-  //look for tag between ()
+  // look for tag between ()
   if (c[lpos]=='(')
   {
     spos = ++lpos;
@@ -143,20 +143,20 @@ static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
     pos = ++lpos;
     return 1; // tag key
   }
-  //so far no tag and no item index found. So check if its a dictionary name
+  // so far no tag and no item index found. So check if it's a dictionary name
   spos = lpos;
   while ( ((c[lpos] >= 'a')&&(c[lpos] <= 'z')) ||
           ((c[lpos] >= 'A')&&(c[lpos] <= 'Z')) ||
           ((c[lpos] >= '0')&&(c[lpos] <= '9'))) ++lpos;
   aString.append(c + spos, (lpos-spos));
   key=getTagKeyFromDictionary(aString);
-  //if key was found in dictionary, return 1 for tag key
+  // if key was found in dictionary, return 1 for tag key
   if ( (key.getGroup()!=0xffff) && (key.getElement()!=0xffff) )
   {
     pos=lpos;
-    return 1; //tag key
+    return 1; // tag key
   }
-  //if no return command was processed this far, the token could not be parsed
+  // if no return command was processed this far, the token could not be parsed
   return 0; // parse error
 }
 
@@ -169,7 +169,7 @@ static DcmItem* getItemFromPath(DcmItem &dataset,
   Uint32 idx = 0;
   int pos = 0;
   int token = 0;
-  int expected = 1; //first expected is a tagkey
+  int expected = 1; // first expected is a tagkey
   OFBool finished = OFFalse;
   DcmItem *result = &dataset;
   DcmSequenceOfItems *sq = NULL;
@@ -180,14 +180,14 @@ static DcmItem* getItemFromPath(DcmItem &dataset,
     token = readNextToken(location, pos, key, idx);
     if ((token != expected)&&(token != -1))
     {
-      message=message + "parse error in path '" + location + "'.";
+      message=message + "parse error in path '" + location + "'";
       return NULL;
     }
     if (token == -1)
     {
       if (!finished)
       {
-        message=message + "Error: path '" + location + "' incomplete.";
+        message=message + "Error: path '" + location + "' incomplete";
         return NULL;
       }
       return result;
@@ -255,25 +255,25 @@ static OFCondition splitTagPath(OFString &tag_path,
     lpos=rpos;
     if (tag_path[rpos]==')')
     {
-        //get opening '(' of target tag; if its not found -> return error
+        // get opening '(' of target tag; if its not found -> return error
         while ( (tag_path[lpos]!='(') && (lpos>0) ) --lpos;
         if (tag_path[lpos]!='(')
             return makeOFCondition(OFM_dcmdata,22,OF_error,"Invalid tag path!");
-        //now lpos and rpos "point" to braces of target tag
-        //copy target tag from tag path
+        // now lpos and rpos "point" to braces of target tag
+        // copy target tag from tag path
         target_tag=tag_path.substr(lpos,rpos-lpos+1);
-        //delete target tag from path (inclusive trailing '.')
+        // delete target tag from path (inclusive trailing '.')
         tag_path.erase(lpos,tag_path.length()-lpos);
-        //if theres a tag path left, remove the '.', too
+        // if there's a tag path left, remove the '.', too
         if ( (tag_path.length()>0) && (tag_path[tag_path.length()-1]=='.'))
             tag_path.erase(tag_path.length()-1,1);
-        //parse target_tag into DcmTagKey
+        // parse target_tag into DcmTagKey
         if (2 != sscanf(target_tag.c_str(),"(%x,%x)", &group, &elem))
             return makeOFCondition(OFM_dcmdata,22,OF_error,"Invalid target tag!");
         key = DcmTagKey(group,elem);
     }
     else
-    //otherwise we could have a dictionary name
+    // otherwise we could have a dictionary name
     {
         while ( (lpos>0) && (((tag_path[lpos] >= 'a')&&(tag_path[lpos] <= 'z')) ||
                 ((tag_path[lpos] >= 'A')&&(tag_path[lpos] <= 'Z')) ||
@@ -286,7 +286,7 @@ static OFCondition splitTagPath(OFString &tag_path,
         if ( (key.getGroup()==0xffff) && (key.getElement()==0xffff) )
         {
             OFString message=target_tag;
-            message.append(" not found in Dictionary!");
+            message.append(" not found in dictionary!");
             return makeOFCondition(OFM_dcmdata,22,OF_error,message.c_str());
         }
     }
@@ -301,7 +301,7 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
                                                   const OFBool ignore_missing_tags,
                                                   const OFBool no_reservation_checks)
 {
-  //if no file loaded : return an error
+  // if no file loaded: return an error
   if (dfile == NULL)
       return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
 
@@ -317,7 +317,7 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
   Uint32 numResultPaths = proc.getResults(resultPaths);
   if (numResultPaths == 0) return EC_IllegalCall;
 
-  // general validity checking; only must be done for one result
+  // general validity checking; must only be done for one result
   OFListIterator(DcmPath*) resultPath = resultPaths.begin();
   // verify that groups 0 (invalid) and 2 (meta header) were not used
   if ( (*resultPath)->containsGroup(0) || (*resultPath)->containsGroup(2) )
@@ -338,7 +338,7 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
       // if user specified a value to be inserted into non-leaf element, return error
       if (value.length() != 0)
           return makeOFCondition(OFM_dcmdata,22,OF_error,"Cannot put value into non-leaf elements!");
-      // Non-leaf elements (items/sequences) cannot just be modified
+      // non-leaf elements (items/sequences) cannot just be modified
       if (only_modify)
          return makeOFCondition(OFM_dcmdata,22,OF_error,"Cannot modify non-leaf elements!");
       // we have inserted an item/sequence at the end -> job completed
@@ -364,13 +364,99 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
 }
 
 
+OFCondition MdfDatasetManager::modifyOrInsertFromFile(OFString tag_path,
+                                                      const OFString &filename,
+                                                      const OFBool &only_modify,
+                                                      const OFBool update_metaheader,
+                                                      const OFBool ignore_missing_tags,
+                                                      const OFBool no_reservation_checks)
+{
+  // if no file loaded: return an error
+  if (dfile == NULL)
+      return makeOFCondition(OFM_dcmdata, 22, OF_error, "No file loaded yet!");
+
+  // first, perform some basic checks on the specified file(name)
+  if (filename.empty())
+      return makeOFCondition(OFM_dcmdata, 22, OF_error, "No filename specified to read value from!");
+  if (!OFStandard::fileExists(filename))
+      return makeOFCondition(OFM_dcmdata, 22, OF_error, "File to read value from does not exist!");
+  if (!OFStandard::isReadable(filename))
+      return makeOFCondition(OFM_dcmdata, 22, OF_error, "File to read value from is not readable!");
+
+  // find or create specified path
+  DcmPathProcessor proc;
+  proc.checkPrivateReservations(!no_reservation_checks);
+  OFCondition result = proc.findOrCreatePath(dset, tag_path, !only_modify /*create if desired*/);
+  // if desired, handle tag not found as being not an error
+  if ((result == EC_TagNotFound) && only_modify && ignore_missing_tags)
+      return EC_Normal;
+  if (result.bad()) return result;
+  OFList<DcmPath *> resultPaths;
+  Uint32 numResultPaths = proc.getResults(resultPaths);
+  if (numResultPaths == 0) return EC_IllegalCall;
+
+  // general validity checking; must only be done for one result
+  OFListIterator(DcmPath*) resultPath = resultPaths.begin();
+  // verify that groups 0 (invalid) and 2 (meta header) were not used
+  if ((*resultPath)->containsGroup(0) || (*resultPath)->containsGroup(2))
+      return makeOFCondition(OFM_dcmdata,22,OF_error, "Cannot insert/modify tags with group 0000 or 0002!");
+  // also - according to the standard -  groups 1,3,5,7,FF are illegal
+  if ((*resultPath)->containsGroup(1) || (*resultPath)->containsGroup(3) ||
+      (*resultPath)->containsGroup(5) || (*resultPath)->containsGroup(7) ||
+      (*resultPath)->containsGroup(0xffff))
+      return makeOFCondition(OFM_dcmdata, 22, OF_error, "Groups 0001,0003,0005,0007,FFFF are illegal!");
+
+  DcmPathNode *lastElement = (*resultPath)->back();
+  if (lastElement == NULL) return EC_IllegalCall;
+  DcmObject *obj = lastElement->m_obj;
+  if (obj == NULL) return EC_IllegalCall;
+  // if object at the end is not a leaf, the insertion/modification fails
+  if (!obj->isLeaf())
+      return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot put value into non-leaf elements!");
+
+  // start modifying element value as desired
+  resultPath = resultPaths.begin();
+  while (resultPath != resultPaths.end())
+  {
+      DcmPathNode *lastElement = (*resultPath)->back();
+      if (lastElement == NULL) return EC_IllegalCall;
+      // if tag is already present, start modify operation
+      DcmElement *elem = OFstatic_cast(DcmElement*, lastElement->m_obj);
+      if (elem == NULL) return EC_IllegalCall;
+      // check whether VR is "unknown"
+      DcmEVR vr = elem->getTag().getEVR();
+      if (ignore_un_modifies && ((vr == EVR_UN) || (vr == EVR_UNKNOWN) || (vr == EVR_UNKNOWN2B)))
+      {
+          OFLOG_WARN(mdfdsmanLogger, "will not write value to attribute having VR=UN: " << elem->getTag());
+          return EC_Normal;
+      }
+      // create stream object for binary file
+      DcmInputFileStream fileStream(filename.c_str());
+      result = fileStream.status();
+      if (result.good())
+      {
+          const size_t fileLen = OFStandard::getFileSize(filename);
+          if (fileLen & 1)
+              return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot insert/modify value with odd length from file!");
+          // read element value from binary file (requires even length)
+          result = elem->createValueFromTempFile(fileStream.newFactory(), fileLen, EBO_LittleEndian);
+      }
+      if (result.bad()) return result;
+      if (update_metaheader)
+          deleteRelatedMetaheaderTag(elem->getTag());
+      resultPath++;
+  }
+  return EC_Normal;
+}
+
+
 OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
                                              const OFString &value,
                                              const OFBool update_metaheader,
                                              int &count,
                                              const OFBool ignore_missing_tags)
 {
-    // if no file loaded : return an error
+    // if no file loaded: return an error
     if (dfile == NULL)
         return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
     DcmTagKey key;
@@ -392,10 +478,10 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
     DcmStack result_stack;
     DcmObject *elem;
     // get references to all matching tags in dataset and store them in stack
-    OFLOG_DEBUG(mdfdsmanLogger, "Looking for occurences of: " << key.toString());
+    OFLOG_DEBUG(mdfdsmanLogger, "looking for occurences of: " << key.toString());
     result=dset->findAndGetElements(key, result_stack);
     // if there are elements found, modify metaheader if necessary
-    OFLOG_DEBUG(mdfdsmanLogger, "Found " << result_stack.card() << " occurences");
+    OFLOG_DEBUG(mdfdsmanLogger, "found " << result_stack.card() << " occurences");
     // as long there are matching elements left on the stack
     while( result_stack.card() > 0 && result.good() )
     {
@@ -405,7 +491,7 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
         if (elem->isLeaf())
         {
             // and put new value to element
-            OFLOG_DEBUG(mdfdsmanLogger, "Accessing existing tag for modify operation");
+            OFLOG_DEBUG(mdfdsmanLogger, "accessing existing tag for modify operation");
             result=startModify(OFstatic_cast(DcmElement*,elem),value);
             if (result.good()) count++;
         }
@@ -424,7 +510,7 @@ OFCondition MdfDatasetManager::deleteTag(OFString tag_path,
                                          const OFBool ignore_missing_tags)
 {
 
-  // if no file loaded : return an error
+  // if no file loaded: return an error
   if (dfile == NULL)
       return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
 
@@ -500,7 +586,7 @@ OFCondition MdfDatasetManager::deletePrivateData()
 
 OFCondition MdfDatasetManager::generateAndInsertUID(const DcmTagKey& uidKey)
 {
-    //if no file loaded : return an error
+    // if no file loaded : return an error
     if (dfile==NULL)
         return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
 
@@ -535,7 +621,7 @@ OFCondition MdfDatasetManager::saveFile(const char *file_name,
                                         OFCmdUnsignedInt opt_itempad,
                                         OFBool opt_dataset)
 {
-    //if no file loaded: return an error
+    // if no file loaded: return an error
     if (dfile==NULL)
         return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
 
@@ -557,11 +643,10 @@ OFCondition MdfDatasetManager::saveFile(const char *file_name,
                                  (opt_dataset) ? EWM_dataset : EWM_fileformat);
 
     } else {
-        OFLOG_DEBUG(mdfdsmanLogger, "no conversion to transfer syntax " <<
-                 DcmXfer(opt_xfer).getXferName() << " possible! ");
+        OFLOG_DEBUG(mdfdsmanLogger, "no conversion to transfer syntax " << DcmXfer(opt_xfer).getXferName() << " possible!");
         result = EC_CannotChangeRepresentation;
     }
-    //save file
+    // save file
     OFLOG_INFO(mdfdsmanLogger, "Saving current dataset to file: " << file_name);
     return result;
 }
@@ -569,7 +654,7 @@ OFCondition MdfDatasetManager::saveFile(const char *file_name,
 
 OFCondition MdfDatasetManager::saveFile()
 {
-    //Save file without changing any parameters
+    // save file without changing any parameters
     return saveFile(current_file.c_str(), EXS_Unknown, EET_UndefinedLength,
                     EGL_recalcGL, EPD_noChange, 0, 0, OFFalse);
 }
@@ -582,7 +667,7 @@ OFCondition MdfDatasetManager::startModify(DcmElement *elem,
     DcmEVR vr = elem->getTag().getEVR();
     if ( ignore_un_modifies && ((vr == EVR_UN) || (vr == EVR_UNKNOWN) || (vr == EVR_UNKNOWN2B)))
     {
-      OFLOG_DEBUG(mdfdsmanLogger, "Will not write value to attribute having VR=UN: " << elem->getTag().toString());
+      OFLOG_WARN(mdfdsmanLogger, "will not write value to attribute having VR=UN: " << elem->getTag().toString());
       return EC_Normal;
     }
     // start putString function being defined on all VRs
@@ -626,7 +711,7 @@ OFBool MdfDatasetManager::isTagInDictionary(const DcmTagKey &search_key)
 {
     const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
     const DcmDictEntry *dicent = globalDataDict.findEntry(search_key,NULL);
-    //successfull lookup in dictionary -> translate to tag and return
+    // successfull lookup in dictionary -> translate to tag and return
     dcmDataDict.unlock();
     if (dicent)
         return OFTrue;
@@ -642,7 +727,7 @@ void MdfDatasetManager::setModifyUNValues(OFBool modifyUNValues)
 
 MdfDatasetManager::~MdfDatasetManager()
 {
-    //cleanup
+    // cleanup
     delete dfile;
 }
 
@@ -650,6 +735,11 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
+** Revision 1.27  2010-05-20 15:53:58  joergr
+** Added support for reading the value of insert/modify statements from a file.
+** Slightly modified log messages and log levels in order to be more consistent.
+** Removed some unnecessary include directives.
+**
 ** Revision 1.26  2009-11-04 09:58:06  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **
