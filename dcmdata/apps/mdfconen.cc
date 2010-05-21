@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-20 15:53:58 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2010-05-21 08:53:34 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -392,7 +392,7 @@ void MdfConsoleEngine::parseCommandLine()
             OFString option_value, tag_path, tag_value;
             if (option_string == "--insert")
                 aJob.option = "i";
-            if (option_string == "--insert-from-file")
+            else if (option_string == "--insert-from-file")
                 aJob.option = "if";
             else if (option_string == "--modify")
                 aJob.option = "m";
@@ -666,6 +666,9 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.36  2010-05-21 08:53:34  joergr
+** Fixed wrong use of if statement which prevented option --insert from working.
+**
 ** Revision 1.35  2010-05-20 15:53:58  joergr
 ** Added support for reading the value of insert/modify statements from a file.
 ** Slightly modified log messages and log levels in order to be more consistent.

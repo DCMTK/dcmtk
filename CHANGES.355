@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.21 (riesmeier)
+
+- Fixed wrong use of if statement which prevented option --insert from working.
+  Affects: dcmdata/apps/mdfconen.cc
+
 **** Changes from 2010.05.20 (riesmeier)
 
 - Added new method for determining the size of a given file (in bytes).
