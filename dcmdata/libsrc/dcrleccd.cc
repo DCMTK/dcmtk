@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2009, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: decoder codec class for RLE
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-17 16:41:26 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2010-05-21 14:02:48 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,6 +152,8 @@ OFCondition DcmRLECodecDecoder::decode(
 
           while ((currentFrame < imageFrames) && result.good())
           {
+            DCMDATA_DEBUG("RLE decoder processes frame " << currentFrame);
+            DCMDATA_DEBUG("RLE decoder processes pixel item " << currentItem);
             // get first pixel item of this frame
             result = pixSeq->getItem(pixItem, currentItem++);
             if (result.good())
@@ -222,6 +224,7 @@ OFCondition DcmRLECodecDecoder::decode(
                   byteOffset -= fragmentOffset; // now byteOffset is correct but may point to next fragment
                   while ((byteOffset > fragmentLength) && result.good())
                   {
+                    DCMDATA_DEBUG("RLE decoder processes pixel item " << currentItem);
                     result = pixSeq->getItem(pixItem, currentItem++);
                     if (result.good())
                     {
@@ -260,6 +263,8 @@ OFCondition DcmRLECodecDecoder::decode(
                     {
                       if (rledecoder.size() < bytesPerStripe)
                       {
+                        DCMDATA_WARN("RLE decoder is finished but has produced insufficient data for this stripe, will continue with next pixel item");
+                        DCMDATA_DEBUG("RLE decoder processes pixel item " << currentItem);
                         result = pixSeq->getItem(pixItem, currentItem++);
                         if (result.good())
                         {
@@ -289,7 +294,10 @@ OFCondition DcmRLECodecDecoder::decode(
                       result = rledecoder.decompress(rleData + byteOffset, OFstatic_cast(size_t, fragmentLength - byteOffset));
 
                       if (result.good() || result == EC_StreamNotifyClient)
+                      {
+                        DCMDATA_DEBUG("RLE decoder processes pixel item " << currentItem);
                         result = pixSeq->getItem(pixItem, currentItem++);
+                      }
                       if (result.good())
                       {
                         inputBytes -= fragmentLength - byteOffset;
@@ -312,11 +320,10 @@ OFCondition DcmRLECodecDecoder::decode(
                   }
                 }
 
-                // make sure the RLE decoder has produced the right amount of data
                 if (result.good() && (rledecoder.size() != bytesPerStripe))
                 {
-                  // error: RLE decoder is finished but has produced insufficient data for this stripe
-                  result = EC_CannotChangeRepresentation;
+                    DCMDATA_ERROR("RLE decoder is finished but has produced insufficient data for this stripe");
+                    result = EC_CannotChangeRepresentation;
                 }
 
                 // distribute decompressed bytes into output image array
@@ -466,6 +473,8 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     DcmRLEDecoder rledecoder(bytesPerStripe);
     if (rledecoder.fail()) return EC_MemoryExhausted;  // RLE decoder failed to initialize
 
+    DCMDATA_DEBUG("RLE decoder processes frame " << frameNo);
+
     // determine the corresponding item (first fragment) for this frame
     Uint32 currentItem = startFragment;
 
@@ -478,6 +487,7 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
             return result;
     }
 
+    DCMDATA_DEBUG("RLE decoder processes pixel item " << currentItem);
     // now access and decompress the frame starting at the item we have identified
     result = fromPixSeq->getItem(pixItem, currentItem);
     if (result.bad())
@@ -524,7 +534,7 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     size_t bytesToDecode;
 
     // for each stripe in stripe set
-    for (i=0; i<numberOfStripes; ++i)
+    for (i = 0; i < numberOfStripes; ++i)
     {
         // reset RLE codec
         rledecoder.clear();
@@ -569,9 +579,18 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
 
         // copy the decoded stuff over to the buffer here...
         // make sure the RLE decoder has produced the right amount of data
-        if (rledecoder.size() != bytesPerStripe)
+        if (lastStripe && (rledecoder.size() < bytesPerStripe))
         {
-            // error: RLE decoder is finished but has produced insufficient data for this stripe
+            // stream ended premature? report a warning and continue
+            if (result == EC_StreamNotifyClient)
+            {
+                DCMDATA_WARN("RLE decoder is finished but has produced insufficient data for this stripe, filling remaining pixels");
+                result = EC_Normal;
+            }
+        }
+        else if (rledecoder.size() != bytesPerStripe)
+        {
+            DCMDATA_ERROR("RLE decoder is finished but has produced insufficient data for this stripe");
             return EC_CannotChangeRepresentation;
         }
 
@@ -606,10 +625,18 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
             pixelPointer = imageData8 + sampleOffset + imageBytesAllocated - byte - 1;
         }
 
-        // loop through all pixels of the frame
-        for (pixel = 0; pixel < bytesPerStripe; ++pixel)
+        // copy the pixel data that was decoded
+        const size_t decoderSize = rledecoder.size();
+        for (pixel = 0; pixel < decoderSize; ++pixel)
         {
             *pixelPointer = *outputBuffer++;
+            pixelPointer += offsetBetweenSamples;
+        }
+        // and fill the remainder of the image with copies of the last decoded pixel
+        const Uint8 lastPixelValue = *(outputBuffer - 1);
+        for (pixel = decoderSize; pixel < bytesPerStripe; ++pixel)
+        {
+            *pixelPointer = lastPixelValue;
             pixelPointer += offsetBetweenSamples;
         }
     }
@@ -678,6 +705,12 @@ OFCondition DcmRLECodecDecoder::determineDecompressedColorModel(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
+ * Revision 1.14  2010-05-21 14:02:48  joergr
+ * Fixed issue with incorrectly encoded RLE images: Now, if the RLE decoder is
+ * finished but has produced insufficient data, the remaining pixels of the
+ * image are filled with the value of the last pixel. Applies to decodeFrame().
+ * Added useful log messages on various levels to decode() and decodeFrame().
+ *
  * Revision 1.13  2009-11-17 16:41:26  joergr
  * Added new method that allows for determining the color model of the
  * decompressed image.

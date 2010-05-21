@@ -11,6 +11,15 @@ Changes between releases are documented here.
 
 **** Changes from 2010.05.21 (riesmeier)
 
+- Fixed issue with incorrectly encoded RLE images: Now, if the RLE decoder is
+  finished but has produced insufficient data, the remaining pixels of the
+  image are filled with the value of the last pixel. Applies to decodeFrame().
+  Thanks to Jeroen Eggermont <j.eggermont@lumc.nl> for the bug report and fix.
+  Affects: dcmdata/libsrc/dcrleccd.cc
+
+- Added useful log messages on various levels to decode() and decodeFrame().
+  Affects: dcmdata/libsrc/dcrleccd.cc
+
 - Fixed wrong use of if statement which prevented option --insert from working.
   Affects: dcmdata/apps/mdfconen.cc
 
