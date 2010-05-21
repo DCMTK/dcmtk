@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: uli $
-** Update Date:		$Date: 2009-11-18 11:53:58 $
+** Update Date:		$Date: 2010-05-21 11:47:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/diutil.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -107,8 +107,6 @@ OFBool DU_findSOPClassAndInstanceInFile(
   char* sopClass, 
   char* sopInstance,
   OFBool tolerateSpacePaddedUIDs = OFFalse);
- 
-unsigned long DU_fileSize(const char *fname);
 
 const char *DU_cstoreStatusString(Uint16 statusCode);
 const char *DU_cfindStatusString(Uint16 statusCode);
@@ -127,6 +125,9 @@ const char *DU_neventReportStatusString(Uint16 statusCode);
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
+** Revision 1.10  2010-05-21 11:47:52  uli
+** Replaced DU_fileSize() with OFStandard::getFileSize().
+**
 ** Revision 1.9  2009-11-18 11:53:58  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **

@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2006-06-23 10:09:17 $
+** Last Update:		$Author: uli $
+** Update Date:		$Date: 2010-05-21 11:47:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -87,6 +87,7 @@
 #include "dcmtk/dcmnet/dimse.h"		/* always include the module header */
 #include "dcmtk/dcmnet/cond.h"
 #include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
+#include "dcmtk/ofstd/ofstd.h"         /* for OFStandard::getFileSize() */
 
 
 /* Global flag to enable/disable workaround code for some buggy Store SCUs
@@ -197,7 +198,7 @@ DIMSE_storeUser(
 	if (imageFileTotalBytes > 0) progress.totalBytes = imageFileTotalBytes; 
 	else
 	{
-          if (imageFileName != NULL) progress.totalBytes = DU_fileSize(imageFileName);
+          if (imageFileName != NULL) progress.totalBytes = OFStandard::getFileSize(imageFileName);
           else progress.totalBytes = dcmGuessModalityBytes(request->AffectedSOPClassUID);
         }
 	callbackCtx.progress = &progress;
@@ -515,6 +516,9 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
+** Revision 1.21  2010-05-21 11:47:52  uli
+** Replaced DU_fileSize() with OFStandard::getFileSize().
+**
 ** Revision 1.20  2006-06-23 10:09:17  meichel
 ** Fixed incorrect default initialization of C-GET cancel struct.
 **

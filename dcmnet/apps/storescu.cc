@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-18 16:10:25 $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-05-21 11:47:52 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1564,7 +1564,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   cond = DIMSE_storeUser(assoc, presID, &req,
     NULL, dcmff.getDataset(), progressCallback, NULL,
     opt_blockMode, opt_dimse_timeout,
-    &rsp, &statusDetail, NULL, DU_fileSize(fname));
+    &rsp, &statusDetail, NULL, OFStandard::getFileSize(fname));
 
   /*
    * If store command completed normally, with a status
@@ -1751,6 +1751,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.89  2010-05-21 11:47:52  uli
+** Replaced DU_fileSize() with OFStandard::getFileSize().
+**
 ** Revision 1.88  2010-05-18 16:10:25  joergr
 ** Replaced '\n' by OFendl in log messages.
 **

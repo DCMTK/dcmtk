@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.21 (schlachter)
+
+- Replaced DU_fileSize() with OFStandard::getFileSize().
+  Affects: dcmnet/apps/storescu.cc
+           dcmnet/include/dcmtk/dcmnet/diutil.h
+           dcmnet/libsrc/dimstore.cc
+           dcmnet/libsrc/diutil.cc
+
 **** Changes from 2010.05.21 (riesmeier)
 
 - Fixed wrong use of if statement which prevented option --insert from working.

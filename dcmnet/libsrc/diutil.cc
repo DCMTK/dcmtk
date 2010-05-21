@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: uli $
-** Update Date:		$Date: 2010-03-01 09:08:49 $
+** Update Date:		$Date: 2010-05-21 11:47:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.26 $
+** CVS/RCS Revision:	$Revision: 1.27 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -273,19 +273,6 @@ DU_findSOPClassAndInstanceInFile(
     }
     
     return found;
-}
-
-
-unsigned long
-DU_fileSize(const char *fname)
-{
-    struct stat s;
-    unsigned long nbytes = 0;
-
-    if (stat(fname, &s) == 0) {
-	nbytes = s.st_size;
-    }
-    return nbytes;
 }
 
 const char *
@@ -808,6 +795,9 @@ DU_neventReportStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
+** Revision 1.27  2010-05-21 11:47:52  uli
+** Replaced DU_fileSize() with OFStandard::getFileSize().
+**
 ** Revision 1.26  2010-03-01 09:08:49  uli
 ** Removed some unnecessary include directives in the headers.
 **
