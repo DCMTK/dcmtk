@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009, OFFIS
+ *  Copyright (C) 2009-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:08 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-05-21 14:43:07 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -297,7 +297,8 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
     switch (bpp)
     {
       case 24:
-        cond = parse24BppRow(row_data, width, &pixData[posData]);
+      case 32:
+        cond = parse24_32BppRow(row_data, width, bpp, &pixData[posData]);
         break;
       default:
         cond = makeOFCondition(OFM_dcmdata, 18, OF_error, "unsupported BMP file - wrong bpp");
@@ -319,8 +320,9 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
 }
 
 
-OFCondition I2DBmpSource::parse24BppRow(const char *row,
+OFCondition I2DBmpSource::parse24_32BppRow(const char *row,
                                         const Uint16 width,
+                                        const int bpp,
                                         char *pixData) const
 {
   /* We now must convert this line of the bmp file into the kind of data that
@@ -328,18 +330,28 @@ OFCondition I2DBmpSource::parse24BppRow(const char *row,
    * (notice the order!) pixel value. We convert this into "standard" RGB.
    */
   Uint32 x;
-  Uint32 pos = 0;
+  Uint32 pos_a = 0;
+  Uint32 pos_b = 0;
+
+  /* 32bpp images really are 24bpp images with a null byte prepended in front of
+   * each pixel. Some apps use that as an alpha channel, but that's not allowed.
+   */
+  int offset = 0;
+  if (bpp == 32)
+    offset = 1;
+
   for (x = 0; x < width; x++)
   {
-    Uint8 r = row[pos + 2];
-    Uint8 g = row[pos + 1];
-    Uint8 b = row[pos];
+    Uint8 r = row[pos_a + 2];
+    Uint8 g = row[pos_a + 1];
+    Uint8 b = row[pos_a];
 
-    pixData[pos]     = r;
-    pixData[pos + 1] = g;
-    pixData[pos + 2] = b;
+    pixData[pos_b]     = r;
+    pixData[pos_b + 1] = g;
+    pixData[pos_b + 2] = b;
 
-    pos += 3;
+    pos_a += 3 + offset;
+    pos_b += 3;
   }
   return EC_Normal;
 }
@@ -428,6 +440,9 @@ I2DBmpSource::~I2DBmpSource()
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.cc,v $
+ * Revision 1.5  2010-05-21 14:43:07  uli
+ * Added support for 32bpp BMP images to libi2d.
+ *
  * Revision 1.4  2009-11-04 09:58:08  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

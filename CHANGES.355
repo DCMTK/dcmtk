@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.05.21 (schlachter)
 
+- Added support for 32bpp BMP images to libi2d.
+  Affects: dcmdata/docs/img2dcm.man
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dbmps.h
+           dcmdata/libi2d/i2dbmps.cc
+
 - Replaced DU_fileSize() with OFStandard::getFileSize().
   Affects: dcmnet/apps/storescu.cc
            dcmnet/include/dcmtk/dcmnet/diutil.h
