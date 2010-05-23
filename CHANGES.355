@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.23 (riesmeier)
+
+- Added two new private tags from OCULUS Pentacam 1.17 conformance statement.
+  Affects: dcmdata/data/private.dic
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2010.05.21 (schlachter)
 
 - Added support for 32bpp BMP images to libi2d.

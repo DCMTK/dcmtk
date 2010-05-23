@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2010-05-10 12:10:12
+**   Date: 2010-05-21 15:00:40
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2010-05-10 12:10:12";
+const char* dcmBuiltinDictBuildDate = "2010-05-21 15:00:40";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -14326,8 +14326,16 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_OB, "OriginalMeasuringData", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "OCULUS Optikgeraete GmbH" }
+  , { 0x0029, 0x1012, 0x0029, 0x1012,
+      EVR_UL, "OriginalMeasuringDataLength", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "OCULUS Optikgeraete GmbH" }
   , { 0x0029, 0x1020, 0x0029, 0x1020,
       EVR_OB, "OriginalMeasuringRawData", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "OCULUS Optikgeraete GmbH" }
+  , { 0x0029, 0x1022, 0x0029, 0x1022,
+      EVR_UL, "OriginalMeasuringRawDataLength", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "OCULUS Optikgeraete GmbH" }
   , { 0x0031, 0x0010, 0x0031, 0x0010,
