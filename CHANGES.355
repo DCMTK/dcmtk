@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.25 (schlachter)
+
+- Added a missing include before the use of int64_t.
+  Affects: ofstd/include/dcmtk/ofstd/oftypes.h
+
 **** Changes from 2010.05.23 (riesmeier)
 
 - Added two new private tags from OCULUS Pentacam 1.17 conformance statement.

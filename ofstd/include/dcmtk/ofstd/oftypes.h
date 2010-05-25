@@ -24,9 +24,9 @@
  *      supported by all C++ Compilers
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-05-07 11:12:29 $
+ *  Update Date:      $Date: 2010-05-25 10:02:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/oftypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,10 @@
 #define OFTYPES_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>                /* Needed for int64_t */
+#endif
 
 #ifdef __CHAR_UNSIGNED__
 typedef signed char     Sint8;
@@ -142,6 +146,9 @@ typedef int OFBool;
 /*
  * CVS/RCS Log:
  * $Log: oftypes.h,v $
+ * Revision 1.10  2010-05-25 10:02:36  uli
+ * Added a missing include before the use of int64_t.
+ *
  * Revision 1.9  2010-05-07 11:12:29  uli
  * Add new define OFTypename which only expands to "typename"
  * if "HAVE_TYPENAME" is defined.
