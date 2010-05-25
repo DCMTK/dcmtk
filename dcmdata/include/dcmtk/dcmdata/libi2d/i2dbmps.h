@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-05-21 14:43:07 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-05-25 12:40:06 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,12 +165,23 @@ protected:
   /** Parse a single 24bpp or 32bpp row of bmp data.
    *  @param row - [in] The row of data to parse.
    *  @param width - [in] The length in pixel of the row.
+   *  @param bpp - [in] The number of bits per pixel.
    *  @param pixData - [out] The buffer to write the data to (in "RGB" format).
    *  @return EC_Normal, if successful, error otherwise
    */
-  OFCondition parse24_32BppRow(const char *row,
+  OFCondition parse24_32BppRow(const Uint8 *row,
+                               const Uint16 width,
+                               const int bpp,
+                               char *pixData /*out*/) const;
+
+  /** Parse a single 16bpp row of bmp data.
+   *  @param row - [in] The row of data to parse.
+   *  @param width - [in] The length in pixel of the row.
+   *  @param pixData - [out] The buffer to write the data to (in "RGB" format).
+   *  @return EC_Normal, if successful, error otherwise
+   */
+  OFCondition parse16BppRow(const Uint8 *row,
                             const Uint16 width,
-                            const int bpp,
                             char *pixData /*out*/) const;
 
   /** Read 4 bytes from the byte stream and interpret it as a signed integer.
@@ -200,6 +211,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.h,v $
+ * Revision 1.5  2010-05-25 12:40:06  uli
+ * Added support for 16bpp BMP images to libi2d
+ *
  * Revision 1.4  2010-05-21 14:43:07  uli
  * Added support for 32bpp BMP images to libi2d.
  *

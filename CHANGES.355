@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.05.25 (schlachter)
 
+- Added support for 16bpp BMP images to libi2d.
+  Affects: dcmdata/docs/img2dcm.man
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dbmps.h
+           dcmdata/libi2d/i2dbmps.cc
+
 - Added a missing include before the use of int64_t.
   Affects: ofstd/include/dcmtk/ofstd/oftypes.h
 

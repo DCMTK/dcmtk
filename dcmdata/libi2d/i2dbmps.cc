@@ -23,8 +23,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-05-21 14:43:07 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2010-05-25 12:40:06 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,7 +244,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
    */
 
   const Uint32 row_length = (width * bpp / 8 + 3) & ~3;
-  char *row_data;
+  Uint8 *row_data;
   Uint32 y;
   Sint32 direction;
   Uint32 max;
@@ -268,7 +268,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
 
   DCMDATA_LIBI2D_DEBUG("I2DBmpSource: Starting to read bitmap data");
 
-  row_data = new char[row_length];
+  row_data = new Uint8[row_length];
   pixData = new char[length];
 
   if (!row_data || !pixData)
@@ -296,6 +296,9 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
     OFCondition cond;
     switch (bpp)
     {
+      case 16:
+        cond = parse16BppRow(row_data, width, &pixData[posData]);
+        break;
       case 24:
       case 32:
         cond = parse24_32BppRow(row_data, width, bpp, &pixData[posData]);
@@ -320,10 +323,10 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
 }
 
 
-OFCondition I2DBmpSource::parse24_32BppRow(const char *row,
-                                        const Uint16 width,
-                                        const int bpp,
-                                        char *pixData) const
+OFCondition I2DBmpSource::parse24_32BppRow(const Uint8 *row,
+                                           const Uint16 width,
+                                           const int bpp,
+                                           char *pixData) const
 {
   /* We now must convert this line of the bmp file into the kind of data that
    * our caller expects. Each pixel consists of three bytes: blue, green, red
@@ -352,6 +355,39 @@ OFCondition I2DBmpSource::parse24_32BppRow(const char *row,
 
     pos_a += 3 + offset;
     pos_b += 3;
+  }
+  return EC_Normal;
+}
+
+
+OFCondition I2DBmpSource::parse16BppRow(const Uint8 *row,
+                                        const Uint16 width,
+                                        char *pixData) const
+{
+  /* We now must convert this line of the bmp file into the kind of data that
+   * our caller expects. Each pixel consists of three bytes: blue, green, red
+   * (notice the order!) pixel value. We convert this into "standard" RGB.
+   */
+  Uint32 x;
+  Uint32 pos = 0;
+
+  for (x = 0; x < width; x++)
+  {
+    // Assemble one pixel value from the input data
+    Uint16 pixel = 0;
+    pixel |= OFstatic_cast(Uint16, row[2*x + 1]) << 8;
+    pixel |= OFstatic_cast(Uint16, row[2*x + 0]);
+
+    // Each colors has 5 bit, we convert that into 8 bit
+    Uint8 r = (pixel >> 10) << 3;
+    Uint8 g = (pixel >>  5) << 3;
+    Uint8 b = (pixel >>  0) << 3;
+
+    pixData[pos]     = r;
+    pixData[pos + 1] = g;
+    pixData[pos + 2] = b;
+
+    pos += 3;
   }
   return EC_Normal;
 }
@@ -440,6 +476,9 @@ I2DBmpSource::~I2DBmpSource()
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.cc,v $
+ * Revision 1.6  2010-05-25 12:40:06  uli
+ * Added support for 16bpp BMP images to libi2d
+ *
  * Revision 1.5  2010-05-21 14:43:07  uli
  * Added support for 32bpp BMP images to libi2d.
  *
