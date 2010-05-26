@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.26 (riesmeier)
+
+- Use correct delete statement for char array buffer, i.e. "delete[]".
+  Affects: oflog/libsrc/fileap.cc
+
+- Replaced checking of macro WIN32 by _WIN32.
+  Affects: oflog/libsrc/fileap.cc
+
 **** Changes from 2010.05.25 (schlachter)
 
 - Added support for 16bpp BMP images to libi2d.

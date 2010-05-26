@@ -138,7 +138,7 @@ rolloverFiles(const tstring& filename, unsigned int maxBackupIndex)
         OFSTRINGSTREAM_GETOFSTRING(source_oss, source)
         OFSTRINGSTREAM_GETOFSTRING(target_oss, target)
 
-#if defined (WIN32)
+#if defined (_WIN32)
         // Try to remove the target first. It seems it is not
         // possible to rename over existing file.
         ret = file_remove (target);
@@ -214,7 +214,7 @@ FileAppender::init(const tstring& filename_,
 
     if (bufferSize != 0)
     {
-        delete buffer;
+        delete[] buffer;
         buffer = new tchar[bufferSize];
         out.rdbuf ()->pubsetbuf (buffer, bufferSize);
     }
@@ -245,7 +245,7 @@ FileAppender::close()
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
         out.close();
-        delete buffer;
+        delete[] buffer;
         buffer = 0;
         closed = true;
     LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
@@ -427,7 +427,7 @@ RollingFileAppender::rollover()
 
         int ret;
 
-#if defined (WIN32)
+#if defined (_WIN32)
         // Try to remove the target first. It seems it is not
         // possible to rename over existing file.
         ret = file_remove (target);
@@ -636,7 +636,7 @@ DailyRollingFileAppender::rollover()
     helpers::LogLog & loglog = getLogLog();
     int ret;
 
-#if defined (WIN32)
+#if defined (_WIN32)
     // Try to remove the target first. It seems it is not
     // possible to rename over existing file, e.g. "log.2009-11-07.1".
     ret = file_remove (backupTarget);
@@ -646,7 +646,7 @@ DailyRollingFileAppender::rollover()
     ret = file_rename (scheduledFilename, backupTarget);
     loglog_renaming_result (loglog, scheduledFilename, backupTarget, ret);
 
-#if defined (WIN32)
+#if defined (_WIN32)
     // Try to remove the target first. It seems it is not
     // possible to rename over existing file, e.g. "log.2009-11-07".
     ret = file_remove (scheduledFilename);
