@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmPixelItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:11:21 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2010-05-27 16:54:27 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,6 +135,7 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
         Uint32 *array = new Uint32[numEntries];
         if (array)
         {
+            DCMDATA_DEBUG("DcmPixelItem: creating offset table with " << numEntries << " entries");
             OFListConstIterator(Uint32) first = offsetList.begin();
             OFListConstIterator(Uint32) last = offsetList.end();
             unsigned long idx = 0;
@@ -194,7 +195,7 @@ OFCondition DcmPixelItem::writeXML(STD_NAMESPACE ostream&out,
             OFStandard::encodeBase64(out, OFstatic_cast(Uint8 *, getValue()), OFstatic_cast(size_t, getLengthField()));
         } else {
             /* get and check 8 bit data */
-            Uint8 *byteValues = NULL;            
+            Uint8 *byteValues = NULL;
             if (getUint8Array(byteValues).good() && (byteValues != NULL))
             {
                 const unsigned long count = getLengthField();
@@ -381,6 +382,9 @@ OFCondition DcmPixelItem::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
+** Revision 1.41  2010-05-27 16:54:27  joergr
+** Added debug message with details on created basic offset table (if any).
+**
 ** Revision 1.40  2009-11-13 13:11:21  joergr
 ** Fixed minor issues in log output.
 **
