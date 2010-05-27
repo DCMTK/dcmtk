@@ -22,8 +22,8 @@
  *  Purpose: decoder codec class for RLE
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-21 14:02:48 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2010-05-27 16:52:32 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -320,6 +320,7 @@ OFCondition DcmRLECodecDecoder::decode(
                   }
                 }
 
+                // make sure the RLE decoder has produced the right amount of data
                 if (result.good() && (rledecoder.size() != bytesPerStripe))
                 {
                     DCMDATA_ERROR("RLE decoder is finished but has produced insufficient data for this stripe");
@@ -705,6 +706,9 @@ OFCondition DcmRLECodecDecoder::determineDecompressedColorModel(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
+ * Revision 1.15  2010-05-27 16:52:32  joergr
+ * Re-added comment that was accidentally removed by the last commit.
+ *
  * Revision 1.14  2010-05-21 14:02:48  joergr
  * Fixed issue with incorrectly encoded RLE images: Now, if the RLE decoder is
  * finished but has produced insufficient data, the remaining pixels of the

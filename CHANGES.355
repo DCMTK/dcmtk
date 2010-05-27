@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.27 (riesmeier)
+
+- Re-added comment that was accidentally removed by the last commit.
+  Affects: dcmdata/libsrc/dcrleccd.cc
+
 **** Changes from 2010.05.26 (riesmeier)
 
 - Use correct delete statement for char array buffer, i.e. "delete[]".
