@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2010.05.27 (riesmeier)
 
+- Added missing basic offset table to "true lossless" mode (if enabled).
+  Thanks to forum user "bwiklak" for the original report.
+  Affects: dcmjpeg/libsrc/djcodece.cc
+
+- Revised wording of log message.
+  Affects: dcmjpeg/libsrc/djcodece.cc
+
 - Added debug message with details on created basic offset table (if any).
   Affects: dcmdata/libsrc/dcpxitem.cc
 

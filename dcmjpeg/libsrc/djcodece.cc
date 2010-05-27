@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2009, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-11-20 16:52:39 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-05-27 17:00:18 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -659,6 +659,13 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     else
       delete pixelSequence;
     delete jpeg; // encoder no longer in use
+
+    if ((result.good()) && (djcp->getCreateOffsetTable()))
+    {
+      // create offset table
+      result = offsetTable->createOffsetTable(offsetList);
+    }
+
     // the following operations do not affect the Image Pixel Module
     // but other modules such as SOP Common.  We only perform these
     // changes if we're on the main level of the datsetItem,
@@ -699,7 +706,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       }
       else
       {
-        DCMJPEG_ERROR("True lossless encoder: Error switching back original pixeldata's planar configuration");
+        DCMJPEG_ERROR("True lossless encoder: Cannot switch back to original planar configuration of the pixel data");
         result = EC_CannotChangeRepresentation;
       }
     }
@@ -1491,6 +1498,10 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
+ * Revision 1.32  2010-05-27 17:00:18  joergr
+ * Added missing basic offset table to "true lossless" mode (if enabled).
+ * Revised wording of log message.
+ *
  * Revision 1.31  2009-11-20 16:52:39  onken
  * Fixed bug in JPEG true lossless encoder which prohibited the generation
  * of a new SOP Instance UID if desired by the user or if image is
