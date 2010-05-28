@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:40:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-05-28 13:23:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 // ----------------------------------------------------------------------------
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/ofstd/ofcmdln.h"
 #include "dcmtk/dcmwlm/wltypdef.h"
@@ -62,7 +63,7 @@
 #define SHORTCOL 4
 #define LONGCOL 21
 
-static OFLogger wlcefsLogger = OFLog::getLogger("dcmtk.apps.wlcefs");
+static OFLogger wlmscpfsLogger = OFLog::getLogger("dcmtk.apps.wlmscpfs");
 
 // ----------------------------------------------------------------------------
 
@@ -245,9 +246,9 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
     cmd->beginOptionBlock();
     if( cmd->findOption("--prefer-uncompr") ) opt_networkTransferSyntax = EXS_Unknown;
-    if( cmd->findOption("--prefer-little") )  opt_networkTransferSyntax = EXS_LittleEndianExplicit;
-    if( cmd->findOption("--prefer-big") )     opt_networkTransferSyntax = EXS_BigEndianExplicit;
-    if( cmd->findOption("--implicit") )       opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+    if( cmd->findOption("--prefer-little") ) opt_networkTransferSyntax = EXS_LittleEndianExplicit;
+    if( cmd->findOption("--prefer-big") ) opt_networkTransferSyntax = EXS_BigEndianExplicit;
+    if( cmd->findOption("--implicit") ) opt_networkTransferSyntax = EXS_LittleEndianImplicit;
     cmd->endOptionBlock();
 
 #ifdef WITH_TCPWRAPPER
@@ -304,7 +305,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   if (!opt_forkedChild)
   {
     /* print resource identifier */
-    OFLOG_DEBUG(wlcefsLogger, rcsid << OFendl);
+    OFLOG_DEBUG(wlmscpfsLogger, rcsid << OFendl);
   }
 
   // set general parameters in data source object
@@ -347,7 +348,7 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
   if( cond.bad() )
   {
     // in case something unexpected happened, dump a corresponding message
-    OFLOG_ERROR(wlcefsLogger, cond.text());
+    OFLOG_ERROR(wlmscpfsLogger, cond.text());
 
     // return error
     return( 1 );
@@ -368,7 +369,7 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
   if( cond.bad() )
   {
     // in case something unexpected happened, dump a corresponding message
-    OFLOG_ERROR(wlcefsLogger, cond.text());
+    OFLOG_ERROR(wlmscpfsLogger, cond.text());
 
     // disconnect from data source
     dataSource->DisconnectFromDataSource();
@@ -388,7 +389,7 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
   if( cond.bad() )
   {
     // in case something unexpected happened, dump a corresponding message
-    OFLOG_ERROR(wlcefsLogger, cond.text());
+    OFLOG_ERROR(wlmscpfsLogger, cond.text());
 
     // return error
     return( 1 );
@@ -403,6 +404,9 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
+** Revision 1.27  2010-05-28 13:23:16  joergr
+** Changed logger name from "dcmtk.apps.wlcefs" to "dcmtk.apps.wlmscpfs".
+**
 ** Revision 1.26  2009-11-24 10:40:01  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
