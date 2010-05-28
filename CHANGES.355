@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.28 (riesmeier)
+
+- Changed logger name from "dcmtk.dcmdata.mdfconen" to "dcmtk.apps.dcmodify".
+  Affects: dcmdata/apps/mdfconen.cc
+
 **** Changes from 2010.05.27 (riesmeier)
 
 - Added missing basic offset table to "true lossless" mode (if enabled).
