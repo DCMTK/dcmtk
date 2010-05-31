@@ -178,18 +178,20 @@ of options.  Some particular options, however, are so specific that they need
 detailed descriptions which will be given in this passage.
 
 The returned character set options are intended for situations in which the
-wlmscpfs application will return attribute values which are not composed of
+\b wlmscpfs application will return attribute values which are not composed of
 characters from the DICOM default character repertoire.  In such cases, for
 example option \e --return-iso-ir-100 can be used to specify that a response
-to a modality's worklist management C-FIND request shall always contain
-DICOM's Specific Character Set attribute (0008,0005) with a corresponding
-value, indicating the character repertoire from which the characters of
-returned attribute values were taken (in this example the repertoire ISO IR
-100).  Please note that the \b wlmscpfs application will not make sure that all
+to a modality's worklist management C-FIND request shall contain DICOM's
+Specific Character Set attribute (0008,0005) with a corresponding value,
+indicating the character repertoire from which the characters of returned
+attribute values were taken (in this example the repertoire ISO IR 100).
+Please note that the \b wlmscpfs application will not make sure that all
 returned values are actually made up of this character repertoire; the
-application expects this to be the case.  Option \e --return-iso-ir-100 will
-only lead to the inclusion of the Specific Character Set attribute (0008,0005)
-with a corresponding value in a worklist management C-FIND response.
+application expects this to be the case.
+
+In general, the Specific Character Set attribute (0008,0005) will only be
+included in the C-FIND response if it contains any attributes that are affected
+by the character set, i.e. for value representations PN, LO, LT, SH, ST and UT.
 
 Please note that a C-FIND request which is handled by this application may
 contain DICOM's Specific Character Set attribute (0008,0005), but this
@@ -201,11 +203,11 @@ application was started.
 
 The options --enable-file-reject and --disable-file-reject can be used to
 enable or disable a file rejection mechanism which makes sure only complete
-worklist files will be used during the matching process. A worklist file is
-considered to be complete if it contains all necessary type 1 information which
-the SCP might have to return to an SCU in a C-FIND response message. Table K.6-1
-in part 4 annex K of the DICOM standard lists all corresponding type 1
-attributes (see column "Return Key Type").
+worklist files will be used during the matching process.  A worklist file is
+considered to be complete if it contains all necessary type 1 information
+which the SCP might have to return to an SCU in a C-FIND response message.
+Table K.6-1 in part 4 annex K of the DICOM standard lists all corresponding
+type 1 attributes (see column "Return Key Type").
 
 \subsection dicom_conformance DICOM Conformance
 
@@ -225,7 +227,7 @@ LittleEndianExplicitTransferSyntax    1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax       1.2.840.10008.1.2.2
 \endverbatim
 
-The default behaviour of the wlmscpfs application is to prefer transfer
+The default behaviour of the \b wlmscpfs application is to prefer transfer
 syntaxes having an explicit encoding over the default implicit transfer
 syntax.  If \b wlmscpfs is running on big-endian hardware it will prefer
 BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa).
@@ -258,7 +260,6 @@ matching keys:
 As return keys the following attributes are currently supported by \b wlmscpfs:
 
 \verbatim
-(0008,0005) SpecificCharacterSet
 (0008,0050) AccessionNumber
 (0008,0080) InstitutionName
 (0008,0081) InstitutionAddress
@@ -344,6 +345,9 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 (0040,3001) ConfidentialityConstraintOnPatientDataDescription
 \endverbatim
 
+The attribute (0008,0005) SpecificCharacterSet is a special case and its
+support by \b wlmscpfs is discussed in the NOTES section above.
+
 \subsection access_control Access Control
 
 When compiled on Unix platforms with TCP wrapper support, host-based access
@@ -412,6 +416,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
