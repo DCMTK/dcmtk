@@ -1,6 +1,23 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.05.31 (riesmeier)
+
+- Fixed incorrect handling of SpecificCharacterSet attribute in C-FIND request
+  and response messages. This also makes sure that option --keep-char-set now
+  really returns the character set provided in the worklist file (if needed).
+  Affects: dcmwlm/docs/wlmscpfs.man
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlfsim.cc
+
+- Added a warning message if the C-FIND request contains the SpecificCharacter
+  Set attribute because its value is not used for matching.
+  Affects: dcmwlm/libsrc/wlds.cc
+
+- Slightly modified some log messages, e.g. replaced '\n' by OFendl.
+  Affects: dcmwlm/libsrc/wlds.cc
+
 **** Changes from 2010.05.28 (riesmeier)
 
 - Changed logger name from "dcmtk.dcmdata.mdfconen" to "dcmtk.apps.dcmodify".
