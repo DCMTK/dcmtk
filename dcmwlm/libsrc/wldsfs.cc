@@ -22,9 +22,8 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-18 16:43:01 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2010-05-31 09:21:45 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -288,7 +287,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
 
   // Actually there should be no elements in array matchingDatasets. Delete them to be sure.
   // matchingDatasets will in the end contain all records (datasets) that match the search mask.
-  while (!matchingDatasets.empty())
+  while ( !matchingDatasets.empty() )
   {
     DcmDataset *dset = matchingDatasets.front();
     delete dset; dset = NULL;
@@ -342,8 +341,6 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
       // initialize it with search mask
       DcmDataset *resultRecord = new DcmDataset(*identifiers);
       matchingDatasets.push_back(resultRecord);
-      // this variable is needed later, it must be initialized with NULL
-      DcmElement *specificCharacterSetElement = NULL;
 
       // dump some information if required
       DCMWLM_INFO("  Processing matching result no. " << i);
@@ -362,48 +359,6 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
           HandleNonSequenceElementInResultDataset( element, i );
         else
           HandleSequenceElementInResultDataset( element, i );
-
-        // in case the current element is the "Specific Character Set" attribute, remember this element for later
-        if( element->getTag().getXTag() == DCM_SpecificCharacterSet )
-          specificCharacterSetElement = element;
-      }
-
-      // after having created the entire returned data set, deal with the "Specific Character Set" attribute.
-      // If it shall not be contained in the returned data set
-      if( returnedCharacterSet == RETURN_NO_CHARACTER_SET )
-      {
-        // and it is already included, delete it
-        if( specificCharacterSetElement != NULL )
-        {
-          DcmElement *elem = resultRecord->remove( specificCharacterSetElement );
-          delete elem;
-        }
-      }
-      else if( returnedCharacterSet == RETURN_CHARACTER_SET_ISO_IR_100 )
-      {
-        // if it shall be contained in the returned data set, check if it is not already included
-        if( specificCharacterSetElement == NULL )
-        {
-          // if it is not included in the returned dataset, create a new element and insert it
-          specificCharacterSetElement = new DcmCodeString( DcmTag( DCM_SpecificCharacterSet ) );
-          if( resultRecord->insert( specificCharacterSetElement ) != EC_Normal )
-          {
-            delete specificCharacterSetElement;
-            specificCharacterSetElement = NULL;
-            DCMWLM_WARN("WlmDataSourceDatabase::StartFindRequest: Could not insert specific character set element into dataset");
-          }
-        }
-        // and set the value of the attribute accordingly
-        if( specificCharacterSetElement != NULL )
-        {
-            OFCondition cond = specificCharacterSetElement->putString( "ISO_IR 100" );
-            if( cond.bad() )
-              DCMWLM_WARN("WlmDataSourceDatabase::StartFindRequest: Could not set value in result element");
-        }
-      }
-      else
-      {
-        // case RETURN_CHARACTER_SET_FROM_FILE is handled in HandleNonSequenceElementInResultDataset().
       }
 
       // if the ScheduledProcedureStepSequence can be found in the current dataset, handle
@@ -419,6 +374,36 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
 
       // handle existent but empty ReferencedPatientSequence
       HandleExistentButEmptyReferencedStudyOrPatientSequenceAttributes( resultRecord, DCM_ReferencedPatientSequence );
+
+      // after having created the entire returned data set, deal with the "Specific Character Set" attribute.
+      // first option: remove character set element from result dataset
+      if( returnedCharacterSet == RETURN_NO_CHARACTER_SET )
+      {
+        // nothing to do since it was already removed from the search mask
+        // resultRecord->findAndDeleteElement( DCM_SpecificCharacterSet );
+      }
+      // check whether extended characters maybe used in the result dataset
+      else if ( resultRecord->isAffectedBySpecificCharacterSet() )
+      {
+        OFCondition cond = EC_Normal;
+        // second option: specify ISO 8859-1 (Latin-1) character set
+        if( returnedCharacterSet == RETURN_CHARACTER_SET_ISO_IR_100 )
+        {
+          cond = resultRecord->putAndInsertString( DCM_SpecificCharacterSet, "ISO_IR 100" );
+        }
+        // third option: use charactet set from worklist file
+        else if( returnedCharacterSet == RETURN_CHARACTER_SET_FROM_FILE )
+        {
+          char *value = NULL;
+          fileSystemInteractionManager.GetAttributeValueForMatchingRecord( DCM_SpecificCharacterSet, NULL, 0, i, value );
+          if( (value != NULL) && (strlen(value) > 0) )
+          {
+            cond = resultRecord->putAndInsertString( DCM_SpecificCharacterSet, value );
+          }
+        }
+        if( cond.bad() )
+          DCMWLM_WARN("Could not set value of attribute SpecificCharacterSet in result dataset");
+      }
     }
 
     // Determine a corresponding return value: If matching records were found, WLM_PENDING or
@@ -505,9 +490,8 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
   DcmTagKey tag( element->getTag().getXTag() );
 
   // check if the current element is the "Specific Character Set" (0008,0005) attribute;
-  // we do not want to deal with this attribute here (unless mode is RETURN_CHARACTER_SET_FROM_FILE);
-  // this attribute will be taken care of when the entire result dataset is completed.
-  if( returnedCharacterSet == RETURN_CHARACTER_SET_FROM_FILE || tag != DCM_SpecificCharacterSet )
+  // we do not want to deal with this attribute here.
+  if( tag != DCM_SpecificCharacterSet )
   {
     // in case the current element is not the "Specific Character Set" (0008,0005) attribute,
     // get a value for the current element from database; note that all values for return key
@@ -806,6 +790,10 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
+** Revision 1.25  2010-05-31 09:21:45  joergr
+** Fixed incorrect handling of SpecificCharacterSet attribute in C-FIND request
+** and response messages.
+**
 ** Revision 1.24  2010-05-18 16:43:01  joergr
 ** Slightly modified log messages and log levels in order to be more consistent.
 ** Replaced '\n' by OFendl in log messages.

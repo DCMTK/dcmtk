@@ -22,8 +22,8 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2010-05-18 16:37:04 $
-*  CVS/RCS Revision: $Revision: 1.23 $
+*  Update Date:      $Date: 2010-05-31 09:16:55 $
+*  CVS/RCS Revision: $Revision: 1.24 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -579,7 +579,6 @@ OFBool WlmFileSystemInteractionManager::DatasetIsComplete( DcmDataset *dataset )
 //                DICOM standard part 4 annex K, the following attributes are type 1 attributes in
 //                C-Find RSP messages:
 //                      Attribute                             Tag      Return Key Type
-//                  SpecificCharacterSet                  (0008,0005)        1C (will be checked in WlmDataSourceFileSystem::StartFindRequest(...); this attribute does not have to be checked here)
 //                  ScheduledProcedureStepSequence        (0040,0100)        1
 //                   > ScheduledStationAETitle            (0040,0001)        1
 //                   > ScheduledProcedureStepStartDate    (0040,0002)        1
@@ -2162,6 +2161,10 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
+** Revision 1.24  2010-05-31 09:16:55  joergr
+** Fixed incorrect handling of SpecificCharacterSet attribute in C-FIND request
+** and response messages.
+**
 ** Revision 1.23  2010-05-18 16:37:04  joergr
 ** Slightly modified log messages and log levels in order to be more consistent.
 **
