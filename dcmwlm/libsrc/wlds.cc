@@ -22,9 +22,8 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-18 16:37:04 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2010-05-31 09:22:59 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,11 +32,11 @@
 
 // ----------------------------------------------------------------------------
 
-#include "dcmtk/config/osconfig.h"  // specific configuration for operating system
+#include "dcmtk/config/osconfig.h"   // specific configuration for operating system
 
-#include "dcmtk/dcmnet/dicom.h"     // for DIC_NODENAME etc. used in "wltypdef.h"
-#include "dcmtk/dcmwlm/wltypdef.h"  // for type definitions
-#include "dcmtk/ofstd/oftypes.h"   // for OFBool
+#include "dcmtk/dcmnet/dicom.h"      // for DIC_NODENAME etc. used in "wltypdef.h"
+#include "dcmtk/dcmwlm/wltypdef.h"   // for type definitions
+#include "dcmtk/ofstd/oftypes.h"     // for OFBool
 #include "dcmtk/dcmdata/dcdatset.h"  // for DcmDataset
 #include "dcmtk/dcmdata/dcvrat.h"    // for DcmAttributTag
 #include "dcmtk/dcmdata/dcvrlo.h"    // for DcmLongString
@@ -56,8 +55,8 @@
 
 OFLogger DCM_dcmwlmGetLogger()
 {
-    static OFLogger DCM_dcmwlmLogger = OFLog::getLogger("dcmtk.dcmwlm");
-    return DCM_dcmwlmLogger;
+  static OFLogger DCM_dcmwlmLogger = OFLog::getLogger("dcmtk.dcmwlm");
+  return DCM_dcmwlmLogger;
 }
 
 // ----------------------------------------------------------------------------
@@ -78,7 +77,7 @@ WlmDataSource::WlmDataSource()
   // Make sure data dictionary is loaded.
   if( !dcmDataDict.isDictionaryLoaded() )
   {
-    DCMWLM_WARN("no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
+    DCMWLM_WARN("No data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
   // Initialize member variables.
@@ -242,28 +241,21 @@ void WlmDataSource::CheckNonSequenceElementInSearchMask( DcmDataset *searchMask,
     {
       // if there is a problem with the current element, increase the corresponding counter and dump an error message.
       invalidMatchingKeyAttributeCount++;
-      DCMWLM_WARN("WlmDataSource::CheckNonSequenceElementInSearchMask: Matching key attribute ("
-          << tag.getTagName() << ") with invalid value encountered in the search mask");
+      DCMWLM_WARN("Matching key attribute (" << tag.getTagName() << ") with invalid value encountered in the search mask");
     }
   }
   // if current element is not a supported matching key attribute, determine
   // if the current element is a supported return key attribute.
   else if( IsSupportedReturnKeyAttribute( element, supSequenceElement ) )
   {
-    // check if the current supported return key attribute is not the "Specific Character Set" (0008,0005) attribute.
-    // (For this specific attribute there is nothing to do here.)
-    if( element->getTag().getXTag() != DCM_SpecificCharacterSet )
+    // we need to check if the current element (a supported return key attribute) does not contain a value.
+    // According to the DICOM standard part 4, section K.2.2.1.2. a return key attribute which is NOT a
+    // a matching key attribute must not contain a value. If one such attribute does contain a value,
+    // i.e. if the current element's length does not equal 0, we want to dump a warning message.
+    if( element->getLength() != 0 )
     {
-      // in case the current element is not the "Specific Character Set" attribute, we need to check
-      // if the current element (a supported return key attribute) does not contain a value. According
-      // to the DICOM standard part 4, section K.2.2.1.2. a return key attribute which is NOT a
-      // a matching key attribute must not contain a value. If one such attribute does contain a value,
-      // i.e. if the current element's length does not equal 0, we want to dump a warning message.
-      if( element->getLength() != 0 )
-      {
-        DCMWLM_INFO("  - Non-empty return key attribute (" << tag.getTagName()
-            << ") encountered in the search mask.\n    The specified value will be overridden.");
-      }
+      DCMWLM_INFO("  - Non-empty return key attribute (" << tag.getTagName() << ") encountered in the search mask." << OFendl
+          << "    The specified value will be overridden.");
     }
   }
   // if current element is neither a supported matching key attribute nor a supported return key
@@ -287,13 +279,21 @@ void WlmDataSource::CheckNonSequenceElementInSearchMask( DcmDataset *searchMask,
       delete elem;
     }
 
-    // dump a warning
-    DCMWLM_INFO("  - Unsupported (non-sequence) attribute (" << tag.getTagName()
-        << ") encountered in the search mask.\n    This attribute will not be existent in any result dataset.");
+    // handle special case of "Specific Character Set"
+    if( tag == DCM_SpecificCharacterSet )
+    {
+      DCMWLM_WARN("Attribute " << tag.getTagName() << " found in the search mask, value is neither checked nor used for matching");
+    }
+    else
+    {
+      // dump a warning
+      DCMWLM_INFO("  - Unsupported (non-sequence) attribute (" << tag.getTagName() << ") encountered in the search mask." << OFendl
+          << "    This attribute will not be existent in any result dataset.");
 
-    // remember this attribute's tag in the list of error elements
-    foundUnsupportedOptionalKey = OFTrue;
-    PutErrorElements( tag );
+      // remember this attribute's tag in the list of error elements
+      foundUnsupportedOptionalKey = OFTrue;
+      PutErrorElements( tag );
+    }
   }
 }
 
@@ -337,8 +337,8 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
       // an empty sequence is not allowed in a C-FIND request
       if (element->getLength() == 0)
       {
-        DCMWLM_WARN("Empty sequence (" << tag.getTagName()
-            << ") encountered within the query.\n  Treating as if an empty item within the sequence has been sent.");
+        DCMWLM_WARN("Empty sequence (" << tag.getTagName() << ") encountered within the query, "
+            << "treating as if an empty item within the sequence has been sent");
       }
       // if this is the case, we need to check the value of a variable
       // which pertains to a certain command line option
@@ -360,8 +360,8 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
         // we want to dump an error message and we want to increase the corresponding counter.
         PutOffendingElements(tag);
         errorComment->putString("More than 1 item in sequence.");
-        DCMWLM_ERROR("More than one item in sequence (" << tag.getTagName()
-            << ") within the query encountered.\n  Discarding all items except for the first one.");
+        DCMWLM_ERROR("More than one item in sequence (" << tag.getTagName() << ") within the query encountered, "
+            << "discarding all items except for the first one");
         invalidMatchingKeyAttributeCount++;
 
         // also, we want to delete all items except the first one
@@ -428,8 +428,8 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
     }
 
     // dump a warning
-    DCMWLM_INFO("  - Unsupported (sequence) attribute (" << tag.getTagName()
-        << ") encountered in the search mask.\n    This attribute will not be existent in any result dataset.");
+    DCMWLM_INFO("  - Unsupported (sequence) attribute (" << tag.getTagName() << ") encountered in the search mask." << OFendl
+        << "    This attribute will not be existent in any result dataset.");
 
     // remember this attribute's tag in the list of error elements
     foundUnsupportedOptionalKey = OFTrue;
@@ -539,13 +539,13 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
     {
       // this code should never be executed; if it is, there is a logical error
       // in the source code and we want to dump a warning message
-      DCMWLM_ERROR("WlmDataSource::ExpandEmptySequenceInSearchMask: Unsupported sequence attribute encountered.");
+      DCMWLM_ERROR("WlmDataSource::ExpandEmptySequenceInSearchMask: Unsupported sequence attribute encountered");
     }
   }
   else
   {
     // this code should never be executed. if it is, we want to dump a warning message
-    DCMWLM_ERROR("WlmDataSource::ExpandEmptySequenceInSearchMask: Unable to find item in sequence.");
+    DCMWLM_ERROR("WlmDataSource::ExpandEmptySequenceInSearchMask: Unable to find item in sequence");
   }
 }
 
@@ -1243,7 +1243,6 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 // Task         : This function checks if the given element refers to an attribute which is a supported
 //                return key attribute. If this is the case OFTrue is returned, else OFFalse.
 //                Currently, the following attributes are supported as return keys:
-//                   DCM_SpecificCharacterSet                              (0008,0005)  CS  O  1
 //                   DCM_ScheduledProcedureStepSequence                    (0040,0100)  SQ  R  1
 //                    > DCM_ScheduledStationAETitle                        (0040,0001)  AE  R  1
 //                    > DCM_ScheduledProcedureStepStartDate                (0040,0002)  DA  R  1
@@ -1386,8 +1385,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
   }
   else
   {
-    if( elementKey == DCM_SpecificCharacterSet                              ||
-        elementKey == DCM_ScheduledProcedureStepSequence                    ||
+    if( elementKey == DCM_ScheduledProcedureStepSequence                    ||
         elementKey == DCM_RequestedProcedureID                              ||
         elementKey == DCM_RequestedProcedureDescription                     ||
         elementKey == DCM_StudyInstanceUID                                  ||
@@ -1454,6 +1452,13 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
+** Revision 1.28  2010-05-31 09:22:59  joergr
+** Fixed incorrect handling of SpecificCharacterSet attribute in C-FIND request
+** and response messages.
+** Added a warning message if the C-FIND request contains the SpecificCharacter
+** Set attribute because its value is not used for matching.
+** Slightly modified some log messages, e.g. replaced '\n' by OFendl.
+**
 ** Revision 1.27  2010-05-18 16:37:04  joergr
 ** Slightly modified log messages and log levels in order to be more consistent.
 **
