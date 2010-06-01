@@ -21,9 +21,9 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-27 17:00:18 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-06-01 16:17:57 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -937,7 +937,10 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   // don't render overlays
   dimage.hideAllOverlays();
 
-  // original pixel depth of source image
+  // actual pixel depth of source image which can be different from Bits Stored
+  // e. g. when Modality LUT (if enabled) shifts pixel values to a smaller
+  // range or if the pixel values itself do not make use of the "Bits Stored"
+  // full range available.
   int pixelDepth = dimage.getDepth();
 
   // create overlay data for embedded overlays
@@ -997,12 +1000,14 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
           // query image range and extreme values
           if (result.good())
           {
+            // technically possible min/max values
             if (! dimage.getMinMaxValues(minRange, maxRange, 1)) result = EC_IllegalCall;
             if (maxRange <= minRange) result = EC_IllegalCall;
           }
 
           if (result.good())
           {
+            // actually present min/max values in pixel data
             if (! dimage.getMinMaxValues(minUsed, maxUsed, 0)) result = EC_IllegalCall;
             if (maxUsed < minUsed) result = EC_IllegalCall;
           }
@@ -1247,11 +1252,14 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
     // update Modality LUT Module and Pixel Intensity Relationship
     if (windowType == 0)
     {
-      if (mode_XA)
+      if (mode_XA) // XA needs special handling
       {
         // XA Mode: set Pixel Intensity Relationship to "DISP", no Modality LUT
         if (result.good()) result = dataset->putAndInsertString(DCM_PixelIntensityRelationship, "DISP");
       }
+      /* else if we had a modality LUT before, a LUT is inserted again.
+         or if specific rescale slope/intercept has been computed, use that in image
+       */
       else if (foundModalityLUT || rescaleSlope != 1.0 || rescaleIntercept != 0.0)
       {
         char buf[64];
@@ -1268,7 +1276,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
     }
     else
     {
-      // if we had found a Modality LUT Transformation, create a new identity transformation
+      // if we had found a Modality LUT Transformation, create a identity LUT transformation
       if (foundModalityLUT)
       {
         if (result.good()) result = dataset->putAndInsertString(DCM_RescaleIntercept, "0");
@@ -1322,6 +1330,8 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
       }
     }
   }
+
+  // determine compression ratio
   if (compressedSize > 0) compressionRatio = uncompressedSize / compressedSize;
   return result;
 }
@@ -1368,13 +1378,15 @@ OFCondition DJCodecEncoder::correctVOIWindows(
   if (center && width)
   {
     unsigned long numWindows = center->getVM();
+    // iterate over all defined VOI windows
     for (unsigned long i=0; i<numWindows; i++)
     {
       if (((center->getFloat64(currentCenter,i)).good()) && ((width->getFloat64(currentWidth,i)).good()))
       {
-        // found one pair of values
+        // found one pair of values, adapt them to value range shifted pixel data
         tempCenter = (currentCenter+voiOffset)*voiFactor;
         tempWidth = currentWidth * voiFactor;
+        // add this window to the attribute values that are later replacing old windows
         OFStandard::ftoa(buf, sizeof(buf), tempCenter, OFStandard::ftoa_uppercase, 0, 6);
         if (newCenter.length() > 0) newCenter += "\\";
         newCenter += buf;
@@ -1398,10 +1410,12 @@ OFCondition DJCodecEncoder::correctVOIWindows(
     }
   }
 
+  // remove old windows
   delete dataset->remove(DCM_WindowCenter);
   delete dataset->remove(DCM_WindowWidth);
   delete dataset->remove(DCM_WindowCenterWidthExplanation);
 
+  // and insert newly computed ones if necessary
   if (newCenter.length() > 0)
   {
     if (result.good()) result = dataset->putAndInsertString(DCM_WindowCenter, newCenter.c_str());
@@ -1498,6 +1512,9 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
+ * Revision 1.33  2010-06-01 16:17:57  onken
+ * Added some comments and line breaks (improved code readability).
+ *
  * Revision 1.32  2010-05-27 17:00:18  joergr
  * Added missing basic offset table to "true lossless" mode (if enabled).
  * Revised wording of log message.

@@ -21,9 +21,9 @@
  *
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-24 15:01:34 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-06-01 16:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -355,7 +355,18 @@ private:
   /// mode for SOP Instance UID creation
   E_UIDCreation uidCreation;
 
-  /// mode for VOI transformation of monochrome images
+  /** mode for VOI transformation of monochrome images. possible values:
+      0: no VOI transformation (default). See also variables
+         usePixelValues (default) or useModalityRescale denoting two
+         further variables tweaking compression behaviour.
+      1: use the n-th VOI window from the image file (see variable windowType)
+      2: use the n-th VOI look up table from the image file (see variable windowType)
+      3: compute VOI window using min-max algorithm
+      4: compute VOI window using Histogram algorithm, ignoring n percent
+      5: compute VOI window using center r and width s
+      6: compute VOI window using min-max algorithm ignoring extremes
+      7: compute region of interest VOI window
+   */
   unsigned long windowType;
 
   /// parameter for VOI transform of monochrome images, used in modes 1, 2, 4, 6
@@ -405,6 +416,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcparam.h,v $
+ * Revision 1.11  2010-06-01 16:17:49  onken
+ * Added some comments and line breaks (improved code readability).
+ *
  * Revision 1.10  2010-03-24 15:01:34  joergr
  * Fixed minor formatting issues in API documentation.
  *
