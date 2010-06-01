@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.01 (onken)
+
+- Added some comments and line breaks (improved code readability)
+  Affects: dcmjpeg/include/dcmtk/dcmjpeg/djcparam.h
+           dcmjpeg/libsrc/djcodece.cc
+           dcmjpeg/libsrc/djencext.cc
+
 **** Changes from 2010.06.01 (schlachter)
 
 - Added support for indexed-color BMP images (bit depths 1, 4 and 8).
