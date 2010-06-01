@@ -326,11 +326,11 @@ such data. JFIF information is \b always removed by \b img2dcm.
 
 \subsubsection bmpinputplugin BMP Input Plugin
 
-\b img2dcm supports BMP as input format. However, so far only 16, 24 and 32
-bit RGB (i.e. 5 or 8 bit per color channel) images are accepted for conversion
-while grayscale images are rejected. For color, also images stored in BMPs
-upside-down fashion can be converted to DICOM. There are no specific options
-for fine-tuning BMP format conversion.
+\b img2dcm supports BMP as input format. However, so far only the most commmon
+BMP images are supported.  In particular, BMP images which use bitfields or
+run length encoding will be rejected. Such images are uncommon. All input images
+will be converted into a DICOM image with RGB color model and a bit depth of 24.
+There are no specific options for fine-tuning BMP format conversion.
 
 \subsection outputplugins Output Plugins
 

@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-05-25 12:40:06 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2010-06-01 10:33:53 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,19 +131,29 @@ protected:
   OFCondition readFileHeader(Uint32 &offset);
 
   /** Reads and checks the BMP bitmap header.
-   *  After this function, the current read position is in the middle of the
-   *  header, use fseek() to get to a known offset!
+   *  After this function, the current read position is just after the
+   *  header. That is, at the beginning of the color palette.
    *  @param width - [out] width of the image in pixel
    *  @param height - [out] height of the image in pixel
    *  @param isTopDown - [out] OFTrue if this is a top down bitmap
    *                     (height was read as negative value).OFFalse otherwise.
    *  @param bpp - [out] bits per pixel of the image.
+   *  @param colors - [out] number of entries in color table.
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition readBitmapHeader(Uint16 &width     /*out*/,
                                Uint16 &height    /*out*/,
                                Uint16 &bpp       /*out*/,
-                               OFBool &isTopDown /*out*/);
+                               OFBool &isTopDown /*out*/,
+                               Uint16 &colors    /*out*/);
+
+  /** Read the color palette from the file.
+   * @param colors - [in] number of colors to read
+   * @param palette - [out] the read color palette is stored here
+   *  @return EC_Normal, if successful, error otherwise
+   */
+  OFCondition readColorPalette(Uint16 colors,
+                               Uint32*& palette);
 
   /** Read the bitmap data.
    *  This assumes the current read position is at the start of the image data.
@@ -151,6 +161,8 @@ protected:
    *  @param height - [in] height of the image in pixel
    *  @param bpp - [in] Image's bits per pixel.
    *  @param isTopDown - [in] If true, this is a top down bitmap
+   *  @param colors - [in] Number of color palette entries
+   *  @param palette - [in] Color palette
    *  @param data - [out] Image data
    *  @param length - [out] Length of data
    *  @return EC_Normal, if successful, error otherwise
@@ -159,6 +171,8 @@ protected:
                              const Uint16 height,
                              const Uint16 bpp,
                              const OFBool isTopDown,
+                             const Uint16 colors,
+                             const Uint32* palette,
                              char*& pixData /*out*/,
                              Uint32& length /*out*/);
 
@@ -183,6 +197,22 @@ protected:
   OFCondition parse16BppRow(const Uint8 *row,
                             const Uint16 width,
                             char *pixData /*out*/) const;
+
+  /** Parse a single 1, 4 or 8bpp row of bmp data.
+   *  @param row - [in] The row of data to parse.
+   *  @param width - [in] The length in pixel of the row.
+   *  @param bpp - [in] The number of bits per pixel.
+   *  @param colors - [in] The number of entries in the color palette.
+   *  @param palette - [in] The color palette to use.
+   *  @param pixData - [out] The buffer to write the data to (in "RGB" format).
+   *  @return EC_Normal, if successful, error otherwise
+   */
+  OFCondition parseIndexedColorRow(const Uint8 *row,
+                                   const Uint16 width,
+                                   const int bpp,
+                                   const Uint16 colors,
+                                   const Uint32* palette,
+                                   char *pixData /*out*/) const;
 
   /** Read 4 bytes from the byte stream and interpret it as a signed integer.
    *  @param result - [out] The result
@@ -211,6 +241,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.h,v $
+ * Revision 1.6  2010-06-01 10:33:53  uli
+ * Added support for indexed-color BMP images (bit depths 1, 4 and 8).
+ *
  * Revision 1.5  2010-05-25 12:40:06  uli
  * Added support for 16bpp BMP images to libi2d
  *

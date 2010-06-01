@@ -23,8 +23,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-05-25 12:40:06 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2010-06-01 10:33:53 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,9 +98,17 @@ OFCondition I2DBmpSource::readPixelData(Uint16& rows,
   }
 
   Uint16 width, height;
-  Uint16 bpp;
+  Uint16 bpp, colors;
   OFBool isTopDown = OFFalse; /* Most BMPs are stored bottom-up */
-  cond = readBitmapHeader(width, height, bpp, isTopDown);
+  cond = readBitmapHeader(width, height, bpp, isTopDown, colors);
+  if (cond.bad())
+  {
+    closeFile();
+    return cond;
+  }
+
+  Uint32 *palette = NULL;
+  cond = readColorPalette(colors, palette);
   if (cond.bad())
   {
     closeFile();
@@ -114,7 +122,11 @@ OFCondition I2DBmpSource::readPixelData(Uint16& rows,
   /* ...and read the "real" image data */
   char *data;
   Uint32 data_length;
-  cond = readBitmapData(width, height, bpp, isTopDown, data, data_length);
+  cond = readBitmapData(width, height, bpp, isTopDown, colors, palette, data, data_length);
+
+  if (palette)
+    delete[] palette;
+
   if (cond.bad())
   {
     closeFile();
@@ -168,7 +180,8 @@ OFCondition I2DBmpSource::readFileHeader(Uint32 &offset)
 OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
                                            Uint16 &height,
                                            Uint16 &bpp,
-                                           OFBool &isTopDown)
+                                           OFBool &isTopDown,
+                                           Uint16 &colors)
 {
   Uint16 tmp_word;
   Uint32 tmp_dword;
@@ -219,13 +232,72 @@ OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
    *  DWord: Size of image data or 0 (yes, that's what the standard says!).
    *  Long:  Horizontal resolution in pixel per meter, mostly set to 0.
    *  Long:  Vertical resolution in pixel per meter, mostly set to 0:
-   *  DWord: Size of color table, unused for our supported bpp values.
-   *  DWord: Used colors count, 0 for our supported bpp values.
    */
+
+  /* Skip over three uninteresting entries */
+  if (bmpFile.fseek(12, SEEK_CUR) != 0)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Not a BMP file - invalid header");
+
+  /* Number of entries in color table, 0 means "use default" */
+  if (readDWord(tmp_dword) != 0)
+    return EC_EndOfStream;
+
+  colors = tmp_dword;
+  if (colors == 0) {
+    // In this case, 1, 4 and 8 bpp get pow(2, bpp) colors in the color table,
+    // others get no color table at all
+    switch (bpp) {
+    case 1:
+      colors = 2;
+      break;
+    case 4:
+      colors = 16;
+      break;
+    case 8:
+      colors = 256;
+      break;
+    }
+  }
+
+  /* Skip another uninteresting entry (number of important colors) */
+  if (bmpFile.fseek(4, SEEK_CUR) != 0)
+    return EC_EndOfStream;
 
   DCMDATA_LIBI2D_DEBUG("I2DBmpSource: BMP width: " << width);
   DCMDATA_LIBI2D_DEBUG("I2DBmpSource: BMP height: " << height);
   DCMDATA_LIBI2D_DEBUG("I2DBmpSource: BMP stored as top down: " << (isTopDown ? "Yes" : "No"));
+  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: Colortable entries: " << colors);
+
+  return EC_Normal;
+}
+
+
+OFCondition I2DBmpSource::readColorPalette(Uint16 colors,
+                                           Uint32*& palette)
+{
+  if (colors == 0)
+    // Nothing to do;
+    return EC_Normal;
+
+  if (colors > 256)
+    // BMPs can not have more than 256 color table entries
+    return EC_IllegalCall;
+
+  // Read the color palette
+  palette = new Uint32[colors];
+  for (int i = 0; i < colors; i++) {
+    Uint32 tmp;
+
+    // Each item is 32-bit BGRx entry, this function reads that data
+    if (readDWord(tmp) != 0) {
+      delete[] palette;
+      palette = NULL;
+      return EC_EndOfStream;
+    }
+
+    // Converting this BGRx into RGB is done elsewhere
+    palette[i] = tmp;
+  }
 
   return EC_Normal;
 }
@@ -235,6 +307,8 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
                                          const Uint16 height,
                                          const Uint16 bpp,
                                          const OFBool isTopDown,
+                                         const Uint16 colors,
+                                         const Uint32* palette,
                                          char*& pixData,
                                          Uint32& length)
 {
@@ -248,6 +322,14 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
   Uint32 y;
   Sint32 direction;
   Uint32 max;
+
+  // "palette" may only be NULL if colors is 0 and vice versa
+  if ((palette == NULL) != (colors == 0))
+    return EC_IllegalCall;
+
+  // These bit depths always need a color palette
+  if (colors == 0 && (bpp == 1 || bpp == 4 || bpp == 8))
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "invalid BMP file - missing color palette");
 
   if (isTopDown)
   {
@@ -296,6 +378,11 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
     OFCondition cond;
     switch (bpp)
     {
+      case 1:
+      case 4:
+      case 8:
+        cond = parseIndexedColorRow(row_data, width, bpp, colors, palette, &pixData[posData]);
+        break;
       case 16:
         cond = parse16BppRow(row_data, width, &pixData[posData]);
         break;
@@ -304,7 +391,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
         cond = parse24_32BppRow(row_data, width, bpp, &pixData[posData]);
         break;
       default:
-        cond = makeOFCondition(OFM_dcmdata, 18, OF_error, "unsupported BMP file - wrong bpp");
+        cond = makeOFCondition(OFM_dcmdata, 18, OF_error, "unsupported BMP file - invalid bpp");
         break;
     }
     if (cond.bad())
@@ -386,6 +473,59 @@ OFCondition I2DBmpSource::parse16BppRow(const Uint8 *row,
     pixData[pos]     = r;
     pixData[pos + 1] = g;
     pixData[pos + 2] = b;
+
+    pos += 3;
+  }
+  return EC_Normal;
+}
+
+
+OFCondition I2DBmpSource::parseIndexedColorRow(const Uint8 *row,
+                                               const Uint16 width,
+                                               const int bpp,
+                                               const Uint16 colors,
+                                               const Uint32* palette,
+                                               char *pixData /*out*/) const
+{
+  // data that is still left from reading the last pixel
+  Uint8 data = 0;
+  // Number of valid bits in data
+  Uint8 bitsLeft = 0;
+
+  Uint32 pos = 0;
+  Uint32 pos_input = 0;
+  for (Uint32 x = 0; x < width; x++)
+  {
+    // Check if we still got enough bits in our buffer
+    if (bitsLeft < bpp)
+    {
+      // No, we must get a new byte of input data
+      bitsLeft += 8;
+      data <<= 8;
+      data |= row[pos_input++];
+    }
+
+    // Get the left-most bpp bits from data
+    Uint8 index = (data >> (bitsLeft - bpp));
+    // The right-most bpp bits in "index" now contain the data we want,
+    // clear all the higher bits.
+    // (1 << bpp) gives us in binary: 00001000 (with bpp zero bits) if we
+    // substract 1, only the right-most bpp bits will be 1.
+    index &= (1 << bpp) - 1;
+    bitsLeft -= bpp;
+
+    // Check if we are still in the color palette
+    if (index >= colors)
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, "unsupported BMP file - access beyond end of color table");
+
+    // Get the colors
+    Uint32 pixel = palette[index];
+
+    // And save it in the resulting image, this implicitely converts the BGR we
+    // got from the color table into RGB.
+    pixData[pos]     = OFstatic_cast(Uint8, pixel >> 16);
+    pixData[pos + 1] = OFstatic_cast(Uint8, pixel >>  8);
+    pixData[pos + 2] = OFstatic_cast(Uint8, pixel >>  0);
 
     pos += 3;
   }
@@ -476,6 +616,9 @@ I2DBmpSource::~I2DBmpSource()
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.cc,v $
+ * Revision 1.7  2010-06-01 10:33:53  uli
+ * Added support for indexed-color BMP images (bit depths 1, 4 and 8).
+ *
  * Revision 1.6  2010-05-25 12:40:06  uli
  * Added support for 16bpp BMP images to libi2d
  *
