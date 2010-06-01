@@ -9,6 +9,9 @@ Changes between releases are documented here.
            dcmdata/libi2d/Makefile.dep
            dcmdata/libi2d/i2dbmps.cc
 
+- Generate a better error message if an image exceeds 65535 rows or columns.
+  Affects: dcmdata/libi2d/i2dbmps.cc
+
 **** Changes from 2010.05.31 (riesmeier)
 
 - Fixed incorrect handling of SpecificCharacterSet attribute in C-FIND request

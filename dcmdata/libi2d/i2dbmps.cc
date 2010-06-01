@@ -23,8 +23,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-01 10:33:53 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2010-06-01 12:59:48 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,10 @@
 #include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/libi2d/i2doutpl.h"
 
+#ifndef UINT16_MAX
+/// Maximum value a Uint16 can hold
+#define UINT16_MAX 65535
+#endif
 
 I2DBmpSource::I2DBmpSource() : bmpFile()
 {
@@ -205,11 +209,19 @@ OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
   else
     isTopDown = OFFalse;
   height = OFstatic_cast(Uint16, tmp_height);
+
+  // Check if we got a valid value here which fits into a Uint16
+  // (height < 0 can happen because -(INT_MIN) == INT_MIN).
+  if (tmp_height <= 0 || tmp_height > UINT16_MAX)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unsupported BMP file - height too large or zero");
+
   if (tmp_width < 0) /* Width also can be signed, but no semantic */
   {
     tmp_width = -tmp_width;
   }
   width = OFstatic_cast(Uint16, tmp_width);
+  if (tmp_width <= 0 || tmp_width > UINT16_MAX)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unsupported BMP file - width too large or zero");
 
   /* Some older standards used this, always 1 for BMP (number of planes) */
   if (readWord(tmp_word) != 0 || tmp_word != 1)
@@ -228,15 +240,13 @@ OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
   if (tmp_dword != 0)
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unsupported BMP file - compressed");
 
-  /* We don't care about the rest of the bitmap info header, fields are:
+  /* We don't care about the next three fields of the bitmap info header:
    *  DWord: Size of image data or 0 (yes, that's what the standard says!).
    *  Long:  Horizontal resolution in pixel per meter, mostly set to 0.
    *  Long:  Vertical resolution in pixel per meter, mostly set to 0:
    */
-
-  /* Skip over three uninteresting entries */
   if (bmpFile.fseek(12, SEEK_CUR) != 0)
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Not a BMP file - invalid header");
+    return EC_EndOfStream;
 
   /* Number of entries in color table, 0 means "use default" */
   if (readDWord(tmp_dword) != 0)
@@ -255,6 +265,9 @@ OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
       break;
     case 8:
       colors = 256;
+      break;
+    default:
+      colors = 0;
       break;
     }
   }
@@ -360,7 +373,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
     return EC_MemoryExhausted;
   }
 
-  /* From bottom-most row up */
+  /* Go through each row of the image */
   for (; y != max; y += direction)
   {
     /* Calculate posData for this line, it is the index of the first byte for
@@ -616,6 +629,9 @@ I2DBmpSource::~I2DBmpSource()
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.cc,v $
+ * Revision 1.8  2010-06-01 12:59:48  uli
+ * Generate a better error message if an image exceeds 65535 rows or columns.
+ *
  * Revision 1.7  2010-06-01 10:33:53  uli
  * Added support for indexed-color BMP images (bit depths 1, 4 and 8).
  *
