@@ -3,6 +3,27 @@ Changes between releases are documented here.
 
 **** Changes from 2010.06.02 (riesmeier)
 
+- Replaced calls to strerror() by new helper function OFStandard::strerror()
+  which results in using the thread safe version of strerror() if available.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/libsrc/dcompat.cc
+           dcmnet/libsrc/dimse.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulfsm.cc
+
+- Replaced use of sprintf() on a static char array by class OFString.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+- Replaced use of sprintf() on a static char array by class OFString or
+  OFOStringStream respectively.
+  Affects: dcmnet/libsrc/dul.cc
+
+- Slightly modified some condition texts for reasons of consistency.
+  Affects: dcmnet/libsrc/dul.cc
+
+- Added #warning statement for systems where HAVE_STRERROR is not defined.
+  Affects: dcmnet/libsrc/dcompat.cc
+
 - Introduced new helper function strerror() which is used as a wrapper to the
   various approaches found on different systems.
   Affects: dcmdata/libsrc/dcddirif.cc
