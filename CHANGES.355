@@ -19,6 +19,13 @@ Changes between releases are documented here.
            dcmwlm/libsrc/wlmactmg.cc
            ofstd/libsrc/ofstd.cc
 
+- Rebuilt Makefile dependencies.
+  Affects: ofstd/tests/Makefile.dep
+           dcmdata/apps/Makefile.dep
+           dcmdata/libi2d/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/tests/Makefile.dep
+
 **** Changes from 2010.06.01 (onken)
 
 - Added some comments and line breaks (improved code readability)

@@ -32,10 +32,11 @@ toffile.o: toffile.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/ofstd/ofcast.h ../include/dcmtk/ofstd/ofstdinc.h \
-  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofstream.h \
-  ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
-  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oflist.h \
-  ../include/dcmtk/ofstd/ofcond.h ../include/dcmtk/ofstd/ofstdinc.h
+  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofstd.h \
+  ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/ofcond.h \
+  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofconsol.h \
+  ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/ofstd.h \
+  ../include/dcmtk/ofstd/ofstdinc.h
 tofstd.o: tofstd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/ofstd.h \
