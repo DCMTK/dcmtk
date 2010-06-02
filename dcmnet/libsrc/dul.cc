@@ -54,9 +54,9 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: joergr $, $Date: 2009-12-08 16:39:21 $
+** Last Update:   $Author: joergr $, $Date: 2010-06-02 15:47:56 $
 ** Source File:   $RCSfile: dul.cc,v $
-** Revision:      $Revision: 1.84 $
+** Revision:      $Revision: 1.85 $
 ** Status:        $State: Exp $
 */
 
@@ -759,9 +759,11 @@ DUL_RejectAssociationRQ(
 
         if (!found)
         {
-            char buf1[256];
-            sprintf(buf1, "DUL Illegal reason for rejecting Association: %x", localParams.reason);
-            return makeDcmnetCondition(DULC_ILLEGALREJECTREASON, OF_error, buf1);
+            OFOStringStream stream;
+            stream << "DUL Illegal reason for rejecting Association: "
+                   << STD_NAMESPACE hex << localParams.reason << OFStringStream_ends;
+            OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+            return makeDcmnetCondition(DULC_ILLEGALREJECTREASON, OF_error, msg.c_str());
         }
     }
     {
@@ -773,9 +775,11 @@ DUL_RejectAssociationRQ(
 
         if (!found)
         {
-            char buf2[256];
-            sprintf(buf2, "DUL Illegal result for rejecting Association: %x", localParams.result);
-            return makeDcmnetCondition(DULC_ILLEGALREJECTRESULT, OF_error, buf2);
+            OFOStringStream stream;
+            stream << "DUL Illegal result for rejecting Association: "
+                   << STD_NAMESPACE hex << localParams.result << OFStringStream_ends;
+            OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+            return makeDcmnetCondition(DULC_ILLEGALREJECTRESULT, OF_error, msg.c_str());
         }
     }
     cond = PRV_StateMachine(NULL, association,
@@ -1492,8 +1496,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 {
     fd_set
     fdset;
-    struct timeval
-        timeout_val;
+    struct timeval timeout_val;
 #ifdef HAVE_DECLARATION_SOCKLEN_T
     socklen_t len;
 #elif !defined(HAVE_PROTOTYPE_ACCEPT) || defined(HAVE_INTP_ACCEPT)
@@ -1501,8 +1504,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #else
     size_t len;
 #endif
-    int nfound,
-        connected;
+    int nfound, connected;
     struct sockaddr from;
     struct hostent *remote = NULL;
     struct linger sockarg;
@@ -1525,9 +1527,12 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
       len = sizeof(from);
       if (getsockname(sock, &from, &len))
       {
-          char buf3[256];
-          sprintf(buf3, "TCP Initialization Error: %s, getsockname failed on socket %d", strerror(errno), sock);
-          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf3);
+          char buf[256];
+          OFOStringStream stream;
+          stream << "TCP Initialization Error: " << OFStandard::strerror(errno, buf, sizeof(buf))
+                 << ", getsockname failed on socket " << sock << OFStringStream_ends;
+          OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
     }
     else
@@ -1595,9 +1600,12 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 
         if (sock < 0)
         {
-            char buf3[256];
-            sprintf(buf3, "TCP Initialization Error: %s, accept failed on socket %d", strerror(errno), sock);
-            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf3);
+            char buf[256];
+            OFOStringStream stream;
+            stream << "TCP Initialization Error: " << OFStandard::strerror(errno, buf, sizeof(buf))
+                   << ", accept failed on socket " << sock << OFStringStream_ends;
+            OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
     }
 
@@ -1609,18 +1617,23 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         if (pid > 0)
         {
             // we're the parent process, close accepted socket and return
-            char buf4[256];
             close(sock);
-            sprintf(buf4, "new child process started with pid %i", OFstatic_cast(int, pid));
-            return makeDcmnetCondition (DULC_FORKEDCHILD, OF_ok, buf4);
+
+            OFOStringStream stream;
+            stream << "New child process started with pid " << pid << OFStringStream_ends;
+            OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+            return makeDcmnetCondition(DULC_FORKEDCHILD, OF_ok, msg.c_str());
         }
         else if (pid < 0)
         {
             // fork failed, return error code
-            char buf5[256];
             close(sock);
-            sprintf(buf5, "Error: %s, fork failed", strerror(errno));
-            return makeDcmnetCondition (DULC_CANNOTFORK, OF_error, buf5);
+
+            char buf[256];
+            OFString msg = "Multi-Process Error: ";
+            msg += OFStandard::strerror(errno, buf, sizeof(buf));
+            msg += ", fork failed";
+            return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, msg.c_str());
         }
         else
         {
@@ -1658,9 +1671,11 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         // create anonymous pipe
         if (!CreatePipe(&hChildStdInRead, &hChildStdInWrite, &sa,0))
         {
-            char buf4[256];
-            sprintf(buf4, "Error %i while creating anonymous pipe",OFstatic_cast(int, GetLastError()));
-            return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, buf4);
+            OFOStringStream stream;
+            stream << "Multi-Process Error: Creating anonymous pipe failed with error code "
+                   << GetLastError() << OFStringStream_ends;
+            OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+            return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, msg.c_str());
         }
 
         // create duplicate of write end handle of pipe
@@ -1668,7 +1683,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                              GetCurrentProcess(), &hChildStdInWriteDup, 0,
                              FALSE, DUPLICATE_SAME_ACCESS))
         {
-            return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, "Error while duplicating handle");
+            return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, "Multi-Process Error: Duplicating handle failed");
         }
 
         // destroy original write end handle of pipe
@@ -1692,9 +1707,11 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         // create child process.
         if (!CreateProcess(NULL,OFconst_cast(char *, cmdLine.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi))
         {
-            char buf4[256];
-            sprintf(buf4, "CreateProcess failed: (%i)", (int)GetLastError());
-            return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, buf4);
+            OFOStringStream stream;
+            stream << "Multi-Process Error: Creating process failed with error code "
+                   << GetLastError() << OFStringStream_ends;
+            OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+            return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, msg.c_str());
         }
         else
         {
@@ -1710,9 +1727,12 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 CloseHandle(pi.hProcess);
                 CloseHandle(pi.hThread);
                 CloseHandle((HANDLE)sock);
-                char buf4[256];
-                sprintf(buf4, "error getting real process handle: OpenProcess failed, windows error code: (%i)", (int)GetLastError());
-                return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, buf4);
+
+                OFOStringStream stream;
+                stream << "Multi-Process Error: Opening process to get real process handle failed with error code "
+                       << GetLastError() << OFStringStream_ends;
+                OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+                return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, msg.c_str());
             }
 
             // PROCESS_INFORMATION pi now contains various handles for the new process.
@@ -1730,20 +1750,20 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 
                 // send number of socket handle in child process over anonymous pipe
                 DWORD bytesWritten;
-                char buf5[20];
-                sprintf(buf5,"%i",(int)childSocketHandle);
-                if (!WriteFile(hChildStdInWriteDup, buf5, strlen(buf5) + 1, &bytesWritten, NULL))
-                                {
+                char buf[20];
+                sprintf(buf, "%i", OFstatic_cast(int, childSocketHandle);
+                if (!WriteFile(hChildStdInWriteDup, buf5, strlen(buf) + 1, &bytesWritten, NULL))
+                {
                     CloseHandle(hChildStdInWriteDup);
-                    return makeDcmnetCondition (DULC_CANNOTFORK, OF_error, "error while writing to anonymous pipe");
+                    return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, "Multi-Process Error: Writing to anonymous pipe failed");
                 }
 
                 // return OF_ok status code DULC_FORKEDCHILD with descriptive text
-                char buf4[256];
-                sprintf(buf4, "new child process started with pid %i, socketHandle %i",
-                  OFstatic_cast(int, pi.dwProcessId),
-                  (int)childSocketHandle);
-                return makeDcmnetCondition (DULC_FORKEDCHILD, OF_ok, buf4);
+                OFOStringStream stream;
+                stream << "New child process started with pid " << OFstatic_cast(int, pi.dwProcessId)
+                       << ", socketHandle " << OFstatic_cast(int, childSocketHandle) << OFStringStream_ends;
+                OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+                return makeDcmnetCondition(DULC_FORKEDCHILD, OF_ok, msg.c_str());
             }
             else
             {
@@ -1752,7 +1772,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 CloseHandle(hParentProcessHandle);
                 CloseHandle(pi.hProcess);
                 CloseHandle(pi.hThread);
-                return makeDcmnetCondition (DULC_CANNOTFORK, OF_error, "error while duplicating socket handle");
+                return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, "Multi-Process Error: Duplicating socket handle failed");
             }
         }
     }
@@ -1761,19 +1781,22 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #ifndef HAVE_GUSI_H
     /* GUSI always returns an error for setsockopt() */
     sockarg.l_onoff = 0;
-    if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg,
-                   sizeof(sockarg)) < 0)
+    if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0)
     {
-        char buf4[256];
-        sprintf(buf4, "TCP Initialization Error: %s, setsockopt failed on socket %d", strerror(errno), sock);
-        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf4);
+        char buf[256];
+        OFOStringStream stream;
+        stream << "TCP Initialization Error: " << OFStandard::strerror(errno, buf, 256)
+               << ", setsockopt failed on socket " << sock << OFStringStream_ends;
+        OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
     reuse = 1;
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
     {
-        char buf1[256];
-        sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
-        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
+        char buf[256];
+        OFString msg = "TCP Initialization Error: ";
+        msg += OFStandard::strerror(errno, buf, 256);
+        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
 #endif
     setTCPBufferLength(sock);
@@ -1796,9 +1819,10 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     if (tcpNoDelay) {
         if (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&tcpNoDelay, sizeof(tcpNoDelay)) < 0)
         {
-          char buf1[256];
-          sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
-          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
+            char buf[256];
+            OFString msg = "TCP Initialization Error: ";
+            msg += OFStandard::strerror(errno, buf, 256);
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
     }
 #endif // DONT_DISABLE_NAGLE_ALGORITHM
@@ -1843,7 +1867,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         // enforce access control using the TCP wrapper - see hosts_access(5).
 
         // if reverse DNS lookup is disabled, use default value
-        if (client_dns_name.size() == 0) client_dns_name = STRING_UNKNOWN;
+        if (client_dns_name.empty()) client_dns_name = STRING_UNKNOWN;
 
         struct request_info request;
         request_init(&request, RQ_CLIENT_NAME, client_dns_name.c_str(), 0);
@@ -1859,9 +1883,11 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #else
           (void) close(sock);
 #endif
-          char buf[1024];
-          sprintf(buf, "TCP wrapper: denied connection from %s (%s)", client_dns_name.c_str(), client_ip_address);
-          return makeDcmnetCondition(DULC_TCPWRAPPER, OF_error, buf);
+          OFOStringStream stream;
+          stream << "TCP wrapper: denied connection from " << client_dns_name
+                 << " (" << client_ip_address << ")" << OFStringStream_ends;
+          OFSTRINGSTREAM_GETOFSTRING(stream, msg)
+          return makeDcmnetCondition(DULC_TCPWRAPPER, OF_error, msg.c_str());
         }
     }
 #endif
@@ -1882,17 +1908,18 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #else
       (void) close(sock);
 #endif
-      char buf1[256];
-      sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
-      return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
+      char buf[256];
+      OFString msg = "TCP Initialization Error: ";
+      msg += OFStandard::strerror(errno, buf, sizeof(buf));
+      return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
 
     DcmTransportLayerStatus tcsStatus;
     if (TCS_ok != (tcsStatus = (*association)->connection->serverSideHandshake()))
     {
-      char buf[4096]; // error message could be long
-      sprintf(buf, "DUL secure transport layer: %s", (*association)->connection->errorString(tcsStatus));
-      return makeDcmnetCondition(DULC_TLSERROR, OF_error, buf);
+      OFString msg = "DUL secure transport layer: ";
+      msg += (*association)->connection->errorString(tcsStatus);
+      return makeDcmnetCondition(DULC_TLSERROR, OF_error, msg.c_str());
     }
 
     return EC_Normal;
@@ -1927,9 +1954,9 @@ createNetworkKey(const char *mode,
         strcmp(mode, AE_ACCEPTOR) != 0 &&
         strcmp(mode, AE_BOTH) != 0)
     {
-        char buf1[4096];
-        sprintf(buf1, "Unrecognized Network Mode: %s", mode);
-        return makeDcmnetCondition(DULC_ILLEGALPARAMETER, OF_error, buf1);
+        OFString msg = "Unrecognized Network Mode: ";
+        msg += mode;
+        return makeDcmnetCondition(DULC_ILLEGALPARAMETER, OF_error, msg.c_str());
     }
     *key = (PRIVATE_NETWORKKEY *) malloc(sizeof(PRIVATE_NETWORKKEY));
     if (*key == NULL) return EC_MemoryExhausted;
@@ -2016,9 +2043,10 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         (*key)->networkSpecific.TCP.listenSocket = socket(AF_INET, SOCK_STREAM, 0);
         if ((*key)->networkSpecific.TCP.listenSocket < 0)
         {
-          char buf1[256];
-          sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
-          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
+          char buf[256];
+          OFString msg = "TCP Initialization Error: ";
+          msg += OFStandard::strerror(errno, buf, sizeof(buf));
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
         reuse = 1;
 #ifdef HAVE_GUSI_H
@@ -2027,9 +2055,10 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         if (setsockopt((*key)->networkSpecific.TCP.listenSocket,
             SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
         {
-          char buf2[256];
-          sprintf(buf2, "TCP Initialization Error: %s", strerror(errno));
-          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf2);
+          char buf[256];
+          OFString msg = "TCP Initialization Error: ";
+          msg += OFStandard::strerror(errno, buf, sizeof(buf));
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
 #endif
 /* Name socket using wildcards */
@@ -2039,18 +2068,20 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         if (bind((*key)->networkSpecific.TCP.listenSocket,
                  (struct sockaddr *) & server, sizeof(server)))
         {
-          char buf3[256];
-          sprintf(buf3, "TCP Initialization Error: %s", strerror(errno));
-          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf3);
+          char buf[256];
+          OFString msg = "TCP Initialization Error: ";
+          msg += OFStandard::strerror(errno, buf, sizeof(buf));
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
 /* Find out assigned port number and print it out */
         length = sizeof(server);
         if (getsockname((*key)->networkSpecific.TCP.listenSocket,
                         (struct sockaddr *) & server, &length))
         {
-          char buf4[256];
-          sprintf(buf4, "TCP Initialization Error: %s", strerror(errno));
-          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf4);
+          char buf[256];
+          OFString msg = "TCP Initialization Error: ";
+          msg += OFStandard::strerror(errno, buf, sizeof(buf));
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
 #ifdef HAVE_GUSI_H
         /* GUSI always returns an error for setsockopt(...) */
@@ -2059,9 +2090,10 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         if (setsockopt((*key)->networkSpecific.TCP.listenSocket,
            SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0)
         {
-          char buf5[256];
-          sprintf(buf5, "TCP Initialization Error: %s", strerror(errno));
-          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf5);
+          char buf[256];
+          OFString msg = "TCP Initialization Error: ";
+          msg += OFStandard::strerror(errno, buf, sizeof(buf));
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
 #endif
         listen((*key)->networkSpecific.TCP.listenSocket, PRV_LISTENBACKLOG);
@@ -2664,6 +2696,13 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.85  2010-06-02 15:47:56  joergr
+** Replaced calls to strerror() by new helper function OFStandard::strerror()
+** which results in using the thread safe version of strerror() if available.
+** Replaced use of sprintf() on a static char array by class OFString or
+** OFOStringStream respectively.
+** Slightly modified some condition texts for reasons of consistency.
+**
 ** Revision 1.84  2009-12-08 16:39:21  joergr
 ** Fixed use of wrong logging macro. Fixed inconsistent source code formatting.
 **
