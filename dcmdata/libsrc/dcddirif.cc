@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2009, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 13:30:51 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2010-06-02 12:41:38 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -298,7 +298,7 @@ static OFString &constructTagNameWithSQ(DcmObject *object,
     {
         /* create text */
         OFOStringStream oss;
-        oss << constructTagName(fromSequence, tempStr) << "[" << itemNumber << "]";
+        oss << constructTagName(fromSequence, tempStr) << "[" << itemNumber << "]" << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(oss, tmpString)
         tagName = tmpString;
         OFSTRINGSTREAM_FREESTR(tmpString)
@@ -4874,6 +4874,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.34  2010-06-02 12:41:38  joergr
+ *  Appended missing OFStringStream_ends to the end of output streams because
+ *  this is required when OFOStringStream is mapped to ostrstream.
+ *
  *  Revision 1.33  2009-11-25 13:30:51  joergr
  *  Adapted code for new approach to access individual frames of a DICOM image.
  *

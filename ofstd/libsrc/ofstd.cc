@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-20 09:20:32 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2010-06-02 12:36:48 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -812,6 +812,7 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
     /* call stream variant of convert to markup */
     if (OFStandard::convertToMarkupStream(stream, sourceString, convertNonASCII, markupMode, newlineAllowed).good())
     {
+        stream << OFStringStream_ends;
         /* convert string stream into a character string */
         OFSTRINGSTREAM_GETSTR(stream, buffer_str)
         markupString.assign(buffer_str);
@@ -905,6 +906,7 @@ const OFString &OFStandard::encodeBase64(const unsigned char *data,
     /* call stream variant of base64 encoder */
     if (OFStandard::encodeBase64(stream, data, length, width).good())
     {
+        stream << OFStringStream_ends;
         /* convert string stream into a character string */
         OFSTRINGSTREAM_GETSTR(stream, buffer_str)
         result.assign(buffer_str);
@@ -1827,6 +1829,10 @@ long OFStandard::getProcessID()
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.59  2010-06-02 12:36:48  joergr
+ *  Appended missing OFStringStream_ends to the end of output streams because
+ *  this is required when OFOStringStream is mapped to ostrstream.
+ *
  *  Revision 1.58  2010-05-20 09:20:32  joergr
  *  Added new method for determining the size of a given file (in bytes).
  *

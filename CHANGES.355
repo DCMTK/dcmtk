@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.02 (riesmeier)
+
+- Appended missing OFStringStream_ends to the end of output streams because
+  this is required when OFOStringStream is mapped to ostrstream.
+  Affects: dcmdata/libsrc/dcddirif.cc
+           dcmpstat/tests/msgserv.cc
+           dcmtls/libsrc/tlslayer.cc
+           dcmtls/libsrc/tlstrans.cc
+           dcmwlm/libsrc/wlmactmg.cc
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2010.06.01 (onken)
 
 - Added some comments and line breaks (improved code readability)
