@@ -1,38 +1,38 @@
 /*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
-**  
+**
 **  This software and supporting documentation were
-**  developed by 
-**  
+**  developed by
+**
 **    Institut OFFIS
 **    Bereich Kommunikationssysteme
 **    Westerstr. 10-12
 **    26121 Oldenburg, Germany
-**    
+**
 **    Fachbereich Informatik
 **    Abteilung Prozessinformatik
-**    Carl von Ossietzky Universitaet Oldenburg 
+**    Carl von Ossietzky Universitaet Oldenburg
 **    Ammerlaender Heerstr. 114-118
 **    26111 Oldenburg, Germany
-**    
+**
 **    CERIUM
 **    Laboratoire SIM
 **    Faculte de Medecine
 **    2 Avenue du Pr. Leon Bernard
 **    35043 Rennes Cedex, France
-**  
-**  for CEN/TC251/WG4 as a contribution to the Radiological 
-**  Society of North America (RSNA) 1993 Digital Imaging and 
+**
+**  for CEN/TC251/WG4 as a contribution to the Radiological
+**  Society of North America (RSNA) 1993 Digital Imaging and
 **  Communications in Medicine (DICOM) Demonstration.
-**  
+**
 **  THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER OFFIS,
-**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING 
-**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR 
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER 
-**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE 
-**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE   
-**  IS WITH THE USER. 
-**  
+**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING
+**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR
+**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER
+**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE
+**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE
+**  IS WITH THE USER.
+**
 **  Copyright of the software and supporting documentation
 **  is, unless otherwise stated, jointly owned by OFFIS,
 **  Oldenburg University and CERIUM and free access is hereby
@@ -41,32 +41,32 @@
 **  software. However, any distribution of this software
 **  source code or supporting documentation or derivative
 **  works (source code and supporting documentation) must
-**  include the three paragraphs of this copyright notice. 
-** 
+**  include the three paragraphs of this copyright notice.
+**
 */
 /*
-** 
-** Author:Andrew Hewett		Created: 11-08-93 
+**
+** Author:Andrew Hewett		Created: 11-08-93
 ** 	   Oldenburg University
 **	   Germany
 **
 ** Module: dcompat.cc
-** 
+**
 ** Purpose:
 ** This is the place to declare compatability routines
-** which can be missing on some systems.  
+** which can be missing on some systems.
 **
 ** Base Reference System is SUNOS 4.1.3
 **
-** This include file is automatically included by dicom.h 
+** This include file is automatically included by dicom.h
 **
-** Module Prefix: none 
-** 
+** Module Prefix: none
 **
-** Last Update:		$Author: uli $
-** Update Date:		$Date: 2010-01-20 13:49:47 $
+**
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 2010-06-02 14:52:03 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.32 $
+** CVS/RCS Revision:	$Revision: 1.33 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -172,7 +172,7 @@ int dcmtk_flock(int fd, int operation)
 #endif
   OVERLAPPED overl;
   OFBitmanipTemplate<char>::zeroMem((char *)&overl, sizeof(overl));
-  
+
   if (operation==LOCK_SH)
   {
     if (GetVersion() < 0x80000000) // Windows NT
@@ -215,7 +215,7 @@ void dcmtk_plockerr(const char *s)
 {
   LPVOID lpMsgBuf=NULL;
 
-  FormatMessage( 
+  FormatMessage(
     FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
     NULL,
     GetLastError(),
@@ -225,7 +225,7 @@ void dcmtk_plockerr(const char *s)
   if (lpMsgBuf && s)
       DCMNET_ERROR(s << ": " << (const char*)lpMsgBuf);
   LocalFree(lpMsgBuf);
-} 
+}
 
 #else /* USE__LOCKING */
 
@@ -247,12 +247,12 @@ int dcmtk_flock(int fd, int operation)
     int mode = 0;
 
     /* we only have exclusive lock using the windows _locking function */
-    if (operation & LOCK_SH) mode = _LK_LOCK; /* shared lock */	
+    if (operation & LOCK_SH) mode = _LK_LOCK; /* shared lock */
     if (operation & LOCK_EX) mode = _LK_LOCK; /* exclusive lock */
     if (operation & LOCK_UN) mode = _LK_UNLCK; /* unlock */
     if (operation & LOCK_NB) mode = _LK_NBLCK; /* non-blocking */
     int status = _locking(fd, mode, maxSize);
-    
+
     /* reset file point back to original position */
     pos = lseek(fd, originalPosition, SEEK_SET);
     if (pos < 0) return pos;
@@ -261,7 +261,8 @@ int dcmtk_flock(int fd, int operation)
 
 void dcmtk_plockerr(const char *s)
 {
-  DCMNET_ERROR(s << ": " << strerror(errno));
+  char buf[256];
+  DCMNET_ERROR(s << ": " << OFStandard::strerror(errno, buf, sizeof(buf)));
 }
 
 #endif /* USE__LOCKING */
@@ -301,7 +302,7 @@ int dcmtk_flock(int fd, int operation)
     	/* blocking */
 	cmd = F_SETLKW;
     }
-    
+
 #if SIZEOF_VOID_P == SIZEOF_INT
   /* some systems, e.g. NeXTStep, need the third argument
    * for fcntl calls to be casted to int. Other systems,
@@ -319,7 +320,8 @@ int dcmtk_flock(int fd, int operation)
 
 void dcmtk_plockerr(const char *s)
 {
-  DCMNET_ERROR(s << ": " << strerror(errno));
+  char buf[256];
+  DCMNET_ERROR(s << ": " << OFStandard::strerror(errno, buf, sizeof(buf)));
 }
 
 #endif /* _WIN32 */
@@ -328,7 +330,7 @@ void dcmtk_plockerr(const char *s)
 
 #ifndef HAVE_GETHOSTNAME
 /*
-** Use the SYSV uname function (if we have it) 
+** Use the SYSV uname function (if we have it)
 */
 #ifdef HAVE_UNAME
 int gethostname(char* name, int namelen);
@@ -360,7 +362,7 @@ int access(const char* path, int /* amode */)
     struct stat buf;
 
     rc = stat(path, &buf);
-    
+
     /* WARNING
     ** on the macintosh if a file is there we can do anything with it except
     ** if it is locked or on a read only filesystem.  Trying to find out about
@@ -374,6 +376,9 @@ int access(const char* path, int /* amode */)
 
 
 #ifndef HAVE_STRERROR
+
+#warning Your system does not seem to have the strerror() function
+
 /*
  * strerror does not appear to be available on SunOs 4.1.3
  */
@@ -381,7 +386,7 @@ char *strerror(int errornum)
 {
     static char string[256];
     char *s = NULL;
-    /* 
+    /*
      * These are not in the system include files,
      * declare them here.
      */
@@ -390,7 +395,7 @@ char *strerror(int errornum)
 
     string[0] = '\0';
     if (errornum < 0 || errornum >= sys_nerr) {
-        sprintf(string,"Error number: %d", errornum);
+        sprintf(string, "Error number: %d", errornum);
 	s = string;
     } else {
         s = sys_errlist[errornum];
@@ -402,7 +407,7 @@ char *strerror(int errornum)
 
 
 #ifndef HAVE_TEMPNAM
-/* 
+/*
  * These functions are not present on NeXTs but are used by the
  * DB module.
  */
@@ -443,7 +448,7 @@ tempnam(char *dir, char *pfx)
     /* SUNOS Compatability: take the first 5 characters of prefix (pfx) */
     bzero(prefix, sizeof(prefix));
     strncpy(prefix, pfx, 5);
-    /* 
+    /*
      * Find a suitable name.
      * Use at most 14 characters for filename component of
      * path.  The last 5 characters use the process id, the middle
@@ -451,13 +456,13 @@ tempnam(char *dir, char *pfx)
      * note will recycle after about 65536 times
      */
 
-    mix++;	/* will recycle */    
+    mix++;	/* will recycle */
 
-    sprintf(name, "%s%c%s%04x%05d", tmpdir, PATH_SEPARATOR, prefix, 
+    sprintf(name, "%s%c%s%04x%05d", tmpdir, PATH_SEPARATOR, prefix,
 	(unsigned int)mix, (int)OFStandard::getProcessID());
 
-    return name;    
-} 
+    return name;
+}
 
 #endif /* ! HAVE_TEMPNAM */
 
@@ -465,6 +470,11 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
+** Revision 1.33  2010-06-02 14:52:03  joergr
+** Replaced calls to strerror() by new helper function OFStandard::strerror()
+** which results in using the thread safe version of strerror() if available.
+** Added #warning statement for systems where HAVE_STRERROR is not defined.
+**
 ** Revision 1.32  2010-01-20 13:49:47  uli
 ** Added OFStandard::getProcessID().
 **
