@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSConnection
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-04-29 16:18:51 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-02 12:32:58 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,7 +147,7 @@ DcmTransportLayerStatus DcmTLSConnection::renegotiate(const char *newSuite)
   if (tlsConnection == NULL) return TCS_noConnection;
   if (newSuite == NULL) return TCS_illegalCall;
   DcmTransportLayerStatus result = TCS_ok;
-  
+
   switch (SSL_get_error(tlsConnection, SSL_set_cipher_list(tlsConnection, newSuite)))
   {
     case SSL_ERROR_NONE:
@@ -296,6 +296,7 @@ OFString& DcmTLSConnection::dumpConnectionParameters(OFString& str)
          << ", encryption: " << SSL_CIPHER_get_bits(SSL_get_current_cipher(tlsConnection), NULL) << " bits" << OFendl
          << DcmTLSTransportLayer::dumpX509Certificate(SSL_get_peer_certificate(tlsConnection)) << OFendl;
   // out << "Certificate verification: " << X509_verify_cert_error_string(SSL_get_verify_result(tlsConnection)) << OFendl;
+  stream << OFStringStream_ends;
   OFSTRINGSTREAM_GETSTR(stream, res)
   str = res;
   OFSTRINGSTREAM_FREESTR(res)
@@ -317,7 +318,7 @@ const char *DcmTLSConnection::errorString(DcmTransportLayerStatus code)
       {
         const char *result = ERR_reason_error_string(lastError);
         if (result) return result;
-      } 
+      }
       return "unspecified TLS error";
       /* break; */
     case TCS_illegalCall:
@@ -332,7 +333,7 @@ const char *DcmTLSConnection::errorString(DcmTransportLayerStatus code)
 
 #else  /* WITH_OPENSSL */
 
-/* make sure that the object file is not completely empty if compiled 
+/* make sure that the object file is not completely empty if compiled
  * without OpenSSL because some linkers might fail otherwise.
  */
 void tlstrans_dummy_function()
@@ -346,6 +347,10 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
+ *  Revision 1.15  2010-06-02 12:32:58  joergr
+ *  Appended missing OFStringStream_ends to the end of output streams because
+ *  this is required when OFOStringStream is mapped to ostrstream.
+ *
  *  Revision 1.14  2010-04-29 16:18:51  onken
  *  Added debug message noting the initiation of a TLS client handshake.
  *

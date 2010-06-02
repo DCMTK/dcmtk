@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2009, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSTransportLayer
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-22 11:39:55 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-02 12:32:58 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -467,7 +467,7 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
          << "  Issued by    : " << certIssuerName << OFendl
          << "  Serial no.   : " << certSerialNumber << OFendl
          << "  Validity     : not before " << certValidNotBefore << ", not after " << certValidNotAfter << OFendl
-         << "  Public key   : " << certPubKeyType << ", " << certPubKeyBits << " bits" << OFendl;
+         << "  Public key   : " << certPubKeyType << ", " << certPubKeyBits << " bits" << OFendl << OFStringStream_ends;
     OFSTRINGSTREAM_GETOFSTRING(out, ret)
     return ret;
   } else {
@@ -489,6 +489,10 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
+ *  Revision 1.17  2010-06-02 12:32:58  joergr
+ *  Appended missing OFStringStream_ends to the end of output streams because
+ *  this is required when OFOStringStream is mapped to ostrstream.
+ *
  *  Revision 1.16  2010-02-22 11:39:55  uli
  *  Remove some unneeded includes.
  *

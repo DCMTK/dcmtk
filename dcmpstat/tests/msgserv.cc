@@ -22,8 +22,8 @@
  *  Purpose: Sample message server for class DVPSIPCClient
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-29 10:44:56 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2010-06-02 12:31:12 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -331,6 +331,7 @@ int main(int argc, char *argv[])
                 oss << "received unknown message type " << msg.getMessageType() << ", status: ";
                 if (msg.extractIntFromPayload(i)) oss << statusString(i) << OFendl; else oss << "(none)" << OFendl;
             }
+            oss << OFStringStream_ends;
             OFSTRINGSTREAM_GETSTR(oss, str);
             OFLOG_INFO(msgservLogger, str);
             OFSTRINGSTREAM_FREESTR(str);
@@ -366,6 +367,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
+ * Revision 1.17  2010-06-02 12:31:12  joergr
+ * Appended missing OFStringStream_ends to the end of output streams because
+ * this is required when OFOStringStream is mapped to ostrstream.
+ *
  * Revision 1.16  2010-04-29 10:44:56  joergr
  * Use printError() method for command line parsing errors only. In all other
  * cases use log output. Added flag for exclusive options to --help.

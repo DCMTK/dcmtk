@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-18 16:43:01 $
+ *  Update Date:      $Date: 2010-06-02 12:33:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1023,6 +1023,7 @@ static OFString AddStatusDetail( DcmDataset **statusDetail, const DcmElement *el
       log << "AddStatusDetail: unsupported status detail type: " << vr.getVRName() << OFendl;
       break;
   }
+  log << OFStringStream_ends;
   OFSTRINGSTREAM_GETOFSTRING(log, ret)
   return ret;
 }
@@ -1145,6 +1146,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.31  2010-06-02 12:33:33  joergr
+** Appended missing OFStringStream_ends to the end of output streams because
+** this is required when OFOStringStream is mapped to ostrstream.
+**
 ** Revision 1.30  2010-05-18 16:43:01  joergr
 ** Slightly modified log messages and log levels in order to be more consistent.
 ** Replaced '\n' by OFendl in log messages.
