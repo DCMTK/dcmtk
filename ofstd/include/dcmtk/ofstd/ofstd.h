@@ -22,8 +22,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-20 09:20:13 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2010-06-02 12:54:28 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,6 +132,20 @@ class OFStandard
       return my_strlcat(dst, src, siz);
 #endif
     }
+
+    /** convert a given error code to a string. This function wraps the various
+     *  approaches found on different systems. Internally, the standard function
+     *  strerror() or strerror_r() is used.
+     *  @param errnum error code to be converted
+     *  @param buf buffer which is used to store the result string (if supported)
+     *  @param buflen size if the buffer in bytes
+     *  @return pointer to string describing the error code. Please note that depending
+     *     on the implementation of the function used, the result may or may not be a
+     *     pointer to buf. The return value can also be NULL if the buffer is invalid.
+     */
+    static const char *strerror(const int errnum,
+                                char *buf,
+                                const size_t buflen);
 
     /** returns the upper-case version of a given string
      *  @param result string variable in which the result is stored
@@ -526,9 +540,9 @@ class OFStandard
      //@}
 
     /** makes the current process sleep until seconds seconds have
-     *  elapsed or a signal arrives which is not ignored.
+     *  elapsed or a signal arrives which is not ignored
      *  @param seconds number of seconds to sleep
-     *  @return Zero if the requested time has elapsed, or the number of seconds left to sleep.
+     *  @return zero if the requested time has elapsed, or the number of seconds left to sleep
      */
     static inline unsigned int sleep(unsigned int seconds)
     {
@@ -546,6 +560,11 @@ class OFStandard
      */
     static long getProcessID();
 
+     /** check whether the addition of two 32-bit integers yields in an overflow
+     *  @param summand1 first integer value to be added
+     *  @param summand2 second integer value to be added
+     *  @return OFTrue if an overflow occurred during the addition, OFFalse otherwise
+     */
     static inline OFBool check32BitAddOverflow(const Uint32 summand1,
                                                const Uint32 summand2)
     {
@@ -560,7 +579,7 @@ class OFStandard
      *  @param src source string, must not be NULL
      *  @param siz size of destination buffer
      *  @return the total length of the string the function tried to
-     *    create, i.e. strlen(src).
+     *    create, i.e. strlen(src)
      */
     static size_t my_strlcpy(char *dst, const char *src, size_t siz);
 
@@ -570,14 +589,14 @@ class OFStandard
      *  @param src source string, must not be NULL
      *  @param siz size of destination buffer
      *  @return the total length of the string the function tried to
-     *    create, i.e. the initial length of dst plus the length of src.
+     *    create, i.e. the initial length of dst plus the length of src
      */
     static size_t my_strlcat(char *dst, const char *src, size_t siz);
 
     /** makes the current process sleep until seconds seconds have
-     *  elapsed or a signal arrives which is not ignored.
+     *  elapsed or a signal arrives which is not ignored
      *  @param seconds number of seconds to sleep
-     *  @return Zero if the requested time has elapsed, or the number of seconds left to sleep.
+     *  @return zero if the requested time has elapsed, or the number of seconds left to sleep
      */
     static unsigned int my_sleep(unsigned int seconds);
 };
@@ -590,6 +609,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.41  2010-06-02 12:54:28  joergr
+ * Introduced new helper function strerror() which is used as a wrapper to the
+ * various approaches found on different systems.
+ *
  * Revision 1.40  2010-05-20 09:20:13  joergr
  * Added new method for determining the size of a given file (in bytes).
  *

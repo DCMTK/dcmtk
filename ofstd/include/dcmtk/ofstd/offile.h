@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2009, OFFIS
+ *  Copyright (C) 2006-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-04-26 12:22:30 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-02 12:55:30 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oftypes.h"    /* for class OFBool */
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
+#include "dcmtk/ofstd/ofstd.h"      /* for class OFStandard */
 
 #define INCLUDE_UNISTD
 #define INCLUDE_CSTDIO
@@ -701,24 +702,8 @@ public:
    */
   void getLastErrorString(OFString& s) const
   {
-#ifdef HAVE_PROTOTYPE_STRERROR_R
     char buf[1000];
-    buf[0] = 0; // be paranoid and initialize the buffer to empty string.
-
-    // two incompatible interfaces for strerror_r with different return types exist.
-#ifdef HAVE_CHARP_STRERROR_R
-    // we're using the GNU specific version that returns the result, which may
-    // or may not be a pointer to buf
-    s = strerror_r(lasterror_, buf, 1000);
-#else
-    // we're using the X/OPEN version that always stores the result in buf.
-    (void) strerror_r(lasterror_, buf, 1000);
-    s = buf;
-#endif
-#else
-    // we only have strerror() which is thread unsafe on Posix platforms, but thread safe on Windows.
-    s = STDIO_NAMESPACE strerror(lasterror_);
-#endif
+    s = OFStandard::strerror(lasterror_, buf, 1000);
   }
 
 // Cygwin does not support the wide character functions
@@ -854,6 +839,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.12  2010-06-02 12:55:30  joergr
+ * Introduced new helper function strerror() which is used as a wrapper to the
+ * various approaches found on different systems.
+ *
  * Revision 1.11  2010-04-26 12:22:30  uli
  * Fixed a some minor doxygen warnings.
  *

@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-02 12:36:48 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2010-06-02 12:56:54 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -296,6 +296,45 @@ size_t OFStandard::my_strlcat(char *dst, const char *src, size_t siz)
   return(dlen + (s - src));       /* count does not include NUL */
 }
 #endif /* HAVE_STRLCAT */
+
+
+#ifdef HAVE_PROTOTYPE_STRERROR_R
+/*
+ * convert a given error code to a string. This function wraps the various
+ * approaches found on different systems. Internally, the standard function
+ * strerror() or strerror_r() is used.
+ */
+const char *OFStandard::strerror(const int errnum,
+                                 char *buf,
+                                 const size_t buflen)
+{
+    const char *result = NULL;
+    if ((buf != NULL) && (buflen > 0))
+    {
+        // be paranoid and initialize the buffer to empty string
+        buf[0] = 0;
+        // two incompatible interfaces for strerror_r with different return types exist
+#ifdef HAVE_CHARP_STRERROR_R
+        // we're using the GNU specific version that returns the result, which may
+        // or may not be a pointer to buf
+        result = strerror_r(errnum, buf, buflen);
+#else
+        // we're using the X/OPEN version that always stores the result in buf
+        (void) strerror_r(errnum, buf, buflen);
+        result = buf;
+#endif
+    }
+    return result;
+}
+#else
+const char *OFStandard::strerror(const int errnum,
+                                 char * /*buf*/,
+                                 const size_t /*buflen*/)
+{
+    // we only have strerror() which is thread unsafe on Posix platforms, but thread safe on Windows
+    return STDIO_NAMESPACE strerror(errnum);
+}
+#endif
 
 
 OFString &OFStandard::toUpper(OFString &result,
@@ -1829,6 +1868,10 @@ long OFStandard::getProcessID()
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.60  2010-06-02 12:56:54  joergr
+ *  Introduced new helper function strerror() which is used as a wrapper to the
+ *  various approaches found on different systems.
+ *
  *  Revision 1.59  2010-06-02 12:36:48  joergr
  *  Appended missing OFStringStream_ends to the end of output streams because
  *  this is required when OFOStringStream is mapped to ostrstream.
