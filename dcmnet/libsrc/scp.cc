@@ -21,10 +21,10 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-04-29 16:14:56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-02 16:03:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/scp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -233,7 +233,7 @@ OFCondition DcmSCP::listen()
 #endif
     // Initialize network, i.e. create an instance of T_ASC_Network*.
   T_ASC_Network *m_net = NULL;
-  cond = ASC_initializeNetwork( NET_ACCEPTOR, (int)m_port, m_ACSETimeout, &m_net );
+  cond = ASC_initializeNetwork( NET_ACCEPTOR, OFstatic_cast(int, m_port), m_ACSETimeout, &m_net );
   if( cond.bad() ) return( cond );
 
 #if defined(HAVE_SETUID) && defined(HAVE_GETUID)
@@ -282,7 +282,7 @@ void DcmSCP::refuseAssociation( DcmRefuseReasonType reason )
 {
   if (m_assoc == NULL)
   {
-    DCMNET_WARN("refuseAssociation() called but actually no association running, ignoring");
+    DCMNET_WARN("DcmSCP::refuseAssociation() called but actually no association running, ignoring");
     return;
   }
 
@@ -366,7 +366,7 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
   }
 
   // Listen to a socket for timeout seconds and wait for an association request.
-  OFCondition cond = ASC_receiveAssociation( network, &m_assoc, m_maxPDU, NULL, NULL, OFFalse, DUL_NOBLOCK, OFstatic_cast(int,timeout) );
+  OFCondition cond = ASC_receiveAssociation( network, &m_assoc, m_maxPDU, NULL, NULL, OFFalse, DUL_NOBLOCK, OFstatic_cast(int, timeout) );
 
   // just return, if timeout occured (DUL_NOASSOCIATIONREQUEST)
   // or (WIN32) if dcmnet has started a child for us, to handle this
@@ -490,9 +490,9 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
 
   // Dump some debug information
   OFString tmpstr;
-  DCMNET_DEBUG("Association Acknowledged (Max Send PDV: )" << OFstatic_cast(Uint32, m_assoc->sendPDVLength));
+  DCMNET_INFO("Association Acknowledged (Max Send PDV: )" << OFstatic_cast(Uint32, m_assoc->sendPDVLength));
   if( ASC_countAcceptedPresentationContexts( m_assoc->params ) == 0 )
-    DCMNET_DEBUG("    (but no valid presentation contexts)");
+    DCMNET_INFO("    (but no valid presentation contexts)");
   DCMNET_DEBUG(ASC_dumpParameters(tmpstr, m_assoc->params, ASC_ASSOC_AC));
 
   // Depending on if this execution shall be limited to one process or not, spawn a sub-
@@ -506,9 +506,9 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
 #ifdef HAVE_FORK
   else
   {
-    COUT << "DcmSCP: Forking new child to handle connection" << OFendl;
+    DCMNET_DEBUG("DcmSCP: Forking new child to handle connection");
     // Spawn a sub-process to handle the association (i.e. handle the callers requests)
-    int pid = (int)(fork());
+    int pid = OFstatic_cast(int, fork());
     if( pid < 0 )
     {
       refuseAssociation(DCMSCP_CANNOT_FORK );
@@ -575,7 +575,7 @@ void DcmSCP::handleAssociation( )
 {
   if (m_assoc == NULL)
   {
-    DCMNET_WARN("refuseAssociation() called but SCP actually has no association running, ignoring");
+    DCMNET_WARN("DcmSCP::handleAssociation() called but SCP actually has no association running, ignoring");
     return;
   }
 
@@ -645,7 +645,7 @@ OFCondition DcmSCP::handleIncomingCommand(T_DIMSE_Message* msg,
        */
       DCMNET_ERROR("Cannot handle this kind of DIMSE message: ");
       OFString tmpstr;
-      DIMSE_dumpMessage(tmpstr, *msg, DIMSE_INCOMING);
+      DCMNET_ERROR(DIMSE_dumpMessage(tmpstr, *msg, DIMSE_INCOMING));
       cond = EC_IllegalCall; // TODO specific error
       break;
   }
@@ -660,7 +660,7 @@ OFCondition DcmSCP::handleEchoRequest(T_DIMSE_C_EchoRQ *req,
                                       T_ASC_PresentationContextID presId)
 {
   // Dump debug information
-  DCMNET_DEBUG("Received C-ECHO Request, MessageID " << OFstatic_cast(Uint16, req->MessageID));
+  DCMNET_INFO("Received C-ECHO Request: MsgID " << OFstatic_cast(Uint16, req->MessageID));
   DCMNET_DEBUG("Sending C-ECHO Response");
 
   // Send an echo response
@@ -746,7 +746,6 @@ void DcmSCP::removeProcessFromTable( int pid )
 
   // dump a warning if process could not be found in process table
   DCMNET_WARN("Could not find and delete process with ID " << pid << " from internal process table");
-
 }
 
 // ----------------------------------------------------------------------------
@@ -757,12 +756,12 @@ void DcmSCP::cleanChildren()
 #ifdef HAVE_WAITPID                                           // PLATFORMS THAT HAVE waitpid()
   int options = WNOHANG;
   int stat_loc;
-  int child=1;
+  int child = 1;
 
   while( child > 0 )
   {
     // determine status for child processes
-    child = (int)(waitpid(-1, &stat_loc, options));
+    child = OFstatic_cast(int, waitpid(-1, &stat_loc, options));
     if( child == 0 )
     {
       // child not yet finished
@@ -822,8 +821,8 @@ void DcmSCP::cleanChildren()
     }
   }
 #else                                                         // OTHER PLATFORMS
-// for other platforms without waitpid() and without wait3() we
-// don't know how to cleanup after children. Dump an error message.
+  // for other platforms without waitpid() and without wait3() we
+  // don't know how to cleanup after children. Dump an error message.
   DCMNET_WARN("Don't know how to wait for child processes on this platform (ignoring)");
 #endif
 }
@@ -832,7 +831,7 @@ void DcmSCP::cleanChildren()
 // ----------------------------------------------------------------------------
 
 // static void addStatusDetail(DcmDataset **statusDetail,
-//                            const DcmElement *elem)
+//                             const DcmElement *elem)
 //{
 //  DCMNET_TRACE("Add element to status detail");
 //  // If no element was passed, return to the caller.
@@ -1046,7 +1045,7 @@ OFBool DcmSCP::isConnected() const
 
 OFString DcmSCP::getPeerAETitle() const
 {
-  if  (m_assoc == NULL)
+  if (m_assoc == NULL)
     return "";
   return m_assoc->params->DULparams.callingAPTitle;
 }
@@ -1055,7 +1054,7 @@ OFString DcmSCP::getPeerAETitle() const
 
 OFString DcmSCP::getCalledAETitle() const
 {
-  if  (m_assoc == NULL)
+  if (m_assoc == NULL)
     return "";
   return m_assoc->params->DULparams.calledAPTitle;
 }
@@ -1132,7 +1131,7 @@ OFCondition DcmSCP::setAndCheckAssociationProfile(const OFString& profileName)
   const char *c = profileName.c_str();
   while (*c)
   {
-    if (! isspace(*c)) mangledName += (char) (toupper(*c));
+    if (! isspace(*c)) mangledName += OFstatic_cast(char, toupper(*c));
     ++c;
   }
   /* check profile */
@@ -1160,7 +1159,6 @@ OFCondition DcmSCP::addAbstractSyntax(const OFString& abstractSyntaxUID,
 {
   if (profile.empty())
     return EC_IllegalParameter;
-
 
   const OFString DCMSCP_TS_KEY("DCMSCP_GEN_TS_KEY");
   const OFString DCMSCP_PC_KEY("DCMSCP_GEN_PC_KEY");
@@ -1190,7 +1188,7 @@ OFCondition DcmSCP::addAbstractSyntax(const OFString& abstractSyntaxUID,
   OFString mangledName;
   while (*c)
   {
-    if (! isspace(*c)) mangledName += (char) (toupper(*c));
+    if (! isspace(*c)) mangledName += OFstatic_cast(char, toupper(*c));
     ++c;
   }
   if (result.good() && !m_assocConfig->isKnownProfile(mangledName.c_str()))
@@ -1229,11 +1227,9 @@ void DcmSCP::notifyAssociationRequest(const T_ASC_Parameters& params,
                                       DcmSCPActionType& desiredAction)
 {
   // Dump some information if required
-  DCMNET_DEBUG("++++++++++++++++++++++++++++++++++++++++" << OFendl
-                << "Association Received "
-                << params.DULparams.callingPresentationAddress << ": "
-                << params.DULparams.callingAPTitle << " -> "
-                << params.DULparams.calledAPTitle);
+  DCMNET_INFO("Association Received " << params.DULparams.callingPresentationAddress << ": "
+                                      << params.DULparams.callingAPTitle << " -> "
+                                      << params.DULparams.calledAPTitle);
 
     // Dump more information if required
   OFString msg;
@@ -1244,28 +1240,28 @@ void DcmSCP::notifyAssociationRequest(const T_ASC_Parameters& params,
 
 void DcmSCP::notifyAssociationAcknowledge()
 {
-  DCMNET_DEBUG("Association acknowledged");
+  DCMNET_INFO("Association Acknowledged");
 }
 
 // ----------------------------------------------------------------------------
 
 void DcmSCP::notifyReleaseRequest()
 {
-  DCMNET_DEBUG("Received Association Release Request");
+  DCMNET_INFO("Received Association Release Request");
 }
 
 // ----------------------------------------------------------------------------
 
 void DcmSCP::notifyAbortRequest()
 {
-  DCMNET_DEBUG("DcmSCP: Received Association Abort Request");
+  DCMNET_INFO("DcmSCP: Received Association Abort Request");
 }
 
 // ----------------------------------------------------------------------------
 
 void DcmSCP::notifyAssociatonTermination()
 {
-  DCMNET_DEBUG("DcmSCP: Association Terminated");
+  DCMNET_INFO("DcmSCP: Association Terminated");
 }
 
 // ----------------------------------------------------------------------------
@@ -1278,6 +1274,10 @@ void DcmSCP::notifyDIMSEError(const OFCondition& cond)
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.5  2010-06-02 16:03:38  joergr
+** Slightly modified some log messages and levels for reasons of consistency.
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
 ** Revision 1.4  2010-04-29 16:14:56  onken
 ** Added function for responding to storage requests to SCP class.
 **

@@ -21,6 +21,14 @@ Changes between releases are documented here.
 - Slightly modified some condition texts for reasons of consistency.
   Affects: dcmnet/libsrc/dul.cc
 
+- Slightly modified some log messages and levels for reasons of consistency.
+  Affects: dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+
+- Use type cast macros (e.g. OFstatic_cast) where appropriate.
+  Affects: dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+
 - Added #warning statement for systems where HAVE_STRERROR is not defined.
   Affects: dcmnet/libsrc/dcompat.cc
 

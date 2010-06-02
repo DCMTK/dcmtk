@@ -21,10 +21,10 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-04-29 16:13:25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-02 16:01:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/scu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,7 @@ OFCondition DcmSCU::initNetwork()
   /* Since the underlying dcmnet structures reserve only 64 bytes for peer
      as well as local host name, we check here for buffer overflow.
    */
-  if ( (m_peer.length() + 5 /* max 65535 */) +1 /* for ":" */ > 63)
+  if ( (m_peer.length() + 5 /* max 65535 */) + 1 /* for ":" */ > 63)
   {
     DCMNET_ERROR("Maximum length of peer host name '" << m_peer << "' is longer than maximum of 57 characters");
     return EC_IllegalCall;
@@ -140,7 +140,7 @@ OFCondition DcmSCU::initNetwork()
       const char *c = m_assocConfigProfile.c_str();
       while (*c)
       {
-        if (! isspace(*c)) profileName += (char) (toupper(*c));
+        if (! isspace(*c)) profileName += OFstatic_cast(char, toupper(*c));
         ++c;
       }
 
@@ -204,7 +204,7 @@ OFCondition DcmSCU::initNetwork()
     // goto next free nr, only odd presentation context numbers permitted
     nextFreePresID += 2;
   }
-  
+
   numContexts = ASC_countPresentationContexts(m_params);
   if (numContexts == 0)
   {
@@ -226,7 +226,7 @@ OFCondition DcmSCU::negotiateAssociation()
 
   /* create association, i.e. try to establish a network connection to another */
   /* DICOM application. This call creates an instance of T_ASC_Association*. */
-  DCMNET_DEBUG("Requesting Association");
+  DCMNET_INFO("Requesting Association");
   OFCondition cond = ASC_requestAssociation(m_net, m_params, &m_assoc);
   if (cond.bad()) {
     if (cond == DUL_ASSOCIATIONREJECTED)
@@ -234,30 +234,29 @@ OFCondition DcmSCU::negotiateAssociation()
       T_ASC_RejectParameters rej;
 
       ASC_getRejectParameters(m_params, &rej);
-      DCMNET_DEBUG("Association rejected");
-      ASC_printRejectParameters(msg, &rej);
+      DCMNET_DEBUG("Association Rejected:" << OFendl << ASC_printRejectParameters(msg, &rej));
       return cond;
     }
     else
     {
-      DCMNET_DEBUG("Association Request Failed:\n" << DimseCondition::dump(msg,cond));
+      DCMNET_DEBUG("Association Request Failed: " << DimseCondition::dump(msg, cond));
       return cond;
     }
   }
 
   /* dump the presentation contexts which have been accepted/refused */
-  DCMNET_DEBUG("Association Parameters Negotiated:\n" << ASC_dumpParameters(msg, m_params, ASC_ASSOC_AC));
+  DCMNET_DEBUG("Association Parameters Negotiated:" << OFendl << ASC_dumpParameters(msg, m_params, ASC_ASSOC_AC));
 
   /* count the presentation contexts which have been accepted by the SCP */
   /* If there are none, finish the execution */
   if (ASC_countAcceptedPresentationContexts(m_params) == 0)
   {
-    DCMNET_DEBUG("No acceptable presentation contexts found");
+    DCMNET_ERROR("No Acceptable Presentation Contexts");
     return EC_IllegalCall;
   }
 
   /* dump general information concerning the establishment of the network connection if required */
-  DCMNET_DEBUG("Association Accepted (Max Send PDV: " << (unsigned long)(m_assoc->sendPDVLength));
+  DCMNET_INFO("Association Accepted (Max Send PDV: " << OFstatic_cast(unsigned long, m_assoc->sendPDVLength));
   return EC_Normal;
 }
 
@@ -340,7 +339,6 @@ Uint16 DcmSCU::nextMessageID()
 }
 
 
-
 void DcmSCU::closeAssociation(const OFCondition& abortOrReleaseRequested)
 {
   OFCondition cond;
@@ -350,53 +348,52 @@ void DcmSCU::closeAssociation(const OFCondition& abortOrReleaseRequested)
   if (abortOrReleaseRequested == EC_Normal)
   {
     /* release association */
-    DCMNET_DEBUG("Releasing association");
+    DCMNET_INFO("Releasing Association");
     cond = ASC_releaseAssociation(m_assoc);
     if (cond.bad())
     {
-      DCMNET_ERROR("Association release failed :\n" << DimseCondition::dump(msg, cond));
+      DCMNET_ERROR("Association Release Failed: " << DimseCondition::dump(msg, cond));
       return;
     }
   }
   else if (abortOrReleaseRequested == DUL_PEERREQUESTEDRELEASE)
   {
-    DCMNET_ERROR("Protocol Error: peer requested release (Aborting)");
+    DCMNET_ERROR("Protocol Error: Peer requested release (Aborting)");
     cond = ASC_abortAssociation(m_assoc);
-    if (cond.bad()) 
+    if (cond.bad())
     {
-      DCMNET_ERROR("Association abort failed: " << cond.text() << ": " << DimseCondition::dump(msg, cond));
+      DCMNET_ERROR("Association Abort Failed: " << cond.text() << ": " << DimseCondition::dump(msg, cond));
     }
   }
   else if (abortOrReleaseRequested == DUL_PEERABORTEDASSOCIATION)
   {
-    DCMNET_DEBUG("Peer Aborted Association");
+    DCMNET_INFO("Peer Aborted Association");
   }
   else
   {
-    DCMNET_ERROR("DcmSCU failed");
-    DCMNET_ERROR(DimseCondition::dump(msg, abortOrReleaseRequested));
-    DCMNET_DEBUG("Aborting Association");
+    DCMNET_ERROR("DcmSCU Failed: " << DimseCondition::dump(msg, abortOrReleaseRequested));
+    DCMNET_INFO("Aborting Association");
     cond = ASC_abortAssociation(m_assoc);
-    if (cond.bad()) 
+    if (cond.bad())
     {
-      DCMNET_ERROR("Association Abort Failed:" << DimseCondition::dump(msg, cond));
+      DCMNET_ERROR("Association Abort Failed: " << DimseCondition::dump(msg, cond));
     }
   }
 
   /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
   /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
   cond = ASC_destroyAssociation(&m_assoc);
-  if (cond.bad()) 
+  if (cond.bad())
   {
-    DCMNET_ERROR("Unable to clean up internal association structures" << DimseCondition::dump(msg, cond));
+    DCMNET_ERROR("Unable to clean up internal association structures: " << DimseCondition::dump(msg, cond));
   }
 
   /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
   /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
   cond = ASC_dropNetwork(&m_net);
-  if (cond.bad()) 
+  if (cond.bad())
   {
-    DCMNET_ERROR("Unable to clean up internal network structures" << DimseCondition::dump(msg, cond));  
+    DCMNET_ERROR("Unable to clean up internal network structures: " << DimseCondition::dump(msg, cond));
   }
 
 #ifdef HAVE_WINSOCK_H
@@ -419,7 +416,7 @@ OFCondition DcmSCU::sendECHORequest( const T_ASC_PresentationContextID& presID )
     pcid = findPresContID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax);
   if (pcid == 0)
   {
-    DCMNET_ERROR("No presentation context found for sending C-ECHO with SOP Class/TS: " 
+    DCMNET_ERROR("No presentation context found for sending C-ECHO with SOP Class / Transfer Syntax: "
       << dcmFindNameOfUID(UID_VerificationSOPClass) << "/"
       << DcmXfer(UID_LittleEndianImplicitTransferSyntax).getXferName());
     return EC_IllegalCall;
@@ -429,13 +426,13 @@ OFCondition DcmSCU::sendECHORequest( const T_ASC_PresentationContextID& presID )
   Uint16 status;
   cond = DIMSE_echoUser(m_assoc, nextMessageID(), m_blockMode, m_dimseTimeout, &status, NULL);
   if (cond.bad())
-  {  
+  {
     DCMNET_ERROR("Failed sending C-ECHO request or receiving response: " << cond.text());
     return cond;
   }
   else
   {
-    if (status == STATUS_Success) 
+    if (status == STATUS_Success)
       DCMNET_DEBUG("Successfully sent C-ECHO request");
     else
     {
@@ -462,7 +459,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID& presID,
   DcmDataset* statusDetail = NULL;
   T_DIMSE_Message msg;
   T_DIMSE_C_StoreRQ* req = &(msg.msg.CStoreRQ);
-  
+
   // Set type of message
   msg.CommandField = DIMSE_C_STORE_RQ;
   /* Set message ID */
@@ -504,7 +501,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID& presID,
   {
     OFString sopname = dcmFindNameOfUID(sopClass.c_str());
     OFString tsname = DcmXfer(ts).getXferName();
-    DCMNET_ERROR("No presentation context found for sending C-STORE with SOP Class/TS: " 
+    DCMNET_ERROR("No presentation context found for sending C-STORE with SOP Class / Transfer Syntax: "
       << (sopname.empty() ? sopClass : sopname) << "/"
       << (tsname.empty() ? DcmXfer(ts).getXferName() : tsname));
     return EC_IllegalCall;
@@ -514,23 +511,23 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID& presID,
 
   cond = DIMSE_sendMessageUsingMemoryData(m_assoc, pcid, &msg, statusDetail, dset, NULL, NULL, NULL);
   delete dcmff; dcmff = NULL;
-  if (cond == EC_Normal) 
+  if (cond == EC_Normal)
   {
     DCMNET_DEBUG("Successfully sent C-STORE request");
   }
   else
-  {  
-    DCMNET_ERROR("Failed sending C-STORE request" << cond.text());
-     return cond;
+  {
+    DCMNET_ERROR("Failed sending C-STORE request: " << cond.text());
+    return cond;
   }
-  
+
   /* Receive response */
-  
+
   T_DIMSE_Message rsp;
   cond = receiveDIMSEResponse(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
   if (cond.bad())
     return cond;
-  
+
   DCMNET_DEBUG("Received response (probably C-STORE-RSP) on presentation context " << pcid);
   if (rsp.CommandField != DIMSE_C_STORE_RSP)
   {
@@ -541,7 +538,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID& presID,
   DCMNET_DEBUG("Response has status " << storeRsp.DimseStatus);
   if (statusDetail != NULL)
   {
-    DCMNET_DEBUG("Response has status detail:" << DcmObject::PrintHelper(*statusDetail));
+    DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
     delete statusDetail;
   }
   else
@@ -581,7 +578,7 @@ OFCondition DcmSCU::sendDIMSERequest( const T_ASC_PresentationContextID& presID,
   OFCondition cond;
   if (msg == NULL)
     return DIMSE_NULLKEY;
-  
+
   T_ASC_PresentationContextID id=presID; //TODO
   /* call the according DIMSE function to sent the message */
   cond = DIMSE_sendMessageUsingMemoryData(m_assoc, id, msg, NULL/*statusDetail*/, dataObject,
@@ -788,6 +785,10 @@ OFCondition DcmSCU::getDatasetInfo(DcmDataset* dataset,
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.5  2010-06-02 16:01:49  joergr
+** Slightly modified some log messages and levels for reasons of consistency.
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
 ** Revision 1.4  2010-04-29 16:13:25  onken
 ** Made SCU class independent from dcmtls, i.e. outsourced TLS API. Added
 ** direct API support for sending C-STORE requests. Further API changes and
