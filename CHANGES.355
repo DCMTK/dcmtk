@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2010.06.02 (riesmeier)
 
+- Introduced new helper function strerror() which is used as a wrapper to the
+  various approaches found on different systems.
+  Affects: dcmdata/libsrc/dcddirif.cc
+           ofstd/include/dcmtk/ofstd/offile.h
+           ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 - Appended missing OFStringStream_ends to the end of output streams because
   this is required when OFOStringStream is mapped to ostrstream.
   Affects: dcmdata/libsrc/dcddirif.cc

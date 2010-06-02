@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-02 12:41:38 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2010-06-02 13:03:12 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1078,21 +1078,8 @@ OFCondition DicomDirInterface::appendToDicomDir(const E_ApplicationProfile profi
             }
         } else {
             /* create error message "No such file or directory" from error code */
-            const char *text = NULL;
-#ifdef HAVE_PROTOTYPE_STRERROR_R
             char buffer[255];
-#ifdef HAVE_CHARP_STRERROR_R
-            /* use the GNU specific version that returns the result, which may or may not be a pointer to buffer */
-            text = strerror_r(ENOENT, buffer, 255);
-#else
-            /* use the X/OPEN version that always stores the result in buffer */
-            (void) strerror_r(ENOENT, buffer, 255);
-            text = buffer;
-#endif
-#else
-            /* warning: function call is not thread-safe on Unix systems */
-            text = strerror(ENOENT);
-#endif
+            const char *text = OFStandard::strerror(ENOENT, buffer, 255);
             if ((text == NULL) || (strlen(text) == 0))
                 text = "(unknown error code)";
             /*  error code 18 is reserved for file read error messages (see dcerror.cc) */
@@ -1136,21 +1123,8 @@ OFCondition DicomDirInterface::updateDicomDir(const E_ApplicationProfile profile
             }
         } else {
             /* create error message "No such file or directory" from error code */
-            const char *text = NULL;
-#ifdef HAVE_PROTOTYPE_STRERROR_R
             char buffer[255];
-#ifdef HAVE_CHARP_STRERROR_R
-            /* use the GNU specific version that returns the result, which may or may not be a pointer to buffer */
-            text = strerror_r(ENOENT, buffer, 255);
-#else
-            /* use the X/OPEN version that always stores the result in buffer */
-            (void) strerror_r(ENOENT, buffer, 255);
-            text = buffer;
-#endif
-#else
-            /* warning: function call is not thread-safe on Unix systems */
-            text = strerror(ENOENT);
-#endif
+            const char *text = OFStandard::strerror(ENOENT, buffer, 255);
             if ((text == NULL) || (strlen(text) == 0))
                 text = "(unknown error code)";
             /*  error code 18 is reserved for file read error messages (see dcerror.cc) */
@@ -4874,6 +4848,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.35  2010-06-02 13:03:12  joergr
+ *  Introduced new helper function strerror() which is used as a wrapper to the
+ *  various approaches found on different systems.
+ *
  *  Revision 1.34  2010-06-02 12:41:38  joergr
  *  Appended missing OFStringStream_ends to the end of output streams because
  *  this is required when OFOStringStream is mapped to ostrstream.
