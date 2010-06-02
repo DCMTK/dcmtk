@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-18 16:10:25 $
- *  CVS/RCS Revision: $Revision: 1.125 $
+ *  Update Date:      $Date: 2010-06-02 14:42:59 $
+ *  CVS/RCS Revision: $Revision: 1.126 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2552,7 +2552,10 @@ static void cleanChildren(pid_t pid, OFBool synch)
     if (child < 0)
     {
       if (errno != ECHILD)
-        OFLOG_WARN(storescpLogger, "wait for child failed: " << strerror(errno));
+      {
+        char buf[256];
+        OFLOG_WARN(storescpLogger, "wait for child failed: " << OFStandard::strerror(errno, buf, sizeof(buf)));
+      }
     }
 
     if (synch) child = -1; // break out of loop
@@ -2716,6 +2719,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.126  2010-06-02 14:42:59  joergr
+** Replaced calls to strerror() by new helper function OFStandard::strerror()
+** which results in using the thread safe version of strerror() if available.
+**
 ** Revision 1.125  2010-05-18 16:10:25  joergr
 ** Replaced '\n' by OFendl in log messages.
 **

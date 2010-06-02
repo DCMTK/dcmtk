@@ -56,9 +56,9 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: onken $
-** Update Date:         $Date: 2010-04-29 16:15:14 $
-** CVS/RCS Revision:    $Revision: 1.57 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2010-06-02 14:47:46 $
+** CVS/RCS Revision:    $Revision: 1.58 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -597,9 +597,9 @@ sendStraightFileData(
 
     f = fopen(dataFileName, "rb");
     if (f == NULL) {
-        DIMSE_warning(assoc,
-            "sendStraightFileData: cannot open DICOM file (%s): %s",
-            dataFileName, strerror(errno));
+        char buf[256];
+        DCMNET_WARN(DIMSE_warn_str(assoc) << "sendStraightFileData: cannot open DICOM file ("
+            << dataFileName << "): " << OFStandard::strerror(errno, buf, sizeof(buf)));
         cond = DIMSE_SENDFAILED;
     }
 
@@ -901,8 +901,9 @@ DIMSE_sendMessage(
       {
         if (! dcmff.loadFile(dataFileName, EXS_Unknown).good())
         {
+          char buf[256];
           DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: cannot open DICOM file ("
-            << dataFileName << "): " << strerror(errno));
+            << dataFileName << "): " << OFStandard::strerror(errno, buf, sizeof(buf)));
           cond = DIMSE_SENDFAILED;
         } else {
           dataObject = dcmff.getDataset();
@@ -1759,6 +1760,10 @@ OFString DIMSE_warn_str(T_ASC_Association *assoc)
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.58  2010-06-02 14:47:46  joergr
+** Replaced calls to strerror() by new helper function OFStandard::strerror()
+** which results in using the thread safe version of strerror() if available.
+**
 ** Revision 1.57  2010-04-29 16:15:14  onken
 ** Added debug message noting the presentation context a command set is sent on.
 **
