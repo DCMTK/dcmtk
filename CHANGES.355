@@ -29,6 +29,12 @@ Changes between releases are documented here.
   Affects: dcmdata/libsrc/cmdlnarg.cc
            dcmnet/libsrc/dul.cc
 
+- Rebuilt Makefile dependencies.
+  Affects: dcmdata/libsrc/Makefile.dep
+           dcmnet/apps/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+           ofstd/libsrc/Makefile.dep
+
 **** Changes from 2010.06.02 (riesmeier)
 
 - Replaced calls to strerror() by new helper function OFStandard::strerror()
