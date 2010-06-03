@@ -25,6 +25,10 @@ Changes between releases are documented here.
            dcmwlm/tests/wltest.cc
            ofstd/libsrc/ofthread.cc
 
+- Fixed issues on Windows platforms introduced with last commit.
+  Affects: dcmdata/libsrc/cmdlnarg.cc
+           dcmnet/libsrc/dul.cc
+
 **** Changes from 2010.06.02 (riesmeier)
 
 - Replaced calls to strerror() by new helper function OFStandard::strerror()

@@ -23,8 +23,8 @@
  *  for OS environments which cannot pass arguments on the command line.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-03 10:29:20 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2010-06-03 13:29:43 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,6 +98,7 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 
 void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
@@ -119,7 +120,7 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     {
         char buf[256];
         DCMDATA_ERROR("INTERNAL ERROR: cannot map stderr to stdout: "
-            << OFStandard::strerror(errno, buf, sizeof(buf))
+            << OFStandard::strerror(errno, buf, sizeof(buf)));
     }
 
 #ifndef NO_IOS_BASE_ASSIGN
@@ -139,13 +140,13 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     {
         char buf[256];
         DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stdout: "
-            << OFStandard::strerror(errno, buf, sizeof(buf))
+            << OFStandard::strerror(errno, buf, sizeof(buf)));
     }
     if (setvbuf(stderr, NULL, _IONBF, 0 ) != 0 )
     {
         char buf[256];
         DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stderr: "
-            << OFStandard::strerror(errno, buf, sizeof(buf))
+            << OFStandard::strerror(errno, buf, sizeof(buf)));
     }
 #endif /* __BORLANDC__ */
 #endif
@@ -161,6 +162,9 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
+** Revision 1.25  2010-06-03 13:29:43  joergr
+** Fixed issues on Windows platforms introduced with last commit.
+**
 ** Revision 1.24  2010-06-03 10:29:20  joergr
 ** Replaced calls to strerror() by new helper function OFStandard::strerror()
 ** which results in using the thread safe version of strerror() if available.
@@ -257,4 +261,3 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 ** argc,argv available in main().
 **
 */
-

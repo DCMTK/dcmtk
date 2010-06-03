@@ -54,9 +54,9 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: joergr $, $Date: 2010-06-02 15:47:56 $
+** Last Update:   $Author: joergr $, $Date: 2010-06-03 13:32:51 $
 ** Source File:   $RCSfile: dul.cc,v $
-** Revision:      $Revision: 1.85 $
+** Revision:      $Revision: 1.86 $
 ** Status:        $State: Exp $
 */
 
@@ -1751,8 +1751,8 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 // send number of socket handle in child process over anonymous pipe
                 DWORD bytesWritten;
                 char buf[20];
-                sprintf(buf, "%i", OFstatic_cast(int, childSocketHandle);
-                if (!WriteFile(hChildStdInWriteDup, buf5, strlen(buf) + 1, &bytesWritten, NULL))
+                sprintf(buf, "%i", OFreinterpret_cast(int, childSocketHandle));
+                if (!WriteFile(hChildStdInWriteDup, buf, strlen(buf) + 1, &bytesWritten, NULL))
                 {
                     CloseHandle(hChildStdInWriteDup);
                     return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, "Multi-Process Error: Writing to anonymous pipe failed");
@@ -1761,7 +1761,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 // return OF_ok status code DULC_FORKEDCHILD with descriptive text
                 OFOStringStream stream;
                 stream << "New child process started with pid " << OFstatic_cast(int, pi.dwProcessId)
-                       << ", socketHandle " << OFstatic_cast(int, childSocketHandle) << OFStringStream_ends;
+                       << ", socketHandle " << OFreinterpret_cast(int, childSocketHandle) << OFStringStream_ends;
                 OFSTRINGSTREAM_GETOFSTRING(stream, msg)
                 return makeDcmnetCondition(DULC_FORKEDCHILD, OF_ok, msg.c_str());
             }
@@ -1785,7 +1785,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     {
         char buf[256];
         OFOStringStream stream;
-        stream << "TCP Initialization Error: " << OFStandard::strerror(errno, buf, 256)
+        stream << "TCP Initialization Error: " << OFStandard::strerror(errno, buf, sizeof(buf))
                << ", setsockopt failed on socket " << sock << OFStringStream_ends;
         OFSTRINGSTREAM_GETOFSTRING(stream, msg)
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
@@ -1795,7 +1795,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     {
         char buf[256];
         OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::strerror(errno, buf, 256);
+        msg += OFStandard::strerror(errno, buf, sizeof(buf));
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
 #endif
@@ -1821,7 +1821,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         {
             char buf[256];
             OFString msg = "TCP Initialization Error: ";
-            msg += OFStandard::strerror(errno, buf, 256);
+            msg += OFStandard::strerror(errno, buf, sizeof(buf));
             return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
     }
@@ -2696,6 +2696,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.86  2010-06-03 13:32:51  joergr
+** Fixed issues on Windows platforms introduced with last commit.
+**
 ** Revision 1.85  2010-06-02 15:47:56  joergr
 ** Replaced calls to strerror() by new helper function OFStandard::strerror()
 ** which results in using the thread safe version of strerror() if available.
