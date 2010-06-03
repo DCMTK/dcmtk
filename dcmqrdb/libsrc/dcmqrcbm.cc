@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-02 16:22:40 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2010-06-03 10:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,8 +214,10 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     lockfd = open(fname, O_RDONLY , 0666);
 #endif
     if (lockfd < 0) {
+        char buf[256];
         /* due to quota system the file could have been deleted */
-        DCMQRDB_ERROR("Move SCP: storeSCU: [file: " << fname << "]: " << strerror(errno));
+        DCMQRDB_ERROR("Move SCP: storeSCU: [file: " << fname << "]: "
+            << OFStandard::strerror(errno, buf, sizeof(buf)));
         nFailed++;
         addFailedUIDInstance(sopInstance);
         return EC_Normal;
@@ -677,6 +679,10 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
+ * Revision 1.14  2010-06-03 10:34:57  joergr
+ * Replaced calls to strerror() by new helper function OFStandard::strerror()
+ * which results in using the thread safe version of strerror() if available.
+ *
  * Revision 1.13  2009-12-02 16:22:40  joergr
  * Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
  * the log stream in order to avoid an application crash.

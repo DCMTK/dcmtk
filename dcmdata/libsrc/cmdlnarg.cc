@@ -23,8 +23,8 @@
  *  for OS environments which cannot pass arguments on the command line.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-23 08:11:02 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2010-06-03 10:29:20 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,7 +117,9 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     int fderr = dup(fileno(stdout));
     if (fderr != fileno(stderr))
     {
-        DCMDATA_ERROR("INTERNAL ERROR: cannot map stderr to stdout: " << strerror(errno));
+        char buf[256];
+        DCMDATA_ERROR("INTERNAL ERROR: cannot map stderr to stdout: "
+            << OFStandard::strerror(errno, buf, sizeof(buf))
     }
 
 #ifndef NO_IOS_BASE_ASSIGN
@@ -135,11 +137,15 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     /* make sure the buffering is removed */
     if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 )
     {
-        DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stdout: " << strerror(errno));
+        char buf[256];
+        DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stdout: "
+            << OFStandard::strerror(errno, buf, sizeof(buf))
     }
     if (setvbuf(stderr, NULL, _IONBF, 0 ) != 0 )
     {
-        DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stderr: " << strerror(errno));
+        char buf[256];
+        DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stderr: "
+            << OFStandard::strerror(errno, buf, sizeof(buf))
     }
 #endif /* __BORLANDC__ */
 #endif
@@ -155,6 +161,10 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
+** Revision 1.24  2010-06-03 10:29:20  joergr
+** Replaced calls to strerror() by new helper function OFStandard::strerror()
+** which results in using the thread safe version of strerror() if available.
+**
 ** Revision 1.23  2010-04-23 08:11:02  joergr
 ** On Windows systems, use binary mode for stdout in order to be more consistent
 ** with common Unix behavior, e.g. useful for command line tools like dcm2pnm.

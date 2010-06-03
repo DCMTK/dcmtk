@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveGetContext
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-02 16:22:13 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2010-06-03 10:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -188,8 +188,9 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
     lockfd = open(fname, O_RDONLY , 0666);
 #endif
     if (lockfd < 0) {
+        char buf[256];
         /* due to quota system the file could have been deleted */
-        DCMQRDB_ERROR("Get SCP: storeSCU: [file: " << fname << "]: " << strerror(errno));
+        DCMQRDB_ERROR("Get SCP: storeSCU: [file: " << fname << "]: " << OFStandard::strerror(errno, buf, sizeof(buf)));
         nFailed++;
         addFailedUIDInstance(sopInstance);
         return EC_Normal;
@@ -342,6 +343,10 @@ void DcmQueryRetrieveGetContext::buildFailedInstanceList(DcmDataset ** rspIds)
 /*
  * CVS Log
  * $Log: dcmqrcbg.cc,v $
+ * Revision 1.9  2010-06-03 10:34:57  joergr
+ * Replaced calls to strerror() by new helper function OFStandard::strerror()
+ * which results in using the thread safe version of strerror() if available.
+ *
  * Revision 1.8  2009-12-02 16:22:13  joergr
  * Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
  * the log stream in order to avoid an application crash.

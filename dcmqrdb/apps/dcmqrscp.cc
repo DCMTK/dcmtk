@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:41 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-03 10:33:34 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -615,7 +615,9 @@ main(int argc, char *argv[])
 
     /* read config file */
     if (access(opt_configFileName, R_OK) < 0) {
-      OFLOG_FATAL(dcmqrscpLogger, "cannot access " << opt_configFileName << ": " << strerror(errno));
+      char buf[256];
+      OFLOG_FATAL(dcmqrscpLogger, "cannot access " << opt_configFileName << ": "
+        << OFStandard::strerror(errno, buf, sizeof(buf)));
       return 10;
     }
 
@@ -740,6 +742,10 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
+ * Revision 1.21  2010-06-03 10:33:34  joergr
+ * Replaced calls to strerror() by new helper function OFStandard::strerror()
+ * which results in using the thread safe version of strerror() if available.
+ *
  * Revision 1.20  2009-11-24 10:10:41  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

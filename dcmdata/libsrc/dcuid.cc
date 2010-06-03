@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:45 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-03 10:28:41 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -958,8 +958,9 @@ static long gethostid(void)
 {
     char buf[128];
     if (sysinfo(SI_HW_SERIAL, buf, 128) == -1) {
-       DCMDATA_FATAL("sysinfo: " << strerror(errno));
-       exit(1);
+      char buf[256];
+      DCMDATA_FATAL("sysinfo: " << OFStandard::strerror(errno, buf, sizeof(buf));
+      exit(1);
     }
 #ifdef HAVE_STRTOUL
     return(strtoul(buf, NULL, 0));
@@ -1422,6 +1423,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.76  2010-06-03 10:28:41  joergr
+** Replaced calls to strerror() by new helper function OFStandard::strerror()
+** which results in using the thread safe version of strerror() if available.
+**
 ** Revision 1.75  2010-03-01 09:08:45  uli
 ** Removed some unnecessary include directives in the headers.
 **

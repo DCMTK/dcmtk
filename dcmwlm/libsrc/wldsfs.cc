@@ -22,8 +22,8 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-31 09:21:45 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2010-06-03 10:31:21 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -687,9 +687,10 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
   handleToReadLockFile = open( lockname.c_str(), O_RDWR );
   if( handleToReadLockFile == -1 )
   {
+    char buf[256];
     handleToReadLockFile = 0;
     DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Cannot open file " << lockname
-      << " (return code: " << strerror(errno) << ")");
+      << " (return code: " << OFStandard::strerror(errno, buf, sizeof(buf)) << ")");
     return OFFalse;
   }
 
@@ -790,6 +791,10 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
+** Revision 1.26  2010-06-03 10:31:21  joergr
+** Replaced calls to strerror() by new helper function OFStandard::strerror()
+** which results in using the thread safe version of strerror() if available.
+**
 ** Revision 1.25  2010-05-31 09:21:45  joergr
 ** Fixed incorrect handling of SpecificCharacterSet attribute in C-FIND request
 ** and response messages.

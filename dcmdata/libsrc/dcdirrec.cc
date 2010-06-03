@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-04 17:10:31 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Update Date:      $Date: 2010-06-03 10:28:41 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1058,9 +1058,10 @@ OFCondition DcmDirectoryRecord::purgeReferencedFile()
         {                                 // filename exists
             if (unlink(localFileName) != 0)
             {
-              const char *text = strerror(errno);
-              if (text == NULL) text = "(unknown error code)";
-              errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
+                char buf[256];
+                const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
+                if (text == NULL) text = "(unknown error code)";
+                errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
             }
             delete[] localFileName;
         } else                            // no referenced file exists
@@ -1520,6 +1521,10 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.70  2010-06-03 10:28:41  joergr
+ * Replaced calls to strerror() by new helper function OFStandard::strerror()
+ * which results in using the thread safe version of strerror() if available.
+ *
  * Revision 1.69  2009-12-04 17:10:31  joergr
  * Slightly modified some log messages.
  *

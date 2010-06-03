@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:45 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-03 10:28:40 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1032,9 +1032,10 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     int tempfilefd = mkstemp(tempfile);
     if (tempfilefd < 0)
     {
+        char buf[256];
         DCMDATA_ERROR("DcmDicomDir: Cannot create DICOMDIR temporary file: " << tempfile);
         delete[] tempfile;
-        const char *text = strerror(errno);
+        const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
         if (text == NULL) text = "(unknown error code)";
         errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
         return errorFlag;
@@ -1043,9 +1044,10 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     FILE *f = fdopen(tempfilefd, "wb");
     if (f == NULL)
     {
+        char buf[256];
         DCMDATA_ERROR("DcmDicomDir: Cannot create DICOMDIR temporary file: " << tempfile);
         delete[] tempfile;
-        const char *text = strerror(errno);
+        const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
         if (text == NULL) text = "(unknown error code)";
         errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
         return errorFlag;
@@ -1119,10 +1121,12 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
         strcat( backupname, DICOMDIR_BACKUP_SUFFIX );
         unlink( backupname );
-        if (errorFlag == EC_Normal) {
+        if (errorFlag == EC_Normal)
+        {
             if (rename(dicomDirFileName, backupname) != 0)
             {
-              const char *text = strerror(errno);
+              char buf[256];
+              const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
               if (text == NULL) text = "(unknown error code)";
               errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
             }
@@ -1130,7 +1134,8 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 #else
         if ( unlink( dicomDirFileName ) != 0 )
         {
-          const char *text = strerror(errno);
+          char buf[256];
+          const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
           if (text == NULL) text = "(unknown error code)";
           errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
         }
@@ -1139,7 +1144,8 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     if (errorFlag == EC_Normal && rename( tempfile, dicomDirFileName ) != 0)
     {
-      const char *text = strerror(errno);
+      char buf[256];
+      const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
       if (text == NULL) text = "(unknown error code)";
       errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
     }
@@ -1341,6 +1347,10 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.59  2010-06-03 10:28:40  joergr
+** Replaced calls to strerror() by new helper function OFStandard::strerror()
+** which results in using the thread safe version of strerror() if available.
+**
 ** Revision 1.58  2010-03-01 09:08:45  uli
 ** Removed some unnecessary include directives in the headers.
 **

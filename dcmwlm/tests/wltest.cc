@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Worklist Database Test Program
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:40:01 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/tests/wltest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-03 10:31:24 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -219,8 +218,8 @@ int main(int argc, char* argv[])
 
     for (j=i; j<argc; j++) {
         if (!OFStandard::pathExists(argv[j])) {
-            errmsg("cannot access %s: %s", argv[j],
-               strerror(errno));
+            char buf[256];
+            errmsg("cannot access %s: %s", argv[j], OFStandard::strerror(errno, buf, sizeof(buf)));
             usage();
         }
     }
@@ -371,6 +370,10 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
 /*
 ** CVS Log
 ** $Log: wltest.cc,v $
+** Revision 1.9  2010-06-03 10:31:24  joergr
+** Replaced calls to strerror() by new helper function OFStandard::strerror()
+** which results in using the thread safe version of strerror() if available.
+**
 ** Revision 1.8  2009-11-24 10:40:01  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **

@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-20 09:22:31 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2010-06-03 10:30:17 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -293,7 +293,8 @@ static OFCondition putElementContent(xmlNodePtr current,
                         /* read binary file into the buffer */
                         if (fread(buf, 1, OFstatic_cast(size_t, fileSize), f) != fileSize)
                         {
-                            const char *text = strerror(errno);
+                            char errBuf[256];
+                            const char *text = OFStandard::strerror(errno, errBuf, sizeof(errBuf));
                             if (text == NULL) text = "(unknown error code)";
                             OFLOG_ERROR(xml2dcmLogger, "error reading binary data file: " << filename << ": " << text);
                             result = EC_CorruptedData;
@@ -998,6 +999,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.31  2010-06-03 10:30:17  joergr
+ * Replaced calls to strerror() by new helper function OFStandard::strerror()
+ * which results in using the thread safe version of strerror() if available.
+ *
  * Revision 1.30  2010-05-20 09:22:31  joergr
  * Use new OFStandard::getFileSize() method where appropriate.
  *

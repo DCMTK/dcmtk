@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-02 16:27:05 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2010-06-03 10:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -389,6 +389,7 @@ static long DB_lseek(int fildes, long offset, int whence)
     long pos;
     long curpos;
     long endpos;
+    char buf[256];
 
     /*
     ** we should not be seeking to an offset < 0
@@ -400,27 +401,27 @@ static long DB_lseek(int fildes, long offset, int whence)
     /* get the current position */
     curpos = lseek(fildes, 0, SEEK_CUR);
     if (curpos < 0) {
-        DCMQRDB_ERROR("DB_lseek: cannot get current position: " << strerror(errno));
+        DCMQRDB_ERROR("DB_lseek: cannot get current position: " << OFStandard::strerror(errno, buf, sizeof(buf)));
         return curpos;
     }
     /* get the end of file position */
     endpos = lseek(fildes, 0, SEEK_END);
     if (endpos < 0) {
-        DCMQRDB_ERROR("DB_lseek: cannot get end of file position: " << strerror(errno));
+        DCMQRDB_ERROR("DB_lseek: cannot get end of file position: " << OFStandard::strerror(errno, buf, sizeof(buf)));
         return endpos;
     }
 
     /* return to current position */
     curpos = lseek(fildes, curpos, SEEK_SET);
     if (curpos < 0) {
-        DCMQRDB_ERROR("DB_lseek: cannot reset current position: " << strerror(errno));
+        DCMQRDB_ERROR("DB_lseek: cannot reset current position: " << OFStandard::strerror(errno, buf, sizeof(buf)));
         return curpos;
     }
 
     /* do the requested seek */
     pos = lseek(fildes, offset, whence);
     if (pos < 0) {
-        DCMQRDB_ERROR("DB_lseek: cannot seek to " << offset << ": " << strerror(errno));
+        DCMQRDB_ERROR("DB_lseek: cannot seek to " << offset << ": " << OFStandard::strerror(errno, buf, sizeof(buf)));
         return pos;
     }
 
@@ -2570,9 +2571,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
 #endif
 
     if (unlink(imgFile) < 0) {
+        char buf[256];
         /* delete file */
         DCMQRDB_ERROR("DB ERROR: cannot delete image file: " << imgFile << OFendl
-            << "DcmQRIndexDatabaseError: " << strerror(errno));
+            << "DcmQRIndexDatabaseError: " << OFStandard::strerror(errno, buf, sizeof(buf)));
     }
 
 #ifdef LOCK_IMAGE_FILES
@@ -2896,8 +2898,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     DcmFileFormat dcmff;
     if (dcmff.loadFile(imageFileName).bad())
     {
+      char buf[256];
       DCMQRDB_WARN("DB: Cannot open file: " << imageFileName << ": "
-          << strerror(errno));
+          << OFStandard::strerror(errno, buf, sizeof(buf)));
       status->setStatus(STATUS_STORE_Error_CannotUnderstand);
       return (DcmQRIndexDatabaseError) ;
     }
@@ -3262,7 +3265,8 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
         /* create index file if it does not already exist */
         FILE* f = fopen(handle_->indexFilename, "ab");
         if (f == NULL) {
-            DCMQRDB_ERROR(handle_->indexFilename << ": " << strerror(errno));
+            char buf[256];
+            DCMQRDB_ERROR(handle_->indexFilename << ": " << OFStandard::strerror(errno, buf, sizeof(buf)));
             result = DcmQRIndexDatabaseError;
             return;
         }
@@ -3422,6 +3426,10 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.19  2010-06-03 10:34:57  joergr
+ * Replaced calls to strerror() by new helper function OFStandard::strerror()
+ * which results in using the thread safe version of strerror() if available.
+ *
  * Revision 1.18  2009-12-02 16:27:05  joergr
  * Sightly modified source code formatting.
  *

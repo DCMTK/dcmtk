@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2009, OFFIS
+ *  Copyright (C) 1999-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-27 10:50:57 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2010-06-03 10:32:58 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,8 +138,11 @@ static void cleanChildren()
 #endif
         if (child < 0)
         {
-           if (errno != ECHILD)
-             OFLOG_ERROR(dcmpsrcvLogger, "wait for child failed: " << strerror(errno));
+            if (errno != ECHILD)
+            {
+                char buf[256];
+                OFLOG_ERROR(dcmpsrcvLogger, "wait for child failed: " << OFStandard::strerror(errno, buf, sizeof(buf)));
+            }
         }
     }
 #endif
@@ -1329,7 +1332,8 @@ int main(int argc, char *argv[])
             pid = (int)(fork());
             if (pid < 0)
             {
-              OFLOG_ERROR(dcmpsrcvLogger, "Cannot create association sub-process: " << strerror(errno));
+              char buf[256];
+              OFLOG_ERROR(dcmpsrcvLogger, "Cannot create association sub-process: " << OFStandard::strerror(errno, buf, sizeof(buf)));
               refuseAssociation(assoc, ref_CannotFork);
 
               if (messageClient)
@@ -1338,7 +1342,7 @@ int main(int argc, char *argv[])
                 OFOStringStream out;
                 OFString temp_str;
                 out << "DIMSE Association Rejected:" << OFendl
-                    << "  reason: cannot create association sub-process: " << strerror(errno) << OFendl
+                    << "  reason: cannot create association sub-process: " << OFStandard::strerror(errno, buf, sizeof(buf)) << OFendl
                     << "  calling presentation address: " << assoc->params->DULparams.callingPresentationAddress << OFendl
                     << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
                     << "  called AE title: " << assoc->params->DULparams.calledAPTitle << OFendl;
@@ -1480,6 +1484,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
+ * Revision 1.58  2010-06-03 10:32:58  joergr
+ * Replaced calls to strerror() by new helper function OFStandard::strerror()
+ * which results in using the thread safe version of strerror() if available.
+ *
  * Revision 1.57  2009-11-27 10:50:57  joergr
  * Fixed various issues with syntax usage (e.g. layout and formatting).
  * Sightly modifed log messages.

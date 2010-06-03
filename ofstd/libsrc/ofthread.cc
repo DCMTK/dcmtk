@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,10 +25,9 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:49:02 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofthread.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-03 10:27:04 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +43,8 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CERRNO
 #include "dcmtk/ofstd/ofstdinc.h"
+
+#include "dcmtk/ofstd/ofstd.h"
 
 #ifdef HAVE_WINDOWS_H
 #define WINDOWS_INTERFACE
@@ -258,7 +259,8 @@ void OFThread::errorstr(OFString& description, int /* code */ )
     LocalFree(buf);
   }
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
-  const char *str = strerror(code);
+  char buf[256];
+  const char *str = OFStandard::strerror(code, buf, sizeof(buf));
   if (str) description = str; else description.clear();
 #else
   description = "error: threads not implemented";
@@ -383,7 +385,8 @@ void OFThreadSpecificData::errorstr(OFString& description, int /* code */ )
   if (buf) description = (const char *)buf;
   LocalFree(buf);
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
-  const char *str = strerror(code);
+  char buf[256];
+  const char *str = OFStandard::strerror(code, buf, sizeof(buf));
   if (str) description = str; else description.clear();
 #else
   description = "error: thread specific data not implemented";
@@ -525,7 +528,8 @@ void OFSemaphore::errorstr(OFString& description, int /* code */ )
     LocalFree(buf);
   }
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
-  const char *str = strerror(code);
+  char buf[256];
+  const char *str = OFStandard::strerror(code, buf, sizeof(buf));
   if (str) description = str; else description.clear();
 #else
   description = "error: semaphore not implemented";
@@ -655,7 +659,8 @@ void OFMutex::errorstr(OFString& description, int /* code */ )
     LocalFree(buf);
   }
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
-  const char *str = strerror(code);
+  char buf[256];
+  const char *str = OFStandard::strerror(code, buf, sizeof(buf));
   if (str) description = str; else description.clear();
 #else
   description = "error: mutex not implemented";
@@ -925,7 +930,8 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
     LocalFree(buf);
   }
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
-  const char *str = strerror(code);
+  char buf[256];
+  const char *str = OFStandard::strerror(code, buf, sizeof(buf));
   if (str) description = str; else description.clear();
 #else
   description = "error: read/write lock not implemented";
@@ -939,7 +945,11 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
- * Revision 1.16  2005-12-08 15:49:02  meichel
+ * Revision 1.17  2010-06-03 10:27:04  joergr
+ * Replaced calls to strerror() by new helper function OFStandard::strerror()
+ * which results in using the thread safe version of strerror() if available.
+ *
+ * Revision 1.16  2005/12/08 15:49:02  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.15  2005/07/27 17:07:52  joergr

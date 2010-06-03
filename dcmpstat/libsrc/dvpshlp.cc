@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPSHelper
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:58 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-03 10:33:00 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,17 +159,18 @@ void DVPSHelper::cleanChildren()
     while (child > 0)
     {
 #ifdef HAVE_WAITPID
-    child = (int)(waitpid(-1, &stat_loc, options));
+      child = (int)(waitpid(-1, &stat_loc, options));
 #elif defined(HAVE_WAIT3)
-    child = wait3(&status, options, &rusage);
+      child = wait3(&status, options, &rusage);
 #endif
-        if (child < 0)
+      if (child < 0)
+      {
+        if ((errno != ECHILD) && (errno != 0))
         {
-          if ((errno != ECHILD) && (errno != 0))
-          {
-            DCMPSTAT_INFO("wait for child failed: " << strerror(errno));
-          }
+          char buf[256];
+          DCMPSTAT_ERROR("wait for child failed: " << OFStandard::strerror(errno, buf, sizeof(buf)));
         }
+      }
     }
 #endif
 }
@@ -233,6 +234,10 @@ OFCondition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.cc,v $
+ *  Revision 1.18  2010-06-03 10:33:00  joergr
+ *  Replaced calls to strerror() by new helper function OFStandard::strerror()
+ *  which results in using the thread safe version of strerror() if available.
+ *
  *  Revision 1.17  2009-11-24 14:12:58  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

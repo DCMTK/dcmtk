@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2009, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DcmOutputFileStream and related classes,
  *    implements streamed output to files.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-22 11:39:54 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-03 10:28:41 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,10 +45,11 @@ DcmFileConsumer::DcmFileConsumer(const char *filename)
 , file_()
 , status_(EC_Normal)
 {
-  
+
   if (!file_.fopen(filename, "wb"))
   {
-    const char *text = strerror(errno);
+    char buf[256];
+    const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
     if (text == NULL) text = "(unknown error code)";
     status_ = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
   }
@@ -85,7 +86,7 @@ offile_off_t DcmFileConsumer::avail() const
 {
   // since we cannot report "unlimited", let's claim that we can still write 2GB.
   // Note that offile_off_t is a signed type.
-  return 2147483647L; 
+  return 2147483647L;
 }
 
 offile_off_t DcmFileConsumer::write(const void *buf, offile_off_t buflen)
@@ -99,8 +100,8 @@ offile_off_t DcmFileConsumer::write(const void *buf, offile_off_t buflen)
 #else
     /* On Windows (at least for some versions of MSVC), calls to fwrite() for more than
      * 67,076,095 bytes (a bit less than 64 MByte) fail if we're writing to a network
-     * share. See MSDN KB899149. As a workaround, we always write in chunks of 
-     * 32M which should hardly negatively affect performance. 
+     * share. See MSDN KB899149. As a workaround, we always write in chunks of
+     * 32M which should hardly negatively affect performance.
      */
 #define DcmFileConsumer_MAX_CHUNK_SIZE 33554432 /* 32 MByte */
     offile_off_t written;
@@ -161,6 +162,10 @@ DcmOutputFileStream::~DcmOutputFileStream()
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.cc,v $
+ * Revision 1.13  2010-06-03 10:28:41  joergr
+ * Replaced calls to strerror() by new helper function OFStandard::strerror()
+ * which results in using the thread safe version of strerror() if available.
+ *
  * Revision 1.12  2010-02-22 11:39:54  uli
  * Remove some unneeded includes.
  *

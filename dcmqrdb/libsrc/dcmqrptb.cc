@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: classes DcmQueryRetrieveProcessSlot, DcmQueryRetrieveProcessTable
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:42 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-03 10:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -219,7 +219,8 @@ void DcmQueryRetrieveProcessTable::cleanChildren()
           }
           else if (errno != 0)
           {
-            DCMQRDB_ERROR("wait for child process failed: " << strerror(errno));
+            char buf[256];
+            DCMQRDB_ERROR("wait for child process failed: " << OFStandard::strerror(errno, buf, sizeof(buf)));
           }
       }
       else if (child > 0)
@@ -240,6 +241,10 @@ void DcmQueryRetrieveProcessTable::cleanChildren()
 /*
  * CVS Log
  * $Log: dcmqrptb.cc,v $
+ * Revision 1.8  2010-06-03 10:34:57  joergr
+ * Replaced calls to strerror() by new helper function OFStandard::strerror()
+ * which results in using the thread safe version of strerror() if available.
+ *
  * Revision 1.7  2009-11-24 10:10:42  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

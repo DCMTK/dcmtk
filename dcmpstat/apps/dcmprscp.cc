@@ -22,8 +22,8 @@
  *  Purpose: Presentation State Viewer - Print Server
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-29 10:36:52 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2010-06-03 10:32:58 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,8 +103,11 @@ static void cleanChildren()
 #endif
         if (child < 0)
         {
-           if (errno != ECHILD)
-             OFLOG_ERROR(dcmprscpLogger, "wait for child failed: " << strerror(errno));
+            if (errno != ECHILD)
+            {
+                char buf[256];
+                OFLOG_ERROR(dcmprscpLogger, "wait for child failed: " << OFStandard::strerror(errno, buf, sizeof(buf)));
+            }
         }
     }
 #endif
@@ -556,6 +559,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
+ * Revision 1.31  2010-06-03 10:32:58  joergr
+ * Replaced calls to strerror() by new helper function OFStandard::strerror()
+ * which results in using the thread safe version of strerror() if available.
+ *
  * Revision 1.30  2010-04-29 10:36:52  joergr
  * Fixed typo in log message.
  *

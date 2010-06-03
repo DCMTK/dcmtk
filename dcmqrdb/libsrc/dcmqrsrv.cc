@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveSCP
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:42 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-03 10:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1024,8 +1024,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             pid = (int)(fork());
             if (pid < 0)
             {
+                char errBuf[256];
                 DCMQRDB_ERROR("Cannot create association sub-process: "
-                   << strerror(errno));
+                   << OFStandard::strerror(errno, errBuf, sizeof(errBuf)));
                 cond = refuseAssociation(&assoc, CTN_CannotFork);
                 go_cleanup = OFTrue;
             }
@@ -1085,6 +1086,10 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrsrv.cc,v $
+ * Revision 1.7  2010-06-03 10:34:57  joergr
+ * Replaced calls to strerror() by new helper function OFStandard::strerror()
+ * which results in using the thread safe version of strerror() if available.
+ *
  * Revision 1.6  2009-11-24 10:10:42  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

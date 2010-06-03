@@ -22,8 +22,8 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-20 09:23:45 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2010-06-03 10:30:17 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -481,8 +481,9 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
         /* read binary file into the buffer */
         if (fread(buf, 1, OFstatic_cast(size_t, len), f) != len)
         {
+            char errBuf[256];
             OFLOG_ERROR(dump2dcmLogger, "error reading binary data file: " << filename
-                    << ": " << strerror(errno));
+                << ": " << OFStandard::strerror(errno, errBuf, sizeof(errBuf)));
             ec = EC_CorruptedData;
         }
         else if (evr == EVR_OW)
@@ -1119,6 +1120,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
+** Revision 1.68  2010-06-03 10:30:17  joergr
+** Replaced calls to strerror() by new helper function OFStandard::strerror()
+** which results in using the thread safe version of strerror() if available.
+**
 ** Revision 1.67  2010-05-20 09:23:45  joergr
 ** Use new OFStandard::getFileSize() method where appropriate.
 **
