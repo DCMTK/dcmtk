@@ -1,6 +1,30 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.03 (riesmeier)
+
+- Replaced calls to strerror() by new helper function OFStandard::strerror()
+  which results in using the thread safe version of strerror() if available.
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmdata/libsrc/cmdlnarg.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcostrmf.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/libsrc/dvpshlp.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/libsrc/dcmqrcbg.cc
+           dcmqrdb/libsrc/dcmqrcbm.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmqrdb/libsrc/dcmqrptb.cc
+           dcmqrdb/libsrc/dcmqrsrv.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/tests/wltest.cc
+           ofstd/libsrc/ofthread.cc
+
 **** Changes from 2010.06.02 (riesmeier)
 
 - Replaced calls to strerror() by new helper function OFStandard::strerror()
