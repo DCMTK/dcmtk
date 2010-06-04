@@ -22,8 +22,8 @@
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:45 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2010-06-04 14:22:39 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -343,7 +343,8 @@ OFCondition DcmCodecList::registerCodec(
   // acquire write lock on codec list.  Will block if some codec is currently active.
   OFCondition result = EC_Normal;
 #ifdef _REENTRANT
-  if (0 == codecLock.wrlock())
+  OFReadWriteLocker locker(codecLock);
+  if (0 == locker.wrlock())
   {
 #endif
     DcmCodecList *listEntry = new DcmCodecList(aCodec, aDefaultRepParam, aCodecParameter);
@@ -364,7 +365,6 @@ OFCondition DcmCodecList::registerCodec(
       if (result.good()) registeredCodecs.push_back(listEntry); else delete listEntry;
     } else result = EC_MemoryExhausted;
 #ifdef _REENTRANT
-    codecLock.unlock();
   } else result = EC_IllegalCall;
 #endif
   return result;
@@ -380,7 +380,8 @@ OFCondition DcmCodecList::deregisterCodec(const DcmCodec *aCodec)
   OFCondition result = EC_Normal;
 
 #ifdef _REENTRANT
-  if (0 == codecLock.wrlock())
+  OFReadWriteLocker locker(codecLock);
+  if (0 == locker.wrlock())
   {
 #endif
     OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
@@ -394,7 +395,6 @@ OFCondition DcmCodecList::deregisterCodec(const DcmCodec *aCodec)
       } else ++first;
     }
 #ifdef _REENTRANT
-    codecLock.unlock();
   } else result = EC_IllegalCall;
 #endif
   return result;
@@ -412,7 +412,8 @@ OFCondition DcmCodecList::updateCodecParameter(
   OFCondition result = EC_Normal;
 
 #ifdef _REENTRANT
-  if (0 == codecLock.wrlock())
+  OFReadWriteLocker locker(codecLock);
+  if (0 == locker.wrlock())
   {
 #endif
     OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
@@ -423,7 +424,6 @@ OFCondition DcmCodecList::updateCodecParameter(
       ++first;
     }
 #ifdef _REENTRANT
-    codecLock.unlock();
   } else result = EC_IllegalCall;
 #endif
   return result;
@@ -444,7 +444,8 @@ OFCondition DcmCodecList::decode(
 
   // acquire write lock on codec list.  Will block if some write lock is currently active.
 #ifdef _REENTRANT
-  if (0 == codecLock.rdlock())
+  OFReadWriteLocker locker(codecLock);
+  if (0 == locker.rdlock())
   {
 #endif
     E_TransferSyntax fromXfer = fromType.getXfer();
@@ -459,7 +460,6 @@ OFCondition DcmCodecList::decode(
       } else ++first;
     }
 #ifdef _REENTRANT
-    codecLock.unlock();
   } else result = EC_IllegalCall;
 #endif
   return result;
@@ -484,7 +484,8 @@ OFCondition DcmCodecList::decodeFrame(
 
   // acquire write lock on codec list.  Will block if some write lock is currently active.
 #ifdef _REENTRANT
-  if (0 == codecLock.rdlock())
+  OFReadWriteLocker locker(codecLock);
+  if (0 == locker.rdlock())
   {
 #endif
     E_TransferSyntax fromXfer = fromType.getXfer();
@@ -500,7 +501,6 @@ OFCondition DcmCodecList::decodeFrame(
       } else ++first;
     }
 #ifdef _REENTRANT
-    codecLock.unlock();
   } else result = EC_IllegalCall;
 #endif
   return result;
@@ -524,7 +524,8 @@ OFCondition DcmCodecList::encode(
 
   // acquire write lock on codec list.  Will block if some write lock is currently active.
 #ifdef _REENTRANT
-  if (0 == codecLock.rdlock())
+  OFReadWriteLocker locker(codecLock);
+  if (0 == locker.rdlock())
   {
 #endif
     OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
@@ -540,7 +541,6 @@ OFCondition DcmCodecList::encode(
       } else ++first;
     }
 #ifdef _REENTRANT
-    codecLock.unlock();
   } else result = EC_IllegalCall;
 #endif
 
@@ -564,7 +564,8 @@ OFCondition DcmCodecList::encode(
 
   // acquire write lock on codec list.  Will block if some write lock is currently active.
 #ifdef _REENTRANT
-  if (0 == codecLock.rdlock())
+  OFReadWriteLocker locker(codecLock);
+  if (0 == locker.rdlock())
   {
 #endif
     OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
@@ -580,7 +581,6 @@ OFCondition DcmCodecList::encode(
       } else ++first;
     }
 #ifdef _REENTRANT
-    codecLock.unlock();
   } else result = EC_IllegalCall;
 #endif
 
@@ -598,7 +598,8 @@ OFBool DcmCodecList::canChangeCoding(
 
   // acquire write lock on codec list.  Will block if some write lock is currently active.
 #ifdef _REENTRANT
-  if (0 == codecLock.rdlock())
+  OFReadWriteLocker locker(codecLock);
+  if (0 == locker.rdlock())
   {
 #endif
     OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
@@ -612,7 +613,6 @@ OFBool DcmCodecList::canChangeCoding(
       } else ++first;
     }
 #ifdef _REENTRANT
-    codecLock.unlock();
   }
 #endif
 
@@ -633,7 +633,8 @@ OFCondition DcmCodecList::determineDecompressedColorModel(
 
   // acquire write lock on codec list.  Will block if some write lock is currently active.
 #ifdef _REENTRANT
-  if (0 == codecLock.rdlock())
+  OFReadWriteLocker locker(codecLock);
+  if (0 == locker.rdlock())
   {
 #endif
     E_TransferSyntax fromXfer = fromType.getXfer();
@@ -649,7 +650,6 @@ OFCondition DcmCodecList::determineDecompressedColorModel(
       } else ++first;
     }
 #ifdef _REENTRANT
-    codecLock.unlock();
   } else result = EC_IllegalCall;
 #endif
   return result;
@@ -659,6 +659,10 @@ OFCondition DcmCodecList::determineDecompressedColorModel(
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
+** Revision 1.19  2010-06-04 14:22:39  uli
+** Use new OFReadWriteLocker to avoid dead locks when we return from a codec
+** via an exception.
+**
 ** Revision 1.18  2010-03-01 09:08:45  uli
 ** Removed some unnecessary include directives in the headers.
 **
