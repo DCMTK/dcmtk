@@ -26,8 +26,8 @@
  *           multi-thread APIs.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-04 13:58:42 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2010-06-04 14:18:20 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -951,7 +951,6 @@ OFReadWriteLocker::~OFReadWriteLocker()
     theLock.unlock();
 }
 
-/* TODO: print an error message if locked == true? */
 #ifdef DEBUG
 #define lockWarn(name, locked) \
   if (locked == OFTrue)        \
@@ -998,6 +997,9 @@ int OFReadWriteLocker::unlock()
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
+ * Revision 1.19  2010-06-04 14:18:20  uli
+ * Removed an outdated comment.
+ *
  * Revision 1.18  2010-06-04 13:58:42  uli
  * Added class OFReadWriteLocker which simplifies unlocking OFReadWriteLocks.
  *
