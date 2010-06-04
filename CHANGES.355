@@ -43,6 +43,7 @@ Changes between releases are documented here.
 
 - Use new OFReadWriteLocker to avoid dead locks when we return from a codec
   via an exception. Thanks to forum user "Niels Dekker" for the fix.
+  Affects: dcmdata/libsrc/dccodec.cc
 
 **** Changes from 2010.06.04 (riesmeier)
 
