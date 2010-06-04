@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.04 (riesmeier)
+
+- Added support for option --exec-sync to Unix systems (before: Windows only).
+  Thanks to forum user "eludias" for the patch.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+
 **** Changes from 2010.06.03 (riesmeier)
 
 - Replaced calls to strerror() by new helper function OFStandard::strerror()

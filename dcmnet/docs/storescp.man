@@ -313,7 +313,6 @@ filename generation:
 
   -xs   --exec-sync
           execute command synchronously in foreground
-          (this option is available on Windows only)
 \endverbatim
 
 \subsection tls_options transport layer security (TLS) options
@@ -751,6 +750,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

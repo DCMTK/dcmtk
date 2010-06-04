@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-02 14:42:59 $
- *  CVS/RCS Revision: $Revision: 1.126 $
+ *  Update Date:      $Date: 2010-06-04 08:07:03 $
+ *  CVS/RCS Revision: $Revision: 1.127 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -202,10 +202,7 @@ OFBool             opt_forkMode = OFFalse;
 #endif
 
 OFBool             opt_forkedChild = OFFalse;
-
-#ifdef _WIN32
 OFBool             opt_execSync = OFFalse;            // default: execute in background
-#endif
 
 #ifdef WITH_OPENSSL
 static int         opt_keyFileFormat = SSL_FILETYPE_PEM;
@@ -391,10 +388,10 @@ int main(int argc, char *argv[])
 #endif
     cmd.addSubGroup("sorting into subdirectories (not with --bit-preserving):");
       cmd.addOption("--sort-conc-studies",      "-ss",  1, "[p]refix: string",
-                                                           "sort studies using prefix p and a timestamp" );
+                                                           "sort studies using prefix p and a timestamp");
       cmd.addOption("--sort-on-study-uid",      "-su",  1, "[p]refix: string",
-                                                           "sort studies using prefix p and the Study\nInstance UID" );
-      cmd.addOption("--sort-on-patientname",    "-sp",     "sort studies using the Patient's Name and\na timestamp" );
+                                                           "sort studies using prefix p and the Study\nInstance UID");
+      cmd.addOption("--sort-on-patientname",    "-sp",     "sort studies using the Patient's Name and\na timestamp");
 
     cmd.addSubGroup("filename generation:");
       cmd.addOption("--default-filenames",      "-uf",     "generate filename from instance UID (default)");
@@ -405,15 +402,13 @@ int main(int argc, char *argv[])
 
   cmd.addGroup("event options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--exec-on-reception",        "-xcr", 1, "[c]ommand: string",
-                                                           "execute command c after having received and\nprocessed one C-STORE-RQ message" );
+                                                           "execute command c after having received and\nprocessed one C-STORE-RQ message");
     cmd.addOption("--exec-on-eostudy",          "-xcs", 1, "[c]ommand: string",
-                                                           "execute command c after having received and\nprocessed all C-STORE-RQ messages that belong\nto one study" );
-    cmd.addOption("--rename-on-eostudy",        "-rns",    "having received and processed all C-STORE-RQ\nmessages that belong to one study, rename\noutput files according to certain pattern" );
+                                                           "execute command c after having received and\nprocessed all C-STORE-RQ messages that belong\nto one study");
+    cmd.addOption("--rename-on-eostudy",        "-rns",    "having received and processed all C-STORE-RQ\nmessages that belong to one study, rename\noutput files according to certain pattern");
     cmd.addOption("--eostudy-timeout",          "-tos", 1, "[t]imeout: integer",
-                                                           "specifies a timeout of t seconds for\nend-of-study determination" );
-#ifdef _WIN32
-    cmd.addOption("--exec-sync",                "-xs",     "execute command synchronously in foreground" );
-#endif
+                                                           "specifies a timeout of t seconds for\nend-of-study determination");
+    cmd.addOption("--exec-sync",                "-xs",     "execute command synchronously in foreground");
 
 #ifdef WITH_OPENSSL
   cmd.addGroup("transport layer security (TLS) options:");
@@ -873,10 +868,7 @@ int main(int argc, char *argv[])
       app.checkValue(cmd.getValueAndCheckMin(opt_endOfStudyTimeout, 0));
     }
 
-#ifdef _WIN32
     if (cmd.findOption("--exec-sync")) opt_execSync = OFTrue;
-#endif
-
   }
 
   /* print resource identifier */
@@ -2481,7 +2473,7 @@ static void executeCommand( const OFString &cmd )
   {
     /* we are the parent process */
     /* remove pending zombie child processes */
-    cleanChildren(pid, OFTrue);
+    cleanChildren(pid, opt_execSync);
   }
   else // in case we are the child process, execute the command etc.
   {
@@ -2719,6 +2711,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.127  2010-06-04 08:07:03  joergr
+** Added support for option --exec-sync to Unix systems (before: Windows only).
+**
 ** Revision 1.126  2010-06-02 14:42:59  joergr
 ** Replaced calls to strerror() by new helper function OFStandard::strerror()
 ** which results in using the thread safe version of strerror() if available.
