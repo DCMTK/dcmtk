@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.04 (schlachter)
+
+- Fixed oflog compilation when configure was called with --disable-threads.
+  Affects: oflog/include/dcmtk/oflog/helpers/threadcf.h
+           oflog/libsrc/Makefile.dep
+           oflog/libsrc/strhelp.cc
+           oflog/libsrc/threads.cc
+
 **** Changes from 2010.06.04 (riesmeier)
 
 - Added support for option --exec-sync to Unix systems (before: Windows only).

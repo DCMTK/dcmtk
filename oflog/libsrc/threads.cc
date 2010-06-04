@@ -18,8 +18,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LOG4CPLUS_SINGLE_THREADED
-
 //#include <cassert>
 #define INCLUDE_CASSERT
 //#include <exception>
@@ -30,6 +28,8 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/oflog/config.h"
+
+#ifndef LOG4CPLUS_SINGLE_THREADED
 
 #if defined(LOG4CPLUS_USE_PTHREADS)
 #  include <sched.h>
@@ -130,7 +130,11 @@ blockAllSignals()
 #if defined (LOG4CPLUS_USE_PTHREADS)
     // Block all signals.
     ::sigset_t signal_set;
+#if defined (_DARWIN_C_SOURCE)
+    sigfillset (&signal_set);
+#else
     ::sigfillset (&signal_set);
+#endif // _DARWIN_C_SOURCE
     ::pthread_sigmask (SIG_BLOCK, &signal_set, 0);
 #endif
 }
