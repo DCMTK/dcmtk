@@ -25,9 +25,9 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-03 10:27:04 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-06-04 13:58:42 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -940,11 +940,67 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
 }
 
 
+OFReadWriteLocker::OFReadWriteLocker(OFReadWriteLock& lock)
+    : theLock(lock), locked(OFFalse)
+{
+}
+
+OFReadWriteLocker::~OFReadWriteLocker()
+{
+  if (locked)
+    theLock.unlock();
+}
+
+/* TODO: print an error message if locked == true? */
+#ifdef DEBUG
+#define lockWarn(name, locked) \
+  if (locked == OFTrue)        \
+  {                            \
+    ofConsole.lockCout() << "OFReadWriteLocker::" name "(): Already locked?!" << OFendl; \
+    ofConsole.unlockCout();    \
+  }
+#else
+#define lockWarn(name, locked)
+#endif
+
+#define OFReadWriteLockerFunction(name) \
+int OFReadWriteLocker::name()           \
+{                                       \
+  lockWarn(#name, locked);              \
+  int ret = theLock. name ();           \
+  if (ret == 0)                         \
+    locked = OFTrue;                    \
+  return ret;                           \
+}
+
+OFReadWriteLockerFunction(rdlock)
+OFReadWriteLockerFunction(wrlock)
+OFReadWriteLockerFunction(tryrdlock)
+OFReadWriteLockerFunction(trywrlock)
+
+int OFReadWriteLocker::unlock()
+{
+#ifdef DEBUG
+  if (locked == OFFalse)
+  {
+    ofConsole.lockCout() << "OFReadWriteLocker::unlock(): Nothing to unlock?!" << OFendl;
+    ofConsole.unlockCout();
+  }
+#endif
+
+  int ret = theLock.unlock();
+  if (ret == 0)
+    locked = OFFalse;
+  return ret;
+}
 
 /*
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
+ * Revision 1.18  2010-06-04 13:58:42  uli
+ * Added class OFReadWriteLocker which simplifies unlocking OFReadWriteLocks.
+ *
  * Revision 1.17  2010-06-03 10:27:04  joergr
  * Replaced calls to strerror() by new helper function OFStandard::strerror()
  * which results in using the thread safe version of strerror() if available.

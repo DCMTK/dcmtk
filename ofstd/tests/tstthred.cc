@@ -23,9 +23,9 @@
  *           as used by most multithread implementations
  *
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:48 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-06-04 13:58:42 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -331,6 +331,126 @@ void rwlock_test()
   CERR << "read/write lock test passed." << OFendl;
 }
 
+class RWLockerT1: public OFThread
+{
+public:
+  RWLockerT1(): OFThread() {}
+  ~RWLockerT1() {}
+
+  virtual void run()
+  {
+    OFReadWriteLocker locker(*rwlock);
+    if (0 == locker.rdlock())
+    {
+      rw_cond1 = 1; // acquired read lock
+      mutex->lock();
+      mutex->unlock();
+      if (0== locker.unlock()) rw_cond2=1;
+      mutex2->lock();
+      mutex2->unlock();
+      if (OFReadWriteLock::busy == locker.tryrdlock()) rw_cond3=1;
+      if (0 == locker.rdlock()) rw_cond4=1;
+      // Implicit unlock() at the end
+    }
+    return;
+  }
+};
+
+class RWLockerT2: public OFThread
+{
+public:
+  RWLockerT2(): OFThread() {}
+  ~RWLockerT2() {}
+
+  virtual void run()
+  {
+    OFReadWriteLocker locker(*rwlock);
+    if ((0==mutex2->trylock())&&(OFReadWriteLock::busy == locker.trywrlock())) rw_cond5=1;
+    if (0 == locker.wrlock())
+    {
+      rw_cond6=1;
+      mutex2->unlock();
+      OFStandard::sleep(1);
+      // Explicite unlock(), check if this causes one unlock() too much
+      if (0==locker.unlock()) rw_cond7=1;
+    }
+    return;
+  }
+};
+
+void rwlocker_test()
+{
+  OFString errmsg;
+
+  // Reset global state
+  rwlock=NULL;
+  mutex2=NULL;
+  rw_cond1=0;
+  rw_cond2=0;
+  rw_cond3=0;
+  rw_cond4=0;
+  rw_cond5=0;
+  rw_cond6=0;
+  rw_cond7=0;
+
+  mutex = new OFMutex();
+  if ((!mutex)||(! mutex->initialized())) bailout("creation of mutex failed", __LINE__);
+  mutex2 = new OFMutex();
+  if ((!mutex2)||(! mutex2->initialized())) bailout("creation of mutex failed", __LINE__);
+  rwlock = new OFReadWriteLock();
+  if ((!rwlock)||(! rwlock->initialized())) bailout("creation of read/write lock failed", __LINE__);
+
+  int condition = mutex->trylock();
+  if (condition)
+  {
+    mutex->errorstr(errmsg, condition);
+    CERR << "mutex lock failed: ";
+    bailout(errmsg.c_str(), __LINE__);
+  }
+
+  OFReadWriteLocker rwlockLocker(*rwlock);
+  condition = rwlockLocker.tryrdlock();
+  if (condition)
+  {
+    rwlock->errorstr(errmsg, condition);
+    CERR << "read lock failed: ";
+    bailout(errmsg.c_str(), __LINE__);
+  }
+
+  RWLockerT1 t1;
+  if (0 != t1.start()) bailout("unable to create thread, semaphore test failed", __LINE__);
+
+  RWLockerT2 t2;
+  if (0 != t2.start()) bailout("unable to create thread, semaphore test failed", __LINE__);
+
+
+  int i=0;
+  while ((i++<5) && ((!rw_cond1)||(!rw_cond5))) OFStandard::sleep(1);
+
+  if ((!rw_cond1)||(!rw_cond5)) bailout("read/write lock/unlock test failed", __LINE__);
+  condition = rwlockLocker.unlock();
+  if (condition)
+  {
+    rwlock->errorstr(errmsg, condition);
+    CERR << "read lock failed: ";
+    bailout(errmsg.c_str(), __LINE__);
+  }
+  OFStandard::sleep(1);
+  if (rw_cond6) bailout("read/write lock test failed", __LINE__);
+
+  mutex->unlock();
+
+  i=0;
+  while ((i++<5) && ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7))) OFStandard::sleep(1);
+  if ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7)) bailout("read/write lock/unlock test failed", __LINE__);
+
+  delete mutex;
+  delete mutex2;
+  delete rwlock;
+  CERR << "read/write lock locker test passed." << OFendl;
+}
+
+
 static OFThreadSpecificData *tsdata=NULL;
 static int tsd_cond1=0;
 static int tsd_cond2=0;
@@ -451,6 +571,7 @@ int main()
   mutex_test();
   semaphore_test(); // may assume that mutexes work correctly
   rwlock_test();    // may assume that mutexes and semaphores work correctly
+  rwlocker_test();  // may assume that mutexes, semaphores and read/write locks work correctly
   tsdata_test();
   CERR << "all tests passed." << OFendl;
   return 0;
@@ -461,6 +582,9 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstthred.cc,v $
+ * Revision 1.12  2010-06-04 13:58:42  uli
+ * Added class OFReadWriteLocker which simplifies unlocking OFReadWriteLocks.
+ *
  * Revision 1.11  2006-08-14 16:42:48  meichel
  * Updated all code in module ofstd to correctly compile if the standard
  *   namespace has not included into the global one with a "using" directive.

@@ -33,6 +33,11 @@ Changes between releases are documented here.
 - Fixed a warning with VisualStudio 2008 about an implicit cast.
   Affects: dcmdata/libi2d/i2dbmps.cc
 
+- Added class OFReadWriteLocker which simplifies unlocking OFReadWriteLocks.
+  Affects: ofstd/include/dcmtk/ofstd/ofthread.h
+           ofstd/libsrc/ofthread.cc
+           ofstd/tests/tstthred.cc
+
 **** Changes from 2010.06.04 (riesmeier)
 
 - Added support for option --exec-sync to Unix systems (before: Windows only).

@@ -25,9 +25,9 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:06:08 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-06-04 13:58:42 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -501,12 +501,76 @@ private:
   OFReadWriteLock& operator=(const OFReadWriteLock& arg);
 };
 
+/** This class aims to provide an easy way for making sure OFReadWriteLocks
+ *  are unlocked in an exception safe way. You can just create a local
+ *  instance of this class and lock the OFReadWriteLock through it. When it
+ *  is destructed it will make sure that the lock is unlocked if necessary.
+ */
+class OFReadWriteLocker {
+public:
+  /** constructor
+   *  @param lock the lock to associate this instance with
+   */
+  OFReadWriteLocker(OFReadWriteLock& lock);
+
+  /** destructor, unlocks the mutex if necessary */
+  ~OFReadWriteLocker();
+
+  /** lock the lock for reading
+   *  @return 0 upon success, an error code otherwise
+   *  @see OFReadWriteLock::rdlock
+   */
+  int rdlock();
+
+  /** lock the lock for writing
+   *  @return 0 upon success, an error code otherwise
+   *  @see OFReadWriteLock::wrlock
+   */
+  int wrlock();
+
+  /** try to lock the lock for reading
+   *  @return 0 upon success, OFReadWriteLock::busy if the read/write lock
+   *    is already locked, an error code otherwise
+   *  @see OFReadWriteLock::tryrdlock
+   */
+  int tryrdlock();
+
+  /** try to lock the lock for writing
+   *  @return 0 upon success, OFReadWriteLock::busy if the read/write lock
+   *    is already locked, an error code otherwise
+   *  @see OFReadWriteLock::trywrlock
+   */
+  int trywrlock();
+
+  /** unlock the lock
+   *  @return 0 upon success, an error code otherwise
+   *  @see OFReadWriteLock::unlock
+   */
+  int unlock();
+
+private:
+  /** the lock on which we are operating */
+  OFReadWriteLock& theLock;
+
+  /** did we sucessfully lock the lock? */
+  OFBool locked;
+
+  /** unimplemented private copy constructor */
+  OFReadWriteLocker(const OFReadWriteLocker& arg);
+
+  /** unimplemented private assignment operator */
+  OFReadWriteLocker& operator=(const OFReadWriteLocker& arg);
+};
+
 #endif
 
 /*
  *
  * CVS/RCS Log:
  * $Log: ofthread.h,v $
+ * Revision 1.10  2010-06-04 13:58:42  uli
+ * Added class OFReadWriteLocker which simplifies unlocking OFReadWriteLocks.
+ *
  * Revision 1.9  2005-12-08 16:06:08  meichel
  * Changed include path schema for all DCMTK header files
  *
