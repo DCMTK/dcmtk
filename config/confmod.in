@@ -6,8 +6,8 @@ parentdir=`pwd`
 relparentdir=.
 configdir="configdir"
 
-while test $parentdir != "/" -a $configdir = "configdir"; do
-	if test -d $parentdir/config ; then
+while test "$parentdir" != "/" -a "$configdir" = "configdir"; do
+	if test -d "$parentdir/config" ; then
 		configdir=`echo $relparentdir | sed 's/^\.\///'`/config
 	else
 changequote(, )dnl
@@ -17,7 +17,7 @@ changequote([, ])dnl
 	fi
 done
 
-if test $configdir = "configdir" ; then
+if test "$configdir" = "configdir" ; then
 	echo "Cannot find configure directory"
 	exit 1
 fi

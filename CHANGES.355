@@ -9,6 +9,27 @@ Changes between releases are documented here.
            oflog/libsrc/strhelp.cc
            oflog/libsrc/threads.cc
 
+- Don't trip over spaces in the absolute path to the code.
+  Affects: config/configure
+           config/configure.in
+           config/confmod
+           config/confmod.in
+           dcmdata/configure
+           dcmimage/configure
+           dcmimgle/configure
+           dcmjpeg/configure
+           dcmjpls/configure
+           dcmnet/configure
+           dcmpstat/configure
+           dcmqrdb/configure
+           dcmsign/configure
+           dcmsr/configure
+           dcmtls/configure
+           dcmwlm/configure
+           doxygen/configure
+           oflog/configure
+           ofstd/configure
+
 **** Changes from 2010.06.04 (riesmeier)
 
 - Added support for option --exec-sync to Unix systems (before: Windows only).

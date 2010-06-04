@@ -97,7 +97,7 @@ AH_BOTTOM([#endif /* CFUNIX_H */])
 dnl Include general file
 sinclude(general.m4)dnl
 
-AC_CONFIG_AUX_DIR(`pwd`)
+AC_CONFIG_AUX_DIR([.])
 
 dnl Checks for programs.
 
