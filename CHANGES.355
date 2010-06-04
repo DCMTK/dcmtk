@@ -52,6 +52,9 @@ Changes between releases are documented here.
   Affects: dcmnet/apps/storescp.cc
            dcmnet/docs/storescp.man
 
+- Added links to experimental DICOM SCU and SCP classes.
+  Affects: dcmnet/docs/dcmnet.dox
+
 **** Changes from 2010.06.03 (riesmeier)
 
 - Replaced calls to strerror() by new helper function OFStandard::strerror()

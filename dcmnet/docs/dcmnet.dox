@@ -9,6 +9,11 @@ Control Service Element (ACSE) and the DICOM Message Service Element (DIMSE).
 The main interfaces are the structs and functions declared in file assoc.h and
 dimse.h.
 
+The are also two experimental classes for implementing a DICOM Service Class
+User and Provider:
+\li \b DcmSCU
+\li \b DcmSCP
+
 \section Tools
 
 This module contains the following command line tools:
