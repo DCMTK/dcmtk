@@ -23,8 +23,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-01 12:59:48 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2010-06-04 12:06:25 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -225,7 +225,7 @@ OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
 
   /* Some older standards used this, always 1 for BMP (number of planes) */
   if (readWord(tmp_word) != 0 || tmp_word != 1)
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Not a BMP file - invalid bitmap header");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Not a BMP file - invalid number of planes");
 
   /* Color depth in bpp */
   if (readWord(tmp_word) != 0)
@@ -252,10 +252,14 @@ OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
   if (readDWord(tmp_dword) != 0)
     return EC_EndOfStream;
 
-  colors = tmp_dword;
+  /* A BMP file can only have 256 color table entries */
+  if (tmp_dword > 256)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "invalid BMP file - color table too big");
+
+  colors = OFstatic_cast(Uint16, tmp_dword);
   if (colors == 0) {
-    // In this case, 1, 4 and 8 bpp get pow(2, bpp) colors in the color table,
-    // others get no color table at all
+    // In this case, 1, 4 and 8 bpp get 2**bpp colors in the color table,
+    // others get no color table at all.
     switch (bpp) {
     case 1:
       colors = 2;
@@ -629,6 +633,9 @@ I2DBmpSource::~I2DBmpSource()
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.cc,v $
+ * Revision 1.9  2010-06-04 12:06:25  uli
+ * Fixed a warning with VisualStudio 2008 about an implicit cast.
+ *
  * Revision 1.8  2010-06-01 12:59:48  uli
  * Generate a better error message if an image exceeds 65535 rows or columns.
  *

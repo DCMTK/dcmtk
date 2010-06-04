@@ -30,6 +30,9 @@ Changes between releases are documented here.
            oflog/configure
            ofstd/configure
 
+- Fixed a warning with VisualStudio 2008 about an implicit cast.
+  Affects: dcmdata/libi2d/i2dbmps.cc
+
 **** Changes from 2010.06.04 (riesmeier)
 
 - Added support for option --exec-sync to Unix systems (before: Windows only).
