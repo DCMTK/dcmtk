@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.07 (onken)
+
+- Fixed crash in dcmimage's TIFF plugin on some windows systems
+  that was caused by closing the output file more than once.
+  Affects: dcmimage/libsrc/dipitiff.cc
+  
+- Added Visual Studio 10 (2010) to the list of supported Windows compilers.
+  Affects: CMakeLists.txt
+
 **** Changes from 2010.06.04 (schlachter)
 
 - Fixed oflog compilation when configure was called with --disable-threads.
