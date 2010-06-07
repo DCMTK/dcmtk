@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmMetaInfo
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:44 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-07 13:54:13 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,6 +184,20 @@ class DcmMetaInfo
     virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
                                  const size_t flags = 0);
 
+    /** load object from a DICOM file
+     *  @param fileName name of the file to load
+     *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown)
+     *  @param groupLength flag, specifying how to handle the group length tags
+     *  @param maxReadLength maximum number of bytes to be read for an element value.
+     *    Element values with a larger size are not loaded until their value is retrieved
+     *    (with getXXX()) or loadAllDataElements() is called.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition loadFile(const char *fileName,
+                                 const E_TransferSyntax readXfer = EXS_Unknown,
+                                 const E_GrpLenEncoding groupLength = EGL_noChange,
+                                 const Uint32 maxReadLength = DCM_MaxReadLength);
+
 
   private:
 
@@ -248,6 +262,9 @@ class DcmMetaInfo
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
+** Revision 1.32  2010-06-07 13:54:13  joergr
+** Added new method that allows for loading the meta-header only.
+**
 ** Revision 1.31  2010-03-01 09:08:44  uli
 ** Removed some unnecessary include directives in the headers.
 **
@@ -370,4 +387,3 @@ class DcmMetaInfo
 ** - merged read / write methods for block and file transfer
 **
 */
-

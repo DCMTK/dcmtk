@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-25 16:30:17 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2010-06-07 13:55:53 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,7 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
+#include "dcmtk/dcmdata/dcistrmf.h"    /* for class DcmInputFileStream */
 #include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
 
 
@@ -582,9 +583,45 @@ OFCondition DcmMetaInfo::write(
 }
 
 
+// ********************************
+
+
+OFCondition DcmMetaInfo::loadFile(const char *fileName,
+                                  const E_TransferSyntax readXfer,
+                                  const E_GrpLenEncoding groupLength,
+                                  const Uint32 maxReadLength)
+{
+    OFCondition l_error = EC_IllegalParameter;
+    /* check parameters first */
+    if ((fileName != NULL) && (strlen(fileName) > 0))
+    {
+        /* open file for input */
+        DcmInputFileStream fileStream(fileName);
+        /* check stream status */
+        l_error = fileStream.status();
+        if (l_error.good())
+        {
+            /* clear this object */
+            l_error = clear();
+            if (l_error.good())
+            {
+                /* read data from file */
+                transferInit();
+                l_error = read(fileStream, readXfer, groupLength, maxReadLength);
+                transferEnd();
+            }
+        }
+    }
+    return l_error;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.52  2010-06-07 13:55:53  joergr
+** Added new method that allows for loading the meta-header only.
+**
 ** Revision 1.51  2010-03-25 16:30:17  joergr
 ** Made log messages more consistent within this module.
 **
