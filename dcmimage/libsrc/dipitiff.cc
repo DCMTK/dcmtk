@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements TIFF interface for plugable image formats
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-06 12:33:56 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-06-07 12:49:51 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,7 +167,11 @@ int DiTIFFPlugin::write(
             offset += bytesperrow;
           }
           TIFFFlushData(tif);
-          TIFFClose(tif);
+          /* Clean up internal structures and free memory.
+           * However, the file will be closed by the caller, therefore
+           * TIFFClose(tif) is not called.
+           */
+          TIFFCleanup(tif);
         }
         if (OK) result = 1;
       }
@@ -216,6 +220,10 @@ int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
  *
  * CVS/RCS Log:
  * $Log: dipitiff.cc,v $
+ * Revision 1.10  2010-06-07 12:49:51  onken
+ * Fixed crash in dcmimage's TIFF plugin on some windows systems
+ * that was caused by closing the output file more than once.
+ *
  * Revision 1.9  2009-08-06 12:33:56  meichel
  * Fixed bug that caused TIFF export in dcm2pnm to fail on Win32
  *   for newer releases of libtiff (3.7.4 and newer)
