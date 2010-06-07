@@ -21,9 +21,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:44 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-07 13:57:57 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,7 +132,9 @@ typedef enum {
     /// read as dataset (assume no meta header present)
     ERM_dataset = 1,
     /// read file format only, refuse if no meta-header
-    ERM_fileOnly = 2
+    ERM_fileOnly = 2,
+    /// read meta-header only, do not read the dataset
+    ERM_metaOnly = 3
 } E_FileReadMode;
 
 /// mode for file writing
@@ -210,6 +212,9 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.33  2010-06-07 13:57:57  joergr
+ * Added new file read mode that allows for loading the meta-header only.
+ *
  * Revision 1.32  2010-03-01 09:08:44  uli
  * Removed some unnecessary include directives in the headers.
  *

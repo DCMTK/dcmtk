@@ -7,6 +7,10 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dcmetinf.h
            dcmdata/libsrc/dcmetinf.cc
 
+- Added new file read mode that allows for loading the meta-header only.
+  Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/libsrc/dcfilefo.cc
+
 **** Changes from 2010.06.07 (onken)
 
 - Fixed crash in dcmimage's TIFF plugin on some windows systems

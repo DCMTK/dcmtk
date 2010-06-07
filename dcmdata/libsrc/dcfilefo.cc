@@ -22,8 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-25 16:30:17 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2010-06-07 13:59:51 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,8 +76,8 @@ DcmFileFormat::DcmFileFormat()
 
 
 DcmFileFormat::DcmFileFormat(DcmDataset *dataset)
-    : DcmSequenceOfItems(InternalUseTag),
-      FileReadMode(ERM_autoDetect)
+  : DcmSequenceOfItems(InternalUseTag),
+    FileReadMode(ERM_autoDetect)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
@@ -587,9 +587,9 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
                 errorFlag = metaInfo->read(inStream, xfer, glenc, maxReadLength);
             }
 
-            // read MetaInfo() from Tag(0002,0010) and determine xfer
+            // determine xfer from tag (0002,0010) in the meta header
             newxfer = lookForXfer(metaInfo);
-            if (FileReadMode == ERM_fileOnly)
+            if ((FileReadMode == ERM_fileOnly) || (FileReadMode == ERM_metaOnly))
             {
                 // reject file if no meta header present
                 if (errorFlag.good() && (newxfer == EXS_Unknown))
@@ -604,9 +604,13 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
                     itemList->seek (ELP_first);
                     itemList->insert(dataset, ELP_next);
                 }
-                if (dataset && dataset->transferState() != ERW_ready)
+                // check whether to read the dataset at all
+                if (FileReadMode != ERM_metaOnly)
                 {
-                    errorFlag = dataset->read(inStream, newxfer, glenc, maxReadLength);
+                    if (dataset && dataset->transferState() != ERW_ready)
+                    {
+                        errorFlag = dataset->read(inStream, newxfer, glenc, maxReadLength);
+                    }
                 }
             }
         }
@@ -914,6 +918,9 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.59  2010-06-07 13:59:51  joergr
+** Added new file read mode that allows for loading the meta-header only.
+**
 ** Revision 1.58  2010-03-25 16:30:17  joergr
 ** Made log messages more consistent within this module.
 **
