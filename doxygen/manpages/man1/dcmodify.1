@@ -1,4 +1,4 @@
-.TH "dcmodify" 1 "4 May 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmodify" 1 "8 Jun 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmodify \- Modify DICOM files
@@ -146,6 +146,9 @@ insert mode:
   -i    --insert  "[t]ag-path=[v]alue"
           insert (or overwrite) path at position t with value v
 
+  -if   --insert-from-file  "[t]ag-path=[f]ilename"
+          insert (or overwrite) path at position t with value from file f
+
   -nrc  --no-reserv-check
           do not check private reservations
 
@@ -153,6 +156,9 @@ modify mode:
 
   -m    --modify  "[t]ag-path=[v]alue"
           modify tag at position t to value v
+
+  -mf   --modify-from-file  "[t]ag-path=[f]ilename"
+          modify tag at position t to value from file f
 
   -ma   --modify-all  "[t]ag=[v]alue"
           modify ALL matching tags t in file to value v
@@ -180,9 +186,8 @@ unique identifier:
           generate new SOP Instance UID
 
   -nmu  --no-meta-uid
-          don't update metaheader UIDs;
-          UIDs in the metaheader won't be changed, if related UIDs in
-          the dataset are modified via options -m, -i or -ma
+          do not update metaheader UIDs if related
+          UIDs in the dataset are modified
 
 other processing options:
 
@@ -280,16 +285,21 @@ Also, see description above how inserting values into elements with unknown VR a
 When you use \fBdcmodify\fP to delete a private reservation tag, please note that \fBdcmodify\fP won't touch the private tags that are under this reservation. The user is forced to handle the consistency between reservations and their pending private tags.
 .PP
 For the deletion of private non-reservation tags there are no special issues.
-.SH "CHANGING UIDs"
+.SH "CHANGING UIDS"
 .PP
 \fBdcmodify\fP will automatically correct 'Media Storage SOP Class UID' and 'Media Storage SOP Instance UID' in the metaheader, if you make changes to the related tags in the dataset ('SOP Class UID' and 'SOP Instance UID') via insert or modify mode options. You can disable this behaviour by using the \fI-nmu\fP option.
 .PP
 If you generate new UID's with \fI-gst\fP, \fI-gse\fP or \fI-gin\fP, this will only affect the UID you choosed to generate. So if you use \fI-gst\fP to generate a new 'Study Instance UID', then 'Series Instance UID' and 'SOP Instance UID' will not be affected! This gives you the possibility to generate each value separately. Normally, you would also modify the 'underlying' UIDs. As a disadvantage of this flexibility, the user has to assure, that when creating 'new' DICOM files with new UIDs with \fBdcmodify\fP, other UIDs have to be updated by the user as necessary.
 .PP
 When choosing the \fI-gin\fP option, the related metaheader tag ('Media Storage SOP Instance UID') is updated automatically. This behaviour cannot be disabled.
+.SH "ELEMENT VALUES FROM FILE"
+.PP
+In order to read the element value from a file instead of specifying it on the command line, option \fI-mf\fP and \fI-if\fP can be used. Please note that for OW elements, the data is expected to be little endian ordered and will be swapped if necessary. The file size should always be an even number of bytes, i.e. no automatic padding is performed.
 .SH "WILDCARDS"
 .PP
-\fBdcmodify\fP also permits the usage of a wildcard character '*' for item numbers in path expressions, e.g. 'ContentSequence[*].CodeValue' selects all 'Code Value' attributes in all items of the ContentSequence. Using a wildcard is possible for all basic operations, i.e . modifying \fI-m\fP, inserting \fI-i\fP and \fI-e\fP options which makes it, together with the automatic creation of intermediate path nodes a powerful tool for construction and processing complex datasets. The options \fI-ma\fP and \fI-ea\fP for modifying or deleting all occurences of a DICOM element based on its tag does not accept any wildcards but only works on single elements (i.e. a single dictionary name or tag key).
+\fBdcmodify\fP also permits the usage of a wildcard character '*' for item numbers in path expressions, e.g. 'ContentSequence[*].CodeValue' selects all 'Code Value' attributes in all items of the ContentSequence. Using a wildcard is possible for all basic operations, i.e. modifying \fI-m\fP, inserting \fI-i\fP and \fI-e\fP options which makes it, together with the automatic creation of intermediate path nodes a powerful tool for construction and processing complex datasets.
+.PP
+The options \fI-ma\fP and \fI-ea\fP for modifying or deleting all occurences of a DICOM element based on its tag do not accept any wildcards but only work on single elements (i.e. a single dictionary name or tag key).
 .SH "EXAMPLES"
 .PP
 .PP
@@ -316,6 +326,15 @@ When choosing the \fI-gin\fP option, the related metaheader tag ('Media Storage 
        possible.  You can specify longer tag paths, too (e.g.
        "(0008,1111)[*].(0008,1111)[*].(0010,0010)=A Third One").
 
+-if  --insert-from-file:
+       dcmodify -if "PixelData=pixel.raw" file.dcm
+       Inserts the content of file 'pixel.raw' into the PixelData element
+       of 'file.dcm'.  The contents of the file will be read as is.
+       OW data is expected to be little endian ordered and will be
+       swapped if necessary.  No checks will be made to ensure that the
+       amount of data is reasonable in terms of other attributes such as
+       Rows or Columns.
+
 -m   --modify:
        dcmodify -m "(0010,0010)=A Name" file.dcm
        Changes tag (0010,0010) on 1st level to "A Name".
@@ -333,6 +352,11 @@ When choosing the \fI-gin\fP option, the related metaheader tag ('Media Storage 
 
        Note that for the '-m' option the last node in the path must be
        a leaf element, i.e. not a sequence or an item.
+
+-mf  --modify-from-file:
+       dcmodify -mf "PixelData=pixel.raw" file.dcm
+       Does the same as -if in case there was already a PixelData element
+       in 'file.dcm'.  Otherwise nothing is changed.
 
 -ma  --modify-all:
        dcmodify -ma "(0010,0010)=New Name" file.dcm
@@ -411,4 +435,4 @@ The \fBdcmodify\fP utility will attempt to load DICOM data dictionaries specifie
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2003-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2003-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

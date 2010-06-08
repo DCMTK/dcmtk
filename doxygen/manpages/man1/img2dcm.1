@@ -1,4 +1,4 @@
-.TH "img2dcm" 1 "4 May 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "img2dcm" 1 "8 Jun 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 img2dcm \- Convert standard image formats into DICOM format
@@ -266,7 +266,7 @@ JFIF (JPEG File Interchange Format) information facilitates optional APPn marker
 .PP
 For DICOM it is kind of a 'gray zone', whether the integration of JFIF (or any other APPn) data into the DICOM object's internal JPEG stream is allowed or not. However, the most reliable approach is to cut those markers and their information off the JPEG stream. This approach is also taken by the \fBimg2dcm\fP application. By default, all APPn markers are cut off from the original JPEG stream. However, if you want to keep other APPn markers than JFIF (e. g. EXIF information) inside the DICOM stream, the option \fI--keep-appn\fP does the trick. It should also be slightly faster than cutting off APPn information, because it is not necessary to scan the whole JPEG stream for such data. JFIF information is \fBalways\fP removed by \fBimg2dcm\fP.
 .SS "BMP Input Plugin"
-\fBimg2dcm\fP supports BMP as input format. However, so far only 24 bit RGB (i.e. 8 bit per color channel) images are accepted for conversion while grayscale images are rejected. For color, also images stored in BMPs upside-down fashion can be converted to DICOM. There are no specific options for fine-tuning BMP format conversion.
+\fBimg2dcm\fP supports BMP as input format. However, so far only the most commmon BMP images are supported. In particular, BMP images which use bitfields or run length encoding will be rejected. Such images are uncommon. All input images will be converted into a DICOM image with RGB color model and a bit depth of 24. There are no specific options for fine-tuning BMP format conversion.
 .SS "Output Plugins"
 The desired output SOP Class can be selected on the command line. Currently, an export plugin for the Secondary Capture Image SOP class (default, option \fI-sc\fP), the new Secondary Capture Image SOP classes (option \fI-nsc\fP) and Visible Light Photographic Image SOP class (option \fI-vl\fP) are available. Please note that the first one is deprecated according to the DICOM standard but is selected as a default because it is widely supported. Future versions of \fBimg2dcm\fP might provide further output plugins for other SOP Classes.
 .PP
@@ -346,4 +346,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcm2pnm\fP(1), \fBdcmj2pnm\fP(1), \fBdump2dcm\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2007-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2007-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

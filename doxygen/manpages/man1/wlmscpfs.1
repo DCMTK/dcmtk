@@ -1,4 +1,4 @@
-.TH "wlmscpfs" 1 "4 May 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "8 Jun 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
@@ -175,7 +175,9 @@ other network options:
 .PP
 The semantic impacts of the above mentioned options is clear for the majority of options. Some particular options, however, are so specific that they need detailed descriptions which will be given in this passage.
 .PP
-The returned character set options are intended for situations in which the wlmscpfs application will return attribute values which are not composed of characters from the DICOM default character repertoire. In such cases, for example option \fI--return-iso-ir-100\fP can be used to specify that a response to a modality's worklist management C-FIND request shall always contain DICOM's Specific Character Set attribute (0008,0005) with a corresponding value, indicating the character repertoire from which the characters of returned attribute values were taken (in this example the repertoire ISO IR 100). Please note that the \fBwlmscpfs\fP application will not make sure that all returned values are actually made up of this character repertoire; the application expects this to be the case. Option \fI--return-iso-ir-100\fP will only lead to the inclusion of the Specific Character Set attribute (0008,0005) with a corresponding value in a worklist management C-FIND response.
+The returned character set options are intended for situations in which the \fBwlmscpfs\fP application will return attribute values which are not composed of characters from the DICOM default character repertoire. In such cases, for example option \fI--return-iso-ir-100\fP can be used to specify that a response to a modality's worklist management C-FIND request shall contain DICOM's Specific Character Set attribute (0008,0005) with a corresponding value, indicating the character repertoire from which the characters of returned attribute values were taken (in this example the repertoire ISO IR 100). Please note that the \fBwlmscpfs\fP application will not make sure that all returned values are actually made up of this character repertoire; the application expects this to be the case.
+.PP
+In general, the Specific Character Set attribute (0008,0005) will only be included in the C-FIND response if it contains any attributes that are affected by the character set, i.e. for value representations PN, LO, LT, SH, ST and UT.
 .PP
 Please note that a C-FIND request which is handled by this application may contain DICOM's Specific Character Set attribute (0008,0005), but this application will never use this attribute's value for matching. Besides, the question if DICOM's Specific Character Set attribute (0008,0005) will be contained in a C-FIND response which is returned by this application is always determined by the returned character set option which was specified when this application was started.
 .PP
@@ -202,7 +204,7 @@ BigEndianExplicitTransferSyntax       1.2.840.10008.1.2.2
 .fi
 .PP
 .PP
-The default behaviour of the wlmscpfs application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBwlmscpfs\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa). This behaviour can be changed with the \fI--prefer\fP options (see above).
+The default behaviour of the \fBwlmscpfs\fP application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBwlmscpfs\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa). This behaviour can be changed with the \fI--prefer\fP options (see above).
 .PP
 The \fBwlmscpfs\fP application does not support extended negotiation.
 .PP
@@ -235,7 +237,6 @@ As return keys the following attributes are currently supported by \fBwlmscpfs:\
 .PP
 .nf
 
-(0008,0005) SpecificCharacterSet
 (0008,0050) AccessionNumber
 (0008,0080) InstitutionName
 (0008,0081) InstitutionAddress
@@ -321,6 +322,8 @@ As return keys the following attributes are currently supported by \fBwlmscpfs:\
 (0040,3001) ConfidentialityConstraintOnPatientDataDescription
 .fi
 .PP
+.PP
+The attribute (0008,0005) SpecificCharacterSet is a special case and its support by \fBwlmscpfs\fP is discussed in the NOTES section above.
 .SS "Access Control"
 When compiled on Unix platforms with TCP wrapper support, host-based access control can be enabled with the \fI--access-control\fP command line option. In this case the access control rules defined in the system's host access control tables for \fBwlmscpfs\fP are enforced. The default locations of the host access control tables are \fI/etc/hosts.allow\fP and \fI/etc/hosts.deny\fP. Further details are described in \fBhosts_access\fP(5).
 .SH "LOGGING"
@@ -342,4 +345,4 @@ The \fBwlmscpfs\fP utility will attempt to load DICOM data dictionaries specifie
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1996-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

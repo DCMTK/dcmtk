@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.08 (riesmeier)
+
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2010.06.07 (riesmeier)
 
 - Added new method that allows for loading the meta-header only.
