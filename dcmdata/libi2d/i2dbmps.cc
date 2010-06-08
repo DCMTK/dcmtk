@@ -23,8 +23,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-08 14:34:45 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2010-06-08 14:39:12 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -385,7 +385,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
      */
     Uint32 posData = (y - 1) * width * 3;
 
-    if (bmpFile.fread(row_data, 1, row_length) < 1)
+    if (bmpFile.fread(row_data, 1, row_length) < row_length)
     {
       delete[] row_data;
       delete[] pixData;
@@ -633,6 +633,9 @@ I2DBmpSource::~I2DBmpSource()
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.cc,v $
+ * Revision 1.11  2010-06-08 14:39:12  uli
+ * Check for premature file ending while reading the pixel data.
+ *
  * Revision 1.10  2010-06-08 14:34:45  uli
  * Correctly calculate the row length for images with bpp below 8.
  *
