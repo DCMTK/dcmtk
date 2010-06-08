@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.08 (onken)
+
+- Added C-FIND functionality to DcmSCU. Some code cleanups. Fixed
+  memory leak sometimes occuring during association configuration.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+
 **** Changes from 2010.06.08 (schlachter)
 
 - Correctly calculate the row length for images with bpp below 8.

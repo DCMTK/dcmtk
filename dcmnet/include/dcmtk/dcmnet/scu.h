@@ -22,9 +22,9 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-04-29 16:13:28 $
+ *  Update Date:      $Date: 2010-06-08 17:54:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/scu.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,52 @@
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
 #endif
+
+
+/** Class representing a single C-FIND response.
+ */
+class FINDResponse
+{
+
+public:
+
+  /// Standard constructor
+  FINDResponse();
+
+  /// Destructor, cleans up internal memory (datasets if present)
+  virtual ~FINDResponse();
+
+  /// Mandatory response field
+  Uint16 m_messageIDRespondedTo;
+
+   // Mandatory response field
+  OFString m_affectedSOPClassUID;
+
+  /// Conditional response field (NULL if absent)
+  DcmDataset *m_dataset;
+
+  /// Mandatory Response Field
+  Uint16 m_status;
+};
+
+
+/** Class representing a bunch of FINDResponses from a single
+ *  C-FIND session.
+ */
+class FINDResponses
+{
+
+public:
+  FINDResponses();
+  virtual ~FINDResponses();
+  Uint32 numResults() const;
+  void add(FINDResponse* rsp);
+  OFListIterator(FINDResponse*) begin();
+  OFListIterator(FINDResponse*) end();
+
+private:
+  OFList<FINDResponse*> m_responses;
+};
 
 /** Base class for implementing DICOM Service Class User functionality.
  *  The class offers support for negotiating associations and sending
@@ -92,8 +138,8 @@ public:
     *  @param transferSyntax [in] The transfer syntax (UID) to look for
     *  @return Adequate Presentation context ID that can be used. 0 if not found.
     */
-  T_ASC_PresentationContextID findPresContID(const OFString& abstractSyntax,
-                                             const OFString& transferSyntax);
+  T_ASC_PresentationContextID findPresentationContextID(const OFString& abstractSyntax,
+                                                        const OFString& transferSyntax);
 
   /**
    * This function sends a C-ECHO command via network
@@ -103,7 +149,7 @@ public:
    *  @return EC_Normal if echo was successful, error code otherwise
    *           
    */
-  OFCondition sendECHORequest( const T_ASC_PresentationContextID& presID );
+  virtual OFCondition sendECHORequest( const T_ASC_PresentationContextID& presID );
 
   /** This function sends a C-STORE request on the currently opened
    *  association and receives the corresponding response then.
@@ -136,12 +182,50 @@ public:
    *          error code otherwise. That means that if the receiver sends a response 
    *          denoting failure of the storage request, EC_Normal will be returned.
    */
-  OFCondition sendSTORERequest( const T_ASC_PresentationContextID& presID,
-                                const OFString& dicomFile,
-                                DcmDataset* dset,
-                                DcmDataset*& rspCommandSet,
-                                DcmDataset*& rspStatusDetail,
-                                Uint16& rspStatusCode);
+  virtual OFCondition sendSTORERequest( const T_ASC_PresentationContextID& presID,
+                                        const OFString& dicomFile,
+                                        DcmDataset* dset,
+                                        DcmDataset*& rspCommandSet,
+                                        DcmDataset*& rspStatusDetail,
+                                        Uint16& rspStatusCode);
+
+  /** Sends a C-FIND Rqeuest on given presentation context
+   *  and receive list of responses. The function receives the first response
+   *  and then calls the function handleFINDResponse which gets the
+   *  relevant presentation context together with the response dataset
+   *  and status information. Then it waits again for the next response,
+   *  if there are more to come (i.e. response status is PENDING).
+   *  In the end, after receiving all responses, the full list of responses
+   *  is returned to the caller. If he is not interested, he just sets
+   *  responses=NULL when calling the function.
+   *  This function can be overwritten by actual SCU implementations but just
+   *  should work fine for most people.
+   */
+  virtual OFCondition sendFINDRequest( T_ASC_PresentationContextID presContextID,
+                                       DcmDataset* queryKeys,
+                                       FINDResponses* responses);
+
+  /** This is the standard handler for C-FIND message responses: It just
+   *  adds up all responses it receives and prints a DEBUG message. Therefore
+   *  it is called by for each response received in sendFINDRequest().
+   *  The idea is of course to overwrite this function in a derived, actual
+   *  SCU implementation if required. Thus, after each response, the caller
+   *  of sendFINDRequest() can decide on its own whether he wants to cancel
+   *  the C-FIND session, terminate the association, do something useful
+   *  or whatever. That way this is a more object oriented kind of callback.
+   */
+  virtual OFCondition handleFINDResponse(Uint16 presContextID,
+                                         FINDResponse* response,
+                                         OFBool& waitForNextResponse);
+
+  /** Send C-FIND-CANCEL and therefore ends the C-FIND session, i.e.
+   *  no further responses will be handled. A call to this function
+   *  only makes sense if an association is open, the given presentation
+   *  context represents a valid C-FIND-enabled SOP class and usuall only,
+   *  if the last command send on that presentation context was a C-FIND
+   *  message.
+   */
+  virtual OFCondition sendCANCELRequest(Uint16 presContextID);
 
   /** Closes the association of this SCU. As parameter it needs information
    *  whether the remote peer wants to release/abort the association. Allowed values:
@@ -365,6 +449,17 @@ protected:
                                    DIMSE_ProgressCallback callback,
                                    void *callbackContext);
 
+   /** After negotiation association, this call returns the presentation
+    *  context belonging to the given presentation context ID.
+    *  @param presID [in] The presentation context ID to look for.
+    *  @param abstractSyntax [out] The abstract syntax (UID) for that ID.
+    *         Empty, if such a presentation context does not exist.
+    *  @param transferSyntax [out] The transfer syntax (UID) for that ID.
+    *         Empty, if such a presentation context does not exist.
+    */
+  void findPresentationContext(const Uint16 presID,
+                               OFString& abstractSyntax,
+                               OFString& transferSyntax);
 
 private:
 
@@ -448,6 +543,10 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.7  2010-06-08 17:54:12  onken
+** Added C-FIND functionality to DcmSCU. Some code cleanups. Fixed
+** memory leak sometimes occuring during association configuration.
+**
 ** Revision 1.6  2010-04-29 16:13:28  onken
 ** Made SCU class independent from dcmtls, i.e. outsourced TLS API. Added
 ** direct API support for sending C-STORE requests. Further API changes and
