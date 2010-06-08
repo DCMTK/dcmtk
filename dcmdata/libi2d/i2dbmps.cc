@@ -23,8 +23,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-04 12:06:25 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2010-06-08 14:34:45 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -334,7 +334,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
      row_length = (row_length + 3) & ~3
    */
 
-  const Uint32 row_length = (width * bpp / 8 + 3) & ~3;
+  const Uint32 row_length = ((width * bpp + 31) / 32) * 4;
   Uint8 *row_data;
   Uint32 y;
   Sint32 direction;
@@ -633,6 +633,9 @@ I2DBmpSource::~I2DBmpSource()
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.cc,v $
+ * Revision 1.10  2010-06-08 14:34:45  uli
+ * Correctly calculate the row length for images with bpp below 8.
+ *
  * Revision 1.9  2010-06-04 12:06:25  uli
  * Fixed a warning with VisualStudio 2008 about an implicit cast.
  *

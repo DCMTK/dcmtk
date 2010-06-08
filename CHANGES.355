@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.08 (schlachter)
+
+- Correctly calculate the row length for images with bpp below 8.
+  Affects: dcmdata/libi2d/i2dbmps.cc
+
 **** Changes from 2010.06.08 (riesmeier)
 
 - Updated man pages.
