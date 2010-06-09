@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-05-21 11:47:52 $
- *  CVS/RCS Revision: $Revision: 1.89 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-09 16:03:36 $
+ *  CVS/RCS Revision: $Revision: 1.90 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmnet/dicom.h"      /* for DICOM_APPLICATION_REQUESTOR */
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
@@ -176,11 +177,20 @@ configureUserIdentityRequest(T_ASC_Parameters *params);
 static OFCondition
 checkUserIdentityResponse(T_ASC_Parameters *params);
 
+/* helper macro for converting stream output to a string */
+#define CONVERT_TO_STRING(output, string) \
+    optStream.str(""); \
+    optStream.clear(); \
+    optStream << output << OFStringStream_ends; \
+    OFSTRINGSTREAM_GETOFSTRING(optStream, string)
+
 #define SHORTCOL 4
 #define LONGCOL 19
 
 int main(int argc, char *argv[])
 {
+  OFOStringStream optStream;
+
   const char *opt_peer = NULL;
   OFCmdUnsignedInt opt_port = 104;
   const char *opt_peerTitle = PEERAPPLICATIONTITLE;
@@ -209,7 +219,6 @@ int main(int argc, char *argv[])
   WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-  char tempstr[20];
   OFString temp_str;
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM storage (C-STORE) SCU", rcsid);
   OFCommandLine cmd;
@@ -241,19 +250,12 @@ int main(int argc, char *argv[])
       cmd.addOption("--recurse",              "+r",      "recurse within specified directories");
   cmd.addGroup("network options:");
     cmd.addSubGroup("application entity titles:");
-      OFString opt1 = "set my calling AE title (default: ";
-      opt1 += APPLICATIONTITLE;
-      opt1 += ")";
-      cmd.addOption("--aetitle",              "-aet", 1, "[a]etitle: string", opt1.c_str());
-      OFString opt2 = "set called AE title of peer (default: ";
-      opt2 += PEERAPPLICATIONTITLE;
-      opt2 += ")";
-      cmd.addOption("--call",                 "-aec", 1, "[a]etitle: string", opt2.c_str());
+      cmd.addOption("--aetitle",              "-aet", 1, "[a]etitle: string", "set called AE title of peer (default: " APPLICATIONTITLE ")");
+      cmd.addOption("--call",                 "-aec", 1, "[a]etitle: string", "set called AE title of peer (default: " PEERAPPLICATIONTITLE ")");
     cmd.addSubGroup("association negotiation profile from configuration file:");
       cmd.addOption("--config-file",          "-xf",  2, "[f]ilename, [p]rofile: string",
                                                          "use profile p from config file f");
     cmd.addSubGroup("proposed transmission transfer syntaxes (not with --config-file):");
-
       cmd.addOption("--propose-uncompr",      "-x=",     "propose all uncompressed TS, explicit VR\nwith local byte ordering first (default)");
       cmd.addOption("--propose-little",       "-xe",     "propose all uncompressed TS, explicit VR\nlittle endian first");
       cmd.addOption("--propose-big",          "-xb",     "propose all uncompressed TS, explicit VR\nbig endian first");
@@ -293,43 +295,25 @@ int main(int argc, char *argv[])
       cmd.addOption("--pos-response",         "-rsp",    "expect positive response");
     cmd.addSubGroup("other network options:");
       cmd.addOption("--timeout",              "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
-      cmd.addOption("--acse-timeout",         "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      CONVERT_TO_STRING("[s]econds: integer (default: " << opt_acse_timeout << ")", optString1);
+      cmd.addOption("--acse-timeout",         "-ta",  1, optString1.c_str(), "timeout for ACSE messages");
       cmd.addOption("--dimse-timeout",        "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
-
-      OFString opt3 = "set max receive pdu to n bytes (default: ";
-      sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
-      opt3 += tempstr;
-      opt3 += ")";
-      OFString opt4 = "[n]umber of bytes: integer (";
-      sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
-      opt4 += tempstr;
-      opt4 += "..";
-      sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
-      opt4 += tempstr;
-      opt4 += ")";
-      cmd.addOption("--max-pdu",              "-pdu", 1, opt4.c_str(), opt3.c_str());
-      cmd.addOption("--max-send-pdu",                 1, opt4.c_str(), "restrict max send pdu to n bytes");
+      CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString2);
+      CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxReceivePDULength << ")", optString3);
+      cmd.addOption("--max-pdu",              "-pdu", 1, optString2.c_str(), optString3.c_str());
+      cmd.addOption("--max-send-pdu",                 1, optString2.c_str(), "restrict max send pdu to n bytes");
       cmd.addOption("--repeat",                       1, "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                           "abort association instead of releasing it");
       cmd.addOption("--no-halt",              "-nh",     "do not halt if unsuccessful store encountered\n(default: do halt)");
       cmd.addOption("--uid-padding",          "-up",     "silently correct space-padded UIDs");
 
       cmd.addOption("--invent-instance",      "+II",     "invent a new SOP instance UID for every image\nsent");
-      OFString opt5 = "invent a new series UID after n images\nhave been sent (default: ";
-      sprintf(tempstr, "%ld", (long)opt_inventSeriesCount);
-      opt5 += tempstr;
-      opt5 += ")";
-      cmd.addOption("--invent-series",        "+IR",  1, "[n]umber: integer (implies --invent-instance)", opt5.c_str());
-      OFString opt6 = "invent a new study UID after n series\nhave been sent (default: ";
-      sprintf(tempstr, "%ld", (long)opt_inventStudyCount);
-      opt6 += tempstr;
-      opt6 += ")";
-      cmd.addOption("--invent-study",         "+IS",  1, "[n]umber: integer (implies --invent-instance)", opt6.c_str());
-      OFString opt7 = "invent a new patient ID and name after n studies\nhave been sent (default: ";
-      sprintf(tempstr, "%ld", (long)opt_inventPatientCount);
-      opt7 += tempstr;
-      opt7 += ")";
-      cmd.addOption("--invent-patient",       "+IP",  1, "[n]umber: integer (implies --invent-instance)", opt7.c_str());
+      CONVERT_TO_STRING("invent a new series UID after n images" << OFendl << "have been sent (default: " << opt_inventSeriesCount << ")", optString4);
+      cmd.addOption("--invent-series",        "+IR",  1, "[n]umber: integer (implies --invent-instance)", optString4.c_str());
+      CONVERT_TO_STRING("invent a new study UID after n series" << OFendl << "have been sent (default: " << opt_inventStudyCount << ")", optString5);
+      cmd.addOption("--invent-study",         "+IS",  1, "[n]umber: integer (implies --invent-instance)", optString5.c_str());
+      CONVERT_TO_STRING("invent a new patient ID and name after n studies" << OFendl << "have been sent (default: " << opt_inventPatientCount << ")", optString6);
+      cmd.addOption("--invent-patient",       "+IP",  1, "[n]umber: integer (implies --invent-instance)", optString6.c_str());
 
 #ifdef WITH_OPENSSL
   cmd.addGroup("transport layer security (TLS) options:");
@@ -696,107 +680,114 @@ int main(int argc, char *argv[])
          app.checkDependence("--pos-response", "--user, --kerberos or --saml", opt_identMode != ASC_USER_IDENTITY_NONE);
          opt_identResponse = OFTrue;
       }
-
-      /* finally, create list of input files */
-      const char *paramString = NULL;
-      const int paramCount = cmd.getParamCount();
-      OFList<OFString> inputFiles;
-      if (opt_scanDir)
-        OFLOG_INFO(storescuLogger, "determining input files ...");
-      /* iterate over all input filenames */
-      for (int i = 3; i <= paramCount; i++)
-      {
-        cmd.getParam(i, paramString);
-        /* search directory recursively (if required) */
-        if (OFStandard::dirExists(paramString))
-        {
-          if (opt_scanDir)
-            OFStandard::searchDirectoryRecursively(paramString, inputFiles, opt_scanPattern, "" /*dirPrefix*/, opt_recurse);
-          else
-            OFLOG_WARN(storescuLogger, "ignoring directory because option --scan-directories is not set: " << paramString);
-        } else
-          inputFiles.push_back(paramString);
-      }
-      /* check whether there are any input files at all */
-      if (inputFiles.empty())
-      {
-        OFLOG_FATAL(storescuLogger, "no input files to be sent");
-        exit(1);
-      }
-
-      /* check input files */
-      OFString errormsg;
-      DcmFileFormat dfile;
-      char sopClassUID[128];
-      char sopInstanceUID[128];
-      OFBool ignoreName;
-      const char *currentFilename = NULL;
-      OFListIterator(OFString) if_iter = inputFiles.begin();
-      OFListIterator(OFString) if_last = inputFiles.end();
-      OFLOG_INFO(storescuLogger, "checking input files ...");
-      /* iterate over all input filenames */
-      while (if_iter != if_last)
-      {
-        ignoreName = OFFalse;
-        currentFilename = (*if_iter).c_str();
-        if (OFStandard::fileExists(currentFilename))
-        {
-          if (opt_proposeOnlyRequiredPresentationContexts)
-          {
-            if (!findSOPClassAndInstanceInFile(currentFilename, sopClassUID, sopInstanceUID))
-            {
-              ignoreName = OFTrue;
-              errormsg = "missing SOP class (or instance) in file: ";
-              errormsg += currentFilename;
-              if (opt_haltOnUnsuccessfulStore)
-              {
-                OFLOG_FATAL(storescuLogger, errormsg);
-                exit(1);
-              }
-              else
-                OFLOG_WARN(storescuLogger, errormsg << ", ignoring file");
-            }
-            else if (!dcmIsaStorageSOPClassUID(sopClassUID))
-            {
-              ignoreName = OFTrue;
-              errormsg = "unknown storage SOP class in file: ";
-              errormsg += currentFilename;
-              errormsg += ": ";
-              errormsg += sopClassUID;
-              if (opt_haltOnUnsuccessfulStore)
-              {
-                OFLOG_FATAL(storescuLogger, errormsg);
-                exit(1);
-              }
-              else
-                OFLOG_WARN(storescuLogger, errormsg << ", ignoring file");
-            }
-            else
-            {
-              sopClassUIDList.push_back(sopClassUID);
-              sopInstanceUIDList.push_back(sopInstanceUID);
-            }
-          }
-          if (!ignoreName) fileNameList.push_back(currentFilename);
-        }
-        else
-        {
-          errormsg = "cannot access file: ";
-          errormsg += currentFilename;
-          if (opt_haltOnUnsuccessfulStore)
-          {
-            OFLOG_FATAL(storescuLogger, errormsg);
-            exit(1);
-          }
-          else
-            OFLOG_WARN(storescuLogger, errormsg << ", ignoring file");
-        }
-        ++if_iter;
-      }
    }
 
     /* print resource identifier */
     OFLOG_DEBUG(storescuLogger, rcsid << OFendl);
+
+    /* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+      OFLOG_WARN(storescuLogger, "no data dictionary loaded, check environment variable: "
+          << DCM_DICT_ENVIRONMENT_VARIABLE);
+    }
+
+    /* finally, create list of input files */
+    const char *paramString = NULL;
+    const int paramCount = cmd.getParamCount();
+    OFList<OFString> inputFiles;
+    if (opt_scanDir)
+      OFLOG_INFO(storescuLogger, "determining input files ...");
+    /* iterate over all input filenames/directories */
+    for (int i = 3; i <= paramCount; i++)
+    {
+      cmd.getParam(i, paramString);
+      /* search directory recursively (if required) */
+      if (OFStandard::dirExists(paramString))
+      {
+        if (opt_scanDir)
+          OFStandard::searchDirectoryRecursively(paramString, inputFiles, opt_scanPattern, "" /*dirPrefix*/, opt_recurse);
+        else
+          OFLOG_WARN(storescuLogger, "ignoring directory because option --scan-directories is not set: " << paramString);
+      } else
+        inputFiles.push_back(paramString);
+    }
+    /* check whether there are any input files at all */
+    if (inputFiles.empty())
+    {
+      OFLOG_FATAL(storescuLogger, "no input files to be sent");
+      exit(1);
+    }
+
+    /* check input files */
+    OFString errormsg;
+    DcmFileFormat dfile;
+    char sopClassUID[128];
+    char sopInstanceUID[128];
+    OFBool ignoreName;
+    const char *currentFilename = NULL;
+    OFListIterator(OFString) if_iter = inputFiles.begin();
+    OFListIterator(OFString) if_last = inputFiles.end();
+    OFLOG_INFO(storescuLogger, "checking input files ...");
+    /* iterate over all input filenames */
+    while (if_iter != if_last)
+    {
+      ignoreName = OFFalse;
+      currentFilename = (*if_iter).c_str();
+      if (OFStandard::fileExists(currentFilename))
+      {
+        if (opt_proposeOnlyRequiredPresentationContexts)
+        {
+          if (!findSOPClassAndInstanceInFile(currentFilename, sopClassUID, sopInstanceUID))
+          {
+            ignoreName = OFTrue;
+            errormsg = "missing SOP class (or instance) in file: ";
+            errormsg += currentFilename;
+            if (opt_haltOnUnsuccessfulStore)
+            {
+              OFLOG_FATAL(storescuLogger, errormsg);
+              exit(1);
+            }
+            else
+              OFLOG_WARN(storescuLogger, errormsg << ", ignoring file");
+          }
+          else if (!dcmIsaStorageSOPClassUID(sopClassUID))
+          {
+            ignoreName = OFTrue;
+            errormsg = "unknown storage SOP class in file: ";
+            errormsg += currentFilename;
+            errormsg += ": ";
+            errormsg += sopClassUID;
+            if (opt_haltOnUnsuccessfulStore)
+            {
+              OFLOG_FATAL(storescuLogger, errormsg);
+              exit(1);
+            }
+            else
+              OFLOG_WARN(storescuLogger, errormsg << ", ignoring file");
+          }
+          else
+          {
+            sopClassUIDList.push_back(sopClassUID);
+            sopInstanceUIDList.push_back(sopInstanceUID);
+          }
+        }
+        if (!ignoreName) fileNameList.push_back(currentFilename);
+      }
+      else
+      {
+        errormsg = "cannot access file: ";
+        errormsg += currentFilename;
+        if (opt_haltOnUnsuccessfulStore)
+        {
+          OFLOG_FATAL(storescuLogger, errormsg);
+          exit(1);
+        }
+        else
+          OFLOG_WARN(storescuLogger, errormsg << ", ignoring file");
+      }
+      ++if_iter;
+    }
 
 #ifdef ON_THE_FLY_COMPRESSION
     // register global JPEG decompression codecs
@@ -811,13 +802,6 @@ int main(int argc, char *argv[])
     // register RLE decompression codec
     DcmRLEDecoderRegistration::registerCodecs();
 #endif
-
-    /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded())
-    {
-      OFLOG_WARN(storescuLogger, "no data dictionary loaded, check environment variable: "
-          << DCM_DICT_ENVIRONMENT_VARIABLE);
-    }
 
     /* initialize network, i.e. create an instance of T_ASC_Network*. */
     OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, opt_acse_timeout, &net);
@@ -1751,6 +1735,11 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.90  2010-06-09 16:03:36  joergr
+** Used new approach on how to output variable information to the syntax usage.
+** Moved check on input files behind the line where the resource identifier is
+** printed.
+**
 ** Revision 1.89  2010-05-21 11:47:52  uli
 ** Replaced DU_fileSize() with OFStandard::getFileSize().
 **

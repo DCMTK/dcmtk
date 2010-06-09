@@ -10,6 +10,13 @@ Changes between releases are documented here.
   information is usually reported in a better way by some other means).
   Affects: dcmnet/libsrc/dimse.cc
 
+- Used new approach on how to output variable information to the syntax usage.
+  Affects: dcmnet/apps/storescu.cc
+
+- Moved check on input files behind the line where the resource identifier is
+  printed.
+  Affects: dcmnet/apps/storescu.cc
+
 **** Changes from 2010.06.08 (onken)
 
 - Added C-FIND functionality to DcmSCU. Some code cleanups. Fixed
