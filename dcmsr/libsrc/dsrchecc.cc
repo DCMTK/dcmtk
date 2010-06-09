@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2009, OFFIS
+ *  Copyright (C) 2003-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRChestCadSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 08:36:36 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2010-06-09 16:35:12 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,7 +103,7 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
     /* row 4 of the table */
     else if ((relationshipType == RT_hasConceptMod) && !byReference &&
         ((sourceValueType == VT_Container) || (sourceValueType == VT_Code) || (sourceValueType == VT_Composite) ||
-        (sourceValueType == VT_Num /* CP 767 */)))
+        (sourceValueType == VT_Num)))
     {
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code);
     }
@@ -115,7 +115,7 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
         result = (targetValueType == VT_Container) || (targetValueType == VT_Text) || (targetValueType == VT_Code) ||
                  (targetValueType == VT_Num) || (targetValueType == VT_Date) || (targetValueType == VT_Image) ||
                  (targetValueType == VT_Waveform) || (targetValueType == VT_SCoord) || (targetValueType == VT_TCoord) ||
-                 (targetValueType == VT_UIDRef /* CP 767 */);
+                 (targetValueType == VT_UIDRef);
     }
     /* row 6 of the table */
     else if ((relationshipType == RT_inferredFrom) && ((sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
@@ -123,7 +123,7 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
         /* by-reference allowed */
         result = (targetValueType == VT_Code) || (targetValueType == VT_Num) || (targetValueType == VT_Image) ||
                  (targetValueType == VT_Waveform) || (targetValueType == VT_SCoord) || (targetValueType == VT_TCoord) ||
-                 (targetValueType == VT_Container) || (targetValueType == VT_Text /* CP 767 */);
+                 (targetValueType == VT_Container) || (targetValueType == VT_Text);
     }
     /* row 7 of the table */
     else if ((relationshipType == RT_selectedFrom) && (sourceValueType == VT_SCoord))
@@ -144,6 +144,9 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrchecc.cc,v $
+ *  Revision 1.7  2010-06-09 16:35:12  joergr
+ *  Removed references to CP 767.
+ *
  *  Revision 1.6  2009-08-07 08:36:36  joergr
  *  Added missing relationship content constraint introduced with DICOM 2007.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2009, OFFIS
+ *  Copyright (C) 2003-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRMammographyCadSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 08:36:36 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2010-06-09 16:35:12 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
     {
         result = (targetValueType == VT_Code) || (targetValueType == VT_Num) || (targetValueType == VT_SCoord) ||
                  (targetValueType == VT_Image) || (targetValueType == VT_Container) ||
-                 (targetValueType == VT_Text /* CP 767 */ ) || (targetValueType == VT_Date /* CP 767 */);
+                 (targetValueType == VT_Text) || (targetValueType == VT_Date);
     }
     /* row 2 of the table */
     else if ((relationshipType == RT_hasObsContext) && !byReference && ((sourceValueType == VT_Container) ||
@@ -92,7 +92,7 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
     {
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
                  (targetValueType == VT_Date) || (targetValueType == VT_Time) || (targetValueType == VT_PName) ||
-                 (targetValueType == VT_UIDRef /* CP 767 */) || (targetValueType == VT_Composite);
+                 (targetValueType == VT_UIDRef) || (targetValueType == VT_Composite);
     }
     /* row 3 of the table */
     else if ((relationshipType == RT_hasAcqContext) && !byReference && (sourceValueType == VT_Image))
@@ -103,26 +103,26 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
     /* row 4 of the table */
     else if ((relationshipType == RT_hasConceptMod) && !byReference &&
         ((sourceValueType == VT_Container) || (sourceValueType == VT_Code) ||
-        (sourceValueType == VT_Num /* CP 767 */) || (sourceValueType == VT_Composite /* CP 767 */)))
+        (sourceValueType == VT_Num) || (sourceValueType == VT_Composite)))
     {
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code);
     }
     /* row 5 the table */
     else if ((relationshipType == RT_hasProperties) &&
-        ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num /* CP 767 */)))
+        ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
     {
         /* by-reference allowed */
         result = (targetValueType == VT_Container) || (targetValueType == VT_Text) || (targetValueType == VT_Code) ||
                  (targetValueType == VT_Num) || (targetValueType == VT_Date) || (targetValueType == VT_Image) ||
-                 (targetValueType == VT_SCoord) || (targetValueType == VT_UIDRef /* CP 767 */);
+                 (targetValueType == VT_SCoord) || (targetValueType == VT_UIDRef);
     }
     /* row 6 of the table */
     else if ((relationshipType == RT_inferredFrom) && ((sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
     {
         /* by-reference allowed */
         result = (targetValueType == VT_Code) || (targetValueType == VT_Num) || (targetValueType == VT_SCoord) ||
-                 (targetValueType == VT_Container) || (targetValueType == VT_Text /* CP 767 */) ||
-                 (targetValueType == VT_Image /* CP 767 */);
+                 (targetValueType == VT_Container) || (targetValueType == VT_Text) ||
+                 (targetValueType == VT_Image);
     }
     /* row 7 of the table */
     else if ((relationshipType == RT_selectedFrom) && (sourceValueType == VT_SCoord))
@@ -137,6 +137,9 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
 /*
  *  CVS/RCS Log:
  *  $Log: dsrmamcc.cc,v $
+ *  Revision 1.11  2010-06-09 16:35:12  joergr
+ *  Removed references to CP 767.
+ *
  *  Revision 1.10  2009-08-07 08:36:36  joergr
  *  Added missing relationship content constraint introduced with DICOM 2007.
  *
