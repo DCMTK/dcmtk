@@ -57,8 +57,8 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-06-02 14:47:46 $
-** CVS/RCS Revision:    $Revision: 1.58 $
+** Update Date:         $Date: 2010-06-09 15:52:48 $
+** CVS/RCS Revision:    $Revision: 1.59 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -953,7 +953,7 @@ DIMSE_sendMessage(
 
       /* dump information if required */
       DCMNET_TRACE("DIMSE Command to be sent on Presentation Context ID:" << OFstatic_cast(Uint16, presID));
-      DCMNET_DEBUG("DIMSE Command to Send:" << OFendl << DcmObject::PrintHelper(*cmdObj));
+      DCMNET_TRACE("DIMSE Command to Send:" << OFendl << DcmObject::PrintHelper(*cmdObj));
 
       /* Send the DIMSE command. DIMSE commands are always little endian implicit. */
       cond = sendDcmDataset(assoc, cmdObj, presID, EXS_LittleEndianImplicit, DUL_COMMANDPDV, NULL, NULL);
@@ -1127,7 +1127,7 @@ DIMSE_receiveCommand(
     if (commandSet) *commandSet = NULL;
 
     /* dump some information if required */
-    DCMNET_DEBUG("DIMSE receiveCommand");
+    DCMNET_TRACE("DIMSE receiveCommand");
 
     /* check if the data dictionary is available. If not return an error */
     if (!isDataDictPresent()) return DIMSE_NODATADICT;
@@ -1235,7 +1235,7 @@ DIMSE_receiveCommand(
     cmdSet->transferEnd();
 
     /* dump information if required */
-    DCMNET_DEBUG("DIMSE receiveCommand: " << pdvCount << " PDVs ("
+    DCMNET_TRACE("DIMSE receiveCommand: " << pdvCount << " PDVs ("
         << bytesRead << " bytes), PresID=" << (int) pid);
 
     /* check if this is a valid presentation context */
@@ -1263,7 +1263,7 @@ DIMSE_receiveCommand(
     if (commandSet) *commandSet = new DcmDataset(*cmdSet);
 
     /* dump some more information if required */
-    DCMNET_DEBUG("DIMSE Command Received:" << OFendl << DcmObject::PrintHelper(*cmdSet));
+    DCMNET_TRACE("DIMSE Command Received:" << OFendl << DcmObject::PrintHelper(*cmdSet));
 
     /* parse the information in cmdSet and create a corresponding T_DIMSE_Message */
     /* structure which represents the the DIMSE message which was received */
@@ -1760,6 +1760,10 @@ OFString DIMSE_warn_str(T_ASC_Association *assoc)
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.59  2010-06-09 15:52:48  joergr
+** Moved some annoying log messages from level DEBUG to TRACE (because the same
+** information is usually reported in a better way by some other means).
+**
 ** Revision 1.58  2010-06-02 14:47:46  joergr
 ** Replaced calls to strerror() by new helper function OFStandard::strerror()
 ** which results in using the thread safe version of strerror() if available.
