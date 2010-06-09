@@ -25,6 +25,9 @@ Changes between releases are documented here.
   Affects: dcmsr/libsrc/dsrchecc.cc
            dcmsr/libsrc/dsrmamcc.cc
 
+- Fixed wrong option text introduced with last commit.
+  Affects: dcmnet/apps/storescu.cc
+
 **** Changes from 2010.06.08 (onken)
 
 - Added C-FIND functionality to DcmSCU. Some code cleanups. Fixed

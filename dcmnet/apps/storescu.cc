@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-09 16:03:36 $
- *  CVS/RCS Revision: $Revision: 1.90 $
+ *  Update Date:      $Date: 2010-06-09 20:00:46 $
+ *  CVS/RCS Revision: $Revision: 1.91 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -250,7 +250,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--recurse",              "+r",      "recurse within specified directories");
   cmd.addGroup("network options:");
     cmd.addSubGroup("application entity titles:");
-      cmd.addOption("--aetitle",              "-aet", 1, "[a]etitle: string", "set called AE title of peer (default: " APPLICATIONTITLE ")");
+      cmd.addOption("--aetitle",              "-aet", 1, "[a]etitle: string", "set my calling AE title (default: " APPLICATIONTITLE ")");
       cmd.addOption("--call",                 "-aec", 1, "[a]etitle: string", "set called AE title of peer (default: " PEERAPPLICATIONTITLE ")");
     cmd.addSubGroup("association negotiation profile from configuration file:");
       cmd.addOption("--config-file",          "-xf",  2, "[f]ilename, [p]rofile: string",
@@ -1735,6 +1735,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.91  2010-06-09 20:00:46  joergr
+** Fixed wrong option text introduced with last commit.
+**
 ** Revision 1.90  2010-06-09 16:03:36  joergr
 ** Used new approach on how to output variable information to the syntax usage.
 ** Moved check on input files behind the line where the resource identifier is
