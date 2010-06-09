@@ -17,6 +17,14 @@ Changes between releases are documented here.
   printed.
   Affects: dcmnet/apps/storescu.cc
 
+- Added preliminary support for N-ACTION to DcmSCU. Some further code cleanups
+  and enhancements.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+
+- Removed references to CP 767.
+  Affects: dcmsr/libsrc/dsrchecc.cc
+           dcmsr/libsrc/dsrmamcc.cc
+
 **** Changes from 2010.06.08 (onken)
 
 - Added C-FIND functionality to DcmSCU. Some code cleanups. Fixed
