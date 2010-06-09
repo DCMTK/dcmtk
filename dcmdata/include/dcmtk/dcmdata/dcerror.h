@@ -22,8 +22,8 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-02-25 13:50:50 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2010-06-09 15:53:34 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,6 +64,7 @@ const unsigned short OFM_dcmjpls  = 19;
 const unsigned short OFM_dcmwave  = 20;
 const unsigned short OFM_dcmrt    = 21;
 const unsigned short OFM_dcmloco  = 22;
+const unsigned short OFM_dcmstcom = 23;
 
 
 // condition constants
@@ -143,6 +144,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.34  2010-06-09 15:53:34  joergr
+** Added number for new module "dcmstcom", used for module-specific error codes.
+**
 ** Revision 1.33  2010-02-25 13:50:50  joergr
 ** Fixed issue with element values which exceed the maximum of a 16-bit length
 ** field.
