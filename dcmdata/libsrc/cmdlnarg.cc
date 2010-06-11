@@ -23,8 +23,8 @@
  *  for OS environments which cannot pass arguments on the command line.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-03 13:29:43 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2010-06-11 14:32:02 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,8 +131,10 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     /* make stdout the same as stderr */
     *stdout = *stderr;
 
+#ifdef USE_BINARY_MODE_FOR_STDOUT_ON_WINDOWS
     /* use binary mode for stdout in order to be more consistent with common Unix behavior */
     setmode(fileno(stdout), O_BINARY);
+#endif
 
 #ifndef __BORLANDC__  /* setvbuf on stdout/stderr does not work with Borland C++ */
     /* make sure the buffering is removed */
@@ -162,6 +164,10 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
+** Revision 1.26  2010-06-11 14:32:02  joergr
+** On Windows systems, the binary mode for stdout is now disabled by default
+** since this causes newlines in textual output to be converted to LF only.
+**
 ** Revision 1.25  2010-06-03 13:29:43  joergr
 ** Fixed issues on Windows platforms introduced with last commit.
 **

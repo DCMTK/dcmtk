@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.11 (riesmeier)
+
+- On Windows systems, the binary mode for stdout is now disabled by default
+  since this causes newlines in textual output to be converted to LF only.
+  Affects: config/docs/macros.txt
+           dcmdata/libsrc/cmdlnarg.cc
+
 **** Changes from 2010.06.11 (schlachter)
 
 - Added test for i2d's BMP code.

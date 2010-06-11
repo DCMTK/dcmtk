@@ -307,6 +307,16 @@ USE__LOCKING
     compilers where _get_osfhandle() is not available since it does not
     implement shared locks.
 
+USE_BINARY_MODE_FOR_STDOUT_ON_WINDOWS
+  Affected: dcmdata
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: On Windows systems, the standard output (stdout) is opened in
+    text mode by default.  Therefore, the binary output of tools like dcm2pnm
+    to stdout does not work correctly (in contrast to Unix systems).  When
+    this preprocessor macro is defined, the binary mode is enabled for stdout.
+    However, this causes newlines in the textual output to be converted to LF
+    only (instead of CR LF which would be the usual translation for Windows).
+
 USING_STD_NAMESPACE
   Affected: all modules
   Type of modification: Re-activated behaviour of earlier DCMTK releases.
