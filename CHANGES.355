@@ -15,6 +15,11 @@ Changes between releases are documented here.
   Affects: oflog/include/dcmtk/oflog/helpers/threads.h
            oflog/libsrc/threads.cc
 
+- Use OFStandard::sleep() in oflog.
+  Affects: oflog/include/dcmtk/oflog/helpers/sleep.h
+           oflog/libsrc/Makefile.dep
+           oflog/libsrc/sleep.cc
+
 **** Changes from 2010.06.09 (riesmeier)
 
 - Added number for new module "dcmstcom", used for module-specific error codes.
