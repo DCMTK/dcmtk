@@ -16,11 +16,12 @@ ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 
 LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(oflogdir)/include
-LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(top_srcdir)/libi2d -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc
 LOCALLIBS = -ldcmdata -loflog -lofstd $(ZLIBLIBS)
+I2DLIBS = -li2d
 
-objs = tvrdatim.o tstpread.o tstpath.o tstchval.o
-progs = tvrdatim tstpread tstpath tstchval
+objs = tvrdatim.o tstpread.o tstpath.o tstchval.o i2dbmp.o
+progs = tvrdatim tstpread tstpath tstchval i2dbmp
 
 
 all: $(progs)
@@ -36,6 +37,9 @@ tstpath: tstpath.o
 
 tstchval: tstchval.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+
+i2dbmp: i2dbmp.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(I2DLIBS) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
 install: all

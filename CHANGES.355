@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.11 (schlachter)
+
+- Added test for i2d's BMP code.
+  Added:   dcmdata/tests/i2dbmp.cc
+  Affects: dcmdata/tests/Makefile.dep
+           dcmdata/tests/Makefile.in
+
 **** Changes from 2010.06.09 (riesmeier)
 
 - Added number for new module "dcmstcom", used for module-specific error codes.
