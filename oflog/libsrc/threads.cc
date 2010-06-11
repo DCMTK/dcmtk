@@ -141,17 +141,6 @@ blockAllSignals()
 #endif // LOG4CPLUS_SINGLE_THREADED
 
 
-void
-yield()
-{
-#if defined(LOG4CPLUS_USE_PTHREADS)
-    ::sched_yield();
-#elif defined(LOG4CPLUS_USE_WIN32_THREADS)
-    ::Sleep(0);
-#endif
-}
-
-
 tstring
 getCurrentThreadName()
 {

@@ -11,6 +11,10 @@ Changes between releases are documented here.
 - Add recent change to each module's configure script to the template, too.
   Affects: config/templates/configure.mod
 
+- Removed unused yield() which was trying to use pthread_yield().
+  Affects: oflog/include/dcmtk/oflog/helpers/threads.h
+           oflog/libsrc/threads.cc
+
 **** Changes from 2010.06.09 (riesmeier)
 
 - Added number for new module "dcmstcom", used for module-specific error codes.

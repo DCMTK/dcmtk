@@ -61,7 +61,6 @@ private:
 #ifndef LOG4CPLUS_SINGLE_THREADED
 
 LOG4CPLUS_EXPORT void blockAllSignals();
-LOG4CPLUS_EXPORT void yield();
 LOG4CPLUS_EXPORT tstring getCurrentThreadName();
 
 
