@@ -46,9 +46,9 @@
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
 ** Intent:        Define tables and provide functions that implement
 **                the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:   $Author: joergr $, $Date: 2010-06-02 15:18:27 $
+** Last Update:   $Author: joergr $, $Date: 2010-06-14 16:02:56 $
 ** Source File:   $RCSfile: dulfsm.cc,v $
-** Revision:      $Revision: 1.68 $
+** Revision:      $Revision: 1.69 $
 ** Status:        $State: Exp $
 */
 
@@ -283,7 +283,7 @@ static FSM_Event_Description Event_Table[] = {
     {A_ASSOCIATE_AC_PDU_RCV, "A-ASSOCIATE-AC PDU (on transport)"},
     {A_ASSOCIATE_RJ_PDU_RCV, "A-ASSOCIATE-RJ PDU (on transport)"},
     {TRANS_CONN_INDICATION, "Transport connection indication"},
-    {A_ASSOCIATE_RQ_PDU_RCV, "A-ASSOCIATE-RQ PDU (on tranport)"},
+    {A_ASSOCIATE_RQ_PDU_RCV, "A-ASSOCIATE-RQ PDU (on transport)"},
     {A_ASSOCIATE_RESPONSE_ACCEPT, "A-ASSOCIATE resp prim (accept)"},
     {A_ASSOCIATE_RESPONSE_REJECT, "A-ASSOCIATE resp prim (reject)"},
     {P_DATA_REQ, "P-DATA request primitive"},
@@ -302,14 +302,10 @@ static FSM_Event_Description Event_Table[] = {
 static FSM_FUNCTION FSM_FunctionTable[] = {
     {AE_1, AE_1_TransportConnect, "AE 1 Transport Connect"},
     {AE_2, AE_2_SendAssociateRQPDU, "AE 2 Send Associate RQ PDU"},
-    {AE_3, AE_3_AssociateConfirmationAccept,
-    "AE 3 Associate Confirmation Accept"},
-    {AE_4, AE_4_AssociateConfirmationReject,
-    "AE 4 Associate Confirmation Reject"},
-    {AE_5, AE_5_TransportConnectResponse,
-    "AE 5 Transport Connect Response"},
-    {AE_6, AE_6_ExamineAssociateRequest,
-    "AE 6 Examine Associate Request"},
+    {AE_3, AE_3_AssociateConfirmationAccept, "AE 3 Associate Confirmation Accept"},
+    {AE_4, AE_4_AssociateConfirmationReject, "AE 4 Associate Confirmation Reject"},
+    {AE_5, AE_5_TransportConnectResponse, "AE 5 Transport Connect Response"},
+    {AE_6, AE_6_ExamineAssociateRequest, "AE 6 Examine Associate Request"},
     {AE_7, AE_7_SendAssociateAC, "AE 7 Send Associate AC"},
     {AE_8, AE_8_SendAssociateRJ, "AE 8 Send Associate RJ"},
 
@@ -324,8 +320,7 @@ static FSM_FUNCTION FSM_FunctionTable[] = {
     {AA_5, AA_5_StopARTIMtimer, "AA 5 Stop ARTIM timer"},
     {AA_6, AA_6_IgnorePDU, "AA 6 Ignore PDU"},
     {AA_7, AA_7_State13SendAbort, "AA 7 State 13 Send Abort"},
-    {AA_8, AA_8_UnrecognizedPDUSendAbort,
-    "AA 8 Unrecognized PDU Send Abort"},
+    {AA_8, AA_8_UnrecognizedPDUSendAbort, "AA 8 Unrecognized PDU Send Abort"},
 
     {AR_1, AR_1_SendReleaseRQ, "AR 1 Send Release RQ"},
     {AR_2, AR_2_IndicateRelease, "AR 2 Indicate Release"},
@@ -3415,12 +3410,12 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     if (cond.bad()) return cond;
 
     DCMNET_TRACE("Read PDU HEAD TCP:" << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                    << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[0])
-                    << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[1])
-                    << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[2])
-                    << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[3])
-                    << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[4])
-                    << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[5]));
+              << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[0])
+              << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[1])
+              << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[2])
+              << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[3])
+              << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[4])
+              << " " << STD_NAMESPACE setw(2) << (unsigned short)(buffer[5]));
 
     /* determine PDU type (captured in byte 0 of buffer) and assign it to reference parameter */
     *type = *buffer++;
@@ -3449,10 +3444,10 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     *pduLength = length;
 
     DCMNET_TRACE("Read PDU HEAD TCP: type: "
-                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned short)(*type)
-                << ", length: " << STD_NAMESPACE dec << (*pduLength) << " ("
-                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)*pduLength
-                << ")");
+              << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned short)(*type)
+              << ", length: " << STD_NAMESPACE dec << (*pduLength) << " ("
+              << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)*pduLength
+              << ")");
 
     /* return ok */
     return EC_Normal;
@@ -3666,8 +3661,8 @@ dump_pdu(const char *type, void *buffer, unsigned long length)
 
     str << "PDU Type: " << type << ", PDU Length: " << length-6 << " + 6 bytes PDU header" << OFendl;
     if (length > 512) {
-            str << "Only dumping 512 bytes." << OFendl;
-            length = 512;
+        str << "Only dumping 512 bytes." << OFendl;
+        length = 512;
     }
     p = (unsigned char*)buffer;
 
@@ -3943,6 +3938,9 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.69  2010-06-14 16:02:56  joergr
+** Fixed typo in event description table.
+**
 ** Revision 1.68  2010-06-02 15:18:27  joergr
 ** Replaced calls to strerror() by new helper function OFStandard::strerror()
 ** which results in using the thread safe version of strerror() if available.
