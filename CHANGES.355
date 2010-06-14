@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.14 (riesmeier)
+
+- Fixed typo in event description table.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+- Slightly modified output of DIMSE_dumpMessage_end().
+  Affects: dcmnet/libsrc/dimdump.cc
+
+- Minor fixes to log messages and log levels.
+  Affects: dcmnet/libsrc/scp.cc
+
 **** Changes from 2010.06.14 (onken)
 
 - Improved efficiency of finding an appropriate presentation context.
