@@ -22,9 +22,9 @@
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-02 16:03:38 $
+ *  Update Date:      $Date: 2010-06-14 15:56:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/scp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,7 @@ DcmSCP::DcmSCP() :
   // manipulations. We want to see the real data.
   dcmEnableAutomaticInputDataCorrection.set( OFFalse );
   if (!m_forkedChild)
-    DCMDATA_DEBUG(OFendl << "(notice: dcmdata auto correction disabled.)" << OFendl);
+    DCMNET_WARN("(notice: dcmdata auto correction disabled.)");
 
 #ifdef HAVE_GUSI_H
   // needed for Macintosh.
@@ -188,7 +188,7 @@ OFCondition DcmSCP::listen()
   OFCondition cond = EC_Normal;
   // Make sure data dictionary is loaded.
   if( !dcmDataDict.isDictionaryLoaded() )
-    DCMDATA_WARN("Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
+    DCMDATA_WARN("no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
 
 #ifdef HAVE_GETEUID
   // If port is privileged we must be as well.
@@ -490,7 +490,7 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
 
   // Dump some debug information
   OFString tmpstr;
-  DCMNET_INFO("Association Acknowledged (Max Send PDV: )" << OFstatic_cast(Uint32, m_assoc->sendPDVLength));
+  DCMNET_INFO("Association Acknowledged (Max Send PDV: " << OFstatic_cast(Uint32, m_assoc->sendPDVLength) << ")");
   if( ASC_countAcceptedPresentationContexts( m_assoc->params ) == 0 )
     DCMNET_INFO("    (but no valid presentation contexts)");
   DCMNET_DEBUG(ASC_dumpParameters(tmpstr, m_assoc->params, ASC_ASSOC_AC));
@@ -666,7 +666,7 @@ OFCondition DcmSCP::handleEchoRequest(T_DIMSE_C_EchoRQ *req,
   // Send an echo response
   OFCondition cond = DIMSE_sendEchoResponse( m_assoc, presId, req, STATUS_Success, NULL );
   if( cond.bad() )
-    DCMNET_ERROR("Error while sending C-ECHO Response: " << cond.text());
+    DCMNET_ERROR("Cannot send C-ECHO Response: " << cond.text());
   else
     DCMNET_DEBUG("C-ECHO successfully sent");
 
@@ -1274,6 +1274,9 @@ void DcmSCP::notifyDIMSEError(const OFCondition& cond)
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.6  2010-06-14 15:56:21  joergr
+** Minor fixes to log messages and log levels.
+**
 ** Revision 1.5  2010-06-02 16:03:38  joergr
 ** Slightly modified some log messages and levels for reasons of consistency.
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
