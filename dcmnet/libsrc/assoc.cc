@@ -67,10 +67,10 @@
 **      Module Prefix: ASC_
 **
 **
-** Last Update:         $Author: uli $
-** Update Date:         $Date: 2009-11-18 11:53:59 $
+** Last Update:         $Author: onken $
+** Update Date:         $Date: 2010-06-14 12:35:47 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.54 $
+** CVS/RCS Revision:    $Revision: 1.55 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1031,8 +1031,7 @@ ASC_findAcceptedPresentationContextID(
     (void)LST_Position(l, (LST_NODE*)pc);
     while (pc && !found)
     {
-        found = (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
-        found &= (pc->result == ASC_P_ACCEPTANCE);
+        found = ( (strcmp(pc->abstractSyntax, abstractSyntax) == 0) && (pc->result == ASC_P_ACCEPTANCE) );
         if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
     }
     if (found) return pc->presentationContextID;
@@ -1047,6 +1046,7 @@ ASC_findAcceptedPresentationContextID(
  * - then tries to find an explicit VR uncompressed TS presentation ctx
  * - then tries to find an implicit VR uncompressed TS presentation ctx
  * - finally accepts each matching presentation ctx independent of TS.
+ * Returns 0 if no appropriate presentation context could be found at all.
  */
 T_ASC_PresentationContextID
 ASC_findAcceptedPresentationContextID(
@@ -1058,7 +1058,7 @@ ASC_findAcceptedPresentationContextID(
     LST_HEAD **l;
     OFBool found = OFFalse;
 
-    if ((transferSyntax==NULL)||(abstractSyntax==NULL))
+    if ( (transferSyntax == NULL) || (abstractSyntax == NULL) )
       return 0;
     if (assoc->params->DULparams.acceptedPresentationContext == NULL)
       return 0;
@@ -1071,9 +1071,7 @@ ASC_findAcceptedPresentationContextID(
     (void)LST_Position(l, (LST_NODE*)pc);
     while (pc && !found)
     {
-        found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
-        found &= (pc->result == ASC_P_ACCEPTANCE);
-        found &= (strcmp(pc->acceptedTransferSyntax, transferSyntax) == 0);
+        found = (strcmp(pc->abstractSyntax, abstractSyntax) == 0) && (pc->result == ASC_P_ACCEPTANCE) && (strcmp(pc->acceptedTransferSyntax, transferSyntax) == 0);
         if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
     }
     if (found) return pc->presentationContextID;
@@ -1084,10 +1082,10 @@ ASC_findAcceptedPresentationContextID(
     (void)LST_Position(l, (LST_NODE*)pc);
     while (pc && !found)
     {
-        found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
-        found &= (pc->result == ASC_P_ACCEPTANCE);
-        found &= ((strcmp(pc->acceptedTransferSyntax, UID_LittleEndianExplicitTransferSyntax) == 0) ||
-                  (strcmp(pc->acceptedTransferSyntax, UID_BigEndianExplicitTransferSyntax) == 0));
+        found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0)
+          && (pc->result == ASC_P_ACCEPTANCE)
+          && ((strcmp(pc->acceptedTransferSyntax, UID_LittleEndianExplicitTransferSyntax) == 0)
+           || (strcmp(pc->acceptedTransferSyntax, UID_BigEndianExplicitTransferSyntax) == 0));
         if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
     }
     if (found) return pc->presentationContextID;
@@ -1098,26 +1096,17 @@ ASC_findAcceptedPresentationContextID(
     (void)LST_Position(l, (LST_NODE*)pc);
     while (pc && !found)
     {
-        found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
-        found &= (pc->result == ASC_P_ACCEPTANCE);
-        found &= (strcmp(pc->acceptedTransferSyntax, UID_LittleEndianImplicitTransferSyntax) == 0);
+        found = (strcmp(pc->abstractSyntax, abstractSyntax) == 0)
+                && (pc->result == ASC_P_ACCEPTANCE)
+                && (strcmp(pc->acceptedTransferSyntax, UID_LittleEndianImplicitTransferSyntax) == 0);
         if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
     }
     if (found) return pc->presentationContextID;
 
-    /* finally we accept everything we get. */
-    l = &assoc->params->DULparams.acceptedPresentationContext;
-    pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
-    (void)LST_Position(l, (LST_NODE*)pc);
-    while (pc && !found)
-    {
-        found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
-        found &= (pc->result == ASC_P_ACCEPTANCE);
-        if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
-    }
-    if (found) return pc->presentationContextID;
-
-    return 0;   /* otherwise */
+    /* finally we accept everything we get.
+       returns 0 if abstract syntax is not supported
+     */
+    return ASC_findAcceptedPresentationContextID(assoc, abstractSyntax);
 }
 
 
@@ -2178,6 +2167,9 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
+** Revision 1.55  2010-06-14 12:35:47  onken
+** Improved efficiency of finding an appropriate presentation context.
+**
 ** Revision 1.54  2009-11-18 11:53:59  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **

@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.14 (onken)
+
+- Improved efficiency of finding an appropriate presentation context.
+  Thanks to Evgeny Sabelskiy <evgeny.sabelskiy@gmail.com> for the suggestion.
+  Affects: dcmnet/libsrc/assoc.cc
+
 **** Changes from 2010.06.11 (riesmeier)
 
 - On Windows systems, the binary mode for stdout is now disabled by default
