@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2009-12-08 16:44:25 $
+** Update Date:         $Date: 2010-06-14 16:00:21 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimdump.cc,v $
-** CVS/RCS Revision:    $Revision: 1.13 $
+** CVS/RCS Revision:    $Revision: 1.14 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -97,15 +97,17 @@ static void DIMSE_dumpMessage_start(OFString &str, enum DIMSE_direction dir)
 
 static void DIMSE_dumpMessage_end(OFString &str, DcmItem *dataset = NULL)
 {
+    str += '\n';
     if (dataset)
     {
+      str += "-----------------------------------------------------------------";
       OFOStringStream stream;
       stream << DcmObject::PrintHelper(*dataset, DCMTypes::PF_shortenLongTagValues) << OFStringStream_ends;
       OFSTRINGSTREAM_GETSTR(stream, result)
       str += result;
       OFSTRINGSTREAM_FREESTR(result)
     }
-    str += "\n======================= END DIMSE MESSAGE =======================";
+    str += "======================= END DIMSE MESSAGE =======================";
 }
 
 static void DIMSE_printNStatusString(STD_NAMESPACE ostream& dumpStream, int status)
@@ -1214,6 +1216,9 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_Message &msg, enum DIMSE_dire
 /*
 ** CVS Log
 ** $Log: dimdump.cc,v $
+** Revision 1.14  2010-06-14 16:00:21  joergr
+** Slightly modified output of DIMSE_dumpMessage_end().
+**
 ** Revision 1.13  2009-12-08 16:44:25  joergr
 ** Slightly modified some log messages.
 **
