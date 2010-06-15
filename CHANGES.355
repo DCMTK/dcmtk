@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.15 (riesmeier)
+
+- Added extended sample configuration file for the logger.
+  Added:   oflog/etc/filelog.cfg
+  Affects: oflog/etc/Makefile.in
+
 **** Changes from 2010.06.14 (riesmeier)
 
 - Fixed typo in event description table.
