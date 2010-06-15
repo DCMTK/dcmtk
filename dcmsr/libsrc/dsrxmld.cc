@@ -23,8 +23,8 @@
  *    classes: DSRXMLDocument
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 08:42:40 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2010-06-15 14:34:51 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,7 @@
 
 #ifdef LIBXML_SCHEMAS_ENABLED
 #include <libxml/xmlschemas.h>
+#endif /* LIBXML_SCHEMAS_ENABLED */
 
 // This function is also used in xml2dcm, try to stay in sync!
 extern "C" void errorFunction(void * ctx, const char *msg, ...)
@@ -106,7 +107,6 @@ extern "C" void errorFunction(void * ctx, const char *msg, ...)
     buffer += "";
 #endif
 }
-#endif /* LIBXML_SCHEMAS_ENABLED */
 
 #endif /* WITH_LIBXML */
 
@@ -727,6 +727,9 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
+ *  Revision 1.16  2010-06-15 14:34:51  uli
+ *  Don't fail to compile if libxml does not support schemas.
+ *
  *  Revision 1.15  2009-10-28 08:42:40  uli
  *  Use a local variable for buffering libxml error messages instead of a
  *  static one.
