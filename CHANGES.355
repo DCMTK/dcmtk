@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.15 (schlachter)
+
+- Print a warning in the file appender if the specified
+  maxFileSize is too low. This is r1383 from log4cplus.
+  Affects: oflog/libsrc/fileap.cc
+
 **** Changes from 2010.06.15 (riesmeier)
 
 - Added extended sample configuration file for the logger.
