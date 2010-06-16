@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.16 (riesmeier)
+
+- Added type cast to integer variable in order to avoid compiler warnings
+  reported by VisualStudio 2008 with warning level 4 (highest).
+  Thanks to forum user "Yves Neumann" for the report.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diovpln.h
+           dcmimgle/libsrc/diovpln.cc
+
 **** Changes from 2010.06.15 (schlachter)
 
 - Print a warning in the file appender if the specified

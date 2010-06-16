@@ -19,11 +19,11 @@
  *
  *  Author:  Joerg Riesmeier
  *
- *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
+ *  Purpose: DicomOverlayPlane (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:47 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-16 07:08:08 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -227,10 +227,7 @@ class DiOverlayPlane
      *  @param  top_pos   y-coordinate of the new plane origin (maybe negative)
      */
     inline void place(const signed int left_pos,
-                      const signed int top_pos)
-    {
-        Left = left_pos; Top = top_pos;
-    }
+                      const signed int top_pos);
 
     /** set scaling factor in x- and y-direction
      *
@@ -567,6 +564,10 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
+ * Revision 1.30  2010-06-16 07:08:08  joergr
+ * Added type cast to integer variables in order to avoid compiler warnings
+ * reported by VisualStudio 2008 with warning level 4 (highest).
+ *
  * Revision 1.29  2010-03-01 09:08:47  uli
  * Removed some unnecessary include directives in the headers.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -19,11 +19,11 @@
  *
  *  Author:  Joerg Riesmeier
  *
- *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
+ *  Purpose: DicomOverlayPlane (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:30:21 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2010-06-16 07:08:12 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -537,6 +537,14 @@ int DiOverlayPlane::show(const Uint16 pvalue)
 }
 
 
+void DiOverlayPlane::place(const signed int left_pos,
+                           const signed int top_pos)
+{
+    Left = OFstatic_cast(Sint16, left_pos);
+    Top = OFstatic_cast(Sint16, top_pos);
+}
+
+
 void DiOverlayPlane::setScaling(const double xfactor,
                                 const double yfactor)
 {
@@ -607,6 +615,10 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
+ * Revision 1.36  2010-06-16 07:08:12  joergr
+ * Added type cast to integer variables in order to avoid compiler warnings
+ * reported by VisualStudio 2008 with warning level 4 (highest).
+ *
  * Revision 1.35  2009-11-25 16:30:21  joergr
  * Adapted code for new approach to access individual frames of a DICOM image.
  * Removed inclusion of header file "ofconsol.h".
