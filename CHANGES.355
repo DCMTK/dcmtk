@@ -9,6 +9,9 @@ Changes between releases are documented here.
   Affects: dcmimgle/include/dcmtk/dcmimgle/diovpln.h
            dcmimgle/libsrc/diovpln.cc
 
+- Removed inline declaration from place() function.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diovpln.h
+
 **** Changes from 2010.06.15 (schlachter)
 
 - Print a warning in the file appender if the specified

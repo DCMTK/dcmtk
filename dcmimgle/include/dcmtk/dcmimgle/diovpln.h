@@ -22,8 +22,8 @@
  *  Purpose: DicomOverlayPlane (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-16 07:08:08 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2010-06-16 08:10:53 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,8 +226,8 @@ class DiOverlayPlane
      ** @param  left_pos  x-coordinate of the new plane origin (maybe negative)
      *  @param  top_pos   y-coordinate of the new plane origin (maybe negative)
      */
-    inline void place(const signed int left_pos,
-                      const signed int top_pos);
+    void place(const signed int left_pos,
+               const signed int top_pos);
 
     /** set scaling factor in x- and y-direction
      *
@@ -533,13 +533,13 @@ inline int DiOverlayPlane::reset(const unsigned long frame)
 inline int DiOverlayPlane::getNextBit()
 {
     int result;
-    if (BitsAllocated == 16)                                       // optimization
+    if (BitsAllocated == 16)                                        // optimization
         result = OFstatic_cast(int, *(Ptr++) & (1 << BitPosition));
     else
     {
-       Ptr = StartPtr + (BitPos >> 4);                             // div 16
-       result = OFstatic_cast(int, *Ptr & (1 << (BitPos & 0xf)));  // mod 16
-       BitPos += BitsAllocated;                                    // next bit
+        Ptr = StartPtr + (BitPos >> 4);                             // div 16
+        result = OFstatic_cast(int, *Ptr & (1 << (BitPos & 0xf)));  // mod 16
+        BitPos += BitsAllocated;                                    // next bit
     }
     return result;
 }
@@ -564,6 +564,9 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
+ * Revision 1.31  2010-06-16 08:10:53  joergr
+ * Removed inline declaration from place() function.
+ *
  * Revision 1.30  2010-06-16 07:08:08  joergr
  * Added type cast to integer variables in order to avoid compiler warnings
  * reported by VisualStudio 2008 with warning level 4 (highest).
