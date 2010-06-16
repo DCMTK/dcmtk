@@ -54,9 +54,9 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: joergr $, $Date: 2010-06-03 13:32:51 $
+** Last Update:   $Author: joergr $, $Date: 2010-06-16 08:45:21 $
 ** Source File:   $RCSfile: dul.cc,v $
-** Revision:      $Revision: 1.86 $
+** Revision:      $Revision: 1.87 $
 ** Status:        $State: Exp $
 */
 
@@ -1798,6 +1798,28 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         msg += OFStandard::strerror(errno, buf, sizeof(buf));
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
+#ifndef DISABLE_RECV_TIMEOUT
+    /* use a timeout of 60 seconds for the recv() function */
+    const int recvTimeout = 60;
+    DCMNET_DEBUG("setting network receive timeout to " << recvTimeout << " seconds");
+#ifdef HAVE_WINSOCK_H
+    // for Windows, specify receive timeout in milliseconds
+    int timeoutVal = recvTimeout * 1000;
+    if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char *) &timeoutVal, sizeof(timeoutVal)) < 0)
+#else
+    // for other systems, specify receive timeout as timeval struct
+    struct timeval timeoutVal;
+    timeoutVal.tv_sec = recvTimeout;
+    timeoutVal.tv_usec = 0;
+    if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeoutVal, sizeof(timeoutVal)) < 0)
+#endif
+    {
+        // according to MSDN: available in the Microsoft implementation of Windows Sockets 2,
+        // so we are reporting a warning message but are not returning with an error code;
+        // this also applies to all other systems where the call to this function might fail
+        DCMNET_WARN("cannot set network receive timeout to " << recvTimeout << " seconds");
+    }
+#endif
 #endif
     setTCPBufferLength(sock);
 
@@ -2696,6 +2718,11 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.87  2010-06-16 08:45:21  joergr
+** Introduced a new timeout of 60 seconds for the recv() function in order to
+** make sure that the association is terminated if the receiver looses the
+** connection to the sender. This can be disabled by DISABLE_RECV_TIMEOUT.
+**
 ** Revision 1.86  2010-06-03 13:32:51  joergr
 ** Fixed issues on Windows platforms introduced with last commit.
 **

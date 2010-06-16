@@ -78,6 +78,16 @@ DISABLE_OFSTD_FTOA
     such as German since DICOM decimal strings always use the Posix
     locale.
 
+DISABLE_RECV_TIMEOUT
+  Affected: dcmnet
+  Type of modification: Disables feature
+  Explanation: By default, DCMTK specifies a timeout of 60 seconds for
+    the recv() function.  This is especially useful in cases where the
+    receiver (e.g. storescp) looses the connection to the sender because
+    the network cable is pulled on the sender side (e.g. for a mobile
+    device).  This flag disables the call to the setsockopt() function
+    so that no timeout is specified.
+
 DONT_DISABLE_NAGLE_ALGORITHM
   Affected: dcmnet
   Type of modification: Disables feature
