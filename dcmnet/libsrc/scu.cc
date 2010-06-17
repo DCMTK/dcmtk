@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2010, OFFIS
+ *  Copyright (C) 2008-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-09 16:33:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/scu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2010-06-17 17:13:06 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,11 +66,16 @@ DcmSCU::DcmSCU() :
   WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
   WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
-
 }
+
 
 DcmSCU::~DcmSCU()
 {
+    // abort association (if any) and destroy dcmnet data structures
+    if (isConnected())
+        closeAssociation(EC_IllegalCall);
+    // free memory allocated by this class
+    delete m_openDIMSERequest;
 }
 
 
@@ -176,16 +180,18 @@ OFCondition DcmSCU::initNetwork()
 
   // Add presentation contexts not originating from config file
   OFListIterator(DcmSCUPresContext) contIt = m_presContexts.begin();
-  while ((contIt != m_presContexts.end()) && (nextFreePresID <= 255))
+  OFListConstIterator(DcmSCUPresContext) endOfContList = m_presContexts.end();
+  while ((contIt != endOfContList) && (nextFreePresID <= 255))
   {
     const Uint16 numTransferSyntaxes = (*contIt).transferSyntaxes.size();
     const char** transferSyntaxes = new const char*[numTransferSyntaxes];
 
     // Iterate over transfer syntaxes within one presentation context
     OFListIterator(OFString) syntaxIt = (*contIt).transferSyntaxes.begin();
+    OFListIterator(OFString) endOfSyntaxList = (*contIt).transferSyntaxes.end();
     Uint16 sNum = 0;
     // copy all transfersyntaxes to array
-    while (syntaxIt != (*contIt).transferSyntaxes.end())
+    while (syntaxIt != endOfSyntaxList)
     {
       transferSyntaxes[sNum] = (*syntaxIt).c_str();
       ++syntaxIt;
@@ -195,7 +201,8 @@ OFCondition DcmSCU::initNetwork()
     // add the presentation context
     cond = ASC_addPresentationContext(m_params, OFstatic_cast(Uint8, nextFreePresID), (*contIt).abstractSyntaxName.c_str(), transferSyntaxes, numTransferSyntaxes);
     // if adding was successfull, prepare pres. context ID for next addition
-    delete[] transferSyntaxes; transferSyntaxes = NULL;
+    delete[] transferSyntaxes;
+    transferSyntaxes = NULL;
     if (cond.bad())
       return cond;
     contIt++;
@@ -207,13 +214,12 @@ OFCondition DcmSCU::initNetwork()
   if (numContexts == 0)
   {
     DCMNET_ERROR("Cannot initialize network: No presentation contexts defined");
-    return EC_IllegalCall; // TODO: need to find better error code
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
   DCMNET_DEBUG("Configured a total of " << numContexts << " presentation contexts for SCU");
 
   return cond;
 }
-
 
 
 OFCondition DcmSCU::negotiateAssociation()
@@ -257,7 +263,7 @@ OFCondition DcmSCU::negotiateAssociation()
   if (ASC_countAcceptedPresentationContexts(m_params) == 0)
   {
     DCMNET_ERROR("No Acceptable Presentation Contexts");
-    return EC_IllegalCall; // TODO: need to find better error code
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
 
   /* dump general information concerning the establishment of the network connection if required */
@@ -267,14 +273,15 @@ OFCondition DcmSCU::negotiateAssociation()
 
 
 OFCondition DcmSCU::addPresentationContext(const OFString& abstractSyntax,
-                                           const OFList<OFString>& tSyntaxes)
+                                           const OFList<OFString>& xferSyntaxes)
 
 {
 
   DcmSCUPresContext presContext;
   presContext.abstractSyntaxName = abstractSyntax;
-  OFListConstIterator(OFString) it = tSyntaxes.begin();
-  while (it != tSyntaxes.end())
+  OFListConstIterator(OFString) it = xferSyntaxes.begin();
+  OFListConstIterator(OFString) endOfList = xferSyntaxes.end();
+  while (it != endOfList)
   {
     presContext.transferSyntaxes.push_back(*it);
     it++;
@@ -439,7 +446,6 @@ void DcmSCU::closeAssociation(const OFCondition& abortOrReleaseRequested)
 #ifdef HAVE_WINSOCK_H
   WSACleanup();
 #endif
-
 }
 
 
@@ -492,7 +498,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
 }
 
 
-// Sends C-ECHO request to another DICOM application
+// Sends C-STORE request to another DICOM application
 OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
                                      const OFString& dicomFile,
                                      DcmDataset *dset,
@@ -538,7 +544,8 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     DCMNET_ERROR("  SOP Class UID: " << sopClass);
     DCMNET_ERROR("  SOP Instance UID: " << sopInstance);
     DCMNET_ERROR("  Transfersyntax: " << DcmXfer(transferSyntax).getXferName());
-    delete dcmff; dcmff = NULL;
+    delete dcmff;
+    dcmff = NULL;
     return EC_IllegalParameter;
   }
   OFStandard::strlcpy(req->AffectedSOPClassUID, sopClass.c_str(), sizeof(req->AffectedSOPClassUID));
@@ -562,8 +569,9 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
 
   DCMNET_INFO("Send C-STORE Request");
   DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, NULL, pcid));
-  cond = DIMSE_sendMessageUsingMemoryData(m_assoc, pcid, &msg, statusDetail, dset, NULL, NULL, NULL);
-  delete dcmff; dcmff = NULL;
+  cond = sendDIMSEMessage(pcid, &msg, dset, NULL /* callback */, NULL /* callbackContext */);
+  delete dcmff;
+  dcmff = NULL;
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending C-STORE request: " << cond.text());
@@ -573,7 +581,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   /* Receive response */
 
   T_DIMSE_Message rsp;
-  cond = receiveDIMSEResponse(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
+  cond = receiveDIMSECommand(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
   if (cond.bad())
     return cond;
 
@@ -637,7 +645,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
 
   DCMNET_INFO("Send C-FIND Request");
   DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, NULL, pcid));
-  cond = DIMSE_sendMessageUsingMemoryData(m_assoc, pcid, &msg, statusDetail, queryKeys, NULL, NULL, NULL);
+  cond = sendDIMSEMessage(pcid, &msg, queryKeys, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending C-FIND request: " << cond.text());
@@ -652,7 +660,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     statusDetail = NULL;
 
     // Receive command set
-    cond = receiveDIMSEResponse(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
+    cond = receiveDIMSECommand(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
     if (cond.bad())
       return cond;
 
@@ -679,20 +687,20 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     if (DICOM_PENDING_STATUS(findrsp->m_status))
     {
       // Check if dataset is announced correctly
-      if (rsp.msg.CFindRSP.DataSetType != DIMSE_DATASET_PRESENT)
+      if (rsp.msg.CFindRSP.DataSetType == DIMSE_DATASET_NULL)
       {
         DCMNET_ERROR("Received C-FIND response with PENDING status but no dataset announced, aborting");
         delete findrsp;
-        return EC_IllegalCall; // TODO: need to find better error code
+        return DIMSE_BADMESSAGE;
       }
 
       // Receive dataset
       cond = receiveDIMSEDataset(&pcid, &rspDataset, NULL /* callback */, NULL /* callbackContext */);
       if (cond.bad())
       {
-        delete findrsp;
         DCMNET_ERROR("Unable to receive C-FIND dataset on presentation context " << pcid << ": " << cond.text());
-        return EC_IllegalCall; // TODO: need to find better error code
+        delete findrsp;
+        return DIMSE_BADDATA;
       }
       DCMNET_DEBUG("Received dataset on presentation context " << pcid);
       findrsp->m_dataset = rspDataset;
@@ -749,7 +757,7 @@ OFCondition DcmSCU::handleFINDResponse(Uint16 presContextID,
 }
 
 
-// Send C-FIND-CANCEL and therefore ends current C-FIND session
+// Send C-FIND-CANCEL and, therefore, ends current C-FIND session
 OFCondition DcmSCU::sendCANCELRequest(Uint16 presContextID)
 {
   return EC_Normal;
@@ -759,42 +767,45 @@ OFCondition DcmSCU::sendCANCELRequest(Uint16 presContextID)
 // Sends N-ACTION request to another DICOM application
 OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
                                       const OFString &sopInstanceUID,
-                                      DcmDataset *dset,
-                                      Uint16& rspStatusCode)
+                                      const Uint16 actionTypeID,
+                                      DcmDataset *dataset,
+                                      Uint16 &rspStatusCode)
 {
   // Do some basic validity checks
   if (m_assoc == NULL)
-    return ASC_NULLKEY;
-  if (sopInstanceUID.empty() || (dset == NULL))
-    return EC_IllegalParameter;
+    return DIMSE_ILLEGALASSOCIATION;
+  if (sopInstanceUID.empty() || (dataset == NULL))
+    return DIMSE_NULLKEY;
 
   // Prepare DIMSE data structures for issuing request
   OFCondition cond;
   OFString tempStr;
   Uint8 pcid = presID;
-  T_DIMSE_Message msg;
-  DcmDataset* statusDetail = NULL;
-  DcmDataset* commandSet = NULL;
-  T_DIMSE_N_ActionRQ* req = &(msg.msg.NActionRQ);
-  // Set type of message
-  msg.CommandField = DIMSE_N_ACTION_RQ;
-  // Set message ID
-  req->MessageID = nextMessageID();
-  // Announce dataset
-  req->DataSetType = DIMSE_DATASET_PRESENT;
+  T_DIMSE_Message request;
+  T_DIMSE_N_ActionRQ &actionReq = request.msg.NActionRQ;
+  DcmDataset *statusDetail = NULL;
+
+  request.CommandField = DIMSE_N_ACTION_RQ;
+  actionReq.MessageID = nextMessageID();
+  actionReq.DataSetType = DIMSE_DATASET_PRESENT;
+  actionReq.ActionTypeID = actionTypeID;
 
   // Determine SOP Class from presentation context
   OFString abstractSyntax, transferSyntax;
   findPresentationContext(pcid, abstractSyntax, transferSyntax);
   if (abstractSyntax.empty() || transferSyntax.empty())
     return EC_IllegalCall; // TODO: need to find better error code
-  OFStandard::strlcpy(req->RequestedSOPClassUID, abstractSyntax.c_str(), sizeof(req->RequestedSOPClassUID));
-  OFStandard::strlcpy(req->RequestedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(req->RequestedSOPInstanceUID));
+  OFStandard::strlcpy(actionReq.RequestedSOPClassUID, abstractSyntax.c_str(), sizeof(actionReq.RequestedSOPClassUID));
+  OFStandard::strlcpy(actionReq.RequestedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(actionReq.RequestedSOPInstanceUID));
 
   // Send request
-  DCMNET_INFO("Send N-ACTION Request");
-  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, NULL, pcid));
-  cond = DIMSE_sendMessageUsingMemoryData(m_assoc, pcid, &msg, statusDetail, dset, NULL, NULL, NULL);
+  DCMNET_INFO("Sending N-ACTION Request");
+  // Output dataset only if trace level is enabled
+  if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, dataset, pcid));
+  else
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, NULL, pcid));
+  cond = sendDIMSEMessage(pcid, &request, dataset, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending N-ACTION request: " << cond.text());
@@ -802,115 +813,248 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
   }
 
   // Receive response
-  T_DIMSE_Message rsp;
-  cond = receiveDIMSEResponse(&pcid, &rsp, &statusDetail, &commandSet);
+  T_DIMSE_Message response;
+  cond = receiveDIMSECommand(&pcid, &response, &statusDetail, NULL /* commandSet */);
   if (cond.bad())
+  {
+    DCMNET_ERROR("Failed receiving DIMSE response: " << cond.text());
+    delete statusDetail;
     return cond;
+  }
 
-  if (rsp.CommandField == DIMSE_N_ACTION_RSP)
+  // Check command set
+  if (response.CommandField == DIMSE_N_ACTION_RSP)
   {
     DCMNET_INFO("Received N-ACTION Response");
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
   } else {
     DCMNET_ERROR("Expected N-ACTION response but received DIMSE command 0x"
-        << STD_NAMESPACE hex << OFstatic_cast(unsigned, rsp.CommandField));
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
+        << STD_NAMESPACE hex << OFstatic_cast(unsigned, response.CommandField));
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
+    delete statusDetail;
     return DIMSE_BADCOMMANDTYPE;
   }
-  T_DIMSE_N_ActionRSP actionRsp = msg.msg.NActionRSP;
-  rspStatusCode = actionRsp.DimseStatus;
   if (statusDetail != NULL)
   {
     DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
     delete statusDetail;
   }
-  else
+
+  // Set return value
+  T_DIMSE_N_ActionRSP &actionRsp = response.msg.NActionRSP;
+  rspStatusCode = actionRsp.DimseStatus;
+
+  // Check whether there is a dataset to be received
+  if (actionRsp.DataSetType == DIMSE_DATASET_PRESENT)
   {
-    DCMNET_DEBUG("Response has status detail: none");
+    // this should never happen
+    DcmDataset *tempDataset = NULL;
+    T_ASC_PresentationContextID tempID;
+    cond = receiveDIMSEDataset(&tempID, &tempDataset, NULL /* callback */, NULL /* callbackContext */);
+    if (cond.good())
+    {
+      DCMNET_WARN("Received unexpected dataset after N-ACTION response, ignoring");
+      delete tempDataset;
+    } else {
+      DCMNET_ERROR("Failed receiving unexpected dataset after N-ACTION response: " << cond.text());
+      delete tempDataset;
+      return DIMSE_BADDATA;
+    }
+  }
+  if (actionRsp.MessageIDBeingRespondedTo != actionReq.MessageID)
+  {
+    DCMNET_ERROR("Received response with wrong message ID ("
+        << actionRsp.MessageIDBeingRespondedTo << " instead of " << actionReq.MessageID << ")");
+    return DIMSE_BADMESSAGE;
   }
 
   return cond;
 }
 
 
-// This function sends a DIMSE command and possibly also instance data to
-// the configured peer DICOM application.
-OFCondition DcmSCU::sendDIMSERequest(const T_ASC_PresentationContextID presID,
+// Receives N-EVENT-REPORT request
+OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&dataset,
+                                             Uint16 &eventTypeID,
+                                             const int timeout)
+{
+  // Do some basic validity checks
+  if (m_assoc == NULL)
+    return DIMSE_ILLEGALASSOCIATION;
+
+  OFCondition cond;
+  OFString tempStr;
+  T_ASC_PresentationContextID presID;
+  T_DIMSE_Message request;
+  T_DIMSE_N_EventReportRQ &eventReportReq = request.msg.NEventReportRQ;
+  DcmDataset *reqDataset = NULL;
+  DcmDataset *statusDetail = NULL;
+  Uint16 statusCode = 0;
+
+  if (timeout > 0)
+    DCMNET_DEBUG("Handle N-EVENT-REPORT request, waiting up to " << timeout << " seconds (only for N-EVENT-REPORT message)");
+  else if ((m_dimseTimeout > 0) && (m_blockMode == DIMSE_NONBLOCKING))
+    DCMNET_DEBUG("Handle N-EVENT-REPORT request, waiting up to " << m_dimseTimeout << " seconds (default for all DIMSE messages)");
+  else
+    DCMNET_DEBUG("Handle N-EVENT-REPORT request, waiting an unlimited period of time");
+
+  // Receive request, use specific timeout (if defined)
+  cond = receiveDIMSECommand(&presID, &request, &statusDetail, NULL /* commandSet */, timeout);
+  if (cond.bad())
+  {
+    if (cond != DIMSE_NODATAAVAILABLE)
+      DCMNET_ERROR("Failed receiving DIMSE request: " << cond.text());
+    delete statusDetail;
+    return cond;
+  }
+
+  // Check command set
+  if (request.CommandField == DIMSE_N_EVENT_REPORT_RQ)
+  {
+    DCMNET_INFO("Received N-EVENT-REPORT Request");
+  } else {
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, NULL, presID));
+    DCMNET_ERROR("Expected N-EVENT-REPORT request but received DIMSE command 0x"
+        << STD_NAMESPACE hex << OFstatic_cast(unsigned, request.CommandField));
+    delete statusDetail;
+    return DIMSE_BADCOMMANDTYPE;
+  }
+  if (statusDetail != NULL)
+  {
+    DCMNET_DEBUG("Request has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+    delete statusDetail;
+  }
+
+  // Check if dataset is announced correctly
+  if (eventReportReq.DataSetType == DIMSE_DATASET_NULL)
+  {
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, NULL, presID));
+    DCMNET_ERROR("Received N-EVENT-REPORT request but no dataset announced, aborting");
+    return DIMSE_BADMESSAGE;
+  }
+
+  // Receive dataset; TODO: do we need to compare presentation context ID of command and dataset?
+  cond = receiveDIMSEDataset(&presID, &reqDataset, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, NULL, presID));
+    DCMNET_ERROR("Unable to receive N-EVENT-REPORT dataset on presentation context " << presID);
+    return DIMSE_BADDATA;
+  }
+
+  // Output dataset only if trace level is enabled
+  if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, reqDataset, presID));
+  else
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, NULL, presID));
+
+  // Check the request dataset and return the DIMSE status code to be used
+  statusCode = checkEVENTREPORTRequest(&eventReportReq, reqDataset);
+
+  // Send back response
+  T_DIMSE_Message response;
+  T_DIMSE_N_EventReportRSP &eventReportRsp = response.msg.NEventReportRSP;
+  response.CommandField = DIMSE_N_EVENT_REPORT_RSP;
+  eventReportRsp.MessageIDBeingRespondedTo = eventReportReq.MessageID;
+  eventReportRsp.DimseStatus = statusCode;
+  eventReportRsp.DataSetType = DIMSE_DATASET_NULL;
+  eventReportRsp.opts = 0;
+  eventReportRsp.AffectedSOPClassUID[0] = 0;
+  eventReportRsp.AffectedSOPInstanceUID[0] = 0;
+
+  DCMNET_INFO("Sending N-EVENT-REPORT Response");
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
+  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending N-EVENT-REPORT response: " << cond.text());
+    return cond;
+  }
+
+  // Set return values
+  dataset = reqDataset;
+  eventTypeID = eventReportReq.EventTypeID;
+
+  return cond;
+}
+
+
+Uint16 DcmSCU::checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ * /*eventReportReq*/,
+                                       DcmDataset * /*reqDataset*/)
+{
+    // we default to success
+    return STATUS_Success;
+}
+
+
+// Sends a DIMSE command and possibly also instance data to the configured peer DICOM application
+OFCondition DcmSCU::sendDIMSEMessage(const T_ASC_PresentationContextID presID,
                                      T_DIMSE_Message *msg,
-                                     /*DcmDataset *statusDetail,*/ // Brauche ich nur bei RSP nachrichten oder?
                                      DcmDataset *dataObject,
                                      DIMSE_ProgressCallback callback,
                                      void *callbackContext,
                                      DcmDataset **commandSet)
 {
-  OFCondition cond;
+  if (m_assoc == NULL)
+    return DIMSE_ILLEGALASSOCIATION;
   if (msg == NULL)
     return DIMSE_NULLKEY;
 
-  T_ASC_PresentationContextID pcid = presID; // TODO
-  /* call the according DIMSE function to sent the message */
-  cond = DIMSE_sendMessageUsingMemoryData(m_assoc, pcid, msg, NULL /*statusDetail*/, dataObject,
+  OFCondition cond;
+  /* call the corresponding DIMSE function to sent the message */
+  cond = DIMSE_sendMessageUsingMemoryData(m_assoc, presID, msg, NULL /*statusDetail*/, dataObject,
                                           callback, callbackContext, commandSet);
+
+#if 0
+  // currently disabled because it is not (yet) needed
   if (cond.good())
   {
-    if (m_openDIMSERequest == NULL)
-      delete m_openDIMSERequest;
+    /* create a copy of the current DIMSE command message */
+    delete m_openDIMSERequest;
     m_openDIMSERequest = new T_DIMSE_Message;
-    bzero((char*)m_openDIMSERequest, sizeof(*m_openDIMSERequest)); // TODO: notwendig?
     memcpy((char*)m_openDIMSERequest, msg, sizeof(*m_openDIMSERequest));
   }
+#endif
 
   return cond;
 }
 
-/*   presId       - [out] Contains in the end the ID of the presentation context which was specified in the DIMSE command.
- *   msg          - [out] Contains in the end information which represents a certain DIMSE command which was received.
- *   statusDetail - [out] If a non-NULL value is passed this variable will in the end contain detailed
- *                        information with regard to the status information which is captured in the status
- *                        element (0000,0900). Note that the value for element (0000,0900) is not contained
- *                        in this return value but in msg. For details on the structure of this object, see
- *                        DICOM standard (year 2000) part 7, annex C) (or the corresponding section in a later
- *                        version of the standard.)
- *   commandSet   - [out] [optional parameter, default = NULL] If this parameter is not NULL
- *                        it will return a copy of the DIMSE command which was received from the other
- *                        DICOM application.
- */
-OFCondition DcmSCU::receiveDIMSEResponse(T_ASC_PresentationContextID *presID,
-                                         T_DIMSE_Message *msg,
-                                         DcmDataset **statusDetail,
-                                         DcmDataset **commandSet)
+
+// Receive DIMSE command (excluding dataset!) over the currently open association
+OFCondition DcmSCU::receiveDIMSECommand(T_ASC_PresentationContextID *presID,
+                                        T_DIMSE_Message *msg,
+                                        DcmDataset **statusDetail,
+                                        DcmDataset **commandSet,
+                                        const Uint32 timeout)
 {
   if (m_assoc == NULL)
-    return DIMSE_NULLKEY;
+    return DIMSE_ILLEGALASSOCIATION;
+
   OFCondition cond;
-  cond = DIMSE_receiveCommand(m_assoc, m_blockMode, m_dimseTimeout, presID,
-                              msg, statusDetail, commandSet);
+  if (timeout > 0)
+  {
+    /* call the corresponding DIMSE function to receive the command (use specified timeout)*/
+    cond = DIMSE_receiveCommand(m_assoc, DIMSE_NONBLOCKING, timeout, presID,
+                                msg, statusDetail, commandSet);
+  } else {
+    /* call the corresponding DIMSE function to receive the command (use default timeout) */
+    cond = DIMSE_receiveCommand(m_assoc, m_blockMode, m_dimseTimeout, presID,
+                                msg, statusDetail, commandSet);
+  }
   return cond;
 }
 
-/*
- * This function revceives one data set (of instance data) via network from another DICOM application.
- *
- * Parameters:
- *   assoc           - [in] The association (network connection to another DICOM application).
- *   blocking        - [in] The blocking mode for receiving data (either DIMSE_BLOCKING or DIMSE_NONBLOCKING)
- *   timeout         - [in] Timeout interval for receiving data (if the blocking mode is DIMSE_NONBLOCKING).
- *   presID          - [out] Contains in the end the ID of the presentation context which was used in the PDVs
- *                          that were received on the network. If the PDVs show different presentation context
- *                          IDs, this function will return an error.
- *   dataObject      - [out] Contains in the end the information which was received over the network.
- *                          Note that this function assumes that either imageFileName or imageDataSet does not equal NULL.
- *   callback        - [in] Pointer to a function which shall be called to indicate progress.
- *   callbackData    - [in] Pointer to data which shall be passed to the progress indicating function
- */
+
+// Receives one dataset (of instance data) via network from another DICOM application
 OFCondition DcmSCU::receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
                                         DcmDataset **dataObject,
                                         DIMSE_ProgressCallback callback,
                                         void *callbackContext)
 {
   if (m_assoc == NULL)
-    return DIMSE_NULLKEY;
+    return DIMSE_ILLEGALASSOCIATION;
+
   OFCondition cond;
+  /* call the corresponding DIMSE function to receive the dataset */
   cond = DIMSE_receiveDataSetInMemory(m_assoc, m_blockMode, m_dimseTimeout, presID,
                                       dataObject, callback, callbackContext);
   return cond;
@@ -953,13 +1097,13 @@ void DcmSCU::setPeerPort(const Uint16 peerPort)
 }
 
 
-void DcmSCU::setDIMSETimeout(const Uint16 dimseTimeout)
+void DcmSCU::setDIMSETimeout(const Uint32 dimseTimeout)
 {
   m_dimseTimeout = dimseTimeout;
 }
 
 
-void DcmSCU::setACSETimeout(const Uint16 acseTimeout)
+void DcmSCU::setACSETimeout(const Uint32 acseTimeout)
 {
   m_acseTimeout = acseTimeout;
 }
@@ -1028,13 +1172,13 @@ Uint16 DcmSCU::getPeerPort() const
 }
 
 
-Uint16 DcmSCU::getDIMSETimeout() const
+Uint32 DcmSCU::getDIMSETimeout() const
 {
   return m_dimseTimeout;
 }
 
 
-Uint16 DcmSCU::getACSETimeout() const
+Uint32 DcmSCU::getACSETimeout() const
 {
   return m_acseTimeout;
 }
@@ -1138,6 +1282,10 @@ FINDResponse::~FINDResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.8  2010-06-17 17:13:06  joergr
+** Added preliminary support for N-EVENT-REPORT to DcmSCU. Some further code
+** cleanups and enhancements. Renamed some methods. Revised documentation.
+**
 ** Revision 1.7  2010-06-09 16:33:34  joergr
 ** Added preliminary support for N-ACTION to DcmSCU. Some further code cleanups
 ** and enhancements.
