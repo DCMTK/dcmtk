@@ -20,6 +20,10 @@ Changes between releases are documented here.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
            dcmnet/libsrc/scu.cc
 
+- Rebuilt Makefile dependencies.
+  Affects: dcmnet/apps/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+
 **** Changes from 2010.06.16 (riesmeier)
 
 - Added type cast to integer variable in order to avoid compiler warnings
