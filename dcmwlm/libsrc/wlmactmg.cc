@@ -23,8 +23,8 @@
  *           class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-17 15:22:39 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2010-06-17 15:49:09 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -493,7 +493,7 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
   // Reject association if no presentation context was negotiated
   if( ASC_countAcceptedPresentationContexts( assoc->params ) == 0 )
   {
-    DCMNET_INFO("No Acceptable Presentation Contexts");
+    DCMWLM_INFO("No Acceptable Presentation Contexts");
     RefuseAssociation( &assoc, WLM_FORCED );
     if( !opt_singleProcess )
     {
@@ -1144,6 +1144,9 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.33  2010-06-17 15:49:09  joergr
+** Fixed wrong logger macro (was DCMNET_INFO instead of DCMWLM_INFO).
+**
 ** Revision 1.32  2010-06-17 15:22:39  joergr
 ** Moved output of "No Acceptable Presentation Contexts" message to another code
 ** line in order to be visible at all (if appropriate).

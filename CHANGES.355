@@ -7,6 +7,9 @@ Changes between releases are documented here.
   line in order to be visible at all (if appropriate).
   Affects: dcmwlm/libsrc/wlmactmg.cc
 
+- Fixed wrong logger macro (was DCMNET_INFO instead of DCMWLM_INFO).
+  Affects: dcmwlm/libsrc/wlmactmg.cc
+
 **** Changes from 2010.06.16 (riesmeier)
 
 - Added type cast to integer variable in order to avoid compiler warnings
