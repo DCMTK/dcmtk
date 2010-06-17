@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.17 (riesmeier)
+
+- Moved output of "No Acceptable Presentation Contexts" message to another code
+  line in order to be visible at all (if appropriate).
+  Affects: dcmwlm/libsrc/wlmactmg.cc
+
 **** Changes from 2010.06.16 (riesmeier)
 
 - Added type cast to integer variable in order to avoid compiler warnings

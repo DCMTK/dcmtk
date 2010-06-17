@@ -23,9 +23,8 @@
  *           class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-02 12:33:33 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2010-06-17 15:22:39 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -494,6 +493,7 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
   // Reject association if no presentation context was negotiated
   if( ASC_countAcceptedPresentationContexts( assoc->params ) == 0 )
   {
+    DCMNET_INFO("No Acceptable Presentation Contexts");
     RefuseAssociation( &assoc, WLM_FORCED );
     if( !opt_singleProcess )
     {
@@ -517,8 +517,6 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
 
   // Dump some information if required.
   DCMWLM_INFO("Association Acknowledged (Max Send PDV: " << assoc->sendPDVLength << ")");
-  if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
-    DCMWLM_INFO("    (but no valid presentation contexts)");
 
   // Dump some more information if required.
   DCMWLM_DEBUG(ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
@@ -1146,6 +1144,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.32  2010-06-17 15:22:39  joergr
+** Moved output of "No Acceptable Presentation Contexts" message to another code
+** line in order to be visible at all (if appropriate).
+**
 ** Revision 1.31  2010-06-02 12:33:33  joergr
 ** Appended missing OFStringStream_ends to the end of output streams because
 ** this is required when OFOStringStream is mapped to ostrstream.
