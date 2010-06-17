@@ -21,7 +21,11 @@ Changes between releases are documented here.
            dcmnet/libsrc/scu.cc
 
 - Rebuilt Makefile dependencies.
-  Affects: dcmnet/apps/Makefile.dep
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/libi2d/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/tests/Makefile.dep
+           dcmnet/apps/Makefile.dep
            dcmnet/libsrc/Makefile.dep
 
 **** Changes from 2010.06.16 (riesmeier)
