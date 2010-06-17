@@ -22,9 +22,8 @@
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-14 15:56:21 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/scp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2010-06-17 17:08:05 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,19 +91,20 @@ static void getPresentationContextInfo(const T_ASC_Association *assoc,
 DcmSCP::DcmSCP() :
   m_assoc(NULL),
   m_assocConfig(NULL),
-  m_assocCfgProfileName("Default"),
-  m_port( 104 ),
+  m_assocCfgProfileName("DEFAULT"),
+  m_port(104),
   m_aetitle("DCMTK_SCP"),
-  m_refuseAssociation( OFFalse ),
-  m_maxPDU( ASC_DEFAULTMAXPDU ),
-  m_singleProcess( OFTrue ),
-  m_forkedChild( OFFalse ),
-  m_maxAssociations( 1 ),
+  m_refuseAssociation(OFFalse),
+  m_maxReceivePDULength(ASC_DEFAULTMAXPDU),
+  m_singleProcess(OFTrue),
+  m_forkedChild(OFFalse),
+  m_maxAssociations(1),
   m_blockMode(DIMSE_BLOCKING),
   m_DIMSETimeout(0),
   m_ACSETimeout(30),
+  m_verbosePCMode(OFFalse),
   m_processTable(),
-  m_respondWithCalledAETitle( OFTrue ),
+  m_respondWithCalledAETitle(OFTrue),
   m_pcInfo()
 {
   // make sure not to let dcmdata remove tailing blank padding or perform other
@@ -255,7 +255,7 @@ OFCondition DcmSCP::listen()
     cond = waitForAssociation(m_net);
 
     // Clean up any child processes if the execution is not limited to a single process.
-    // (On windows platform, childs are not handled via the process table,
+    // (On Windows platform, childs are not handled via the process table,
     // so there's no need to clean up children)
 #ifdef HAVE_FORK
     if( !m_singleProcess )
@@ -278,7 +278,7 @@ OFCondition DcmSCP::listen()
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::refuseAssociation( DcmRefuseReasonType reason )
+void DcmSCP::refuseAssociation(DcmRefuseReasonType reason)
 {
   if (m_assoc == NULL)
   {
@@ -365,8 +365,8 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
       timeout = 1000;
   }
 
-  // Listen to a socket for timeout seconds and wait for an association request.
-  OFCondition cond = ASC_receiveAssociation( network, &m_assoc, m_maxPDU, NULL, NULL, OFFalse, DUL_NOBLOCK, OFstatic_cast(int, timeout) );
+  // Listen to a socket for timeout seconds and wait for an association request
+  OFCondition cond = ASC_receiveAssociation( network, &m_assoc, m_maxReceivePDULength, NULL, NULL, OFFalse, DUL_NOBLOCK, OFstatic_cast(int, timeout) );
 
   // just return, if timeout occured (DUL_NOASSOCIATIONREQUEST)
   // or (WIN32) if dcmnet has started a child for us, to handle this
@@ -468,6 +468,7 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
   // Reject association if no presentation context was negotiated
   if( ASC_countAcceptedPresentationContexts( m_assoc->params ) == 0 )
   {
+    DCMNET_INFO("No Acceptable Presentation Contexts");
     refuseAssociation( DCMSCP_NO_PRES_CONTEXTS );
     if( !m_singleProcess )
     {
@@ -491,12 +492,13 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
   // Dump some debug information
   OFString tmpstr;
   DCMNET_INFO("Association Acknowledged (Max Send PDV: " << OFstatic_cast(Uint32, m_assoc->sendPDVLength) << ")");
-  if( ASC_countAcceptedPresentationContexts( m_assoc->params ) == 0 )
-    DCMNET_INFO("    (but no valid presentation contexts)");
-  DCMNET_DEBUG(ASC_dumpParameters(tmpstr, m_assoc->params, ASC_ASSOC_AC));
+  if (m_verbosePCMode)
+    DCMNET_INFO(ASC_dumpParameters(tmpstr, m_assoc->params, ASC_ASSOC_AC));
+  else
+    DCMNET_DEBUG(ASC_dumpParameters(tmpstr, m_assoc->params, ASC_ASSOC_AC));
 
   // Depending on if this execution shall be limited to one process or not, spawn a sub-
-  // process to handle the association or don't. (Note: For windows dcmnet is handling
+  // process to handle the association or don't. (Note: For Windows dcmnet is handling
   // the creation for a new subprocess, so we can call HandleAssociation directly, too)
   if( m_singleProcess || m_forkedChild )
   {
@@ -705,7 +707,7 @@ OFCondition DcmSCP::sendCStoreResponse(T_ASC_PresentationContextID presID,
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::addProcessToTable( int pid )
+void DcmSCP::addProcessToTable(int pid)
 {
   DcmProcessSlotType *ps;
 
@@ -902,9 +904,9 @@ void DcmSCP::forceAssociationRefuse(const OFBool doRefuse)
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::setMaxReceivePDU(const Uint32 maxPDU)
+void DcmSCP::setMaxReceivePDULength(const Uint32 maxRecPDU)
 {
-  m_maxPDU = maxPDU;
+  m_maxReceivePDULength = maxRecPDU;
 }
 
 void DcmSCP::setPort(const Uint16& port)
@@ -943,16 +945,23 @@ void DcmSCP::setDIMSEBlockingMode(const T_DIMSE_BlockingMode blockingMode)
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::setDIMSETimeout(const Uint16 dimseTimeout)
+void DcmSCP::setDIMSETimeout(const Uint32 dimseTimeout)
 {
   m_DIMSETimeout = dimseTimeout;
 }
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::setACSETimeout(const Uint16 acseTimeout)
+void DcmSCP::setACSETimeout(const Uint32 acseTimeout)
 {
   m_ACSETimeout = acseTimeout;
+}
+
+// ----------------------------------------------------------------------------
+
+void DcmSCP::setVerbosePCMode(const OFBool mode)
+{
+  m_verbosePCMode = mode;
 }
 
 // ----------------------------------------------------------------------------
@@ -966,9 +975,9 @@ OFBool DcmSCP::getRefuseAssociation() const
 
 // ----------------------------------------------------------------------------
 
-Uint32 DcmSCP::getMaxReceivePDU() const
+Uint32 DcmSCP::getMaxReceivePDULength() const
 {
-  return m_maxPDU;
+  return m_maxReceivePDULength;
 }
 
 // ----------------------------------------------------------------------------
@@ -980,7 +989,7 @@ Uint16 DcmSCP::getPort() const
 
 // ----------------------------------------------------------------------------
 
-OFString DcmSCP::getAETitle() const
+const OFString &DcmSCP::getAETitle() const
 {
   return m_aetitle;
 }
@@ -1022,16 +1031,23 @@ T_DIMSE_BlockingMode DcmSCP::getDIMSEBlockingMode() const
 
 // ----------------------------------------------------------------------------
 
-Uint16 DcmSCP::getDIMSETimeout () const
+Uint32 DcmSCP::getDIMSETimeout () const
 {
   return m_DIMSETimeout;
 }
 
 // ----------------------------------------------------------------------------
 
-Uint16 DcmSCP::getACSETimeout () const
+Uint32 DcmSCP::getACSETimeout () const
 {
   return m_ACSETimeout;
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool DcmSCP::getVerbosePCMode() const
+{
+  return m_verbosePCMode;
 }
 
 // ----------------------------------------------------------------------------
@@ -1061,7 +1077,7 @@ OFString DcmSCP::getCalledAETitle() const
 
 // ----------------------------------------------------------------------------
 
-Uint32 DcmSCP::getPeerMaxPDU() const
+Uint32 DcmSCP::getPeerMaxPDULength() const
 {
   if (m_assoc == NULL)
     return 0;
@@ -1153,9 +1169,9 @@ OFCondition DcmSCP::setAndCheckAssociationProfile(const OFString& profileName)
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::addAbstractSyntax(const OFString& abstractSyntaxUID,
-                                      const OFList<OFString> transferSyntaxUIDs,
-                                      const OFString& profile)
+OFCondition DcmSCP::addPresentationContext(const OFString& abstractSyntax,
+                                           const OFList<OFString> xferSyntaxes,
+                                           const OFString& profile)
 {
   if (profile.empty())
     return EC_IllegalParameter;
@@ -1169,8 +1185,8 @@ OFCondition DcmSCP::addAbstractSyntax(const OFString& abstractSyntaxUID,
     m_assocConfig = new DcmAssociationConfiguration();
     newlyCreated = OFTrue;
   }
-  OFListConstIterator(OFString) it = transferSyntaxUIDs.begin();
-  OFListConstIterator(OFString) endOfList = transferSyntaxUIDs.end();
+  OFListConstIterator(OFString) it = xferSyntaxes.begin();
+  OFListConstIterator(OFString) endOfList = xferSyntaxes.end();
   OFCondition result;
   // the association configuration needs key names for transfer syntaxes and
   // presentation contexts. Use predefined key names.
@@ -1181,7 +1197,7 @@ OFCondition DcmSCP::addAbstractSyntax(const OFString& abstractSyntaxUID,
   }
   if (result.good())
   {
-    result = m_assocConfig->addPresentationContext(DCMSCP_PC_KEY.c_str(), abstractSyntaxUID.c_str(), DCMSCP_TS_KEY.c_str());
+    result = m_assocConfig->addPresentationContext(DCMSCP_PC_KEY.c_str(), abstractSyntax.c_str(), DCMSCP_TS_KEY.c_str());
   }
   /* perform name mangling for config file key */
   const char *c = profile.c_str();
@@ -1233,7 +1249,10 @@ void DcmSCP::notifyAssociationRequest(const T_ASC_Parameters& params,
 
     // Dump more information if required
   OFString msg;
-  DCMNET_DEBUG("Incoming Association Request:" << OFendl << ASC_dumpParameters(msg, m_assoc->params, ASC_ASSOC_RQ));
+  if (m_verbosePCMode)
+    DCMNET_INFO("Incoming Association Request:" << OFendl << ASC_dumpParameters(msg, m_assoc->params, ASC_ASSOC_RQ));
+  else
+    DCMNET_DEBUG("Incoming Association Request:" << OFendl << ASC_dumpParameters(msg, m_assoc->params, ASC_ASSOC_RQ));
 }
 
 // ----------------------------------------------------------------------------
@@ -1274,6 +1293,10 @@ void DcmSCP::notifyDIMSEError(const OFCondition& cond)
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.7  2010-06-17 17:08:05  joergr
+** Aligned SCP class with existing SCU class. Some further code cleanups.
+** Changed default profile from "Default" to "DEFAULT". Revised documentation.
+**
 ** Revision 1.6  2010-06-14 15:56:21  joergr
 ** Minor fixes to log messages and log levels.
 **

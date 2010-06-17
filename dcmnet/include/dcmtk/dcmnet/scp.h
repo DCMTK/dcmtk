@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009, OFFIS
+ *  Copyright (C) 2009-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,9 @@
  *  Purpose: General SCP class that can be used to implement derived SCP
  *           applications.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-04-29 16:14:59 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/scp.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-17 17:06:30 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +62,7 @@ struct DcmProcessSlotType
   DIC_AE callingAETitle;
   /// Called AE title
   DIC_AE calledAETitle;
-  /// Process id
+  /// Process ID
   int processId;
   /// Start time
   time_t startTime;
@@ -71,9 +70,8 @@ struct DcmProcessSlotType
   OFBool hasStorageAbility;
 };
 
-/** Action codes that can be given to DcmSCP to control
- *  behaviour during SCPs operation. Different hooks permit
- *  jumping into different phases of SCP operation.
+/** Action codes that can be given to DcmSCP to control behaviour during SCP's operation.
+ *  Different hooks permit jumping into different phases of SCP operation.
  */
 enum DcmSCPActionType
 {
@@ -105,10 +103,9 @@ enum DcmRefuseReasonType
   DCMSCP_INTERNAL_ERROR
 };
 
-/** Structure representing a single Presentation Context.
- *  Fields "reserved" and "result" not included from
- *  DUL_PRESENTATIONCONTEXT which served as the blueprint for
- *  this structure.
+/** Structure representing a single Presentation Context. Fields "reserved" and "result"
+ *  not included from DUL_PRESENTATIONCONTEXT which served as the blueprint for this
+ *  structure.
  */
 struct DcmPresentationContextInfo
 {
@@ -125,15 +122,13 @@ struct DcmPresentationContextInfo
   // Fields "reserved" and "result" not included from DUL_PRESENTATIONCONTEXT
 };
 
-/** Base class for implementing a DICOM Service Class Provider (SCP).
- *  Derived classes can add the presentation contexts they want to support,
- *  set further parameters (port, peer hostname, etc. as desired) and then call
- *  DcmSCP's listen() method to start the server. For incoming associations
- *  and DIMSE messages, a derived class can define the behaviour of the
- *  server. The DcmSCP base class is capable to respond to C-ECHO requests
+/** Base class for implementing a DICOM Service Class Provider (SCP). Derived classes can
+ *  add the presentation contexts they want to support, set further parameters (port, peer
+ *  hostname, etc. as desired) and then call DcmSCP's listen() method to start the server.
+ *  For incoming associations and DIMSE messages, a derived class can define the behaviour
+ *  of the server. The DcmSCP base class is capable of responding to C-ECHO requests
  *  (Verification SOP Class).
- *  @warning This class is EXPERIMENTAL. Be careful to use it in production
- *           environment.
+ *  @warning This class is EXPERIMENTAL. Be careful to use it in production environment.
  */
 class DcmSCP
 {
@@ -144,9 +139,14 @@ public:
    */
   DcmSCP();
 
-#ifdef _WIN32    
-   /* Marks this SCP as being a forked child under windows, ie. it handles
-   *  an association received by the parent.
+  /** Virtual destructor, frees internal memory.
+   */
+  virtual ~DcmSCP();
+
+#ifdef _WIN32
+  /** Marks this SCP as being a forked child under Windows, i.e. it handles an association
+   *  received by the parent.
+   *  @return EC_Normal if marking was successful, an error code otherwise
    */
   OFCondition markAsForkedChild();
 #endif
@@ -157,262 +157,238 @@ public:
    */
   virtual OFCondition listen();
 
-  
+
   /* ************************************************************* */
   /*             Set methods for configuring SCP behaviour         */
   /* ************************************************************* */
 
-  /** Add abstract syntax to presentation contexts the SCP is able to
-   *  negotiate with SCUs.
-   *  @param abstractSyntaxUID [in] The UID of the abstract sytntax (e. g. SOP
-   *         class to add.
-   *  @param transferSyntaxUIDs [in] List of transfer syntaxes (UIDs) that
-   *         should be supported for the given abstract syntax name.
-   *  @param profile The profile the abstract snytax should be added to.
-   *         The default is to add it to the DcmSCP's internal standard
-   *         profile.
-   *  @return EC_Normal if adding was successful, error code otherwise
+  /** Add abstract syntax to presentation contexts the SCP is able to negotiate with SCUs.
+   *  @param abstractSyntax [in] The UID of the abstract syntax (e.g. SOP class) to add
+   *  @param xferSyntaxes   [in] List of transfer syntaxes (UIDs) that should be supported
+   *                             for the given abstract syntax name
+   *  @param profile        [in] The profile the abstract snytax should be added to. The
+   *                             default is to add it to the DcmSCP's internal standard
+   *                             profile called "DEFAULT".
+   *  @return EC_Normal if adding was successful, an error code otherwise
    */
-  virtual OFCondition addAbstractSyntax(const OFString& abstractSyntaxUID,
-                                        const OFList<OFString> transferSyntaxUIDs,
-                                        const OFString& profile);
+  virtual OFCondition addPresentationContext(const OFString& abstractSyntax,
+                                             const OFList<OFString> xferSyntaxes,
+                                             const OFString& profile = "DEFAULT");
 
-  /** Set SCP's TCP/IP listening port.
-   *  @param port [in] The port number to listen on. Note that usually
-   *         on Unix-like systems only root user is permitted to open
-   *         ports below 1024.
+  /** Set SCP's TCP/IP listening port
+   *  @param port [in] The port number to listen on. Note that usually on Unix-like systems
+   *                   only root user is permitted to open ports below 1024.
    */
-  virtual void setPort(const Uint16& port);
-  
-  /** Set AETitle of server.
-   *  @param aetitle [in] The AETitle of the server. Per default, all
-   *         SCU association requests calling another AETitle will be
-   *         rejected. This behaviour can be changed by using
-   *         the setRespondWithCalledAETitle() method.
-   */
-  virtual void setAETitle(const OFString& aetitle);
+  void setPort(const Uint16& port);
 
-  /** Set SCP to use the called AETitle from the SCU request for the
-   *  response, i.e. the SCP will always respond with setting it's own
-   *  name to the one the SCU used for calling. Overrides any AETitle
-   *  eventually set with setAETitle().
-   *  @param useCalled [in] If OFTrue, the SCP will use the called AE
-   *         title from the request for responding. DcmSCP's default is
-   *         OFFalse.
+  /** Set AETitle of the server
+   *  @param aetitle [in] The AETitle of the server. By default, all SCU association requests
+   *                      calling another AETitle will be rejected. This behaviour can be
+   *                      changed by using the setRespondWithCalledAETitle() method.
    */
-  virtual void setRespondWithCalledAETitle(const OFBool useCalled);
+  void setAETitle(const OFString& aetitle);
+
+  /** Set SCP to use the called AETitle from the SCU request for the response, i.e. the SCP
+   *  will always respond with setting it's own name to the one the SCU used for calling.
+   *  Overrides any AETitle eventually set with setAETitle().
+   *  @param useCalled [in] If OFTrue, the SCP will use the called AE title from the request
+   *                        for responding. DcmSCP's default is OFFalse
+   */
+  void setRespondWithCalledAETitle(const OFBool useCalled);
 
   /** Loads association configuration file
-   *  @param assocFile [in] The filename of the association configuration
-   *         to be loaded. The association configuration file must be 
-   *         valid for an SCP.
+   *  @param assocFile [in] The filename of the association configuration to be loaded. The
+   *                        association configuration file must be valid for an SCP.
    *  @return EC_Normal if loading was successful, error otherwise
    */
   virtual OFCondition loadAssociationCfgFile(const OFString& assocFile);
 
-  /** If an association profile should be selected, either by loading
-   *  an associaton configuration file or using the addAbstractSyntax()
-   *  function, one of those can be selected and checked for validity
-   *  using this method.
-   *  @param profileName [in] The name of the association profile
-   *         which must be configured before being selected here.
-   *  @return EC_Normal if selecting/checking was successful,
-   *          error otherwise
+  /** If an association profile should be selected, either by loading an associaton
+   *  configuration file or using the addAbstractSyntax() function, one of those can be
+   *  selected and checked for validity using this method.
+   *  @param profileName [in] The name of the association profile which must be configured
+   *                          before being selected here
+   *  @return EC_Normal if selecting/checking was successful, an error code otherwise
    */
   virtual OFCondition setAndCheckAssociationProfile(const OFString& profileName);
 
-  /** Force every association request to be refused by SCP, no matter what
-   *  the SCU is offering.
-   *  @param doRefuse [in] If OFTrue, every association is being refused.
-   *         DcmSCP's default is not to refuse every association.
+  /** Force every association request to be refused by SCP, no matter what the SCU is
+   *  offering
+   *  @param doRefuse [in] If OFTrue, every association is being refused. DcmSCP's default
+   *                       is not to refuse every association.
    */
-  virtual void forceAssociationRefuse(const OFBool doRefuse);
+  void forceAssociationRefuse(const OFBool doRefuse);
 
-  /** Set maximum PDU size the SCP is able to receive. This size
-   *  is sent in associaton response message to SCU.
-   *  
-   *  @param maxPDU [in] If OFTrue, every association is being refused.
-   *         DcmSCP's default is not to refuse every association.
+  /** Set maximum PDU size the SCP is able to receive. This size is sent in associaton
+   *  response message to SCU.
+   *  @param maxRecPDU [in] The maximum PDU size to use in bytes
    */
-  virtual void setMaxReceivePDU(const Uint32 maxPDU);
+  void setMaxReceivePDULength(const Uint32 maxRecPDU);
 
-  /** Enable multi-process mode for SCP. For every incoming association,
-   *  a new process is started. For Unix this is done with the fork()
-   *  command that creates a copy of the process running and continues
-   *  executing the code after the fork() called seamlessy. For windows
-   *  CreateProcess() is used given the commandline specified in the
-   *  function's parameters. The created process is handled a copy
-   *  of the open TCP/IP connection and then is responsible for handling
-   *  the association. After process fork/creation, DcmSCP is ready for
-   *  listening to new connection requests.
-   *  
-   *  @param argc [in] Number of commandline arguments (only windows)
-   *  @param argv [in] Command line (only windows)
-   *  @return EC_Normal, if single process mode could be enabled,
-   *          error otherwise.
+  /** Enable multi-process mode for SCP. For every incoming association, a new process is
+   *  started. For Unix this is done with the fork() command that creates a copy of the
+   *  process running and continues executing the code after the fork() called seamlessy.
+   *  For Windows CreateProcess() is used given the commandline specified in the function's
+   *  parameters. The created process is handled a copy of the open TCP/IP connection and
+   *  then is responsible for handling the association. After process fork/creation, DcmSCP
+   *  is ready for listening to new connection requests.
+   *  @param argc [in] Number of commandline arguments (only Windows)
+   *  @param argv [in] Command line (only Windows)
+   *  @return EC_Normal, if single process mode could be enabled, an error otherwise
    */
-  virtual OFCondition enableMultiProcessMode(int argc = 0,
-                                             char *argv[] = NULL);
+  OFCondition enableMultiProcessMode(int argc = 0,
+                                     char *argv[] = NULL);
 
-  /** Set number of maximum simultanous associations. Only works
-   *  for unix and with multi-process mode enabled.
-   *  
+  /** Set number of maximum simultanous associations. Only works for Unix and with
+   *  multi-process mode enabled.
    *  @param maxAssocs [in] Maximum number of simultanous associations
    */
-  virtual void setMaxAssociations(const Uint16 maxAssocs);
+  void setMaxAssociations(const Uint16 maxAssocs);
 
-  /** Set whether DIMSE messaging should be blocking or non-blocking.
-   *  In non-blocking mode, the networking routines will wait for DIMSE
-   *  messages for the specified DIMSE timeout time, see setDIMSETimeout()
-   *  function. In blocking mode, no timeout is set but the
-   *  operating system's network routines will be used to read from the
-   *  socket for new data. In the worst case, this may be a long time
-   *  until that call returns. The default of DcmSCP is blocking mode.
-   *  @param blockingMode [in] Either DIMSE_BLOCKING for blocking mode
-   *         or DIMSE_NONBLOCKING for non-blocking mode.
+  /** Set whether DIMSE messaging should be blocking or non-blocking. In non-blocking mode,
+   *  the networking routines will wait for DIMSE messages for the specified DIMSE timeout
+   *  time, see setDIMSETimeout() function. In blocking mode, no timeout is set but the
+   *  operating system's network routines will be used to read from the socket for new data.
+   *  In the worst case, this may be a long time until that call returns. The default of
+   *  DcmSCP is blocking mode.
+   *  @param blockingMode [in] Either DIMSE_BLOCKING for blocking mode or DIMSE_NONBLOCKING
+   *                           for non-blocking mode
    */
-  virtual void setDIMSEBlockingMode(const T_DIMSE_BlockingMode blockingMode);
+  void setDIMSEBlockingMode(const T_DIMSE_BlockingMode blockingMode);
 
-
-  /** Set the timeout to be waited for incoming DIMSE message packets.
-   *  This is only relevant for DIMSE blocking mode messaging
-   *  (see also setDIMSEBlockingMode().
+  /** Set the timeout to be waited for incoming DIMSE message packets. This is only relevant
+   *  for DIMSE blocking mode messaging (see also setDIMSEBlockingMode().
    *  @param dimseTimeout [in] DIMSE receive timeout in seconds
    */
-  virtual void setDIMSETimeout (const Uint16 dimseTimeout);
+  void setDIMSETimeout (const Uint32 dimseTimeout);
 
   /** Set the timeout used during ACSE messaging protocol.
    *  @param acseTimeout [in] ACSE timeout in seconds.
    */
-  virtual void setACSETimeout (const Uint16 acseTimeout);
+  void setACSETimeout (const Uint32 acseTimeout);
+
+  /** Set whether to show presentation contexts in verbose or debug mode
+   *  @param mode [in] Show presentation contexts in verbose mode if OFTrue. By default, the
+   *                   presentation contexts are shown in debug mode.
+   */
+  void setVerbosePCMode(const OFBool mode);
 
   /* Get methods for SCP settings */
 
-
-  /** Returns TCP/IP port number SCP listens for
-   *  new connection requests.
+  /** Returns TCP/IP port number SCP listens for new connection requests
    *  @return The port number
    */
-  virtual Uint16 getPort() const;
+  Uint16 getPort() const;
 
-  /** Returns SCP's own AE title. Only used if the SCP is not
-   *  configured to respond with the called AE Title the SCU uses
-   *  for association negotiaton, see setRespondWithCalledAETitle().
+  /** Returns SCP's own AE title. Only used if the SCP is not configured to respond with the
+   *  called AE Title the SCU uses for association negotiaton, see setRespondWithCalledAETitle().
    *  @return The configured AETitle
    */
-  virtual OFString getAETitle() const;
+  const OFString &getAETitle() const;
 
-  /** Returns whether SCP uses the called AE Title from SCU requests
-   *  to respond to connection requests instead of a configured
-   *  AE Title.
-   *  @return OFTrue, if the SCU's calling AE Title is utilized, OFFalse
-   *          otherwise.
+  /** Returns whether SCP uses the called AE Title from SCU requests to respond to connection
+   *  requests instead of a configured AE Title
+   *  @return OFTrue, if the SCU's calling AE Title is utilized, OFFalse otherwise
    */
-  virtual OFBool getRespondWithCalledAETitle() const;
+  OFBool getRespondWithCalledAETitle() const;
 
-  /** Returns whether SCP should refuse any association request no matter
-   *  what the SCU proposes.
-   *  @return OFTrue, if SCP is configured to refuse every association.
+  /** Returns whether SCP should refuse any association request no matter what the SCU proposes
+   *  @return OFTrue, if SCP is configured to refuse every association
    */
-  virtual OFBool getRefuseAssociation() const;
+  OFBool getRefuseAssociation() const;
 
-  /** Returns whether SCP should refuse any association request no matter
-   *  what the SCU proposes.
-   *  @return OFTrue, if SCP is configured to refuse every association.
+  /** Returns maximum PDU length configured to be received by SCP
+   *  @return Maximum PDU length in bytes
    */
-  virtual Uint32 getMaxReceivePDU() const;
+  Uint32 getMaxReceivePDULength() const;
 
-  /** Returns whether SCP is running in single or multi-process mode.
-   *  @return OFTrue, if SCP is running in single process mode, otherwise
-   *          returns OFFalse.
+  /** Returns whether SCP is running in single or multi-process mode
+   *  @return OFTrue, if SCP is running in single process mode, otherwise returns OFFalse
    */
-  virtual OFBool getSingleProcess() const;
+  OFBool getSingleProcess() const;
 
-  /** Returns number of maximum simultanous connections permitted.
-   *  Only makes sense for Unix operating systems. For Windows the
-   *  number of maximum connections is either "unlimited" or
-   *  1. Use getSingleProcess() in that case to find out if
-   *  SCP is permitting more than one connection.
-   *  @return Under Unix-like systems, returns number of maximum
-   *          associations (=processes) permitted.
+  /** Returns number of maximum simultanous connections permitted. Only makes sense for Unix
+   *  operating systems. For Windows, the number of maximum connections is either "unlimited"
+   *  or 1. Use getSingleProcess() in that case to find out if SCP is permitting more than
+   *  one connection.
+   *  @return Under Unix-like systems, returns number of maximum associations (=processes)
+   *          permitted
    */
-  virtual Uint16 getMaxAssociations() const;
+  Uint16 getMaxAssociations() const;
 
-  /** Returns whether receiving of DIMSE messages is done
-   *  in blocking or unblocking mode.
+  /** Returns whether receiving of DIMSE messages is done in blocking or unblocking mode
    *  @return DIMSE_BLOCKING if in blocking mode, otherwise DIMSE_NONBLOCKING
    */
-  virtual T_DIMSE_BlockingMode getDIMSEBlockingMode() const;
+  T_DIMSE_BlockingMode getDIMSEBlockingMode() const;
 
-  /** Returns DIMSE timeout (only applicable in blocking mode).
+  /** Returns DIMSE timeout (only applicable in blocking mode)
    *  @return DIMSE timeout in seconds
    */
-  virtual Uint16 getDIMSETimeout () const;
+  Uint32 getDIMSETimeout () const;
 
-  /** Returns ACSE timeout.
+  /** Returns ACSE timeout
    *  @return ACSE timeout in seconds
    */
-  virtual Uint16 getACSETimeout () const;
+  Uint32 getACSETimeout () const;
+
+  /** Returns the verbose presentation context mode configured specifying whether details on
+   *  the presentation contexts (negotiated during association setup) should be shown in
+   *  verbose or debug mode. The latter is the default.
+   *  @return The verbose presentation context mode configured
+   */
+  OFBool getVerbosePCMode() const;
 
   /* Get information about current association */
 
-  /** Returns whether SCP is currently connected. If in multi-process mode,
-   *  the "father" process should always return false here, because connection
-   *  is always handled by child process.
+  /** Returns whether SCP is currently connected. If in multi-process mode, the "father"
+   *  process should always return false here, because connection is always handled by child
+   *  process.
    *  @return OFTrue, if SCP is currently connected to calling SCU
    */
-  virtual OFBool isConnected() const;
+  OFBool isConnected() const;
 
-  /** Returns number of associations currently running. Only applicable
-   *  in Unix-like operating systems. Can only be greater than one when
-   *  running in multi-process mode.
+  /** Returns number of associations currently running. Only applicable in Unix-like
+   *  operating systems. Can only be greater than one when running in multi-process mode.
    *  @return Number of currently running associations
    */
-  virtual Uint16 numAssociations() const;
+  Uint16 numAssociations() const;
 
-  /** Returns AE Title the SCU used as called AE Title in associaton request.
-   *  @return AE Title the SCP was called with. Empty string if SCP is
-   *          currently not connected.
+  /** Returns AE Title the SCU used as called AE Title in associaton request
+   *  @return AE Title the SCP was called with. Empty string if SCP is currently not
+   *          connected.
    */
-  virtual OFString getCalledAETitle() const;
-  
+  OFString getCalledAETitle() const;
 
-  /** Returns AE Title (calling AE Title) the SCU used for association request.
-   *  @return Calling AE Title of SCU. Empty string if SCP is currently
+  /** Returns AE Title (calling AE Title) the SCU used for association request
+   *  @return Calling AE Title of SCU. Empty string if SCP is currently not connected.
+   */
+  OFString getPeerAETitle() const;
+
+  /** Returns IP address of connected SCU
+   *  @return IP address of connected SCU. Empty string ifS SCP is currently not connected.
+   */
+  OFString getPeerIP() const;
+
+  /** Returns maximum PDU size the communication peer (i.e. the SCU) is able to receive
+   *  @return Maximum PDU size the SCU is able to receive. Returns zero if SCP is currently
    *          not connected.
    */
-  virtual OFString getPeerAETitle() const;
+  Uint32 getPeerMaxPDULength() const;
 
-  /** Returns IP address of connected SCU.
-   *  @return IP address of connected SCU. Empty string ifS SCP is currently
-   *          not connected.
-   */
-  virtual OFString getPeerIP() const;
 
-  /** 
-   *  @return Maximum PDU size the SCU is possible to receive. 
-   *          Returns zero if SCP is currently not connected.
-   */
-  virtual Uint32 getPeerMaxPDU() const;
-
-  /** Virtual destructor, frees internal memory.
-   */
-  virtual ~DcmSCP();
-  
 protected:
 
   /* *********************************************************************
    * Functions particularly interesting for overwriting in derived classes
-   * ********************************************************************* 
+   * *********************************************************************
    */
 
-  /** Handle incoming command set and react accordingly, e. g. sending 
-   *  response via DIMSE_sendXXXResponse(). The standard handler only
-   *  knows how to handle an Echo request by calling handleEchoRequest().
-   *  This function is most likely to be implemented by a derived class
-   *  implementing a specific SCP behaviour.
+  /** Handle incoming command set and react accordingly, e.g. sending response via
+   *  DIMSE_sendXXXResponse(). The standard handler only knows how to handle an Echo request
+   *  by calling handleEchoRequest(). This function is most likely to be implemented by a
+   *  derived class implementing a specific SCP behaviour.
    */
-  virtual OFCondition handleIncomingCommand(T_DIMSE_Message* incomingMsg, 
+  virtual OFCondition handleIncomingCommand(T_DIMSE_Message* incomingMsg,
                                             const DcmPresentationContextInfo& presContextInfo);
 
   /** Overwrite this function to be notified about an incoming association request.
@@ -426,71 +402,65 @@ protected:
    */
   virtual void notifyAssociationAcknowledge();
 
-  /** Overwrite this function to be notified about an incoming
-   *  association release request.
+  /** Overwrite this function to be notified about an incoming association release request.
    *  The standard handler prints debug information.
    */
   virtual void notifyReleaseRequest();
 
-  /** Overwrite this function to be notified about an incoming
-   *  association abort request.
+  /** Overwrite this function to be notified about an incoming association abort request.
    *  The standard handler prints debug information.
    */
   virtual void notifyAbortRequest();
 
-  /** Overwrite this function to be notified when an association
-   *  is terminated.
+  /** Overwrite this function to be notified when an association is terminated.
    *  The standard handler prints debug information.
    */
   virtual void notifyAssociatonTermination();
 
-  /** Overwrite this function to be notified when an association
-   *  is terminated.
+  /** Overwrite this function to be notified when an association is terminated.
    *  The standard handler prints debug information.
    */
   virtual void notifyDIMSEError(const OFCondition& cond);
 
-  /** Receive dataset over existing association.
+  /** Receive dataset over existing association
+   *  @param TODO
+   *  @return TODO
    */
   virtual OFCondition receiveDataset(DcmDataset **dataObject,
 		                                 DIMSE_ProgressCallback callback,
 		                                 void *callbackContext);
 
-  /** Respond to storage request.
+  /** Respond to storage request
    *  @param presID The presentation context ID to respond to
    *  @param request The request that is responded to
    *  @param response The actual response
-   *  @param statusDetail The status detail to be sent.
-   *  @return EC_Normal, if responding was successful, error code otherwise
+   *  @param statusDetail The status detail to be sent
+   *  @return EC_Normal, if responding was successful, an error code otherwise
    */
   virtual OFCondition sendCStoreResponse(T_ASC_PresentationContextID presID,
 	                                       T_DIMSE_C_StoreRQ *request,
 	                                       T_DIMSE_C_StoreRSP *response,
 	                                       DcmDataset *statusDetail);
 
-  /** Standard handler for Verification Service Class (DICOM Echo). Returns
-   *  echo response (ie. whether C-ECHO could be responded to with status
-   *  success).
-   *  @param req [in] The DIMSE C-ECHO-RQ message that was received.
-   *  @param presId [in] The presentation context to be used. Per default
-   *         the presentation context of the request is used.
-   *  @return OFCondition value denoting success or error.
+  /** Standard handler for Verification Service Class (DICOM Echo). Returns echo response
+   *  (i.e. whether C-ECHO could be responded to with status success).
+   *  @param req    [in] The DIMSE C-ECHO-RQ message that was received
+   *  @param presId [in] The presentation context to be used. By default, the presentation
+   *                     context of the request is used.
+   *  @return OFCondition value denoting success or error
    */
-  virtual OFCondition handleEchoRequest(T_DIMSE_C_EchoRQ *req, 
+  virtual OFCondition handleEchoRequest(T_DIMSE_C_EchoRQ *req,
                                         T_ASC_PresentationContextID presId);
 
-  /** Function that checks for each association request, whether the 
-   *  combination of calling and called AE title proposed by the
-   *  SCU is accepted. The standard behaviour is to either accept
-   *  any AE title (if the corresponding option is set)
-   *  or to only accept the one set with setAETitle(). In the former case,
-   *  the function also adopts the SCPs AETitle to the one used by the
-   *  SCU. The method can be overwritten to have full control about which
-   *  AE title combinations are accepted by the SCP.
+  /** Function that checks for each association request, whether the combination of calling
+   *  and called AE title proposed by the SCU is accepted. The standard behaviour is to
+   *  either accept any AE title (if the corresponding option is set) or to only accept the
+   *  one set with setAETitle(). In the former case, the function also adopts the SCP's
+   *  AETitle to the one used by the SCU. The method can be overwritten to have full control
+   *  about which AE title combinations are accepted by the SCP.
    *  @param callingAE [in] The AE title the SCU uses as Calling AE Title
-   *  @param calledAE [in] The AE title the SCU uses as Called AE Title
-   *  @return OFTrue if the given AE title is going to be accepted, OFFalse
-   *          otherwise
+   *  @param calledAE  [in] The AE title the SCU uses as Called AE Title
+   *  @return OFTrue if the given AE title is going to be accepted, OFFalse otherwise
    */
   virtual OFBool calledAETitleAccepted(const OFString& callingAE,
                                        const OFString& calledAE);
@@ -498,68 +468,57 @@ protected:
 
   /* *********************************************************************
    * Further functions and member variables
-   * ********************************************************************* 
+   * *********************************************************************
    */
 
-  /** This function takes care of receiving, negotiating and
-   *  accepting/refusing an association request. Additionally,
-   *  if negotiaton was successful, it handles any incoming
-   *  DIMSE commands by calling handleAssociation(). There is
-   *  only returned an error, if something goes wrong. Therefore,
-   *  refusing an association because of wrong application context
-   *  name or no common presentation contexts with the SCU
-   *  does NOT lead to an error.
-   *  @param network [in] Contains network parameters.
-   *  @return EC_Normal, if everything went fine, error code otherwise.
+  /** This function takes care of receiving, negotiating and accepting/refusing an
+   *  association request. Additionally, if negotiaton was successful, it handles any
+   *  incoming DIMSE commands by calling handleAssociation(). An error is only returned, if
+   *  something goes wrong. Therefore, refusing an association because of wrong application
+   *  context name or no common presentation contexts with the SCU does NOT lead to an error.
+   *  @param network [in] Contains network parameters
+   *  @return EC_Normal, if everything went fine, an error code otherwise
    */
   virtual OFCondition waitForAssociation(T_ASC_Network* network);
 
-    /** This function takes care of removing items referring to
-     *  (terminated) subprocess from the table which stores all
-     *  subprocess information. This function does not make sense
-     *  for Windows operating systems where the SCP does not have
-     *  any control over additionally created processes.
-     * 
+    /** This function takes care of removing items referring to (terminated) subprocess from
+     *  the table which stores all subprocess information. This function does not make sense
+     *  for Windows operating systems where the SCP does not have any control over
+     *  additionally created processes.
      */
   virtual void cleanChildren();
 
-  /** This function checks all presentation contexts proposed by the SCU
-   *  whether they are supported or not. It is not an error if no common
-   *  presentation context could be identified with the SCU; only issues
-   *  like problems in memory management etc. are reported as an error.
-   *  This function does not send a response message to the SCU. This
+  /** This function checks all presentation contexts proposed by the SCU whether they are
+   *  supported or not. It is not an error if no common presentation context could be
+   *  identified with the SCU; only issues like problems in memory management etc. are
+   *  reported as an error. This function does not send a response message to the SCU. This
    *  is done in other functions.
-   *  @return EC_Normal if negotiation was successfully done, otherwise
-   *          an error code.
+   *  @return EC_Normal if negotiation was successfully done, an error code otherwise
    */
-  virtual OFCondition negotiateAssociation(); 
+  virtual OFCondition negotiateAssociation();
 
-  /** This function adds a process to the table that stores
-   *  process information (only relevant for multi-process mode under
-   *  Unix-like systems).
-   *  @param pid [in] The process id of the sub-process which was just
-   *         started.
+  /** This function adds a process to the table that stores process information (only
+   *  relevant for multi-process mode under Unix-like systems)
+   *  @param pid [in] The process ID of the sub-process which was just started
    */
-  virtual void addProcessToTable( int pid); 
+  virtual void addProcessToTable(int pid);
 
-  /** This function removes one particular item from the table
-   *  which stores all subprocess information. The corresponding process
-   *  item to be deleted will be identified by its process id.
-   *  This function is only applicable for multi-process mode under
-   *  Unix-like systems.
-   *  @param pid [in] Process id.
+  /** This function removes one particular item from the table which stores all subprocess
+   *  information. The corresponding process item to be deleted will be identified by its
+   *  process ID. This function is only applicable for multi-process mode under Unix-like
+   *  systems.
+   *  @param pid [in] Process ID.
    */
-  virtual void removeProcessFromTable( int pid );
+  virtual void removeProcessFromTable(int pid);
 
-  /** This function takes care of refusing an assocation request.
-   *  @param reason [in] The reason why the association request will be refused
-   *         and that will be reported to the SCU.
+  /** This function takes care of refusing an assocation request
+   *  @param reason [in] The reason why the association request will be refused and that
+   *                     will be reported to the SCU.
    */
-  virtual void refuseAssociation( DcmRefuseReasonType reason );
+  virtual void refuseAssociation(DcmRefuseReasonType reason);
 
-  /** This function takes care of handling the other DICOM application's
-   *  request. After having accomplished all necessary steps, the association
-   *  will be dropped and destroyed.
+  /** This function takes care of handling the other DICOM application's request. After
+   *  having accomplished all necessary steps, the association will be dropped and destroyed.
    */
   virtual void handleAssociation();
 
@@ -567,107 +526,99 @@ protected:
 private:
 
   /** Private undefined copy constructor. Shall never be called.
-   *  @param src Source object.
+   *  @param src Source object
    */
-  DcmSCP( const DcmSCP &src );
+  DcmSCP(const DcmSCP &src);
 
   /** Private undefined assignment operator. Shall never be called.
-   *  @param src Source object.
-   *  @return Reference to this.
+   *  @param src Source object
+   *  @return Reference to this
    */
-  DcmSCP &operator=( const DcmSCP &src );
+  DcmSCP &operator=(const DcmSCP &src);
 
   /// Current association run by this SCP
   T_ASC_Association *m_assoc;
 
-  /// Association configuration. May be filled from association configuration
-  /// file or by adding presentation contexts by calling 
-  /// addPresentationContext() (or both)
+  /// Association configuration. May be filled from association configuration file or by
+  /// adding presentation contexts by calling addPresentationContext() (or both)
   DcmAssociationConfiguration* m_assocConfig;
 
-  /// Profile in association configuration that should be used. Per default,
-  /// the profile named "Default" is used.
+  /// Profile in association configuration that should be used. By default, a profile
+  /// called "DEFAULT" is used.
   OFString m_assocCfgProfileName;
 
-  /// Port on which the SCP is listening for association requests. The default
-  /// port is 104.
+  /// Port on which the SCP is listening for association requests. The default port is 104.
   Uint16 m_port;
 
-  /// AETitle to be used for responding to SCU (default: DCMTK_SCP). This
-  /// value is not evaluated if the the SCP is configured to respond to
-  /// any assocation requests with the name the SCU used as Called AE Title
-  /// (which is the SCPs default behaviour); see setRespondWithCalledAETitle().
+  /// AETitle to be used for responding to SCU (default: DCMTK_SCP). This value is not
+  /// evaluated if the the SCP is configured to respond to any assocation requests with the
+  /// name the SCU used as Called AE Title (which is the SCP's default behaviour); see
+  /// setRespondWithCalledAETitle().
   OFString m_aetitle;
-  
-  /// Indicates if the application shall refuse any association
-  /// attempt regardless of what the SCU proposes.
+
+  /// Indicates if the application shall refuse any association attempt regardless of what
+  /// the SCU proposes.
   OFBool m_refuseAssociation;
-  
-  /// Maximum PDU size the SCP is able to receive. This value is 
-  /// sent to the SCU during association negotiaton.
-  Uint32 m_maxPDU;
-  
-  /// Indicates if SCP is run in single process mode or not. In 
-  /// multi-process mode, the SCP starts a new process for any
-  /// incoming association request. The association is then
-  /// completetly handled by the "child" process while the
-  /// parent process keeps listening for new associations.
-  /// Under unix, multi-process mode uses the fork command to
-  /// spawn a process which is an exact copy of the parent and
-  /// continues code execution after the fork command. For windows,
-  /// the programmer of the derived class is responsible for setting
-  /// the command line needed for the internal "CreateProcess" call. The
-  /// commandline arguments are specified with function
-  /// enableMultiProcessMode().
+
+  /// Maximum PDU size the SCP is able to receive. This value is sent to the SCU during
+  /// association negotiaton.
+  Uint32 m_maxReceivePDULength;
+
+  /// Indicates if SCP is run in single process mode or not. In multi-process mode, the SCP
+  /// starts a new process for any incoming association request. The association is then
+  /// completetly handled by the "child" process while the parent process keeps listening for
+  /// new associations. Under Unix, multi-process mode uses the fork command to spawn a
+  /// process which is an exact copy of the parent and continues code execution after the
+  /// fork command. For Windows, the programmer of the derived class is responsible for
+  /// setting the command line needed for the internal "CreateProcess" call. The commandline
+  /// arguments are specified with function enableMultiProcessMode().
   OFBool m_singleProcess;
-  
-  /// Indicates, that this process was spawn as child from a parent process
-  /// needed for multiprocess mode under windows operating systems.
+
+  /// Indicates, that this process was spawn as child from a parent process needed for
+  /// multiprocess mode under Windows operating systems.
   OFBool m_forkedChild;
-  
-  /// Number of arguments in commandline, needed for multiprocess mode
-  /// on windows sytems
+
+  /// Number of arguments in commandline, needed for multiprocess mode on Windows sytems
   int m_cmd_argc;
-  
-  /// Complete command line, needed for multiprocess mode on 
-  /// windows sytems
+
+  /// Complete command line, needed for multiprocess mode on Windows sytems
   char **m_cmd_argv;
-  
-  /// Maximum number of association for multi-process mode. This 
-  /// member is only evaluated under Unix. For windows there is no
-  /// mechanism to restrict the number of simultanous associations
-  /// in multi-process mode, thus only permitting "unlimited" 
-  /// associations.
+
+  /// Maximum number of association for multi-process mode. This member is only evaluated
+  /// under Unix. For Windows there is no mechanism to restrict the number of simultanous
+  /// associations in multi-process mode, thus only permitting "unlimited" associations.
   Uint16 m_maxAssociations;
-  
-  /// Blocking mode for DIMSE operations. If DIMSE non-blocking mode is
-  /// enabled, the SCP is wating for new DIMSE data a specific (m_dimseTimeout)
-  /// amount of time and then returns if not data arrives. In blocking mode
-  /// the SCP is calling the underlying operating system function for
-  /// receiving data from the socket directly, which may return after a very
-  /// long time, depending on the system's network configuration.
+
+  /// Blocking mode for DIMSE operations. If DIMSE non-blocking mode is enabled, the SCP is
+  /// wating for new DIMSE data a specific (m_dimseTimeout) amount of time and then returns
+  /// if not data arrives. In blocking mode the SCP is calling the underlying operating
+  /// system function for receiving data from the socket directly, which may return after a
+  /// very long time, depending on the system's network configuration.
   T_DIMSE_BlockingMode m_blockMode;
-  
-  /// Timeout for DIMSE operations in seconds.
-  /// Maximum time in DIMSE non-blocking mode to wait for incoming DIMSE
-  /// data.
-  Uint16 m_DIMSETimeout;
-  
-  /// Timeout for ACSE operations in seconds. Maximum time during association
-  /// negotiaton which is given for the SCU to follow the ACSE protocol.
-  Uint16 m_ACSETimeout;
-  
-  /// Table of processes for non-single process mode. This member is only 
-  /// applicable when SCP is run under Unix and multi-process mode.
+
+  /// Timeout for DIMSE operations in seconds. Maximum time in DIMSE non-blocking mode to
+  /// wait for incoming DIMSE data.
+  Uint32 m_DIMSETimeout;
+
+  /// Timeout for ACSE operations in seconds. Maximum time during association negotiaton
+  /// which is given for the SCU to follow the ACSE protocol.
+  Uint32 m_ACSETimeout;
+
+  /// Verbose PC mode. Flags specifying whether details on the presentation contexts
+  /// (negotiated during association setup) should be shown in verbose or debug mode.
+  OFBool m_verbosePCMode;
+
+  /// Table of processes for non-single process mode. This member is only applicable when
+  /// the SCP is running under Unix and multi-process mode.
   OFList<DcmProcessSlotType*> m_processTable;
 
-  /// If set, the AE Title as received in the request (called AE Title) is
-  /// used in response (default: OFTrue).
+  /// If set, the AE Title as received in the request (called AE Title) is used in response
+  /// (default: OFTrue).
   OFBool m_respondWithCalledAETitle;
 
-  /// The presentation context of the current DIMSE request. This member stores
-  /// information to the very presentation context that was used by the client
-  /// when sending the last received DIMSE message to this SCP.
+  /// The presentation context of the current DIMSE request. This member stores information
+  /// to the very presentation context that was used by the client when sending the last
+  /// received DIMSE message to this SCP.
   DcmPresentationContextInfo m_pcInfo;
 
   /** Drops association and clears internal structures to free memory
@@ -682,6 +633,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.5  2010-06-17 17:06:30  joergr
+ *  Aligned SCP class with existing SCU class. Some further code cleanups.
+ *  Changed default profile from "Default" to "DEFAULT". Revised documentation.
+ *
  *  Revision 1.4  2010-04-29 16:14:59  onken
  *  Added function for responding to storage requests to SCP class.
  *

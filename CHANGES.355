@@ -9,6 +9,10 @@ Changes between releases are documented here.
 
 - Fixed wrong logger macro (was DCMNET_INFO instead of DCMWLM_INFO).
   Affects: dcmwlm/libsrc/wlmactmg.cc
+  
+- Aligned SCP class with existing SCU class. Some further code cleanups.
+  Changed default profile from "Default" to "DEFAULT". Revised documentation.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
 
 **** Changes from 2010.06.16 (riesmeier)
 
