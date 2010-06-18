@@ -22,8 +22,8 @@
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-17 17:08:05 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2010-06-18 14:55:57 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,10 +155,11 @@ OFCondition DcmSCP::enableMultiProcessMode(int argc,
                                            char *argv[])
 {
   if ( m_assoc != NULL )
-    return EC_IllegalCall;
+    return DIMSE_ILLEGALASSOCIATION;
+
 #ifdef _WIN32
   if ( (argc == 0) || (argv == NULL) )
-    return EC_IllegalCall;
+    return EC_IllegalParameter;
   m_cmd_argc = argc;
   m_cmd_argv = argv;
 #endif
@@ -175,7 +176,7 @@ OFCondition DcmSCP::markAsForkedChild()
      any network initializiation -> Be sure there is no association so far.
    */
   if ( m_singleProcess || (m_assoc != NULL) )
-    return EC_IllegalCall;
+    return EC_IllegalCall; // TODO: need to find better error code
   m_forkedChild = OFTrue;
   return EC_Normal;
 }
@@ -188,14 +189,14 @@ OFCondition DcmSCP::listen()
   OFCondition cond = EC_Normal;
   // Make sure data dictionary is loaded.
   if( !dcmDataDict.isDictionaryLoaded() )
-    DCMDATA_WARN("no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
+    DCMNET_WARN("no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
 
 #ifdef HAVE_GETEUID
   // If port is privileged we must be as well.
   if( m_port < 1024 && geteuid() != 0 )
   {
     DCMNET_ERROR("No privileges to open this network port (choose port below 1024?)");
-    return EC_IllegalCall;
+    return EC_IllegalCall; // TODO: need to find better error code
   }
 #endif
 
@@ -347,8 +348,11 @@ void DcmSCP::refuseAssociation(DcmRefuseReasonType reason)
 
 OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
 {
-  if (network == NULL) return ASC_NULLKEY; // TODO specific error
-  if (m_assoc != NULL) return EC_IllegalCall;
+  if (network == NULL)
+    return ASC_NULLKEY;
+  if (m_assoc != NULL)
+    return DIMSE_ILLEGALASSOCIATION;
+
   char buf[BUFSIZ];
   Uint16 timeout;
 
@@ -387,12 +391,12 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
   {
     if (desiredAction == DCMSCP_ACTION_REFUSE_ASSOCIATION)
     {
-        refuseAssociation( DCMSCP_INTERNAL_ERROR );
-        if( !m_singleProcess )
-        {
-          dropAndDestroyAssociation();
-        }
-        return( EC_Normal );
+      refuseAssociation( DCMSCP_INTERNAL_ERROR );
+      if( !m_singleProcess )
+      {
+        dropAndDestroyAssociation();
+      }
+      return( EC_Normal );
     }
     else desiredAction = DCMSCP_ACTION_UNDEFINED; // reset for later use
   }
@@ -450,9 +454,15 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
     return( EC_Normal );
   }
 
+  /* set our application entity title */
+  if (m_respondWithCalledAETitle)
+    ASC_setAPTitles(m_assoc->params, NULL, NULL, m_assoc->params->DULparams.calledAPTitle);
+  else
+    ASC_setAPTitles(m_assoc->params, NULL, NULL, m_aetitle.c_str());
+
   /* If we get to this point the association shall be negotiated.
      Thus, for every presentation context it is checked whether
-     it can be accepdted. However, this is only a "dry" run, i.e. there
+     it can be accepted. However, this is only a "dry" run, i.e. there
      is not yet sent a response message to the SCU
    */
   cond = negotiateAssociation();
@@ -490,12 +500,12 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
   notifyAssociationAcknowledge();
 
   // Dump some debug information
-  OFString tmpstr;
+  OFString tempStr;
   DCMNET_INFO("Association Acknowledged (Max Send PDV: " << OFstatic_cast(Uint32, m_assoc->sendPDVLength) << ")");
   if (m_verbosePCMode)
-    DCMNET_INFO(ASC_dumpParameters(tmpstr, m_assoc->params, ASC_ASSOC_AC));
+    DCMNET_INFO(ASC_dumpParameters(tempStr, m_assoc->params, ASC_ASSOC_AC));
   else
-    DCMNET_DEBUG(ASC_dumpParameters(tmpstr, m_assoc->params, ASC_ASSOC_AC));
+    DCMNET_DEBUG(ASC_dumpParameters(tempStr, m_assoc->params, ASC_ASSOC_AC));
 
   // Depending on if this execution shall be limited to one process or not, spawn a sub-
   // process to handle the association or don't. (Note: For Windows dcmnet is handling
@@ -550,11 +560,12 @@ OFCondition DcmSCP::negotiateAssociation()
 {
   // check whether there is something to negotiate...
   if (m_assoc == NULL)
-    return ASC_NULLKEY;
+    return DIMSE_ILLEGALASSOCIATION;
+
   if (m_assocConfig == NULL)
   {
     DCMNET_ERROR("Cannot negotiate association: Missing association configuration");
-    return EC_IllegalCall;
+    return EC_IllegalCall; // TODO: need to find better error code
   }
 
   /* set presentation contexts as defined in config file */
@@ -562,11 +573,11 @@ OFCondition DcmSCP::negotiateAssociation()
   if (m_assocConfig)
     result = m_assocConfig->evaluateAssociationParameters(m_assocCfgProfileName.c_str(), *m_assoc);
   else
-    return EC_IllegalCall;
+    return EC_IllegalCall; // TODO: need to find better error code
   if (result.bad())
   {
-    OFString tmpstr;
-    DCMNET_ERROR(DimseCondition::dump(tmpstr, result));
+    OFString tempStr;
+    DCMNET_ERROR(DimseCondition::dump(tempStr, result));
   }
   return result;
 }
@@ -645,10 +656,10 @@ OFCondition DcmSCP::handleIncomingCommand(T_DIMSE_Message* msg,
          Note that the condition will be returned and
          that the caller is responsible to end the association if desired
        */
-      DCMNET_ERROR("Cannot handle this kind of DIMSE message: ");
-      OFString tmpstr;
-      DCMNET_ERROR(DIMSE_dumpMessage(tmpstr, *msg, DIMSE_INCOMING));
-      cond = EC_IllegalCall; // TODO specific error
+      DCMNET_ERROR("Cannot handle this kind of DIMSE message:");
+      OFString tempStr;
+      DCMNET_ERROR(DIMSE_dumpMessage(tempStr, *msg, DIMSE_INCOMING));
+      cond = EC_IllegalCall; // TODO: need to find better error code
       break;
   }
 
@@ -659,18 +670,20 @@ OFCondition DcmSCP::handleIncomingCommand(T_DIMSE_Message* msg,
 // ----------------------------------------------------------------------------
 
 OFCondition DcmSCP::handleEchoRequest(T_DIMSE_C_EchoRQ *req,
-                                      T_ASC_PresentationContextID presId)
+                                      T_ASC_PresentationContextID presID)
 {
+  OFString tempStr;
   // Dump debug information
-  DCMNET_INFO("Received C-ECHO Request: MsgID " << OFstatic_cast(Uint16, req->MessageID));
-  DCMNET_DEBUG("Sending C-ECHO Response");
+  DCMNET_INFO("Received C-ECHO Request");
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, *req, DIMSE_INCOMING, NULL, presID));
+  DCMNET_INFO("Sending C-ECHO Response");
 
   // Send an echo response
-  OFCondition cond = DIMSE_sendEchoResponse( m_assoc, presId, req, STATUS_Success, NULL );
+  OFCondition cond = DIMSE_sendEchoResponse( m_assoc, presID, req, STATUS_Success, NULL );
   if( cond.bad() )
-    DCMNET_ERROR("Cannot send C-ECHO Response: " << cond.text());
+    DCMNET_ERROR("Cannot send C-ECHO Response: " << DimseCondition::dump(tempStr, cond));
   else
-    DCMNET_DEBUG("C-ECHO successfully sent");
+    DCMNET_DEBUG("C-ECHO Response successfully sent");
 
   // return return value
   return cond;
@@ -683,7 +696,9 @@ OFCondition DcmSCP::receiveDataset(DcmDataset **dataObject,
                                    DIMSE_ProgressCallback callback,
                                    void *callbackContext)
 {
-  if ( (m_assoc == NULL) ) return ASC_NULLKEY;
+  if (m_assoc == NULL)
+     return DIMSE_ILLEGALASSOCIATION;
+
   T_ASC_PresentationContextID presID;
   return DIMSE_receiveDataSetInMemory(m_assoc,
     m_blockMode,
@@ -1135,7 +1150,7 @@ OFCondition DcmSCP::loadAssociationCfgFile(const OFString& assocFile)
 OFCondition DcmSCP::setAndCheckAssociationProfile(const OFString& profileName)
 {
   if (m_assocConfig == NULL)
-    return EC_IllegalCall;
+    return EC_IllegalCall; // TODO: need to find better error code
   if (profileName.empty())
     return EC_IllegalParameter;
 
@@ -1154,12 +1169,12 @@ OFCondition DcmSCP::setAndCheckAssociationProfile(const OFString& profileName)
   if (result.good() && !m_assocConfig->isKnownProfile(mangledName.c_str()))
   {
     DCMNET_ERROR("No association profile named \"" << profileName << "\" in association configuration");
-    result = EC_IllegalParameter;
+    result = EC_IllegalParameter; // TODO: need to find better error code
   }
   if (result.good() && !m_assocConfig->isValidSCPProfile(mangledName.c_str()))
   {
     DCMNET_ERROR("The association profile named \"" << profileName << "\" is not a valid SCP association profile");
-    result = EC_IllegalParameter;
+    result = EC_IllegalParameter; // TODO: need to find better error code
   }
   if (result.good())
     m_assocCfgProfileName = mangledName;
@@ -1171,13 +1186,15 @@ OFCondition DcmSCP::setAndCheckAssociationProfile(const OFString& profileName)
 
 OFCondition DcmSCP::addPresentationContext(const OFString& abstractSyntax,
                                            const OFList<OFString> xferSyntaxes,
+                                           const T_ASC_SC_ROLE role,
                                            const OFString& profile)
 {
   if (profile.empty())
     return EC_IllegalParameter;
 
-  const OFString DCMSCP_TS_KEY("DCMSCP_GEN_TS_KEY");
-  const OFString DCMSCP_PC_KEY("DCMSCP_GEN_PC_KEY");
+  const char *DCMSCP_TS_KEY = "DCMSCP_GEN_TS_KEY";
+  const char *DCMSCP_PC_KEY = "DCMSCP_GEN_PC_KEY";
+  const char *DCMSCP_RO_KEY = "DCMSCP_GEN_RO_KEY";
   // create new association configuration if not already existing
   OFBool newlyCreated = OFFalse;
   if (!m_assocConfig)
@@ -1188,16 +1205,20 @@ OFCondition DcmSCP::addPresentationContext(const OFString& abstractSyntax,
   OFListConstIterator(OFString) it = xferSyntaxes.begin();
   OFListConstIterator(OFString) endOfList = xferSyntaxes.end();
   OFCondition result;
-  // the association configuration needs key names for transfer syntaxes and
-  // presentation contexts. Use predefined key names.
+  // the association configuration needs key names for transfer syntaxes,
+  // presentation contexts and roles. Use predefined key names.
   while ((it != endOfList) && result.good())
   {
-    result = m_assocConfig->addTransferSyntax(DCMSCP_TS_KEY.c_str(), (*it).c_str());
+    result = m_assocConfig->addTransferSyntax(DCMSCP_TS_KEY, (*it).c_str());
     it++;
   }
   if (result.good())
   {
-    result = m_assocConfig->addPresentationContext(DCMSCP_PC_KEY.c_str(), abstractSyntax.c_str(), DCMSCP_TS_KEY.c_str());
+    result = m_assocConfig->addPresentationContext(DCMSCP_PC_KEY, abstractSyntax.c_str(), DCMSCP_TS_KEY);
+  }
+  if (result.good())
+  {
+    result = m_assocConfig->addRole(DCMSCP_RO_KEY, abstractSyntax.c_str(), role);
   }
   /* perform name mangling for config file key */
   const char *c = profile.c_str();
@@ -1209,7 +1230,7 @@ OFCondition DcmSCP::addPresentationContext(const OFString& abstractSyntax,
   }
   if (result.good() && !m_assocConfig->isKnownProfile(mangledName.c_str()))
   {
-    result = m_assocConfig->addProfile(mangledName.c_str(), DCMSCP_PC_KEY.c_str());
+    result = m_assocConfig->addProfile(mangledName.c_str(), DCMSCP_PC_KEY, DCMSCP_RO_KEY);
   }
   if (result.bad() && newlyCreated)
   {
@@ -1259,7 +1280,7 @@ void DcmSCP::notifyAssociationRequest(const T_ASC_Parameters& params,
 
 void DcmSCP::notifyAssociationAcknowledge()
 {
-  DCMNET_INFO("Association Acknowledged");
+  DCMNET_DEBUG("DcmSCP: Association Acknowledged");
 }
 
 // ----------------------------------------------------------------------------
@@ -1273,26 +1294,34 @@ void DcmSCP::notifyReleaseRequest()
 
 void DcmSCP::notifyAbortRequest()
 {
-  DCMNET_INFO("DcmSCP: Received Association Abort Request");
+  DCMNET_INFO("Received Association Abort Request");
 }
 
 // ----------------------------------------------------------------------------
 
 void DcmSCP::notifyAssociatonTermination()
 {
-  DCMNET_INFO("DcmSCP: Association Terminated");
+  DCMNET_DEBUG("DcmSCP: Association Terminated");
 }
 
 // ----------------------------------------------------------------------------
 
 void DcmSCP::notifyDIMSEError(const OFCondition& cond)
 {
-  DCMNET_DEBUG("DIMSE Error, detail (if available): " << cond.text());
+  OFString tempStr;
+  DCMNET_DEBUG("DIMSE Error, detail (if available): " << DimseCondition::dump(tempStr, cond));
 }
+
 
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.8  2010-06-18 14:55:57  joergr
+** Added support for the SCP/SCU role selection negotiation.
+** Changed some error conditions / return codes to more appropriate values.
+** Made sure that the responding application entity title is set.
+** Further revised logging output. Use DimseCondition::dump() where appropriate.
+**
 ** Revision 1.7  2010-06-17 17:08:05  joergr
 ** Aligned SCP class with existing SCU class. Some further code cleanups.
 ** Changed default profile from "Default" to "DEFAULT". Revised documentation.
