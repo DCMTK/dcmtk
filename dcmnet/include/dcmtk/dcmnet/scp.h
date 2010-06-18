@@ -23,8 +23,8 @@
  *           applications.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-17 17:06:30 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2010-06-18 14:50:33 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,6 +166,7 @@ public:
    *  @param abstractSyntax [in] The UID of the abstract syntax (e.g. SOP class) to add
    *  @param xferSyntaxes   [in] List of transfer syntaxes (UIDs) that should be supported
    *                             for the given abstract syntax name
+   *  @param role           [in] The role to be negotiated
    *  @param profile        [in] The profile the abstract snytax should be added to. The
    *                             default is to add it to the DcmSCP's internal standard
    *                             profile called "DEFAULT".
@@ -173,6 +174,7 @@ public:
    */
   virtual OFCondition addPresentationContext(const OFString& abstractSyntax,
                                              const OFList<OFString> xferSyntaxes,
+                                             const T_ASC_SC_ROLE role = ASC_SC_ROLE_DEFAULT,
                                              const OFString& profile = "DEFAULT");
 
   /** Set SCP's TCP/IP listening port
@@ -445,12 +447,12 @@ protected:
   /** Standard handler for Verification Service Class (DICOM Echo). Returns echo response
    *  (i.e. whether C-ECHO could be responded to with status success).
    *  @param req    [in] The DIMSE C-ECHO-RQ message that was received
-   *  @param presId [in] The presentation context to be used. By default, the presentation
+   *  @param presID [in] The presentation context to be used. By default, the presentation
    *                     context of the request is used.
    *  @return OFCondition value denoting success or error
    */
   virtual OFCondition handleEchoRequest(T_DIMSE_C_EchoRQ *req,
-                                        T_ASC_PresentationContextID presId);
+                                        T_ASC_PresentationContextID presID);
 
   /** Function that checks for each association request, whether the combination of calling
    *  and called AE title proposed by the SCU is accepted. The standard behaviour is to
@@ -627,12 +629,15 @@ private:
 
 };
 
-
 #endif // SCP_H
+
 
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.6  2010-06-18 14:50:33  joergr
+ *  Added support for the SCP/SCU role selection negotiation.
+ *
  *  Revision 1.5  2010-06-17 17:06:30  joergr
  *  Aligned SCP class with existing SCU class. Some further code cleanups.
  *  Changed default profile from "Default" to "DEFAULT". Revised documentation.
