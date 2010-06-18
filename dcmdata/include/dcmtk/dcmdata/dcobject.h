@@ -24,8 +24,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:44 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2010-06-18 08:17:57 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -636,6 +636,12 @@ public:
      */
     class PrintHelper
     {
+      private:
+        /** Undefined assignment operator. This is needed to work around a
+         *  compiler warning on VC2008 with the highest warning level.
+         */
+        PrintHelper& operator=(PrintHelper &);
+
       public:
         /** construct a PrintHelper
          *  @param dcmobj DcmObject you want to print
@@ -691,6 +697,10 @@ static inline STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream &stream, D
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.68  2010-06-18 08:17:57  uli
+ * Added undefined assignment operator to PrintHelper to work around
+ * a warning with VC2008.
+ *
  * Revision 1.67  2010-03-01 09:08:44  uli
  * Removed some unnecessary include directives in the headers.
  *

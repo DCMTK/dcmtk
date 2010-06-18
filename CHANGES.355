@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.18 (schlachter)
+
+- Added undefined assignment operator to PrintHelper to work around
+  a warning with VC2008. Thanks to forum user "Yves Neumann" for the report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcobject.h
+
 **** Changes from 2010.06.17 (riesmeier)
 
 - Moved output of "No Acceptable Presentation Contexts" message to another code
