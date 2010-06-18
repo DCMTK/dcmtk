@@ -22,8 +22,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-17 17:13:06 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2010-06-18 14:58:01 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,8 @@ OFCondition DcmSCU::initNetwork()
     result = DcmAssociationConfigurationFile::initialize(assocConfig, m_assocConfigFilename.c_str());
     if (result.bad())
     {
-      DCMNET_WARN("Unable to parse association configuration file " << m_assocConfigFilename << " (ignored): " << result.text());
+      DCMNET_WARN("Unable to parse association configuration file " << m_assocConfigFilename
+        << " (ignored): " << result.text());
       return result;
     }
     else
@@ -151,7 +152,8 @@ OFCondition DcmSCU::initNetwork()
       result = assocConfig.setAssociationParameters(profileName.c_str(), *m_params);
       if (result.bad())
       {
-        DCMNET_WARN("Unable to apply association configuration file" << m_assocConfigFilename <<" (ignored): " << result.text());
+        DCMNET_WARN("Unable to apply association configuration file" << m_assocConfigFilename
+          <<" (ignored): " << result.text());
         return result;
       }
     }
@@ -169,7 +171,8 @@ OFCondition DcmSCU::initNetwork()
   // Print warning if number of overall presenation contexts exceeds 128
   if ((numContexts + m_presContexts.size()) > 128)
   {
-    DCMNET_WARN("Number of presentation contexts exceeds 128 (" << numContexts + m_presContexts.size() << "). Some contexts will not be negotiated");
+    DCMNET_WARN("Number of presentation contexts exceeds 128 (" << numContexts + m_presContexts.size()
+      << "). Some contexts will not be negotiated");
   }
   else
   {
@@ -199,7 +202,8 @@ OFCondition DcmSCU::initNetwork()
     }
 
     // add the presentation context
-    cond = ASC_addPresentationContext(m_params, OFstatic_cast(Uint8, nextFreePresID), (*contIt).abstractSyntaxName.c_str(), transferSyntaxes, numTransferSyntaxes);
+    cond = ASC_addPresentationContext(m_params, OFstatic_cast(Uint8, nextFreePresID),
+      (*contIt).abstractSyntaxName.c_str(), transferSyntaxes, numTransferSyntaxes);
     // if adding was successfull, prepare pres. context ID for next addition
     delete[] transferSyntaxes;
     transferSyntaxes = NULL;
@@ -453,7 +457,8 @@ void DcmSCU::closeAssociation(const OFCondition& abortOrReleaseRequested)
 OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
 {
   if (m_assoc == NULL)
-    return ASC_NULLKEY;
+    return DIMSE_ILLEGALASSOCIATION;
+
   OFCondition cond;
   Uint16 pcid = presID;
 
@@ -481,7 +486,8 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
   cond = DIMSE_echoUser(m_assoc, nextMessageID(), m_blockMode, m_dimseTimeout, &status, NULL);
   if (cond.bad())
   {
-    DCMNET_ERROR("Failed sending C-ECHO request or receiving response: " << cond.text());
+    OFString tempStr;
+    DCMNET_ERROR("Failed sending C-ECHO request or receiving response: " << DimseCondition::dump(tempStr, cond));
     return cond;
   }
   else
@@ -490,7 +496,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
       DCMNET_DEBUG("Successfully sent C-ECHO request");
     else
     {
-      DCMNET_ERROR("C-ECHO failed with status code: " << status);
+      DCMNET_ERROR("C-ECHO failed with status code: 0x" << STD_NAMESPACE hex << status);
       return makeOFCondition(OFM_dcmnet, 22, OF_error, "SCP returned non-success status in C-ECHO response");
     }
   }
@@ -508,7 +514,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
 {
   // Do some basic validity checks
   if (m_assoc == NULL)
-    return ASC_NULLKEY;
+    return DIMSE_ILLEGALASSOCIATION;
 
   OFCondition cond;
   OFString tempStr;
@@ -574,7 +580,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   dcmff = NULL;
   if (cond.bad())
   {
-    DCMNET_ERROR("Failed sending C-STORE request: " << cond.text());
+    DCMNET_ERROR("Failed sending C-STORE request: " << DimseCondition::dump(tempStr, cond));
     return cond;
   }
 
@@ -591,7 +597,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
   } else {
     DCMNET_ERROR("Expected C-STORE response but received DIMSE command 0x"
-        << STD_NAMESPACE hex << OFstatic_cast(unsigned, rsp.CommandField));
+        << STD_NAMESPACE hex << OFstatic_cast(unsigned int, rsp.CommandField));
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
     return DIMSE_BADCOMMANDTYPE;
   }
@@ -601,10 +607,6 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   {
     DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
     delete statusDetail;
-  }
-  else
-  {
-    DCMNET_DEBUG("Response has status detail: none");
   }
 
   return cond;
@@ -618,9 +620,9 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
 {
   // Do some basic validity checks
   if (m_assoc == NULL)
-    return ASC_NULLKEY;
+    return DIMSE_ILLEGALASSOCIATION;
   if (queryKeys == NULL)
-    return EC_IllegalCall;
+    return ASC_NULLKEY;
 
   /* Prepare DIMSE data structures for issuing request */
   OFCondition cond;
@@ -648,7 +650,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
   cond = sendDIMSEMessage(pcid, &msg, queryKeys, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
-    DCMNET_ERROR("Failed sending C-FIND request: " << cond.text());
+    DCMNET_ERROR("Failed sending C-FIND request: " << DimseCondition::dump(tempStr, cond));
     return cond;
   }
 
@@ -670,7 +672,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
       DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
     } else {
       DCMNET_ERROR("Expected C-FIND response but received DIMSE command 0x"
-          << STD_NAMESPACE hex << OFstatic_cast(unsigned, rsp.CommandField));
+          << STD_NAMESPACE hex << OFstatic_cast(unsigned int, rsp.CommandField));
       DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
       return DIMSE_BADCOMMANDTYPE;
     }
@@ -698,7 +700,8 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
       cond = receiveDIMSEDataset(&pcid, &rspDataset, NULL /* callback */, NULL /* callbackContext */);
       if (cond.bad())
       {
-        DCMNET_ERROR("Unable to receive C-FIND dataset on presentation context " << pcid << ": " << cond.text());
+        DCMNET_ERROR("Unable to receive C-FIND dataset on presentation context " << pcid << ": "
+            << DimseCondition::dump(tempStr, cond));
         delete findrsp;
         return DIMSE_BADDATA;
       }
@@ -808,7 +811,7 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
   cond = sendDIMSEMessage(pcid, &request, dataset, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
-    DCMNET_ERROR("Failed sending N-ACTION request: " << cond.text());
+    DCMNET_ERROR("Failed sending N-ACTION request: " << DimseCondition::dump(tempStr, cond));
     return cond;
   }
 
@@ -817,7 +820,7 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
   cond = receiveDIMSECommand(&pcid, &response, &statusDetail, NULL /* commandSet */);
   if (cond.bad())
   {
-    DCMNET_ERROR("Failed receiving DIMSE response: " << cond.text());
+    DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, cond));
     delete statusDetail;
     return cond;
   }
@@ -829,7 +832,7 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
   } else {
     DCMNET_ERROR("Expected N-ACTION response but received DIMSE command 0x"
-        << STD_NAMESPACE hex << OFstatic_cast(unsigned, response.CommandField));
+        << STD_NAMESPACE hex << OFstatic_cast(unsigned int, response.CommandField));
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
     delete statusDetail;
     return DIMSE_BADCOMMANDTYPE;
@@ -856,7 +859,8 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
       DCMNET_WARN("Received unexpected dataset after N-ACTION response, ignoring");
       delete tempDataset;
     } else {
-      DCMNET_ERROR("Failed receiving unexpected dataset after N-ACTION response: " << cond.text());
+      DCMNET_ERROR("Failed receiving unexpected dataset after N-ACTION response: "
+        << DimseCondition::dump(tempStr, cond));
       delete tempDataset;
       return DIMSE_BADDATA;
     }
@@ -902,7 +906,7 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&dataset,
   if (cond.bad())
   {
     if (cond != DIMSE_NODATAAVAILABLE)
-      DCMNET_ERROR("Failed receiving DIMSE request: " << cond.text());
+      DCMNET_ERROR("Failed receiving DIMSE request: " << DimseCondition::dump(tempStr, cond));
     delete statusDetail;
     return cond;
   }
@@ -914,7 +918,7 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&dataset,
   } else {
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, NULL, presID));
     DCMNET_ERROR("Expected N-EVENT-REPORT request but received DIMSE command 0x"
-        << STD_NAMESPACE hex << OFstatic_cast(unsigned, request.CommandField));
+        << STD_NAMESPACE hex << OFstatic_cast(unsigned int, request.CommandField));
     delete statusDetail;
     return DIMSE_BADCOMMANDTYPE;
   }
@@ -966,7 +970,7 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&dataset,
   cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
-    DCMNET_ERROR("Failed sending N-EVENT-REPORT response: " << cond.text());
+    DCMNET_ERROR("Failed sending N-EVENT-REPORT response: " << DimseCondition::dump(tempStr, cond));
     return cond;
   }
 
@@ -1196,7 +1200,7 @@ OFCondition DcmSCU::getDatasetInfo(DcmDataset* dataset,
                                    E_TransferSyntax& transferSyntax)
 {
   if (dataset == NULL)
-    return EC_IllegalCall;
+    return EC_IllegalParameter;
   dataset->findAndGetOFString(DCM_SOPClassUID, sopClassUID);
   dataset->findAndGetOFString(DCM_SOPInstanceUID, sopInstanceUID);
   transferSyntax = dataset->getOriginalXfer();
@@ -1282,6 +1286,10 @@ FINDResponse::~FINDResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.9  2010-06-18 14:58:01  joergr
+** Changed some error conditions / return codes to more appropriate values.
+** Further revised logging output. Use DimseCondition::dump() where appropriate.
+**
 ** Revision 1.8  2010-06-17 17:13:06  joergr
 ** Added preliminary support for N-EVENT-REPORT to DcmSCU. Some further code
 ** cleanups and enhancements. Renamed some methods. Revised documentation.

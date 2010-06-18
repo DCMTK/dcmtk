@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.18 (riesmeier)
+
+- Added support for the SCP/SCU role selection negotiation.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
+- Made sure that the responding application entity title is set.
+  Affects: dcmnet/libsrc/scp.cc
+
+- Changed some error conditions / return codes to more appropriate values.
+  Further revised logging output. Use DimseCondition::dump() where appropriate.
+  Affects: dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+
 **** Changes from 2010.06.18 (schlachter)
 
 - Added undefined assignment operator to PrintHelper to work around
