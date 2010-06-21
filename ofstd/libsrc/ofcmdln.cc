@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-23 12:19:02 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2010-06-21 16:32:51 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -373,7 +373,7 @@ OFBool OFCommandLine::addParam(const char *param,
         switch (LastParamMode)
         {
             case OFCmdParam::PM_Optional:
-                if (mode != OFCmdParam::PM_Optional)
+                if ((mode != OFCmdParam::PM_Optional) && (mode != OFCmdParam::PM_MultiOptional))
                 {
                     ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is optional => hides "
                                          << param << " !" << OFendl;
@@ -383,7 +383,7 @@ OFBool OFCommandLine::addParam(const char *param,
 /*
             case OFCmdParam::PM_MultiMandatory:
                 {
-                    ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi_mandatory => hides "
+                    ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi-mandatory => hides "
                                          << param << " !" << OFendl;
                     ofConsole.unlockCerr();
                 }
@@ -391,7 +391,7 @@ OFBool OFCommandLine::addParam(const char *param,
 */
             case OFCmdParam::PM_MultiOptional:
                 {
-                    ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi_optional => hides "
+                    ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi-optional => hides "
                                          << param << " !" << OFendl;
                     ofConsole.unlockCerr();
                 }
@@ -1557,6 +1557,9 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
+ * Revision 1.49  2010-06-21 16:32:51  joergr
+ * Removed wrong warning message on an optional parameter hiding another one.
+ *
  * Revision 1.48  2009-12-23 12:19:02  joergr
  * Added support for getting the name of the program, i.e. the value of argv[0].
  *

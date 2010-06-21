@@ -8,6 +8,9 @@ Changes between releases are documented here.
   option --arguments and compiled with HAVE_STD_STRING (use "string" class).
   Affects: oflog/include/dcmtk/oflog/spi/logevent.h
 
+- Removed wrong warning message on an optional parameter hiding another one.
+  Affects: ofstd/libsrc/ofcmdln.cc
+
 **** Changes from 2010.06.18 (riesmeier)
 
 - Added support for the SCP/SCU role selection negotiation.
