@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.21 (riesmeier)
+
+- Fixed issue with InternalLoggingEvent constructor when parameter "function_"
+  is NULL. This caused a crash when using any of the command line tools with
+  option --arguments and compiled with HAVE_STD_STRING (use "string" class).
+  Affects: oflog/include/dcmtk/oflog/spi/logevent.h
+
 **** Changes from 2010.06.18 (riesmeier)
 
 - Added support for the SCP/SCU role selection negotiation.

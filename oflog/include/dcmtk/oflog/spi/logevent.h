@@ -73,7 +73,9 @@ namespace log4cplus {
                        ? LOG4CPLUS_C_STR_TO_TSTRING(filename)
                        : log4cplus::tstring()) ),
                 line(line_),
-                function(function_),
+                function( ( function_
+                          ? LOG4CPLUS_C_STR_TO_TSTRING(function_)
+                          : log4cplus::tstring()) ),
                 threadCached(false),
                 ndcCached(false)
              {
@@ -207,4 +209,3 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // _LOG4CPLUS_SPI_INTERNAL_LOGGING_EVENT_HEADER_
-
