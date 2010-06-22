@@ -13,6 +13,8 @@ Changes between releases are documented here.
             CMake/dcmtkTestBoolType.cc
             CMake/dcmtkTestPThreadType.cc
 
+  Affects:  CMake/GenerateDCMTKConfigure.cmake            
+
 - Added experimental cmake support for unix systems and adapted windows build
   configuration. Thanks to CTK and especially Kitware people for help.
   Added:   CMake/3rdparty.cmake
