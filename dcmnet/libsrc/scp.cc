@@ -22,8 +22,8 @@
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-18 14:55:57 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2010-06-22 15:48:33 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,11 +31,12 @@
  */
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmnet/scp.h"
 #include "dcmtk/dcmnet/diutil.h"
 
 
-static DUL_PRESENTATIONCONTEXT* findPresentationContextID(LST_HEAD * head,
+static DUL_PRESENTATIONCONTEXT* findPresentationContextID(LST_HEAD *head,
                                                           T_ASC_PresentationContextID presentationContextID)
 {
   DUL_PRESENTATIONCONTEXT *pc;
@@ -69,7 +70,7 @@ static DUL_PRESENTATIONCONTEXT* findPresentationContextID(LST_HEAD * head,
 
 static void getPresentationContextInfo(const T_ASC_Association *assoc,
                                        const Uint8 presID,
-                                       DcmPresentationContextInfo& info)
+                                       DcmPresentationContextInfo &info)
 {
   if (assoc == NULL)
     return;
@@ -98,14 +99,17 @@ DcmSCP::DcmSCP() :
   m_maxReceivePDULength(ASC_DEFAULTMAXPDU),
   m_singleProcess(OFTrue),
   m_forkedChild(OFFalse),
+#ifdef _WIN32
+  m_cmd_argc(0),
+  m_cmd_argv(NULL),
+#endif
   m_maxAssociations(1),
   m_blockMode(DIMSE_BLOCKING),
-  m_DIMSETimeout(0),
-  m_ACSETimeout(30),
+  m_dimseTimeout(0),
+  m_acseTimeout(30),
   m_verbosePCMode(OFFalse),
   m_processTable(),
-  m_respondWithCalledAETitle(OFTrue),
-  m_pcInfo()
+  m_respondWithCalledAETitle(OFTrue)
 {
   // make sure not to let dcmdata remove tailing blank padding or perform other
   // manipulations. We want to see the real data.
@@ -123,19 +127,14 @@ DcmSCP::DcmSCP() :
   WSAData winSockData;
   // we need at least version 1.1.
   WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-  WSAStartup(winSockVersionNeeded, &winSockData);
+  WSAStartup(winSockVersionNeeded, &winSockData); // TODO: check with multiple SCP instances whether this is harmful
 #endif
-
 }
 
 // ----------------------------------------------------------------------------
 
 DcmSCP::~DcmSCP()
 {
-#ifdef HAVE_WINSOCK_H
-  WSACleanup();
-#endif
-
   // Clean up memory of association configuration
   if (m_assocConfig)
   {
@@ -147,6 +146,10 @@ DcmSCP::~DcmSCP()
   {
     dropAndDestroyAssociation();
   }
+
+#ifdef HAVE_WINSOCK_H
+  WSACleanup(); // TODO: check with multiple SCP instances whether this is harmful
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -234,8 +237,9 @@ OFCondition DcmSCP::listen()
 #endif
     // Initialize network, i.e. create an instance of T_ASC_Network*.
   T_ASC_Network *m_net = NULL;
-  cond = ASC_initializeNetwork( NET_ACCEPTOR, OFstatic_cast(int, m_port), m_ACSETimeout, &m_net );
-  if( cond.bad() ) return( cond );
+  cond = ASC_initializeNetwork( NET_ACCEPTOR, OFstatic_cast(int, m_port), m_acseTimeout, &m_net );
+  if( cond.bad() )
+    return cond;
 
 #if defined(HAVE_SETUID) && defined(HAVE_GETUID)
   // Return to normal uid so that we can't do too much damage in case
@@ -248,8 +252,9 @@ OFCondition DcmSCP::listen()
   // If we get to this point, the entire initialization process has been completed
   // successfully. Now, we want to start handling all incoming requests. Since
   // this activity is supposed to represent a server process, we do not want to
-  // terminate this activity. Hence, create an endless while-loop.
-  while( cond.good() )
+  // terminate this activity (unless indicated by the stopAfterCurrentAssociation()
+  // method). Hence, create an inifinite while-loop.
+  while( cond.good() && !stopAfterCurrentAssociation() )
   {
     // Wait for an association and handle the requests of
     // the calling applications correspondingly.
@@ -264,17 +269,19 @@ OFCondition DcmSCP::listen()
 #elif _WIN32
     // if running in multi-process mode, always terminate child after one association
     // for unix, this is done in WaitForAssociation() with exit()
-    if (DUL_processIsForkedChild()) return cond;
+    if (DUL_processIsForkedChild())
+      return cond;
 #endif
   }
   // Drop the network, i.e. free memory of T_ASC_Network* structure. This call
   // is the counterpart of ASC_initializeNetwork(...) which was called above.
   cond = ASC_dropNetwork( &m_net );
   m_net = NULL;
-  if( cond.bad() ) return( cond );
+  if( cond.bad() )
+    return cond;
 
   // return ok
-  return( EC_Normal );
+  return EC_Normal;
 }
 
 // ----------------------------------------------------------------------------
@@ -289,24 +296,39 @@ void DcmSCP::refuseAssociation(DcmRefuseReasonType reason)
 
   T_ASC_RejectParameters rej;
 
-  // Dump some information if required.
-  if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  // dump some information if required
+  switch( reason )
   {
-    switch( reason )
-    {
-      case DCMSCP_TOO_MANY_ASSOCIATIONS: DCMNET_ERROR("Refusing Association (too many associations)"); break;
-      case DCMSCP_CANNOT_FORK:           DCMNET_ERROR("Refusing Association (cannot fork)"); break;
-      case DCMSCP_BAD_APP_CONTEXT:       DCMNET_ERROR("Refusing Association (bad application context)"); break;
-      case DCMSCP_BAD_AE_SERVICE:        DCMNET_ERROR("Refusing Association (bad application entity service)"); break;
-      case DCMSCP_FORCED:                DCMNET_WARN ("Refusing Association (forced via command line)"); break;
-      case DCMSCP_NO_IC_UID:             DCMNET_ERROR("Refusing Association (no implementation class UID provided)"); break;
-      case DCMSCP_NO_PRES_CONTEXTS:      DCMNET_ERROR("Refusing Association (no acceptable presentation contexts)"); break;
-      case DCMSCP_INTERNAL_ERROR:        DCMNET_ERROR("Refusing Association (internal error)"); break;
-      default:                           DCMNET_ERROR("Refusing Association (unknown reason)"); break;
-    }
+    case DCMSCP_TOO_MANY_ASSOCIATIONS:
+      DCMNET_INFO("Refusing Association (too many associations)");
+      break;
+    case DCMSCP_CANNOT_FORK:
+      DCMNET_INFO("Refusing Association (cannot fork)");
+      break;
+    case DCMSCP_BAD_APPLICATION_CONTEXT_NAME:
+      DCMNET_INFO("Refusing Association (bad application context)");
+      break;
+    case DCMSCP_BAD_APPLICATION_ENTITY_SERVICE:
+      DCMNET_INFO("Refusing Association (bad application entity service)");
+      break;
+    case DCMSCP_FORCED:
+      DCMNET_INFO("Refusing Association (forced via command line)");
+      break;
+    case DCMSCP_NO_IMPLEMENTATION_CLASS_UID:
+      DCMNET_INFO("Refusing Association (no implementation class UID provided)");
+      break;
+    case DCMSCP_NO_PRESENTATION_CONTEXTS:
+      DCMNET_INFO("Refusing Association (no acceptable presentation contexts)");
+      break;
+    case DCMSCP_INTERNAL_ERROR:
+      DCMNET_INFO("Refusing Association (internal error)");
+      break;
+    default:
+      DCMNET_INFO("Refusing Association (unknown reason)");
+      break;
   }
 
-  // Set some values in the reject message depending on the reason.
+  // Set some values in the reject message depending on the reason
   switch( reason )
   {
     case DCMSCP_TOO_MANY_ASSOCIATIONS:
@@ -319,18 +341,18 @@ void DcmSCP::refuseAssociation(DcmRefuseReasonType reason)
       rej.source = ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED;
       rej.reason = ASC_REASON_SP_PRES_TEMPORARYCONGESTION;
       break;
-    case DCMSCP_BAD_APP_CONTEXT:
+    case DCMSCP_BAD_APPLICATION_CONTEXT_NAME:
       rej.result = ASC_RESULT_REJECTEDTRANSIENT;
       rej.source = ASC_SOURCE_SERVICEUSER;
       rej.reason = ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED;
       break;
-    case DCMSCP_BAD_AE_SERVICE:
+    case DCMSCP_BAD_APPLICATION_ENTITY_SERVICE:
       rej.result = ASC_RESULT_REJECTEDPERMANENT;
       rej.source = ASC_SOURCE_SERVICEUSER;
       rej.reason = ASC_REASON_SU_CALLEDAETITLENOTRECOGNIZED;
       break;
     case DCMSCP_FORCED:
-    case DCMSCP_NO_IC_UID:
+    case DCMSCP_NO_IMPLEMENTATION_CLASS_UID:
     default:
       rej.result = ASC_RESULT_REJECTEDPERMANENT;
       rej.source = ASC_SOURCE_SERVICEUSER;
@@ -346,7 +368,7 @@ void DcmSCP::refuseAssociation(DcmRefuseReasonType reason)
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
+OFCondition DcmSCP::waitForAssociation(T_ASC_Network *network)
 {
   if (network == NULL)
     return ASC_NULLKEY;
@@ -396,7 +418,7 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
       {
         dropAndDestroyAssociation();
       }
-      return( EC_Normal );
+      return EC_Normal;
     }
     else desiredAction = DCMSCP_ACTION_UNDEFINED; // reset for later use
   }
@@ -412,7 +434,7 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
     {
       dropAndDestroyAssociation();
     }
-    return( EC_Normal );
+    return EC_Normal;
   }
 
   // Condition 2: determine the application context name. If an error occurred or if the
@@ -420,12 +442,12 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
   cond = ASC_getApplicationContextName( m_assoc->params, buf );
   if( cond.bad() || strcmp( buf, DICOM_STDAPPLICATIONCONTEXT ) != 0 )
   {
-    refuseAssociation( DCMSCP_BAD_APP_CONTEXT );
+    refuseAssociation( DCMSCP_BAD_APPLICATION_CONTEXT_NAME );
     if( !m_singleProcess )
     {
       dropAndDestroyAssociation();
     }
-    return( EC_Normal );
+    return EC_Normal;
   }
 
   // Condition 3: if there are too many concurrent associations
@@ -437,21 +459,21 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
     {
       dropAndDestroyAssociation();
     }
-    return( EC_Normal );
+    return EC_Normal;
   }
 
   // Condition 4: if the called application entity title is not supported
   // whithin the data source we want to refuse the association request
 
-  if(!calledAETitleAccepted(m_assoc->params->DULparams.callingAPTitle,
-                            m_assoc->params->DULparams.calledAPTitle) )
+  if( !calledAETitleAccepted(m_assoc->params->DULparams.callingAPTitle,
+                             m_assoc->params->DULparams.calledAPTitle) )
   {
-    refuseAssociation( DCMSCP_BAD_AE_SERVICE );
+    refuseAssociation( DCMSCP_BAD_APPLICATION_ENTITY_SERVICE );
     if( !m_singleProcess )
     {
       dropAndDestroyAssociation();
     }
-    return( EC_Normal );
+    return EC_Normal ;
   }
 
   /* set our application entity title */
@@ -472,22 +494,22 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
     {
       dropAndDestroyAssociation();
     }
-    return( EC_Normal );
+    return EC_Normal;
   }
 
   // Reject association if no presentation context was negotiated
   if( ASC_countAcceptedPresentationContexts( m_assoc->params ) == 0 )
   {
     DCMNET_INFO("No Acceptable Presentation Contexts");
-    refuseAssociation( DCMSCP_NO_PRES_CONTEXTS );
+    refuseAssociation( DCMSCP_NO_PRESENTATION_CONTEXTS );
     if( !m_singleProcess )
     {
       dropAndDestroyAssociation();
     }
-    return( EC_Normal );
+    return EC_Normal;
   }
 
-  // If the negotiation was successful, accept the association request.
+  // If the negotiation was successful, accept the association request
   cond = ASC_acknowledgeAssociation( m_assoc );
   if( cond.bad() )
   {
@@ -495,7 +517,7 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
     {
       dropAndDestroyAssociation();
     }
-    return( EC_Normal );
+    return EC_Normal;
   }
   notifyAssociationAcknowledge();
 
@@ -509,10 +531,10 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
 
   // Depending on if this execution shall be limited to one process or not, spawn a sub-
   // process to handle the association or don't. (Note: For Windows dcmnet is handling
-  // the creation for a new subprocess, so we can call HandleAssociation directly, too)
+  // the creation for a new subprocess, so we can call HandleAssociation directly, too.)
   if( m_singleProcess || m_forkedChild )
   {
-    // Go ahead and handle the association (i.e. handle the callers requests) in this process.
+    // Go ahead and handle the association (i.e. handle the callers requests) in this process
     handleAssociation();
   }
 #ifdef HAVE_FORK
@@ -523,12 +545,12 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
     int pid = OFstatic_cast(int, fork());
     if( pid < 0 )
     {
-      refuseAssociation(DCMSCP_CANNOT_FORK );
+      refuseAssociation( DCMSCP_CANNOT_FORK );
       if( !m_singleProcess )
       {
         dropAndDestroyAssociation();
       }
-      return( EC_Normal );
+      return EC_Normal;
     }
     else if( pid > 0 )
     {
@@ -543,7 +565,7 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
     {
       // If the process id is not positive, this must be the child process.
       // We want to handle the association, i.e. the callers requests.
-      handleAssociation( );
+      handleAssociation();
 
       // When everything is finished, terminate the child process.
       exit(0);
@@ -551,7 +573,7 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network* network)
   }
 #endif // HAVE_FORK
 
-  return( EC_Normal );
+  return EC_Normal;
 }
 
 // ----------------------------------------------------------------------------
@@ -584,7 +606,7 @@ OFCondition DcmSCP::negotiateAssociation()
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::handleAssociation( )
+void DcmSCP::handleAssociation()
 {
   if (m_assoc == NULL)
   {
@@ -641,26 +663,23 @@ void DcmSCP::handleAssociation( )
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::handleIncomingCommand(T_DIMSE_Message* msg,
-                                          const DcmPresentationContextInfo& info)
+OFCondition DcmSCP::handleIncomingCommand(T_DIMSE_Message *msg,
+                                          const DcmPresentationContextInfo &info)
 {
   OFCondition cond;
-  switch( msg->CommandField )
+  if( msg->CommandField == DIMSE_C_ECHO_RQ )
   {
-    case DIMSE_C_ECHO_RQ:
-      // Process C-ECHO-Request
-      cond = handleEchoRequest( &msg->msg.CEchoRQ, info.presentationContextID );
-      break;
-    default:
-      /* We cannot handle this kind of message.
-         Note that the condition will be returned and
-         that the caller is responsible to end the association if desired
-       */
-      DCMNET_ERROR("Cannot handle this kind of DIMSE message:");
-      OFString tempStr;
-      DCMNET_ERROR(DIMSE_dumpMessage(tempStr, *msg, DIMSE_INCOMING));
-      cond = EC_IllegalCall; // TODO: need to find better error code
-      break;
+    // Process C-ECHO request
+    cond = handleECHORequest( msg->msg.CEchoRQ, info.presentationContextID );
+  } else {
+    // We cannot handle this kind of message. Note that the condition will be returned
+    // and that the caller is responsible to end the association if desired.
+    OFString tempStr;
+    DCMNET_ERROR("Cannot handle this kind of DIMSE command (0x"
+      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+      << OFstatic_cast(unsigned int, msg->CommandField) << ")");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, *msg, DIMSE_INCOMING));
+    cond = DIMSE_BADCOMMANDTYPE;
   }
 
   // return result
@@ -669,55 +688,183 @@ OFCondition DcmSCP::handleIncomingCommand(T_DIMSE_Message* msg,
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::handleEchoRequest(T_DIMSE_C_EchoRQ *req,
+OFCondition DcmSCP::handleECHORequest(T_DIMSE_C_EchoRQ &reqMessage,
                                       T_ASC_PresentationContextID presID)
 {
   OFString tempStr;
   // Dump debug information
   DCMNET_INFO("Received C-ECHO Request");
-  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, *req, DIMSE_INCOMING, NULL, presID));
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
   DCMNET_INFO("Sending C-ECHO Response");
 
   // Send an echo response
-  OFCondition cond = DIMSE_sendEchoResponse( m_assoc, presID, req, STATUS_Success, NULL );
+  OFCondition cond = DIMSE_sendEchoResponse( m_assoc, presID, &reqMessage, STATUS_Success, NULL );
   if( cond.bad() )
     DCMNET_ERROR("Cannot send C-ECHO Response: " << DimseCondition::dump(tempStr, cond));
   else
     DCMNET_DEBUG("C-ECHO Response successfully sent");
 
-  // return return value
+  // return result
   return cond;
 }
 
 // ----------------------------------------------------------------------------
 
-// Receive dataset over existing association.
-OFCondition DcmSCP::receiveDataset(DcmDataset **dataObject,
-                                   DIMSE_ProgressCallback callback,
-                                   void *callbackContext)
+// Send response to former storage request
+OFCondition DcmSCP::sendSTOREResponse(T_ASC_PresentationContextID presID,
+                                      T_DIMSE_C_StoreRQ &reqMessage,
+                                      T_DIMSE_C_StoreRSP &rspMessage,
+                                      DcmDataset *statusDetail)
 {
-  if (m_assoc == NULL)
-     return DIMSE_ILLEGALASSOCIATION;
-
-  T_ASC_PresentationContextID presID;
-  return DIMSE_receiveDataSetInMemory(m_assoc,
-    m_blockMode,
-    m_DIMSETimeout,
-    &presID,
-    dataObject,
-    callback,
-    callbackContext);
+  return DIMSE_sendStoreResponse(m_assoc, presID, &reqMessage, &rspMessage, statusDetail);
 }
 
 // ----------------------------------------------------------------------------
 
-// Send response to former storage request
-OFCondition DcmSCP::sendCStoreResponse(T_ASC_PresentationContextID presID,
-                                       T_DIMSE_C_StoreRQ *request,
-                                       T_DIMSE_C_StoreRSP *response,
-                                       DcmDataset *statusDetail)
+OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage,
+                                             T_ASC_PresentationContextID presID,
+                                             DcmDataset *&reqDataset,
+                                             Uint16 &eventTypeID)
 {
-  return DIMSE_sendStoreResponse(m_assoc, presID, request, response, statusDetail);
+  // Do some basic validity checks
+  if (m_assoc == NULL)
+    return DIMSE_ILLEGALASSOCIATION;
+
+  OFCondition cond;
+  OFString tempStr;
+  DcmDataset *dataset = NULL;
+//  DcmDataset *statusDetail = NULL; // TODO: do we need this and if so, how do we get it?
+  Uint16 statusCode = 0;
+
+  // Dump debug information
+  DCMNET_INFO("Received N-EVENT-REPORT Request");
+
+  // Check if dataset is announced correctly
+  if (reqMessage.DataSetType == DIMSE_DATASET_NULL)
+  {
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+    DCMNET_ERROR("Received N-EVENT-REPORT request but no dataset announced, aborting");
+    return DIMSE_BADMESSAGE;
+  }
+
+  // Receive dataset; TODO: do we need to compare presentation context ID of command and dataset?
+  cond = receiveDIMSEDataset(&presID, &dataset, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+    DCMNET_ERROR("Unable to receive N-EVENT-REPORT dataset on presentation context " << presID);
+    return DIMSE_BADDATA;
+  }
+
+  // Output dataset only if trace level is enabled
+  if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, dataset, presID));
+  else
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+
+  // Check the request dataset and return the DIMSE status code to be used
+  statusCode = checkEVENTREPORTRequest(reqMessage, dataset);
+
+  // Send back response
+  T_DIMSE_Message response;
+  T_DIMSE_N_EventReportRSP &eventReportRsp = response.msg.NEventReportRSP;
+  response.CommandField = DIMSE_N_EVENT_REPORT_RSP;
+  eventReportRsp.MessageIDBeingRespondedTo = reqMessage.MessageID;
+  eventReportRsp.DimseStatus = statusCode;
+  eventReportRsp.DataSetType = DIMSE_DATASET_NULL;
+  eventReportRsp.opts = 0;
+  eventReportRsp.AffectedSOPClassUID[0] = 0;
+  eventReportRsp.AffectedSOPInstanceUID[0] = 0;
+
+  DCMNET_INFO("Sending N-EVENT-REPORT Response");
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
+  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending N-EVENT-REPORT response: " << DimseCondition::dump(tempStr, cond));
+    return cond;
+  }
+
+  // Set return values
+  reqDataset = dataset;
+  eventTypeID = reqMessage.EventTypeID;
+
+  return cond;
+}
+
+// ----------------------------------------------------------------------------
+
+Uint16 DcmSCP::checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ & /*reqMessage*/,
+                                       DcmDataset * /*reqDataset*/)
+{
+  // we default to success
+  return STATUS_Success;
+}
+
+// ----------------------------------------------------------------------------
+
+// Sends a DIMSE command and possibly also instance data to the configured peer DICOM application
+OFCondition DcmSCP::sendDIMSEMessage(const T_ASC_PresentationContextID presID,
+                                     T_DIMSE_Message *msg,
+                                     DcmDataset *dataObject,
+                                     DIMSE_ProgressCallback callback,
+                                     void *callbackContext,
+                                     DcmDataset **commandSet)
+{
+  if (m_assoc == NULL)
+    return DIMSE_ILLEGALASSOCIATION;
+  if (msg == NULL)
+    return DIMSE_NULLKEY;
+
+  OFCondition cond;
+  /* call the corresponding DIMSE function to sent the message */
+  cond = DIMSE_sendMessageUsingMemoryData(m_assoc, presID, msg, NULL /*statusDetail*/, dataObject,
+                                          callback, callbackContext, commandSet);
+  return cond;
+}
+
+// ----------------------------------------------------------------------------
+
+// Receive DIMSE command (excluding dataset!) over the currently open association
+OFCondition DcmSCP::receiveDIMSECommand(T_ASC_PresentationContextID *presID,
+                                        T_DIMSE_Message *msg,
+                                        DcmDataset **statusDetail,
+                                        DcmDataset **commandSet,
+                                        const Uint32 timeout)
+{
+  if (m_assoc == NULL)
+    return DIMSE_ILLEGALASSOCIATION;
+
+  OFCondition cond;
+  if (timeout > 0)
+  {
+    /* call the corresponding DIMSE function to receive the command (use specified timeout) */
+    cond = DIMSE_receiveCommand(m_assoc, DIMSE_NONBLOCKING, timeout, presID,
+                                msg, statusDetail, commandSet);
+  } else {
+    /* call the corresponding DIMSE function to receive the command (use default timeout) */
+    cond = DIMSE_receiveCommand(m_assoc, m_blockMode, m_dimseTimeout, presID,
+                                msg, statusDetail, commandSet);
+  }
+  return cond;
+}
+
+// ----------------------------------------------------------------------------
+
+// Receives one dataset (of instance data) via network from another DICOM application
+OFCondition DcmSCP::receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
+                                        DcmDataset **dataObject,
+                                        DIMSE_ProgressCallback callback,
+                                        void *callbackContext)
+{
+  if (m_assoc == NULL)
+    return DIMSE_ILLEGALASSOCIATION;
+
+  OFCondition cond;
+  /* call the corresponding DIMSE function to receive the dataset */
+  cond = DIMSE_receiveDataSetInMemory(m_assoc, m_blockMode, m_dimseTimeout, presID,
+                                      dataObject, callback, callbackContext);
+  return cond;
 }
 
 // ----------------------------------------------------------------------------
@@ -742,7 +889,7 @@ void DcmSCP::addProcessToTable(int pid)
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::removeProcessFromTable( int pid )
+void DcmSCP::removeProcessFromTable(int pid)
 {
   DcmProcessSlotType *ps = NULL;
 
@@ -813,7 +960,6 @@ void DcmSCP::cleanChildren()
   int options = WNOHANG;
   struct rusage rusage;
   int child = 1;
-  char msg[200];
 
   while( child > 0 )
   {
@@ -843,7 +989,6 @@ void DcmSCP::cleanChildren()
   DCMNET_WARN("Don't know how to wait for child processes on this platform (ignoring)");
 #endif
 }
-
 
 // ----------------------------------------------------------------------------
 
@@ -924,14 +1069,16 @@ void DcmSCP::setMaxReceivePDULength(const Uint32 maxRecPDU)
   m_maxReceivePDULength = maxRecPDU;
 }
 
-void DcmSCP::setPort(const Uint16& port)
+// ----------------------------------------------------------------------------
+
+void DcmSCP::setPort(const Uint16 port)
 {
   m_port = port;
 }
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::setAETitle(const OFString& aetitle)
+void DcmSCP::setAETitle(const OFString &aetitle)
 {
   m_aetitle = aetitle;
 }
@@ -962,14 +1109,14 @@ void DcmSCP::setDIMSEBlockingMode(const T_DIMSE_BlockingMode blockingMode)
 
 void DcmSCP::setDIMSETimeout(const Uint32 dimseTimeout)
 {
-  m_DIMSETimeout = dimseTimeout;
+  m_dimseTimeout = dimseTimeout;
 }
 
 // ----------------------------------------------------------------------------
 
 void DcmSCP::setACSETimeout(const Uint32 acseTimeout)
 {
-  m_ACSETimeout = acseTimeout;
+  m_acseTimeout = acseTimeout;
 }
 
 // ----------------------------------------------------------------------------
@@ -1048,14 +1195,14 @@ T_DIMSE_BlockingMode DcmSCP::getDIMSEBlockingMode() const
 
 Uint32 DcmSCP::getDIMSETimeout () const
 {
-  return m_DIMSETimeout;
+  return m_dimseTimeout;
 }
 
 // ----------------------------------------------------------------------------
 
 Uint32 DcmSCP::getACSETimeout () const
 {
-  return m_ACSETimeout;
+  return m_acseTimeout;
 }
 
 // ----------------------------------------------------------------------------
@@ -1069,7 +1216,7 @@ OFBool DcmSCP::getVerbosePCMode() const
 
 OFBool DcmSCP::isConnected() const
 {
-  return (m_assoc != NULL);
+  return (m_assoc != NULL) && (m_assoc->DULassociation != NULL);
 }
 
 // ----------------------------------------------------------------------------
@@ -1110,8 +1257,8 @@ OFString DcmSCP::getPeerIP() const
 
 // ----------------------------------------------------------------------------
 
-OFBool DcmSCP::calledAETitleAccepted(const OFString& callingAE,
-                                     const OFString& calledAE)
+OFBool DcmSCP::calledAETitleAccepted(const OFString &callingAE,
+                                     const OFString &calledAE)
 {
   if (m_respondWithCalledAETitle)  // default is to use the called AE title
   {
@@ -1126,7 +1273,7 @@ OFBool DcmSCP::calledAETitleAccepted(const OFString& callingAE,
 // ----------------------------------------------------------------------------
 
 // Reads association configuration from config file
-OFCondition DcmSCP::loadAssociationCfgFile(const OFString& assocFile)
+OFCondition DcmSCP::loadAssociationCfgFile(const OFString &assocFile)
 {
   // delete any previous association configuration
   if (m_assocConfig)
@@ -1147,7 +1294,7 @@ OFCondition DcmSCP::loadAssociationCfgFile(const OFString& assocFile)
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::setAndCheckAssociationProfile(const OFString& profileName)
+OFCondition DcmSCP::setAndCheckAssociationProfile(const OFString &profileName)
 {
   if (m_assocConfig == NULL)
     return EC_IllegalCall; // TODO: need to find better error code
@@ -1184,10 +1331,10 @@ OFCondition DcmSCP::setAndCheckAssociationProfile(const OFString& profileName)
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::addPresentationContext(const OFString& abstractSyntax,
+OFCondition DcmSCP::addPresentationContext(const OFString &abstractSyntax,
                                            const OFList<OFString> xferSyntaxes,
                                            const T_ASC_SC_ROLE role,
-                                           const OFString& profile)
+                                           const OFString &profile)
 {
   if (profile.empty())
     return EC_IllegalParameter;
@@ -1248,7 +1395,7 @@ void DcmSCP::dropAndDestroyAssociation()
 {
   if (m_assoc)
   {
-    notifyAssociatonTermination();
+    notifyAssociationTermination();
     ASC_dropAssociation( m_assoc );
     ASC_destroyAssociation( &m_assoc );
   }
@@ -1260,8 +1407,8 @@ void DcmSCP::dropAndDestroyAssociation()
 /* ************************************************************************** */
 
 
-void DcmSCP::notifyAssociationRequest(const T_ASC_Parameters& params,
-                                      DcmSCPActionType& desiredAction)
+void DcmSCP::notifyAssociationRequest(const T_ASC_Parameters &params,
+                                      DcmSCPActionType &desiredAction)
 {
   // Dump some information if required
   DCMNET_INFO("Association Received " << params.DULparams.callingPresentationAddress << ": "
@@ -1269,11 +1416,11 @@ void DcmSCP::notifyAssociationRequest(const T_ASC_Parameters& params,
                                       << params.DULparams.calledAPTitle);
 
     // Dump more information if required
-  OFString msg;
+  OFString tempStr;
   if (m_verbosePCMode)
-    DCMNET_INFO("Incoming Association Request:" << OFendl << ASC_dumpParameters(msg, m_assoc->params, ASC_ASSOC_RQ));
+    DCMNET_INFO("Incoming Association Request:" << OFendl << ASC_dumpParameters(tempStr, m_assoc->params, ASC_ASSOC_RQ));
   else
-    DCMNET_DEBUG("Incoming Association Request:" << OFendl << ASC_dumpParameters(msg, m_assoc->params, ASC_ASSOC_RQ));
+    DCMNET_DEBUG("Incoming Association Request:" << OFendl << ASC_dumpParameters(tempStr, m_assoc->params, ASC_ASSOC_RQ));
 }
 
 // ----------------------------------------------------------------------------
@@ -1299,23 +1446,35 @@ void DcmSCP::notifyAbortRequest()
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::notifyAssociatonTermination()
+void DcmSCP::notifyAssociationTermination()
 {
   DCMNET_DEBUG("DcmSCP: Association Terminated");
 }
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::notifyDIMSEError(const OFCondition& cond)
+void DcmSCP::notifyDIMSEError(const OFCondition &cond)
 {
   OFString tempStr;
   DCMNET_DEBUG("DIMSE Error, detail (if available): " << DimseCondition::dump(tempStr, cond));
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool DcmSCP::stopAfterCurrentAssociation()
+{
+  return OFFalse;
 }
 
 
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.9  2010-06-22 15:48:33  joergr
+** Added support for handling N-EVENT-REPORT request.
+** Added support for stopping after the current association is finished.
+** Further code cleanup. Renamed some methods, variables, types and so on.
+**
 ** Revision 1.8  2010-06-18 14:55:57  joergr
 ** Added support for the SCP/SCU role selection negotiation.
 ** Changed some error conditions / return codes to more appropriate values.

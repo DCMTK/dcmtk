@@ -23,8 +23,8 @@
  *           applications.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-18 14:50:33 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2010-06-22 15:44:55 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,12 +35,12 @@
 #define SCP_H
 
 #include "dcmtk/config/osconfig.h"  /* make sure OS specific configuration is included first */
+
 #include "dcmtk/oflog/oflog.h"
 #include "dcmtk/dcmdata/dctk.h"     /* Covers most common dcmdata classes */
 #include "dcmtk/dcmnet/dimse.h"     /* DIMSE network layer */
 #include "dcmtk/dcmnet/dcasccff.h"  /* For reading a association config file */
 #include "dcmtk/dcmnet/dcasccfg.h"  /* For holding association cfg file infos */
-
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -81,7 +81,7 @@ enum DcmSCPActionType
   DCMSCP_ACTION_REFUSE_ASSOCIATION
 };
 
-/** Codes denoting a reason for refusing an association.
+/** Codes denoting a reason for refusing an association
  */
 enum DcmRefuseReasonType
 {
@@ -90,15 +90,15 @@ enum DcmRefuseReasonType
   /// Forking a new SCP process failed
   DCMSCP_CANNOT_FORK,
   /// Refusing association because of bad application context name
-  DCMSCP_BAD_APP_CONTEXT,
+  DCMSCP_BAD_APPLICATION_CONTEXT_NAME,
   /// Refusing association because of unacceppted AE name
-  DCMSCP_BAD_AE_SERVICE,
+  DCMSCP_BAD_APPLICATION_ENTITY_SERVICE,
   /// Refusing association because SCP was forced to do so
   DCMSCP_FORCED,
   /// Refusing association because of missing Implementation Class UID
-  DCMSCP_NO_IC_UID,
+  DCMSCP_NO_IMPLEMENTATION_CLASS_UID,
   /// Refusing association because proposed Presentation Context is supported
-  DCMSCP_NO_PRES_CONTEXTS,
+  DCMSCP_NO_PRESENTATION_CONTEXTS,
   /// Refusing association because of internal error
   DCMSCP_INTERNAL_ERROR
 };
@@ -121,6 +121,7 @@ struct DcmPresentationContextInfo
   OFString acceptedTransferSyntax;
   // Fields "reserved" and "result" not included from DUL_PRESENTATIONCONTEXT
 };
+
 
 /** Base class for implementing a DICOM Service Class Provider (SCP). Derived classes can
  *  add the presentation contexts they want to support, set further parameters (port, peer
@@ -172,29 +173,29 @@ public:
    *                             profile called "DEFAULT".
    *  @return EC_Normal if adding was successful, an error code otherwise
    */
-  virtual OFCondition addPresentationContext(const OFString& abstractSyntax,
+  virtual OFCondition addPresentationContext(const OFString &abstractSyntax,
                                              const OFList<OFString> xferSyntaxes,
                                              const T_ASC_SC_ROLE role = ASC_SC_ROLE_DEFAULT,
-                                             const OFString& profile = "DEFAULT");
+                                             const OFString &profile = "DEFAULT");
 
   /** Set SCP's TCP/IP listening port
    *  @param port [in] The port number to listen on. Note that usually on Unix-like systems
    *                   only root user is permitted to open ports below 1024.
    */
-  void setPort(const Uint16& port);
+  void setPort(const Uint16 port);
 
   /** Set AETitle of the server
    *  @param aetitle [in] The AETitle of the server. By default, all SCU association requests
    *                      calling another AETitle will be rejected. This behaviour can be
    *                      changed by using the setRespondWithCalledAETitle() method.
    */
-  void setAETitle(const OFString& aetitle);
+  void setAETitle(const OFString &aetitle);
 
   /** Set SCP to use the called AETitle from the SCU request for the response, i.e. the SCP
    *  will always respond with setting it's own name to the one the SCU used for calling.
    *  Overrides any AETitle eventually set with setAETitle().
    *  @param useCalled [in] If OFTrue, the SCP will use the called AE title from the request
-   *                        for responding. DcmSCP's default is OFFalse
+   *                        for responding. DcmSCP's default is OFFalse.
    */
   void setRespondWithCalledAETitle(const OFBool useCalled);
 
@@ -203,7 +204,7 @@ public:
    *                        association configuration file must be valid for an SCP.
    *  @return EC_Normal if loading was successful, error otherwise
    */
-  virtual OFCondition loadAssociationCfgFile(const OFString& assocFile);
+  virtual OFCondition loadAssociationCfgFile(const OFString &assocFile);
 
   /** If an association profile should be selected, either by loading an associaton
    *  configuration file or using the addAbstractSyntax() function, one of those can be
@@ -212,7 +213,7 @@ public:
    *                          before being selected here
    *  @return EC_Normal if selecting/checking was successful, an error code otherwise
    */
-  virtual OFCondition setAndCheckAssociationProfile(const OFString& profileName);
+  virtual OFCondition setAndCheckAssociationProfile(const OFString &profileName);
 
   /** Force every association request to be refused by SCP, no matter what the SCU is
    *  offering
@@ -262,12 +263,12 @@ public:
    *  for DIMSE blocking mode messaging (see also setDIMSEBlockingMode().
    *  @param dimseTimeout [in] DIMSE receive timeout in seconds
    */
-  void setDIMSETimeout (const Uint32 dimseTimeout);
+  void setDIMSETimeout(const Uint32 dimseTimeout);
 
   /** Set the timeout used during ACSE messaging protocol.
    *  @param acseTimeout [in] ACSE timeout in seconds.
    */
-  void setACSETimeout (const Uint32 acseTimeout);
+  void setACSETimeout(const Uint32 acseTimeout);
 
   /** Set whether to show presentation contexts in verbose or debug mode
    *  @param mode [in] Show presentation contexts in verbose mode if OFTrue. By default, the
@@ -283,7 +284,7 @@ public:
   Uint16 getPort() const;
 
   /** Returns SCP's own AE title. Only used if the SCP is not configured to respond with the
-   *  called AE Title the SCU uses for association negotiaton, see setRespondWithCalledAETitle().
+   *  called AE Title the SCU uses for association negotiation, see setRespondWithCalledAETitle().
    *  @return The configured AETitle
    */
   const OFString &getAETitle() const;
@@ -326,12 +327,12 @@ public:
   /** Returns DIMSE timeout (only applicable in blocking mode)
    *  @return DIMSE timeout in seconds
    */
-  Uint32 getDIMSETimeout () const;
+  Uint32 getDIMSETimeout() const;
 
   /** Returns ACSE timeout
    *  @return ACSE timeout in seconds
    */
-  Uint32 getACSETimeout () const;
+  Uint32 getACSETimeout() const;
 
   /** Returns the verbose presentation context mode configured specifying whether details on
    *  the presentation contexts (negotiated during association setup) should be shown in
@@ -367,7 +368,7 @@ public:
   OFString getPeerAETitle() const;
 
   /** Returns IP address of connected SCU
-   *  @return IP address of connected SCU. Empty string ifS SCP is currently not connected.
+   *  @return IP address of connected SCU. Empty string if SCP is currently not connected.
    */
   OFString getPeerIP() const;
 
@@ -380,79 +381,110 @@ public:
 
 protected:
 
-  /* *********************************************************************
-   * Functions particularly interesting for overwriting in derived classes
-   * *********************************************************************
+  /* ***********************************************************************
+   *  Functions particularly interesting for overwriting in derived classes
+   * ***********************************************************************
    */
 
   /** Handle incoming command set and react accordingly, e.g. sending response via
    *  DIMSE_sendXXXResponse(). The standard handler only knows how to handle an Echo request
    *  by calling handleEchoRequest(). This function is most likely to be implemented by a
    *  derived class implementing a specific SCP behaviour.
+   *  @param TODO
+   *  @return TODO
    */
-  virtual OFCondition handleIncomingCommand(T_DIMSE_Message* incomingMsg,
-                                            const DcmPresentationContextInfo& presContextInfo);
+  virtual OFCondition handleIncomingCommand(T_DIMSE_Message *incomingMsg,
+                                            const DcmPresentationContextInfo &presContextInfo);
 
   /** Overwrite this function to be notified about an incoming association request.
-   *  The standard handler just prints debug information.
+   *  The standard handler only outputs some information to the logger.
+   *  @param TODO
    */
-  virtual void notifyAssociationRequest(const T_ASC_Parameters& params,
-                                        DcmSCPActionType& desiredAction);
+  virtual void notifyAssociationRequest(const T_ASC_Parameters &params,
+                                        DcmSCPActionType &desiredAction);
 
   /** Overwrite this function to be notified about an incoming association request.
-   *  The standard handler prints debug information.
+   *  The standard handler only outputs some information to the logger.
    */
   virtual void notifyAssociationAcknowledge();
 
   /** Overwrite this function to be notified about an incoming association release request.
-   *  The standard handler prints debug information.
+   *  The standard handler only outputs some information to the logger.
    */
   virtual void notifyReleaseRequest();
 
   /** Overwrite this function to be notified about an incoming association abort request.
-   *  The standard handler prints debug information.
+   *  The standard handler only outputs some information to the logger.
    */
   virtual void notifyAbortRequest();
 
   /** Overwrite this function to be notified when an association is terminated.
-   *  The standard handler prints debug information.
+   *  The standard handler only outputs some information to the logger.
    */
-  virtual void notifyAssociatonTermination();
+  virtual void notifyAssociationTermination();
 
   /** Overwrite this function to be notified when an association is terminated.
-   *  The standard handler prints debug information.
-   */
-  virtual void notifyDIMSEError(const OFCondition& cond);
-
-  /** Receive dataset over existing association
+   *  The standard handler only outputs some information to the logger.
    *  @param TODO
-   *  @return TODO
    */
-  virtual OFCondition receiveDataset(DcmDataset **dataObject,
-		                                 DIMSE_ProgressCallback callback,
-		                                 void *callbackContext);
+  virtual void notifyDIMSEError(const OFCondition &cond);
+
+  /** Overwrite this function to change the behavior of the listen() method. As long as no
+   *  severe error occurs and this method returns OFFalse, the listen() method will wait
+   *  for incoming associations in an infinite loop.
+   *  @return The standard handler always returns OFFalse
+   */
+  virtual OFBool stopAfterCurrentAssociation();
 
   /** Respond to storage request
-   *  @param presID The presentation context ID to respond to
-   *  @param request The request that is responded to
-   *  @param response The actual response
-   *  @param statusDetail The status detail to be sent
+   *  @param presID       [in] The presentation context ID to respond to
+   *  @param reqMessage   [in] The C-STORE request that is responded to
+   *  @param rspMessage   [in] The C-STORE response to be sent
+   *  @param statusDetail [in  The status detail to be sent
    *  @return EC_Normal, if responding was successful, an error code otherwise
    */
-  virtual OFCondition sendCStoreResponse(T_ASC_PresentationContextID presID,
-	                                       T_DIMSE_C_StoreRQ *request,
-	                                       T_DIMSE_C_StoreRSP *response,
-	                                       DcmDataset *statusDetail);
+  virtual OFCondition sendSTOREResponse(T_ASC_PresentationContextID presID,
+                                        T_DIMSE_C_StoreRQ &reqMessage,
+                                        T_DIMSE_C_StoreRSP &rspMessage,
+                                        DcmDataset *statusDetail);
 
   /** Standard handler for Verification Service Class (DICOM Echo). Returns echo response
    *  (i.e. whether C-ECHO could be responded to with status success).
-   *  @param req    [in] The DIMSE C-ECHO-RQ message that was received
-   *  @param presID [in] The presentation context to be used. By default, the presentation
-   *                     context of the request is used.
+   *  @param reqMessage [in] The C-ECHO request message that was received
+   *  @param presID     [in] The presentation context to be used. By default, the presentation
+   *                         context of the request is used.
    *  @return OFCondition value denoting success or error
    */
-  virtual OFCondition handleEchoRequest(T_DIMSE_C_EchoRQ *req,
+  virtual OFCondition handleECHORequest(T_DIMSE_C_EchoRQ &reqMessage,
                                         T_ASC_PresentationContextID presID);
+
+  /** Receives N-EVENT-REPORT request on the currently opened association and sends a
+   *  corresponding response. Calls checkEVENTREPORTRequest() in order to determine the
+   *  DIMSE status code to be used for the N-EVENT-REPORT response.
+   *  @param reqMessage  [in]  The N-EVENT-REPORT request message that was received
+   *  @param presID      [in]  The presentation context to be used. By default, the
+   *                           presentation context of the request is used.
+   *  @param reqDataset  [out] Pointer to the dataset received
+   *  @param eventTypeID [out] Event Type ID from the command set received
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage,
+                                               T_ASC_PresentationContextID presID,
+                                               DcmDataset *&reqDataset,
+                                               Uint16 &eventTypeID);
+
+  /** Check given N-EVENT-REPORT request and dataset for validity. This method is called by
+   *  handleEVENTREPORTRequest() before sending the response in order to determine the
+   *  DIMSE status code to be used for the response message.
+   *  @param reqMessage [in] The N-EVENT-REPORT request message data structure
+   *  @param reqDataset [in] The N-EVENT-REPORT request dataset received. Might be NULL.
+   *  @return DIMSE status code to be used for the N-EVENT-REPORT response.
+   *          Always returns STATUS_Success (0). Derived classes should, therefore,
+   *          overwrite this method and return a more appropriate value based on the
+   *          result of the checks performed.
+   */
+  virtual Uint16 checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage,
+                                         DcmDataset *reqDataset);
 
   /** Function that checks for each association request, whether the combination of calling
    *  and called AE title proposed by the SCU is accepted. The standard behaviour is to
@@ -464,24 +496,24 @@ protected:
    *  @param calledAE  [in] The AE title the SCU uses as Called AE Title
    *  @return OFTrue if the given AE title is going to be accepted, OFFalse otherwise
    */
-  virtual OFBool calledAETitleAccepted(const OFString& callingAE,
-                                       const OFString& calledAE);
+  virtual OFBool calledAETitleAccepted(const OFString &callingAE,
+                                       const OFString &calledAE);
 
 
   /* *********************************************************************
-   * Further functions and member variables
+   *  Further functions and member variables
    * *********************************************************************
    */
 
   /** This function takes care of receiving, negotiating and accepting/refusing an
-   *  association request. Additionally, if negotiaton was successful, it handles any
+   *  association request. Additionally, if negotiation was successful, it handles any
    *  incoming DIMSE commands by calling handleAssociation(). An error is only returned, if
    *  something goes wrong. Therefore, refusing an association because of wrong application
    *  context name or no common presentation contexts with the SCU does NOT lead to an error.
    *  @param network [in] Contains network parameters
    *  @return EC_Normal, if everything went fine, an error code otherwise
    */
-  virtual OFCondition waitForAssociation(T_ASC_Network* network);
+  virtual OFCondition waitForAssociation(T_ASC_Network *network);
 
     /** This function takes care of removing items referring to (terminated) subprocess from
      *  the table which stores all subprocess information. This function does not make sense
@@ -524,6 +556,72 @@ protected:
    */
   virtual void handleAssociation();
 
+  /** Sends a DIMSE command and possibly also a dataset from a data object via network to
+   *  another DICOM application
+   *  @param presID          [in]  Presentation context ID to be used for message
+   *  @param msg             [in]  Structure that represents a certain DIMSE command which
+   *                               shall be sent
+   *  @param dataObject      [in]  The instance data which shall be sent to the other DICOM
+   *                               application; NULL, if there is none
+   *  @param callback        [in]  Pointer to a function which shall be called to indicate
+   *                               progress
+   *  @param callbackContext [in]  Pointer to data which shall be passed to the progress
+   *                               indicating function
+   *  @param commandSet      [out] If this parameter is not NULL it will return a copy of the
+   *                               DIMSE command which is sent to the other DICOM application
+   *  @return Returns EC_Normal if sending request was successful, an error code otherwise
+   */
+  OFCondition sendDIMSEMessage(const T_ASC_PresentationContextID presID,
+                               T_DIMSE_Message *msg,
+                               DcmDataset *dataObject,
+                               DIMSE_ProgressCallback callback,
+                               void *callbackContext,
+                               DcmDataset **commandSet = NULL);
+
+  /** Receive DIMSE command (excluding dataset!) over the currently open association
+   *  @param presID       [out] Contains in the end the ID of the presentation context
+   *                            which was specified in the DIMSE command received
+   *  @param msg          [out] The message received
+   *  @param statusDetail [out] If a non-NULL value is passed this variable will in the end
+   *                            contain detailed information with regard to the status
+   *                            information which is captured in the status element
+   *                            (0000,0900). Note that the value for element (0000,0900) is
+   *                            not contained in this return value but in internal msg. For
+   *                            details on the structure of this object, see DICOM standard
+   *                            part 7, annex C).
+   *  @param commandSet   [out] If this parameter is not NULL, it will return a copy of the
+   *                            DIMSE command which was received from the other DICOM
+   *                            application. The caller is responsible to de-allocate the
+   *                            returned object!
+   *  @param timeout      [in]  If this parameter is not 0, it specifies the timeout (in
+   *                            seconds) to be used for receiving the DIMSE command.
+   *                            Otherwise, the default timeout value is used (see
+   *                            setDIMSETimeout()).
+   *  @return EC_Normal if command could be received successfully, an error code otherwise
+   */
+  OFCondition receiveDIMSECommand(T_ASC_PresentationContextID *presID,
+                                  T_DIMSE_Message *msg,
+                                  DcmDataset **statusDetail,
+                                  DcmDataset **commandSet = NULL,
+                                  const Uint32 timeout = 0);
+
+  /** Receives one dataset (of instance data) via network from another DICOM application
+   *  @param presID          [out] Contains in the end the ID of the presentation context
+   *                               which was used in the PDVs that were received on the
+   *                               network. If the PDVs show different presentation context
+   *                               IDs, this function will return an error.
+   *  @param dataObject      [out] Contains in the end the information which was received
+   *                               over the network
+   *  @param callback        [in]  Pointer to a function which shall be called to indicate
+   *                               progress
+   *  @param callbackContext [in]  Pointer to data which shall be passed to the progress
+   *                               indicating function
+   *  @return EC_Normal if dataset could be received successfully, an error code otherwise
+   */
+  OFCondition receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
+                                  DcmDataset **dataObject,
+                                  DIMSE_ProgressCallback callback,
+                                  void *callbackContext);
 
 private:
 
@@ -543,7 +641,7 @@ private:
 
   /// Association configuration. May be filled from association configuration file or by
   /// adding presentation contexts by calling addPresentationContext() (or both)
-  DcmAssociationConfiguration* m_assocConfig;
+  DcmAssociationConfiguration *m_assocConfig;
 
   /// Profile in association configuration that should be used. By default, a profile
   /// called "DEFAULT" is used.
@@ -563,7 +661,7 @@ private:
   OFBool m_refuseAssociation;
 
   /// Maximum PDU size the SCP is able to receive. This value is sent to the SCU during
-  /// association negotiaton.
+  /// association negotiation.
   Uint32 m_maxReceivePDULength;
 
   /// Indicates if SCP is run in single process mode or not. In multi-process mode, the SCP
@@ -580,11 +678,13 @@ private:
   /// multiprocess mode under Windows operating systems.
   OFBool m_forkedChild;
 
+#ifdef _WIN32
   /// Number of arguments in commandline, needed for multiprocess mode on Windows sytems
   int m_cmd_argc;
 
   /// Complete command line, needed for multiprocess mode on Windows sytems
   char **m_cmd_argv;
+#endif
 
   /// Maximum number of association for multi-process mode. This member is only evaluated
   /// under Unix. For Windows there is no mechanism to restrict the number of simultanous
@@ -600,11 +700,11 @@ private:
 
   /// Timeout for DIMSE operations in seconds. Maximum time in DIMSE non-blocking mode to
   /// wait for incoming DIMSE data.
-  Uint32 m_DIMSETimeout;
+  Uint32 m_dimseTimeout;
 
-  /// Timeout for ACSE operations in seconds. Maximum time during association negotiaton
+  /// Timeout for ACSE operations in seconds. Maximum time during association negotiation
   /// which is given for the SCU to follow the ACSE protocol.
-  Uint32 m_ACSETimeout;
+  Uint32 m_acseTimeout;
 
   /// Verbose PC mode. Flags specifying whether details on the presentation contexts
   /// (negotiated during association setup) should be shown in verbose or debug mode.
@@ -612,16 +712,11 @@ private:
 
   /// Table of processes for non-single process mode. This member is only applicable when
   /// the SCP is running under Unix and multi-process mode.
-  OFList<DcmProcessSlotType*> m_processTable;
+  OFList<DcmProcessSlotType *> m_processTable;
 
   /// If set, the AE Title as received in the request (called AE Title) is used in response
   /// (default: OFTrue).
   OFBool m_respondWithCalledAETitle;
-
-  /// The presentation context of the current DIMSE request. This member stores information
-  /// to the very presentation context that was used by the client when sending the last
-  /// received DIMSE message to this SCP.
-  DcmPresentationContextInfo m_pcInfo;
 
   /** Drops association and clears internal structures to free memory
    */
@@ -635,6 +730,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.7  2010-06-22 15:44:55  joergr
+ *  Added support for handling N-EVENT-REPORT request.
+ *  Added support for stopping after the current association is finished.
+ *  Further code cleanup. Renamed some methods, variables, types and so on.
+ *
  *  Revision 1.6  2010-06-18 14:50:33  joergr
  *  Added support for the SCP/SCU role selection negotiation.
  *
