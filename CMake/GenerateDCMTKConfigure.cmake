@@ -364,7 +364,7 @@ IF("HAVE_CXX_BOOL" MATCHES "^HAVE_CXX_BOOL$")
   MESSAGE(STATUS "Checking support for C++ type bool")
   TRY_COMPILE(HAVE_CXX_BOOL
               ${CMAKE_BINARY_DIR}/CMakeTmp/Bool
-              ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestBoolType.cxx
+              ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestBoolType.cc
               OUTPUT_VARIABLE OUTPUT)
   IF(HAVE_CXX_BOOL)
     MESSAGE(STATUS "Checking support for C++ type bool -- yes")
@@ -386,7 +386,7 @@ ENDIF("HAVE_CXX_BOOL" MATCHES "^HAVE_CXX_BOOL$")
 IF("C_CHAR_UNSIGNED" MATCHES "^C_CHAR_UNSIGNED$")
   MESSAGE(STATUS "Checking signedness of char")
   TRY_RUN(C_CHAR_SIGNED C_CHAR_SIGNED_COMPILED ${CMAKE_BINARY_DIR}/CMakeTmp/Char
-          ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestCharSignedness.cxx)
+          ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestCharSignedness.cc)
   IF(C_CHAR_SIGNED_COMPILED)
     IF(C_CHAR_SIGNED)
       MESSAGE(STATUS "Checking signedness of char -- signed")
@@ -408,7 +408,7 @@ IF("HAVE_POINTER_TYPE_PTHREAD_T" MATCHES "^HAVE_POINTER_TYPE_PTHREAD_T$")
   ELSE (HAVE_WINDOWS_H)
     TRY_COMPILE(HAVE_INT_TYPE_PTHREAD_T
                 ${CMAKE_BINARY_DIR}/CMakeTmp/PThreadType
-                ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestPThreadType.cxx
+                ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestPThreadType.cc
                 OUTPUT_VARIABLE OUTPUT)
   ENDIF(HAVE_WINDOWS_H)
   IF(NOT HAVE_INT_TYPE_PTHREAD_T)
