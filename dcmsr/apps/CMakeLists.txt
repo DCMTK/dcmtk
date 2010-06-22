@@ -13,5 +13,5 @@ ENDFOREACH(PROGRAM)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dsr2html dsr2xml dsrdump xml2dsr)
-  TARGET_LINK_LIBRARIES(${PROGRAM} netapi32 wsock32 ofstd oflog dcmdata dcmsr ${ZLIB_LIBS} ${LIBXML_LIBS})
+  TARGET_LINK_LIBRARIES(${PROGRAM} dcmsr dcmdata oflog ofstd ${ZLIB_LIBS} ${LIBXML_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
 ENDFOREACH(PROGRAM)

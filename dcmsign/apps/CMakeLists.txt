@@ -8,4 +8,4 @@ ADD_EXECUTABLE(dcmsign dcmsign)
 INSTALL_TARGETS(${INSTALL_BINDIR} dcmsign)
 
 # make sure executables are linked to the corresponding libraries
-TARGET_LINK_LIBRARIES(dcmsign netapi32 wsock32 ofstd oflog dcmdata dcmdsig ${ZLIB_LIBS} ${OPENSSL_LIBS})
+TARGET_LINK_LIBRARIES(dcmsign dcmdsig dcmdata oflog ofstd oflog ${ZLIB_LIBS} ${OPENSSL_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})

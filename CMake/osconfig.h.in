@@ -1,0 +1,845 @@
+#ifndef OSCONFIG_H
+#define OSCONFIG_H
+
+/*
+** Define enclosures for include files with C linkage (mostly system headers)
+*/
+#ifdef __cplusplus
+#define BEGIN_EXTERN_C extern "C" {
+#define END_EXTERN_C }
+#else
+#define BEGIN_EXTERN_C
+#define END_EXTERN_C
+#endif
+
+
+/* Settings for Borland C++ Builder */
+#ifdef __BORLANDC__
+#define _MSC_VER 1200  // Treat Borland C++ 5.5 as MSVC6.
+#endif /* __BORLANDC__ */
+
+
+/* Define if you have the <windows.h> header file.  */
+#if !defined(__CYGWIN__)
+  #cmakedefine HAVE_WINDOWS_H @HAVE_WINDOWS_H@
+  /* Define if you have the <winsock.h> header file.  */
+  #cmakedefine HAVE_WINSOCK_H @HAVE_WINSOCK_H@
+  #define windows 1
+#endif
+
+#if (!defined(_WIN32) || defined(__CYGWIN__))
+#define HAVE_STD_STRING 1
+#endif
+
+#ifdef __CYGWIN__
+#define NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND 1
+#endif
+
+/* MinGW needs some special handling because it is a mixture of WIN32 and Posix.
+ * The following settings are not tested by configure but need to be set for MinGW.
+ */
+#ifdef __MINGW32__
+#define NO_IOS_BASE_ASSIGN
+#endif
+
+/* Define the canonical host system type as a string constant */
+#define CANONICAL_HOST_TYPE "@CANONICAL_HOST_TYPE@"
+
+/* Define if char is unsigned on the C compiler */
+#cmakedefine C_CHAR_UNSIGNED @C_CHAR_UNSIGNED@
+
+/* Define to the inline keyword supported by the C compiler, if any, or to the
+   empty string */
+#define C_INLINE __inline
+
+/* Define if >> is unsigned on the C compiler */
+/* #undef  C_RIGHTSHIFT_UNSIGNED */
+
+/* Define the DCMTK default path */
+#define DCMTK_PREFIX "@DCMTK_PREFIX@"
+
+/* Define the default data dictionary path for the dcmdata library package */
+#define DCM_DICT_DEFAULT_PATH "@DCM_DICT_DEFAULT_PATH@"
+
+/* Define the environment variable path separator */
+#define ENVIRONMENT_PATH_SEPARATOR '@ENVIRONMENT_PATH_SEPARATOR@'
+
+/* Define to 1 if you have the `accept' function. */
+#cmakedefine HAVE_ACCEPT @HAVE_ACCEPT@
+
+/* Define to 1 if you have the `access' function. */
+#cmakedefine HAVE_ACCESS @HAVE_ACCESS@
+
+/* Define to 1 if you have the <alloca.h> header file. */
+#cmakedefine HAVE_ALLOCA_H @HAVE_ALLOCA_H@
+
+/* Define to 1 if you have the <arpa/inet.h> header file. */
+#cmakedefine HAVE_ARPA_INET_H @HAVE_ARPA_INET_H@
+
+/* Define to 1 if you have the <assert.h> header file. */
+#define HAVE_ASSERT_H 1
+
+/* Define to 1 if you have the `bcmp' function. */
+#cmakedefine HAVE_BCMP @HAVE_BCMP@
+
+/* Define to 1 if you have the `bcopy' function. */
+#cmakedefine HAVE_BCOPY @HAVE_BCOPY@
+
+/* Define to 1 if you have the `bind' function. */
+#cmakedefine HAVE_BIND @HAVE_BIND@
+
+/* Define to 1 if you have the `bzero' function. */
+#cmakedefine HAVE_BZERO @HAVE_BZERO@
+
+/* Define if your C++ compiler can work with class templates */
+#define HAVE_CLASS_TEMPLATE 1
+
+/* Define to 1 if you have the `connect' function. */
+#cmakedefine HAVE_CONNECT @HAVE_CONNECT@
+
+/* define if the compiler supports const_cast<> */
+#define HAVE_CONST_CAST 1
+
+/* Define to 1 if you have the <ctype.h> header file. */
+#cmakedefine HAVE_CTYPE_H @HAVE_CTYPE_H@
+
+/* Define to 1 if you have the `cuserid' function. */
+#cmakedefine HAVE_CUSERID @HAVE_CUSERID@
+
+/* Define if bool is a built-in type */
+#cmakedefine HAVE_CXX_BOOL @HAVE_CXX_BOOL@
+
+/* Define if volatile is a known keyword */
+#define HAVE_CXX_VOLATILE 1
+
+/* Define if "const" is supported by the C compiler */
+#define HAVE_C_CONST 1
+
+/* Define if your system has a declaration for socklen_t in sys/types.h
+   sys/socket.h */
+#cmakedefine HAVE_DECLARATION_SOCKLEN_T @HAVE_DECLARATION_SOCKLEN_T@
+
+/* Define if your system has a declaration for std::ios_base::openmode in
+   iostream.h */
+#cmakedefine HAVE_DECLARATION_STD__IOS_BASE__OPENMODE @HAVE_DECLARATION_STD__IOS_BASE__OPENMODE@
+
+/* Define if your system has a declaration for struct utimbuf in sys/types.h
+   utime.h sys/utime.h */
+#define HAVE_DECLARATION_STRUCT_UTIMBUF 1
+
+/* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.*/
+#cmakedefine HAVE_DIRENT_H @HAVE_DIRENT_H@
+
+/* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
+#cmakedefine HAVE_VPRINTF @HAVE_VPRINTF@
+#ifndef HAVE_VPRINTF
+  #cmakedefine HAVE_DOPRNT @HAVE_DOPRNT@
+#endif
+
+/* define if the compiler supports dynamic_cast<> */
+#define HAVE_DYNAMIC_CAST 1
+
+/* Define if your system cannot pass command line arguments into main() (e.g. Macintosh) */
+/* #undef HAVE_EMPTY_ARGC_ARGV */
+
+/* Define to 1 if you have the <errno.h> header file. */
+#cmakedefine HAVE_ERRNO_H @HAVE_ERRNO_H@
+
+/* Define if your C++ compiler supports the explicit template specialization
+   syntax */
+#define HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION 1
+
+/* Define to 1 if you have the <fcntl.h> header file. */
+#cmakedefine HAVE_FCNTL_H @HAVE_FCNTL_H@
+
+/* Define to 1 if you have the `finite' function. */
+#cmakedefine HAVE_FINITE @HAVE_FINITE@
+
+/* Define to 1 if you have the <float.h> header file. */
+#cmakedefine HAVE_FLOAT_H @HAVE_FLOAT_H@
+
+/* Define to 1 if you have the `flock' function. */
+#cmakedefine HAVE_FLOCK @HAVE_FLOCK@
+
+/* Define to 1 if you have the <fnmatch.h> header file. */
+#cmakedefine HAVE_FNMATCH_H @HAVE_FNMATCH_H@
+
+/* Define to 1 if you have the `fork' function. */
+#cmakedefine HAVE_FORK @HAVE_FORK@
+
+/* Define to 1 if you have the <fstream> header file. */
+#cmakedefine HAVE_FSTREAM @HAVE_FSTREAM@
+
+/* Define to 1 if you have the <fstream.h> header file. */
+#cmakedefine HAVE_FSTREAM_H @HAVE_FSTREAM_H@
+
+/* Define if your C++ compiler can work with function templates */
+#define HAVE_FUNCTION_TEMPLATE 1
+
+/* Define to 1 if you have the `getenv' function. */
+#cmakedefine HAVE_GETENV @HAVE_GETENV@
+
+/* Define to 1 if you have the `geteuid' function. */
+#cmakedefine HAVE_GETEUID @HAVE_GETEUID@
+
+/* Define to 1 if you have the `gethostbyname' function. */
+#cmakedefine HAVE_GETHOSTBYNAME @HAVE_GETHOSTBYNAME@
+
+/* Define to 1 if you have the `gethostid' function. */
+#cmakedefine HAVE_GETHOSTID @HAVE_GETHOSTID@
+
+/* Define to 1 if you have the `gethostname' function. */
+#cmakedefine HAVE_GETHOSTNAME @HAVE_GETHOSTNAME@
+
+/* Define to 1 if you have the `getlogin' function. */
+#cmakedefine HAVE_GETLOGIN @HAVE_GETLOGIN@
+
+/* Define to 1 if you have the `getpid' function. */
+#cmakedefine HAVE_GETPID @HAVE_GETPID@
+
+/* Define to 1 if you have the `getsockname' function. */
+#cmakedefine HAVE_GETSOCKNAME @HAVE_GETSOCKNAME@
+
+/* Define to 1 if you have the `getsockopt' function. */
+#cmakedefine HAVE_GETSOCKOPT @HAVE_GETSOCKOPT@
+
+/* Define to 1 if you have the `getuid' function. */
+#cmakedefine HAVE_GETUID @HAVE_GETUID@
+
+/* Define to 1 if you have the <ieeefp.h> header file. */
+#cmakedefine HAVE_IEEEFP_H @HAVE_IEEEFP_H@
+
+/* Define to 1 if you have the `index' function. */
+#cmakedefine HAVE_INDEX @HAVE_INDEX@
+
+/* Define if your system declares argument 3 of accept() as int * instead of
+   size_t * or socklen_t * */
+#define HAVE_INTP_ACCEPT 1
+
+/* Define if your system declares argument 5 of getsockopt() as int * instead
+   of size_t * or socklen_t */
+#define HAVE_INTP_GETSOCKOPT 1
+
+/* Define if your system declares argument 2-4 of select() as int * instead of
+   struct fd_set * */
+/* #undef  HAVE_INTP_SELECT */
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#cmakedefine HAVE_INTTYPES_H @HAVE_INTTYPES_H@
+
+/* Define to 1 if you have the <iomanip> header file. */
+#cmakedefine HAVE_IOMANIP @HAVE_IOMANIP@
+
+/* Define to 1 if you have the <iomanip.h> header file. */
+#cmakedefine HAVE_IOMANIP_H @HAVE_IOMANIP_H@
+
+/* Define to 1 if you have the <iostream> header file. */
+#cmakedefine HAVE_IOSTREAM @HAVE_IOSTREAM@
+
+/* Define to 1 if you have the <iostream.h> header file. */
+#cmakedefine HAVE_IOSTREAM_H @HAVE_IOSTREAM_H@
+
+/* Define if your system defines ios::nocreate in iostream.h */
+/* defined below */
+
+/* Define to 1 if you have the <io.h> header file. */
+#cmakedefine HAVE_IO_H @HAVE_IO_H@
+
+/* Define to 1 if you have the `isinf' function. */
+#cmakedefine HAVE_ISINF @HAVE_ISINF@
+
+/* Define to 1 if you have the `isnan' function. */
+#cmakedefine HAVE_ISNAN @HAVE_ISNAN@
+
+/* Define to 1 if you have the <iso646.h> header file. */
+#cmakedefine HAVE_ISO646_H @HAVE_ISO646_H@
+
+/* Define to 1 if you have the `itoa' function. */
+#cmakedefine HAVE_ITOA @HAVE_ITOA@
+
+/* Define to 1 if you have the <libc.h> header file. */
+#cmakedefine HAVE_LIBC_H @HAVE_LIBC_H@
+
+/* Define to 1 if you have the `iostream' library (-liostream). */
+#cmakedefine HAVE_LIBIOSTREAM @HAVE_LIBIOSTREAM@
+
+/* Define to 1 if you have the `nsl' library (-lnsl). */
+#cmakedefine HAVE_LIBNSL @HAVE_LIBNSL@
+
+/* Define to 1 if you have the <libpng/png.h> header file. */
+// Comment this out so inside dipipng.cxx we can include <png.h>
+// instead of <libpng/png.h> KW 20060622
+//#cmakedefine HAVE_LIBPNG_PNG_H @HAVE_LIBPNG_PNG_H@
+
+/* Define to 1 if you have the `socket' library (-lsocket). */
+#cmakedefine HAVE_LIBSOCKET @HAVE_LIBSOCKET@
+
+/* Define if libtiff supports LZW compression */
+#define HAVE_LIBTIFF_LZW_COMPRESSION 1
+
+/* Define to 1 if you have the <limits.h> header file. */
+#cmakedefine  HAVE_LIMITS_H @HAVE_LIMITS_H@
+
+/* Define to 1 if you have the `listen' function. */
+#cmakedefine  HAVE_LISTEN @HAVE_LISTEN@
+
+/* Define to 1 if you have the <locale.h> header file. */
+#cmakedefine  HAVE_LOCALE_H @HAVE_LOCALE_H@
+
+/* Define to 1 if you have the `lockf' function. */
+#cmakedefine  HAVE_LOCKF @HAVE_LOCKF@
+
+/* Define to 1 if you support file names longer than 14 characters. */
+#define HAVE_LONG_FILE_NAMES 1
+
+/* Define to 1 if you have the `malloc_debug' function. */
+#cmakedefine  HAVE_MALLOC_DEBUG @HAVE_MALLOC_DEBUG@
+
+/* Define to 1 if you have the <malloc.h> header file. */
+#cmakedefine  HAVE_MALLOC_H @HAVE_MALLOC_H@
+
+/* Define to 1 if you have the <math.h> header file. */
+#cmakedefine  HAVE_MATH_H @HAVE_MATH_H@
+
+/* Define to 1 if you have the `memcmp' function. */
+#cmakedefine  HAVE_MEMCMP @HAVE_MEMCMP@
+
+/* Define to 1 if you have the `memcpy' function. */
+#cmakedefine  HAVE_MEMCPY @HAVE_MEMCPY@
+
+/* Define to 1 if you have the `memmove' function. */
+#cmakedefine  HAVE_MEMMOVE @HAVE_MEMMOVE@
+
+/* Define to 1 if you have the <memory.h> header file. */
+#cmakedefine  HAVE_MEMORY_H @HAVE_MEMORY_H@
+
+/* Define to 1 if you have the `memset' function. */
+#cmakedefine  HAVE_MEMSET @HAVE_MEMSET@
+
+/* Define to 1 if you have the `mkstemp' function. */
+#cmakedefine  HAVE_MKSTEMP @HAVE_MKSTEMP@
+
+/* Define to 1 if you have the `mktemp' function. */
+#cmakedefine  HAVE_MKTEMP @HAVE_MKTEMP@
+
+/* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
+#cmakedefine  HAVE_NDIR_H @HAVE_NDIR_H@
+
+/* Define to 1 if you have the <netdb.h> header file. */
+#cmakedefine  HAVE_NETDB_H @HAVE_NETDB_H@
+
+/* Define to 1 if you have the <netinet/in.h> header file. */
+#cmakedefine  HAVE_NETINET_IN_H @HAVE_NETINET_IN_H@
+
+/* Define to 1 if you have the <netinet/in_systm.h> header file. */
+#cmakedefine  HAVE_NETINET_IN_SYSTM_H @HAVE_NETINET_IN_SYSTM_H@
+
+/* Define to 1 if you have the <netinet/tcp.h> header file. */
+#cmakedefine  HAVE_NETINET_TCP_H @HAVE_NETINET_TCP_H@
+
+/* Define to 1 if you have the <new.h> header file. */
+#cmakedefine  HAVE_NEW_H @HAVE_NEW_H@
+
+/* Define if your system supports readdir_r with the obsolete Posix 1.c draft
+   6 declaration (2 arguments) instead of the Posix 1.c declaration with 3
+   arguments. */
+/* #undef  HAVE_OLD_READDIR_R */
+
+/* Define if your system has a prototype for accept in sys/types.h
+   sys/socket.h */
+#cmakedefine  HAVE_PROTOTYPE_ACCEPT @HAVE_PROTOTYPE_ACCEPT@
+
+/* Define if your system has a prototype for bind in sys/types.h sys/socket.h */
+#cmakedefine  HAVE_PROTOTYPE_BIND @HAVE_PROTOTYPE_BIND@
+
+/* Define if your system has a prototype for bzero in string.h strings.h
+   libc.h unistd.h stdlib.h */
+#cmakedefine  HAVE_PROTOTYPE_BZERO @HAVE_PROTOTYPE_BZERO@
+
+/* Define if your system has a prototype for connect in sys/types.h
+   sys/socket.h */
+#cmakedefine  HAVE_PROTOTYPE_CONNECT @HAVE_PROTOTYPE_CONNECT@
+
+/* Define if your system has a prototype for finite in math.h */
+#cmakedefine  HAVE_PROTOTYPE_FINITE @HAVE_PROTOTYPE_FINITE@
+
+/* Define if your system has a prototype for flock in sys/file.h */
+#cmakedefine  HAVE_PROTOTYPE_FLOCK @HAVE_PROTOTYPE_FLOCK@
+
+/* Define if your system has a prototype for gethostbyname in libc.h unistd.h
+   stdlib.h netdb.h */
+#cmakedefine  HAVE_PROTOTYPE_GETHOSTBYNAME @HAVE_PROTOTYPE_GETHOSTBYNAME@
+
+/* Define if your system has a prototype for gethostid in libc.h unistd.h
+   stdlib.h netdb.h */
+#cmakedefine  HAVE_PROTOTYPE_GETHOSTID @HAVE_PROTOTYPE_GETHOSTID@
+
+/* Define if your system has a prototype for gethostname in unistd.h libc.h
+   stdlib.h netdb.h */
+#cmakedefine  HAVE_PROTOTYPE_GETHOSTNAME @HAVE_PROTOTYPE_GETHOSTNAME@
+
+/* Define if your system has a prototype for getsockname in sys/types.h
+   sys/socket.h */
+#cmakedefine  HAVE_PROTOTYPE_GETSOCKNAME @HAVE_PROTOTYPE_GETSOCKNAME@
+
+/* Define if your system has a prototype for getsockopt in sys/types.h
+   sys/socket.h */
+#cmakedefine  HAVE_PROTOTYPE_GETSOCKOPT @HAVE_PROTOTYPE_GETSOCKOPT@
+
+/* Define if your system has a prototype for gettimeofday in sys/time.h
+   unistd.h */
+#cmakedefine  HAVE_PROTOTYPE_GETTIMEOFDAY @HAVE_PROTOTYPE_GETTIMEOFDAY@
+
+/* Define if your system has a prototype for isinf in math.h */
+#cmakedefine  HAVE_PROTOTYPE_ISINF @HAVE_PROTOTYPE_ISINF@
+
+/* Define if your system has a prototype for isnan in math.h */
+#cmakedefine  HAVE_PROTOTYPE_ISNAN @HAVE_PROTOTYPE_ISNAN@
+
+/* Define if your system has a prototype for listen in sys/types.h
+  sys/socket.h */
+#cmakedefine  HAVE_PROTOTYPE_LISTEN @HAVE_PROTOTYPE_LISTEN@
+
+/* Define if your system has a prototype for mkstemp in libc.h unistd.h
+   stdlib.h */
+#cmakedefine  HAVE_PROTOTYPE_MKSTEMP @HAVE_PROTOTYPE_MKSTEMP@
+
+/* Define if your system has a prototype for mktemp in libc.h unistd.h
+   stdlib.h */
+#cmakedefine  HAVE_PROTOTYPE_MKTEMP @HAVE_PROTOTYPE_MKTEMP@
+
+/* Define if your system has a prototype for select in sys/select.h
+   sys/types.h sys/socket.h sys/time.h */
+#cmakedefine  HAVE_PROTOTYPE_SELECT @HAVE_PROTOTYPE_SELECT@
+
+/* Define if your system has a prototype for setsockopt in sys/types.h
+   sys/socket.h */
+#cmakedefine  HAVE_PROTOTYPE_SETSOCKOPT @HAVE_PROTOTYPE_SETSOCKOPT@
+
+/* Define if your system has a prototype for socket in sys/types.h
+   sys/socket.h */
+#cmakedefine  HAVE_PROTOTYPE_SOCKET @HAVE_PROTOTYPE_SOCKET@
+
+/* Define if your system has a prototype for std::vfprintf in stdarg.h */
+#cmakedefine  HAVE_PROTOTYPE_STD__VFPRINTF @HAVE_PROTOTYPE_STD__VFPRINTF@
+
+/* Define if your system has a prototype for strcasecmp in string.h */
+#cmakedefine  HAVE_PROTOTYPE_STRCASECMP @HAVE_PROTOTYPE_STRCASECMP@
+
+/* Define if your system has a prototype for strncasecmp in string.h */
+#cmakedefine  HAVE_PROTOTYPE_STRNCASECMP @HAVE_PROTOTYPE_STRNCASECMP@
+
+/* Define if your system has a prototype for usleep in libc.h unistd.h
+   stdlib.h */
+#cmakedefine  HAVE_PROTOTYPE_USLEEP @HAVE_PROTOTYPE_USLEEP@
+
+/* Define if your system has a prototype for wait3 in libc.h sys/wait.h
+   sys/time.h sys/resource.h */
+#cmakedefine  HAVE_PROTOTYPE_WAIT3 @HAVE_PROTOTYPE_WAIT3@
+
+/* Define if your system has a prototype for waitpid in sys/wait.h sys/time.h
+   sys/resource.h */
+#cmakedefine  HAVE_PROTOTYPE_WAITPID @HAVE_PROTOTYPE_WAITPID@
+
+/* Define if your system has a prototype for _stricmp in string.h */
+#cmakedefine  HAVE_PROTOTYPE__STRICMP @HAVE_PROTOTYPE__STRICMP@
+
+/* Define to 1 if you have the <pthread.h> header file. */
+#cmakedefine  HAVE_PTHREAD_H @HAVE_PTHREAD_H@
+
+/* Define if your system supports POSIX read/write locks */
+#cmakedefine HAVE_PTHREAD_RWLOCK @HAVE_PTHREAD_RWLOCK@
+
+/* define if the compiler supports reinterpret_cast<> */
+#define HAVE_REINTERPRET_CAST 1
+
+/* Define to 1 if you have the `rindex' function. */
+#cmakedefine  HAVE_RINDEX @HAVE_RINDEX@
+
+/* Define to 1 if you have the `select' function. */
+#cmakedefine  HAVE_SELECT @HAVE_SELECT@
+
+/* Define to 1 if you have the <semaphore.h> header file. */
+#cmakedefine  HAVE_SEMAPHORE_H @HAVE_SEMAPHORE_H@
+
+/* Define to 1 if you have the <setjmp.h> header file. */
+#cmakedefine  HAVE_SETJMP_H @HAVE_SETJMP_H@
+
+/* Define to 1 if you have the `setsockopt' function. */
+#cmakedefine  HAVE_SETSOCKOPT @HAVE_SETSOCKOPT@
+
+/* Define to 1 if you have the `setuid' function. */
+#cmakedefine  HAVE_SETUID @HAVE_SETUID@
+
+/* Define to 1 if you have the <signal.h> header file. */
+#cmakedefine HAVE_SIGNAL_H @HAVE_SIGNAL_H@
+
+/* Define to 1 if you have the `sleep' function. */
+#cmakedefine  HAVE_SLEEP @HAVE_SLEEP@
+
+/* Define to 1 if you have the `socket' function. */
+#cmakedefine  HAVE_SOCKET @HAVE_SOCKET@
+
+/* Define to 1 if you have the <sstream> header file. */
+#cmakedefine  HAVE_SSTREAM @HAVE_SSTREAM@
+
+/* Define to 1 if you have the <sstream.h> header file. */
+#cmakedefine  HAVE_SSTREAM_H @HAVE_SSTREAM_H@
+
+/* Define to 1 if you have the `stat' function. */
+#cmakedefine  HAVE_STAT @HAVE_STAT@
+
+/* define if the compiler supports static_cast<> */
+#define HAVE_STATIC_CAST 1
+
+/* Define if your C++ compiler can work with static methods in class templates
+   */
+#define HAVE_STATIC_TEMPLATE_METHOD 1
+
+/* Define to 1 if you have the <stat.h> header file. */
+#cmakedefine  HAVE_STAT_H @HAVE_STAT_H@
+
+/* Define to 1 if you have the <stdarg.h> header file. */
+#cmakedefine  HAVE_STDARG_H @HAVE_STDARG_H@
+
+/* Define to 1 if you have the <stddef.h> header file. */
+#cmakedefine  HAVE_STDDEF_H @HAVE_STDDEF_H@
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#cmakedefine  HAVE_STDINT_H @HAVE_STDINT_H@
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#cmakedefine  HAVE_STDIO_H @HAVE_STDIO_H@
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#cmakedefine  HAVE_STDLIB_H @HAVE_STDLIB_H@
+
+/* Define if ANSI standard C++ includes use std namespace */
+/* defined below */
+
+/* Define if the compiler supports std::nothrow */
+/* defined below */
+
+/* Define to 1 if you have the `strchr' function. */
+#cmakedefine  HAVE_STRCHR @HAVE_STRCHR@
+
+/* Define to 1 if you have the `strdup' function. */
+#cmakedefine  HAVE_STRDUP @HAVE_STRDUP@
+
+/* Define to 1 if you have the `strerror' function. */
+#cmakedefine  HAVE_STRERROR @HAVE_STRERROR@
+
+/* Define to 1 if you have the <strings.h> header file. */
+#cmakedefine  HAVE_STRINGS_H @HAVE_STRINGS_H@
+
+/* Define to 1 if you have the <string.h> header file. */
+#cmakedefine  HAVE_STRING_H @HAVE_STRING_H@
+
+/* Define to 1 if you have the `strlcat' function. */
+#cmakedefine  HAVE_STRLCAT @HAVE_STRLCAT@
+
+/* Define to 1 if you have the `strlcpy' function. */
+#cmakedefine  HAVE_STRLCPY @HAVE_STRLCPY@
+
+/* Define to 1 if you have the `strstr' function. */
+#cmakedefine  HAVE_STRSTR @HAVE_STRSTR@
+
+/* Define to 1 if you have the <strstream> header file. */
+#cmakedefine  HAVE_STRSTREAM @HAVE_STRSTREAM@
+
+/* Define to 1 if you have the <strstream.h> header file. */
+#cmakedefine  HAVE_STRSTREAM_H @HAVE_STRSTREAM_H@
+
+/* Define to 1 if you have the <strstrea.h> header file. */
+#cmakedefine  HAVE_STRSTREA_H @HAVE_STRSTREA_H@
+
+/* Define to 1 if you have the `strtoul' function. */
+#cmakedefine  HAVE_STRTOUL @HAVE_STRTOUL@
+
+/* Define to 1 if you have the <synch.h> header file. */
+#cmakedefine  HAVE_SYNCH_H @HAVE_SYNCH_H@
+
+/* Define to 1 if you have the `sysinfo' function. */
+#cmakedefine  HAVE_SYSINFO @HAVE_SYSINFO@
+
+/* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.*/
+#cmakedefine  HAVE_SYS_DIR_H @HAVE_SYS_DIR_H@
+
+/* Define to 1 if you have the <sys/errno.h> header file. */
+#cmakedefine  HAVE_SYS_ERRNO_H @HAVE_SYS_ERRNO_H@
+
+/* Define to 1 if you have the <sys/file.h> header file. */
+#cmakedefine  HAVE_SYS_FILE_H @HAVE_SYS_FILE_H@
+
+/* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.*/
+#cmakedefine  HAVE_SYS_NDIR_H @HAVE_SYS_NDIR_H@
+
+/* Define to 1 if you have the <sys/param.h> header file. */
+#cmakedefine  HAVE_SYS_PARAM_H @HAVE_SYS_PARAM_H@
+
+/* Define to 1 if you have the <sys/resource.h> header file. */
+#cmakedefine  HAVE_SYS_RESOURCE_H @HAVE_SYS_RESOURCE_H@
+
+/* Define to 1 if you have the <sys/select.h> header file. */
+#cmakedefine  HAVE_SYS_SELECT_H @HAVE_SYS_SELECT_H@
+
+/* Define to 1 if you have the <sys/socket.h> header file. */
+#cmakedefine  HAVE_SYS_SOCKET_H @HAVE_SYS_SOCKET_H@
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#cmakedefine  HAVE_SYS_STAT_H @HAVE_SYS_STAT_H@
+
+/* Define to 1 if you have the <sys/time.h> header file. */
+#cmakedefine  HAVE_SYS_TIME_H @HAVE_SYS_TIME_H@
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#cmakedefine  HAVE_SYS_TYPES_H @HAVE_SYS_TYPES_H@
+
+/* Define to 1 if you have the <sys/utime.h> header file. */
+#cmakedefine  HAVE_SYS_UTIME_H @HAVE_SYS_UTIME_H@
+
+/* Define to 1 if you have the <sys/utsname.h> header file. */
+#cmakedefine  HAVE_SYS_UTSNAME_H @HAVE_SYS_UTSNAME_H@
+
+/* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
+#cmakedefine  HAVE_SYS_WAIT_H @HAVE_SYS_WAIT_H@
+
+/* Define to 1 if you have the `tempnam' function. */
+#cmakedefine  HAVE_TEMPNAM @HAVE_TEMPNAM@
+
+/* Define to 1 if you have the <thread.h> header file. */
+#cmakedefine  HAVE_THREAD_H @HAVE_THREAD_H@
+
+/* Define to 1 if you have the <time.h> header file. */
+#cmakedefine  HAVE_TIME_H @HAVE_TIME_H@
+
+/* Define to 1 if you have the `tmpnam' function. */
+#cmakedefine  HAVE_TMPNAM @HAVE_TMPNAM@
+
+/* define if the compiler recognizes typename */
+#define HAVE_TYPENAME 1
+
+/* Define to 1 if you have the `uname' function. */
+#cmakedefine  HAVE_UNAME @HAVE_UNAME@
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#cmakedefine  HAVE_UNISTD_H @HAVE_UNISTD_H@
+
+/* Define to 1 if you have the <unix.h> header file. */
+#cmakedefine  HAVE_UNIX_H @HAVE_UNIX_H@
+
+/* Define to 1 if you have the `usleep' function. */
+#cmakedefine  HAVE_USLEEP @HAVE_USLEEP@
+
+/* Define to 1 if you have the <utime.h> header file. */
+#cmakedefine  HAVE_UTIME_H @HAVE_UTIME_H@
+
+/* Define to 1 if you have the `waitpid' function. */
+#cmakedefine  HAVE_WAITPID @HAVE_WAITPID@
+
+/* Define to 1 if you have the <wctype.h> header file. */
+#cmakedefine  HAVE_WCTYPE_H @HAVE_WCTYPE_H@
+
+/* Define to 1 if you have the `_findfirst' function. */
+#cmakedefine  HAVE__FINDFIRST @HAVE__FINDFIRST@
+
+/* Define if <math.h> fails if included extern "C" */
+#define INCLUDE_MATH_H_AS_CXX 1
+
+/* Define to the address where bug reports for this package should be sent. */
+/* #undef  PACKAGE_BUGREPORT */
+
+/* Define to the full name of this package. */
+#define PACKAGE_NAME "@DCMTK_PACKAGE_NAME@"
+
+/* Define to the full name and version of this package. */
+#define PACKAGE_STRING "@DCMTK_PACKAGE_STRING@"
+
+/* Define to the default configuration directory (used by some applications) */
+#define DEFAULT_CONFIGURATION_DIR "@DCMTK_DEFAULT_CONFIGURATION_DIR@"
+
+/* Define to the default support data directory (used by some applications) */
+#define DEFAULT_SUPPORT_DATA_DIR "@DCMTK_DEFAULT_SUPPORT_DATA_DIR@"
+
+/* Define to the one symbol short name of this package. */
+/* #undef  PACKAGE_TARNAME */
+
+/* Define to the date of this package. */
+#define PACKAGE_DATE "@DCMTK_PACKAGE_DATE@"
+
+/* Define to the version of this package. */
+#define PACKAGE_VERSION "@DCMTK_PACKAGE_VERSION@"
+
+/* Define to the version suffix of this package. */
+#define PACKAGE_VERSION_SUFFIX "@DCMTK_PACKAGE_VERSION_SUFFIX@"
+
+/* Define to the version number of this package. */
+#define PACKAGE_VERSION_NUMBER "@DCMTK_PACKAGE_VERSION_NUMBER@"
+
+/* Define path separator */
+#define PATH_SEPARATOR '@PATH_SEPARATOR@'
+
+/* Define as the return type of signal handlers (`int' or `void'). */
+#define RETSIGTYPE void
+
+/* Define if signal handlers need ellipse (...) parameters */
+/* #undef  SIGNAL_HANDLER_WITH_ELLIPSE */
+
+/* The size of a `char', as computed by sizeof. */
+#cmakedefine SIZEOF_CHAR @SIZEOF_CHAR@
+
+/* The size of a `double', as computed by sizeof. */
+#cmakedefine SIZEOF_DOUBLE @SIZEOF_DOUBLE@
+
+/* The size of a `float', as computed by sizeof. */
+#cmakedefine SIZEOF_FLOAT @SIZEOF_FLOAT@
+
+/* The size of a `int', as computed by sizeof. */
+#cmakedefine SIZEOF_INT @SIZEOF_INT@
+
+/* The size of a `long', as computed by sizeof. */
+#cmakedefine SIZEOF_LONG @SIZEOF_LONG@
+
+/* The size of a `short', as computed by sizeof. */
+#cmakedefine SIZEOF_SHORT @SIZEOF_SHORT@
+
+/* The size of a `void *', as computed by sizeof. */
+#cmakedefine SIZEOF_VOID_P @SIZEOF_VOID_P@
+
+/* Define to 1 if you have the ANSI C header files. */
+#define STDC_HEADERS 1
+
+/* Define to 1 if your <sys/time.h> declares `struct tm'. */
+/* #undef  TM_IN_SYS_TIME */
+
+/* Define if ANSI standard C++ includes are used */
+#cmakedefine USE_STD_CXX_INCLUDES
+
+/* Define if we are compiling with libpng support */
+#cmakedefine WITH_LIBPNG
+
+/* Define if we are compiling with libtiff support */
+#cmakedefine WITH_LIBTIFF
+
+/* Define if we are compiling with libxml support */
+#cmakedefine WITH_LIBXML
+
+/* Define if we are compiling with OpenSSL support */
+#cmakedefine WITH_OPENSSL
+
+/* Define if we are compiling for built-in private tag dictionary */
+#cmakedefine WITH_PRIVATE_TAGS
+
+/* Define if we are compiling with libwrap (TCP wrapper) support */
+/* #undef  WITH_TCPWRAPPER */
+
+/* Define if we are compiling with zlib support */
+#cmakedefine WITH_ZLIB
+
+/* Define if we are compiling with any type of Multi-thread support */
+#cmakedefine WITH_THREADS
+
+/* Define if pthread_t is a pointer type on your system */
+#cmakedefine HAVE_POINTER_TYPE_PTHREAD_T @HAVE_POINTER_TYPE_PTHREAD_T@
+
+/* Define to 1 if on AIX 3.
+   System headers sometimes define this.
+   We just want to avoid a redefinition error message.  */
+#ifndef _ALL_SOURCE
+/* #undef _ALL_SOURCE */
+#endif
+
+/* Define to 1 if type `char' is unsigned and you are not using gcc.  */
+#ifndef __CHAR_UNSIGNED__
+/* #undef __CHAR_UNSIGNED__ */
+#endif
+
+/* Define `pid_t' to `int' if <sys/types.h> does not define. */
+#cmakedefine HAVE_NO_TYPEDEF_PID_T
+#ifdef HAVE_NO_TYPEDEF_PID_T
+#define pid_t int
+#endif
+
+/* Define `size_t' to `unsigned' if <sys/types.h> does not define. */
+#cmakedefine HAVE_NO_TYPEDEF_SIZE_T
+#ifdef HAVE_NO_TYPEDEF_SIZE_T
+#define size_t unsigned
+#endif
+
+/* Define `ssize_t' to `long' if <sys/types.h> does not define. */
+#cmakedefine HAVE_NO_TYPEDEF_SSIZE_T
+#ifdef HAVE_NO_TYPEDEF_SSIZE_T
+#define ssize_t long
+#endif
+
+/* Platform specific settings for Visual C++
+ * By default, enable ANSI standard C++ includes on Visual C++ 6 and newer
+ *   _MSC_VER == 1100 on Microsoft Visual C++ 5.0
+ *   _MSC_VER == 1200 on Microsoft Visual C++ 6.0
+ *   _MSC_VER == 1300 on Microsoft Visual C++ 7.0
+ *   _MSC_VER == 1310 on Microsoft Visual C++ 7.1
+ *   _MSC_VER == 1400 on Microsoft Visual C++ 8.0
+ */
+
+#ifdef USE_STD_CXX_INCLUDES
+
+/* Define if your system defines ios::nocreate in iostream.h */
+/* #undef HAVE_IOS_NOCREATE  */
+
+/* Define if ANSI standard C++ includes use std namespace */
+#define HAVE_STD_NAMESPACE 1
+
+/* Define if it is not possible to assign stream objects */
+#define NO_IOS_BASE_ASSIGN 1
+
+/* Define if the compiler supports std::nothrow */
+#define HAVE_STD__NOTHROW 1
+
+/* Define if your system has a prototype for std::vfprintf in stdarg.h */
+/* #undef HAVE_PROTOTYPE_STD__VFPRINTF */
+
+#else
+
+/* Define if your system defines ios::nocreate in iostream.h */
+#define HAVE_IOS_NOCREATE 1
+
+/* Define if ANSI standard C++ includes use std namespace */
+/* #undef HAVE_STD_NAMESPACE  */
+
+/* Define if it is not possible to assign stream objects */
+/* #undef NO_IOS_BASE_ASSIGN  */
+
+/* Define if the compiler supports std::nothrow */
+/* #undef HAVE_STD__NOTHROW  */
+
+/* Define if your system has a prototype for std::vfprintf in stdarg.h */
+#cmakedefine  HAVE_PROTOTYPE_STD__VFPRINTF @HAVE_PROTOTYPE_STD__VFPRINTF@
+
+
+#endif /* USE_STD_CXX_INCLUDES */
+
+/* Additional settings for Borland C++ Builder */
+#ifdef __BORLANDC__
+#define _stricmp stricmp    // _stricmp in MSVC is stricmp in Borland C++
+#define _strnicmp strnicmp  // _strnicmp in MSVC is strnicmp in Borland C++
+#pragma warn -8027          // disable Warning W8027 "functions containing while are not expanded inline"
+#pragma warn -8004          // disable Warning W8004 "variable is assigned a value that is never used"
+#pragma warn -8012          // disable Warning W8012 "comparing signed and unsigned values"
+#ifdef WITH_THREADS
+#define __MT__              // required for _beginthreadex() API in <process.h>
+#endif
+#define HAVE_PROTOTYPE_MKTEMP
+#undef HAVE_SYS_UTIME_H 1
+#define NO_IOS_BASE_ASSIGN
+#endif /* __BORLANDC__ */
+
+// define STD_NAMESPACE to std:: if the standard namespace exists
+#ifndef STDIO_NAMESPACE
+#ifdef HAVE_STD_NAMESPACE
+#define STDIO_NAMESPACE std::
+#else
+#define STDIO_NAMESPACE
+#endif
+#endif
+
+#endif /* !OSCONFIG_H*/

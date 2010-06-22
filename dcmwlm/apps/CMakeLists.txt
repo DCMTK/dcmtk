@@ -11,4 +11,4 @@ ADD_EXECUTABLE(wlmscpfs wlmscpfs wlcefs)
 INSTALL_TARGETS(${INSTALL_BINDIR} wlmscpfs)
 
 # make sure executables are linked to the corresponding libraries
-TARGET_LINK_LIBRARIES(wlmscpfs netapi32 wsock32 ofstd oflog dcmdata dcmtls dcmnet dcmwlm ${ZLIB_LIBS})
+TARGET_LINK_LIBRARIES(wlmscpfs dcmwlm dcmnet dcmtls dcmdata oflog ofstd ${ZLIB_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})

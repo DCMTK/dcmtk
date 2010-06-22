@@ -17,8 +17,9 @@ ENDFOREACH(PROGRAM)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcm2xml dcmconv dcmcrle dcmdrle dcmdump dcmgpdir dcmodify dump2dcm xml2dcm pdf2dcm dcm2pdf img2dcm)
-  TARGET_LINK_LIBRARIES(${PROGRAM} netapi32 wsock32 ofstd oflog dcmdata ${ZLIB_LIBS})
+  TARGET_LINK_LIBRARIES(${PROGRAM} dcmdata oflog ofstd ${ZLIB_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})
 ENDFOREACH(PROGRAM)
-TARGET_LINK_LIBRARIES(dcmftest ofstd ${ZLIB_LIBS})
-TARGET_LINK_LIBRARIES(xml2dcm ${LIBXML_LIBS})
-TARGET_LINK_LIBRARIES(img2dcm libi2d)
+
+TARGET_LINK_LIBRARIES(dcmftest ofstd ${ZLIB_LIBS} ${THREAD_LIBS})
+TARGET_LINK_LIBRARIES(xml2dcm ${TARGET_LINK_LIBRARIES} ${LIBXML_LIBS} )
+TARGET_LINK_LIBRARIES(img2dcm ${TARGET_LINK_LIBRARIES} libi2d dcmdata)

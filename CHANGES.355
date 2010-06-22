@@ -1,6 +1,36 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.22 (onken)
+
+- Added experimental cmake support for unix systems and adapted windows build
+  configuration. Thanks to CTK and especially Kitware people for help.
+  Added:   CMake/3rdparty.cmake  
+           CMake/CheckFunctionWithHeaderExists.cmake
+           CMake/GenerateDCMTKConfigure.cmake
+           CMake/dcmtkTestCharSignedness.cxx
+           CMake/GenerateDCMTKConfigure.cmake
+           CMake/CheckFunctionWithHeaderExists.cmake
+           CMake/dcmtkTestBoolType.cxx
+           CMake/dcmtkTestPThreadType.cxx
+           CMake/osconfig.h.in
+  
+  Affects: CMakeLists.txt
+           dcmdata/apps/CMakeLists.txt
+           dcmimage/apps/CMakeLists.txt
+           dcmimgle/apps/CMakeLists.txt
+           dcmjpeg/apps/
+           dcmjpls/apps
+           dcmnet/apps
+           dcmpstat/CMakeLists.txt
+           dcmpstat/apps/CMakeLists.txt
+           dcmqrdb/apps/CMakeLists.txt
+           cmsign/apps/CMakeLists.txt
+           dcmsr/apps/CMakeLists.txt
+           dcmsr/tests/CMakeLists.txt
+           dcmwlm/apps/CMakeLists.txt
+           oflog/libsrc/CMakeLists.txt
+
 **** Changes from 2010.06.21 (riesmeier)
 
 - Fixed issue with InternalLoggingEvent constructor when parameter "function_"

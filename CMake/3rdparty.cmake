@@ -1,0 +1,145 @@
+IF(WIN32)
+  # libxml support: find out whether user has library
+  GET_FILENAME_COMPONENT(LIBXML_DIR "${DCMTK_SOURCE_DIR}/../libxml2-2.7.7" ABSOLUTE)
+  FIND_PATH(WITH_LIBXMLINC "/include/libxml/parser.h" "${LIBXML_DIR}"/ NO_DEFAULT_PATH)
+  # libpng support: find out whether user has library
+  GET_FILENAME_COMPONENT(LIBPNG_DIR "${DCMTK_SOURCE_DIR}/../libpng-1.4.2" ABSOLUTE)
+  FIND_PATH(WITH_LIBPNGINC "include/png.h" "${LIBPNG_DIR}" NO_DEFAULT_PATH)
+  # libtiff support: find out whether user has library
+  GET_FILENAME_COMPONENT(LIBTIFF_DIR "${DCMTK_SOURCE_DIR}/../tiff-3.9.2" ABSOLUTE)
+  FIND_PATH(WITH_LIBTIFFINC "include/tiff.h" "${LIBTIFF_DIR}" NO_DEFAULT_PATH)
+  # OpenSSL support: find out whether user has library
+  GET_FILENAME_COMPONENT(OPENSSL_DIR "${DCMTK_SOURCE_DIR}/../openssl-1.0.0" ABSOLUTE)
+  FIND_PATH(WITH_OPENSSLINC "include/openssl/ssl.h" "${OPENSSL_DIR}" NO_DEFAULT_PATH)
+  # zlib support: find out whether user has library
+  GET_FILENAME_COMPONENT(ZLIB_DIR "${DCMTK_SOURCE_DIR}/../zlib-1.2.5" ABSOLUTE)
+  FIND_PATH(WITH_ZLIBINC "include/zlib.h" "${ZLIB_DIR}" NO_DEFAULT_PATH)
+  # sndfile support:: find out whether user has library. Needed for module dcmwave (not in public DCMTK yet, marked as advanced)
+  GET_FILENAME_COMPONENT(SNDFILE_DIR "${DCMTK_SOURCE_DIR}/../libsndfile-1.0.17" ABSOLUTE)
+  FIND_PATH(WITH_SNDFILEINC "sndfile.h" "${SNDFILE_DIR}" NO_DEFAULT_PATH)
+  MARK_AS_ADVANCED(SNDFILE_DIR WITH_SNDFILEINC)
+
+  # libxml support: configure compiler
+  IF(WITH_LIBXMLINC AND DCMTK_WITH_XML)
+    SET(LIBXML_INCDIR ${WITH_LIBXMLINC}/include)
+    SET(LIBXML_LIBDIR ${WITH_LIBXMLINC}/lib)
+    SET(LIBXML_LIBS debug libxml2_d optimized libxml2_o debug iconv_d optimized iconv_o)
+  ENDIF(WITH_LIBXMLINC AND DCMTK_WITH_XML)
+  # print warning if library is enabled but library path not set
+  IF( (NOT WITH_LIBXMLINC) AND DCMTK_WITH_XML)
+    MESSAGE(STATUS "Warning: libxml2 enabled but not found, check path!")
+  ENDIF( (NOT WITH_LIBXMLINC) AND DCMTK_WITH_XML)
+
+  # libpng support: configure compiler
+  IF(WITH_LIBPNGINC AND DCMTK_WITH_PNG)
+    SET(LIBPNG_INCDIR ${WITH_LIBPNGINC}/include)
+    SET(LIBPNG_LIBDIR ${WITH_LIBPNGINC}/lib)
+    SET(LIBPNG_LIBS debug libpng_d optimized libpng_o)
+  ENDIF(WITH_LIBPNGINC AND DCMTK_WITH_PNG)
+  # turn off library if library path not set
+  IF( (NOT WITH_LIBPNGINC) AND DCMTK_WITH_PNG)
+    MESSAGE(STATUS "Warning: libpng enabled but not found, check path!")
+  ENDIF( (NOT WITH_LIBPNGINC) AND DCMTK_WITH_PNG)
+
+  # libtiff support: configure compiler
+  IF(WITH_LIBTIFFINC AND DCMTK_WITH_TIFF)
+    SET(LIBTIFF_INCDIR ${WITH_LIBTIFFINC}/include)
+    SET(LIBTIFF_LIBDIR ${WITH_LIBTIFFINC}/lib)
+    SET(LIBTIFF_LIBS debug libtiff_d optimized libtiff_o)
+  ENDIF(WITH_LIBTIFFINC AND DCMTK_WITH_TIFF)
+  # turn off library if library path not set
+  IF( (NOT WITH_LIBTIFFINC) AND DCMTK_WITH_TIFF)
+    MESSAGE(STATUS "Warning: libtiff enabled but not found, check path!")
+  ENDIF( (NOT WITH_LIBTIFFINC) AND DCMTK_WITH_TIFF)
+
+  # OpenSSL support: configure compiler
+  IF(WITH_OPENSSLINC AND DCMTK_WITH_OPENSSL)
+    SET(OPENSSL_BINDIR ${WITH_OPENSSLINC}/bin)
+    SET(OPENSSL_INCDIR ${WITH_OPENSSLINC}/include)
+    SET(OPENSSL_LIBDIR ${WITH_OPENSSLINC}/lib)
+    SET(OPENSSL_LIBS debug dcmtkssl_d.lib optimized dcmtkssl_o.lib debug dcmtkeay_d.lib optimized dcmtkeay_o.lib)
+    SET(WITH_OPENSSL 1)
+  ENDIF(WITH_OPENSSLINC AND DCMTK_WITH_OPENSSL)
+  # turn off library if library path not set
+  IF( (NOT WITH_OPENSSLINC) AND DCMTK_WITH_OPENSSL)
+    MESSAGE(STATUS "Warning: openssl enabled but not found, check path!")
+  ENDIF( (NOT WITH_OPENSSLINC) AND DCMTK_WITH_OPENSSL)
+
+  # zlib support: configure compiler
+  IF(WITH_ZLIBINC AND DCMTK_WITH_ZLIB)
+    SET(ZLIB_INCDIR ${WITH_ZLIBINC}/include)
+    SET(ZLIB_LIBDIR ${WITH_ZLIBINC}/lib)
+    SET(ZLIB_LIBS debug zlib_d optimized zlib_o)
+    SET(WITH_ZLIB 1)
+  ENDIF(WITH_ZLIBINC AND DCMTK_WITH_ZLIB)
+  # turn off library if library path not set
+  IF( (NOT WITH_ZLIBINC) AND DCMTK_WITH_ZLIB)
+    MESSAGE(STATUS "Warning: zlib enabled but not found, check path!")
+  ENDIF( (NOT WITH_ZLIBINC) AND DCMTK_WITH_ZLIB)
+
+  # sndfile support: configure compiler
+  IF(WITH_SNDFILEINC AND DCMTK_WITH_SNDFILE)
+    SET(SNDFILE_INCDIR ${WITH_SNDFILEINC}/include)
+    SET(SNDFILE_LIBDIR ${WITH_SNDFILEINC})
+    SET(SNDFILE_LIBS debug libsndfile-1 optimized libsndfile-1)
+    SET(WITH_SNDFILE 1)
+  ENDIF(WITH_SNDFILEINC AND DCMTK_WITH_SNDFILE)
+  # turn off library if library path not set
+  IF( (NOT WITH_SNDFILEINC) AND DCMTK_WITH_SNDFILE)
+    MESSAGE(STATUS "Warning: libsndfile enabled but not found, check path!")
+  ENDIF( (NOT WITH_SNDFILEINC) AND DCMTK_WITH_SNDFILE)
+
+ELSE(WIN32)
+  # Find TIFF
+  IF(DCMTK_WITH_TIFF)
+    FIND_PACKAGE(TIFF)
+    INCLUDE_DIRECTORIES(${TIFF_INCLUDE_DIR})
+    SET(LIBTIFF_LIBS ${TIFF_LIBRARY})
+    # turn off library if it could not be found
+    IF (NOT LIBTIFF_LIBS)
+      MESSAGE(STATUS "Warning: libtiff enabled but not found, check path!")
+    ENDIF(NOT LIBTIFF_LIBS)
+  ENDIF(DCMTK_WITH_TIFF)
+
+
+  # Find PNG
+  IF(DCMTK_WITH_PNG)
+    FIND_PACKAGE(PNG)
+    INCLUDE_DIRECTORIES(${PNG_INCLUDE_DIR})
+    SET(LIBPNG_LIBS ${PNG_LIBRARY})
+    IF (NOT LIBPNG_LIBS)
+      MESSAGE(STATUS "Warning: libpng enabled but not found, check path!")
+    ENDIF(NOT LIBPNG_LIBS)
+  ENDIF(DCMTK_WITH_PNG)
+
+  # Find OpenSSL
+  IF(DCMTK_WITH_OPENSSL)
+    FIND_PACKAGE(OpenSSL)
+    INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR})
+    SET(OPENSSL_LIBS ${OPENSSL_LIBRARIES})
+    IF (NOT OPENSSL_LIBS)
+      MESSAGE(STATUS "Warning: openssl enabled but not found, check path!")
+    ENDIF(NOT OPENSSL_LIBS)
+  ENDIF(DCMTK_WITH_OPENSSL)
+
+  # Find libXML2
+  IF(DCMTK_WITH_XML)
+    FIND_PACKAGE(LibXml2)
+    INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
+    SET(LIBXML_LIBS ${LIBXML2_LIBRARIES})
+    IF (NOT LIBXML_LIBS)
+      MESSAGE(STATUS "Warning: libxml2 enabled but not found, check path!")
+    ENDIF(NOT LIBXML_LIBS)
+  ENDIF(DCMTK_WITH_XML)
+
+  # Find zlib
+  IF(DCMTK_WITH_ZLIB)
+    FIND_PACKAGE(ZLIB)
+    INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
+    SET(ZLIB_LIBS ${ZLIB_LIBRARIES})
+    IF (NOT ZLIB_LIBS)
+      MESSAGE(STATUS "Warning: zlib enabled but not found, check path!")
+    ENDIF(NOT ZLIB_LIBS)
+
+  ENDIF(DCMTK_WITH_ZLIB)
+ENDIF(WIN32)

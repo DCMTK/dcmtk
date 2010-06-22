@@ -1,94 +1,97 @@
-# declare project
-PROJECT(dcmtk)
+# Declare project
+PROJECT(DCMTK)
 
-# check for Windows operating system
-IF(NOT WIN32)
-  MESSAGE(FATAL_ERROR "Please use GNU autoconf for Unix systems.")
-ENDIF(NOT WIN32)
+# Minimum CMake version required
+cmake_minimum_required(VERSION 2.6)
 
-# check for Microsoft compiler
-IF(NOT MSVC)
-  MESSAGE("Warning: This package has only been tested with Microsoft compilers.")
-ENDIF(NOT MSVC)
+#-----------------------------------------------------------------------------
+# General project settings to configure DCMTK build process
+#-----------------------------------------------------------------------------
 
-# check required version of CMake
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4.8)
-IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.1)
-  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.8.1 CACHE STRING "Latest version of CMake when this project was released." FORCE)
-ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.1)
+#  Modules to be built (default: build all public modules)
+SET(DCMTK_MODULES ofstd oflog dcmdata dcmimgle dcmjpeg dcmimage dcmtls dcmnet dcmwlm dcmqrdb dcmsr dcmpstat dcmsign dcmjpls)
 
-IF(COMMAND CMAKE_POLICY)
-  # Works around warnings about libraries linked against that don't have absolute paths
-  CMAKE_POLICY(SET CMP0003 OLD)
-  # Works around warnings about escaped quotes in ADD_DEFINITIONS statements
-  CMAKE_POLICY(SET CMP0005 OLD)
-ENDIF(COMMAND CMAKE_POLICY)
+# Package "release" settings
+SET(DCMTK_PACKAGE_NAME "DCMTK")
+SET(DCMTK_PACKAGE_VERSION "3.5.5")
+SET(DCMTK_PACKAGE_VERSION_NUMBER "355")
+SET(DCMTK_PACKAGE_VERSION_SUFFIX "")
+SET(DCMTK_PACKAGE_DATE "20100226")
+SET(DCMTK_DEFAULT_CONFIGURATION_DIR "")
+SET(DCMTK_DEFAULT_SUPPORT_DATA_DIR "")
 
-# package information
-SET(PACKAGE_NAME "dcmtk")
-SET(PACKAGE_DATE "CVS")
-SET(PACKAGE_VERSION "3.5.5")
-SET(PACKAGE_VERSION_NUMBER "355")
-SET(PACKAGE_VERSION_SUFFIX "")
-SET(PACKAGE_TARNAME "${PACKAGE_NAME}-${PACKAGE_VERSION}")
-SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
-SET(PACKAGE_BUGREPORT "dicom-bugs@offis.de")
+# DCMTK build options
+OPTION(DCMTK_WITH_TIFF "Support for TIFF" ON)
+OPTION(DCMTK_WITH_PNG "Support for PNG" ON)
+OPTION(DCMTK_WITH_XML "Support for XML" OFF)
+OPTION(DCMTK_WITH_ZLIB "Support for ZLIB" ON)
+OPTION(DCMTK_WITH_OPENSSL "Support for OPENSSL" OFF)
+OPTION(DCMTK_WITH_SNDFILE "Support for SNDFILE" OFF)
+MARK_AS_ADVANCED(SNDFILE_DIR DCMTK_WITH_SNDFILE) # not yet needed in public DCMTK
+OPTION(DCMTK_WITH_PRIVATE_TAGS "Support for DICOM private tags" OFF)
+OPTION(DCMTK_WITH_THREADS "Support for multi-threading" ON)
 
-# default build type
-SET(CMAKE_BUILD_TYPE Release)
 
-# various CMake-specific settings
-SET(CMAKE_USE_RELATIVE_PATHS ON)
-SET(CMAKE_SUPPRESS_REGENERATION ON)
-MARK_AS_ADVANCED(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
+#SET(CXX_TEST_PATH ${EXECUTABLE_OUTPUT_PATH})
 
-# define user configurable options and paths to external libraries which might be used
 
-# installation path prefix
-GET_FILENAME_COMPONENT(INSTALL_DIR "${dcmtk_SOURCE_DIR}/../${PACKAGE_TARNAME}-win32-i386" ABSOLUTE)
-SET(INSTALL_PREFIX "${INSTALL_DIR}" CACHE PATH "Installation path prefix.")
+#-----------------------------------------------------------------------------
+# Include directories
+#-----------------------------------------------------------------------------
 
-# shared libraries (option not yet available)
-#OPTION(WITH_SHARED_LIBS "Build with shared libraries." OFF)
-SET(WITH_SHARED_LIBS OFF)
-SET(BUILD_SHARED_LIBS ${WITH_SHARED_LIBS})
+SET(DCMTK_INCLUDE_DIR
+  ${DCMTK_BINARY_DIR}/include
+  #${DCMTK_SOURCE_DIR}/config/include
+  ${DCMTK_SOURCE_DIR}/dcmimgle/include
+  ${DCMTK_SOURCE_DIR}/ofstd/include
+  ${DCMTK_SOURCE_DIR}/oflog/include
+  ${DCMTK_SOURCE_DIR}/dcmdata/include
+  ${DCMTK_SOURCE_DIR}/dcmimage/include
+  ${DCMTK_SOURCE_DIR}/dcmjpeg/libijg8
+  ${DCMTK_SOURCE_DIR}/dcmjpeg/libijg12
+  ${DCMTK_SOURCE_DIR}/dcmjpeg/libijg16
+  ${DCMTK_SOURCE_DIR}/dcmjpeg/include
+  ${DCMTK_SOURCE_DIR}/dcmnet/include
+  ${DCMTK_SOURCE_DIR}/dcmpstat/include
+  ${DCMTK_SOURCE_DIR}/dcmsr/include
+  ${DCMTK_SOURCE_DIR}/dcmqrdb/include
+  ${DCMTK_SOURCE_DIR}/dcmsign/include
+  ${DCMTK_SOURCE_DIR}/dcmwlm/include
+  ${DCMTK_SOURCE_DIR}/dcmtls/include
+  ${DCMTK_SOURCE_DIR}/dcmnet/include
+  ${DCMTK_SOURCE_DIR}/dcmqrdb/include
+  ${DCMTK_SOURCE_DIR}/dcmsign/include
+  ${DCMTK_SOURCE_DIR}/dcmsr/include
+  ${DCMTK_SOURCE_DIR}/dcmwlm/include
+  ${DCMTK_SOURCE_DIR}/dcmpstat/include
+)
+INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR})
 
-# doxygen support
-FIND_PROGRAM(DOXYGEN_EXECUTABLE "doxygen")
 
-# private tag dictionary
-OPTION(WITH_PRIVATE_TAGS "Build with private tag dictionary." OFF)
+#-----------------------------------------------------------------------------
+# Installation sub-directories
+#-----------------------------------------------------------------------------
 
-# libxml support
-OPTION(WITH_LIBXML "Build with libxml support." OFF)
-GET_FILENAME_COMPONENT(LIBXML_DIR "${dcmtk_SOURCE_DIR}/../libxml2-2.6.26" ABSOLUTE)
-FIND_PATH(WITH_LIBXMLINC "include/libxml/parser.h" "${LIBXML_DIR}" NO_DEFAULT_PATH)
-# libpng support
-OPTION(WITH_LIBPNG "Build with libpng support." ON)
-GET_FILENAME_COMPONENT(LIBPNG_DIR "${dcmtk_SOURCE_DIR}/../libpng-1.2.8" ABSOLUTE)
-FIND_PATH(WITH_LIBPNGINC "include/png.h" "${LIBPNG_DIR}" NO_DEFAULT_PATH)
-# libtiff support
-OPTION(WITH_LIBTIFF "Build with libtiff support." ON)
-GET_FILENAME_COMPONENT(LIBTIFF_DIR "${dcmtk_SOURCE_DIR}/../tiff-3.8.2" ABSOLUTE)
-FIND_PATH(WITH_LIBTIFFINC "include/tiff.h" "${LIBTIFF_DIR}" NO_DEFAULT_PATH)
-# OpenSSL support
-OPTION(WITH_OPENSSL "Build with OpenSSL support." OFF)
-GET_FILENAME_COMPONENT(OPENSSL_DIR "${dcmtk_SOURCE_DIR}/../openssl-0.9.8a" ABSOLUTE)
-FIND_PATH(WITH_OPENSSLINC "include/openssl/ssl.h" "${OPENSSL_DIR}" NO_DEFAULT_PATH)
-# zlib support
-OPTION(WITH_ZLIB "Build with zlib support." ON)
-GET_FILENAME_COMPONENT(ZLIB_DIR "${dcmtk_SOURCE_DIR}/../zlib-1.2.3" ABSOLUTE)
-FIND_PATH(WITH_ZLIBINC "include/zlib.h" "${ZLIB_DIR}" NO_DEFAULT_PATH)
-# sndfile support
-OPTION(WITH_SNDFILE "Build with sndfile support." ON)
-GET_FILENAME_COMPONENT(SNDFILE_DIR "${dcmtk_SOURCE_DIR}/../libsndfile-1.0.17" ABSOLUTE)
-FIND_PATH(WITH_SNDFILEINC "sndfile.h" "${SNDFILE_DIR}" NO_DEFAULT_PATH)
+SET(INSTALL_BINDIR "/bin")
+SET(INSTALL_INCDIR "/include")
+SET(INSTALL_LIBDIR "/lib")
+SET(INSTALL_ETCDIR "/etc")
+SET(INSTALL_DATDIR "/share")
+SET(INSTALL_DOCDIR "/share/doc/dcmtk-${DCMTK_PACKAGE_VERSION}")
+SET(INSTALL_HTMDIR "/share/doc/dcmtk-${DCMTK_PACKAGE_VERSION}/html")
+SET(INSTALL_MANDIR "/share/man")
+
+#-----------------------------------------------------------------------------
+# Platform-specific settings
+#-----------------------------------------------------------------------------
 
 # set project wide flags for compiler and linker
 
-OPTION(OVERWRITE_COMPILER_FLAGS "Overwrite compiler flags with package default values." ON)
+IF(WIN32)
+OPTION(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS "Overwrite compiler flags with DCMTK's WIN32 package default values." ON)
+ENDIF(WIN32)
 
-IF(OVERWRITE_COMPILER_FLAGS)
+IF(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS)
 
 # settings for Microsoft Visual C
 IF(CMAKE_C_COMPILER MATCHES "CL|cl")
@@ -150,99 +153,134 @@ IF(CMAKE_CXX_COMPILER MATCHES "BCC32|bcc32")
   SET(CMAKE_STANDARD_LIBRARIES "import32.lib cw32mt.lib")
 ENDIF(CMAKE_CXX_COMPILER MATCHES "BCC32|bcc32")
 
-ENDIF(OVERWRITE_COMPILER_FLAGS)
+ENDIF(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS)
 
-# set general compiler flags
-ADD_DEFINITIONS(-D_REENTRANT)
+# On Visual Studio 8 MS deprecated C. This removes all 1.276E1265 security
+# warnings
+IF(WIN32)
+  IF(NOT BORLAND)
+    IF(NOT CYGWIN)
+      IF(NOT MINGW)
+        IF(NOT DCMTK_ENABLE_VISUAL_STUDIO_DEPRECATED_C_WARNINGS)
+          ADD_DEFINITIONS(
+            -D_CRT_FAR_MAPPINGS_NO_DEPRECATE
+            -D_CRT_IS_WCTYPE_NO_DEPRECATE
+            -D_CRT_MANAGED_FP_NO_DEPRECATE
+            -D_CRT_NONSTDC_NO_DEPRECATE
+            -D_CRT_SECURE_NO_DEPRECATE
+            -D_CRT_SECURE_NO_DEPRECATE_GLOBALS
+            -D_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE
+            -D_CRT_TIME_FUNCTIONS_NO_DEPRECATE
+            -D_CRT_VCCLRIT_NO_DEPRECATE
+            -D_SCL_SECURE_NO_DEPRECATE
+            )
+        ENDIF(NOT DCMTK_ENABLE_VISUAL_STUDIO_DEPRECATED_C_WARNINGS)
+      ENDIF(NOT MINGW)
+    ENDIF(NOT CYGWIN)
+  ENDIF(NOT BORLAND)
+ENDIF(WIN32)
 
-# pass optional build date to compiler
-#ADD_DEFINITIONS("-DDCMTK_BUILD_DATE=\\\"YYYY-MM-DD\\\"")
+IF( WIN32 )
+  SET(WIN32_STD_LIBRARIES ws2_32 netapi32 wsock32)
+ENDIF( WIN32 )
 
-# set precompiler switches, directories and libraries
-# according to optional settings
+# settings for Apple
+IF(APPLE)
+  # Need to fix ofstd/libsrc/ofthread.cxx
+  MESSAGE(STATUS "APPLE - FORCE THREADS OFF") # semaphores must be named in OS X!
+  SET(DCMTK_WITH_THREADS OFF CACHE BOOL "" FORCE)
+ENDIF(APPLE)
 
-# libxml support
-IF(WITH_LIBXML AND WITH_LIBXMLINC)
-  SET(LIBXML_INCDIR ${WITH_LIBXMLINC}/include)
-  SET(LIBXML_LIBDIR ${WITH_LIBXMLINC}/lib)
-  SET(LIBXML_LIBS debug libxml2_d optimized libxml2_o debug iconv_d optimized iconv_o)
-ELSE(WITH_LIBXML AND WITH_LIBXMLINC)
-  SET(WITH_LIBXML OFF)
-ENDIF(WITH_LIBXML AND WITH_LIBXMLINC)
-# libpng support
-IF(WITH_LIBPNG AND WITH_LIBPNGINC)
-  SET(LIBPNG_INCDIR ${WITH_LIBPNGINC}/include)
-  SET(LIBPNG_LIBDIR ${WITH_LIBPNGINC}/lib)
-  SET(LIBPNG_LIBS debug libpng_d optimized libpng_o)
-ELSE(WITH_LIBPNG AND WITH_LIBPNGINC)
-  SET(WITH_LIBPNG OFF)
-ENDIF(WITH_LIBPNG AND WITH_LIBPNGINC)
-# libtiff support
-IF(WITH_LIBTIFF AND WITH_LIBTIFFINC)
-  SET(LIBTIFF_INCDIR ${WITH_LIBTIFFINC}/include)
-  SET(LIBTIFF_LIBDIR ${WITH_LIBTIFFINC}/lib)
-  SET(LIBTIFF_LIBS debug libtiff_d optimized libtiff_o)
-ELSE(WITH_LIBTIFF AND WITH_LIBTIFFINC)
-  SET(WITH_LIBTIFF OFF)
-ENDIF(WITH_LIBTIFF AND WITH_LIBTIFFINC)
-# OpenSSL support
-IF(WITH_OPENSSL AND WITH_OPENSSLINC)
-  SET(OPENSSL_BINDIR ${WITH_OPENSSLINC}/bin)
-  SET(OPENSSL_INCDIR ${WITH_OPENSSLINC}/include)
-  SET(OPENSSL_LIBDIR ${WITH_OPENSSLINC}/lib)
-  SET(OPENSSL_LIBS debug dcmtkssl_d.lib optimized dcmtkssl_o.lib debug dcmtkeay_d.lib optimized dcmtkeay_o.lib)
-ELSE(WITH_OPENSSL AND WITH_OPENSSLINC)
-  SET(WITH_OPENSSL OFF)
-ENDIF(WITH_OPENSSL AND WITH_OPENSSLINC)
-# zlib support
-IF(WITH_ZLIB AND WITH_ZLIBINC)
-  SET(ZLIB_INCDIR ${WITH_ZLIBINC}/include)
-  SET(ZLIB_LIBDIR ${WITH_ZLIBINC}/lib)
-  SET(ZLIB_LIBS debug zlib_d optimized zlib_o)
-ELSE(WITH_ZLIB AND WITH_ZLIBINC)
-  SET(WITH_ZLIB OFF)
-ENDIF(WITH_ZLIB AND WITH_ZLIBINC)
-# sndfile support
-IF(WITH_SNDFILE AND WITH_SNDFILEINC)
-  SET(SNDFILE_INCDIR ${WITH_SNDFILEINC}/include)
-  SET(SNDFILE_LIBDIR ${WITH_SNDFILEINC})
-  SET(SNDFILE_LIBS debug libsndfile-1 optimized libsndfile-1)
-ELSE(WITH_SNDFILE AND WITH_SNDFILEINC)
-  SET(WITH_SNDFILE OFF)
-ENDIF(WITH_SNDFILE AND WITH_SNDFILEINC)
+# setting for IA64 / x86_64
+IF(UNIX)
+  IF(CMAKE_SYSTEM_PROCESSOR STREQUAL "ia64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL  "x86_64")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+  ENDIF(CMAKE_SYSTEM_PROCESSOR STREQUAL "ia64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL  "x86_64")
+ENDIF(UNIX)
 
-# specify installation prefix
-SET(CMAKE_INSTALL_PREFIX ${INSTALL_PREFIX})
-MARK_AS_ADVANCED(FORCE CMAKE_INSTALL_PREFIX)
+# settings for Borland C++
+IF(CMAKE_CXX_COMPILER MATCHES bcc32)
+  # further settings required?
+  SET(CMAKE_STANDARD_LIBRARIES "import32.lib cw32mt.lib")
+ENDIF(CMAKE_CXX_COMPILER MATCHES bcc32)
 
-# specify installation sub-directories
-SET(INSTALL_BINDIR "/bin")
-SET(INSTALL_ETCDIR "/etc/dcmtk")
-SET(INSTALL_DATDIR "/share/dcmtk")
-SET(INSTALL_DOCDIR "/share/doc/dcmtk")
-SET(INSTALL_HTMDIR "/share/doc/dcmtk/html")
-SET(INSTALL_INCDIR "/include")
-SET(INSTALL_LIBDIR "/lib")
-SET(INSTALL_MANDIR "/man")
+# add the osconfig.h.in file
+INCLUDE(${DCMTK_SOURCE_DIR}/CMake/GenerateDCMTKConfigure.cmake)
+CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in
+               ${DCMTK_BINARY_DIR}/include/dcmtk/config/osconfig.h)
 
-# generate native Windows paths
-STRING(REPLACE "/" "\\\\" NATIVE_INSTALL_PREFIX ${INSTALL_PREFIX})
-STRING(REPLACE "/" "\\\\" NATIVE_INSTALL_ETCDIR ${INSTALL_ETCDIR})
-STRING(REPLACE "/" "\\\\" NATIVE_INSTALL_DATDIR ${INSTALL_DATDIR})
 
-# specify default data dictionaries
-SET(DEFAULT_DATADICT_PATH "@NATIVE_INSTALL_PREFIX@@NATIVE_INSTALL_DATDIR@\\\\dicom.dic")
-IF(WITH_PRIVATE_TAGS)
-  SET(DEFAULT_DATADICT_PATH ${DEFAULT_DATADICT_PATH} "@NATIVE_INSTALL_PREFIX@@NATIVE_INSTALL_DATDIR@\\\\private.dic")
-ENDIF(WITH_PRIVATE_TAGS)
+#-----------------------------------------------------------------------------
+# Dart configuration (disabled per default)
+#-----------------------------------------------------------------------------
 
-# declare installation files
-INSTALL_FILES(${INSTALL_DOCDIR} FILES COPYRIGHT FAQ HISTORY VERSION ANNOUNCE.355 CHANGES.355)
+# Includes build targets Experimental, Nightly and Continous which are the standard
+# groups pre-configured in Dashboard. In CTest these groups are called "Tracks".
+#
+# INCLUDE(${CMAKE_ROOT}/Modules/Dart.cmake)
+# IF(BUILD_TESTING)
+# ENABLE_TESTING()
+# ENDIF(BUILD_TESTING)
 
-# declare include directories which hold for all subdirectories and subsubdirectories
-INCLUDE_DIRECTORIES(${dcmtk_SOURCE_DIR}/config/include)
+#-----------------------------------------------------------------------------
+# Third party libraries
+#-----------------------------------------------------------------------------
 
-# recurse into subdirectories
-SUBDIRS(config ofstd oflog dcmdata dcmtls dcmnet dcmqrdb dcmimgle dcmimage dcmjpeg dcmjpls dcmsign dcmsr dcmpstat dcmwlm doxygen)
-# add non-public modules
-#SUBDIRS(dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmloco dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmrt dcmwave)
+INCLUDE(CMake/3rdparty.cmake)
+
+#-----------------------------------------------------------------------------
+# Thread support
+#-----------------------------------------------------------------------------
+
+# See dcmtk-3.5.4/config/configure.in
+IF(WITH_THREADS)
+  ADD_DEFINITIONS(-D_REENTRANT)
+  IF(HAVE_PTHREAD_RWLOCK)
+    IF(APPLE)
+      ADD_DEFINITIONS(-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE)
+    ENDIF(APPLE)
+
+    IF("${CMAKE_SYSTEM_NAME}" MATCHES "^IRIX")
+      ADD_DEFINITIONS(-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT)
+    ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "^IRIX")
+
+  ENDIF(HAVE_PTHREAD_RWLOCK)
+  IF(HAVE_PTHREAD_H)
+     CHECK_LIBRARY_EXISTS(pthread pthread_key_create "" HAVE_LIBPTHREAD)
+     IF(HAVE_LIBPTHREAD)
+       SET(THREAD_LIBS pthread)
+     ENDIF(HAVE_LIBPTHREAD)
+     CHECK_LIBRARY_EXISTS(rt sem_init "" HAVE_LIBRT)
+     IF(HAVE_LIBRT)
+       SET(THREAD_LIBS ${THREAD_LIBS} rt)
+     ENDIF(HAVE_LIBRT)
+  ENDIF(HAVE_PTHREAD_H)
+ENDIF(WITH_THREADS)
+
+
+#-----------------------------------------------------------------------------
+# Start actual compilation tasks
+#-----------------------------------------------------------------------------
+
+# Recurse into subdirectories
+FOREACH(module ${DCMTK_MODULES})
+  ADD_SUBDIRECTORY(${module})
+ENDFOREACH()
+
+#-----------------------------------------------------------------------------
+# Installation tasks
+#-----------------------------------------------------------------------------
+
+# Install global headers
+
+INSTALL_FILES(${INSTALL_INCDIR}/dcmtk/config FILES ${CMAKE_CURRENT_BINARY_DIR}/include/dcmtk/config/osconfig.h)
+
+
+# Install headers and static libraries
+FOREACH(lib ${DCMTK_LIBS})
+  FILE(GLOB headers_to_install "${CMAKE_CURRENT_SOURCE_DIR}/${lib}/include/dcmtk/${lib}/*.h")
+  INSTALL(FILES
+    ${headers_to_install}
+    DESTINATION ${DCMTK_INSTALL_INCLUDE_DIR}/dcmtk/${lib} COMPONENT Development
+  )
+ENDFOREACH()

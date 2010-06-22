@@ -17,7 +17,7 @@ ENDFOREACH(PROGRAM)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmmkcrv dcmmklut dcmp2pgm dcmprscp dcmprscu dcmpsmk dcmpschk dcmpsprt dcmpsrcv dcmpssnd)
-  TARGET_LINK_LIBRARIES(${PROGRAM} netapi32 wsock32 ofstd oflog dcmdata dcmnet dcmqrdb dcmimgle dcmpstat ${ZLIB_LIBS})
+  TARGET_LINK_LIBRARIES(${PROGRAM} dcmpstat dcmimgle dcmqrdb dcmnet dcmdata oflog ofstd ${ZLIB_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
 ENDFOREACH(PROGRAM)
 FOREACH(PROGRAM dcmmklut dcmp2pgm dcmprscp dcmprscu dcmpschk dcmpsmk dcmpsprt dcmpsrcv dcmpssnd)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmsr)
