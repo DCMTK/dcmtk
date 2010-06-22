@@ -1,6 +1,28 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.22 (riesmeier)
+
+- Introduced new enumeration type to be used for closeAssociation().
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+           dcmtls/include/dcmtk/dcmtls/tlsscu.h
+           dcmtls/libsrc/tlsscu.cc
+
+- Added support for handling N-EVENT-REPORT request.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
+- Added support for stopping after the current association is finished.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
+- Further code cleanup. Renamed some methods, variables, types and so on.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+
 **** Changes from 2010.06.22 (onken)
 
 - Renamed additional CMake C++ files to DCMTK's C++ standard file
@@ -8,12 +30,10 @@ Changes between releases are documented here.
   Removed:  CMake/dcmtkTestCharSignedness.cxx
             CMake/dcmtkTestBoolType.cxx
             CMake/dcmtkTestPThreadType.cxx
-            
   Added:    CMake/dcmtkTestCharSignedness.cc
             CMake/dcmtkTestBoolType.cc
             CMake/dcmtkTestPThreadType.cc
-
-  Affects:  CMake/GenerateDCMTKConfigure.cmake            
+  Affects:  CMake/GenerateDCMTKConfigure.cmake
 
 - Added experimental cmake support for unix systems and adapted windows build
   configuration. Thanks to CTK and especially Kitware people for help.
@@ -26,7 +46,7 @@ Changes between releases are documented here.
            CMake/dcmtkTestBoolType.cxx
            CMake/dcmtkTestPThreadType.cxx
            CMake/osconfig.h.in
-  
+
   Affects: CMakeLists.txt
            dcmdata/apps/CMakeLists.txt
            dcmimage/apps/CMakeLists.txt
