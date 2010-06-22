@@ -3,9 +3,19 @@ Changes between releases are documented here.
 
 **** Changes from 2010.06.22 (onken)
 
+- Renamed additional CMake C++ files to DCMTK's C++ standard file
+  extension .cc.
+  Removed:  CMake/dcmtkTestCharSignedness.cxx
+            CMake/dcmtkTestBoolType.cxx
+            CMake/dcmtkTestPThreadType.cxx
+            
+  Added:    CMake/dcmtkTestCharSignedness.cc
+            CMake/dcmtkTestBoolType.cc
+            CMake/dcmtkTestPThreadType.cc
+
 - Added experimental cmake support for unix systems and adapted windows build
   configuration. Thanks to CTK and especially Kitware people for help.
-  Added:   CMake/3rdparty.cmake  
+  Added:   CMake/3rdparty.cmake
            CMake/CheckFunctionWithHeaderExists.cmake
            CMake/GenerateDCMTKConfigure.cmake
            CMake/dcmtkTestCharSignedness.cxx
