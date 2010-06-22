@@ -21,17 +21,17 @@
  *
  *  Purpose: Base class for TLS-enabled Service Class Users (SCUs)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-04-29 16:17:56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-22 15:50:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmtls/libsrc/tlsscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"  /* make sure OS specific configuration is included first */
 
 #ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlsscu.h"
@@ -106,13 +106,13 @@ DcmTLSSCU::~DcmTLSSCU()
 OFCondition DcmTLSSCU::initNetwork()
 {
   OFCondition cond;
-  
+
   /* First, create TLS layer */
   m_tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, m_readSeedFile.c_str());
   if (m_tLayer == NULL)
   {
     DCMTLS_ERROR("Unable to create TLS transport layer for SCP, maybe problem with seed file?");
-    return EC_IllegalCall;
+    return EC_IllegalCall; // TODO: need to find better error code
   }
 
   /* If authentication of both sides (and not only encryption) is desired,
@@ -127,19 +127,19 @@ OFCondition DcmTLSSCU::initNetwork()
     if ( cond.good() && (TCS_ok != m_tLayer->setPrivateKeyFile(m_privateKeyFile.c_str(), m_privateKeyFileFormat)) )
     {
       DCMTLS_ERROR("Unable to create TLS transport layer for SCP: Unable to load private TLS key from file " << m_privateKeyFile);
-      cond = EC_IllegalCall;
+      cond = EC_IllegalCall; // TODO: need to find better error code
     }
     // Set file that contains host certificate
     if ( cond.good() && (TCS_ok != m_tLayer->setCertificateFile(m_certificateFile.c_str(), m_certKeyFileFormat)) )
     {
       DCMTLS_ERROR("Unable to load SCP certificate from file " << m_certificateFile);
-      cond = EC_IllegalCall;
+      cond = EC_IllegalCall; // TODO: need to find better error code
     }
     // Set whether private key fits with certificate
     if (! m_tLayer->checkPrivateKeyMatchesCertificate() && cond.good())
     {
       DCMTLS_ERROR("Private key from file " << m_privateKeyFile << " and certificate from file " << m_certificateFile << " do not match");
-      cond = EC_IllegalCall;
+      cond = EC_IllegalCall; // TODO: need to find better error code
     }
   }
 
@@ -147,14 +147,14 @@ OFCondition DcmTLSSCU::initNetwork()
   if ( cond.good() && (TCS_ok != m_tLayer->setCipherSuites(m_ciphersuites.c_str())) )
   {
     DCMTLS_ERROR("Unable to set selected cipher suites for SCP");
-    cond = EC_IllegalCall;
+    cond = EC_IllegalCall; // TODO: need to find better error code
   }
 
   /* Initiliaze Diffie-Hellman parameters from file if given */
   if (!m_dhparam.empty() && cond.good())
   {
     if (!m_tLayer->setTempDHParameters(m_dhparam.c_str()))
-      cond = EC_IllegalCall;
+      cond = EC_IllegalCall; // TODO: need to find better error code
   }
 
   /* Set whether SCU should check the SCP's certificate for validity */
@@ -164,14 +164,14 @@ OFCondition DcmTLSSCU::initNetwork()
   /*  Now we are ready to initialize scu's network structures */
   if (cond.good())
     cond = DcmSCU::initNetwork();
-   
+
   /* Set the transport layer type (type of network connection) in the params
      structure. The default is an insecure connection in DcmSCU. To make use of
-     OPENSSL, it must "inject" the TLS layer here. 
+     OPENSSL, it must "inject" the TLS layer here.
   */
   if (cond.good())
     cond = useSecureConnection(m_tLayer);
-   
+
   /* Finally, look whether everyhting was successful. If not,
    * delete secure layer created above
    */
@@ -180,7 +180,8 @@ OFCondition DcmTLSSCU::initNetwork()
     OFString msg;
     DimseCondition::dump(msg, cond);
     DCMTLS_ERROR(msg);
-    delete m_tLayer; m_tLayer = NULL;
+    delete m_tLayer;
+    m_tLayer = NULL;
   }
 
   return cond;
@@ -191,19 +192,20 @@ OFCondition DcmTLSSCU::negotiateAssociation()
 {
  // Negotiate association
   OFCondition cond = DcmSCU::negotiateAssociation();
-  if (cond.bad()) 
+  if (cond.bad())
   {
     // if something goes wrong, delete TLS structures
-    delete m_tLayer; m_tLayer = NULL;
+    delete m_tLayer;
+    m_tLayer = NULL;
   }
   return cond;
 }
 
 
-void DcmTLSSCU::closeAssociation(const OFCondition& abortOrReleaseRequested)
+void DcmTLSSCU::closeAssociation(const DcmCloseAssociationType closeType)
 {
-  // Close asssociation
-  DcmSCU::closeAssociation(abortOrReleaseRequested);
+  // Close association
+  DcmSCU::closeAssociation(closeType);
 
   if (m_tLayer && !m_writeSeedFile.empty())
   {
@@ -217,8 +219,8 @@ void DcmTLSSCU::closeAssociation(const OFCondition& abortOrReleaseRequested)
       DCMNET_WARN("Cannot write random seed, ignoring");
     }
   }
-  delete m_tLayer; m_tLayer = NULL;
-
+  delete m_tLayer;
+  m_tLayer = NULL;
 }
 
 
@@ -235,7 +237,8 @@ void DcmTLSSCU::enableAuthentication(const OFString& privateKey,
   m_certKeyFileFormat = certFormat;
   if (m_passwd != NULL)
   {
-    delete[] m_passwd; m_passwd = NULL;
+    delete[] m_passwd;
+    m_passwd = NULL;
   }
   if (passphrase == NULL)
   {
@@ -369,9 +372,14 @@ OFString DcmTLSSCU::getDHParam() const
 
 
 #endif // WITH_OPENSSL
+
+
 /*
 ** CVS Log
 ** $Log: tlsscu.cc,v $
+** Revision 1.2  2010-06-22 15:50:09  joergr
+** Introduced new enumeration type to be used for closeAssociation().
+**
 ** Revision 1.1  2010-04-29 16:17:56  onken
 ** Added new class DcmTLSSCU as base class for developing TLS-enabled SCUs.
 **
