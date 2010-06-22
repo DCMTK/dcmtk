@@ -22,8 +22,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-17 17:11:27 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2010-06-22 15:45:27 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +34,9 @@
 #define SCU_H
 
 #include "dcmtk/config/osconfig.h"  /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmnet/dcompat.h"
+
 #include "dcmtk/dcmdata/dctk.h"     /* Covers most common dcmdata classes */
+#include "dcmtk/dcmnet/dcompat.h"
 #include "dcmtk/dcmnet/dimse.h"     /* DIMSE network layer */
 #include "dcmtk/dcmnet/dcasccff.h"  /* For reading a association config file */
 #include "dcmtk/dcmnet/dcasccfg.h"  /* For holding association cfg file infos */
@@ -43,6 +44,21 @@
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
 #endif
+
+
+/** Different types of closing an association
+ */
+enum DcmCloseAssociationType
+{
+  /// Release the current association
+  DCMSCU_RELEASE_ASSOCIATION,
+  /// Abort the current association
+  DCMSCU_ABORT_ASSOCIATION,
+  /// Peer requested release (Aborting)
+  DCMSCU_PEER_REQUESTED_RELEASE,
+  /// Peer aborted the association
+  DCMSCU_PEER_ABORTED_ASSOCIATION
+};
 
 
 /** Class representing a single C-FIND response
@@ -81,12 +97,12 @@ public:
   FINDResponses();
   virtual ~FINDResponses();
   Uint32 numResults() const;
-  void add(FINDResponse* rsp);
-  OFListIterator(FINDResponse*) begin();
-  OFListIterator(FINDResponse*) end();
+  void add(FINDResponse *rsp);
+  OFListIterator(FINDResponse *) begin();
+  OFListIterator(FINDResponse *) end();
 
 private:
-  OFList<FINDResponse*> m_responses;
+  OFList<FINDResponse *> m_responses;
 };
 
 /** Base class for implementing DICOM Service Class User functionality. The class offers
@@ -114,8 +130,8 @@ public:
    *                             abstract syntax
    *  @return EC_Normal if adding was successful, otherwise error code
    */
-  OFCondition addPresentationContext(const OFString& abstractSyntax,
-                                     const OFList<OFString>& xferSyntaxes);
+  OFCondition addPresentationContext(const OFString &abstractSyntax,
+                                     const OFList<OFString> &xferSyntaxes);
 
   /** Initialize network, i.e. prepare for association negotiation
    *  @return EC_Normal if initialization was successful, otherwise error code
@@ -136,8 +152,8 @@ public:
     *                             If empty, the transfer syntax is not checked.
     *  @return Adequate Presentation context ID that can be used. 0 if none found.
     */
-  T_ASC_PresentationContextID findPresentationContextID(const OFString& abstractSyntax,
-                                                        const OFString& transferSyntax);
+  T_ASC_PresentationContextID findPresentationContextID(const OFString &abstractSyntax,
+                                                        const OFString &transferSyntax);
 
   /** This function sends a C-ECHO command via network to another DICOM application
    *  @param presID [in] Presentation context ID to use. A value of 0 lets SCP class tries
@@ -176,11 +192,11 @@ public:
    *          denoting failure of the storage request, EC_Normal will be returned.
    */
   virtual OFCondition sendSTORERequest(const T_ASC_PresentationContextID presID,
-                                       const OFString& dicomFile,
-                                       DcmDataset* dset,
-                                       DcmDataset*& rspCommandSet,
-                                       DcmDataset*& rspStatusDetail,
-                                       Uint16& rspStatusCode);
+                                       const OFString &dicomFile,
+                                       DcmDataset *dset,
+                                       DcmDataset *&rspCommandSet,
+                                       DcmDataset *&rspStatusDetail,
+                                       Uint16 &rspStatusCode);
 
   /** Sends a C-FIND Request on given presentation context and receives list of responses.
    *  The function receives the first response and then calls the function handleFINDResponse
@@ -195,8 +211,8 @@ public:
    *  @return TODO
    */
   virtual OFCondition sendFINDRequest(T_ASC_PresentationContextID presID,
-                                      DcmDataset* queryKeys,
-                                      FINDResponses* responses);
+                                      DcmDataset *queryKeys,
+                                      FINDResponses *responses);
 
   /** This is the standard handler for C-FIND message responses: It just adds up all
    *  responses it receives and prints a DEBUG message. Therefore, it is called by for
@@ -209,8 +225,8 @@ public:
    *  @return TODO
    */
   virtual OFCondition handleFINDResponse(Uint16 presContextID,
-                                         FINDResponse* response,
-                                         OFBool& waitForNextResponse);
+                                         FINDResponse *response,
+                                         OFBool &waitForNextResponse);
 
   /** Send C-FIND-CANCEL and, therefore, ends the C-FIND session, i.e. no further responses
    *  will be handled. A call to this function only makes sense if an association is open,
@@ -229,7 +245,7 @@ public:
    *                              context itself.
    *  @param sopInstanceUID [in]  The requested SOP Instance UID
    *  @param actionTypeID   [in]  The action type ID to be used
-   *  @param dataset        [in]  The dataset to be sent
+   *  @param reqDataset     [in]  The dataset to be sent
    *  @param rspStatusCode  [out] The response status code received. 0 means success,
    *                              others can be found in the DICOM standard.
    *  @return EC_Normal if request could be issued and response was received successfully,
@@ -239,59 +255,54 @@ public:
   virtual OFCondition sendACTIONRequest(const T_ASC_PresentationContextID presID,
                                         const OFString &sopInstanceUID,
                                         const Uint16 actionTypeID,
-                                        DcmDataset *dataset,
+                                        DcmDataset *reqDataset,
                                         Uint16 &rspStatusCode);
 
   /** Receives N-EVENT-REPORT request on the currently opened association and sends a
    *  corresponding response. Calls checkEVENTREPORTRequest() in order to determine the
    *  DIMSE status code to be used for the N-EVENT-REPORT response.
-   *  @param dataset     [out] Pointer to the dataset received
+   *  @param reqDataset  [out] Pointer to the dataset received
    *  @param eventTypeID [out] Event Type ID from the command set received
    *  @param timeout     [in]  Optional timeout in seconds for receiving data. This value
    *                           (if not 0) overwrites the standard DIMSE timeout and also
    *                           enables the non-blocking mode for receiving the request.
    *  @return status, EC_Normal if successful, an error code otherwise
    */
-  virtual OFCondition handleEVENTREPORTRequest(DcmDataset *&dataset,
+  virtual OFCondition handleEVENTREPORTRequest(DcmDataset *&reqDataset,
                                                Uint16 &eventTypeID,
                                                const int timeout = 0);
 
-  /** Closes the association of this SCU. As parameter it needs information whether the
-   *  remote peer wants to release/abort the association. Allowed values:
-   *  EC_Normal: Let SCU release its association.
-   *  DUL_PEERABORTEDASSOCIATION: Also releases association on peer's request.
-   *  DUL_PEERREQUESTEDRELEASE: Aborts associaton on peer's request.
-   *  Other cases: SCU aborts association.
-   *  @param abortOrReleaseRequested [in] Define whether to release or abort the association
+  /** Closes the association created by this SCU. Also resets the current association.
+   *  @param closeType [in] Define whether to release or abort the association
    */
-  virtual void closeAssociation(const OFCondition& abortOrReleaseRequested);
+  virtual void closeAssociation(const DcmCloseAssociationType closeType);
 
   /* Set methods */
 
   /** Set maximum PDU length (to be received by SCU)
    *  @param maxRecPDU [in] The maximum PDU size to use in bytes
    */
-  void setMaxReceivePDULength(const unsigned long& maxRecPDU);
+  void setMaxReceivePDULength(const unsigned long maxRecPDU);
 
   /** Set whether to send in DIMSE blocking or non-blocking mode
    *  @param blockingMode [in] Either blocking or non-blocking mode
    */
-  void setDIMSEBlockingMode(const T_DIMSE_BlockingMode& blockingMode);
+  void setDIMSEBlockingMode(const T_DIMSE_BlockingMode blockingMode);
 
   /** Set SCU's AETitle to be used in association negotiation
    *  @param myAETtitle [in] The SCU's AETitle to be used
    */
-  void setAETitle(const OFString& myAETtitle);
+  void setAETitle(const OFString &myAETtitle);
 
   /** Set SCP's host (hostname or IP address) to talk to in association negotiation
    *  @param peerHostName [in] The SCP's hostname or IP address to be used
    */
-  void setPeerHostName(const OFString& peerHostName);
+  void setPeerHostName(const OFString &peerHostName);
 
   /** Set SCP's AETitle to talk to in association negotiation
    *  @param peerAETitle [in] The SCP's AETitle to be used
    */
-  void setPeerAETitle(const OFString& peerAETitle);
+  void setPeerAETitle(const OFString &peerAETitle);
 
   /** Set SCP's port number to connect to for association negotiation
    *  @param peerPort [in] The SCP's port number
@@ -315,8 +326,8 @@ public:
    *  @param filename [in] File name of the association configuration file
    *  @param profile  [in] Profile inside the association negotiation file
    */
-  void setAssocConfigFileAndProfile(const OFString& filename,
-                                    const OFString& profile);
+  void setAssocConfigFileAndProfile(const OFString &filename,
+                                    const OFString &profile);
 
   /** Set whether to show presentation contexts in verbose or debug mode
    *  @param mode [in] Show presentation contexts in verbose mode if OFTrue. By default, the
@@ -418,17 +429,17 @@ protected:
    *  @return Error if dataset is NULL, otherwise EC_Normal. All return parameters will be
    *          empty if not found (transferSyntax will be set to EXS_Unknown) in the file.
    */
-  OFCondition getDatasetInfo(DcmDataset* dataset,
-                             OFString& sopClassUID,
-                             OFString& sopInstanceUID,
-                             E_TransferSyntax& transferSyntax);
+  OFCondition getDatasetInfo(DcmDataset *dataset,
+                             OFString &sopClassUID,
+                             OFString &sopInstanceUID,
+                             E_TransferSyntax &transferSyntax);
 
 
   /** Tells DcmSCU to use a secure TLS connection described by the given TLS layer
    *  @param tlayer [in] The TLS transport layer including all TLS parameters
    *  @return EC_Normal if given transport layer is ok, an error code otherwise
    */
-  OFCondition useSecureConnection(DcmTransportLayer* tlayer);
+  OFCondition useSecureConnection(DcmTransportLayer *tlayer);
 
   /** Receive DIMSE command (excluding dataset!) over the currently open association
    *  @param presID       [out] Contains in the end the ID of the presentation context
@@ -484,20 +495,20 @@ protected:
     *                              Empty, if such a presentation context does not exist.
     */
   void findPresentationContext(const Uint16 presID,
-                               OFString& abstractSyntax,
-                               OFString& transferSyntax);
+                               OFString &abstractSyntax,
+                               OFString &transferSyntax);
 
   /** Check given N-EVENT-REPORT request and dataset for validity. This method is called by
    *  handleEVENTREPORTRequest() before sending the response in order to determine the
    *  DIMSE status code to be used for the response message.
-   *  @param eventReportReq [in] The N-EVENT-REPORT request message data structure
-   *  @param reqDataset     [in] The N-EVENT-REPORT request dataset received. Might be NULL.
+   *  @param request    [in] The N-EVENT-REPORT request message data structure
+   *  @param reqDataset [in] The N-EVENT-REPORT request dataset received. Might be NULL.
    *  @return DIMSE status code to be used for the N-EVENT-REPORT response.
    *          Always returns STATUS_Success (0). Derived classes should, therefore,
    *          overwrite this method and return a more appropriate value based on the
    *          result of the checks performed.
    */
-  virtual Uint16 checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ *eventReportReq,
+  virtual Uint16 checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &request,
                                          DcmDataset *reqDataset);
 
 private:
@@ -517,7 +528,7 @@ private:
   T_ASC_Association *m_assoc;
 
   /// The DICOM network the association is based on
-  T_ASC_Network* m_net;
+  T_ASC_Network *m_net;
 
   /// Association parameters
   T_ASC_Parameters *m_params;
@@ -544,7 +555,7 @@ private:
   OFString m_assocConfigFile;
 
   /// The last DIMSE successfully sent, unresponded DIMSE request
-  T_DIMSE_Message* m_openDIMSERequest;
+  T_DIMSE_Message *m_openDIMSERequest;
 
   /// Maximum PDU size
   Uint32 m_maxReceivePDULength;
@@ -586,6 +597,10 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.10  2010-06-22 15:45:27  joergr
+** Introduced new enumeration type to be used for closeAssociation().
+** Further code cleanup. Renamed some methods, variables, types and so on.
+**
 ** Revision 1.9  2010-06-17 17:11:27  joergr
 ** Added preliminary support for N-EVENT-REPORT to DcmSCU. Some further code
 ** cleanups and enhancements. Renamed some methods. Revised documentation.
