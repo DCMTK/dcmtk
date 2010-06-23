@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-25 16:31:42 $
- *  CVS/RCS Revision: $Revision: 1.145 $
+ *  Update Date:      $Date: 2010-06-23 08:50:25 $
+ *  CVS/RCS Revision: $Revision: 1.146 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1432,18 +1432,16 @@ OFCondition DcmItem::insert(DcmElement *elem,
                         /* now the following holds: remObj == dE and elementList */
                         /* points to the element after the former current element. */
 
-                        /* dump some information if required */
-                        DCMDATA_TRACE("DcmItem::insert() Element " << remObj->getTag()
-                            << " VR=\"" << DcmVR(remObj->getVR()).getVRName()
-                            << "\" p=" << OFstatic_cast(void *, remObj) << " removed");
-
                         /* if the pointer to the removed object does not */
                         /* equal NULL (the usual case), delete this object */
                         /* and dump some information if required */
                         if (remObj != NULL)
                         {
+                            /* dump some information if required */
+                            DCMDATA_TRACE("DcmItem::insert() Element " << remObj->getTag()
+                                << " VR=\"" << DcmVR(remObj->getVR()).getVRName()
+                                << "\" p=" << OFstatic_cast(void *, remObj) << " removed and deleted");
                             delete remObj;
-                            DCMDATA_TRACE("DcmItem::insert() Element p=" << OFstatic_cast(void *, remObj) << " deleted");
                         }
                         /* insert the new element before the current element */
                         elementList->insert(elem, ELP_prev);
@@ -1451,7 +1449,6 @@ OFCondition DcmItem::insert(DcmElement *elem,
                         DCMDATA_TRACE("DcmItem::insert() Element " << elem->getTag()
                             << " VR=\"" << DcmVR(elem->getVR()).getVRName()
                             << "\" p=" << OFstatic_cast(void *, elem) << " replaced older one");
-
                     }   // if (replaceOld)
                     /* or else, i.e. the current element shall not be replaced by the new element */
                     else {
@@ -3625,6 +3622,10 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.146  2010-06-23 08:50:25  joergr
+** Moved log output to another code line in order to avoid a possible NULL
+** pointer dereference.
+**
 ** Revision 1.145  2010-03-25 16:31:42  joergr
 ** Use return value of getTag() for stream output where possible.
 ** Made log messages more consistent within this module.

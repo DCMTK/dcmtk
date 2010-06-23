@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.23 (riesmeier)
+
+- Moved log output to another code line in order to avoid a possible NULL
+  pointer dereference. Thanks to forum user "Niels Dekker" for the report.
+  Affects: dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2010.06.22 (riesmeier)
 
 - Introduced new enumeration type to be used for closeAssociation().
@@ -46,7 +52,6 @@ Changes between releases are documented here.
            CMake/dcmtkTestBoolType.cxx
            CMake/dcmtkTestPThreadType.cxx
            CMake/osconfig.h.in
-
   Affects: CMakeLists.txt
            dcmdata/apps/CMakeLists.txt
            dcmimage/apps/CMakeLists.txt
