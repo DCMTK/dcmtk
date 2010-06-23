@@ -61,19 +61,32 @@ ENDIF(DCMTK_WITH_THREADS)
 # CMake doesn't provide a configure-style system type string
 SET(CANONICAL_HOST_TYPE "${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}")
 
+# Configure dictionary path and install prefix
 IF(WIN32 AND NOT CYGWIN)
+  # Set DCMTK_PREFIX needed within some code. Be sure that all / are replaced by \\.
   SET(DCMTK_PREFIX "${CMAKE_INSTALL_PREFIX}")
-  SET(DCM_DICT_DEFAULT_PATH "dicom.dic;/dicom.dic;${DCMTK_PREFIX}/lib/dicom.dic")
   STRING(REGEX REPLACE "/" "\\\\\\\\" DCMTK_PREFIX "${DCMTK_PREFIX}")
-  STRING(REGEX REPLACE "/" "\\\\\\\\" DCM_DICT_DEFAULT_PATH
-         "${DCM_DICT_DEFAULT_PATH}")
+  # Set path and multiple path separator being used in dictionary code etc.
   SET(PATH_SEPARATOR "\\\\")
   SET(ENVIRONMENT_PATH_SEPARATOR ";")
+   # Set dictionary path to the data dir inside install main dir (prefix)
+  SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}${INSTALL_DATDIR}/dicom.dic")
+  # If private dictionary should be utilized, add it to default dictionary path
+  IF(WITH_PRIVATE_TAGS)
+    SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}${ENVIRONMENT_PATH_SEPARATOR}${DCMTK_PREFIX}${INSTALL_DATDIR}${PATH_SEPARATOR}private.dic" )
+  ENDIF(WITH_PRIVATE_TAGS)
+  # Again, fpr windows strip all / from path and replace it with \\.
+  STRING(REGEX REPLACE "/" "\\\\\\\\" DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}")
 ELSE(WIN32 AND NOT CYGWIN)
-  SET(DCMTK_PREFIX "${CMAKE_INSTALL_PREFIX}")
-  SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}/share/dcmtk/dicom.dic")
+  # Set path and multiple path separator being used in dictionary code etc.
   SET(PATH_SEPARATOR "/")
   SET(ENVIRONMENT_PATH_SEPARATOR ":")
+  SET(DCMTK_PREFIX "${CMAKE_INSTALL_PREFIX}")
+  SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}${INSTALL_DATDIR}${PATH_SEPARATOR}dicom.dic")
+  # If private dictionary should be utilized, add it to default dictionary path
+  IF(WITH_PRIVATE_TAGS)
+    SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}${ENVIRONMENT_PATH_SEPARATOR}${DCMTK_PREFIX}${INSTALL_DATDIR}${PATH_SEPARATOR}private.dic" )
+  ENDIF(WITH_PRIVATE_TAGS)
 ENDIF(WIN32 AND NOT CYGWIN)
 
 # Check the sizes of various types
@@ -96,10 +109,10 @@ INCLUDE(${DCMTK_SOURCE_DIR}/CMake/CheckFunctionWithHeaderExists.cmake)
 # For windows, hardcode these values to avoid long search times
 IF(WIN32 AND NOT CYGWIN)
   CHECK_INCLUDE_FILE_CXX("windows.h"  HAVE_WINDOWS_H)
-  CHECK_INCLUDE_FILE_CXX("winsock.h"    HAVE_WINSOCK_H)
+  CHECK_INCLUDE_FILE_CXX("winsock.h"  HAVE_WINSOCK_H)
 ENDIF(WIN32 AND NOT CYGWIN)
 
-  CHECK_INCLUDE_FILE_CXX("errno.h"    HAVE_ERRNO_H)
+  CHECK_INCLUDE_FILE_CXX("errno.h" HAVE_ERRNO_H)
   CHECK_INCLUDE_FILE_CXX("dirent.h" HAVE_DIRENT_H)
   CHECK_INCLUDE_FILE_CXX("fcntl.h" HAVE_FCNTL_H)
   CHECK_INCLUDE_FILE_CXX("fstream" HAVE_FSTREAM)
@@ -173,8 +186,6 @@ ENDIF(WIN32 AND NOT CYGWIN)
 
 
   IF(WIN32 AND NOT CYGWIN)
-    CHECK_INCLUDE_FILE_CXX("windows.h"  HAVE_WINDOWS_H)
-    CHECK_INCLUDE_FILE_CXX("winsock.h"    HAVE_WINSOCK_H)
     SET(HAVE_NO_TYPEDEF_SSIZE_T TRUE)
     SET(HAVE_NO_TYPEDEF_PID_T TRUE)
   ELSE(WIN32 AND NOT CYGWIN)
@@ -407,9 +418,9 @@ IF("HAVE_POINTER_TYPE_PTHREAD_T" MATCHES "^HAVE_POINTER_TYPE_PTHREAD_T$")
     SET(HAVE_INT_TYPE_PTHREAD_T 1)
   ELSE (HAVE_WINDOWS_H)
     TRY_COMPILE(HAVE_INT_TYPE_PTHREAD_T
-                ${CMAKE_BINARY_DIR}/CMakeTmp/PThreadType
-                ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestPThreadType.cc
-                OUTPUT_VARIABLE OUTPUT)
+      ${CMAKE_BINARY_DIR}/CMakeTmp/PThreadType
+      ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestPThreadType.cc
+      OUTPUT_VARIABLE OUTPUT)
   ENDIF(HAVE_WINDOWS_H)
   IF(NOT HAVE_INT_TYPE_PTHREAD_T)
     MESSAGE(STATUS "Checking whether pthread_t is a pointer type -- yes")
