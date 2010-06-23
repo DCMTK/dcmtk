@@ -2,21 +2,24 @@
 PROJECT(DCMTK)
 
 # Minimum CMake version required
-cmake_minimum_required(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
+IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.1)
+  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.8.1 CACHE STRING "Latest version of CMake when this project was released." FORCE)
+ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.1)
 
 #-----------------------------------------------------------------------------
 # General project settings to configure DCMTK build process
 #-----------------------------------------------------------------------------
 
 #  Modules to be built (default: build all public modules)
-SET(DCMTK_MODULES ofstd oflog dcmdata dcmimgle dcmjpeg dcmimage dcmtls dcmnet dcmwlm dcmqrdb dcmsr dcmpstat dcmsign dcmjpls)
+SET(DCMTK_MODULES config ofstd oflog dcmdata dcmimgle dcmjpeg dcmimage dcmtls dcmnet dcmwlm dcmqrdb dcmsr dcmpstat dcmsign dcmjpls doxygen)
 
 # Package "release" settings
 SET(DCMTK_PACKAGE_NAME "DCMTK")
 SET(DCMTK_PACKAGE_VERSION "3.5.5")
 SET(DCMTK_PACKAGE_VERSION_NUMBER "355")
 SET(DCMTK_PACKAGE_VERSION_SUFFIX "")
-SET(DCMTK_PACKAGE_DATE "20100226")
+SET(DCMTK_PACKAGE_DATE "CVS")
 SET(DCMTK_DEFAULT_CONFIGURATION_DIR "")
 SET(DCMTK_DEFAULT_SUPPORT_DATA_DIR "")
 
@@ -30,7 +33,7 @@ OPTION(DCMTK_WITH_SNDFILE "Support for SNDFILE" OFF)
 MARK_AS_ADVANCED(SNDFILE_DIR DCMTK_WITH_SNDFILE) # not yet needed in public DCMTK
 OPTION(DCMTK_WITH_PRIVATE_TAGS "Support for DICOM private tags" OFF)
 OPTION(DCMTK_WITH_THREADS "Support for multi-threading" ON)
-
+OPTION(DCMTK_WITH_DOXYGEN "Build API documentation with doxygen" ON)
 
 #SET(CXX_TEST_PATH ${EXECUTABLE_OUTPUT_PATH})
 
@@ -75,10 +78,10 @@ INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR})
 SET(INSTALL_BINDIR "/bin")
 SET(INSTALL_INCDIR "/include")
 SET(INSTALL_LIBDIR "/lib")
-SET(INSTALL_ETCDIR "/etc")
-SET(INSTALL_DATDIR "/share")
-SET(INSTALL_DOCDIR "/share/doc/dcmtk-${DCMTK_PACKAGE_VERSION}")
-SET(INSTALL_HTMDIR "/share/doc/dcmtk-${DCMTK_PACKAGE_VERSION}/html")
+SET(INSTALL_ETCDIR "/etc/dcmtk/")
+SET(INSTALL_DATDIR "/share/dcmtk")
+SET(INSTALL_DOCDIR "/share/doc/dcmtk")
+SET(INSTALL_HTMDIR "/share/doc/dcmtk/html")
 SET(INSTALL_MANDIR "/share/man")
 
 #-----------------------------------------------------------------------------
@@ -257,6 +260,13 @@ IF(WITH_THREADS)
   ENDIF(HAVE_PTHREAD_H)
 ENDIF(WITH_THREADS)
 
+# Enable new cmake behaviour when dealing with libraries whose full path is
+# given to the linker. This is necessary to avoid warnings in cmake versions
+# greater lower than 2.6.
+# See http://www.cmake.org/cmake/help/cmake-2.6.html#policy:CMP0003
+IF(COMMAND CMAKE_POLICY)
+  CMAKE_POLICY(SET CMP0003 NEW)
+ENDIF(COMMAND CMAKE_POLICY)
 
 #-----------------------------------------------------------------------------
 # Start actual compilation tasks
@@ -265,16 +275,17 @@ ENDIF(WITH_THREADS)
 # Recurse into subdirectories
 FOREACH(module ${DCMTK_MODULES})
   ADD_SUBDIRECTORY(${module})
-ENDFOREACH()
+ENDFOREACH(module)
 
 #-----------------------------------------------------------------------------
 # Installation tasks
 #-----------------------------------------------------------------------------
 
 # Install global headers
-
 INSTALL_FILES(${INSTALL_INCDIR}/dcmtk/config FILES ${CMAKE_CURRENT_BINARY_DIR}/include/dcmtk/config/osconfig.h)
 
+# Install DCMTK's general documentation files
+INSTALL_FILES(${INSTALL_DOCDIR} FILES COPYRIGHT FAQ HISTORY VERSION ANNOUNCE.355 CHANGES.355)
 
 # Install headers and static libraries
 FOREACH(lib ${DCMTK_LIBS})
@@ -283,4 +294,4 @@ FOREACH(lib ${DCMTK_LIBS})
     ${headers_to_install}
     DESTINATION ${DCMTK_INSTALL_INCLUDE_DIR}/dcmtk/${lib} COMPONENT Development
   )
-ENDFOREACH()
+ENDFOREACH(lib)
