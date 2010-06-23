@@ -1,6 +1,42 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.23 (onken)
+
+- Added building of doxygen and manpage documentation for cmake under unix.
+  Affects: CMakeLists.txt
+           doxygen/CMakeLists.txt
+           CMake/3rdparty.cmake
+  
+- Forced 3rd party libraries to be turned of during cmake configuration if
+  library was not found or library path not set.
+  Affects: CMake/3rdparty.cmake
+
+- Fixed default (private and standard) dictionary path for windows and linux
+  in cmake configuration.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
+- Removed doubled cmake check for windows.h and winsock.h.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
+- Removed superfluous CMakeLists.txt.
+  Affects: config/CMakeLists.txt
+  
+  Removed: config/include/dcmtk/config/CMakeLists.txt
+  
+- Re-established compatibility to CMake version 2.4. Inserted warning if newer
+  cmake version than the one last tested in OFFIS is used (old behaviour).
+  Set package date to "CVS" to be consistent with old behaviour. Changed
+  install directories to be consistent with unix and old windows behaviour. Added
+  cmake policy (CMP0003) to avoid cmake warning when libraries with full path
+  are linked to executable. Added installation of general files (COPYRIGHT,
+  FAQ, HISTORY, VERSION, ANNOUNCE.355, CHANGES.355).
+  Affects: CMakeLists.txt
+  
+- Removed obsolete cfwin32.h.in.
+  Affects: config/include/dcmtk/config/cfwin32.h.in
+           config/include/dcmtk/config/osconfig.h
+  
 **** Changes from 2010.06.23 (riesmeier)
 
 - Moved log output to another code line in order to avoid a possible NULL
