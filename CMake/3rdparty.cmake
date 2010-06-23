@@ -26,9 +26,10 @@ IF(WIN32)
     SET(LIBXML_LIBS debug libxml2_d optimized libxml2_o debug iconv_d optimized iconv_o)
   ENDIF(WITH_LIBXMLINC AND DCMTK_WITH_XML)
   # print warning if library is enabled but library path not set
-  IF( (NOT WITH_LIBXMLINC) AND DCMTK_WITH_XML)
-    MESSAGE(STATUS "Warning: libxml2 enabled but not found, check path!")
-  ENDIF( (NOT WITH_LIBXMLINC) AND DCMTK_WITH_XML)
+  IF( NOT WITH_LIBXMLINC AND DCMTK_WITH_XML)
+    MESSAGE(STATUS "Error: libxml2 enabled but not found, check path and re-enable DCMTK_WITH_XML!")
+    SET(DCMTK_WITH_XML OFF CACHE BOOL "" FORCE)
+  ENDIF( NOT WITH_LIBXMLINC AND DCMTK_WITH_XML)
 
   # libpng support: configure compiler
   IF(WITH_LIBPNGINC AND DCMTK_WITH_PNG)
@@ -37,9 +38,10 @@ IF(WIN32)
     SET(LIBPNG_LIBS debug libpng_d optimized libpng_o)
   ENDIF(WITH_LIBPNGINC AND DCMTK_WITH_PNG)
   # turn off library if library path not set
-  IF( (NOT WITH_LIBPNGINC) AND DCMTK_WITH_PNG)
-    MESSAGE(STATUS "Warning: libpng enabled but not found, check path!")
-  ENDIF( (NOT WITH_LIBPNGINC) AND DCMTK_WITH_PNG)
+  IF( NOT WITH_LIBPNGINC AND DCMTK_WITH_PNG)
+    MESSAGE(STATUS "Error: libpng enabled but not found, check path and re-enable DCMTK_WITH_PNG!")
+    SET(DCMTK_WITH_PNG OFF CACHE BOOL "" FORCE)
+  ENDIF( NOT WITH_LIBPNGINC AND DCMTK_WITH_PNG)
 
   # libtiff support: configure compiler
   IF(WITH_LIBTIFFINC AND DCMTK_WITH_TIFF)
@@ -48,9 +50,10 @@ IF(WIN32)
     SET(LIBTIFF_LIBS debug libtiff_d optimized libtiff_o)
   ENDIF(WITH_LIBTIFFINC AND DCMTK_WITH_TIFF)
   # turn off library if library path not set
-  IF( (NOT WITH_LIBTIFFINC) AND DCMTK_WITH_TIFF)
-    MESSAGE(STATUS "Warning: libtiff enabled but not found, check path!")
-  ENDIF( (NOT WITH_LIBTIFFINC) AND DCMTK_WITH_TIFF)
+  IF( NOT WITH_LIBTIFFINC AND DCMTK_WITH_TIFF)
+    MESSAGE(STATUS "Error: libtiff enabled but not found, check path and re-enable DCMTK_WITH_TIFF!")
+    SET(DCMTK_WITH_TIFF OFF CACHE BOOL "" FORCE)
+  ENDIF( NOT WITH_LIBTIFFINC AND DCMTK_WITH_TIFF)
 
   # OpenSSL support: configure compiler
   IF(WITH_OPENSSLINC AND DCMTK_WITH_OPENSSL)
@@ -61,9 +64,10 @@ IF(WIN32)
     SET(WITH_OPENSSL 1)
   ENDIF(WITH_OPENSSLINC AND DCMTK_WITH_OPENSSL)
   # turn off library if library path not set
-  IF( (NOT WITH_OPENSSLINC) AND DCMTK_WITH_OPENSSL)
-    MESSAGE(STATUS "Warning: openssl enabled but not found, check path!")
-  ENDIF( (NOT WITH_OPENSSLINC) AND DCMTK_WITH_OPENSSL)
+  IF( NOT WITH_OPENSSLINC AND DCMTK_WITH_OPENSSL)
+    MESSAGE(STATUS "Error: openssl enabled but not found, check path and re-enable DCMTK_WITH_OPENSSL!")
+    SET(DCMTK_WITH_OPENSSL OFF CACHE BOOL "" FORCE)
+  ENDIF( NOT WITH_OPENSSLINC AND DCMTK_WITH_OPENSSL)
 
   # zlib support: configure compiler
   IF(WITH_ZLIBINC AND DCMTK_WITH_ZLIB)
@@ -73,9 +77,10 @@ IF(WIN32)
     SET(WITH_ZLIB 1)
   ENDIF(WITH_ZLIBINC AND DCMTK_WITH_ZLIB)
   # turn off library if library path not set
-  IF( (NOT WITH_ZLIBINC) AND DCMTK_WITH_ZLIB)
-    MESSAGE(STATUS "Warning: zlib enabled but not found, check path!")
-  ENDIF( (NOT WITH_ZLIBINC) AND DCMTK_WITH_ZLIB)
+  IF( NOT WITH_ZLIBINC AND DCMTK_WITH_ZLIB)
+    MESSAGE(STATUS "Error: zlib enabled but not found, check path and re-enable DCMTK_WITH_ZLIB!")
+    SET(DCMTK_WITH_ZLIB OFF CACHE BOOL "" FORCE)
+  ENDIF( NOT WITH_ZLIBINC AND DCMTK_WITH_ZLIB)
 
   # sndfile support: configure compiler
   IF(WITH_SNDFILEINC AND DCMTK_WITH_SNDFILE)
@@ -85,9 +90,9 @@ IF(WIN32)
     SET(WITH_SNDFILE 1)
   ENDIF(WITH_SNDFILEINC AND DCMTK_WITH_SNDFILE)
   # turn off library if library path not set
-  IF( (NOT WITH_SNDFILEINC) AND DCMTK_WITH_SNDFILE)
+  IF( NOT WITH_SNDFILEINC AND DCMTK_WITH_SNDFILE)
     MESSAGE(STATUS "Warning: libsndfile enabled but not found, check path!")
-  ENDIF( (NOT WITH_SNDFILEINC) AND DCMTK_WITH_SNDFILE)
+  ENDIF( NOT WITH_SNDFILEINC AND DCMTK_WITH_SNDFILE)
 
 ELSE(WIN32)
   # Find TIFF
@@ -97,10 +102,10 @@ ELSE(WIN32)
     SET(LIBTIFF_LIBS ${TIFF_LIBRARY})
     # turn off library if it could not be found
     IF (NOT LIBTIFF_LIBS)
-      MESSAGE(STATUS "Warning: libtiff enabled but not found, check path!")
+      MESSAGE(STATUS "Error: libtiff enabled but not found, check path and re-enable DCMTK_WITH_TIFF!")
+      SET(DCMTK_WITH_TIFF OFF CACHE BOOL "" FORCE)
     ENDIF(NOT LIBTIFF_LIBS)
   ENDIF(DCMTK_WITH_TIFF)
-
 
   # Find PNG
   IF(DCMTK_WITH_PNG)
@@ -108,7 +113,7 @@ ELSE(WIN32)
     INCLUDE_DIRECTORIES(${PNG_INCLUDE_DIR})
     SET(LIBPNG_LIBS ${PNG_LIBRARY})
     IF (NOT LIBPNG_LIBS)
-      MESSAGE(STATUS "Warning: libpng enabled but not found, check path!")
+      MESSAGE(STATUS "Error: libpng enabled but not found, check path and re-enable DCMTK_WITH_PNG!")
     ENDIF(NOT LIBPNG_LIBS)
   ENDIF(DCMTK_WITH_PNG)
 
@@ -118,7 +123,7 @@ ELSE(WIN32)
     INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR})
     SET(OPENSSL_LIBS ${OPENSSL_LIBRARIES})
     IF (NOT OPENSSL_LIBS)
-      MESSAGE(STATUS "Warning: openssl enabled but not found, check path!")
+      MESSAGE(STATUS "Error: openssl enabled but not found, check path and re-enable DCMTK_WITH_OPENSSL!")
     ENDIF(NOT OPENSSL_LIBS)
   ENDIF(DCMTK_WITH_OPENSSL)
 
@@ -128,7 +133,7 @@ ELSE(WIN32)
     INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
     SET(LIBXML_LIBS ${LIBXML2_LIBRARIES})
     IF (NOT LIBXML_LIBS)
-      MESSAGE(STATUS "Warning: libxml2 enabled but not found, check path!")
+      MESSAGE(STATUS "Error: libxml2 enabled but not found, check path and re-enable DCMTK_WITH_XML!")
     ENDIF(NOT LIBXML_LIBS)
   ENDIF(DCMTK_WITH_XML)
 
@@ -138,8 +143,16 @@ ELSE(WIN32)
     INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
     SET(ZLIB_LIBS ${ZLIB_LIBRARIES})
     IF (NOT ZLIB_LIBS)
-      MESSAGE(STATUS "Warning: zlib enabled but not found, check path!")
+      MESSAGE(STATUS "Error: zlib enabled but not found, check path and re-enable DCMTK_WITH_ZLIB!")
     ENDIF(NOT ZLIB_LIBS)
-
   ENDIF(DCMTK_WITH_ZLIB)
 ENDIF(WIN32)
+
+# Find doxygen
+IF (DCMTK_WITH_DOXYGEN)
+  FIND_PACKAGE(Doxygen) # will set variable DOXYGEN_EXECUTABLE
+  IF(NOT DOXYGEN_EXECUTABLE)
+      MESSAGE(STATUS "Error: doxygen enabled but not found, check doxygen installation!")
+      SET(DCMTK_WITH_DOXYGEN OFF CACHE BOOL "" FORCE)
+  ENDIF(NOT DOXYGEN_EXECUTABLE)
+ENDIF(DCMTK_WITH_DOXYGEN)
