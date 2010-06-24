@@ -22,8 +22,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-22 15:45:27 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2010-06-24 09:21:54 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -237,12 +237,10 @@ public:
    */
   virtual OFCondition sendCANCELRequest(Uint16 presContextID);
 
-  /** This function sends a N-ACTION request on the currently opened association and
-   *  receives the corresponding response then
-   *  @param presID         [in]  Contains in the end the ID of the presentation context
-   *                              which was specified in the DIMSE command. If 0 is given,
-   *                              the function tries to find an approriate presentation
-   *                              context itself.
+  /** This function sends a N-ACTION request on the currently opened association and receives
+   *  the corresponding response then
+   *  @param presID         [in]  The ID of the presentation context to be used for sending
+   *                              the request message. Should not be 0.
    *  @param sopInstanceUID [in]  The requested SOP Instance UID
    *  @param actionTypeID   [in]  The action type ID to be used
    *  @param reqDataset     [in]  The dataset to be sent
@@ -494,7 +492,7 @@ protected:
     *  @param transferSyntax [out] The transfer syntax (UID) for that ID.
     *                              Empty, if such a presentation context does not exist.
     */
-  void findPresentationContext(const Uint16 presID,
+  void findPresentationContext(const T_ASC_PresentationContextID presID,
                                OFString &abstractSyntax,
                                OFString &transferSyntax);
 
@@ -597,6 +595,10 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.11  2010-06-24 09:21:54  joergr
+** Revised comment to make clear that the parameter "presID" shall never be 0
+** for the sendACTIONRequest() method.
+**
 ** Revision 1.10  2010-06-22 15:45:27  joergr
 ** Introduced new enumeration type to be used for closeAssociation().
 ** Further code cleanup. Renamed some methods, variables, types and so on.
