@@ -22,8 +22,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-22 15:48:53 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2010-06-24 09:26:57 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -361,7 +361,7 @@ T_ASC_PresentationContextID DcmSCU::findPresentationContextID(const OFString &ab
 }
 
 
-void DcmSCU::findPresentationContext(const Uint16 presID,
+void DcmSCU::findPresentationContext(const T_ASC_PresentationContextID presID,
                                      OFString &abstractSyntax,
                                      OFString &transferSyntax)
 {
@@ -471,25 +471,21 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
     return DIMSE_ILLEGALASSOCIATION;
 
   OFCondition cond;
-  Uint16 pcid = presID;
+  T_ASC_PresentationContextID pcid = presID;
 
   /* If necessary, find appropriate presentation context */
   if (pcid == 0)
     pcid = findPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianExplicitTransferSyntax);
   if (pcid == 0)
-  {
     pcid = findPresentationContextID(UID_VerificationSOPClass, UID_BigEndianExplicitTransferSyntax);
-  }
   if (pcid == 0)
-  {
     pcid = findPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax);
-  }
   if (pcid == 0)
   {
     DCMNET_ERROR("No presentation context found for sending C-ECHO with SOP Class / Transfer Syntax: "
       << dcmFindNameOfUID(UID_VerificationSOPClass) << "/"
       << DcmXfer(UID_LittleEndianImplicitTransferSyntax).getXferName());
-    return EC_IllegalCall; // TODO: need to find better error code
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
 
   /* Now, assemble dimse message */
@@ -530,7 +526,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
 
   OFCondition cond;
   OFString tempStr;
-  Uint8 pcid = presID;
+  T_ASC_PresentationContextID pcid = presID;
   DcmDataset* statusDetail = NULL;
   T_DIMSE_Message msg;
   T_DIMSE_C_StoreRQ* req = &(msg.msg.CStoreRQ);
@@ -580,7 +576,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     DCMNET_ERROR("No presentation context found for sending C-STORE with SOP Class / Transfer Syntax: "
       << (sopname.empty() ? sopClass : sopname) << "/"
       << (tsname.empty() ? DcmXfer(transferSyntax).getXferName() : tsname));
-    return EC_IllegalCall; // TODO: need to find better error code
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
 
   /* Send request */
@@ -601,7 +597,10 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   T_DIMSE_Message rsp;
   cond = receiveDIMSECommand(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
   if (cond.bad())
+  {
+    DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, cond));
     return cond;
+  }
 
   if (rsp.CommandField == DIMSE_C_STORE_RSP)
   {
@@ -640,7 +639,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
   /* Prepare DIMSE data structures for issuing request */
   OFCondition cond;
   OFString tempStr;
-  Uint8 pcid = presID;
+  T_ASC_PresentationContextID pcid = presID;
   T_DIMSE_Message msg;
   DcmDataset* statusDetail = NULL;
   T_DIMSE_C_FindRQ* req = &(msg.msg.CFindRQ);
@@ -655,7 +654,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
   OFString abstractSyntax, transferSyntax;
   findPresentationContext(pcid, abstractSyntax, transferSyntax);
   if (abstractSyntax.empty() || transferSyntax.empty())
-    return EC_IllegalCall; // TODO: need to find better error code
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   OFStandard::strlcpy(req->AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(req->AffectedSOPClassUID));
 
   DCMNET_INFO("Send C-FIND Request");
@@ -677,7 +676,10 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     // Receive command set
     cond = receiveDIMSECommand(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
     if (cond.bad())
+    {
+      DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, cond));
       return cond;
+    }
 
     if (rsp.CommandField == DIMSE_C_FIND_RSP)
     {
@@ -714,12 +716,12 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
       cond = receiveDIMSEDataset(&pcid, &rspDataset, NULL /* callback */, NULL /* callbackContext */);
       if (cond.bad())
       {
-        DCMNET_ERROR("Unable to receive C-FIND dataset on presentation context " << pcid << ": "
-            << DimseCondition::dump(tempStr, cond));
+        DCMNET_ERROR("Unable to receive C-FIND dataset on presentation context "
+          << OFstatic_cast(unsigned int, pcid) << ": " << DimseCondition::dump(tempStr, cond));
         delete findrsp;
         return DIMSE_BADDATA;
       }
-      DCMNET_DEBUG("Received dataset on presentation context " << pcid);
+      DCMNET_DEBUG("Received dataset on presentation context " << OFstatic_cast(unsigned int, pcid));
       findrsp->m_dataset = rspDataset;
     }
 
@@ -797,7 +799,7 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
   // Prepare DIMSE data structures for issuing request
   OFCondition cond;
   OFString tempStr;
-  Uint8 pcid = presID;
+  T_ASC_PresentationContextID pcid = presID;
   T_DIMSE_Message request;
   T_DIMSE_N_ActionRQ &actionReq = request.msg.NActionRQ;
   DcmDataset *statusDetail = NULL;
@@ -811,7 +813,7 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
   OFString abstractSyntax, transferSyntax;
   findPresentationContext(pcid, abstractSyntax, transferSyntax);
   if (abstractSyntax.empty() || transferSyntax.empty())
-    return EC_IllegalCall; // TODO: need to find better error code
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   OFStandard::strlcpy(actionReq.RequestedSOPClassUID, abstractSyntax.c_str(), sizeof(actionReq.RequestedSOPClassUID));
   OFStandard::strlcpy(actionReq.RequestedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(actionReq.RequestedSOPInstanceUID));
 
@@ -835,7 +837,6 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
   if (cond.bad())
   {
     DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, cond));
-    delete statusDetail;
     return cond;
   }
 
@@ -876,7 +877,6 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
     } else {
       DCMNET_ERROR("Failed receiving unexpected dataset after N-ACTION response: "
         << DimseCondition::dump(tempStr, cond));
-      delete tempDataset;
       return DIMSE_BADDATA;
     }
   }
@@ -903,6 +903,7 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
   OFCondition cond;
   OFString tempStr;
   T_ASC_PresentationContextID presID;
+  T_ASC_PresentationContextID presIDdset;
   T_DIMSE_Message request;
   T_DIMSE_N_EventReportRQ &eventReportReq = request.msg.NEventReportRQ;
   DcmDataset *dataset = NULL;
@@ -922,7 +923,6 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
   {
     if (cond != DIMSE_NODATAAVAILABLE)
       DCMNET_ERROR("Failed receiving DIMSE request: " << DimseCondition::dump(tempStr, cond));
-    delete statusDetail;
     return cond;
   }
 
@@ -952,12 +952,13 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
     return DIMSE_BADMESSAGE;
   }
 
-  // Receive dataset; TODO: do we need to compare presentation context ID of command and dataset?
-  cond = receiveDIMSEDataset(&presID, &dataset, NULL /* callback */, NULL /* callbackContext */);
+  // Receive dataset
+  cond = receiveDIMSEDataset(&presIDdset, &dataset, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, NULL, presID));
-    DCMNET_ERROR("Unable to receive N-EVENT-REPORT dataset on presentation context " << presID);
+    DCMNET_ERROR("Unable to receive N-EVENT-REPORT dataset on presentation context "
+      << OFstatic_cast(unsigned int, presID));
     return DIMSE_BADDATA;
   }
 
@@ -966,6 +967,16 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, dataset, presID));
   else
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, NULL, presID));
+
+  // Compare presentation context ID of command and data set
+  if (presIDdset != presID)
+  {
+    DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID)
+      << ") and data set (" << OFstatic_cast(unsigned int, presIDdset) << ") differs");
+    delete dataset;
+    return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error,
+      "DIMSE: Presentation Contexts of Command and Data Set differ");
+  }
 
   // Check the request dataset and return the DIMSE status code to be used
   statusCode = checkEVENTREPORTRequest(eventReportReq, dataset);
@@ -987,6 +998,7 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending N-EVENT-REPORT response: " << DimseCondition::dump(tempStr, cond));
+    delete dataset;
     return cond;
   }
 
@@ -1302,6 +1314,11 @@ FINDResponse::~FINDResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.11  2010-06-24 09:26:57  joergr
+** Added check on whether the presentation context ID of command and data set are
+** identical. Made sure that received dataset is deleted when an error occurs.
+** Used more appropriate error conditions / return codes. Further code cleanup.
+**
 ** Revision 1.10  2010-06-22 15:48:53  joergr
 ** Introduced new enumeration type to be used for closeAssociation().
 ** Further code cleanup. Renamed some methods, variables, types and so on.

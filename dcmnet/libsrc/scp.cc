@@ -22,8 +22,8 @@
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-22 15:48:33 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2010-06-24 09:26:56 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -353,6 +353,8 @@ void DcmSCP::refuseAssociation(DcmRefuseReasonType reason)
       break;
     case DCMSCP_FORCED:
     case DCMSCP_NO_IMPLEMENTATION_CLASS_UID:
+    case DCMSCP_NO_PRESENTATION_CONTEXTS:
+    case DCMSCP_INTERNAL_ERROR:
     default:
       rej.result = ASC_RESULT_REJECTEDPERMANENT;
       rej.source = ASC_SOURCE_SERVICEUSER;
@@ -473,7 +475,7 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network *network)
     {
       dropAndDestroyAssociation();
     }
-    return EC_Normal ;
+    return EC_Normal;
   }
 
   /* set our application entity title */
@@ -732,6 +734,7 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
 
   OFCondition cond;
   OFString tempStr;
+  T_ASC_PresentationContextID presIDdset;
   DcmDataset *dataset = NULL;
 //  DcmDataset *statusDetail = NULL; // TODO: do we need this and if so, how do we get it?
   Uint16 statusCode = 0;
@@ -747,12 +750,12 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
     return DIMSE_BADMESSAGE;
   }
 
-  // Receive dataset; TODO: do we need to compare presentation context ID of command and dataset?
-  cond = receiveDIMSEDataset(&presID, &dataset, NULL /* callback */, NULL /* callbackContext */);
+  // Receive dataset
+  cond = receiveDIMSEDataset(&presIDdset, &dataset, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
-    DCMNET_ERROR("Unable to receive N-EVENT-REPORT dataset on presentation context " << presID);
+    DCMNET_ERROR("Unable to receive N-EVENT-REPORT dataset on presentation context " << OFstatic_cast(unsigned int, presID));
     return DIMSE_BADDATA;
   }
 
@@ -761,6 +764,16 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, dataset, presID));
   else
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+
+  // Compare presentation context ID of command and data set
+  if (presIDdset != presID)
+  {
+    DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID)
+      << ") and data set (" << OFstatic_cast(unsigned int, presIDdset) << ") differs");
+    delete dataset;
+    return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error,
+      "DIMSE: Presentation Contexts of Command and Data Set differ");
+  }
 
   // Check the request dataset and return the DIMSE status code to be used
   statusCode = checkEVENTREPORTRequest(reqMessage, dataset);
@@ -782,6 +795,7 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending N-EVENT-REPORT response: " << DimseCondition::dump(tempStr, cond));
+    delete dataset;
     return cond;
   }
 
@@ -874,7 +888,7 @@ void DcmSCP::addProcessToTable(int pid)
   DcmProcessSlotType *ps;
 
   // Allocate some memory for a new item in the list of processes.
-  ps = new DcmProcessSlotType ();
+  ps = new DcmProcessSlotType();
 
   // Remember process information in the new item.
   ASC_getPresentationAddresses( m_assoc->params, ps->peerName, NULL );
@@ -1193,14 +1207,14 @@ T_DIMSE_BlockingMode DcmSCP::getDIMSEBlockingMode() const
 
 // ----------------------------------------------------------------------------
 
-Uint32 DcmSCP::getDIMSETimeout () const
+Uint32 DcmSCP::getDIMSETimeout() const
 {
   return m_dimseTimeout;
 }
 
 // ----------------------------------------------------------------------------
 
-Uint32 DcmSCP::getACSETimeout () const
+Uint32 DcmSCP::getACSETimeout() const
 {
   return m_acseTimeout;
 }
@@ -1470,6 +1484,11 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.10  2010-06-24 09:26:56  joergr
+** Added check on whether the presentation context ID of command and data set are
+** identical. Made sure that received dataset is deleted when an error occurs.
+** Used more appropriate error conditions / return codes. Further code cleanup.
+**
 ** Revision 1.9  2010-06-22 15:48:33  joergr
 ** Added support for handling N-EVENT-REPORT request.
 ** Added support for stopping after the current association is finished.

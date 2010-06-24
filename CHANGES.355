@@ -7,6 +7,12 @@ Changes between releases are documented here.
   for the sendACTIONRequest() method.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
 
+- Added check on whether the presentation context ID of command and data set are
+  identical. Made sure that received dataset is deleted when an error occurs.
+  Used more appropriate error conditions / return codes. Further code cleanup.
+  Affects: dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+
 **** Changes from 2010.06.23 (onken)
 
 - Added building of doxygen and manpage documentation for cmake under unix.
