@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2010.06.25 (schlachter)
 
+- Correctly check for std::vsnprintf and std::vfprintf.
+  The old check always suceeded.
+  Affects: config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/cfunix.h.in
+
 - Don't allow OFString(NULL) because it is also forbidden for std::string.
   Affects: ofstd/libsrc/ofstring.cc
 

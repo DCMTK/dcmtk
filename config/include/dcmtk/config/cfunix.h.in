@@ -83,6 +83,12 @@
 /* define if the compiler supports const_cast<> */
 #undef HAVE_CONST_CAST
 
+/* Define to 1 if you have the <cstdarg> header file. */
+#undef HAVE_CSTDARG
+
+/* Define to 1 if you have the <cstdio> header file. */
+#undef HAVE_CSTDIO
+
 /* Define to 1 if you have the <ctype.h> header file. */
 #undef HAVE_CTYPE_H
 
@@ -502,10 +508,12 @@ typedef unsigned short ushort;
    sys/socket.h */
 #undef HAVE_PROTOTYPE_SOCKET
 
-/* Define if your system has a prototype for std::vfprintf in stdarg.h */
+/* Define if your system has a prototype for std::vfprintf in stdarg.h stdio.h
+   */
 #undef HAVE_PROTOTYPE_STD__VFPRINTF
 
-/* Define if your system has a prototype for std::vsnprintf in stdarg.h */
+/* Define if your system has a prototype for std::vsnprintf in stdarg.h
+   stdio.h */
 #undef HAVE_PROTOTYPE_STD__VSNPRINTF
 
 /* Define if your system has a prototype for strcasecmp in string.h */

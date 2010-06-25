@@ -5,8 +5,8 @@ dnl Purpose: additional M4 macros for GNU autoconf
 dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
-dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.42 $
+dnl Last Update:  $Author: uli $
+dnl Revision:     $Revision: 1.43 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -102,6 +102,46 @@ changequote([, ])dnl
 else
   AC_MSG_RESULT(no)
 ifelse([$4], , , [$4
+])dnl
+fi
+])
+
+dnl AC_CHECK_COMPILES verifies that the given code fragment can be compiled.
+dnl   It is assumed that successfully compiling means that the specified
+dnl   function is available. If header file(s) are given as argument 2, they
+dnl   #included in the search. Otherwise only predefined functions will be
+dnl   available. The header files are only included in the search if they have
+dnl   already been found using the AC_CHECK_HEADERS(header) macro.
+
+dnl AC_CHECK_COMPILES(FUNCTION, HEADER-FILE..., CODE, ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
+AC_DEFUN(AC_CHECK_COMPILES,
+[AC_MSG_CHECKING([ifelse([$2], , [for $1], [for $1 (in $2)])])
+AH_TEMPLATE(AS_TR_CPP(HAVE_PROTOTYPE_$1), [Define if your system has a prototype for $1 in $2])
+ifelse([$2], , [ac_includes=""
+],
+[ac_includes=""
+for ac_header in $2
+do
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes
+#include<$ac_header>"
+  fi
+done])
+tmp_save_1=`echo $1 | tr ' :' '__'`
+AC_CACHE_VAL(ac_cv_compiles_$tmp_save_1,
+[AC_TRY_COMPILE([$ac_includes], [$3],
+eval "ac_cv_compiles_$tmp_save_1=yes", eval "ac_cv_compiles_$tmp_save_1=no")])dnl
+if eval "test \"`echo '$''{'ac_cv_compiles_$tmp_save_1'}'`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED([$ac_tr_prototype])
+  ifelse([$4], , :, [$4])
+else
+  AC_MSG_RESULT(no)
+ifelse([$5], , , [$5
 ])dnl
 fi
 ])
@@ -1707,6 +1747,10 @@ fi
 
 dnl
 dnl $Log: aclocal.m4,v $
+dnl Revision 1.43  2010-06-25 11:35:58  uli
+dnl Correctly check for std::vsnprintf and std::vfprintf.
+dnl The old check always suceeded.
+dnl
 dnl Revision 1.42  2009-08-06 12:58:09  meichel
 dnl Added configure test that checks for a std::nothrow version of operator delete.
 dnl   VC6 has a std::nothrow version of operator new, but not of operator delete.

@@ -16359,6 +16359,151 @@ fi
 done
 
 
+for ac_header in cstdarg
+do
+as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  { echo "$as_me:$LINENO: checking for $ac_header" >&5
+echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+fi
+ac_res=`eval echo '${'$as_ac_Header'}'`
+	       { echo "$as_me:$LINENO: result: $ac_res" >&5
+echo "${ECHO_T}$ac_res" >&6; }
+else
+  # Is the header compilable?
+{ echo "$as_me:$LINENO: checking $ac_header usability" >&5
+echo $ECHO_N "checking $ac_header usability... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <$ac_header>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_header_compiler=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+echo "${ECHO_T}$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ echo "$as_me:$LINENO: checking $ac_header presence" >&5
+echo $ECHO_N "checking $ac_header presence... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <$ac_header>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+echo "${ECHO_T}$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_cxx_preproc_warn_flag in
+  yes:no: )
+    { echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
+echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
+echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
+echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
+echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
+echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
+echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
+echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
+    ( cat <<\_ASBOX
+## ---------------------------------- ##
+## Report this to dicom-bugs@offis.de ##
+## ---------------------------------- ##
+_ASBOX
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+{ echo "$as_me:$LINENO: checking for $ac_header" >&5
+echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  eval "$as_ac_Header=\$ac_header_preproc"
+fi
+ac_res=`eval echo '${'$as_ac_Header'}'`
+	       { echo "$as_me:$LINENO: result: $ac_res" >&5
+echo "${ECHO_T}$ac_res" >&6; }
+
+fi
+if test `eval echo '${'$as_ac_Header'}'` = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+
 for ac_header in stdarg.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
@@ -16505,6 +16650,151 @@ done
 
 
 for ac_header in stddef.h
+do
+as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  { echo "$as_me:$LINENO: checking for $ac_header" >&5
+echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+fi
+ac_res=`eval echo '${'$as_ac_Header'}'`
+	       { echo "$as_me:$LINENO: result: $ac_res" >&5
+echo "${ECHO_T}$ac_res" >&6; }
+else
+  # Is the header compilable?
+{ echo "$as_me:$LINENO: checking $ac_header usability" >&5
+echo $ECHO_N "checking $ac_header usability... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <$ac_header>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_header_compiler=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+echo "${ECHO_T}$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ echo "$as_me:$LINENO: checking $ac_header presence" >&5
+echo $ECHO_N "checking $ac_header presence... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <$ac_header>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+echo "${ECHO_T}$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_cxx_preproc_warn_flag in
+  yes:no: )
+    { echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
+echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
+echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
+echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
+echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
+echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
+echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
+echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
+    ( cat <<\_ASBOX
+## ---------------------------------- ##
+## Report this to dicom-bugs@offis.de ##
+## ---------------------------------- ##
+_ASBOX
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+{ echo "$as_me:$LINENO: checking for $ac_header" >&5
+echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  eval "$as_ac_Header=\$ac_header_preproc"
+fi
+ac_res=`eval echo '${'$as_ac_Header'}'`
+	       { echo "$as_me:$LINENO: result: $ac_res" >&5
+echo "${ECHO_T}$ac_res" >&6; }
+
+fi
+if test `eval echo '${'$as_ac_Header'}'` = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+
+for ac_header in cstdio
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
@@ -28257,7 +28547,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 28260 "configure"
+#line 28550 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -28467,14 +28757,12 @@ echo "${ECHO_T}no" >&6; }
 fi
 unset ac_cv_declaration
 
-   { echo "$as_me:$LINENO: checking prototype for std::vfprintf (in cstdarg)" >&5
-echo $ECHO_N "checking prototype for std::vfprintf (in cstdarg)... $ECHO_C" >&6; }
+   { echo "$as_me:$LINENO: checking for std::vfprintf (in cstdarg cstdio)" >&5
+echo $ECHO_N "checking for std::vfprintf (in cstdarg cstdio)... $ECHO_C" >&6; }
 
-
-:
 
 ac_includes=""
-for ac_header in cstdarg
+for ac_header in cstdarg cstdio
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
@@ -28483,7 +28771,7 @@ do
   fi
 done
 tmp_save_1=`echo std::vfprintf | tr ' :' '__'`
-if { as_var=ac_cv_prototype_$tmp_save_1; eval "test \"\${$as_var+set}\" = set"; }; then
+if { as_var=ac_cv_compiles_$tmp_save_1; eval "test \"\${$as_var+set}\" = set"; }; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -28492,24 +28780,11 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
 $ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct std::vfprintf(dummyStruct);
-
-
 int
 main ()
 {
-
+FILE *stream; va_list ap; std::vfprintf(stream, "", ap);
   ;
   return 0;
 }
@@ -28531,17 +28806,17 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
 	 test -z "$ac_cxx_werror_flag" ||
 	 test ! -s conftest.err
        } && test -s conftest.$ac_objext; then
-  eval "ac_cv_prototype_$tmp_save_1=no"
+  eval "ac_cv_compiles_$tmp_save_1=yes"
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "ac_cv_prototype_$tmp_save_1=yes"
+	eval "ac_cv_compiles_$tmp_save_1=no"
 fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_compiles_$tmp_save_1'}'`\" = yes"; then
   { echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6; }
   ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
@@ -28555,14 +28830,12 @@ else
 echo "${ECHO_T}no" >&6; }
 fi
 
-   { echo "$as_me:$LINENO: checking prototype for std::vsnprintf (in cstdarg)" >&5
-echo $ECHO_N "checking prototype for std::vsnprintf (in cstdarg)... $ECHO_C" >&6; }
+   { echo "$as_me:$LINENO: checking for std::vsnprintf (in cstdarg cstdio)" >&5
+echo $ECHO_N "checking for std::vsnprintf (in cstdarg cstdio)... $ECHO_C" >&6; }
 
-
-:
 
 ac_includes=""
-for ac_header in cstdarg
+for ac_header in cstdarg cstdio
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
@@ -28571,7 +28844,7 @@ do
   fi
 done
 tmp_save_1=`echo std::vsnprintf | tr ' :' '__'`
-if { as_var=ac_cv_prototype_$tmp_save_1; eval "test \"\${$as_var+set}\" = set"; }; then
+if { as_var=ac_cv_compiles_$tmp_save_1; eval "test \"\${$as_var+set}\" = set"; }; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -28580,24 +28853,11 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
 $ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct std::vsnprintf(dummyStruct);
-
-
 int
 main ()
 {
-
+char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);
   ;
   return 0;
 }
@@ -28619,17 +28879,17 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
 	 test -z "$ac_cxx_werror_flag" ||
 	 test ! -s conftest.err
        } && test -s conftest.$ac_objext; then
-  eval "ac_cv_prototype_$tmp_save_1=no"
+  eval "ac_cv_compiles_$tmp_save_1=yes"
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "ac_cv_prototype_$tmp_save_1=yes"
+	eval "ac_cv_compiles_$tmp_save_1=no"
 fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_compiles_$tmp_save_1'}'`\" = yes"; then
   { echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6; }
   ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
@@ -28803,14 +29063,12 @@ echo "${ECHO_T}no" >&6; }
 fi
 unset ac_cv_declaration
 
-   { echo "$as_me:$LINENO: checking prototype for std::vfprintf (in stdarg.h)" >&5
-echo $ECHO_N "checking prototype for std::vfprintf (in stdarg.h)... $ECHO_C" >&6; }
+   { echo "$as_me:$LINENO: checking for std::vfprintf (in stdarg.h stdio.h)" >&5
+echo $ECHO_N "checking for std::vfprintf (in stdarg.h stdio.h)... $ECHO_C" >&6; }
 
-
-:
 
 ac_includes=""
-for ac_header in stdarg.h
+for ac_header in stdarg.h stdio.h
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
@@ -28819,7 +29077,7 @@ do
   fi
 done
 tmp_save_1=`echo std::vfprintf | tr ' :' '__'`
-if { as_var=ac_cv_prototype_$tmp_save_1; eval "test \"\${$as_var+set}\" = set"; }; then
+if { as_var=ac_cv_compiles_$tmp_save_1; eval "test \"\${$as_var+set}\" = set"; }; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -28828,24 +29086,11 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
 $ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct std::vfprintf(dummyStruct);
-
-
 int
 main ()
 {
-
+FILE *stream; va_list ap; std::vfprintf(stream, "", ap);
   ;
   return 0;
 }
@@ -28867,17 +29112,17 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
 	 test -z "$ac_cxx_werror_flag" ||
 	 test ! -s conftest.err
        } && test -s conftest.$ac_objext; then
-  eval "ac_cv_prototype_$tmp_save_1=no"
+  eval "ac_cv_compiles_$tmp_save_1=yes"
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "ac_cv_prototype_$tmp_save_1=yes"
+	eval "ac_cv_compiles_$tmp_save_1=no"
 fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_compiles_$tmp_save_1'}'`\" = yes"; then
   { echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6; }
   ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
@@ -28891,14 +29136,12 @@ else
 echo "${ECHO_T}no" >&6; }
 fi
 
-   { echo "$as_me:$LINENO: checking prototype for std::vsnprintf (in stdarg.h)" >&5
-echo $ECHO_N "checking prototype for std::vsnprintf (in stdarg.h)... $ECHO_C" >&6; }
+   { echo "$as_me:$LINENO: checking for std::vsnprintf (in stdarg.h stdio.h)" >&5
+echo $ECHO_N "checking for std::vsnprintf (in stdarg.h stdio.h)... $ECHO_C" >&6; }
 
-
-:
 
 ac_includes=""
-for ac_header in stdarg.h
+for ac_header in stdarg.h stdio.h
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
@@ -28907,7 +29150,7 @@ do
   fi
 done
 tmp_save_1=`echo std::vsnprintf | tr ' :' '__'`
-if { as_var=ac_cv_prototype_$tmp_save_1; eval "test \"\${$as_var+set}\" = set"; }; then
+if { as_var=ac_cv_compiles_$tmp_save_1; eval "test \"\${$as_var+set}\" = set"; }; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -28916,24 +29159,11 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
 $ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct std::vsnprintf(dummyStruct);
-
-
 int
 main ()
 {
-
+char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);
   ;
   return 0;
 }
@@ -28955,17 +29185,17 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
 	 test -z "$ac_cxx_werror_flag" ||
 	 test ! -s conftest.err
        } && test -s conftest.$ac_objext; then
-  eval "ac_cv_prototype_$tmp_save_1=no"
+  eval "ac_cv_compiles_$tmp_save_1=yes"
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "ac_cv_prototype_$tmp_save_1=yes"
+	eval "ac_cv_compiles_$tmp_save_1=no"
 fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_compiles_$tmp_save_1'}'`\" = yes"; then
   { echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6; }
   ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
@@ -28990,7 +29220,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 28993 "configure"
+#line 29223 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -29063,7 +29293,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 29066 "configure"
+#line 29296 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -29136,7 +29366,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 29139 "configure"
+#line 29369 "configure"
 #include "confdefs.h"
 
 template <class T>

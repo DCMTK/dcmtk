@@ -473,8 +473,10 @@ AC_CHECK_HEADERS(signal.h)
 AC_CHECK_HEADERS(sstream)
 AC_CHECK_HEADERS(sstream.h)
 AC_CHECK_HEADERS(stat.h)
+AC_CHECK_HEADERS(cstdarg)
 AC_CHECK_HEADERS(stdarg.h)
 AC_CHECK_HEADERS(stddef.h)
+AC_CHECK_HEADERS(cstdio)
 AC_CHECK_HEADERS(stdio.h)
 AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS(stdlib.h)
@@ -815,13 +817,17 @@ if test "$ac_use_std_includes" = "yes"; then
    AC_CHECK_STD_NAMESPACE
    AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream)
    AC_CHECK_IOS_NOCREATE(std::ios, fstream)
-   AC_CHECK_PROTOTYPE(std::vfprintf, cstdarg)
-   AC_CHECK_PROTOTYPE(std::vsnprintf, cstdarg)
+   AC_CHECK_COMPILES(std::vfprintf, cstdarg cstdio,
+     [FILE *stream; va_list ap; std::vfprintf(stream, "", ap);])
+   AC_CHECK_COMPILES(std::vsnprintf, cstdarg cstdio,
+     [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
 else
    AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream.h)
    AC_CHECK_IOS_NOCREATE(ios, fstream.h)
-   AC_CHECK_PROTOTYPE(std::vfprintf, stdarg.h)
-   AC_CHECK_PROTOTYPE(std::vsnprintf, stdarg.h)
+   AC_CHECK_COMPILES(std::vfprintf, stdarg.h stdio.h,
+     [FILE *stream; va_list ap; std::vfprintf(stream, "", ap);])
+   AC_CHECK_COMPILES(std::vsnprintf, stdarg.h stdio.h,
+     [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
 fi
 
 AC_CHECK_CLASS_TEMPLATE
