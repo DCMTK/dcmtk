@@ -22,8 +22,8 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:47 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2010-06-25 09:15:19 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 #include "dcmtk/ofstd/ofstream.h"
 
 #define INCLUDE_CMATH
+#define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
@@ -444,6 +445,9 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
+ * Revision 1.37  2010-06-25 09:15:19  uli
+ * Fixed issues with compiling with HAVE_STD_STRING.
+ *
  * Revision 1.36  2010-03-01 09:08:47  uli
  * Removed some unnecessary include directives in the headers.
  *

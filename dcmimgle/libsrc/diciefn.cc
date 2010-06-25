@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomCIELABFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:11:03 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-06-25 09:15:19 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "dcmtk/ofstd/ofstream.h"
 
 #define INCLUDE_CMATH
+#define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
@@ -255,6 +256,9 @@ int DiCIELABFunction::writeCurveData(const char *filename,
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
+ * Revision 1.26  2010-06-25 09:15:19  uli
+ * Fixed issues with compiling with HAVE_STD_STRING.
+ *
  * Revision 1.25  2009-11-25 16:11:03  joergr
  * Removed inclusion of header file "ofconsol.h".
  *

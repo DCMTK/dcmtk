@@ -22,9 +22,9 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 8 bits/sample. 
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:48 $
+ *  Update Date:      $Date: 2010-06-25 09:15:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg8.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSETJMP
+#define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
 // These two macros are re-defined in the IJG header files.
@@ -576,6 +577,9 @@ void DJCompressIJG8Bit::emitMessage(void *arg, int msg_level) const
 /*
  * CVS/RCS Log
  * $Log: djeijg8.cc,v $
+ * Revision 1.14  2010-06-25 09:15:19  uli
+ * Fixed issues with compiling with HAVE_STD_STRING.
+ *
  * Revision 1.13  2010-03-01 09:08:48  uli
  * Removed some unnecessary include directives in the headers.
  *

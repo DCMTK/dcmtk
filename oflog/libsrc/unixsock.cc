@@ -50,6 +50,8 @@
 #endif
 
 #define INCLUDE_CERRNO
+#define INCLUDE_CSTRING
+#define INCLUDE_CSTDLIB
 //#include <unistd.h>
 #include "dcmtk/ofstd/ofstdinc.h"
 

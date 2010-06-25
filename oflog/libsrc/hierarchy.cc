@@ -24,6 +24,9 @@
 #include "dcmtk/oflog/spi/rootlog.h"
 //#include <utility>
 
+#define INCLUDE_CSTDLIB
+#include "dcmtk/ofstd/ofstdinc.h"
+
 using namespace log4cplus;
 using namespace log4cplus::helpers;
 

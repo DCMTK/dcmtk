@@ -21,10 +21,10 @@
  *
  *  Purpose: decompression routines of the IJG JPEG library configured for 12 bits/sample.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-24 14:57:40 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-06-25 09:15:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg12.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSETJMP
+#define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
 // These two macros are re-defined in the IJG header files.
@@ -487,6 +488,9 @@ void DJDecompressIJG12Bit::emitMessage(int msg_level) const
 /*
  * CVS/RCS Log
  * $Log: djdijg12.cc,v $
+ * Revision 1.20  2010-06-25 09:15:19  uli
+ * Fixed issues with compiling with HAVE_STD_STRING.
+ *
  * Revision 1.19  2010-03-24 14:57:40  joergr
  * Added new options for the color space conversion during decompression based
  * on the color model that is "guessed" by the underlying JPEG library (IJG).

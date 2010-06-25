@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveConfig
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:42 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2010-06-25 09:15:19 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #define INCLUDE_CSTDIO
 #define INCLUDE_CCTYPE
 #define INCLUDE_CSTDARG
+#define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofcmdln.h"
 
@@ -1056,6 +1057,9 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
+ * Revision 1.9  2010-06-25 09:15:19  uli
+ * Fixed issues with compiling with HAVE_STD_STRING.
+ *
  * Revision 1.8  2009-11-24 10:10:42  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

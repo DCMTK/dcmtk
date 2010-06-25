@@ -28,6 +28,7 @@
 //#include <cassert>
 #define INCLUDE_CASSERT
 #define INCLUDE_CTIME
+#define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #if defined(LOG4CPLUS_HAVE_FTIME)

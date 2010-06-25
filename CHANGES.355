@@ -1,6 +1,29 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.25 (schlachter)
+
+- Fixed issues with compiling with HAVE_STD_STRING.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdicent.h
+           dcmdata/libsrc/dctagkey.cc
+           dcmimgle/apps/dcod2lum.cc
+           dcmimgle/libsrc/diciefn.cc
+           dcmimgle/libsrc/digsdfn.cc
+           dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+           dcmjpeg/libsrc/djeijg12.cc
+           dcmjpeg/libsrc/djeijg16.cc
+           dcmjpeg/libsrc/djeijg8.cc
+           dcmnet/libsrc/dccfuidh.cc
+           dcmqrdb/libsrc/dcmqrcnf.cc
+           dcmsign/libsrc/siprivat.cc
+           oflog/libsrc/hierarchy.cc
+           oflog/libsrc/socketap.cc
+           oflog/libsrc/threads.cc
+           oflog/libsrc/timehelp.cc
+           oflog/libsrc/unixsock.cc
+
 **** Changes from 2010.06.24 (riesmeier)
 
 - Revised comment to make clear that the parameter "presID" shall never be 0

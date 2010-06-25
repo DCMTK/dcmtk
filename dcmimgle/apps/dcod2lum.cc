@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: convert hardcopy characteristic curve file to softcopy format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:09 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-06-25 09:15:19 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CCTYPE
+#define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/ofstd/ofstream.h"
@@ -188,6 +189,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcod2lum.cc,v $
+ * Revision 1.8  2010-06-25 09:15:19  uli
+ * Fixed issues with compiling with HAVE_STD_STRING.
+ *
  * Revision 1.7  2006-08-15 16:30:09  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.

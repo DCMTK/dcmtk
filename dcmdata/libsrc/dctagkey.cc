@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  Update Date:      $Date: 2010-06-25 09:15:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctagkey.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "dcmtk/dcmdata/dctagkey.h"
 
 #define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
 /*
@@ -95,6 +96,9 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k)
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.cc,v $
+** Revision 1.15  2010-06-25 09:15:19  uli
+** Fixed issues with compiling with HAVE_STD_STRING.
+**
 ** Revision 1.14  2009-11-04 09:58:10  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

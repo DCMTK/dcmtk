@@ -25,6 +25,8 @@
 #include "dcmtk/oflog/spi/logevent.h"
 #include "dcmtk/oflog/helpers/sleep.h"
 
+#define INCLUDE_CSTDLIB
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #define LOG4CPLUS_MESSAGE_VERSION 2
 

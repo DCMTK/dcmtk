@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: SiPrivateKey
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:27 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-06-25 09:15:19 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,9 @@
 #include "dcmtk/dcmsign/sirsa.h"
 #include "dcmtk/dcmsign/sidsa.h"
 #include "dcmtk/dcmsign/sicert.h"
+
+#define INCLUDE_CSTRING
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #include <openssl/evp.h>
@@ -192,6 +195,9 @@ int siprivat_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: siprivat.cc,v $
+ *  Revision 1.7  2010-06-25 09:15:19  uli
+ *  Fixed issues with compiling with HAVE_STD_STRING.
+ *
  *  Revision 1.6  2005-12-08 15:47:27  meichel
  *  Changed include path schema for all DCMTK header files
  *

@@ -22,9 +22,9 @@
  *  Purpose: Interface for a dictionary entry in the loadable DICOM data dictionary
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:44 $
+ *  Update Date:      $Date: 2010-06-25 09:15:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcdicent.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,9 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dctagkey.h"
 #include "dcmtk/dcmdata/dcvr.h"
+
+#define INCLUDE_CSTRING               /* for strcmp() */
+#include "dcmtk/ofstd/ofstdinc.h"
 
 /// constant describing an unlimited VM
 #define DcmVariableVM   -1
@@ -410,6 +413,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
+** Revision 1.24  2010-06-25 09:15:19  uli
+** Fixed issues with compiling with HAVE_STD_STRING.
+**
 ** Revision 1.23  2010-03-01 09:08:44  uli
 ** Removed some unnecessary include directives in the headers.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: 
  *    class DcmUIDHandler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:44:33 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-06-25 09:15:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dccfuidh.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,8 +35,11 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmnet/dccfuidh.h"
 
-#include "dcmtk/dcmdata/dcuid.h"    /* for dcmFindUIDFromName() */ 
+#include "dcmtk/dcmdata/dcuid.h"    /* for dcmFindUIDFromName() */
 #include "dcmtk/dcmdata/dcxfer.h"   /* for gLocalByteOrder */
+
+#define INCLUDE_CSTRING             /* for strcmp() */
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #define SymbolicUID_LocalEndianExplicit    "LocalEndianExplicit"
 #define SymbolicUID_OppositeEndianExplicit "OppositeEndianExplicit"
@@ -140,6 +143,9 @@ OFBool DcmUIDHandler::isValidUID() const
 /*
  * CVS/RCS Log
  * $Log: dccfuidh.cc,v $
+ * Revision 1.3  2010-06-25 09:15:19  uli
+ * Fixed issues with compiling with HAVE_STD_STRING.
+ *
  * Revision 1.2  2005-12-08 15:44:33  meichel
  * Changed include path schema for all DCMTK header files
  *
