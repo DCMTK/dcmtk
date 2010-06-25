@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.06.25 (schlachter)
 
+- Don't allow OFString(NULL) because it is also forbidden for std::string.
+  Affects: ofstd/libsrc/ofstring.cc
+
 - Fixed issues with compiling with HAVE_STD_STRING.
   Affects: dcmdata/include/dcmtk/dcmdata/dcdicent.h
            dcmdata/libsrc/dctagkey.cc

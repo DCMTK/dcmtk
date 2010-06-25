@@ -21,9 +21,9 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-03 07:50:18 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-06-25 09:43:23 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,32 +69,26 @@ OFString::OFString(const OFString& str, size_t pos, size_t n)
 OFString::OFString (const char* s, size_t n)
     : theCString(NULL), theSize(0), theCapacity(0)
 {
-    if (s) {
-        if (n == OFString_npos) {
-            n = strlen(s);
-        }
-        reserve(n);
-        OFBitmanipTemplate<char>::copyMem(s, this->theCString, n);
-        this->theCString[n] = '\0';
-        this->theSize = n;
-    } else {
-        reserve(1);
+    assert(s != NULL);
+    if (n == OFString_npos) {
+        n = strlen(s);
     }
+    reserve(n);
+    OFBitmanipTemplate<char>::copyMem(s, this->theCString, n);
+    this->theCString[n] = '\0';
+    this->theSize = n;
 }
 
 OFString::OFString (const char* s)
     : theCString(NULL), theSize(0), theCapacity(0)
 {
-    if (s) {
-        const size_t n = strlen(s);
-        reserve(n);
-        // Because we used strlen() to figure out the length we can use strcpy()
-        // since there won't be any '\0' bytes in the string.
-        strcpy(this->theCString, s);
-        this->theSize = n;
-    } else {
-        reserve(1);
-    }
+    assert(s != NULL);
+    const size_t n = strlen(s);
+    reserve(n);
+    // Because we used strlen() to figure out the length we can use strcpy()
+    // since there won't be any '\0' bytes in the string.
+    strcpy(this->theCString, s);
+    this->theSize = n;
 }
 
 
@@ -1049,6 +1043,9 @@ int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
+** Revision 1.29  2010-06-25 09:43:23  uli
+** Don't allow OFString(NULL) because it is also forbidden for std::string.
+**
 ** Revision 1.28  2010-05-03 07:50:18  joergr
 ** Added type cast to integer variable in order to avoid compiler warnings
 ** reported by VisualStudio 2010.
