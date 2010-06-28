@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.28 (riesmeier)
+
+- Introduced explicit type casts in order to compile with new gcc versions on
+  MinGW/MSYS. Thank to forum user "marlam" for the report and suggested fix.
+  Affects: ofstd/libsrc/ofthread.cc
+
+- Use type cast macros (e.g. OFstatic_cast) where appropriate.
+  Affects: ofstd/libsrc/ofthread.cc
+
 **** Changes from 2010.06.25 (schlachter)
 
 - Correctly check for std::vsnprintf and std::vfprintf.

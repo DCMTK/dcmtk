@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,9 +25,9 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-04 14:18:20 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-06-28 07:22:00 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,17 +137,21 @@ int OFThread::start()
 {
 #ifdef WINDOWS_INTERFACE
   unsigned int tid = 0;
-  theThreadHandle = _beginthreadex(NULL, 0, thread_stub, (void *)this, 0, &tid);
+  theThreadHandle = _beginthreadex(NULL, 0, thread_stub, OFstatic_cast(void *, this), 0, &tid);
   if (theThreadHandle == 0) return errno; else
   {
+#ifdef HAVE_POINTER_TYPE_PTHREAD_T
+    theThread = OFreinterpret_cast(void *, tid);
+#else
     theThread = tid;
+#endif
     return 0;
   }
 #elif defined(POSIX_INTERFACE)
-  pthread_t tid=0;
+  pthread_t tid = 0;
   int result = pthread_create(&tid, NULL, thread_stub, OFstatic_cast(void *, this));
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
-  if (0 == result) theThread = tid; else theThread = 0;
+  if (0 == result) theThread = OFstatic_cast(void *, tid); else theThread = 0;
 #else
   if (0 == result) theThread = OFstatic_cast(unsigned long, tid); else theThread = 0;
 #endif
@@ -196,7 +200,11 @@ OFBool OFThread::equal(unsigned long /* tID */ )
 #endif
 {
 #ifdef WINDOWS_INTERFACE
+#ifdef HAVE_POINTER_TYPE_PTHREAD_T
+  if (theThread == OFreinterpret_cast(void *, tID)) return OFTrue; else return OFFalse;
+#else
   if (theThread == tID) return OFTrue; else return OFFalse;
+#endif
 #elif defined(POSIX_INTERFACE)
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
   // dangerous - we cast an unsigned long back to a pointer type and hope that it is still valid
@@ -416,7 +424,7 @@ OFSemaphore::OFSemaphore(unsigned int /* numResources */ )
 : theSemaphore(NULL)
 {
 #ifdef WINDOWS_INTERFACE
-  theSemaphore = (void *)(CreateSemaphore(NULL, numResources, numResources, NULL));
+  theSemaphore = OFstatic_cast(void *, CreateSemaphore(NULL, numResources, numResources, NULL));
 #elif defined(POSIX_INTERFACE)
   sem_t *sem = new sem_t;
   if (sem)
@@ -553,7 +561,7 @@ OFMutex::OFMutex()
 : theMutex(NULL)
 {
 #ifdef WINDOWS_INTERFACE
-  theMutex = (void *)(CreateMutex(NULL, FALSE, NULL));
+  theMutex = OFstatic_cast(void *, CreateMutex(NULL, FALSE, NULL));
 #elif defined(POSIX_INTERFACE)
   pthread_mutex_t *mtx = new pthread_mutex_t;
   if (mtx)
@@ -997,6 +1005,10 @@ int OFReadWriteLocker::unlock()
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
+ * Revision 1.20  2010-06-28 07:22:00  joergr
+ * Introduced explicit type casts in order to compile with new gcc versions on
+ * MinGW/MSYS. Use type cast macros (e.g. OFstatic_cast) where appropriate.
+ *
  * Revision 1.19  2010-06-04 14:18:20  uli
  * Removed an outdated comment.
  *
