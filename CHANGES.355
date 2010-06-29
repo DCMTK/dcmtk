@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.29 (riesmeier)
+
+- Added new module "dcmstcom" as an optional extension to the documentation.
+  Affects: doxygen/htmldocs.dox
+           doxygen/htmldocs.cfg
+
 **** Changes from 2010.06.29 (schlachter)
 
 - Avoid an unneeded call to strlen().
@@ -12,7 +18,7 @@ Changes between releases are documented here.
 **** Changes from 2010.06.28 (riesmeier)
 
 - Introduced explicit type casts in order to compile with new gcc versions on
-  MinGW/MSYS. Thank to forum user "marlam" for the report and suggested fix.
+  MinGW/MSYS. Thanks to forum user "marlam" for the report and suggested fix.
   Affects: ofstd/libsrc/ofthread.cc
 
 - Use type cast macros (e.g. OFstatic_cast) where appropriate.
