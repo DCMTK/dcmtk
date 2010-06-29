@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.29 (schlachter)
+
+- Avoid an unneeded call to strlen().
+  Affects: ofstd/libsrc/ofconapp.cc
+
 **** Changes from 2010.06.28 (riesmeier)
 
 - Introduced explicit type casts in order to compile with new gcc versions on

@@ -21,9 +21,9 @@
  *
  *  Purpose: Handle console applications (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 11:14:58 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-06-29 12:56:47 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -200,7 +200,7 @@ void OFConsoleApplication::printWarning(const char *str,
     if (!QuietMode)
     {
         ofConsole.lockCerr() << Name << ": ";
-        if ((prefix != NULL) && (strlen(prefix) > 0))
+        if ((prefix != NULL) && (prefix[0] != '0'))
             ofConsole.getCerr() << prefix << ": ";
         ofConsole.getCerr() << str << OFendl;
         ofConsole.unlockCerr();
@@ -294,6 +294,9 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
+ * Revision 1.27  2010-06-29 12:56:47  uli
+ * Avoid an unneeded call to strlen().
+ *
  * Revision 1.26  2008-09-25 11:14:58  joergr
  * Added method for printing the resource identifier of an application.
  *
