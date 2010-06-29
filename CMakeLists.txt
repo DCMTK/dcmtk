@@ -98,7 +98,7 @@ SET(INSTALL_MANDIR "/share/man")
 # set project wide flags for compiler and linker
 
 IF(WIN32)
-OPTION(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS "Overwrite compiler flags with DCMTK's WIN32 package default values." ON)
+  OPTION(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS "Overwrite compiler flags with DCMTK's WIN32 package default values." ON)
 ENDIF(WIN32)
 
 IF(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS)
@@ -266,12 +266,15 @@ IF(WITH_THREADS)
   ENDIF(HAVE_PTHREAD_H)
 ENDIF(WITH_THREADS)
 
-# Enable new cmake behaviour when dealing with libraries whose full path is
-# given to the linker. This is necessary to avoid warnings in cmake versions
-# greater lower than 2.6.
-# See http://www.cmake.org/cmake/help/cmake-2.6.html#policy:CMP0003
 IF(COMMAND CMAKE_POLICY)
+  # Enable new CMake behaviour when dealing with libraries whose full path is
+  # given to the linker. This is necessary to avoid warnings in CMake versions
+  # greater than 2.6.
+  # See http://www.cmake.org/cmake/help/cmake-2.6.html#policy:CMP0003
   CMAKE_POLICY(SET CMP0003 NEW)
+
+  # Works around warnings about escaped quotes in ADD_DEFINITIONS statements
+  CMAKE_POLICY(SET CMP0005 OLD)
 ENDIF(COMMAND CMAKE_POLICY)
 
 #-----------------------------------------------------------------------------
