@@ -11,8 +11,10 @@ ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.1)
 # General project settings to configure DCMTK build process
 #-----------------------------------------------------------------------------
 
-#  Modules to be built (default: build all public modules)
+# Modules to be built (default: build all public modules)
 SET(DCMTK_MODULES config ofstd oflog dcmdata dcmimgle dcmjpeg dcmimage dcmtls dcmnet dcmwlm dcmqrdb dcmsr dcmpstat dcmsign dcmjpls doxygen)
+# Add non-public modules
+#SET(DCMTK_MODULES ${DCMTK_MODULES} dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmloco dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmstcom dcmrt dcmwave)
 
 # Package "release" settings
 SET(DCMTK_PACKAGE_NAME "DCMTK")
@@ -36,7 +38,6 @@ OPTION(DCMTK_WITH_THREADS "Support for multi-threading" ON)
 OPTION(DCMTK_WITH_DOXYGEN "Build API documentation with doxygen" ON)
 
 #SET(CXX_TEST_PATH ${EXECUTABLE_OUTPUT_PATH})
-
 
 #-----------------------------------------------------------------------------
 # Include directories
@@ -70,7 +71,6 @@ SET(DCMTK_INCLUDE_DIR
 )
 INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR})
 
-
 #-----------------------------------------------------------------------------
 # Installation sub-directories
 #-----------------------------------------------------------------------------
@@ -83,6 +83,13 @@ SET(INSTALL_DATDIR "/share/dcmtk")
 SET(INSTALL_DOCDIR "/share/doc/dcmtk")
 SET(INSTALL_HTMDIR "/share/doc/dcmtk/html")
 SET(INSTALL_MANDIR "/share/man")
+
+#-----------------------------------------------------------------------------
+# Platform-independent settings
+#-----------------------------------------------------------------------------
+
+# pass optional build date to compiler
+#ADD_DEFINITIONS("-DDCMTK_BUILD_DATE=\\\"YYYY-MM-DD\\\"")
 
 #-----------------------------------------------------------------------------
 # Platform-specific settings
@@ -183,9 +190,9 @@ IF(WIN32)
   ENDIF(NOT BORLAND)
 ENDIF(WIN32)
 
-IF( WIN32 )
+IF(WIN32)
   SET(WIN32_STD_LIBRARIES ws2_32 netapi32 wsock32)
-ENDIF( WIN32 )
+ENDIF(WIN32)
 
 # settings for Apple
 IF(APPLE)
@@ -196,9 +203,9 @@ ENDIF(APPLE)
 
 # setting for IA64 / x86_64
 IF(UNIX)
-  IF(CMAKE_SYSTEM_PROCESSOR STREQUAL "ia64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL  "x86_64")
+  IF(CMAKE_SYSTEM_PROCESSOR STREQUAL "ia64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-  ENDIF(CMAKE_SYSTEM_PROCESSOR STREQUAL "ia64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL  "x86_64")
+  ENDIF(CMAKE_SYSTEM_PROCESSOR STREQUAL "ia64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
 ENDIF(UNIX)
 
 # settings for Borland C++
@@ -212,7 +219,6 @@ INCLUDE(${DCMTK_SOURCE_DIR}/CMake/GenerateDCMTKConfigure.cmake)
 CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in
                ${DCMTK_BINARY_DIR}/include/dcmtk/config/osconfig.h)
 
-
 #-----------------------------------------------------------------------------
 # Dart configuration (disabled per default)
 #-----------------------------------------------------------------------------
@@ -222,7 +228,7 @@ CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in
 #
 # INCLUDE(${CMAKE_ROOT}/Modules/Dart.cmake)
 # IF(BUILD_TESTING)
-# ENABLE_TESTING()
+#   ENABLE_TESTING()
 # ENDIF(BUILD_TESTING)
 
 #-----------------------------------------------------------------------------

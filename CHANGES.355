@@ -7,6 +7,10 @@ Changes between releases are documented here.
   Affects: doxygen/htmldocs.dox
            doxygen/htmldocs.cfg
 
+- Re-added old feature that was present in previous versions of the CMake
+  files: commented definition of DCMTK_BUILD_DATE and non-public modules.
+  Affects: CMakeLists.txt
+
 **** Changes from 2010.06.29 (schlachter)
 
 - Avoid an unneeded call to strlen().
