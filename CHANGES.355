@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.06.30 (riesmeier)
+
+- Added missing end statement to close a verbatim block.
+  Affects: dcmpstat/docs/dcmprscu.man
+
 **** Changes from 2010.06.29 (riesmeier)
 
 - Added new module "dcmstcom" as an optional extension to the documentation.

@@ -72,6 +72,7 @@ dcmfile-in  stored print file(s) to be spooled
 
   -lc  --log-config  [f]ilename: string
          use config file f for the logger
+\endverbatim
 
 \subsection print_options print options
 \verbatim
@@ -200,6 +201,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1999-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1999-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
