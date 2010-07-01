@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2009, OFFIS
+ *  Copyright (C) 2008-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Class definitions for accessing DICOM dataset structures (items,
  *           sequences and leaf elements via string-based path access.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-07-01 16:56:17 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,7 +153,7 @@ OFString DcmPath::toString() const
 }
 
 
-// Checks whethe a specific group number is used in the path's path nodes
+// Checks whether a specific group number is used in the path's path nodes
 OFBool DcmPath::containsGroup(const Uint16& groupNo) const
 {
   OFListConstIterator(DcmPathNode*) it = m_path.begin();
@@ -621,8 +621,8 @@ OFCondition DcmPathProcessor::findOrCreateItemPath(DcmItem* item,
   if (item == NULL)
     return EC_IllegalParameter;
 
-  if (path.length() == 0)
-      return EC_IllegalParameter;
+  if (path.empty())
+    return EC_IllegalParameter;
 
   OFString restPath(path);
   OFCondition status = EC_Normal;
@@ -678,7 +678,7 @@ OFCondition DcmPathProcessor::findOrCreateItemPath(DcmItem* item,
     else
     {
       // if sequence could be inserted and there is nothing more to do: add current path to results and return success
-      if (restPath.length() == 0)
+      if (restPath.empty())
       {
         currentResult = new DcmPath(m_currentPath);
         currentResult->append(new DcmPathNode(elem,0));
@@ -691,17 +691,15 @@ OFCondition DcmPathProcessor::findOrCreateItemPath(DcmItem* item,
       status = findOrCreateSequencePath(seq, restPath);
       m_currentPath.pop_back(); // avoid side effects
       delete node;
-     }
-  }
-  else if (restPath.length() == 0) // we inserted a leaf element: path must be completed
-  {
-     // add element and add current path to overall results; then return success
-    {
-      currentResult = new DcmPath(m_currentPath);
-      currentResult->append(new DcmPathNode(elem, 0));
-      m_results.push_back(currentResult);
-      return EC_Normal;
     }
+  }
+  else if (restPath.empty()) // we inserted a leaf element: path must be completed
+  {
+    // add element and add current path to overall results; then return success
+    currentResult = new DcmPath(m_currentPath);
+    currentResult->append(new DcmPathNode(elem, 0));
+    m_results.push_back(currentResult);
+    return EC_Normal;
   }
   else // we inserted a leaf element but there is path left -> error
     status = makeOFCondition(OFM_dcmdata, 25, OF_error, "Invalid Path: Non-sequence tag found with rest path following");
@@ -771,7 +769,7 @@ OFCondition DcmPathProcessor::findOrCreateSequencePath(DcmSequenceOfItems* seq,
       if (oneItem != NULL)
       {
         // if the item was the last thing to parse, add list to results and return
-        if (restPath.length() == 0)
+        if (restPath.empty())
         {
           DcmPathNode* itemNode = new DcmPathNode(oneItem, itemNo);
           DcmPath* currentResult = new DcmPath(m_currentPath);
@@ -838,7 +836,7 @@ OFCondition DcmPathProcessor::findOrCreateSequencePath(DcmSequenceOfItems* seq,
   // at this point, the item has been obtained and everyhthing is fine so far
 
   // finding/creating the path was successful. now check whether there is more to do
-  if (restPath.length() != 0)
+  if (!restPath.empty())
   {
     // push new item to result path and continue
     DcmPathNode* itemNode = new DcmPathNode(resultItem, itemNo);
@@ -934,6 +932,10 @@ OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem *item /* in */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.12  2010-07-01 16:56:17  joergr
+** Replaced "OFString::length() == 0" by "OFString::empty()".
+** Removed superfluous curly brackets.
+**
 ** Revision 1.11  2009-11-04 09:58:10  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

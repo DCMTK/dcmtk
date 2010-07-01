@@ -8,10 +8,16 @@ Changes between releases are documented here.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
            dcmsr/libsrc/dsrdoc.cc
 
+- Replaced "OFString::length() == 0" by "OFString::empty()".
+  Affects: dcmdata/libsrc/dcpath.cc
+
+- Removed superfluous curly brackets.
+  Affects: dcmdata/libsrc/dcpath.cc
+
 **** Changes from 2010.07.01 (onken)
 
 - Revised osconfig.h generation: Fixed pthread test by including pthread.h into
-  compiled test program. Added test for std::vsnprintf which sets 
+  compiled test program. Added test for std::vsnprintf which sets
   HAVE_PROTOTYPE_STD__VSNPRINTF. Slightly adapted and explained chekcs for
   socklen_t and std::ios_base::openmode. Turned useless(?) library searches
   for iostream, nsl and socket into comments.
@@ -21,7 +27,7 @@ Changes between releases are documented here.
   Affects: CMakeLists.txt
            CMake/3rdparty.cmake
            CMake/GenerateDCMTKConfigure.cmake
-   
+
 - Fixed 3rd-party compiler switches for windows (libraries not found are now
   reliably disabled if no path is given). Also added some status messages
   printed in CMake configure step.
