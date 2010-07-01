@@ -26,15 +26,15 @@ SET(DCMTK_DEFAULT_CONFIGURATION_DIR "")
 SET(DCMTK_DEFAULT_SUPPORT_DATA_DIR "")
 
 # DCMTK build options
-OPTION(DCMTK_WITH_TIFF "Support for TIFF" ON)
-OPTION(DCMTK_WITH_PNG "Support for PNG" ON)
-OPTION(DCMTK_WITH_XML "Support for XML" OFF)
-OPTION(DCMTK_WITH_ZLIB "Support for ZLIB" ON)
-OPTION(DCMTK_WITH_OPENSSL "Support for OPENSSL" OFF)
-OPTION(DCMTK_WITH_SNDFILE "Support for SNDFILE" OFF)
+OPTION(DCMTK_WITH_TIFF "Configure DCMTK with support for TIFF" ON)
+OPTION(DCMTK_WITH_PNG "Configure DCMTK with support for PNG" ON)
+OPTION(DCMTK_WITH_XML "Configure DCMTK with support for XML" OFF)
+OPTION(DCMTK_WITH_ZLIB "Configure DCMTK with support for ZLIB" ON)
+OPTION(DCMTK_WITH_OPENSSL "Configure DCMTK with support for OPENSSL" OFF)
+OPTION(DCMTK_WITH_SNDFILE "Configure DCMTK with support for SNDFILE" OFF)
 MARK_AS_ADVANCED(SNDFILE_DIR DCMTK_WITH_SNDFILE) # not yet needed in public DCMTK
-OPTION(DCMTK_WITH_PRIVATE_TAGS "Support for DICOM private tags" OFF)
-OPTION(DCMTK_WITH_THREADS "Support for multi-threading" ON)
+OPTION(DCMTK_WITH_PRIVATE_TAGS "Configure DCMTK with support for DICOM private tags coming with DCMTK" OFF)
+OPTION(DCMTK_WITH_THREADS "Configure DCMTK with support for multi-threading" ON)
 OPTION(DCMTK_WITH_DOXYGEN "Build API documentation with doxygen" ON)
 
 #SET(CXX_TEST_PATH ${EXECUTABLE_OUTPUT_PATH})
