@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2009, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:49:32 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2010-07-01 13:40:35 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,7 +62,6 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     StudyID(DCM_StudyID),
     AccessionNumber(DCM_AccessionNumber),
     StudyDescription(DCM_StudyDescription),
-    SeriesDescription(DCM_SeriesDescription),
     PatientsName(DCM_PatientsName),
     PatientID(DCM_PatientID),
     PatientsBirthDate(DCM_PatientsBirthDate),
@@ -71,6 +70,7 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     Modality(DCM_Modality),
     SeriesInstanceUID(DCM_SeriesInstanceUID),
     SeriesNumber(DCM_SeriesNumber),
+    SeriesDescription(DCM_SeriesDescription),
     ReferencedPerformedProcedureStep(DCM_ReferencedPerformedProcedureStepSequence),
     InstanceNumber(DCM_InstanceNumber),
     CompletionFlag(DCM_CompletionFlag),
@@ -119,7 +119,6 @@ void DSRDocument::clear()
     StudyID.clear();
     AccessionNumber.clear();
     StudyDescription.clear();
-    SeriesDescription.clear();
     PatientsName.clear();
     PatientID.clear();
     PatientsBirthDate.clear();
@@ -128,6 +127,7 @@ void DSRDocument::clear()
     Modality.clear();
     SeriesInstanceUID.clear();
     SeriesNumber.clear();
+    SeriesDescription.clear();
     ReferencedPerformedProcedureStep.clear();
     InstanceNumber.clear();
     CompletionFlag.clear();
@@ -332,7 +332,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         getAndCheckElementFromDataset(dataset, SOPInstanceUID, "1", "1");
         getAndCheckElementFromDataset(dataset, SpecificCharacterSet, "1-n", "1C");
         if (SpecificCharacterSet.getVM() > 1)
-            DCMSR_WARN("Multiple values for 'SpecificCharacterSet' are not supported");
+            DCMSR_WARN("Multiple values for Specific Character Set are not supported");
         getAndCheckElementFromDataset(dataset, InstanceCreationDate, "1", "3");
         getAndCheckElementFromDataset(dataset, InstanceCreationTime, "1", "3");
         getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3");
@@ -347,9 +347,6 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2");
         getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3");
 
-        // --- General series Module ---
-        getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3");
-
         // --- Patient Module ---
         getAndCheckElementFromDataset(dataset, PatientsName, "1", "2");
         getAndCheckElementFromDataset(dataset, PatientID, "1", "2");
@@ -363,6 +360,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         getElementFromDataset(dataset, Modality);   /* already checked */
         getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1");
         getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1");
+        getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3");
         /* need to check sequence in two steps (avoids additional getAndCheck... method) */
         searchCond = getElementFromDataset(dataset, ReferencedPerformedProcedureStep);
         checkElementValue(ReferencedPerformedProcedureStep, "1", "2", searchCond);
@@ -459,10 +457,6 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         if (StudyDescription.getLength() > 0)     /* optional */
             addElementToDataset(result, dataset, new DcmLongString(StudyDescription));
 
-        // --- General series Module ---
-        if (SeriesDescription.getLength() > 0)    /* optional */
-            addElementToDataset(result, dataset, new DcmLongString(SeriesDescription));
-
         // --- Patient Module ---
         addElementToDataset(result, dataset, new DcmPersonName(PatientsName));
         addElementToDataset(result, dataset, new DcmLongString(PatientID));
@@ -476,6 +470,8 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         addElementToDataset(result, dataset, new DcmCodeString(Modality));
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SeriesInstanceUID));
         addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber));
+        if (SeriesDescription.getLength() > 0)    /* optional */
+            addElementToDataset(result, dataset, new DcmLongString(SeriesDescription));
         /* always write empty sequence since not yet fully supported */
         ReferencedPerformedProcedureStep.clear();
         addElementToDataset(result, dataset, new DcmSequenceOfItems(ReferencedPerformedProcedureStep));
@@ -957,7 +953,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
             if (tmpString != "?")
                 stream << " encoding=\"" << tmpString << "\"";
             else
-                DCMSR_WARN("Cannot map SpecificCharacterSet to equivalent XML encoding");
+                DCMSR_WARN("Cannot map Specific Character Set to equivalent XML encoding");
         }
         stream << "?>" << OFendl;
 
@@ -1244,7 +1240,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 if (tmpString != "?")
                     stream << " encoding=\"" << tmpString << "\"";
                 else
-                    DCMSR_WARN("Cannot map SpecificCharacterSet to equivalent XML encoding");
+                    DCMSR_WARN("Cannot map Specific Character Set to equivalent XML encoding");
             }
             stream << "?>" << OFendl;
         }
@@ -1318,7 +1314,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                         stream << " /";
                     stream << ">" << OFendl;
                 } else
-                    DCMSR_WARN("Cannot map SpecificCharacterSet to equivalent HTML charset");
+                    DCMSR_WARN("Cannot map Specific Character Set to equivalent HTML charset");
             }
         }
         /* generator meta element referring to the DCMTK */
@@ -2353,6 +2349,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.66  2010-07-01 13:40:35  joergr
+ *  Moved SeriesDescription (0008,103E) from General Series to SR Document Series
+ *  Module (according to CP 703).
+ *
  *  Revision 1.65  2009-10-14 10:49:32  joergr
  *  Fixed minor issues in log output. Also updated copyright date (if required).
  *

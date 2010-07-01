@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.01 (riesmeier)
+
+- Moved SeriesDescription (0008,103E) from General Series to SR Document Series
+  Module (according to CP 703).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/libsrc/dsrdoc.cc
+
 **** Changes from 2010.07.01 (onken)
 
 - Fixed 3rd-party compiler switches for windows (libraries not found are now

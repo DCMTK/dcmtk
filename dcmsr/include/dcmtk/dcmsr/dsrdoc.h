@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2009, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:50 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-07-01 13:40:33 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1093,12 +1093,6 @@ class DSRDocument
     /// Study Description: (LO, 1, 3)
     DcmLongString       StudyDescription;
 
-    // --- General Series Module ---
-    // (see SR Document Series Module)
-
-    /// Series Description: (LO, 1, 3)
-    DcmLongString       SeriesDescription;
-
     // --- Patient Module (M) ---
 
     /// Person Name: (PN, 1, 2)
@@ -1127,6 +1121,8 @@ class DSRDocument
     DcmUniqueIdentifier SeriesInstanceUID;
     /// Series Number: (IS, 1, 1)
     DcmIntegerString    SeriesNumber;
+    /// Series Description: (LO, 1, 3)
+    DcmLongString       SeriesDescription;
     /// Referenced Performed Procedure Step Sequence: (SQ, 1, 2)
     DcmSequenceOfItems  ReferencedPerformedProcedureStep;
 
@@ -1172,6 +1168,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.47  2010-07-01 13:40:33  joergr
+ *  Moved SeriesDescription (0008,103E) from General Series to SR Document Series
+ *  Module (according to CP 703).
+ *
  *  Revision 1.46  2009-10-13 14:57:50  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
