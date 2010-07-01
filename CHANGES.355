@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.01 (onken)
+
+- Fixed 3rd-party compiler switches for windows (libraries not found are now
+  reliably disabled if no path is given). Also added some status messages
+  printed in CMake configure step.
+  Affects: CMakeLists.txt
+           CMake/3rdparty.cmake
+           CMake/GenerateDCMTKConfigure.cmake
+
 **** Changes from 2010.07.01 (riesmeier)
 
 - Moved SeriesDescription (0008,103E) from General Series to SR Document Series
@@ -10,6 +19,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.07.01 (onken)
 
+- Simplified and fixed 3rd-party library support (a second time...).
+  Affects: CMakeLists.txt
+           CMake/3rdparty.cmake
+           CMake/GenerateDCMTKConfigure.cmake
+   
 - Fixed 3rd-party compiler switches for windows (libraries not found are now
   reliably disabled if no path is given). Also added some status messages
   printed in CMake configure step.

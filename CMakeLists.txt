@@ -214,6 +214,16 @@ IF(CMAKE_CXX_COMPILER MATCHES bcc32)
   SET(CMAKE_STANDARD_LIBRARIES "import32.lib cw32mt.lib")
 ENDIF(CMAKE_CXX_COMPILER MATCHES bcc32)
 
+#-----------------------------------------------------------------------------
+# Third party libraries
+#-----------------------------------------------------------------------------
+
+INCLUDE(CMake/3rdparty.cmake)
+
+#-----------------------------------------------------------------------------
+# Prepare osconfig.h
+#-----------------------------------------------------------------------------
+
 # add the osconfig.h.in file
 INCLUDE(${DCMTK_SOURCE_DIR}/CMake/GenerateDCMTKConfigure.cmake)
 CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in
@@ -230,12 +240,6 @@ CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in
 # IF(BUILD_TESTING)
 #   ENABLE_TESTING()
 # ENDIF(BUILD_TESTING)
-
-#-----------------------------------------------------------------------------
-# Third party libraries
-#-----------------------------------------------------------------------------
-
-INCLUDE(CMake/3rdparty.cmake)
 
 #-----------------------------------------------------------------------------
 # Thread support
