@@ -6,6 +6,10 @@ Changes between releases are documented here.
 - Include the correct headers while checking for std::vsnprintf and vfprintf.
   Affects: CMake/GenerateDCMTKConfigure.cmake
 
+- Added comment explaining why an even buffer size is required.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcpixel.h
+           dcmdata/libsrc/dcpixel.cc
+
 **** Changes from 2010.07.02 (riesmeier)
 
 - Introduced new macro "DONT_LOAD_EXTERNAL_DICTIONARIES" that allows for

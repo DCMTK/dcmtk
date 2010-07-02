@@ -22,8 +22,8 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:45 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2010-07-02 12:34:42 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1079,6 +1079,9 @@ OFCondition DcmPixelData::getUncompressedFrame(
     if (result.bad()) return result;
 
     // determine the minimum buffer size, which may be frame size plus one pad byte if frame size is odd.
+    // We need this extra byte, because the image might be in a different
+    // endianness than our host cpu. In this case the decoder will swap
+    // the data to the host byte order which could overflow the buffer.
     Uint32 minBufSize = frameSize;
     if (minBufSize & 1) ++minBufSize;
 
@@ -1134,6 +1137,9 @@ OFCondition DcmPixelData::getDecompressedColorModel(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
+** Revision 1.49  2010-07-02 12:34:42  uli
+** Added comment explaining why an even buffer size is required.
+**
 ** Revision 1.48  2010-03-01 09:08:45  uli
 ** Removed some unnecessary include directives in the headers.
 **

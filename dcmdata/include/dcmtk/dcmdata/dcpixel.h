@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmPixelData
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-22 11:39:54 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2010-07-02 12:34:42 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -575,7 +575,8 @@ public:
      *    table is empty.
      *  @param buffer pointer to buffer allocated by the caller. The buffer
      *    must be large enough for one frame of this image.
-     *  @param bufSize size of buffer, in bytes
+     *  @param bufSize size of buffer, in bytes. This number must be even so
+     *    that the data can properly be converted to a different endianness.
      *  @param decompressedColorModel upon successful return, the color model
      *    of the decompressed image (which may be different from the one used
      *    in the compressed images) is returned in this parameter.
@@ -612,6 +613,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
+** Revision 1.39  2010-07-02 12:34:42  uli
+** Added comment explaining why an even buffer size is required.
+**
 ** Revision 1.38  2010-02-22 11:39:54  uli
 ** Remove some unneeded includes.
 **
