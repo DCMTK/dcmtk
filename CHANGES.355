@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.02 (schlachter)
+
+- Include the correct headers while checking for std::vsnprintf and vfprintf.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
 **** Changes from 2010.07.02 (riesmeier)
 
 - Introduced new macro "DONT_LOAD_EXTERNAL_DICTIONARIES" that allows for
