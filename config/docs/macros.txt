@@ -303,7 +303,7 @@ STRICT_COMPARE
     space characters when comparing UIDs.  This behaviour can be modified
     by defining this macro.
 
-SUPRESS_CREATE_STAMP
+SUPPRESS_CREATE_STAMP
   Affected: dcmdata
   Type of modification: Activates experimental or rarely used feature
   Explanation: When defined, suppresses the creation of a time stamp

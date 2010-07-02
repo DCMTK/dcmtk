@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.02 (riesmeier)
+
+- Fixed typo: Changed "SUPRESS_CREATE_STAMP" to "SUPPRESS_CREATE_STAMP".
+  Affects: config/docs/macros.txt
+           dcmdata/libsrc/mkdeftag.cc
+           dcmdata/libsrc/mkdictbi.cc
+
 **** Changes from 2010.07.01 (riesmeier)
 
 - Moved SeriesDescription (0008,103E) from General Series to SR Document Series
