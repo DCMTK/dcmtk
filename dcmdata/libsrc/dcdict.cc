@@ -21,9 +21,9 @@
  *
  *  Purpose: loadable DICOM data dictionary
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:45 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-07-02 08:26:17 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,13 @@
 ** THE Global DICOM Data Dictionary
 */
 
+#ifdef DONT_LOAD_EXTERNAL_DICTIONARIES
+// if defined at compilation time, only the builtin dictionary is loaded
+GlobalDcmDataDictionary dcmDataDict(OFTrue /*loadBuiltin*/, OFFalse /*loadExternal*/);
+#else
+// this is the default case, i.e. both the builtin and the external dictionaries are loaded
 GlobalDcmDataDictionary dcmDataDict(OFTrue /*loadBuiltin*/, OFTrue /*loadExternal*/);
+#endif
 
 
 /*
@@ -842,6 +848,11 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
+** Revision 1.45  2010-07-02 08:26:17  joergr
+** Introduced new macro "DONT_LOAD_EXTERNAL_DICTIONARIES" that allows for
+** loading the builtin dictionary only (at application start), i.e. ignore the
+** environment variable DCMDICTPATH and the default dictionary files.
+**
 ** Revision 1.44  2010-03-01 09:08:45  uli
 ** Removed some unnecessary include directives in the headers.
 **
