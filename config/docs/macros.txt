@@ -98,6 +98,19 @@ DONT_DISABLE_NAGLE_ALGORITHM
     code affecting the Nagle algorithm is disabled.  See documentation
     for environment variable TCP_NODELAY in config/docs/envvars.txt.
 
+DONT_LOAD_EXTERNAL_DICTIONARIES
+  Affected: dcmdata
+  Type of modification: Disables feature
+  Explanation: By default, DCMTK loads data dictionaries from files at
+    application start (before the main function is called).  These files
+    are either specified by the DCMDICTPATH environment variable or the
+    default files are used.  This flag disables the loading of external
+    dictionaries from file at application start, which might be useful
+    when only the builtin dictionary should be used.  However, if no
+    dictionary gets loaded, this is likely to cause unexpected behaviour.
+    Even if this flag is defined, the reloadDictionaries() method can be
+    used to load the external dictionaries after application start.
+
 EXPERIMENTAL_READ_FROM_FILE
   Affected: dump2dcm
   Type of modification: Activates experimental or rarely used feature

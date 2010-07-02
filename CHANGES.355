@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2010.07.02 (riesmeier)
 
+- Introduced new macro "DONT_LOAD_EXTERNAL_DICTIONARIES" that allows for
+  loading the builtin dictionary only (at application start), i.e. ignore the
+  environment variable DCMDICTPATH and the default dictionary files.
+  Thanks to forum user "Niels Dekker" for the suggestion.
+  Affects: config/docs/macros.txt
+           dcmdata/libsrc/dcdict.cc
+
 - Fixed typo: Changed "SUPRESS_CREATE_STAMP" to "SUPPRESS_CREATE_STAMP".
   Affects: config/docs/macros.txt
            dcmdata/libsrc/mkdeftag.cc
