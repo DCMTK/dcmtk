@@ -88,6 +88,17 @@ SET(INSTALL_MANDIR "/share/man")
 # Platform-independent settings
 #-----------------------------------------------------------------------------
 
+IF(COMMAND CMAKE_POLICY)
+  # Enable new CMake behaviour when dealing with libraries whose full path is
+  # given to the linker. This is necessary to avoid warnings in CMake versions
+  # greater than 2.6.
+  # See http://www.cmake.org/cmake/help/cmake-2.6.html#policy:CMP0003
+  CMAKE_POLICY(SET CMP0003 NEW)
+
+  # Works around warnings about escaped quotes in ADD_DEFINITIONS statements
+  CMAKE_POLICY(SET CMP0005 OLD)
+ENDIF(COMMAND CMAKE_POLICY)
+
 # pass optional build date to compiler
 #ADD_DEFINITIONS("-DDCMTK_BUILD_DATE=\\\"YYYY-MM-DD\\\"")
 
@@ -269,17 +280,6 @@ IF(WITH_THREADS)
      ENDIF(HAVE_LIBRT)
   ENDIF(HAVE_PTHREAD_H)
 ENDIF(WITH_THREADS)
-
-IF(COMMAND CMAKE_POLICY)
-  # Enable new CMake behaviour when dealing with libraries whose full path is
-  # given to the linker. This is necessary to avoid warnings in CMake versions
-  # greater than 2.6.
-  # See http://www.cmake.org/cmake/help/cmake-2.6.html#policy:CMP0003
-  CMAKE_POLICY(SET CMP0003 NEW)
-
-  # Works around warnings about escaped quotes in ADD_DEFINITIONS statements
-  CMAKE_POLICY(SET CMP0005 OLD)
-ENDIF(COMMAND CMAKE_POLICY)
 
 #-----------------------------------------------------------------------------
 # Start actual compilation tasks
