@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.05 (schlachter)
+
+- Remove some duplicate checks from the cmake files.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
 **** Changes from 2010.07.02 (schlachter)
 
 - Include the correct headers while checking for std::vsnprintf and vfprintf.
