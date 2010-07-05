@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Remove some duplicate checks from the cmake files.
   Affects: CMake/GenerateDCMTKConfigure.cmake
 
+- Always define STDIO_NAMESPACE to :: on window to make MSVC6 happy.
+  Affects: CMake/osconfig.h.in
+
 **** Changes from 2010.07.02 (schlachter)
 
 - Include the correct headers while checking for std::vsnprintf and vfprintf.

@@ -833,13 +833,7 @@
 #define NO_IOS_BASE_ASSIGN
 #endif /* __BORLANDC__ */
 
-// define STD_NAMESPACE to std:: if the standard namespace exists
-#ifndef STDIO_NAMESPACE
-#ifdef HAVE_STD_NAMESPACE
-#define STDIO_NAMESPACE std::
-#else
-#define STDIO_NAMESPACE
-#endif
-#endif
+// Always define STDIO_NAMESPACE to ::, because MSVC6 gets mad if you don't.
+#define STDIO_NAMESPACE ::
 
 #endif /* !OSCONFIG_H*/
