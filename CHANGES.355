@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2010.07.06 (onken)
 
+- Fixed status flag in dictionary denoting that a dictionary is loaded which
+  was not set if a single dictionary was loaded explicitly with
+  loadDictionary(). In that case isDictionaryLoaded() returned OFFalse where
+  OFTrue would be correct. Thanks to forum user "Chichon" for the bug report.
+  Affects: dcmdata/libsrc/dcdict.cc
+
 - Fixed memory leaked in extended negotiaton code. Thanks to Peter Klotz
   <Peter.Klotz@ith-icoserve.com> for the hint and patch.
   Affects: dcmnet/libsrc/extneg.cc

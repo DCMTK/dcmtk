@@ -21,9 +21,9 @@
  *
  *  Purpose: loadable DICOM data dictionary
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-02 08:26:17 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-07-06 16:19:37 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -580,8 +580,15 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
 
     fclose(f);
 
-    /* return OFFalse if errors were encountered */
-    return (errorsEncountered == 0) ? (OFTrue) : (OFFalse);
+    /* return OFFalse in case of errors and set internal state accordingly */
+    if (errorsEncountered == 0) {
+        dictionaryLoaded = OFTrue;
+        return OFTrue;
+    }
+    else {
+        dictionaryLoaded = OFFalse;
+        return OFFalse;
+    }
 }
 
 #ifndef HAVE_GETENV
@@ -848,6 +855,12 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
+** Revision 1.46  2010-07-06 16:19:37  onken
+** Fixed status flag in dictionary denoting that a dictionary is loaded which
+** was not set if a single dictionary was loaded explicitly with
+** loadDictionary(). In that case isDictionaryLoaded() returned OFFalse where
+** OFTrue would be correct. Thanks to forum user "Chichon" for the bug report.
+**
 ** Revision 1.45  2010-07-02 08:26:17  joergr
 ** Introduced new macro "DONT_LOAD_EXTERNAL_DICTIONARIES" that allows for
 ** loading the builtin dictionary only (at application start), i.e. ignore the
