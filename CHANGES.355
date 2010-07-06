@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.06 (onken)
+
+- Fixed memory leaked in extended negotiaton code. Thanks to Peter Klotz
+  <Peter.Klotz@ith-icoserve.com> for the hint and patch.
+  Affects: dcmnet/libsrc/extneg.cc
+
 **** Changes from 2010.07.05 (schlachter)
 
 - Remove some duplicate checks from the cmake files.

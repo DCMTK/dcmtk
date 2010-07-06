@@ -7,10 +7,10 @@
 ** Purpose:
 **   Extended Negotiation for A-ASSOCIATE
 **
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2005-12-08 15:44:54 $
+** Last Update:         $Author: onken $
+** Update Date:         $Date: 2010-07-06 14:50:17 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/extneg.cc,v $
-** CVS/RCS Revision:    $Revision: 1.5 $
+** CVS/RCS Revision:    $Revision: 1.6 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -35,6 +35,8 @@ void deleteListMembers(SOPClassExtendedNegotiationSubItemList& lst)
 {
     OFListIterator(SOPClassExtendedNegotiationSubItem*) i = lst.begin();
     while (i != lst.end()) {
+        delete[] (*i)->serviceClassAppInfo;
+        (*i)->serviceClassAppInfo = NULL;
         delete *i;
         ++i;
     }
@@ -45,6 +47,9 @@ void deleteListMembers(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS/RCS Log:
 ** $Log: extneg.cc,v $
+** Revision 1.6  2010-07-06 14:50:17  onken
+** Fixed memory leaked in extended negotiaton code.
+**
 ** Revision 1.5  2005-12-08 15:44:54  meichel
 ** Changed include path schema for all DCMTK header files
 **
