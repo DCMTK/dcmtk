@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.07.07 (onken)
 
+- Corrected names of two Ophthalmic Photography SOP Classes. Thanks to Peter
+  Klotz <Peter.Klotz@ith-icoserve.com> for the hint and patch.
+  Affects: dcmqrdb/docs/dcmqrscp.man
+           doxygen/manpages/man1/dcmqrscp.1
+           
 - Added Ophthalmic Tomography Image Storage to list of supported SOP classes.
   Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
            dcmdata/libsrc/dcddirif.cc
