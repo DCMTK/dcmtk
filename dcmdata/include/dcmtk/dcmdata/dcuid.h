@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:45 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-07-07 07:28:36 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -389,6 +389,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_OphthalmicPhotography8BitImageStorage                  "1.2.840.10008.5.1.4.1.1.77.1.5.1"
 #define UID_OphthalmicPhotography16BitImageStorage                 "1.2.840.10008.5.1.4.1.1.77.1.5.2"
 #define UID_StereometricRelationshipStorage                        "1.2.840.10008.5.1.4.1.1.77.1.5.3"
+#define UID_OphthalmicTomographyImageStorage                       "1.2.840.10008.5.1.4.1.1.77.1.5.4"
 #define UID_RETIRED_VLMultiFrameImageStorage                       "1.2.840.10008.5.1.4.1.1.77.2"
 #define UID_StandaloneOverlayStorage                               "1.2.840.10008.5.1.4.1.1.8"
 #define UID_BasicTextSR                                            "1.2.840.10008.5.1.4.1.1.88.11"
@@ -612,6 +613,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.78  2010-07-07 07:28:36  onken
+** Added Ophthalmic Tomography Image Storage to list of supported SOP classes.
+**
 ** Revision 1.77  2010-03-01 09:08:45  uli
 ** Removed some unnecessary include directives in the headers.
 **

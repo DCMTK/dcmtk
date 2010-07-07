@@ -1,7 +1,24 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2010.07.06 (onken)
+**** Changes from 2010.07.07 (onken)
+
+- Added Ophthalmic Tomography Image Storage to list of supported SOP classes.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+           doxygen/manpages/man1/dcmqrscp.1
+           doxygen/manpages/man1/dcmqrscp.1
+           doxygen/manpages/man1/storescp.1
+           doxygen/manpages/man1/storescu.1
+ 
+ **** Changes from 2010.07.06 (onken)
 
 - Fixed status flag in dictionary denoting that a dictionary is loaded which
   was not set if a single dictionary was loaded explicitly with

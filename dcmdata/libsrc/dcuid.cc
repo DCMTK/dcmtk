@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-03 10:28:41 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-07-07 07:28:38 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,6 +173,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_NuclearMedicineImageStorage,                         "NuclearMedicineImageStorage" },
     { UID_OphthalmicPhotography16BitImageStorage,              "OphthalmicPhotography16BitImageStorage" },
     { UID_OphthalmicPhotography8BitImageStorage,               "OphthalmicPhotography8BitImageStorage" },
+    { UID_OphthalmicTomographyImageStorage,                    "OphthalmicTomographyImageStorage" },
     { UID_PETCurveStorage,                                     "PETCurveStorage" },
     { UID_PETImageStorage,                                     "PETImageStorage" },
     { UID_ProcedureLogStorage,                                 "ProcedureLogStorage" },
@@ -448,6 +449,7 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_NuclearMedicineImageStorage,
     UID_OphthalmicPhotography16BitImageStorage,
     UID_OphthalmicPhotography8BitImageStorage,
+    UID_OphthalmicTomographyImageStorage,
     UID_PETCurveStorage,
     UID_PETImageStorage,
     UID_ProcedureLogStorage,
@@ -546,6 +548,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_NuclearMedicineImageStorage,
     UID_OphthalmicPhotography16BitImageStorage,
     UID_OphthalmicPhotography8BitImageStorage,
+    UID_OphthalmicTomographyImageStorage,
     UID_PETCurveStorage,
     UID_PETImageStorage,
     UID_ProcedureLogStorage,
@@ -599,7 +602,7 @@ const int numberOfDcmLongSCUStorageSOPClassUIDs = (sizeof(dcmLongSCUStorageSOPCl
  *  e.g. storescu. This list is guaranteed to have at most 64 entries.
  */
 const char* dcmShortSCUStorageSOPClassUIDs[] = {
-    /* This list *must* be limited to 64 SOP classes or less (currently: 63).
+    /* This list *must* be limited to 64 SOP classes or less (currently: 64).
      * If we have more than 64 storage transfer syntaxes, tools
      * such as storescu will fail because they attempt to negotiate two
      * presentation contexts for each SOP class, and there is a total limit of
@@ -650,6 +653,7 @@ const char* dcmShortSCUStorageSOPClassUIDs[] = {
     UID_NuclearMedicineImageStorage,
     UID_OphthalmicPhotography16BitImageStorage,
     UID_OphthalmicPhotography8BitImageStorage,
+    UID_OphthalmicTomographyImageStorage,
     UID_PETCurveStorage,
     UID_PETImageStorage,
     UID_ProcedureLogStorage,
@@ -723,6 +727,7 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_NuclearMedicineImageStorage,
     UID_OphthalmicPhotography16BitImageStorage,
     UID_OphthalmicPhotography8BitImageStorage,
+    UID_OphthalmicTomographyImageStorage,
     UID_PETCurveStorage,
     UID_PETImageStorage,
     UID_RETIRED_NuclearMedicineImageStorage,
@@ -809,6 +814,7 @@ static const DcmModalityTable modalities[] = {
     { UID_NuclearMedicineImageStorage,                         "NM",  2 * 64 * 64 },
     { UID_OphthalmicPhotography16BitImageStorage,              "OPw", 768 * 576 * 6 },
     { UID_OphthalmicPhotography8BitImageStorage,               "OPb", 768 * 576 * 3 },
+    { UID_OphthalmicTomographyImageStorage,                    "OT",  768 * 576 * 3 },
     { UID_PETCurveStorage,                                     "PC",  4096 },
     { UID_PETImageStorage,                                     "PI",  512 * 512 * 2 },
     { UID_ProcedureLogStorage,                                 "SRp", 4096 },
@@ -1423,6 +1429,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.77  2010-07-07 07:28:38  onken
+** Added Ophthalmic Tomography Image Storage to list of supported SOP classes.
+**
 ** Revision 1.76  2010-06-03 10:28:41  joergr
 ** Replaced calls to strerror() by new helper function OFStandard::strerror()
 ** which results in using the thread safe version of strerror() if available.
