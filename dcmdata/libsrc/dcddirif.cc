@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-07-07 07:28:38 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2010-07-07 09:20:44 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1270,7 +1270,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                             compare(mediaSOPClassUID, UID_VideoPhotographicImageStorage) ||
                             compare(mediaSOPClassUID, UID_OphthalmicPhotography8BitImageStorage) ||
                             compare(mediaSOPClassUID, UID_OphthalmicPhotography16BitImageStorage) ||
-                            compare(mediaSOPClassUID, UID_OphthalmicTomographyImageStorage) |
+                            compare(mediaSOPClassUID, UID_OphthalmicTomographyImageStorage) ||
                             compare(mediaSOPClassUID, UID_EnhancedXAImageStorage) ||
                             compare(mediaSOPClassUID, UID_EnhancedXRFImageStorage);
                     break;
@@ -4849,6 +4849,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.37  2010-07-07 09:20:44  onken
+ *  Changed binary OR to logical OR (error introduced by last commit).
+ *
  *  Revision 1.36  2010-07-07 07:28:38  onken
  *  Added Ophthalmic Tomography Image Storage to list of supported SOP classes.
  *
