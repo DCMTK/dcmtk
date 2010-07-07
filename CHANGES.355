@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2010.07.07 (onken)
 
+- Changed binary OR to logical OR (error introduced by last commit).
+  Affects: dcmdata/libsrc/dcddirif.cc
+
+- Added Ophthalmic Photography SOP Classes also to SCP list.
+  Affects: doxygen/manpages/man1/dcmqrscp.1
+
 - Corrected names of two Ophthalmic Photography SOP Classes. Thanks to Peter
   Klotz <Peter.Klotz@ith-icoserve.com> for the hint and patch.
   Affects: dcmqrdb/docs/dcmqrscp.man
