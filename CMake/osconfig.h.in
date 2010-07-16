@@ -13,12 +13,6 @@
 #endif
 
 
-/* Settings for Borland C++ Builder */
-#ifdef __BORLANDC__
-#define _MSC_VER 1200  // Treat Borland C++ 5.5 as MSVC6.
-#endif /* __BORLANDC__ */
-
-
 /* Define if you have the <windows.h> header file.  */
 #if !defined(__CYGWIN__)
   #cmakedefine HAVE_WINDOWS_H @HAVE_WINDOWS_H@
@@ -772,6 +766,23 @@
 #define ssize_t long
 #endif
 
+ /* Additional settings for Borland C++ Builder */
+#ifdef __BORLANDC__
+#define _stricmp stricmp    // _stricmp in MSVC is stricmp in Borland C++
+#define _strnicmp strnicmp  // _strnicmp in MSVC is strnicmp in Borland C++
+#pragma warn -8027          // disable Warning W8027 "functions containing while are not expanded inline"
+#pragma warn -8004          // disable Warning W8004 "variable is assigned a value that is never used"
+#pragma warn -8012          // disable Warning W8012 "comparing signed and unsigned values"
+#ifdef WITH_THREADS
+#define __MT__              // required for _beginthreadex() API in <process.h>
+#define _MT                 // required for _errno on BCB6
+#endif
+#define HAVE_PROTOTYPE_MKTEMP
+#undef HAVE_SYS_UTIME_H 1
+#define NO_IOS_BASE_ASSIGN
+#define _MSC_VER 1200  // Treat Borland C++ 5.5 as MSVC6.
+#endif /* __BORLANDC__ */
+
 /* Platform specific settings for Visual C++
  * By default, enable ANSI standard C++ includes on Visual C++ 6 and newer
  *   _MSC_VER == 1100 on Microsoft Visual C++ 5.0
@@ -780,6 +791,22 @@
  *   _MSC_VER == 1310 on Microsoft Visual C++ 7.1
  *   _MSC_VER == 1400 on Microsoft Visual C++ 8.0
  */
+
+#ifdef _MSC_VER
+#if _MSC_VER <= 1200 /* Additional settings for VC6 and older */
+/* disable warning that return type for 'identifier::operator –>' is not a UDT or reference to a UDT */
+#pragma warning( disable : 4284 )
+#define HAVE_OLD_INTERLOCKEDCOMPAREEXCHANGE
+#else
+#define HAVE_VSNPRINTF 1
+#endif /* _MSC_VER <= 1200 */
+
+#if _MSC_VER >= 1400  /* Additional settings for Visual Studio 2005 and newer */
+#pragma warning( disable : 4996 )  // disable warnings about "deprecated" C runtime functions
+#pragma warning( disable : 4351 )  // disable warnings about "new behavior" when initializing the elements of an array
+#endif /* _MSC_VER >= 1400 */
+#endif /* _MSC_VER */
+
 
 #ifdef USE_STD_CXX_INCLUDES
 
@@ -817,21 +844,6 @@
 
 
 #endif /* USE_STD_CXX_INCLUDES */
-
-/* Additional settings for Borland C++ Builder */
-#ifdef __BORLANDC__
-#define _stricmp stricmp    // _stricmp in MSVC is stricmp in Borland C++
-#define _strnicmp strnicmp  // _strnicmp in MSVC is strnicmp in Borland C++
-#pragma warn -8027          // disable Warning W8027 "functions containing while are not expanded inline"
-#pragma warn -8004          // disable Warning W8004 "variable is assigned a value that is never used"
-#pragma warn -8012          // disable Warning W8012 "comparing signed and unsigned values"
-#ifdef WITH_THREADS
-#define __MT__              // required for _beginthreadex() API in <process.h>
-#endif
-#define HAVE_PROTOTYPE_MKTEMP
-#undef HAVE_SYS_UTIME_H 1
-#define NO_IOS_BASE_ASSIGN
-#endif /* __BORLANDC__ */
 
 // Always define STDIO_NAMESPACE to ::, because MSVC6 gets mad if you don't.
 #define STDIO_NAMESPACE ::
