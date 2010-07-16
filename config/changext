@@ -104,4 +104,10 @@ do
   `mv $file.new $file`
 done
 
+if [ -f CMake/GenerateDCMTKConfigure.cmake ] ; then
+  echo "updating CMake/GenerateDCMTKConfigure.cmake"
+  cat CMake/GenerateDCMTKConfigure.cmake | sed -e "s/\.$oldext/.$newext/g" > CMake/GenerateDCMTKConfigure.cmake.new
+  mv CMake/GenerateDCMTKConfigure.cmake.new CMake/GenerateDCMTKConfigure.cmake
+fi
+
 echo "done."

@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.07.16 (schlachter)
 
+- Update the affected CMake file in config/changext.
+  Affects: config/changext
+
 - Added a check to CMake for a broken 'typename' implementation.
   Added:   CMake/dcmtkTestTypename.cc
   Affects: CMake/GenerateDCMTKConfigure.cmake
