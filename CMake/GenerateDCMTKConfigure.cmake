@@ -368,17 +368,17 @@ IF("HAVE_CXX_BOOL" MATCHES "^HAVE_CXX_BOOL$")
   IF(HAVE_CXX_BOOL)
     MESSAGE(STATUS "Checking support for C++ type bool -- yes")
     SET(HAVE_CXX_BOOL 1 CACHE INTERNAL "Support for C++ type bool")
-    WRITE_FILE(${CMAKE_BINARY_DIR}/CMakeFiles/CMakeOutput.log
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
       "Determining if the C++ compiler supports type bool "
       "passed with the following output:\n"
-      "${OUTPUT}\n" APPEND)
+      "${OUTPUT}\n")
   ELSE(HAVE_CXX_BOOL)
     MESSAGE(STATUS "Checking support for C++ type bool -- no")
     SET(HAVE_CXX_BOOL 0 CACHE INTERNAL "Support for C++ type bool")
-    WRITE_FILE(${CMAKE_BINARY_DIR}/CMakeFiles/CMakeError.log
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
       "Determining if the C++ compiler supports type bool "
       "failed with the following output:\n"
-      "${OUTPUT}\n" APPEND)
+      "${OUTPUT}\n")
   ENDIF(HAVE_CXX_BOOL)
 ENDIF("HAVE_CXX_BOOL" MATCHES "^HAVE_CXX_BOOL$")
 
@@ -413,17 +413,17 @@ IF("HAVE_POINTER_TYPE_PTHREAD_T" MATCHES "^HAVE_POINTER_TYPE_PTHREAD_T$")
   IF(NOT HAVE_INT_TYPE_PTHREAD_T)
     MESSAGE(STATUS "Checking whether pthread_t is a pointer type -- yes")
     SET(HAVE_POINTER_TYPE_PTHREAD_T 1 CACHE INTERNAL "Set if pthread_t is a pointer type")
-    WRITE_FILE(${CMAKE_BINARY_DIR}/CMakeFiles/CMakeOutput.log
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
       "Determining if the C++ compiler supports type bool "
       "passed with the following output:\n"
-      "${OUTPUT}\n" APPEND)
+      "${OUTPUT}\n")
   ELSE(NOT HAVE_INT_TYPE_PTHREAD_T)
     MESSAGE(STATUS "Checking whether pthread_t is a pointer type -- no")
     SET(HAVE_POINTER_TYPE_PTHREAD_T 0 CACHE INTERNAL "Set if pthread_t is a pointer type")
-    WRITE_FILE(${CMAKE_BINARY_DIR}/CMakeFiles/CMakeError.log
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
       "Determining if pthread_t is a pointer type "
       "failed with the following output:\n"
-      "${OUTPUT}\n" APPEND)
+      "${OUTPUT}\n")
   ENDIF(NOT HAVE_INT_TYPE_PTHREAD_T)
 ENDIF("HAVE_POINTER_TYPE_PTHREAD_T" MATCHES "^HAVE_POINTER_TYPE_PTHREAD_T$")
 
@@ -437,16 +437,16 @@ IF("HAVE_TYPENAME" MATCHES "^HAVE_TYPENAME$")
   IF(HAVE_TYPENAME)
     MESSAGE(STATUS "Checking whether typename works correctly -- yes")
     SET(HAVE_TYPENAME 1 CACHE INTERNAL "Set if typename works correctly")
-    WRITE_FILE(${CMAKE_BINARY_DIR}/CMakeFiles/CMakeOutput.log
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
       "Determining if the C++ compiler supports typename"
       "passed with the following output:\n"
-      "${OUTPUT}\n" APPEND)
+      "${OUTPUT}\n")
   ELSE(HAVE_TYPENAME)
     MESSAGE(STATUS "Checking whether typename works correctly -- no")
     SET(HAVE_TYPENAME 0 CACHE INTERNAL "Set if typename works correctly")
-    WRITE_FILE(${CMAKE_BINARY_DIR}/CMakeFiles/CMakeError.log
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
       "Determining if the C++ compiler supports typename"
       "failed with the following output:\n"
-      "${OUTPUT}\n" APPEND)
+      "${OUTPUT}\n")
   ENDIF(HAVE_TYPENAME)
 ENDIF("HAVE_TYPENAME" MATCHES "^HAVE_TYPENAME$")

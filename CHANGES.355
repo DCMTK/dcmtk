@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.07.16 (schlachter)
 
+- Only generate a single CMakeOutput.log and CMakeError.log. Previously, our own
+  code used a different path than CMake itself and we got four log files.
+  Affects: CMake/CheckFunctionWithHeaderExists.cmake
+           CMake/GenerateDCMTKConfigure.cmake
+
 - Update the affected CMake file in config/changext.
   Affects: config/changext
 
