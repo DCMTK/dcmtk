@@ -617,7 +617,7 @@
 #cmakedefine  HAVE_TMPNAM @HAVE_TMPNAM@
 
 /* define if the compiler recognizes typename */
-#define HAVE_TYPENAME 1
+#cmakedefine HAVE_TYPENAME @HAVE_TYPENAME@
 
 /* Define to 1 if you have the `uname' function. */
 #cmakedefine  HAVE_UNAME @HAVE_UNAME@

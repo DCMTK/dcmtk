@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.16 (schlachter)
+
+- Added a check to CMake for a broken 'typename' implementation.
+  Added:   CMake/dcmtkTestTypename.cc
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+
 **** Changes from 2010.07.07 (onken)
 
 - Changed binary OR to logical OR (error introduced by last commit).

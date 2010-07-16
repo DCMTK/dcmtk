@@ -426,3 +426,27 @@ IF("HAVE_POINTER_TYPE_PTHREAD_T" MATCHES "^HAVE_POINTER_TYPE_PTHREAD_T$")
       "${OUTPUT}\n" APPEND)
   ENDIF(NOT HAVE_INT_TYPE_PTHREAD_T)
 ENDIF("HAVE_POINTER_TYPE_PTHREAD_T" MATCHES "^HAVE_POINTER_TYPE_PTHREAD_T$")
+
+# check if typename works properly. Only MSC6 really fails here.
+IF("HAVE_TYPENAME" MATCHES "^HAVE_TYPENAME$")
+  MESSAGE(STATUS "Checking whether typename works correctly")
+  TRY_COMPILE(HAVE_TYPENAME
+    ${CMAKE_BINARY_DIR}/CMakeTmp/Typename
+    ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestTypename.cc
+    OUTPUT_VARIABLE OUTPUT)
+  IF(HAVE_TYPENAME)
+    MESSAGE(STATUS "Checking whether typename works correctly -- yes")
+    SET(HAVE_TYPENAME 1 CACHE INTERNAL "Set if typename works correctly")
+    WRITE_FILE(${CMAKE_BINARY_DIR}/CMakeFiles/CMakeOutput.log
+      "Determining if the C++ compiler supports typename"
+      "passed with the following output:\n"
+      "${OUTPUT}\n" APPEND)
+  ELSE(HAVE_TYPENAME)
+    MESSAGE(STATUS "Checking whether typename works correctly -- no")
+    SET(HAVE_TYPENAME 0 CACHE INTERNAL "Set if typename works correctly")
+    WRITE_FILE(${CMAKE_BINARY_DIR}/CMakeFiles/CMakeError.log
+      "Determining if the C++ compiler supports typename"
+      "failed with the following output:\n"
+      "${OUTPUT}\n" APPEND)
+  ENDIF(HAVE_TYPENAME)
+ENDIF("HAVE_TYPENAME" MATCHES "^HAVE_TYPENAME$")
