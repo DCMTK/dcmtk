@@ -1,6 +1,21 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.16 (onken)
+
+- Fixed VC6 compilation and worked on Borland support.
+  Re-inserted some compiler definitions that were in old cfwin32.h but
+  are missing in the newly introduced CMake compilation mechanism:
+  Added some Visual Studio specific checks disabling some warnings
+  (4284 for <= VC6, 4996 and 4351 for > VC6). Added define for HAVE_VSNPRINTF
+  (<= VC6). Added _MT definition for Borland with threads. Moved some
+  compiler-specific textblocks in order to keep related definitions together.
+  Affects: CMake/osconfig.h.in
+
+- Introduced flag to increase internal compiler heap for VC6 since some systems
+  fail to compile dcmimgle with the default setting.
+  Affects: CMakeLists.txt
+
 **** Changes from 2010.07.16 (schlachter)
 
 - Only generate a single CMakeOutput.log and CMakeError.log. Previously, our own
