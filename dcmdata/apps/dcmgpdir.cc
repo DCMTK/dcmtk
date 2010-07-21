@@ -46,8 +46,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-21 13:29:48 $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  Update Date:      $Date: 2010-07-21 14:28:19 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -284,7 +284,7 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--recurse"))
         {
             opt_recurse = OFTrue;
-            if (opt_directory == NULL)
+            if ((opt_directory == NULL) || (strlen(opt_directory) == 0))
                 opt_directory = ".";
         }
         cmd.endOptionBlock();
@@ -596,6 +596,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
+ * Revision 1.93  2010-07-21 14:28:19  joergr
+ * Made sure that no NULL pointer is passed to the OFString constructor.
+ *
  * Revision 1.92  2010-07-21 13:29:48  joergr
  * Made sure that no NULL pointer is passed to the OFString constructor. This
  * occurred when option --recurse was used without --pattern, or option

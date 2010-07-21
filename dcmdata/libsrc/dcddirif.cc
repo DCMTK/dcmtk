@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-07-07 09:20:44 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-07-21 14:25:55 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2360,7 +2360,7 @@ OFCondition DicomDirInterface::loadAndCheckDicomFile(const char *filename,
     OFCondition result = EC_IllegalParameter;
     /* create fully qualified pathname of the DICOM file to be added */
     OFString pathname;
-    OFStandard::combineDirAndFilename(pathname, directory, filename, OFTrue /*allowEmptyDirName*/);
+    OFStandard::combineDirAndFilename(pathname, OFSTRING_GUARD(directory), OFSTRING_GUARD(filename), OFTrue /*allowEmptyDirName*/);
     DCMDATA_INFO("checking file: " << pathname);
     /* check filename */
     if (isFilenameValid(filename))
@@ -3912,12 +3912,12 @@ OFCondition DicomDirInterface::addDicomFile(const char *filename,
                                             const char *directory)
 {
     OFCondition result = EC_IllegalParameter;
-    /* first make sure that a DICOMDIR object exists */
+    /* first, make sure that a DICOMDIR object exists */
     if (DicomDir != NULL)
     {
         /* create fully qualified pathname of the DICOM file to be added */
         OFString pathname;
-        OFStandard::combineDirAndFilename(pathname, directory, filename, OFTrue /*allowEmptyDirName*/);
+        OFStandard::combineDirAndFilename(pathname, OFSTRING_GUARD(directory), OFSTRING_GUARD(filename), OFTrue /*allowEmptyDirName*/);
         /* then check the file name, load the file and check the content */
         DcmFileFormat fileformat;
         result = loadAndCheckDicomFile(filename, directory, fileformat);
@@ -4849,6 +4849,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.38  2010-07-21 14:25:55  joergr
+ *  Made sure that no NULL pointer is passed to the OFString constructor.
+ *
  *  Revision 1.37  2010-07-07 09:20:44  onken
  *  Changed binary OR to logical OR (error introduced by last commit).
  *
