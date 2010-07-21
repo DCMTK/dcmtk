@@ -46,15 +46,16 @@ OPTION(DCMTK_WITH_DOXYGEN "Build API documentation with doxygen" ON)
 SET(DCMTK_INCLUDE_DIR
   ${DCMTK_BINARY_DIR}/include
   #${DCMTK_SOURCE_DIR}/config/include
-  ${DCMTK_SOURCE_DIR}/dcmimgle/include
   ${DCMTK_SOURCE_DIR}/ofstd/include
   ${DCMTK_SOURCE_DIR}/oflog/include
   ${DCMTK_SOURCE_DIR}/dcmdata/include
+  ${DCMTK_SOURCE_DIR}/dcmimgle/include
   ${DCMTK_SOURCE_DIR}/dcmimage/include
   ${DCMTK_SOURCE_DIR}/dcmjpeg/libijg8
   ${DCMTK_SOURCE_DIR}/dcmjpeg/libijg12
   ${DCMTK_SOURCE_DIR}/dcmjpeg/libijg16
   ${DCMTK_SOURCE_DIR}/dcmjpeg/include
+  ${DCMTK_SOURCE_DIR}/dcmjpls/include
   ${DCMTK_SOURCE_DIR}/dcmnet/include
   ${DCMTK_SOURCE_DIR}/dcmpstat/include
   ${DCMTK_SOURCE_DIR}/dcmsr/include
@@ -199,8 +200,13 @@ IF(WIN32)
       ENDIF(NOT MINGW)
     ENDIF(NOT CYGWIN)
   ENDIF(NOT BORLAND)
+ELSE(WIN32)
+  # compiler flags for non-windows systems
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L")
 ENDIF(WIN32)
 
+# define libraries that must be linked to most windows applications
 IF(WIN32)
   SET(WIN32_STD_LIBRARIES ws2_32 netapi32 wsock32)
 ENDIF(WIN32)
