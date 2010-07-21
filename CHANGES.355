@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.07.21 (riesmeier)
 
+- Made sure that no NULL pointer is passed to the OFString constructor. This
+  occurred when option --recurse was used without --pattern, or option
+  --no-recurse was used without --input-directory.
+  Affects: dcmdata/apps/dcmgpdir.cc
+
 - Fixed CVS log entry and updated copyright date.
   Affects: dcmimgle/libsrc/dimoimg.cc
 

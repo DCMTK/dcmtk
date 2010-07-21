@@ -46,8 +46,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-23 15:17:24 $
- *  CVS/RCS Revision: $Revision: 1.91 $
+ *  Update Date:      $Date: 2010-07-21 13:29:48 $
+ *  CVS/RCS Revision: $Revision: 1.92 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,8 +111,8 @@ int main(int argc, char *argv[])
     const char *opt_fileset = DEFAULT_FILESETID;
     const char *opt_descriptor = NULL;
     const char *opt_charset = DEFAULT_DESCRIPTOR_CHARSET;
-    const char *opt_directory = NULL;
-    const char *opt_pattern = NULL;
+    const char *opt_directory = "";
+    const char *opt_pattern = "";
     DicomDirInterface::E_ApplicationProfile opt_profile = DicomDirInterface::AP_GeneralPurpose;
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
@@ -596,6 +596,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
+ * Revision 1.92  2010-07-21 13:29:48  joergr
+ * Made sure that no NULL pointer is passed to the OFString constructor. This
+ * occurred when option --recurse was used without --pattern, or option
+ * --no-recurse was used without --input-directory.
+ *
  * Revision 1.91  2010-03-23 15:17:24  joergr
  * Use printError() method for command line parsing errors only. After the
  * resource identifier has been printed to the log stream use "oflog" instead.
