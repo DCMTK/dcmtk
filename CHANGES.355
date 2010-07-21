@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.07.21 (riesmeier)
 
+- Made sure that no NULL pointer is passed to the OFString constructor. This
+  occurred when option --scan-directories was used without --scan-pattern.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmnet/apps/storescu.cc
+
 - Fixed possibly wrong calculation of rangeToBits() for negative values.
   Thanks to forum user "takeos" for the report and suggested fix.
   Affects: dcmimgle/libsrc/diutils.cc

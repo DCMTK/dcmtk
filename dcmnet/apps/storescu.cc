@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-09 20:00:46 $
- *  CVS/RCS Revision: $Revision: 1.91 $
+ *  Update Date:      $Date: 2010-07-21 12:54:05 $
+ *  CVS/RCS Revision: $Revision: 1.92 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,7 +108,7 @@ static E_FileReadMode opt_readMode = ERM_autoDetect;
 
 static OFBool opt_scanDir = OFFalse;
 static OFBool opt_recurse = OFFalse;
-static const char *opt_scanPattern = NULL;
+static const char *opt_scanPattern = "";
 
 static OFBool opt_haltOnUnsuccessfulStore = OFTrue;
 static OFBool unsuccessfulStoreEncountered = OFFalse;
@@ -1735,6 +1735,10 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.92  2010-07-21 12:54:05  joergr
+** Made sure that no NULL pointer is passed to the OFString constructor. This
+** occurred when option --scan-directories was used without --scan-pattern.
+**
 ** Revision 1.91  2010-06-09 20:00:46  joergr
 ** Fixed wrong option text introduced with last commit.
 **

@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-23 15:17:24 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Update Date:      $Date: 2010-07-21 12:54:45 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
     OFBool stopOnErrors = OFTrue;
     OFBool scanDir = OFFalse;
     OFBool recurse = OFFalse;
-    const char *scanPattern = NULL;
+    const char *scanPattern = "";
     const char *pixelDirectory = NULL;
 
 #ifdef HAVE_GUSI_H
@@ -743,6 +743,10 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.83  2010-07-21 12:54:45  joergr
+ * Made sure that no NULL pointer is passed to the OFString constructor. This
+ * occurred when option --scan-directories was used without --scan-pattern.
+ *
  * Revision 1.82  2010-03-23 15:17:24  joergr
  * Use printError() method for command line parsing errors only. After the
  * resource identifier has been printed to the log stream use "oflog" instead.
