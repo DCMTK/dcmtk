@@ -22,8 +22,8 @@
  *  Purpose: Utilities (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-02-23 16:42:15 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2010-07-21 08:56:23 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,8 +66,8 @@ unsigned int DicomImageClass::rangeToBits(double minvalue,
     if (minvalue < 0)
     {
         if (fabs(minvalue) > fabs(maxvalue))
-            return tobits(OFstatic_cast(unsigned long, fabs(minvalue)), 0) + 1;
-        else
+            return tobits(OFstatic_cast(unsigned long, fabs(minvalue)), 1) + 1;
+        else /* 'minvalue' is negative, 'maxvalue' is positive */
             return tobits(OFstatic_cast(unsigned long, fabs(maxvalue)), 0) + 1;
     }
     return tobits(OFstatic_cast(unsigned long, maxvalue), 0);
@@ -152,6 +152,9 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
  *
  * CVS/RCS Log:
  * $Log: diutils.cc,v $
+ * Revision 1.21  2010-07-21 08:56:23  joergr
+ * Fixed possibly wrong calculation of rangeToBits() for negative values.
+ *
  * Revision 1.20  2010-02-23 16:42:15  joergr
  * Added new helper function which determines whether an integer representation
  * is signed or unsigned.

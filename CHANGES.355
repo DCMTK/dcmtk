@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.21 (riesmeier)
+
+- Fixed possibly wrong calculation of rangeToBits() for negative values.
+  Thanks to forum user "takeos" for the report and suggested fix.
+  Affects: dcmimgle/libsrc/diutils.cc
+
 **** Changes from 2010.07.16 (onken)
 
 - Fixed VC6 compilation and worked on Borland support.
@@ -43,7 +49,7 @@ Changes between releases are documented here.
   Klotz <Peter.Klotz@ith-icoserve.com> for the hint and patch.
   Affects: dcmqrdb/docs/dcmqrscp.man
            doxygen/manpages/man1/dcmqrscp.1
-           
+
 - Added Ophthalmic Tomography Image Storage to list of supported SOP classes.
   Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
            dcmdata/libsrc/dcddirif.cc
@@ -58,8 +64,8 @@ Changes between releases are documented here.
            doxygen/manpages/man1/dcmqrscp.1
            doxygen/manpages/man1/storescp.1
            doxygen/manpages/man1/storescu.1
- 
- **** Changes from 2010.07.06 (onken)
+
+**** Changes from 2010.07.06 (onken)
 
 - Fixed status flag in dictionary denoting that a dictionary is loaded which
   was not set if a single dictionary was loaded explicitly with
