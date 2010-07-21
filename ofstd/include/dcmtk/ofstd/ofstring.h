@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2009, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-04-26 12:22:30 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-07-21 14:25:10 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,11 @@
 
 #include "dcmtk/ofstd/oftypes.h"       /* for OFBool */
 #include "dcmtk/ofstd/ofcast.h"
+
+
+// makes sure than result is never NULL
+#define OFSTRING_GUARD(c_string) ((c_string != NULL) ? (c_string) : "")
+
 
 #ifdef HAVE_STD_STRING
 /*
@@ -1104,6 +1109,10 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
+** Revision 1.27  2010-07-21 14:25:10  joergr
+** Introduced new guard macro that makes sure that a C string is never NULL.
+** Useful when passing a C string to a OFString constructor or an output stream.
+**
 ** Revision 1.26  2010-04-26 12:22:30  uli
 ** Fixed a some minor doxygen warnings.
 **
