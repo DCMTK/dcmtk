@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:30:54 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Update Date:      $Date: 2010-07-21 13:08:00 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -653,7 +653,7 @@ int DiMonoImage::processNextFrames(const unsigned long fcount)
         delete InterData;
         InterData = NULL;
         DiMonoModality *modality = new DiMonoModality(Document, InputData);
-        Init(modality);
+        Init(modality, OFTrue /* reuse */);
         return (ImageStatus == EIS_Normal);
     }
     return 0;
@@ -662,15 +662,20 @@ int DiMonoImage::processNextFrames(const unsigned long fcount)
 /*********************************************************************/
 
 
-void DiMonoImage::Init(DiMonoModality *modality)
+void DiMonoImage::Init(DiMonoModality *modality,
+                       const OFBool reuse)
 {
     if (modality != NULL)
     {
-        Overlays[0] = new DiOverlay(Document, BitsAllocated, BitsStored, HighBit);
-        if ((Overlays[0] != NULL) && !(Document->getFlags() & CIF_UsePresentationState))
-            Overlays[0]->showAllPlanes();                       // default: show all overlays with stored modes
-        if ((Overlays[0] == NULL) || (Overlays[0]->getCount() == 0) || (!Overlays[0]->hasEmbeddedData()))
-            detachPixelData();                                  // no longer needed, save memory
+        /* only create new overlay object if none exists */
+        if (Overlays[0] == NULL)
+        {
+            Overlays[0] = new DiOverlay(Document, BitsAllocated, BitsStored, HighBit);
+            if ((Overlays[0] != NULL) && !(Document->getFlags() & CIF_UsePresentationState))
+                Overlays[0]->showAllPlanes();               // default: show all overlays with stored modes
+            if ((Overlays[0] == NULL) || (Overlays[0]->getCount() == 0) || (!Overlays[0]->hasEmbeddedData()))
+                detachPixelData();                          // no longer needed, save memory
+        }
         switch (InputData->getRepresentation())
         {
             case EPR_Uint8:
@@ -695,27 +700,30 @@ void DiMonoImage::Init(DiMonoModality *modality)
         deleteInputData();                                  // no longer needed, save memory
         if (modality->getBits() > 0)
             BitsPerSample = modality->getBits();            // get bit depth of internal representation
-        /* get grayscale related attributes */
-        if (checkInterData() && !(Document->getFlags() & CIF_UsePresentationState))
+        if (checkInterData())
         {
-            /* VOI windows */
-            WindowCount = Document->getVM(DCM_WindowCenter);
-            const unsigned long count = Document->getVM(DCM_WindowWidth);
-            if (count < WindowCount)                        // determine number of VOI windows
-                WindowCount = count;
-            /* VOI LUT */
-            DcmSequenceOfItems *seq = NULL;
-            VoiLutCount = Document->getSequence(DCM_VOILUTSequence, seq);
-            /* Presentation LUT Shape */
-            OFString str;
-            if (Document->getValue(DCM_PresentationLUTShape, str))
+            /* get grayscale related attributes (if desired) */
+            if (!reuse && !(Document->getFlags() & CIF_UsePresentationState))
             {
-                if (str == "IDENTITY")
-                    PresLutShape = ESP_Identity;
-                else if (str == "INVERSE")
-                    PresLutShape = ESP_Inverse;
-                else
-                    DCMIMGLE_WARN("unknown value for 'PresentationLUTShape' (" << str << ") ... ignoring");
+                /* VOI windows */
+                WindowCount = Document->getVM(DCM_WindowCenter);
+                const unsigned long count = Document->getVM(DCM_WindowWidth);
+                if (count < WindowCount)                    // determine number of VOI windows
+                    WindowCount = count;
+                /* VOI LUT */
+                DcmSequenceOfItems *seq = NULL;
+                VoiLutCount = Document->getSequence(DCM_VOILUTSequence, seq);
+                /* Presentation LUT Shape */
+                OFString str;
+                if (Document->getValue(DCM_PresentationLUTShape, str))
+                {
+                    if (str == "IDENTITY")
+                        PresLutShape = ESP_Identity;
+                    else if (str == "INVERSE")
+                        PresLutShape = ESP_Inverse;
+                    else
+                        DCMIMGLE_WARN("unknown value for 'PresentationLUTShape' (" << str << ") ... ignoring");
+                }
             }
         }
     } else
@@ -2131,6 +2139,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.80  2010-07-21 13:08:00  joergr
+ * Fixed memory leak when using processNextFrames(): DiOverlay object was
+ * created multiple times. Thanks to forum user "takeos" for the report.
+ *
  * Revision 1.79  2009-11-25 16:30:54  joergr
  * Adapted code for new approach to access individual frames of a DICOM image.
  *
