@@ -220,7 +220,7 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_FUNCTION_EXISTS(usleep HAVE_USLEEP)
   CHECK_FUNCTION_EXISTS(waitpid HAVE_WAITPID)
   CHECK_FUNCTION_EXISTS(_findfirst HAVE__FINDFIRST)
-
+  
   SET(HEADERS)
 
   IF(HAVE_IOSTREAM_H)
@@ -338,8 +338,8 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_FUNCTIONWITHHEADER_EXISTS(std::vfprintf "${CXXHEADERS}" HAVE_PROTOTYPE_STD__VFPRINTF)
   CHECK_FUNCTIONWITHHEADER_EXISTS(std::vsnprintf "${CXXHEADERS}" HAVE_PROTOTYPE_STD__VSNPRINTF)
   CHECK_FUNCTIONWITHHEADER_EXISTS(_stricmp "${HEADERS}" HAVE_PROTOTYPE__STRICMP)
-  # in the following, "existence" is an (exchangeable) identifier that is needed for successful compile test
-  CHECK_FUNCTIONWITHHEADER_EXISTS("socklen_t existence" "${HEADERS}" HAVE_DECLARATION_SOCKLEN_T)
+  # "definition" is an (exchangeable) identifier that is needed for successful compile test
+  CHECK_FUNCTIONWITHHEADER_EXISTS("socklen_t definition" "${HEADERS}" HAVE_DECLARATION_SOCKLEN_T)
   CHECK_FUNCTIONWITHHEADER_EXISTS(gettimeofday "${HEADERS}" HAVE_PROTOTYPE_GETTIMEOFDAY)
   CHECK_FUNCTIONWITHHEADER_EXISTS(connect "${HEADERS}" HAVE_PROTOTYPE_CONNECT)
   CHECK_FUNCTIONWITHHEADER_EXISTS(mkstemp "${HEADERS}" HAVE_PROTOTYPE_MKSTEMP)
@@ -347,15 +347,25 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_FUNCTIONWITHHEADER_EXISTS(select "${HEADERS}" HAVE_PROTOTYPE_SELECT)
   CHECK_FUNCTIONWITHHEADER_EXISTS(strcasecmp "${HEADERS}" HAVE_PROTOTYPE_STRCASECMP)
   CHECK_FUNCTIONWITHHEADER_EXISTS(strncasecmp "${HEADERS}" HAVE_PROTOTYPE_STRNCASECMP)
-  # in the following, "existence" is an (exchangeable) identifier that is needed for successful compile test
-  CHECK_FUNCTIONWITHHEADER_EXISTS("std::ios_base::openmode existence" "${HEADERS}" HAVE_DECLARATION_STD__IOS_BASE__OPENMODE)
+  # "definition" is an (exchangeable) identifier that is needed for successful compile test
+  CHECK_FUNCTIONWITHHEADER_EXISTS("std::ios_base::openmode definition" "${HEADERS}" HAVE_DECLARATION_STD__IOS_BASE__OPENMODE)
   CHECK_FUNCTIONWITHHEADER_EXISTS(pthread_rwlock_init "${HEADERS}" HAVE_PTHREAD_RWLOCK)
 
   # TODO: Uncommented because it seems not to make sense. Remove if there are no complaints.
   #CHECK_LIBRARY_EXISTS(iostream "" "" HAVE_LIBIOSTREAM)
   #CHECK_LIBRARY_EXISTS(nsl "" "" HAVE_LIBNSL)
   #CHECK_LIBRARY_EXISTS(socket "" "" HAVE_LIBSOCKET)
-
+  
+  # Check for some type definitions needed by JasPer and defines them if necessary
+  # Even if not functions but types are looked for, the script works fine.
+  # "definition" is an (exchangeable) identifier that is needed for successful compile test
+  CHECK_FUNCTIONWITHHEADER_EXISTS("uchar definition" "${HEADERS}"        HAVE_UCHAR_TYPEDEF)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("ushort definition" "${HEADERS}"       HAVE_USHORT_TYPEDEF)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("uint definition" "${HEADERS}"         HAVE_UINT_TYPEDEF)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("ulong definition" "${HEADERS}"        HAVE_ULONG_TYPEDEF)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("longlong definition" "${HEADERS}"     HAVE_LONGLONG)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("ulonglong definition" "${HEADERS}"    HAVE_ULONGLONG)  
+  
 # tests that require a try-compile
 
 # check for HAVE_CXX_BOOL

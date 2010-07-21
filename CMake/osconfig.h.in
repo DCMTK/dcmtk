@@ -766,6 +766,31 @@
 #define ssize_t long
 #endif
 
+/* Set typedefs as needed for JasPer library */
+#cmakedefine HAVE_UCHAR_TYPEDEF
+#ifndef HAVE_UCHAR_TYPEDEF
+#define uchar unsigned char
+#endif
+
+#cmakedefine HAVE_USHORT_TYPEDEF
+#ifndef HAVE_USHORT_TYPEDEF
+#define ushort unsigned short
+#endif
+
+#cmakedefine HAVE_UINT_TYPEDEF
+#ifndef HAVE_UINT_TYPEDEF
+#define uint unsigned int
+#endif
+
+#cmakedefine HAVE_ULONG_TYPEDEF
+#ifndef HAVE_ULONG_TYPEDEF
+#define ulong unsigned long
+#endif
+
+/* evaluated by JasPer */
+#cmakedefine HAVE_LONGLONG
+#cmakedefine HAVE_ULONGLONG
+
  /* Additional settings for Borland C++ Builder */
 #ifdef __BORLANDC__
 #define _stricmp stricmp    // _stricmp in MSVC is stricmp in Borland C++

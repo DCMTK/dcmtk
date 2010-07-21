@@ -1,12 +1,20 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2010.07.21 (riesmeier)
+**** Changes from 2010.07.21 (onken)
 
-- Made sure that no NULL pointer is passed to the OFString constructor. This
-  occurred when option --recurse was used without --pattern, or option
-  --no-recurse was used without --input-directory.
-  Affects: dcmdata/apps/dcmgpdir.cc
+- Added some compiler definitions for unix systems that were not taken
+  over into cmake for unix. Added some missing include directories (did
+  not have any effect, so far).
+  Affects: CMakeLists.txt
+  
+- Added checks for uchar, ushort, uint, ulong, longlong and longlong needed
+  by private dcmjp2k module. Also introduced corresponding typedefs as needed
+  by dcmjp2k.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h
+
+**** Changes from 2010.07.21 (riesmeier)
 
 - Fixed CVS log entry and updated copyright date.
   Affects: dcmimgle/libsrc/dimoimg.cc
