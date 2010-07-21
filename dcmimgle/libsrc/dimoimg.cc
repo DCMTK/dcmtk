@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-21 13:08:00 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Update Date:      $Date: 2010-07-21 13:10:43 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2139,9 +2139,12 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.81  2010-07-21 13:10:43  joergr
+ * Fixed CVS log entry and updated copyright date.
+ *
  * Revision 1.80  2010-07-21 13:08:00  joergr
  * Fixed memory leak when using processNextFrames(): DiOverlay object was
- * created multiple times. Thanks to forum user "takeos" for the report.
+ * created multiple times.
  *
  * Revision 1.79  2009-11-25 16:30:54  joergr
  * Adapted code for new approach to access individual frames of a DICOM image.
