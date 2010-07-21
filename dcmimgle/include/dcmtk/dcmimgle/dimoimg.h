@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeImage (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:47 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-07-21 13:08:56 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -891,8 +891,10 @@ class DiMonoImage
     /** initialize internal data structures and member variables
      *
      ** @param  modality  pointer to object handling the modality transform
+     *  @param  reuse     reuse particular information determined in a previous call
      */
-    void Init(DiMonoModality *modality);
+    void Init(DiMonoModality *modality,
+              const OFBool reuse = OFFalse);
 
     /** initialize internal data structures (for Uint8)
      *
@@ -1149,6 +1151,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
+ * Revision 1.55  2010-07-21 13:08:56  joergr
+ * Fixed memory leak when using processNextFrames(): DiOverlay object was
+ * created multiple times.
+ *
  * Revision 1.54  2010-03-01 09:08:47  uli
  * Removed some unnecessary include directives in the headers.
  *

@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.07.21 (riesmeier)
 
+- Fixed memory leak when using processNextFrames(): DiOverlay object was
+  created multiple times. Thanks to forum user "takeos" for the report.
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
 - Made sure that no NULL pointer is passed to the OFString constructor. This
   occurred when option --scan-directories was used without --scan-pattern.
   Affects: dcmdata/apps/dcmdump.cc
