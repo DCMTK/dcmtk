@@ -1,13 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.22 (riesmeier)
+
+- Made sure that the size of the buffer for partial access to pixel data is
+  always an even number of bytes.
+  Thanks to Jeroen Eggermont <j.eggermont@lumc.nl> for the original report.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+
 **** Changes from 2010.07.21 (onken)
 
 - Added some compiler definitions for unix systems that were not taken
   over into cmake for unix. Added some missing include directories (did
   not have any effect, so far).
   Affects: CMakeLists.txt
-  
+
 - Added checks for uchar, ushort, uint, ulong, longlong and ulonglong needed
   by private dcmjp2k module. Also introduced corresponding typedefs as needed
   by dcmjp2k.

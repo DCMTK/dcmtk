@@ -22,8 +22,8 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-16 12:56:46 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2010-07-22 10:27:30 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -384,8 +384,9 @@ class DiInputPixelTemplate
 #ifdef DEBUG
             DCMIMGLE_TRACE("PixelCount: " << PixelCount << ", byteFactor: " << byteFactor << ", bytes_T1: " << bytes_T1 << ", count_T1: " << count_T1);
 #endif
-            /* allocate temporary buffer */
-            pixel = new T1[count_T1];
+            /* allocate temporary buffer, even number of bytes required for getUncompressedFrame() */
+            const Uint32 extraByte = ((sizeof(T1) == 1) && (count_T1 & 1)) ? 1 : 0;
+            pixel = new T1[count_T1 + extraByte];
             if (pixel != NULL)
             {
                 if (uncompressed)
@@ -409,8 +410,10 @@ class DiInputPixelTemplate
                     const Uint32 fsize = FrameSize * byteFactor;
                     for (Uint32 frame = 0; frame < NumberOfFrames; ++frame)
                     {
+                        /* make sure that the buffer always has an even number of bytes as required for getUncompressedFrame() */
+                        const Uint32 bufSize = (fsize & 1) ? fsize + 1 : fsize;
                         status = pixelData->getUncompressedFrame(document->getDataset(), FirstFrame + frame, fragment,
-                            OFreinterpret_cast(Uint8 *, pixel) + lengthBytes, fsize, decompressedColorModel, fileCache);
+                            OFreinterpret_cast(Uint8 *, pixel) + lengthBytes, bufSize, decompressedColorModel, fileCache);
                         if (status.good())
                         {
                             DCMIMGLE_TRACE("successfully decompressed frame " << FirstFrame + frame);
@@ -642,6 +645,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
+ * Revision 1.41  2010-07-22 10:27:30  joergr
+ * Made sure that the size of the buffer for partial access to pixel data is
+ * always an even number of bytes.
+ *
  * Revision 1.40  2010-04-16 12:56:46  joergr
  * Further enhanced computation of buffer size when using partial read access
  * to pixel data. Now also some rare cases of BitsAllocated are supported.
