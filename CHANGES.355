@@ -8,7 +8,7 @@ Changes between releases are documented here.
   not have any effect, so far).
   Affects: CMakeLists.txt
   
-- Added checks for uchar, ushort, uint, ulong, longlong and longlong needed
+- Added checks for uchar, ushort, uint, ulong, longlong and ulonglong needed
   by private dcmjp2k module. Also introduced corresponding typedefs as needed
   by dcmjp2k.
   Affects: CMake/GenerateDCMTKConfigure.cmake
