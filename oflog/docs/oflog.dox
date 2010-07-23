@@ -14,8 +14,9 @@ The main classes are (in alphabetical order):
 
 \section Files
 
-The following file provides a sample configuration and further documentation:
+The following files provide sample configurations and further documentation:
 \li \ref file_logger
+\li \ref file_filelog
 
 \section Examples
 
@@ -83,4 +84,8 @@ a line break.
 /*!
     \page file_logger logger.cfg file
     \verbinclude ../etc/logger.cfg
+*/
+/*!
+    \page file_filelog filelog.cfg file
+    \verbinclude ../etc/filelog.cfg
 */

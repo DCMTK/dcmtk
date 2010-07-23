@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.23 (riesmeier)
+
+- Added reference to extended sample configuration file to oflog documentation.
+  Affects: oflog/docs/oflog.dox
+
 **** Changes from 2010.07.22 (riesmeier)
 
 - Made sure that the size of the buffer for partial access to pixel data is
