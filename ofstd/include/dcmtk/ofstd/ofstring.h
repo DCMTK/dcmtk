@@ -22,8 +22,8 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-21 14:25:10 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2010-07-26 07:31:17 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@
 #include "dcmtk/ofstd/ofcast.h"
 
 
-// makes sure than result is never NULL
+// makes sure that resulting C string is never NULL
 #define OFSTRING_GUARD(c_string) ((c_string != NULL) ? (c_string) : "")
 
 
@@ -1109,6 +1109,9 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
+** Revision 1.28  2010-07-26 07:31:17  joergr
+** Fixed typo (and revised documentation on the OFSTRING_GUARD macro).
+**
 ** Revision 1.27  2010-07-21 14:25:10  joergr
 ** Introduced new guard macro that makes sure that a C string is never NULL.
 ** Useful when passing a C string to a OFString constructor or an output stream.
