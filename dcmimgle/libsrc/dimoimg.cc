@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-21 13:10:43 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Update Date:      $Date: 2010-07-26 07:24:08 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1165,7 +1165,7 @@ int DiMonoImage::setVoiLut(const DcmUnsignedShort &data,
     VoiLutData = new DiLookupTable(data, descriptor, explanation, descripMode);
     if (VoiLutData != NULL)
     {
-        VoiExplanation = VoiLutData->getExplanation();
+        VoiExplanation = OFSTRING_GUARD(VoiLutData->getExplanation());
         return VoiLutData->isValid();
     }
     VoiExplanation = "";
@@ -1184,7 +1184,7 @@ int DiMonoImage::setVoiLut(const unsigned long pos,
             DCM_LUTExplanation, descripMode, pos, &VoiLutCount);
         if (VoiLutData != NULL)
         {
-            VoiExplanation = VoiLutData->getExplanation();
+            VoiExplanation = OFSTRING_GUARD(VoiLutData->getExplanation());
             return VoiLutData->isValid();
         }
         VoiExplanation = "";
@@ -2139,6 +2139,9 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.82  2010-07-26 07:24:08  joergr
+ * Made sure that no NULL pointer is passed to the OFString constructor.
+ *
  * Revision 1.81  2010-07-21 13:10:43  joergr
  * Fixed CVS log entry and updated copyright date.
  *
