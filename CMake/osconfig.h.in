@@ -769,22 +769,22 @@
 /* Set typedefs as needed for JasPer library */
 #cmakedefine HAVE_UCHAR_TYPEDEF
 #ifndef HAVE_UCHAR_TYPEDEF
-#define uchar unsigned char
+typedef unsigned char uchar;
 #endif
 
 #cmakedefine HAVE_USHORT_TYPEDEF
 #ifndef HAVE_USHORT_TYPEDEF
-#define ushort unsigned short
+typedef unsigned short ushort;
 #endif
 
 #cmakedefine HAVE_UINT_TYPEDEF
 #ifndef HAVE_UINT_TYPEDEF
-#define uint unsigned int
+typedef unsigned int uint;
 #endif
 
 #cmakedefine HAVE_ULONG_TYPEDEF
 #ifndef HAVE_ULONG_TYPEDEF
-#define ulong unsigned long
+typedef unsigned long ulong;
 #endif
 
 /* evaluated by JasPer */

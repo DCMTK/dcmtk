@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.27 (onken)
+
+- Changed lately introduced defines for uchar, ushort, uint, ulong to typedefs
+  to be more consistend with old cfunix.h behaviour and to not collide with QT.
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for hint and suggested
+  patch.
+  Affects: CMake/osconfig.h.in
+
 **** Changes from 2010.07.26 (riesmeier)
 
 - Made sure that no NULL pointer is passed to the OFString constructor. Thanks
