@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.26 (riesmeier)
+
+- Changed value of _XOPEN_SOURCE for FreeBSD systems to 600 in order to enable
+  certain features of unistd.h. Thanks to Pietro Cerutti <gahr@FreeBSD.org> for
+  the report and suggested patch.
+  Affects: config/configure
+           config/configure.in
+
 **** Changes from 2010.07.27 (onken)
 
 - Changed lately introduced defines for uchar, ushort, uint, ulong to typedefs
