@@ -21,9 +21,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-09 15:53:34 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-07-30 16:52:51 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,7 @@ const unsigned short OFM_dcmwave  = 20;
 const unsigned short OFM_dcmrt    = 21;
 const unsigned short OFM_dcmloco  = 22;
 const unsigned short OFM_dcmstcom = 23;
+const unsigned short OFM_dcmppscu = 24;
 
 
 // condition constants
@@ -144,6 +145,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.35  2010-07-30 16:52:51  onken
+** Added error code for new (non-public) module dcmppscu.
+**
 ** Revision 1.34  2010-06-09 15:53:34  joergr
 ** Added number for new module "dcmstcom", used for module-specific error codes.
 **

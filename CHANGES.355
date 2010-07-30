@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.07.30 (onken)
+
+- Added error code for new (non-public) module dcmppscu.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+
 **** Changes from 2010.07.26 (riesmeier)
 
 - Changed value of _XOPEN_SOURCE for FreeBSD systems to 600 in order to enable
