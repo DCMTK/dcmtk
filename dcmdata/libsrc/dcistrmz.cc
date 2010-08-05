@@ -22,9 +22,9 @@
  *  Purpose: zlib compression filter for input streams
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-22 11:39:54 $
+ *  Update Date:      $Date: 2010-08-05 08:38:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmz.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -309,7 +309,7 @@ offile_off_t DcmZLibInputFilter::decompress(const void *buf, offile_off_t buflen
 #ifdef DEBUG
        if (!eos_)
        {
-         offile_off_t count = inputBufCount_ - (numBytes - (offile_off_t)(zstream_->avail_in));
+         offile_off_t count = inputBufCount_ - (numBytes - OFstatic_cast(offile_off_t, zstream_->avail_in));
          if (count > 2)
          {
            /* we silently ignore up to two trailing bytes after the end of the
@@ -354,7 +354,7 @@ offile_off_t DcmZLibInputFilter::decompress(const void *buf, offile_off_t buflen
 #ifdef DEBUG
           if (!eos_)
           {
-             offile_off_t count = (offile_off_t)(zstream_->avail_in);
+             offile_off_t count = OFstatic_cast(offile_off_t, zstream_->avail_in);
              if (count > 2)
              {
                /* we silently ignore up to two trailing bytes after the end of the
@@ -433,6 +433,9 @@ void dcistrmz_dummy_function()
 /*
  * CVS/RCS Log:
  * $Log: dcistrmz.cc,v $
+ * Revision 1.11  2010-08-05 08:38:10  uli
+ * Fixed some warnings from -Wold-style-cast.
+ *
  * Revision 1.10  2010-02-22 11:39:54  uli
  * Remove some unneeded includes.
  *

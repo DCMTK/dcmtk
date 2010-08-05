@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSTransportLayer
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-02 12:32:58 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-05 08:38:11 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,7 @@ extern "C" int DcmTLSTransportLayer_passwordCallback(char *buf, int size, int rw
 int DcmTLSTransportLayer_passwordCallback(char *buf, int size, int /* rwflag */, void *userdata)
 {
   if (userdata == NULL) return -1;
-  OFString *password = (OFString *)userdata;
+  OFString *password = OFreinterpret_cast(OFString *, userdata);
   int passwordSize = password->length();
   if (passwordSize > size) passwordSize = size;
   strncpy(buf, password->c_str(), passwordSize);
@@ -390,7 +390,7 @@ void DcmTLSTransportLayer::seedPRNG(const char *randFile)
 
 void DcmTLSTransportLayer::addPRNGseed(void *buf, size_t bufSize)
 {
-  RAND_seed(buf,(int) bufSize);
+  RAND_seed(buf,OFstatic_cast(int, bufSize));
 }
 
 OFBool DcmTLSTransportLayer::writeRandomSeed(const char *randFile)
@@ -424,7 +424,7 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
     {
       ASN1_UTCTIME_print(certValidNotBeforeBIO, X509_get_notBefore(peerCertificate));
       BIO_write(certValidNotBeforeBIO,"\0",1);
-      BIO_get_mem_data(certValidNotBeforeBIO, (char *)(&bufptr));
+      BIO_get_mem_data(certValidNotBeforeBIO, OFreinterpret_cast(char *, &bufptr));
       if (bufptr) certValidNotBefore = bufptr;
       BIO_free(certValidNotBeforeBIO);
     }
@@ -434,7 +434,7 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
     {
       ASN1_UTCTIME_print(certValidNotAfterBIO, X509_get_notAfter(peerCertificate));
       BIO_write(certValidNotAfterBIO,"\0",1);
-      BIO_get_mem_data(certValidNotAfterBIO, (char *)(&bufptr));
+      BIO_get_mem_data(certValidNotAfterBIO, OFreinterpret_cast(char *, &bufptr));
       if (bufptr) certValidNotAfter = bufptr;
       BIO_free(certValidNotAfterBIO);
     }
@@ -489,6 +489,9 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
+ *  Revision 1.18  2010-08-05 08:38:11  uli
+ *  Fixed some warnings from -Wold-style-cast.
+ *
  *  Revision 1.17  2010-06-02 12:32:58  joergr
  *  Appended missing OFStringStream_ends to the end of output streams because
  *  this is required when OFOStringStream is mapped to ostrstream.

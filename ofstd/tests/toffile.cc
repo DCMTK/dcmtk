@@ -22,9 +22,9 @@
  *  Purpose: test program for the non-trivial fseek and ftell implementations
  *           in class OFFile
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-07 16:18:48 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-05 08:38:11 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ OFBool fillFile(OFFile& file)
 
 Uint32 myRand(Uint32 max)
 {
-   return (Uint32)(((double)max) * rand() / RAND_MAX); // 0.. max * RAND_MAX
+   return OFstatic_cast(Uint32, (OFstatic_cast(double, max) * rand() / RAND_MAX)); // 0.. max * RAND_MAX
 }
 
 OFBool seekFile(OFFile &file)
@@ -118,7 +118,7 @@ OFBool seekFile(OFFile &file)
       if (v != pos / sizeof(Uint32))
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_SET) to block " << i << ": expected " 
-             << (unsigned long)(pos / sizeof(Uint32)) << ", found " << v << OFendl;
+             << OFstatic_cast(unsigned long, pos / sizeof(Uint32)) << ", found " << v << OFendl;
         return OFFalse;
       }
     }
@@ -162,7 +162,7 @@ OFBool seekFile(OFFile &file)
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_SET) to block " << block 
              << " offset " << offset << ": expected " 
-             << (unsigned long)(pos / sizeof(Uint32)) << ", found " << v << OFendl;
+             << OFstatic_cast(unsigned long, pos / sizeof(Uint32)) << ", found " << v << OFendl;
         return OFFalse;
       }
     }
@@ -181,7 +181,7 @@ OFBool seekFile(OFFile &file)
   // fseek to each 4th block using SEEK_END
   for (i=0; i < FILESIZE; i += 4)
   {
-    pos = (offile_off_t)-1 * (FILESIZE - i) * BLOCKSIZE * sizeof(Uint32);
+    pos = OFstatic_cast(offile_off_t, -1 * (FILESIZE - i) * BLOCKSIZE * sizeof(Uint32));
 
     result = file.fseek(pos, SEEK_END);
     if (result)
@@ -192,11 +192,11 @@ OFBool seekFile(OFFile &file)
     if (1 == file.fread(&v, sizeof(Uint32), 1))
     {
       // successfully read value. Now check if the value is correct.
-      expected = ((offile_off_t) BLOCKSIZE * i);
+      expected = OFstatic_cast(offile_off_t, BLOCKSIZE * i);
       if (v != expected)
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_END) to block " << FILESIZE-i << ": expected " 
-             << (unsigned long)expected << ", found " << v << OFendl;
+             << OFstatic_cast(unsigned long, expected) << ", found " << v << OFendl;
         return OFFalse;
       }
     }
@@ -226,7 +226,7 @@ OFBool seekFile(OFFile &file)
   {
     block = myRand(FILESIZE-2); // this avoids that pos can ever be 0, which would cause us to read after the end of file.
     offset = myRand(BLOCKSIZE-1);    
-    pos = (offile_off_t)-1 * (FILESIZE - block - 1) * BLOCKSIZE * sizeof(Uint32) + offset * sizeof(Uint32);
+    pos = OFstatic_cast(offile_off_t, -1 * (FILESIZE - block - 1) * BLOCKSIZE * sizeof(Uint32) + offset * sizeof(Uint32));
     result = file.fseek(pos, SEEK_END);
     if (result)
     {
@@ -236,12 +236,12 @@ OFBool seekFile(OFFile &file)
     if (1 == file.fread(&v, sizeof(Uint32), 1))
     {
       // successfully read value. Now check if the value is correct.
-      expected = ((offile_off_t)FILESIZE * BLOCKSIZE * sizeof(Uint32) + pos) / sizeof(Uint32);
+      expected = OFstatic_cast(offile_off_t, FILESIZE * BLOCKSIZE * sizeof(Uint32) + pos) / sizeof(Uint32);
       if (v != expected)
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_END) to block " << block 
              << " offset " << offset << ": expected " 
-             << (unsigned long)expected << ", found " << v << OFendl;
+             << OFstatic_cast(unsigned long, expected) << ", found " << v << OFendl;
         return OFFalse;
       }
     }
@@ -275,7 +275,7 @@ OFBool seekFile(OFFile &file)
       if (v != expected)
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_CUR) to block " << i << ": expected " 
-             << (unsigned long)expected << ", found " << v << OFendl;
+             << OFstatic_cast(unsigned long, expected) << ", found " << v << OFendl;
         return OFFalse;
       }
     }
@@ -321,7 +321,7 @@ OFBool seekFile(OFFile &file)
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_CUR) to block " << block 
              << " offset " << offset << ": expected " 
-             << (unsigned long)(pos / sizeof(Uint32)) << ", found " << v << OFendl;
+             << OFstatic_cast(unsigned long, pos / sizeof(Uint32)) << ", found " << v << OFendl;
         return OFFalse;
       }
       lastpos = pos+sizeof(Uint32); // we have read a few bytes from the stream, so our position has changed
@@ -343,7 +343,7 @@ int main()
   COUT << "Test program for LFS support in DCMTK class OFFile\n" << OFendl;
   
   // initialize random generator
-  srand((unsigned int)time(NULL));
+  srand(OFstatic_cast(unsigned int, time(NULL)));
 
   // check if typedefs are large enough
   COUT << "Checking typedefs.\n"
@@ -410,6 +410,9 @@ int main()
 /*
  * CVS/RCS Log:
  * $Log: toffile.cc,v $
+ * Revision 1.3  2010-08-05 08:38:11  uli
+ * Fixed some warnings from -Wold-style-cast.
+ *
  * Revision 1.2  2009-08-07 16:18:48  meichel
  * Fixed some seek offset computations in SEEK_END tests
  *

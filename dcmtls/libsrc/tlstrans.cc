@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSConnection
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-02 12:32:58 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-05 08:38:11 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -194,14 +194,14 @@ DcmTransportLayerStatus DcmTLSConnection::renegotiate(const char *newSuite)
 
 ssize_t DcmTLSConnection::read(void *buf, size_t nbyte)
 {
-  if (tlsConnection) return SSL_read(tlsConnection, (char*)buf, nbyte);
+  if (tlsConnection) return SSL_read(tlsConnection, OFreinterpret_cast(char*, buf), nbyte);
   errno = EIO; /* IO Error */
   return -1;
 }
 
 ssize_t DcmTLSConnection::write(void *buf, size_t nbyte)
 {
-  if (tlsConnection) return SSL_write(tlsConnection, (char*)buf, nbyte);
+  if (tlsConnection) return SSL_write(tlsConnection, OFreinterpret_cast(char*, buf), nbyte);
   errno = EIO; /* IO Error */
   return -1;
 }
@@ -225,7 +225,7 @@ unsigned long DcmTLSConnection::getPeerCertificateLength()
     X509 *peerCert = SSL_get_peer_certificate(tlsConnection);
     if (peerCert)
     {
-      result = (unsigned long) i2d_X509(peerCert, NULL);
+      result = OFstatic_cast(unsigned long, i2d_X509(peerCert, NULL));
     }
   }
   return result;
@@ -239,11 +239,11 @@ unsigned long DcmTLSConnection::getPeerCertificate(void *buf, unsigned long bufL
     X509 *peerCert = SSL_get_peer_certificate(tlsConnection);
     if (peerCert)
     {
-      unsigned long certSize = (unsigned long) i2d_X509(peerCert, NULL);
+      unsigned long certSize = OFstatic_cast(unsigned long, i2d_X509(peerCert, NULL));
       if (certSize <= bufLen)
       {
-      	unsigned char *p = (unsigned char *)buf;
-        result = (unsigned long) i2d_X509(peerCert, &p);
+        unsigned char *p = OFreinterpret_cast(unsigned char *, buf);
+        result = OFstatic_cast(unsigned long, i2d_X509(peerCert, &p));
       }
     }
   }
@@ -347,6 +347,9 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
+ *  Revision 1.16  2010-08-05 08:38:11  uli
+ *  Fixed some warnings from -Wold-style-cast.
+ *
  *  Revision 1.15  2010-06-02 12:32:58  joergr
  *  Appended missing OFStringStream_ends to the end of output streams because
  *  this is required when OFOStringStream is mapped to ostrstream.

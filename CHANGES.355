@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.05 (schlachter)
+
+- Fixed some warnings from -Wold-style-cast.
+  Affects: dcmdata/libi2d/i2dbmps.cc
+           dcmdata/libi2d/i2djpgs.cc
+           dcmdata/libsrc/dcistrmz.cc
+           dcmdata/tests/tstpread.cc
+           dcmtls/libsrc/tlslayer.cc
+           dcmtls/libsrc/tlstrans.cc
+           oflog/include/dcmtk/oflog/oflog.h
+           oflog/libsrc/sockbuff.cc
+           oflog/libsrc/unixsock.cc
+           ofstd/tests/toffile.cc
+
 **** Changes from 2010.07.30 (onken)
 
 - Added error code for new (non-public) module dcmppscu.

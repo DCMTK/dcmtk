@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-05-14 12:29:55 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2010-08-05 08:38:11 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,7 @@ public:
      *  @return the log level to which this logger is set.
      */
     LogLevel getChainedLogLevel() const {
-        return (LogLevel) Logger::getChainedLogLevel();
+        return OFstatic_cast(LogLevel, Logger::getChainedLogLevel());
     }
 };
 
@@ -162,6 +162,9 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.11  2010-08-05 08:38:11  uli
+ * Fixed some warnings from -Wold-style-cast.
+ *
  * Revision 1.10  2010-05-14 12:29:55  uli
  * Added new function OFLog::reconfigure() which reinterprets the logger config
  * file. This can e.g. be useful for logging to a different file after fork().

@@ -22,8 +22,8 @@
  *  Purpose: Test application for partial element access API
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:11 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-08-05 08:38:10 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,16 +70,16 @@ void createTestDataset(DcmDataset *dset, unsigned char *buffer)
   dset->putAndInsertUint8Array(DCM_EncapsulatedDocument, buffer, BUFSIZE);
 
   // short array, VR=US
-  dset->putAndInsertUint16Array(DCM_RWavePointer, (Uint16 *)buffer, BUFSIZE/sizeof(Uint16));
+  dset->putAndInsertUint16Array(DCM_RWavePointer, OFreinterpret_cast(Uint16 *, buffer), BUFSIZE/sizeof(Uint16));
 
   // long array, VR=UL
   DcmElement *elem = new DcmUnsignedLong(DCM_TableOfPixelValues);
-  elem->putUint32Array((Uint32 *)buffer, BUFSIZE/sizeof(Uint32));
+  elem->putUint32Array(OFreinterpret_cast(Uint32 *, buffer), BUFSIZE/sizeof(Uint32));
   dset->insert(elem);
 
   // double array, VR=FD
   elem = new DcmFloatingPointDouble(DCM_TableOfYBreakPoints);
-  elem->putFloat64Array((Float64 *)buffer, BUFSIZE/sizeof(Float64));
+  elem->putFloat64Array(OFreinterpret_cast(Float64 *, buffer), BUFSIZE/sizeof(Float64));
   dset->insert(elem);
 }
 
@@ -111,12 +111,12 @@ OFCondition sequentialNonOverlappingRead(DcmElement *delem, DcmFileCache *dcache
         str << "Expected: ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
-          str << STD_NAMESPACE hex << (int) (buffer[offset+i]) << " ";
+          str << STD_NAMESPACE hex << OFstatic_cast(int, buffer[offset+i]) << " ";
         }
         str << OFendl << "Found   : ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
-          str << STD_NAMESPACE hex << (int) (target[i]) << " ";
+          str << STD_NAMESPACE hex << OFstatic_cast(int, target[i]) << " ";
         }
         str << OFStringStream_ends;
 
@@ -161,12 +161,12 @@ OFCondition sequentialOverlappingRead(DcmElement *delem, DcmFileCache *dcache, u
         str << "Expected: ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
-          str << STD_NAMESPACE hex << (int) (buffer[offset+i]) << " ";
+          str << STD_NAMESPACE hex << OFstatic_cast(int, buffer[offset+i]) << " ";
         }
         str << OFendl << "Found   : ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
-          str << STD_NAMESPACE hex << (int) (target[i]) << " ";
+          str << STD_NAMESPACE hex << OFstatic_cast(int, target[i]) << " ";
         }
         str << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(str, c_str)
@@ -212,12 +212,12 @@ OFCondition randomRead(DcmElement *delem, DcmFileCache *dcache, unsigned char *b
         str << "Expected: ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
-          str << STD_NAMESPACE hex << (int) (buffer[offset+i]) << " ";
+          str << STD_NAMESPACE hex << OFstatic_cast(int, buffer[offset+i]) << " ";
         }
         str << OFendl << "Found   : ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
-          str << STD_NAMESPACE hex << (int) (target[i]) << " ";
+          str << STD_NAMESPACE hex << OFstatic_cast(int, target[i]) << " ";
         }
         str << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(str, c_str)
@@ -386,7 +386,7 @@ int main(int argc, char *argv[])
     srand(time(NULL));
     for (int i = BUFSIZE; i; --i)
     {
-      *bufptr++ = (unsigned char) rand();
+      *bufptr++ = OFstatic_cast(unsigned char, rand());
     }
 
     createTestDataset(dfile.getDataset(), buffer);
@@ -470,6 +470,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: tstpread.cc,v $
+ * Revision 1.5  2010-08-05 08:38:10  uli
+ * Fixed some warnings from -Wold-style-cast.
+ *
  * Revision 1.4  2009-11-04 09:58:11  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

@@ -146,7 +146,7 @@ log4cplus::helpers::openSocket(unsigned short port, SocketState& state)
     int optval = 1;
     setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval) );
 
-    if(bind(sock, (struct sockaddr*)&server, sizeof(server)) < 0) {
+    if(bind(sock, OFreinterpret_cast(struct sockaddr*, &server), sizeof(server)) < 0) {
         return INVALID_SOCKET;
     }
 
@@ -203,7 +203,7 @@ log4cplus::helpers::acceptSocket(SOCKET_TYPE sock, SocketState& state)
     socklen_t len = sizeof(struct sockaddr);
     SOCKET_TYPE clientSock;
 
-    while(   (clientSock = ::accept(sock, (struct sockaddr*)&net_client, &len)) == -1
+    while(   (clientSock = ::accept(sock, OFreinterpret_cast(struct sockaddr*, &net_client), &len)) == -1
           && (errno == EINTR))
         ;
 

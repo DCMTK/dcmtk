@@ -21,9 +21,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:23:30 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-05 08:38:10 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,7 +126,7 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
   {
     if ( isSOFMarker((*entry)->marker) )
     {
-      jpegEncoding = (E_JPGMARKER) ((*entry)->marker);
+      jpegEncoding = OFstatic_cast(E_JPGMARKER, (*entry)->marker);
       break;
     }
     entry++;
@@ -694,7 +694,7 @@ int I2DJpegSource::read1Byte(Uint8& result)
   c = jpegFile.fgetc();
   if (c == EOF)
     return EOF;
-  result = (Uint8) c;
+  result = OFstatic_cast(Uint8, c);
   return 0;
 }
 
@@ -710,7 +710,7 @@ int I2DJpegSource::read2Bytes(Uint16& result)
   c2 = jpegFile.fgetc();
   if (c2 == EOF)
     return EOF;
-  result = (((Uint16) c1) << 8) + ((Uint16) c2);
+  result = ((OFstatic_cast(Uint16, c1)) << 8) + OFstatic_cast(Uint16, c2);
   return 0;
 }
 
@@ -761,7 +761,7 @@ OFCondition I2DJpegSource::nextMarker(const OFBool& lastWasSOSMarker,
   if (discarded_bytes != 0) {
     DCMDATA_LIBI2D_WARN("garbage data found in JPEG file");
   }
-  result = (E_JPGMARKER)c;
+  result = OFstatic_cast(E_JPGMARKER, c);
   return EC_Normal;
 }
 
@@ -776,12 +776,12 @@ OFCondition I2DJpegSource::firstMarker(E_JPGMARKER& result)
 {
   Uint8 c1, c2;
 
-  c1 = (Uint8)jpegFile.fgetc();
-  c2 = (Uint8)jpegFile.fgetc();
+  c1 = OFstatic_cast(Uint8, jpegFile.fgetc());
+  c2 = OFstatic_cast(Uint8, jpegFile.fgetc());
   if (c1 != 0xFF || c2 != E_JPGMARKER_SOI) {
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Not a JPEG file");
   }
-  result = (E_JPGMARKER)c2;
+  result = OFstatic_cast(E_JPGMARKER, c2);
   return EC_Normal;
 }
 
@@ -906,6 +906,9 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.14  2010-08-05 08:38:10  uli
+ * Fixed some warnings from -Wold-style-cast.
+ *
  * Revision 1.13  2009-11-13 13:23:30  joergr
  * Fixed minor issues in log output.
  *

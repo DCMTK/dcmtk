@@ -23,8 +23,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-08 14:39:12 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2010-08-05 08:38:10 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -231,7 +231,7 @@ OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
   if (readWord(tmp_word) != 0)
     return EC_EndOfStream;
   bpp = tmp_word;
-  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: BMP bpp: " << (int) bpp);
+  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: BMP bpp: " << OFstatic_cast(int, bpp));
 
   /* Compression info */
   if (readDWord(tmp_dword) != 0)
@@ -561,7 +561,7 @@ int I2DBmpSource::readWord(Uint16& result)
   c2 = bmpFile.fgetc();
   if (c2 == EOF)
     return EOF;
-  result = (((Uint16) c2) << 8) + ((Uint16) c1);
+  result = (OFstatic_cast(Uint16, c2) << 8) + OFstatic_cast(Uint16, c1);
   return 0;
 }
 
@@ -583,10 +583,10 @@ int I2DBmpSource::readDWord(Uint32& result)
   c4 = bmpFile.fgetc();
   if (c4 == EOF)
     return EOF;
-  result = (((Uint32) c4) << 24) +
-           (((Uint32) c3) << 16) +
-           (((Uint32) c2) <<  8) +
-            ((Uint32) c1);
+  result = (OFstatic_cast(Uint32, c4) << 24) +
+           (OFstatic_cast(Uint32, c3) << 16) +
+           (OFstatic_cast(Uint32, c2) <<  8) +
+            OFstatic_cast(Uint32, c1);
   return 0;
 }
 
@@ -604,7 +604,7 @@ int I2DBmpSource::readLong(Sint32& result)
   if (tmp & (1 << 31))
   {
     /* If the highest bit is set, it is a negative number, convert it */
-    result = -((Sint32) ~(tmp - 1));
+    result = -(OFstatic_cast(Sint32, ~(tmp - 1)));
   }
   else
   {
@@ -633,6 +633,9 @@ I2DBmpSource::~I2DBmpSource()
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.cc,v $
+ * Revision 1.12  2010-08-05 08:38:10  uli
+ * Fixed some warnings from -Wold-style-cast.
+ *
  * Revision 1.11  2010-06-08 14:39:12  uli
  * Check for premature file ending while reading the pixel data.
  *
