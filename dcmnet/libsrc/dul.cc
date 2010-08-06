@@ -54,9 +54,9 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: joergr $, $Date: 2010-06-16 08:45:21 $
+** Last Update:   $Author: uli $, $Date: 2010-08-06 08:41:36 $
 ** Source File:   $RCSfile: dul.cc,v $
-** Revision:      $Revision: 1.87 $
+** Revision:      $Revision: 1.88 $
 ** Status:        $State: Exp $
 */
 
@@ -1421,6 +1421,8 @@ DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
         0,                      /* peer max pdu */
         NULL,                   /* Requested Extended Negotation List */
         NULL,                   /* Accepted Extended Negotation List */
+        NULL,                   /* Requested User Identify Negotiation */
+        NULL,                   /* Accepted User Identify Negotiation */
         OFFalse                 /* don't use Secure Transport Layer */
     };
 
@@ -2718,6 +2720,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.88  2010-08-06 08:41:36  uli
+** Fixed some more compiler warnings.
+**
 ** Revision 1.87  2010-06-16 08:45:21  joergr
 ** Introduced a new timeout of 60 seconds for the recv() function in order to
 ** make sure that the association is terminated if the receiver looses the

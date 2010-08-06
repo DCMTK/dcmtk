@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2005, OFFIS
+ *  Copyright (C) 2003-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements PNG interface for plugable image formats
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:26 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-06 08:41:36 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,7 +214,10 @@ OFString DiPNGPlugin::getLibraryVersionString()
     char cver[10];
     png_uint_32 ver = png_access_version_number();
     if( ver < 999999 ) {
-        sprintf( cver, "%li.%li.%li", (ver/10000)%100, (ver/100)%100, ver%100 );
+        sprintf( cver, "%li.%li.%li",
+                        OFstatic_cast(long int, (ver/10000)%100),
+                        OFstatic_cast(long int, (ver/100)%100),
+                        OFstatic_cast(long int, ver%100) );
     }else{
         sprintf( cver, "unknown" );
     }
@@ -232,6 +235,9 @@ int dipipng_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
  * CVS/RCS Log:
  * $Log: dipipng.cc,v $
+ * Revision 1.7  2010-08-06 08:41:36  uli
+ * Fixed some more compiler warnings.
+ *
  * Revision 1.6  2005-12-08 15:42:26  meichel
  * Changed include path schema for all DCMTK header files
  *

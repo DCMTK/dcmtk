@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009, OFFIS
+ *  Copyright (C) 2009-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *           Standard
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-29 13:59:34 $
+ *  Update Date:      $Date: 2010-08-06 08:41:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/ofmap.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,13 +114,13 @@ public:
      */
     typedef OFListIterator(value_type) iterator;
 
-    /** constant iteratorclass for OFMap. You can read the elements, but you may
+    /** constant iterator class for OFMap. You can read the elements, but you may
      *  not modify them.
      */
     typedef OFListConstIterator(value_type) const_iterator;
 
     /** default constructor */
-    OFMap() { }
+    OFMap() : values_() { }
 
     /** copy constructor */
     OFMap& operator=(const OFMap& other)
@@ -268,6 +268,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofmap.h,v $
+** Revision 1.3  2010-08-06 08:41:36  uli
+** Fixed some more compiler warnings.
+**
 ** Revision 1.2  2009-09-29 13:59:34  uli
 ** Fix an invalid iterator use in OFMap. A iterator was used after it was passed
 ** to erase().

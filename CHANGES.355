@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.06 (schlachter)
+
+- Fixed some more compiler warnings.
+  Affects: dcmimage/libsrc/dipipng.cc
+           dcmnet/libsrc/dul.cc
+           ofstd/include/dcmtk/ofstd/ofmap.h
+
 **** Changes from 2010.08.05 (schlachter)
 
 - Fixed some warnings from -Wold-style-cast.
