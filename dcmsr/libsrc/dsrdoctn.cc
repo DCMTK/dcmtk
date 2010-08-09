@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2009, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-30 10:09:50 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2010-08-09 15:29:12 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -494,7 +494,7 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
     /* read ObservationDateTime (conditional) */
     getAndCheckStringValueFromDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, "1", "1C");
     /* determine template identifier expected for this document */
-    const OFString expectedTemplateIdentifier = (constraintChecker != NULL) ? constraintChecker->getRootTemplateIdentifier() : "";
+    const OFString expectedTemplateIdentifier = (constraintChecker != NULL) ? OFSTRING_GUARD(constraintChecker->getRootTemplateIdentifier()) : "";
     /* read ContentTemplateSequence (conditional) */
     DcmItem *ditem = NULL;
     if (dataset.findAndGetSequenceItem(DCM_ContentTemplateSequence, ditem, 0 /*itemNum*/).good())
@@ -1123,6 +1123,9 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.52  2010-08-09 15:29:12  joergr
+ *  Made sure that no NULL pointer is passed to the OFString constructor.
+ *
  *  Revision 1.51  2009-10-30 10:09:50  joergr
  *  Added check on the presence of the Concept Name Code Sequence for the root
  *  CONTAINER.

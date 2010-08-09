@@ -54,6 +54,10 @@ Changes between releases are documented here.
            dcmwlm/wwwapps/readwlst.cc
            dcmwlm/wwwapps/writwlst.cc
 
+- Made sure that no NULL pointer is passed to the OFString constructor. Thanks
+  to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report and patch.
+  Affects: dcmsr/libsrc/dsrdoctn.cc
+
 - Updated man pages.
   Affects: doxygen/manpages/man1/*
 
