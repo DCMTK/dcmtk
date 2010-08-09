@@ -1,6 +1,62 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.09 (riesmeier)
+
+- Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+  the official "keyword" is used for the attribute name which results in a
+  number of minor changes (e.g. "PatientsName" is now called "PatientName").
+  NB: Both users and developers should be aware of these changes and modify
+  there scripts and/or source code accordingly.
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/pdf2dcm.cc
+           dcmdata/data/dicom.dic
+           dcmdata/data/dumppat.txt
+           dcmdata/docs/dcmdata.dox
+           dcmdata/docs/dcmgpdir.man
+           dcmdata/docs/dcmodify.man
+           dcmdata/docs/img2dcm.man
+           dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/include/dcmtk/dcmdata/dcpath.h
+           dcmdata/include/dcmtk/dcmdata/dctag.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
+           dcmdata/libi2d/i2d.cc
+           dcmdata/libsrc/dccodec.cc
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/tests/tstpath.cc
+           dcmjpeg/docs/dcmmkdir.man
+           dcmnet/docs/findscu.man
+           dcmnet/docs/storescp.man
+           dcmpstat/include/dcmtk/dcmpstat/dcmpstat.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpssp.h
+           dcmpstat/libsrc/dcmpstat.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsib.cc
+           dcmpstat/libsrc/dvpssp.cc
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/docs/dcmqrti.man
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqridx.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrtis.h
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmqrdb/libsrc/dcmqrtis.cc
+           dcmsign/libsrc/sicreapr.cc
+           dcmsr/docs/dcmsr.dox
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmwlm/docs/wlmscpfs.man
+           dcmwlm/include/dcmtk/dcmwlm/wlds.h
+           dcmwlm/include/dcmtk/dcmwlm/wlfsim.h
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wlfsim.cc
+           dcmwlm/wwwapps/readoviw.cc
+           dcmwlm/wwwapps/readwlst.cc
+           dcmwlm/wwwapps/writwlst.cc
+
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2010.08.06 (schlachter)
 
 - Fixed some more compiler warnings.
