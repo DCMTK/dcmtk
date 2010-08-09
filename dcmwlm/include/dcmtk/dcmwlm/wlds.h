@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:40:01 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:29:38 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,17 +135,17 @@ class WlmDataSource
        *     > DCM_ScheduledProcedureStepStartDate                (0040,0002)  DA  R  1
        *     > DCM_ScheduledProcedureStepStartTime                (0040,0003)  TM  R  1
        *     > DCM_Modality                                       (0008,0060)  CS  R  1
-       *     > DCM_ScheduledPerformingPhysiciansName              (0040,0006)  PN  R  2
-       *    DCM_PatientsName                                      (0010,0010)  PN  R  1
+       *     > DCM_ScheduledPerformingPhysicianName               (0040,0006)  PN  R  2
+       *    DCM_PatientName                                       (0010,0010)  PN  R  1
        *    DCM_PatientID                                         (0010,0020)  LO  R  1
        *    DCM_AccessionNumber                                   (0008,0050)  SH  O  2
        *    DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
-       *    DCM_ReferringPhysiciansName                           (0008,0090)  PN  O  2
-       *    DCM_PatientsSex                                       (0010,0040)  CS  O  2
+       *    DCM_ReferringPhysicianName                            (0008,0090)  PN  O  2
+       *    DCM_PatientSex                                        (0010,0040)  CS  O  2
        *    DCM_RequestingPhysician                               (0032,1032)  PN  O  2
        *    DCM_AdmissionID                                       (0038,0010)  LO  O  2
        *    DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
-       *    DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
+       *    DCM_PatientBirthDate                                  (0010,0030)  DA  O  2
        *  @param element            Pointer to the element which shall be checked.
        *  @param supSequenceElement Pointer to the superordinate sequence element of which
        *                            the currently processed element is an attribute, or NULL if
@@ -164,7 +163,7 @@ class WlmDataSource
        *     > DCM_ScheduledProcedureStepStartDate                (0040,0002)  DA  R  1
        *     > DCM_ScheduledProcedureStepStartTime                (0040,0003)  TM  R  1
        *     > DCM_Modality                                       (0008,0060)  CS  R  1
-       *     > DCM_ScheduledPerformingPhysiciansName              (0040,0006)  PN  R  2
+       *     > DCM_ScheduledPerformingPhysicianName               (0040,0006)  PN  R  2
        *     > DCM_ScheduledProcedureStepDescription              (0040,0007)  LO  O  1
        *     > DCM_ScheduledStationName                           (0040,0010)  SH  O  2
        *     > DCM_ScheduledProcedureStepLocation                 (0040,0011)  SH  O  2
@@ -190,17 +189,17 @@ class WlmDataSource
        *    DCM_PatientTransportArrangements                      (0040,1004)  LO  O  2
        *    DCM_AccessionNumber                                   (0008,0050)  SH  O  2
        *    DCM_RequestingPhysician                               (0032,1032)  PN  O  2
-       *    DCM_ReferringPhysiciansName                           (0008,0090)  PN  O  2
+       *    DCM_ReferringPhysicianName                            (0008,0090)  PN  O  2
        *    DCM_AdmissionID                                       (0038,0010)  LO  O  2
        *    DCM_CurrentPatientLocation                            (0038,0300)  LO  O  2
        *    DCM_ReferencedPatientSequence                         (0008,1120)  SQ  O  2
        *     > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  2
        *     > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  2
-       *    DCM_PatientsName                                      (0010,0010)  PN  R  1
+       *    DCM_PatientName                                       (0010,0010)  PN  R  1
        *    DCM_PatientID                                         (0010,0020)  LO  R  1
-       *    DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
-       *    DCM_PatientsSex                                       (0010,0040)  CS  O  2
-       *    DCM_PatientsWeight                                    (0010,1030)  DS  O  2
+       *    DCM_PatientBirthDate                                  (0010,0030)  DA  O  2
+       *    DCM_PatientSex                                        (0010,0040)  CS  O  2
+       *    DCM_PatientWeight                                     (0010,1030)  DS  O  2
        *    DCM_ConfidentialityConstraintOnPatientDataDescription (0040,3001)  LO  O  2
        *    DCM_PatientState                                      (0038,0500)  LO  O  2
        *    DCM_PregnancyStatus                                   (0010,21c0)  US  O  2
@@ -211,14 +210,14 @@ class WlmDataSource
        *    DCM_InstitutionName                                   (0008,0080)  LO  O  3  (from the Visit Identification Module)
        *    DCM_AdmittingDiagnosesDescription                     (0008,1080)  LO  O  3  (from the Visit Admission Module)
        *    DCM_OtherPatientIDs                                   (0010,1000)  LO  O  3  (from the Patient Identification Module)
-       *    DCM_PatientsSize                                      (0010,1020)  DS  O  3  (from the Patient Demographic Module)
+       *    DCM_PatientSize                                       (0010,1020)  DS  O  3  (from the Patient Demographic Module)
        *    DCM_EthnicGroup                                       (0010,2160)  SH  O  3  (from the Patient Demographic Module)
        *    DCM_PatientComments                                   (0010,4000)  LT  O  3  (from the Patient Demographic Module)
        *    DCM_AdditionalPatientHistory                          (0010,21b0)  LT  O  3  (from the Patient Medical Module)
        *    DCM_LastMenstrualDate                                 (0010,21d0)  DA  O  3  (from the Patient Medical Module)
        *    DCM_InstitutionAddress                                (0008,0081)  ST  O  3  (from the Visit Identification Module)
        *    DCM_OtherPatientNames                                 (0010,1001)  PN  O  3  (from the Patient Identification Module)
-       *    DCM_PatientsAddress                                   (0010,1040)  LO  O  3  (from the Patient Demographic Module)
+       *    DCM_PatientAddress                                    (0010,1040)  LO  O  3  (from the Patient Demographic Module)
        *    DCM_MilitaryRank                                      (0010,1080)  LO  O  3  (from the Patient Demographic Module)
        *    DCM_SmokingStatus                                     (0010,21a0)  CS  O  3  (from the Patient Medical Module)
        *    DCM_RequestingService                                 (0032,1033)  LO  O  3  (from the Imaging Service Request Module)
@@ -277,17 +276,17 @@ class WlmDataSource
        *     > DCM_ScheduledProcedureStepStartDate                (0040,0002)  DA  R  1
        *     > DCM_ScheduledProcedureStepStartTime                (0040,0003)  TM  R  1
        *     > DCM_Modality                                       (0008,0060)  CS  R  1
-       *     > DCM_ScheduledPerformingPhysiciansName              (0040,0006)  PN  R  2
-       *    DCM_PatientsName                                      (0010,0010)  PN  R  1
+       *     > DCM_ScheduledPerformingPhysicianName               (0040,0006)  PN  R  2
+       *    DCM_PatientName                                       (0010,0010)  PN  R  1
        *    DCM_PatientID                                         (0010,0020)  LO  R  1
        *    DCM_AccessionNumber                                   (0008,0050)  SH  O  2
        *    DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
-       *    DCM_ReferringPhysiciansName                           (0008,0090)  PN  O  2
-       *    DCM_PatientsSex                                       (0010,0040)  CS  O  2
+       *    DCM_ReferringPhysicianName                            (0008,0090)  PN  O  2
+       *    DCM_PatientSex                                        (0010,0040)  CS  O  2
        *    DCM_RequestingPhysician                               (0032,1032)  PN  O  2
        *    DCM_AdmissionID                                       (0038,0010)  LO  O  2
        *    DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
-       *    DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
+       *    DCM_PatientBirthDate                                  (0010,0030)  DA  O  2
        *  As a result, the following data types have to be supported in this function:
        *  AE, DA, TM, CS, PN, LO and SH. For the correct specification of these datatypes
        *  2003 DICOM standard, part 5, section 6.2, table 6.2-1.
@@ -532,6 +531,11 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
+** Revision 1.27  2010-08-09 13:29:38  joergr
+** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+** the official "keyword" is used for the attribute name which results in a
+** number of minor changes (e.g. "PatientsName" is now called "PatientName").
+**
 ** Revision 1.26  2009-11-24 10:40:01  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: enums and structures used for the database index file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-30 14:45:02 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-08-09 13:23:00 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -278,11 +278,11 @@ struct ImagesofStudyArray
  * (= highest index +1)
  */
 
-#define RECORDIDX_PatientsBirthDate               0
-#define RECORDIDX_PatientsSex                     1
-#define RECORDIDX_PatientsName                    2
+#define RECORDIDX_PatientBirthDate                0
+#define RECORDIDX_PatientSex                      1
+#define RECORDIDX_PatientName                     2
 #define RECORDIDX_PatientID                       3
-#define RECORDIDX_PatientsBirthTime               4
+#define RECORDIDX_PatientBirthTime                4
 #define RECORDIDX_OtherPatientIDs                 5
 #define RECORDIDX_OtherPatientNames               6
 #define RECORDIDX_EthnicGroup                     7
@@ -295,15 +295,15 @@ struct ImagesofStudyArray
 #define RECORDIDX_StudyDescription               14
 #define RECORDIDX_NameOfPhysiciansReadingStudy   15
 #define RECORDIDX_AccessionNumber                16
-#define RECORDIDX_ReferringPhysiciansName        17
+#define RECORDIDX_ReferringPhysicianName         17
 #define RECORDIDX_ProcedureDescription           18
 #define RECORDIDX_AttendingPhysiciansName        19
 #define RECORDIDX_StudyInstanceUID               20
 #define RECORDIDX_OtherStudyNumbers              21
 #define RECORDIDX_AdmittingDiagnosesDescription  22
-#define RECORDIDX_PatientsAge                    23
-#define RECORDIDX_PatientsSize                   24
-#define RECORDIDX_PatientsWeight                 25
+#define RECORDIDX_PatientAge                     23
+#define RECORDIDX_PatientSize                    24
+#define RECORDIDX_PatientWeight                  25
 #define RECORDIDX_Occupation                     26
 #define RECORDIDX_NumberofStudyRelatedSeries     27
 #define RECORDIDX_NumberofStudyRelatedInstances  28
@@ -317,7 +317,7 @@ struct ImagesofStudyArray
 #define RECORDIDX_SeriesDescription              36
 #define RECORDIDX_ProtocolName                   37
 #define RECORDIDX_OperatorsName                  38
-#define RECORDIDX_PerformingPhysiciansName       39
+#define RECORDIDX_PerformingPhysicianName        39
 #define RECORDIDX_PresentationLabel              40
 
 #define NBPARAMETERS                             41
@@ -339,11 +339,11 @@ struct IdxRecord
 
     DB_SmallDcmElmt param                   [NBPARAMETERS] ;
 
-    char    PatientsBirthDate               [DA_MAX_LENGTH+1] ;
-    char    PatientsSex                     [CS_MAX_LENGTH+1] ;
-    char    PatientsName                    [PN_MAX_LENGTH+1] ;
+    char    PatientBirthDate                [DA_MAX_LENGTH+1] ;
+    char    PatientSex                      [CS_MAX_LENGTH+1] ;
+    char    PatientName                     [PN_MAX_LENGTH+1] ;
     char    PatientID                       [LO_MAX_LENGTH+1] ;
-    char    PatientsBirthTime               [TM_MAX_LENGTH+1] ;
+    char    PatientBirthTime                [TM_MAX_LENGTH+1] ;
     char    OtherPatientIDs                 [LO_MAX_LENGTH+1] ;
     char    OtherPatientNames               [PN_MAX_LENGTH+1] ;
     char    EthnicGroup                     [SH_MAX_LENGTH+1] ;
@@ -358,15 +358,15 @@ struct IdxRecord
     char    NameOfPhysiciansReadingStudy    [PN_MAX_LENGTH+1] ;
 
     char    AccessionNumber                 [CS_MAX_LENGTH+1] ;
-    char    ReferringPhysiciansName         [PN_MAX_LENGTH+1] ;
+    char    ReferringPhysicianName          [PN_MAX_LENGTH+1] ;
     char    ProcedureDescription            [LO_MAX_LENGTH+1] ;
     char    AttendingPhysiciansName         [PN_MAX_LENGTH+1] ;
     char    StudyInstanceUID                [UI_MAX_LENGTH+1] ;
     char    OtherStudyNumbers               [IS_MAX_LENGTH+1] ;
     char    AdmittingDiagnosesDescription   [LO_MAX_LENGTH+1] ;
-    char    PatientsAge                     [AS_MAX_LENGTH+1] ;
-    char    PatientsSize                    [DS_MAX_LENGTH+1] ;
-    char    PatientsWeight                  [DS_MAX_LENGTH+1] ;
+    char    PatientAge                      [AS_MAX_LENGTH+1] ;
+    char    PatientSize                     [DS_MAX_LENGTH+1] ;
+    char    PatientWeight                   [DS_MAX_LENGTH+1] ;
     char    Occupation                      [SH_MAX_LENGTH+1] ;
     char    NumberofStudyRelatedSeries      [IS_MAX_LENGTH+1] ;
     char    NumberofStudyRelatedInstances   [IS_MAX_LENGTH+1] ;
@@ -383,7 +383,7 @@ struct IdxRecord
     char    SeriesDescription               [LO_MAX_LENGTH+1] ;
     char    ProtocolName                    [LO_MAX_LENGTH+1] ;
     char    OperatorsName                   [PN_MAX_LENGTH+1] ;
-    char    PerformingPhysiciansName        [PN_MAX_LENGTH+1] ;
+    char    PerformingPhysicianName         [PN_MAX_LENGTH+1] ;
     char    PresentationLabel               [CS_LABEL_MAX_LENGTH+1] ;
 
     DVIFhierarchyStatus hstat;
@@ -402,6 +402,11 @@ private:
 /*
  * CVS Log
  * $Log: dcmqridx.h,v $
+ * Revision 1.5  2010-08-09 13:23:00  joergr
+ * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ * the official "keyword" is used for the attribute name which results in a
+ * number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  * Revision 1.4  2009-01-30 14:45:02  joergr
  * Uncommented initialization of array variables in order to avoid compiler
  * warnings reported by VisualStudio 2005.

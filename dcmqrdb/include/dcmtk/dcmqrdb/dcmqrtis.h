@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: TI Common Constants, Types, Globals and Functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:42 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:23:00 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,7 @@ struct TI_StudyEntry
 {
     DIC_UI  studyInstanceUID;
     DIC_CS  studyID;
-    DIC_PN  patientsName;
+    DIC_PN  patientName;
     DIC_LO  patientID;
     TI_SeriesEntry  *series[TI_MAXSERIES];  /* array of series pointers */
     int     seriesCount;
@@ -308,6 +308,11 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrtis.h,v $
+ * Revision 1.7  2010-08-09 13:23:00  joergr
+ * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ * the official "keyword" is used for the attribute name which results in a
+ * number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  * Revision 1.6  2009-11-24 10:10:42  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

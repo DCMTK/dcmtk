@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-04 08:07:03 $
- *  CVS/RCS Revision: $Revision: 1.127 $
+ *  Update Date:      $Date: 2010-08-09 13:19:31 $
+ *  CVS/RCS Revision: $Revision: 1.128 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,7 +141,7 @@ enum E_SortStudyMode
     ESM_None,
     ESM_Timestamp,
     ESM_StudyInstanceUID,
-    ESM_PatientsName
+    ESM_PatientName
 };
 
 OFBool             opt_showPresentationContexts = OFFalse;
@@ -832,7 +832,7 @@ int main(int argc, char *argv[])
     {
       app.checkConflict("--sort-on-patientname", "--bit-preserving", opt_bitPreserving);
       opt_sortStudyDirPrefix = NULL;
-      opt_sortStudyMode = ESM_PatientsName;
+      opt_sortStudyMode = ESM_PatientName;
     }
     cmd.endOptionBlock();
 
@@ -863,7 +863,7 @@ int main(int argc, char *argv[])
 
     if (cmd.findOption("--eostudy-timeout"))
     {
-      app.checkDependence("--eostudy-timeout", "--sort-conc-studies, --sort-on-study-uid, --sort-on-patientsname, --exec-on-eostudy or --rename-on-eostudy",
+      app.checkDependence("--eostudy-timeout", "--sort-conc-studies, --sort-on-study-uid, --sort-on-patientname, --exec-on-eostudy or --rename-on-eostudy",
         (opt_sortStudyMode != ESM_None) || (opt_execOnEndOfStudy != NULL) || opt_renameOnEndOfStudy);
       app.checkValue(cmd.getValueAndCheckMin(opt_endOfStudyTimeout, 0));
     }
@@ -1899,23 +1899,23 @@ storeSCPCallback(
         }
 
         // if --sort-on-patientname is active, we need to extract the
-        // patients name (format: last_name^first_name)
-        OFString currentPatientsName;
-        if (opt_sortStudyMode == ESM_PatientsName)
+        // patient's name (format: last_name^first_name)
+        OFString currentPatientName;
+        if (opt_sortStudyMode == ESM_PatientName)
         {
           OFString tmpName;
-          if ((*imageDataSet)->findAndGetOFString(DCM_PatientsName, tmpName).bad() || tmpName.empty())
+          if ((*imageDataSet)->findAndGetOFString(DCM_PatientName, tmpName).bad() || tmpName.empty())
           {
             // default if patient name is missing or empty
             tmpName = "ANONYMOUS";
-            OFLOG_WARN(storescpLogger, "element PatientsName " << DCM_PatientsName << " absent or empty in data set, using '"
+            OFLOG_WARN(storescpLogger, "element PatientName " << DCM_PatientName << " absent or empty in data set, using '"
                  << tmpName << "' instead");
           }
 
           /* substitute non-ASCII characters in patient name to ASCII "equivalent" */
           const size_t length = tmpName.length();
           for (size_t i = 0; i < length; i++)
-            mapCharacterAndAppendToString(tmpName[i], currentPatientsName);
+            mapCharacterAndAppendToString(tmpName[i], currentPatientName);
         }
 
         // if this is the first DICOM object that was received or if the study instance UID in the
@@ -1962,9 +1962,9 @@ storeSCPCallback(
                 subdirectoryName += '_';
               subdirectoryName += currentStudyInstanceUID;
               break;
-            case ESM_PatientsName:
+            case ESM_PatientName:
               // pattern: "[Patient's Name]_[YYYYMMDD]_[HHMMSSMMM]"
-              subdirectoryName = currentPatientsName;
+              subdirectoryName = currentPatientName;
               subdirectoryName += '_';
               subdirectoryName += timestamp;
               break;
@@ -2711,6 +2711,11 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.128  2010-08-09 13:19:31  joergr
+** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+** the official "keyword" is used for the attribute name which results in a
+** number of minor changes (e.g. "PatientsName" is now called "PatientName").
+**
 ** Revision 1.127  2010-06-04 08:07:03  joergr
 ** Added support for option --exec-sync to Unix systems (before: Windows only).
 **

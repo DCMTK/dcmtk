@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,13 +21,12 @@
  *
  *  Purpose:
  *   Program to read one or more DICOM worklist files and pass some tags
- *   to a WWW CGI perl script (as hexadecimal encoded ASCII via stdout). 
+ *   to a WWW CGI perl script (as hexadecimal encoded ASCII via stdout).
  *   Used to display an "overview" of available worklist files.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:38 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/wwwapps/readoviw.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:32:08 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +58,7 @@ void printStringElement(DcmObject& obj, DcmTagKey searchtag)
     DcmObject *searchedObj = stack.top();
 /*
 ** Use the simpler (virtual) method of DcmElement to get
-** the string pointer.  
+** the string pointer.
 ** Modified while adding support for the VR's UT and VS.
 */
 #ifdef ELABORATE_BUT_PROBABLY_UNNECESSARY_CODE
@@ -84,7 +83,7 @@ void printStringElement(DcmObject& obj, DcmTagKey searchtag)
         ((DcmCharString*)searchedObj)->getString(c);
         break;
       default:
-        break; 
+        break;
     }
 #else
     if ((searchedObj->getLength() > 0) && searchedObj->isaString()) {
@@ -92,7 +91,7 @@ void printStringElement(DcmObject& obj, DcmTagKey searchtag)
 	elem->getString(c);
     }
 #endif
-  }  
+  }
   printHexString(c);
 }
 
@@ -106,7 +105,7 @@ int main(int argc, char *argv[])
     }
 
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) 
+    if (!dcmDataDict.isDictionaryLoaded())
     {
       fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
         DCM_DICT_ENVIRONMENT_VARIABLE);
@@ -120,7 +119,7 @@ int main(int argc, char *argv[])
       DcmFileFormat dfile;
 
       cond = dfile.loadFile(argv[count]);
-        
+
       if (cond.bad())
       {
           fprintf(stderr, "readoviw: error: %s: reading file: %s\n", dfile.error().text(), argv[count]);
@@ -132,7 +131,7 @@ int main(int argc, char *argv[])
         {
           printStringElement(*dataset, DCM_AccessionNumber);
           printf("\\");
-          printStringElement(*dataset, DCM_PatientsName);
+          printStringElement(*dataset, DCM_PatientName);
           printf("\\");
           printStringElement(*dataset, DCM_RequestedProcedureDescription);
           printf("\\");
@@ -145,7 +144,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: readoviw.cc,v $
- *   Revision 1.2  2005-12-08 15:48:38  meichel
+ *   Revision 1.3  2010-08-09 13:32:08  joergr
+ *   Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ *   the official "keyword" is used for the attribute name which results in a
+ *   number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
+ *   Revision 1.2  2005/12/08 15:48:38  meichel
  *   Changed include path schema for all DCMTK header files
  *
  *   Revision 1.1  2002/12/03 12:17:35  wilkens

@@ -23,8 +23,8 @@
  *    classes: DcmPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-29 10:36:20 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2010-08-09 13:21:56 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,14 +84,14 @@ OFLogger DCM_dcmpstatLogfileGetLogger()
 /* --------------- class DcmPresentationState --------------- */
 
 DcmPresentationState::DcmPresentationState()
-: patientName(DCM_PatientsName)
+: patientName(DCM_PatientName)
 , patientID(DCM_PatientID)
-, patientBirthDate(DCM_PatientsBirthDate)
-, patientSex(DCM_PatientsSex)
+, patientBirthDate(DCM_PatientBirthDate)
+, patientSex(DCM_PatientSex)
 , studyInstanceUID(DCM_StudyInstanceUID)
 , studyDate(DCM_StudyDate)
 , studyTime(DCM_StudyTime)
-, referringPhysiciansName(DCM_ReferringPhysiciansName)
+, referringPhysicianName(DCM_ReferringPhysicianName)
 , studyID(DCM_StudyID)
 , accessionNumber(DCM_AccessionNumber)
 , seriesInstanceUID(DCM_SeriesInstanceUID)
@@ -104,7 +104,7 @@ DcmPresentationState::DcmPresentationState()
 , presentationDescription(DCM_ContentDescription)
 , presentationCreationDate(DCM_PresentationCreationDate)
 , presentationCreationTime(DCM_PresentationCreationTime)
-, presentationCreatorsName(DCM_ContentCreatorsName)
+, presentationCreatorsName(DCM_ContentCreatorName)
 , referencedSeriesList()
 , sOPInstanceUID(DCM_SOPInstanceUID)
 , specificCharacterSet(DCM_SpecificCharacterSet)
@@ -159,7 +159,7 @@ void DcmPresentationState::clear()
   studyInstanceUID.clear();
   studyDate.clear();
   studyTime.clear();
-  referringPhysiciansName.clear();
+  referringPhysicianName.clear();
   studyID.clear();
   accessionNumber.clear();
   seriesInstanceUID.clear();
@@ -373,7 +373,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     READ_FROM_DATASET(DcmUniqueIdentifier, studyInstanceUID)
     READ_FROM_DATASET(DcmDate, studyDate)
     READ_FROM_DATASET(DcmTime, studyTime)
-    READ_FROM_DATASET(DcmPersonName, referringPhysiciansName)
+    READ_FROM_DATASET(DcmPersonName, referringPhysicianName)
     READ_FROM_DATASET(DcmShortString, studyID)
     READ_FROM_DATASET(DcmShortString, accessionNumber)
     READ_FROM_DATASET(DcmUniqueIdentifier, seriesInstanceUID)
@@ -862,7 +862,7 @@ OFCondition DcmPresentationState::createFromImage(
   READ_FROM_DATASET(DcmUniqueIdentifier, studyInstanceUID)
   READ_FROM_DATASET(DcmDate, studyDate)
   READ_FROM_DATASET(DcmTime, studyTime)
-  READ_FROM_DATASET(DcmPersonName, referringPhysiciansName)
+  READ_FROM_DATASET(DcmPersonName, referringPhysicianName)
   READ_FROM_DATASET(DcmShortString, studyID)
   READ_FROM_DATASET(DcmShortString, accessionNumber)
   READ_FROM_DATASET(DcmLongString, manufacturer)
@@ -1156,7 +1156,7 @@ OFCondition DcmPresentationState::write(DcmItem &dset, OFBool replaceSOPInstance
   ADD_TO_DATASET(DcmUniqueIdentifier, studyInstanceUID)
   ADD_TO_DATASET(DcmDate, studyDate)
   ADD_TO_DATASET(DcmTime, studyTime)
-  ADD_TO_DATASET(DcmPersonName, referringPhysiciansName)
+  ADD_TO_DATASET(DcmPersonName, referringPhysicianName)
   ADD_TO_DATASET(DcmShortString, studyID)
   ADD_TO_DATASET(DcmShortString, accessionNumber)
   ADD_TO_DATASET(DcmCodeString, modality)
@@ -1962,6 +1962,11 @@ OFCondition DcmPresentationState::moveOverlay(size_t old_layer, size_t idx, size
 
 /*
  *  $Log: dcmpstat.cc,v $
+ *  Revision 1.13  2010-08-09 13:21:56  joergr
+ *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ *  the official "keyword" is used for the attribute name which results in a
+ *  number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  *  Revision 1.12  2010-04-29 10:36:20  joergr
  *  Fixed typo in log message.
  *

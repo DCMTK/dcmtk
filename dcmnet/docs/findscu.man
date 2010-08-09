@@ -223,7 +223,7 @@ example:
 \verbatim
 # query patient names and IDs
 (0008,0052) CS [PATIENT]     # QueryRetrieveLevel
-(0010,0010) PN []            # PatientsName
+(0010,0010) PN []            # PatientName
 (0010,0020) LO []            # PatientID
 \endverbatim
 
@@ -234,7 +234,7 @@ using the \e -k option.  For example the command:
 findscu -P -k "(0010,0010)=HEWETT*" caesar 5678 patqry.dcm
 \endverbatim
 
-will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientsName
+will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientName
 attribute in patqry.dcm to have the value "HEWETT*".  If such an attribute is
 present it will be replaced, if absent it will be inserted.  The \e -k option
 can be present more than once.  The value part (after the '=') may be absent
@@ -249,7 +249,7 @@ Also \e -k accepts dictionary names instead of element tags for specifying
 DICOM elements.  For example, the \b findscu call above then reads like this:
 
 \verbatim
-findscu -P -k PatientsName="HEWETT*" caesar 5678 patqry.dcm
+findscu -P -k PatientName="HEWETT*" caesar 5678 patqry.dcm
 \endverbatim
 
 It is also possible to specify sequences, items and nested attributes using
@@ -359,6 +359,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

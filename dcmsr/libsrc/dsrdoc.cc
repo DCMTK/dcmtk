@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-01 13:40:35 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Update Date:      $Date: 2010-08-09 13:26:56 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,14 +58,14 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     StudyInstanceUID(DCM_StudyInstanceUID),
     StudyDate(DCM_StudyDate),
     StudyTime(DCM_StudyTime),
-    ReferringPhysiciansName(DCM_ReferringPhysiciansName),
+    ReferringPhysicianName(DCM_ReferringPhysicianName),
     StudyID(DCM_StudyID),
     AccessionNumber(DCM_AccessionNumber),
     StudyDescription(DCM_StudyDescription),
-    PatientsName(DCM_PatientsName),
+    PatientName(DCM_PatientName),
     PatientID(DCM_PatientID),
-    PatientsBirthDate(DCM_PatientsBirthDate),
-    PatientsSex(DCM_PatientsSex),
+    PatientBirthDate(DCM_PatientBirthDate),
+    PatientSex(DCM_PatientSex),
     Manufacturer(DCM_Manufacturer),
     Modality(DCM_Modality),
     SeriesInstanceUID(DCM_SeriesInstanceUID),
@@ -115,14 +115,14 @@ void DSRDocument::clear()
     StudyInstanceUID.clear();
     StudyDate.clear();
     StudyTime.clear();
-    ReferringPhysiciansName.clear();
+    ReferringPhysicianName.clear();
     StudyID.clear();
     AccessionNumber.clear();
     StudyDescription.clear();
-    PatientsName.clear();
+    PatientName.clear();
     PatientID.clear();
-    PatientsBirthDate.clear();
-    PatientsSex.clear();
+    PatientBirthDate.clear();
+    PatientSex.clear();
     Manufacturer.clear();
     Modality.clear();
     SeriesInstanceUID.clear();
@@ -175,17 +175,17 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
             /* document type/title */
             stream << documentTypeToDocumentTitle(getDocumentType(), tmpString) << OFendl << OFendl;
             /* patient related information */
-            if (PatientsName.getLength() > 0)
+            if (PatientName.getLength() > 0)
             {
-                stream << "Patient             : " << getPrintStringFromElement(PatientsName, tmpString);
+                stream << "Patient             : " << getPrintStringFromElement(PatientName, tmpString);
                 OFString patientStr;
-                if (PatientsSex.getLength() > 0)
-                    patientStr += getPrintStringFromElement(PatientsSex, tmpString);
-                if (PatientsBirthDate.getLength() > 0)
+                if (PatientSex.getLength() > 0)
+                    patientStr += getPrintStringFromElement(PatientSex, tmpString);
+                if (PatientBirthDate.getLength() > 0)
                 {
                    if (!patientStr.empty())
                        patientStr += ", ";
-                   patientStr += getPrintStringFromElement(PatientsBirthDate, tmpString);
+                   patientStr += getPrintStringFromElement(PatientBirthDate, tmpString);
                 }
                 if (PatientID.getLength() > 0)
                 {
@@ -199,8 +199,8 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                 stream << OFendl;
             }
             /* referring physician */
-            if (ReferringPhysiciansName.getLength() > 0)
-                stream << "Referring Physician : " << getPrintStringFromElement(ReferringPhysiciansName, tmpString) << OFendl;
+            if (ReferringPhysicianName.getLength() > 0)
+                stream << "Referring Physician : " << getPrintStringFromElement(ReferringPhysicianName, tmpString) << OFendl;
             /* study related information  */
             if (StudyDescription.getLength() > 0)
             {
@@ -342,16 +342,16 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         getAndCheckElementFromDataset(dataset, StudyInstanceUID, "1", "1");
         getAndCheckElementFromDataset(dataset, StudyDate, "1", "2");
         getAndCheckElementFromDataset(dataset, StudyTime, "1", "2");
-        getAndCheckElementFromDataset(dataset, ReferringPhysiciansName, "1", "2");
+        getAndCheckElementFromDataset(dataset, ReferringPhysicianName, "1", "2");
         getAndCheckElementFromDataset(dataset, StudyID, "1", "2");
         getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2");
         getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3");
 
         // --- Patient Module ---
-        getAndCheckElementFromDataset(dataset, PatientsName, "1", "2");
+        getAndCheckElementFromDataset(dataset, PatientName, "1", "2");
         getAndCheckElementFromDataset(dataset, PatientID, "1", "2");
-        getAndCheckElementFromDataset(dataset, PatientsBirthDate, "1", "2");
-        getAndCheckElementFromDataset(dataset, PatientsSex, "1", "2");
+        getAndCheckElementFromDataset(dataset, PatientBirthDate, "1", "2");
+        getAndCheckElementFromDataset(dataset, PatientSex, "1", "2");
 
         // --- General Equipment Module ---
         getAndCheckElementFromDataset(dataset, Manufacturer, "1", "2");
@@ -451,17 +451,17 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(StudyInstanceUID));
         addElementToDataset(result, dataset, new DcmDate(StudyDate));
         addElementToDataset(result, dataset, new DcmTime(StudyTime));
-        addElementToDataset(result, dataset, new DcmPersonName(ReferringPhysiciansName));
+        addElementToDataset(result, dataset, new DcmPersonName(ReferringPhysicianName));
         addElementToDataset(result, dataset, new DcmShortString(StudyID));
         addElementToDataset(result, dataset, new DcmShortString(AccessionNumber));
         if (StudyDescription.getLength() > 0)     /* optional */
             addElementToDataset(result, dataset, new DcmLongString(StudyDescription));
 
         // --- Patient Module ---
-        addElementToDataset(result, dataset, new DcmPersonName(PatientsName));
+        addElementToDataset(result, dataset, new DcmPersonName(PatientName));
         addElementToDataset(result, dataset, new DcmLongString(PatientID));
-        addElementToDataset(result, dataset, new DcmDate(PatientsBirthDate));
-        addElementToDataset(result, dataset, new DcmCodeString(PatientsSex));
+        addElementToDataset(result, dataset, new DcmDate(PatientBirthDate));
+        addElementToDataset(result, dataset, new DcmCodeString(PatientSex));
 
         // --- General Equipment Module ---
         addElementToDataset(result, dataset, new DcmLongString(Manufacturer));
@@ -594,7 +594,7 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                     /* Referring Physician's Name */
                     OFString tmpString;
                     DSRPNameTreeNode::getValueFromXMLNodeContent(doc, childNode.getChild(), tmpString);
-                    ReferringPhysiciansName.putString(tmpString.c_str());
+                    ReferringPhysicianName.putString(tmpString.c_str());
                 }
             }
             else if (doc.matchNode(cursor, "patient"))
@@ -657,16 +657,16 @@ OFCondition DSRDocument::readXMLPatientData(const DSRXMLDocument &doc,
             {
                 /* Patient's Name */
                 DSRPNameTreeNode::getValueFromXMLNodeContent(doc, cursor.getChild(), tmpString);
-                PatientsName.putString(tmpString.c_str());
+                PatientName.putString(tmpString.c_str());
             }
             else if (doc.matchNode(cursor, "birthday"))
             {
                 /* Patient's Birth Date */
                 DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(cursor.getChild(), "date"), tmpString);
-                PatientsBirthDate.putString(tmpString.c_str());
+                PatientBirthDate.putString(tmpString.c_str());
             }
             else if (doc.getElementFromNodeContent(cursor, PatientID, "id").bad() &&
-                     doc.getElementFromNodeContent(cursor, PatientsSex, "sex").bad())
+                     doc.getElementFromNodeContent(cursor, PatientSex, "sex").bad())
             {
                 doc.printUnexpectedNodeWarning(cursor);
             }
@@ -983,24 +983,24 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         writeStringFromElementToXML(stream, Modality, "modality", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, Manufacturer, "manufacturer", (flags & XF_writeEmptyTags) > 0);
 
-        if ((flags & XF_writeEmptyTags) || (ReferringPhysiciansName.getLength() > 0))
+        if ((flags & XF_writeEmptyTags) || (ReferringPhysicianName.getLength() > 0))
         {
             stream << "<referringphysician>" << OFendl;
-            writeStringFromElementToXML(stream, ReferringPhysiciansName, "name", (flags & XF_writeEmptyTags) > 0);
+            writeStringFromElementToXML(stream, ReferringPhysicianName, "name", (flags & XF_writeEmptyTags) > 0);
             stream << "</referringphysician>" << OFendl;
         }
 
         stream << "<patient>" << OFendl;
         writeStringFromElementToXML(stream, PatientID, "id", (flags & XF_writeEmptyTags) > 0);
-        writeStringFromElementToXML(stream, PatientsName, "name", (flags & XF_writeEmptyTags) > 0);
-        if ((flags & XF_writeEmptyTags) || (PatientsBirthDate.getLength() > 0))
+        writeStringFromElementToXML(stream, PatientName, "name", (flags & XF_writeEmptyTags) > 0);
+        if ((flags & XF_writeEmptyTags) || (PatientBirthDate.getLength() > 0))
         {
             stream << "<birthday>" << OFendl;
-            PatientsBirthDate.getISOFormattedDate(tmpString);
+            PatientBirthDate.getISOFormattedDate(tmpString);
             writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
             stream << "</birthday>" << OFendl;
         }
-        writeStringFromElementToXML(stream, PatientsSex, "sex", (flags & XF_writeEmptyTags) > 0);
+        writeStringFromElementToXML(stream, PatientSex, "sex", (flags & XF_writeEmptyTags) > 0);
         stream << "</patient>" << OFendl;
 
         stream << "<study uid=\"" << getMarkupStringFromElement(StudyInstanceUID, tmpString) << "\">" << OFendl;
@@ -1136,11 +1136,11 @@ void DSRDocument::renderHTMLPatientData(STD_NAMESPACE ostream &stream,
 {
     OFString tmpString, string2;
     OFString htmlString;
-    stream << convertToHTMLString(dicomToReadablePersonName(getStringValueFromElement(PatientsName, tmpString), string2), htmlString, flags);
+    stream << convertToHTMLString(dicomToReadablePersonName(getStringValueFromElement(PatientName, tmpString), string2), htmlString, flags);
     OFString patientStr;
-    if (PatientsSex.getLength() > 0)
+    if (PatientSex.getLength() > 0)
     {
-        getPrintStringFromElement(PatientsSex, tmpString);
+        getPrintStringFromElement(PatientSex, tmpString);
         if (tmpString == "M")
             patientStr += "male";
         else if (tmpString == "F")
@@ -1150,12 +1150,12 @@ void DSRDocument::renderHTMLPatientData(STD_NAMESPACE ostream &stream,
         else
             patientStr += convertToHTMLString(tmpString, htmlString, flags);
     }
-    if (PatientsBirthDate.getLength() > 0)
+    if (PatientBirthDate.getLength() > 0)
     {
        if (!patientStr.empty())
            patientStr += ", ";
        patientStr += '*';
-       patientStr += dicomToReadableDate(getStringValueFromElement(PatientsBirthDate, tmpString), string2);
+       patientStr += dicomToReadableDate(getStringValueFromElement(PatientBirthDate, tmpString), string2);
     }
     if (PatientID.getLength() > 0)
     {
@@ -1335,7 +1335,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
             /* create a table for this purpose */
             stream << "<table>" << OFendl;
             /* patient related information */
-            if (PatientsName.getLength() > 0)
+            if (PatientName.getLength() > 0)
             {
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Patient:</b></td>" << OFendl;
@@ -1345,11 +1345,11 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 stream << "</tr>" << OFendl;
             }
             /* referring physician */
-            if (ReferringPhysiciansName.getLength() > 0)
+            if (ReferringPhysicianName.getLength() > 0)
             {
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Referring Physician:</b></td>" << OFendl;
-                stream << "<td>" << convertToHTMLString(dicomToReadablePersonName(getStringValueFromElement(ReferringPhysiciansName, tmpString), string2), htmlString, newFlags);
+                stream << "<td>" << convertToHTMLString(dicomToReadablePersonName(getStringValueFromElement(ReferringPhysicianName, tmpString), string2), htmlString, newFlags);
                 stream << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
             }
@@ -1694,27 +1694,27 @@ const char *DSRDocument::getSpecificCharacterSet() const
 }
 
 
-const char *DSRDocument::getPatientsName() const
+const char *DSRDocument::getPatientName() const
 {
-    return getStringValueFromElement(PatientsName);
+    return getStringValueFromElement(PatientName);
 }
 
 
-const char *DSRDocument::getPatientsBirthDate() const
+const char *DSRDocument::getPatientBirthDate() const
 {
-    return getStringValueFromElement(PatientsBirthDate);
+    return getStringValueFromElement(PatientBirthDate);
 }
 
 
-const char *DSRDocument::getPatientsSex() const
+const char *DSRDocument::getPatientSex() const
 {
-    return getStringValueFromElement(PatientsSex);
+    return getStringValueFromElement(PatientSex);
 }
 
 
-const char *DSRDocument::getReferringPhysiciansName() const
+const char *DSRDocument::getReferringPhysicianName() const
 {
-    return getStringValueFromElement(ReferringPhysiciansName);
+    return getStringValueFromElement(ReferringPhysicianName);
 }
 
 
@@ -1846,27 +1846,27 @@ const OFString &DSRDocument::getSpecificCharacterSet(OFString &value) const
 }
 
 
-const OFString &DSRDocument::getPatientsName(OFString &value) const
+const OFString &DSRDocument::getPatientName(OFString &value) const
 {
-    return getStringValueFromElement(PatientsName, value);
+    return getStringValueFromElement(PatientName, value);
 }
 
 
-const OFString &DSRDocument::getPatientsBirthDate(OFString &value) const
+const OFString &DSRDocument::getPatientBirthDate(OFString &value) const
 {
-    return getStringValueFromElement(PatientsBirthDate, value);
+    return getStringValueFromElement(PatientBirthDate, value);
 }
 
 
-const OFString &DSRDocument::getPatientsSex(OFString &value) const
+const OFString &DSRDocument::getPatientSex(OFString &value) const
 {
-    return getStringValueFromElement(PatientsSex, value);
+    return getStringValueFromElement(PatientSex, value);
 }
 
 
-const OFString &DSRDocument::getReferringPhysiciansName(OFString &value) const
+const OFString &DSRDocument::getReferringPhysicianName(OFString &value) const
 {
-    return getStringValueFromElement(ReferringPhysiciansName, value);
+    return getStringValueFromElement(ReferringPhysicianName, value);
 }
 
 
@@ -1975,31 +1975,31 @@ OFCondition DSRDocument::setCompletionFlagDescription(const OFString &value)
 }
 
 
-OFCondition DSRDocument::setPatientsName(const OFString &value)
+OFCondition DSRDocument::setPatientName(const OFString &value)
 {
     /* might add check for correct format (VR) later on */
-    return PatientsName.putString(value.c_str());
+    return PatientName.putString(value.c_str());
 }
 
 
-OFCondition DSRDocument::setPatientsBirthDate(const OFString &value)
+OFCondition DSRDocument::setPatientBirthDate(const OFString &value)
 {
     /* might add check for correct format (VR) later on */
-    return PatientsBirthDate.putString(value.c_str());
+    return PatientBirthDate.putString(value.c_str());
 }
 
 
-OFCondition DSRDocument::setPatientsSex(const OFString &value)
+OFCondition DSRDocument::setPatientSex(const OFString &value)
 {
     /* might add check for correct format (VR) later on */
-    return PatientsSex.putString(value.c_str());
+    return PatientSex.putString(value.c_str());
 }
 
 
-OFCondition DSRDocument::setReferringPhysiciansName(const OFString &value)
+OFCondition DSRDocument::setReferringPhysicianName(const OFString &value)
 {
     /* might add check for correct format (VR) later on */
-    return ReferringPhysiciansName.putString(value.c_str());
+    return ReferringPhysicianName.putString(value.c_str());
 }
 
 
@@ -2349,6 +2349,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.67  2010-08-09 13:26:56  joergr
+ *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ *  the official "keyword" is used for the attribute name which results in a
+ *  number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  *  Revision 1.66  2010-07-01 13:40:35  joergr
  *  Moved SeriesDescription (0008,103E) from General Series to SR Document Series
  *  Module (according to CP 703).

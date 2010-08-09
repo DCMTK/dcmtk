@@ -48,7 +48,7 @@ it to a file (see \ref src_mkreport "mkreport" source file for details):
 
 \code
 DSRDocument document;
-document.setPatientsName("Doe^John");
+document.setPatientName("Doe^John");
 /* ... */
 document.getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
 document.getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue(/* some code */));

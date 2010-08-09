@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-02 16:20:53 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2010-08-09 13:23:32 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,11 +58,11 @@ extern "C" int TI_seriesCompare(const void *a, const void *b);
 extern "C" int TI_imageCompare(const void *a, const void *b);
 
 void
-TI_getInfoFromDataset(DcmDataset *dset, DIC_PN patientsName, DIC_CS studyId,
+TI_getInfoFromDataset(DcmDataset *dset, DIC_PN patientName, DIC_CS studyId,
     DIC_IS seriesNumber, DIC_CS modality, DIC_IS imageNumber)
 {
-    DU_getStringDOElement(dset, DCM_PatientsName, patientsName);
-    DU_stripLeadingAndTrailingSpaces(patientsName);
+    DU_getStringDOElement(dset, DCM_PatientName, patientName);
+    DU_stripLeadingAndTrailingSpaces(patientName);
     DU_getStringDOElement(dset, DCM_StudyID, studyId);
     DU_stripLeadingAndTrailingSpaces(studyId);
     DU_getStringDOElement(dset, DCM_SeriesNumber, seriesNumber);
@@ -74,7 +74,7 @@ TI_getInfoFromDataset(DcmDataset *dset, DIC_PN patientsName, DIC_CS studyId,
 }
 
 void
-TI_getInfoFromImage(char *imgFile, DIC_PN patientsName, DIC_CS studyId,
+TI_getInfoFromImage(char *imgFile, DIC_PN patientName, DIC_CS studyId,
     DIC_IS seriesNumber, DIC_CS modality, DIC_IS imageNumber)
 {
     DcmFileFormat dcmff;
@@ -86,7 +86,7 @@ TI_getInfoFromImage(char *imgFile, DIC_PN patientsName, DIC_CS studyId,
 
     DcmDataset *obj = dcmff.getDataset();
 
-    TI_getInfoFromDataset(obj, patientsName, studyId, seriesNumber,
+    TI_getInfoFromDataset(obj, patientName, studyId, seriesNumber,
         modality, imageNumber);
 }
 
@@ -241,7 +241,7 @@ static OFBool TI_detachDB(TI_DBEntry *db)
 
 static void printStudyEntry(TI_StudyEntry *study)
 {
-    printf(STUDYFORMAT, study->patientsName, study->patientID,
+    printf(STUDYFORMAT, study->patientName, study->patientID,
         study->studyID);
 }
 
@@ -272,7 +272,7 @@ static void TI_buildStudyQuery(DcmDataset **query)
     DU_putStringDOElement(*query, DCM_QueryRetrieveLevel, "STUDY");
     DU_putStringDOElement(*query, DCM_StudyInstanceUID, NULL);
     DU_putStringDOElement(*query, DCM_StudyID, NULL);
-    DU_putStringDOElement(*query, DCM_PatientsName, NULL);
+    DU_putStringDOElement(*query, DCM_PatientName, NULL);
     DU_putStringDOElement(*query, DCM_PatientID, NULL);
 }
 
@@ -458,7 +458,7 @@ TI_addStudyEntry(TI_DBEntry *db, DcmDataset *reply)
     /* extract info from reply */
     ok = DU_getStringDOElement(reply, DCM_StudyInstanceUID, se->studyInstanceUID);
     if (ok) ok = DU_getStringDOElement(reply, DCM_StudyID, se->studyID);
-    if (ok) ok = DU_getStringDOElement(reply, DCM_PatientsName, se->patientsName);
+    if (ok) ok = DU_getStringDOElement(reply, DCM_PatientName, se->patientName);
     if (ok) ok = DU_getStringDOElement(reply, DCM_PatientID, se->patientID);
 
     if (!ok) {
@@ -468,7 +468,7 @@ TI_addStudyEntry(TI_DBEntry *db, DcmDataset *reply)
 
     DU_stripLeadingAndTrailingSpaces(se->studyInstanceUID);
     DU_stripLeadingAndTrailingSpaces(se->studyID);
-    DU_stripLeadingAndTrailingSpaces(se->patientsName);
+    DU_stripLeadingAndTrailingSpaces(se->patientName);
     DU_stripLeadingAndTrailingSpaces(se->patientID);
 
     /* add to array */
@@ -768,7 +768,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_storeImage(char *sopClass, char *sopI
     T_ASC_PresentationContextID presId;
     T_DIMSE_C_StoreRQ req;
     T_DIMSE_C_StoreRSP rsp;
-    DIC_PN patientsName;
+    DIC_PN patientName;
     DIC_CS studyId;
     DIC_IS seriesNumber;
     DIC_CS modality;
@@ -812,14 +812,14 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_storeImage(char *sopClass, char *sopI
         return OFFalse;
     }
 
-    TI_getInfoFromImage(imgFile, patientsName, studyId,
+    TI_getInfoFromImage(imgFile, patientName, studyId,
         seriesNumber, modality, imageNumber);
 
     /* start store */
     msgId = assoc->nextMsgID++;
     printf("[MsgID %d] Store,\n", msgId);
-    printf("  PatientsName: %s, StudyID: %s,\n",
-        patientsName, studyId);
+    printf("  PatientName: %s, StudyID: %s,\n",
+        patientName, studyId);
     printf("  Series: %s, Modality: %s, Image: %s,\n",
         seriesNumber, modality, imageNumber);
     printf("  Image UID: %s\n", sopInstance);
@@ -1294,7 +1294,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_series(int arg, const char * /*cmdbuf
     printf("%d Series in StudyID %s,\n",
         study->seriesCount, study->studyID);
     printf("  Patient: %s (Database: %s)\n",
-        study->patientsName, db->title);
+        study->patientName, db->title);
     return OFTrue;
 }
 
@@ -1393,7 +1393,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_image(int arg, const char * /*cmdbuf*
     printf("%d Images in %s Series, StudyID %s,\n",
         series->imageCount, series->modality, study->studyID);
     printf("  Patient: %s (Database: %s)\n",
-        study->patientsName, db->title);
+        study->patientName, db->title);
     return OFTrue;
 }
 
@@ -2208,6 +2208,11 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
+ * Revision 1.14  2010-08-09 13:23:32  joergr
+ * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ * the official "keyword" is used for the attribute name which results in a
+ * number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  * Revision 1.13  2009-12-02 16:20:53  joergr
  * Make sure that dcmSOPClassUIDToModality() never returns NULL when passed to
  * the log stream in order to avoid an application crash.

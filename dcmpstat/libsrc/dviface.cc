@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-12-15 14:50:49 $
- *  CVS/RCS Revision: $Revision: 1.162 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:21:56 $
+ *  CVS/RCS Revision: $Revision: 1.163 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1823,7 +1823,7 @@ const char *DVInterface::getStudyTime()
 
 const char *DVInterface::getReferringPhysiciansName()
 {
-    return idxRec.ReferringPhysiciansName;
+    return idxRec.ReferringPhysicianName;
 }
 
 
@@ -1841,7 +1841,7 @@ const char *DVInterface::getNameOfPhysiciansReadingStudy()
 
 const char *DVInterface::getPatientName()
 {
-    return idxRec.PatientsName;
+    return idxRec.PatientName;
 }
 
 
@@ -1853,19 +1853,19 @@ const char *DVInterface::getPatientID()
 
 const char *DVInterface::getPatientBirthDate()
 {
-    return idxRec.PatientsBirthDate;
+    return idxRec.PatientBirthDate;
 }
 
 
 const char *DVInterface::getPatientSex()
 {
-    return idxRec.PatientsSex;
+    return idxRec.PatientSex;
 }
 
 
 const char *DVInterface::getPatientBirthTime()
 {
-    return idxRec.PatientsBirthTime;
+    return idxRec.PatientBirthTime;
 }
 
 
@@ -1913,7 +1913,7 @@ const char *DVInterface::getSeriesTime()
 
 const char *DVInterface::getSeriesPerformingPhysiciansName()
 {
-    return idxRec.PerformingPhysiciansName;
+    return idxRec.PerformingPhysicianName;
 }
 
 
@@ -2591,13 +2591,13 @@ OFCondition DVInterface::saveDICOMImage(
 
     if (dataset)
     {
-      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PatientsName);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PatientName);
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PatientID);
-      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PatientsBirthDate);
-      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PatientsSex);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PatientBirthDate);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PatientSex);
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_StudyDate);
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_StudyTime);
-      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_ReferringPhysiciansName);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_ReferringPhysicianName);
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_StudyID);
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_AccessionNumber);
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SeriesNumber);
@@ -4237,6 +4237,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
+ *  Revision 1.163  2010-08-09 13:21:56  joergr
+ *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ *  the official "keyword" is used for the attribute name which results in a
+ *  number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  *  Revision 1.162  2009-12-15 14:50:49  uli
  *  Fixes some issues with --logfile and the config's log options.
  *

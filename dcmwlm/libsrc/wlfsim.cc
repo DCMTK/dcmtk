@@ -22,8 +22,8 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2010-05-31 09:16:55 $
-*  CVS/RCS Revision: $Revision: 1.24 $
+*  Update Date:      $Date: 2010-08-09 13:30:34 $
+*  CVS/RCS Revision: $Revision: 1.25 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -601,7 +601,7 @@ OFBool WlmFileSystemInteractionManager::DatasetIsComplete( DcmDataset *dataset )
 //                  ReferencedPatientSequence             (0008,1120)        2
 //                   > ReferencedSOPClassUID              (0008,1150)        1C (Required if a sequence item is present)
 //                   > ReferencedSOPInstanceUID           (0008,1155)        1C (Required if a sequence item is present)
-//                  PatientsName                          (0010,0010)        1
+//                  PatientName                           (0010,0010)        1
 //                  PatientID                             (0010,0020)        1
 // Parameters   : dataset - [in] The dataset of the worklist file which is currently examined.
 // Return Value : OFTrue in case the given dataset contains all necessary return type 1 information,
@@ -636,7 +636,7 @@ OFBool WlmFileSystemInteractionManager::DatasetIsComplete( DcmDataset *dataset )
     // ...if ScheduledProcedureStepID is missing or empty in the ScheduledProcedureStepSequence, or
     // ...if RequestedProcedureID is missing or empty in the dataset, or
     // ...if StudyInstanceUID is missing or empty in the dataset, or
-    // ...if PatientsName is missing or empty in the dataset, or
+    // ...if PatientName is missing or empty in the dataset, or
     // ...if PatientID is missing or empty in the dataset, or
     // ...if inside the ScheduledProcedureStepSequence, no information can be retrieved from
     //    the ScheduledProcedureStepDescription attribute and (at the same time) also no
@@ -653,7 +653,7 @@ OFBool WlmFileSystemInteractionManager::DatasetIsComplete( DcmDataset *dataset )
         AttributeIsAbsentOrEmpty( DCM_ScheduledProcedureStepID, scheduledProcedureStepSequenceItem ) ||
         AttributeIsAbsentOrEmpty( DCM_RequestedProcedureID, dataset ) ||
         AttributeIsAbsentOrEmpty( DCM_StudyInstanceUID, dataset ) ||
-        AttributeIsAbsentOrEmpty( DCM_PatientsName, dataset ) ||
+        AttributeIsAbsentOrEmpty( DCM_PatientName, dataset ) ||
         AttributeIsAbsentOrEmpty( DCM_PatientID, dataset ) ||
         DescriptionAndCodeSequenceAttributesAreIncomplete( DCM_ScheduledProcedureStepDescription, DCM_ScheduledProtocolCodeSequence, scheduledProcedureStepSequenceItem ) ||
         DescriptionAndCodeSequenceAttributesAreIncomplete( DCM_RequestedProcedureDescription, DCM_RequestedProcedureCodeSequence, dataset ) ||
@@ -840,18 +840,18 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmDataset *da
           break;
 
         case 4:
-          // matching key attribute is DCM_ScheduledPerformingPhysiciansName (PN, 1)
-          matchFound = ScheduledPerformingPhysiciansNamesMatch( mkaValuesDataset[4], mkaValuesSearchMask[4] );
+          // matching key attribute is DCM_ScheduledPerformingPhysicianName (PN, 1)
+          matchFound = ScheduledPerformingPhysicianNamesMatch( mkaValuesDataset[4], mkaValuesSearchMask[4] );
           break;
 
         case 5:
-          // matching key attribute is DCM_PatientsName (PN, 1)
+          // matching key attribute is DCM_PatientName (PN, 1)
           matchFound = PatientsNamesMatch( mkaValuesDataset[5], mkaValuesSearchMask[5] );
           break;
 
         case 6:
           // matching key attribute is DCM_PatientID (LO, 1)
-          matchFound = PatientIdsMatch( mkaValuesDataset[6], mkaValuesSearchMask[6] );
+          matchFound = PatientsIDsMatch( mkaValuesDataset[6], mkaValuesSearchMask[6] );
           break;
 
         case 7:
@@ -865,12 +865,12 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmDataset *da
           break;
 
         case 9:
-          // matching key attribute is DCM_ReferringPhysiciansName (PN, 2)
-          matchFound = ReferringPhysiciansNamesMatch( mkaValuesDataset[9], mkaValuesSearchMask[9] );
+          // matching key attribute is DCM_ReferringPhysicianName (PN, 2)
+          matchFound = ReferringPhysicianNamesMatch( mkaValuesDataset[9], mkaValuesSearchMask[9] );
           break;
 
         case 10:
-          // matching key attribute is DCM_PatientsSex (CS, 2)
+          // matching key attribute is DCM_PatientSex (CS, 2)
           matchFound = PatientsSexesMatch( mkaValuesDataset[10], mkaValuesSearchMask[10] );
           break;
 
@@ -890,7 +890,7 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmDataset *da
           break;
 
         case 14:
-          // matching key attribute is DCM_PatientsBirthDate (DA, 2)
+          // matching key attribute is DCM_PatientBirthDate (DA, 2)
           matchFound = PatientsBirthDatesMatch( mkaValuesDataset[14], mkaValuesSearchMask[14] );
           break;
 
@@ -933,17 +933,17 @@ void WlmFileSystemInteractionManager::DetermineMatchingKeyAttributeValues( DcmDa
       case 1 : tag = DCM_ScheduledProcedureStepStartDate   ; break;
       case 2 : tag = DCM_ScheduledProcedureStepStartTime   ; break;
       case 3 : tag = DCM_Modality                          ; break;
-      case 4 : tag = DCM_ScheduledPerformingPhysiciansName ; break;
-      case 5 : tag = DCM_PatientsName                      ; break;
+      case 4 : tag = DCM_ScheduledPerformingPhysicianName  ; break;
+      case 5 : tag = DCM_PatientName                       ; break;
       case 6 : tag = DCM_PatientID                         ; break;
       case 7 : tag = DCM_AccessionNumber                   ; break;
       case 8 : tag = DCM_RequestedProcedureID              ; break;
-      case 9 : tag = DCM_ReferringPhysiciansName           ; break;
-      case 10 : tag = DCM_PatientsSex                      ; break;
+      case 9 : tag = DCM_ReferringPhysicianName            ; break;
+      case 10 : tag = DCM_PatientSex                       ; break;
       case 11 : tag = DCM_RequestingPhysician              ; break;
       case 12 : tag = DCM_AdmissionID                      ; break;
       case 13 : tag = DCM_RequestedProcedurePriority       ; break;
-      case 14 : tag = DCM_PatientsBirthDate                ; break;
+      case 14 : tag = DCM_PatientBirthDate                 ; break;
       default:                                               break;
     }
 
@@ -1072,7 +1072,7 @@ OFBool WlmFileSystemInteractionManager::ModalitiesMatch( const char *datasetValu
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::ScheduledPerformingPhysiciansNamesMatch( const char *datasetValue, const char *searchMaskValue )
+OFBool WlmFileSystemInteractionManager::ScheduledPerformingPhysicianNamesMatch( const char *datasetValue, const char *searchMaskValue )
 // Date         : July 12, 2002
 // Author       : Thomas Wilkens
 // Task         : This function returns OFTrue if the dataset's and the search mask's values in
@@ -1142,7 +1142,7 @@ OFBool WlmFileSystemInteractionManager::PatientsNamesMatch( const char *datasetV
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::PatientIdsMatch( const char *datasetValue, const char *searchMaskValue )
+OFBool WlmFileSystemInteractionManager::PatientsIDsMatch( const char *datasetValue, const char *searchMaskValue )
 // Date         : July 12, 2002
 // Author       : Thomas Wilkens
 // Task         : This function returns OFTrue if the dataset's and the search mask's values in
@@ -1233,7 +1233,7 @@ OFBool WlmFileSystemInteractionManager::RequestedProcedureIdsMatch( const char *
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::ReferringPhysiciansNamesMatch( const char *datasetValue, const char *searchMaskValue )
+OFBool WlmFileSystemInteractionManager::ReferringPhysicianNamesMatch( const char *datasetValue, const char *searchMaskValue )
 // Date         : December 22, 2003
 // Author       : Thomas Wilkens
 // Task         : This function returns OFTrue if the dataset's and the search mask's values in
@@ -2161,6 +2161,11 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
+** Revision 1.25  2010-08-09 13:30:34  joergr
+** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+** the official "keyword" is used for the attribute name which results in a
+** number of minor changes (e.g. "PatientsName" is now called "PatientName").
+**
 ** Revision 1.24  2010-05-31 09:16:55  joergr
 ** Fixed incorrect handling of SpecificCharacterSet attribute in C-FIND request
 ** and response messages.

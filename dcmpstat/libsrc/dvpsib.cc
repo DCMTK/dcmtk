@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:58 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:21:56 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -430,7 +430,7 @@ OFCondition DVPSImageBoxContent::createDefaultValues(OFBool renumber, unsigned l
   OFCondition result = EC_Normal;
   char uid[100];
   OFBool isEmpty = OFFalse;
-  
+
   SET_UID(sOPInstanceUID)
 
   if (renumber)
@@ -928,7 +928,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       }
     }
   }
-  
+
   // if n-set was successful, send back response dataset
   if (result && (EC_Normal == writeresult))
   {
@@ -977,7 +977,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   Uint16 val=0;
   char newuid[70];
   OFString aString;
-    
+
   // samplesPerPixel
   if (result)
   {
@@ -1048,7 +1048,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   }
 
   Uint16 bitsStoredValue = 0;
-  
+
   // bitsStored
   if (result)
   {
@@ -1076,7 +1076,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           } else {
             ADD_TO_PDATASET(DcmUnsignedShort, bitsStored)
           }
-        }      
+        }
       } else {
         DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: illegal bits stored value: " << val);
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1215,18 +1215,18 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         if ((EC_Normal == oldPxData->getUint16Array(pxdata16)) && pxdata16)
         {
           pixelData->putUint16Array(pxdata16, oldPxData->getLength()/sizeof(Uint16));
-          rspDataset->insert(pixelData, OFTrue /*replaceOld*/);         	
-        } 
+          rspDataset->insert(pixelData, OFTrue /*replaceOld*/);
+        }
         else if ((EC_Normal == oldPxData->getUint8Array(pxdata8)) && pxdata8)
         {
           pixelData->putUint8Array(pxdata8, oldPxData->getLength()/sizeof(Uint8));
-          rspDataset->insert(pixelData, OFTrue /*replaceOld*/);         	
+          rspDataset->insert(pixelData, OFTrue /*replaceOld*/);
         } else {
           DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: cannot access pixel data");
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
-          result = OFFalse;    
+          result = OFFalse;
         }
-      } else writeresult=EC_MemoryExhausted; 
+      } else writeresult=EC_MemoryExhausted;
     } else {
       DCMPSTAT_INFO("cannot update Basic Grayscale Image Box: pixel data missing in basic grayscale image sequence");
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
@@ -1268,12 +1268,12 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   if (result && (EC_Normal == writeresult))
   {
     // complete Hardcopy Grayscale Image
-    
+
     // write patient module
-    if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_PatientsName, DEFAULT_patientName);
+    if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_PatientName, DEFAULT_patientName);
     if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_PatientID);
-    if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_PatientsBirthDate);
-    if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_PatientsSex);
+    if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_PatientBirthDate);
+    if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_PatientSex);
 
     // general study and general series modules are written somewhere else
 
@@ -1311,7 +1311,7 @@ Uint16 DVPSImageBoxContent::getImageBoxPosition()
 OFCondition DVPSImageBoxContent::setUIDsAndAETitle(DcmUniqueIdentifier& studyUID, DcmUniqueIdentifier& seriesUID, const char *aetitle)
 {
   if (aetitle==NULL) return EC_IllegalCall;
-  
+
   studyInstanceUID = studyUID;
   seriesInstanceUID = seriesUID;
   return retrieveAETitle.putString(aetitle);
@@ -1319,6 +1319,11 @@ OFCondition DVPSImageBoxContent::setUIDsAndAETitle(DcmUniqueIdentifier& studyUID
 
 /*
  *  $Log: dvpsib.cc,v $
+ *  Revision 1.38  2010-08-09 13:21:56  joergr
+ *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ *  the official "keyword" is used for the attribute name which results in a
+ *  number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  *  Revision 1.37  2009-11-24 14:12:58  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

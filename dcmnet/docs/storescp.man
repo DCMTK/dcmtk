@@ -420,10 +420,10 @@ names are created differently. For option \e --sort-on-study-uid the pattern is
 and for option \e --sort-on-patientname
 
 \verbatim
-  [PatientsName]_[YYYYMMDD]_[HHMMSSPPP]
+  [PatientName]_[YYYYMMDD]_[HHMMSSPPP]
 \endverbatim
 
-where 'PatientsName' is replaced by "ANONYMOUS" if the data element is empty
+where 'PatientName' is replaced by "ANONYMOUS" if the data element is empty
 or absent in the data set. Please note, however, that for option
 \e --sort-on-study-uid the same subdirectory will be used for all DICOM objects
 that belong to the same study, i.e. in contrast to the other \e --sort-xxx

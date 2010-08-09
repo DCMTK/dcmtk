@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-01 13:40:33 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2010-08-09 13:26:25 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -386,22 +386,22 @@ class DSRDocument
     /** get patient's name
      ** @return pointer to string value (might be NULL)
      */
-    const char *getPatientsName() const;
+    const char *getPatientName() const;
 
     /** get patient's birth date
      ** @return pointer to string value (might be NULL)
      */
-    const char *getPatientsBirthDate() const;
+    const char *getPatientBirthDate() const;
 
     /** get patient's sex
      ** @return pointer to string value (might be NULL)
      */
-    const char *getPatientsSex() const;
+    const char *getPatientSex() const;
 
     /** get referring physicians name
      ** @return pointer to string value (might be NULL)
      */
-    const char *getReferringPhysiciansName() const;
+    const char *getReferringPhysicianName() const;
 
     /** get study description
      ** @return pointer to string value (might be NULL)
@@ -524,25 +524,25 @@ class DSRDocument
      ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getPatientsName(OFString &value) const;
+    const OFString &getPatientName(OFString &value) const;
 
     /** get patient's birth date
      ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getPatientsBirthDate(OFString &value) const;
+    const OFString &getPatientBirthDate(OFString &value) const;
 
     /** get patient's sex
      ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getPatientsSex(OFString &value) const;
+    const OFString &getPatientSex(OFString &value) const;
 
     /** get referring physicians name
      ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getReferringPhysiciansName(OFString &value) const;
+    const OFString &getReferringPhysicianName(OFString &value) const;
 
     /** get study description
      ** @param  value  reference to character string in which the value should be stored
@@ -652,28 +652,28 @@ class DSRDocument
      ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPatientsName(const OFString &value);
+    OFCondition setPatientName(const OFString &value);
 
     /** set patient's birth date.
      *  The passed string must be a valid DICOM Date (DA).
      ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPatientsBirthDate(const OFString &value);
+    OFCondition setPatientBirthDate(const OFString &value);
 
     /** set patient's sex.
      *  The passed string must be a valid DICOM Code String (CS).
      ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPatientsSex(const OFString &value);
+    OFCondition setPatientSex(const OFString &value);
 
     /** set referring physicians name.
      *  The passed string must be a valid DICOM Person Name (PN).
      ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setReferringPhysiciansName(const OFString &value);
+    OFCondition setReferringPhysicianName(const OFString &value);
 
     /** set study description.
      *  The passed string must be a valid DICOM Long String (LO).
@@ -1084,8 +1084,8 @@ class DSRDocument
     DcmDate             StudyDate;
     /// StudyTime: (TM, 1, 2)
     DcmTime             StudyTime;
-    /// ReferringPhysiciansName: (PN, 1, 2)
-    DcmPersonName       ReferringPhysiciansName;
+    /// ReferringPhysicianName: (PN, 1, 2)
+    DcmPersonName       ReferringPhysicianName;
     /// Study ID: (SH, 1, 2)
     DcmShortString      StudyID;
     /// Accession Number: (SH, 1, 2)
@@ -1095,14 +1095,14 @@ class DSRDocument
 
     // --- Patient Module (M) ---
 
-    /// Person Name: (PN, 1, 2)
-    DcmPersonName       PatientsName;
+    /// Patient's Name: (PN, 1, 2)
+    DcmPersonName       PatientName;
     /// Patient ID: (LO, 1, 2)
     DcmLongString       PatientID;
-    /// Patient Birth Date: (DA, 1, 2)
-    DcmDate             PatientsBirthDate;
-    /// Patient Sex: (CS, 1, 2)
-    DcmCodeString       PatientsSex;
+    /// Patient's Birth Date: (DA, 1, 2)
+    DcmDate             PatientBirthDate;
+    /// Patient's Sex: (CS, 1, 2)
+    DcmCodeString       PatientSex;
 
     // --- General Equipment Module (M) ---
 
@@ -1168,6 +1168,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.48  2010-08-09 13:26:25  joergr
+ *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ *  the official "keyword" is used for the attribute name which results in a
+ *  number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  *  Revision 1.47  2010-07-01 13:40:33  joergr
  *  Moved SeriesDescription (0008,103E) from General Series to SR Document Series
  *  Module (according to CP 703).

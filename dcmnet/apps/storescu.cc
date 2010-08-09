@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-21 12:54:05 $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  Update Date:      $Date: 2010-08-09 13:19:32 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1403,7 +1403,7 @@ replaceSOPInstanceInformation(DcmDataset *dataset)
   OFLOG_INFO(storescuLogger, "  SOPInstanceUID=" << sopInstanceUID);
   OFLOG_INFO(storescuLogger, "  ImageNumber=" << imageNumber);
 
-  updateStringAttributeValue(dataset, DCM_PatientsName, patientName);
+  updateStringAttributeValue(dataset, DCM_PatientName, patientName);
   updateStringAttributeValue(dataset, DCM_PatientID, patientID);
   updateStringAttributeValue(dataset, DCM_StudyInstanceUID, studyInstanceUID);
   updateStringAttributeValue(dataset, DCM_StudyID, studyID);
@@ -1735,6 +1735,11 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.93  2010-08-09 13:19:32  joergr
+** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+** the official "keyword" is used for the attribute name which results in a
+** number of minor changes (e.g. "PatientsName" is now called "PatientName").
+**
 ** Revision 1.92  2010-07-21 12:54:05  joergr
 ** Made sure that no NULL pointer is passed to the OFString constructor. This
 ** occurred when option --scan-directories was used without --scan-pattern.

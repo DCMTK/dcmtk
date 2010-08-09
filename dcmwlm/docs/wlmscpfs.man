@@ -240,11 +240,11 @@ matching keys:
 
 \verbatim
 (0008,0050) AccessionNumber
-(0008,0090) ReferringPhysiciansName
-(0010,0010) PatientsName
+(0008,0090) ReferringPhysicianName
+(0010,0010) PatientName
 (0010,0020) PatientID
-(0010,0030) PatientsBirthDate
-(0010,0040) PatientsSex
+(0010,0030) PatientBirthDate
+(0010,0040) PatientSex
 (0032,1032) RequestingPhysician
 (0038,0010) AdmissionID
 (0040,0100) ScheduledProcedureStepSequence
@@ -252,7 +252,7 @@ matching keys:
   (0040,0001) > ScheduledStationAETitle
   (0040,0002) > ScheduledProcedureStepStartDate
   (0040,0003) > ScheduledProcedureStepStartTime
-  (0040,0006) > ScheduledPerformingPhysiciansName
+  (0040,0006) > ScheduledPerformingPhysicianName
 (0040,1001) RequestedProcedureID
 (0040,1003) RequestedProcedurePriority
 \endverbatim
@@ -263,7 +263,7 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 (0008,0050) AccessionNumber
 (0008,0080) InstitutionName
 (0008,0081) InstitutionAddress
-(0008,0090) ReferringPhysiciansName
+(0008,0090) ReferringPhysicianName
 (0008,1080) AdmittingDiagnosesDescription
 (0008,1110) ReferencedStudySequence
   (0008,1150) > ReferencedSOPClassUID
@@ -271,15 +271,15 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 (0008,1120) ReferencedPatientSequence
   (0008,1150) > ReferencedSOPClassUID
   (0008,1155) > ReferencedSOPInstanceUID
-(0010,0010) PatientsName
+(0010,0010) PatientName
 (0010,0020) PatientID
-(0010,0030) PatientsBirthDate
-(0010,0040) PatientsSex
+(0010,0030) PatientBirthDate
+(0010,0040) PatientSex
 (0010,1000) OtherPatientIDs
 (0010,1001) OtherPatientNames
-(0010,1020) PatientsSize
-(0010,1030) PatientsWeight
-(0010,1040) PatientsAddress
+(0010,1020) PatientSize
+(0010,1030) PatientWeight
+(0010,1040) PatientAddress
 (0010,1080) MilitaryRank
 (0010,2000) MedicalAlerts
 (0010,2110) ContrastAllergies
@@ -311,7 +311,7 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
   (0040,0003) > ScheduledProcedureStepStartTime
   (0040,0004) > ScheduledProcedureStepEndDate
   (0040,0005) > ScheduledProcedureStepEndTime
-  (0040,0006) > ScheduledPerformingPhysiciansName
+  (0040,0006) > ScheduledPerformingPhysicianName
   (0040,0007) > ScheduledProcedureStepDescription
   (0040,0008) > ScheduledProtocolCodeSequence
     (0008,0100) >  > CodeValue

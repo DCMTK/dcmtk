@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 1996-2009, OFFIS
+*  Copyright (C) 1996-2010, OFFIS
 *
 *  This software and supporting documentation were developed by
 *
@@ -21,10 +21,9 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: uli $
-*  Update Date:      $Date: 2009-11-24 10:40:01 $
-*  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.16 $
+*  Last Update:      $Author: joergr $
+*  Update Date:      $Date: 2010-08-09 13:29:39 $
+*  CVS/RCS Revision: $Revision: 1.17 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -117,7 +116,7 @@ class WlmFileSystemInteractionManager
        *    ReferencedPatientSequence             (0008,1120)        2
        *     > ReferencedSOPClassUID              (0008,1150)        1C (Required if a sequence item is present)
        *     > ReferencedSOPInstanceUID           (0008,1155)        1C (Required if a sequence item is present)
-       *    PatientsName                          (0010,0010)        1
+       *    PatientName                           (0010,0010)        1
        *    PatientID                             (0010,0020)        1
        *  @param dataset - [in] The dataset of the worklist file which is currently examined.
        *  @return OFTrue in case the given dataset contains all necessary return type 1 information,
@@ -197,7 +196,7 @@ class WlmFileSystemInteractionManager
        *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
        *  @return OFTrue if the values match, OFFalse otherwise.
        */
-    OFBool ScheduledPerformingPhysiciansNamesMatch( const char *datasetValue, const char *searchMaskValue );
+    OFBool ScheduledPerformingPhysicianNamesMatch( const char *datasetValue, const char *searchMaskValue );
 
       /** This function returns OFTrue if the dataset's and the search mask's values in
        *  attribute patient's names match; otherwise OFFalse will be returned.
@@ -213,7 +212,7 @@ class WlmFileSystemInteractionManager
        *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
        *  @return OFTrue if the values match, OFFalse otherwise.
        */
-    OFBool PatientIdsMatch( const char *datasetValue, const char *searchMaskValue );
+    OFBool PatientsIDsMatch( const char *datasetValue, const char *searchMaskValue );
 
       /** This function returns OFTrue if the dataset's and the search mask's values in
        *  attribute accession number match; otherwise OFFalse will be returned.
@@ -237,7 +236,7 @@ class WlmFileSystemInteractionManager
        *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
        *  @return OFTrue if the values match, OFFalse otherwise.
        */
-    OFBool ReferringPhysiciansNamesMatch( const char *datasetValue, const char *searchMaskValue );
+    OFBool ReferringPhysicianNamesMatch( const char *datasetValue, const char *searchMaskValue );
 
       /** This function returns OFTrue if the dataset's and the search mask's values in
        *  attribute patient sex match; otherwise OFFalse will be returned.
@@ -458,6 +457,11 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
+** Revision 1.17  2010-08-09 13:29:39  joergr
+** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+** the official "keyword" is used for the attribute name which results in a
+** number of minor changes (e.g. "PatientsName" is now called "PatientName").
+**
 ** Revision 1.16  2009-11-24 10:40:01  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **

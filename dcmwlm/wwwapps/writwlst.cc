@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -20,13 +20,12 @@
  *  Author:  Andrew Hewett
  *
  *  Purpose:
- *   Program to create a worklist file from a WWW CGI perl script generated 
+ *   Program to create a worklist file from a WWW CGI perl script generated
  *   hexedecimal encoded string.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:40:01 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/wwwapps/writwlst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:32:08 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +64,7 @@ usage()
 	"    -f    write dataset\n"
 	"    +o    overwrite dcmfile-out if existing (default)\n"
 	"    -o    update dcmfile-out if existing\n"
-	"  group length encoding:\n" 
+	"  group length encoding:\n"
 	"    +g    write with group lengths\n"
 	"    -g    write without group lengths (default)\n"
 	"  length encoding in sequences and items:\n"
@@ -97,15 +96,15 @@ private:
     }
     void expand(int newlen);
 public:
-    int length() const { 
-	return len; 
+    int length() const {
+	return len;
     }
-    int maxlength() const { 
-	return maxlen; 
+    int maxlength() const {
+	return maxlen;
     }
 
-    const char* c_str() const { 
-	return str; 
+    const char* c_str() const {
+	return str;
     }
 
     void append(char c) {
@@ -141,7 +140,7 @@ public:
     : str(NULL)
     , len(0)
     , maxlen(0)
-    { 
+    {
 	expand(capacity);
     }
     SimpleStr(const char* s)
@@ -164,7 +163,7 @@ private:
     /*undefined*/ SimpleStr& operator=(const SimpleStr&);
 };
 
-void SimpleStr::expand(int newlen) 
+void SimpleStr::expand(int newlen)
 {
     if (newlen >= maxlen) {
         maxlen = max(newlen, maxlen+SimpleStr_defaultSize);
@@ -215,7 +214,7 @@ addStringAttr(DcmItem *item, const DcmTagKey& key, const SimpleStr& str)
 
 
 static DcmItem*
-getOrInsertSequenceItem(DcmItem *dset, const DcmTagKey& key, 
+getOrInsertSequenceItem(DcmItem *dset, const DcmTagKey& key,
 			unsigned int itemNumber)
 {
     OFCondition ec = EC_Normal;
@@ -242,12 +241,12 @@ getOrInsertSequenceItem(DcmItem *dset, const DcmTagKey& key,
     } else if (stack.top()->ident() == EVR_SQ) {
 	DcmSequenceOfItems *sq = (DcmSequenceOfItems*)stack.top();
 	if (itemNumber > sq->card()) {
-	    /* we need to create some more items */ 
+	    /* we need to create some more items */
 	    for (unsigned long i=sq->card(); i<=itemNumber; i++) {
 		DcmItem *item = new DcmItem;
 		sq->insert(item, OFTrue);
 	    }
-	} 
+	}
 	foundItem = sq->getItem(itemNumber);
     } else {
 	CERR << "error: not a sequence: " << key << OFendl;
@@ -286,17 +285,17 @@ addValue(int valCount, SimpleStr& val, DcmDataset& dset)
 	KeyPos(  3, DCM_RequestedProcedurePriority ),
 	KeyPos(  4, DCM_AccessionNumber ),
 	KeyPos(  5, DCM_RequestingPhysician ),
-	KeyPos(  6, DCM_PatientsName ),
+	KeyPos(  6, DCM_PatientName ),
 	KeyPos(  7, DCM_PatientID ),
-	KeyPos(  8, DCM_PatientsBirthDate ),
-	KeyPos(  9, DCM_PatientsSex ),
+	KeyPos(  8, DCM_PatientBirthDate ),
+	KeyPos(  9, DCM_PatientSex ),
 	KeyPos( 10, DCM_MedicalAlerts ),
 	KeyPos( 11, DCM_Allergies ),
 	KeyPos( 12, DCM_ScheduledStationAETitle, OFTrue ),
 	KeyPos( 13, DCM_ScheduledProcedureStepStartDate, OFTrue ),
 	KeyPos( 14, DCM_ScheduledProcedureStepStartTime, OFTrue ),
 	KeyPos( 15, DCM_Modality, OFTrue ),
-	KeyPos( 16, DCM_ScheduledPerformingPhysiciansName, OFTrue ),
+	KeyPos( 16, DCM_ScheduledPerformingPhysicianName, OFTrue ),
 	KeyPos( 17, DCM_ScheduledProcedureStepDescription, OFTrue ),
 	KeyPos( 18, DCM_ScheduledStationName, OFTrue ),
 	KeyPos( 19, DCM_ScheduledProcedureStepLocation, OFTrue ),
@@ -311,10 +310,10 @@ addValue(int valCount, SimpleStr& val, DcmDataset& dset)
 	/* ignore extra values */
 	return OFTrue;
     }
-    
+
     KeyPos *kp = &posTab[valCount];
     if (kp->position != valCount) {
-	CERR << "internal error: inconsistent posTab (valCount=" 
+	CERR << "internal error: inconsistent posTab (valCount="
 	     << valCount <<")" << OFendl;
 	return OFFalse;
     }
@@ -524,7 +523,7 @@ int main(int argc, char *argv[])
 	CERR << "virtual memory exhausted" << OFendl;
 	return 1;
     }
-    
+
     if (keepOverride)
     {
       // update old WL file
@@ -532,13 +531,13 @@ int main(int argc, char *argv[])
     }
 
     dataset=fileformat->getDataset();
-        
+
     OFBool parseOK = OFTrue;
 
     if (strcmp(ifname, "-") == 0) {
 	/* read from stdin */
 	parseOK = parseWorklist(stdin, *dataset);
-	
+
     } else {
 	FILE* f = NULL;
 	if ((f = fopen(ifname, "r")) != NULL) {
@@ -565,7 +564,7 @@ int main(int argc, char *argv[])
     }
 
     /* write to file */
-    
+
     if (verbosemode)
 	COUT << "writing file: " << ofname << OFendl;
 
@@ -583,6 +582,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: writwlst.cc,v $
+ *   Revision 1.8  2010-08-09 13:32:08  joergr
+ *   Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ *   the official "keyword" is used for the attribute name which results in a
+ *   number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  *   Revision 1.7  2009-11-24 10:40:01  uli
  *   Switched to logging mechanism provided by the "new" oflog module.
  *

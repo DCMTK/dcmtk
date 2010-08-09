@@ -22,8 +22,8 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-03 10:34:57 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2010-08-09 13:23:32 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,11 +80,11 @@ const OFCondition DcmQRIndexDatabaseError(DcmQRIndexDatabaseErrorC);
  ***/
 
 static const DB_FindAttr TbFindAttr [] = {
-        DB_FindAttr( DCM_PatientsBirthDate ,                    PATIENT_LEVEL,  OPTIONAL_KEY,   DATE_CLASS      ),
-        DB_FindAttr( DCM_PatientsSex,                           PATIENT_LEVEL,  OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_PatientsName,                          PATIENT_LEVEL,  REQUIRED_KEY,   STRING_CLASS    ),
+        DB_FindAttr( DCM_PatientBirthDate,                      PATIENT_LEVEL,  OPTIONAL_KEY,   DATE_CLASS      ),
+        DB_FindAttr( DCM_PatientSex,                            PATIENT_LEVEL,  OPTIONAL_KEY,   STRING_CLASS    ),
+        DB_FindAttr( DCM_PatientName,                           PATIENT_LEVEL,  REQUIRED_KEY,   STRING_CLASS    ),
         DB_FindAttr( DCM_PatientID,                             PATIENT_LEVEL,  UNIQUE_KEY,     STRING_CLASS    ),
-        DB_FindAttr( DCM_PatientsBirthTime,                     PATIENT_LEVEL,  OPTIONAL_KEY,   TIME_CLASS      ),
+        DB_FindAttr( DCM_PatientBirthTime,                      PATIENT_LEVEL,  OPTIONAL_KEY,   TIME_CLASS      ),
         DB_FindAttr( DCM_OtherPatientIDs,                       PATIENT_LEVEL,  OPTIONAL_KEY,   STRING_CLASS    ),
         DB_FindAttr( DCM_OtherPatientNames,                     PATIENT_LEVEL,  OPTIONAL_KEY,   STRING_CLASS    ),
         DB_FindAttr( DCM_EthnicGroup,                           PATIENT_LEVEL,  OPTIONAL_KEY,   STRING_CLASS    ),
@@ -96,15 +96,15 @@ static const DB_FindAttr TbFindAttr [] = {
         DB_FindAttr( DCM_StudyTime,                             STUDY_LEVEL,    REQUIRED_KEY,   TIME_CLASS      ),
         DB_FindAttr( DCM_StudyID,                               STUDY_LEVEL,    REQUIRED_KEY,   STRING_CLASS    ),
         DB_FindAttr( DCM_AccessionNumber,                       STUDY_LEVEL,    REQUIRED_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_ReferringPhysiciansName,               STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
+        DB_FindAttr( DCM_ReferringPhysicianName,                STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
         DB_FindAttr( DCM_StudyDescription,                      STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
         DB_FindAttr( DCM_NameOfPhysiciansReadingStudy,          STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
         DB_FindAttr( DCM_StudyInstanceUID,                      STUDY_LEVEL,    UNIQUE_KEY,     UID_CLASS       ),
         DB_FindAttr( DCM_RETIRED_OtherStudyNumbers,             STUDY_LEVEL,    OPTIONAL_KEY,   OTHER_CLASS     ),
         DB_FindAttr( DCM_AdmittingDiagnosesDescription,         STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_PatientsAge,                           STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_PatientsSize,                          STUDY_LEVEL,    OPTIONAL_KEY,   OTHER_CLASS     ),
-        DB_FindAttr( DCM_PatientsWeight,                        STUDY_LEVEL,    OPTIONAL_KEY,   OTHER_CLASS     ),
+        DB_FindAttr( DCM_PatientAge,                            STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
+        DB_FindAttr( DCM_PatientSize,                           STUDY_LEVEL,    OPTIONAL_KEY,   OTHER_CLASS     ),
+        DB_FindAttr( DCM_PatientWeight,                         STUDY_LEVEL,    OPTIONAL_KEY,   OTHER_CLASS     ),
         DB_FindAttr( DCM_Occupation,                            STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
         DB_FindAttr( DCM_AdditionalPatientHistory,              STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
         DB_FindAttr( DCM_NumberOfStudyRelatedSeries,            STUDY_LEVEL,    OPTIONAL_KEY,   OTHER_CLASS     ),
@@ -207,21 +207,21 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
 {
     if (! linksOnly)
     {
-        idx -> param[RECORDIDX_PatientsBirthDate]. XTag = DCM_PatientsBirthDate  ;
-        idx -> param[RECORDIDX_PatientsBirthDate]. ValueLength = DA_MAX_LENGTH  ;
-        idx -> PatientsBirthDate[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientsSex]. XTag = DCM_PatientsSex  ;
-        idx -> param[RECORDIDX_PatientsSex]. ValueLength = CS_MAX_LENGTH  ;
-        idx -> PatientsSex[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientsName]. XTag = DCM_PatientsName  ;
-        idx -> param[RECORDIDX_PatientsName]. ValueLength = PN_MAX_LENGTH  ;
-        idx -> PatientsName[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientBirthDate]. XTag = DCM_PatientBirthDate  ;
+        idx -> param[RECORDIDX_PatientBirthDate]. ValueLength = DA_MAX_LENGTH  ;
+        idx -> PatientBirthDate[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientSex]. XTag = DCM_PatientSex  ;
+        idx -> param[RECORDIDX_PatientSex]. ValueLength = CS_MAX_LENGTH  ;
+        idx -> PatientSex[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientName]. XTag = DCM_PatientName  ;
+        idx -> param[RECORDIDX_PatientName]. ValueLength = PN_MAX_LENGTH  ;
+        idx -> PatientName[0] = '\0' ;
         idx -> param[RECORDIDX_PatientID]. XTag = DCM_PatientID  ;
         idx -> param[RECORDIDX_PatientID]. ValueLength = LO_MAX_LENGTH  ;
         idx -> PatientID[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientsBirthTime]. XTag = DCM_PatientsBirthTime  ;
-        idx -> param[RECORDIDX_PatientsBirthTime]. ValueLength = TM_MAX_LENGTH  ;
-        idx -> PatientsBirthTime[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientBirthTime]. XTag = DCM_PatientBirthTime  ;
+        idx -> param[RECORDIDX_PatientBirthTime]. ValueLength = TM_MAX_LENGTH  ;
+        idx -> PatientBirthTime[0] = '\0' ;
         idx -> param[RECORDIDX_OtherPatientIDs]. XTag = DCM_OtherPatientIDs  ;
         idx -> param[RECORDIDX_OtherPatientIDs]. ValueLength = LO_MAX_LENGTH  ;
         idx -> OtherPatientIDs[0] = '\0' ;
@@ -258,9 +258,9 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
         idx -> param[RECORDIDX_AccessionNumber]. XTag = DCM_AccessionNumber;
         idx -> param[RECORDIDX_AccessionNumber]. ValueLength = CS_MAX_LENGTH ;
         idx -> AccessionNumber[0] = '\0' ;
-        idx -> param[RECORDIDX_ReferringPhysiciansName]. XTag = DCM_ReferringPhysiciansName  ;
-        idx -> param[RECORDIDX_ReferringPhysiciansName]. ValueLength = PN_MAX_LENGTH ;
-        idx -> ReferringPhysiciansName[0] = '\0' ;
+        idx -> param[RECORDIDX_ReferringPhysicianName]. XTag = DCM_ReferringPhysicianName  ;
+        idx -> param[RECORDIDX_ReferringPhysicianName]. ValueLength = PN_MAX_LENGTH ;
+        idx -> ReferringPhysicianName[0] = '\0' ;
         idx -> param[RECORDIDX_ProcedureDescription]. XTag = DCM_StudyDescription  ;
         idx -> param[RECORDIDX_ProcedureDescription]. ValueLength = LO_MAX_LENGTH ;
         idx -> ProcedureDescription[0] = '\0' ;
@@ -276,15 +276,15 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
         idx -> param[RECORDIDX_AdmittingDiagnosesDescription]. XTag = DCM_AdmittingDiagnosesDescription  ;
         idx -> param[RECORDIDX_AdmittingDiagnosesDescription]. ValueLength = LO_MAX_LENGTH ;
         idx -> AdmittingDiagnosesDescription[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientsAge]. XTag = DCM_PatientsAge  ;
-        idx -> param[RECORDIDX_PatientsAge]. ValueLength = AS_MAX_LENGTH ;
-        idx -> PatientsAge[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientsSize]. XTag = DCM_PatientsSize  ;
-        idx -> param[RECORDIDX_PatientsSize]. ValueLength = DS_MAX_LENGTH ;
-        idx -> PatientsSize[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientsWeight]. XTag = DCM_PatientsWeight  ;
-        idx -> param[RECORDIDX_PatientsWeight]. ValueLength = DS_MAX_LENGTH ;
-        idx -> PatientsWeight[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientAge]. XTag = DCM_PatientAge  ;
+        idx -> param[RECORDIDX_PatientAge]. ValueLength = AS_MAX_LENGTH ;
+        idx -> PatientAge[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientSize]. XTag = DCM_PatientSize  ;
+        idx -> param[RECORDIDX_PatientSize]. ValueLength = DS_MAX_LENGTH ;
+        idx -> PatientSize[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientWeight]. XTag = DCM_PatientWeight  ;
+        idx -> param[RECORDIDX_PatientWeight]. ValueLength = DS_MAX_LENGTH ;
+        idx -> PatientWeight[0] = '\0' ;
         idx -> param[RECORDIDX_Occupation]. XTag = DCM_Occupation  ;
         idx -> param[RECORDIDX_Occupation]. ValueLength = SH_MAX_LENGTH ;
         idx -> Occupation[0] = '\0' ;
@@ -324,18 +324,18 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
         idx -> param[RECORDIDX_OperatorsName ]. XTag = DCM_OperatorsName  ;
         idx -> param[RECORDIDX_OperatorsName ]. ValueLength = PN_MAX_LENGTH ;
         idx -> OperatorsName[0] = '\0';
-        idx -> param[RECORDIDX_PerformingPhysiciansName]. XTag = DCM_PerformingPhysiciansName  ;
-        idx -> param[RECORDIDX_PerformingPhysiciansName]. ValueLength = PN_MAX_LENGTH ;
-        idx -> PerformingPhysiciansName[0] = '\0';
+        idx -> param[RECORDIDX_PerformingPhysicianName]. XTag = DCM_PerformingPhysicianName  ;
+        idx -> param[RECORDIDX_PerformingPhysicianName]. ValueLength = PN_MAX_LENGTH ;
+        idx -> PerformingPhysicianName[0] = '\0';
         idx -> param[RECORDIDX_PresentationLabel]. XTag = DCM_ContentLabel  ;
         idx -> param[RECORDIDX_PresentationLabel]. ValueLength = CS_LABEL_MAX_LENGTH ;
         idx -> PresentationLabel[0] = '\0';
     }
-    idx -> param[RECORDIDX_PatientsBirthDate]. PValueField = (char *)idx -> PatientsBirthDate ;
-    idx -> param[RECORDIDX_PatientsSex]. PValueField = (char *)idx -> PatientsSex ;
-    idx -> param[RECORDIDX_PatientsName]. PValueField = (char *)idx -> PatientsName ;
+    idx -> param[RECORDIDX_PatientBirthDate]. PValueField = (char *)idx -> PatientBirthDate ;
+    idx -> param[RECORDIDX_PatientSex]. PValueField = (char *)idx -> PatientSex ;
+    idx -> param[RECORDIDX_PatientName]. PValueField = (char *)idx -> PatientName ;
     idx -> param[RECORDIDX_PatientID]. PValueField = (char *)idx -> PatientID ;
-    idx -> param[RECORDIDX_PatientsBirthTime]. PValueField = (char *)idx -> PatientsBirthTime ;
+    idx -> param[RECORDIDX_PatientBirthTime]. PValueField = (char *)idx -> PatientBirthTime ;
     idx -> param[RECORDIDX_OtherPatientIDs]. PValueField = (char *)idx -> OtherPatientIDs ;
     idx -> param[RECORDIDX_OtherPatientNames]. PValueField = (char *)idx -> OtherPatientNames ;
     idx -> param[RECORDIDX_EthnicGroup]. PValueField = (char *)idx -> EthnicGroup ;
@@ -348,15 +348,15 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
     idx -> param[RECORDIDX_StudyDescription]. PValueField = (char *) idx -> StudyDescription ;
     idx -> param[RECORDIDX_NameOfPhysiciansReadingStudy]. PValueField = (char *) idx ->NameOfPhysiciansReadingStudy;
     idx -> param[RECORDIDX_AccessionNumber]. PValueField = (char *) idx -> AccessionNumber ;
-    idx -> param[RECORDIDX_ReferringPhysiciansName]. PValueField = (char *) idx -> ReferringPhysiciansName ;
+    idx -> param[RECORDIDX_ReferringPhysicianName]. PValueField = (char *) idx -> ReferringPhysicianName ;
     idx -> param[RECORDIDX_ProcedureDescription]. PValueField = (char *) idx -> ProcedureDescription ;
     idx -> param[RECORDIDX_AttendingPhysiciansName]. PValueField = (char *) idx -> AttendingPhysiciansName ;
     idx -> param[RECORDIDX_StudyInstanceUID]. PValueField = (char *) idx -> StudyInstanceUID ;
     idx -> param[RECORDIDX_OtherStudyNumbers]. PValueField = (char *) idx -> OtherStudyNumbers ;
     idx -> param[RECORDIDX_AdmittingDiagnosesDescription]. PValueField = (char *) idx -> AdmittingDiagnosesDescription ;
-    idx -> param[RECORDIDX_PatientsAge]. PValueField = (char *) idx -> PatientsAge ;
-    idx -> param[RECORDIDX_PatientsSize]. PValueField = (char *) idx -> PatientsSize ;
-    idx -> param[RECORDIDX_PatientsWeight]. PValueField = (char *) idx -> PatientsWeight ;
+    idx -> param[RECORDIDX_PatientAge]. PValueField = (char *) idx -> PatientAge ;
+    idx -> param[RECORDIDX_PatientSize]. PValueField = (char *) idx -> PatientSize ;
+    idx -> param[RECORDIDX_PatientWeight]. PValueField = (char *) idx -> PatientWeight ;
     idx -> param[RECORDIDX_Occupation]. PValueField = (char *) idx -> Occupation ;
     idx -> param[RECORDIDX_NumberofStudyRelatedSeries]. PValueField = (char *) idx -> NumberofStudyRelatedSeries ;
     idx -> param[RECORDIDX_NumberofStudyRelatedInstances]. PValueField = (char *) idx -> NumberofStudyRelatedInstances ;
@@ -370,7 +370,7 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
     idx -> param[RECORDIDX_SeriesDescription]. PValueField = (char *) idx -> SeriesDescription ;
     idx -> param[RECORDIDX_ProtocolName]. PValueField = (char *) idx -> ProtocolName ;
     idx -> param[RECORDIDX_OperatorsName ]. PValueField = (char *) idx -> OperatorsName ;
-    idx -> param[RECORDIDX_PerformingPhysiciansName]. PValueField = (char *) idx -> PerformingPhysiciansName ;
+    idx -> param[RECORDIDX_PerformingPhysicianName]. PValueField = (char *) idx -> PerformingPhysicianName ;
     idx -> param[RECORDIDX_PresentationLabel]. PValueField = (char *) idx -> PresentationLabel ;
 }
 
@@ -3426,6 +3426,11 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.20  2010-08-09 13:23:32  joergr
+ * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ * the official "keyword" is used for the attribute name which results in a
+ * number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  * Revision 1.19  2010-06-03 10:34:57  joergr
  * Replaced calls to strerror() by new helper function OFStandard::strerror()
  * which results in using the thread safe version of strerror() if available.

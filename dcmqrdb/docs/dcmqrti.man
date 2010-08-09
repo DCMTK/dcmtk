@@ -318,7 +318,7 @@ When an image is stored, a message will be printed of the form:
 ------------------------------------------------------------
 New Association Started (swallow:2001,ACME1)
 [MsgID 1] Store,
-  PatientsName: JACKSON^ANDREW^^^, StudyID: 20001,
+  PatientName: JACKSON^ANDREW^^^, StudyID: 20001,
   Series: 2, Modality: CR, Image: 1,
   Image UID: 1.2.840.113654.2.3.1993.9.123.6.1834
   0%________25%_________50%__________75%________100%
@@ -443,6 +443,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1993-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1993-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

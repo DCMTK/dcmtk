@@ -22,8 +22,8 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-31 09:22:59 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2010-08-09 13:30:34 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -491,7 +491,7 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
       newElement = new DcmDate( DcmTag( DCM_ScheduledProcedureStepStartDate ) );           if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmTime( DcmTag( DCM_ScheduledProcedureStepStartTime ) );           if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmCodeString( DcmTag( DCM_Modality ) );                            if( item->insert( newElement ) != EC_Normal ) delete newElement;
-      newElement = new DcmPersonName( DcmTag( DCM_ScheduledPerformingPhysiciansName ) );   if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmPersonName( DcmTag( DCM_ScheduledPerformingPhysicianName ) );    if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmLongString( DcmTag( DCM_ScheduledProcedureStepDescription ) );   if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmShortString( DcmTag( DCM_ScheduledStationName ) );               if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmShortString( DcmTag( DCM_ScheduledProcedureStepLocation ) );     if( item->insert( newElement ) != EC_Normal ) delete newElement;
@@ -632,17 +632,17 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
 //                    > DCM_ScheduledProcedureStepStartDate                (0040,0002)  DA  R  1
 //                    > DCM_ScheduledProcedureStepStartTime                (0040,0003)  TM  R  1
 //                    > DCM_Modality                                       (0008,0060)  CS  R  1
-//                    > DCM_ScheduledPerformingPhysiciansName              (0040,0006)  PN  R  2
-//                   DCM_PatientsName                                      (0010,0010)  PN  R  1
+//                    > DCM_ScheduledPerformingPhysicianName               (0040,0006)  PN  R  2
+//                   DCM_PatientName                                       (0010,0010)  PN  R  1
 //                   DCM_PatientID                                         (0010,0020)  LO  R  1
 //                   DCM_AccessionNumber                                   (0008,0050)  SH  O  2
 //                   DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
-//                   DCM_ReferringPhysiciansName                           (0008,0090)  PN  O  2
-//                   DCM_PatientsSex                                       (0010,0040)  CS  O  2
+//                   DCM_ReferringPhysicianName                            (0008,0090)  PN  O  2
+//                   DCM_PatientSex                                        (0010,0040)  CS  O  2
 //                   DCM_RequestingPhysician                               (0032,1032)  PN  O  2
 //                   DCM_AdmissionID                                       (0038,0010)  LO  O  2
 //                   DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
-//                   DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
+//                   DCM_PatientBirthDate                                  (0010,0030)  DA  O  2
 //                As a result, the following data types have to be supported in this function:
 //                AE, DA, TM, CS, PN, LO and SH. For the correct specification of these datatypes
 //                2003 DICOM standard, part 5, section 6.2, table 6.2-1.
@@ -1174,17 +1174,17 @@ OFBool WlmDataSource::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmS
 //                    > DCM_ScheduledProcedureStepStartDate                (0040,0002)  DA  R  1
 //                    > DCM_ScheduledProcedureStepStartTime                (0040,0003)  TM  R  1
 //                    > DCM_Modality                                       (0008,0060)  CS  R  1
-//                    > DCM_ScheduledPerformingPhysiciansName              (0040,0006)  PN  R  2
-//                   DCM_PatientsName                                      (0010,0010)  PN  R  1
+//                    > DCM_ScheduledPerformingPhysicianName               (0040,0006)  PN  R  2
+//                   DCM_PatientName                                       (0010,0010)  PN  R  1
 //                   DCM_PatientID                                         (0010,0020)  LO  R  1
 //                   DCM_AccessionNumber                                   (0008,0050)  SH  O  2
 //                   DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
-//                   DCM_ReferringPhysiciansName                           (0008,0090)  PN  O  2
-//                   DCM_PatientsSex                                       (0010,0040)  CS  O  2
+//                   DCM_ReferringPhysicianName                            (0008,0090)  PN  O  2
+//                   DCM_PatientSex                                        (0010,0040)  CS  O  2
 //                   DCM_RequestingPhysician                               (0032,1032)  PN  O  2
 //                   DCM_AdmissionID                                       (0038,0010)  LO  O  2
 //                   DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
-//                   DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
+//                   DCM_PatientBirthDate                                  (0010,0030)  DA  O  2
 // Parameters   : element            - [in] Pointer to the element which shall be checked.
 //                supSequenceElement - [in] Pointer to the superordinate sequence element of which
 //                                     the currently processed element is an attribute, or NULL if
@@ -1212,22 +1212,22 @@ OFBool WlmDataSource::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmS
           elementKey == DCM_ScheduledProcedureStepStartDate   ||
           elementKey == DCM_ScheduledProcedureStepStartTime   ||
           elementKey == DCM_Modality                          ||
-          elementKey == DCM_ScheduledPerformingPhysiciansName ) )
+          elementKey == DCM_ScheduledPerformingPhysicianName ) )
       isSupportedMatchingKeyAttribute = OFTrue;
   }
   else
   {
     if( elementKey == DCM_ScheduledProcedureStepSequence ||
-        elementKey == DCM_PatientsName                   ||
+        elementKey == DCM_PatientName                    ||
         elementKey == DCM_PatientID                      ||
         elementKey == DCM_AccessionNumber                ||
         elementKey == DCM_RequestedProcedureID           ||
-        elementKey == DCM_ReferringPhysiciansName        ||
-        elementKey == DCM_PatientsSex                    ||
+        elementKey == DCM_ReferringPhysicianName         ||
+        elementKey == DCM_PatientSex                     ||
         elementKey == DCM_RequestingPhysician            ||
         elementKey == DCM_AdmissionID                    ||
         elementKey == DCM_RequestedProcedurePriority     ||
-        elementKey == DCM_PatientsBirthDate )
+        elementKey == DCM_PatientBirthDate )
       isSupportedMatchingKeyAttribute = OFTrue;
   }
 
@@ -1248,7 +1248,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                    > DCM_ScheduledProcedureStepStartDate                (0040,0002)  DA  R  1
 //                    > DCM_ScheduledProcedureStepStartTime                (0040,0003)  TM  R  1
 //                    > DCM_Modality                                       (0008,0060)  CS  R  1
-//                    > DCM_ScheduledPerformingPhysiciansName              (0040,0006)  PN  R  2
+//                    > DCM_ScheduledPerformingPhysicianName               (0040,0006)  PN  R  2
 //                    > DCM_ScheduledProcedureStepDescription              (0040,0007)  LO  O  1
 //                    > DCM_ScheduledStationName                           (0040,0010)  SH  O  2
 //                    > DCM_ScheduledProcedureStepLocation                 (0040,0011)  SH  O  2
@@ -1274,17 +1274,17 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_PatientTransportArrangements                      (0040,1004)  LO  O  2
 //                   DCM_AccessionNumber                                   (0008,0050)  SH  O  2
 //                   DCM_RequestingPhysician                               (0032,1032)  PN  O  2
-//                   DCM_ReferringPhysiciansName                           (0008,0090)  PN  O  2
+//                   DCM_ReferringPhysicianName                            (0008,0090)  PN  O  2
 //                   DCM_AdmissionID                                       (0038,0010)  LO  O  2
 //                   DCM_CurrentPatientLocation                            (0038,0300)  LO  O  2
 //                   DCM_ReferencedPatientSequence                         (0008,1120)  SQ  O  2
 //                    > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  2
 //                    > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  2
-//                   DCM_PatientsName                                      (0010,0010)  PN  R  1
+//                   DCM_PatientName                                       (0010,0010)  PN  R  1
 //                   DCM_PatientID                                         (0010,0020)  LO  R  1
-//                   DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
-//                   DCM_PatientsSex                                       (0010,0040)  CS  O  2
-//                   DCM_PatientsWeight                                    (0010,1030)  DS  O  2
+//                   DCM_PatientBirthDate                                  (0010,0030)  DA  O  2
+//                   DCM_PatientSex                                        (0010,0040)  CS  O  2
+//                   DCM_PatientWeight                                     (0010,1030)  DS  O  2
 //                   DCM_ConfidentialityConstraintOnPatientDataDescription (0040,3001)  LO  O  2
 //                   DCM_PatientState                                      (0038,0500)  LO  O  2
 //                   DCM_PregnancyStatus                                   (0010,21c0)  US  O  2
@@ -1295,18 +1295,18 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_InstitutionName                                   (0008,0080)  LO  O  3  (from the Visit Identification Module)
 //                   DCM_AdmittingDiagnosesDescription                     (0008,1080)  LO  O  3  (from the Visit Admission Module)
 //                   DCM_OtherPatientIDs                                   (0010,1000)  LO  O  3  (from the Patient Identification Module)
-//                   DCM_PatientsSize                                      (0010,1020)  DS  O  3  (from the Patient Demographic Module)
+//                   DCM_PatientSize                                       (0010,1020)  DS  O  3  (from the Patient Demographic Module)
 //                   DCM_EthnicGroup                                       (0010,2160)  SH  O  3  (from the Patient Demographic Module)
 //                   DCM_PatientComments                                   (0010,4000)  LT  O  3  (from the Patient Demographic Module)
 //                   DCM_AdditionalPatientHistory                          (0010,21b0)  LT  O  3  (from the Patient Medical Module)
 //                   DCM_LastMenstrualDate                                 (0010,21d0)  DA  O  3  (from the Patient Medical Module)
 //                   DCM_InstitutionAddress                                (0008,0081)  ST  O  3  (from the Visit Identification Module)
 //                   DCM_OtherPatientNames                                 (0010,1001)  PN  O  3  (from the Patient Identification Module)
-//                   DCM_PatientsAddress                                   (0010,1040)  LO  O  3  (from the Patient Demographic Module)
+//                   DCM_PatientAddress                                    (0010,1040)  LO  O  3  (from the Patient Demographic Module)
 //                   DCM_MilitaryRank                                      (0010,1080)  LO  O  3  (from the Patient Demographic Module)
 //                   DCM_SmokingStatus                                     (0010,21a0)  CS  O  3  (from the Patient Medical Module)
 //                   DCM_RequestingService                                 (0032,1033)  LO  O  3  (from the Imaging Service Request Module)
-//                   DCM_IssuerOfAdmissionID                               (0038,0011)  LO  O  3  (from the Visit Identification Module)
+//                   DCM_RETIRED_IssuerOfAdmissionID                       (0038,0011)  LO  O  3  (from the Visit Identification Module)
 //                   DCM_ReasonForTheRequestedProcedure                    (0040,1002)  LO  O  3  (from the Requested Procedure Module)
 //                   DCM_RequestedProcedureLocation                        (0040,1005)  LO  O  3  (from the Requested Procedure Module)
 //                   DCM_ConfidentialityCode                               (0040,1008)  LO  O  3  (from the Requested Procedure Module)
@@ -1353,7 +1353,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
             elementKey == DCM_ScheduledProcedureStepStartDate            ||
             elementKey == DCM_ScheduledProcedureStepStartTime            ||
             elementKey == DCM_Modality                                   ||
-            elementKey == DCM_ScheduledPerformingPhysiciansName          ||
+            elementKey == DCM_ScheduledPerformingPhysicianName           ||
             elementKey == DCM_ScheduledProcedureStepDescription          ||
             elementKey == DCM_ScheduledStationName                       ||
             elementKey == DCM_ScheduledProcedureStepLocation             ||
@@ -1394,15 +1394,15 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_PatientTransportArrangements                      ||
         elementKey == DCM_AccessionNumber                                   ||
         elementKey == DCM_RequestingPhysician                               ||
-        elementKey == DCM_ReferringPhysiciansName                           ||
+        elementKey == DCM_ReferringPhysicianName                            ||
         elementKey == DCM_AdmissionID                                       ||
         elementKey == DCM_CurrentPatientLocation                            ||
         elementKey == DCM_ReferencedPatientSequence                         ||
-        elementKey == DCM_PatientsName                                      ||
+        elementKey == DCM_PatientName                                       ||
         elementKey == DCM_PatientID                                         ||
-        elementKey == DCM_PatientsBirthDate                                 ||
-        elementKey == DCM_PatientsSex                                       ||
-        elementKey == DCM_PatientsWeight                                    ||
+        elementKey == DCM_PatientBirthDate                                  ||
+        elementKey == DCM_PatientSex                                        ||
+        elementKey == DCM_PatientWeight                                     ||
         elementKey == DCM_ConfidentialityConstraintOnPatientDataDescription ||
         elementKey == DCM_PatientState                                      ||
         elementKey == DCM_PregnancyStatus                                   ||
@@ -1413,18 +1413,18 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_InstitutionName                                   ||
         elementKey == DCM_AdmittingDiagnosesDescription                     ||
         elementKey == DCM_OtherPatientIDs                                   ||
-        elementKey == DCM_PatientsSize                                      ||
+        elementKey == DCM_PatientSize                                       ||
         elementKey == DCM_EthnicGroup                                       ||
         elementKey == DCM_PatientComments                                   ||
         elementKey == DCM_AdditionalPatientHistory                          ||
         elementKey == DCM_LastMenstrualDate                                 ||
         elementKey == DCM_InstitutionAddress                                ||
         elementKey == DCM_OtherPatientNames                                 ||
-        elementKey == DCM_PatientsAddress                                   ||
+        elementKey == DCM_PatientAddress                                    ||
         elementKey == DCM_MilitaryRank                                      ||
         elementKey == DCM_SmokingStatus                                     ||
         elementKey == DCM_RequestingService                                 ||
-        elementKey == DCM_IssuerOfAdmissionID                               ||
+        elementKey == DCM_RETIRED_IssuerOfAdmissionID                       ||
         elementKey == DCM_ReasonForTheRequestedProcedure                    ||
         elementKey == DCM_RequestedProcedureLocation                        ||
         elementKey == DCM_ConfidentialityCode                               ||
@@ -1434,7 +1434,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_IssueDateOfImagingServiceRequest                  ||
         elementKey == DCM_IssueTimeOfImagingServiceRequest                  ||
         elementKey == DCM_OrderEnteredBy                                    ||
-        elementKey == DCM_OrderEnterersLocation                             ||
+        elementKey == DCM_OrderEntererLocation                              ||
         elementKey == DCM_OrderCallbackPhoneNumber                          ||
         elementKey == DCM_PlacerOrderNumberImagingServiceRequest            ||
         elementKey == DCM_FillerOrderNumberImagingServiceRequest            ||
@@ -1452,6 +1452,11 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
+** Revision 1.29  2010-08-09 13:30:34  joergr
+** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+** the official "keyword" is used for the attribute name which results in a
+** number of minor changes (e.g. "PatientsName" is now called "PatientName").
+**
 ** Revision 1.28  2010-05-31 09:22:59  joergr
 ** Fixed incorrect handling of SpecificCharacterSet attribute in C-FIND request
 ** and response messages.

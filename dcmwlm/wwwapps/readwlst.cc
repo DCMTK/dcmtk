@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,9 @@
  *   Program to read a DICOM worklist file and pass (nearly) all tags
  *   to a WWW CGI perl script (as hexadecimal encoded ASCII via stdout).
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/wwwapps/readwlst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:32:08 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +58,7 @@ void printStringElement(DcmObject& obj, DcmTagKey searchtag)
 //    searchedObj->verify(OFTrue);
 /*
 ** Use the simpler (virtual) method of DcmElement to get
-** the string pointer.  
+** the string pointer.
 ** Modified while adding support for the VR's UT and VS.
 */
 #ifdef ELABORATE_BUT_PROBABLY_UNNECESSARY_CODE
@@ -84,7 +83,7 @@ void printStringElement(DcmObject& obj, DcmTagKey searchtag)
         ((DcmCharString*)searchedObj)->getString(c);
         break;
       default:
-        break; 
+        break;
     }
 #else
     if ((searchedObj->getLength() > 0) && searchedObj->isaString()) {
@@ -92,7 +91,7 @@ void printStringElement(DcmObject& obj, DcmTagKey searchtag)
 	elem->getString(c);
     }
 #endif
-  }  
+  }
   printHexString(c);
 }
 
@@ -105,7 +104,7 @@ int main(int argc, char *argv[])
     }
 
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) 
+    if (!dcmDataDict.isDictionaryLoaded())
     {
       fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
         DCM_DICT_ENVIRONMENT_VARIABLE);
@@ -129,10 +128,10 @@ int main(int argc, char *argv[])
       printf("\\"); printStringElement(*dataset, DCM_RequestedProcedurePriority);
       printf("\\"); printStringElement(*dataset, DCM_AccessionNumber);
       printf("\\"); printStringElement(*dataset, DCM_RequestingPhysician);
-      printf("\\"); printStringElement(*dataset, DCM_PatientsName);
+      printf("\\"); printStringElement(*dataset, DCM_PatientName);
       printf("\\"); printStringElement(*dataset, DCM_PatientID);
-      printf("\\"); printStringElement(*dataset, DCM_PatientsBirthDate);
-      printf("\\"); printStringElement(*dataset, DCM_PatientsSex);
+      printf("\\"); printStringElement(*dataset, DCM_PatientBirthDate);
+      printf("\\"); printStringElement(*dataset, DCM_PatientSex);
       printf("\\"); printStringElement(*dataset, DCM_MedicalAlerts);
       printf("\\"); printStringElement(*dataset, DCM_Allergies);
       DcmStack stack;
@@ -146,7 +145,7 @@ int main(int argc, char *argv[])
           printf("\\"); if (item) printStringElement(*item, DCM_ScheduledProcedureStepStartDate);
           printf("\\"); if (item) printStringElement(*item, DCM_ScheduledProcedureStepStartTime);
           printf("\\"); if (item) printStringElement(*item, DCM_Modality);
-          printf("\\"); if (item) printStringElement(*item, DCM_ScheduledPerformingPhysiciansName);
+          printf("\\"); if (item) printStringElement(*item, DCM_ScheduledPerformingPhysicianName);
           printf("\\"); if (item) printStringElement(*item, DCM_ScheduledProcedureStepDescription);
           printf("\\"); if (item) printStringElement(*item, DCM_ScheduledStationName);
           printf("\\"); if (item) printStringElement(*item, DCM_ScheduledProcedureStepLocation);
@@ -169,6 +168,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: readwlst.cc,v $
+ *   Revision 1.4  2010-08-09 13:32:08  joergr
+ *   Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ *   the official "keyword" is used for the attribute name which results in a
+ *   number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  *   Revision 1.3  2008-04-30 12:38:43  meichel
  *   Fixed compile errors due to changes in attribute tag names
  *

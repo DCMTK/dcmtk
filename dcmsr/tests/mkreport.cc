@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Create sample structured reports using the dcmsr API
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:52 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:27:21 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -217,10 +217,10 @@ static void generate_ki(DSRDocument *doc,
     doc->setSeriesDescription("IHE Year 2 - Key Image Note");
     doc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
 
-    doc->setPatientsName("Last Name^First Name");
-    doc->setPatientsSex("O");
+    doc->setPatientName("Last Name^First Name");
+    doc->setPatientSex("O");
     doc->setManufacturer("Kuratorium OFFIS e.V.");
-    doc->setReferringPhysiciansName("Last Name^First Name");
+    doc->setReferringPhysicianName("Last Name^First Name");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Document Title"));
@@ -258,10 +258,10 @@ static void generate_si(DSRDocument *doc,
     doc->setSeriesDescription("IHE Year 2 - Simple Image Report");
     doc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
 
-    doc->setPatientsName("Last Name^First Name");
-    doc->setPatientsSex("O");
+    doc->setPatientName("Last Name^First Name");
+    doc->setPatientSex("O");
     doc->setManufacturer("Kuratorium OFFIS e.V.");
-    doc->setReferringPhysiciansName("Last Name^First Name");
+    doc->setReferringPhysicianName("Last Name^First Name");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Document Title"));
@@ -305,9 +305,9 @@ static void generate_fk(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Templates");
     doc->setSeriesDescription("Fake Report, C. Iulius Caesar: De bello Gallico");
 
-    doc->setPatientsName("Caesar^Gaius Iulius");
-    doc->setPatientsSex("M");
-    doc->setReferringPhysiciansName("Augustus Caesar^Gaius Iulius Octavianus");
+    doc->setPatientName("Caesar^Gaius Iulius");
+    doc->setPatientSex("M");
+    doc->setReferringPhysicianName("Augustus Caesar^Gaius Iulius Octavianus");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CH_0.1", OFFIS_CODING_SCHEME_DESIGNATOR, "De bello Gallico"));
@@ -390,8 +390,8 @@ static void generate_lp(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Test");
     doc->setSeriesDescription("Valid report with loop/cycle");
 
-    doc->setPatientsName("Loop^Mr");
-    doc->setPatientsSex("M");
+    doc->setPatientName("Loop^Mr");
+    doc->setPatientSex("M");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("TST.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Document Title"));
@@ -417,10 +417,10 @@ static void generate_01(DSRDocument *doc, OFString &studyUID_01)
     doc->getStudyInstanceUID(studyUID_01);
     doc->setSeriesDescription("Basic Text Report");
 
-    doc->setPatientsName("Osterman^Phillip^B.");
-    doc->setPatientsBirthDate("19220909");
-    doc->setPatientsSex("M");
-    doc->setReferringPhysiciansName("Fukuda^Katherine M.^^^M. D.");
+    doc->setPatientName("Osterman^Phillip^B.");
+    doc->setPatientBirthDate("19220909");
+    doc->setPatientSex("M");
+    doc->setReferringPhysicianName("Fukuda^Katherine M.^^^M. D.");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.06", OFFIS_CODING_SCHEME_DESIGNATOR, "Consultation Report"));
@@ -454,10 +454,10 @@ static void generate_02(DSRDocument *doc, OFString &studyUID_01)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("Text Report with CODE, NUM and PNAME content items");
 
-    doc->setPatientsName("Osterman^Phillip B.");
-    doc->setPatientsBirthDate("19220909");
-    doc->setPatientsSex("M");
-    doc->setReferringPhysiciansName("Fukuda^Katherine M.^^^M. D.");
+    doc->setPatientName("Osterman^Phillip B.");
+    doc->setPatientBirthDate("19220909");
+    doc->setPatientSex("M");
+    doc->setReferringPhysicianName("Fukuda^Katherine M.^^^M. D.");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.06", OFFIS_CODING_SCHEME_DESIGNATOR, "Consultation Report"));
@@ -541,7 +541,7 @@ static void generate_02(DSRDocument *doc, OFString &studyUID_01)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_03", OFFIS_CODING_SCHEME_DESIGNATOR, "Treatment"));
     doc->getTree().getCurrentContentItem().setStringValue("The plan of treatment is as follows: 4500 rad, 15 treatment sessions, using 100 kV radiation.\nThe reason for treatment, expected acute reaction, and remote possibility of complication was discussed with this patient at some length, and he accepted therapy as outlined.");
-    
+
     // add additional information on UCUM coding scheme (UID from CP 372)
     doc->getCodingSchemeIdentification().addItem("UCUM");
     doc->getCodingSchemeIdentification().setCodingSchemeUID("2.16.840.1.113883.6.8");
@@ -557,10 +557,10 @@ static void generate_03(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("Text Report with different sections");
 
-    doc->setPatientsName("Silverman^Elaine J.");
-    doc->setPatientsBirthDate("19811010");
-    doc->setPatientsSex("F");
-    doc->setReferringPhysiciansName("Cooper^Harold B.^^^M. D.");
+    doc->setPatientName("Silverman^Elaine J.");
+    doc->setPatientBirthDate("19811010");
+    doc->setPatientSex("F");
+    doc->setReferringPhysicianName("Cooper^Harold B.^^^M. D.");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Radiology Report"));
@@ -596,9 +596,9 @@ static void generate_04(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("Text Report with hierarchical structure");
 
-    doc->setPatientsName("Mars^Verna Marie^de");
-    doc->setPatientsBirthDate("19320810");
-    doc->setPatientsSex("F");
+    doc->setPatientName("Mars^Verna Marie^de");
+    doc->setPatientBirthDate("19320810");
+    doc->setPatientSex("F");
     doc->setPatientID("62789");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -667,9 +667,9 @@ static void generate_05(DSRDocument *doc)
     doc->setSeriesDescription("Text Report with different sections");
     doc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
 
-    doc->setPatientsName("Silverman^Elaine J.");
-    doc->setPatientsBirthDate("19811010");
-    doc->setPatientsSex("F");
+    doc->setPatientName("Silverman^Elaine J.");
+    doc->setPatientBirthDate("19811010");
+    doc->setPatientSex("F");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_19", OFFIS_CODING_SCHEME_DESIGNATOR, "Discharge Summary"));
@@ -715,11 +715,11 @@ static void generate_06(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("Report with Image Reference");
 
-    doc->setPatientsName("Russel^William");
-    doc->setPatientsBirthDate("19900808");
-    doc->setPatientsSex("M");
+    doc->setPatientName("Russel^William");
+    doc->setPatientBirthDate("19900808");
+    doc->setPatientSex("M");
     doc->setPatientID("4523");
-    doc->setReferringPhysiciansName("Smythe^John^^Dr.");
+    doc->setReferringPhysicianName("Smythe^John^^Dr.");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Radiology Report"));
@@ -755,11 +755,11 @@ static void generate_07(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("Report with Image and Presentation State Reference");
 
-    doc->setPatientsName("Russel^William");
-    doc->setPatientsBirthDate("19900808");
-    doc->setPatientsSex("M");
+    doc->setPatientName("Russel^William");
+    doc->setPatientBirthDate("19900808");
+    doc->setPatientSex("M");
     doc->setPatientID("4523");
-    doc->setReferringPhysiciansName("Smythe^John^^Dr.");
+    doc->setReferringPhysicianName("Smythe^John^^Dr.");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Radiology Report"));
@@ -796,11 +796,11 @@ static void generate_08(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("Report with Presentation State Reference");
 
-    doc->setPatientsName("Russel^William");
-    doc->setPatientsBirthDate("19900808");
-    doc->setPatientsSex("M");
+    doc->setPatientName("Russel^William");
+    doc->setPatientBirthDate("19900808");
+    doc->setPatientSex("M");
     doc->setPatientID("4523");
-    doc->setReferringPhysiciansName("Smythe^John^^Dr.");
+    doc->setReferringPhysicianName("Smythe^John^^Dr.");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Radiology Report"));
@@ -836,8 +836,8 @@ static void generate_09(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("RSNA '95, Picker, CT");
 
-    doc->setPatientsName("Smith^Harold");
-    doc->setPatientsSex("M");
+    doc->setPatientName("Smith^Harold");
+    doc->setPatientSex("M");
     doc->setPatientID("PIKR750000");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -873,9 +873,9 @@ static void generate_10(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("RSNA '95, Picker, MR");
 
-    doc->setPatientsName("Walz^John^R");
-    doc->setPatientsSex("M");
-    doc->setPatientsBirthDate("19781024");
+    doc->setPatientName("Walz^John^R");
+    doc->setPatientSex("M");
+    doc->setPatientBirthDate("19781024");
     doc->setPatientID("PIKR752962");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -920,9 +920,9 @@ static void generate_11(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("RSNA '95, Kodak, CR");
 
-    doc->setPatientsName("Gamage^Mary");
-    doc->setPatientsSex("F");
-    doc->setPatientsBirthDate("19950210");
+    doc->setPatientName("Gamage^Mary");
+    doc->setPatientSex("F");
+    doc->setPatientBirthDate("19950210");
     doc->setPatientID("KHIS001");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -959,9 +959,9 @@ static void generate_12(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("RSNA '95, Acuson, US");
 
-    doc->setPatientsName("Napper^Margret");
-    doc->setPatientsSex("F");
-    doc->setPatientsBirthDate("19500420");
+    doc->setPatientName("Napper^Margret");
+    doc->setPatientSex("F");
+    doc->setPatientBirthDate("19500420");
     doc->setPatientID("ACN000001");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -1006,8 +1006,8 @@ static void generate_13(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("RSNA '95, GE, CT");
 
-    doc->setPatientsName("Wilkins^Charles");
-    doc->setPatientsSex("M");
+    doc->setPatientName("Wilkins^Charles");
+    doc->setPatientSex("M");
     doc->setPatientID("GE0514");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -1043,8 +1043,8 @@ static void generate_14(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("RSNA '95, GE, MR");
 
-    doc->setPatientsName("Tyson^Bradley");
-    doc->setPatientsSex("M");
+    doc->setPatientName("Tyson^Bradley");
+    doc->setPatientSex("M");
     doc->setPatientID("GE1140");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -1080,9 +1080,9 @@ static void generate_15(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("RSNA '95, Siemens, MR");
 
-    doc->setPatientsName("Neubauer^Anna");
-    doc->setPatientsSex("F");
-    doc->setPatientsBirthDate("19511104");
+    doc->setPatientName("Neubauer^Anna");
+    doc->setPatientSex("F");
+    doc->setPatientBirthDate("19511104");
     doc->setPatientID("SMS511104");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -1110,9 +1110,9 @@ static void generate_16(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("RSNA '95, Siemens, DS");
 
-    doc->setPatientsName("Schmidt^Anna");
-    doc->setPatientsSex("F");
-    doc->setPatientsBirthDate("19450102");
+    doc->setPatientName("Schmidt^Anna");
+    doc->setPatientSex("F");
+    doc->setPatientBirthDate("19450102");
     doc->setPatientID("SMS450102");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -1149,9 +1149,9 @@ static void generate_17(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("RSNA '95, Siemens, DR");
 
-    doc->setPatientsName("Offenmüller^Peter");
-    doc->setPatientsSex("M");
-    doc->setPatientsBirthDate("19280302");
+    doc->setPatientName("Offenmüller^Peter");
+    doc->setPatientSex("M");
+    doc->setPatientBirthDate("19280302");
     doc->setPatientID("SMS280302");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -1196,9 +1196,9 @@ static void generate_18(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("RSNA '95, Fuji, CR");
 
-    doc->setPatientsName("Tanaka^Hanako");
-    doc->setPatientsSex("M");
-    doc->setPatientsBirthDate("19250824");
+    doc->setPatientName("Tanaka^Hanako");
+    doc->setPatientSex("M");
+    doc->setPatientBirthDate("19250824");
     doc->setPatientID("FUJI00001");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -1243,8 +1243,8 @@ static void generate_19(DSRDocument *doc)
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("RSNA '95, ATL, US");
 
-    doc->setPatientsName("Smith^Mary");
-    doc->setPatientsSex("F");
+    doc->setPatientName("Smith^Mary");
+    doc->setPatientSex("F");
     doc->setPatientID("ATL000001");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -1272,6 +1272,11 @@ static void generate_19(DSRDocument *doc)
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
+ *  Revision 1.28  2010-08-09 13:27:21  joergr
+ *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ *  the official "keyword" is used for the attribute name which results in a
+ *  number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  *  Revision 1.27  2009-10-13 14:57:52  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

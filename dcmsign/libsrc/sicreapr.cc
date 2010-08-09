@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: SiCreatorProfile
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:22 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:25:05 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ OFBool SiCreatorProfile::attributeRequired(const DcmTagKey& key) const
   if (key == DCM_InstitutionAddress) return OFTrue;
   if (key == DCM_StationName) return OFTrue;
   if (key == DCM_InstitutionalDepartmentName) return OFTrue;
-  if (key == DCM_ManufacturersModelName) return OFTrue;
+  if (key == DCM_ManufacturerModelName) return OFTrue;
   if (key == DCM_DeviceSerialNumber) return OFTrue;
   if (key == DCM_SoftwareVersions) return OFTrue;
   if (key == DCM_SpatialResolution) return OFTrue;
@@ -70,33 +70,33 @@ OFBool SiCreatorProfile::attributeRequired(const DcmTagKey& key) const
 
   /* Any overlay data present */
   if ((key.getGroup() >= 0x6000) && (key.getGroup() < 0x6020) && ((key.getGroup() & 0x0001) == 0)) return OFTrue;
-  
+
   /* Any image data present - we assume this means the Image Pixel Module and not just PixelData */
-  if (key.getGroup() == 0x0028) 
+  if (key.getGroup() == 0x0028)
   {
     Uint16 elem = key.getElement();
     if (elem == 0x0002) return OFTrue; // DCM_SamplesPerPixel
     if (elem == 0x0004) return OFTrue; // DCM_PhotometricInterpretation
-    if (elem == 0x0006) return OFTrue; // DCM_PlanarConfiguration                   
+    if (elem == 0x0006) return OFTrue; // DCM_PlanarConfiguration
     if (elem == 0x0010) return OFTrue; // DCM_Rows
     if (elem == 0x0011) return OFTrue; // DCM_Columns
-    if (elem == 0x0034) return OFTrue; // DCM_PixelAspectRatio                      
+    if (elem == 0x0034) return OFTrue; // DCM_PixelAspectRatio
     if (elem == 0x0100) return OFTrue; // DCM_BitsAllocated
-    if (elem == 0x0101) return OFTrue; // DCM_BitsStored                            
-    if (elem == 0x0102) return OFTrue; // DCM_HighBit                               
-    if (elem == 0x0103) return OFTrue; // DCM_PixelRepresentation                   
-    if (elem == 0x0106) return OFTrue; // DCM_SmallestImagePixelValue               
-    if (elem == 0x0107) return OFTrue; // DCM_LargestImagePixelValue                
-    if (elem == 0x1101) return OFTrue; // DCM_RedPaletteColorLookupTableDescriptor  
+    if (elem == 0x0101) return OFTrue; // DCM_BitsStored
+    if (elem == 0x0102) return OFTrue; // DCM_HighBit
+    if (elem == 0x0103) return OFTrue; // DCM_PixelRepresentation
+    if (elem == 0x0106) return OFTrue; // DCM_SmallestImagePixelValue
+    if (elem == 0x0107) return OFTrue; // DCM_LargestImagePixelValue
+    if (elem == 0x1101) return OFTrue; // DCM_RedPaletteColorLookupTableDescriptor
     if (elem == 0x1102) return OFTrue; // DCM_GreenPaletteColorLookupTableDescriptor
-    if (elem == 0x1103) return OFTrue; // DCM_BluePaletteColorLookupTableDescriptor 
-    if (elem == 0x1201) return OFTrue; // DCM_RedPaletteColorLookupTableData        
-    if (elem == 0x1202) return OFTrue; // DCM_GreenPaletteColorLookupTableData      
-    if (elem == 0x1203) return OFTrue; // DCM_BluePaletteColorLookupTableData       
+    if (elem == 0x1103) return OFTrue; // DCM_BluePaletteColorLookupTableDescriptor
+    if (elem == 0x1201) return OFTrue; // DCM_RedPaletteColorLookupTableData
+    if (elem == 0x1202) return OFTrue; // DCM_GreenPaletteColorLookupTableData
+    if (elem == 0x1203) return OFTrue; // DCM_BluePaletteColorLookupTableData
   }
   if (key == DCM_PixelData) return OFTrue;
 
-  return OFFalse;    
+  return OFFalse;
 }
 
 #else /* WITH_OPENSSL */
@@ -107,6 +107,11 @@ int sicreapr_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sicreapr.cc,v $
+ *  Revision 1.7  2010-08-09 13:25:05  joergr
+ *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ *  the official "keyword" is used for the attribute name which results in a
+ *  number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  *  Revision 1.6  2005-12-08 15:47:22  meichel
  *  Changed include path schema for all DCMTK header files
  *

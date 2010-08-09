@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmPresentationState
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:20:50 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -819,7 +819,7 @@ protected:
   /// Module=General_Study, VR=TM, VM=1, Type 2
   DcmTime                  studyTime;
   /// Module=General_Study, VR=PN, VM=1, Type 2
-  DcmPersonName            referringPhysiciansName;
+  DcmPersonName            referringPhysicianName;
   /// Module=General_Study, VR=SH, VM=1, Type 2
   DcmShortString           studyID;
   /// Module=General_Study, VR=SH, VM=1, Type 2
@@ -992,6 +992,11 @@ protected:
 
 /*
  *  $Log: dcmpstat.h,v $
+ *  Revision 1.5  2010-08-09 13:20:50  joergr
+ *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ *  the official "keyword" is used for the attribute name which results in a
+ *  number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  *  Revision 1.4  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
