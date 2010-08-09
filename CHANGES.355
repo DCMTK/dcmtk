@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2010.08.09 (riesmeier)
 
+- Added CMakeLists.txt for dcmdata tests.
+  Affects: dcmdata/CMakeLists.txt
+           dcmdata/tests/CMakeLists.txt
+
+**** Changes from 2010.08.09 (riesmeier)
+
 - Updated data dictionary to 2009 edition of the DICOM standard. From now on,
   the official "keyword" is used for the attribute name which results in a
   number of minor changes (e.g. "PatientsName" is now called "PatientName").
