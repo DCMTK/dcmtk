@@ -7,7 +7,7 @@ Changes between releases are documented here.
   the official "keyword" is used for the attribute name which results in a
   number of minor changes (e.g. "PatientsName" is now called "PatientName").
   NB: Both users and developers should be aware of these changes and modify
-  there scripts and/or source code accordingly.
+  their scripts and/or source code accordingly.
   Affects: dcmdata/apps/dcmgpdir.cc
            dcmdata/apps/pdf2dcm.cc
            dcmdata/data/dicom.dic
