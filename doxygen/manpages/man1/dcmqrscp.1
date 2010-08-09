@@ -1,4 +1,4 @@
-.TH "dcmqrscp" 1 "8 Jun 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrscp" 1 "9 Aug 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmqrscp \- DICOM image archive (central test node)
@@ -672,11 +672,11 @@ Query/Retrieve Level: PATIENT (or STUDY for the Study Root Q/R model)
 .PP
 .nf
 
-(0010,0010) PatientsName
+(0010,0010) PatientName
 (0010,0020) PatientID
-(0010,0030) PatientsBirthDate
-(0010,0032) PatientsBirthTime
-(0010,0040) PatientsSex
+(0010,0030) PatientBirthDate
+(0010,0032) PatientBirthTime
+(0010,0040) PatientSex
 (0010,1000) OtherPatientIDs
 (0010,1001) OtherPatientNames
 (0010,2160) EthnicGroup
@@ -695,13 +695,13 @@ Query/Retrieve Level: STUDY
 (0008,0020) StudyDate
 (0008,0030) StudyTime
 (0008,0050) AccessionNumber
-(0008,0090) ReferringPhysiciansName
+(0008,0090) ReferringPhysicianName
 (0008,1030) StudyDescription
 (0008,1060) NameOfPhysiciansReadingStudy
 (0008,1080) AdmittingDiagnosesDescription
-(0010,1010) PatientsAge
-(0010,1020) PatientsSize
-(0010,1030) PatientsWeight
+(0010,1010) PatientAge
+(0010,1020) PatientSize
+(0010,1030) PatientWeight
 (0010,2180) Occupation
 (0010,21B0) AdditionalPatientHistory
 (0020,000D) StudyInstanceUID
@@ -765,4 +765,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmqrti\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1993-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1993-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

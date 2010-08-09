@@ -1,4 +1,4 @@
-.TH "findscu" 1 "8 Jun 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "9 Aug 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 findscu \- DICOM query (C-FIND) SCU
@@ -222,7 +222,7 @@ Each file supplied on the command line will be sent to the SCP as part of a C-FI
 
 # query patient names and IDs
 (0008,0052) CS [PATIENT]     # QueryRetrieveLevel
-(0010,0010) PN []            # PatientsName
+(0010,0010) PN []            # PatientName
 (0010,0020) LO []            # PatientID
 .fi
 .PP
@@ -236,7 +236,7 @@ findscu -P -k "(0010,0010)=HEWETT*" caesar 5678 patqry.dcm
 .fi
 .PP
 .PP
-will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientsName attribute in patqry.dcm to have the value 'HEWETT*'. If such an attribute is present it will be replaced, if absent it will be inserted. The \fI-k\fP option can be present more than once. The value part (after the '=') may be absent causing the attribute to be sent with zero length.
+will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientName attribute in patqry.dcm to have the value 'HEWETT*'. If such an attribute is present it will be replaced, if absent it will be inserted. The \fI-k\fP option can be present more than once. The value part (after the '=') may be absent causing the attribute to be sent with zero length.
 .PP
 In earlier versions of \fBfindscu\fP, the tag keys were specified without braces around group and element number, e. g. '0010,0010' instead of '(0010,0010)'. It is recommended switching to the new syntax; however, the old syntax is still working.
 .PP
@@ -245,7 +245,7 @@ Also \fI-k\fP accepts dictionary names instead of element tags for specifying DI
 .PP
 .nf
 
-findscu -P -k PatientsName="HEWETT*" caesar 5678 patqry.dcm
+findscu -P -k PatientName="HEWETT*" caesar 5678 patqry.dcm
 .fi
 .PP
 .PP
@@ -310,4 +310,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
