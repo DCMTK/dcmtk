@@ -1,7 +1,10 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2010.08.09 (riesmeier)
+**** Changes from 2010.08.09 (onken)
+
+- Fixed path test.
+  Affects: dcmdata/tests/tstpath.cc
 
 - Added CMakeLists.txt for dcmdata tests.
   Affects: dcmdata/CMakeLists.txt
