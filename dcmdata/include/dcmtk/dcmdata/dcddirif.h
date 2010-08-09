@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2009, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 13:31:05 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2010-08-09 13:02:56 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -448,7 +448,7 @@ class DicomDirInterface
 
     /** enable/disable the "invent new patient ID" mode.
      *  If the mode is enabled a new PatientID is invented in case of
-     *  inconsistent PatientsName attributes, i.e. when different patients
+     *  inconsistent PatientName attributes, i.e. when different patients
      *  share the same ID.
      *  Default: off, do not invent new patient ID
      *  @param newMode enable mode if OFTrue, disable if OFFalse
@@ -633,7 +633,7 @@ class DicomDirInterface
     /** check whether given directory record matches dataset.
      *  The check depends on the record type and is performed mainly based on
      *  the unique key defined for the particular record type (e.g. SOPInstanceUID
-     *  for IMAGE records).  For PATIENT records the PatientsName may also be used
+     *  for IMAGE records).  For PATIENT records the PatientName may also be used
      *  if the PatientID is absent.
      *  @param record directory record to be checked
      *  @param dataset DICOM dataset of the current file
@@ -1442,6 +1442,11 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.17  2010-08-09 13:02:56  joergr
+ * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ * the official "keyword" is used for the attribute name which results in a
+ * number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  * Revision 1.16  2009-11-25 13:31:05  joergr
  * Adapted code for new approach to access individual frames of a DICOM image.
  *

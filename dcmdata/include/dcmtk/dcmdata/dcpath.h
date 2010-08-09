@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2009, OFFIS
+ *  Copyright (C) 2008-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Class declarations for accessing DICOM dataset structures (items,
  *           sequences and leaf elements via string-based path access.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:07 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:02:56 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,7 +190,7 @@ public:
 
   /** Function that parses a tag from the beginning of a path string.
    *  The tag has to be either in numeric format, e. g. "(0010,0010)" or
-   *  a dictionary name, e. g. "PatientsName". If successful, the
+   *  a dictionary name, e. g. "PatientName". If successful, the
    *  parsed tag is removed from the path string.
    *  @param path - [in/out] The path string, starting with the attribute
    *                to parse
@@ -239,7 +239,7 @@ public:
    */
   void setItemWildcardSupport(const OFBool& supported);
 
-  
+
   /** Enables (class default: enabled) or disables checking of private
    *  reservations when inserting private tags. If enabled and a private
    *  tag is created that has no private reservation, an error is returned.
@@ -263,7 +263,7 @@ public:
    *  SEQUENCE[ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
    *  . ITEMNO must be a positive integer starting with 0.
    *  SEQUENCE and ATTRIBUTE must be a tag, written e. g.
-   *  "(0010,0010)" or as a dictionary name, e. g. "PatientsName". If the
+   *  "(0010,0010)" or as a dictionary name, e. g. "PatientName". If the
    *  path cannot be fully created (see option createIfNecessary), any
    *  possibly object changes are reverted. So a path is either fully created
    *  or no path component is created at all. The result can be obtained
@@ -300,7 +300,7 @@ public:
    *  SEQUENCE[ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
    *  . ITEMNO must be a positive integer starting with 0.
    *  SEQUENCE and ATTRIBUTE must be a tag, written e. g.
-   *  "(0010,0010)" or as a dictionary name, e. g. "PatientsName".
+   *  "(0010,0010)" or as a dictionary name, e. g. "PatientName".
    *
    *  Example: The path
    *  "ContentSequence[4].(0040,a043)[0].CodeValue" selects the Content
@@ -336,13 +336,13 @@ public:
    *  a DICOM query file.
    *  @param dataset [in/out] the dataset (e.g. query keys) the override key is applied to.
    *                          Must be non-NULL.
-   *  @param pathParam [in] the override key in path syntax (see class DcmPath). Also the 
-   *                        path can end with a value assignment, e. g. "PatientsName=Doe^John".
+   *  @param pathParam [in] the override key in path syntax (see class DcmPath). Also the
+   *                        path can end with a value assignment, e. g. "PatientName=Doe^John".
    *                        An empty (or missing value) will not be ignored but will be
    *                        written as empty to the attribute (if not a sequence or item)
    *  @return EC_Normal if adding was successful, error code otherwise
    */
-  OFCondition applyPathWithValue(DcmDataset *dataset, 
+  OFCondition applyPathWithValue(DcmDataset *dataset,
 	     	             		         const OFString& overrideKey);
 
   /** Deconstructor, cleans up memory that was allocated for any
@@ -364,7 +364,7 @@ protected:
    *  SEQUENCE[ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
    *  . ITEMNO must be a positive integer starting with 0.
    *  SEQUENCE and ATTRIBUTE must be a tag, written e. g.
-   *  "(0010,0010)" or as a dictionary name, e. g. "PatientsName". If the
+   *  "(0010,0010)" or as a dictionary name, e. g. "PatientName". If the
    *  path cannot be fully created (see option createIfNecessary), any
    *  possibly object changes are reverted. So a path is either fully created
    *  or no path component is created at all. The result can be obtained
@@ -400,7 +400,7 @@ protected:
    *  [ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
    *  . ITEMNO must be a positive integer starting with 0.
    *  SEQUENCE and ATTRIBUTE must be a tag, written e. g.
-   *  "(0010,0010)" or as a dictionary name, e. g. "PatientsName". If the
+   *  "(0010,0010)" or as a dictionary name, e. g. "PatientName". If the
    *  path cannot be fully created (see option createIfNecessary), any
    *  possibly object changes are reverted. So a path is either fully created
    *  or no path component is created at all. The result can be obtained
@@ -518,6 +518,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.h,v $
+** Revision 1.9  2010-08-09 13:02:56  joergr
+** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+** the official "keyword" is used for the attribute name which results in a
+** number of minor changes (e.g. "PatientsName" is now called "PatientName").
+**
 ** Revision 1.8  2009-11-04 09:58:07  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

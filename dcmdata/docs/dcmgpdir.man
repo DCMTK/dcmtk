@@ -131,7 +131,7 @@ type 1 attributes:
 
   +Ipi  --invent-patient-id
           invent new PatientID in case of inconsistent
-          PatientsName attributes
+          PatientName attributes
 
 other checks:
 

@@ -42,10 +42,10 @@ DcmFileFormat fileformat;
 OFCondition status = fileformat.loadFile("test.dcm");
 if (status.good())
 {
-  OFString patientsName;
-  if (fileformat.getDataset()->findAndGetOFString(DCM_PatientsName, patientsName).good())
+  OFString patientName;
+  if (fileformat.getDataset()->findAndGetOFString(DCM_PatientName, patientName).good())
   {
-    cout << "Patient's Name: " << patientsName << endl;
+    cout << "Patient's Name: " << patientName << endl;
   } else
     cerr << "Error: cannot access Patient's Name!" << endl;
 } else
@@ -60,7 +60,7 @@ DcmFileFormat fileformat;
 DcmDataset *dataset = fileformat.getDataset();
 dataset->putAndInsertString(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
 dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
-dataset->putAndInsertString(DCM_PatientsName, "Doe^John");
+dataset->putAndInsertString(DCM_PatientName, "Doe^John");
 /* ... */
 dataset->putAndInsertUint8Array(DCM_PixelData, pixelData, pixelLength);
 OFCondition status = fileformat.saveFile("test.dcm", EXS_LittleEndianExplicit);

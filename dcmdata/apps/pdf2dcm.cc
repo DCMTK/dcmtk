@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2009, OFFIS
+ *  Copyright (C) 2005-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert PDF file to DICOM format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:20:23 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2010-08-09 13:04:19 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,10 +74,10 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 OFCondition createHeader(
   DcmItem *dataset,
-  const char *opt_patientsName,
+  const char *opt_patientName,
   const char *opt_patientID,
-  const char *opt_patientsBirthdate,
-  const char *opt_patientsSex,
+  const char *opt_patientBirthdate,
+  const char *opt_patientSex,
   OFBool opt_burnedInAnnotation,
   const char *opt_studyUID,
   const char *opt_seriesUID,
@@ -95,7 +95,7 @@ OFCondition createHeader(
     if (result.good()) result = dataset->insertEmptyElement(DCM_StudyTime);
     if (result.good()) result = dataset->insertEmptyElement(DCM_AccessionNumber);
     if (result.good()) result = dataset->insertEmptyElement(DCM_Manufacturer);
-    if (result.good()) result = dataset->insertEmptyElement(DCM_ReferringPhysiciansName);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_ReferringPhysicianName);
     if (result.good()) result = dataset->insertEmptyElement(DCM_StudyID);
     if (result.good()) result = dataset->insertEmptyElement(DCM_ContentDate);
     if (result.good()) result = dataset->insertEmptyElement(DCM_ContentTime);
@@ -122,10 +122,10 @@ OFCondition createHeader(
 
     // insert variable value attributes
     if (result.good()) result = dataset->putAndInsertString(DCM_DocumentTitle,        opt_documentTitle);
-    if (result.good()) result = dataset->putAndInsertString(DCM_PatientsName,         opt_patientsName);
+    if (result.good()) result = dataset->putAndInsertString(DCM_PatientName,          opt_patientName);
     if (result.good()) result = dataset->putAndInsertString(DCM_PatientID,            opt_patientID);
-    if (result.good()) result = dataset->putAndInsertString(DCM_PatientsBirthDate,    opt_patientsBirthdate);
-    if (result.good()) result = dataset->putAndInsertString(DCM_PatientsSex,          opt_patientsSex);
+    if (result.good()) result = dataset->putAndInsertString(DCM_PatientBirthDate,     opt_patientBirthdate);
+    if (result.good()) result = dataset->putAndInsertString(DCM_PatientSex,           opt_patientSex);
     if (result.good()) result = dataset->putAndInsertString(DCM_BurnedInAnnotation,   opt_burnedInAnnotation ? "YES" : "NO");
 
     sprintf(buf, "%ld", OFstatic_cast(long, opt_instanceNumber));
@@ -257,10 +257,10 @@ void createIdentifiers(
   const char *opt_seriesFile,
   OFString& studyUID,
   OFString& seriesUID,
-  OFString& patientsName,
+  OFString& patientName,
   OFString& patientID,
-  OFString& patientsBirthDate,
-  OFString& patientsSex,
+  OFString& patientBirthDate,
+  OFString& patientSex,
   Sint32& incrementedInstance)
 {
   char buf[100];
@@ -280,13 +280,13 @@ void createIdentifiers(
       {
         // read patient attributes
         c = NULL;
-        if (dset->findAndGetString(DCM_PatientsName, c).good() && c) patientsName = c;
+        if (dset->findAndGetString(DCM_PatientName, c).good() && c) patientName = c;
         c = NULL;
         if (dset->findAndGetString(DCM_PatientID, c).good() && c) patientID = c;
         c = NULL;
-        if (dset->findAndGetString(DCM_PatientsBirthDate, c).good() && c) patientsBirthDate = c;
+        if (dset->findAndGetString(DCM_PatientBirthDate, c).good() && c) patientBirthDate = c;
         c = NULL;
-        if (dset->findAndGetString(DCM_PatientsSex, c).good() && c) patientsSex = c;
+        if (dset->findAndGetString(DCM_PatientSex, c).good() && c) patientSex = c;
 
         // read study attributes
         c = NULL;
@@ -338,16 +338,16 @@ int main(int argc, char *argv[])
 
   // document specific options
   const char *   opt_seriesFile = NULL;
-  const char *   opt_patientsName = NULL;
+  const char *   opt_patientName = NULL;
   const char *   opt_patientID = NULL;
-  const char *   opt_patientsBirthdate = NULL;
+  const char *   opt_patientBirthdate = NULL;
   const char *   opt_documentTitle = NULL;
   const char *   opt_conceptCSD = NULL;
   const char *   opt_conceptCV = NULL;
   const char *   opt_conceptCM = NULL;
 
   OFBool         opt_readSeriesInfo = OFFalse;
-  const char *   opt_patientsSex = NULL;
+  const char *   opt_patientSex = NULL;
   OFBool         opt_annotation = OFTrue;
   OFCmdSignedInt opt_instance = 1;
   OFBool         opt_increment = OFFalse;
@@ -462,7 +462,7 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--patient-name"))
       {
-        app.checkValue(cmd.getValue(opt_patientsName));
+        app.checkValue(cmd.getValue(opt_patientName));
         app.checkConflict("--patient-name", "--study-from or --series-from", opt_seriesFile != NULL);
       }
       if (cmd.findOption("--patient-id"))
@@ -472,12 +472,12 @@ int main(int argc, char *argv[])
       }
       if (cmd.findOption("--patient-birthdate"))
       {
-        app.checkValue(cmd.getValue(opt_patientsBirthdate));
+        app.checkValue(cmd.getValue(opt_patientBirthdate));
         app.checkConflict("--patient-birthdate", "--study-from or --series-from", opt_seriesFile != NULL);
       }
       if (cmd.findOption("--patient-sex"))
       {
-        app.checkValue(cmd.getValue(opt_patientsSex));
+        app.checkValue(cmd.getValue(opt_patientSex));
         app.checkConflict("--patient-sex", "--study-from or --series-from", opt_seriesFile != NULL);
       }
 
@@ -534,18 +534,18 @@ int main(int argc, char *argv[])
     // create study and series UID
     OFString studyUID;
     OFString seriesUID;
-    OFString patientsName;
+    OFString patientName;
     OFString patientID;
-    OFString patientsBirthDate;
-    OFString patientsSex;
+    OFString patientBirthDate;
+    OFString patientSex;
     Sint32 incrementedInstance = 0;
 
-    if (opt_patientsName) patientsName = opt_patientsName;
+    if (opt_patientName) patientName = opt_patientName;
     if (opt_patientID) patientID = opt_patientID;
-    if (opt_patientsBirthdate) patientsBirthDate = opt_patientsBirthdate;
-    if (opt_patientsSex) patientsSex = opt_patientsSex;
+    if (opt_patientBirthdate) patientBirthDate = opt_patientBirthdate;
+    if (opt_patientSex) patientSex = opt_patientSex;
 
-    createIdentifiers(opt_readSeriesInfo, opt_seriesFile, studyUID, seriesUID, patientsName, patientID, patientsBirthDate, patientsSex, incrementedInstance);
+    createIdentifiers(opt_readSeriesInfo, opt_seriesFile, studyUID, seriesUID, patientName, patientID, patientBirthDate, patientSex, incrementedInstance);
     if (opt_increment) opt_instance = incrementedInstance;
 
     OFLOG_INFO(pdf2dcmLogger, "creating encapsulated PDF object");
@@ -562,8 +562,8 @@ int main(int argc, char *argv[])
 
     // now we need to generate an instance number that is guaranteed to be unique within a series.
 
-    result = createHeader(fileformat.getDataset(), patientsName.c_str(), patientID.c_str(),
-      patientsBirthDate.c_str(), patientsSex.c_str(), opt_annotation, studyUID.c_str(),
+    result = createHeader(fileformat.getDataset(), patientName.c_str(), patientID.c_str(),
+      patientBirthDate.c_str(), patientSex.c_str(), opt_annotation, studyUID.c_str(),
       seriesUID.c_str(), opt_documentTitle, opt_conceptCSD, opt_conceptCV, opt_conceptCM, OFstatic_cast(Sint32, opt_instance));
 
     if (result.bad())
@@ -609,6 +609,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
+** Revision 1.17  2010-08-09 13:04:19  joergr
+** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+** the official "keyword" is used for the attribute name which results in a
+** number of minor changes (e.g. "PatientsName" is now called "PatientName").
+**
 ** Revision 1.16  2009-11-13 13:20:23  joergr
 ** Fixed minor issues in log output.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2009, OFFIS
+ *  Copyright (C) 2007-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-03-25 09:26:58 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:06:03 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -237,8 +237,8 @@ OFCondition Image2Dcm::applyStudyOrSeriesFromFile(DcmDataset *targetDset)
 
   // Patient level attributes (type 2 - if value cannot be read, insert empty value
   OFString value;
-  srcDset->findAndGetOFString(DCM_PatientsName, value);
-  cond = targetDset->putAndInsertOFStringArray(DCM_PatientsName, value);
+  srcDset->findAndGetOFString(DCM_PatientName, value);
+  cond = targetDset->putAndInsertOFStringArray(DCM_PatientName, value);
   if (cond.bad())
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Patient's Name to file");
   value.clear();
@@ -249,14 +249,14 @@ OFCondition Image2Dcm::applyStudyOrSeriesFromFile(DcmDataset *targetDset)
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Patient ID to file");
   value.clear();
 
-  srcDset->findAndGetOFString(DCM_PatientsSex, value);
-  cond = targetDset->putAndInsertOFStringArray(DCM_PatientsSex, value);
+  srcDset->findAndGetOFString(DCM_PatientSex, value);
+  cond = targetDset->putAndInsertOFStringArray(DCM_PatientSex, value);
   if (cond.bad())
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Patient's Sex to file");
   value.clear();
 
-  srcDset->findAndGetOFString(DCM_PatientsBirthDate, value);
-  cond = targetDset->putAndInsertOFStringArray(DCM_PatientsBirthDate, value);
+  srcDset->findAndGetOFString(DCM_PatientBirthDate, value);
+  cond = targetDset->putAndInsertOFStringArray(DCM_PatientBirthDate, value);
   if (cond.bad())
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Patient's Birth Date to file");
   value.clear();
@@ -288,8 +288,8 @@ OFCondition Image2Dcm::applyStudyOrSeriesFromFile(DcmDataset *targetDset)
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Study Time to file");
   value.clear();
 
-  srcDset->findAndGetOFString(DCM_ReferringPhysiciansName, value);
-  cond = targetDset->putAndInsertOFStringArray(DCM_ReferringPhysiciansName, value);
+  srcDset->findAndGetOFString(DCM_ReferringPhysicianName, value);
+  cond = targetDset->putAndInsertOFStringArray(DCM_ReferringPhysicianName, value);
   if (cond.bad())
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Referring Physician's Name to file");
   value.clear();
@@ -416,8 +416,8 @@ void Image2Dcm::setISOLatin1(OFBool insertLatin1)
 }
 
 
-OFCondition Image2Dcm::insertEncapsulatedPixelData(DcmDataset* dset, 
-                                                   char *pixData, 
+OFCondition Image2Dcm::insertEncapsulatedPixelData(DcmDataset* dset,
+                                                   char *pixData,
                                                    Uint32 length,
                                                    const E_TransferSyntax& outputTS) const
 {
@@ -456,7 +456,7 @@ OFCondition Image2Dcm::insertEncapsulatedPixelData(DcmDataset* dset,
   }
 
   // insert pixel data attribute incorporating pixel sequence into dataset
-  DcmPixelData *pixelData = new DcmPixelData(DCM_PixelData); 
+  DcmPixelData *pixelData = new DcmPixelData(DCM_PixelData);
   if (pixelData == NULL)
   {
     delete pixelSequence; pixelSequence = NULL;
@@ -562,16 +562,16 @@ OFString Image2Dcm::isValid(DcmDataset& dset) const
   DCMDATA_LIBI2D_DEBUG("Image2Dcm: Checking validity of DICOM output dataset");
   OFString dummy, err; OFCondition cond;
   // General Patient module attributes
-  err += checkAndInventType2Attrib(DCM_PatientsName, &dset);
-  err += checkAndInventType2Attrib(DCM_PatientsSex, &dset);
-  err += checkAndInventType2Attrib(DCM_PatientsBirthDate, &dset);
+  err += checkAndInventType2Attrib(DCM_PatientName, &dset);
+  err += checkAndInventType2Attrib(DCM_PatientSex, &dset);
+  err += checkAndInventType2Attrib(DCM_PatientBirthDate, &dset);
   err += checkAndInventType2Attrib(DCM_PatientID, &dset);
 
   // General Study module attributes
   err += checkAndInventType1Attrib(DCM_StudyInstanceUID, &dset);
   err += checkAndInventType2Attrib(DCM_StudyDate, &dset);
   err += checkAndInventType2Attrib(DCM_StudyTime, &dset);
-  err += checkAndInventType2Attrib(DCM_ReferringPhysiciansName, &dset);
+  err += checkAndInventType2Attrib(DCM_ReferringPhysicianName, &dset);
   err += checkAndInventType2Attrib(DCM_StudyID, &dset);
   err += checkAndInventType2Attrib(DCM_AccessionNumber, &dset);
 
@@ -754,6 +754,11 @@ Image2Dcm::~Image2Dcm()
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
+ * Revision 1.13  2010-08-09 13:06:03  joergr
+ * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ * the official "keyword" is used for the attribute name which results in a
+ * number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  * Revision 1.12  2010-03-25 09:26:58  onken
  * Pixel data is now already marked with the correct transfer syntax in
  * memory not only when writing to disk. This permits conversion in

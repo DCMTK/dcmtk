@@ -272,7 +272,7 @@ Rows, Columns etc.) are not copied but replaced by \b img2dcm during conversion.
 \subsection inputplugins Input Plugins
 
 The \b img2dcm application currently supports the JPEG and the BMP image format
-as input. 
+as input.
 
 \subsubsection jpeginputplugin JPEG Input Plugin
 
@@ -368,17 +368,17 @@ img2dcm -i BMP image.bmp out.dcm
 </li>
 
 <li>
-img2dcm image.jpg out.dcm -vlp -k "PatientsName=Bond^James"
+img2dcm image.jpg out.dcm -vlp -k "PatientName=Bond^James"
 <br>Same as first example, but writes Visible Light Photographic Image object
-to "out.dcm" and sets PatientsName to "Bond^James" which otherwise would be
+to "out.dcm" and sets PatientName to "Bond^James" which otherwise would be
 left empty.
 </li>
 
 <li>
 img2dcm image.jpg out.dcm --series-from template.dcm -k
-"PatientsName=Bond^James"
+"PatientName=Bond^James"
 <br>Same as 1), but imports patient/study/series infomation from DICOM file
-"template.dcm". Please note that attribute PatientsName will contain
+"template.dcm". Please note that attribute PatientName will contain
 "Bond^James" at the end, any value from "template.dcm" will be overwritten.
 That is, because the -k option is applied at the very end of the conversion
 pipeline (see above).

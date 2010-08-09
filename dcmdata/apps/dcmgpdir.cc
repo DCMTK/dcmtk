@@ -46,8 +46,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-21 14:28:19 $
- *  CVS/RCS Revision: $Revision: 1.93 $
+ *  Update Date:      $Date: 2010-08-09 13:04:19 $
+ *  CVS/RCS Revision: $Revision: 1.94 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("type 1 attributes:");
         cmd.addOption("--strict",                "-I",     "exit with error if DICOMDIR type 1 attributes\nare missing in DICOM file (default)");
         cmd.addOption("--invent",                "+I",     "invent DICOMDIR type 1 attributes\nif missing in DICOM file");
-        cmd.addOption("--invent-patient-id",     "+Ipi",   "invent new PatientID in case of inconsistent\nPatientsName attributes");
+        cmd.addOption("--invent-patient-id",     "+Ipi",   "invent new PatientID in case of inconsistent\nPatientName attributes");
       cmd.addSubGroup("other checks:");
         cmd.addOption("--allow-retired-sop",     "+Nrs",   "allow retired SOP classes defined in previous\neditions of the DICOM standard");
         cmd.addOption("--no-xfer-check",         "-Nxc",   "do not reject images with non-standard\ntransfer syntax (just warn)");
@@ -596,8 +596,13 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
+ * Revision 1.94  2010-08-09 13:04:19  joergr
+ * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ * the official "keyword" is used for the attribute name which results in a
+ * number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  * Revision 1.93  2010-07-21 14:28:19  joergr
- * Made sure that no NULL pointer is passed to the OFString constructor.
+ * Enhanced check of input directory variable (also check for empty string).
  *
  * Revision 1.92  2010-07-21 13:29:48  joergr
  * Made sure that no NULL pointer is passed to the OFString constructor. This

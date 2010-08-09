@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-21 14:25:55 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2010-08-09 13:01:22 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -813,7 +813,7 @@ static OFCondition insertSortedUnder(DcmDirectoryRecord *parent,
             case ERT_ModalityLut:
             case ERT_VoiLut:
                 /* try to insert based on LUTNumber */
-                result = insertWithISCriterion(parent, child, DCM_RETIRED_LookupTableNumber);
+                result = insertWithISCriterion(parent, child, DCM_RETIRED_LUTNumber);
                 break;
             case ERT_SRDocument:
             case ERT_Presentation:
@@ -1744,10 +1744,10 @@ OFCondition DicomDirInterface::checkDentalRadiographAttributes(DcmItem *dataset,
     OFCondition result = EC_Normal;
     /* check presence of type 2 elements */
     if (!checkExists(dataset, DCM_InstitutionName, filename) ||
-        !checkExists(dataset, DCM_ManufacturersModelName, filename) ||
+        !checkExists(dataset, DCM_ManufacturerModelName, filename) ||
         !checkExists(dataset, DCM_DetectorID, filename) ||
         !checkExists(dataset, DCM_DetectorManufacturerName, filename) ||
-        !checkExists(dataset, DCM_DetectorManufacturersModelName, filename))
+        !checkExists(dataset, DCM_DetectorManufacturerModelName, filename))
     {
         result = EC_TagNotFound;
     }
@@ -2038,8 +2038,8 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                 if (!checkExistsWithValue(dataset, DCM_PatientID, filename))
                     result = EC_InvalidTag;
             }
-            /* PatientsName is type 2 in DICOMDIR and images */
-            if (!checkExists(dataset, DCM_PatientsName, filename))
+            /* PatientName is type 2 in DICOMDIR and images */
+            if (!checkExists(dataset, DCM_PatientName, filename))
                 result = EC_TagNotFound;
             /* StudyDate is type 1 in DICOMDIR and type 2 in images */
             if (!InventMode)
@@ -2093,14 +2093,14 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                 case ERT_ModalityLut:
                     if (!InventMode)
                     {
-                        if (!checkExistsWithValue(dataset, DCM_RETIRED_LookupTableNumber, filename))
+                        if (!checkExistsWithValue(dataset, DCM_RETIRED_LUTNumber, filename))
                             result = EC_InvalidTag;
                     }
                     break;
                 case ERT_VoiLut:
                     if (!InventMode)
                     {
-                        if (!checkExistsWithValue(dataset, DCM_RETIRED_LookupTableNumber, filename))
+                        if (!checkExistsWithValue(dataset, DCM_RETIRED_LUTNumber, filename))
                             result = EC_InvalidTag;
                     }
                     break;
@@ -2421,22 +2421,22 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
                     /* PatientID is the primary key */
                     result = compare(getStringFromDataset(record, DCM_PatientID, patientID),
                                      getStringFromDataset(dataset, DCM_PatientID, datasetString));
-                    /* optional: check whether PatientsName also matches */
-                    if (result && !compare(getStringFromDataset(record, DCM_PatientsName, recordString),
-                                           getStringFromDataset(dataset, DCM_PatientsName, datasetString)))
+                    /* optional: check whether PatientName also matches */
+                    if (result && !compare(getStringFromDataset(record, DCM_PatientName, recordString),
+                                           getStringFromDataset(dataset, DCM_PatientName, datasetString)))
                     {
                         if (InventPatientIDMode)
                         {
-                            DCMDATA_WARN("PatientsName inconsistent for PatientID: " << patientID);
+                            DCMDATA_WARN("PatientName inconsistent for PatientID: " << patientID);
                             /* remove current patient ID, will be replaced later */
                             dataset->putAndInsertString(DCM_PatientID, "");
                             result = OFFalse;
                         }
                     }
                 } else {
-                    /* if there is no value for PatientID in the dataset try using the PatientsName */
-                    result = compare(getStringFromDataset(record, DCM_PatientsName, recordString),
-                                     getStringFromDataset(dataset, DCM_PatientsName, datasetString));
+                    /* if there is no value for PatientID in the dataset try using the PatientName */
+                    result = compare(getStringFromDataset(record, DCM_PatientName, recordString),
+                                     getStringFromDataset(dataset, DCM_PatientName, datasetString));
                 }
                 break;
             case ERT_Study:
@@ -2535,22 +2535,22 @@ DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmDirectoryRecord *re
         {
             /* use type 1C instead of 1 in order to avoid unwanted overwriting */
             copyElementType1C(dataset, DCM_PatientID, record, sourceFilename);
-            copyElementType2(dataset, DCM_PatientsName, record, sourceFilename);
+            copyElementType2(dataset, DCM_PatientName, record, sourceFilename);
             if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
                 (ApplicationProfile == AP_USBandFlash) ||
                 (ApplicationProfile == AP_MPEG2MPatMLDVD))
             {
                 /* additional type 1C keys specified by specific profiles */
-                copyElementType1C(dataset, DCM_PatientsBirthDate, record, sourceFilename);
-                copyElementType1C(dataset, DCM_PatientsSex, record, sourceFilename);
+                copyElementType1C(dataset, DCM_PatientBirthDate, record, sourceFilename);
+                copyElementType1C(dataset, DCM_PatientSex, record, sourceFilename);
             }
             else if ((ApplicationProfile == AP_BasicCardiac) ||
                      (ApplicationProfile == AP_XrayAngiographic) ||
                      (ApplicationProfile == AP_XrayAngiographicDVD))
             {
                 /* additional type 2 keys specified by specific profiles */
-                copyElementType2(dataset, DCM_PatientsBirthDate, record, sourceFilename);
-                copyElementType2(dataset, DCM_PatientsSex, record, sourceFilename);
+                copyElementType2(dataset, DCM_PatientBirthDate, record, sourceFilename);
+                copyElementType2(dataset, DCM_PatientSex, record, sourceFilename);
             }
         } else {
             printRecordErrorMessage(record->error(), ERT_Patient, "create");
@@ -2623,7 +2623,7 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *rec
                 /* additional type 1C keys specified by specific profiles */
                 copyElementType1C(dataset, DCM_InstitutionName, record, sourceFilename);
                 copyElementType1C(dataset, DCM_InstitutionAddress, record, sourceFilename);
-                copyElementType1C(dataset, DCM_PerformingPhysiciansName, record, sourceFilename);
+                copyElementType1C(dataset, DCM_PerformingPhysicianName, record, sourceFilename);
             }
             else if ((ApplicationProfile == AP_BasicCardiac) ||
                      (ApplicationProfile == AP_XrayAngiographic) ||
@@ -2632,7 +2632,7 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *rec
                 /* additional type 2 keys specified by specific profiles (type 1C or 3 in file) */
                 copyStringWithDefault(dataset, DCM_InstitutionName, record, sourceFilename);
                 copyStringWithDefault(dataset, DCM_InstitutionAddress, record, sourceFilename);
-                copyStringWithDefault(dataset, DCM_PerformingPhysiciansName, record, sourceFilename);
+                copyStringWithDefault(dataset, DCM_PerformingPhysicianName, record, sourceFilename);
             }
         } else {
             printRecordErrorMessage(record->error(), ERT_Series, "create");
@@ -2689,7 +2689,7 @@ DcmDirectoryRecord *DicomDirInterface::buildModalityLutRecord(DcmDirectoryRecord
         if (record->error().good())
         {
             /* copy attribute values from dataset to modality lut record */
-            copyElementType1(dataset, DCM_RETIRED_LookupTableNumber, record, sourceFilename);
+            copyElementType1(dataset, DCM_RETIRED_LUTNumber, record, sourceFilename);
         } else {
             printRecordErrorMessage(record->error(), ERT_ModalityLut, "create");
             /* free memory */
@@ -2717,7 +2717,7 @@ DcmDirectoryRecord *DicomDirInterface::buildVoiLutRecord(DcmDirectoryRecord *rec
         if (record->error().good())
         {
             /* copy attribute values from dataset to voi lut record */
-            copyElementType1(dataset, DCM_RETIRED_LookupTableNumber, record, sourceFilename);
+            copyElementType1(dataset, DCM_RETIRED_LUTNumber, record, sourceFilename);
         } else {
             printRecordErrorMessage(record->error(), ERT_VoiLut, "create");
             /* free memory */
@@ -2824,7 +2824,7 @@ DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmDirectoryRecor
             copyElementType2(dataset, DCM_ContentDescription, record, sourceFilename);
             copyElementType1(dataset, DCM_PresentationCreationDate, record, sourceFilename);
             copyElementType1(dataset, DCM_PresentationCreationTime, record, sourceFilename);
-            copyElementType2(dataset, DCM_ContentCreatorsName, record, sourceFilename);
+            copyElementType2(dataset, DCM_ContentCreatorName, record, sourceFilename);
             copyElementType1(dataset, DCM_ReferencedSeriesSequence, record, sourceFilename);
         } else {
             printRecordErrorMessage(record->error(), ERT_Presentation, "create");
@@ -3072,7 +3072,7 @@ DcmDirectoryRecord *DicomDirInterface::buildRegistrationRecord(DcmDirectoryRecor
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentLabel, record, sourceFilename);
             copyElementType2(dataset, DCM_ContentDescription, record, sourceFilename);
-            copyElementType2(dataset, DCM_ContentCreatorsName, record, sourceFilename);
+            copyElementType2(dataset, DCM_ContentCreatorName, record, sourceFilename);
         } else {
             printRecordErrorMessage(record->error(), ERT_Registration, "create");
             /* free memory */
@@ -3105,7 +3105,7 @@ DcmDirectoryRecord *DicomDirInterface::buildFiducialRecord(DcmDirectoryRecord *r
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentLabel, record, sourceFilename);
             copyElementType2(dataset, DCM_ContentDescription, record, sourceFilename);
-            copyElementType2(dataset, DCM_ContentCreatorsName, record, sourceFilename);
+            copyElementType2(dataset, DCM_ContentCreatorName, record, sourceFilename);
         } else {
             printRecordErrorMessage(record->error(), ERT_Fiducial, "create");
             /* free memory */
@@ -3256,7 +3256,7 @@ DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmDirectoryRecord *r
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentLabel, record, sourceFilename);
             copyElementType2(dataset, DCM_ContentDescription, record, sourceFilename);
-            copyElementType2(dataset, DCM_ContentCreatorsName, record, sourceFilename);
+            copyElementType2(dataset, DCM_ContentCreatorName, record, sourceFilename);
         } else {
             printRecordErrorMessage(record->error(), ERT_ValueMap, "create");
             /* free memory */
@@ -3877,8 +3877,8 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
                     break;
                 case ERT_ModalityLut:
                 case ERT_VoiLut:
-                    if (!record->tagExistsWithValue(DCM_RETIRED_LookupTableNumber))
-                        setDefaultValue(record, DCM_RETIRED_LookupTableNumber, AutoLutNumber++);
+                    if (!record->tagExistsWithValue(DCM_RETIRED_LUTNumber))
+                        setDefaultValue(record, DCM_RETIRED_LUTNumber, AutoLutNumber++);
                     break;
                 case ERT_Curve:
                     if (!record->tagExistsWithValue(DCM_RETIRED_CurveNumber))
@@ -4849,6 +4849,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.39  2010-08-09 13:01:22  joergr
+ *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ *  the official "keyword" is used for the attribute name which results in a
+ *  number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  *  Revision 1.38  2010-07-21 14:25:55  joergr
  *  Made sure that no NULL pointer is passed to the OFString constructor.
  *

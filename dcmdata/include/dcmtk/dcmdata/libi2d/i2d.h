@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2009, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class to control conversion of image format to DICOM
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-03-25 09:44:07 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:03:07 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,7 @@ public:
    *  @param ovkeys [in] override keys that can be tags, dictionary names
    *                     and paths (see DcmPath for syntax). Also it is
    *                     permitted to set a value if appropriate, e. g.
-   *                     "PatientsName=Doe^John" would be a valid override
+   *                     "PatientName=Doe^John" would be a valid override
    *                     key.
    *  @return none
    */
@@ -227,8 +227,8 @@ private:
    *  @param outputTS [in] - The output transfer syntax to be used
    *  @return EC_Normal, if successfull, error otherwise.
    */
-  OFCondition insertEncapsulatedPixelData(DcmDataset* dset, 
-                                          char *pixData, 
+  OFCondition insertEncapsulatedPixelData(DcmDataset* dset,
+                                          char *pixData,
                                           Uint32 length,
                                           const E_TransferSyntax& outputTS) const;
 
@@ -278,6 +278,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: i2d.h,v $
+ * Revision 1.12  2010-08-09 13:03:07  joergr
+ * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+ * the official "keyword" is used for the attribute name which results in a
+ * number of minor changes (e.g. "PatientsName" is now called "PatientName").
+ *
  * Revision 1.11  2010-03-25 09:44:07  onken
  * Pixel data is now already marked with the correct transfer syntax in memory
  * not only when writing to disk. This permits conversion in memory, e. g. for

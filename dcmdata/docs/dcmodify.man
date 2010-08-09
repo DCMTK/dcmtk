@@ -50,7 +50,7 @@ where 'sequence' is a sequence tag like (0008,1111) or a dictionary name for a
 tag.  'item-no' describes the item number to be accessed (counting from zero).
 'element' defines the target tag to work on.  A tag can either be specified
 directly as (0010,0010) or through the corresponding dictionary name
-"PatientsName".  The '*' denotes that you can repeat sequence statements to
+"PatientName".  The '*' denotes that you can repeat sequence statements to
 access deeper levels in DICOM files (see EXAMPLES section).  For 'item-no',
 also a wildcard character '*' can be used selecting all items in surrounding
 sequence (see section WILDCARDS below).
@@ -386,21 +386,21 @@ single elements (i.e. a single dictionary name or tag key).
 \verbatim
 -i   --insert:
        dcmodify -i "(0010,0010)=A Name" file.dcm
-       Inserts the PatientsName tag into 'file.dcm' at 1st level.
+       Inserts the PatientName tag into 'file.dcm' at 1st level.
        If tag already exists, -i will overwrite it!  If you want to
        insert an element with value multiplicity > 1 (e.g. 4) you
        can do this with: dcmodify -i "(0018,1310)=1\\2\\3\\4"
 
-       dcmodify -i "(0008,1111)[0].PatientsName=Another Name" *.dcm
-       Inserts PatientsName tag into the first item of sequence
+       dcmodify -i "(0008,1111)[0].PatientName=Another Name" *.dcm
+       Inserts PatientName tag into the first item of sequence
        (0008,1111).  Note that the use of wildcards for files is
        possible.  You can specify longer tag paths, too (e.g.
        "(0008,1111)[0].(0008,1111)[1].(0010,0010)=A Third One").
        If any part of the path, e.g. the sequence or the item "0"
        does not exist, it is automatically inserted by dcmodify.
 
-       dcmodify -i "(0008,1111)[*].PatientsName=Another Name" *.dcm
-       Inserts PatientsName tag into _every_ item of sequence
+       dcmodify -i "(0008,1111)[*].PatientName=Another Name" *.dcm
+       Inserts PatientName tag into _every_ item of sequence
        (0008,1111).  Note that the use of wildcards for files is
        possible.  You can specify longer tag paths, too (e.g.
        "(0008,1111)[*].(0008,1111)[*].(0010,0010)=A Third One").

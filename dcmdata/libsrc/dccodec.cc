@@ -21,9 +21,9 @@
  *
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-04 14:22:39 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:01:22 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,14 +88,14 @@ OFCondition DcmCodec::convertToSecondaryCapture(DcmItem *dataset)
   if (result.good()) result = insertStringIfMissing(dataset, DCM_Modality, "OT");
 
   // Type 2 attributes - insert without value if missing
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientsName, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientName, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientID, NULL);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientsBirthDate, NULL);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientsSex, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientBirthDate, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientSex, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientOrientation, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyDate, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyTime, NULL);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_ReferringPhysiciansName, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_ReferringPhysicianName, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyID, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_AccessionNumber, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_SeriesNumber, NULL);
@@ -659,6 +659,11 @@ OFCondition DcmCodecList::determineDecompressedColorModel(
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
+** Revision 1.20  2010-08-09 13:01:22  joergr
+** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+** the official "keyword" is used for the attribute name which results in a
+** number of minor changes (e.g. "PatientsName" is now called "PatientName").
+**
 ** Revision 1.19  2010-06-04 14:22:39  uli
 ** Use new OFReadWriteLocker to avoid dead locks when we return from a codec
 ** via an exception.

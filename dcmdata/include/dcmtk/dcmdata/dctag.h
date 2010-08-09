@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Definition of the class DcmTag
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:07 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dctag.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-09 13:02:57 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,10 +126,10 @@ public:
      *  @return copy of tag key, by value
      */
     DcmTagKey getXTag() const
-    { 
+    {
       return * OFstatic_cast(const DcmTagKey *, this);
     }
-    
+
     /** returns name of attribute tag.
      *  If name has not been accessed before, a dictionary lookup
      *  under consideration of the current private creator code
@@ -178,7 +177,7 @@ public:
     /** convert the given string to a DICOM tag value
      *  @param name name or tag of the attribute to be searched for.
      *    If the name of the attribute is given the spelling has to be consistent
-     *    with the spelling used in the data dictionary (e.g. "PatientsName").
+     *    with the spelling used in the data dictionary (e.g. "PatientName").
      *    If the tag values are used the format is "gggg,eeee" (i.e. two hexa-
      *    decimal numbers separated by a comma).
      *  @param value variable in which the resulting tag value is stored.
@@ -227,6 +226,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
+** Revision 1.23  2010-08-09 13:02:57  joergr
+** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+** the official "keyword" is used for the attribute name which results in a
+** number of minor changes (e.g. "PatientsName" is now called "PatientName").
+**
 ** Revision 1.22  2009-11-04 09:58:07  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **
