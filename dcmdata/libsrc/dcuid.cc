@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-07-07 07:28:38 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-10 12:31:15 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -900,20 +900,20 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID)
 ** dcmFindNameOfUID(const char* uid)
 ** Return the name of a UID.
 ** Performs a table lookup and returns a pointer to a read-only string.
-** Returns NULL of the UID is not known.
+** Returns defaultValue of the UID is not known.
 */
 
 const char*
-dcmFindNameOfUID(const char* uid)
+dcmFindNameOfUID(const char* uid, const char* defaultValue)
 {
     int i = 0;
-    if (uid == NULL) return NULL;
+    if (uid == NULL) return defaultValue;
     for (i=0; i<uidNameMap_size; i++) {
       if (uidNameMap[i].uid != NULL && strcmp(uid, uidNameMap[i].uid) == 0) {
         return uidNameMap[i].name;
       }
     }
-    return NULL;
+    return defaultValue;
 }
 
 //
@@ -1429,6 +1429,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.78  2010-08-10 12:31:15  uli
+** Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.
+**
 ** Revision 1.77  2010-07-07 07:28:38  onken
 ** Added Ophthalmic Tomography Image Storage to list of supported SOP classes.
 **
