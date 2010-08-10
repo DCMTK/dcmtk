@@ -22,9 +22,9 @@
  *  Purpose: Test program for testing path features of DcmItem
  *           and DcmSequenceOfItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-08-09 17:53:02 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-10 07:08:22 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,8 +159,8 @@ int main(int argc, char *argv[])
   OFCommandLine cmd;
 
   cmd.addGroup("general options:");
-   cmd.addOption("--help",      "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--help",    "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--version",       "print version information and exit", OFCommandLine::AF_Exclusive);
    OFLog::addOptions(cmd);
 
   /* evaluate command line */
@@ -187,8 +187,7 @@ int main(int argc, char *argv[])
   if (!dcmDataDict.isDictionaryLoaded())
   {
       OFLOG_WARN(tstpathLogger, "no data dictionary loaded, "
-           << "check environment variable: "
-           << DCM_DICT_ENVIRONMENT_VARIABLE);
+           << "check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
   DcmFileFormat dcmff;
@@ -232,7 +231,7 @@ int main(int argc, char *argv[])
   path = "(0040,A730)[a].ContentSequence[3].ConceptNameCodeSequence[0].CodeValue";
   testPathInsertionsWithoutWildcard(path, dset, 7, OFTrue);
 
-  OFLOG_INFO(tstpathLogger, "\nThese find routines should work\n:"
+  OFLOG_INFO(tstpathLogger, "\nThese find routines should work:\n"
                            << "================================");
 
   path = "PatientID";
@@ -258,7 +257,7 @@ int main(int argc, char *argv[])
   path = "ConceptNameCodeSequence"; // should not exist on main level
   testPathInsertionsWithoutWildcard(path, dset, 1, OFTrue, OFFalse /* do not create */);
 
-  OFLOG_INFO(tstpathLogger, "\nChecking dataset length:"
+  OFLOG_INFO(tstpathLogger, "\nChecking dataset length:\n"
                            << "========================");
   Uint32 length = dset->calcElementLength(EXS_LittleEndianExplicit,EET_ExplicitLength);
   OFLOG_INFO(tstpathLogger, "Checking whether length of encoded dataset matches pre-calculated length");
@@ -322,6 +321,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: tstpath.cc,v $
+ * Revision 1.11  2010-08-10 07:08:22  joergr
+ * Re-added newline character removed by last commit and moved another newline
+ * to the right place.
+ *
  * Revision 1.10  2010-08-09 17:53:02  onken
  * Fixed path test.
  *

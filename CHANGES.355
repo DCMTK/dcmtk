@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.10 (riesmeier)
+
+- Re-added newline character removed by last commit and moved another newline
+  to the right place.
+  Affects: dcmdata/tests/tstpath.cc
+
 **** Changes from 2010.08.09 (onken)
 
 - Fixed path test.
