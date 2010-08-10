@@ -21,9 +21,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-24 09:26:57 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-10 11:59:32 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -483,7 +483,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
   if (pcid == 0)
   {
     DCMNET_ERROR("No presentation context found for sending C-ECHO with SOP Class / Transfer Syntax: "
-      << dcmFindNameOfUID(UID_VerificationSOPClass) << "/"
+      << dcmFindNameOfUID(UID_VerificationSOPClass, "") << "/"
       << DcmXfer(UID_LittleEndianImplicitTransferSyntax).getXferName());
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
@@ -571,10 +571,10 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     pcid = findPresentationContextID(sopClass, DcmXfer(transferSyntax).getXferID());
   if (pcid == 0)
   {
-    OFString sopname = dcmFindNameOfUID(sopClass.c_str());
+    OFString sopname = dcmFindNameOfUID(sopClass.c_str(), sopClass.c_str());
     OFString tsname = DcmXfer(transferSyntax).getXferName();
     DCMNET_ERROR("No presentation context found for sending C-STORE with SOP Class / Transfer Syntax: "
-      << (sopname.empty() ? sopClass : sopname) << "/"
+      << sopname << "/"
       << (tsname.empty() ? DcmXfer(transferSyntax).getXferName() : tsname));
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
@@ -1314,6 +1314,9 @@ FINDResponse::~FINDResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.12  2010-08-10 11:59:32  uli
+** Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.
+**
 ** Revision 1.11  2010-06-24 09:26:57  joergr
 ** Added check on whether the presentation context ID of command and data set are
 ** identical. Made sure that received dataset is deleted when an error occurs.

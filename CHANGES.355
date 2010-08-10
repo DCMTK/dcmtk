@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2010.08.10 (schlachter)
 
+- Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/mkdictbi.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/scu.cc
+
 - Removed undefined function printFileErrorMessage().
   Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
 

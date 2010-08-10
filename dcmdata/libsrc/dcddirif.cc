@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:01:22 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-10 11:59:31 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1427,7 +1427,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                 result = EC_Normal;
             else
             {
-                OFString sopClassName = dcmFindNameOfUID(mediaSOPClassUID.c_str());
+                OFString sopClassName = dcmFindNameOfUID(mediaSOPClassUID.c_str(), "");
                 if (sopClassName.empty())
                     sopClassName = mediaSOPClassUID;
                 DCMDATA_ERROR("invalid SOP class (" << sopClassName << ") for " << getProfileName(ApplicationProfile)
@@ -1495,12 +1495,12 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                     compare(transferSyntax, UID_JPEG2000TransferSyntax);
                             if (!found)
                             {
-                                OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax);
-                                OFString xferName2 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax);
-                                OFString xferName3 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax);
-                                OFString xferName4 = dcmFindNameOfUID(UID_JPEGProcess2_4TransferSyntax);
-                                OFString xferName5 = dcmFindNameOfUID(UID_JPEG2000LosslessOnlyTransferSyntax);
-                                OFString xferName6 = dcmFindNameOfUID(UID_JPEG2000TransferSyntax);
+                                OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
+                                OFString xferName2 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax, "");
+                                OFString xferName3 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax, "");
+                                OFString xferName4 = dcmFindNameOfUID(UID_JPEGProcess2_4TransferSyntax, "");
+                                OFString xferName5 = dcmFindNameOfUID(UID_JPEG2000LosslessOnlyTransferSyntax, "");
+                                OFString xferName6 = dcmFindNameOfUID(UID_JPEG2000TransferSyntax, "");
                                 /* create error message */
                                 OFOStringStream oss;
                                 oss << xferName1 << ", " << xferName2 << ", " << xferName3
@@ -1525,9 +1525,9 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                         compare(transferSyntax, UID_JPEGProcess2_4TransferSyntax);
                                 if (!found)
                                 {
-                                    OFString xferName1 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax);
-                                    OFString xferName2 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax);
-                                    OFString xferName3 = dcmFindNameOfUID(UID_JPEGProcess2_4TransferSyntax);
+                                    OFString xferName1 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax, "");
+                                    OFString xferName2 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax, "");
+                                    OFString xferName3 = dcmFindNameOfUID(UID_JPEGProcess2_4TransferSyntax, "");
                                     /* create error message */
                                     OFOStringStream oss;
                                     oss << xferName1 << ", " << xferName2 << " or " << xferName3
@@ -1549,8 +1549,8 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                     compare(transferSyntax, UID_JPEGProcess14SV1TransferSyntax);
                             if (!found)
                             {
-                                OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax);
-                                OFString xferName2 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax);
+                                OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
+                                OFString xferName2 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax, "");
                                 /* create error message */
                                 OFOStringStream oss;
                                 oss << xferName1 << " or " << xferName2 << " expected: "
@@ -1577,9 +1577,9 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                     compare(transferSyntax, UID_JPEGProcess1TransferSyntax);
                             if (!found)
                             {
-                                OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax);
-                                OFString xferName2 = dcmFindNameOfUID(UID_RLELosslessTransferSyntax);
-                                OFString xferName3 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax);
+                                OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
+                                OFString xferName2 = dcmFindNameOfUID(UID_RLELosslessTransferSyntax, "");
+                                OFString xferName3 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax, "");
                                 /* create error message */
                                 OFOStringStream oss;
                                 oss << xferName1 << ", " << xferName2 << " or " << xferName3
@@ -1607,7 +1607,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                             found = compare(transferSyntax, expectedTransferSyntax);
                             if (!found)
                             {
-                                OFString xferName = dcmFindNameOfUID(expectedTransferSyntax.c_str());
+                                OFString xferName = dcmFindNameOfUID(expectedTransferSyntax.c_str(), "");
                                 if (xferName.empty())
                                     xferName = expectedTransferSyntax;
                                 /* create error message */
@@ -4750,7 +4750,7 @@ OFBool DicomDirInterface::compareStringAttributes(DcmItem *dataset,
         if (!result)
         {
             OFString uniqueString;
-            OFString originFilename = record->getRecordsOriginFile();
+            OFString originFilename = OFSTRING_GUARD(record->getRecordsOriginFile());
             const DcmTagKey uniqueKey = getRecordUniqueKey(record->getRecordType());
             getStringFromDataset(record, uniqueKey, uniqueString);
             if (originFilename.empty())
@@ -4797,7 +4797,7 @@ OFBool DicomDirInterface::compareSequenceAttributes(DcmItem *dataset,
             if (!result)
             {
                 OFString uniqueString;
-                OFString originFilename = record->getRecordsOriginFile();
+                OFString originFilename = OFSTRING_GUARD(record->getRecordsOriginFile());
                 const DcmTagKey uniqueKey = getRecordUniqueKey(record->getRecordType());
                 getStringFromDataset(record, uniqueKey, uniqueString);
                 if (originFilename.empty())
@@ -4840,7 +4840,7 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
         record->putAndInsertString(key, buffer);
         /* create warning message */
         DCMDATA_WARN(recordTypeToName(record->getRecordType()) << " Record (origin: "
-            << record->getRecordsOriginFile() << ") inventing " << DcmTag(key).getTagName()
+            << OFSTRING_GUARD(record->getRecordsOriginFile()) << ") inventing " << DcmTag(key).getTagName()
             << ": " << buffer);
     }
 }
@@ -4849,6 +4849,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.40  2010-08-10 11:59:31  uli
+ *  Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.
+ *
  *  Revision 1.39  2010-08-09 13:01:22  joergr
  *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
  *  the official "keyword" is used for the attribute name which results in a

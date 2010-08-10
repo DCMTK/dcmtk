@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-07-07 07:28:36 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-10 11:59:31 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,9 +46,10 @@
 /** return the name of a UID.
  *  Performs a table lookup and returns a pointer to a read-only string.
  *  @param uid UID string for which the name is to be looked up
- *  @return name string or NULL if UID is unknown
+ *  @param defaultValue default to return if UID not known
+ *  @return name string or defaultValue if UID is unknown
  */
-const char* dcmFindNameOfUID(const char* uid);
+const char* dcmFindNameOfUID(const char* uid, const char* defaultValue = NULL);
 
 /** return the UID of a name.
  *  Performs a table lookup and returns a pointer to a read-only string.
@@ -613,6 +614,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.79  2010-08-10 11:59:31  uli
+** Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.
+**
 ** Revision 1.78  2010-07-07 07:28:36  onken
 ** Added Ophthalmic Tomography Image Storage to list of supported SOP classes.
 **

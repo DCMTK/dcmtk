@@ -23,9 +23,9 @@
  *  Generate a builtin data dictionary which can be compiled into
  *  the dcmdata library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-02 07:12:29 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-10 11:59:31 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +116,7 @@ printSimpleEntry(FILE* fout, const DcmDictEntry* e, OFBool& isFirst, OFBool& isP
             e->getVR().getVRName(),
             e->getTagName(),
             e->getVMMin(), e->getVMMax(),
-            e->getStandardVersion());
+            OFSTRING_GUARD(e->getStandardVersion()));
     fprintf(fout, "      %s, %s,\n", rr2s(e->getGroupRangeRestriction()),
             rr2s(e->getElementRangeRestriction()));
 
@@ -358,6 +358,9 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
+** Revision 1.33  2010-08-10 11:59:31  uli
+** Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.
+**
 ** Revision 1.32  2010-07-02 07:12:29  joergr
 ** Fixed typo: Changed "SUPRESS_CREATE_STAMP" to "SUPPRESS_CREATE_STAMP".
 **

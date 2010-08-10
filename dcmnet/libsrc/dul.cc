@@ -54,9 +54,9 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: uli $, $Date: 2010-08-06 08:41:36 $
+** Last Update:   $Author: uli $, $Date: 2010-08-10 11:59:31 $
 ** Source File:   $RCSfile: dul.cc,v $
-** Revision:      $Revision: 1.88 $
+** Revision:      $Revision: 1.89 $
 ** Status:        $State: Exp $
 */
 
@@ -2486,8 +2486,8 @@ OFString& dumpExtNegList(OFString& ret, SOPClassExtendedNegotiationSubItemList& 
     OFListIterator(SOPClassExtendedNegotiationSubItem*) i = lst.begin();
     while (i != lst.end()) {
         SOPClassExtendedNegotiationSubItem* extNeg = *i;
-        const char* uidName = dcmFindNameOfUID(extNeg->sopClassUID.c_str());
-        str << "  =" << ((uidName)?(uidName):("Unknown-UID"))
+        const char* uidName = dcmFindNameOfUID(extNeg->sopClassUID.c_str(), "Unknown-UID");
+        str << "  =" << uidName
             << " (" << extNeg->sopClassUID.c_str() << ")" << OFendl
             << "    [";
         for (int k=0; k<(int)extNeg->serviceClassAppInfoLength; k++) {
@@ -2534,14 +2534,9 @@ dump_uid(const char *UID, const char *indent)
         sprintf(buf, indent, " ");
         return OFString(buf) + "No UID";
     } else {
-        uidName = dcmFindNameOfUID(UID);
-        if (uidName != NULL) {
-            sprintf(buf, indent, " ");
-            return OFString(buf) + uidName;
-        } else {
-            sprintf(buf, indent, " ");
-            return OFString(buf) + "Unknown UID";
-        }
+        uidName = dcmFindNameOfUID(UID, "Unknown UID");
+        sprintf(buf, indent, " ");
+        return OFString(buf) + uidName;
     }
 }
 /* checkNetwork
@@ -2720,6 +2715,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.89  2010-08-10 11:59:31  uli
+** Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.
+**
 ** Revision 1.88  2010-08-06 08:41:36  uli
 ** Fixed some more compiler warnings.
 **

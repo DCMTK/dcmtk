@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:19:32 $
- *  CVS/RCS Revision: $Revision: 1.93 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-10 11:59:31 $
+ *  CVS/RCS Revision: $Revision: 1.94 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1524,8 +1524,8 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   /* if required, dump general information concerning transfer syntaxes */
   if (storescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
     DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
-    OFLOG_INFO(storescuLogger, "Transfer Syntax: " << dcmFindNameOfUID(fileTransfer.getXferID())
-        << " -> " << dcmFindNameOfUID(netTransfer.getXferID()));
+    OFLOG_INFO(storescuLogger, "Transfer Syntax: " << dcmFindNameOfUID(fileTransfer.getXferID(), "")
+        << " -> " << dcmFindNameOfUID(netTransfer.getXferID(), ""));
   }
 
 #ifdef ON_THE_FLY_COMPRESSION
@@ -1735,6 +1735,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.94  2010-08-10 11:59:31  uli
+** Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.
+**
 ** Revision 1.93  2010-08-09 13:19:32  joergr
 ** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
 ** the official "keyword" is used for the attribute name which results in a
