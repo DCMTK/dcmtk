@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.10 (schlachter)
+
+- Fixed some unlikely problems with NULL pointers.
+  Affects: ofstd/libsrc/ofconapp.cc
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2010.08.10 (riesmeier)
 
 - Re-added newline character removed by last commit and moved another newline

@@ -22,8 +22,8 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-29 13:45:58 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2010-08-10 09:34:20 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,9 +45,9 @@
 OFConsoleApplication::OFConsoleApplication(const char *app,
                                            const char *desc,
                                            const char *rcsid)
- : Name(app),
-   Description(desc),
-   Identification(rcsid),
+ : Name(OFSTRING_GUARD(app)),
+   Description(OFSTRING_GUARD(desc)),
+   Identification(OFSTRING_GUARD(rcsid)),
    QuietMode(OFFalse),
    CmdLine(NULL)
 {
@@ -294,6 +294,9 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
+ * Revision 1.29  2010-08-10 09:34:20  uli
+ * Fixed some unlikely problems with NULL pointers.
+ *
  * Revision 1.28  2010-06-29 13:45:58  uli
  * Fix a typo in my last commit.
  *
