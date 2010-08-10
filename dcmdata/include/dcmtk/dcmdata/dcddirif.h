@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:02:56 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-10 11:02:58 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1094,16 +1094,6 @@ class DicomDirInterface
                                  const E_DirRecType recordType,
                                  const char *operation);
 
-    /** print the given error status to the log stream (stderr).
-     *  The output format is: "Error: <error.text()>: [<operation> ][file: <filename>]"
-     *  @param error status to be reported (only if ".bad()")
-     *  @param operation name of the operation that failed (optional, might be NULL)
-     *  @param filename name of the file (optional, might be NULL)
-     */
-    void printFileErrorMessage(const OFCondition &error,
-                               const char *operation,
-                               const char *filename);
-
     /** copy contents of specified file
      *  @param fromFilename name of the file to be copied
      *  @param toFilename name of the new file (copy of 'fromFilename')
@@ -1442,6 +1432,9 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.18  2010-08-10 11:02:58  uli
+ * Removed undefined function printFileErrorMessage().
+ *
  * Revision 1.17  2010-08-09 13:02:56  joergr
  * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
  * the official "keyword" is used for the attribute name which results in a
