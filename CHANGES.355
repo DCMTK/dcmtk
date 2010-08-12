@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.12 (onken)
+
+- Make sure that configure/make works on current MinGW systems.
+  Affects: oflog/libsrc/factory.cc
+
 **** Changes from 2010.08.12 (riesmeier)
 
 - Made sure that "arpa/inet.h" is only included when available on the system.

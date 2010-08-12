@@ -156,8 +156,8 @@ void initializeFactoryRegistry()
     REG_APPENDER (reg, RollingFileAppender);
     REG_APPENDER (reg, DailyRollingFileAppender);
     REG_APPENDER (reg, SocketAppender);
-#if defined(_WIN32)
-#  if defined(LOG4CPLUS_HAVE_NT_EVENT_LOG)
+#if defined(_WIN32) && !defined(__MINGW32__)
+#if defined(LOG4CPLUS_HAVE_NT_EVENT_LOG)
     REG_APPENDER (reg, NTEventLogAppender);
 #  endif
 #  if defined(LOG4CPLUS_HAVE_WIN32_CONSOLE)
@@ -166,7 +166,7 @@ void initializeFactoryRegistry()
     REG_APPENDER (reg, Win32DebugAppender);
 #elif defined(LOG4CPLUS_HAVE_SYSLOG_H)
     REG_APPENDER (reg, SysLogAppender);
-#endif
+#endif // defined(_WIN32) && !defined(__MINGW32__)
 
     LayoutFactoryRegistry& reg2 = getLayoutFactoryRegistry();
     REG_LAYOUT (reg2, SimpleLayout);
