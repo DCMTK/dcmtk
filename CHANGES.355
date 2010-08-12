@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.08.12 (onken)
 
+- Fixed MinGW compilation also for building with cmake.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           oflog/libsrc/winsock.cc
+
 - Make sure that configure/make works on current MinGW systems.
   Affects: oflog/libsrc/factory.cc
 
