@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.12 (riesmeier)
+
+- Made sure that "arpa/inet.h" is only included when available on the system.
+  Affects: oflog/libsrc/unixsock.cc
+
+- Added explicit type cast for fourth parameter of setsockopt() which is
+  required for some systems.
+  Affects: oflog/libsrc/unixsock.cc
+
 **** Changes from 2010.08.10 (schlachter)
 
 - Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.

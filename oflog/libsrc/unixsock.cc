@@ -31,7 +31,10 @@
 # define _XOPEN_SOURCE_EXTENDED
 # endif
 #endif
+
+#ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
+#endif
 
 #ifdef LOG4CPLUS_HAVE_NETINET_IN_H
 #include <netinet/in.h>
@@ -144,7 +147,7 @@ log4cplus::helpers::openSocket(unsigned short port, SocketState& state)
     server.sin_port = htons(port);
 
     int optval = 1;
-    setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval) );
+    setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, (char*)&optval, sizeof(optval) );
 
     if(bind(sock, OFreinterpret_cast(struct sockaddr*, &server), sizeof(server)) < 0) {
         return INVALID_SOCKET;
@@ -300,4 +303,3 @@ log4cplus::helpers::getHostname (bool fqdn)
     free(hn);
     return res;
 }
-
