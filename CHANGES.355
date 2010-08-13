@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.13 (riesmeier)
+
+- Fixed wrong call to DcmItem::putAndInsertSint32() for setting the value of
+  NumberOfFrames (0028,0008) which has a value representation of IS (not SL).
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the original report.
+  Affects: dcmimage/libsrc/dicoimg.cc
+
 **** Changes from 2010.08.12 (onken)
 
 - Fixed MinGW compilation also for building with cmake.

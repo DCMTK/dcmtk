@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 14:43:36 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2010-08-13 13:24:48 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -576,6 +576,7 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
             /* check whether pixel data has been written and insert element into the dataset */
             if (ok && dataset.insert(pixel, OFTrue /*replaceOld*/).good())
             {
+                char numBuf[20];
                 /* set color model */
                 if (getInternalColorModel() == EPI_YBR_Full)
                     dataset.putAndInsertString(DCM_PhotometricInterpretation, "YBR_FULL");
@@ -584,7 +585,12 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
                 /* set image resolution */
                 dataset.putAndInsertUint16(DCM_Columns, Columns);
                 dataset.putAndInsertUint16(DCM_Rows, Rows);
-                dataset.putAndInsertSint32(DCM_NumberOfFrames, NumberOfFrames);
+#if SIZEOF_LONG == 8
+                sprintf(numBuf, "%d", NumberOfFrames);
+#else
+                sprintf(numBuf, "%ld", NumberOfFrames);
+#endif
+                dataset.putAndInsertString(DCM_NumberOfFrames, numBuf);
                 dataset.putAndInsertUint16(DCM_SamplesPerPixel, 3);
                 dataset.putAndInsertUint16(DCM_PlanarConfiguration, planarConfig);
                 /* set pixel encoding and data */
@@ -708,6 +714,10 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
+ * Revision 1.44  2010-08-13 13:24:48  joergr
+ * Fixed wrong call to DcmItem::putAndInsertSint32() for setting the value of
+ * NumberOfFrames (0028,0008) which has a value representation of IS (not SL).
+ *
  * Revision 1.43  2009-11-25 14:43:36  joergr
  * Added new source and header file for the module logger.
  *
