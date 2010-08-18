@@ -22,8 +22,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-03 10:28:40 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2010-08-18 15:13:23 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -877,7 +877,7 @@ DcmSequenceOfItems& DcmDicomDir::getMRDRSequence()
 
 
 DcmDirectoryRecord* DcmDicomDir::recurseMatchFile( DcmDirectoryRecord* startRec,
-                                                   char *filename )
+                                                   const char *filename )
 {
     DcmDirectoryRecord* retRec = NULL;
     if ( filename != NULL && *filename != '\0' && startRec != NULL)
@@ -907,7 +907,7 @@ DcmDirectoryRecord* DcmDicomDir::recurseMatchFile( DcmDirectoryRecord* startRec,
 
 
 DcmDirectoryRecord* DcmDicomDir::searchMatchFile( DcmSequenceOfItems& recSeq,
-                                                  char *filename )
+                                                  const char *filename )
 {
     DcmDirectoryRecord* retRec = NULL;
     if ( filename != NULL && *filename != '\0' )
@@ -936,7 +936,7 @@ DcmDirectoryRecord* DcmDicomDir::searchMatchFile( DcmSequenceOfItems& recSeq,
 // ********************************
 
 
-DcmDirectoryRecord* DcmDicomDir::matchFilename( char *filename )
+DcmDirectoryRecord* DcmDicomDir::matchFilename( const char *filename )
 {
     DcmDirectoryRecord* retRec = NULL;
     if ( filename != NULL && *filename != '\0' )
@@ -964,7 +964,7 @@ DcmDirectoryRecord* DcmDicomDir::matchFilename( char *filename )
 // ********************************
 
 
-DcmDirectoryRecord* DcmDicomDir::matchOrCreateMRDR( char *filename )
+DcmDirectoryRecord* DcmDicomDir::matchOrCreateMRDR( const char *filename )
 {
     DcmDirectoryRecord* newMRDR = NULL;
     DcmDirectoryRecord* matchRec = matchFilename( filename );
@@ -1347,6 +1347,10 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.60  2010-08-18 15:13:23  joergr
+** Added const specifier to char pointers where appropriate. Thanks to forum
+** user "takeos" for the report.
+**
 ** Revision 1.59  2010-06-03 10:28:40  joergr
 ** Replaced calls to strerror() by new helper function OFStandard::strerror()
 ** which results in using the thread safe version of strerror() if available.

@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmDicomDir
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:44 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcdicdir.h,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-18 15:13:26 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +66,7 @@ public:
     DcmDicomDir();
 
     /** constructor
-     *  @param fileName filename to read a DICOMDIR from. If NULL, an attempt is 
+     *  @param fileName filename to read a DICOMDIR from. If NULL, an attempt is
      *  made to read file DEFAULT_DICOMDIR_NAME ("DICOMDIR").
      *  @param fileSetID file set ID of this file set, used only for new DICOMDIRs
      */
@@ -93,33 +92,33 @@ public:
     /// returns current status flag
     virtual OFCondition error();
 
-    /** returns reference to DICOM file from which DICOMDIR was read. 
+    /** returns reference to DICOM file from which DICOMDIR was read.
      *  Note, this file may be obsolete if the DICOMDIR was modified
      *  @return reference to DICOM file
      */
     virtual DcmFileFormat& getDirFileFormat();
 
-    /** returns file name from which DICOMDIR was read. 
+    /** returns file name from which DICOMDIR was read.
      *  @return filename of DICOMDIR
      */
     virtual const char* getDirFileName();
 
-    /// returns root directory record    
+    /// returns root directory record
     virtual DcmDirectoryRecord& getRootRecord();
 
-    /// returns container in which all MRDR (multi-reference directory records) are stored  
+    /// returns container in which all MRDR (multi-reference directory records) are stored
     virtual DcmSequenceOfItems& getMRDRSequence();
 
     /** look up directory record for the given referenced file ID (not OS file path)
      *  @return directory record if found, NULL otherwise
      */
-    virtual DcmDirectoryRecord* matchFilename( char *filename );
+    virtual DcmDirectoryRecord* matchFilename( const char *filename );
 
     /** look up MRDR for the given referenced file ID (not OS file path).
      *  If there is none yet, create one.
      *  @return MRDR for given referenced file ID
      */
-    virtual DcmDirectoryRecord* matchOrCreateMRDR( char *filename );
+    virtual DcmDirectoryRecord* matchOrCreateMRDR( const char *filename );
 
     /** writes DICOMDIR to file
      *  @param oxfer, must be DICOMDIR_DEFAULT_TRANSFERSYNTAX
@@ -138,56 +137,56 @@ public:
      */
     virtual OFCondition verify( OFBool autocorrect = OFFalse );
 
-  protected: 
-  	
+  protected:
+
     // Manipulation of member variables
     OFCondition createNewElements(const char* fileSetID);  // in
     DcmDataset& getDataset(void);
 
     // side-effect free methods for manipulation and conversion
-    DcmSequenceOfItems&    getDirRecSeq(      DcmDataset &dset );   // inout
-    DcmUnsignedLongOffset* lookForOffsetElem( DcmObject *obj,       // in
-                                              const DcmTagKey &offsetTag );// in
-    DcmDirectoryRecord*    recurseMatchFile(  DcmDirectoryRecord* startRec,// in
-                                              char *filename );            // in
-    DcmDirectoryRecord*    searchMatchFile(   DcmSequenceOfItems& recSeq,  // in
-                                              char *filename );            // in
-    OFCondition resolveGivenOffsets( DcmObject *startPoint,         // inout
-                                     ItemOffset *itOffsets,         // in
-                                     const unsigned long numOffsets,  // in
-                                     const DcmTagKey &offsetTag );  // in
-    OFCondition resolveAllOffsets(   DcmDataset &dset );            // inout
-    OFCondition linkMRDRtoRecord(    DcmDirectoryRecord *dRec );    // inout
-    OFCondition moveRecordToTree(    DcmDirectoryRecord *startRec,  // in
-                                     DcmSequenceOfItems &fromDirSQ, // inout
-                                     DcmDirectoryRecord *toRecord );// inout
-    OFCondition moveMRDRbetweenSQs(  DcmSequenceOfItems &fromSQ,    // in
-                                     DcmSequenceOfItems &toDirSQ ); // inout
-    Uint32     lengthUntilSQ(       DcmDataset &dset,              // in
-                                     E_TransferSyntax oxfer,        // in
-                                     E_EncodingType enctype );      // in
-    Uint32     lengthOfRecord(      DcmItem *item,                 // in
-                                     E_TransferSyntax oxfer,        // in
-                                     E_EncodingType enctype );      // in
-    OFCondition convertGivenPointer( DcmObject *startPoint,         // inout
-                                     ItemOffset *itOffsets,         // in
-                                     const unsigned long numOffsets,  // in
-                                     const DcmTagKey &offsetTag );  // in
-    OFCondition convertAllPointer(   DcmDataset &dset,              // inout
-                                     Uint32 beginOfFileSet,        // in
-                                     E_TransferSyntax oxfer,        // in
-                                     E_EncodingType enctype );      // in
-    OFCondition copyRecordPtrToSQ(   DcmDirectoryRecord *record,    // in
-                                     DcmSequenceOfItems &toDirSQ,   // inout
-                                     DcmDirectoryRecord **firstRec, // out
-                                     DcmDirectoryRecord **lastRec );// out
-    OFCondition insertMediaSOPUID(   DcmMetaInfo &metaInfo );       // inout
-    OFCondition countMRDRRefs(       DcmDirectoryRecord *startRec,  // in
-                                     ItemOffset *refCounter,        // inout
-                                     const unsigned long numCounters );   // in
-    OFCondition checkMRDRRefCounter( DcmDirectoryRecord *startRec,  // in
-                                     ItemOffset *refCounter,        // inout
-                                     const unsigned long numCounters );    // in
+    DcmSequenceOfItems&    getDirRecSeq(      DcmDataset &dset );    // inout
+    DcmUnsignedLongOffset* lookForOffsetElem( DcmObject *obj,        // in
+                                              const DcmTagKey &offsetTag ); // in
+    DcmDirectoryRecord*    recurseMatchFile(  DcmDirectoryRecord* startRec, // in
+                                              const char *filename );       // in
+    DcmDirectoryRecord*    searchMatchFile(   DcmSequenceOfItems& recSeq,   // in
+                                              const char *filename );       // in
+    OFCondition resolveGivenOffsets( DcmObject *startPoint,          // inout
+                                     ItemOffset *itOffsets,          // in
+                                     const unsigned long numOffsets, // in
+                                     const DcmTagKey &offsetTag );   // in
+    OFCondition resolveAllOffsets(   DcmDataset &dset );             // inout
+    OFCondition linkMRDRtoRecord(    DcmDirectoryRecord *dRec );     // inout
+    OFCondition moveRecordToTree(    DcmDirectoryRecord *startRec,   // in
+                                     DcmSequenceOfItems &fromDirSQ,  // inout
+                                     DcmDirectoryRecord *toRecord ); // inout
+    OFCondition moveMRDRbetweenSQs(  DcmSequenceOfItems &fromSQ,     // in
+                                     DcmSequenceOfItems &toDirSQ );  // inout
+    Uint32     lengthUntilSQ(        DcmDataset &dset,               // in
+                                     E_TransferSyntax oxfer,         // in
+                                     E_EncodingType enctype );       // in
+    Uint32     lengthOfRecord(       DcmItem *item,                  // in
+                                     E_TransferSyntax oxfer,         // in
+                                     E_EncodingType enctype );       // in
+    OFCondition convertGivenPointer( DcmObject *startPoint,          // inout
+                                     ItemOffset *itOffsets,          // in
+                                     const unsigned long numOffsets, // in
+                                     const DcmTagKey &offsetTag );   // in
+    OFCondition convertAllPointer(   DcmDataset &dset,               // inout
+                                     Uint32 beginOfFileSet,          // in
+                                     E_TransferSyntax oxfer,         // in
+                                     E_EncodingType enctype );       // in
+    OFCondition copyRecordPtrToSQ(   DcmDirectoryRecord *record,     // in
+                                     DcmSequenceOfItems &toDirSQ,    // inout
+                                     DcmDirectoryRecord **firstRec,  // out
+                                     DcmDirectoryRecord **lastRec ); // out
+    OFCondition insertMediaSOPUID(   DcmMetaInfo &metaInfo );        // inout
+    OFCondition countMRDRRefs(       DcmDirectoryRecord *startRec,   // in
+                                     ItemOffset *refCounter,         // inout
+                                     const unsigned long numCounters );  // in
+    OFCondition checkMRDRRefCounter( DcmDirectoryRecord *startRec,   // in
+                                     ItemOffset *refCounter,         // inout
+                                     const unsigned long numCounters );  // in
 
     // complete re-organization of the managed directory records (side effect)
     OFCondition convertLinearToTree();
@@ -237,6 +236,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
+** Revision 1.26  2010-08-18 15:13:26  joergr
+** Added const specifier to char pointers where appropriate. Thanks to forum
+** user "takeos" for the report.
+**
 ** Revision 1.25  2010-03-01 09:08:44  uli
 ** Removed some unnecessary include directives in the headers.
 **

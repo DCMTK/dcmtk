@@ -7,6 +7,11 @@ Changes between releases are documented here.
   never overwritten.
   Affects: dcmdata/libsrc/dcvrobow.cc
 
+- Added const specifier to char pointers where appropriate. Thanks to forum
+  user "takeos" for the report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdicdir.h
+           dcmdata/libsrc/dcdicdir.cc
+
 **** Changes from 2010.08.13 (riesmeier)
 
 - Fixed wrong call to DcmItem::putAndInsertSint32() for setting the value of
