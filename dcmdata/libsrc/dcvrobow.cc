@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-23 14:30:34 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2010-08-18 14:50:06 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -237,7 +237,7 @@ void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream&out,
                 DCMDATA_WARN("DcmOtherByteOtherWord: Can't open output file for pixel data: " << fname);
             }
         } else {
-            DCMDATA_WARN("DcmOtherByteOtherWord: Output file for pixel data already exists: " << fname);
+            DCMDATA_WARN("DcmOtherByteOtherWord: Output file for pixel data already exists, skipping: " << fname);
         }
     } else
         DcmOtherByteOtherWord::print(out, flags, level, pixelFileName, pixelCounter);
@@ -310,8 +310,7 @@ OFCondition DcmOtherByteOtherWord::putUint16Array(const Uint16 *wordValue,
             errorFlag = putValue(wordValue, sizeof(Uint16) * OFstatic_cast(Uint32, numWords));
         else
             errorFlag = EC_CorruptedData;
-    }
-    else
+    } else
         errorFlag = putValue(NULL, 0);
     return errorFlag;
 }
@@ -739,6 +738,10 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.61  2010-08-18 14:50:06  joergr
+** Revised warning message to indicate that existing pixel data raw files are
+** never overwritten.
+**
 ** Revision 1.60  2010-04-23 14:30:34  joergr
 ** Added new method to all VR classes which checks whether the stored value
 ** conforms to the VR definition and to the specified VM.

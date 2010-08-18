@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.18 (riesmeier)
+
+- Revised warning message to indicate that existing pixel data raw files are
+  never overwritten.
+  Affects: dcmdata/libsrc/dcvrobow.cc
+
 **** Changes from 2010.08.13 (riesmeier)
 
 - Fixed wrong call to DcmItem::putAndInsertSint32() for setting the value of
