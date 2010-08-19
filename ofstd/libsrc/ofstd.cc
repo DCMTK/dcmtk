@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-10 09:34:20 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2010-08-19 08:43:09 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -309,7 +309,7 @@ const char *OFStandard::strerror(const int errnum,
                                  const size_t buflen)
 {
     const char *result = "";
-    if ((buf != "") && (buflen > 0))
+    if ((buf != NULL) && (buflen > 0))
     {
         // be paranoid and initialize the buffer to empty string
         buf[0] = 0;
@@ -1868,6 +1868,9 @@ long OFStandard::getProcessID()
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.62  2010-08-19 08:43:09  uli
+ *  Fixed a comparision that checks for a valid buffer.
+ *
  *  Revision 1.61  2010-08-10 09:34:20  uli
  *  Fixed some unlikely problems with NULL pointers.
  *

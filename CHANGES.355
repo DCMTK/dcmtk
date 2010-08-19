@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.08.19 (schlachter)
 
+- Fixed a comparision that checks for a valid buffer.
+  Affects: ofstd/libsrc/ofstd.cc
+
 - Removed unused variables.
   Affects: dcmjpls/libsrc/djcodecd.cc
 
