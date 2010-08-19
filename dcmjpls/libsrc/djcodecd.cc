@@ -22,8 +22,8 @@
  *  Purpose: codec classes for JPEG-LS decoders.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-01-19 15:19:06 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2010-08-19 08:04:29 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -200,8 +200,6 @@ OFCondition DJLSDecoderBase::decode(
   Uint32 fragmentLength = 0;
   OFBool done = OFFalse;
   Uint32 fragmentsForThisFrame = 0;
-  OFString jlsTempName;
-  OFString pnmTempName;
   size_t compressedSize;
 
   while (result.good() && !done)
@@ -664,6 +662,9 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.9  2010-08-19 08:04:29  uli
+ * Removed unused variables.
+ *
  * Revision 1.8  2010-01-19 15:19:06  uli
  * Made file names fit into 8.3 format.
  *

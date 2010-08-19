@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.19 (schlachter)
+
+- Removed unused variables.
+  Affects: dcmjpls/libsrc/djcodecd.cc
+
 **** Changes from 2010.08.18 (riesmeier)
 
 - Revised warning message to indicate that existing pixel data raw files are
