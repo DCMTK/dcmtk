@@ -22,8 +22,8 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-25 09:43:23 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2010-08-19 12:07:55 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,6 +226,12 @@ OFString::assign (const OFString& str, size_t pos, size_t n)
         this->theSize = 0;
     }
     return *this;
+}
+
+OFString&
+OFString::assign (const OFString& str)
+{
+    return assign(str, 0, OFString_npos);
 }
 
 OFString&
@@ -1043,6 +1049,9 @@ int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
+** Revision 1.30  2010-08-19 12:07:55  uli
+** Made OFString follow the C++ standard for std::string::assign().
+**
 ** Revision 1.29  2010-06-25 09:43:23  uli
 ** Don't allow OFString(NULL) because it is also forbidden for std::string.
 **

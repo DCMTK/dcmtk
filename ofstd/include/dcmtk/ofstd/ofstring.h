@@ -21,9 +21,9 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-26 07:31:17 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-19 12:07:55 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -213,10 +213,16 @@ public:
      *  The function reports an out-of-range error if pos > str.size().
      *  @param str string to append from
      *  @param pos position to start copying from
-     *  @param n maximum number of characters to copy
+     *  @param n maximum number of characters to copy, can be OFString_npos
      *  @return reference to this object
      */
-    OFString& assign(const OFString& str, size_t pos = 0, size_t n = OFString_npos);
+    OFString& assign(const OFString& str, size_t pos, size_t n);
+
+    /** Assigns input string str to the current string object.
+     *  @param str string to copy
+     *  @return reference to this object
+     */
+    OFString& assign(const OFString& str);
 
     /** constructs a temporary string from the input and assigns it to the current string.
      *  @param s pointer to an array of char of length n. Must not be NULL.
@@ -1109,6 +1115,9 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
+** Revision 1.29  2010-08-19 12:07:55  uli
+** Made OFString follow the C++ standard for std::string::assign().
+**
 ** Revision 1.28  2010-07-26 07:31:17  joergr
 ** Fixed typo (and revised documentation on the OFSTRING_GUARD macro).
 **

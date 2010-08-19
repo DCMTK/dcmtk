@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.08.19 (schlachter)
 
+- Made OFString follow the C++ standard for std::string::assign().
+  Affects: ofstd/include/dcmtk/ofstd/ofstring.h
+           ofstd/libsrc/ofstring.cc
+
 - Fixed a comparision that checks for a valid buffer.
   Affects: ofstd/libsrc/ofstd.cc
 
