@@ -21,9 +21,9 @@
  *
  *  Purpose: Test application for partial element access API
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-05 08:38:10 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2010-08-23 07:22:56 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,9 +114,9 @@ OFCondition sequentialNonOverlappingRead(DcmElement *delem, DcmFileCache *dcache
           str << STD_NAMESPACE hex << OFstatic_cast(int, buffer[offset+i]) << " ";
         }
         str << OFendl << "Found   : ";
-        for (Uint32 i=0; i<bytes_to_read; ++i)
+        for (Uint32 j=0; j<bytes_to_read; ++j)
         {
-          str << STD_NAMESPACE hex << OFstatic_cast(int, target[i]) << " ";
+          str << STD_NAMESPACE hex << OFstatic_cast(int, target[j]) << " ";
         }
         str << OFStringStream_ends;
 
@@ -164,9 +164,9 @@ OFCondition sequentialOverlappingRead(DcmElement *delem, DcmFileCache *dcache, u
           str << STD_NAMESPACE hex << OFstatic_cast(int, buffer[offset+i]) << " ";
         }
         str << OFendl << "Found   : ";
-        for (Uint32 i=0; i<bytes_to_read; ++i)
+        for (Uint32 j=0; j<bytes_to_read; ++j)
         {
-          str << STD_NAMESPACE hex << OFstatic_cast(int, target[i]) << " ";
+          str << STD_NAMESPACE hex << OFstatic_cast(int, target[j]) << " ";
         }
         str << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(str, c_str)
@@ -215,9 +215,9 @@ OFCondition randomRead(DcmElement *delem, DcmFileCache *dcache, unsigned char *b
           str << STD_NAMESPACE hex << OFstatic_cast(int, buffer[offset+i]) << " ";
         }
         str << OFendl << "Found   : ";
-        for (Uint32 i=0; i<bytes_to_read; ++i)
+        for (Uint32 j=0; j<bytes_to_read; ++j)
         {
-          str << STD_NAMESPACE hex << OFstatic_cast(int, target[i]) << " ";
+          str << STD_NAMESPACE hex << OFstatic_cast(int, target[j]) << " ";
         }
         str << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(str, c_str)
@@ -470,6 +470,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: tstpread.cc,v $
+ * Revision 1.6  2010-08-23 07:22:56  meichel
+ * Minor changes needed for compilation on MSVC6
+ *
  * Revision 1.5  2010-08-05 08:38:10  uli
  * Fixed some warnings from -Wold-style-cast.
  *

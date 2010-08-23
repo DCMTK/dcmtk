@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.23 (eichelberg)
+
+- Minor changes needed for compilation on MSVC6
+  Affects: dcmdata/tests/tstpath.cc
+           dcmdata/tests/tstpread.cc
+
 **** Changes from 2010.08.19 (schlachter)
 
 - Made OFString follow the C++ standard for std::string::assign().
