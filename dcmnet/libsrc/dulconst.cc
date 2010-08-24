@@ -49,9 +49,9 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-1993
 ** Intent:    This file contains functions for construction of
 **      DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:   $Author: uli $, $Date: 2010-03-05 08:37:23 $
+** Last Update:   $Author: uli $, $Date: 2010-08-24 09:21:29 $
 ** Source File:   $RCSfile: dulconst.cc,v $
-** Revision:    $Revision: 1.23 $
+** Revision:    $Revision: 1.24 $
 ** Status:    $State: Exp $
 */
 
@@ -1006,9 +1006,13 @@ constructSCUSCPRoles(unsigned char type,
       presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->requestedPresentationContext); 
     }
   } else {
-    presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext);
+    presentationCtx = params->acceptedPresentationContext != NULL ?
+      (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext) :
+      (DUL_PRESENTATIONCONTEXT*)NULL;
+
     if (presentationCtx != NULL)
       (void) LST_Position(&params->acceptedPresentationContext, (LST_NODE*)presentationCtx);
+
     while (presentationCtx != NULL) {
       if (presentationCtx->acceptedSCRole != DUL_SC_ROLE_DEFAULT) {
         scuscpItem = (PRV_SCUSCPROLE*)malloc(sizeof(*scuscpItem));
@@ -1515,6 +1519,10 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
+** Revision 1.24  2010-08-24 09:21:29  uli
+** Fixed a NULL pointer dereference if ASC_acknowledgeAssociation() was called
+** without a previous ASC_acceptContextsWithPreferredTransferSyntaxes().
+**
 ** Revision 1.23  2010-03-05 08:37:23  uli
 ** Fixed possible memory leak in case of error during construction
 ** of sub-items. This was found with cppcheck.

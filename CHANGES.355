@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.24 (schlachter)
+
+- Fixed a NULL pointer dereference if ASC_acknowledgeAssociation() was called
+  without a previous ASC_acceptContextsWithPreferredTransferSyntaxes().
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for finding and fixing
+  this.
+
 **** Changes from 2010.08.24 (onken)
 
 - Added -fPIC C compiler flag neede to compile under 64 bit linux.
