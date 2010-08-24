@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.24 (onken)
+
+- Added -fPIC C compiler flag neede to compile under 64 bit linux.
+  Thanks to Steve Pieper <pieper@bwh.harvard.edu> for the hint.
+  Affects: CMakeLists.txt
+
 **** Changes from 2010.08.23 (eichelberg)
 
 - Minor changes needed for compilation on MSVC6
