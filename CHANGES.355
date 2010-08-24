@@ -3,10 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2010.08.24 (schlachter)
 
+- Fixed some resource leaks in dcmtls (FDs and memory was leaked).
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for submitting a patch.
+  Affects: dcmnet/libsrc/dcmtrans.cc
+           dcmtls/libsrc/tlstrans.cc
+
 - Fixed a NULL pointer dereference if ASC_acknowledgeAssociation() was called
   without a previous ASC_acceptContextsWithPreferredTransferSyntaxes().
   Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for finding and fixing
   this.
+  Affects: dcmnet/libsrc/dulconst.cc
 
 **** Changes from 2010.08.24 (onken)
 

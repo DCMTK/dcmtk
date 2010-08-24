@@ -23,8 +23,8 @@
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 11:53:59 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2010-08-24 10:06:04 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,6 +190,7 @@ DcmTCPConnection::DcmTCPConnection(int openSocket)
 
 DcmTCPConnection::~DcmTCPConnection()
 {
+  close();
 }
 
 DcmTransportLayerStatus DcmTCPConnection::serverSideHandshake()
@@ -227,14 +228,17 @@ ssize_t DcmTCPConnection::write(void *buf, size_t nbyte)
 
 void DcmTCPConnection::close()
 {
+  if (getSocket() != -1)
+  {
 #ifdef HAVE_WINSOCK_H
-  (void) shutdown(getSocket(), 1 /* SD_SEND */);
-  (void) closesocket(getSocket());
+    (void) shutdown(getSocket(), 1 /* SD_SEND */);
+    (void) closesocket(getSocket());
 #else
-  (void) ::close(getSocket());
+    (void) ::close(getSocket());
 #endif
   /* forget about this socket (now closed) */
-  setSocket(-1);
+    setSocket(-1);
+  }
 }
 
 unsigned long DcmTCPConnection::getPeerCertificateLength()
@@ -314,6 +318,9 @@ const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
 
 /*
  *  $Log: dcmtrans.cc,v $
+ *  Revision 1.13  2010-08-24 10:06:04  uli
+ *  Fixed some resource leaks in dcmtls (FDs and memory was leaked).
+ *
  *  Revision 1.12  2009-11-18 11:53:59  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

@@ -23,8 +23,8 @@
  *    classes: DcmTLSConnection
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-05 08:38:11 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2010-08-24 10:06:04 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ DcmTLSConnection::DcmTLSConnection(int openSocket, SSL *newTLSConnection)
 
 DcmTLSConnection::~DcmTLSConnection()
 {
-  if (tlsConnection) SSL_free(tlsConnection);
+  close();
 }
 
 DcmTransportLayerStatus DcmTLSConnection::serverSideHandshake()
@@ -208,13 +208,22 @@ ssize_t DcmTLSConnection::write(void *buf, size_t nbyte)
 
 void DcmTLSConnection::close()
 {
-  if (tlsConnection) SSL_shutdown(tlsConnection);
+  if (tlsConnection != NULL)
+  {
+    SSL_shutdown(tlsConnection);
+    SSL_free(tlsConnection);
+    tlsConnection = NULL;
+  }
+  if (getSocket()!=-1)
+  {
 #ifdef HAVE_WINSOCK_H
-  (void) shutdown(getSocket(),  1 /* SD_SEND */);
-  (void) closesocket(getSocket());
+    (void) shutdown(getSocket(),  1 /* SD_SEND */);
+    (void) closesocket(getSocket());
 #else
-  (void) ::close(getSocket());
+    (void) ::close(getSocket());
 #endif
+    setSocket(-1);
+  }
 }
 
 unsigned long DcmTLSConnection::getPeerCertificateLength()
@@ -226,6 +235,7 @@ unsigned long DcmTLSConnection::getPeerCertificateLength()
     if (peerCert)
     {
       result = OFstatic_cast(unsigned long, i2d_X509(peerCert, NULL));
+      X509_free(peerCert);
     }
   }
   return result;
@@ -245,6 +255,7 @@ unsigned long DcmTLSConnection::getPeerCertificate(void *buf, unsigned long bufL
         unsigned char *p = OFreinterpret_cast(unsigned char *, buf);
         result = OFstatic_cast(unsigned long, i2d_X509(peerCert, &p));
       }
+      X509_free(peerCert);
     }
   }
   return result;
@@ -288,14 +299,23 @@ OFBool DcmTLSConnection::isTransparentConnection()
 
 OFString& DcmTLSConnection::dumpConnectionParameters(OFString& str)
 {
+  if (tlsConnection == NULL)
+  {
+    // This should never happen (famous last words)
+    str = "Transport connection: TLS/SSL over TCP/IP\n  Error: No Connection\n";
+    return str;
+  }
+
+  X509 *peerCert = SSL_get_peer_certificate(tlsConnection);
   OFOStringStream stream;
   stream << "Transport connection: TLS/SSL over TCP/IP" << OFendl
          << "  Protocol: " << SSL_get_version(tlsConnection) << OFendl
          << "  Ciphersuite: " << SSL_CIPHER_get_name(SSL_get_current_cipher(tlsConnection))
          << ", version: " << SSL_CIPHER_get_version(SSL_get_current_cipher(tlsConnection))
          << ", encryption: " << SSL_CIPHER_get_bits(SSL_get_current_cipher(tlsConnection), NULL) << " bits" << OFendl
-         << DcmTLSTransportLayer::dumpX509Certificate(SSL_get_peer_certificate(tlsConnection)) << OFendl;
+         << DcmTLSTransportLayer::dumpX509Certificate(peerCert) << OFendl;
   // out << "Certificate verification: " << X509_verify_cert_error_string(SSL_get_verify_result(tlsConnection)) << OFendl;
+  X509_free(peerCert);
   stream << OFStringStream_ends;
   OFSTRINGSTREAM_GETSTR(stream, res)
   str = res;
@@ -347,6 +367,9 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
+ *  Revision 1.17  2010-08-24 10:06:04  uli
+ *  Fixed some resource leaks in dcmtls (FDs and memory was leaked).
+ *
  *  Revision 1.16  2010-08-05 08:38:11  uli
  *  Fixed some warnings from -Wold-style-cast.
  *
