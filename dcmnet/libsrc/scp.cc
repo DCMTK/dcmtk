@@ -22,8 +22,8 @@
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-24 09:26:56 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2010-08-25 14:09:53 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -502,7 +502,13 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network *network)
   // Reject association if no presentation context was negotiated
   if( ASC_countAcceptedPresentationContexts( m_assoc->params ) == 0 )
   {
+    // Dump some debug information
+    OFString tempStr;
     DCMNET_INFO("No Acceptable Presentation Contexts");
+    if (m_verbosePCMode)
+      DCMNET_INFO(ASC_dumpParameters(tempStr, m_assoc->params, ASC_ASSOC_RJ));
+    else
+      DCMNET_DEBUG(ASC_dumpParameters(tempStr, m_assoc->params, ASC_ASSOC_RJ));
     refuseAssociation( DCMSCP_NO_PRESENTATION_CONTEXTS );
     if( !m_singleProcess )
     {
@@ -1484,6 +1490,10 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.11  2010-08-25 14:09:53  joergr
+** Output details on ASCE response parameters in case the association is
+** rejected because of "No Acceptable Presentation Contexts".
+**
 ** Revision 1.10  2010-06-24 09:26:56  joergr
 ** Added check on whether the presentation context ID of command and data set are
 ** identical. Made sure that received dataset is deleted when an error occurs.

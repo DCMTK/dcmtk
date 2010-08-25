@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.25 (riesmeier)
+
+- Output details on ASCE response parameters in case the association is
+  rejected because of "No Acceptable Presentation Contexts".
+  Affects: dcmnet/libsrc/scp.cc
+
 **** Changes from 2010.08.24 (schlachter)
 
 - Fixed some resource leaks in dcmtls (FDs and memory was leaked).
