@@ -44,9 +44,9 @@
 ** Intent:        This file defines the public structures and constants
 **                and the function prototypes for the DUL (DICOM Upper
 **                Layer) facility.
-** Last Update:   $Author: joergr $, $Date: 2009-12-08 16:37:52 $
+** Last Update:   $Author: joergr $, $Date: 2010-08-26 09:28:02 $
 ** Source File:   $RCSfile: dul.h,v $
-** Revision:      $Revision: 1.28 $
+** Revision:      $Revision: 1.29 $
 ** Status:        $State: Exp $
 */
 
@@ -67,34 +67,41 @@ class DcmTransportConnection;
 class DcmTransportLayer;
 class LST_HEAD;
 
-/** Global flag to enable/disable reverse DNS lookup when accepting
- *  associations.  If disabled, the numerical IP address instead of the symbolic hostname
- *  is stored in the callingPresentationAddress field of the association parameters
+/** Global flag to enable/disable reverse DNS lookup when accepting associations.
+ *  If disabled, the numerical IP address instead of the symbolic hostname is
+ *  stored in the callingPresentationAddress field of the association parameters
  *  structure.  Most DICOM applications (except imagectn) don't need the symbolic
  *  hostname anyway, and the reverse DNS lookup can cause a long timeout.
  */
-extern OFGlobal<OFBool> dcmDisableGethostbyaddr; /* default OFFalse */
+extern OFGlobal<OFBool> dcmDisableGethostbyaddr;   /* default OFFalse */
+
+/** Global flag specifying whether to reject presentation contexts in case of an
+ *  unsuccessful SCP/SCU role selection (strict) or to return the corresponding
+ *  user data item with appropriate values (default). This applies to association
+ *  acceptors only.
+ */
+extern OFGlobal<OFBool> dcmStrictRoleSelection;   /* default OFFalse */
 
 /**  Global timeout (seconds) for connecting to remote hosts.
  *   Default value is -1 which selects infinite timeout, i.e. blocking connect().
  */
 extern OFGlobal<Sint32> dcmConnectionTimeout;   /* default -1 */
 
-/** This global flag allows to set an already opened socket file descriptor
- *  which will be used by dcmnet the next time receiveTransportConnectionTCP()
- *  is called. Useful for use with proxy applications, but inherently thread unsafe!
+/** This global flag allows to set an already opened socket file descriptor which
+ *  will be used by dcmnet the next time receiveTransportConnectionTCP() is called.
+ *  Useful for use with proxy applications, but inherently thread unsafe!
  */
 extern OFGlobal<int> dcmExternalSocketHandle;   /* default -1 */
 
-/** When compiled with WITH_TCPWRAPPER, DCMTK server processes may use the
- *  TCP wrapper library to enforce access control - see hosts_access(5).
- *  If this global flag is non-NULL, the TCP wrapper is enabled and the
- *  string pointed to is used as the daemon name.  If the flag is NULL,
- *  no access control is performed.
+/** When compiled with WITH_TCPWRAPPER, DCMTK server processes may use the TCP
+ *  wrapper library to enforce access control - see hosts_access(5).  If this
+ *  global flag is non-NULL, the TCP wrapper is enabled and the string pointed
+ *  to is used as the daemon name.  If the flag is NULL, no access control is
+ *  performed.
  */
 extern OFGlobal<const char *> dcmTCPWrapperDaemonName;   /* default NULL */
 
-/* Global option flag for compatibility with DCMTK releases prior to 3.0
+/* Global option flag for compatibility with DCMTK releases prior to version 3.0.
  * Default (0) is automatic handling, which should work in most cases.
  */
 extern OFGlobal<unsigned long> dcmEnableBackwardCompatibility;
@@ -177,6 +184,7 @@ typedef struct {
 }   DUL_ASSOCIATESERVICEPARAMETERS;
 
 typedef enum {
+    DUL_SC_ROLE_NONE,
     DUL_SC_ROLE_DEFAULT,
     DUL_SC_ROLE_SCU,
     DUL_SC_ROLE_SCP,
@@ -273,10 +281,10 @@ typedef struct {
 
 #define DUL_SCU_INITIATED_ABORT           0x00
 #define DUL_SCP_INITIATED_ABORT           0x02
-                                          
+
 #define DUL_ABORTSERVICEUSER              0x00
 #define DUL_ABORTSERVICEPROVIDER          0x02
-                                          
+
 #define DUL_ABORTNOREASON                 0x00
 #define DUL_ABORTUNRECOGNIZEDPDU          0x01
 #define DUL_ABORTUNEXPECTEDPDU            0x02
@@ -494,6 +502,12 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
+** Revision 1.29  2010-08-26 09:28:02  joergr
+** Fixed incorrect behavior of association acceptors during SCP/SCU role
+** selection negotiation.
+** Introduced new global flag which allows for rejecting presentation contexts
+** in case of an unsuccessful SCP/SCU role selection (disabled by default).
+**
 ** Revision 1.28  2009-12-08 16:37:52  joergr
 ** Fixed inconsistent source code formatting.
 **

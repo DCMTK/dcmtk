@@ -54,9 +54,9 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: uli $, $Date: 2010-08-10 11:59:31 $
+** Last Update:   $Author: joergr $, $Date: 2010-08-26 09:24:21 $
 ** Source File:   $RCSfile: dul.cc,v $
-** Revision:      $Revision: 1.89 $
+** Revision:      $Revision: 1.90 $
 ** Status:        $State: Exp $
 */
 
@@ -146,6 +146,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofstd.h"
 
 OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
+OFGlobal<OFBool> dcmStrictRoleSelection(OFFalse);
 OFGlobal<Sint32> dcmConnectionTimeout(-1);
 OFGlobal<int>    dcmExternalSocketHandle(-1);
 OFGlobal<const char *> dcmTCPWrapperDaemonName((const char *)NULL);
@@ -2388,6 +2389,7 @@ typedef struct {
 }   SC_MAP;
 
 static SC_MAP scMap[] = {
+    {DUL_SC_ROLE_NONE, "None"},
     {DUL_SC_ROLE_DEFAULT, "Default"},
     {DUL_SC_ROLE_SCU, "SCU"},
     {DUL_SC_ROLE_SCP, "SCP"},
@@ -2715,6 +2717,12 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.90  2010-08-26 09:24:21  joergr
+** Fixed incorrect behavior of association acceptors during SCP/SCU role
+** selection negotiation.
+** Introduced new global flag which allows for rejecting presentation contexts
+** in case of an unsuccessful SCP/SCU role selection (disabled by default).
+**
 ** Revision 1.89  2010-08-10 11:59:31  uli
 ** Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.
 **
