@@ -1,6 +1,29 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.26 (riesmeier)
+
+- Fixed incorrect behavior of association acceptors during SCP/SCU role
+  selection negotiation.
+  Affects: dcmnet/include/dcmtk/dcmnet/assoc.h
+           dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/include/dcmtk/dcmnet/dul.h
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/dcasccfg.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulconst.cc
+           dcmnet/libsrc/dulfsm.cc
+
+- Introduced new global flag which allows for rejecting presentation contexts
+  in case of an unsuccessful SCP/SCU role selection (disabled by default).
+  Affects: dcmnet/include/dcmtk/dcmnet/dul.h
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dul.cc
+
+- Minor changes to output format of ACSE parameters.
+  Affects: dcmnet/libsrc/assoc.cc
+
 **** Changes from 2010.08.26 (schlachter)
 
 - Added a test that breaks DcmUnlimitedText. This has to be fixed.
@@ -8,7 +31,7 @@ Changes between releases are documented here.
 
 **** Changes from 2010.08.25 (riesmeier)
 
-- Output details on ASCE response parameters in case the association is
+- Output details on ACSE response parameters in case the association is
   rejected because of "No Acceptable Presentation Contexts".
   Affects: dcmnet/libsrc/scp.cc
 
