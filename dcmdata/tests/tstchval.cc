@@ -21,9 +21,9 @@
  *
  *  Purpose: test program for checkStringValue() methods
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-23 14:34:45 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-08-26 08:39:50 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/ofstd/ofbmanip.h"
 
 
 #define CHECK_GOOD(number, check) \
@@ -236,7 +237,14 @@ int main(int , char *[])
   COUT << OFendl;
 
   /* test "Unlimited Text" */
+  size_t hugeBufSize = 1024 * 512;
+  char *hugeBuf = new char[hugeBufSize];
+
+  OFBitmanipTemplate<char>::setMem(hugeBuf, 'n', hugeBufSize);
+  hugeBuf[hugeBufSize - 1] = '\0';
+
   CHECK_GOOD( "UT-01", DcmUnlimitedText::checkStringValue(" This text can be pretty long ... ") )
+  CHECK_GOOD( "UT-02", DcmUnlimitedText::checkStringValue(hugeBuf) )
   COUT << OFendl;
 
   return 0;
@@ -247,6 +255,9 @@ int main(int , char *[])
  *
  * CVS/RCS Log:
  * $Log: tstchval.cc,v $
+ * Revision 1.4  2010-08-26 08:39:50  uli
+ * Added a test that breaks DcmUnlimitedText. This has to be fixed.
+ *
  * Revision 1.3  2010-04-23 14:34:45  joergr
  * Renamed static helper function checkValue() to checkStringValue().
  *

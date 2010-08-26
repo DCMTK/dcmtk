@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.26 (schlachter)
+
+- Added a test that breaks DcmUnlimitedText. This has to be fixed.
+  Affects: dcmdata/tests/tstchval.cc
+
 **** Changes from 2010.08.25 (riesmeier)
 
 - Output details on ASCE response parameters in case the association is
