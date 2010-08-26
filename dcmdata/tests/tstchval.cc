@@ -22,8 +22,8 @@
  *  Purpose: test program for checkStringValue() methods
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-26 08:39:50 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-08-26 12:18:09 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -247,6 +247,8 @@ int main(int , char *[])
   CHECK_GOOD( "UT-02", DcmUnlimitedText::checkStringValue(hugeBuf) )
   COUT << OFendl;
 
+  delete[] hugeBuf;
+
   return 0;
 }
 
@@ -255,6 +257,9 @@ int main(int , char *[])
  *
  * CVS/RCS Log:
  * $Log: tstchval.cc,v $
+ * Revision 1.5  2010-08-26 12:18:09  uli
+ * Added a test that breaks DcmUnlimitedText. This has to be fixed.
+ *
  * Revision 1.4  2010-08-26 08:39:50  uli
  * Added a test that breaks DcmUnlimitedText. This has to be fixed.
  *
