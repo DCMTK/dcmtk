@@ -49,9 +49,9 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-1993
 ** Intent:    This file contains functions for construction of
 **      DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:   $Author: uli $, $Date: 2010-08-24 09:21:29 $
+** Last Update:   $Author: joergr $, $Date: 2010-08-26 09:25:10 $
 ** Source File:   $RCSfile: dulconst.cc,v $
-** Revision:    $Revision: 1.24 $
+** Revision:    $Revision: 1.25 $
 ** Status:    $State: Exp $
 */
 
@@ -791,7 +791,7 @@ constructPresentationContext(unsigned char associateType,
 **
 ** Purpose:
 **  Construct the User Info part of the Associate PDU. This function
-**  is for calculating the total length of all user item informaiton. It does
+**  is for calculating the total length of all user item information. It does
 **  not yet write the item content to buffer or network. This happens later on
 **  in function streamUserInfo().
 **
@@ -989,23 +989,24 @@ constructSCUSCPRoles(unsigned char type,
         if (scuscpItem == NULL) return EC_MemoryExhausted;
         if (presentationCtx->proposedSCRole == DUL_SC_ROLE_SCU) {
           scuRole = 1;
+          scpRole = 0;
         } else if (presentationCtx->proposedSCRole == DUL_SC_ROLE_SCP) {
+          scuRole = 0;
           scpRole = 1;
         } else {
           scuRole = scpRole = 1;
         }
         cond = constructSCUSCPSubItem(presentationCtx->abstractSyntax,
-          DUL_TYPESCUSCPROLE, scuRole, scpRole,
-          scuscpItem, &length);
+          DUL_TYPESCUSCPROLE, scuRole, scpRole, scuscpItem, &length);
         if (cond.bad())
           return cond;
         *rtnLength += length;
         cond = LST_Enqueue(lst, (LST_NODE*)scuscpItem);
         if (cond.bad()) return cond;
       }
-      presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->requestedPresentationContext); 
+      presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->requestedPresentationContext);
     }
-  } else {
+  } else {  // type != DUL_TYPEASSOCIATERQ
     presentationCtx = params->acceptedPresentationContext != NULL ?
       (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext) :
       (DUL_PRESENTATIONCONTEXT*)NULL;
@@ -1014,15 +1015,28 @@ constructSCUSCPRoles(unsigned char type,
       (void) LST_Position(&params->acceptedPresentationContext, (LST_NODE*)presentationCtx);
 
     while (presentationCtx != NULL) {
-      if (presentationCtx->acceptedSCRole != DUL_SC_ROLE_DEFAULT) {
+      // check that the default behavior does not apply
+      if ((presentationCtx->proposedSCRole != DUL_SC_ROLE_DEFAULT) &&
+          (presentationCtx->acceptedSCRole != DUL_SC_ROLE_DEFAULT)) {
         scuscpItem = (PRV_SCUSCPROLE*)malloc(sizeof(*scuscpItem));
         if (scuscpItem == NULL) return EC_MemoryExhausted;
         if (presentationCtx->acceptedSCRole == DUL_SC_ROLE_SCU) {
-          scuRole = 1;
+          // only accept SCU role for the requester if proposed, see PS 3.7
+          scuRole = (presentationCtx->proposedSCRole != DUL_SC_ROLE_SCP) ? 1 : 0;
+          scpRole = 0;
         } else if (presentationCtx->acceptedSCRole == DUL_SC_ROLE_SCP) {
-          scpRole = 1;
+          scuRole = 0;
+          // only accept SCP role for the requester if proposed, see PS 3.7
+          scpRole = (presentationCtx->proposedSCRole != DUL_SC_ROLE_SCU) ? 1 : 0;
         } else {
-          scuRole = scpRole = 1;
+          // only accept roles for the requester if proposed, see PS 3.7
+          scuRole = (presentationCtx->proposedSCRole != DUL_SC_ROLE_SCP) ? 1 : 0;
+          scpRole = (presentationCtx->proposedSCRole != DUL_SC_ROLE_SCU) ? 1 : 0;
+        }
+        // neither SCU nor SCP role accepted
+        if ((scuRole == 0) && (scpRole == 0)) {
+            presentationCtx->acceptedSCRole = DUL_SC_ROLE_NONE;
+            DCMNET_WARN("setting accepted SCP/SCU role to NONE, i.e. both role fields are 0 in SCP/SCU role selection sub-item");
         }
         cond = constructSCUSCPSubItem(presentationCtx->abstractSyntax,
           DUL_TYPESCUSCPROLE, scuRole, scpRole, scuscpItem, &length);
@@ -1519,6 +1533,10 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
+** Revision 1.25  2010-08-26 09:25:10  joergr
+** Fixed incorrect behavior of association acceptors during SCP/SCU role
+** selection negotiation.
+**
 ** Revision 1.24  2010-08-24 09:21:29  uli
 ** Fixed a NULL pointer dereference if ASC_acknowledgeAssociation() was called
 ** without a previous ASC_acceptContextsWithPreferredTransferSyntaxes().

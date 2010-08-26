@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 11:53:59 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-26 09:22:24 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,12 +42,14 @@ const OFConditionConst ASCE_MISSINGTRANSFERSYNTAX(   OFM_dcmnet, ASCC_MISSINGTRA
 const OFConditionConst ASCE_NULLKEY(                 OFM_dcmnet, ASCC_NULLKEY,                  OF_error, "ASC Caller passed in a NULL key");
 const OFConditionConst ASCE_SHUTDOWNAPPLICATION(     OFM_dcmnet, ASCC_SHUTDOWNAPPLICATION,      OF_error, "ASC Application shutdown requested");
 const OFConditionConst ASCE_USERIDENTIFICATIONFAILED(OFM_dcmnet, ASCC_USERIDENTIFICATIONFAILED, OF_error, "ASC User Identification Negotiation failed");
+const OFConditionConst ASCE_SCPSCUROLESELETIONFAILED(OFM_dcmnet, ASCC_SCPSCUROLESELETIONFAILED, OF_error, "ASC SCP/SCU role selection failed");
 
 const OFCondition ASC_BADPRESENTATIONCONTEXTID(ASCE_BADPRESENTATIONCONTEXTID);
 const OFCondition ASC_MISSINGTRANSFERSYNTAX(   ASCE_MISSINGTRANSFERSYNTAX);
 const OFCondition ASC_NULLKEY(                 ASCE_NULLKEY);
 const OFCondition ASC_SHUTDOWNAPPLICATION(     ASCE_SHUTDOWNAPPLICATION);
 const OFCondition ASC_USERIDENTIFICATIONFAILED(ASCE_USERIDENTIFICATIONFAILED);
+const OFCondition ASC_SCPSCUROLESELETIONFAILED(ASCE_SCPSCUROLESELETIONFAILED);
 
 const OFConditionConst DIMSEE_BADCOMMANDTYPE(               OFM_dcmnet, DIMSEC_BADCOMMANDTYPE,               OF_error, "DIMSE Bad command type");
 const OFConditionConst DIMSEE_BADDATA(                      OFM_dcmnet, DIMSEC_BADDATA,                      OF_error, "DIMSE Inappropriate data for message");
@@ -173,6 +174,10 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
+ * Revision 1.19  2010-08-26 09:22:24  joergr
+ * Fixed incorrect behavior of association acceptors during SCP/SCU role
+ * selection negotiation.
+ *
  * Revision 1.18  2009-11-18 11:53:59  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -19,12 +19,11 @@
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: 
+ *  Purpose:
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:44:27 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcasccfg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-26 09:23:38 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,7 +136,7 @@ OFBool DcmAssociationConfiguration::isValidSCPProfile(const char *key) const
   const DcmPresentationContextList *contextList = contexts_.getPresentationContextList(contextKey);
   if (contextList)
   {
-    // now loop through all presentation contexts  
+    // now loop through all presentation contexts
     OFListConstIterator(DcmPresentationContextItem) outerfirst = contextList->begin();
     OFListConstIterator(DcmPresentationContextItem) innerfirst;
     OFListConstIterator(DcmPresentationContextItem) last = contextList->end();
@@ -156,7 +155,7 @@ OFBool DcmAssociationConfiguration::isValidSCPProfile(const char *key) const
           return OFFalse;
         }
         ++innerfirst;
-      }  
+      }
       ++outerfirst;
     }
     // there are no duplicate abstract syntaxes, so this is a valid SCP profile.
@@ -238,7 +237,7 @@ OFCondition DcmAssociationConfiguration::setAssociationParameters(
   OFListConstIterator(DcmRoleSelectionItem) rslast;
   DcmUIDHandler uid;
 
-  // now loop through all presentation contexts  
+  // now loop through all presentation contexts
   OFListConstIterator(DcmPresentationContextItem) first = contextList->begin();
   OFListConstIterator(DcmPresentationContextItem) last = contextList->end();
   while (first != last)
@@ -291,7 +290,7 @@ OFCondition DcmAssociationConfiguration::setAssociationParameters(
       rslast = roleSelectionList->end();
       uid = abstractSyntax;
       while (rsfirst != rslast)
-      {        
+      {
         if ((*rsfirst).matches(uid))
         {
           // found abstract syntax, set role accordingly
@@ -435,7 +434,7 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
     if (!found)
     {
       // abstract syntax not supported, reject presentation context
-      result = ASC_refusePresentationContext(assoc.params, pc.presentationContextID, 
+      result = ASC_refusePresentationContext(assoc.params, pc.presentationContextID,
         ASC_P_ABSTRACTSYNTAXNOTSUPPORTED);
       if (result.bad()) return result;
     }
@@ -443,7 +442,7 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
     {
       // abstract syntax is supported, get transfer syntax list and SCP/SCU role
       transferSyntaxKey = (*first).getTransferSyntaxKey();
-      transferSyntaxList = xferSyntaxes_.getTransferSyntaxList(transferSyntaxKey);      
+      transferSyntaxList = xferSyntaxes_.getTransferSyntaxList(transferSyntaxKey);
       if (! transferSyntaxList)
       {
         // error: key undefined
@@ -451,7 +450,7 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
         s += transferSyntaxKey;
         return makeOFCondition(OFM_dcmnet, 1073, OF_error, s.c_str());
       }
-    
+
       // look up SCP/SCU role for this abstract syntax
       acceptedRole = ASC_SC_ROLE_DEFAULT;
       if (roleSelectionList)
@@ -461,7 +460,7 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
         rslast = roleSelectionList->end();
         uid = pc.abstractSyntax;
         while (rsfirst != rslast)
-        {        
+        {
           if ((*rsfirst).matches(uid))
           {
             // found abstract syntax, set role accordingly
@@ -491,17 +490,23 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
             result = ASC_acceptPresentationContext(
                 assoc.params, pc.presentationContextID,
                 pc.proposedTransferSyntaxes[j], acceptedRole);
+            // SCP/SCU role selection failed, reject presentation context
+            if (result == ASC_SCPSCUROLESELETIONFAILED)
+            {
+              result = ASC_refusePresentationContext(assoc.params,
+                pc.presentationContextID, ASC_P_NOREASON);
+            }
             if (result.bad()) return result;
           }
         }
         ++tsfirst;
       }
 
-      // no matching transfer syntax found, reject context     
+      // no matching transfer syntax found, reject context
       if (!found)
       {
         // transfer syntax not supported, reject presentation context
-        result = ASC_refusePresentationContext(assoc.params, pc.presentationContextID, 
+        result = ASC_refusePresentationContext(assoc.params, pc.presentationContextID,
           ASC_P_TRANSFERSYNTAXESNOTSUPPORTED);
         if (result.bad()) return result;
       }
@@ -546,6 +551,10 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
 /*
  * CVS/RCS Log
  * $Log: dcasccfg.cc,v $
+ * Revision 1.5  2010-08-26 09:23:38  joergr
+ * Fixed incorrect behavior of association acceptors during SCP/SCU role
+ * selection negotiation.
+ *
  * Revision 1.4  2005-12-08 15:44:27  meichel
  * Changed include path schema for all DCMTK header files
  *

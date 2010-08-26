@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-18 11:53:58 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/cond.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-08-26 09:27:21 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,6 +79,7 @@ const unsigned short ASCC_MISSINGTRANSFERSYNTAX          = 0x105;
 const unsigned short ASCC_NULLKEY                        = 0x106;
 const unsigned short ASCC_SHUTDOWNAPPLICATION            = 0x107;
 const unsigned short ASCC_USERIDENTIFICATIONFAILED       = 0x108;
+const unsigned short ASCC_SCPSCUROLESELETIONFAILED       = 0x109;
 
 // condition constants used in the association module
 extern const OFCondition ASC_BADPRESENTATIONCONTEXTID;   /* Bad presentation context ID */
@@ -87,6 +87,7 @@ extern const OFCondition ASC_MISSINGTRANSFERSYNTAX;      /* Missing transfer syn
 extern const OFCondition ASC_NULLKEY;                    /* Caller passed in a NULL key */
 extern const OFCondition ASC_SHUTDOWNAPPLICATION;        /* Peer requested application shutdown */
 extern const OFCondition ASC_USERIDENTIFICATIONFAILED;   /* User Identity Negotiation failed */
+extern const OFCondition ASC_SCPSCUROLESELETIONFAILED;   /* SCP/SCU role selection failed */
 
 // condition code constants used in the DIMSE module
 const unsigned short DIMSEC_BADCOMMANDTYPE               = 0x201;
@@ -284,6 +285,10 @@ typedef OFCondition CONDITION;
 /*
  * CVS Log
  * $Log: cond.h,v $
+ * Revision 1.14  2010-08-26 09:27:21  joergr
+ * Fixed incorrect behavior of association acceptors during SCP/SCU role
+ * selection negotiation.
+ *
  * Revision 1.13  2009-11-18 11:53:58  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

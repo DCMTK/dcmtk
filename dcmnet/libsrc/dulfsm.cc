@@ -46,9 +46,9 @@
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
 ** Intent:        Define tables and provide functions that implement
 **                the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:   $Author: joergr $, $Date: 2010-06-14 16:02:56 $
+** Last Update:   $Author: joergr $, $Date: 2010-08-26 09:25:59 $
 ** Source File:   $RCSfile: dulfsm.cc,v $
-** Revision:      $Revision: 1.69 $
+** Revision:      $Revision: 1.70 $
 ** Status:        $State: Exp $
 */
 
@@ -921,15 +921,16 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
                     requestedPresentationCtx->proposedSCRole;
             }
             userPresentationCtx->acceptedSCRole = DUL_SC_ROLE_DEFAULT;
-            scuscpRole = findSCUSCPRole(
-                                        &assoc.userInfo.SCUSCPRoleList,
+            scuscpRole = findSCUSCPRole(&assoc.userInfo.SCUSCPRoleList,
                                         userPresentationCtx->abstractSyntax);
             if (scuscpRole != NULL) {
-                if (scuscpRole->SCURole == scuscpRole->SCPRole)
+                if ((scuscpRole->SCURole == 0) && (scuscpRole->SCPRole == 0))
+                    userPresentationCtx->acceptedSCRole = DUL_SC_ROLE_NONE;
+                else if ((scuscpRole->SCURole == 1) && (scuscpRole->SCPRole == 1))
                     userPresentationCtx->acceptedSCRole = DUL_SC_ROLE_SCUSCP;
                 else if (scuscpRole->SCURole == 1)
                     userPresentationCtx->acceptedSCRole = DUL_SC_ROLE_SCU;
-                else
+                else  // SCPRole == 1
                     userPresentationCtx->acceptedSCRole = DUL_SC_ROLE_SCP;
             }
             if (prvCtx->transferSyntaxList == NULL)
@@ -2487,7 +2488,10 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     OFCondition cond = constructAssociatePDU(params, DUL_TYPEASSOCIATERQ,
                                  &associateRequest);
     if (cond.bad())
+    {
+        DCMNET_ERROR(cond.text());
         return cond;
+    }
     if (associateRequest.length + 6 <= sizeof(buffer))
         b = buffer;
     else {
@@ -2566,7 +2570,11 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     localService = *params;
     OFCondition cond = constructAssociatePDU(&localService, DUL_TYPEASSOCIATEAC,
                                  &associateReply);
-    if (cond.bad()) return cond;
+    if (cond.bad())
+    {
+        DCMNET_ERROR(cond.text());
+        return cond;
+    }
 
     // we need to have length+6 bytes in buffer, but 4 bytes reserve won't hurt
     if (associateReply.length + 10 <= sizeof(buffer)) b = buffer;
@@ -3771,7 +3779,7 @@ translatePresentationContextList(LST_HEAD ** internalList,
     (void) LST_Position(internalList, (LST_NODE*)context);
     while (context != NULL) {
         userContext = (DUL_PRESENTATIONCONTEXT*)malloc(sizeof(DUL_PRESENTATIONCONTEXT));
-        if (userContext == NULL)  return EC_MemoryExhausted;
+        if (userContext == NULL) return EC_MemoryExhausted;
         if ((userContext->proposedTransferSyntax = LST_Create()) == NULL) return EC_MemoryExhausted;
 
         userContext->acceptedTransferSyntax[0] = '\0';
@@ -3783,19 +3791,22 @@ translatePresentationContextList(LST_HEAD ** internalList,
         scuscpRole = findSCUSCPRole(SCUSCPRoleList,
                                     userContext->abstractSyntax);
         if (scuscpRole != NULL) {
-            if (scuscpRole->SCURole == scuscpRole->SCPRole)
+            if (scuscpRole->SCURole == scuscpRole->SCPRole) {
                 userContext->proposedSCRole = DUL_SC_ROLE_SCUSCP;
+                if (scuscpRole->SCURole == 0)
+                    DCMNET_WARN("DULFSM: both role fields are 0 in SCP/SCU role selection sub-item");
+            }
             else if (scuscpRole->SCURole == 1)
                 userContext->proposedSCRole = DUL_SC_ROLE_SCU;
-            else
+            else  // SCPRole == 1
                 userContext->proposedSCRole = DUL_SC_ROLE_SCP;
         }
         subItem = (DUL_SUBITEM*)LST_Head(&context->transferSyntaxList);
         if (subItem == NULL)
         {
-              char buf1[256];
-              sprintf(buf1, "DUL Peer supplied illegal number of transfer syntaxes (%d)", 0);
-              return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf1);
+            char buf1[256];
+            sprintf(buf1, "DUL Peer supplied illegal number of transfer syntaxes (%d)", 0);
+            return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf1);
         }
         (void) LST_Position(&context->transferSyntaxList, (LST_NODE*)subItem);
         while (subItem != NULL) {
@@ -3938,6 +3949,10 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.70  2010-08-26 09:25:59  joergr
+** Fixed incorrect behavior of association acceptors during SCP/SCU role
+** selection negotiation.
+**
 ** Revision 1.69  2010-06-14 16:02:56  joergr
 ** Fixed typo in event description table.
 **

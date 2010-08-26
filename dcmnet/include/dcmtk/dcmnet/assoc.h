@@ -67,10 +67,10 @@
 **  Module Prefix: ASC_
 **
 **
-** Last Update:   $Author: uli $
-** Update Date:   $Date: 2009-11-18 11:53:58 $
+** Last Update:   $Author: joergr $
+** Update Date:   $Date: 2010-08-26 09:26:41 $
 ** Source File:   $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/assoc.h,v $
-** CVS/RCS Revision:  $Revision: 1.29 $
+** CVS/RCS Revision:  $Revision: 1.30 $
 ** Status:    $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -153,6 +153,7 @@ enum T_ASC_P_ResultReason
 
 enum T_ASC_SC_ROLE
 {
+    ASC_SC_ROLE_NONE,
     ASC_SC_ROLE_DEFAULT,
     ASC_SC_ROLE_SCU,
     ASC_SC_ROLE_SCP,
@@ -631,6 +632,10 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
+** Revision 1.30  2010-08-26 09:26:41  joergr
+** Fixed incorrect behavior of association acceptors during SCP/SCU role
+** selection negotiation.
+**
 ** Revision 1.29  2009-11-18 11:53:58  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **
