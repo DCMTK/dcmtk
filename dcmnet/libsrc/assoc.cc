@@ -67,10 +67,10 @@
 **      Module Prefix: ASC_
 **
 **
-** Last Update:         $Author: onken $
-** Update Date:         $Date: 2010-06-14 12:35:47 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2010-08-26 09:21:18 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.55 $
+** CVS/RCS Revision:    $Revision: 1.56 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -294,7 +294,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     ASC_setAPTitles(*params,
                     "calling AP Title",
                     "called AP Title",
-                    "resp AP Title");
+                    "resp. AP Title");
 
     /* make sure max pdv length is even */
     if ((maxReceivePDUSize % 2) != 0)
@@ -552,6 +552,7 @@ dulRole2ascRole(DUL_SC_ROLE role)
     case DUL_SC_ROLE_SCU: ar = ASC_SC_ROLE_SCU; break;
     case DUL_SC_ROLE_SCP: ar = ASC_SC_ROLE_SCP; break;
     case DUL_SC_ROLE_SCUSCP: ar = ASC_SC_ROLE_SCUSCP; break;
+    case DUL_SC_ROLE_NONE: ar = ASC_SC_ROLE_NONE; break;
     case DUL_SC_ROLE_DEFAULT:
     default: ar = ASC_SC_ROLE_DEFAULT; break;
     }
@@ -566,6 +567,7 @@ ascRole2dulRole(T_ASC_SC_ROLE role)
     case ASC_SC_ROLE_SCU: dr = DUL_SC_ROLE_SCU; break;
     case ASC_SC_ROLE_SCP: dr = DUL_SC_ROLE_SCP; break;
     case ASC_SC_ROLE_SCUSCP: dr = DUL_SC_ROLE_SCUSCP; break;
+    case ASC_SC_ROLE_NONE: dr = DUL_SC_ROLE_NONE; break;
     case ASC_SC_ROLE_DEFAULT:
     default: dr = DUL_SC_ROLE_DEFAULT; break;
     }
@@ -580,6 +582,7 @@ ascRole2String(T_ASC_SC_ROLE role)
     case ASC_SC_ROLE_SCU: s = "SCU"; break;
     case ASC_SC_ROLE_SCP: s = "SCP"; break;
     case ASC_SC_ROLE_SCUSCP: s = "SCP/SCU"; break;
+    case ASC_SC_ROLE_NONE: s = "None"; break;
     case ASC_SC_ROLE_DEFAULT: s = "Default"; break;
     default: s = "Unknown"; break;
     }
@@ -836,7 +839,7 @@ ASC_acceptPresentationContext(
     LST_HEAD *lst;
 
     proposedContext = findPresentationContextID(
-                             params->DULparams.requestedPresentationContext,
+                              params->DULparams.requestedPresentationContext,
                                                 presentationContextID);
     if (proposedContext == NULL) return ASC_BADPRESENTATIONCONTEXTID;
     strcpy(proposedContext->acceptedTransferSyntax, transferSyntax);
@@ -844,6 +847,24 @@ ASC_acceptPresentationContext(
     /* we want to mark this proposed context as beeing ok */
     proposedContext->result = ASC_P_ACCEPTANCE;
     proposedContext->acceptedSCRole = ascRole2dulRole(acceptedRole);
+
+    /* check whether the SCP/SCU role selection is successful */
+    if (dcmStrictRoleSelection.get())
+    {
+        if (proposedContext->proposedSCRole != proposedContext->acceptedSCRole)
+        {
+            if (((proposedContext->proposedSCRole == DUL_SC_ROLE_DEFAULT) && (proposedContext->acceptedSCRole != DUL_SC_ROLE_SCU)) ||
+                ((proposedContext->proposedSCRole == DUL_SC_ROLE_SCU) && (proposedContext->acceptedSCRole != DUL_SC_ROLE_DEFAULT)) ||
+                ((proposedContext->proposedSCRole != DUL_SC_ROLE_SCUSCP) && (proposedContext->acceptedSCRole != DUL_SC_ROLE_SCUSCP)))
+            {
+                proposedContext->result = ASC_P_NOREASON;
+                DCMNET_ERROR("ASSOC: SCP/SCU role selection failed, proposed ("
+                    << ascRole2String(dulRole2ascRole(proposedContext->proposedSCRole))
+                    << ") and accepted role (" << ascRole2String(acceptedRole) << ") are incompatible");
+                return ASC_SCPSCUROLESELETIONFAILED;
+            }
+        }
+    }
 
     acceptedContext = findPresentationContextID(
                               params->DULparams.acceptedPresentationContext,
@@ -1151,8 +1172,12 @@ ASC_acceptContextsWithTransferSyntax(
             cond = ASC_acceptPresentationContext(
                 params, pc.presentationContextID,
                 transferSyntax, acceptedRole);
+            // SCP/SCU role selection failed, reject presentation context
+            if (cond == ASC_SCPSCUROLESELETIONFAILED) {
+                cond = ASC_refusePresentationContext(params,
+                    pc.presentationContextID, ASC_P_NOREASON);
+            }
             if (cond.bad()) return cond;
-
         } else {
             T_ASC_P_ResultReason reason;
 
@@ -1417,9 +1442,12 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
     }
 
     outstream << "    Proposed SCP/SCU Role: "
-        << ascRole2String(p->proposedRole) << OFendl
-        << "    Accepted SCP/SCU Role: "
-        << ascRole2String(p->acceptedRole) << OFendl;
+        << ascRole2String(p->proposedRole) << OFendl;
+
+    if (p->resultReason != ASC_P_NOTYETNEGOTIATED) {
+        outstream << "    Accepted SCP/SCU Role: "
+            << ascRole2String(p->acceptedRole) << OFendl;
+    }
 
     if (p->resultReason == ASC_P_ACCEPTANCE) {
         const char* ts = dcmFindNameOfUID(p->acceptedTransferSyntax);
@@ -1479,25 +1507,27 @@ ASC_dumpParameters(OFString& str, T_ASC_Parameters * params, ASC_associateType d
     }
 
     outstream << "====================== BEGIN A-ASSOCIATE-" << str_dir << " =====================" << OFendl
-        << "Our Implementation Class UID:    "
+        << "Our Implementation Class UID:      "
         << params->ourImplementationClassUID << OFendl
-        << "Our Implementation Version Name: "
+        << "Our Implementation Version Name:   "
         << params->ourImplementationVersionName << OFendl
         << "Their Implementation Class UID:    "
         << params->theirImplementationClassUID << OFendl
         << "Their Implementation Version Name: "
-        << params->theirImplementationVersionName << OFendl
-        << "Application Context Name:    "
+        << params->theirImplementationVersionName << OFendl;
+
+    outstream << "Application Context Name:    "
         << params->DULparams.applicationContextName << OFendl
         << "Calling Application Name:    "
         << params->DULparams.callingAPTitle << OFendl
         << "Called Application Name:     "
         << params->DULparams.calledAPTitle << OFendl
         << "Responding Application Name: "
-        << params->DULparams.respondingAPTitle << OFendl
-        << "Our Max PDU Receive Size: "
+        << params->DULparams.respondingAPTitle << OFendl;
+
+    outstream << "Our Max PDU Receive Size:    "
         << params->ourMaxPDUReceiveSize << OFendl
-        << "Their Max PDU Receive Size: "
+        << "Their Max PDU Receive Size:  "
         << params->theirMaxPDUReceiveSize << OFendl;
 
     outstream << "Presentation Contexts:" << OFendl;
@@ -1515,13 +1545,14 @@ ASC_dumpParameters(OFString& str, T_ASC_Parameters * params, ASC_associateType d
     } else {
         outstream << " none" << OFendl;
     }
+
     ASC_getAcceptedExtNegList(params, &extNegList);
     outstream << "Accepted Extended Negotiation:";
     if (extNegList != NULL) {
         outstream << OFendl;
         outstream << dumpExtNegList(temp_str, *extNegList);
     } else {
-        outstream << " none" << OFendl;
+        outstream << "  none" << OFendl;
     }
 
     UserIdentityNegotiationSubItemRQ *userIdentRQ = NULL;
@@ -1541,9 +1572,8 @@ ASC_dumpParameters(OFString& str, T_ASC_Parameters * params, ASC_associateType d
         outstream << OFendl;
         userIdentAC->dump(outstream);
     } else {
-        outstream << " none" << OFendl;
+        outstream << "  none" << OFendl;
     }
-
 
 #if 0
     outstream << "DUL Params --- BEGIN" << OFendl;
@@ -2167,6 +2197,12 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
+** Revision 1.56  2010-08-26 09:21:18  joergr
+** Fixed incorrect behavior of association acceptors during SCP/SCU role
+** selection negotiation. Minor changes to output format of ACSE parameters.
+** Introduced new global flag which allows for rejecting presentation contexts
+** in case of an unsuccessful SCP/SCU role selection (disabled by default).
+**
 ** Revision 1.55  2010-06-14 12:35:47  onken
 ** Improved efficiency of finding an appropriate presentation context.
 **
