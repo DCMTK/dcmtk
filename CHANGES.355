@@ -26,6 +26,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.08.26 (schlachter)
 
+- The FileAppender was using the wrong variable for a check.
+  Affects: oflog/libsrc/fileap.cc
+
 - Added a test that breaks DcmUnlimitedText. This has to be fixed.
   Affects: dcmdata/tests/tstchval.cc
 

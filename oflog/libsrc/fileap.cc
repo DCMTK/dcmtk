@@ -360,7 +360,7 @@ RollingFileAppender::RollingFileAppender(const Properties& properties, tstring& 
 void
 RollingFileAppender::init(long maxFileSize_, int maxBackupIndex_)
 {
-    if (this->maxFileSize < MINIMUM_ROLLING_LOG_SIZE)
+    if (maxFileSize_ < MINIMUM_ROLLING_LOG_SIZE)
     {
         tostringstream oss;
         oss << LOG4CPLUS_TEXT ("RollingFileAppender: MaxFileSize property")
