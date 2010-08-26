@@ -45,7 +45,7 @@ objs = dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
 	$(dictobjs) cmdlnarg.o dcvrut.o dctypes.o dcpcache.o dcddirif.o \
 	dcistrma.o dcistrmb.o dcistrmf.o dcistrmz.o \
 	dcostrma.o dcostrmb.o dcostrmf.o dcostrmz.o dcwcache.o dcpath.o \
-	vrscan.o
+	vrscan.o vrscanl.o
 support_objs = mkdeftag.o mkdictbi.o dcdictzz.o
 support_progs = mkdeftag mkdictbi
 
@@ -74,6 +74,9 @@ mkdeftag: mkdeftag.o $(dictobjs) $(support_progs_objs)
 
 mkdictbi: mkdictbi.o $(dictobjs) $(support_progs_objs)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) $(support_progs_objs) $(LOCALLIBS) $(LIBS)
+
+mkvrscan:
+	flex -8 --header-file=vrscanl.h --outfile=vrscanl.c vrscanl.l
 
 
 # Generate a new include file of defined tags

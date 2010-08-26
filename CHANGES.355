@@ -26,6 +26,15 @@ Changes between releases are documented here.
 
 **** Changes from 2010.08.26 (schlachter)
 
+- Ported vrscan from ancient flex++ to current flex version.
+  Added:   dcmdata/libsrc/vrscanl.c
+           dcmdata/libsrc/vrscanl.h
+           dcmdata/libsrc/vrscanl.l
+  Affects: dcmdata/include/dcmtk/dcmdata/vrscan.h
+           dcmdata/libsrc/Makefile.in
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/vrscan.cc
+
 - The FileAppender was using the wrong variable for a check.
   Affects: oflog/libsrc/fileap.cc
 
