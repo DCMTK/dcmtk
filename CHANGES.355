@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.08.27 (onken)
+
+- Fixed cmake compilation under unix according to changes regarding flex
+  version transition.
+  Affects: dcmdata/libsrc/CMakeLists.txt
+
 **** Changes from 2010.08.26 (riesmeier)
 
 - Fixed incorrect behavior of association acceptors during SCP/SCU role
