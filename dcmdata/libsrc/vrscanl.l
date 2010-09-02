@@ -23,12 +23,15 @@
  *    These are the regular expressions for the value representations
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-02 10:37:37 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2010-09-02 12:02:06 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log:
  *  $Log: vrscanl.l,v $
+ *  Revision 1.4  2010-09-02 12:02:06  uli
+ *  Use longjmp() for error handling in the VR scanner.
+ *
  *  Revision 1.3  2010-09-02 10:37:37  uli
  *  Fix a compiler warning about an unused function.
  *
@@ -102,6 +105,8 @@
 
 %{
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "vrscani.h"
 %}
 
 default_charset_without_control_chars [\041-\133\135-\176][\040-\133\135-\176]*

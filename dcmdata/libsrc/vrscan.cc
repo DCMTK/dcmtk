@@ -22,8 +22,8 @@
  *  Purpose: Interface to the VR scanner.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-02 10:16:02 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2010-09-02 12:02:06 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 #include "dcmtk/dcmdata/dctypes.h"    /* For DCMDATA_WARN() */
 
 BEGIN_EXTERN_C
+#include "vrscani.h"
 #include "vrscanl.h"
 END_EXTERN_C
 
@@ -65,7 +66,9 @@ char* vrscan::makeBuffer(const OFString& vr, const OFString& value, size_t& size
 
 int vrscan::scan(const OFString& vr, const OFString& value)
 {
+    struct vrscan_error error;
     yyscan_t scanner;
+    int result;
 
     if (yylex_init(&scanner))
     {
@@ -77,11 +80,20 @@ int vrscan::scan(const OFString& vr, const OFString& value)
 
     size_t bufSize;
     char *buf = makeBuffer(vr, value, bufSize);
-    yy_scan_buffer(buf, bufSize, scanner);
+    error.error_msg = "(Unknown error)";
+    yyset_extra(&error, scanner);
 
-    int result = yylex(scanner);
-    if (yylex(scanner))
+    if (setjmp(error.setjmp_buffer))
+    {
+        DCMDATA_WARN("Fatal error in lexer: " << error.error_msg);
         result = 16 /* UNKNOWN */;
+    } else {
+        yy_scan_buffer(buf, bufSize, scanner);
+
+        result = yylex(scanner);
+        if (yylex(scanner))
+            result = 16 /* UNKNOWN */;
+    }
 
     yylex_destroy(scanner);
     delete[] buf;
@@ -93,6 +105,9 @@ int vrscan::scan(const OFString& vr, const OFString& value)
 /*
 ** CVS/RCS Log:
 ** $Log: vrscan.cc,v $
+** Revision 1.7  2010-09-02 12:02:06  uli
+** Use longjmp() for error handling in the VR scanner.
+**
 ** Revision 1.6  2010-09-02 10:16:02  uli
 ** The VR scanner now only copies the input data once, not twice.
 **

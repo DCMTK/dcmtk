@@ -17,6 +17,14 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.02 (schlachter)
 
+- Use longjmp() for error handling in the VR scanner.
+  Added:   dcmdata/libsrc/vrscani.h
+  Affects: dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/vrscan.cc
+           dcmdata/libsrc/vrscanl.c
+           dcmdata/libsrc/vrscanl.h
+           dcmdata/libsrc/vrscanl.l
+
 - Fix a compiler warning about an unused function.
   Affects: dcmdata/libsrc/vrscanl.c
            dcmdata/libsrc/vrscanl.h
