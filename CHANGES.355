@@ -17,6 +17,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.02 (schlachter)
 
+- The VR scanner now only copies the input data once, not twice.
+  Affects: dcmdata/include/dcmtk/dcmdata/vrscan.h
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/vrscan.cc
+
 - Avoid a pointless data-copy in DcmElement::scanValue() if possible.
   Affects: dcmdata/libsrc/dcelem.cc
 

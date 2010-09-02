@@ -22,8 +22,8 @@
  *  Purpose: Interface to the VR scanner.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-02 09:49:38 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2010-09-02 10:16:02 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,8 @@ class vrscan
 {
 public:
     static int scan(const OFString& vr, const OFString& value);
+private:
+    static char* makeBuffer(const OFString& vr, const OFString& value, size_t& size);
 };
 
 #endif // VRSCAN_H
@@ -50,6 +52,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: vrscan.h,v $
+** Revision 1.4  2010-09-02 10:16:02  uli
+** The VR scanner now only copies the input data once, not twice.
+**
 ** Revision 1.3  2010-09-02 09:49:38  uli
 ** Add the VR prefix into the scanner instead of adding it in the caller.
 **

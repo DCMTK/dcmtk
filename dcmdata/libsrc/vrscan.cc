@@ -22,8 +22,8 @@
  *  Purpose: Interface to the VR scanner.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-02 09:49:38 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2010-09-02 10:16:02 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,27 @@ BEGIN_EXTERN_C
 #include "vrscanl.h"
 END_EXTERN_C
 
+char* vrscan::makeBuffer(const OFString& vr, const OFString& value, size_t& size)
+{
+    char *buffer, *pos;
+
+    // Allocate the needed buffer
+    size = vr.length() + value.length() + 2;
+    pos = buffer = new char[size];
+
+    // Fill it with the input
+    OFBitmanipTemplate<char>::copyMem(vr.data(), pos, vr.size());
+    pos += vr.size();
+
+    OFBitmanipTemplate<char>::copyMem(value.data(), pos, value.size());
+    pos += value.size();
+
+    // yy_scan_buffer() requires this
+    pos[0] = pos[1] = '\0';
+
+    return buffer;
+}
+
 int vrscan::scan(const OFString& vr, const OFString& value)
 {
     yyscan_t scanner;
@@ -54,14 +75,16 @@ int vrscan::scan(const OFString& vr, const OFString& value)
         return 16;
     }
 
-    OFString buf = vr + value;
-    yy_scan_bytes(buf.c_str(), buf.length(), scanner);
+    size_t bufSize;
+    char *buf = makeBuffer(vr, value, bufSize);
+    yy_scan_buffer(buf, bufSize, scanner);
 
     int result = yylex(scanner);
     if (yylex(scanner))
         result = 16 /* UNKNOWN */;
 
     yylex_destroy(scanner);
+    delete[] buf;
 
     return result;
 }
@@ -70,6 +93,9 @@ int vrscan::scan(const OFString& vr, const OFString& value)
 /*
 ** CVS/RCS Log:
 ** $Log: vrscan.cc,v $
+** Revision 1.6  2010-09-02 10:16:02  uli
+** The VR scanner now only copies the input data once, not twice.
+**
 ** Revision 1.5  2010-09-02 09:49:38  uli
 ** Add the VR prefix into the scanner instead of adding it in the caller.
 **
