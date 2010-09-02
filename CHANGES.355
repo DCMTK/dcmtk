@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.02 (riesmeier)
+
+- Added support for Supplement 144 (Ophthalmic Axial Measurements Storage SOP
+  Classes) to DICOM data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
+- Added support for Supplement 120 (Extended Presentation States) to DICOM data
+  dictionary and fixed some wrong definitions from previous version.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2010.09.02 (schlachter)
 
 - Made the VR scanner reentrant again.

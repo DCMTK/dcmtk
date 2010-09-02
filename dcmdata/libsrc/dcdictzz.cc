@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2010-07-30 09:07:13
+**   Date: 2010-09-02 11:30:49
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2010-07-30 09:07:13";
+const char* dcmBuiltinDictBuildDate = "2010-09-02 11:30:49";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -11455,6 +11455,250 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "MydriaticAgentSequence", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0022, 0x1007, 0x0022, 0x1007,
+      EVR_SQ, "OphthalmicAxialMeasurementsRightEyeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1008, 0x0022, 0x1008,
+      EVR_SQ, "OphthalmicAxialMeasurementsLeftEyeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1009, 0x0022, 0x1009,
+      EVR_CS, "OphthalmicAxialMeasurementsDeviceType", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1010, 0x0022, 0x1010,
+      EVR_CS, "OphthalmicAxialLengthMeasurementsType", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1012, 0x0022, 0x1012,
+      EVR_SQ, "OphthalmicAxialLengthSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1019, 0x0022, 0x1019,
+      EVR_FL, "OphthalmicAxialLength", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1024, 0x0022, 0x1024,
+      EVR_SQ, "LensStatusCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1025, 0x0022, 0x1025,
+      EVR_SQ, "VitreousStatusCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1028, 0x0022, 0x1028,
+      EVR_SQ, "IOLFormulaCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1029, 0x0022, 0x1029,
+      EVR_LO, "IOLFormulaDetail", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1033, 0x0022, 0x1033,
+      EVR_FL, "KeratometerIndex", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1035, 0x0022, 0x1035,
+      EVR_SQ, "SourceofOphthalmicAxialLengthCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1037, 0x0022, 0x1037,
+      EVR_FL, "TargetRefraction", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1039, 0x0022, 0x1039,
+      EVR_CS, "RefractiveProcedureOccurred", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1040, 0x0022, 0x1040,
+      EVR_SQ, "RefractiveSurgeryTypeCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1044, 0x0022, 0x1044,
+      EVR_SQ, "OphthalmicUltrasoundMethodCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1050, 0x0022, 0x1050,
+      EVR_SQ, "OphthalmicAxialLengthMeasurementsSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1053, 0x0022, 0x1053,
+      EVR_FL, "IOLPower", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1054, 0x0022, 0x1054,
+      EVR_FL, "PredictedRefractiveError", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1059, 0x0022, 0x1059,
+      EVR_FL, "OphthalmicAxialLengthVelocity", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1065, 0x0022, 0x1065,
+      EVR_LO, "LensStatusDescription", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1066, 0x0022, 0x1066,
+      EVR_LO, "VitreousStatusDescription", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1090, 0x0022, 0x1090,
+      EVR_SQ, "IOLPowerSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1092, 0x0022, 0x1092,
+      EVR_SQ, "LensConstantSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1093, 0x0022, 0x1093,
+      EVR_LO, "IOLManufacturer", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1095, 0x0022, 0x1095,
+      EVR_LO, "ImplantName", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1096, 0x0022, 0x1096,
+      EVR_SQ, "KKeratometryMeasurementTypeCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1097, 0x0022, 0x1097,
+      EVR_LO, "ImplantPartNumber", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1100, 0x0022, 0x1100,
+      EVR_SQ, "ReferencedOphthalmicAxialMeasurementsSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1101, 0x0022, 0x1101,
+      EVR_SQ, "OphthalmicAxialLengthMeasurementsSegmentNameCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1103, 0x0022, 0x1103,
+      EVR_SQ, "RefractiveErrorBeforeRefractiveSurgeryCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1121, 0x0022, 0x1121,
+      EVR_FL, "IOLPowerForExactEmmetropia", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1122, 0x0022, 0x1122,
+      EVR_FL, "IOLPowerForExactTargetRefraction", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1125, 0x0022, 0x1125,
+      EVR_SQ, "AnteriorChamberDepthDefinitionCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1127, 0x0022, 0x1127,
+      EVR_SQ, "LensThicknessSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1128, 0x0022, 0x1128,
+      EVR_SQ, "AnteriorChamberDepthSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1130, 0x0022, 0x1130,
+      EVR_FL, "LensThickness", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1131, 0x0022, 0x1131,
+      EVR_FL, "AnteriorChamberDepth", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1132, 0x0022, 0x1132,
+      EVR_SQ, "SourceofLensThicknessDataCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1133, 0x0022, 0x1133,
+      EVR_SQ, "SourceofAnteriorChamberDepthDataCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1134, 0x0022, 0x1134,
+      EVR_SQ, "SourceofRefractiveMeasurementsSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1135, 0x0022, 0x1135,
+      EVR_SQ, "SourceofRefractiveMeasurementsCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1140, 0x0022, 0x1140,
+      EVR_CS, "OphthalmicAxialLengthMeasurementModified", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1150, 0x0022, 0x1150,
+      EVR_SQ, "OphthalmicAxialLengthDataSourceCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1155, 0x0022, 0x1155,
+      EVR_FL, "SignaltoNoiseRatio", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1159, 0x0022, 0x1159,
+      EVR_LO, "OphthalmicAxialLengthDataSourceDescription", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1210, 0x0022, 0x1210,
+      EVR_SQ, "OphthalmicAxialLengthMeasurementsTotalLengthSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1211, 0x0022, 0x1211,
+      EVR_SQ, "OphthalmicAxialLengthMeasurementsSegmentalLengthSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1212, 0x0022, 0x1212,
+      EVR_SQ, "OphthalmicAxialLengthMeasurementsLengthSummationSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1220, 0x0022, 0x1220,
+      EVR_SQ, "UltrasoundOphthalmicAxialLengthMeasurementsSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1225, 0x0022, 0x1225,
+      EVR_SQ, "OpticalOphthalmicAxialLengthMeasurementsSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1230, 0x0022, 0x1230,
+      EVR_SQ, "UltrasoundSelectedOphthalmicAxialLengthSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1250, 0x0022, 0x1250,
+      EVR_SQ, "OphthalmicAxialLengthSelectionMethodCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1255, 0x0022, 0x1255,
+      EVR_SQ, "OpticalSelectedOphthalmicAxialLengthSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1257, 0x0022, 0x1257,
+      EVR_SQ, "SelectedSegmentalOphthalmicAxialLengthSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1260, 0x0022, 0x1260,
+      EVR_SQ, "SelectedTotalOphthalmicAxialLengthSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1262, 0x0022, 0x1262,
+      EVR_SQ, "OphthalmicAxialLengthQualityMetricSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1265, 0x0022, 0x1265,
+      EVR_SQ, "OphthalmicAxialLengthQualityMetricTypeCodeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1300, 0x0022, 0x1300,
+      EVR_SQ, "IntraocularLensCalculationsRightEyeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1310, 0x0022, 0x1310,
+      EVR_SQ, "IntraocularLensCalculationsLeftEyeSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1330, 0x0022, 0x1330,
+      EVR_SQ, "ReferencedOphthalmicAxialLengthMeasurementQCImageSequence", 1, 1, "Supplement_144",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
 #ifdef WITH_PRIVATE_TAGS
   , { 0x0023, 0x0000, 0x0023, 0x0000,
       EVR_LO, "CRExposureMenuCode", 1, 1, "DICOM",
@@ -18000,179 +18244,179 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0207, 0x0070, 0x0207,
-      EVR_LO, "GraphicGroupLabel", 1, 1, "DICOM_2009",
+      EVR_LO, "GraphicGroupLabel", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0208, 0x0070, 0x0208,
-      EVR_ST, "GraphicGroupDescription", 1, 1, "DICOM_2009",
+      EVR_ST, "GraphicGroupDescription", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0209, 0x0070, 0x0209,
-      EVR_SQ, "CompoundGraphicSequence", 1, 1, "DICOM_2009",
+      EVR_SQ, "CompoundGraphicSequence", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0226, 0x0070, 0x0226,
-      EVR_UL, "CompoundGraphicInstanceID", 1, 1, "DICOM_2009",
+      EVR_UL, "CompoundGraphicInstanceID", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0227, 0x0070, 0x0227,
-      EVR_LO, "FontName", 1, 1, "DICOM_2009",
+      EVR_LO, "FontName", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0228, 0x0070, 0x0228,
-      EVR_LO, "FontNameType", 1, 1, "DICOM_2009",
+      EVR_CS, "FontNameType", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0229, 0x0070, 0x0229,
-      EVR_LO, "CSSFontName", 1, 1, "DICOM_2009",
+      EVR_LO, "CSSFontName", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0230, 0x0070, 0x0230,
-      EVR_FD, "RotationAngle", 1, 1, "DICOM_2009",
+      EVR_FD, "RotationAngle", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0231, 0x0070, 0x0231,
-      EVR_SQ, "TextStyleSequence", 1, 1, "DICOM_2009",
+      EVR_SQ, "TextStyleSequence", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0232, 0x0070, 0x0232,
-      EVR_SQ, "LineStyleSequence", 1, 1, "DICOM_2009",
+      EVR_SQ, "LineStyleSequence", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0233, 0x0070, 0x0233,
-      EVR_SQ, "FillStyleSequence", 1, 1, "DICOM_2009",
+      EVR_SQ, "FillStyleSequence", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0234, 0x0070, 0x0234,
-      EVR_SQ, "GraphicGroupSequence", 1, 1, "DICOM_2009",
+      EVR_SQ, "GraphicGroupSequence", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0241, 0x0070, 0x0241,
-      EVR_US, "TextColorCIELabValue", 3, 3, "DICOM_2009",
+      EVR_US, "TextColorCIELabValue", 3, 3, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0242, 0x0070, 0x0242,
-      EVR_CS, "HorizontalAlignment", 1, 1, "DICOM_2009",
+      EVR_CS, "HorizontalAlignment", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0243, 0x0070, 0x0243,
-      EVR_CS, "VerticalAlignment", 1, 1, "DICOM_2009",
+      EVR_CS, "VerticalAlignment", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0244, 0x0070, 0x0244,
-      EVR_CS, "ShadowStyle", 1, 1, "DICOM_2009",
+      EVR_CS, "ShadowStyle", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0245, 0x0070, 0x0245,
-      EVR_FL, "ShadowOffsetX", 1, 1, "DICOM_2009",
+      EVR_FL, "ShadowOffsetX", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0246, 0x0070, 0x0246,
-      EVR_FL, "ShadowOffsetY", 1, 1, "DICOM_2009",
+      EVR_FL, "ShadowOffsetY", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0247, 0x0070, 0x0247,
-      EVR_US, "ShadowColorCIELabValue", 3, 3, "DICOM_2009",
+      EVR_US, "ShadowColorCIELabValue", 3, 3, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0248, 0x0070, 0x0248,
-      EVR_CS, "Underlined", 1, 1, "DICOM_2009",
+      EVR_CS, "Underlined", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0249, 0x0070, 0x0249,
-      EVR_CS, "Bold", 1, 1, "DICOM_2009",
+      EVR_CS, "Bold", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0250, 0x0070, 0x0250,
-      EVR_CS, "Italic", 1, 1, "DICOM_2009",
+      EVR_CS, "Italic", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0251, 0x0070, 0x0251,
-      EVR_US, "PatternOnCIELabValue", 3, 3, "DICOM_2009",
+      EVR_US, "PatternOnColorCIELabValue", 3, 3, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0252, 0x0070, 0x0252,
-      EVR_US, "PatternOffCIELabValue", 3, 3, "DICOM_2009",
+      EVR_US, "PatternOffColorCIELabValue", 3, 3, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0253, 0x0070, 0x0253,
-      EVR_FL, "Thickness", 1, 1, "DICOM_2009",
+      EVR_FL, "LineThickness", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0254, 0x0070, 0x0254,
-      EVR_CS, "LineDashingStyle", 1, 1, "DICOM_2009",
+      EVR_CS, "LineDashingStyle", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0255, 0x0070, 0x0255,
-      EVR_UL, "LinePattern", 1, 1, "DICOM_2009",
+      EVR_UL, "LinePattern", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0256, 0x0070, 0x0256,
-      EVR_OB, "FillPattern", 1, 1, "DICOM_2009",
+      EVR_OB, "FillPattern", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0257, 0x0070, 0x0257,
-      EVR_CS, "FillMode", 1, 1, "DICOM_2009",
+      EVR_CS, "FillMode", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0258, 0x0070, 0x0258,
-      EVR_FL, "ShadowOpacity", 1, 1, "DICOM_2009",
+      EVR_FL, "ShadowOpacity", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0261, 0x0070, 0x0261,
-      EVR_FL, "GapLength", 1, 1, "DICOM_2009",
+      EVR_FL, "GapLength", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0262, 0x0070, 0x0262,
-      EVR_FL, "DiameterOfVisibility", 1, 1, "DICOM_2009",
+      EVR_FL, "DiameterOfVisibility", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0273, 0x0070, 0x0273,
-      EVR_FL, "RotationPoint", 1, 1, "DICOM_2009",
+      EVR_FL, "RotationPoint", 2, 2, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0274, 0x0070, 0x0274,
-      EVR_CS, "TickAlignment", 1, 1, "DICOM_2009",
+      EVR_CS, "TickAlignment", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0278, 0x0070, 0x0278,
-      EVR_CS, "ShowTickLabel", 1, 1, "DICOM_2009",
+      EVR_CS, "ShowTickLabel", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0279, 0x0070, 0x0279,
-      EVR_CS, "TickLabelAlignment", 1, 1, "DICOM_2009",
+      EVR_CS, "TickLabelAlignment", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0282, 0x0070, 0x0282,
-      EVR_CS, "CompoundGraphicsDimensionType", 1, 1, "DICOM_2009",
+      EVR_CS, "CompoundGraphicUnits", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0284, 0x0070, 0x0284,
-      EVR_FL, "PatternOnOpacity", 1, 1, "DICOM_2009",
+      EVR_FL, "PatternOnOpacity", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0285, 0x0070, 0x0285,
-      EVR_FL, "PatternOffOpacity", 1, 1, "DICOM_2009",
+      EVR_FL, "PatternOffOpacity", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0287, 0x0070, 0x0287,
-      EVR_SQ, "MajorTicksSequence", 1, 1, "DICOM_2009",
+      EVR_SQ, "MajorTicksSequence", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0288, 0x0070, 0x0288,
-      EVR_FL, "TickPosition", 1, 1, "DICOM_2009",
+      EVR_FL, "TickPosition", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0289, 0x0070, 0x0289,
-      EVR_SH, "TickLabel", 1, 1, "DICOM_2009",
+      EVR_SH, "TickLabel", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0294, 0x0070, 0x0294,
-      EVR_ST, "CompoundGraphicType", 1, 1, "DICOM_2009",
+      EVR_CS, "CompoundGraphicType", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0295, 0x0070, 0x0295,
-      EVR_UL, "AnnotationGroupID", 1, 1, "DICOM_2009",
+      EVR_UL, "GraphicGroupID", 1, 1, "Supplement_120",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0306, 0x0070, 0x0306,

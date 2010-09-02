@@ -22,12 +22,13 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2010-08-09 13:00:14 $
-#  CVS/RCS Revision: $Revision: 1.3 $
+#  Update Date:      $Date: 2010-09-02 09:30:29 $
+#  CVS/RCS Revision: $Revision: 1.4 $
 #  Status:           $State: Exp $
 #
 # This file contains the complete data dictionary from the 2009 edition
-# of the DICOM standard.
+# of the DICOM standard.  In addition, the data dictionary entries from
+# the following final text supplements have been incorporated: 120, 144
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -1761,50 +1762,6 @@
 (0070,0101)	DS	PresentationPixelSpacing	2	DICOM_2009
 (0070,0102)	IS	PresentationPixelAspectRatio	2	DICOM_2009
 (0070,0103)	FL	PresentationPixelMagnificationRatio	1	DICOM_2009
-(0070,0207)	LO	GraphicGroupLabel	1	DICOM_2009
-(0070,0208)	ST	GraphicGroupDescription	1	DICOM_2009
-(0070,0209)	SQ	CompoundGraphicSequence	1	DICOM_2009
-(0070,0226)	UL	CompoundGraphicInstanceID	1	DICOM_2009
-(0070,0227)	LO	FontName	1	DICOM_2009
-(0070,0228)	LO	FontNameType	1	DICOM_2009
-(0070,0229)	LO	CSSFontName	1	DICOM_2009
-(0070,0230)	FD	RotationAngle	1	DICOM_2009
-(0070,0231)	SQ	TextStyleSequence	1	DICOM_2009
-(0070,0232)	SQ	LineStyleSequence	1	DICOM_2009
-(0070,0233)	SQ	FillStyleSequence	1	DICOM_2009
-(0070,0234)	SQ	GraphicGroupSequence	1	DICOM_2009
-(0070,0241)	US	TextColorCIELabValue	3	DICOM_2009
-(0070,0242)	CS	HorizontalAlignment	1	DICOM_2009
-(0070,0243)	CS	VerticalAlignment	1	DICOM_2009
-(0070,0244)	CS	ShadowStyle	1	DICOM_2009
-(0070,0245)	FL	ShadowOffsetX	1	DICOM_2009
-(0070,0246)	FL	ShadowOffsetY	1	DICOM_2009
-(0070,0247)	US	ShadowColorCIELabValue	3	DICOM_2009
-(0070,0248)	CS	Underlined	1	DICOM_2009
-(0070,0249)	CS	Bold	1	DICOM_2009
-(0070,0250)	CS	Italic	1	DICOM_2009
-(0070,0251)	US	PatternOnCIELabValue	3	DICOM_2009
-(0070,0252)	US	PatternOffCIELabValue	3	DICOM_2009
-(0070,0253)	FL	Thickness	1	DICOM_2009
-(0070,0254)	CS	LineDashingStyle	1	DICOM_2009
-(0070,0255)	UL	LinePattern	1	DICOM_2009
-(0070,0256)	OB	FillPattern	1	DICOM_2009
-(0070,0257)	CS	FillMode	1	DICOM_2009
-(0070,0258)	FL	ShadowOpacity	1	DICOM_2009
-(0070,0261)	FL	GapLength	1	DICOM_2009
-(0070,0262)	FL	DiameterOfVisibility	1	DICOM_2009
-(0070,0273)	FL	RotationPoint	1	DICOM_2009
-(0070,0274)	CS	TickAlignment	1	DICOM_2009
-(0070,0278)	CS	ShowTickLabel	1	DICOM_2009
-(0070,0279)	CS	TickLabelAlignment	1	DICOM_2009
-(0070,0282)	CS	CompoundGraphicsDimensionType	1	DICOM_2009
-(0070,0284)	FL	PatternOnOpacity	1	DICOM_2009
-(0070,0285)	FL	PatternOffOpacity	1	DICOM_2009
-(0070,0287)	SQ	MajorTicksSequence	1	DICOM_2009
-(0070,0288)	FL	TickPosition	1	DICOM_2009
-(0070,0289)	SH	TickLabel	1	DICOM_2009
-(0070,0294)	ST	CompoundGraphicType	1	DICOM_2009
-(0070,0295)	UL	AnnotationGroupID	1	DICOM_2009
 (0070,0306)	CS	ShapeType	1	DICOM_2009
 (0070,0308)	SQ	RegistrationSequence	1	DICOM_2009
 (0070,0309)	SQ	MatrixRegistrationSequence	1	DICOM_2009
@@ -2681,6 +2638,121 @@
 (FFFE,E000)	na	Item	1	DICOM_2009
 (FFFE,E00D)	na	ItemDelimitationItem	1	DICOM_2009
 (FFFE,E0DD)	na	SequenceDelimitationItem	1	DICOM_2009
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 120 (Extended Presentation States)
+#
+(0070,0207)	LO	GraphicGroupLabel	1	Supplement_120
+(0070,0208)	ST	GraphicGroupDescription	1	Supplement_120
+(0070,0209)	SQ	CompoundGraphicSequence	1	Supplement_120
+(0070,0226)	UL	CompoundGraphicInstanceID	1	Supplement_120
+(0070,0227)	LO	FontName	1	Supplement_120
+(0070,0228)	CS	FontNameType	1	Supplement_120
+(0070,0229)	LO	CSSFontName	1	Supplement_120
+(0070,0230)	FD	RotationAngle	1	Supplement_120
+(0070,0231)	SQ	TextStyleSequence	1	Supplement_120
+(0070,0232)	SQ	LineStyleSequence	1	Supplement_120
+(0070,0233)	SQ	FillStyleSequence	1	Supplement_120
+(0070,0234)	SQ	GraphicGroupSequence	1	Supplement_120
+(0070,0241)	US	TextColorCIELabValue	3	Supplement_120
+(0070,0242)	CS	HorizontalAlignment	1	Supplement_120
+(0070,0243)	CS	VerticalAlignment	1	Supplement_120
+(0070,0244)	CS	ShadowStyle	1	Supplement_120
+(0070,0245)	FL	ShadowOffsetX	1	Supplement_120
+(0070,0246)	FL	ShadowOffsetY	1	Supplement_120
+(0070,0247)	US	ShadowColorCIELabValue	3	Supplement_120
+(0070,0248)	CS	Underlined	1	Supplement_120
+(0070,0249)	CS	Bold	1	Supplement_120
+(0070,0250)	CS	Italic	1	Supplement_120
+(0070,0251)	US	PatternOnColorCIELabValue	3	Supplement_120
+(0070,0252)	US	PatternOffColorCIELabValue	3	Supplement_120
+(0070,0253)	FL	LineThickness	1	Supplement_120
+(0070,0254)	CS	LineDashingStyle	1	Supplement_120
+(0070,0255)	UL	LinePattern	1	Supplement_120
+(0070,0256)	OB	FillPattern	1	Supplement_120
+(0070,0257)	CS	FillMode	1	Supplement_120
+(0070,0258)	FL	ShadowOpacity	1	Supplement_120
+(0070,0261)	FL	GapLength	1	Supplement_120
+(0070,0262)	FL	DiameterOfVisibility	1	Supplement_120
+(0070,0273)	FL	RotationPoint	2	Supplement_120
+(0070,0274)	CS	TickAlignment	1	Supplement_120
+(0070,0278)	CS	ShowTickLabel	1	Supplement_120
+(0070,0279)	CS	TickLabelAlignment	1	Supplement_120
+(0070,0282)	CS	CompoundGraphicUnits	1	Supplement_120
+(0070,0284)	FL	PatternOnOpacity	1	Supplement_120
+(0070,0285)	FL	PatternOffOpacity	1	Supplement_120
+(0070,0287)	SQ	MajorTicksSequence	1	Supplement_120
+(0070,0288)	FL	TickPosition	1	Supplement_120
+(0070,0289)	SH	TickLabel	1	Supplement_120
+(0070,0294)	CS	CompoundGraphicType	1	Supplement_120
+(0070,0295)	UL	GraphicGroupID	1	Supplement_120
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 144 (Ophthalmic Axial Measurements Storage SOP Classes)
+#
+(0022,1007)	SQ	OphthalmicAxialMeasurements RightEyeSequence	1	Supplement_144
+(0022,1008)	SQ	OphthalmicAxialMeasurementsLeftEyeSequence	1	Supplement_144
+(0022,1009)	CS	OphthalmicAxialMeasurementsDeviceType	1	Supplement_144
+(0022,1010)	CS	OphthalmicAxialLengthMeasurementsType	1	Supplement_144
+(0022,1012)	SQ	OphthalmicAxialLengthSequence 	1	Supplement_144
+(0022,1019)	FL	OphthalmicAxialLength 	1	Supplement_144
+(0022,1024)	SQ	LensStatusCodeSequence	1	Supplement_144
+(0022,1025)	SQ	VitreousStatusCodeSequence	1	Supplement_144
+(0022,1028)	SQ	IOLFormulaCodeSequence	1	Supplement_144
+(0022,1029)	LO	IOLFormulaDetail	1	Supplement_144
+(0022,1033)	FL	KeratometerIndex	1	Supplement_144
+(0022,1035)	SQ	SourceofOphthalmicAxialLength CodeSequence	1	Supplement_144
+(0022,1037)	FL	TargetRefraction 	1	Supplement_144
+(0022,1039)	CS	RefractiveProcedureOccurred	1	Supplement_144
+(0022,1040)	SQ	RefractiveSurgeryTypeCodeSequence	1	Supplement_144
+(0022,1044)	SQ	OphthalmicUltrasoundMethodCodeSequence	1	Supplement_144
+(0022,1050)	SQ	OphthalmicAxialLengthMeasurementsSequence	1	Supplement_144
+(0022,1053)	FL	IOLPower	1	Supplement_144
+(0022,1054)	FL	PredictedRefractiveError	1	Supplement_144
+(0022,1059)	FL	OphthalmicAxialLengthVelocity	1	Supplement_144
+(0022,1065)	LO	LensStatusDescription	1	Supplement_144
+(0022,1066)	LO	VitreousStatusDescription	1	Supplement_144
+(0022,1090)	SQ	IOLPowerSequence	1	Supplement_144
+(0022,1092)	SQ	LensConstantSequence	1	Supplement_144
+(0022,1093)	LO	IOLManufacturer	1	Supplement_144
+(0022,1095)	LO	ImplantName	1	Supplement_144
+(0022,1096)	SQ	KKeratometryMeasurementTypeCodeSequence 	1	Supplement_144
+(0022,1097)	LO	ImplantPartNumber	1	Supplement_144
+(0022,1100)	SQ	ReferencedOphthalmicAxialMeasurementsSequence	1	Supplement_144
+(0022,1101)	SQ	OphthalmicAxialLengthMeasurementsSegmentNameCodeSequence	1	Supplement_144
+(0022,1103)	SQ	RefractiveErrorBeforeRefractiveSurgeryCodeSequence	1	Supplement_144
+(0022,1121)	FL	IOLPowerForExactEmmetropia	1	Supplement_144
+(0022,1122)	FL	IOLPowerForExactTargetRefraction	1	Supplement_144
+(0022,1125)	SQ	AnteriorChamberDepthDefinitionCodeSequence	1	Supplement_144
+(0022,1127)	SQ	LensThicknessSequence	1	Supplement_144
+(0022,1128)	SQ	AnteriorChamberDepthSequence	1	Supplement_144
+(0022,1130)	FL	LensThickness	1	Supplement_144
+(0022,1131)	FL	AnteriorChamberDepth	1	Supplement_144
+(0022,1132)	SQ	SourceofLensThicknessDataCodeSequence	1	Supplement_144
+(0022,1133)	SQ	SourceofAnteriorChamberDepthDataCodeSequence	1	Supplement_144
+(0022,1134)	SQ	SourceofRefractiveMeasurementsSequence	1	Supplement_144
+(0022,1135)	SQ	SourceofRefractiveMeasurementsCodeSequence	1	Supplement_144
+(0022,1140)	CS	OphthalmicAxialLengthMeasurementModified	1	Supplement_144
+(0022,1150)	SQ	OphthalmicAxialLengthDataSourceCodeSequence	1	Supplement_144
+(0022,1155)	FL	SignaltoNoiseRatio	1	Supplement_144
+(0022,1159)	LO	OphthalmicAxialLengthDataSourceDescription	1	Supplement_144
+(0022,1210)	SQ	OphthalmicAxialLengthMeasurementsTotalLengthSequence	1	Supplement_144
+(0022,1211)	SQ	OphthalmicAxialLengthMeasurementsSegmentalLengthSequence	1	Supplement_144
+(0022,1212)	SQ	OphthalmicAxialLengthMeasurementsLengthSummationSequence	1	Supplement_144
+(0022,1220)	SQ	UltrasoundOphthalmicAxialLengthMeasurementsSequence	1	Supplement_144
+(0022,1225)	SQ	OpticalOphthalmicAxialLengthMeasurementsSequence	1	Supplement_144
+(0022,1230)	SQ	UltrasoundSelectedOphthalmicAxialLengthSequence	1	Supplement_144
+(0022,1250)	SQ	OphthalmicAxialLengthSelectionMethodCodeSequence	1	Supplement_144
+(0022,1255)	SQ	OpticalSelectedOphthalmicAxialLengthSequence	1	Supplement_144
+(0022,1257)	SQ	SelectedSegmentalOphthalmicAxialLengthSequence	1	Supplement_144
+(0022,1260)	SQ	SelectedTotalOphthalmicAxialLengthSequence	1	Supplement_144
+(0022,1262)	SQ	OphthalmicAxialLengthQualityMetricSequence	1	Supplement_144
+(0022,1265)	SQ	OphthalmicAxialLengthQualityMetricTypeCodeSequence	1	Supplement_144
+(0022,1300)	SQ	IntraocularLensCalculationsRightEyeSequence	1	Supplement_144
+(0022,1310)	SQ	IntraocularLensCalculationsLeftEyeSequence	1	Supplement_144
+(0022,1330)	SQ	ReferencedOphthalmicAxialLengthMeasurementQCImageSequence	1	Supplement_144
 #
 #---------------------------------------------------------------------------
 #

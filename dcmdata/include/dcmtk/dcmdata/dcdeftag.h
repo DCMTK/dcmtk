@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2010-07-30 14:33:14
+**   Date: 2010-09-02 11:30:40
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2010-07-30 14:33:14"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2010-09-02 11:30:40"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 2936
+** Number of entries: 2997
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1179,6 +1179,67 @@
 #define DCM_IlluminationPower                    DcmTagKey(0x0022, 0x0056)
 #define DCM_IlluminationBandwidth                DcmTagKey(0x0022, 0x0057)
 #define DCM_MydriaticAgentSequence               DcmTagKey(0x0022, 0x0058)
+#define DCM_OphthalmicAxialMeasurementsRightEyeSequence DcmTagKey(0x0022, 0x1007)
+#define DCM_OphthalmicAxialMeasurementsLeftEyeSequence DcmTagKey(0x0022, 0x1008)
+#define DCM_OphthalmicAxialMeasurementsDeviceType DcmTagKey(0x0022, 0x1009)
+#define DCM_OphthalmicAxialLengthMeasurementsType DcmTagKey(0x0022, 0x1010)
+#define DCM_OphthalmicAxialLengthSequence        DcmTagKey(0x0022, 0x1012)
+#define DCM_OphthalmicAxialLength                DcmTagKey(0x0022, 0x1019)
+#define DCM_LensStatusCodeSequence               DcmTagKey(0x0022, 0x1024)
+#define DCM_VitreousStatusCodeSequence           DcmTagKey(0x0022, 0x1025)
+#define DCM_IOLFormulaCodeSequence               DcmTagKey(0x0022, 0x1028)
+#define DCM_IOLFormulaDetail                     DcmTagKey(0x0022, 0x1029)
+#define DCM_KeratometerIndex                     DcmTagKey(0x0022, 0x1033)
+#define DCM_SourceofOphthalmicAxialLengthCodeSequence DcmTagKey(0x0022, 0x1035)
+#define DCM_TargetRefraction                     DcmTagKey(0x0022, 0x1037)
+#define DCM_RefractiveProcedureOccurred          DcmTagKey(0x0022, 0x1039)
+#define DCM_RefractiveSurgeryTypeCodeSequence    DcmTagKey(0x0022, 0x1040)
+#define DCM_OphthalmicUltrasoundMethodCodeSequence DcmTagKey(0x0022, 0x1044)
+#define DCM_OphthalmicAxialLengthMeasurementsSequence DcmTagKey(0x0022, 0x1050)
+#define DCM_IOLPower                             DcmTagKey(0x0022, 0x1053)
+#define DCM_PredictedRefractiveError             DcmTagKey(0x0022, 0x1054)
+#define DCM_OphthalmicAxialLengthVelocity        DcmTagKey(0x0022, 0x1059)
+#define DCM_LensStatusDescription                DcmTagKey(0x0022, 0x1065)
+#define DCM_VitreousStatusDescription            DcmTagKey(0x0022, 0x1066)
+#define DCM_IOLPowerSequence                     DcmTagKey(0x0022, 0x1090)
+#define DCM_LensConstantSequence                 DcmTagKey(0x0022, 0x1092)
+#define DCM_IOLManufacturer                      DcmTagKey(0x0022, 0x1093)
+#define DCM_ImplantName                          DcmTagKey(0x0022, 0x1095)
+#define DCM_KKeratometryMeasurementTypeCodeSequence DcmTagKey(0x0022, 0x1096)
+#define DCM_ImplantPartNumber                    DcmTagKey(0x0022, 0x1097)
+#define DCM_ReferencedOphthalmicAxialMeasurementsSequence DcmTagKey(0x0022, 0x1100)
+#define DCM_OphthalmicAxialLengthMeasurementsSegmentNameCodeSequence DcmTagKey(0x0022, 0x1101)
+#define DCM_RefractiveErrorBeforeRefractiveSurgeryCodeSequence DcmTagKey(0x0022, 0x1103)
+#define DCM_IOLPowerForExactEmmetropia           DcmTagKey(0x0022, 0x1121)
+#define DCM_IOLPowerForExactTargetRefraction     DcmTagKey(0x0022, 0x1122)
+#define DCM_AnteriorChamberDepthDefinitionCodeSequence DcmTagKey(0x0022, 0x1125)
+#define DCM_LensThicknessSequence                DcmTagKey(0x0022, 0x1127)
+#define DCM_AnteriorChamberDepthSequence         DcmTagKey(0x0022, 0x1128)
+#define DCM_LensThickness                        DcmTagKey(0x0022, 0x1130)
+#define DCM_AnteriorChamberDepth                 DcmTagKey(0x0022, 0x1131)
+#define DCM_SourceofLensThicknessDataCodeSequence DcmTagKey(0x0022, 0x1132)
+#define DCM_SourceofAnteriorChamberDepthDataCodeSequence DcmTagKey(0x0022, 0x1133)
+#define DCM_SourceofRefractiveMeasurementsSequence DcmTagKey(0x0022, 0x1134)
+#define DCM_SourceofRefractiveMeasurementsCodeSequence DcmTagKey(0x0022, 0x1135)
+#define DCM_OphthalmicAxialLengthMeasurementModified DcmTagKey(0x0022, 0x1140)
+#define DCM_OphthalmicAxialLengthDataSourceCodeSequence DcmTagKey(0x0022, 0x1150)
+#define DCM_SignaltoNoiseRatio                   DcmTagKey(0x0022, 0x1155)
+#define DCM_OphthalmicAxialLengthDataSourceDescription DcmTagKey(0x0022, 0x1159)
+#define DCM_OphthalmicAxialLengthMeasurementsTotalLengthSequence DcmTagKey(0x0022, 0x1210)
+#define DCM_OphthalmicAxialLengthMeasurementsSegmentalLengthSequence DcmTagKey(0x0022, 0x1211)
+#define DCM_OphthalmicAxialLengthMeasurementsLengthSummationSequence DcmTagKey(0x0022, 0x1212)
+#define DCM_UltrasoundOphthalmicAxialLengthMeasurementsSequence DcmTagKey(0x0022, 0x1220)
+#define DCM_OpticalOphthalmicAxialLengthMeasurementsSequence DcmTagKey(0x0022, 0x1225)
+#define DCM_UltrasoundSelectedOphthalmicAxialLengthSequence DcmTagKey(0x0022, 0x1230)
+#define DCM_OphthalmicAxialLengthSelectionMethodCodeSequence DcmTagKey(0x0022, 0x1250)
+#define DCM_OpticalSelectedOphthalmicAxialLengthSequence DcmTagKey(0x0022, 0x1255)
+#define DCM_SelectedSegmentalOphthalmicAxialLengthSequence DcmTagKey(0x0022, 0x1257)
+#define DCM_SelectedTotalOphthalmicAxialLengthSequence DcmTagKey(0x0022, 0x1260)
+#define DCM_OphthalmicAxialLengthQualityMetricSequence DcmTagKey(0x0022, 0x1262)
+#define DCM_OphthalmicAxialLengthQualityMetricTypeCodeSequence DcmTagKey(0x0022, 0x1265)
+#define DCM_IntraocularLensCalculationsRightEyeSequence DcmTagKey(0x0022, 0x1300)
+#define DCM_IntraocularLensCalculationsLeftEyeSequence DcmTagKey(0x0022, 0x1310)
+#define DCM_ReferencedOphthalmicAxialLengthMeasurementQCImageSequence DcmTagKey(0x0022, 0x1330)
 #define DCM_SamplesPerPixel                      DcmTagKey(0x0028, 0x0002)
 #define DCM_SamplesPerPixelUsed                  DcmTagKey(0x0028, 0x0003)
 #define DCM_PhotometricInterpretation            DcmTagKey(0x0028, 0x0004)
@@ -1996,9 +2057,9 @@
 #define DCM_Underlined                           DcmTagKey(0x0070, 0x0248)
 #define DCM_Bold                                 DcmTagKey(0x0070, 0x0249)
 #define DCM_Italic                               DcmTagKey(0x0070, 0x0250)
-#define DCM_PatternOnCIELabValue                 DcmTagKey(0x0070, 0x0251)
-#define DCM_PatternOffCIELabValue                DcmTagKey(0x0070, 0x0252)
-#define DCM_Thickness                            DcmTagKey(0x0070, 0x0253)
+#define DCM_PatternOnColorCIELabValue            DcmTagKey(0x0070, 0x0251)
+#define DCM_PatternOffColorCIELabValue           DcmTagKey(0x0070, 0x0252)
+#define DCM_LineThickness                        DcmTagKey(0x0070, 0x0253)
 #define DCM_LineDashingStyle                     DcmTagKey(0x0070, 0x0254)
 #define DCM_LinePattern                          DcmTagKey(0x0070, 0x0255)
 #define DCM_FillPattern                          DcmTagKey(0x0070, 0x0256)
@@ -2010,14 +2071,14 @@
 #define DCM_TickAlignment                        DcmTagKey(0x0070, 0x0274)
 #define DCM_ShowTickLabel                        DcmTagKey(0x0070, 0x0278)
 #define DCM_TickLabelAlignment                   DcmTagKey(0x0070, 0x0279)
-#define DCM_CompoundGraphicsDimensionType        DcmTagKey(0x0070, 0x0282)
+#define DCM_CompoundGraphicUnits                 DcmTagKey(0x0070, 0x0282)
 #define DCM_PatternOnOpacity                     DcmTagKey(0x0070, 0x0284)
 #define DCM_PatternOffOpacity                    DcmTagKey(0x0070, 0x0285)
 #define DCM_MajorTicksSequence                   DcmTagKey(0x0070, 0x0287)
 #define DCM_TickPosition                         DcmTagKey(0x0070, 0x0288)
 #define DCM_TickLabel                            DcmTagKey(0x0070, 0x0289)
 #define DCM_CompoundGraphicType                  DcmTagKey(0x0070, 0x0294)
-#define DCM_AnnotationGroupID                    DcmTagKey(0x0070, 0x0295)
+#define DCM_GraphicGroupID                       DcmTagKey(0x0070, 0x0295)
 #define DCM_ShapeType                            DcmTagKey(0x0070, 0x0306)
 #define DCM_RegistrationSequence                 DcmTagKey(0x0070, 0x0308)
 #define DCM_MatrixRegistrationSequence           DcmTagKey(0x0070, 0x0309)
