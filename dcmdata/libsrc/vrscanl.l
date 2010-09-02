@@ -23,12 +23,15 @@
  *    These are the regular expressions for the value representations
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-02 09:23:15 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2010-09-02 10:37:37 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log:
  *  $Log: vrscanl.l,v $
+ *  Revision 1.3  2010-09-02 10:37:37  uli
+ *  Fix a compiler warning about an unused function.
+ *
  *  Revision 1.2  2010-09-02 09:23:15  uli
  *  Made the VR scanner reentrant again.
  *
@@ -94,9 +97,8 @@
  */
 
 %option reentrant
- /* We don't use yywrap() nor yyunput(), avoid the compiler warnings */
-%option noyywrap
-%option nounput 
+/* Avoid compiler warnings about unused functions */
+%option noyywrap nounput noinput
 
 %{
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */

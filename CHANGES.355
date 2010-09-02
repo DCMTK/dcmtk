@@ -17,6 +17,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.02 (schlachter)
 
+- Fix a compiler warning about an unused function.
+  Affects: dcmdata/libsrc/vrscanl.c
+           dcmdata/libsrc/vrscanl.h
+           dcmdata/libsrc/vrscanl.l
+
 - Added a test for UT VR with an invalid character.
   Affects: dcmdata/tests/tstchval.cc
 
