@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Handling of transfer syntaxes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-06-23 12:09:13 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2010-09-02 12:12:43 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,10 +100,12 @@ typedef enum {
     EXS_JPEG2000 = 27,
     /// MPEG2 Main Profile at Main Level
     EXS_MPEG2MainProfileAtMainLevel = 28,
+    /// MPEG2 Main Profile at High Level
+    EXS_MPEG2MainProfileAtHighLevel = 29,
     /// JPEG 2000 part 2 multi-component extensions (lossless)
-    EXS_JPEG2000MulticomponentLosslessOnly = 29,
+    EXS_JPEG2000MulticomponentLosslessOnly = 30,
     /// JPEG 2000 part 2 multi-component extensions (lossless or lossy)
-    EXS_JPEG2000Multicomponent = 30
+    EXS_JPEG2000Multicomponent = 31
 } E_TransferSyntax;
 
 /** enumeration of byte orders
@@ -295,6 +297,9 @@ extern const E_ByteOrder gLocalByteOrder;
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
+ * Revision 1.22  2010-09-02 12:12:43  joergr
+ * Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
+ *
  * Revision 1.21  2008-06-23 12:09:13  joergr
  * Fixed inconsistencies in Doxygen API documentation.
  *

@@ -154,6 +154,9 @@ proposed transmission transfer syntaxes (not with --config-file):
   -xm   --propose-mpeg2
           propose MPEG2 Main Profile @ Main Level TS only
 
+  -xh   --propose-mpeg2-high
+          propose MPEG2 Main Profile @ High Level TS only
+
   -xr   --propose-rle
           propose RLE lossless TS
           and all uncompressed transfer syntaxes
@@ -412,6 +415,7 @@ JPEGLSLossyTransferSyntax                            1.2.840.10008.1.2.4.81
 JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
 JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
 MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
+MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 \endverbatim
 
@@ -499,6 +503,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

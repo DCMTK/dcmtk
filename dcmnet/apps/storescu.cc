@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-10 11:59:31 $
- *  CVS/RCS Revision: $Revision: 1.94 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-02 12:12:48 $
+ *  CVS/RCS Revision: $Revision: 1.95 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -268,6 +268,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--propose-jls-lossless", "-xt",     "propose JPEG-LS lossless TS\nand all uncompressed transfer syntaxes");
       cmd.addOption("--propose-jls-lossy",    "-xu",     "propose JPEG-LS lossy TS\nand all uncompressed transfer syntaxes");
       cmd.addOption("--propose-mpeg2",        "-xm",     "propose MPEG2 Main Profile @ Main Level TS only");
+      cmd.addOption("--propose-mpeg2-high",   "-xh",     "propose MPEG2 Main Profile @ High Level TS only");
       cmd.addOption("--propose-rle",          "-xr",     "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
 #ifdef WITH_ZLIB
       cmd.addOption("--propose-deflated",     "-xd",     "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");
@@ -432,6 +433,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--propose-jls-lossless")) opt_networkTransferSyntax = EXS_JPEGLSLossless;
       if (cmd.findOption("--propose-jls-lossy")) opt_networkTransferSyntax = EXS_JPEGLSLossy;
       if (cmd.findOption("--propose-mpeg2")) opt_networkTransferSyntax = EXS_MPEG2MainProfileAtMainLevel;
+      if (cmd.findOption("--propose-mpeg2-high")) opt_networkTransferSyntax = EXS_MPEG2MainProfileAtHighLevel;
       if (cmd.findOption("--propose-rle")) opt_networkTransferSyntax = EXS_RLELossless;
 #ifdef WITH_ZLIB
       if (cmd.findOption("--propose-deflated")) opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
@@ -455,6 +457,7 @@ int main(int argc, char *argv[])
         app.checkConflict("--config-file", "--propose-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
         app.checkConflict("--config-file", "--propose-jls-lossy", opt_networkTransferSyntax == EXS_JPEGLSLossy);
         app.checkConflict("--config-file", "--propose-mpeg2", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtMainLevel);
+        app.checkConflict("--config-file", "--propose-mpeg2-high", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtHighLevel);
         app.checkConflict("--config-file", "--propose-rle", opt_networkTransferSyntax == EXS_RLELossless);
 #ifdef WITH_ZLIB
         app.checkConflict("--config-file", "--propose-deflated", opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit);
@@ -1207,10 +1210,11 @@ addStoragePresentationContexts(T_ASC_Parameters *params,
   OFList<OFString> fallbackSyntaxes;
   // - If little endian implicit is preferred, we don't need any fallback syntaxes
   //   because it is the default transfer syntax and all applications must support it.
-  // - If MPEG2 MP@ML is preferred, we don't want to propose any fallback solution
+  // - If MPEG2 MP@ML/HL is preferred, we don't want to propose any fallback solution
   //   because this is not required and we cannot decompress the movie anyway.
   if ((opt_networkTransferSyntax != EXS_LittleEndianImplicit) &&
-      (opt_networkTransferSyntax != EXS_MPEG2MainProfileAtMainLevel))
+      (opt_networkTransferSyntax != EXS_MPEG2MainProfileAtMainLevel) &&
+      (opt_networkTransferSyntax != EXS_MPEG2MainProfileAtHighLevel))
   {
     fallbackSyntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
     fallbackSyntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
@@ -1735,6 +1739,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.95  2010-09-02 12:12:48  joergr
+** Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
+**
 ** Revision 1.94  2010-08-10 11:59:31  uli
 ** Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.
 **

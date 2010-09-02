@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-03 10:34:57 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2010-09-02 12:13:00 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -629,6 +629,11 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
         transferSyntaxes[0] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
         numTransferSyntaxes = 1;
         break;
+      case EXS_MPEG2MainProfileAtHighLevel:
+        /* we only propose MPEG2 MP@HL since we don't want to decompress */
+        transferSyntaxes[0] = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
+        numTransferSyntaxes = 1;
+        break;
       case EXS_RLELossless:
         /* we prefer RLE Lossless */
         transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
@@ -679,6 +684,9 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
+ * Revision 1.15  2010-09-02 12:13:00  joergr
+ * Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
+ *
  * Revision 1.14  2010-06-03 10:34:57  joergr
  * Replaced calls to strerror() by new helper function OFStandard::strerror()
  * which results in using the thread safe version of strerror() if available.

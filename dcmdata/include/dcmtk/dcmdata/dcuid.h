@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-10 11:59:31 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-02 12:12:43 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -318,6 +318,8 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_JPEG2000TransferSyntax              "1.2.840.10008.1.2.4.91"
 /// MPEG2 Main Profile @ Main Level
 #define UID_MPEG2MainProfileAtMainLevelTransferSyntax "1.2.840.10008.1.2.4.100"
+/// MPEG2 Main Profile @ High Level
+#define UID_MPEG2MainProfileAtHighLevelTransferSyntax "1.2.840.10008.1.2.4.101"
 /// JPEG 2000 Part 2 Multi-component Image Compression (Lossless Only)
 #define UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax "1.2.840.10008.1.2.4.92"
 /// JPEG 2000 Part 2 Multi-component Image Compression (Lossless or Lossy)
@@ -614,6 +616,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.80  2010-09-02 12:12:43  joergr
+** Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
+**
 ** Revision 1.79  2010-08-10 11:59:31  uli
 ** Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.
 **

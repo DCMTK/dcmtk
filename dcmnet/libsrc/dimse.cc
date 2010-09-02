@@ -57,8 +57,8 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-06-09 15:52:48 $
-** CVS/RCS Revision:    $Revision: 1.59 $
+** Update Date:         $Date: 2010-09-02 12:12:54 $
+** CVS/RCS Revision:    $Revision: 1.60 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -345,6 +345,7 @@ getTransferSyntax(
         case EXS_JPEG2000LosslessOnly:
         case EXS_JPEG2000:
         case EXS_MPEG2MainProfileAtMainLevel:
+        case EXS_MPEG2MainProfileAtHighLevel:
         case EXS_JPEG2000MulticomponentLosslessOnly:
         case EXS_JPEG2000Multicomponent:
 #ifdef WITH_ZLIB
@@ -1760,6 +1761,9 @@ OFString DIMSE_warn_str(T_ASC_Association *assoc)
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.60  2010-09-02 12:12:54  joergr
+** Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
+**
 ** Revision 1.59  2010-06-09 15:52:48  joergr
 ** Moved some annoying log messages from level DEBUG to TRACE (because the same
 ** information is usually reported in a better way by some other means).

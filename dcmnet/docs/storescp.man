@@ -111,6 +111,9 @@ preferred network transfer syntaxes (not with --config-file):
   +xm   --prefer-mpeg2
           prefer MPEG2 Main Profile @ Main Level TS
 
+  +xh   --prefer-mpeg2-high
+          prefer MPEG2 Main Profile @ High Level TS
+
   +xr   --prefer-rle
           prefer RLE lossless TS
 
@@ -631,6 +634,7 @@ JPEGLSLossyTransferSyntax                            1.2.840.10008.1.2.4.81
 JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
 JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
 MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
+MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 \endverbatim
 

@@ -3,6 +3,25 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.02 (riesmeier)
 
+- Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/include/dcmtk/dcmdata/dcxfer.h
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dcxfer.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmnet/libsrc/dimse.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/libsrc/dcmqrcbm.cc
+           dcmqrdb/libsrc/dcmqrsrv.cc
+
 - Added support for Supplement 144 (Ophthalmic Axial Measurements Storage SOP
   Classes) to DICOM data dictionary.
   Affects: dcmdata/data/dicom.dic

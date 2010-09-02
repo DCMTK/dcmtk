@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: handling of transfer syntaxes
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:11 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-02 12:12:46 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -323,6 +323,15 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFFalse,
       ESC_none },
+    { UID_MPEG2MainProfileAtHighLevelTransferSyntax,
+      "MPEG2 Main Profile @ High Level",
+      EXS_MPEG2MainProfileAtHighLevel,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFFalse,
+      ESC_none },
    { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
       "JPEG 2000 Part 2 Multicomponent Image Compression (Lossless only)",
       EXS_JPEG2000MulticomponentLosslessOnly,
@@ -581,6 +590,9 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
+ * Revision 1.30  2010-09-02 12:12:46  joergr
+ * Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
+ *
  * Revision 1.29  2009-11-04 09:58:11  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *
