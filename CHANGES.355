@@ -17,6 +17,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.02 (schlachter)
 
+- Avoid a pointless data-copy in DcmElement::scanValue() if possible.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 - Add the VR prefix in the scanner instead of adding it in the caller.
   Affects: dcmdata/include/dcmtk/dcmdata/vrscan.h
            dcmdata/libsrc/dcelem.cc

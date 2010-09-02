@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-02 09:49:38 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Update Date:      $Date: 2010-09-02 09:56:54 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1626,6 +1626,10 @@ int DcmElement::scanValue(const OFString &value,
                           const size_t pos,
                           const size_t num)
 {
+  // Only create a copy of the string if we have to, this could be a lot of data
+  if (pos == 0 && (num == OFString_npos || num >= value.length()))
+      return vrscan::scan(vr, value);
+
   // construct input string to be scanned
   OFString realValue(value, pos, num);
   return vrscan::scan(vr, realValue);
@@ -1712,6 +1716,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.85  2010-09-02 09:56:54  uli
+** Avoid a pointless data-copy in DcmElement::scanValue() if possible.
+**
 ** Revision 1.84  2010-09-02 09:49:38  uli
 ** Add the VR prefix into the scanner instead of adding it in the caller.
 **
