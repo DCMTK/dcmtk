@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-26 12:29:48 $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  Update Date:      $Date: 2010-09-02 09:49:38 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1627,9 +1627,8 @@ int DcmElement::scanValue(const OFString &value,
                           const size_t num)
 {
   // construct input string to be scanned
-  OFString vrAndValue(vr);
-  vrAndValue.append(value, pos, num);
-  return vrscan::scan(vrAndValue);
+  OFString realValue(value, pos, num);
+  return vrscan::scan(vr, realValue);
 }
 
 
@@ -1713,6 +1712,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.84  2010-09-02 09:49:38  uli
+** Add the VR prefix into the scanner instead of adding it in the caller.
+**
 ** Revision 1.83  2010-08-26 12:29:48  uli
 ** Ported vrscan from ancient flex++ to current flex version.
 **

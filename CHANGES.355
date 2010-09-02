@@ -17,6 +17,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.02 (schlachter)
 
+- Add the VR prefix in the scanner instead of adding it in the caller.
+  Affects: dcmdata/include/dcmtk/dcmdata/vrscan.h
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/vrscan.cc
+
 - Made the VR scanner reentrant again.
   Affects: dcmdata/libsrc/Makefile.dep
            dcmdata/libsrc/vrscan.cc

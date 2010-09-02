@@ -22,8 +22,8 @@
  *  Purpose: Interface to the VR scanner.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-02 09:23:15 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-09-02 09:49:38 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/vrscan.h"
+#include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofstd.h"        /* For OFString::strerror() */
 #include "dcmtk/dcmdata/dctypes.h"    /* For DCMDATA_WARN() */
 
@@ -41,7 +42,7 @@ BEGIN_EXTERN_C
 #include "vrscanl.h"
 END_EXTERN_C
 
-int vrscan::scan(const OFString& value)
+int vrscan::scan(const OFString& vr, const OFString& value)
 {
     yyscan_t scanner;
 
@@ -52,7 +53,10 @@ int vrscan::scan(const OFString& value)
                 << OFStandard::strerror(errno, buf, sizeof(buf)));
         return 16;
     }
-    yy_scan_bytes(value.c_str(), value.length(), scanner);
+
+    OFString buf = vr + value;
+    yy_scan_bytes(buf.c_str(), buf.length(), scanner);
+
     int result = yylex(scanner);
     if (yylex(scanner))
         result = 16 /* UNKNOWN */;
@@ -66,6 +70,9 @@ int vrscan::scan(const OFString& value)
 /*
 ** CVS/RCS Log:
 ** $Log: vrscan.cc,v $
+** Revision 1.5  2010-09-02 09:49:38  uli
+** Add the VR prefix into the scanner instead of adding it in the caller.
+**
 ** Revision 1.4  2010-09-02 09:23:15  uli
 ** Made the VR scanner reentrant again.
 **
