@@ -17,6 +17,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.02 (schlachter)
 
+- Added a test for UT VR with an invalid character.
+  Affects: dcmdata/tests/tstchval.cc
+
 - The VR scanner now only copies the input data once, not twice.
   Affects: dcmdata/include/dcmtk/dcmdata/vrscan.h
            dcmdata/libsrc/Makefile.dep

@@ -22,8 +22,8 @@
  *  Purpose: test program for checkStringValue() methods
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-26 12:18:09 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2010-09-02 10:26:17 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -237,17 +237,14 @@ int main(int , char *[])
   COUT << OFendl;
 
   /* test "Unlimited Text" */
-  size_t hugeBufSize = 1024 * 512;
-  char *hugeBuf = new char[hugeBufSize];
-
-  OFBitmanipTemplate<char>::setMem(hugeBuf, 'n', hugeBufSize);
-  hugeBuf[hugeBufSize - 1] = '\0';
+  OFString hugeString(1024 * 512, 'n');
 
   CHECK_GOOD( "UT-01", DcmUnlimitedText::checkStringValue(" This text can be pretty long ... ") )
-  CHECK_GOOD( "UT-02", DcmUnlimitedText::checkStringValue(hugeBuf) )
-  COUT << OFendl;
+  CHECK_GOOD( "UT-02", DcmUnlimitedText::checkStringValue(hugeString) )
 
-  delete[] hugeBuf;
+  hugeString[hugeString.length() / 2] = '\t';
+  CHECK_BAD ( "UT-03", DcmUnlimitedText::checkStringValue(hugeString) )
+  COUT << OFendl;
 
   return 0;
 }
@@ -257,6 +254,9 @@ int main(int , char *[])
  *
  * CVS/RCS Log:
  * $Log: tstchval.cc,v $
+ * Revision 1.6  2010-09-02 10:26:17  uli
+ * Added a test for UT VR with an invalid character.
+ *
  * Revision 1.5  2010-08-26 12:18:09  uli
  * Added a test that breaks DcmUnlimitedText. This has to be fixed.
  *
