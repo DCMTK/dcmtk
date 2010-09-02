@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.02 (schlachter)
+
+- Made the VR scanner reentrant again.
+  Affects: dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/vrscan.cc
+           dcmdata/libsrc/vrscanl.c
+           dcmdata/libsrc/vrscanl.h
+           dcmdata/libsrc/vrscanl.l
+
 **** Changes from 2010.08.27 (onken)
 
 - Fixed cmake compilation under unix according to changes regarding flex

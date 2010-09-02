@@ -23,12 +23,15 @@
  *    These are the regular expressions for the value representations
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-26 12:29:48 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2010-09-02 09:23:15 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log:
  *  $Log: vrscanl.l,v $
+ *  Revision 1.2  2010-09-02 09:23:15  uli
+ *  Made the VR scanner reentrant again.
+ *
  *  Revision 1.1  2010-08-26 12:29:48  uli
  *  Ported vrscan from ancient flex++ to current flex version.
  *
@@ -89,6 +92,11 @@
  *
  *
  */
+
+%option reentrant
+ /* We don't use yywrap() nor yyunput(), avoid the compiler warnings */
+%option noyywrap
+%option nounput 
 
 %{
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -169,5 +177,3 @@ lt{lt-st-ut}               {return 14; /* LT | ST | UT */}
 .                          {return 16; /* UNKNOWN */;}
 
 %%
-
-int yywrap (void) {return 1;}

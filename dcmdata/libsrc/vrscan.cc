@@ -22,8 +22,8 @@
  *  Purpose: Interface to the VR scanner.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-26 12:29:48 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2010-09-02 09:23:15 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,8 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/vrscan.h"
-#include "dcmtk/ofstd/ofbmanip.h"
+#include "dcmtk/ofstd/ofstd.h"        /* For OFString::strerror() */
+#include "dcmtk/dcmdata/dctypes.h"    /* For DCMDATA_WARN() */
 
 BEGIN_EXTERN_C
 #include "vrscanl.h"
@@ -42,12 +43,21 @@ END_EXTERN_C
 
 int vrscan::scan(const OFString& value)
 {
-    yy_scan_bytes(value.c_str(), value.length());
-    int result = yylex();
-    if (yylex())
+    yyscan_t scanner;
+
+    if (yylex_init(&scanner))
+    {
+        char buf[256];
+        DCMDATA_WARN("Error while setting up lexer: "
+                << OFStandard::strerror(errno, buf, sizeof(buf)));
+        return 16;
+    }
+    yy_scan_bytes(value.c_str(), value.length(), scanner);
+    int result = yylex(scanner);
+    if (yylex(scanner))
         result = 16 /* UNKNOWN */;
 
-    yypop_buffer_state();
+    yylex_destroy(scanner);
 
     return result;
 }
@@ -56,6 +66,9 @@ int vrscan::scan(const OFString& value)
 /*
 ** CVS/RCS Log:
 ** $Log: vrscan.cc,v $
+** Revision 1.4  2010-09-02 09:23:15  uli
+** Made the VR scanner reentrant again.
+**
 ** Revision 1.3  2010-08-26 12:29:48  uli
 ** Ported vrscan from ancient flex++ to current flex version.
 **
