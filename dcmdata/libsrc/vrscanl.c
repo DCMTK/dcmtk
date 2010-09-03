@@ -5512,12 +5512,15 @@ static yyconst flex_int16_t yy_chk[19183] =
  *    These are the regular expressions for the value representations
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-02 12:02:06 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-09-03 07:26:19 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log:
  *  $Log: vrscanl.c,v $
+ *  Revision 1.5  2010-09-03 07:26:19  uli
+ *  Make the VR scanner work on windows again.
+ *
  *  Revision 1.4  2010-09-02 12:02:06  uli
  *  Use longjmp() for error handling in the VR scanner.
  *
@@ -5589,11 +5592,17 @@ static yyconst flex_int16_t yy_chk[19183] =
  */
 /* Avoid compiler warnings about unused functions */
 #define YY_NO_INPUT 1
-#line 104 "vrscanl.l"
+#line 107 "vrscanl.l"
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "vrscani.h"
-#line 5594 "vrscanl.c"
+/* Make this work on windows (we don't need interactivity anyway) */
+/* This seems to be a bug: The .c file won't include it, but .h will still.
+ * %option nounistd
+ */
+#line 118 "vrscanl.l"
+static int isatty(int fd) { return 0; }
+#line 5603 "vrscanl.c"
 
 #define INITIAL 0
 
@@ -5808,10 +5817,10 @@ YY_DECL
 	register int yy_act;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-#line 162 "vrscanl.l"
+#line 174 "vrscanl.l"
 
 
-#line 5812 "vrscanl.c"
+#line 5821 "vrscanl.c"
 
 	if ( !yyg->yy_init )
 		{
@@ -5870,16 +5879,12 @@ yy_match:
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 19143 );
+		while ( yy_current_state != 1757 );
+		yy_cp = yyg->yy_last_accepting_cpos;
+		yy_current_state = yyg->yy_last_accepting_state;
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
-		if ( yy_act == 0 )
-			{ /* have to back up */
-			yy_cp = yyg->yy_last_accepting_cpos;
-			yy_current_state = yyg->yy_last_accepting_state;
-			yy_act = yy_accept[yy_current_state];
-			}
 
 		YY_DO_BEFORE_ACTION;
 
@@ -5896,101 +5901,101 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 164 "vrscanl.l"
+#line 176 "vrscanl.l"
 {return 1;  /* AS */}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 165 "vrscanl.l"
+#line 177 "vrscanl.l"
 {return 2;  /* DA */}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 166 "vrscanl.l"
+#line 178 "vrscanl.l"
 {return 3;  /* OLD_DA */}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 167 "vrscanl.l"
+#line 179 "vrscanl.l"
 {return 17; /* dubious DA */}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 168 "vrscanl.l"
+#line 180 "vrscanl.l"
 {return 4;  /* TM */}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 169 "vrscanl.l"
+#line 181 "vrscanl.l"
 {return 5;  /* OLD_TM */}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 170 "vrscanl.l"
+#line 182 "vrscanl.l"
 {return 6;  /* DS */}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 171 "vrscanl.l"
+#line 183 "vrscanl.l"
 {return 7;  /* DT */}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 172 "vrscanl.l"
+#line 184 "vrscanl.l"
 {return 18; /* dubious DT */}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 173 "vrscanl.l"
+#line 185 "vrscanl.l"
 {return 8;  /* IS */}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 174 "vrscanl.l"
+#line 186 "vrscanl.l"
 {return 9;  /* UI */}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 175 "vrscanl.l"
+#line 187 "vrscanl.l"
 {return 10; /* CS */}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 176 "vrscanl.l"
+#line 188 "vrscanl.l"
 {return 11; /* PN */}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 177 "vrscanl.l"
+#line 189 "vrscanl.l"
 {return 15; /* OLD_PN */}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 178 "vrscanl.l"
+#line 190 "vrscanl.l"
 {return 12; /* LO | SH */}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 179 "vrscanl.l"
+#line 191 "vrscanl.l"
 {return 13; /* AE */}
 	YY_BREAK
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 180 "vrscanl.l"
+#line 192 "vrscanl.l"
 {return 14; /* LT | ST | UT */}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 181 "vrscanl.l"
+#line 193 "vrscanl.l"
 {return 16; /* UNKNOWN */;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 183 "vrscanl.l"
+#line 195 "vrscanl.l"
 ECHO;
 	YY_BREAK
-#line 5991 "vrscanl.c"
+#line 5996 "vrscanl.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -6057,7 +6062,8 @@ case YY_STATE_EOF(INITIAL):
 
 			else
 				{
-				yy_cp = yyg->yy_c_buf_p;
+				yy_cp = yyg->yy_last_accepting_cpos;
+				yy_current_state = yyg->yy_last_accepting_state;
 				goto yy_find_action;
 				}
 			}
@@ -7059,7 +7065,7 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 183 "vrscanl.l"
+#line 195 "vrscanl.l"
 
 
 

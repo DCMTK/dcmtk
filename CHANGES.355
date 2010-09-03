@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.03 (schlachter)
+
+- Make the VR scanner work on windows again.
+  Affects: dcmdata/libsrc/vrscani.h
+           dcmdata/libsrc/vrscanl.c
+           dcmdata/libsrc/vrscanl.h
+           dcmdata/libsrc/vrscanl.l
+
 **** Changes from 2010.09.02 (riesmeier)
 
 - Added support for "MPEG2 Main Profile @ High Level" transfer syntax.

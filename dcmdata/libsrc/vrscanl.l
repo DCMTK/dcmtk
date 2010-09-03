@@ -23,12 +23,15 @@
  *    These are the regular expressions for the value representations
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-02 12:02:06 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-09-03 07:26:19 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log:
  *  $Log: vrscanl.l,v $
+ *  Revision 1.5  2010-09-03 07:26:19  uli
+ *  Make the VR scanner work on windows again.
+ *
  *  Revision 1.4  2010-09-02 12:02:06  uli
  *  Use longjmp() for error handling in the VR scanner.
  *
@@ -107,6 +110,15 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "vrscani.h"
+%}
+
+/* Make this work on windows (we don't need interactivity anyway) */
+%option nointeractive
+/* This seems to be a bug: The .c file won't include it, but .h will still.
+ * %option nounistd
+ */
+%{
+static int isatty(int fd) { return 0; }
 %}
 
 default_charset_without_control_chars [\041-\133\135-\176][\040-\133\135-\176]*
