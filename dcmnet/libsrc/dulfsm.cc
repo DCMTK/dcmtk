@@ -46,9 +46,9 @@
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
 ** Intent:        Define tables and provide functions that implement
 **                the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:   $Author: joergr $, $Date: 2010-08-26 09:25:59 $
+** Last Update:   $Author: uli $, $Date: 2010-09-07 11:13:09 $
 ** Source File:   $RCSfile: dulfsm.cc,v $
-** Revision:      $Revision: 1.70 $
+** Revision:      $Revision: 1.71 $
 ** Status:        $State: Exp $
 */
 
@@ -1367,7 +1367,7 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
     length = pduLength;                     //set length to the PDU's length
     pdvCount = 0;                           //set counter variable to 0
     p = (*association)->fragmentBuffer;     //set p to the buffer which contains the PDU's PDVs
-    while (length > 0) {                    //as long as length is greater than 0
+    while (length > 4) {                    //as long as length is greater than 4 (= a length field can be read)
         EXTRACT_LONG_BIG(p, pdvLength);     //determine the length of the current PDV (the PDV p points to)
         p += 4 + pdvLength;                 //move p so that it points to the next PDV (move p 4 bytes over the length field plus the amount of bytes which is captured in the PDV's length field (over presentation context.Id, message information header and data fragment))
         length -= 4 + pdvLength;            //update length (i.e. determine the length of the buffer which has not been evaluated yet.)
@@ -3949,6 +3949,9 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.71  2010-09-07 11:13:09  uli
+** Fixed a possible read beyond the end of the PDV buffer.
+**
 ** Revision 1.70  2010-08-26 09:25:59  joergr
 ** Fixed incorrect behavior of association acceptors during SCP/SCU role
 ** selection negotiation.

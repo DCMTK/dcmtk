@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Fixed a missing addOption() call.
   Affects: dcmnet/apps/storescp.cc
 
+- Fixed a possible read beyond the end of the PDV buffer.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
 **** Changes from 2010.09.03 (schlachter)
 
 - Make the VR scanner work on windows again.
