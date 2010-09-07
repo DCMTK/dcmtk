@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-02 12:12:48 $
- *  CVS/RCS Revision: $Revision: 1.129 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-09-07 07:54:45 $
+ *  CVS/RCS Revision: $Revision: 1.130 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -299,6 +299,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--prefer-jls-lossless",    "+xt",     "prefer JPEG-LS lossless TS");
       cmd.addOption("--prefer-jls-lossy",       "+xu",     "prefer JPEG-LS lossy TS");
       cmd.addOption("--prefer-mpeg2",           "+xm",     "prefer MPEG2 Main Profile @ Main Level TS");
+      cmd.addOption("--prefer-mpeg2-high",      "+xh",     "prefer MPEG2 Main Profile @ High Level TS");
       cmd.addOption("--prefer-rle",             "+xr",     "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
       cmd.addOption("--prefer-deflated",        "+xd",     "prefer deflated expl. VR little endian TS");
@@ -2726,6 +2727,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.130  2010-09-07 07:54:45  uli
+** Fixed a missing addOption() call.
+**
 ** Revision 1.129  2010-09-02 12:12:48  joergr
 ** Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
 **

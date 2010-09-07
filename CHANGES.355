@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.07 (schlachter)
+
+- Fixed a missing addOption() call.
+  Affects: dcmnet/apps/storescp.cc
+
 **** Changes from 2010.09.03 (schlachter)
 
 - Make the VR scanner work on windows again.
