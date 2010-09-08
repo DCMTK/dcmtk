@@ -49,9 +49,9 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-1993
 ** Intent:    This file contains functions for construction of
 **      DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:   $Author: joergr $, $Date: 2010-08-26 09:25:10 $
+** Last Update:   $Author: uli $, $Date: 2010-09-08 07:31:29 $
 ** Source File:   $RCSfile: dulconst.cc,v $
-** Revision:    $Revision: 1.25 $
+** Revision:    $Revision: 1.26 $
 ** Status:    $State: Exp $
 */
 
@@ -610,7 +610,7 @@ streamDataPDUHead(DUL_DATAPDU * pdu, unsigned char *buf,
     COPY_LONG_BIG(l, buf);
     buf += 4;
     *buf++ = pdu->presentationDataValue.presentationContextID;
-    *buf++ = pdu->presentationDataValue.messageControlHeader & (!0x2);
+    *buf++ = pdu->presentationDataValue.messageControlHeader & (~0x2);
 #endif
 
     /* append PDV length field information to buffer */
@@ -1533,6 +1533,9 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
+** Revision 1.26  2010-09-08 07:31:29  uli
+** Fix wrong use of logical invert. A bit-wise invert is meant here.
+**
 ** Revision 1.25  2010-08-26 09:25:10  joergr
 ** Fixed incorrect behavior of association acceptors during SCP/SCU role
 ** selection negotiation.
