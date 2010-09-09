@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.09 (riesmeier)
 
+- Further code clean-up and minor changes to log messages.
+  Affects: dcmqrdb/libsrc/dcmqrcbg.cc
+           dcmqrdb/libsrc/dcmqrcnf.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmqrdb/libsrc/dcmqrsrv.cc
+
 - Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
   Affects: dcmqrdb/apps/dcmqrscp.cc
            dcmqrdb/apps/dcmqrti.cc

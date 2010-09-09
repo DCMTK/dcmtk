@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveGetContext
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-09 15:00:03 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2010-09-09 16:54:32 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,8 +92,10 @@ void DcmQueryRetrieveGetContext::callbackHandler(
         dbcond = dbHandle.startMoveRequest(
             request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         if (dbcond.bad()) {
+            OFString temp_str;
             DCMQRDB_ERROR("getSCP: Database: startMoveRequest Failed ("
-                << DU_cmoveStatusString(dbStatus.status()) << "):");
+                << DU_cmoveStatusString(dbStatus.status()) << "): "
+                << DimseCondition::dump(temp_str, dbcond));
         }
     }
 
@@ -343,6 +345,9 @@ void DcmQueryRetrieveGetContext::buildFailedInstanceList(DcmDataset ** rspIds)
 /*
  * CVS Log
  * $Log: dcmqrcbg.cc,v $
+ * Revision 1.11  2010-09-09 16:54:32  joergr
+ * Further code clean-up and minor changes to log messages.
+ *
  * Revision 1.10  2010-09-09 15:00:03  joergr
  * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
  *

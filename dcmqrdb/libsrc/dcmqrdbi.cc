@@ -22,8 +22,8 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-09 15:00:03 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2010-09-09 16:54:32 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -207,129 +207,129 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
 {
     if (! linksOnly)
     {
-        idx -> param[RECORDIDX_PatientBirthDate]. XTag = DCM_PatientBirthDate  ;
-        idx -> param[RECORDIDX_PatientBirthDate]. ValueLength = DA_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_PatientBirthDate]. XTag = DCM_PatientBirthDate ;
+        idx -> param[RECORDIDX_PatientBirthDate]. ValueLength = DA_MAX_LENGTH ;
         idx -> PatientBirthDate[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientSex]. XTag = DCM_PatientSex  ;
-        idx -> param[RECORDIDX_PatientSex]. ValueLength = CS_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_PatientSex]. XTag = DCM_PatientSex ;
+        idx -> param[RECORDIDX_PatientSex]. ValueLength = CS_MAX_LENGTH ;
         idx -> PatientSex[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientName]. XTag = DCM_PatientName  ;
-        idx -> param[RECORDIDX_PatientName]. ValueLength = PN_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_PatientName]. XTag = DCM_PatientName ;
+        idx -> param[RECORDIDX_PatientName]. ValueLength = PN_MAX_LENGTH ;
         idx -> PatientName[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientID]. XTag = DCM_PatientID  ;
-        idx -> param[RECORDIDX_PatientID]. ValueLength = LO_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_PatientID]. XTag = DCM_PatientID ;
+        idx -> param[RECORDIDX_PatientID]. ValueLength = LO_MAX_LENGTH ;
         idx -> PatientID[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientBirthTime]. XTag = DCM_PatientBirthTime  ;
-        idx -> param[RECORDIDX_PatientBirthTime]. ValueLength = TM_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_PatientBirthTime]. XTag = DCM_PatientBirthTime ;
+        idx -> param[RECORDIDX_PatientBirthTime]. ValueLength = TM_MAX_LENGTH ;
         idx -> PatientBirthTime[0] = '\0' ;
-        idx -> param[RECORDIDX_OtherPatientIDs]. XTag = DCM_OtherPatientIDs  ;
-        idx -> param[RECORDIDX_OtherPatientIDs]. ValueLength = LO_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_OtherPatientIDs]. XTag = DCM_OtherPatientIDs ;
+        idx -> param[RECORDIDX_OtherPatientIDs]. ValueLength = LO_MAX_LENGTH ;
         idx -> OtherPatientIDs[0] = '\0' ;
-        idx -> param[RECORDIDX_OtherPatientNames]. XTag = DCM_OtherPatientNames  ;
-        idx -> param[RECORDIDX_OtherPatientNames]. ValueLength = PN_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_OtherPatientNames]. XTag = DCM_OtherPatientNames ;
+        idx -> param[RECORDIDX_OtherPatientNames]. ValueLength = PN_MAX_LENGTH ;
         idx -> OtherPatientNames[0] = '\0' ;
-        idx -> param[RECORDIDX_EthnicGroup]. XTag = DCM_EthnicGroup  ;
-        idx -> param[RECORDIDX_EthnicGroup]. ValueLength = SH_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_EthnicGroup]. XTag = DCM_EthnicGroup ;
+        idx -> param[RECORDIDX_EthnicGroup]. ValueLength = SH_MAX_LENGTH ;
         idx -> EthnicGroup[0] = '\0' ;
-        idx -> param[RECORDIDX_NumberofPatientRelatedStudies]. XTag = DCM_NumberOfPatientRelatedStudies  ;
-        idx -> param[RECORDIDX_NumberofPatientRelatedStudies]. ValueLength = IS_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_NumberofPatientRelatedStudies]. XTag = DCM_NumberOfPatientRelatedStudies ;
+        idx -> param[RECORDIDX_NumberofPatientRelatedStudies]. ValueLength = IS_MAX_LENGTH ;
         idx -> NumberofPatientRelatedStudies[0] = '\0' ;
-        idx -> param[RECORDIDX_NumberofPatientRelatedSeries]. XTag = DCM_NumberOfPatientRelatedSeries  ;
-        idx -> param[RECORDIDX_NumberofPatientRelatedSeries]. ValueLength = IS_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_NumberofPatientRelatedSeries]. XTag = DCM_NumberOfPatientRelatedSeries ;
+        idx -> param[RECORDIDX_NumberofPatientRelatedSeries]. ValueLength = IS_MAX_LENGTH ;
         idx -> NumberofPatientRelatedSeries[0] = '\0' ;
-        idx -> param[RECORDIDX_NumberofPatientRelatedInstances]. XTag = DCM_NumberOfPatientRelatedInstances  ;
-        idx -> param[RECORDIDX_NumberofPatientRelatedInstances]. ValueLength = IS_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_NumberofPatientRelatedInstances]. XTag = DCM_NumberOfPatientRelatedInstances ;
+        idx -> param[RECORDIDX_NumberofPatientRelatedInstances]. ValueLength = IS_MAX_LENGTH ;
         idx -> NumberofPatientRelatedInstances[0] = '\0' ;
-        idx -> param[RECORDIDX_StudyDate]. XTag = DCM_StudyDate  ;
-        idx -> param[RECORDIDX_StudyDate]. ValueLength = DA_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_StudyDate]. XTag = DCM_StudyDate ;
+        idx -> param[RECORDIDX_StudyDate]. ValueLength = DA_MAX_LENGTH ;
         idx -> StudyDate[0] = '\0' ;
-        idx -> param[RECORDIDX_StudyTime]. XTag = DCM_StudyTime  ;
-        idx -> param[RECORDIDX_StudyTime]. ValueLength = TM_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_StudyTime]. XTag = DCM_StudyTime ;
+        idx -> param[RECORDIDX_StudyTime]. ValueLength = TM_MAX_LENGTH ;
         idx -> StudyTime[0] = '\0' ;
-        idx -> param[RECORDIDX_StudyID]. XTag = DCM_StudyID  ;
-        idx -> param[RECORDIDX_StudyID]. ValueLength = CS_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_StudyID]. XTag = DCM_StudyID ;
+        idx -> param[RECORDIDX_StudyID]. ValueLength = CS_MAX_LENGTH ;
         idx -> StudyID[0] = '\0' ;
-        idx -> param[RECORDIDX_StudyDescription]. XTag = DCM_StudyDescription  ;
-        idx -> param[RECORDIDX_StudyDescription]. ValueLength = LO_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_StudyDescription]. XTag = DCM_StudyDescription ;
+        idx -> param[RECORDIDX_StudyDescription]. ValueLength = LO_MAX_LENGTH ;
         idx -> StudyDescription[0] = '\0' ;
-        idx -> param[RECORDIDX_NameOfPhysiciansReadingStudy]. XTag = DCM_NameOfPhysiciansReadingStudy  ;
-        idx -> param[RECORDIDX_NameOfPhysiciansReadingStudy]. ValueLength = PN_MAX_LENGTH  ;
+        idx -> param[RECORDIDX_NameOfPhysiciansReadingStudy]. XTag = DCM_NameOfPhysiciansReadingStudy ;
+        idx -> param[RECORDIDX_NameOfPhysiciansReadingStudy]. ValueLength = PN_MAX_LENGTH ;
         idx -> NameOfPhysiciansReadingStudy[0] = '\0' ;
-        idx -> param[RECORDIDX_AccessionNumber]. XTag = DCM_AccessionNumber;
+        idx -> param[RECORDIDX_AccessionNumber]. XTag = DCM_AccessionNumber ;
         idx -> param[RECORDIDX_AccessionNumber]. ValueLength = CS_MAX_LENGTH ;
         idx -> AccessionNumber[0] = '\0' ;
-        idx -> param[RECORDIDX_ReferringPhysicianName]. XTag = DCM_ReferringPhysicianName  ;
+        idx -> param[RECORDIDX_ReferringPhysicianName]. XTag = DCM_ReferringPhysicianName ;
         idx -> param[RECORDIDX_ReferringPhysicianName]. ValueLength = PN_MAX_LENGTH ;
         idx -> ReferringPhysicianName[0] = '\0' ;
-        idx -> param[RECORDIDX_ProcedureDescription]. XTag = DCM_StudyDescription  ;
+        idx -> param[RECORDIDX_ProcedureDescription]. XTag = DCM_StudyDescription ;
         idx -> param[RECORDIDX_ProcedureDescription]. ValueLength = LO_MAX_LENGTH ;
         idx -> ProcedureDescription[0] = '\0' ;
-        idx -> param[RECORDIDX_AttendingPhysiciansName]. XTag = DCM_NameOfPhysiciansReadingStudy  ;
+        idx -> param[RECORDIDX_AttendingPhysiciansName]. XTag = DCM_NameOfPhysiciansReadingStudy ;
         idx -> param[RECORDIDX_AttendingPhysiciansName]. ValueLength = PN_MAX_LENGTH ;
         idx -> AttendingPhysiciansName[0] = '\0' ;
-        idx -> param[RECORDIDX_StudyInstanceUID]. XTag = DCM_StudyInstanceUID  ;
+        idx -> param[RECORDIDX_StudyInstanceUID]. XTag = DCM_StudyInstanceUID ;
         idx -> param[RECORDIDX_StudyInstanceUID]. ValueLength = UI_MAX_LENGTH ;
         idx -> StudyInstanceUID[0] = '\0' ;
-        idx -> param[RECORDIDX_OtherStudyNumbers]. XTag = DCM_RETIRED_OtherStudyNumbers  ;
+        idx -> param[RECORDIDX_OtherStudyNumbers]. XTag = DCM_RETIRED_OtherStudyNumbers ;
         idx -> param[RECORDIDX_OtherStudyNumbers]. ValueLength = IS_MAX_LENGTH ;
         idx -> OtherStudyNumbers[0] = '\0' ;
-        idx -> param[RECORDIDX_AdmittingDiagnosesDescription]. XTag = DCM_AdmittingDiagnosesDescription  ;
+        idx -> param[RECORDIDX_AdmittingDiagnosesDescription]. XTag = DCM_AdmittingDiagnosesDescription ;
         idx -> param[RECORDIDX_AdmittingDiagnosesDescription]. ValueLength = LO_MAX_LENGTH ;
         idx -> AdmittingDiagnosesDescription[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientAge]. XTag = DCM_PatientAge  ;
+        idx -> param[RECORDIDX_PatientAge]. XTag = DCM_PatientAge ;
         idx -> param[RECORDIDX_PatientAge]. ValueLength = AS_MAX_LENGTH ;
         idx -> PatientAge[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientSize]. XTag = DCM_PatientSize  ;
+        idx -> param[RECORDIDX_PatientSize]. XTag = DCM_PatientSize ;
         idx -> param[RECORDIDX_PatientSize]. ValueLength = DS_MAX_LENGTH ;
         idx -> PatientSize[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientWeight]. XTag = DCM_PatientWeight  ;
+        idx -> param[RECORDIDX_PatientWeight]. XTag = DCM_PatientWeight ;
         idx -> param[RECORDIDX_PatientWeight]. ValueLength = DS_MAX_LENGTH ;
         idx -> PatientWeight[0] = '\0' ;
-        idx -> param[RECORDIDX_Occupation]. XTag = DCM_Occupation  ;
+        idx -> param[RECORDIDX_Occupation]. XTag = DCM_Occupation ;
         idx -> param[RECORDIDX_Occupation]. ValueLength = SH_MAX_LENGTH ;
         idx -> Occupation[0] = '\0' ;
-        idx -> param[RECORDIDX_NumberofStudyRelatedSeries]. XTag = DCM_NumberOfStudyRelatedSeries  ;
+        idx -> param[RECORDIDX_NumberofStudyRelatedSeries]. XTag = DCM_NumberOfStudyRelatedSeries ;
         idx -> param[RECORDIDX_NumberofStudyRelatedSeries]. ValueLength = IS_MAX_LENGTH ;
         idx -> NumberofStudyRelatedSeries[0] = '\0' ;
-        idx -> param[RECORDIDX_NumberofStudyRelatedInstances]. XTag = DCM_NumberOfStudyRelatedInstances  ;
+        idx -> param[RECORDIDX_NumberofStudyRelatedInstances]. XTag = DCM_NumberOfStudyRelatedInstances ;
         idx -> param[RECORDIDX_NumberofStudyRelatedInstances]. ValueLength = IS_MAX_LENGTH ;
         idx -> NumberofStudyRelatedInstances[0] = '\0' ;
-        idx -> param[RECORDIDX_SeriesNumber]. XTag = DCM_SeriesNumber  ;
+        idx -> param[RECORDIDX_SeriesNumber]. XTag = DCM_SeriesNumber ;
         idx -> param[RECORDIDX_SeriesNumber]. ValueLength = IS_MAX_LENGTH ;
         idx -> SeriesNumber[0] = '\0' ;
-        idx -> param[RECORDIDX_SeriesInstanceUID]. XTag = DCM_SeriesInstanceUID  ;
+        idx -> param[RECORDIDX_SeriesInstanceUID]. XTag = DCM_SeriesInstanceUID ;
         idx -> param[RECORDIDX_SeriesInstanceUID]. ValueLength = UI_MAX_LENGTH ;
         idx -> SeriesInstanceUID[0] = '\0' ;
-        idx -> param[RECORDIDX_Modality]. XTag = DCM_Modality  ;
+        idx -> param[RECORDIDX_Modality]. XTag = DCM_Modality ;
         idx -> param[RECORDIDX_Modality]. ValueLength = CS_MAX_LENGTH ;
         idx -> ImageNumber[0] = '\0' ;
-        idx -> param[RECORDIDX_ImageNumber]. XTag = DCM_InstanceNumber  ;
+        idx -> param[RECORDIDX_ImageNumber]. XTag = DCM_InstanceNumber ;
         idx -> param[RECORDIDX_ImageNumber]. ValueLength = IS_MAX_LENGTH ;
         idx -> ImageNumber[0] = '\0' ;
-        idx -> param[RECORDIDX_SOPInstanceUID]. XTag = DCM_SOPInstanceUID  ;
+        idx -> param[RECORDIDX_SOPInstanceUID]. XTag = DCM_SOPInstanceUID ;
         idx -> param[RECORDIDX_SOPInstanceUID]. ValueLength = UI_MAX_LENGTH ;
         idx -> SOPInstanceUID[0] = '\0' ;
-        idx -> param[RECORDIDX_SeriesDate]. XTag = DCM_SeriesDate;
+        idx -> param[RECORDIDX_SeriesDate]. XTag = DCM_SeriesDate ;
         idx -> param[RECORDIDX_SeriesDate]. ValueLength = DA_MAX_LENGTH ;
-        idx -> SeriesDate[0] = '\0'     ;
-        idx -> param[RECORDIDX_SeriesTime]. XTag = DCM_SeriesTime;
+        idx -> SeriesDate[0] = '\0' ;
+        idx -> param[RECORDIDX_SeriesTime]. XTag = DCM_SeriesTime ;
         idx -> param[RECORDIDX_SeriesTime]. ValueLength = TM_MAX_LENGTH ;
-        idx -> SeriesTime[0] = '\0'     ;
-        idx -> param[RECORDIDX_SeriesDescription]. XTag = DCM_SeriesDescription  ;
+        idx -> SeriesTime[0] = '\0' ;
+        idx -> param[RECORDIDX_SeriesDescription]. XTag = DCM_SeriesDescription ;
         idx -> param[RECORDIDX_SeriesDescription]. ValueLength = LO_MAX_LENGTH ;
-        idx -> SeriesDescription[0] = '\0'      ;
-        idx -> param[RECORDIDX_ProtocolName]. XTag = DCM_ProtocolName  ;
+        idx -> SeriesDescription[0] = '\0' ;
+        idx -> param[RECORDIDX_ProtocolName]. XTag = DCM_ProtocolName ;
         idx -> param[RECORDIDX_ProtocolName]. ValueLength = LO_MAX_LENGTH ;
-        idx -> ProtocolName[0] = '\0'   ;
-        idx -> param[RECORDIDX_OperatorsName ]. XTag = DCM_OperatorsName  ;
+        idx -> ProtocolName[0] = '\0' ;
+        idx -> param[RECORDIDX_OperatorsName ]. XTag = DCM_OperatorsName ;
         idx -> param[RECORDIDX_OperatorsName ]. ValueLength = PN_MAX_LENGTH ;
-        idx -> OperatorsName[0] = '\0';
-        idx -> param[RECORDIDX_PerformingPhysicianName]. XTag = DCM_PerformingPhysicianName  ;
+        idx -> OperatorsName[0] = '\0' ;
+        idx -> param[RECORDIDX_PerformingPhysicianName]. XTag = DCM_PerformingPhysicianName ;
         idx -> param[RECORDIDX_PerformingPhysicianName]. ValueLength = PN_MAX_LENGTH ;
-        idx -> PerformingPhysicianName[0] = '\0';
-        idx -> param[RECORDIDX_PresentationLabel]. XTag = DCM_ContentLabel  ;
+        idx -> PerformingPhysicianName[0] = '\0' ;
+        idx -> param[RECORDIDX_PresentationLabel]. XTag = DCM_ContentLabel ;
         idx -> param[RECORDIDX_PresentationLabel]. ValueLength = CS_LABEL_MAX_LENGTH ;
-        idx -> PresentationLabel[0] = '\0';
+        idx -> PresentationLabel[0] = '\0' ;
     }
     idx -> param[RECORDIDX_PatientBirthDate]. PValueField = (char *)idx -> PatientBirthDate ;
     idx -> param[RECORDIDX_PatientSex]. PValueField = (char *)idx -> PatientSex ;
@@ -1097,8 +1097,8 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchTime (DB_SmallDcmElmt *mod, DB_Sma
 int DcmQueryRetrieveIndexDatabaseHandle::matchUID (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
 {
     int match ;
-    char *uid  ;
-    char *modl  ;
+    char *uid ;
+    char *modl ;
     char *pc ;
     unsigned int length ;
 
@@ -1267,10 +1267,10 @@ int DcmQueryRetrieveIndexDatabaseHandle::dbmatch (DB_SmallDcmElmt *mod, DB_Small
     switch (keyClass) {
 
     case DATE_CLASS :
-        return matchDate (mod, elt)  ;
+        return matchDate (mod, elt) ;
 
     case TIME_CLASS :
-        return matchTime (mod, elt)  ;
+        return matchTime (mod, elt) ;
 
     case UID_CLASS :
         return matchUID  (mod, elt) ;
@@ -3426,6 +3426,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.22  2010-09-09 16:54:32  joergr
+ * Further code clean-up and minor changes to log messages.
+ *
  * Revision 1.21  2010-09-09 15:00:03  joergr
  * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
  *

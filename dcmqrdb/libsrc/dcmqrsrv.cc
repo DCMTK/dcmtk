@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveSCP
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-09 15:00:03 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2010-09-09 16:54:32 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,8 +91,8 @@ static void storeCallback(
     void *callbackData,
     T_DIMSE_StoreProgress *progress,    /* progress state */
     T_DIMSE_C_StoreRQ *req,             /* original store request */
-    char *imageFileName,       /* being received into */
-    DcmDataset **imageDataSet, /* being received into */
+    char *imageFileName,                /* being received into */
+    DcmDataset **imageDataSet,          /* being received into */
     /* out */
     T_DIMSE_C_StoreRSP *rsp,            /* final store response */
     DcmDataset **stDetail)
@@ -215,7 +215,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
 
 OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OFBool correctUIDPadding)
 {
-    OFCondition           cond = EC_Normal;
+    OFCondition         cond = EC_Normal;
     DIC_NODENAME        peerHostName;
     DIC_AE              peerAETitle;
     DIC_AE              myAETitle;
@@ -224,10 +224,10 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
     ASC_getPresentationAddresses(assoc->params, peerHostName, NULL);
     ASC_getAPTitles(assoc->params, peerAETitle, myAETitle, NULL);
 
- /* now do the real work */
+    /* now do the real work */
     cond = dispatch(assoc, correctUIDPadding);
 
- /* clean up on association termination */
+    /* clean up on association termination */
     if (cond == DUL_PEERREQUESTEDRELEASE) {
         DCMQRDB_INFO("Association Release");
         cond = ASC_acknowledgeRelease(assoc);
@@ -236,7 +236,7 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
         DCMQRDB_INFO("Association Aborted");
     } else {
         DCMQRDB_ERROR("DIMSE Failure (aborting association): " << DimseCondition::dump(temp_str, cond));
-    /* some kind of error so abort the association */
+        /* some kind of error so abort the association */
         cond = ASC_abortAssociation(assoc);
     }
 
@@ -563,12 +563,12 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     OFString temp_str;
     struct { const char *moveSyntax, *findSyntax; } queryRetrievePairs[] =
     {
-    { UID_MOVEPatientRootQueryRetrieveInformationModel,
-      UID_FINDPatientRootQueryRetrieveInformationModel },
-    { UID_MOVEStudyRootQueryRetrieveInformationModel,
-      UID_FINDStudyRootQueryRetrieveInformationModel },
-    { UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel,
-      UID_FINDPatientStudyOnlyQueryRetrieveInformationModel}
+      { UID_MOVEPatientRootQueryRetrieveInformationModel,
+        UID_FINDPatientRootQueryRetrieveInformationModel },
+      { UID_MOVEStudyRootQueryRetrieveInformationModel,
+        UID_FINDStudyRootQueryRetrieveInformationModel },
+      { UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel,
+        UID_FINDPatientStudyOnlyQueryRetrieveInformationModel }
     };
 
     DIC_AE calledAETitle;
@@ -863,17 +863,17 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         movepid = ASC_findAcceptedPresentationContextID(assoc,
         queryRetrievePairs[i].moveSyntax);
         if (movepid != 0) {
-        findpid = ASC_findAcceptedPresentationContextID(assoc,
-            queryRetrievePairs[i].findSyntax);
-        if (findpid == 0) {
-        if (options_.requireFindForMove_) {
-            /* refuse the move */
-            ASC_refusePresentationContext(assoc->params,
-                movepid, ASC_P_USERREJECTION);
+          findpid = ASC_findAcceptedPresentationContextID(assoc,
+              queryRetrievePairs[i].findSyntax);
+          if (findpid == 0) {
+            if (options_.requireFindForMove_) {
+              /* refuse the move */
+              ASC_refusePresentationContext(assoc->params,
+                  movepid, ASC_P_USERREJECTION);
             } else {
-            DCMQRDB_ERROR("Move PresCtx but no Find (accepting for now)");
-        }
-        }
+              DCMQRDB_ERROR("Move Presentation Context but no Find (accepting for now)");
+            }
+          }
         }
     }
 
@@ -1094,6 +1094,9 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrsrv.cc,v $
+ * Revision 1.10  2010-09-09 16:54:32  joergr
+ * Further code clean-up and minor changes to log messages.
+ *
  * Revision 1.9  2010-09-09 15:00:03  joergr
  * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
  *

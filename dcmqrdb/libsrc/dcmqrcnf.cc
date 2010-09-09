@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-25 09:15:19 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-09 16:54:32 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -547,7 +547,7 @@ DcmQueryRetrieveConfigQuota *DcmQueryRetrieveConfig::parseQuota(char **valuehand
    DcmQueryRetrieveConfigQuota *helpquota;
 
    if ((helpquota = (DcmQueryRetrieveConfigQuota *)malloc(sizeof(DcmQueryRetrieveConfigQuota))) == NULL)
-      panic("Memory allocation4");
+      panic("Memory allocation 4");
    helpvalue = parsevalues(valuehandle);
    sscanf(helpvalue, "%d , %s", &studies, helpval);
    helpquota->maxStudies = studies;
@@ -1057,6 +1057,9 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
+ * Revision 1.10  2010-09-09 16:54:32  joergr
+ * Further code clean-up and minor changes to log messages.
+ *
  * Revision 1.9  2010-06-25 09:15:19  uli
  * Fixed issues with compiling with HAVE_STD_STRING.
  *
