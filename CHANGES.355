@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.09 (riesmeier)
 
+- Added support for Supplement 146 (Ophthalmic Visual Field Static Perimetry
+  Measurements Storage SOP Class) to DICOM data dictionary and fixed typos in
+  recent additions for Supplement 144.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Fixed wrong typecast on callback data in progressCallback() function.
   Thanks to forum user "Shaeto" for the report and suggested fix.
   Affects: dcmnet/libsrc/dfindscu.cc

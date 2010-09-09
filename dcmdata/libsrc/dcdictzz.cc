@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2010-09-02 11:30:49
+**   Date: 2010-09-09 12:30:56
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2010-09-02 11:30:49";
+const char* dcmBuiltinDictBuildDate = "2010-09-09 12:30:56";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -11560,7 +11560,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1096, 0x0022, 0x1096,
-      EVR_SQ, "KKeratometryMeasurementTypeCodeSequence", 1, 1, "Supplement_144",
+      EVR_SQ, "KeratometryMeasurementTypeCodeSequence", 1, 1, "Supplement_144",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1097, 0x0022, 0x1097,
@@ -12052,6 +12052,408 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "CRShuttersApplied", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK3" }
+#endif
+  , { 0x0024, 0x0010, 0x0024, 0x0010,
+      EVR_FL, "VisualFieldHorizontalExtent", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0011, 0x0024, 0x0011,
+      EVR_FL, "VisualFieldVerticalExtent", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0012, 0x0024, 0x0012,
+      EVR_CS, "VisualFieldShape", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0016, 0x0024, 0x0016,
+      EVR_SQ, "ScreeningTestModeCodeSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0018, 0x0024, 0x0018,
+      EVR_FL, "MaximumStimulusLuminance", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0020, 0x0024, 0x0020,
+      EVR_FL, "BackgroundLuminance", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0021, 0x0024, 0x0021,
+      EVR_SQ, "StimulusColorCodeSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0024, 0x0024, 0x0024,
+      EVR_SQ, "BackgroundIlluminationColorCodeSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0025, 0x0024, 0x0025,
+      EVR_FL, "StimulusArea", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0028, 0x0024, 0x0028,
+      EVR_FL, "StimulusPresentationTime", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0032, 0x0024, 0x0032,
+      EVR_SQ, "FixationSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0033, 0x0024, 0x0033,
+      EVR_SQ, "FixationMonitoringCodeSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0034, 0x0024, 0x0034,
+      EVR_SQ, "VisualFieldCatchTrialSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0035, 0x0024, 0x0035,
+      EVR_US, "FixationCheckedQuantity", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0036, 0x0024, 0x0036,
+      EVR_US, "PatientNotProperlyFixatedQuantity", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0037, 0x0024, 0x0037,
+      EVR_CS, "PresentedVisualStimuliDataFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0038, 0x0024, 0x0038,
+      EVR_US, "NumberOfVisualStimuli", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0039, 0x0024, 0x0039,
+      EVR_CS, "ExcessiveFixationLossesDataFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0040, 0x0024, 0x0040,
+      EVR_CS, "ExcessiveFixationLosses", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0042, 0x0024, 0x0042,
+      EVR_US, "StimuliRetestingQuantity", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0044, 0x0024, 0x0044,
+      EVR_LT, "CommentsOnPatientPerformanceOfVisualField", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0045, 0x0024, 0x0045,
+      EVR_CS, "FalseNegativesEstimateFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0046, 0x0024, 0x0046,
+      EVR_FL, "FalseNegativesEstimate", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0048, 0x0024, 0x0048,
+      EVR_US, "NegativeCatchTrialsQuantity", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0050, 0x0024, 0x0050,
+      EVR_US, "FalseNegativesQuantity", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0051, 0x0024, 0x0051,
+      EVR_CS, "ExcessiveFalseNegativesDataFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0052, 0x0024, 0x0052,
+      EVR_CS, "ExcessiveFalseNegatives", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0053, 0x0024, 0x0053,
+      EVR_CS, "FalsePositivesEstimateFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0054, 0x0024, 0x0054,
+      EVR_FL, "FalsePositivesEstimate", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0055, 0x0024, 0x0055,
+      EVR_CS, "CatchTrialsDataFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0056, 0x0024, 0x0056,
+      EVR_US, "PositiveCatchTrialsQuantity", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0057, 0x0024, 0x0057,
+      EVR_CS, "TestPointNormalsDataFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0058, 0x0024, 0x0058,
+      EVR_SQ, "TestPointNormalsSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0059, 0x0024, 0x0059,
+      EVR_CS, "GlobalDeviationProbabilityNormalsFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0060, 0x0024, 0x0060,
+      EVR_US, "FalsePositivesQuantity", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0061, 0x0024, 0x0061,
+      EVR_CS, "ExcessiveFalsePositivesDataFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0062, 0x0024, 0x0062,
+      EVR_CS, "ExcessiveFalsePositives", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0063, 0x0024, 0x0063,
+      EVR_CS, "VisualFieldTestNormalsFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0064, 0x0024, 0x0064,
+      EVR_SQ, "ResultsNormalsSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0065, 0x0024, 0x0065,
+      EVR_SQ, "AgeCorrectedSensitivityDeviationAlgorithmSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0066, 0x0024, 0x0066,
+      EVR_FL, "GlobalDeviationFromNormal", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0067, 0x0024, 0x0067,
+      EVR_SQ, "GeneralizedDefectSensitivityDeviationAlgorithmSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0068, 0x0024, 0x0068,
+      EVR_FL, "LocalizedDeviationfromNormal", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0069, 0x0024, 0x0069,
+      EVR_LO, "PatientReliabilityIndicator", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0070, 0x0024, 0x0070,
+      EVR_FL, "VisualFieldMeanSensitivity", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0071, 0x0024, 0x0071,
+      EVR_FL, "GlobalDeviationProbability", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0072, 0x0024, 0x0072,
+      EVR_CS, "LocalDeviationProbabilityNormalsFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0073, 0x0024, 0x0073,
+      EVR_FL, "LocalizedDeviationProbability", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0074, 0x0024, 0x0074,
+      EVR_CS, "ShortTermFluctuationCalculated", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0075, 0x0024, 0x0075,
+      EVR_FL, "ShortTermFluctuation", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0076, 0x0024, 0x0076,
+      EVR_CS, "ShortTermFluctuationProbabilityCalculated", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0077, 0x0024, 0x0077,
+      EVR_FL, "ShortTermFluctuationProbability", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0078, 0x0024, 0x0078,
+      EVR_CS, "CorrectedLocalizedDeviationFromNormalCalculated", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0079, 0x0024, 0x0079,
+      EVR_FL, "CorrectedLocalizedDeviationFromNormal", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0080, 0x0024, 0x0080,
+      EVR_CS, "CorrectedLocalizedDeviationFromNormalProbabilityCalculated", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0081, 0x0024, 0x0081,
+      EVR_FL, "CorrectedLocalizedDeviationFromNormalProbability", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0083, 0x0024, 0x0083,
+      EVR_SQ, "GlobalDeviationProbabilitySequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0085, 0x0024, 0x0085,
+      EVR_SQ, "LocalizedDeviationProbabilitySequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0086, 0x0024, 0x0086,
+      EVR_CS, "FovealSensitivityMeasured", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0087, 0x0024, 0x0087,
+      EVR_FL, "FovealSensitivity", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0088, 0x0024, 0x0088,
+      EVR_FL, "VisualFieldTestDuration", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0089, 0x0024, 0x0089,
+      EVR_SQ, "VisualFieldTestPointSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0090, 0x0024, 0x0090,
+      EVR_FL, "VisualFieldTestPointXCoordinate", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0091, 0x0024, 0x0091,
+      EVR_FL, "VisualFieldTestPointYCoordinate", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0092, 0x0024, 0x0092,
+      EVR_FL, "AgeCorrectedSensitivityDeviationValue", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0093, 0x0024, 0x0093,
+      EVR_CS, "StimulusResults", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0094, 0x0024, 0x0094,
+      EVR_FL, "SensitivityValue", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0095, 0x0024, 0x0095,
+      EVR_CS, "RetestStimulusSeen", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0096, 0x0024, 0x0096,
+      EVR_FL, "RetestSensitivityValue", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0097, 0x0024, 0x0097,
+      EVR_SQ, "VisualFieldTestPointNormalsSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0098, 0x0024, 0x0098,
+      EVR_FL, "QuantifiedDefect", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0102, 0x0024, 0x0102,
+      EVR_CS, "GeneralizedDefectCorrectedSensitivityDeviationFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0103, 0x0024, 0x0103,
+      EVR_FL, "GeneralizedDefectCorrectedSensitivityDeviationValue", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0104, 0x0024, 0x0104,
+      EVR_FL, "GeneralizedDefectCorrectedSensitivityDeviationProbabilityValue", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0105, 0x0024, 0x0105,
+      EVR_FL, "MinimumSensitivityValue", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0106, 0x0024, 0x0106,
+      EVR_CS, "BlindSpotLocalized", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0107, 0x0024, 0x0107,
+      EVR_FL, "BlindSpotXCoordinate", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0108, 0x0024, 0x0108,
+      EVR_FL, "BlindSpotYCoordinate", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0110, 0x0024, 0x0110,
+      EVR_SQ, "VisualAcuityMeasurementSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0112, 0x0024, 0x0112,
+      EVR_SQ, "RefractiveParametersUsedOnPatientSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0113, 0x0024, 0x0113,
+      EVR_CS, "MeasurementLaterality", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0114, 0x0024, 0x0114,
+      EVR_SQ, "OphthalmicPatientClinicalInformationLeftEyeSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0115, 0x0024, 0x0115,
+      EVR_SQ, "OphthalmicPatientClinicalInformationRightEyeSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0117, 0x0024, 0x0117,
+      EVR_CS, "FovealPointNormativeDataFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0118, 0x0024, 0x0118,
+      EVR_FL, "FovealPointProbabilityValue", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0120, 0x0024, 0x0120,
+      EVR_CS, "ScreeningBaselineMeasured", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0122, 0x0024, 0x0122,
+      EVR_SQ, "ScreeningBaselineMeasuredSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0124, 0x0024, 0x0124,
+      EVR_CS, "ScreeningBaselineType", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0126, 0x0024, 0x0126,
+      EVR_FL, "ScreeningBaselineValue", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0202, 0x0024, 0x0202,
+      EVR_LO, "AlgorithmSource", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0306, 0x0024, 0x0306,
+      EVR_LO, "DataSetName", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0307, 0x0024, 0x0307,
+      EVR_LO, "DataSetVersion", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0308, 0x0024, 0x0308,
+      EVR_LO, "DataSetSource", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0309, 0x0024, 0x0309,
+      EVR_LO, "DataSetDescription", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0317, 0x0024, 0x0317,
+      EVR_SQ, "VisualFieldTestReliabilityGlobalIndexSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0320, 0x0024, 0x0320,
+      EVR_SQ, "VisualFieldGlobalResultsIndexSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0325, 0x0024, 0x0325,
+      EVR_SQ, "DataObservationSequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0338, 0x0024, 0x0338,
+      EVR_CS, "IndexNormalsFlag", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0341, 0x0024, 0x0341,
+      EVR_FL, "IndexProbability", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0024, 0x0344, 0x0024, 0x0344,
+      EVR_SQ, "IndexProbabilitySequence", 1, 1, "Supplement_146",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+#ifdef WITH_PRIVATE_TAGS
   , { 0x0025, 0x0000, 0x0025, 0x0000,
       EVR_US, "ViewNative", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
