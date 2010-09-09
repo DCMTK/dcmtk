@@ -3,11 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.09 (riesmeier)
 
+- Fixed wrong typecast on callback data in progressCallback() function.
+  Thanks to forum user "Shaeto" for the report and suggested fix.
+  Affects: dcmnet/libsrc/dfindscu.cc
+
 - Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
   Affects: dcmnet/apps/echoscu.cc
 
 - Fixed typo in OFCondition constants for SCP/SCU role selection failures.
-  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for submitting a patch.
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report.
   Affects: dcmnet/include/dcmtk/dcmnet/cond.h
            dcmnet/libsrc/assoc.cc
            dcmnet/libsrc/cond.cc

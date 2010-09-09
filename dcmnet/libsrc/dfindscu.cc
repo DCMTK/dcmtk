@@ -22,9 +22,8 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-18 16:15:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dfindscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2010-09-09 09:46:33 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +58,7 @@ static void progressCallback(
     T_DIMSE_C_FindRSP *rsp,
     DcmDataset *responseIdentifiers)
 {
-    DcmFindSCUDefaultCallback *callback = OFreinterpret_cast(DcmFindSCUDefaultCallback *, callbackData);
+    DcmFindSCUCallback *callback = OFreinterpret_cast(DcmFindSCUCallback *, callbackData);
     if (callback) callback->callback(request, responseCount, rsp, responseIdentifiers);
 }
 
@@ -541,6 +540,9 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.11  2010-09-09 09:46:33  joergr
+ * Fixed wrong typecast on callback data in progressCallback() function.
+ *
  * Revision 1.10  2010-05-18 16:15:43  joergr
  * Slightly modified log messages and log levels in order to be more consistent.
  * Replaced '\n' by OFendl in log messages.
