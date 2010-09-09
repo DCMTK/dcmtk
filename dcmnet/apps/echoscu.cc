@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-18 16:10:25 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2010-09-09 08:34:09 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,6 +106,7 @@ static const char* transferSyntaxes[] = {
       UID_JPEG2000LosslessOnlyTransferSyntax,
       UID_JPEG2000TransferSyntax,
       UID_MPEG2MainProfileAtMainLevelTransferSyntax,
+      UID_MPEG2MainProfileAtHighLevelTransferSyntax,
       UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
       UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax
 };
@@ -748,6 +749,9 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
+** Revision 1.51  2010-09-09 08:34:09  joergr
+** Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
+**
 ** Revision 1.50  2010-05-18 16:10:25  joergr
 ** Replaced '\n' by OFendl in log messages.
 **

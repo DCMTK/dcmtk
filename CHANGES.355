@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.09 (riesmeier)
 
+- Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
+  Affects: dcmnet/apps/echoscu.cc
+
 - Fixed typo in OFCondition constants for SCP/SCU role selection failures.
   Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for submitting a patch.
   Affects: dcmnet/include/dcmtk/dcmnet/cond.h
