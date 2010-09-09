@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveFindContext
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:42 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-09 15:00:02 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,7 @@ void DcmQueryRetrieveFindContext::callbackHandler(
 
     if (responseCount == 1) {
         /* start the database search */
-        DCMQRDB_INFO("Find SCP Request Identifiers:\n" << DcmObject::PrintHelper(*requestIdentifiers));
+        DCMQRDB_INFO("Find SCP Request Identifiers:" << OFendl << DcmObject::PrintHelper(*requestIdentifiers));
         dbcond = dbHandle.startFindRequest(
             request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         if (dbcond.bad()) {
@@ -95,15 +95,18 @@ void DcmQueryRetrieveFindContext::callbackHandler(
             << DU_cfindStatusString(dbStatus.status()) << "]");
     DCMQRDB_DEBUG(DIMSE_dumpMessage(str, *response, DIMSE_OUTGOING));
     if (DICOM_PENDING_STATUS(dbStatus.status()) && (*responseIdentifiers != NULL))
-        DCMQRDB_DEBUG("Find SCP Response Identifiers:\n" << DcmObject::PrintHelper(**responseIdentifiers));
+        DCMQRDB_DEBUG("Find SCP Response Identifiers:" << OFendl << DcmObject::PrintHelper(**responseIdentifiers));
     if (*stDetail)
-        DCMQRDB_DEBUG("Status detail:\n" << DcmObject::PrintHelper(**stDetail));
+        DCMQRDB_DEBUG("  Status detail:" << OFendl << DcmObject::PrintHelper(**stDetail));
 }
 
 
 /*
  * CVS Log
  * $Log: dcmqrcbf.cc,v $
+ * Revision 1.5  2010-09-09 15:00:02  joergr
+ * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
+ *
  * Revision 1.4  2009-11-24 10:10:42  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveGetContext
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-03 10:34:57 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2010-09-09 15:00:03 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,7 @@ void DcmQueryRetrieveGetContext::callbackHandler(
 
     if (responseCount == 1) {
         /* start the database search */
-        DCMQRDB_INFO("Get SCP Request Identifiers:\n" << DcmObject::PrintHelper(*requestIdentifiers));
+        DCMQRDB_INFO("Get SCP Request Identifiers:" << OFendl << DcmObject::PrintHelper(*requestIdentifiers));
         dbcond = dbHandle.startMoveRequest(
             request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         if (dbcond.bad()) {
@@ -277,10 +277,10 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
         nFailed++;
         addFailedUIDInstance(sopInstance);
         OFString temp_str;
-        DCMQRDB_ERROR("Get SCP: storeSCU: Store Request Failed:" << DimseCondition::dump(temp_str, cond));
+        DCMQRDB_ERROR("Get SCP: storeSCU: Store Request Failed: " << DimseCondition::dump(temp_str, cond));
     }
     if (stDetail) {
-        DCMQRDB_INFO("  Status Detail:\n" << DcmObject::PrintHelper(*stDetail));
+        DCMQRDB_INFO("  Status Detail:" << OFendl << DcmObject::PrintHelper(*stDetail));
         delete stDetail;
     }
     return cond;
@@ -318,7 +318,7 @@ void DcmQueryRetrieveGetContext::getNextImage(DcmQueryRetrieveDatabaseStatus * d
 
         if (cond != EC_Normal) {
             OFString temp_str;
-            DCMQRDB_ERROR("getSCP: Get Sub-Op Failed:" << DimseCondition::dump(temp_str, cond));
+            DCMQRDB_ERROR("getSCP: Get Sub-Op Failed: " << DimseCondition::dump(temp_str, cond));
             /* clear condition stack */
         }
     }
@@ -343,6 +343,9 @@ void DcmQueryRetrieveGetContext::buildFailedInstanceList(DcmDataset ** rspIds)
 /*
  * CVS Log
  * $Log: dcmqrcbg.cc,v $
+ * Revision 1.10  2010-09-09 15:00:03  joergr
+ * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
+ *
  * Revision 1.9  2010-06-03 10:34:57  joergr
  * Replaced calls to strerror() by new helper function OFStandard::strerror()
  * which results in using the thread safe version of strerror() if available.

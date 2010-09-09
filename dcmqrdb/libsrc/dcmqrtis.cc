@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:23:32 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2010-09-09 15:00:03 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -520,14 +520,14 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_detachAssociation(OFBool abortFlag)
         DCMQRDB_INFO("Aborting Association (" << peerTitle << ")");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
-            DCMQRDB_ERROR("Association Abort Failed:" << DimseCondition::dump(temp_str, cond));
+            DCMQRDB_ERROR("Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
         }
     } else {
         /* release association */
         DCMQRDB_INFO("Releasing Association (" << peerTitle << ")");
         cond = ASC_releaseAssociation(assoc);
         if (cond.bad()) {
-            DCMQRDB_ERROR("Association Release Failed:\n" << DimseCondition::dump(temp_str, cond));
+            DCMQRDB_ERROR("Association Release Failed: " << DimseCondition::dump(temp_str, cond));
         }
     }
     ASC_dropAssociation(assoc);
@@ -635,7 +635,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
 
     cond = ASC_createAssociationParameters(&params, maxReceivePDULength);
     if (cond.bad()) {
-        DCMQRDB_ERROR("Help, cannot create association parameters:\n" << DimseCondition::dump(temp_str, cond));
+        DCMQRDB_ERROR("Help, cannot create association parameters: " << DimseCondition::dump(temp_str, cond));
         return OFFalse;
     }
     ASC_setAPTitles(params, currentAETitle, currentPeerTitle, NULL);
@@ -651,11 +651,11 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
 
     cond = addPresentationContexts(params);
     if (cond.bad()) {
-        DCMQRDB_ERROR("Help, cannot add presentation contexts:\n" << DimseCondition::dump(temp_str, cond));
+        DCMQRDB_ERROR("Help, cannot add presentation contexts: " << DimseCondition::dump(temp_str, cond));
         ASC_destroyAssociationParameters(&params);
         return OFFalse;
     }
-    DCMQRDB_DEBUG("Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
+    DCMQRDB_DEBUG("Request Parameters:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
 
     /* create association */
     DCMQRDB_INFO("Requesting Association");
@@ -665,14 +665,14 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
             T_ASC_RejectParameters rej;
 
             ASC_getRejectParameters(params, &rej);
-            DCMQRDB_ERROR("Association Rejected:\n" << ASC_printRejectParameters(temp_str, &rej));
+            DCMQRDB_ERROR("Association Rejected:" << OFendl << ASC_printRejectParameters(temp_str, &rej));
             ASC_dropAssociation(assoc);
             ASC_destroyAssociation(&assoc);
 
             return OFFalse;
         } else {
             DCMQRDB_ERROR("Association Request Failed: Peer (" << presentationAddress << ", "
-                << currentPeerTitle << ")\n" << DimseCondition::dump(temp_str, cond));
+                << currentPeerTitle << "): " << DimseCondition::dump(temp_str, cond));
             ASC_dropAssociation(assoc);
             ASC_destroyAssociation(&assoc);
 
@@ -680,7 +680,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
         }
     }
     /* what has been accepted/refused ? */
-    DCMQRDB_DEBUG("Association Parameters Negotiated:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
+    DCMQRDB_DEBUG("Association Parameters Negotiated:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));
 
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
         DCMQRDB_ERROR("All Presentation Contexts Refused: Peer (" << presentationAddress << ","
@@ -745,7 +745,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendEcho()
             DU_cstoreStatusString(status));
     } else {
         OFString temp_str;
-        DCMQRDB_ERROR("Failed:\n" << DimseCondition::dump(temp_str, cond));
+        DCMQRDB_ERROR("Failed: " << DimseCondition::dump(temp_str, cond));
         ASC_abortAssociation(assoc);
         ASC_dropAssociation(assoc);
         ASC_destroyAssociation(&assoc);
@@ -847,7 +847,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_storeImage(char *sopClass, char *sopI
             DU_cstoreStatusString(rsp.DimseStatus));
     } else {
         OFString temp_str;
-        DCMQRDB_ERROR("[MsgID " << msgId << "] Failed:\n" << DimseCondition::dump(temp_str, cond));
+        DCMQRDB_ERROR("[MsgID " << msgId << "] Failed: " << DimseCondition::dump(temp_str, cond));
         ASC_abortAssociation(assoc);
         ASC_dropAssociation(assoc);
         ASC_destroyAssociation(&assoc);
@@ -898,7 +898,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_remoteFindQuery(TI_DBEntry *db, DcmDa
 
     msgId = assoc->nextMsgID++;
 
-    DCMQRDB_INFO("Sending Find SCU RQ: MsgID " << msgId << ":\n" << DcmObject::PrintHelper(*query));
+    DCMQRDB_INFO("Sending Find SCU RQ: MsgID " << msgId << ":" << OFendl << DcmObject::PrintHelper(*query));
 
     req.MessageID = msgId;
     strcpy(req.AffectedSOPClassUID,
@@ -913,7 +913,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_remoteFindQuery(TI_DBEntry *db, DcmDa
         DCMQRDB_INFO(DIMSE_dumpMessage(temp_str, rsp, DIMSE_INCOMING));
     } else {
         OFString temp_str;
-        DCMQRDB_ERROR("Find Failed:\n" << DimseCondition::dump(temp_str, cond));
+        DCMQRDB_ERROR("Find Failed: " << DimseCondition::dump(temp_str, cond));
     }
     if (stDetail != NULL) {
         printf("  Status Detail:\n");
@@ -1083,7 +1083,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_database(int arg, const char * /*cmdb
 
             if (!TI_attachDB(dbEntries[currentdb]))
             {
-                DCMQRDB_FATAL("unable to open database, bailing out.");
+                DCMQRDB_FATAL("unable to open database, bailing out");
                 exit(10);
             }
         }
@@ -2208,6 +2208,9 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
+ * Revision 1.15  2010-09-09 15:00:03  joergr
+ * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
+ *
  * Revision 1.14  2010-08-09 13:23:32  joergr
  * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
  * the official "keyword" is used for the attribute name which results in a

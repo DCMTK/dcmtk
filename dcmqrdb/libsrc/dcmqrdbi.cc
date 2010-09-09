@@ -22,8 +22,8 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:23:32 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2010-09-09 15:00:03 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2547,10 +2547,10 @@ void DcmQueryRetrieveIndexDatabaseHandle::enableQuotaSystem(OFBool enable)
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
 {
     if (!quotaSystemEnabled) {
-      DCMQRDB_WARN("file delete operations are disabled, keeping file: " << imgFile << " despite duplicate SOP Instance UID.");
+      DCMQRDB_WARN("file delete operations are disabled, keeping file: " << imgFile << " despite duplicate SOP Instance UID");
       return EC_Normal;
     } else {
-      DCMQRDB_WARN("Deleting file: " << imgFile << " due to quota or duplicate SOP instance UID.");
+      DCMQRDB_WARN("Deleting file: " << imgFile << " due to quota or duplicate SOP instance UID");
     }
 
 #ifdef LOCK_IMAGE_FILES
@@ -3426,6 +3426,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.21  2010-09-09 15:00:03  joergr
+ * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
+ *
  * Revision 1.20  2010-08-09 13:23:32  joergr
  * Updated data dictionary to 2009 edition of the DICOM standard. From now on,
  * the official "keyword" is used for the attribute name which results in a

@@ -3,6 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.09 (riesmeier)
 
+- Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
+  Affects: dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/apps/dcmqrti.cc
+           dcmqrdb/libsrc/dcmqrcbf.cc
+           dcmqrdb/libsrc/dcmqrcbg.cc
+           dcmqrdb/libsrc/dcmqrcbm.cc
+           dcmqrdb/libsrc/dcmqrcbs.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmqrdb/libsrc/dcmqrsrv.cc
+           dcmqrdb/libsrc/dcmqrtis.cc
+
 - Added support for Supplement 146 (Ophthalmic Visual Field Static Perimetry
   Measurements Storage SOP Class) to DICOM data dictionary and fixed typos in
   recent additions for Supplement 144.

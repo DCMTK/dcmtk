@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-02 12:13:00 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2010-09-09 15:00:03 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
 
     if (responseCount == 1) {
         /* start the database search */
-        DCMQRDB_INFO("Move SCP Request Identifiers:\n" << DcmObject::PrintHelper(*requestIdentifiers));
+        DCMQRDB_INFO("Move SCP Request Identifiers:" << OFendl << DcmObject::PrintHelper(*requestIdentifiers));
         dbcond = dbHandle.startMoveRequest(
         request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         if (dbcond.bad()) {
@@ -166,10 +166,10 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
             << DU_cmoveStatusString(dbStatus.status()) << "]");
     DCMQRDB_DEBUG(DIMSE_dumpMessage(str, *response, DIMSE_OUTGOING));
     if (DICOM_PENDING_STATUS(dbStatus.status()) && (*responseIdentifiers != NULL)) {
-        DCMQRDB_DEBUG("Move SCP Response Identifiers:\n" << DcmObject::PrintHelper(**responseIdentifiers));
+        DCMQRDB_DEBUG("Move SCP Response Identifiers:" << OFendl << DcmObject::PrintHelper(**responseIdentifiers));
     }
     if (*stDetail) {
-        DCMQRDB_DEBUG("  Status detail:\n" << DcmObject::PrintHelper(**stDetail));
+        DCMQRDB_DEBUG("  Status detail:" << OFendl << DcmObject::PrintHelper(**stDetail));
     }
 }
 
@@ -283,10 +283,10 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
         nFailed++;
         addFailedUIDInstance(sopInstance);
         OFString temp_str;
-        DCMQRDB_ERROR("Move SCP: storeSCU: Store Request Failed:\n" << DimseCondition::dump(temp_str, cond));
+        DCMQRDB_ERROR("Move SCP: storeSCU: Store Request Failed: " << DimseCondition::dump(temp_str, cond));
     }
     if (stDetail != NULL) {
-        DCMQRDB_INFO("  Status Detail:\n" << DcmObject::PrintHelper(*stDetail));
+        DCMQRDB_INFO("  Status Detail:" << OFendl << DcmObject::PrintHelper(*stDetail));
         delete stDetail;
     }
     return cond;
@@ -325,8 +325,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
         cond = ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU);
         if (cond.bad()) {
             OFString temp_str;
-            DCMQRDB_ERROR("moveSCP: Cannot create Association-params for sub-ops:\n"
-                << DimseCondition::dump(temp_str, cond));
+            DCMQRDB_ERROR("moveSCP: Cannot create Association-params for sub-ops: " << DimseCondition::dump(temp_str, cond));
         }
     }
     if (cond.good()) {
@@ -340,7 +339,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
         if (cond.bad()) {
             DCMQRDB_ERROR(DimseCondition::dump(temp_str, cond));
         }
-        DCMQRDB_DEBUG("Request Parameters:\n" << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
+        DCMQRDB_DEBUG("Request Parameters:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
     }
     if (cond.good()) {
         /* create association */
@@ -351,9 +350,9 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
                 T_ASC_RejectParameters rej;
 
                 ASC_getRejectParameters(params, &rej);
-                DCMQRDB_ERROR("moveSCP: Sub-Association Rejected\n" << ASC_printRejectParameters(temp_str, &rej));
+                DCMQRDB_ERROR("moveSCP: Sub-Association Rejected" << OFendl << ASC_printRejectParameters(temp_str, &rej));
             } else {
-                DCMQRDB_ERROR("moveSCP: Sub-Association Request Failed:\n" << DimseCondition::dump(temp_str, cond));
+                DCMQRDB_ERROR("moveSCP: Sub-Association Request Failed: " << DimseCondition::dump(temp_str, cond));
             }
         }
     }
@@ -374,17 +373,16 @@ OFCondition DcmQueryRetrieveMoveContext::closeSubAssociation()
         DCMQRDB_INFO("Releasing Sub-Association");
         cond = ASC_releaseAssociation(subAssoc);
         if (cond.bad()) {
-            DCMQRDB_ERROR("moveSCP: Sub-Association Release Failed:\n" << DimseCondition::dump(temp_str, cond));
+            DCMQRDB_ERROR("moveSCP: Sub-Association Release Failed: " << DimseCondition::dump(temp_str, cond));
         }
         cond = ASC_dropAssociation(subAssoc);
         if (cond.bad()) {
-            DCMQRDB_ERROR("moveSCP: Sub-Association Drop Failed:\n" << DimseCondition::dump(temp_str, cond));
+            DCMQRDB_ERROR("moveSCP: Sub-Association Drop Failed: " << DimseCondition::dump(temp_str, cond));
         }
         cond = ASC_destroyAssociation(&subAssoc);
         if (cond.bad()) {
-            DCMQRDB_ERROR("moveSCP: Sub-Association Destroy Failed:\n" << DimseCondition::dump(temp_str, cond));
+            DCMQRDB_ERROR("moveSCP: Sub-Association Destroy Failed: " << DimseCondition::dump(temp_str, cond));
         }
-
     }
 
     if (assocStarted) {
@@ -420,7 +418,7 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
         cond = performMoveSubOp(subImgSOPClass, subImgSOPInstance, subImgFileName);
         if (cond != EC_Normal) {
             OFString temp_str;
-            DCMQRDB_ERROR("moveSCP: Move Sub-Op Failed:" << DimseCondition::dump(temp_str, cond));
+            DCMQRDB_ERROR("moveSCP: Move Sub-Op Failed: " << DimseCondition::dump(temp_str, cond));
             /* clear condition stack */
         }
     }
@@ -684,6 +682,9 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
+ * Revision 1.16  2010-09-09 15:00:03  joergr
+ * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
+ *
  * Revision 1.15  2010-09-02 12:13:00  joergr
  * Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
  *

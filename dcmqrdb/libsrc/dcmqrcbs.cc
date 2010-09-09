@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveStoreContext
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-02 16:21:18 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2010-09-09 15:00:03 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,8 +93,9 @@ void DcmQueryRetrieveStoreContext::saveImageToDB(
         if (dbcond.bad())
         {
             OFString temp_str;
-            DCMQRDB_ERROR("storeSCP: Database: storeRequest Failed (" <<
-               DU_cstoreStatusString(dbStatus.status()) << ")\n" << DimseCondition::dump(temp_str, dbcond));
+            DCMQRDB_ERROR("storeSCP: Database: storeRequest Failed ("
+                << DU_cstoreStatusString(dbStatus.status()) << "): "
+                << DimseCondition::dump(temp_str, dbcond));
         }
         status = dbStatus.status();
     }
@@ -185,9 +186,9 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
 
         OFString str;
         if (rsp->DimseStatus != STATUS_Success)
-            DCMQRDB_WARN("NOTICE: StoreSCP:\n" << DIMSE_dumpMessage(str, *rsp, DIMSE_OUTGOING));
+            DCMQRDB_WARN("NOTICE: StoreSCP:" << OFendl << DIMSE_dumpMessage(str, *rsp, DIMSE_OUTGOING));
         else
-            DCMQRDB_INFO("Sending:\n" << DIMSE_dumpMessage(str, *rsp, DIMSE_OUTGOING));
+            DCMQRDB_INFO("Sending:" << OFendl << DIMSE_dumpMessage(str, *rsp, DIMSE_OUTGOING));
         status = rsp->DimseStatus;
     }
 }
@@ -196,6 +197,9 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
 /*
  * CVS Log
  * $Log: dcmqrcbs.cc,v $
+ * Revision 1.7  2010-09-09 15:00:03  joergr
+ * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
+ *
  * Revision 1.6  2009-12-02 16:21:18  joergr
  * Slightly modified output of progress bar.
  *

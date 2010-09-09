@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Telnet Initiator (ti) Main Program
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:41 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-09 14:59:30 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -251,7 +251,7 @@ int main( int argc, char *argv[] )
           app.checkValue( cmd.getValue( remoteDBTitles[remoteDBTitlesCount] ) );
           remoteDBTitlesCount++;
         }
-        else OFLOG_ERROR(dcmqrtiLogger, "ti: Too many remote database titles.");
+        else OFLOG_ERROR(dcmqrtiLogger, "ti: Too many remote database titles");
       } while (cmd.findOption("--remote", 0, OFCommandLine::FOM_Next));
     }
 
@@ -277,7 +277,7 @@ int main( int argc, char *argv[] )
       // in case its value is not in a certain range, use the default value
       if( maxPDU == 0 || maxPDU < ASC_MINIMUMPDUSIZE || maxPDU > ASC_MAXIMUMPDUSIZE )
       {
-        OFLOG_WARN(dcmqrtiLogger, "ti: no or invalid max pdu size found in configuration file.");
+        OFLOG_WARN(dcmqrtiLogger, "ti: no or invalid max pdu size found in configuration file");
         maxPDU = ASC_DEFAULTMAXPDU;
       }
 
@@ -374,31 +374,31 @@ int main( int argc, char *argv[] )
           cond = ASC_dropNetwork( conf.accessNet() );
           if( cond.bad() )
           {
-            OFLOG_ERROR(dcmqrtiLogger, "ti: error dropping network: " << DimseCondition::dump(temp_str, cond));
+            OFLOG_ERROR(dcmqrtiLogger, "ti: cannot drop network: " << DimseCondition::dump(temp_str, cond));
             returnValue = 1;
           }
         }
         else
         {
-          OFLOG_ERROR(dcmqrtiLogger, "ti: error initialising network: " << DimseCondition::dump(temp_str, cond));
+          OFLOG_ERROR(dcmqrtiLogger, "ti: cannot initialize network: " << DimseCondition::dump(temp_str, cond));
           returnValue = 1;
         }
       }
       else
       {
-        OFLOG_ERROR(dcmqrtiLogger, "ti: no accessable databases.");
+        OFLOG_ERROR(dcmqrtiLogger, "ti: no accessable databases");
         returnValue = 1;
       }
     }
     else
     {
-      OFLOG_ERROR(dcmqrtiLogger, "ti: error while reading configuration file '" << configFileName << "'.");
+      OFLOG_ERROR(dcmqrtiLogger, "ti: cannot read configuration file '" << configFileName << "'");
       returnValue = 1;
     }
   }
   else
   {
-    OFLOG_ERROR(dcmqrtiLogger, "ti: cannot access configuration file '" << configFileName << "'.");
+    OFLOG_ERROR(dcmqrtiLogger, "ti: cannot access configuration file '" << configFileName << "'");
     returnValue = 1;
   }
 
@@ -416,6 +416,9 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
+ * Revision 1.18  2010-09-09 14:59:30  joergr
+ * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
+ *
  * Revision 1.17  2009-11-24 10:10:41  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

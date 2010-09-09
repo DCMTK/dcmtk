@@ -22,8 +22,8 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-02 12:12:56 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2010-09-09 14:59:30 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -668,7 +668,7 @@ main(int argc, char *argv[])
 
     cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, options.acse_timeout_, &options.net_);
     if (cond.bad()) {
-      OFLOG_FATAL(dcmqrscpLogger, "Error initialising network:" << DimseCondition::dump(temp_str, cond));
+      OFLOG_FATAL(dcmqrscpLogger, "cannot initialize network: " << DimseCondition::dump(temp_str, cond));
       return 10;
     }
 
@@ -691,7 +691,7 @@ main(int argc, char *argv[])
      {
        if (!(grp = getgrnam(opt_GroupName)))
        {
-         OFLOG_FATAL(dcmqrscpLogger, "Bad group name " << opt_GroupName);
+         OFLOG_FATAL(dcmqrscpLogger, "bad group name " << opt_GroupName);
          return 10;
        }
        if (setgid(grp->gr_gid) == -1)
@@ -704,7 +704,7 @@ main(int argc, char *argv[])
      {
        if (!(pwd = getpwnam(opt_UserName)))
        {
-         OFLOG_FATAL(dcmqrscpLogger, "Bad user name " << opt_UserName);
+         OFLOG_FATAL(dcmqrscpLogger, "bad user name " << opt_UserName);
          return 10;
        }
        if (setuid(pwd->pw_uid) == -1)
@@ -735,7 +735,7 @@ main(int argc, char *argv[])
 
     cond = ASC_dropNetwork(&options.net_);
     if (cond.bad()) {
-      OFLOG_FATAL(dcmqrscpLogger, "Error dropping network:" << DimseCondition::dump(temp_str, cond));
+      OFLOG_FATAL(dcmqrscpLogger, "cannot drop network: " << DimseCondition::dump(temp_str, cond));
       return 10;
     }
 
@@ -750,6 +750,9 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
+ * Revision 1.23  2010-09-09 14:59:30  joergr
+ * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
+ *
  * Revision 1.22  2010-09-02 12:12:56  joergr
  * Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
  *
