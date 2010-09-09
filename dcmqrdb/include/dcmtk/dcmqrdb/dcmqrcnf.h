@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 10:10:42 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-09 17:20:33 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -312,41 +312,6 @@ public:
 
 private:
 
-  /*
-   *  get Application Title
-   *  Input :
-   *  Return : Application Title
-   */
-  const char *getApplicationTitle() const;
-
-  /*
-   *  get Application Context
-   *  Input :
-   *  Return : Application Context
-   */
-  const char *getApplicationContext() const;
-
-  /*
-   *  get Implementation Class
-   *  Input :
-   *  Return : Implementation Class
-   */
-  const char *getImplementationClass() const;
-
-  /*
-   *  get Implementation Version
-   *  Input :
-   *  Return : Implementation Version
-   */
-  const char *getImplementationVersion() const;
-
-  /*
-   *  get Network Type
-   *  Input :
-   *  Return : Network Type
-   */
-  const char *getNetworkType() const;
-
   const char* vendorForPeerAETitle(const char *peerAETitle) const;
 
   int countCtnTitles() const;
@@ -460,11 +425,6 @@ private:
   static char *parsevalues (char **valuehandle);
 
   /* Configuration Parameters */
-  OFString applicationTitle_;
-  OFString applicationContext_;
-  OFString implementationClass_;
-  OFString implementationVersion_;
-  OFString networkType_;
   OFString UserName_;
   OFString GroupName_;
   int networkTCPPort_;
@@ -482,6 +442,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcnf.h,v $
+ * Revision 1.6  2010-09-09 17:20:33  joergr
+ * Removed unused (or never used?) configuration entries.
+ *
  * Revision 1.5  2009-11-24 10:10:42  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

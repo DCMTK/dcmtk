@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveConfig
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-09 16:54:32 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2010-09-09 17:20:42 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -193,11 +193,6 @@ int DcmQueryRetrieveConfig::countCtnTitles() const
 
 void DcmQueryRetrieveConfig::initConfigStruct()
 {
-   applicationTitle_ = "CTN";
-   applicationContext_ = "1.2.840.10008.3.1.1.1";
-   implementationClass_ = "1.2.3.4.5.6.7.8.9.10";
-   implementationVersion_ = "CEN-DICOM-1.0";
-   networkType_ = "tcp";
    UserName_ = "";
    GroupName_ = "";
    networkTCPPort_ = 104;
@@ -260,29 +255,19 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
       valueptr = skipmnemonic(rcline);
 
       if (!strcmp("ApplicationTitle", mnemonic)) {
-         c = parsevalues(&valueptr);
-         applicationTitle_ = c;
-         free(c);
+        // ignore this entry which was used (really?) in previous versions
       }
       else if (!strcmp("ApplicationContext", mnemonic)) {
-         c = parsevalues(&valueptr);
-         applicationContext_ = c;
-         free(c);
+        // ignore this entry which was used (really?) in previous versions
       }
       else if (!strcmp("ImplementationClass", mnemonic)) {
-         c = parsevalues(&valueptr);
-         implementationClass_ = c;
-         free(c);
+        // ignore this entry which was used (really?) in previous versions
       }
       else if (!strcmp("ImplementationVersion", mnemonic)) {
-         c = parsevalues(&valueptr);
-         implementationVersion_ = c;
-         free(c);
+        // ignore this entry which was used (really?) in previous versions
       }
       else if (!strcmp("NetworkType", mnemonic)) {
-         c = parsevalues(&valueptr);
-         networkType_ = c;
-         free(c);
+        // ignore this entry which was used (really?) in previous versions
       }
       else if (!strcmp("UserName", mnemonic)) {
          c = parsevalues(&valueptr);
@@ -812,10 +797,8 @@ void DcmQueryRetrieveConfig::printConfig()
             CNF_VendorTable.HostEntries[i].Peers[j].HostName << " " << CNF_VendorTable.HostEntries[i].Peers[j].PortNumber);
       }
    }
-   DCMQRDB_INFO("\nGlobal Parameters:\n" << applicationTitle_ << "\n" << applicationContext_ << "\n" <<
-      implementationClass_ << "\n" << implementationVersion_ << "\n" << networkType_ << "\n" <<
-      networkTCPPort_ << "\n" << OFstatic_cast(unsigned long, maxPDUSize_) << "\n" <<
-      maxAssociations_);
+   DCMQRDB_INFO("\nGlobal Parameters:\n" << networkTCPPort_ << "\n" << OFstatic_cast(unsigned long, maxPDUSize_)
+      << "\n" << maxAssociations_);
    DCMQRDB_INFO("\nAEEntries: " << CNF_Config.noOfAEEntries);
    for(i = 0; i < CNF_Config.noOfAEEntries; i++) {
       DCMQRDB_INFO(CNF_Config.AEEntries[i].ApplicationTitle << "\n" << CNF_Config.AEEntries[i].StorageArea
@@ -832,36 +815,6 @@ void DcmQueryRetrieveConfig::printConfig()
       }
       DCMQRDB_INFO("----------------------------------\n");
    }
-}
-
-
-const char *DcmQueryRetrieveConfig::getApplicationTitle() const
-{
-   return(applicationTitle_.c_str());
-}
-
-
-const char *DcmQueryRetrieveConfig::getApplicationContext() const
-{
-   return(applicationContext_.c_str());
-}
-
-
-const char *DcmQueryRetrieveConfig::getImplementationClass() const
-{
-   return(implementationClass_.c_str());
-}
-
-
-const char *DcmQueryRetrieveConfig::getImplementationVersion() const
-{
-   return(implementationVersion_.c_str());
-}
-
-
-const char *DcmQueryRetrieveConfig::getNetworkType() const
-{
-   return(networkType_.c_str());
 }
 
 
@@ -1057,6 +1010,9 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
+ * Revision 1.11  2010-09-09 17:20:42  joergr
+ * Removed unused (or never used?) configuration entries.
+ *
  * Revision 1.10  2010-09-09 16:54:32  joergr
  * Further code clean-up and minor changes to log messages.
  *

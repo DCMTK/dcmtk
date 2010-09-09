@@ -30,7 +30,6 @@ value list.
 
 The Global Parameter part knows of the following keywords:
 
-NetworkTyp      - string value
 NetworkTCPPort  - integer value
 MaxPDUSize      - integer value
 MaxAssociations - integer value
@@ -42,7 +41,6 @@ module.
 
 Example:
 
-NetworkType     = "tcp"
 NetworkTCPPort  = 104
 MaxPDUSize      = 8192
 MaxAssociations = 20

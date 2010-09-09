@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.09 (riesmeier)
 
+- Removed unused (or never used?) configuration entries.
+  Affects: dcmqrdb/docs/dcmqrcnf.txt
+           dcmqrdb/etc/dcmqrscp.cfg
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcnf.h
+           dcmqrdb/libsrc/dcmqrcnf.cc
+
 - Further code clean-up and minor changes to log messages.
   Affects: dcmqrdb/libsrc/dcmqrcbg.cc
            dcmqrdb/libsrc/dcmqrcnf.cc
