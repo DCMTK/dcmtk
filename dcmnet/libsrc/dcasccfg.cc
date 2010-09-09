@@ -22,8 +22,8 @@
  *  Purpose:
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-26 09:23:38 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2010-09-09 08:32:06 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -491,7 +491,7 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
                 assoc.params, pc.presentationContextID,
                 pc.proposedTransferSyntaxes[j], acceptedRole);
             // SCP/SCU role selection failed, reject presentation context
-            if (result == ASC_SCPSCUROLESELETIONFAILED)
+            if (result == ASC_SCPSCUROLESELECTIONFAILED)
             {
               result = ASC_refusePresentationContext(assoc.params,
                 pc.presentationContextID, ASC_P_NOREASON);
@@ -551,6 +551,9 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
 /*
  * CVS/RCS Log
  * $Log: dcasccfg.cc,v $
+ * Revision 1.6  2010-09-09 08:32:06  joergr
+ * Fixed typo in OFCondition constants for SCP/SCU role selection failures.
+ *
  * Revision 1.5  2010-08-26 09:23:38  joergr
  * Fixed incorrect behavior of association acceptors during SCP/SCU role
  * selection negotiation.

@@ -22,8 +22,8 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-26 09:22:24 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2010-09-09 08:32:06 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,19 +37,19 @@
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
 
-const OFConditionConst ASCE_BADPRESENTATIONCONTEXTID(OFM_dcmnet, ASCC_BADPRESENTATIONCONTEXTID, OF_error, "ASC Bad presentation context ID");
-const OFConditionConst ASCE_MISSINGTRANSFERSYNTAX(   OFM_dcmnet, ASCC_MISSINGTRANSFERSYNTAX,    OF_error, "ASC Missing transfer syntax");
-const OFConditionConst ASCE_NULLKEY(                 OFM_dcmnet, ASCC_NULLKEY,                  OF_error, "ASC Caller passed in a NULL key");
-const OFConditionConst ASCE_SHUTDOWNAPPLICATION(     OFM_dcmnet, ASCC_SHUTDOWNAPPLICATION,      OF_error, "ASC Application shutdown requested");
-const OFConditionConst ASCE_USERIDENTIFICATIONFAILED(OFM_dcmnet, ASCC_USERIDENTIFICATIONFAILED, OF_error, "ASC User Identification Negotiation failed");
-const OFConditionConst ASCE_SCPSCUROLESELETIONFAILED(OFM_dcmnet, ASCC_SCPSCUROLESELETIONFAILED, OF_error, "ASC SCP/SCU role selection failed");
+const OFConditionConst ASCE_BADPRESENTATIONCONTEXTID( OFM_dcmnet, ASCC_BADPRESENTATIONCONTEXTID,  OF_error, "ASC Bad presentation context ID");
+const OFConditionConst ASCE_MISSINGTRANSFERSYNTAX(    OFM_dcmnet, ASCC_MISSINGTRANSFERSYNTAX,     OF_error, "ASC Missing transfer syntax");
+const OFConditionConst ASCE_NULLKEY(                  OFM_dcmnet, ASCC_NULLKEY,                   OF_error, "ASC Caller passed in a NULL key");
+const OFConditionConst ASCE_SHUTDOWNAPPLICATION(      OFM_dcmnet, ASCC_SHUTDOWNAPPLICATION,       OF_error, "ASC Application shutdown requested");
+const OFConditionConst ASCE_USERIDENTIFICATIONFAILED( OFM_dcmnet, ASCC_USERIDENTIFICATIONFAILED,  OF_error, "ASC User Identification Negotiation failed");
+const OFConditionConst ASCE_SCPSCUROLESELECTIONFAILED(OFM_dcmnet, ASCC_SCPSCUROLESELECTIONFAILED, OF_error, "ASC SCP/SCU role selection failed");
 
-const OFCondition ASC_BADPRESENTATIONCONTEXTID(ASCE_BADPRESENTATIONCONTEXTID);
-const OFCondition ASC_MISSINGTRANSFERSYNTAX(   ASCE_MISSINGTRANSFERSYNTAX);
-const OFCondition ASC_NULLKEY(                 ASCE_NULLKEY);
-const OFCondition ASC_SHUTDOWNAPPLICATION(     ASCE_SHUTDOWNAPPLICATION);
-const OFCondition ASC_USERIDENTIFICATIONFAILED(ASCE_USERIDENTIFICATIONFAILED);
-const OFCondition ASC_SCPSCUROLESELETIONFAILED(ASCE_SCPSCUROLESELETIONFAILED);
+const OFCondition ASC_BADPRESENTATIONCONTEXTID( ASCE_BADPRESENTATIONCONTEXTID);
+const OFCondition ASC_MISSINGTRANSFERSYNTAX(    ASCE_MISSINGTRANSFERSYNTAX);
+const OFCondition ASC_NULLKEY(                  ASCE_NULLKEY);
+const OFCondition ASC_SHUTDOWNAPPLICATION(      ASCE_SHUTDOWNAPPLICATION);
+const OFCondition ASC_USERIDENTIFICATIONFAILED( ASCE_USERIDENTIFICATIONFAILED);
+const OFCondition ASC_SCPSCUROLESELECTIONFAILED(ASCE_SCPSCUROLESELECTIONFAILED);
 
 const OFConditionConst DIMSEE_BADCOMMANDTYPE(               OFM_dcmnet, DIMSEC_BADCOMMANDTYPE,               OF_error, "DIMSE Bad command type");
 const OFConditionConst DIMSEE_BADDATA(                      OFM_dcmnet, DIMSEC_BADDATA,                      OF_error, "DIMSE Inappropriate data for message");
@@ -174,6 +174,9 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
+ * Revision 1.20  2010-09-09 08:32:06  joergr
+ * Fixed typo in OFCondition constants for SCP/SCU role selection failures.
+ *
  * Revision 1.19  2010-08-26 09:22:24  joergr
  * Fixed incorrect behavior of association acceptors during SCP/SCU role
  * selection negotiation.

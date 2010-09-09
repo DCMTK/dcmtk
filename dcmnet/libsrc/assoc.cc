@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-08-26 09:21:18 $
+** Update Date:         $Date: 2010-09-09 08:32:06 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.56 $
+** CVS/RCS Revision:    $Revision: 1.57 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -861,7 +861,7 @@ ASC_acceptPresentationContext(
                 DCMNET_ERROR("ASSOC: SCP/SCU role selection failed, proposed ("
                     << ascRole2String(dulRole2ascRole(proposedContext->proposedSCRole))
                     << ") and accepted role (" << ascRole2String(acceptedRole) << ") are incompatible");
-                return ASC_SCPSCUROLESELETIONFAILED;
+                return ASC_SCPSCUROLESELECTIONFAILED;
             }
         }
     }
@@ -1173,7 +1173,7 @@ ASC_acceptContextsWithTransferSyntax(
                 params, pc.presentationContextID,
                 transferSyntax, acceptedRole);
             // SCP/SCU role selection failed, reject presentation context
-            if (cond == ASC_SCPSCUROLESELETIONFAILED) {
+            if (cond == ASC_SCPSCUROLESELECTIONFAILED) {
                 cond = ASC_refusePresentationContext(params,
                     pc.presentationContextID, ASC_P_NOREASON);
             }
@@ -2197,6 +2197,9 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
+** Revision 1.57  2010-09-09 08:32:06  joergr
+** Fixed typo in OFCondition constants for SCP/SCU role selection failures.
+**
 ** Revision 1.56  2010-08-26 09:21:18  joergr
 ** Fixed incorrect behavior of association acceptors during SCP/SCU role
 ** selection negotiation. Minor changes to output format of ACSE parameters.

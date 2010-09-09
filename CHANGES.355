@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.09 (riesmeier)
+
+- Fixed typo in OFCondition constants for SCP/SCU role selection failures.
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for submitting a patch.
+  Affects: dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/dcasccfg.cc
+
 **** Changes from 2010.09.08 (schlachter)
 
 - Fix wrong use of logical invert. A bit-wise invert is meant here.
