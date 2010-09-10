@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-07 07:54:45 $
- *  CVS/RCS Revision: $Revision: 1.130 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-10 13:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.131 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/dcmdata/dcuid.h"        /* for dcmtk version name */
-#include "dcmtk/dcmdata/dcdeftag.h"     /* for DCM_StudyInstanceUID */
+#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcostrmz.h"     /* for dcmZlibCompressionLevel */
 
 #ifdef WITH_OPENSSL
@@ -2043,7 +2043,7 @@ storeSCPCallback(
       OFLOG_INFO(storescpLogger, "storing DICOM file: " << fileName);
       if (OFStandard::fileExists(fileName))
       {
-        OFLOG_WARN(storescpLogger, "DICOM file already exists: " << fileName);
+        OFLOG_WARN(storescpLogger, "DICOM file already exists, overwriting: " << fileName);
       }
       OFCondition cond = cbdata->dcmff->saveFile(fileName.c_str(), xfer, opt_sequenceType, opt_groupLength,
           opt_paddingType, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad),
@@ -2727,6 +2727,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.131  2010-09-10 13:58:10  joergr
+** Revised warning message to indicate that existing DICOM file is overwritten.
+**
 ** Revision 1.130  2010-09-07 07:54:45  uli
 ** Fixed a missing addOption() call.
 **

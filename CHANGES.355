@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.10 (riesmeier)
+
+- Revised warning message to indicate that existing DICOM file is overwritten.
+  Affects: dcmnet/apps/storescp.cc
+
 **** Changes from 2010.09.09 (riesmeier)
 
 - Removed unused (or never used?) configuration entries.
