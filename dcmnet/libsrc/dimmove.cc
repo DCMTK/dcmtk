@@ -1,38 +1,38 @@
 /*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
-**  
+**
 **  This software and supporting documentation were
-**  developed by 
-**  
+**  developed by
+**
 **    Institut OFFIS
 **    Bereich Kommunikationssysteme
 **    Westerstr. 10-12
 **    26121 Oldenburg, Germany
-**    
+**
 **    Fachbereich Informatik
 **    Abteilung Prozessinformatik
-**    Carl von Ossietzky Universitaet Oldenburg 
+**    Carl von Ossietzky Universitaet Oldenburg
 **    Ammerlaender Heerstr. 114-118
 **    26111 Oldenburg, Germany
-**    
+**
 **    CERIUM
 **    Laboratoire SIM
 **    Faculte de Medecine
 **    2 Avenue du Pr. Leon Bernard
 **    35043 Rennes Cedex, France
-**  
-**  for CEN/TC251/WG4 as a contribution to the Radiological 
-**  Society of North America (RSNA) 1993 Digital Imaging and 
+**
+**  for CEN/TC251/WG4 as a contribution to the Radiological
+**  Society of North America (RSNA) 1993 Digital Imaging and
 **  Communications in Medicine (DICOM) Demonstration.
-**  
+**
 **  THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER OFFIS,
-**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING 
-**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR 
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER 
-**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE 
-**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE   
-**  IS WITH THE USER. 
-**  
+**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING
+**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR
+**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER
+**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE
+**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE
+**  IS WITH THE USER.
+**
 **  Copyright of the software and supporting documentation
 **  is, unless otherwise stated, jointly owned by OFFIS,
 **  Oldenburg University and CERIUM and free access is hereby
@@ -41,31 +41,30 @@
 **  software. However, any distribution of this software
 **  source code or supporting documentation or derivative
 **  works (source code and supporting documentation) must
-**  include the three paragraphs of this copyright notice. 
-** 
+**  include the three paragraphs of this copyright notice.
+**
 */
 /*
 **
 ** Author: Andrew Hewett                Created: 03-06-93
-** 
+**
 ** Module: dimmove
 **
-** Purpose: 
+** Purpose:
 **      This file contains the routines which help with
 **      query/retrieve services using the C-MOVE operation.
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: uli $
-** Update Date:         $Date: 2009-11-18 11:53:59 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimmove.cc,v $
-** CVS/RCS Revision:    $Revision: 1.13 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2010-09-13 10:40:17 $
+** CVS/RCS Revision:    $Revision: 1.14 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
 
-/* 
+/*
 ** Include Files
 */
 
@@ -82,7 +81,7 @@
 #endif
 
 #include "dcmtk/dcmnet/diutil.h"
-#include "dcmtk/dcmnet/dimse.h"              /* always include the module header */
+#include "dcmtk/dcmnet/dimse.h"       /* always include the module header */
 #include "dcmtk/dcmnet/cond.h"
 
 /*
@@ -90,25 +89,27 @@
 */
 
 static int
-selectReadable(T_ASC_Association *assoc, 
-    T_ASC_Network *net, T_ASC_Association *subAssoc,
+selectReadable(
+    T_ASC_Association *assoc,
+    T_ASC_Network *net,
+    T_ASC_Association *subAssoc,
     T_DIMSE_BlockingMode blockMode, int timeout)
 {
     T_ASC_Association *assocList[2];
     int assocCount = 0;
-    
+
     if (net != NULL && subAssoc == NULL) {
         if (ASC_associationWaiting(net, 0)) {
             /* association request waiting on network */
             return 2;
         }
-    } 
-    assocList[0] = assoc; 
+    }
+    assocList[0] = assoc;
     assocCount = 1;
     assocList[1] = subAssoc;
     if (subAssoc != NULL) assocCount++;
     if (subAssoc == NULL) {
-        timeout = 1;    /* poll wait until an assoc req or move rsp */
+        timeout = 1;            /* poll wait until an assoc req or move rsp */
     } else {
         if (blockMode == DIMSE_BLOCKING) {
             timeout = 10000;    /* a long time */
@@ -132,42 +133,41 @@ selectReadable(T_ASC_Association *assoc,
 
 OFCondition
 DIMSE_moveUser(
-        /* in */
-        T_ASC_Association *assoc, 
-        T_ASC_PresentationContextID presID,
-        T_DIMSE_C_MoveRQ *request,
-        DcmDataset *requestIdentifiers,
-        DIMSE_MoveUserCallback callback, void *callbackData,
-        /* blocking info for response */
-        T_DIMSE_BlockingMode blockMode, int timeout,
-        /* sub-operation provider callback */
-        T_ASC_Network *net,
-        DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
-        /* out */
-        T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
-        DcmDataset **rspIds,
-        OFBool ignorePendingDatasets)
+    /* in */
+    T_ASC_Association *assoc,
+    T_ASC_PresentationContextID presID,
+    T_DIMSE_C_MoveRQ *request,
+    DcmDataset *requestIdentifiers,
+    DIMSE_MoveUserCallback callback, void *callbackData,
+    /* blocking info for response */
+    T_DIMSE_BlockingMode blockMode, int timeout,
+    /* sub-operation provider callback */
+    T_ASC_Network *net,
+    DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
+    /* out */
+    T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
+    DcmDataset **rspIds,
+    OFBool ignorePendingDatasets)
 {
     T_DIMSE_Message req, rsp;
     DIC_US msgId;
     int responseCount = 0;
     T_ASC_Association *subAssoc = NULL;
     DIC_US status = STATUS_Pending;
+    OFBool firstLoop = OFTrue;
 
     if (requestIdentifiers == NULL) return DIMSE_NULLKEY;
 
     bzero((char*)&req, sizeof(req));
     bzero((char*)&rsp, sizeof(rsp));
-    
+
     req.CommandField = DIMSE_C_MOVE_RQ;
     request->DataSetType = DIMSE_DATASET_PRESENT;
     req.msg.CMoveRQ = *request;
 
     msgId = request->MessageID;
 
-    OFCondition cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req,
-                                          NULL, requestIdentifiers, 
-                                          NULL, NULL);
+    OFCondition cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req, NULL, requestIdentifiers, NULL, NULL);
     if (cond != EC_Normal) {
         return cond;
     }
@@ -176,51 +176,51 @@ DIMSE_moveUser(
 
     while (cond == EC_Normal && status == STATUS_Pending) {
 
-        /* if user wants, multiplex between net/subAssoc 
+        /* if user wants, multiplex between net/subAssoc
          * and move responses over main assoc.
          */
         switch (selectReadable(assoc, net, subAssoc, blockMode, timeout)) {
         case 0:
-            /* none are readble, timeout */
-            if (blockMode == DIMSE_BLOCKING) {
-                continue;       /* continue with while loop */
+            /* none are readable, timeout */
+            if ((blockMode == DIMSE_BLOCKING) || firstLoop) {
+                firstLoop = OFFalse;
+                continue;  /* continue with while loop */
             } else {
                 return DIMSE_NODATAAVAILABLE;
             }
-            /* break; */ // never reached after continue or return.
+            /* break; */   // never reached after continue or return statement
         case 1:
             /* main association readable */
+            firstLoop = OFFalse;
             break;
         case 2:
             /* net/subAssoc readable */
             if (subOpCallback) {
                 subOpCallback(subOpCallbackData, net, &subAssoc);
             }
-            continue;   /* continue with main loop */
+            firstLoop = OFFalse;
+            continue;    /* continue with main loop */
             /* break; */ // never reached after continue statement
         }
 
         bzero((char*)&rsp, sizeof(rsp));
 
-        cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, 
-                &rsp, statusDetail);
+        cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, &rsp, statusDetail);
         if (cond != EC_Normal) {
             return cond;
         }
-        if (rsp.CommandField != DIMSE_C_MOVE_RSP)
-        {
-          char buf1[256];
-          sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
-          return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
+        if (rsp.CommandField != DIMSE_C_MOVE_RSP) {
+            char buf1[256];
+            sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
+            return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
         }
-    
+
         *response = rsp.msg.CMoveRSP;
-        
-        if (response->MessageIDBeingRespondedTo != msgId)
-        {
-          char buf2[256];
-          sprintf(buf2, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, msgId);
-          return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf2);
+
+        if (response->MessageIDBeingRespondedTo != msgId) {
+            char buf2[256];
+            sprintf(buf2, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, msgId);
+            return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf2);
         }
 
         status = response->DimseStatus;
@@ -233,11 +233,9 @@ DIMSE_moveUser(
                 delete *statusDetail;
                 *statusDetail = NULL;
             }
-            if (response->DataSetType != DIMSE_DATASET_NULL) 
-            {
+            if (response->DataSetType != DIMSE_DATASET_NULL) {
                 DCMNET_WARN(DIMSE_warn_str(assoc) << "moveUser: Status Pending, but DataSetType!=NULL");
-                if (! ignorePendingDatasets)
-                {
+                if (! ignorePendingDatasets) {
                     // Some systems send an (illegal) dataset following C-MOVE-RSP messages
                     // with pending status, which is a protocol violation, but we need to
                     // handle this nevertheless. The MV300 has been reported to exhibit
@@ -249,9 +247,7 @@ DIMSE_moveUser(
                     if (cond != EC_Normal) {
                         return cond;
                     }
-                }
-                else
-                {
+                } else {
                     // The alternative is to assume that the command set is wrong
                     // and not to read a dataset from the network association.
                     DCMNET_WARN(DIMSE_warn_str(assoc) << "Assuming NO response identifiers are present");
@@ -265,8 +261,7 @@ DIMSE_moveUser(
             break;
         default:
             if (response->DataSetType != DIMSE_DATASET_NULL) {
-                cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout,
-                    &presID, rspIds, NULL, NULL);
+                cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, rspIds, NULL, NULL);
                 if (cond != EC_Normal) {
                     return cond;
                 }
@@ -288,10 +283,12 @@ DIMSE_moveUser(
 }
 
 OFCondition
-DIMSE_sendMoveResponse(T_ASC_Association * assoc, 
-        T_ASC_PresentationContextID presID, T_DIMSE_C_MoveRQ *request, 
-        T_DIMSE_C_MoveRSP *response, DcmDataset *rspIds, 
-        DcmDataset *statusDetail)
+DIMSE_sendMoveResponse(
+    T_ASC_Association *assoc,
+    T_ASC_PresentationContextID presID,
+    T_DIMSE_C_MoveRQ *request,
+    T_DIMSE_C_MoveRSP *response, DcmDataset *rspIds,
+    DcmDataset *statusDetail)
 {
     OFCondition cond = EC_Normal;
     T_DIMSE_Message rsp;
@@ -305,13 +302,13 @@ DIMSE_sendMoveResponse(T_ASC_Association * assoc,
     /* always send afected sop class uid */
     strcpy(rsp.msg.CMoveRSP.AffectedSOPClassUID, request->AffectedSOPClassUID);
     rsp.msg.CMoveRSP.opts = O_MOVE_AFFECTEDSOPCLASSUID;
-    
+
     switch (response->DimseStatus) {
     case STATUS_Success:
     case STATUS_Pending:
         /* Success cannot have a Failed SOP Instance UID list (no failures).
          * Pending may not send such a list.
-         */ 
+         */
         rsp.msg.CMoveRSP.DataSetType = DIMSE_DATASET_NULL;
         rspIds = NULL;  /* zero our local pointer */
         break;
@@ -322,21 +319,21 @@ DIMSE_sendMoveResponse(T_ASC_Association * assoc,
         break;
     }
 
-    /* 
+    /*
      * Make sure the numberOf fields are conformant with
      * the status (see Part 4, C.4.2.1.6-9)
      */
     opts = (O_MOVE_NUMBEROFREMAININGSUBOPERATIONS |
-        O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS |
-        O_MOVE_NUMBEROFFAILEDSUBOPERATIONS |
-        O_MOVE_NUMBEROFWARNINGSUBOPERATIONS);
-        
+            O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS |
+            O_MOVE_NUMBEROFFAILEDSUBOPERATIONS |
+            O_MOVE_NUMBEROFWARNINGSUBOPERATIONS);
+
     switch (response->DimseStatus) {
     case STATUS_Pending:
     case STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication:
         break;
     default:
-        /* Remaining sub-operations may not be in responses 
+        /* Remaining sub-operations may not be in responses
          * with a status of Warning, Failed, Refused or Successful
          */
         opts &= (~ O_MOVE_NUMBEROFREMAININGSUBOPERATIONS);
@@ -345,8 +342,7 @@ DIMSE_sendMoveResponse(T_ASC_Association * assoc,
 
     rsp.msg.CMoveRSP.opts |= opts;
 
-    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &rsp, 
-        statusDetail, rspIds, NULL, NULL);
+    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &rsp, statusDetail, rspIds, NULL, NULL);
 
     return cond;
 
@@ -354,14 +350,14 @@ DIMSE_sendMoveResponse(T_ASC_Association * assoc,
 
 OFCondition
 DIMSE_moveProvider(
-        /* in */ 
-        T_ASC_Association *assoc, 
-        T_ASC_PresentationContextID presIdCmd,
-        T_DIMSE_C_MoveRQ *request,
-        DIMSE_MoveProviderCallback callback, void *callbackData,
-        /* blocking info for data set */
-        T_DIMSE_BlockingMode blockMode, int timeout)
-{       
+    /* in */
+    T_ASC_Association *assoc,
+    T_ASC_PresentationContextID presIdCmd,
+    T_DIMSE_C_MoveRQ *request,
+    DIMSE_MoveProviderCallback callback, void *callbackData,
+    /* blocking info for data set */
+    T_DIMSE_BlockingMode blockMode, int timeout)
+{
     OFCondition cond = EC_Normal;
     T_ASC_PresentationContextID presIdData;
     DcmDataset *statusDetail = NULL;
@@ -374,57 +370,47 @@ DIMSE_moveProvider(
 
     cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presIdData, &reqIds, NULL, NULL);
 
-    if (cond.good())
-    {    
-        if (presIdData != presIdCmd)
-        {
+    if (cond.good()) {
+        if (presIdData != presIdCmd) {
           cond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE: Presentation Contexts of Command and Data Differ");
-        }
-        else
-        {
+        } else {
             bzero((char*)&rsp, sizeof(rsp));
             rsp.DimseStatus = STATUS_Pending;   /* assume */
-            
-            while (cond == EC_Normal && rsp.DimseStatus == STATUS_Pending && normal)
-            {
+
+            while (cond == EC_Normal && rsp.DimseStatus == STATUS_Pending && normal) {
                 responseCount++;
-            
+
                 cond = DIMSE_checkForCancelRQ(assoc, presIdCmd, request->MessageID);
-                if (cond == EC_Normal)
-                {
+                if (cond == EC_Normal) {
                     /* cancel received */
                     rsp.DimseStatus = STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication;
-                    cancelled = OFTrue;     
-                } else if (cond == DIMSE_NODATAAVAILABLE)
-                {
+                    cancelled = OFTrue;
+                } else if (cond == DIMSE_NODATAAVAILABLE) {
                     /* timeout */
                 } else {
                     /* some execption condition occured, bail out */
                     normal = OFFalse;
                 }
-            
-                if (normal)            
-                {
+
+                if (normal) {
                      if (callback) {
-                         callback(callbackData, cancelled, request, reqIds, 
-                             responseCount, &rsp, &statusDetail, &rspIds);
+                         callback(callbackData, cancelled, request, reqIds, responseCount, &rsp, &statusDetail, &rspIds);
                      } else {
                          return makeDcmnetCondition(DIMSEC_NULLKEY, OF_error, "DIMSE_moveProvider: no callback function");
                      }
-                     
+
                      if (cancelled) {
                          /* make sure */
-                         rsp.DimseStatus = 
+                         rsp.DimseStatus =
                            STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication;
                          if (rspIds != NULL) {
                              delete reqIds;
                              reqIds = NULL;
                          }
                      }
-                     
-                     cond = DIMSE_sendMoveResponse(assoc, presIdCmd, request,
-                         &rsp, rspIds, statusDetail);
-                         
+
+                     cond = DIMSE_sendMoveResponse(assoc, presIdCmd, request, &rsp, rspIds, statusDetail);
+
                      if (rspIds != NULL) {
                          delete rspIds;
                          rspIds = NULL;
@@ -446,6 +432,9 @@ DIMSE_moveProvider(
 /*
 ** CVS Log
 ** $Log: dimmove.cc,v $
+** Revision 1.14  2010-09-13 10:40:17  joergr
+** Fixed issue with non-blocking mode in Move SCU (given timeout was ignored).
+**
 ** Revision 1.13  2009-11-18 11:53:59  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **

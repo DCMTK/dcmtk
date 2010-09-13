@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.13 (riesmeier)
+
+- Fixed issue with non-blocking mode in Move SCU (given timeout was ignored).
+  Thanks to forum user "focus" for the original report.
+  Affects: dcmnet/apps/movescu.cc
+
 **** Changes from 2010.09.10 (riesmeier)
 
 - Revised warning message to indicate that existing DICOM file is overwritten.
