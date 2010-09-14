@@ -22,15 +22,15 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2010-09-14 10:01:34 $
-#  CVS/RCS Revision: $Revision: 1.6 $
+#  Update Date:      $Date: 2010-09-14 17:02:34 $
+#  CVS/RCS Revision: $Revision: 1.7 $
 #  Status:           $State: Exp $
 #
 # This file contains the complete data dictionary from the 2009 edition
 # of the DICOM standard.
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
-# - Supplement 120, 144, 146.
+# - Supplement 120, 144, 145, 146.
 # - CP 650, 988, 1010, 1024.
 #
 # Each line represents an entry in the data dictionary.  Each line
@@ -2756,6 +2756,44 @@
 (0022,1300)	SQ	IntraocularLensCalculationsRightEyeSequence	1	Supplement_144
 (0022,1310)	SQ	IntraocularLensCalculationsLeftEyeSequence	1	Supplement_144
 (0022,1330)	SQ	ReferencedOphthalmicAxialLengthMeasurementQCImageSequence	1	Supplement_144
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 145 (Whole Slide Microscopic Image IOD and SOP Classes)
+#
+(0040,08D8)	SQ	RETIRED_PixelSpacingSequence	1	Supplement_145/retired
+(0040,08DA)	SQ	RETIRED_CoordinateSystemAxisCodeSequence	1	Supplement_145/retired
+(0048,0001)	FL	ImagedVolumeWidth	1	Supplement_145
+(0048,0002)	FL	ImagedVolumeHeight	1	Supplement_145
+(0048,0003)	FL	ImagedVolumeDepth	1	Supplement_145
+(0048,0006)	UL	TotalPixelMatrixColumns	1	Supplement_145
+(0048,0007)	UL	TotalPixelMatrixRows	1	Supplement_145
+(0048,0008)	SQ	TotalPixelMatrixOriginSequence	1	Supplement_145
+(0048,0010)	CS	SpecimenLabelInImage	1	Supplement_145
+(0048,0011)	CS	FocusMethod	1	Supplement_145
+(0048,0012)	CS	ExtendedDepthOfField	1	Supplement_145
+(0048,0013)	US	NumberOfFocalPlanes	1	Supplement_145
+(0048,0014)	FL	DistanceBetweenFocalPlanes	1	Supplement_145
+(0048,0015)	US	RecommendedAbsentPixelCIELabValue	3	Supplement_145
+(0048,0100)	SQ	IlluminatorTypeCodeSequence	1	Supplement_145
+(0048,0102)	DS	ImageOrientationSlide	6	Supplement_145
+(0048,0105)	SQ	OpticalPathSequence	1	Supplement_145
+(0048,0106)	SH	OpticalPathIdentifier	1	Supplement_145
+(0048,0107)	ST	OpticalPathDescription	1	Supplement_145
+(0048,0108)	SQ	IlluminationColorCodeSequence	1	Supplement_145
+(0048,0110)	SQ	SpecimenReferenceSequence	1	Supplement_145
+(0048,0111)	DS	CondenserLensPower	1	Supplement_145
+(0048,0112)	DS	ObjectiveLensPower	1	Supplement_145
+(0048,0113)	DS	ObjectiveLensNumericalAperture	1	Supplement_145
+(0048,0120)	SQ	PaletteColorLookupTableSequence	1	Supplement_145
+(0048,0200)	SQ	ReferencedImageNavigationSequence	1	Supplement_145
+(0048,0201)	US	TopLeftHandCornerOfLocalizerArea	2	Supplement_145
+(0048,0202)	US	BottomRightHandCornerOfLocalizerArea	2	Supplement_145
+(0048,0207)	SQ	OpticalPathIdentificationSequence	1	Supplement_145
+(0048,021A)	SQ	PlanePositionSlideSequence	1	Supplement_145
+(0048,021E)	SL	ColumnPositionInTotalImagePixelMatrix	1	Supplement_145
+(0048,021F)	SL	RowPositionInTotalImagePixelMatrix	1	Supplement_145
+(0048,0301)	CS	PixelOriginInterpretation	1	Supplement_145
 #
 #---------------------------------------------------------------------------
 #

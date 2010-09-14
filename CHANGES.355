@@ -13,6 +13,12 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.14 (riesmeier)
 
+- Added support for Supplement 145 (Whole Slide Microscopic Image IOD and SOP
+  Classes) to DICOM data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Fixed issue with missing characters (e.g. apostrophe) in created text files.
   Affects: doxygen/Makefile.in
 

@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2010-09-14 11:56:05
+**   Date: 2010-09-14 18:52:13
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2010-09-14 11:56:05";
+const char* dcmBuiltinDictBuildDate = "2010-09-14 18:52:13";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -16146,11 +16146,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x08d8, 0x0040, 0x08d8,
-      EVR_SQ, "PixelSpacingSequence", 1, 1, "DICOM_2009",
+      EVR_SQ, "RETIRED_PixelSpacingSequence", 1, 1, "Supplement_145/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x08da, 0x0040, 0x08da,
-      EVR_SQ, "CoordinateSystemAxisCodeSequence", 1, 1, "DICOM_2009",
+      EVR_SQ, "RETIRED_CoordinateSystemAxisCodeSequence", 1, 1, "Supplement_145/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x08ea, 0x0040, 0x08ea,
@@ -17805,6 +17805,130 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ADWSoft_3D1" }
 #endif
+  , { 0x0048, 0x0001, 0x0048, 0x0001,
+      EVR_FL, "ImagedVolumeWidth", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0002, 0x0048, 0x0002,
+      EVR_FL, "ImagedVolumeHeight", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0003, 0x0048, 0x0003,
+      EVR_FL, "ImagedVolumeDepth", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0006, 0x0048, 0x0006,
+      EVR_UL, "TotalPixelMatrixColumns", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0007, 0x0048, 0x0007,
+      EVR_UL, "TotalPixelMatrixRows", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0008, 0x0048, 0x0008,
+      EVR_SQ, "TotalPixelMatrixOriginSequence", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0010, 0x0048, 0x0010,
+      EVR_CS, "SpecimenLabelInImage", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0011, 0x0048, 0x0011,
+      EVR_CS, "FocusMethod", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0012, 0x0048, 0x0012,
+      EVR_CS, "ExtendedDepthOfField", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0013, 0x0048, 0x0013,
+      EVR_US, "NumberOfFocalPlanes", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0014, 0x0048, 0x0014,
+      EVR_FL, "DistanceBetweenFocalPlanes", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0015, 0x0048, 0x0015,
+      EVR_US, "RecommendedAbsentPixelCIELabValue", 3, 3, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0100, 0x0048, 0x0100,
+      EVR_SQ, "IlluminatorTypeCodeSequence", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0102, 0x0048, 0x0102,
+      EVR_DS, "ImageOrientationSlide", 6, 6, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0105, 0x0048, 0x0105,
+      EVR_SQ, "OpticalPathSequence", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0106, 0x0048, 0x0106,
+      EVR_SH, "OpticalPathIdentifier", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0107, 0x0048, 0x0107,
+      EVR_ST, "OpticalPathDescription", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0108, 0x0048, 0x0108,
+      EVR_SQ, "IlluminationColorCodeSequence", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0110, 0x0048, 0x0110,
+      EVR_SQ, "SpecimenReferenceSequence", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0111, 0x0048, 0x0111,
+      EVR_DS, "CondenserLensPower", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0112, 0x0048, 0x0112,
+      EVR_DS, "ObjectiveLensPower", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0113, 0x0048, 0x0113,
+      EVR_DS, "ObjectiveLensNumericalAperture", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0120, 0x0048, 0x0120,
+      EVR_SQ, "PaletteColorLookupTableSequence", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0200, 0x0048, 0x0200,
+      EVR_SQ, "ReferencedImageNavigationSequence", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0201, 0x0048, 0x0201,
+      EVR_US, "TopLeftHandCornerOfLocalizerArea", 2, 2, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0202, 0x0048, 0x0202,
+      EVR_US, "BottomRightHandCornerOfLocalizerArea", 2, 2, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0207, 0x0048, 0x0207,
+      EVR_SQ, "OpticalPathIdentificationSequence", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x021a, 0x0048, 0x021a,
+      EVR_SQ, "PlanePositionSlideSequence", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x021e, 0x0048, 0x021e,
+      EVR_SL, "ColumnPositionInTotalImagePixelMatrix", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x021f, 0x0048, 0x021f,
+      EVR_SL, "RowPositionInTotalImagePixelMatrix", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0301, 0x0048, 0x0301,
+      EVR_CS, "PixelOriginInterpretation", 1, 1, "Supplement_145",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0050, 0x0004, 0x0050, 0x0004,
       EVR_CS, "CalibrationImage", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,

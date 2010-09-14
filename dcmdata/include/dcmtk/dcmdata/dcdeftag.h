@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2010-09-14 11:56:00
+**   Date: 2010-09-14 18:52:05
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2010-09-14 11:56:00"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2010-09-14 18:52:05"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3108
+** Number of entries: 3139
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1720,8 +1720,8 @@
 #define DCM_XOffsetInSlideCoordinateSystem       DcmTagKey(0x0040, 0x072a)
 #define DCM_YOffsetInSlideCoordinateSystem       DcmTagKey(0x0040, 0x073a)
 #define DCM_ZOffsetInSlideCoordinateSystem       DcmTagKey(0x0040, 0x074a)
-#define DCM_PixelSpacingSequence                 DcmTagKey(0x0040, 0x08d8)
-#define DCM_CoordinateSystemAxisCodeSequence     DcmTagKey(0x0040, 0x08da)
+#define DCM_RETIRED_PixelSpacingSequence         DcmTagKey(0x0040, 0x08d8)
+#define DCM_RETIRED_CoordinateSystemAxisCodeSequence DcmTagKey(0x0040, 0x08da)
 #define DCM_MeasurementUnitsCodeSequence         DcmTagKey(0x0040, 0x08ea)
 #define DCM_RETIRED_VitalStainCodeSequenceTrial  DcmTagKey(0x0040, 0x09f8)
 #define DCM_RequestedProcedureID                 DcmTagKey(0x0040, 0x1001)
@@ -1928,6 +1928,37 @@
 #define DCM_ReferencedRefractiveMeasurementsSequence DcmTagKey(0x0046, 0x0145)
 #define DCM_SpherePower                          DcmTagKey(0x0046, 0x0146)
 #define DCM_CylinderPower                        DcmTagKey(0x0046, 0x0147)
+#define DCM_ImagedVolumeWidth                    DcmTagKey(0x0048, 0x0001)
+#define DCM_ImagedVolumeHeight                   DcmTagKey(0x0048, 0x0002)
+#define DCM_ImagedVolumeDepth                    DcmTagKey(0x0048, 0x0003)
+#define DCM_TotalPixelMatrixColumns              DcmTagKey(0x0048, 0x0006)
+#define DCM_TotalPixelMatrixRows                 DcmTagKey(0x0048, 0x0007)
+#define DCM_TotalPixelMatrixOriginSequence       DcmTagKey(0x0048, 0x0008)
+#define DCM_SpecimenLabelInImage                 DcmTagKey(0x0048, 0x0010)
+#define DCM_FocusMethod                          DcmTagKey(0x0048, 0x0011)
+#define DCM_ExtendedDepthOfField                 DcmTagKey(0x0048, 0x0012)
+#define DCM_NumberOfFocalPlanes                  DcmTagKey(0x0048, 0x0013)
+#define DCM_DistanceBetweenFocalPlanes           DcmTagKey(0x0048, 0x0014)
+#define DCM_RecommendedAbsentPixelCIELabValue    DcmTagKey(0x0048, 0x0015)
+#define DCM_IlluminatorTypeCodeSequence          DcmTagKey(0x0048, 0x0100)
+#define DCM_ImageOrientationSlide                DcmTagKey(0x0048, 0x0102)
+#define DCM_OpticalPathSequence                  DcmTagKey(0x0048, 0x0105)
+#define DCM_OpticalPathIdentifier                DcmTagKey(0x0048, 0x0106)
+#define DCM_OpticalPathDescription               DcmTagKey(0x0048, 0x0107)
+#define DCM_IlluminationColorCodeSequence        DcmTagKey(0x0048, 0x0108)
+#define DCM_SpecimenReferenceSequence            DcmTagKey(0x0048, 0x0110)
+#define DCM_CondenserLensPower                   DcmTagKey(0x0048, 0x0111)
+#define DCM_ObjectiveLensPower                   DcmTagKey(0x0048, 0x0112)
+#define DCM_ObjectiveLensNumericalAperture       DcmTagKey(0x0048, 0x0113)
+#define DCM_PaletteColorLookupTableSequence      DcmTagKey(0x0048, 0x0120)
+#define DCM_ReferencedImageNavigationSequence    DcmTagKey(0x0048, 0x0200)
+#define DCM_TopLeftHandCornerOfLocalizerArea     DcmTagKey(0x0048, 0x0201)
+#define DCM_BottomRightHandCornerOfLocalizerArea DcmTagKey(0x0048, 0x0202)
+#define DCM_OpticalPathIdentificationSequence    DcmTagKey(0x0048, 0x0207)
+#define DCM_PlanePositionSlideSequence           DcmTagKey(0x0048, 0x021a)
+#define DCM_ColumnPositionInTotalImagePixelMatrix DcmTagKey(0x0048, 0x021e)
+#define DCM_RowPositionInTotalImagePixelMatrix   DcmTagKey(0x0048, 0x021f)
+#define DCM_PixelOriginInterpretation            DcmTagKey(0x0048, 0x0301)
 #define DCM_CalibrationImage                     DcmTagKey(0x0050, 0x0004)
 #define DCM_DeviceSequence                       DcmTagKey(0x0050, 0x0010)
 #define DCM_ContainerComponentTypeCodeSequence   DcmTagKey(0x0050, 0x0012)
