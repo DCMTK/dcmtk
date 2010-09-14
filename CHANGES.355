@@ -13,6 +13,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.14 (riesmeier)
 
+- Fixed issue with missing characters (e.g. apostrophe) in created text files.
+  Affects: doxygen/Makefile.in
+
 - Added support for CP 650, 988, 1010 and 1024 to DICOM data dictionary.
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h
