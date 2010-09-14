@@ -22,14 +22,16 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2010-09-09 10:34:07 $
-#  CVS/RCS Revision: $Revision: 1.5 $
+#  Update Date:      $Date: 2010-09-14 10:01:34 $
+#  CVS/RCS Revision: $Revision: 1.6 $
 #  Status:           $State: Exp $
 #
 # This file contains the complete data dictionary from the 2009 edition
-# of the DICOM standard.  In addition, the data dictionary entries from
-# the following final text supplements have been incorporated: 120, 144,
-# 146
+# of the DICOM standard.
+# In addition, the data dictionary entries from the following final text
+# supplements and correction items have been incorporated:
+# - Supplement 120, 144, 146.
+# - CP 650, 988, 1010, 1024.
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -2859,6 +2861,22 @@
 (0024,0338)	CS	IndexNormalsFlag	1	Supplement_146
 (0024,0341)	FL	IndexProbability	1	Supplement_146
 (0024,0344)	SQ	IndexProbabilitySequence	1	Supplement_146
+#
+#---------------------------------------------------------------------------
+#
+# Correction Items 650, 988, 1010, 1024
+#
+(0010,1021)	SQ	PatientSizeCodeSequence	1	CP_650
+(0018,9092)	SQ	VelocityEncodingAcquisitionSequence	1	CP_988
+(300A,0431)	SQ	ApplicatorGeometrySequence	1	CP_1010
+(300A,0432)	CS	ApplicatorApertureShape	1	CP_1010
+(300A,0433)	FL	ApplicatorOpening	1	CP_1010
+(300A,0434)	FL	ApplicatorOpeningX	1	CP_1010
+(300A,0435)	FL	ApplicatorOpeningY	1	CP_1010
+(300A,0436)	FL	SourceToApplicatorMountingPositionDistance	1	CP_1010
+(0018,1411)	DS	ExposureIndex	1	CP_1024
+(0018,1412)	DS	TargetExposureIndex	1	CP_1024
+(0018,1413)	DS	DeviationIndex	1	CP_1024
 #
 #---------------------------------------------------------------------------
 #

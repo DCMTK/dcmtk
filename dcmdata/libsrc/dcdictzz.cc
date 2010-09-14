@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2010-09-09 12:30:56
+**   Date: 2010-09-14 11:56:05
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2010-09-09 12:30:56";
+const char* dcmBuiltinDictBuildDate = "2010-09-14 11:56:05";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -1919,6 +1919,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "PatientSize", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0010, 0x1021, 0x0010, 0x1021,
+      EVR_SQ, "PatientSizeCodeSequence", 1, 1, "CP_650",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0010, 0x1030, 0x0010, 0x1030,
       EVR_DS, "PatientWeight", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -3483,6 +3487,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "RelativeXRayExposure", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0018, 0x1411, 0x0018, 0x1411,
+      EVR_DS, "ExposureIndex", 1, 1, "CP_1024",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x1412, 0x0018, 0x1412,
+      EVR_DS, "TargetExposureIndex", 1, 1, "CP_1024",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x1413, 0x0018, 0x1413,
+      EVR_DS, "DeviationIndex", 1, 1, "CP_1024",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0018, 0x1450, 0x0018, 0x1450,
       EVR_DS, "ColumnAngulation", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -4425,6 +4441,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0018, 0x9091, 0x0018, 0x9091,
       EVR_FD, "VelocityEncodingMinimumValue", 1, 1, "DICOM_2009",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9092, 0x0018, 0x9092,
+      EVR_SQ, "VelocityEncodingAcquisitionSequence", 1, 1, "CP_988",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x9093, 0x0018, 0x9093,
@@ -22733,6 +22753,30 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x0424, 0x300a, 0x0424,
       EVR_IS, "GeneralAccessoryNumber", 1, 1, "DICOM_2009",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0431, 0x300a, 0x0431,
+      EVR_SQ, "ApplicatorGeometrySequence", 1, 1, "CP_1010",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0432, 0x300a, 0x0432,
+      EVR_CS, "ApplicatorApertureShape", 1, 1, "CP_1010",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0433, 0x300a, 0x0433,
+      EVR_FL, "ApplicatorOpening", 1, 1, "CP_1010",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0434, 0x300a, 0x0434,
+      EVR_FL, "ApplicatorOpeningX", 1, 1, "CP_1010",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0435, 0x300a, 0x0435,
+      EVR_FL, "ApplicatorOpeningY", 1, 1, "CP_1010",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0436, 0x300a, 0x0436,
+      EVR_FL, "SourceToApplicatorMountingPositionDistance", 1, 1, "CP_1010",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300c, 0x0002, 0x300c, 0x0002,

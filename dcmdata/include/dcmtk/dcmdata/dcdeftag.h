@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2010-09-09 12:29:44
+**   Date: 2010-09-14 11:56:00
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2010-09-09 12:29:44"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2010-09-14 11:56:00"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3097
+** Number of entries: 3108
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -287,6 +287,7 @@
 #define DCM_PatientBirthName                     DcmTagKey(0x0010, 0x1005)
 #define DCM_PatientAge                           DcmTagKey(0x0010, 0x1010)
 #define DCM_PatientSize                          DcmTagKey(0x0010, 0x1020)
+#define DCM_PatientSizeCodeSequence              DcmTagKey(0x0010, 0x1021)
 #define DCM_PatientWeight                        DcmTagKey(0x0010, 0x1030)
 #define DCM_PatientAddress                       DcmTagKey(0x0010, 0x1040)
 #define DCM_ACR_NEMA_InsurancePlanIdentification DcmTagKey(0x0010, 0x1050)
@@ -530,6 +531,9 @@
 #define DCM_CassetteSize                         DcmTagKey(0x0018, 0x1403)
 #define DCM_ExposuresOnPlate                     DcmTagKey(0x0018, 0x1404)
 #define DCM_RelativeXRayExposure                 DcmTagKey(0x0018, 0x1405)
+#define DCM_ExposureIndex                        DcmTagKey(0x0018, 0x1411)
+#define DCM_TargetExposureIndex                  DcmTagKey(0x0018, 0x1412)
+#define DCM_DeviationIndex                       DcmTagKey(0x0018, 0x1413)
 #define DCM_ColumnAngulation                     DcmTagKey(0x0018, 0x1450)
 #define DCM_TomoLayerHeight                      DcmTagKey(0x0018, 0x1460)
 #define DCM_TomoAngle                            DcmTagKey(0x0018, 0x1470)
@@ -766,6 +770,7 @@
 #define DCM_DiffusionGradientOrientation         DcmTagKey(0x0018, 0x9089)
 #define DCM_VelocityEncodingDirection            DcmTagKey(0x0018, 0x9090)
 #define DCM_VelocityEncodingMinimumValue         DcmTagKey(0x0018, 0x9091)
+#define DCM_VelocityEncodingAcquisitionSequence  DcmTagKey(0x0018, 0x9092)
 #define DCM_NumberOfKSpaceTrajectories           DcmTagKey(0x0018, 0x9093)
 #define DCM_CoverageOfKSpace                     DcmTagKey(0x0018, 0x9094)
 #define DCM_SpectroscopyAcquisitionPhaseRows     DcmTagKey(0x0018, 0x9095)
@@ -3036,6 +3041,12 @@
 #define DCM_GeneralAccessoryDescription          DcmTagKey(0x300a, 0x0422)
 #define DCM_GeneralAccessoryType                 DcmTagKey(0x300a, 0x0423)
 #define DCM_GeneralAccessoryNumber               DcmTagKey(0x300a, 0x0424)
+#define DCM_ApplicatorGeometrySequence           DcmTagKey(0x300a, 0x0431)
+#define DCM_ApplicatorApertureShape              DcmTagKey(0x300a, 0x0432)
+#define DCM_ApplicatorOpening                    DcmTagKey(0x300a, 0x0433)
+#define DCM_ApplicatorOpeningX                   DcmTagKey(0x300a, 0x0434)
+#define DCM_ApplicatorOpeningY                   DcmTagKey(0x300a, 0x0435)
+#define DCM_SourceToApplicatorMountingPositionDistance DcmTagKey(0x300a, 0x0436)
 #define DCM_ReferencedRTPlanSequence             DcmTagKey(0x300c, 0x0002)
 #define DCM_ReferencedBeamSequence               DcmTagKey(0x300c, 0x0004)
 #define DCM_ReferencedBeamNumber                 DcmTagKey(0x300c, 0x0006)
