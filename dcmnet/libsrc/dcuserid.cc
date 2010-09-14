@@ -8,9 +8,9 @@
 **   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
 **
 ** Last Update:         $Author: uli $
-** Update Date:         $Date: 2009-11-18 11:53:59 $
+** Update Date:         $Date: 2010-09-14 11:42:14 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcuserid.cc,v $
-** CVS/RCS Revision:    $Revision: 1.4 $
+** CVS/RCS Revision:    $Revision: 1.5 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -238,7 +238,8 @@ OFCondition UserIdentityNegotiationSubItemRQ::streamedLength(unsigned long& leng
 
 // Parse User Identity request from read buffer. Buffer must start with item type field.
 OFCondition UserIdentityNegotiationSubItemRQ::parseFromBuffer(unsigned char *readBuffer,
-                                                              unsigned long &bytesRead)
+                                                              unsigned long &bytesRead,
+                                                              unsigned long availData)
 {
   /* BYTE POSITIONS
    * 0       Item Type
@@ -252,6 +253,14 @@ OFCondition UserIdentityNegotiationSubItemRQ::parseFromBuffer(unsigned char *rea
    * n+3-m   Secondary-field
    */
 
+  // If n and m are both 0, this takes 10 bytes (absolute minimum)
+  if (availData < 10)
+  {
+      char buffer[256];
+      sprintf(buffer, "DUL user identity rq length %ld. Need at least 10 bytes", availData);
+      return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
+  }
+
   bytesRead = 0;
   // Skip "item type" and "reserved" field
   readBuffer += 2;
@@ -259,6 +268,16 @@ OFCondition UserIdentityNegotiationSubItemRQ::parseFromBuffer(unsigned char *rea
   unsigned short itemLength = 0;
   EXTRACT_SHORT_BIG(readBuffer, itemLength);
   readBuffer += 2;
+
+  // Is itemLength larger than the available data from readBuffer?
+  if (availData - 4 < itemLength)
+  {
+      char buffer[256];
+      sprintf(buffer, "DUL illegal user identify rq length %ld. Info claims to be %hd bytes.",
+              availData, itemLength);
+      return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
+  }
+
   // Do some length checking
   if (itemLength < 6 ) // at least 6 bytes are mandatory: identity type(1) pos. response(1) primLength(2), secfieldlength(2)
     return EC_CorruptedData;
@@ -279,6 +298,14 @@ OFCondition UserIdentityNegotiationSubItemRQ::parseFromBuffer(unsigned char *rea
   EXTRACT_SHORT_BIG(readBuffer, m_primFieldLength);
   readBuffer += 2;
 
+  // 4 bytes read so far and 2 bytes will be read after this sub-field
+  if (itemLength - 4 - 2 < m_primFieldLength)
+  {
+      char buffer[256];
+      sprintf(buffer, "DUL illegal user identify rq length %ld. Info claims to be %hd bytes. "
+              "Primary field has %hd bytes.", availData, itemLength, m_primFieldLength);
+      return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
+  }
   if (m_primFieldLength > 0)
   {
     m_primField = new char[m_primFieldLength];
@@ -291,6 +318,16 @@ OFCondition UserIdentityNegotiationSubItemRQ::parseFromBuffer(unsigned char *rea
   EXTRACT_SHORT_BIG(readBuffer, m_secFieldLength);
   readBuffer += 2;
   bytesRead += 2;
+
+  // 6 + m_primField bytes read so far, trying to read m_secFieldLength more bytes
+  if (itemLength - 6 - m_primFieldLength < m_secFieldLength)
+  {
+      char buffer[256];
+      sprintf(buffer, "DUL illegal user identify rq length %ld. Info claims to be %hd bytes. "
+              "Primary field has %hd bytes. Secondary field has %hd bytes.",
+              availData, itemLength, m_primFieldLength, m_secFieldLength);
+      return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
+  }
 
   // only user identity type 2 (Username + password authentication) requires second value field
   if ( (m_userIdentityType == ASC_USER_IDENTITY_USER_PASSWORD) && (m_secFieldLength > 0) )
@@ -520,16 +557,36 @@ OFCondition UserIdentityNegotiationSubItemAC::stream(unsigned char *targetBuffer
 
 // Parase User Identity sub item from buffer. Buffer has to start with item type field.
 OFCondition UserIdentityNegotiationSubItemAC::parseFromBuffer(unsigned char *readBuffer,
-                                                              unsigned long &bytesRead)
+                                                              unsigned long &bytesRead,
+                                                              unsigned long availData)
 {
+  // We need at least 6 bytes for the fields that we always read
+  if (availData < 6)
+  {
+      char buffer[256];
+      sprintf(buffer, "DUL illegal user identify ac length %ld. Need at least 6 bytes for"
+              " user identify ac", availData);
+      return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
+  }
+
   bytesRead = 0;
   readBuffer += 2; // Skip "item type" and "reserved" field
   unsigned short itemLength = 0;
-  EXTRACT_SHORT_BIG(readBuffer, itemLength); // ignored at the moment, may be useful for validity checking
+  EXTRACT_SHORT_BIG(readBuffer, itemLength);
   readBuffer += 2; // Skip "item length
 
   EXTRACT_SHORT_BIG(readBuffer, m_rspLength);
   readBuffer += 2;
+
+  // Check if itemLength and m_rspLength are valid and we don't read past the
+  // end of any buffer
+  if (availData - 4 < itemLength || itemLength < 2 || itemLength - 2 < m_rspLength)
+  {
+      char buffer[256];
+      sprintf(buffer, "DUL illegal user identify ac length %ld. Info claims to be %hd bytes. "
+              "Response claims to be %hd bytes.", availData, itemLength, m_rspLength);
+      return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
+  }
 
   if (m_rspLength > 0)
   {
@@ -584,6 +641,9 @@ UserIdentityNegotiationSubItemAC::~UserIdentityNegotiationSubItemAC()
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.cc,v $
+** Revision 1.5  2010-09-14 11:42:14  uli
+** Verify the length fields in the PDUs that we receive.
+**
 ** Revision 1.4  2009-11-18 11:53:59  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **

@@ -8,9 +8,9 @@
 **   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
 **
 ** Last Update:         $Author: uli $
-** Update Date:         $Date: 2009-09-29 14:34:16 $
+** Update Date:         $Date: 2010-09-14 11:42:14 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dcuserid.h,v $
-** CVS/RCS Revision:    $Revision: 1.4 $
+** CVS/RCS Revision:    $Revision: 1.5 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -76,10 +76,12 @@ public:
    *  @param readBuffer - [in/out] The buffer to read from. The pointer to the buffer
    *                      gets incremented by "bytesRead" bytes.
    *  @param bytesRead  - [out] Number of bytes read by this function
+   *  @param availData  - [in] Size of the buffer.
    *  @return EC_Normal if successful, error code otherwise
    */
   virtual OFCondition parseFromBuffer(unsigned char *readBuffer,
-                                      unsigned long& bytesRead) =0;
+                                      unsigned long& bytesRead,
+                                      unsigned long availData) =0;
 
   /** Stream the package into a byte stream for network transmission
    *  @param targetBuffer - [out] The buffer to stream to.
@@ -232,10 +234,12 @@ public:
    *  @param readBuffer - [in] The buffer to read from. The pointer to the buffer
    *                      gets incremented by "bytesRead" bytes.
    *  @param bytesRead  - [out] Number of bytes read by this function
+   *  @param availData  - [in] Size of the buffer.
    *  @return EC_Normal if successful, error code otherwise
    */
   OFCondition parseFromBuffer(unsigned char *readBuffer,
-                              unsigned long &bytesRead);
+                              unsigned long &bytesRead,
+                              unsigned long availData);
 
   /** Dump content of this user identity sub item to output stream
     * @param outstream - [out] The stream to dump to
@@ -331,10 +335,12 @@ public:
    *  @param readBuffer - [in] The buffer to read from. The pointer to the buffer
    *                      gets incremented by "bytesRead" bytes.
    *  @param bytesRead  - [out] Number of bytes read by this function
+   *  @param availData  - [in] Size of the buffer.
    *  @return EC_Normal if successful, error code otherwise
    */
   OFCondition parseFromBuffer(unsigned char *readBuffer,
-                              unsigned long &bytesRead);
+                              unsigned long &bytesRead,
+                              unsigned long availData);
 
   /** Dump content of this user identity sub item to output stream
     * @param outstream - [out] The stream to dump to
@@ -372,6 +378,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.h,v $
+** Revision 1.5  2010-09-14 11:42:14  uli
+** Verify the length fields in the PDUs that we receive.
+**
 ** Revision 1.4  2009-09-29 14:34:16  uli
 ** Include only the needed headers in dcuserid.h and not dctk.h.
 **

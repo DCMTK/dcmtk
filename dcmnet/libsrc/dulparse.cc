@@ -45,9 +45,9 @@
 ** Intent:          This file contains functions for parsing Dicom
 **                  Upper Layer (DUL) Protocol Data Units (PDUs)
 **                  into logical in-memory structures.
-** Last Update:     $Author: joergr $, $Date: 2010-01-20 10:01:01 $
+** Last Update:     $Author: uli $, $Date: 2010-09-14 11:42:14 $
 ** Source File:     $RCSfile: dulparse.cc,v $
-** Revision:        $Revision: 1.30 $
+** Revision:        $Revision: 1.31 $
 ** Status:          $State: Exp $
 */
 
@@ -71,28 +71,34 @@
 
 static OFCondition
 parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
-             unsigned long *itemLength);
+             unsigned long *itemLength, unsigned long availData);
 static OFCondition
 parsePresentationContext(unsigned char type,
                          PRV_PRESENTATIONCONTEXTITEM * context,
-                         unsigned char *buf, unsigned long *itemLength);
+                         unsigned char *buf, unsigned long *itemLength,
+                         unsigned long availData);
 static OFCondition
 parseUserInfo(DUL_USERINFO * userInfo,
               unsigned char *buf, unsigned long *itemLength,
-              unsigned char typeRQorAC);
+              unsigned char typeRQorAC, unsigned long availData);
 static OFCondition
 parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
-            unsigned long *itemLength);
+            unsigned long *itemLength, unsigned long availData);
 static OFCondition
-    parseDummy(unsigned char *buf, unsigned long *itemLength);
+    parseDummy(unsigned char *buf, unsigned long *itemLength,
+            unsigned long availData);
 static OFCondition
 parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
-                unsigned long *length);
+                unsigned long *length, unsigned long availData);
 static void trim_trailing_spaces(char *s);
 
 static OFCondition
 parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
-            unsigned long *length);
+            unsigned long *length, unsigned long availData);
+
+static OFCondition
+makeLengthError(const char *pdu, unsigned long bufSize, unsigned long minSize = 0,
+        unsigned long length = 0);
 
 /* parseAssociate
 **
@@ -130,6 +136,10 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
     (void) memset(assoc, 0, sizeof(*assoc));
     if ((assoc->presentationContextList = LST_Create()) == NULL) return EC_MemoryExhausted;
     if ((assoc->userInfo.SCUSCPRoleList = LST_Create()) == NULL) return EC_MemoryExhausted;
+
+    // Check if the PDU actually is long enough for the fields we read
+    if (pduLength < 2 + 2 + 16 + 16 + 32)
+        return makeLengthError("associate PDU", pduLength, 2 + 2 + 16 + 16 + 32);
 
     assoc->type = *buf++;
     assoc->rsv1 = *buf++;
@@ -196,7 +206,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
         switch (type) {
         case DUL_TYPEAPPLICATIONCONTEXT:
             cond = parseSubItem(&assoc->applicationContext,
-                                buf, &itemLength);
+                                buf, &itemLength, pduLength);
             if (cond.good())
             {
                 buf += itemLength;
@@ -209,7 +219,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             context = (PRV_PRESENTATIONCONTEXTITEM*)malloc(sizeof(PRV_PRESENTATIONCONTEXTITEM));
             if (context == NULL) return EC_MemoryExhausted;
             (void) memset(context, 0, sizeof(*context));
-            cond = parsePresentationContext(type, context, buf, &itemLength);
+            cond = parsePresentationContext(type, context, buf, &itemLength, pduLength);
             if (cond.bad()) return cond;
             buf += itemLength;
             pduLength -= itemLength;
@@ -218,7 +228,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             DCMNET_TRACE("Successfully parsed Presentation Context");
             break;
         case DUL_TYPEUSERINFO:
-            cond = parseUserInfo(&assoc->userInfo, buf, &itemLength, assoc->type);
+            cond = parseUserInfo(&assoc->userInfo, buf, &itemLength, assoc->type, pduLength);
             if (cond.bad())
                 return cond;
             buf += itemLength;
@@ -226,7 +236,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             DCMNET_TRACE("Successfully parsed User Information");
             break;
         default:
-            cond = parseDummy(buf, &itemLength);
+            cond = parseDummy(buf, &itemLength, pduLength);
             buf += itemLength;
             pduLength -= itemLength;
             break;
@@ -258,12 +268,30 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 
 static OFCondition
 parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
-             unsigned long *itemLength)
+             unsigned long *itemLength, unsigned long availData)
 {
+    // Need at least 4 bytes (type, rsv1, two bytes length field)
+    if (availData < 4)
+        return makeLengthError("subitem", availData, 4);
+
     subItem->type = *buf++;
     subItem->rsv1 = *buf++;
     EXTRACT_SHORT_BIG(buf, subItem->length);
     buf += 2;
+
+    // Maximum allowed size and our buffer size is DICOM_UI_LENGTH
+    if (subItem->length > DICOM_UI_LENGTH)
+    {
+        char buffer[256];
+        sprintf(buffer, "DUL illegal subitem length %d. Maximum allowed size is %d.",
+               subItem->length, DICOM_UI_LENGTH);
+        return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
+    }
+
+    // Does the subitem claim to be larger than the containing PDU?
+    if (availData - 4 < subItem->length)
+        return makeLengthError("subitem", availData, 0, subItem->length);
+
     (void) memcpy(subItem->data, buf, subItem->length);
     subItem->data[subItem->length] = '\0';
 
@@ -300,7 +328,7 @@ parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
 static OFCondition
 parsePresentationContext(unsigned char type,
                   PRV_PRESENTATIONCONTEXTITEM * context, unsigned char *buf,
-                         unsigned long *itemLength)
+                         unsigned long *itemLength, unsigned long availData)
 {
     unsigned long
         length;
@@ -309,6 +337,10 @@ parsePresentationContext(unsigned char type,
     OFCondition cond = EC_Normal;
     DUL_SUBITEM
         * subItem;
+
+    // We need at least 8 bytes, anything smaller would be reading past the end
+    if (availData < 8)
+        return makeLengthError("presentation context", availData, 8);
 
     if ((context->transferSyntaxList = LST_Create()) == NULL) return EC_MemoryExhausted;
 
@@ -325,6 +357,10 @@ parsePresentationContext(unsigned char type,
     length = context->length;
     *itemLength = 2 + 2 + length;
 
+    // Does the length field claim to be larger than the containing PDU?
+    if (availData - 4 < length || length < 4)
+        return makeLengthError("presentation context", availData, 4, length);
+
     DCMNET_TRACE("Parsing Presentation Context: ("
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)context->type
             << STD_NAMESPACE dec << "), Length: " << (unsigned long)context->length << OFendl
@@ -340,7 +376,7 @@ parsePresentationContext(unsigned char type,
                     << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)*buf);
             switch (*buf) {
             case DUL_TYPEABSTRACTSYNTAX:
-                cond = parseSubItem(&context->abstractSyntax, buf, &length);
+                cond = parseSubItem(&context->abstractSyntax, buf, &length, presentationLength);
                 if (cond.bad())
                     return cond;
 
@@ -351,7 +387,7 @@ parsePresentationContext(unsigned char type,
             case DUL_TYPETRANSFERSYNTAX:
                 subItem = (DUL_SUBITEM*)malloc(sizeof(DUL_SUBITEM));
                 if (subItem == NULL) return EC_MemoryExhausted;
-                cond = parseSubItem(subItem, buf, &length);
+                cond = parseSubItem(subItem, buf, &length, presentationLength);
                 if (cond.bad()) return cond;
                 cond = LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem);
                 if (cond.bad()) return cond;
@@ -360,7 +396,7 @@ parsePresentationContext(unsigned char type,
                 DCMNET_TRACE("Successfully parsed Transfer Syntax");
                 break;
             default:
-                cond = parseDummy(buf, &length);
+                cond = parseDummy(buf, &length, presentationLength);
                 buf += length;
                 presentationLength -= length;
                 break;
@@ -396,7 +432,8 @@ static OFCondition
 parseUserInfo(DUL_USERINFO * userInfo,
               unsigned char *buf,
               unsigned long *itemLength,
-              unsigned char typeRQorAC)
+              unsigned char typeRQorAC,
+              unsigned long availData)
 {
     unsigned short userLength;
     unsigned long length;
@@ -405,6 +442,10 @@ parseUserInfo(DUL_USERINFO * userInfo,
     SOPClassExtendedNegotiationSubItem *extNeg = NULL;
     UserIdentityNegotiationSubItem *usrIdent = NULL;
 
+    // The minimum allowed size is 4 byte, else we read past the buffer end
+    if (availData < 4)
+        return makeLengthError("user info", availData, 4);
+
     userInfo->type = *buf++;
     userInfo->rsv1 = *buf++;
     EXTRACT_SHORT_BIG(buf, userInfo->length);
@@ -412,6 +453,10 @@ parseUserInfo(DUL_USERINFO * userInfo,
 
     userLength = userInfo->length;
     *itemLength = userLength + 4;
+
+    // Does this item claim to be larger than the available data?
+    if (availData - 4 < userLength)
+        return makeLengthError("user info", availData, 0, userLength);
 
     DCMNET_TRACE("Parsing user info field ("
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)userInfo->type
@@ -422,7 +467,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
                 << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)*buf);
         switch (*buf) {
         case DUL_TYPEMAXLENGTH:
-            cond = parseMaxPDU(&userInfo->maxLength, buf, &length);
+            cond = parseMaxPDU(&userInfo->maxLength, buf, &length, userLength);
             if (cond.bad())
                 return cond;
             buf += length;
@@ -431,7 +476,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
             break;
         case DUL_TYPEIMPLEMENTATIONCLASSUID:
             cond = parseSubItem(&userInfo->implementationClassUID,
-                                buf, &length);
+                                buf, &length, userLength);
             if (cond.bad())
                 return cond;
             buf += length;
@@ -439,14 +484,14 @@ parseUserInfo(DUL_USERINFO * userInfo,
             break;
 
         case DUL_TYPEASYNCOPERATIONS:
-            cond = parseDummy(buf, &length);
+            cond = parseDummy(buf, &length, userLength);
             buf += length;
             userLength -= (unsigned short) length;
             break;
         case DUL_TYPESCUSCPROLE:
             role = (PRV_SCUSCPROLE*)malloc(sizeof(PRV_SCUSCPROLE));
             if (role == NULL) return EC_MemoryExhausted;
-            cond = parseSCUSCPRole(role, buf, &length);
+            cond = parseSCUSCPRole(role, buf, &length, userLength);
             if (cond.bad()) return cond;
             cond = LST_Enqueue(&userInfo->SCUSCPRoleList, (LST_NODE*)role);
             if (cond.bad()) return cond;
@@ -455,7 +500,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
             break;
         case DUL_TYPEIMPLEMENTATIONVERSIONNAME:
             cond = parseSubItem(&userInfo->implementationVersionName,
-                                buf, &length);
+                                buf, &length, userLength);
             if (cond.bad()) return cond;
             buf += length;
             userLength -= (unsigned short) length;
@@ -465,7 +510,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
             /* parse an extended negotiation sub-item */
             extNeg = new SOPClassExtendedNegotiationSubItem;
             if (extNeg == NULL)  return EC_MemoryExhausted;
-            cond = parseExtNeg(extNeg, buf, &length);
+            cond = parseExtNeg(extNeg, buf, &length, userLength);
             if (cond.bad()) return cond;
             if (userInfo->extNegList == NULL)
             {
@@ -483,7 +528,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
           else // assume DUL_TYPEASSOCIATEAC
             usrIdent = new UserIdentityNegotiationSubItemAC();
           if (usrIdent == NULL) return EC_MemoryExhausted;
-          cond = usrIdent->parseFromBuffer(buf, length /*return value*/);
+          cond = usrIdent->parseFromBuffer(buf, length /*return value*/, userLength);
           if (cond.bad())
           {
             delete usrIdent;
@@ -494,7 +539,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
           userLength -= (unsigned short) length;
           break;
         default:
-            cond = parseDummy(buf, &length);
+            cond = parseDummy(buf, &length, userLength);
             buf += length;
             userLength -= (unsigned short) length;
             break;
@@ -525,14 +570,21 @@ parseUserInfo(DUL_USERINFO * userInfo,
 */
 static OFCondition
 parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
-            unsigned long *itemLength)
+            unsigned long *itemLength, unsigned long availData)
 {
+    // We want to read 8 bytes of data, is there enough data?
+    if (availData < 8)
+        return makeLengthError("Max PDU", availData, 8);
+
     max->type = *buf++;
     max->rsv1 = *buf++;
     EXTRACT_SHORT_BIG(buf, max->length);
     buf += 2;
     EXTRACT_LONG_BIG(buf, max->maxLength);
     *itemLength = 2 + 2 + max->length;
+
+    if (max->length != 4)
+        DCMNET_WARN("Invalid length (" << max->length << ") for maximum length item, must be 4");
 
     DCMNET_TRACE("Maximum PDU Length: " << (unsigned long)max->maxLength);
 
@@ -557,15 +609,23 @@ parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
 **      Description of the algorithm (optional) and any other notes.
 */
 static OFCondition
-parseDummy(unsigned char *buf, unsigned long *itemLength)
+parseDummy(unsigned char *buf, unsigned long *itemLength, unsigned long availData)
 {
     unsigned short
         userLength;
+
+    // Is there enough data for the length field?
+    if (availData < 4)
+        return makeLengthError("dummy item", availData, 4);
 
     buf++;
     buf++;
     EXTRACT_SHORT_BIG(buf, userLength);
     buf += 2;
+
+    // Is there less data than the length field claims there is?
+    if (availData - 4 < userLength)
+        return makeLengthError("dummy item", availData, 0, userLength);
 
     *itemLength = userLength + 4;
     return EC_Normal;
@@ -590,10 +650,14 @@ parseDummy(unsigned char *buf, unsigned long *itemLength)
 */
 static OFCondition
 parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
-                unsigned long *length)
+                unsigned long *length, unsigned long availData)
 {
     unsigned short
         UIDLength;
+
+    // We need at least 8 bytes of data, else we read past the end of buf
+    if (availData < 8)
+        return makeLengthError("SCU-SCP role list", availData, 8);
 
     role->type = *buf++;
     role->rsv1 = *buf++;
@@ -602,6 +666,15 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 
     EXTRACT_SHORT_BIG(buf, UIDLength);
     buf += 2;
+
+    // Check if all the length fields are valid (we have the minimum needed
+    // number of bytes, no field is larger than its surrounding field).
+    if (availData - 4 < role->length)
+        return makeLengthError("SCU-SCP role list", availData, 0, role->length);
+    if (role->length < 4)
+        return makeLengthError("SCU-SCP role list UID", role->length, 4);
+    if (role->length - 4 < UIDLength)
+        return makeLengthError("SCU-SCP role list UID", role->length, 0, UIDLength);
 
     (void) memcpy(role->SOPClassUID, buf, UIDLength);
     role->SOPClassUID[UIDLength] = '\0';
@@ -629,9 +702,14 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 
 static OFCondition
 parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
-                unsigned long *length)
+                unsigned long *length, unsigned long availData)
 {
     unsigned char *bufStart = buf;
+
+    // An extended negotiation item has to be at least 6 bytes large
+    if (availData < 6)
+        return makeLengthError("extended negotiation", availData, 6);
+
     extNeg->itemType = *buf++;
     extNeg->reserved1 = *buf++;
     EXTRACT_SHORT_BIG(buf, extNeg->itemLength);
@@ -639,6 +717,15 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
 
     EXTRACT_SHORT_BIG(buf, extNeg->sopClassUIDLength);
     buf += 2;
+
+    // Check if all the length fields are valid (we have the minimum needed
+    // number of bytes, no field is larger than its surrounding field).
+    if (availData - 4 < extNeg->itemLength)
+        return makeLengthError("extended negotiation", availData, 0, extNeg->itemLength);
+    if (extNeg->itemLength < 2)
+        return makeLengthError("extended negotiation item", availData, 2);
+    if (extNeg->itemLength - 2 < extNeg->sopClassUIDLength)
+        return makeLengthError("extended negotiation item", extNeg->itemLength, 0, extNeg->sopClassUIDLength);
 
     extNeg->sopClassUID.append((const char*)buf, extNeg->sopClassUIDLength);
     buf += extNeg->sopClassUIDLength;
@@ -671,6 +758,35 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
     }
 
     return EC_Normal;
+}
+
+/* makeLengthError
+ *
+ * This function is used to generate the OFCondition code for an invalid field
+ * length in a PDU.
+ *
+ * @param pdu The name of the field or PDU which got an invalid length field.
+ * @param bufSize The size of the buffer that we received.
+ * @param length The length as given by the length field.
+ * @param minSize The minimum size that a 'pdu' has to have.
+ */
+static OFCondition
+makeLengthError(const char *pdu, unsigned long bufSize, unsigned long minSize,
+        unsigned long length)
+{
+    OFStringStream stream;
+    stream << "DUL Illegal " << pdu << ". Got " << bufSize << " bytes of data";
+    if (length != 0)
+        stream << " with a length field of " << length << " (data before length field is not included in length field)";
+    if (minSize != 0)
+        stream << ". The minimum allowed size is " << minSize;
+    stream << "." << OFStringStream_ends;
+
+    OFCondition ret;
+    OFSTRINGSTREAM_GETSTR(stream, tmpString)
+    ret = makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, tmpString);
+    OFSTRINGSTREAM_FREESTR(tmpString)
+    return ret;
 }
 
 /* trim_trailing_spaces
@@ -712,6 +828,9 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
+** Revision 1.31  2010-09-14 11:42:14  uli
+** Verify the length fields in the PDUs that we receive.
+**
 ** Revision 1.30  2010-01-20 10:01:01  joergr
 ** Made sure that the calling and called AE title strings are always
 ** null-terminated.
