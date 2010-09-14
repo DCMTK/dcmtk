@@ -8,6 +8,9 @@ Changes between releases are documented here.
            dcmnet/libsrc/dcuserid.cc
            dcmnet/libsrc/dulparse.cc
 
+- Log DUL errors on the INFO level instead of DEBUG.
+  Affects: dcmnet/apps/storescp.cc
+
 **** Changes from 2010.09.14 (riesmeier)
 
 - Added support for CP 650, 988, 1010 and 1024 to DICOM data dictionary.
