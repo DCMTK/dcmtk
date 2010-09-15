@@ -22,8 +22,8 @@
  *  Purpose: Handling of transfer syntaxes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-02 12:12:43 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2010-09-15 08:46:16 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,11 @@ typedef enum {
     /// JPEG 2000 part 2 multi-component extensions (lossless)
     EXS_JPEG2000MulticomponentLosslessOnly = 30,
     /// JPEG 2000 part 2 multi-component extensions (lossless or lossy)
-    EXS_JPEG2000Multicomponent = 31
+    EXS_JPEG2000Multicomponent = 31,
+    /// JPIP Referenced
+    EXS_JPIPReferenced = 32,
+    /// JPIP Referenced Deflate
+    EXS_JPIPReferencedDeflate = 33
 } E_TransferSyntax;
 
 /** enumeration of byte orders
@@ -297,6 +301,10 @@ extern const E_ByteOrder gLocalByteOrder;
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
+ * Revision 1.23  2010-09-15 08:46:16  joergr
+ * Added definition of XML encoding transfer syntax (Supplement 114) and JPIP
+ * referenced transfer syntaxes (Supplement 106).
+ *
  * Revision 1.22  2010-09-02 12:12:43  joergr
  * Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
  *

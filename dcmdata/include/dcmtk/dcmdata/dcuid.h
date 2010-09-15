@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-02 12:12:43 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Update Date:      $Date: 2010-09-15 08:46:16 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -324,6 +324,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax "1.2.840.10008.1.2.4.92"
 /// JPEG 2000 Part 2 Multi-component Image Compression (Lossless or Lossy)
 #define UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax "1.2.840.10008.1.2.4.93"
+/// JPIP Referenced
+#define UID_JPIPReferencedTransferSyntax "1.2.840.10008.1.2.4.94"
+/// JPIP Referenced Deflate
+#define UID_JPIPReferencedDeflateTransferSyntax "1.2.840.10008.1.2.4.95"
 
 /** MIME encapsulation (Supplement 101) is only a pseudo transfer syntax used to
  *  refer to MIME encapsulated HL7 CDA documents from a DICOMDIR when stored
@@ -331,6 +335,12 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
  *  or encoding of DICOM objects.
  */
 #define UID_RFC2557MIMEEncapsulationTransferSyntax "1.2.840.10008.1.2.6.1"
+
+/** XML encoding (Supplement 114) is only a pseudo transfer syntax used to refer to
+ *  encapsulated HL7 CDA documents from a DICOMDIR when stored on a DICOM storage
+ *  medium. It is never used for network communication or encoding of DICOM objects.
+ */
+#define UID_XMLEncodingTransferSyntax "1.2.840.10008.1.2.6.2"
 
 /*
 ** Defined SOP UIDs according to 2004 DICOM edition
@@ -616,6 +626,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.81  2010-09-15 08:46:16  joergr
+** Added definition of XML encoding transfer syntax (Supplement 114) and JPIP
+** referenced transfer syntaxes (Supplement 106).
+**
 ** Revision 1.80  2010-09-02 12:12:43  joergr
 ** Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
 **
