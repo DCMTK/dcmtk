@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-02 12:12:46 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Update Date:      $Date: 2010-09-15 08:53:05 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,7 +133,10 @@ static const UIDNameMap uidNameMap[] = {
     { UID_MPEG2MainProfileAtHighLevelTransferSyntax,           "MPEG2MainProfile@HighLevel" },
     { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax, "JPEG2000MulticomponentLosslessOnly" },
     { UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,             "JPEG2000Multicomponent" },
+    { UID_JPIPReferencedTransferSyntax,                        "JPIPReferenced" },
+    { UID_JPIPReferencedDeflateTransferSyntax,                 "JPIPReferencedDeflate" },
     { UID_RFC2557MIMEEncapsulationTransferSyntax,              "RFC2557MIMEEncapsulation" },
+    { UID_XMLEncodingTransferSyntax,                           "XMLEncoding" },
 
     // Storage
     { UID_AmbulatoryECGWaveformStorage,                        "AmbulatoryECGWaveformStorage" },
@@ -1430,6 +1433,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.80  2010-09-15 08:53:05  joergr
+** Added definition of XML encoding transfer syntax (Supplement 114) and JPIP
+** referenced transfer syntaxes (Supplement 106).
+**
 ** Revision 1.79  2010-09-02 12:12:46  joergr
 ** Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
 **

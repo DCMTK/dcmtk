@@ -22,8 +22,8 @@
  *  Purpose: handling of transfer syntaxes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-02 12:12:46 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2010-09-15 08:53:05 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -349,7 +349,30 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       0L, 0L,
       OFFalse,
-      ESC_none }
+      ESC_none },
+   { UID_JPIPReferencedTransferSyntax,
+      "JPIP Referenced",
+      EXS_JPIPReferenced,
+      EBO_LittleEndian,
+      EVT_Explicit,      
+      EJE_NotEncapsulated,  // in fact, pixel data shall be referenced via (0028,7FE0) Pixel Data Provider URL
+      0L, 0L,
+      OFFalse,
+      ESC_none },
+   { UID_JPIPReferencedDeflateTransferSyntax,
+      "JPIP Referenced Deflate",
+      EXS_JPIPReferencedDeflate,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_NotEncapsulated,  // in fact, pixel data shall be referenced via (0028,7FE0) Pixel Data Provider URL
+      0L, 0L,
+      OFFalse,
+#ifdef WITH_ZLIB
+      ESC_zlib
+#else
+      ESC_unsupported
+#endif
+    }
 
     // enter further transfer syntaxes here ...
 };
@@ -590,6 +613,10 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
+ * Revision 1.31  2010-09-15 08:53:05  joergr
+ * Added definition of XML encoding transfer syntax (Supplement 114) and JPIP
+ * referenced transfer syntaxes (Supplement 106).
+ *
  * Revision 1.30  2010-09-02 12:12:46  joergr
  * Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
  *

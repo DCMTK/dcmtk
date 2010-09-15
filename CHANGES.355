@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.15 (riesmeier)
+
+- Added definition of XML encoding transfer syntax (Supplement 114) and JPIP
+  referenced transfer syntaxes (Supplement 106).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/include/dcmtk/dcmdata/dcxfer.h
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dcxfer.cc
+
 **** Changes from 2010.09.14 (schlachter)
 
 - Verify the length fields in the PDUs that we receive.
