@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-14 11:46:23 $
- *  CVS/RCS Revision: $Revision: 1.132 $
+ *  Update Date:      $Date: 2010-09-16 08:28:40 $
+ *  CVS/RCS Revision: $Revision: 1.133 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1273,7 +1273,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     // If something else was wrong we might have to dump an error message.
     else
     {
-      OFLOG_INFO(storescpLogger, DimseCondition::dump(temp_str, cond));
+      OFLOG_ERROR(storescpLogger, "Receiving Association failed: " << DimseCondition::dump(temp_str, cond));
     }
 
     // no matter what kind of error occurred, we need to do a cleanup
@@ -2727,6 +2727,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.133  2010-09-16 08:28:40  uli
+** Log DUL errors on the ERROR level instead of INFO.
+**
 ** Revision 1.132  2010-09-14 11:46:23  uli
 ** Log DUL errors on the INFO level instead of DEBUG.
 **
