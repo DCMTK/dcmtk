@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Log DUL errors on the ERROR level instead of INFO.
   Affects: dcmnet/apps/storescp.cc
 
+- Handle empty PDVs correctly again.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
 **** Changes from 2010.09.15 (riesmeier)
 
 - Added definition of XML encoding transfer syntax (Supplement 114) and JPIP
