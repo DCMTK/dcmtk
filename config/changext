@@ -18,7 +18,7 @@
 #   old extension (default: cc). This is useful if you want
 #   to "rename back".
 #
-# Author: Marco Eichelberg, (C) 1997-2007 Kuratorium OFFIS e.V.
+# Author: Marco Eichelberg, (C) 1997-2010 Kuratorium OFFIS e.V.
 #
 
 newext=${1-C}
@@ -43,28 +43,28 @@ if [ -f dcmjpeg/apps/dcmmkdir.$newext ] ; then
   `mv dcmjpeg/apps/dcmmkdir.new dcmjpeg/apps/dcmmkdir.$newext`
 fi
 
-if [ -f dcmmisc/apps/tcpsrv_e.$newext ] ; then
+if [ -f dcmeval/apps/tcpsrv_e.$newext ] ; then
   echo "updating implementation include in tcpsrv_e.$newext"
-  `cat dcmmisc/apps/tcpsrv_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmprscp\/apps\/tcpsrv\.$oldext\"/#include \"..\/..\/dcmprscp\/apps\/tcpsrv.$newext\"/g" >dcmmisc/apps/tcpsrv_e.new`
-  `mv dcmmisc/apps/tcpsrv_e.new dcmmisc/apps/tcpsrv_e.$newext`
+  `cat dcmeval/apps/tcpsrv_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmprscp\/apps\/tcpsrv\.$oldext\"/#include \"..\/..\/dcmprscp\/apps\/tcpsrv.$newext\"/g" >dcmeval/apps/tcpsrv_e.new`
+  `mv dcmeval/apps/tcpsrv_e.new dcmeval/apps/tcpsrv_e.$newext`
 fi
 
-if [ -f dcmmisc/apps/tcpprt_e.$newext ] ; then
+if [ -f dcmeval/apps/tcpprt_e.$newext ] ; then
   echo "updating implementation include in tcpprt_e.$newext"
-  `cat dcmmisc/apps/tcpprt_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmprint\/apps\/tcpprt\.$oldext\"/#include \"..\/..\/dcmprint\/apps\/tcpprt.$newext\"/g" >dcmmisc/apps/tcpprt_e.new`
-  `mv dcmmisc/apps/tcpprt_e.new dcmmisc/apps/tcpprt_e.$newext`
+  `cat dcmeval/apps/tcpprt_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmprint\/apps\/tcpprt\.$oldext\"/#include \"..\/..\/dcmprint\/apps\/tcpprt.$newext\"/g" >dcmeval/apps/tcpprt_e.new`
+  `mv dcmeval/apps/tcpprt_e.new dcmeval/apps/tcpprt_e.$newext`
 fi
 
-if [ -f dcmmisc/apps/dcmcjp2e.$newext ] ; then
-  echo "updating implementation include in dcmcjp2e.$newext"
-  `cat dcmmisc/apps/dcmcjp2e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmjp2k\/apps\/dcmcjp2k\.$oldext\"/#include \"..\/..\/dcmjp2k\/apps\/dcmcjp2k.$newext\"/g" >dcmmisc/apps/dcmcjp2e.new`
-  `mv dcmmisc/apps/dcmcjp2e.new dcmmisc/apps/dcmcjp2e.$newext`
+if [ -f dcmeval/apps/dcmcjp2k_e.$newext ] ; then
+  echo "updating implementation include in dcmcjp2k_e.$newext"
+  `cat dcmeval/apps/dcmcjp2k_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmjp2k\/apps\/dcmcjp2k\.$oldext\"/#include \"..\/..\/dcmjp2k\/apps\/dcmcjp2k.$newext\"/g" >dcmeval/apps/dcmcjp2k_e.new`
+  `mv dcmeval/apps/dcmcjp2k_e.new dcmeval/apps/dcmcjp2k_e.$newext`
 fi
 
-if [ -f dcmmisc/apps/dcmdjp2e.$newext ] ; then
-  echo "updating implementation include in dcmdjp2e.$newext"
-  `cat dcmmisc/apps/dcmdjp2e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmjp2k\/apps\/dcmdjp2k\.$oldext\"/#include \"..\/..\/dcmjp2k\/apps\/dcmdjp2k.$newext\"/g" >dcmmisc/apps/dcmdjp2e.new`
-  `mv dcmmisc/apps/dcmdjp2e.new dcmmisc/apps/dcmdjp2e.$newext`
+if [ -f dcmeval/apps/dcmdjp2k_e.$newext ] ; then
+  echo "updating implementation include in dcmdjp2k_e.$newext"
+  `cat dcmeval/apps/dcmdjp2k_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmjp2k\/apps\/dcmdjp2k\.$oldext\"/#include \"..\/..\/dcmjp2k\/apps\/dcmdjp2k.$newext\"/g" >dcmeval/apps/dcmdjp2k_e.new`
+  `mv dcmeval/apps/dcmdjp2k_e.new dcmeval/apps/dcmdjp2k_e.$newext`
 fi
 
 if [ -f dcmqrdbx/apps/dcmqrscq.$newext ] ; then
@@ -73,16 +73,22 @@ if [ -f dcmqrdbx/apps/dcmqrscq.$newext ] ; then
   `mv dcmqrdbx/apps/dcmqrscq.new dcmqrdbx/apps/dcmqrscq.$newext`
 fi
 
-if [ -f dcmmisc/apps/ppsscpfs_e.$newext ] ; then
+if [ -f dcmeval/apps/ppsscpfs_e.$newext ] ; then
   echo "updating implementation include in ppsscpfs_e.$newext"
-  `cat dcmmisc/apps/ppsscpfs_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmpps\/apps\/ppsscpfs\.$oldext\"/#include \"..\/..\/dcmpps\/apps\/ppsscpfs.$newext\"/g" | sed -e "s/#include \"\.\.\/\.\.\/dcmpps\/apps\/ppscefs\.$oldext\"/#include \"..\/..\/dcmpps\/apps\/ppscefs.$newext\"/g" >dcmmisc/apps/ppsscpfs_e.new`
-  `mv dcmmisc/apps/ppsscpfs_e.new dcmmisc/apps/ppsscpfs_e.$newext`
+  `cat dcmeval/apps/ppsscpfs_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmpps\/apps\/ppsscpfs\.$oldext\"/#include \"..\/..\/dcmpps\/apps\/ppsscpfs.$newext\"/g" | sed -e "s/#include \"\.\.\/\.\.\/dcmpps\/apps\/ppscefs\.$oldext\"/#include \"..\/..\/dcmpps\/apps\/ppscefs.$newext\"/g" >dcmeval/apps/ppsscpfs_e.new`
+  `mv dcmeval/apps/ppsscpfs_e.new dcmeval/apps/ppsscpfs_e.$newext`
 fi
 
-if [ -f dcmmisc/apps/pawscpfs_e.$newext ] ; then
+if [ -f dcmeval/apps/pawscpfs_e.$newext ] ; then
   echo "updating implementation include in pawscpfs_e.$newext"
-  `cat dcmmisc/apps/pawscpfs_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmppswm\/apps\/pawscpfs\.$oldext\"/#include \"..\/..\/dcmppswm\/apps\/pawscpfs.$newext\"/g" | sed -e "s/#include \"\.\.\/\.\.\/dcmppswm\/apps\/pawcefs\.$oldext\"/#include \"..\/..\/dcmppswm\/apps\/pawcefs.$newext\"/g" >dcmmisc/apps/pawscpfs_e.new`
-  `mv dcmmisc/apps/pawscpfs_e.new dcmmisc/apps/pawscpfs_e.$newext`
+  `cat dcmeval/apps/pawscpfs_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmppswm\/apps\/pawscpfs\.$oldext\"/#include \"..\/..\/dcmppswm\/apps\/pawscpfs.$newext\"/g" | sed -e "s/#include \"\.\.\/\.\.\/dcmppswm\/apps\/pawcefs\.$oldext\"/#include \"..\/..\/dcmppswm\/apps\/pawcefs.$newext\"/g" >dcmeval/apps/pawscpfs_e.new`
+  `mv dcmeval/apps/pawscpfs_e.new dcmeval/apps/pawscpfs_e.$newext`
+fi
+
+if [ -f dcmeval/apps/dcmanon_e.$newext ] ; then
+  echo "updating implementation include in dcmanon_e.$newext"
+  `cat dcmeval/apps/dcmanon_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmmisc\/apps\/dcmanon\.$oldext\"/#include \"..\/..\/dcmmisc\/apps\/dcmanon.$newext\"/g" >dcmeval/apps/dcmanon_e.new`
+  `mv dcmeval/apps/dcmanon_e.new dcmeval/apps/dcmanon_e.$newext`
 fi
 
 if [ -f dcmmisc/apps/detecscp.$newext ] ; then

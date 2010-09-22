@@ -5,6 +5,7 @@ Changes between releases are documented here.
 
 - Moved evaluation version of non-public DICOM tools to new module "dcmeval".
   Affects: CMakeLists.txt
+           config/changext
 
 **** Changes from 2010.09.16 (schlachter)
 
