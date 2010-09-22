@@ -14,7 +14,7 @@ ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.1)
 # Modules to be built (default: build all public modules)
 SET(DCMTK_MODULES config ofstd oflog dcmdata dcmimgle dcmjpeg dcmimage dcmtls dcmnet dcmwlm dcmqrdb dcmsr dcmpstat dcmsign dcmjpls doxygen)
 # Add non-public modules
-#SET(DCMTK_MODULES ${DCMTK_MODULES} dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmloco dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmstcom dcmrt dcmwave)
+#SET(DCMTK_MODULES ${DCMTK_MODULES} dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmloco dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmstcom dcmrt dcmwave dcmeval)
 
 # Package "release" settings
 SET(DCMTK_PACKAGE_NAME "DCMTK")
@@ -146,7 +146,7 @@ ENDIF(CMAKE_C_COMPILER MATCHES "CL|cl")
 IF(CMAKE_CXX_COMPILER MATCHES "CL|cl")
   IF(NOT WITH_SHARED_LIBS)
     IF(CMAKE_GENERATOR STREQUAL "Visual Studio 6")
-	    SET(CMAKE_CXX_FLAGS "/nologo /W3 /GX /Gy /YX /Zm500") # /Zm500 increments heap size which is needed on some system to compile templates in dcmimgle
+      SET(CMAKE_CXX_FLAGS "/nologo /W3 /GX /Gy /YX /Zm500") # /Zm500 increments heap size which is needed on some system to compile templates in dcmimgle
       SET(CMAKE_CXX_FLAGS_DEBUG "/MTd /Z7 /Od")
       SET(CMAKE_CXX_FLAGS_RELEASE "/MT /O2")
       SET(CMAKE_CXX_FLAGS_MINSIZEREL "/MT /O2")

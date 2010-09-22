@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.22 (riesmeier)
+
+- Moved evaluation version of non-public DICOM tools to new module "dcmeval".
+  Affects: CMakeLists.txt
+
 **** Changes from 2010.09.16 (schlachter)
 
 - Log DUL errors on the ERROR level instead of INFO.
