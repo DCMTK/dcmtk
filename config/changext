@@ -103,6 +103,18 @@ if [ -f dcmmisc/apps/detecscu.$newext ] ; then
   `mv dcmmisc/apps/detecscu.new dcmmisc/apps/detecscu.$newext`
 fi
 
+if [ -f dcmeval/apps/mppsscu_e.$newext ] ; then
+  echo "updating implementation include in mppsscu_e.$newext"
+  `cat dcmeval/apps/mppsscu_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmppscu\/apps\/mppsscu\.$oldext\"/#include \"..\/..\/dcmppscu\/apps\/mppsscu.$newext\"/g" >dcmeval/apps/mppsscu_e.new`
+  `mv dcmeval/apps/mppsscu_e.new dcmeval/apps/mppsscu_e.$newext`
+fi
+
+if [ -f dcmeval/apps/stcomscu_e.$newext ] ; then
+  echo "updating implementation include in stcomscu_e.$newext"
+  `cat dcmeval/apps/stcomscu_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmstcom\/apps\/stcomscu\.$oldext\"/#include \"..\/..\/dcmstcom\/apps\/stcomscu.$newext\"/g" >dcmeval/apps/stcomscu_e.new`
+  `mv dcmeval/apps/stcomscu_e.new dcmeval/apps/stcomscu_e.$newext`
+fi
+
 echo "updating makefiles"
 for file in `find . -name "Makefile*" -print`
 do

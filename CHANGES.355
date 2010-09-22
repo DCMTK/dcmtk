@@ -7,6 +7,9 @@ Changes between releases are documented here.
   Affects: CMakeLists.txt
            config/changext
 
+- Added evaluation versions of non-public DICOM tools "mppsscu" and "stcomscu".
+  Affects: config/changext
+
 **** Changes from 2010.09.16 (schlachter)
 
 - Log DUL errors on the ERROR level instead of INFO.
