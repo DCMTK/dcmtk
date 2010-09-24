@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-23 14:38:39 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Update Date:      $Date: 2010-09-24 13:35:52 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -259,15 +259,15 @@ const OFCondition SR_EC_CorruptedXMLStructure               (ECC_CorruptedXMLStr
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
 {
-    {DSRTypes::DT_invalid,             "",                             "",   "invalid document type"},
-    {DSRTypes::DT_BasicTextSR,         UID_BasicTextSR,                "SR", "Basic Text SR"},
-    {DSRTypes::DT_EnhancedSR,          UID_EnhancedSR,                 "SR", "Enhanced SR"},
-    {DSRTypes::DT_ComprehensiveSR,     UID_ComprehensiveSR,            "SR", "Comprehensive SR"},
-    {DSRTypes::DT_KeyObjectDoc,        UID_KeyObjectSelectionDocument, "KO", "Key Object Selection Document"},
-    {DSRTypes::DT_MammographyCadSR,    UID_MammographyCADSR,           "SR", "Mammography CAD SR"},
-    {DSRTypes::DT_ChestCadSR,          UID_ChestCADSR,                 "SR", "Chest CAD SR"},
-    {DSRTypes::DT_ProcedureLog,        UID_ProcedureLogStorage,        "SR", "Procedure Log"},
-    {DSRTypes::DT_XRayRadiationDoseSR, UID_XRayRadiationDoseSR,        "SR", "X-Ray Radiation Dose SR"}
+    {DSRTypes::DT_invalid,             "",                                    "",   "invalid document type"},
+    {DSRTypes::DT_BasicTextSR,         UID_BasicTextSRStorage,                "SR", "Basic Text SR"},
+    {DSRTypes::DT_EnhancedSR,          UID_EnhancedSRStorage,                 "SR", "Enhanced SR"},
+    {DSRTypes::DT_ComprehensiveSR,     UID_ComprehensiveSRStorage,            "SR", "Comprehensive SR"},
+    {DSRTypes::DT_KeyObjectDoc,        UID_KeyObjectSelectionDocumentStorage, "KO", "Key Object Selection Document"},
+    {DSRTypes::DT_MammographyCadSR,    UID_MammographyCADSRStorage,           "SR", "Mammography CAD SR"},
+    {DSRTypes::DT_ChestCadSR,          UID_ChestCADSRStorage,                 "SR", "Chest CAD SR"},
+    {DSRTypes::DT_ProcedureLog,        UID_ProcedureLogStorage,               "SR", "Procedure Log"},
+    {DSRTypes::DT_XRayRadiationDoseSR, UID_XRayRadiationDoseSRStorage,        "SR", "X-Ray Radiation Dose SR"}
 };
 
 
@@ -1438,6 +1438,11 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.64  2010-09-24 13:35:52  joergr
+ *  Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+ *  resulting name changes are mainly caused by the fact that the corresponding
+ *  SOP Class is now retired.
+ *
  *  Revision 1.63  2010-04-23 14:38:39  joergr
  *  Enhanced checking of element values using the new DcmElement::checkValue()
  *  method.

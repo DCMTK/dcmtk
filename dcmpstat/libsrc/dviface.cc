@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:21:56 $
- *  CVS/RCS Revision: $Revision: 1.163 $
+ *  Update Date:      $Date: 2010-09-24 13:32:58 $
+ *  CVS/RCS Revision: $Revision: 1.164 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2739,7 +2739,7 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
       // source image sequence is written in pState->writeHardcopyImageAttributes().
 
       // SOP Common Module
-      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SOPClassUID, UID_HardcopyGrayscaleImageStorage);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SOPClassUID, UID_RETIRED_HardcopyGrayscaleImageStorage);
       dcmGenerateUniqueIdentifier(newuid);
       theInstanceUID = (instanceUID ? instanceUID : newuid);
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SOPInstanceUID, theInstanceUID.c_str());
@@ -2833,12 +2833,12 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
     return result;
   }
 
-  if (handle.makeNewStoreFileName(UID_HardcopyGrayscaleImageStorage, uid, imageFileName).good())
+  if (handle.makeNewStoreFileName(UID_RETIRED_HardcopyGrayscaleImageStorage, uid, imageFileName).good())
   {
      result = saveHardcopyGrayscaleImage(imageFileName, pixelData, width, height, aspectRatio, OFTrue, uid);
      if (EC_Normal==result)
      {
-       if (handle.storeRequest(UID_HardcopyGrayscaleImageStorage, uid, imageFileName, &dbStatus).bad())
+       if (handle.storeRequest(UID_RETIRED_HardcopyGrayscaleImageStorage, uid, imageFileName, &dbStatus).bad())
        {
          result = EC_IllegalCall;
          DCMPSTAT_LOGFILE("Save hardcopy grayscale image to database failed: could not register in index file");
@@ -3063,13 +3063,13 @@ OFCondition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
     return result;
   }
 
-  if (handle.makeNewStoreFileName(UID_StoredPrintStorage, uid, imageFileName).good())
+  if (handle.makeNewStoreFileName(UID_RETIRED_StoredPrintStorage, uid, imageFileName).good())
   {
      // now store stored print object as filename
      result = saveStoredPrint(imageFileName, writeRequestedImageSize, OFTrue, uid);
      if (EC_Normal==result)
      {
-       if (handle.storeRequest(UID_StoredPrintStorage, uid, imageFileName, &dbStatus).bad())
+       if (handle.storeRequest(UID_RETIRED_StoredPrintStorage, uid, imageFileName, &dbStatus).bad())
        {
          result = EC_IllegalCall;
          DCMPSTAT_LOGFILE("Save stored print to database failed: could not register in index file");
@@ -4237,6 +4237,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
+ *  Revision 1.164  2010-09-24 13:32:58  joergr
+ *  Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+ *  resulting name changes are mainly caused by the fact that the corresponding
+ *  SOP Class is now retired.
+ *
  *  Revision 1.163  2010-08-09 13:21:56  joergr
  *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
  *  the official "keyword" is used for the attribute name which results in a

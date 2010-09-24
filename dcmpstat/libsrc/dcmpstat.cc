@@ -23,8 +23,8 @@
  *    classes: DcmPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:21:56 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2010-09-24 13:32:58 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1023,7 +1023,7 @@ OFCondition DcmPresentationState::createFromImage(
     // of the Modality LUT transformation is "inversersed" and, therefore,
     // must not be copied into the presentation state
     if ((ofsopclassUID == UID_XRayAngiographicImageStorage) ||
-        (ofsopclassUID == UID_XRayFluoroscopyImageStorage) ||
+        (ofsopclassUID == UID_XRayRadiofluoroscopicImageStorage) ||
         (ofsopclassUID == UID_RETIRED_XRayAngiographicBiPlaneImageStorage))
     {
       modalityLUTData.clear();
@@ -1962,6 +1962,11 @@ OFCondition DcmPresentationState::moveOverlay(size_t old_layer, size_t idx, size
 
 /*
  *  $Log: dcmpstat.cc,v $
+ *  Revision 1.14  2010-09-24 13:32:58  joergr
+ *  Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+ *  resulting name changes are mainly caused by the fact that the corresponding
+ *  SOP Class is now retired.
+ *
  *  Revision 1.13  2010-08-09 13:21:56  joergr
  *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
  *  the official "keyword" is used for the attribute name which results in a

@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveSCP
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-09 16:54:32 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2010-09-24 13:34:17 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -567,8 +567,8 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         UID_FINDPatientRootQueryRetrieveInformationModel },
       { UID_MOVEStudyRootQueryRetrieveInformationModel,
         UID_FINDStudyRootQueryRetrieveInformationModel },
-      { UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel,
-        UID_FINDPatientStudyOnlyQueryRetrieveInformationModel }
+      { UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel,
+        UID_RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel }
     };
 
     DIC_AE calledAETitle;
@@ -715,9 +715,9 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         UID_MOVEPatientRootQueryRetrieveInformationModel,
         UID_GETPatientRootQueryRetrieveInformationModel,
 #ifndef NO_PATIENTSTUDYONLY_SUPPORT
-        UID_FINDPatientStudyOnlyQueryRetrieveInformationModel,
-        UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel,
-        UID_GETPatientStudyOnlyQueryRetrieveInformationModel,
+        UID_RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel,
+        UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel,
+        UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel,
 #endif
         UID_FINDStudyRootQueryRetrieveInformationModel,
         UID_MOVEStudyRootQueryRetrieveInformationModel,
@@ -742,15 +742,15 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         {
           if (options_.supportPatientRoot_ && (! options_.disableGetSupport_)) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
-        else if (0 == strcmp(nonStorageSyntaxes[i], UID_FINDPatientStudyOnlyQueryRetrieveInformationModel))
+        else if (0 == strcmp(nonStorageSyntaxes[i], UID_RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel))
         {
           if (options_.supportPatientStudyOnly_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
-        else if (0 == strcmp(nonStorageSyntaxes[i], UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel))
+        else if (0 == strcmp(nonStorageSyntaxes[i], UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel))
         {
           if (options_.supportPatientStudyOnly_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
-        else if (0 == strcmp(nonStorageSyntaxes[i], UID_GETPatientStudyOnlyQueryRetrieveInformationModel))
+        else if (0 == strcmp(nonStorageSyntaxes[i], UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel))
         {
           if (options_.supportPatientStudyOnly_ && (! options_.disableGetSupport_)) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
@@ -1094,6 +1094,11 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrsrv.cc,v $
+ * Revision 1.11  2010-09-24 13:34:17  joergr
+ * Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+ * resulting name changes are mainly caused by the fact that the corresponding
+ * SOP Class is now retired.
+ *
  * Revision 1.10  2010-09-09 16:54:32  joergr
  * Further code clean-up and minor changes to log messages.
  *

@@ -22,8 +22,8 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-09 16:54:32 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2010-09-24 13:34:17 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1638,7 +1638,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     else if (strcmp( SOPClassUID, UID_FINDStudyRootQueryRetrieveInformationModel) == 0)
         handle_->rootLevel = STUDY_ROOT ;
 #ifndef NO_PATIENTSTUDYONLY_SUPPORT
-    else if (strcmp( SOPClassUID, UID_FINDPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+    else if (strcmp( SOPClassUID, UID_RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel) == 0)
         handle_->rootLevel = PATIENT_STUDY ;
 #endif
     else {
@@ -2225,7 +2225,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     else if (strcmp( SOPClassUID, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0)
         handle_->rootLevel = STUDY_ROOT ;
 #ifndef NO_PATIENTSTUDYONLY_SUPPORT
-    else if (strcmp( SOPClassUID, UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+    else if (strcmp( SOPClassUID, UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel) == 0)
         handle_->rootLevel = PATIENT_STUDY ;
 #endif
 #ifndef NO_GET_SUPPORT
@@ -2235,7 +2235,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     else if (strcmp( SOPClassUID, UID_GETStudyRootQueryRetrieveInformationModel) == 0)
         handle_->rootLevel = STUDY_ROOT ;
 #ifndef NO_PATIENTSTUDYONLY_SUPPORT
-    else if (strcmp( SOPClassUID, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+    else if (strcmp( SOPClassUID, UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
         handle_->rootLevel = PATIENT_STUDY ;
 #endif
 #endif
@@ -2937,13 +2937,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
         if (strcmp(SOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage) == 0)
         {
             descrTag = DCM_ContentDescription;
-        } else if (strcmp(SOPClassUID, UID_HardcopyGrayscaleImageStorage) == 0)
+        } else if (strcmp(SOPClassUID, UID_RETIRED_HardcopyGrayscaleImageStorage) == 0)
         {
             strcpy(idxRec.InstanceDescription, "Hardcopy Grayscale Image");
             useDescrTag = OFFalse;
-        } else if ((strcmp(SOPClassUID, UID_BasicTextSR) == 0) ||
-                   (strcmp(SOPClassUID, UID_EnhancedSR) == 0) ||
-                   (strcmp(SOPClassUID, UID_ComprehensiveSR) == 0))
+        } else if ((strcmp(SOPClassUID, UID_BasicTextSRStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_EnhancedSRStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_ComprehensiveSRStorage) == 0))
         {
             OFString string;
             OFString description = "unknown SR";
@@ -2967,7 +2967,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
             }
             strncpy(idxRec.InstanceDescription, description.c_str(), DESCRIPTION_MAX_LENGTH);
             useDescrTag = OFFalse;
-        } else if (strcmp(SOPClassUID, UID_StoredPrintStorage) == 0)
+        } else if (strcmp(SOPClassUID, UID_RETIRED_StoredPrintStorage) == 0)
         {
             strcpy(idxRec.InstanceDescription, "Stored Print");
             useDescrTag = OFFalse;
@@ -3426,6 +3426,11 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.23  2010-09-24 13:34:17  joergr
+ * Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+ * resulting name changes are mainly caused by the fact that the corresponding
+ * SOP Class is now retired.
+ *
  * Revision 1.22  2010-09-09 16:54:32  joergr
  * Further code clean-up and minor changes to log messages.
  *

@@ -1,6 +1,40 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.24 (riesmeier)
+
+- Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+  resulting name changes are mainly caused by the fact that the corresponding
+  SOP Class is now retired.
+  NB: Both users and developers should be aware of these changes and modify
+  their scripts and/or source code accordingly. This is a one-time effort.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/dimomod.cc
+           dcmjpeg/libsrc/djcodecd.cc
+           dcmjpeg/libsrc/djcodece.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmpstat/libsrc/dcmpstat.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsib.cc
+           dcmpstat/libsrc/dvpssp.cc
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmqrdb/libsrc/dcmqrsrv.cc
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsrdump.man
+           dcmsr/docs/xml2dsr.man
+           dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2010.09.23 (riesmeier)
 
 - Removed outdated comment copied from a previous edition of the DICOM standard
@@ -372,7 +406,7 @@ Changes between releases are documented here.
   the official "keyword" is used for the attribute name which results in a
   number of minor changes (e.g. "PatientsName" is now called "PatientName").
   NB: Both users and developers should be aware of these changes and modify
-  their scripts and/or source code accordingly.
+  their scripts and/or source code accordingly. This is a one-time effort.
   Affects: dcmdata/apps/dcmgpdir.cc
            dcmdata/apps/pdf2dcm.cc
            dcmdata/data/dicom.dic

@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:21:57 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2010-09-24 13:32:58 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -299,7 +299,7 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
   DcmUniqueIdentifier refsopclassuid(DCM_ReferencedSOPClassUID);
   READ_FROM_DATASET(DcmUniqueIdentifier, sopclassuid)
   sopclassuid.getOFString(aString,0);
-  if (aString != UID_StoredPrintStorage)
+  if (aString != UID_RETIRED_StoredPrintStorage)
   {
     result=EC_IllegalCall;
     DCMPSTAT_INFO("SOP Class UID does not match StoredPrintStorage");
@@ -670,7 +670,7 @@ OFCondition DVPSStoredPrint::write(
   DcmUniqueIdentifier sopclassuid(DCM_SOPClassUID);
   if (result==EC_Normal)
   {
-     result = sopclassuid.putString(UID_StoredPrintStorage);
+     result = sopclassuid.putString(UID_RETIRED_StoredPrintStorage);
   }
   ADD_TO_DATASET(DcmUniqueIdentifier, sopclassuid)
 
@@ -899,7 +899,7 @@ OFCondition DVPSStoredPrint::addImageBox(
   studyInstanceUID.getString(refstudyuid); // same study UID for stored print and hardcopy image
   imageSeriesInstanceUID.getString(refseriesuid); // but separate series for the hardcopy images
 
-  return addImageBox(retrieveaetitle, refstudyuid, refseriesuid, UID_HardcopyGrayscaleImageStorage,
+  return addImageBox(retrieveaetitle, refstudyuid, refseriesuid, UID_RETIRED_HardcopyGrayscaleImageStorage,
      refsopinstanceuid, requestedimagesize, patientid, presentationlut, inversePLUT);
 }
 
@@ -3202,6 +3202,11 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
+ *  Revision 1.58  2010-09-24 13:32:58  joergr
+ *  Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+ *  resulting name changes are mainly caused by the fact that the corresponding
+ *  SOP Class is now retired.
+ *
  *  Revision 1.57  2010-08-09 13:21:57  joergr
  *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
  *  the official "keyword" is used for the attribute name which results in a

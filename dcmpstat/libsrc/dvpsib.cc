@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:21:56 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2010-09-24 13:32:58 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1288,8 +1288,8 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
     if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_DerivationDescription, "Hardcopy");
 
     // SOP Common Module
-    if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_SOPClassUID, UID_HardcopyGrayscaleImageStorage);
-    if (EC_Normal==writeresult) writeresult = referencedSOPClassUID.putString(UID_HardcopyGrayscaleImageStorage);
+    if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_SOPClassUID, UID_RETIRED_HardcopyGrayscaleImageStorage);
+    if (EC_Normal==writeresult) writeresult = referencedSOPClassUID.putString(UID_RETIRED_HardcopyGrayscaleImageStorage);
     dcmGenerateUniqueIdentifier(newuid);
     if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_SOPInstanceUID, newuid);
     if (EC_Normal==writeresult) writeresult = referencedSOPInstanceUID.putString(newuid);
@@ -1319,6 +1319,11 @@ OFCondition DVPSImageBoxContent::setUIDsAndAETitle(DcmUniqueIdentifier& studyUID
 
 /*
  *  $Log: dvpsib.cc,v $
+ *  Revision 1.39  2010-09-24 13:32:58  joergr
+ *  Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+ *  resulting name changes are mainly caused by the fact that the corresponding
+ *  SOP Class is now retired.
+ *
  *  Revision 1.38  2010-08-09 13:21:56  joergr
  *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
  *  the official "keyword" is used for the attribute name which results in a

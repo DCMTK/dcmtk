@@ -21,9 +21,9 @@
  *
  *  Purpose: codec classes for JPEG-LS decoders.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-19 08:04:29 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-24 13:40:18 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -408,7 +408,7 @@ Uint16 DJLSDecoderBase::determinePlanarConfiguration(
   const OFString& photometricInterpretation)
 {
   // Hardcopy Color Image always requires color-by-plane
-  if (sopClassUID == UID_HardcopyColorImageStorage) return 1;
+  if (sopClassUID == UID_RETIRED_HardcopyColorImageStorage) return 1;
 
   // The 1996 Ultrasound Image IODs require color-by-plane if color model is YBR_FULL.
   if (photometricInterpretation == "YBR_FULL")
@@ -662,6 +662,11 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.10  2010-09-24 13:40:18  joergr
+ * Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+ * resulting name changes are mainly caused by the fact that the corresponding
+ * SOP Class is now retired.
+ *
  * Revision 1.9  2010-08-19 08:04:29  uli
  * Removed unused variables.
  *

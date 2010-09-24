@@ -211,14 +211,14 @@ code rendering:
 The \b dsr2html utility supports the following SOP Classes:
 
 \verbatim
-BasicTextSR                 1.2.840.10008.5.1.4.1.1.88.11
-EnhancedSR                  1.2.840.10008.5.1.4.1.1.88.22
-ComprehensiveSR             1.2.840.10008.5.1.4.1.1.88.33
-ProcedureLog                1.2.840.10008.5.1.4.1.1.88.40
-MammographyCADSR            1.2.840.10008.5.1.4.1.1.88.50
-KeyObjectSelectionDocument  1.2.840.10008.5.1.4.1.1.88.59
-ChestCADSR                  1.2.840.10008.5.1.4.1.1.88.65
-XRayRadiationDoseSR         1.2.840.10008.5.1.4.1.1.88.67
+BasicTextSRStorage                 1.2.840.10008.5.1.4.1.1.88.11
+EnhancedSRStorage                  1.2.840.10008.5.1.4.1.1.88.22
+ComprehensiveSRStorage             1.2.840.10008.5.1.4.1.1.88.33
+ProcedureLogStorage                1.2.840.10008.5.1.4.1.1.88.40
+MammographyCADSRStorage            1.2.840.10008.5.1.4.1.1.88.50
+KeyObjectSelectionDocumentStorage  1.2.840.10008.5.1.4.1.1.88.59
+ChestCADSRStorage                  1.2.840.10008.5.1.4.1.1.88.65
+XRayRadiationDoseSRStorage         1.2.840.10008.5.1.4.1.1.88.67
 \endverbatim
 
 \section logging LOGGING
@@ -289,6 +289,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2000-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
