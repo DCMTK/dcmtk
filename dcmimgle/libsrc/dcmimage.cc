@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:33:23 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2010-09-24 13:25:41 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -197,7 +197,7 @@ void DicomImage::Init()
     if ((Document != NULL) && (Document->good()))
     {
         const char *str;
-        if (hasSOPclassUID(UID_StandaloneOverlayStorage))
+        if (hasSOPclassUID(UID_RETIRED_StandaloneOverlayStorage))
         {
             PhotometricInterpretation = EPI_Monochrome2;            // standalone overlays are handled like monochrome
             Image = new DiOverlayImage(Document, ImageStatus);      // images without pixel data
@@ -808,6 +808,11 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
+ * Revision 1.34  2010-09-24 13:25:41  joergr
+ * Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+ * resulting name changes are mainly caused by the fact that the corresponding
+ * SOP Class is now retired.
+ *
  * Revision 1.33  2009-11-25 16:33:23  joergr
  * Adapted code for new approach to access individual frames of a DICOM image.
  * The getString() method now returns the Defined Term of the attribute

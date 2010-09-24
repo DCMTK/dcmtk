@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-12-01 11:26:19 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2010-09-24 13:30:30 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -267,7 +267,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--worklist")) opt_abstractSyntax = UID_FINDModalityWorklistInformationModel;
       if (cmd.findOption("--patient"))  opt_abstractSyntax = UID_FINDPatientRootQueryRetrieveInformationModel;
       if (cmd.findOption("--study"))    opt_abstractSyntax = UID_FINDStudyRootQueryRetrieveInformationModel;
-      if (cmd.findOption("--psonly"))   opt_abstractSyntax = UID_FINDPatientStudyOnlyQueryRetrieveInformationModel;
+      if (cmd.findOption("--psonly"))   opt_abstractSyntax = UID_RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel;
       cmd.endOptionBlock();
 
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
@@ -587,6 +587,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
+** Revision 1.60  2010-09-24 13:30:30  joergr
+** Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+** resulting name changes are mainly caused by the fact that the corresponding
+** SOP Class is now retired.
+**
 ** Revision 1.59  2009-12-01 11:26:19  joergr
 ** Use helper function checkDependence() where appropriate.
 ** Fixed issue with syntax usage (e.g. layout and formatting).

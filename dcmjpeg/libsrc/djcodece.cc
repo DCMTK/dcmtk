@@ -21,9 +21,9 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-06-01 16:17:57 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-24 13:26:22 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -980,7 +980,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
             // needs special handling.  This is not an issue if we're converting to
             // secondary capture anyway.
             if ((0 == strcmp(classUID, UID_XRayAngiographicImageStorage)) ||
-                (0 == strcmp(classUID, UID_XRayFluoroscopyImageStorage)) ||
+                (0 == strcmp(classUID, UID_XRayRadiofluoroscopicImageStorage)) ||
                 (0 == strcmp(classUID, UID_RETIRED_XRayAngiographicBiPlaneImageStorage)))
             {
               mode_XA = OFTrue;
@@ -1512,6 +1512,11 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
+ * Revision 1.34  2010-09-24 13:26:22  joergr
+ * Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+ * resulting name changes are mainly caused by the fact that the corresponding
+ * SOP Class is now retired.
+ *
  * Revision 1.33  2010-06-01 16:17:57  onken
  * Added some comments and line breaks (improved code readability).
  *

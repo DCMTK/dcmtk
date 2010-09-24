@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-02-23 16:52:22 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2010-09-24 13:25:41 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
             const char *sopClassUID = NULL;                             // check for XA and XRF image (ignore MLUT)
             if ((docu->getValue(DCM_SOPClassUID, sopClassUID) == 0) || (sopClassUID == NULL) ||
                ((strcmp(sopClassUID, UID_XRayAngiographicImageStorage) != 0) &&
-                (strcmp(sopClassUID, UID_XRayFluoroscopyImageStorage) != 0) &&
+                (strcmp(sopClassUID, UID_XRayRadiofluoroscopicImageStorage) != 0) &&
                 (strcmp(sopClassUID, UID_RETIRED_XRayAngiographicBiPlaneImageStorage) != 0)))
             {
                 EL_BitsPerTableEntry descMode = ELM_UseValue;
@@ -270,6 +270,11 @@ void DiMonoModality::determineRepresentation(const DiDocument *docu)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
+ * Revision 1.29  2010-09-24 13:25:41  joergr
+ * Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+ * resulting name changes are mainly caused by the fact that the corresponding
+ * SOP Class is now retired.
+ *
  * Revision 1.28  2010-02-23 16:52:22  joergr
  * Added trace log message which outputs the internal representation for
  * monochrome images (number of bits and signed/unsigned).

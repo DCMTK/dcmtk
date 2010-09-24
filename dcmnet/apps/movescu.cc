@@ -22,8 +22,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-02 12:12:48 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Update Date:      $Date: 2010-09-24 13:30:30 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,8 +128,8 @@ static QuerySyntax querySyntax[3] = {
       UID_MOVEPatientRootQueryRetrieveInformationModel },
     { UID_FINDStudyRootQueryRetrieveInformationModel,
       UID_MOVEStudyRootQueryRetrieveInformationModel },
-    { UID_FINDPatientStudyOnlyQueryRetrieveInformationModel,
-      UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel }
+    { UID_RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel,
+      UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel }
 };
 
 
@@ -1552,6 +1552,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.85  2010-09-24 13:30:30  joergr
+** Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+** resulting name changes are mainly caused by the fact that the corresponding
+** SOP Class is now retired.
+**
 ** Revision 1.84  2010-09-02 12:12:48  joergr
 ** Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
 **

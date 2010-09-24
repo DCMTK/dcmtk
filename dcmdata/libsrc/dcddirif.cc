@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-10 11:59:31 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-24 13:24:37 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -618,24 +618,24 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     /* default: image SOP class */
     E_DirRecType result = ERT_Image;
     /* check whether any non-image SOP class */
-    if (compare(sopClass, UID_StandaloneOverlayStorage))
+    if (compare(sopClass, UID_RETIRED_StandaloneOverlayStorage))
         result = ERT_Overlay;
-    else if (compare(sopClass, UID_StandaloneModalityLUTStorage))
+    else if (compare(sopClass, UID_RETIRED_StandaloneModalityLUTStorage))
         result = ERT_ModalityLut;
-    else if (compare(sopClass, UID_StandaloneVOILUTStorage))
+    else if (compare(sopClass, UID_RETIRED_StandaloneVOILUTStorage))
         result = ERT_VoiLut;
-    else if (compare(sopClass, UID_StandaloneCurveStorage) ||
-             compare(sopClass, UID_PETCurveStorage))
+    else if (compare(sopClass, UID_RETIRED_StandaloneCurveStorage) ||
+             compare(sopClass, UID_RETIRED_StandalonePETCurveStorage))
     {
         result = ERT_Curve;
     }
-    else if (compare(sopClass, UID_BasicTextSR) ||
-             compare(sopClass, UID_EnhancedSR) ||
-             compare(sopClass, UID_ComprehensiveSR) ||
-             compare(sopClass, UID_MammographyCADSR) ||
-             compare(sopClass, UID_ChestCADSR) ||
+    else if (compare(sopClass, UID_BasicTextSRStorage) ||
+             compare(sopClass, UID_EnhancedSRStorage) ||
+             compare(sopClass, UID_ComprehensiveSRStorage) ||
+             compare(sopClass, UID_MammographyCADSRStorage) ||
+             compare(sopClass, UID_ChestCADSRStorage) ||
              compare(sopClass, UID_ProcedureLogStorage) ||
-             compare(sopClass, UID_XRayRadiationDoseSR))
+             compare(sopClass, UID_XRayRadiationDoseSRStorage))
     {
         result = ERT_SRDocument;
     }
@@ -667,9 +667,9 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     {
         result = ERT_RTTreatRecord;
     }
-    else if (compare(sopClass, UID_StoredPrintStorage))
+    else if (compare(sopClass, UID_RETIRED_StoredPrintStorage))
         result = ERT_StoredPrint;
-    else if (compare(sopClass, UID_KeyObjectSelectionDocument))
+    else if (compare(sopClass, UID_KeyObjectSelectionDocumentStorage))
         result = ERT_KeyObjectDoc;
     else if (compare(sopClass, UID_SpatialRegistrationStorage))
         result = ERT_Registration;
@@ -1254,7 +1254,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     expectedTransferSyntax = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
                     /* multi-frame composite IODs only! */
                     found = compare(mediaSOPClassUID, UID_XRayAngiographicImageStorage) ||
-                            compare(mediaSOPClassUID, UID_XRayFluoroscopyImageStorage) ||
+                            compare(mediaSOPClassUID, UID_XRayRadiofluoroscopicImageStorage) ||
                             compare(mediaSOPClassUID, UID_EnhancedCTImageStorage) ||
                             compare(mediaSOPClassUID, UID_NuclearMedicineImageStorage) ||
                             compare(mediaSOPClassUID, UID_RTImageStorage) ||
@@ -1283,7 +1283,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     else if (RetiredSOPClassSupport)
                     {
                         /* the following SOP class has been retired with DICOM 2006: */
-                        found = compare(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
+                        found = compare(mediaSOPClassUID, UID_RETIRED_DetachedPatientManagementSOPClass);
                     }
                     break;
                 case AP_XrayAngiographic:
@@ -1300,9 +1300,9 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                         if (!found && RetiredSOPClassSupport)
                         {
                             /* the following SOP classes have been retired with DICOM 2004: */
-                            found = compare(mediaSOPClassUID, UID_StandaloneOverlayStorage) ||
-                                    compare(mediaSOPClassUID, UID_StandaloneCurveStorage) ||
-                                    compare(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
+                            found = compare(mediaSOPClassUID, UID_RETIRED_StandaloneOverlayStorage) ||
+                                    compare(mediaSOPClassUID, UID_RETIRED_StandaloneCurveStorage) ||
+                                    compare(mediaSOPClassUID, UID_RETIRED_DetachedPatientManagementSOPClass);
                         }
                     }
                     break;
@@ -1322,7 +1322,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     if (!found && RetiredSOPClassSupport)
                     {
                         /* the following SOP class has been retired with DICOM 2004: */
-                        found = compare(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
+                        found = compare(mediaSOPClassUID, UID_RETIRED_DetachedPatientManagementSOPClass);
                     }
                     break;
                 case AP_UltrasoundIDSF:
@@ -1366,13 +1366,13 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     /* is it one of the structured reporting SOP Classes? */
                     if (!found)
                     {
-                        found = compare(mediaSOPClassUID, UID_BasicTextSR) ||
-                                compare(mediaSOPClassUID, UID_EnhancedSR) ||
-                                compare(mediaSOPClassUID, UID_ComprehensiveSR) ||
-                                compare(mediaSOPClassUID, UID_MammographyCADSR) ||
-                                compare(mediaSOPClassUID, UID_ChestCADSR) ||
+                        found = compare(mediaSOPClassUID, UID_BasicTextSRStorage) ||
+                                compare(mediaSOPClassUID, UID_EnhancedSRStorage) ||
+                                compare(mediaSOPClassUID, UID_ComprehensiveSRStorage) ||
+                                compare(mediaSOPClassUID, UID_MammographyCADSRStorage) ||
+                                compare(mediaSOPClassUID, UID_ChestCADSRStorage) ||
                                 compare(mediaSOPClassUID, UID_ProcedureLogStorage) ||
-                                compare(mediaSOPClassUID, UID_XRayRadiationDoseSR);
+                                compare(mediaSOPClassUID, UID_XRayRadiationDoseSRStorage);
                      }
                     /* is it one of the waveform SOP Classes? */
                     if (!found)
@@ -1397,8 +1397,8 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_ColorSoftcopyPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_PseudoColorSoftcopyPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_BlendingSoftcopyPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_StoredPrintStorage) ||
-                                compare(mediaSOPClassUID, UID_KeyObjectSelectionDocument) ||
+                                compare(mediaSOPClassUID, UID_RETIRED_StoredPrintStorage) ||
+                                compare(mediaSOPClassUID, UID_KeyObjectSelectionDocumentStorage) ||
                                 compare(mediaSOPClassUID, UID_RawDataStorage) ||
                                 compare(mediaSOPClassUID, UID_MRSpectroscopyStorage) ||
                                 compare(mediaSOPClassUID, UID_EncapsulatedPDFStorage) ||
@@ -1410,15 +1410,15 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     if (!found && RetiredSOPClassSupport)
                     {
                         /* is it an overlay/curve/modality_lut/voi_lut etc.? */
-                        found = compare(mediaSOPClassUID, UID_StandaloneOverlayStorage) ||
-                                compare(mediaSOPClassUID, UID_StandaloneCurveStorage) ||
-                                compare(mediaSOPClassUID, UID_StandaloneModalityLUTStorage) ||
-                                compare(mediaSOPClassUID, UID_StandaloneVOILUTStorage) ||
-                                compare(mediaSOPClassUID, UID_PETCurveStorage);
+                        found = compare(mediaSOPClassUID, UID_RETIRED_StandaloneOverlayStorage) ||
+                                compare(mediaSOPClassUID, UID_RETIRED_StandaloneCurveStorage) ||
+                                compare(mediaSOPClassUID, UID_RETIRED_StandaloneModalityLUTStorage) ||
+                                compare(mediaSOPClassUID, UID_RETIRED_StandaloneVOILUTStorage) ||
+                                compare(mediaSOPClassUID, UID_RETIRED_StandalonePETCurveStorage);
                         if (!found && (ApplicationProfile == AP_GeneralPurpose))
                         {
                             /* a detached patient mgmt sop class is also ok */
-                            found = compare(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
+                            found = compare(mediaSOPClassUID, UID_RETIRED_DetachedPatientManagementSOPClass);
                         }
                     }
                 }
@@ -3947,7 +3947,7 @@ OFCondition DicomDirInterface::addDicomFile(const char *filename,
                 if (patientRecord != NULL)
                 {
                     /* if patient management file then attach it to patient record and stop */
-                    if (compare(sopClass, UID_DetachedPatientManagementMetaSOPClass))
+                    if (compare(sopClass, UID_RETIRED_DetachedPatientManagementMetaSOPClass))
                     {
                         result = patientRecord->assignToSOPFile(fileID.c_str(), pathname.c_str());
                         DCMDATA_ERROR(result.text() << ": cannot assign patient record to file: " << pathname);
@@ -4849,6 +4849,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.41  2010-09-24 13:24:37  joergr
+ *  Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+ *  resulting name changes are mainly caused by the fact that the corresponding
+ *  SOP Class is now retired.
+ *
  *  Revision 1.40  2010-08-10 11:59:31  uli
  *  Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.
  *

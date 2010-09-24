@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2009, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 13:36:27 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2010-09-24 13:26:22 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -804,7 +804,7 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
     OFString sopClass(sopClassUID);
 
     // Hardcopy Color Image always requires color-by-plane
-    if (sopClass == UID_HardcopyColorImageStorage) return OFTrue;
+    if (sopClass == UID_RETIRED_HardcopyColorImageStorage) return OFTrue;
 
     // The 1996 Ultrasound Image IODs require color-by-plane if color model is YBR_FULL.
     if (photometricInterpretation == EPI_YBR_Full)
@@ -821,6 +821,11 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
+ * Revision 1.16  2010-09-24 13:26:22  joergr
+ * Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
+ * resulting name changes are mainly caused by the fact that the corresponding
+ * SOP Class is now retired.
+ *
  * Revision 1.15  2009-11-25 13:36:27  joergr
  * Added more logging messages.
  *
