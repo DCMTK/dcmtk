@@ -15,6 +15,7 @@ Changes between releases are documented here.
            dcmimgle/libsrc/dimomod.cc
            dcmjpeg/libsrc/djcodecd.cc
            dcmjpeg/libsrc/djcodece.cc
+           dcmjpls/libsrc/djcodecd.cc
            dcmnet/apps/findscu.cc
            dcmnet/apps/movescu.cc
            dcmnet/docs/movescu.man
@@ -34,6 +35,9 @@ Changes between releases are documented here.
            dcmsr/docs/dsrdump.man
            dcmsr/docs/xml2dsr.man
            dcmsr/libsrc/dsrtypes.cc
+
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
 
 **** Changes from 2010.09.23 (riesmeier)
 
