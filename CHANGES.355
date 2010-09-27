@@ -7,6 +7,17 @@ Changes between releases are documented here.
   syntax definitions according to their UID value.
   Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
 
+- Updated list of SOP Class UIDs and well-known SOP Instance UIDs according to
+  the current edition of the DICOM standard (including final text supplements).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
 **** Changes from 2010.09.24 (riesmeier)
 
 - Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
