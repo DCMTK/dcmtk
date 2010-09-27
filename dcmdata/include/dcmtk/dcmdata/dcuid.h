@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-24 13:24:16 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Update Date:      $Date: 2010-09-27 08:24:03 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -261,6 +261,8 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_LittleEndianExplicitTransferSyntax  "1.2.840.10008.1.2.1"
 /// Explicit VR Big Endian
 #define UID_BigEndianExplicitTransferSyntax     "1.2.840.10008.1.2.2"
+/// Deflated Explicit VR Little Endian
+#define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
 /** JPEG Baseline (Process 1): Default Transfer Syntax
  * for Lossy JPEG 8 Bit Image Compression
  */
@@ -269,35 +271,35 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
  *  for Lossy JPEG 12 Bit Image Compression (Process 4 only)
  */
 #define UID_JPEGProcess2_4TransferSyntax        "1.2.840.10008.1.2.4.51"
-/// JPEG Extended (Process 3 & 5)
+/// JPEG Extended (Process 3 & 5) - RETIRED
 #define UID_JPEGProcess3_5TransferSyntax        "1.2.840.10008.1.2.4.52"
-/// JPEG Spectral Selection, Non-Hierarchical (Process 6 & 8)
+/// JPEG Spectral Selection, Non-Hierarchical (Process 6 & 8) - RETIRED
 #define UID_JPEGProcess6_8TransferSyntax        "1.2.840.10008.1.2.4.53"
-/// JPEG Spectral Selection, Non-Hierarchical (Process 7 & 9)
+/// JPEG Spectral Selection, Non-Hierarchical (Process 7 & 9) - RETIRED
 #define UID_JPEGProcess7_9TransferSyntax        "1.2.840.10008.1.2.4.54"
-/// JPEG Full Progression, Non-Hierarchical (Process 10 & 12)
+/// JPEG Full Progression, Non-Hierarchical (Process 10 & 12) - RETIRED
 #define UID_JPEGProcess10_12TransferSyntax      "1.2.840.10008.1.2.4.55"
-/// JPEG Full Progression, Non-Hierarchical (Process 11 & 13)
+/// JPEG Full Progression, Non-Hierarchical (Process 11 & 13) - RETIRED
 #define UID_JPEGProcess11_13TransferSyntax      "1.2.840.10008.1.2.4.56"
 /// JPEG Lossless, Non-Hierarchical (Process 14)
 #define UID_JPEGProcess14TransferSyntax         "1.2.840.10008.1.2.4.57"
-/// JPEG Lossless, Non-Hierarchical (Process 15)
+/// JPEG Lossless, Non-Hierarchical (Process 15) - RETIRED
 #define UID_JPEGProcess15TransferSyntax         "1.2.840.10008.1.2.4.58"
-/// JPEG Extended, Hierarchical (Process 16 & 18)
+/// JPEG Extended, Hierarchical (Process 16 & 18) - RETIRED
 #define UID_JPEGProcess16_18TransferSyntax      "1.2.840.10008.1.2.4.59"
-/// JPEG Extended, Hierarchical (Process 17 & 19)
+/// JPEG Extended, Hierarchical (Process 17 & 19) - RETIRED
 #define UID_JPEGProcess17_19TransferSyntax      "1.2.840.10008.1.2.4.60"
-/// JPEG Spectral Selection, Hierarchical (Process 20 & 22)
+/// JPEG Spectral Selection, Hierarchical (Process 20 & 22) - RETIRED
 #define UID_JPEGProcess20_22TransferSyntax      "1.2.840.10008.1.2.4.61"
-/// JPEG Spectral Selection, Hierarchical (Process 21 & 23)
+/// JPEG Spectral Selection, Hierarchical (Process 21 & 23) - RETIRED
 #define UID_JPEGProcess21_23TransferSyntax      "1.2.840.10008.1.2.4.62"
-/// JPEG Full Progression, Hierarchical (Process 24 & 26)
+/// JPEG Full Progression, Hierarchical (Process 24 & 26) - RETIRED
 #define UID_JPEGProcess24_26TransferSyntax      "1.2.840.10008.1.2.4.63"
-/// JPEG Full Progression, Hierarchical (Process 25 & 27)
+/// JPEG Full Progression, Hierarchical (Process 25 & 27) - RETIRED
 #define UID_JPEGProcess25_27TransferSyntax      "1.2.840.10008.1.2.4.64"
-/// JPEG Lossless, Hierarchical (Process 28)
+/// JPEG Lossless, Hierarchical (Process 28) - RETIRED
 #define UID_JPEGProcess28TransferSyntax         "1.2.840.10008.1.2.4.65"
-/// JPEG Lossless, Hierarchical (Process 29)
+/// JPEG Lossless, Hierarchical (Process 29) - RETIRED
 #define UID_JPEGProcess29TransferSyntax         "1.2.840.10008.1.2.4.66"
 /** JPEG Lossless, Non-Hierarchical, First-Order Prediction (Process 14
  *  [Selection Value 1]): Default Transfer Syntax for Lossless JPEG Image Compression
@@ -307,18 +309,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_JPEGLSLosslessTransferSyntax        "1.2.840.10008.1.2.4.80"
 /// JPEG-LS Lossy (Near-Lossless) Image Compression
 #define UID_JPEGLSLossyTransferSyntax           "1.2.840.10008.1.2.4.81"
-/// RLE Lossless
-#define UID_RLELosslessTransferSyntax           "1.2.840.10008.1.2.5"
-/// Deflated Explicit VR Little Endian
-#define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
 /// JPEG 2000 Image Compression (Lossless Only)
 #define UID_JPEG2000LosslessOnlyTransferSyntax  "1.2.840.10008.1.2.4.90"
 /// JPEG 2000 Image Compression (Lossless or Lossy)
 #define UID_JPEG2000TransferSyntax              "1.2.840.10008.1.2.4.91"
-/// MPEG2 Main Profile @ Main Level
-#define UID_MPEG2MainProfileAtMainLevelTransferSyntax "1.2.840.10008.1.2.4.100"
-/// MPEG2 Main Profile @ High Level
-#define UID_MPEG2MainProfileAtHighLevelTransferSyntax "1.2.840.10008.1.2.4.101"
 /// JPEG 2000 Part 2 Multi-component Image Compression (Lossless Only)
 #define UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax "1.2.840.10008.1.2.4.92"
 /// JPEG 2000 Part 2 Multi-component Image Compression (Lossless or Lossy)
@@ -327,6 +321,12 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_JPIPReferencedTransferSyntax        "1.2.840.10008.1.2.4.94"
 /// JPIP Referenced Deflate
 #define UID_JPIPReferencedDeflateTransferSyntax "1.2.840.10008.1.2.4.95"
+/// MPEG2 Main Profile @ Main Level
+#define UID_MPEG2MainProfileAtMainLevelTransferSyntax "1.2.840.10008.1.2.4.100"
+/// MPEG2 Main Profile @ High Level
+#define UID_MPEG2MainProfileAtHighLevelTransferSyntax "1.2.840.10008.1.2.4.101"
+/// RLE Lossless
+#define UID_RLELosslessTransferSyntax           "1.2.840.10008.1.2.5"
 
 /** MIME encapsulation (Supplement 101) is only a pseudo transfer syntax used to
  *  refer to MIME encapsulated HL7 CDA documents from a DICOMDIR when stored
@@ -630,6 +630,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.83  2010-09-27 08:24:03  joergr
+** Added comment to retired transfer syntaxes and changed order of transfer
+** syntax definitions according to their UID value.
+**
 ** Revision 1.82  2010-09-24 13:24:16  joergr
 ** Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
 ** resulting name changes are mainly caused by the fact that the corresponding

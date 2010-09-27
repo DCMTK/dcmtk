@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.27 (riesmeier)
+
+- Added comment to retired transfer syntaxes and changed order of transfer
+  syntax definitions according to their UID value.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+
 **** Changes from 2010.09.24 (riesmeier)
 
 - Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
