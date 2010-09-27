@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-24 13:24:37 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2010-09-27 15:02:42 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1253,26 +1253,32 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                 case AP_MPEG2MPatMLDVD:
                     expectedTransferSyntax = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
                     /* multi-frame composite IODs only! */
-                    found = compare(mediaSOPClassUID, UID_XRayAngiographicImageStorage) ||
-                            compare(mediaSOPClassUID, UID_XRayRadiofluoroscopicImageStorage) ||
+                    found = compare(mediaSOPClassUID, UID_BreastTomosynthesisImageStorage) ||
                             compare(mediaSOPClassUID, UID_EnhancedCTImageStorage) ||
-                            compare(mediaSOPClassUID, UID_NuclearMedicineImageStorage) ||
-                            compare(mediaSOPClassUID, UID_RTImageStorage) ||
-                            compare(mediaSOPClassUID, UID_RTDoseStorage) ||
-                            compare(mediaSOPClassUID, UID_UltrasoundMultiframeImageStorage) ||
+                            compare(mediaSOPClassUID, UID_EnhancedMRColorImageStorage) ||
                             compare(mediaSOPClassUID, UID_EnhancedMRImageStorage) ||
-                            compare(mediaSOPClassUID, UID_MultiframeSingleBitSecondaryCaptureImageStorage) ||
+                            compare(mediaSOPClassUID, UID_EnhancedPETImageStorage) ||
+                            compare(mediaSOPClassUID, UID_EnhancedUSVolumeStorage) ||
+                            compare(mediaSOPClassUID, UID_EnhancedXAImageStorage) ||
+                            compare(mediaSOPClassUID, UID_EnhancedXRFImageStorage) ||
                             compare(mediaSOPClassUID, UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage) ||
                             compare(mediaSOPClassUID, UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage) ||
+                            compare(mediaSOPClassUID, UID_MultiframeSingleBitSecondaryCaptureImageStorage) ||
                             compare(mediaSOPClassUID, UID_MultiframeTrueColorSecondaryCaptureImageStorage) ||
+                            compare(mediaSOPClassUID, UID_NuclearMedicineImageStorage) ||
+                            compare(mediaSOPClassUID, UID_OphthalmicPhotography16BitImageStorage) ||
+                            compare(mediaSOPClassUID, UID_OphthalmicPhotography8BitImageStorage) ||
+                            compare(mediaSOPClassUID, UID_OphthalmicTomographyImageStorage) ||
+                            compare(mediaSOPClassUID, UID_RTDoseStorage) ||
+                            compare(mediaSOPClassUID, UID_RTImageStorage) ||
+                            compare(mediaSOPClassUID, UID_UltrasoundMultiframeImageStorage) ||
                             compare(mediaSOPClassUID, UID_VideoEndoscopicImageStorage) ||
                             compare(mediaSOPClassUID, UID_VideoMicroscopicImageStorage) ||
                             compare(mediaSOPClassUID, UID_VideoPhotographicImageStorage) ||
-                            compare(mediaSOPClassUID, UID_OphthalmicPhotography8BitImageStorage) ||
-                            compare(mediaSOPClassUID, UID_OphthalmicPhotography16BitImageStorage) ||
-                            compare(mediaSOPClassUID, UID_OphthalmicTomographyImageStorage) ||
-                            compare(mediaSOPClassUID, UID_EnhancedXAImageStorage) ||
-                            compare(mediaSOPClassUID, UID_EnhancedXRFImageStorage);
+                            compare(mediaSOPClassUID, UID_XRay3DAngiographicImageStorage) ||
+                            compare(mediaSOPClassUID, UID_XRay3DCraniofacialImageStorage) ||
+                            compare(mediaSOPClassUID, UID_XRayAngiographicImageStorage) ||
+                            compare(mediaSOPClassUID, UID_XRayRadiofluoroscopicImageStorage);
                     break;
                 case AP_BasicCardiac:
                     if (compare(mediaSOPClassUID, UID_XRayAngiographicImageStorage))
@@ -4849,6 +4855,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.42  2010-09-27 15:02:42  joergr
+ *  Added newly introduced multi-frame image SOP classes to DVD MPEG2 profile.
+ *
  *  Revision 1.41  2010-09-24 13:24:37  joergr
  *  Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
  *  resulting name changes are mainly caused by the fact that the corresponding

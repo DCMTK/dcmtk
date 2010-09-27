@@ -18,6 +18,9 @@ Changes between releases are documented here.
            dcmnet/etc/storescu.cfg
            dcmqrdb/docs/dcmqrscp.man
 
+- Added newly introduced multi-frame image SOP classes to DVD MPEG2 profile.
+  Affects: dcmdata/libsrc/dcdictbi.cc
+
 **** Changes from 2010.09.24 (riesmeier)
 
 - Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
