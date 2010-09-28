@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.28 (riesmeier)
+
+- Added VL Whole Slide Microscopy Image Storage SOP Class (Supplement 145).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
 **** Changes from 2010.09.27 (riesmeier)
 
 - Added comment to retired transfer syntaxes and changed order of transfer

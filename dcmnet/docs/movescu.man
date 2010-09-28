@@ -463,6 +463,7 @@ OphthalmicPhotography8BitImageStorage                1.2.840.10008.5.1.4.1.1.77.
 OphthalmicPhotography16BitImageStorage               1.2.840.10008.5.1.4.1.1.77.1.5.2
 StereometricRelationshipStorage                      1.2.840.10008.5.1.4.1.1.77.1.5.3
 OphthalmicTomographyImageStorage                     1.2.840.10008.5.1.4.1.1.77.1.5.4
+VLWholeSlideMicroscopyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.6
 RETIRED_VLMultiFrameImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
 LensometryMeasurementsStorage                        1.2.840.10008.5.1.4.1.1.78.1
 AutorefractionMeasurementsStorage                    1.2.840.10008.5.1.4.1.1.78.2

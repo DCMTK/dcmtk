@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-27 14:05:01 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Update Date:      $Date: 2010-09-28 07:56:07 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -232,6 +232,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_VLMicroscopicImageStorage,                           "VLMicroscopicImageStorage" },
     { UID_VLPhotographicImageStorage,                          "VLPhotographicImageStorage" },
     { UID_VLSlideCoordinatesMicroscopicImageStorage,           "VLSlideCoordinatesMicroscopicImageStorage" },
+    { UID_VLWholeSlideMicroscopyImageStorage,                  "VLWholeSlideMicroscopyImageStorage" },
     { UID_XAXRFGrayscaleSoftcopyPresentationStateStorage,      "XAXRFGrayscaleSoftcopyPresentationStateStorage" },
     { UID_XRay3DAngiographicImageStorage,                      "XRay3DAngiographicImageStorage" },
     { UID_XRay3DCraniofacialImageStorage,                      "XRay3DCraniofacialImageStorage" },
@@ -562,6 +563,7 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_VLMicroscopicImageStorage,
     UID_VLPhotographicImageStorage,
     UID_VLSlideCoordinatesMicroscopicImageStorage,
+    UID_VLWholeSlideMicroscopyImageStorage,
     UID_XAXRFGrayscaleSoftcopyPresentationStateStorage,
     UID_XRay3DAngiographicImageStorage,
     UID_XRay3DCraniofacialImageStorage,
@@ -692,6 +694,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_VLMicroscopicImageStorage,
     UID_VLPhotographicImageStorage,
     UID_VLSlideCoordinatesMicroscopicImageStorage,
+    UID_VLWholeSlideMicroscopyImageStorage,
     UID_XAXRFGrayscaleSoftcopyPresentationStateStorage,
     UID_XRay3DAngiographicImageStorage,
     UID_XRay3DCraniofacialImageStorage,
@@ -873,6 +876,7 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_VLMicroscopicImageStorage,
     UID_VLPhotographicImageStorage,
     UID_VLSlideCoordinatesMicroscopicImageStorage,
+    UID_VLWholeSlideMicroscopyImageStorage,
     UID_XRay3DAngiographicImageStorage,
     UID_XRay3DCraniofacialImageStorage,
     UID_XRayAngiographicImageStorage,
@@ -985,7 +989,8 @@ static const DcmModalityTable modalities[] = {
     { UID_VLEndoscopicImageStorage,                                "VLe", 768 * 576 * 3 },
     { UID_VLMicroscopicImageStorage,                               "VLm", 768 * 576 * 3 },
     { UID_VLPhotographicImageStorage,                              "VLp", 768 * 576 * 3 },
-    { UID_VLSlideCoordinatesMicroscopicImageStorage,               "VMs", 768 * 576 * 3 },
+    { UID_VLSlideCoordinatesMicroscopicImageStorage,               "VLs", 768 * 576 * 3 },
+    { UID_VLWholeSlideMicroscopyImageStorage,                      "VLw", 10000 * 10000 * 3},
     { UID_XAXRFGrayscaleSoftcopyPresentationStateStorage,          "PSx", 4096 },
     { UID_XRay3DAngiographicImageStorage,                          "XA3", 256 * 512 * 512 },
     { UID_XRay3DCraniofacialImageStorage,                          "XC3", 256 * 512 * 512 },
@@ -1587,6 +1592,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.83  2010-09-28 07:56:07  joergr
+** Added VL Whole Slide Microscopy Image Storage SOP Class (Supplement 145).
+**
 ** Revision 1.82  2010-09-27 14:05:01  joergr
 ** Updated list of SOP Class UIDs and well-known SOP Instance UIDs according to
 ** the current edition of the DICOM standard (including final text supplements).
