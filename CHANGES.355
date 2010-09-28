@@ -3,6 +3,28 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.28 (riesmeier)
 
+- Added support for Colon CAD SR which requires a new value type (SCOORD3D).
+  Added:   dcmsr/include/dcmtk/dcmsr/dsrcolcc.h
+           dcmsr/include/dcmtk/dcmsr/dsrsc3gr.h
+           dcmsr/include/dcmtk/dcmsr/dsrsc3tn.h
+           dcmsr/include/dcmtk/dcmsr/dsrsc3vl.h
+           dcmsr/libsrc/dsrcolcc.cc
+           dcmsr/libsrc/dsrsc3gr.cc
+           dcmsr/libsrc/dsrsc3tn.cc
+           dcmsr/libsrc/dsrsc3vl.cc
+  Affects: dcmsr/apps/Makefile.dep
+           dcmsr/data/dsr2xml.xsd
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsrdump.man
+           dcmsr/docs/xml2dsr.man
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/tests/Makefile.dep
+
 - Added new non-image Storage SOP Classes that do not require a new directory
   record type (e.g. SR DOCUMENT and WAVEFORM).
   Affects: dcmdata/libsrc/dcddirif.cc

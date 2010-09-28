@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-24 13:35:52 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Update Date:      $Date: 2010-09-28 14:09:36 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,7 @@
 #include "dcmtk/dcmsr/dsruidtn.h"
 #include "dcmtk/dcmsr/dsrpnmtn.h"
 #include "dcmtk/dcmsr/dsrscotn.h"
+#include "dcmtk/dcmsr/dsrsc3tn.h"
 #include "dcmtk/dcmsr/dsrtcotn.h"
 #include "dcmtk/dcmsr/dsrcomtn.h"
 #include "dcmtk/dcmsr/dsrimgtn.h"
@@ -56,6 +57,7 @@
 #include "dcmtk/dcmsr/dsrkeycc.h"
 #include "dcmtk/dcmsr/dsrmamcc.h"
 #include "dcmtk/dcmsr/dsrchecc.h"
+#include "dcmtk/dcmsr/dsrcolcc.h"
 #include "dcmtk/dcmsr/dsrprocc.h"
 #include "dcmtk/dcmsr/dsrxrdcc.h"
 
@@ -183,6 +185,14 @@ struct S_GraphicTypeNameMap
 };
 
 
+struct S_GraphicType3DNameMap
+{
+    DSRTypes::E_GraphicType3D Type;
+    const char *EnumeratedValue;
+    const char *ReadableName;
+};
+
+
 struct S_TemporalRangeTypeNameMap
 {
     DSRTypes::E_TemporalRangeType Type;
@@ -266,6 +276,7 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
     {DSRTypes::DT_KeyObjectDoc,        UID_KeyObjectSelectionDocumentStorage, "KO", "Key Object Selection Document"},
     {DSRTypes::DT_MammographyCadSR,    UID_MammographyCADSRStorage,           "SR", "Mammography CAD SR"},
     {DSRTypes::DT_ChestCadSR,          UID_ChestCADSRStorage,                 "SR", "Chest CAD SR"},
+    {DSRTypes::DT_ColonCadSR,          UID_ColonCADSRStorage,                 "SR", "Colon CAD SR"},
     {DSRTypes::DT_ProcedureLog,        UID_ProcedureLogStorage,               "SR", "Procedure Log"},
     {DSRTypes::DT_XRayRadiationDoseSR, UID_XRayRadiationDoseSRStorage,        "SR", "X-Ray Radiation Dose SR"}
 };
@@ -298,6 +309,7 @@ static const S_ValueTypeNameMap ValueTypeNameMap[] =
     {DSRTypes::VT_UIDRef,      "UIDREF",         "uidref",    "UID Reference"},
     {DSRTypes::VT_PName,       "PNAME",          "pname",     "Person Name"},
     {DSRTypes::VT_SCoord,      "SCOORD",         "scoord",    "Spatial Coordinates"},
+    {DSRTypes::VT_SCoord3D,    "SCOORD3D",       "scoord3d",  "Spatial Coordinates (3D)"},
     {DSRTypes::VT_TCoord,      "TCOORD",         "tcoord",    "Temporal Coordinates"},
     {DSRTypes::VT_Composite,   "COMPOSITE",      "composite", "Composite Object"},
     {DSRTypes::VT_Image,       "IMAGE",          "image",     "Image"},
@@ -315,6 +327,18 @@ static const S_GraphicTypeNameMap GraphicTypeNameMap[] =
     {DSRTypes::GT_Polyline,   "POLYLINE",   "Polyline"},
     {DSRTypes::GT_Circle,     "CIRCLE",     "Circle"},
     {DSRTypes::GT_Ellipse,    "ELLIPSE",    "Ellipse"}
+};
+
+
+static const S_GraphicType3DNameMap GraphicType3DNameMap[] =
+{
+    {DSRTypes::GT3_invalid,    "",           "invalid/unknown graphic type"},
+    {DSRTypes::GT3_Point,      "POINT",      "Point"},
+    {DSRTypes::GT3_Multipoint, "MULTIPOINT", "Multiple Points"},
+    {DSRTypes::GT3_Polyline,   "POLYLINE",   "Polyline"},
+    {DSRTypes::GT3_Polygon ,   "POLYGON",    "Polygon"},
+    {DSRTypes::GT3_Ellipse,    "ELLIPSE",    "Ellipse"},
+    {DSRTypes::GT3_Ellipsoid,  "ELLIPSOID",  "Ellipsoid"}
 };
 
 
@@ -478,6 +502,24 @@ const char *DSRTypes::graphicTypeToReadableName(const E_GraphicType graphicType)
 }
 
 
+const char *DSRTypes::graphicType3DToEnumeratedValue(const E_GraphicType3D graphicType)
+{
+    const S_GraphicType3DNameMap *iterator = GraphicType3DNameMap;
+    while ((iterator->Type != GT3_last) && (iterator->Type != graphicType))
+        iterator++;
+    return iterator->EnumeratedValue;
+}
+
+
+const char *DSRTypes::graphicType3DToReadableName(const E_GraphicType3D graphicType)
+{
+    const S_GraphicType3DNameMap *iterator = GraphicType3DNameMap;
+    while ((iterator->Type != GT3_last) && (iterator->Type != graphicType))
+        iterator++;
+    return iterator->ReadableName;
+}
+
+
 const char *DSRTypes::temporalRangeTypeToEnumeratedValue(const E_TemporalRangeType temporalRangeType)
 {
     const S_TemporalRangeTypeNameMap *iterator = TemporalRangeTypeNameMap;
@@ -603,6 +645,18 @@ DSRTypes::E_GraphicType DSRTypes::enumeratedValueToGraphicType(const OFString &e
     E_GraphicType type = GT_invalid;
     const S_GraphicTypeNameMap *iterator = GraphicTypeNameMap;
     while ((iterator->Type != GT_last) && (enumeratedValue != iterator->EnumeratedValue))
+        iterator++;
+    if (enumeratedValue == iterator->EnumeratedValue)
+        type = iterator->Type;
+    return type;
+}
+
+
+DSRTypes::E_GraphicType3D DSRTypes::enumeratedValueToGraphicType3D(const OFString &enumeratedValue)
+{
+    E_GraphicType3D type = GT3_invalid;
+    const S_GraphicType3DNameMap *iterator = GraphicType3DNameMap;
+    while ((iterator->Type != GT3_last) && (enumeratedValue != iterator->EnumeratedValue))
         iterator++;
     if (enumeratedValue == iterator->EnumeratedValue)
         type = iterator->Type;
@@ -1162,6 +1216,9 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
         case DT_ChestCadSR:
             checker = new DSRChestCadSRConstraintChecker();
             break;
+        case DT_ColonCadSR:
+            checker = new DSRColonCadSRConstraintChecker();
+            break;
         case DT_ProcedureLog:
             checker = new DSRProcedureLogConstraintChecker();
             break;
@@ -1207,6 +1264,9 @@ DSRDocumentTreeNode *DSRTypes::createDocumentTreeNode(const E_RelationshipType r
             break;
         case VT_SCoord:
             node = new DSRSCoordTreeNode(relationshipType);
+            break;
+        case VT_SCoord3D:
+            node = new DSRSCoord3DTreeNode(relationshipType);
             break;
         case VT_TCoord:
             node = new DSRTCoordTreeNode(relationshipType);
@@ -1438,6 +1498,9 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.65  2010-09-28 14:09:36  joergr
+ *  Added support for Colon CAD SR which requires a new value type (SCOORD3D).
+ *
  *  Revision 1.64  2010-09-24 13:35:52  joergr
  *  Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
  *  resulting name changes are mainly caused by the fact that the corresponding

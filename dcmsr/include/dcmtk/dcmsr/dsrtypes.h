@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-23 14:38:34 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2010-09-28 14:08:14 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -376,6 +376,8 @@ class DSRTypes
         DT_MammographyCadSR,
         /// DICOM SOP Class: Chest CAD SR
         DT_ChestCadSR,
+        /// DICOM SOP Class: Colon CAD SR
+        DT_ColonCadSR,
         /// DICOM SOP Class: Procedure Log
         DT_ProcedureLog,
         /// DICOM SOP Class: X-Ray Radiation Dose SR
@@ -436,6 +438,8 @@ class DSRTypes
         VT_PName,
         /// DICOM Value Type: SCOORD
         VT_SCoord,
+        /// DICOM Value Type: SCOORD3D
+        VT_SCoord3D,
         /// DICOM Value Type: TCOORD
         VT_TCoord,
         /// DICOM Value Type: COMPOSITE
@@ -472,6 +476,30 @@ class DSRTypes
         GT_Ellipse,
         /// internal type used to mark the last entry
         GT_last = GT_Ellipse
+    };
+
+    /** SR graphic types (3D).  Used for content item SCOORD3D.
+     */
+    enum E_GraphicType3D
+    {
+        /// internal type used to indicate an error
+        GT3_invalid,
+        /// internal type used to indicate an unknown graphic type (defined term)
+        GT3_unknown = GT3_invalid,
+        /// DICOM Graphic Type: POINT
+        GT3_Point,
+        /// DICOM Graphic Type: MULTIPOINT
+        GT3_Multipoint,
+        /// DICOM Graphic Type: POLYLINE
+        GT3_Polyline,
+        /// DICOM Graphic Type: POLYGON
+        GT3_Polygon,
+        /// DICOM Graphic Type: ELLIPSE
+        GT3_Ellipse,
+        /// DICOM Graphic Type: ELLIPSOID
+        GT3_Ellipsoid,
+        /// internal type used to mark the last entry
+        GT3_last = GT3_Ellipsoid
     };
 
     /** SR temporal range types.  Used for content item TCOORD.
@@ -666,6 +694,19 @@ class DSRTypes
      */
     static const char *graphicTypeToReadableName(const E_GraphicType graphicType);
 
+    /** convert graphic type (3D) to DICOM enumerated value
+     ** @param  graphicType  graphic type (3D) to be converted
+     ** @return enumerated value if successful, empty string otherwise (never NULL)
+     */
+    static const char *graphicType3DToEnumeratedValue(const E_GraphicType3D graphicType);
+
+    /** convert graphic type (3D) to readable name.
+     *  Such a readable name is better suited for printing/rendering.
+     ** @param  graphicType  graphic type (3D) to be converted
+     ** @return readable name if successful, empty string otherwise (never NULL)
+     */
+    static const char *graphicType3DToReadableName(const E_GraphicType3D graphicType);
+
     /** convert temporal range type to DICOM enumerated value
      ** @param  temporalRangeType  temporal range type to be converted
      ** @return enumerated value if successful, empty string otherwise (never NULL)
@@ -747,9 +788,15 @@ class DSRTypes
      */
     static E_GraphicType enumeratedValueToGraphicType(const OFString &enumeratedValue);
 
+    /** convert DICOM enumerated value to graphic type (3D)
+     ** @param  enumeratedValue  enumerated value to be converted
+     ** @return graphic type if successful, GT3_invalid otherwise
+     */
+    static E_GraphicType3D enumeratedValueToGraphicType3D(const OFString &enumeratedValue);
+
     /** convert DICOM enumerated value to temporal range type
      ** @param  enumeratedValue  enumerated value to be converted
-     ** @return temporal range type if successful, GT_invalid otherwise
+     ** @return temporal range type if successful, TRT_invalid otherwise
      */
     static E_TemporalRangeType enumeratedValueToTemporalRangeType(const OFString &enumeratedValue);
 
@@ -1206,6 +1253,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.59  2010-09-28 14:08:14  joergr
+ *  Added support for Colon CAD SR which requires a new value type (SCOORD3D).
+ *
  *  Revision 1.58  2010-04-23 14:38:34  joergr
  *  Enhanced checking of element values using the new DcmElement::checkValue()
  *  method.
