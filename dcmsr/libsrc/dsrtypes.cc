@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-28 14:09:36 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2010-09-28 16:25:49 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,6 +155,7 @@ struct S_DocumentTypeNameMap
 {
     DSRTypes::E_DocumentType Type;
     const char *SOPClassUID;
+    OFBool EnhancedEquipmentModule;
     const char *Modality;
     const char *ReadableName;
 };
@@ -269,16 +270,16 @@ const OFCondition SR_EC_CorruptedXMLStructure               (ECC_CorruptedXMLStr
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
 {
-    {DSRTypes::DT_invalid,             "",                                    "",   "invalid document type"},
-    {DSRTypes::DT_BasicTextSR,         UID_BasicTextSRStorage,                "SR", "Basic Text SR"},
-    {DSRTypes::DT_EnhancedSR,          UID_EnhancedSRStorage,                 "SR", "Enhanced SR"},
-    {DSRTypes::DT_ComprehensiveSR,     UID_ComprehensiveSRStorage,            "SR", "Comprehensive SR"},
-    {DSRTypes::DT_KeyObjectDoc,        UID_KeyObjectSelectionDocumentStorage, "KO", "Key Object Selection Document"},
-    {DSRTypes::DT_MammographyCadSR,    UID_MammographyCADSRStorage,           "SR", "Mammography CAD SR"},
-    {DSRTypes::DT_ChestCadSR,          UID_ChestCADSRStorage,                 "SR", "Chest CAD SR"},
-    {DSRTypes::DT_ColonCadSR,          UID_ColonCADSRStorage,                 "SR", "Colon CAD SR"},
-    {DSRTypes::DT_ProcedureLog,        UID_ProcedureLogStorage,               "SR", "Procedure Log"},
-    {DSRTypes::DT_XRayRadiationDoseSR, UID_XRayRadiationDoseSRStorage,        "SR", "X-Ray Radiation Dose SR"}
+    {DSRTypes::DT_invalid,             "",                                    OFFalse, "",   "invalid document type"},
+    {DSRTypes::DT_BasicTextSR,         UID_BasicTextSRStorage,                OFFalse, "SR", "Basic Text SR"},
+    {DSRTypes::DT_EnhancedSR,          UID_EnhancedSRStorage,                 OFFalse, "SR", "Enhanced SR"},
+    {DSRTypes::DT_ComprehensiveSR,     UID_ComprehensiveSRStorage,            OFFalse, "SR", "Comprehensive SR"},
+    {DSRTypes::DT_KeyObjectDoc,        UID_KeyObjectSelectionDocumentStorage, OFFalse, "KO", "Key Object Selection Document"},
+    {DSRTypes::DT_MammographyCadSR,    UID_MammographyCADSRStorage,           OFFalse, "SR", "Mammography CAD SR"},
+    {DSRTypes::DT_ChestCadSR,          UID_ChestCADSRStorage,                 OFFalse, "SR", "Chest CAD SR"},
+    {DSRTypes::DT_ColonCadSR,          UID_ColonCADSRStorage,                 OFTrue,  "SR", "Colon CAD SR"},
+    {DSRTypes::DT_ProcedureLog,        UID_ProcedureLogStorage,               OFFalse, "SR", "Procedure Log"},
+    {DSRTypes::DT_XRayRadiationDoseSR, UID_XRayRadiationDoseSRStorage,        OFTrue,  "SR", "X-Ray Radiation Dose SR"}
 };
 
 
@@ -436,6 +437,15 @@ const char *DSRTypes::documentTypeToDocumentTitle(const E_DocumentType documentT
     if (!documentTitle.empty() && (documentType != DT_KeyObjectDoc))  // avoid doubling of term "Document"
         documentTitle += " Document";
     return documentTitle.c_str();
+}
+
+
+OFBool DSRTypes::requiresEnhancedEquipmentModule(const E_DocumentType documentType)
+{
+    const S_DocumentTypeNameMap *iterator = DocumentTypeNameMap;
+    while ((iterator->Type != DT_last) && (iterator->Type != documentType))
+        iterator++;
+    return iterator->EnhancedEquipmentModule;
 }
 
 
@@ -1380,7 +1390,7 @@ OFBool DSRTypes::writeStringValueToXML(STD_NAMESPACE ostream &stream,
                                        const OFBool writeEmptyValue)
 {
     OFBool result = OFFalse;
-    if (!stringValue.empty() || writeEmptyValue)
+    if (writeEmptyValue || !stringValue.empty())
     {
         stream << "<" << tagName << ">";
         OFStandard::convertToMarkupStream(stream, stringValue, OFFalse /*convertNonASCII*/, OFStandard::MM_XML, OFFalse /*newlineAllowed*/);
@@ -1397,7 +1407,7 @@ OFBool DSRTypes::writeStringFromElementToXML(STD_NAMESPACE ostream &stream,
                                              const OFBool writeEmptyValue)
 {
     OFBool result = OFFalse;
-    if ((delem.getLength() > 0) || writeEmptyValue)
+    if (writeEmptyValue || !delem.isEmpty())
     {
         OFString tempString;
         stream << "<" << tagName << ">";
@@ -1498,6 +1508,12 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.66  2010-09-28 16:25:49  joergr
+ *  Added support for Enhanced General Equipment Module which is required for
+ *  both X-Ray Radiation Dose SR and Colon CAD SR.
+ *  Use new isEmpty() method instead of length in order to determine whether the
+ *  element value is empty (e.g. for checking the presence of type 3 attributes).
+ *
  *  Revision 1.65  2010-09-28 14:09:36  joergr
  *  Added support for Colon CAD SR which requires a new value type (SCOORD3D).
  *

@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.28 (riesmeier)
 
+- Added support for Enhanced General Equipment Module which is required for
+  both X-Ray Radiation Dose SR and Colon CAD SR.
+  Affects: dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrtypes.cc
+
 - Added support for Colon CAD SR which requires a new value type (SCOORD3D).
   Added:   dcmsr/include/dcmtk/dcmsr/dsrcolcc.h
            dcmsr/include/dcmtk/dcmsr/dsrsc3gr.h
@@ -44,6 +52,11 @@ Changes between releases are documented here.
 - Updated comment on the requirements for POLYLINE according to CP-233.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrscovl.h
            dcmsr/libsrc/dsrscovl.cc
+
+- Use new isEmpty() method instead of length in order to determine whether the
+  element value is empty (e.g. for checking the presence of type 3 attributes).
+  Affects: dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrtypes.cc
 
 **** Changes from 2010.09.27 (riesmeier)
 

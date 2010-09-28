@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:26:56 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2010-09-28 16:25:49 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,6 +67,9 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     PatientBirthDate(DCM_PatientBirthDate),
     PatientSex(DCM_PatientSex),
     Manufacturer(DCM_Manufacturer),
+    ManufacturerModelName(DCM_ManufacturerModelName),
+    DeviceSerialNumber(DCM_DeviceSerialNumber),
+    SoftwareVersions(DCM_SoftwareVersions),
     Modality(DCM_Modality),
     SeriesInstanceUID(DCM_SeriesInstanceUID),
     SeriesNumber(DCM_SeriesNumber),
@@ -124,6 +127,9 @@ void DSRDocument::clear()
     PatientBirthDate.clear();
     PatientSex.clear();
     Manufacturer.clear();
+    ManufacturerModelName.clear();
+    DeviceSerialNumber.clear();
+    SoftwareVersions.clear();
     Modality.clear();
     SeriesInstanceUID.clear();
     SeriesNumber.clear();
@@ -148,7 +154,7 @@ void DSRDocument::clear()
 OFBool DSRDocument::isValid()
 {
     /* document is valid if the document tree is valid and ... */
-    return DocumentTree.isValid() && (SOPClassUID.getLength() > 0) && (SOPInstanceUID.getLength() > 0);
+    return DocumentTree.isValid() && !SOPClassUID.isEmpty() && !SOPInstanceUID.isEmpty();
 }
 
 
@@ -175,19 +181,19 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
             /* document type/title */
             stream << documentTypeToDocumentTitle(getDocumentType(), tmpString) << OFendl << OFendl;
             /* patient related information */
-            if (PatientName.getLength() > 0)
+            if (!PatientName.isEmpty())
             {
                 stream << "Patient             : " << getPrintStringFromElement(PatientName, tmpString);
                 OFString patientStr;
-                if (PatientSex.getLength() > 0)
+                if (!PatientSex.isEmpty())
                     patientStr += getPrintStringFromElement(PatientSex, tmpString);
-                if (PatientBirthDate.getLength() > 0)
+                if (!PatientBirthDate.isEmpty())
                 {
                    if (!patientStr.empty())
                        patientStr += ", ";
                    patientStr += getPrintStringFromElement(PatientBirthDate, tmpString);
                 }
-                if (PatientID.getLength() > 0)
+                if (!PatientID.isEmpty())
                 {
                    if (!patientStr.empty())
                        patientStr += ", ";
@@ -199,25 +205,40 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                 stream << OFendl;
             }
             /* referring physician */
-            if (ReferringPhysicianName.getLength() > 0)
+            if (!ReferringPhysicianName.isEmpty())
                 stream << "Referring Physician : " << getPrintStringFromElement(ReferringPhysicianName, tmpString) << OFendl;
             /* study related information  */
-            if (StudyDescription.getLength() > 0)
+            if (!StudyDescription.isEmpty())
             {
                 stream << "Study               : " << getPrintStringFromElement(StudyDescription, tmpString);
-                if (StudyID.getLength() > 0)
-                    stream << " (#" << getPrintStringFromElement(PatientID, tmpString) << ")";
+                if (!StudyID.isEmpty())
+                    stream << " (#" << getPrintStringFromElement(StudyID, tmpString) << ")";
                 stream << OFendl;
             }
-            /* manufacturer */
-            if (Manufacturer.getLength() > 0)
-                stream << "Manufacturer        : " << getPrintStringFromElement(Manufacturer, tmpString) << OFendl;
+            /* manufacturer and device */
+            if (!Manufacturer.isEmpty())
+            {
+                stream << "Manufacturer        : " << getPrintStringFromElement(Manufacturer, tmpString);
+                OFString deviceStr;
+                if (!ManufacturerModelName.isEmpty())
+                    deviceStr += getPrintStringFromElement(ManufacturerModelName, tmpString);
+                if (!DeviceSerialNumber.isEmpty())
+                {
+                   if (!deviceStr.empty())
+                       deviceStr += ", ";
+                   deviceStr += '#';
+                   deviceStr += getPrintStringFromElement(DeviceSerialNumber, tmpString);
+                }
+                if (!deviceStr.empty())
+                    stream << " (" << deviceStr << ")";
+                stream << OFendl;
+            }
             /* Key Object Selection Documents do not contain the SR Document General Module */
             if (getDocumentType() != DT_KeyObjectDoc)
             {
                 /* completion flag */
                 stream << "Completion Flag     : " << completionFlagToEnumeratedValue(CompletionFlagEnum) << OFendl;
-                if (CompletionFlagDescription.getLength() > 0)
+                if (!CompletionFlagDescription.isEmpty())
                     stream << "                      " << getPrintStringFromElement(CompletionFlagDescription, tmpString) << OFendl;
                 /* predecessor documents */
                 if (!PredecessorDocuments.empty())
@@ -252,7 +273,7 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                 }
             }
             /* content date and time */
-            if ((ContentDate.getLength() > 0) && (ContentTime.getLength() > 0))
+            if (!ContentDate.isEmpty() && !ContentTime.isEmpty())
             {
                 stream << "Content Date/Time   : " << getPrintStringFromElement(ContentDate, tmpString) << " ";
                 stream <<                             getPrintStringFromElement(ContentTime, tmpString) << OFendl;
@@ -353,8 +374,20 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         getAndCheckElementFromDataset(dataset, PatientBirthDate, "1", "2");
         getAndCheckElementFromDataset(dataset, PatientSex, "1", "2");
 
-        // --- General Equipment Module ---
-        getAndCheckElementFromDataset(dataset, Manufacturer, "1", "2");
+        if (requiresEnhancedEquipmentModule(documentType))
+        {
+            // --- Enhanced General Equipment Module ---
+            getAndCheckElementFromDataset(dataset, Manufacturer, "1", "1");
+            getAndCheckElementFromDataset(dataset, ManufacturerModelName, "1", "1");
+            getAndCheckElementFromDataset(dataset, DeviceSerialNumber, "1", "1");
+            getAndCheckElementFromDataset(dataset, SoftwareVersions, "1-n", "1");
+        } else {
+            // --- General Equipment Module ---
+            getAndCheckElementFromDataset(dataset, Manufacturer, "1", "2");
+            getAndCheckElementFromDataset(dataset, ManufacturerModelName, "1", "3");
+            getAndCheckElementFromDataset(dataset, DeviceSerialNumber, "1", "3");
+            getAndCheckElementFromDataset(dataset, SoftwareVersions, "1-n", "3");
+        }
 
         // --- SR Document Series Module ---
         getElementFromDataset(dataset, Modality);   /* already checked */
@@ -437,13 +470,13 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         // --- SOP Common Module ---
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SOPClassUID));
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SOPInstanceUID));
-        if (SpecificCharacterSet.getLength() > 0)    /* optional */
+        if (!SpecificCharacterSet.isEmpty())    /* optional */
             addElementToDataset(result, dataset, new DcmCodeString(SpecificCharacterSet));
-        if (InstanceCreationDate.getLength() > 0)    /* optional */
+        if (!InstanceCreationDate.isEmpty())    /* optional */
             addElementToDataset(result, dataset, new DcmDate(InstanceCreationDate));
-        if (InstanceCreationTime.getLength() > 0)    /* optional */
+        if (!InstanceCreationTime.isEmpty())    /* optional */
             addElementToDataset(result, dataset, new DcmTime(InstanceCreationTime));
-        if (InstanceCreatorUID.getLength() > 0)      /* optional */
+        if (!InstanceCreatorUID.isEmpty())      /* optional */
             addElementToDataset(result, dataset, new DcmUniqueIdentifier(InstanceCreatorUID));
         CodingSchemeIdentification.write(dataset);
 
@@ -454,7 +487,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         addElementToDataset(result, dataset, new DcmPersonName(ReferringPhysicianName));
         addElementToDataset(result, dataset, new DcmShortString(StudyID));
         addElementToDataset(result, dataset, new DcmShortString(AccessionNumber));
-        if (StudyDescription.getLength() > 0)     /* optional */
+        if (!StudyDescription.isEmpty())     /* optional */
             addElementToDataset(result, dataset, new DcmLongString(StudyDescription));
 
         // --- Patient Module ---
@@ -466,11 +499,20 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         // --- General Equipment Module ---
         addElementToDataset(result, dataset, new DcmLongString(Manufacturer));
 
+        // --- Enhanced General Equipment Module ---
+        const OFBool enhancedEquipment = requiresEnhancedEquipmentModule(getDocumentType());
+        if (enhancedEquipment || !ManufacturerModelName.isEmpty())   /* optional */
+            addElementToDataset(result, dataset, new DcmLongString(ManufacturerModelName));
+        if (enhancedEquipment || !DeviceSerialNumber.isEmpty())      /* optional */
+            addElementToDataset(result, dataset, new DcmLongString(DeviceSerialNumber));
+        if (enhancedEquipment || !SoftwareVersions.isEmpty())        /* optional */
+            addElementToDataset(result, dataset, new DcmLongString(SoftwareVersions));
+
         // --- SR Document Series Module ---
         addElementToDataset(result, dataset, new DcmCodeString(Modality));
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SeriesInstanceUID));
         addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber));
-        if (SeriesDescription.getLength() > 0)    /* optional */
+        if (!SeriesDescription.isEmpty())    /* optional */
             addElementToDataset(result, dataset, new DcmLongString(SeriesDescription));
         /* always write empty sequence since not yet fully supported */
         ReferencedPerformedProcedureStep.clear();
@@ -484,7 +526,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         if (getDocumentType() != DT_KeyObjectDoc)
         {
             addElementToDataset(result, dataset, new DcmCodeString(CompletionFlag));
-            if (CompletionFlagDescription.getLength() > 0)   /* optional */
+            if (!CompletionFlagDescription.isEmpty())   /* optional */
                 addElementToDataset(result, dataset, new DcmLongString(CompletionFlagDescription));
             addElementToDataset(result, dataset, new DcmCodeString(VerificationFlag));
             if (VerifyingObserver.card() > 0)                /* optional */
@@ -628,6 +670,13 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
             }
             else if (doc.matchNode(cursor, "document"))
                 result = readXMLDocumentData(doc, cursor.getChild(), flags);
+            else if (doc.matchNode(cursor, "device"))
+            {
+                doc.getElementFromNodeContent(doc.getNamedNode(cursor.getChild(), "manufacturer"), Manufacturer, NULL, OFTrue /*encoding*/);
+                doc.getElementFromNodeContent(doc.getNamedNode(cursor.getChild(), "model"), ManufacturerModelName, NULL, OFTrue /*encoding*/);
+                doc.getElementFromNodeContent(doc.getNamedNode(cursor.getChild(), "serial", OFFalse /*required*/), DeviceSerialNumber, NULL, OFTrue /*encoding*/);
+                doc.getElementFromNodeContent(doc.getNamedNode(cursor.getChild(), "version", OFFalse /*required*/), SoftwareVersions, NULL, OFTrue /*encoding*/);
+            }
             else if (doc.getElementFromNodeContent(cursor, Manufacturer, "manufacturer", OFTrue /*encoding*/).bad())
                 doc.printUnexpectedNodeWarning(cursor);
             /* print node error message (if any) */
@@ -981,9 +1030,19 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         stream << "</sopclass>" << OFendl;
         writeStringFromElementToXML(stream, SpecificCharacterSet, "charset", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, Modality, "modality", (flags & XF_writeEmptyTags) > 0);
-        writeStringFromElementToXML(stream, Manufacturer, "manufacturer", (flags & XF_writeEmptyTags) > 0);
+        /* check for additional device information */
+        if (!ManufacturerModelName.isEmpty())
+        {
+            stream << "<device>" << OFendl;
+            writeStringFromElementToXML(stream, Manufacturer, "manufacturer", (flags & XF_writeEmptyTags) > 0);
+            writeStringFromElementToXML(stream, ManufacturerModelName, "model", (flags & XF_writeEmptyTags) > 0);
+            writeStringFromElementToXML(stream, DeviceSerialNumber, "serial", (flags & XF_writeEmptyTags) > 0);
+            writeStringFromElementToXML(stream, SoftwareVersions, "version", (flags & XF_writeEmptyTags) > 0);
+            stream << "</device>" << OFendl;
+        } else
+            writeStringFromElementToXML(stream, Manufacturer, "manufacturer", (flags & XF_writeEmptyTags) > 0);
 
-        if ((flags & XF_writeEmptyTags) || (ReferringPhysicianName.getLength() > 0))
+        if ((flags & XF_writeEmptyTags) || !ReferringPhysicianName.isEmpty())
         {
             stream << "<referringphysician>" << OFendl;
             writeStringFromElementToXML(stream, ReferringPhysicianName, "name", (flags & XF_writeEmptyTags) > 0);
@@ -993,7 +1052,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         stream << "<patient>" << OFendl;
         writeStringFromElementToXML(stream, PatientID, "id", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, PatientName, "name", (flags & XF_writeEmptyTags) > 0);
-        if ((flags & XF_writeEmptyTags) || (PatientBirthDate.getLength() > 0))
+        if ((flags & XF_writeEmptyTags) || !PatientBirthDate.isEmpty())
         {
             stream << "<birthday>" << OFendl;
             PatientBirthDate.getISOFormattedDate(tmpString);
@@ -1009,7 +1068,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
         StudyTime.getISOFormattedTime(tmpString);
         writeStringValueToXML(stream, tmpString, "time", (flags & XF_writeEmptyTags) > 0);
-        if ((flags & XF_writeEmptyTags) || (AccessionNumber.getLength() > 0))
+        if ((flags & XF_writeEmptyTags) || !AccessionNumber.isEmpty())
         {
             stream << "<accession>" << OFendl;
             writeStringFromElementToXML(stream, AccessionNumber, "number", (flags & XF_writeEmptyTags) > 0);
@@ -1025,11 +1084,11 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
 
         stream << "<instance uid=\"" << getMarkupStringFromElement(SOPInstanceUID, tmpString) << "\">" << OFendl;
         writeStringFromElementToXML(stream, InstanceNumber, "number", (flags & XF_writeEmptyTags) > 0);
-        if ((flags & XF_writeEmptyTags) || (InstanceCreatorUID.getLength() > 0) ||
-            (InstanceCreationDate.getLength() > 0) || (InstanceCreationTime.getLength() > 0))
+        if ((flags & XF_writeEmptyTags) || !InstanceCreatorUID.isEmpty() ||
+            !InstanceCreationDate.isEmpty() || !InstanceCreationTime.isEmpty())
         {
             stream << "<creation";
-            if (InstanceCreatorUID.getLength() > 0)
+            if (!InstanceCreatorUID.isEmpty())
                 stream << " uid=\"" << getMarkupStringFromElement(InstanceCreatorUID, tmpString) << "\"";
             stream << ">" << OFendl;
             InstanceCreationDate.getISOFormattedDate(tmpString);
@@ -1138,7 +1197,7 @@ void DSRDocument::renderHTMLPatientData(STD_NAMESPACE ostream &stream,
     OFString htmlString;
     stream << convertToHTMLString(dicomToReadablePersonName(getStringValueFromElement(PatientName, tmpString), string2), htmlString, flags);
     OFString patientStr;
-    if (PatientSex.getLength() > 0)
+    if (!PatientSex.isEmpty())
     {
         getPrintStringFromElement(PatientSex, tmpString);
         if (tmpString == "M")
@@ -1150,14 +1209,14 @@ void DSRDocument::renderHTMLPatientData(STD_NAMESPACE ostream &stream,
         else
             patientStr += convertToHTMLString(tmpString, htmlString, flags);
     }
-    if (PatientBirthDate.getLength() > 0)
+    if (!PatientBirthDate.isEmpty())
     {
        if (!patientStr.empty())
            patientStr += ", ";
        patientStr += '*';
        patientStr += dicomToReadableDate(getStringValueFromElement(PatientBirthDate, tmpString), string2);
     }
-    if (PatientID.getLength() > 0)
+    if (!PatientID.isEmpty())
     {
        if (!patientStr.empty())
            patientStr += ", ";
@@ -1335,7 +1394,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
             /* create a table for this purpose */
             stream << "<table>" << OFendl;
             /* patient related information */
-            if (PatientName.getLength() > 0)
+            if (!PatientName.isEmpty())
             {
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Patient:</b></td>" << OFendl;
@@ -1345,7 +1404,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 stream << "</tr>" << OFendl;
             }
             /* referring physician */
-            if (ReferringPhysicianName.getLength() > 0)
+            if (!ReferringPhysicianName.isEmpty())
             {
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Referring Physician:</b></td>" << OFendl;
@@ -1354,22 +1413,34 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 stream << "</tr>" << OFendl;
             }
             /* study related information */
-            if (StudyDescription.getLength() > 0)
+            if (!StudyDescription.isEmpty())
             {
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Study:</b></td>" << OFendl;
                 stream << "<td>" << convertToHTMLString(getStringValueFromElement(StudyDescription, tmpString), htmlString, newFlags);
-                if (StudyID.getLength() > 0)
+                if (!StudyID.isEmpty())
                     stream << " (#" << convertToHTMLString(getStringValueFromElement(StudyID, tmpString), htmlString, newFlags) << ")";
                 stream << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
             }
             /* manufacturer */
-            if (Manufacturer.getLength() > 0)
+            if (!Manufacturer.isEmpty())
             {
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Manufacturer:</b></td>" << OFendl;
                 stream << "<td>" << convertToHTMLString(getStringValueFromElement(Manufacturer, tmpString), htmlString, newFlags);
+                OFString deviceStr;
+                if (!ManufacturerModelName.isEmpty())
+                    deviceStr += convertToHTMLString(getStringValueFromElement(ManufacturerModelName, tmpString), htmlString, newFlags);
+                if (!DeviceSerialNumber.isEmpty())
+                {
+                   if (!deviceStr.empty())
+                       deviceStr += ", ";
+                   deviceStr += '#';
+                   deviceStr += convertToHTMLString(getStringValueFromElement(DeviceSerialNumber, tmpString), htmlString, newFlags);
+                }
+                if (!deviceStr.empty())
+                    stream << " (" << deviceStr << ")";
                 stream << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
             }
@@ -1381,7 +1452,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 stream << "<td>" << completionFlagToEnumeratedValue(CompletionFlagEnum) << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
                 /* completion flag description */
-                if (CompletionFlagDescription.getLength() > 0)
+                if (!CompletionFlagDescription.isEmpty())
                 {
                     stream << "<tr>" << OFendl;
                     stream << "<td></td>" << OFendl;
@@ -1461,7 +1532,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                     }
                 }
             }
-            if ((ContentDate.getLength() > 0) && (ContentTime.getLength() > 0))
+            if (!ContentDate.isEmpty() && !ContentTime.isEmpty())
             {
                 /* content date and time */
                 stream << "<tr>" << OFendl;
@@ -1736,6 +1807,24 @@ const char *DSRDocument::getManufacturer() const
 }
 
 
+const char *DSRDocument::getManufacturerModelName() const
+{
+    return getStringValueFromElement(ManufacturerModelName);
+}
+
+
+const char *DSRDocument::getDeviceSerialNumber() const
+{
+    return getStringValueFromElement(DeviceSerialNumber);
+}
+
+
+const char *DSRDocument::getSoftwareVersions() const
+{
+    return getStringValueFromElement(SoftwareVersions);
+}
+
+
 const char *DSRDocument::getStudyDate() const
 {
     return getStringValueFromElement(StudyDate);
@@ -1888,6 +1977,24 @@ const OFString &DSRDocument::getManufacturer(OFString &value) const
 }
 
 
+const OFString &DSRDocument::getManufacturerModelName(OFString &value) const
+{
+    return getStringValueFromElement(ManufacturerModelName, value);
+}
+
+
+const OFString &DSRDocument::getDeviceSerialNumber(OFString &value) const
+{
+    return getStringValueFromElement(DeviceSerialNumber, value);
+}
+
+
+const OFString &DSRDocument::getSoftwareVersions(OFString &value) const
+{
+    return getStringValueFromElement(SoftwareVersions, value);
+}
+
+
 const OFString &DSRDocument::getStudyDate(OFString &value) const
 {
     return getStringValueFromElement(StudyDate, value);
@@ -2021,6 +2128,27 @@ OFCondition DSRDocument::setManufacturer(const OFString &value)
 {
     /* might add check for correct format (VR) later on */
     return Manufacturer.putString(value.c_str());
+}
+
+
+OFCondition DSRDocument::setManufacturerModelName(const OFString &value)
+{
+    /* might add check for correct format (VR) later on */
+    return ManufacturerModelName.putString(value.c_str());
+}
+
+
+OFCondition DSRDocument::setDeviceSerialNumber(const OFString &value)
+{
+    /* might add check for correct format (VR) later on */
+    return DeviceSerialNumber.putString(value.c_str());
+}
+
+
+OFCondition DSRDocument::setSoftwareVersions(const OFString &value)
+{
+    /* might add check for correct format (VR) later on */
+    return SoftwareVersions.putString(value.c_str());
 }
 
 
@@ -2299,15 +2427,15 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
         Modality.putString(documentTypeToModality(getDocumentType()));
 
         /* create new instance number if required (type 1) */
-        if (InstanceNumber.getLength() == 0)
+        if (InstanceNumber.isEmpty())
             InstanceNumber.putString("1");
         /* create new series number if required (type 1) */
-        if (SeriesNumber.getLength() == 0)
+        if (SeriesNumber.isEmpty())
             SeriesNumber.putString("1");
 
         char uid[100];
         /* create new SOP instance UID if required */
-        if (SOPInstanceUID.getLength() == 0)
+        if (SOPInstanceUID.isEmpty())
         {
             OFString tmpString;
             SOPInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
@@ -2319,17 +2447,17 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
             InstanceCreatorUID.putString(OFFIS_INSTANCE_CREATOR_UID);
         }
         /* create new study instance UID if required */
-        if (StudyInstanceUID.getLength() == 0)
+        if (StudyInstanceUID.isEmpty())
             StudyInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
         /* create new series instance UID if required */
-        if (SeriesInstanceUID.getLength() == 0)
+        if (SeriesInstanceUID.isEmpty())
             SeriesInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
 
         /* check and set content date if required */
-        if (ContentDate.getLength() == 0)
+        if (ContentDate.isEmpty())
             ContentDate.putString(getStringValueFromElement(InstanceCreationDate));
         /* check and set content time if required */
-        if (ContentTime.getLength() == 0)
+        if (ContentTime.isEmpty())
             ContentTime.putString(getStringValueFromElement(InstanceCreationTime));
     }
     if (getDocumentType() != DT_KeyObjectDoc)
@@ -2349,6 +2477,12 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.68  2010-09-28 16:25:49  joergr
+ *  Added support for Enhanced General Equipment Module which is required for
+ *  both X-Ray Radiation Dose SR and Colon CAD SR.
+ *  Use new isEmpty() method instead of length in order to determine whether the
+ *  element value is empty (e.g. for checking the presence of type 3 attributes).
+ *
  *  Revision 1.67  2010-08-09 13:26:56  joergr
  *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
  *  the official "keyword" is used for the attribute name which results in a
