@@ -19,6 +19,10 @@ Changes between releases are documented here.
 - Made sure that no NULL pointer is passed to the OFString constructor.
   Affects: dcmsr/libsrc/dsrxmld.cc
 
+- Updated comment on the requirements for POLYLINE according to CP-233.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrscovl.h
+           dcmsr/libsrc/dsrscovl.cc
+
 **** Changes from 2010.09.27 (riesmeier)
 
 - Added comment to retired transfer syntaxes and changed order of transfer

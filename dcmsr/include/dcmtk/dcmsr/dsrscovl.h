@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinatesValue
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:50 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-28 14:03:37 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,13 +110,13 @@ class DSRSpatialCoordinatesValue
                               const size_t flags) const;
 
     /** read spatial coordinates value from dataset
-     ** @param  dataset    DICOM dataset from which the value should be read
+     ** @param  dataset  DICOM dataset from which the value should be read
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition read(DcmItem &dataset);
 
     /** write spatial coordinates reference value to dataset
-     ** @param  dataset    DICOM dataset to which the value should be written
+     ** @param  dataset  DICOM dataset to which the value should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition write(DcmItem &dataset) const;
@@ -130,8 +130,8 @@ class DSRSpatialCoordinatesValue
                                 DSRXMLCursor cursor);
 
     /** write spatial coordinates value in XML format
-     ** @param  stream     output stream to which the XML document is written
-     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     ** @param  stream  output stream to which the XML document is written
+     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
@@ -213,9 +213,8 @@ class DSRSpatialCoordinatesValue
 
     /** check the graphic type and data for validity.
      *  If 'graphicType' is valid the number of entries in the 'graphicDatalist' are checked.
-     *  A POINT needs exactly 1 value pair (column,row), a MULTIPOINT at least 1?, a closed
-     *  POLYLINE at least 1? where the first and last pair are equal, a CIRCLE exactly 2 and an
-     *  ELLIPSE exactly 4.
+     *  A POINT needs exactly 1 value pair (column,row), a MULTIPOINT at least 1?, a POLYLINE
+     *  at least 1?, a CIRCLE exactly 2 and an ELLIPSE exactly 4.
      ** @param  graphicType      graphic type to be checked
      *  @param  graphicDataList  list of graphic data to be checked
      ** @return OFTrue if graphic type and data are valid, OFFalse otherwise
@@ -239,6 +238,9 @@ class DSRSpatialCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.h,v $
+ *  Revision 1.14  2010-09-28 14:03:37  joergr
+ *  Updated comment on the requirements for POLYLINE according to CP-233.
+ *
  *  Revision 1.13  2009-10-13 14:57:50  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

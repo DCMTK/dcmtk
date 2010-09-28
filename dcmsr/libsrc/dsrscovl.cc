@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinatesValue
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:51 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-28 14:03:41 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -265,7 +265,7 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
                 break;
             case DSRTypes::GT_Polyline:
 /*              // not required any more according to CP-233
-                if (!(graphicDataList.getItem(1) == graphicDataList.getItem(count)))
+                if (graphicDataList.getItem(1) != graphicDataList.getItem(count))
                     DCMSR_WARN("First and last entry in GraphicData are not equal (POLYLINE)");
 */
                 result = OFTrue;
@@ -302,6 +302,9 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
+ *  Revision 1.21  2010-09-28 14:03:41  joergr
+ *  Updated comment on the requirements for POLYLINE according to CP-233.
+ *
  *  Revision 1.20  2009-10-13 14:57:51  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
