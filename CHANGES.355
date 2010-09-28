@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.28 (riesmeier)
 
+- Added new non-image Storage SOP Classes that do not require a new directory
+  record type (e.g. SR DOCUMENT and WAVEFORM).
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 - Added VL Whole Slide Microscopy Image Storage SOP Class (Supplement 145).
   Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
            dcmdata/libsrc/dcuid.cc
@@ -30,7 +34,7 @@ Changes between releases are documented here.
            dcmqrdb/docs/dcmqrscp.man
 
 - Added newly introduced multi-frame image SOP classes to DVD MPEG2 profile.
-  Affects: dcmdata/libsrc/dcdictbi.cc
+  Affects: dcmdata/libsrc/dcddirif.cc
 
 **** Changes from 2010.09.24 (riesmeier)
 

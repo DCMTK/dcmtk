@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-27 15:02:42 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2010-09-28 08:45:08 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -632,17 +632,21 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     else if (compare(sopClass, UID_BasicTextSRStorage) ||
              compare(sopClass, UID_EnhancedSRStorage) ||
              compare(sopClass, UID_ComprehensiveSRStorage) ||
+             compare(sopClass, UID_ProcedureLogStorage) ||
              compare(sopClass, UID_MammographyCADSRStorage) ||
              compare(sopClass, UID_ChestCADSRStorage) ||
-             compare(sopClass, UID_ProcedureLogStorage) ||
-             compare(sopClass, UID_XRayRadiationDoseSRStorage))
+             compare(sopClass, UID_XRayRadiationDoseSRStorage) ||
+             compare(sopClass, UID_ColonCADSRStorage) ||
+             compare(sopClass, UID_SpectaclePrescriptionReportsStorage) ||
+             compare(sopClass, UID_MacularGridThicknessAndVolumeReportStorage))
     {
         result = ERT_SRDocument;
     }
     else if (compare(sopClass, UID_GrayscaleSoftcopyPresentationStateStorage) ||
              compare(sopClass, UID_ColorSoftcopyPresentationStateStorage) ||
              compare(sopClass, UID_PseudoColorSoftcopyPresentationStateStorage) ||
-             compare(sopClass, UID_BlendingSoftcopyPresentationStateStorage))
+             compare(sopClass, UID_BlendingSoftcopyPresentationStateStorage) ||
+             compare(sopClass, UID_XAXRFGrayscaleSoftcopyPresentationStateStorage))
     {
         result = ERT_Presentation;
     }
@@ -651,7 +655,10 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_AmbulatoryECGWaveformStorage) ||
              compare(sopClass, UID_HemodynamicWaveformStorage) ||
              compare(sopClass, UID_CardiacElectrophysiologyWaveformStorage) ||
-             compare(sopClass, UID_BasicVoiceAudioWaveformStorage))
+             compare(sopClass, UID_BasicVoiceAudioWaveformStorage) ||
+             compare(sopClass, UID_GeneralAudioWaveformStorage) ||
+             compare(sopClass, UID_ArterialPulseWaveformStorage) ||
+             compare(sopClass, UID_RespiratoryWaveformStorage))
     {
         result = ERT_Waveform;
     }
@@ -659,11 +666,15 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_RTDose;
     else if (compare(sopClass, UID_RTStructureSetStorage))
         result = ERT_RTStructureSet;
-    else if (compare(sopClass, UID_RTPlanStorage))
+    else if (compare(sopClass, UID_RTPlanStorage) ||
+             compare(sopClass, UID_RTIonPlanStorage))
+    {
         result = ERT_RTPlan;
+    }
     else if (compare(sopClass, UID_RTBeamsTreatmentRecordStorage) ||
              compare(sopClass, UID_RTBrachyTreatmentRecordStorage) ||
-             compare(sopClass, UID_RTTreatmentSummaryRecordStorage))
+             compare(sopClass, UID_RTTreatmentSummaryRecordStorage) ||
+             compare(sopClass, UID_RTIonBeamsTreatmentRecordStorage))
     {
         result = ERT_RTTreatRecord;
     }
@@ -671,8 +682,11 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_StoredPrint;
     else if (compare(sopClass, UID_KeyObjectSelectionDocumentStorage))
         result = ERT_KeyObjectDoc;
-    else if (compare(sopClass, UID_SpatialRegistrationStorage))
+    else if (compare(sopClass, UID_SpatialRegistrationStorage) ||
+             compare(sopClass, UID_DeformableSpatialRegistrationStorage))
+    {
         result = ERT_Registration;
+    }
     else if (compare(sopClass, UID_SpatialFiducialsStorage))
         result = ERT_Fiducial;
     else if (compare(sopClass, UID_RawDataStorage))
@@ -1367,7 +1381,9 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_RTBeamsTreatmentRecordStorage) ||
                                 compare(mediaSOPClassUID, UID_RTPlanStorage) ||
                                 compare(mediaSOPClassUID, UID_RTBrachyTreatmentRecordStorage) ||
-                                compare(mediaSOPClassUID, UID_RTTreatmentSummaryRecordStorage);
+                                compare(mediaSOPClassUID, UID_RTTreatmentSummaryRecordStorage) ||
+                                compare(mediaSOPClassUID, UID_RTIonPlanStorage) ||
+                                compare(mediaSOPClassUID, UID_RTIonBeamsTreatmentRecordStorage);
                     }
                     /* is it one of the structured reporting SOP Classes? */
                     if (!found)
@@ -1375,10 +1391,13 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                         found = compare(mediaSOPClassUID, UID_BasicTextSRStorage) ||
                                 compare(mediaSOPClassUID, UID_EnhancedSRStorage) ||
                                 compare(mediaSOPClassUID, UID_ComprehensiveSRStorage) ||
+                                compare(mediaSOPClassUID, UID_ProcedureLogStorage) ||
                                 compare(mediaSOPClassUID, UID_MammographyCADSRStorage) ||
                                 compare(mediaSOPClassUID, UID_ChestCADSRStorage) ||
-                                compare(mediaSOPClassUID, UID_ProcedureLogStorage) ||
-                                compare(mediaSOPClassUID, UID_XRayRadiationDoseSRStorage);
+                                compare(mediaSOPClassUID, UID_XRayRadiationDoseSRStorage) ||
+                                compare(mediaSOPClassUID, UID_ColonCADSRStorage) ||
+                                compare(mediaSOPClassUID, UID_SpectaclePrescriptionReportsStorage) ||
+                                compare(mediaSOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage);
                      }
                     /* is it one of the waveform SOP Classes? */
                     if (!found)
@@ -1388,13 +1407,17 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_AmbulatoryECGWaveformStorage) ||
                                 compare(mediaSOPClassUID, UID_HemodynamicWaveformStorage) ||
                                 compare(mediaSOPClassUID, UID_CardiacElectrophysiologyWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_BasicVoiceAudioWaveformStorage);
+                                compare(mediaSOPClassUID, UID_BasicVoiceAudioWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_GeneralAudioWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_ArterialPulseWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_RespiratoryWaveformStorage);
                     }
                     /* is it one of the spatial registration SOP Classes? */
                     if (!found)
                     {
                         found = compare(mediaSOPClassUID, UID_SpatialRegistrationStorage) ||
-                                compare(mediaSOPClassUID, UID_SpatialFiducialsStorage);
+                                compare(mediaSOPClassUID, UID_SpatialFiducialsStorage) ||
+                                compare(mediaSOPClassUID, UID_DeformableSpatialRegistrationStorage);
                     }
                     /* is it any other SOP class? */
                     if (!found)
@@ -1403,6 +1426,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_ColorSoftcopyPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_PseudoColorSoftcopyPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_BlendingSoftcopyPresentationStateStorage) ||
+                                compare(mediaSOPClassUID, UID_XAXRFGrayscaleSoftcopyPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_RETIRED_StoredPrintStorage) ||
                                 compare(mediaSOPClassUID, UID_KeyObjectSelectionDocumentStorage) ||
                                 compare(mediaSOPClassUID, UID_RawDataStorage) ||
@@ -1410,7 +1434,8 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_EncapsulatedPDFStorage) ||
                                 compare(mediaSOPClassUID, UID_RealWorldValueMappingStorage) ||
                                 compare(mediaSOPClassUID, UID_HangingProtocolStorage) ||
-                                compare(mediaSOPClassUID, UID_StereometricRelationshipStorage);
+                                compare(mediaSOPClassUID, UID_StereometricRelationshipStorage) ||
+                                compare(mediaSOPClassUID, UID_SegmentationStorage);  // will be mapped to IMAGE record
                     }
                     /* the following SOP classes have been retired with DICOM 2006: */
                     if (!found && RetiredSOPClassSupport)
@@ -4855,6 +4880,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.43  2010-09-28 08:45:08  joergr
+ *  Added new non-image Storage SOP Classes that do not require a new directory
+ *  record type (e.g. SR DOCUMENT and WAVEFORM).
+ *
  *  Revision 1.42  2010-09-27 15:02:42  joergr
  *  Added newly introduced multi-frame image SOP classes to DVD MPEG2 profile.
  *
