@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-28 14:08:14 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2010-09-28 16:27:12 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -649,6 +649,12 @@ class DSRTypes
     static const char *documentTypeToDocumentTitle(const E_DocumentType documentType,
                                                    OFString &documentTitle);
 
+    /** check whether SR document type requires Enhanced General Equipment Module
+     ** @param  documentType  SR document type to be checked
+     ** @return OFTrue if Enhanced General Equipment Module is required, OFFalse otherwise
+     */
+    static OFBool requiresEnhancedEquipmentModule(const E_DocumentType documentType);
+
     /** convert relationship type to DICOM defined term
      ** @param  relationshipType  relationship type to be converted
      ** @return defined term if successful, empty string otherwise (never NULL)
@@ -1253,6 +1259,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.60  2010-09-28 16:27:12  joergr
+ *  Added support for Enhanced General Equipment Module which is required for
+ *  both X-Ray Radiation Dose SR and Colon CAD SR.
+ *
  *  Revision 1.59  2010-09-28 14:08:14  joergr
  *  Added support for Colon CAD SR which requires a new value type (SCOORD3D).
  *

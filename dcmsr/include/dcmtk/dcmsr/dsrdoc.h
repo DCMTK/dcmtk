@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:26:25 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2010-09-28 16:26:43 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -418,6 +418,21 @@ class DSRDocument
      */
     const char *getManufacturer() const;
 
+    /** get manufacturer's model name
+     ** @return pointer to string value (might be NULL)
+     */
+    const char *getManufacturerModelName() const;
+
+    /** get device serial number
+     ** @return pointer to string value (might be NULL)
+     */
+    const char *getDeviceSerialNumber() const;
+
+    /** get software version(s)
+     ** @return pointer to string value (might be NULL)
+     */
+    const char *getSoftwareVersions() const;
+
     /** get study date
      ** @return pointer to string value (might be NULL)
      */
@@ -562,6 +577,24 @@ class DSRDocument
      */
     const OFString &getManufacturer(OFString &value) const;
 
+    /** get manufacturer's model name
+     ** @param  value  reference to character string in which the value should be stored
+     ** @return character string (might empty)
+     */
+    const OFString &getManufacturerModelName(OFString &value) const;
+
+    /** get device serial number
+     ** @param  value  reference to character string in which the value should be stored
+     ** @return character string (might empty)
+     */
+    const OFString &getDeviceSerialNumber(OFString &value) const;
+
+    /** get software version(s). Please note that only the first component is returned.
+     ** @param  value  reference to character string in which the value should be stored
+     ** @return character string (might empty)
+     */
+    const OFString &getSoftwareVersions(OFString &value) const;
+
     /** get study date
      ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
@@ -695,6 +728,27 @@ class DSRDocument
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setManufacturer(const OFString &value);
+
+    /** set manufacturer's model name.
+     *  The passed string must be a valid DICOM Long String (LO).
+     ** @param  value  character string specifying the value to be set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setManufacturerModelName(const OFString &value);
+
+    /** set device serial number.
+     *  The passed string must be a valid DICOM Long String (LO).
+     ** @param  value  character string specifying the value to be set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setDeviceSerialNumber(const OFString &value);
+
+    /** set software version(s).
+     *  The passed string must be a valid DICOM Long String (LO).
+     ** @param  value  character string specifying the value to be set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setSoftwareVersions(const OFString &value);
 
     /** set content date.
      *  The passed string must be a valid DICOM Date (DA).  If an empty string
@@ -1109,6 +1163,17 @@ class DSRDocument
     /// Manufacturer: (LO, 1, 2)
     DcmLongString       Manufacturer;
 
+    // --- General Equipment Module (M - for some IODs) ---
+
+    //  Manufacturer: (LO, 1, 1)
+        //  - see 'General Equipment Module'
+    /// Manufacturer's Model Name: (LO, 1, 1)
+    DcmLongString       ManufacturerModelName;
+    /// Device Serial Number: (LO, 1, 1)
+    DcmLongString       DeviceSerialNumber;
+    /// Software Version(s): (LO, 1-n, 1)
+    DcmLongString       SoftwareVersions;
+
     // --- Frame of Reference (C) ---
 
     // tbd: conditional module for X-Ray Radiation Dose SR not yet supported
@@ -1168,6 +1233,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.49  2010-09-28 16:26:43  joergr
+ *  Added support for Enhanced General Equipment Module which is required for
+ *  both X-Ray Radiation Dose SR and Colon CAD SR.
+ *
  *  Revision 1.48  2010-08-09 13:26:25  joergr
  *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
  *  the official "keyword" is used for the attribute name which results in a
