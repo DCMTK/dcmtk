@@ -16,6 +16,9 @@ Changes between releases are documented here.
            dcmnet/etc/storescu.cfg
            dcmqrdb/docs/dcmqrscp.man
 
+- Made sure that no NULL pointer is passed to the OFString constructor.
+  Affects: dcmsr/libsrc/dsrxmld.cc
+
 **** Changes from 2010.09.27 (riesmeier)
 
 - Added comment to retired transfer syntaxes and changed order of transfer

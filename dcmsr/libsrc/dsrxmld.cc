@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2009, OFFIS
+ *  Copyright (C) 2003-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXMLDocument
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-15 14:34:51 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-28 13:21:40 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -606,13 +606,13 @@ OFString &DSRXMLDocument::getFullNodePath(const DSRXMLCursor &cursor,
         OFString tmpString;
         xmlNodePtr current = cursor.Node;
         if (!omitCurrent)
-            stringValue = OFreinterpret_cast(const char *, current->name);
+            stringValue = OFSTRING_GUARD(OFreinterpret_cast(const char *, current->name));
         /* follow path to parent nodes */
         while (current->parent != NULL)
         {
             current = current->parent;
             tmpString = stringValue;
-            stringValue = OFreinterpret_cast(const char *, current->name);
+            stringValue = OFSTRING_GUARD(OFreinterpret_cast(const char *, current->name));
             if (!tmpString.empty())
             {
                 stringValue += '/';
@@ -727,6 +727,9 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
+ *  Revision 1.17  2010-09-28 13:21:40  joergr
+ *  Made sure that no NULL pointer is passed to the OFString constructor.
+ *
  *  Revision 1.16  2010-06-15 14:34:51  uli
  *  Don't fail to compile if libxml does not support schemas.
  *
