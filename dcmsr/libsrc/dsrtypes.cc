@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-28 16:25:49 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Update Date:      $Date: 2010-09-29 10:07:41 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -209,6 +209,13 @@ struct S_ContinuityOfContentNameMap
 };
 
 
+struct S_PreliminaryFlagNameMap
+{
+    DSRTypes::E_PreliminaryFlag Type;
+    const char *EnumeratedValue;
+};
+
+
 struct S_CompletionFlagNameMap
 {
     DSRTypes::E_CompletionFlag Type;
@@ -360,6 +367,14 @@ static const S_ContinuityOfContentNameMap ContinuityOfContentNameMap[] =
     {DSRTypes::COC_invalid,    ""},
     {DSRTypes::COC_Separate,   "SEPARATE"},
     {DSRTypes::COC_Continuous, "CONTINUOUS"}
+};
+
+
+static const S_PreliminaryFlagNameMap PreliminaryFlagNameMap[] =
+{
+    {DSRTypes::PF_invalid,      ""},
+    {DSRTypes::PF_Preliminary,  "PRELIMINARY"},
+    {DSRTypes::PF_Final,        "FINAL"}
 };
 
 
@@ -557,6 +572,15 @@ const char *DSRTypes::continuityOfContentToEnumeratedValue(const E_ContinuityOfC
 }
 
 
+const char *DSRTypes::preliminaryFlagToEnumeratedValue(const E_PreliminaryFlag preliminaryFlag)
+{
+    const S_PreliminaryFlagNameMap *iterator = PreliminaryFlagNameMap;
+    while ((iterator->Type != PF_last) && (iterator->Type != preliminaryFlag))
+        iterator++;
+    return iterator->EnumeratedValue;
+}
+
+
 const char *DSRTypes::completionFlagToEnumeratedValue(const E_CompletionFlag completionFlag)
 {
     const S_CompletionFlagNameMap *iterator = CompletionFlagNameMap;
@@ -691,6 +715,18 @@ DSRTypes::E_ContinuityOfContent DSRTypes::enumeratedValueToContinuityOfContent(c
     E_ContinuityOfContent type = COC_invalid;
     const S_ContinuityOfContentNameMap *iterator = ContinuityOfContentNameMap;
     while ((iterator->Type != COC_last) && (enumeratedValue != iterator->EnumeratedValue))
+        iterator++;
+    if (enumeratedValue == iterator->EnumeratedValue)
+        type = iterator->Type;
+    return type;
+}
+
+
+DSRTypes::E_PreliminaryFlag DSRTypes::enumeratedValueToPreliminaryFlag(const OFString &enumeratedValue)
+{
+    E_PreliminaryFlag type = PF_invalid;
+    const S_PreliminaryFlagNameMap *iterator = PreliminaryFlagNameMap;
+    while ((iterator->Type != PF_last) && (enumeratedValue != iterator->EnumeratedValue))
         iterator++;
     if (enumeratedValue == iterator->EnumeratedValue)
         type = iterator->Type;
@@ -1505,9 +1541,13 @@ OFLogger DCM_dcmsrGetLogger()
     return DCM_dcmsrLogger;
 }
 
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.67  2010-09-29 10:07:41  joergr
+ *  Added support for the recently introduced, optional PreliminaryFlag.
+ *
  *  Revision 1.66  2010-09-28 16:25:49  joergr
  *  Added support for Enhanced General Equipment Module which is required for
  *  both X-Ray Radiation Dose SR and Colon CAD SR.

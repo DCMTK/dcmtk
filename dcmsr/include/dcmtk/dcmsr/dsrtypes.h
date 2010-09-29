@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-28 16:27:12 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2010-09-29 10:07:12 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -532,12 +532,26 @@ class DSRTypes
     {
         /// internal type used to indicate an error
         COC_invalid,
-        /// DICOM defined term: SEPARATE
+        /// DICOM enumerated value: SEPARATE
         COC_Separate,
-        /// DICOM defined term: CONTINUOUS
+        /// DICOM enumerated value: CONTINUOUS
         COC_Continuous,
         /// internal type used to mark the last entry
         COC_last = COC_Continuous
+    };
+
+    /** SR document preliminary flag
+     */
+    enum E_PreliminaryFlag
+    {
+        /// internal type used to indicate an error or the absence of this flag
+        PF_invalid,
+        /// DICOM enumerated value: PRELIMINARY
+        PF_Preliminary,
+        /// DICOM enumerated value: FINAL
+        PF_Final,
+        /// internal type used to mark the last entry
+        PF_last = PF_Final
     };
 
     /** SR document completion flag
@@ -546,9 +560,9 @@ class DSRTypes
     {
         /// internal type used to indicate an error
         CF_invalid,
-        /// DICOM defined term: PARTIAL
+        /// DICOM enumerated value: PARTIAL
         CF_Partial,
-        /// DICOM defined term: COMPLETE
+        /// DICOM enumerated value: COMPLETE
         CF_Complete,
         /// internal type used to mark the last entry
         CF_last = CF_Complete
@@ -560,9 +574,9 @@ class DSRTypes
     {
         /// internal type used to indicate an error
         VF_invalid,
-        /// DICOM defined term: UNVERIFIED
+        /// DICOM enumerated value: UNVERIFIED
         VF_Unverified,
-        /// DICOM defined term: VERIFIED
+        /// DICOM enumerated value: VERIFIED
         VF_Verified,
         /// internal type used to mark the last entry
         VF_last = VF_Verified
@@ -732,6 +746,12 @@ class DSRTypes
      */
     static const char *continuityOfContentToEnumeratedValue(const E_ContinuityOfContent continuityOfContent);
 
+    /** convert preliminary flag to DICOM enumerated value
+     ** @param  preliminaryFlag  preliminary flag to be converted
+     ** @return enumerated value if successful, empty string otherwise (never NULL)
+     */
+    static const char *preliminaryFlagToEnumeratedValue(const E_PreliminaryFlag preliminaryFlag);
+
     /** convert completion flag to DICOM enumerated value
      ** @param  completionFlag  completion flag to be converted
      ** @return enumerated value if successful, empty string otherwise (never NULL)
@@ -811,6 +831,12 @@ class DSRTypes
      ** @return continuity of content flag type if successful, COC_invalid otherwise
      */
     static E_ContinuityOfContent enumeratedValueToContinuityOfContent(const OFString &enumeratedValue);
+
+    /** convert DICOM enumerated value to preliminary flag
+     ** @param  enumeratedValue  enumerated value to be converted
+     ** @return preliminary flag type if successful, CF_invalid otherwise
+     */
+    static E_PreliminaryFlag enumeratedValueToPreliminaryFlag(const OFString &enumeratedValue);
 
     /** convert DICOM enumerated value to completion flag
      ** @param  enumeratedValue  enumerated value to be converted
@@ -1259,6 +1285,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.61  2010-09-29 10:07:12  joergr
+ *  Added support for the recently introduced, optional PreliminaryFlag.
+ *
  *  Revision 1.60  2010-09-28 16:27:12  joergr
  *  Added support for Enhanced General Equipment Module which is required for
  *  both X-Ray Radiation Dose SR and Colon CAD SR.

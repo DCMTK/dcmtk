@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-29 08:32:26 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Update Date:      $Date: 2010-09-29 10:07:41 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@
 DSRDocument::DSRDocument(const E_DocumentType documentType)
   : DocumentTree(documentType),
     FinalizedFlag(OFFalse),
+    PreliminaryFlagEnum(PF_invalid),
     CompletionFlagEnum(CF_invalid),
     VerificationFlagEnum(VF_invalid),
     SpecificCharacterSetEnum(CS_invalid),
@@ -76,6 +77,7 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     SeriesDescription(DCM_SeriesDescription),
     ReferencedPerformedProcedureStep(DCM_ReferencedPerformedProcedureStepSequence),
     InstanceNumber(DCM_InstanceNumber),
+    PreliminaryFlag(DCM_PreliminaryFlag),
     CompletionFlag(DCM_CompletionFlag),
     CompletionFlagDescription(DCM_CompletionFlagDescription),
     VerificationFlag(DCM_VerificationFlag),
@@ -104,6 +106,7 @@ void DSRDocument::clear()
     DocumentTree.clear();
     FinalizedFlag = OFFalse;
     /* clear enumerated values */
+    PreliminaryFlagEnum = PF_invalid;
     CompletionFlagEnum = CF_invalid;
     VerificationFlagEnum = VF_invalid;
     SpecificCharacterSetEnum = CS_invalid;
@@ -136,6 +139,7 @@ void DSRDocument::clear()
     SeriesDescription.clear();
     ReferencedPerformedProcedureStep.clear();
     InstanceNumber.clear();
+    PreliminaryFlag.clear();
     CompletionFlag.clear();
     CompletionFlagDescription.clear();
     VerificationFlag.clear();
@@ -236,8 +240,11 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
             /* Key Object Selection Documents do not contain the SR Document General Module */
             if (getDocumentType() != DT_KeyObjectDoc)
             {
+                /* preliminary flag */
+                if (!PreliminaryFlag.isEmpty())
+                    stream << "Preliminary Flag    : " << getStringValueFromElement(PreliminaryFlag, tmpString) << OFendl;
                 /* completion flag */
-                stream << "Completion Flag     : " << completionFlagToEnumeratedValue(CompletionFlagEnum) << OFendl;
+                stream << "Completion Flag     : " << getStringValueFromElement(CompletionFlag, tmpString) << OFendl;
                 if (!CompletionFlagDescription.isEmpty())
                     stream << "                      " << getPrintStringFromElement(CompletionFlagDescription, tmpString) << OFendl;
                 /* predecessor documents */
@@ -250,7 +257,7 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
             if (getDocumentType() != DT_KeyObjectDoc)
             {
                 /* verification flag */
-                stream << "Verification Flag   : " << verificationFlagToEnumeratedValue(VerificationFlagEnum) << OFendl;
+                stream << "Verification Flag   : " << getStringValueFromElement(VerificationFlag, tmpString) << OFendl;
                 /* verifying observer */
                 const size_t obsCount = getNumberOfVerifyingObservers();
                 for (size_t i = 1; i <= obsCount; i++)
@@ -424,6 +431,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "1", "SRDocumentGeneralModule");
             getAndCheckElementFromDataset(dataset, ContentDate, "1", "1", "SRDocumentGeneralModule");
             getAndCheckElementFromDataset(dataset, ContentTime, "1", "1", "SRDocumentGeneralModule");
+            getAndCheckElementFromDataset(dataset, PreliminaryFlag, "1", "3", "SRDocumentGeneralModule");
             getAndCheckElementFromDataset(dataset, CompletionFlag, "1", "1", "SRDocumentGeneralModule");
             getAndCheckElementFromDataset(dataset, CompletionFlagDescription, "1", "3", "SRDocumentGeneralModule");
             getAndCheckElementFromDataset(dataset, VerificationFlag, "1", "1", "SRDocumentGeneralModule");
@@ -447,12 +455,19 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         /* Key Object Selection Documents do not contain the SR Document General Module */
         if (documentType != DT_KeyObjectDoc)
         {
+            /* get and check PreliminaryFlag (if present) */
+            if (!PreliminaryFlag.isEmpty())
+            {
+                PreliminaryFlagEnum = enumeratedValueToPreliminaryFlag(getStringValueFromElement(PreliminaryFlag, tmpString));
+                if (PreliminaryFlagEnum == PF_invalid)
+                    printUnknownValueWarningMessage("PreliminaryFlag", tmpString.c_str());
+            }
+            /* get and check CompletionFlag */
             CompletionFlagEnum = enumeratedValueToCompletionFlag(getStringValueFromElement(CompletionFlag, tmpString));
-            /* check CompletionFlag */
             if (CompletionFlagEnum == CF_invalid)
                 printUnknownValueWarningMessage("CompletionFlag", tmpString.c_str());
+            /* get and check VerificationFlag / VerifyingObserverSequence */
             VerificationFlagEnum = enumeratedValueToVerificationFlag(getStringValueFromElement(VerificationFlag, tmpString));
-            /* check VerificationFlag and VerifyingObserverSequence */
             if (VerificationFlagEnum == VF_invalid)
                 printUnknownValueWarningMessage("VerificationFlag", tmpString.c_str());
             else if (VerificationFlagEnum == VF_Verified)
@@ -541,13 +556,15 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         /* Key Object Selection Documents do not contain the SR General Document Module */
         if (getDocumentType() != DT_KeyObjectDoc)
         {
+            if (!PreliminaryFlag.isEmpty())             /* optional */
+                addElementToDataset(result, dataset, new DcmCodeString(PreliminaryFlag));
             addElementToDataset(result, dataset, new DcmCodeString(CompletionFlag));
             if (!CompletionFlagDescription.isEmpty())   /* optional */
                 addElementToDataset(result, dataset, new DcmLongString(CompletionFlagDescription));
             addElementToDataset(result, dataset, new DcmCodeString(VerificationFlag));
-            if (VerifyingObserver.card() > 0)                /* optional */
+            if (VerifyingObserver.card() > 0)           /* optional */
                 addElementToDataset(result, dataset, new DcmSequenceOfItems(VerifyingObserver));
-            PredecessorDocuments.write(dataset);  /* optional */
+            PredecessorDocuments.write(dataset);        /* optional */
             /* always write empty sequence since not yet fully supported */
             PerformedProcedureCode.clear();
             addElementToDataset(result, dataset, new DcmSequenceOfItems(PerformedProcedureCode));
@@ -872,7 +889,14 @@ OFCondition DSRDocument::readXMLDocumentData(const DSRXMLDocument &doc,
         {
             /* check for known element tags
                (Key Object Selection Documents do not contain the SR Document General Module) */
-            if ((documentType != DT_KeyObjectDoc) && doc.matchNode(cursor, "completion"))
+            if ((documentType != DT_KeyObjectDoc) && doc.matchNode(cursor, "preliminary"))
+            {
+                /* Preliminary Flag */
+                PreliminaryFlagEnum = enumeratedValueToPreliminaryFlag(doc.getStringFromAttribute(cursor, tmpString, "flag"));
+                if (PreliminaryFlagEnum == PF_invalid)
+                    printUnknownValueWarningMessage("PreliminaryFlag", tmpString.c_str());
+            }
+            else if ((documentType != DT_KeyObjectDoc) && doc.matchNode(cursor, "completion"))
             {
                 /* Completion Flag */
                 CompletionFlagEnum = enumeratedValueToCompletionFlag(doc.getStringFromAttribute(cursor, tmpString, "flag"));
@@ -1140,11 +1164,13 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         stream << "<document>" << OFendl;
         if (getDocumentType() != DT_KeyObjectDoc)
         {
-            stream << "<completion flag=\"" << completionFlagToEnumeratedValue(CompletionFlagEnum) << "\">" << OFendl;
+            if (!PreliminaryFlag.isEmpty())
+                stream << "<preliminary flag=\"" << getStringValueFromElement(PreliminaryFlag, tmpString) << "\"/>" << OFendl;
+            stream << "<completion flag=\"" << getStringValueFromElement(CompletionFlag, tmpString) << "\">" << OFendl;
             writeStringFromElementToXML(stream, CompletionFlagDescription, "description", (flags & XF_writeEmptyTags) > 0);
             stream << "</completion>" << OFendl;
 
-            stream << "<verification flag=\"" << verificationFlagToEnumeratedValue(VerificationFlagEnum) << "\">" << OFendl;
+            stream << "<verification flag=\"" << getStringValueFromElement(VerificationFlag, tmpString) << "\">" << OFendl;
             const size_t obsCount = getNumberOfVerifyingObservers();
             for (size_t i = 1; i <= obsCount; i++)
             {
@@ -1462,10 +1488,18 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
             }
             if (getDocumentType() != DT_KeyObjectDoc)
             {
+                /* preliminary flag */
+                if (!PreliminaryFlag.isEmpty())
+                {
+                    stream << "<tr>" << OFendl;
+                    stream << "<td><b>Preliminary Flag:</b></td>" << OFendl;
+                    stream << "<td>" << getStringValueFromElement(PreliminaryFlag, tmpString) << "</td>" << OFendl;
+                    stream << "</tr>" << OFendl;
+                }
                 /* completion flag */
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Completion Flag:</b></td>" << OFendl;
-                stream << "<td>" << completionFlagToEnumeratedValue(CompletionFlagEnum) << "</td>" << OFendl;
+                stream << "<td>" << getStringValueFromElement(CompletionFlag, tmpString) << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
                 /* completion flag description */
                 if (!CompletionFlagDescription.isEmpty())
@@ -1498,7 +1532,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 /* verification flag */
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Verification Flag:</b></td>" << OFendl;
-                stream << "<td>" << verificationFlagToEnumeratedValue(VerificationFlagEnum) << "</td>" << OFendl;
+                stream << "<td>" << getStringValueFromElement(VerificationFlag, tmpString) << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
                 /* verifying observer */
                 const size_t obsCount = getNumberOfVerifyingObservers();
@@ -1625,6 +1659,12 @@ OFCondition DSRDocument::setSpecificCharacterSetType(const E_CharacterSet charac
 {
     SpecificCharacterSetEnum = characterSet;
     return SpecificCharacterSet.putString(characterSetToDefinedTerm(SpecificCharacterSetEnum));
+}
+
+
+DSRTypes::E_PreliminaryFlag DSRDocument::getPreliminaryFlag() const
+{
+    return PreliminaryFlagEnum;
 }
 
 
@@ -2087,13 +2127,32 @@ OFCondition DSRDocument::setSpecificCharacterSet(const OFString &value)
 }
 
 
+OFCondition DSRDocument::setPreliminaryFlag(const E_PreliminaryFlag flag)
+{
+    OFCondition result = EC_IllegalCall;
+    /* not applicable to Key Object Selection Documents */
+    if (getDocumentType() != DT_KeyObjectDoc)
+    {
+        PreliminaryFlagEnum = flag;
+        result = EC_Normal;
+    }
+    return result;
+}
+
+
 OFCondition DSRDocument::setCompletionFlagDescription(const OFString &value)
 {
-    OFCondition result = EC_Normal;
-    if (!value.empty())
-        result = CompletionFlagDescription.putString(value.c_str());
-    else
-        CompletionFlagDescription.clear();
+    OFCondition result = EC_IllegalCall;
+    /* not applicable to Key Object Selection Documents */
+    if (getDocumentType() != DT_KeyObjectDoc)
+    {
+        if (value.empty())
+        {
+            CompletionFlagDescription.clear();
+            result = EC_Normal;
+        } else
+            result = CompletionFlagDescription.putString(value.c_str());
+    }
     return result;
 }
 
@@ -2325,14 +2384,18 @@ OFCondition DSRDocument::completeDocument()
 OFCondition DSRDocument::completeDocument(const OFString &description)
 {
     OFCondition result = EC_IllegalCall;
-    /* if document is not already completed */
-    if ((CompletionFlagEnum != CF_Complete) && (getDocumentType() != DT_KeyObjectDoc))
+    /* not applicable to Key Object Selection Documents */
+    if (getDocumentType() != DT_KeyObjectDoc)
     {
-        /* completed for now and ever */
-        CompletionFlagEnum = CF_Complete;
-        /* completion flag description */
-        setCompletionFlagDescription(description);
-        result = EC_Normal;
+        /* if document is not already completed */
+        if (CompletionFlagEnum != CF_Complete)
+        {
+            /* completed for now and ever */
+            CompletionFlagEnum = CF_Complete;
+            /* completion flag description */
+            setCompletionFlagDescription(description);
+            result = EC_Normal;
+        }
     }
     return result;
 }
@@ -2370,40 +2433,44 @@ OFCondition DSRDocument::verifyDocument(const OFString &observerName,
                                         const OFString &dateTime)
 {
     OFCondition result = EC_IllegalCall;
-    /* verify completed documents only */
-    if ((CompletionFlagEnum == CF_Complete) && (getDocumentType() != DT_KeyObjectDoc))
+    /* not applicable to Key Object Selection Documents */
+    if (getDocumentType() != DT_KeyObjectDoc)
     {
-        /* empty strings are not allowed (type 1 attributes) */
-        if (!observerName.empty() && !organization.empty())
+        /* verify completed documents only */
+        if (CompletionFlagEnum == CF_Complete)
         {
-            DcmItem *ditem = new DcmItem();
-            if (ditem != NULL)
+            /* empty strings are not allowed (type 1 attributes) */
+            if (!observerName.empty() && !organization.empty())
             {
-                /* write VerifyingObserverName */
-                putStringValueToDataset(*ditem, DCM_VerifyingObserverName, observerName);
-                /* write VerifyingObserverIdentificationCodeSequence (might be empty, type 2) */
-                observerCode.writeSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence);
-                /* write VerifyingOrganization */
-                putStringValueToDataset(*ditem, DCM_VerifyingOrganization, organization);
-                /* write VerificationDateTime */
-                if (dateTime.empty())
+                DcmItem *ditem = new DcmItem();
+                if (ditem != NULL)
                 {
-                    OFString tmpString;
-                    currentDateTime(tmpString);
-                    putStringValueToDataset(*ditem, DCM_VerificationDateTime, tmpString);
+                    /* write VerifyingObserverName */
+                    putStringValueToDataset(*ditem, DCM_VerifyingObserverName, observerName);
+                    /* write VerifyingObserverIdentificationCodeSequence (might be empty, type 2) */
+                    observerCode.writeSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence);
+                    /* write VerifyingOrganization */
+                    putStringValueToDataset(*ditem, DCM_VerifyingOrganization, organization);
+                    /* write VerificationDateTime */
+                    if (dateTime.empty())
+                    {
+                        OFString tmpString;
+                        currentDateTime(tmpString);
+                        putStringValueToDataset(*ditem, DCM_VerificationDateTime, tmpString);
+                    } else
+                        putStringValueToDataset(*ditem, DCM_VerificationDateTime, dateTime);
+                    /* insert items into sequence */
+                    VerifyingObserver.insert(ditem);
+                    /* set VerificationFlag to VERIFIED */
+                    VerificationFlagEnum = VF_Verified;
+                    /* reset FinalizedFlag */
+                    FinalizedFlag = OFFalse;
+                    result = EC_Normal;
                 } else
-                    putStringValueToDataset(*ditem, DCM_VerificationDateTime, dateTime);
-                /* insert items into sequence */
-                VerifyingObserver.insert(ditem);
-                /* set VerificationFlag to VERIFIED */
-                VerificationFlagEnum = VF_Verified;
-                /* reset FinalizedFlag */
-                FinalizedFlag = OFFalse;
-                result = EC_Normal;
+                    result = EC_MemoryExhausted;
             } else
-                result = EC_MemoryExhausted;
-        } else
-            result = EC_IllegalParameter;
+                result = EC_IllegalParameter;
+        }
     }
     return result;
 }
@@ -2478,7 +2545,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
     }
     if (getDocumentType() != DT_KeyObjectDoc)
     {
-         /* check and adjust completion flag if required */
+        /* set preliminary flag */
+        PreliminaryFlag.putString(preliminaryFlagToEnumeratedValue(PreliminaryFlagEnum));
+        /* check and adjust completion flag if required */
         if (CompletionFlagEnum == CF_invalid)
             CompletionFlagEnum = CF_Partial;
         CompletionFlag.putString(completionFlagToEnumeratedValue(CompletionFlagEnum));
@@ -2493,6 +2562,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.70  2010-09-29 10:07:41  joergr
+ *  Added support for the recently introduced, optional PreliminaryFlag.
+ *
  *  Revision 1.69  2010-09-29 08:32:26  joergr
  *  Used more specific "moduleName" for getAndCheckElementFromDataset() and
  *  checkElementValue().

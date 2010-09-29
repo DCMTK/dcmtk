@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.29 (riesmeier)
 
+- Added support for the recently introduced, optional PreliminaryFlag.
+  Affects: dcmsr/data/dsr2xml.xsd
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrtypes.cc
+
 - Used more specific "moduleName" for getAndCheckElementFromDataset() and
   checkElementValue().
   Affects: dcmsr/libsrc/dsrcsidl.cc

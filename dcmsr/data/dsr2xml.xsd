@@ -147,6 +147,11 @@
 
   <xsd:complexType name="Document">
     <xsd:sequence>
+      <xsd:element name="preliminary" minOccurs="0">
+        <xsd:complexType>
+          <xsd:attribute name="flag" type="dsr:PreliminaryFlag" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
       <xsd:element name="completion" minOccurs="0">
         <!-- made "completion" optional to match 'KO', too -->
         <xsd:complexType>
@@ -699,6 +704,13 @@
       <xsd:enumeration value="SAMPLE POSITION"/>
       <xsd:enumeration value="TIME OFFSET"/>
       <xsd:enumeration value="DATETIME"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="PreliminaryFlag">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PRELIMINARY"/>
+      <xsd:enumeration value="FINAL"/>
     </xsd:restriction>
   </xsd:simpleType>
 

@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-28 16:26:43 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2010-09-29 10:07:12 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,6 +206,12 @@ class DSRDocument
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setSpecificCharacterSetType(const E_CharacterSet characterSet);
+
+    /** get document preliminary flag.
+     *  Not applicable to Key Object Selection Documents.
+     ** @return preliminary flag (might be PF_invalid if not specified)
+     */
+    E_PreliminaryFlag getPreliminaryFlag() const;
 
     /** get document completion flag.
      *  Not applicable to Key Object Selection Documents.
@@ -672,9 +678,17 @@ class DSRDocument
      */
     OFCondition setSpecificCharacterSet(const OFString &value);
 
+    /** set document preliminary flag.
+     *  According to the DICOM standard, the concept of "completeness" is independent of the
+     *  concept of "preliminary" or "final".  Therefore, this flag can be specified separately.
+     ** @param  flag  preliminary flag to be set (use PF_invalid to omit this optional )
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setPreliminaryFlag(const E_PreliminaryFlag flag);
+
     /** set document completion flag description.
      *  The description can be removed from the DICOM dataset (type 3) by setting an empty
-     *  string.
+     *  string.  Not applicable to Key Object Selection Documents.
      ** @param  value  explanation of the value set for completion flag (optional, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -872,7 +886,7 @@ class DSRDocument
      *  the verification flag is set to UNVERIFIED, the completion flag is set to PARTIAL
      *  (i.e. not complete), the completion flag description is deleted, all digital
      *  signatures contained in the document tree are deleted and the finalized flag is
-     *  reset (OFFalse).
+     *  reset (OFFalse).  The preliminary flag is not modified by this method.
      *  Not applicable to Key Object Selection Documents.
      *  @param clearList clear list of predecessor documents before adding the current
      *    document if OFTrue. Append current document to existing list otherwise.
@@ -894,8 +908,8 @@ class DSRDocument
      *  The completion flag description can be modified independently from the flag by means
      *  of the method setCompletionFlagDescription() - see above.
      *  Not applicable to Key Object Selection Documents.
-     ** @param  description  explanation of the value set for completion flag. (optional, see
-     *                       previous method, VR=LO)
+     ** @param  description  explanation of the value set for completion flag.
+     *                       (optional, see previous method, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition completeDocument(const OFString &description);
@@ -979,8 +993,9 @@ class DSRDocument
      *      document management functions do reset the flag (i.e. set the FinalizedFlag to OFFalse),
      *      other methods (e.g. setXXX) do not change the flag though the state of the document is
      *      not finalized any more after they have been called.
-     *  Not applicable to Key Object Selection Documents since there's no Completion Flag in this
-     *  type of SR document.
+     *  Not applicable to Key Object Selection Documents since there's no completion flag in this
+     *  type of SR document.  Please note that this method has nothing to do with the preliminary
+     *  flag.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition finalizeDocument();
@@ -1100,6 +1115,8 @@ class DSRDocument
 
     /// flag indicating whether is document is finalized or not
     OFBool             FinalizedFlag;
+    /// enumerated value: preliminary, final
+    E_PreliminaryFlag  PreliminaryFlagEnum;
     /// enumerated value: partial, complete
     E_CompletionFlag   CompletionFlagEnum;
     /// enumerated value: unverified, verified
@@ -1195,6 +1212,8 @@ class DSRDocument
 
     /// Instance Number: (IS, 1, 1)
     DcmIntegerString    InstanceNumber;
+    /// Preliminary Flag: (CS, 1, 3)
+    DcmCodeString       PreliminaryFlag;
     /// Completion Flag: (CS, 1, 1)
     DcmCodeString       CompletionFlag;
     /// Completion Flag Description: (LO, 1, 3)
@@ -1233,6 +1252,9 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.50  2010-09-29 10:07:12  joergr
+ *  Added support for the recently introduced, optional PreliminaryFlag.
+ *
  *  Revision 1.49  2010-09-28 16:26:43  joergr
  *  Added support for Enhanced General Equipment Module which is required for
  *  both X-Ray Radiation Dose SR and Colon CAD SR.
