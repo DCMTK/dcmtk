@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.29 (riesmeier)
+
+- Used more specific "moduleName" for getAndCheckElementFromDataset() and
+  checkElementValue().
+  Affects: dcmsr/libsrc/dsrcsidl.cc
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrreftn.cc
+           dcmsr/libsrc/dsrsoprf.cc
+
 **** Changes from 2010.09.28 (riesmeier)
 
 - Added support for Enhanced General Equipment Module which is required for

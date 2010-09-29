@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 15:29:12 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2010-09-29 08:32:26 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -711,7 +711,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                     if (flags & RF_showCurrentlyProcessedItem)
                         DCMSR_INFO("Processing content item " << location);
                     /* read RelationshipType */
-                    result = getAndCheckStringValueFromDataset(*ditem, DCM_RelationshipType, tmpString, "1", "1");
+                    result = getAndCheckStringValueFromDataset(*ditem, DCM_RelationshipType, tmpString, "1", "1", "content item");
                     if (result.good() || (flags & RF_acceptUnknownRelationshipType))
                     {
                         relationshipType = definedTermToRelationshipType(tmpString);
@@ -724,7 +724,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                         }
                         /* check for by-reference relationship */
                         DcmUnsignedLong referencedContentItemIdentifier(DCM_ReferencedContentItemIdentifier);
-                        if (getAndCheckElementFromDataset(*ditem, referencedContentItemIdentifier, "1-n", "1C").good())
+                        if (getAndCheckElementFromDataset(*ditem, referencedContentItemIdentifier, "1-n", "1C", "content item").good())
                         {
                             /* create new node (by-reference, no constraint checker required) */
                             result = createAndAppendNewNode(node, relationshipType, VT_byReference);
@@ -736,7 +736,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                             }
                         } else {
                             /* read ValueType (from DocumentContentMacro) - required to create new node */
-                            result = getAndCheckStringValueFromDataset(*ditem, DCM_ValueType, tmpString, "1", "1");
+                            result = getAndCheckStringValueFromDataset(*ditem, DCM_ValueType, tmpString, "1", "1", "content item");
                             if (result.good())
                             {
                                 /* read by-value relationship */
@@ -1123,6 +1123,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.53  2010-09-29 08:32:26  joergr
+ *  Used more specific "moduleName" for getAndCheckElementFromDataset() and
+ *  checkElementValue().
+ *
  *  Revision 1.52  2010-08-09 15:29:12  joergr
  *  Made sure that no NULL pointer is passed to the OFString constructor.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-28 16:25:49 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Update Date:      $Date: 2010-09-29 08:32:26 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -296,7 +296,7 @@ OFCondition DSRDocument::checkDatasetForReading(DcmItem &dataset,
     DcmUniqueIdentifier sopClassUID(DCM_SOPClassUID);
     DcmCodeString modality(DCM_Modality);
     /* check SOP class UID */
-    result = getAndCheckElementFromDataset(dataset, sopClassUID, "1", "1");
+    result = getAndCheckElementFromDataset(dataset, sopClassUID, "1", "1", "SOPCommonModule");
     if (result.good())
     {
         documentType = sopClassUIDToDocumentType(getStringValueFromElement(sopClassUID, tmpString));
@@ -317,7 +317,10 @@ OFCondition DSRDocument::checkDatasetForReading(DcmItem &dataset,
     /* check modality */
     if (result.good())
     {
-        result = getAndCheckElementFromDataset(dataset, modality, "1", "1");
+        if (documentType == DT_KeyObjectDoc)
+            result = getAndCheckElementFromDataset(dataset, modality, "1", "1", "KeyObjectDocumentSeriesModule");
+        else
+            result = getAndCheckElementFromDataset(dataset, modality, "1", "1", "SRDocumentSeriesModule");
         if (result.good())
         {
             if (getStringValueFromElement(modality, tmpString) != documentTypeToModality(documentType))
@@ -350,72 +353,85 @@ OFCondition DSRDocument::read(DcmItem &dataset,
 
         // --- SOP Common Module ---
         getElementFromDataset(dataset, SOPClassUID);   /* already checked */
-        getAndCheckElementFromDataset(dataset, SOPInstanceUID, "1", "1");
-        getAndCheckElementFromDataset(dataset, SpecificCharacterSet, "1-n", "1C");
+        getAndCheckElementFromDataset(dataset, SOPInstanceUID, "1", "1", "SOPCommonModule");
+        getAndCheckElementFromDataset(dataset, SpecificCharacterSet, "1-n", "1C", "SOPCommonModule");
         if (SpecificCharacterSet.getVM() > 1)
             DCMSR_WARN("Multiple values for Specific Character Set are not supported");
-        getAndCheckElementFromDataset(dataset, InstanceCreationDate, "1", "3");
-        getAndCheckElementFromDataset(dataset, InstanceCreationTime, "1", "3");
-        getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3");
+        getAndCheckElementFromDataset(dataset, InstanceCreationDate, "1", "3", "SOPCommonModule");
+        getAndCheckElementFromDataset(dataset, InstanceCreationTime, "1", "3", "SOPCommonModule");
+        getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3", "SOPCommonModule");
         CodingSchemeIdentification.read(dataset);
 
         // --- General Study Module ---
-        getAndCheckElementFromDataset(dataset, StudyInstanceUID, "1", "1");
-        getAndCheckElementFromDataset(dataset, StudyDate, "1", "2");
-        getAndCheckElementFromDataset(dataset, StudyTime, "1", "2");
-        getAndCheckElementFromDataset(dataset, ReferringPhysicianName, "1", "2");
-        getAndCheckElementFromDataset(dataset, StudyID, "1", "2");
-        getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2");
-        getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3");
+        getAndCheckElementFromDataset(dataset, StudyInstanceUID, "1", "1", "GeneralStudyModule");
+        getAndCheckElementFromDataset(dataset, StudyDate, "1", "2", "GeneralStudyModule");
+        getAndCheckElementFromDataset(dataset, StudyTime, "1", "2", "GeneralStudyModule");
+        getAndCheckElementFromDataset(dataset, ReferringPhysicianName, "1", "2", "GeneralStudyModule");
+        getAndCheckElementFromDataset(dataset, StudyID, "1", "2", "GeneralStudyModule");
+        getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", "GeneralStudyModule");
+        getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3", "GeneralStudyModule");
 
         // --- Patient Module ---
-        getAndCheckElementFromDataset(dataset, PatientName, "1", "2");
-        getAndCheckElementFromDataset(dataset, PatientID, "1", "2");
-        getAndCheckElementFromDataset(dataset, PatientBirthDate, "1", "2");
-        getAndCheckElementFromDataset(dataset, PatientSex, "1", "2");
+        getAndCheckElementFromDataset(dataset, PatientName, "1", "2", "PatientModule");
+        getAndCheckElementFromDataset(dataset, PatientID, "1", "2", "PatientModule");
+        getAndCheckElementFromDataset(dataset, PatientBirthDate, "1", "2", "PatientModule");
+        getAndCheckElementFromDataset(dataset, PatientSex, "1", "2", "PatientModule");
 
         if (requiresEnhancedEquipmentModule(documentType))
         {
             // --- Enhanced General Equipment Module ---
-            getAndCheckElementFromDataset(dataset, Manufacturer, "1", "1");
-            getAndCheckElementFromDataset(dataset, ManufacturerModelName, "1", "1");
-            getAndCheckElementFromDataset(dataset, DeviceSerialNumber, "1", "1");
-            getAndCheckElementFromDataset(dataset, SoftwareVersions, "1-n", "1");
+            getAndCheckElementFromDataset(dataset, Manufacturer, "1", "1", "EnhancedGeneralEquipmentModule");
+            getAndCheckElementFromDataset(dataset, ManufacturerModelName, "1", "1", "EnhancedGeneralEquipmentModule");
+            getAndCheckElementFromDataset(dataset, DeviceSerialNumber, "1", "1", "EnhancedGeneralEquipmentModule");
+            getAndCheckElementFromDataset(dataset, SoftwareVersions, "1-n", "1", "EnhancedGeneralEquipmentModule");
         } else {
             // --- General Equipment Module ---
-            getAndCheckElementFromDataset(dataset, Manufacturer, "1", "2");
-            getAndCheckElementFromDataset(dataset, ManufacturerModelName, "1", "3");
-            getAndCheckElementFromDataset(dataset, DeviceSerialNumber, "1", "3");
-            getAndCheckElementFromDataset(dataset, SoftwareVersions, "1-n", "3");
+            getAndCheckElementFromDataset(dataset, Manufacturer, "1", "2", "GeneralEquipmentModule");
+            getAndCheckElementFromDataset(dataset, ManufacturerModelName, "1", "3", "GeneralEquipmentModule");
+            getAndCheckElementFromDataset(dataset, DeviceSerialNumber, "1", "3", "GeneralEquipmentModule");
+            getAndCheckElementFromDataset(dataset, SoftwareVersions, "1-n", "3", "GeneralEquipmentModule");
         }
 
-        // --- SR Document Series Module ---
+        // --- SR Document Series Module / Key Object Document Series Module ---
         getElementFromDataset(dataset, Modality);   /* already checked */
-        getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1");
-        getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1");
-        getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3");
-        /* need to check sequence in two steps (avoids additional getAndCheck... method) */
-        searchCond = getElementFromDataset(dataset, ReferencedPerformedProcedureStep);
-        checkElementValue(ReferencedPerformedProcedureStep, "1", "2", searchCond);
+        if (documentType == DT_KeyObjectDoc)
+        {
+            getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1", "KeyObjectDocumentSeriesModule");
+            getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1", "KeyObjectDocumentSeriesModule");
+            getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3", "KeyObjectDocumentSeriesModule");
+            /* need to check sequence in two steps (avoids additional getAndCheck... method) */
+            searchCond = getElementFromDataset(dataset, ReferencedPerformedProcedureStep);
+            checkElementValue(ReferencedPerformedProcedureStep, "1", "2", searchCond, "KeyObjectDocumentSeriesModule");
+        } else {
+            getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1", "SRDocumentSeriesModule");
+            getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1", "SRDocumentSeriesModule");
+            getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3", "SRDocumentSeriesModule");
+            /* need to check sequence in two steps (avoids additional getAndCheck... method) */
+            searchCond = getElementFromDataset(dataset, ReferencedPerformedProcedureStep);
+            checkElementValue(ReferencedPerformedProcedureStep, "1", "2", searchCond, "SRDocumentSeriesModule");
+        }
         /* remove possible signature sequences */
         removeAttributeFromSequence(ReferencedPerformedProcedureStep, DCM_MACParametersSequence);
         removeAttributeFromSequence(ReferencedPerformedProcedureStep, DCM_DigitalSignaturesSequence);
 
-        // --- SR Document General Module (M) ---
-        getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "1");
-        getAndCheckElementFromDataset(dataset, ContentDate, "1", "1");
-        getAndCheckElementFromDataset(dataset, ContentTime, "1", "1");
-        /* Key Object Selection Documents do not contain the SR Document General Module */
-        if (documentType != DT_KeyObjectDoc)
+        // --- SR Document General Module / Key Object Document Module ---
+        if (documentType == DT_KeyObjectDoc)
         {
-            getAndCheckElementFromDataset(dataset, CompletionFlag, "1", "1");
-            getAndCheckElementFromDataset(dataset, CompletionFlagDescription, "1", "3");
-            getAndCheckElementFromDataset(dataset, VerificationFlag, "1", "1");
+            getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "1", "KeyObjectDocumentModule");
+            getAndCheckElementFromDataset(dataset, ContentDate, "1", "1", "KeyObjectDocumentModule");
+            getAndCheckElementFromDataset(dataset, ContentTime, "1", "1", "KeyObjectDocumentModule");
+        } else {
+            getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "1", "SRDocumentGeneralModule");
+            getAndCheckElementFromDataset(dataset, ContentDate, "1", "1", "SRDocumentGeneralModule");
+            getAndCheckElementFromDataset(dataset, ContentTime, "1", "1", "SRDocumentGeneralModule");
+            getAndCheckElementFromDataset(dataset, CompletionFlag, "1", "1", "SRDocumentGeneralModule");
+            getAndCheckElementFromDataset(dataset, CompletionFlagDescription, "1", "3", "SRDocumentGeneralModule");
+            getAndCheckElementFromDataset(dataset, VerificationFlag, "1", "1", "SRDocumentGeneralModule");
             obsSearchCond = getElementFromDataset(dataset, VerifyingObserver);
             PredecessorDocuments.read(dataset);
             /* need to check sequence in two steps (avoids additional getAndCheck... method) */
             searchCond = getElementFromDataset(dataset, PerformedProcedureCode);
-            checkElementValue(PerformedProcedureCode, "1", "2", searchCond);
+            checkElementValue(PerformedProcedureCode, "1", "2", searchCond, "SRDocumentGeneralModule");
             PertinentOtherEvidence.read(dataset);
         }
         IdenticalDocuments.read(dataset);
@@ -440,7 +456,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             if (VerificationFlagEnum == VF_invalid)
                 printUnknownValueWarningMessage("VerificationFlag", tmpString.c_str());
             else if (VerificationFlagEnum == VF_Verified)
-                checkElementValue(VerifyingObserver, "1-n", "1", obsSearchCond);
+                checkElementValue(VerifyingObserver, "1-n", "1", obsSearchCond, "SRDocumentGeneralModule");
         }
         SpecificCharacterSetEnum = definedTermToCharacterSet(getStringValueFromElement(SpecificCharacterSet, tmpString));
         /* check SpecificCharacterSet */
@@ -518,7 +534,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         ReferencedPerformedProcedureStep.clear();
         addElementToDataset(result, dataset, new DcmSequenceOfItems(ReferencedPerformedProcedureStep));
 
-        // --- SR Document General Module (M) ---
+        // --- SR Document General Module ---
         addElementToDataset(result, dataset, new DcmIntegerString(InstanceNumber));
         addElementToDataset(result, dataset, new DcmDate(ContentDate));
         addElementToDataset(result, dataset, new DcmTime(ContentTime));
@@ -2477,6 +2493,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.69  2010-09-29 08:32:26  joergr
+ *  Used more specific "moduleName" for getAndCheckElementFromDataset() and
+ *  checkElementValue().
+ *
  *  Revision 1.68  2010-09-28 16:25:49  joergr
  *  Added support for Enhanced General Equipment Module which is required for
  *  both X-Ray Radiation Dose SR and Colon CAD SR.

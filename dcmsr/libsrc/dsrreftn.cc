@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRByReferenceTreeNode
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:51 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-29 08:32:26 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,7 +107,7 @@ OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset)
     ReferencedContentItem.clear();
     ReferencedNodeID = 0;
     /* read ReferencedContentItemIdentifier */
-    OFCondition result = getAndCheckElementFromDataset(dataset, delem, "1-n", "1C");
+    OFCondition result = getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", "content item");
     if (result.good())
     {
         /* create reference string from unsigned long values */
@@ -214,6 +214,10 @@ OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
+ *  Revision 1.19  2010-09-29 08:32:26  joergr
+ *  Used more specific "moduleName" for getAndCheckElementFromDataset() and
+ *  checkElementValue().
+ *
  *  Revision 1.18  2009-10-13 14:57:51  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

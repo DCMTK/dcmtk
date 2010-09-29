@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2009, OFFIS
+ *  Copyright (C) 2003-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:49:32 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2010-09-29 08:32:26 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset)
     /* first, check whether sequence is present and non-empty */
     DcmSequenceOfItems sequence(DCM_CodingSchemeIdentificationSequence);
     OFCondition result = getElementFromDataset(dataset, sequence);
-    checkElementValue(sequence, "1-n", "3", result);
+    checkElementValue(sequence, "1-n", "3", result, "SOPCommonModule");
     if (result.good())
     {
         ItemStruct *item = NULL;
@@ -99,18 +99,18 @@ OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset)
             if (ditem != NULL)
             {
                 /* get the coding scheme designator */
-                if (getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeDesignator, codingSchemeDesignator, "1", "1").good())
+                if (getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeDesignator, codingSchemeDesignator, "1", "1", "CodingSchemeIdentificationSequence").good())
                 {
                     /* add new item to the list */
                     if (addItem(codingSchemeDesignator, item).good())
                     {
                         /* read additional information */
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeRegistry, item->CodingSchemeRegistry, "1", "1C");
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeUID, item->CodingSchemeUID, "1", "1C");
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeExternalID, item->CodingSchemeExternalID, "", "2C");
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeName, item->CodingSchemeName, "1", "3");
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeVersion, item->CodingSchemeVersion, "1", "3");
-                        getAndCheckStringValueFromDataset(*ditem, DCM_ResponsibleOrganization, item->ResponsibleOrganization, "1", "3");
+                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeRegistry, item->CodingSchemeRegistry, "1", "1C", "CodingSchemeIdentificationSequence");
+                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeUID, item->CodingSchemeUID, "1", "1C", "CodingSchemeIdentificationSequence");
+                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeExternalID, item->CodingSchemeExternalID, "1", "2C", "CodingSchemeIdentificationSequence");
+                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeName, item->CodingSchemeName, "1", "3", "CodingSchemeIdentificationSequence");
+                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeVersion, item->CodingSchemeVersion, "1", "3", "CodingSchemeIdentificationSequence");
+                        getAndCheckStringValueFromDataset(*ditem, DCM_ResponsibleOrganization, item->ResponsibleOrganization, "1", "3", "CodingSchemeIdentificationSequence");
                     }
                 }
             }
@@ -570,6 +570,10 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
+ *  Revision 1.16  2010-09-29 08:32:26  joergr
+ *  Used more specific "moduleName" for getAndCheckElementFromDataset() and
+ *  checkElementValue().
+ *
  *  Revision 1.15  2009-10-14 10:49:32  joergr
  *  Fixed minor issues in log output. Also updated copyright date (if required).
  *

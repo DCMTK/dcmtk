@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2009, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:49:32 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2010-09-29 08:32:26 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,9 +89,9 @@ size_t DSRSOPInstanceReferenceList::SeriesStruct::getNumberOfInstances() const
 OFCondition DSRSOPInstanceReferenceList::SeriesStruct::read(DcmItem &dataset)
 {
     /* first, read optional attributes on series level */
-    getAndCheckStringValueFromDataset(dataset, DCM_RetrieveAETitle, RetrieveAETitle, "1-n", "3");
-    getAndCheckStringValueFromDataset(dataset, DCM_StorageMediaFileSetID, StorageMediaFileSetID, "1", "3");
-    getAndCheckStringValueFromDataset(dataset, DCM_StorageMediaFileSetUID, StorageMediaFileSetUID, "1", "3");
+    getAndCheckStringValueFromDataset(dataset, DCM_RetrieveAETitle, RetrieveAETitle, "1-n", "3", "ReferencedSeriesSequence");
+    getAndCheckStringValueFromDataset(dataset, DCM_StorageMediaFileSetID, StorageMediaFileSetID, "1", "3", "ReferencedSeriesSequence");
+    getAndCheckStringValueFromDataset(dataset, DCM_StorageMediaFileSetUID, StorageMediaFileSetUID, "1", "3", "ReferencedSeriesSequence");
     /* then, check whether sequence is present and non-empty */
     DcmSequenceOfItems sequence(DCM_ReferencedSOPSequence);
     OFCondition result = getElementFromDataset(dataset, sequence);
@@ -106,8 +106,8 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::read(DcmItem &dataset)
             {
                 /* get the SOP class and SOP instance UID */
                 OFString sopClassUID, instanceUID;
-                if (getAndCheckStringValueFromDataset(*item, DCM_ReferencedSOPClassUID, sopClassUID, "1", "1").good() &&
-                    getAndCheckStringValueFromDataset(*item, DCM_ReferencedSOPInstanceUID, instanceUID, "1", "1").good())
+                if (getAndCheckStringValueFromDataset(*item, DCM_ReferencedSOPClassUID, sopClassUID, "1", "1", "ReferencedSOPSequence").good() &&
+                    getAndCheckStringValueFromDataset(*item, DCM_ReferencedSOPInstanceUID, instanceUID, "1", "1", "ReferencedSOPSequence").good())
                 {
                     /* check whether instance item already exists */
                     InstanceStruct *instance = gotoInstance(instanceUID);
@@ -430,7 +430,7 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::read(DcmItem &dataset)
             {
                 /* get the series instance UID */
                 OFString seriesUID;
-                if (getAndCheckStringValueFromDataset(*item, DCM_SeriesInstanceUID, seriesUID, "1", "1").good())
+                if (getAndCheckStringValueFromDataset(*item, DCM_SeriesInstanceUID, seriesUID, "1", "1", "ReferencedSeriesSequence").good())
                 {
                     /* check whether series item already exists,
                        because the internal structure is organized in a strictly hierarchical manner  */
@@ -797,6 +797,7 @@ OFCondition DSRSOPInstanceReferenceList::read(DcmItem &dataset)
     checkElementValue(sequence, "1-n", "1C", result);
     if (result.good())
     {
+        OFString sequenceName = DcmTag(SequenceTag).getTagName();
         /* iterate over all sequence items */
         for (unsigned long i = 0; i < sequence.card(); i++)
         {
@@ -805,7 +806,7 @@ OFCondition DSRSOPInstanceReferenceList::read(DcmItem &dataset)
             {
                 /* get the study instance UID */
                 OFString studyUID;
-                if (getAndCheckStringValueFromDataset(*item, DCM_StudyInstanceUID, studyUID, "1", "1").good())
+                if (getAndCheckStringValueFromDataset(*item, DCM_StudyInstanceUID, studyUID, "1", "1", sequenceName.c_str()).good())
                 {
                     /* check whether study item already exists,
                        because the internal structure is organized in a strictly hierarchical manner  */
@@ -1365,6 +1366,10 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFStrin
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
+ *  Revision 1.18  2010-09-29 08:32:26  joergr
+ *  Used more specific "moduleName" for getAndCheckElementFromDataset() and
+ *  checkElementValue().
+ *
  *  Revision 1.17  2009-10-14 10:49:32  joergr
  *  Fixed minor issues in log output. Also updated copyright date (if required).
  *
