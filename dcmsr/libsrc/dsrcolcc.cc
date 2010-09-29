@@ -23,8 +23,8 @@
  *    classes: DSRColonCadSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-28 14:07:29 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2010-09-29 16:32:56 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,8 +95,9 @@ OFBool DSRColonCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
                  (targetValueType == VT_UIDRef) || (targetValueType == VT_Composite);
     }
     /* row 3 of the table */
-    else if ((relationshipType == RT_hasAcqContext) && !byReference && (sourceValueType == VT_Image))
+    else if ((relationshipType == RT_hasAcqContext) && (sourceValueType == VT_Image))
     {
+        /* by-reference allowed */
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Date) ||
                  (targetValueType == VT_Time) || (targetValueType == VT_Num) || (targetValueType == VT_Container);
     }
@@ -123,9 +124,8 @@ OFBool DSRColonCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
                  (targetValueType == VT_Text);
     }
     /* row 7 of the table */
-    else if ((relationshipType == RT_selectedFrom) && (sourceValueType == VT_SCoord))
+    else if ((relationshipType == RT_selectedFrom) && !byReference && (sourceValueType == VT_SCoord))
     {
-        /* by-reference allowed */
         result = (targetValueType == VT_Image);
     }
     return result;
@@ -135,9 +135,11 @@ OFBool DSRColonCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcolcc.cc,v $
+ *  Revision 1.2  2010-09-29 16:32:56  joergr
+ *  Fixed wrong by-reference relationships in constraint checker for Colon CAD.
+ *
  *  Revision 1.1  2010-09-28 14:07:29  joergr
  *  Added support for Colon CAD SR which requires a new value type (SCOORD3D).
- *
  *
  *
  */

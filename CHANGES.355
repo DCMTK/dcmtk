@@ -34,6 +34,9 @@ Changes between releases are documented here.
 
 - Enhanced comments on attributes from Enhanced General Equipment Module.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+  
+- Fixed wrong by-reference relationships in constraint checker for Colon CAD.
+  Affects: dcmsr/libsrc/dsrcolcc.cc
 
 **** Changes from 2010.09.28 (riesmeier)
 
