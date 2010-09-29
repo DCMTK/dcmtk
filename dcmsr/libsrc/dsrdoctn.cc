@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-29 08:32:26 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2010-09-29 15:16:50 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -538,10 +538,10 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
     OFCondition result = EC_Normal;
     /* write digital signatures sequences (optional) */
     if (MACParameters.card() > 0)
-        addElementToDataset(result, dataset, new DcmSequenceOfItems(MACParameters));
+        addElementToDataset(result, dataset, new DcmSequenceOfItems(MACParameters), "1-n", "3", "SOPCommonModule");
     if (DigitalSignatures.card() > 0)
     {
-        addElementToDataset(result, dataset, new DcmSequenceOfItems(DigitalSignatures));
+        addElementToDataset(result, dataset, new DcmSequenceOfItems(DigitalSignatures), "1-n", "3", "SOPCommonModule");
         DCMSR_WARN("Writing possibly incorrect digital signature - same as read from dataset");
     }
     /* add to mark stack */
@@ -1123,6 +1123,9 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.54  2010-09-29 15:16:50  joergr
+ *  Enhanced checking and reporting of standard violations in write() methods.
+ *
  *  Revision 1.53  2010-09-29 08:32:26  joergr
  *  Used more specific "moduleName" for getAndCheckElementFromDataset() and
  *  checkElementValue().

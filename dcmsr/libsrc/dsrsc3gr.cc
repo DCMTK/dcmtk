@@ -23,8 +23,8 @@
  *    classes: DSRGraphicData3DList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-28 14:07:28 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2010-09-29 15:16:50 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,7 +156,7 @@ OFCondition DSRGraphicData3DList::write(DcmItem &dataset) const
     }
     /* add to dataset */
     if (result.good())
-        result = DSRTypes::addElementToDataset(result, dataset, new DcmFloatingPointSingle(delem));
+        result = DSRTypes::addElementToDataset(result, dataset, new DcmFloatingPointSingle(delem), "3-3n", "1", "SCOORD3D content item");
     return result;
 }
 
@@ -247,9 +247,11 @@ OFCondition DSRGraphicData3DList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsc3gr.cc,v $
+ *  Revision 1.2  2010-09-29 15:16:50  joergr
+ *  Enhanced checking and reporting of standard violations in write() methods.
+ *
  *  Revision 1.1  2010-09-28 14:07:28  joergr
  *  Added support for Colon CAD SR which requires a new value type (SCOORD3D).
- *
  *
  *
  */

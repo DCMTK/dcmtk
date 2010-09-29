@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-29 10:07:12 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2010-09-29 15:16:45 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1033,14 +1033,23 @@ class DSRTypes
 
     /** add given element to the dataset.
      *  The element is only added if 'result' is EC_Normal and the 'delem' pointer is not NULL.
-     ** @param  result   reference to status variable (checked before adding and updated afterwards!)
-     *  @param  dataset  reference to DICOM dataset to which the element should be added
-     *  @param  delem    pointer to DICOM element which should be added. deleted in case of error.
-     ** @return current value of 'result', EC_Normal if successful, an error code otherwise
+     *  @param  result      reference to status variable (checked before adding and updated afterwards!)
+     *  @param  dataset     reference to DICOM dataset to which the element should be added
+     *  @param  delem       pointer to DICOM element which should be added. deleted if not inserted.
+     *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
+     *                      (valid value: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                                    "3", "3-n", "3-3n", "4", "6", "16", "32"),
+     *                      interpreted as cardinality (number of items) for sequence attributes
+     *  @param  type        value type (valid value: "1", "2" or something else which is not checked)
+     *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
+     *  @return current value of 'result', EC_Normal if successful, an error code otherwise
      */
     static OFCondition addElementToDataset(OFCondition &result,
                                            DcmItem &dataset,
-                                           DcmElement *delem);
+                                           DcmElement *delem,
+                                           const OFString &vm,
+                                           const OFString &type,
+                                           const char *moduleName = NULL);
 
     /** remove given attribute from the sequence.
      *  All occurrences of the attribute in all items of the sequence are removed.
@@ -1285,6 +1294,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.62  2010-09-29 15:16:45  joergr
+ *  Enhanced checking and reporting of standard violations in write() methods.
+ *
  *  Revision 1.61  2010-09-29 10:07:12  joergr
  *  Added support for the recently introduced, optional PreliminaryFlag.
  *

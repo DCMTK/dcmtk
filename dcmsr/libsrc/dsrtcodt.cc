@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2008, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedDatetimeList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:51 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-29 15:16:51 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,7 +131,7 @@ OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset) const
     result = delem.putOFStringArray(tmpString);
     /* add to dataset */
     if (result.good())
-        result = DSRTypes::addElementToDataset(result, dataset, new DcmDateTime(delem));
+        result = DSRTypes::addElementToDataset(result, dataset, new DcmDateTime(delem), "1-n", "1", "TCOORD content item");
     return result;
 }
 
@@ -169,6 +169,9 @@ OFCondition DSRReferencedDatetimeList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.cc,v $
+ *  Revision 1.16  2010-09-29 15:16:51  joergr
+ *  Enhanced checking and reporting of standard violations in write() methods.
+ *
  *  Revision 1.15  2009-10-13 14:57:51  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

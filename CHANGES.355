@@ -3,6 +3,20 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.29 (riesmeier)
 
+- Enhanced checking and reporting of standard violations in write() methods.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrimgfr.cc
+           dcmsr/libsrc/dsrreftn.cc
+           dcmsr/libsrc/dsrsc3gr.cc
+           dcmsr/libsrc/dsrscogr.cc
+           dcmsr/libsrc/dsrtcodt.cc
+           dcmsr/libsrc/dsrtcosp.cc
+           dcmsr/libsrc/dsrtcoto.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/dsrwavch.cc
+
 - Added support for the recently introduced, optional PreliminaryFlag.
   Affects: dcmsr/data/dsr2xml.xsd
            dcmsr/include/dcmtk/dcmsr/dsrdoc.h

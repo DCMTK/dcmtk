@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRGraphicDataList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:51 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-29 15:16:51 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,7 +145,7 @@ OFCondition DSRGraphicDataList::write(DcmItem &dataset) const
     }
     /* add to dataset */
     if (result.good())
-        result = DSRTypes::addElementToDataset(result, dataset, new DcmFloatingPointSingle(delem));
+        result = DSRTypes::addElementToDataset(result, dataset, new DcmFloatingPointSingle(delem), "2-2n", "1", "SCOORD content item");
     return result;
 }
 
@@ -222,6 +222,9 @@ OFCondition DSRGraphicDataList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
+ *  Revision 1.22  2010-09-29 15:16:51  joergr
+ *  Enhanced checking and reporting of standard violations in write() methods.
+ *
  *  Revision 1.21  2009-10-13 14:57:51  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

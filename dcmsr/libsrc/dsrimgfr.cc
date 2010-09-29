@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRImageFrameList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:51 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-29 15:16:50 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,7 +139,7 @@ OFCondition DSRImageFrameList::write(DcmItem &dataset) const
     result = delem.putOFStringArray(tmpString);
     /* add to dataset */
     if (result.good())
-        result = DSRTypes::addElementToDataset(result, dataset, new DcmIntegerString(delem));
+        result = DSRTypes::addElementToDataset(result, dataset, new DcmIntegerString(delem), "1-n", "1", "IMAGE content item");
     return result;
 }
 
@@ -179,6 +179,9 @@ OFCondition DSRImageFrameList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.cc,v $
+ *  Revision 1.18  2010-09-29 15:16:50  joergr
+ *  Enhanced checking and reporting of standard violations in write() methods.
+ *
  *  Revision 1.17  2009-10-13 14:57:51  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

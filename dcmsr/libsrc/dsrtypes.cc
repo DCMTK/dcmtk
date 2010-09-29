@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-29 10:07:41 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2010-09-29 15:16:51 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -778,14 +778,34 @@ OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 
 OFCondition DSRTypes::addElementToDataset(OFCondition &result,
                                           DcmItem &dataset,
-                                          DcmElement *delem)
+                                          DcmElement *delem,
+                                          const OFString &vm,
+                                          const OFString &type,
+                                          const char *moduleName)
 {
     if (delem != NULL)
     {
+        OFBool triedToInsert = OFFalse;
         if (result.good())
-            result = dataset.insert(delem, OFTrue /*replaceOld*/);
+        {
+            if ((type == "2") || !delem->isEmpty())
+            {
+                triedToInsert = OFTrue;
+                /* insert non-empty element or empty "type 2" element */
+                result = dataset.insert(delem, OFTrue /*replaceOld*/);
+                if (DCM_dcmsrGetLogger().isEnabledFor(OFLogger::WARN_LOG_LEVEL))
+                    checkElementValue(*delem, vm, type, result, moduleName);
+            }
+            else if (type == "1")
+            {
+                /* empty element value not allowed for "type 1" */
+                result = SR_EC_InvalidValue;
+                if (DCM_dcmsrGetLogger().isEnabledFor(OFLogger::WARN_LOG_LEVEL))
+                    checkElementValue(*delem, vm, type, result, moduleName);
+            }
+        }
         /* delete element if not inserted into the dataset */
-        if (result.bad())
+        if (result.bad() || !triedToInsert)
             delete delem;
     } else
         result = EC_MemoryExhausted;
@@ -1545,6 +1565,9 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.68  2010-09-29 15:16:51  joergr
+ *  Enhanced checking and reporting of standard violations in write() methods.
+ *
  *  Revision 1.67  2010-09-29 10:07:41  joergr
  *  Added support for the recently introduced, optional PreliminaryFlag.
  *

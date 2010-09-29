@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-29 08:32:26 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2010-09-29 15:16:50 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,7 +107,7 @@ OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset)
     ReferencedContentItem.clear();
     ReferencedNodeID = 0;
     /* read ReferencedContentItemIdentifier */
-    OFCondition result = getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", "content item");
+    OFCondition result = getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", "by-reference relationship");
     if (result.good())
     {
         /* create reference string from unsigned long values */
@@ -151,7 +151,7 @@ OFCondition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset) const
             i++;
         } while (posEnd != OFString_npos);
         /* write ReferencedContentItemIdentifier */
-        addElementToDataset(result, dataset, new DcmUnsignedLong(delem));
+        addElementToDataset(result, dataset, new DcmUnsignedLong(delem), "1-n", "1", "by-reference relationship");
     }
     return result;
 }
@@ -214,6 +214,9 @@ OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
+ *  Revision 1.20  2010-09-29 15:16:50  joergr
+ *  Enhanced checking and reporting of standard violations in write() methods.
+ *
  *  Revision 1.19  2010-09-29 08:32:26  joergr
  *  Used more specific "moduleName" for getAndCheckElementFromDataset() and
  *  checkElementValue().

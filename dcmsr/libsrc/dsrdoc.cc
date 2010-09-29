@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-29 10:07:41 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Update Date:      $Date: 2010-09-29 15:16:50 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -499,80 +499,90 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         /* write general document attributes */
 
         // --- SOP Common Module ---
-        addElementToDataset(result, dataset, new DcmUniqueIdentifier(SOPClassUID));
-        addElementToDataset(result, dataset, new DcmUniqueIdentifier(SOPInstanceUID));
-        if (!SpecificCharacterSet.isEmpty())    /* optional */
-            addElementToDataset(result, dataset, new DcmCodeString(SpecificCharacterSet));
-        if (!InstanceCreationDate.isEmpty())    /* optional */
-            addElementToDataset(result, dataset, new DcmDate(InstanceCreationDate));
-        if (!InstanceCreationTime.isEmpty())    /* optional */
-            addElementToDataset(result, dataset, new DcmTime(InstanceCreationTime));
-        if (!InstanceCreatorUID.isEmpty())      /* optional */
-            addElementToDataset(result, dataset, new DcmUniqueIdentifier(InstanceCreatorUID));
+        addElementToDataset(result, dataset, new DcmUniqueIdentifier(SOPClassUID), "1", "1", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmUniqueIdentifier(SOPInstanceUID), "1", "1", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmCodeString(SpecificCharacterSet), "1-n", "1C", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmDate(InstanceCreationDate), "1", "3", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmTime(InstanceCreationTime), "1", "3", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmUniqueIdentifier(InstanceCreatorUID), "1", "3", "SOPCommonModule");
         CodingSchemeIdentification.write(dataset);
 
         // --- General Study Module ---
-        addElementToDataset(result, dataset, new DcmUniqueIdentifier(StudyInstanceUID));
-        addElementToDataset(result, dataset, new DcmDate(StudyDate));
-        addElementToDataset(result, dataset, new DcmTime(StudyTime));
-        addElementToDataset(result, dataset, new DcmPersonName(ReferringPhysicianName));
-        addElementToDataset(result, dataset, new DcmShortString(StudyID));
-        addElementToDataset(result, dataset, new DcmShortString(AccessionNumber));
-        if (!StudyDescription.isEmpty())     /* optional */
-            addElementToDataset(result, dataset, new DcmLongString(StudyDescription));
+        addElementToDataset(result, dataset, new DcmUniqueIdentifier(StudyInstanceUID), "1", "1", "GeneralStudyModule");
+        addElementToDataset(result, dataset, new DcmDate(StudyDate), "1", "2", "GeneralStudyModule");
+        addElementToDataset(result, dataset, new DcmTime(StudyTime), "1", "2", "GeneralStudyModule");
+        addElementToDataset(result, dataset, new DcmPersonName(ReferringPhysicianName), "1", "2", "GeneralStudyModule");
+        addElementToDataset(result, dataset, new DcmShortString(StudyID), "1", "2", "GeneralStudyModule");
+        addElementToDataset(result, dataset, new DcmShortString(AccessionNumber), "1", "2", "GeneralStudyModule");
+        addElementToDataset(result, dataset, new DcmLongString(StudyDescription), "1", "3", "GeneralStudyModule");
 
         // --- Patient Module ---
-        addElementToDataset(result, dataset, new DcmPersonName(PatientName));
-        addElementToDataset(result, dataset, new DcmLongString(PatientID));
-        addElementToDataset(result, dataset, new DcmDate(PatientBirthDate));
-        addElementToDataset(result, dataset, new DcmCodeString(PatientSex));
+        addElementToDataset(result, dataset, new DcmPersonName(PatientName), "1", "2", "PatientModule");
+        addElementToDataset(result, dataset, new DcmLongString(PatientID), "1", "2", "PatientModule");
+        addElementToDataset(result, dataset, new DcmDate(PatientBirthDate), "1", "2", "PatientModule");
+        addElementToDataset(result, dataset, new DcmCodeString(PatientSex), "1", "2", "PatientModule");
 
-        // --- General Equipment Module ---
-        addElementToDataset(result, dataset, new DcmLongString(Manufacturer));
-
-        // --- Enhanced General Equipment Module ---
-        const OFBool enhancedEquipment = requiresEnhancedEquipmentModule(getDocumentType());
-        if (enhancedEquipment || !ManufacturerModelName.isEmpty())   /* optional */
-            addElementToDataset(result, dataset, new DcmLongString(ManufacturerModelName));
-        if (enhancedEquipment || !DeviceSerialNumber.isEmpty())      /* optional */
-            addElementToDataset(result, dataset, new DcmLongString(DeviceSerialNumber));
-        if (enhancedEquipment || !SoftwareVersions.isEmpty())        /* optional */
-            addElementToDataset(result, dataset, new DcmLongString(SoftwareVersions));
-
-        // --- SR Document Series Module ---
-        addElementToDataset(result, dataset, new DcmCodeString(Modality));
-        addElementToDataset(result, dataset, new DcmUniqueIdentifier(SeriesInstanceUID));
-        addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber));
-        if (!SeriesDescription.isEmpty())    /* optional */
-            addElementToDataset(result, dataset, new DcmLongString(SeriesDescription));
-        /* always write empty sequence since not yet fully supported */
-        ReferencedPerformedProcedureStep.clear();
-        addElementToDataset(result, dataset, new DcmSequenceOfItems(ReferencedPerformedProcedureStep));
-
-        // --- SR Document General Module ---
-        addElementToDataset(result, dataset, new DcmIntegerString(InstanceNumber));
-        addElementToDataset(result, dataset, new DcmDate(ContentDate));
-        addElementToDataset(result, dataset, new DcmTime(ContentTime));
-        /* Key Object Selection Documents do not contain the SR General Document Module */
-        if (getDocumentType() != DT_KeyObjectDoc)
+        if (requiresEnhancedEquipmentModule(getDocumentType()))
         {
-            if (!PreliminaryFlag.isEmpty())             /* optional */
-                addElementToDataset(result, dataset, new DcmCodeString(PreliminaryFlag));
-            addElementToDataset(result, dataset, new DcmCodeString(CompletionFlag));
-            if (!CompletionFlagDescription.isEmpty())   /* optional */
-                addElementToDataset(result, dataset, new DcmLongString(CompletionFlagDescription));
-            addElementToDataset(result, dataset, new DcmCodeString(VerificationFlag));
-            if (VerifyingObserver.card() > 0)           /* optional */
-                addElementToDataset(result, dataset, new DcmSequenceOfItems(VerifyingObserver));
+            // --- Enhanced General Equipment Module ---
+            addElementToDataset(result, dataset, new DcmLongString(Manufacturer), "1", "1", "EnhancedGeneralEquipmentModule");
+            addElementToDataset(result, dataset, new DcmLongString(ManufacturerModelName), "1", "1", "EnhancedGeneralEquipmentModule");
+            addElementToDataset(result, dataset, new DcmLongString(DeviceSerialNumber), "1", "1", "EnhancedGeneralEquipmentModule");
+            addElementToDataset(result, dataset, new DcmLongString(SoftwareVersions), "1-n", "1", "EnhancedGeneralEquipmentModule");
+        } else {
+            // --- General Equipment Module ---
+            addElementToDataset(result, dataset, new DcmLongString(Manufacturer), "1", "2", "GeneralEquipmentModule");
+            addElementToDataset(result, dataset, new DcmLongString(ManufacturerModelName), "1", "3", "GeneralEquipmentModule");
+            addElementToDataset(result, dataset, new DcmLongString(DeviceSerialNumber), "1", "3", "GeneralEquipmentModule");
+            addElementToDataset(result, dataset, new DcmLongString(SoftwareVersions), "1-n", "3", "GeneralEquipmentModule");
+        }
+
+        // --- SR Document Series Module / Key Object Document Series Module ---
+        if (getDocumentType() == DT_KeyObjectDoc)
+        {
+            addElementToDataset(result, dataset, new DcmCodeString(Modality), "1", "1", "KeyObjectDocumentSeriesModule");
+            addElementToDataset(result, dataset, new DcmUniqueIdentifier(SeriesInstanceUID), "1", "1", "KeyObjectDocumentSeriesModule");
+            addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber), "1", "1", "KeyObjectDocumentSeriesModule");
+            addElementToDataset(result, dataset, new DcmLongString(SeriesDescription), "1", "3", "KeyObjectDocumentSeriesModule");
+            /* always write empty sequence since not yet fully supported */
+            ReferencedPerformedProcedureStep.clear();
+            addElementToDataset(result, dataset, new DcmSequenceOfItems(ReferencedPerformedProcedureStep), "1", "2", "KeyObjectDocumentSeriesModule");
+        } else {
+            addElementToDataset(result, dataset, new DcmCodeString(Modality), "1", "1", "SRDocumentSeriesModule");
+            addElementToDataset(result, dataset, new DcmUniqueIdentifier(SeriesInstanceUID), "1", "1", "SRDocumentSeriesModule");
+            addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber), "1", "1", "SRDocumentSeriesModule");
+            addElementToDataset(result, dataset, new DcmLongString(SeriesDescription), "1", "3", "SRDocumentSeriesModule");
+            /* always write empty sequence since not yet fully supported */
+            ReferencedPerformedProcedureStep.clear();
+            addElementToDataset(result, dataset, new DcmSequenceOfItems(ReferencedPerformedProcedureStep), "1", "2", "SRDocumentSeriesModule");
+        }
+
+        // --- SR Document General Module / Key Object Document Module ---
+        if (getDocumentType() == DT_KeyObjectDoc)
+        {
+            addElementToDataset(result, dataset, new DcmIntegerString(InstanceNumber), "1", "1", "KeyObjectDocumentModule");
+            addElementToDataset(result, dataset, new DcmDate(ContentDate), "1", "1", "KeyObjectDocumentModule");
+            addElementToDataset(result, dataset, new DcmTime(ContentTime), "1", "1", "KeyObjectDocumentModule");
+        } else {
+            addElementToDataset(result, dataset, new DcmIntegerString(InstanceNumber), "1", "1", "SRDocumentGeneralModule");
+            addElementToDataset(result, dataset, new DcmDate(ContentDate), "1", "1", "SRDocumentGeneralModule");
+            addElementToDataset(result, dataset, new DcmTime(ContentTime), "1", "1", "SRDocumentGeneralModule");
+            addElementToDataset(result, dataset, new DcmCodeString(PreliminaryFlag), "1", "3", "SRDocumentGeneralModule");
+            addElementToDataset(result, dataset, new DcmCodeString(CompletionFlag), "1", "1", "SRDocumentGeneralModule");
+            addElementToDataset(result, dataset, new DcmLongString(CompletionFlagDescription), "1", "3", "SRDocumentGeneralModule");
+            addElementToDataset(result, dataset, new DcmCodeString(VerificationFlag), "1", "1", "SRDocumentGeneralModule");
+            if (VerificationFlagEnum == VF_Verified)
+                addElementToDataset(result, dataset, new DcmSequenceOfItems(VerifyingObserver), "1-n", "1", "SRDocumentGeneralModule");
             PredecessorDocuments.write(dataset);        /* optional */
             /* always write empty sequence since not yet fully supported */
             PerformedProcedureCode.clear();
-            addElementToDataset(result, dataset, new DcmSequenceOfItems(PerformedProcedureCode));
+            addElementToDataset(result, dataset, new DcmSequenceOfItems(PerformedProcedureCode), "1", "2", "SRDocumentGeneralModule");
             if (result.good())
                 result = PertinentOtherEvidence.write(dataset);
         }
+
         if (result.good())
-            IdenticalDocuments.write(dataset);    /* optional */
+            IdenticalDocuments.write(dataset);          /* optional */
         if (result.good())
             result = CurrentRequestedProcedureEvidence.write(dataset);
 
@@ -2562,6 +2572,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.71  2010-09-29 15:16:50  joergr
+ *  Enhanced checking and reporting of standard violations in write() methods.
+ *
  *  Revision 1.70  2010-09-29 10:07:41  joergr
  *  Added support for the recently introduced, optional PreliminaryFlag.
  *
