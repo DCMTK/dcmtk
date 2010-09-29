@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-29 10:07:12 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2010-09-29 15:07:06 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1179,17 +1179,23 @@ class DSRDocument
 
     /// Manufacturer: (LO, 1, 2)
     DcmLongString       Manufacturer;
+    /// Manufacturer's Model Name: (LO, 1, 3)
+    DcmLongString       ManufacturerModelName;
+    /// Device Serial Number: (LO, 1, 3)
+    DcmLongString       DeviceSerialNumber;
+    /// Software Version(s): (LO, 1-n, 3)
+    DcmLongString       SoftwareVersions;
 
-    // --- General Equipment Module (M - for some IODs) ---
+    // --- Enhanced General Equipment Module (M - for some IODs) ---
 
     //  Manufacturer: (LO, 1, 1)
         //  - see 'General Equipment Module'
     /// Manufacturer's Model Name: (LO, 1, 1)
-    DcmLongString       ManufacturerModelName;
+        //  - see 'General Equipment Module'
     /// Device Serial Number: (LO, 1, 1)
-    DcmLongString       DeviceSerialNumber;
+        //  - see 'General Equipment Module'
     /// Software Version(s): (LO, 1-n, 1)
-    DcmLongString       SoftwareVersions;
+        //  - see 'General Equipment Module'
 
     // --- Frame of Reference (C) ---
 
@@ -1252,6 +1258,9 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.51  2010-09-29 15:07:06  joergr
+ *  Enhanced comments on attributes from Enhanced General Equipment Module.
+ *
  *  Revision 1.50  2010-09-29 10:07:12  joergr
  *  Added support for the recently introduced, optional PreliminaryFlag.
  *

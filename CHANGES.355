@@ -18,6 +18,9 @@ Changes between releases are documented here.
            dcmsr/libsrc/dsrreftn.cc
            dcmsr/libsrc/dsrsoprf.cc
 
+- Enhanced comments on attributes from Enhanced General Equipment Module.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+
 **** Changes from 2010.09.28 (riesmeier)
 
 - Added support for Enhanced General Equipment Module which is required for
