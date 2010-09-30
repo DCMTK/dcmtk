@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-06-14 16:00:21 $
+** Update Date:         $Date: 2010-09-30 09:50:53 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimdump.cc,v $
-** CVS/RCS Revision:    $Revision: 1.14 $
+** CVS/RCS Revision:    $Revision: 1.15 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -526,6 +526,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_GetRQ &msg, enum DIMSE_dire
     OFOStringStream stream;
     const char *uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
 
+    DIMSE_dumpMessage_start(str, dir);
     stream << "Message Type                  : C-GET RQ" << OFendl;
     if (presID > 0)
     {
@@ -1216,6 +1217,9 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_Message &msg, enum DIMSE_dire
 /*
 ** CVS Log
 ** $Log: dimdump.cc,v $
+** Revision 1.15  2010-09-30 09:50:53  joergr
+** Added missing call to DIMSE_dumpMessage_start() for C-GET-RQ message.
+**
 ** Revision 1.14  2010-06-14 16:00:21  joergr
 ** Slightly modified output of DIMSE_dumpMessage_end().
 **

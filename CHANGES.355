@@ -49,6 +49,9 @@ Changes between releases are documented here.
            dcmnet/etc/storescu.cfg
            dcmqrdb/docs/dcmqrscp.man
 
+- Added missing call to DIMSE_dumpMessage_start() for C-GET-RQ message.
+  Affects: dcmnet/libsrc/dimdump.cc
+
 **** Changes from 2010.09.29 (riesmeier)
 
 - Enhanced checking and reporting of standard violations in write() methods.
