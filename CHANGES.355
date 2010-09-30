@@ -3,6 +3,39 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.30 (riesmeier)
 
+- Added support for the Spectacle Prescription Report IOD.
+  Added:   dcmsr/include/dcmtk/dcmsr/dsrspecc.h
+           dcmsr/libsrc/dsrspecc.cc
+  Affects: dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsrdump.man
+           dcmsr/docs/xml2dsr.man
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+
+- Added support for the Macular Grid Thickness and Volume Report IOD.
+  Added:   dcmsr/include/dcmtk/dcmsr/dsrmaccc.h
+           dcmsr/libsrc/dsrmaccc.cc
+  Affects: dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsrdump.man
+           dcmsr/docs/xml2dsr.man
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+
+- Renamed class and enumeration related to the Key Object Selection Document.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrkeycc.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrkeycc.cc
+           dcmsr/libsrc/dsrtypes.cc
+
 - Fixed incomplete comment.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
 

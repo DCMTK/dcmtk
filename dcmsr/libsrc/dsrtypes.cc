@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-29 15:16:51 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Update Date:      $Date: 2010-09-30 08:59:55 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,8 @@
 #include "dcmtk/dcmsr/dsrcolcc.h"
 #include "dcmtk/dcmsr/dsrprocc.h"
 #include "dcmtk/dcmsr/dsrxrdcc.h"
+#include "dcmtk/dcmsr/dsrspecc.h"
+#include "dcmtk/dcmsr/dsrmaccc.h"
 
 #include "dcmtk/ofstd/ofstd.h"
 
@@ -277,16 +279,18 @@ const OFCondition SR_EC_CorruptedXMLStructure               (ECC_CorruptedXMLStr
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
 {
-    {DSRTypes::DT_invalid,             "",                                    OFFalse, "",   "invalid document type"},
-    {DSRTypes::DT_BasicTextSR,         UID_BasicTextSRStorage,                OFFalse, "SR", "Basic Text SR"},
-    {DSRTypes::DT_EnhancedSR,          UID_EnhancedSRStorage,                 OFFalse, "SR", "Enhanced SR"},
-    {DSRTypes::DT_ComprehensiveSR,     UID_ComprehensiveSRStorage,            OFFalse, "SR", "Comprehensive SR"},
-    {DSRTypes::DT_KeyObjectDoc,        UID_KeyObjectSelectionDocumentStorage, OFFalse, "KO", "Key Object Selection Document"},
-    {DSRTypes::DT_MammographyCadSR,    UID_MammographyCADSRStorage,           OFFalse, "SR", "Mammography CAD SR"},
-    {DSRTypes::DT_ChestCadSR,          UID_ChestCADSRStorage,                 OFFalse, "SR", "Chest CAD SR"},
-    {DSRTypes::DT_ColonCadSR,          UID_ColonCADSRStorage,                 OFTrue,  "SR", "Colon CAD SR"},
-    {DSRTypes::DT_ProcedureLog,        UID_ProcedureLogStorage,               OFFalse, "SR", "Procedure Log"},
-    {DSRTypes::DT_XRayRadiationDoseSR, UID_XRayRadiationDoseSRStorage,        OFTrue,  "SR", "X-Ray Radiation Dose SR"}
+    {DSRTypes::DT_invalid,                             "",                                             OFFalse, "",   "invalid document type"},
+    {DSRTypes::DT_BasicTextSR,                         UID_BasicTextSRStorage,                         OFFalse, "SR", "Basic Text SR"},
+    {DSRTypes::DT_EnhancedSR,                          UID_EnhancedSRStorage,                          OFFalse, "SR", "Enhanced SR"},
+    {DSRTypes::DT_ComprehensiveSR,                     UID_ComprehensiveSRStorage,                     OFFalse, "SR", "Comprehensive SR"},
+    {DSRTypes::DT_KeyObjectSelectionDocument,          UID_KeyObjectSelectionDocumentStorage,          OFFalse, "KO", "Key Object Selection Document"},
+    {DSRTypes::DT_MammographyCadSR,                    UID_MammographyCADSRStorage,                    OFFalse, "SR", "Mammography CAD SR"},
+    {DSRTypes::DT_ChestCadSR,                          UID_ChestCADSRStorage,                          OFFalse, "SR", "Chest CAD SR"},
+    {DSRTypes::DT_ColonCadSR,                          UID_ColonCADSRStorage,                          OFTrue,  "SR", "Colon CAD SR"},
+    {DSRTypes::DT_ProcedureLog,                        UID_ProcedureLogStorage,                        OFFalse, "SR", "Procedure Log"},
+    {DSRTypes::DT_XRayRadiationDoseSR,                 UID_XRayRadiationDoseSRStorage,                 OFTrue,  "SR", "X-Ray Radiation Dose SR"},
+    {DSRTypes::DT_SpectaclePrescriptionReport,         UID_SpectaclePrescriptionReportStorage,         OFTrue,  "SR", "Spectacle Prescription Report"},
+    {DSRTypes::DT_MacularGridThicknessAndVolumeReport, UID_MacularGridThicknessAndVolumeReportStorage, OFTrue,  "SR", "Macular Grid Thickness and Volume Report"}
 };
 
 
@@ -449,8 +453,12 @@ const char *DSRTypes::documentTypeToDocumentTitle(const E_DocumentType documentT
                                                   OFString &documentTitle)
 {
     documentTitle = documentTypeToReadableName(documentType);
-    if (!documentTitle.empty() && (documentType != DT_KeyObjectDoc))  // avoid doubling of term "Document"
+    // avoid doubling of term "Document" and/or "Report"
+    if (!documentTitle.empty() && (documentTitle.find("Document") == OFString_npos) &&
+                                  (documentTitle.find("Report") == OFString_npos))
+    {
         documentTitle += " Document";
+    }
     return documentTitle.c_str();
 }
 
@@ -1273,8 +1281,8 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
         case DT_ComprehensiveSR:
             checker = new DSRComprehensiveSRConstraintChecker();
             break;
-        case DT_KeyObjectDoc:
-            checker = new DSRKeyObjectDocConstraintChecker();
+        case DT_KeyObjectSelectionDocument:
+            checker = new DSRKeyObjectSelectionDocumentConstraintChecker();
             break;
         case DT_MammographyCadSR:
             checker = new DSRMammographyCadSRConstraintChecker();
@@ -1290,6 +1298,12 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
             break;
         case DT_XRayRadiationDoseSR:
             checker = new DSRXRayRadiationDoseSRConstraintChecker();
+            break;
+        case DT_SpectaclePrescriptionReport:
+            checker = new DSRSpectaclePrescriptionReportConstraintChecker();
+            break;
+        case DT_MacularGridThicknessAndVolumeReport:
+            checker = new DSRMacularGridThicknessAndVolumeReportConstraintChecker();
             break;
         default:
             break;
@@ -1565,6 +1579,11 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.69  2010-09-30 08:59:55  joergr
+ *  Added support for the Spectacle Prescription Report IOD.
+ *  Added support for the Macular Grid Thickness and Volume Report IOD.
+ *  Renamed class and enumeration related to the Key Object Selection Document.
+ *
  *  Revision 1.68  2010-09-29 15:16:51  joergr
  *  Enhanced checking and reporting of standard violations in write() methods.
  *

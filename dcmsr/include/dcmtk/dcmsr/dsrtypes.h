@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-29 15:16:45 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2010-09-30 08:59:21 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -364,26 +364,30 @@ class DSRTypes
         DT_invalid,
         /// internal type used to indicate an unknown/unsupported document type
         DT_unknown = DT_invalid,
-        /// DICOM SOP Class: Basic Text SR
+        /// DICOM IOD: Basic Text SR
         DT_BasicTextSR,
-        /// DICOM SOP Class: Enhanced SR
+        /// DICOM IOD: Enhanced SR
         DT_EnhancedSR,
-        /// DICOM SOP Class: Comprehensive SR
+        /// DICOM IOD: Comprehensive SR
         DT_ComprehensiveSR,
-        /// DICOM SOP Class: Key Object Selection Document
-        DT_KeyObjectDoc,
-        /// DICOM SOP Class: Mammography CAD SR
+        /// DICOM IOD: Key Object Selection Document
+        DT_KeyObjectSelectionDocument,
+        /// DICOM IOD: Mammography CAD SR
         DT_MammographyCadSR,
-        /// DICOM SOP Class: Chest CAD SR
+        /// DICOM IOD: Chest CAD SR
         DT_ChestCadSR,
-        /// DICOM SOP Class: Colon CAD SR
+        /// DICOM IOD: Colon CAD SR
         DT_ColonCadSR,
-        /// DICOM SOP Class: Procedure Log
+        /// DICOM IOD: Procedure Log
         DT_ProcedureLog,
-        /// DICOM SOP Class: X-Ray Radiation Dose SR
-        DT_XRayRadiationDoseSR,
+        /// DICOM IOD: X-Ray Radiation Dose SR
+        DT_XRayRadiationDoseSR,        
+        /// DICOM IOD: Spectacle Prescription Report
+        DT_SpectaclePrescriptionReport,
+        /// DICOM IOD: Macular Grid Thickness and Volume Report
+        DT_MacularGridThicknessAndVolumeReport,
         /// internal type used to mark the last entry
-        DT_last = DT_XRayRadiationDoseSR
+        DT_last = DT_MacularGridThicknessAndVolumeReport
     };
 
     /** SR relationship types
@@ -1033,7 +1037,7 @@ class DSRTypes
 
     /** add given element to the dataset.
      *  The element is only added if 'result' is EC_Normal and the 'delem' pointer is not NULL.
-     *  @param  result      reference to status variable (checked before adding and updated afterwards!)
+     ** @param  result      reference to status variable (checked before adding and updated afterwards!)
      *  @param  dataset     reference to DICOM dataset to which the element should be added
      *  @param  delem       pointer to DICOM element which should be added. deleted if not inserted.
      *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
@@ -1042,7 +1046,7 @@ class DSRTypes
      *                      interpreted as cardinality (number of items) for sequence attributes
      *  @param  type        value type (valid value: "1", "2" or something else which is not checked)
      *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
-     *  @return current value of 'result', EC_Normal if successful, an error code otherwise
+     ** @return current value of 'result', EC_Normal if successful, an error code otherwise
      */
     static OFCondition addElementToDataset(OFCondition &result,
                                            DcmItem &dataset,
@@ -1294,6 +1298,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.63  2010-09-30 08:59:21  joergr
+ *  Added support for the Spectacle Prescription Report IOD.
+ *  Added support for the Macular Grid Thickness and Volume Report IOD.
+ *  Renamed class and enumeration related to the Key Object Selection Document.
+ *
  *  Revision 1.62  2010-09-29 15:16:45  joergr
  *  Enhanced checking and reporting of standard violations in write() methods.
  *
