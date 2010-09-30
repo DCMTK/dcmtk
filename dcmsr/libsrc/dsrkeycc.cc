@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -20,11 +20,11 @@
  *  Author:  Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRKeyObjectDocConstraintChecker
+ *    classes: DSRKeyObjectSelectionDocumentConstraintChecker
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:57 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-30 08:57:45 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,45 +37,45 @@
 #include "dcmtk/dcmsr/dsrkeycc.h"
 
 
-DSRKeyObjectDocConstraintChecker::DSRKeyObjectDocConstraintChecker()
+DSRKeyObjectSelectionDocumentConstraintChecker::DSRKeyObjectSelectionDocumentConstraintChecker()
   : DSRIODConstraintChecker()
 {
 }
 
 
-DSRKeyObjectDocConstraintChecker::~DSRKeyObjectDocConstraintChecker()
+DSRKeyObjectSelectionDocumentConstraintChecker::~DSRKeyObjectSelectionDocumentConstraintChecker()
 {
 }
 
 
-OFBool DSRKeyObjectDocConstraintChecker::isByReferenceAllowed() const
+OFBool DSRKeyObjectSelectionDocumentConstraintChecker::isByReferenceAllowed() const
 {
     return OFFalse;
 }
 
 
-OFBool DSRKeyObjectDocConstraintChecker::isTemplateSupportRequired() const
+OFBool DSRKeyObjectSelectionDocumentConstraintChecker::isTemplateSupportRequired() const
 {
     return OFTrue;
 }
 
 
-const char *DSRKeyObjectDocConstraintChecker::getRootTemplateIdentifier() const
+const char *DSRKeyObjectSelectionDocumentConstraintChecker::getRootTemplateIdentifier() const
 {
     return "2010";
 }
 
 
-DSRTypes::E_DocumentType DSRKeyObjectDocConstraintChecker::getDocumentType() const
+DSRTypes::E_DocumentType DSRKeyObjectSelectionDocumentConstraintChecker::getDocumentType() const
 {
-    return DT_KeyObjectDoc;
+    return DT_KeyObjectSelectionDocument;
 }
 
 
-OFBool DSRKeyObjectDocConstraintChecker::checkContentRelationship(const E_ValueType sourceValueType,
-                                                                  const E_RelationshipType relationshipType,
-                                                                  const E_ValueType targetValueType,
-                                                                  const OFBool byReference) const
+OFBool DSRKeyObjectSelectionDocumentConstraintChecker::checkContentRelationship(const E_ValueType sourceValueType,
+                                                                                const E_RelationshipType relationshipType,
+                                                                                const E_ValueType targetValueType,
+                                                                                const OFBool byReference) const
 {
     /* the following code implements the constraints of table A.35.4-2 in DICOM PS3.3 */
     OFBool result = OFFalse;
@@ -85,13 +85,13 @@ OFBool DSRKeyObjectDocConstraintChecker::checkContentRelationship(const E_ValueT
         /* row 1 of the table */
         if ((relationshipType == RT_contains) && (sourceValueType == VT_Container))
         {
-            result = (targetValueType == VT_Text)  || (targetValueType == VT_Composite) ||
-                     (targetValueType == VT_Image) || (targetValueType == VT_Waveform);
+            result = (targetValueType == VT_Text) || (targetValueType == VT_Image) ||
+                     (targetValueType == VT_Waveform) || (targetValueType == VT_Composite);
         }
         /* row 2 of the table */
         else if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
         {
-            result = (targetValueType == VT_Text)   || (targetValueType == VT_Code) ||
+            result = (targetValueType == VT_Text) || (targetValueType == VT_Code) ||
                      (targetValueType == VT_UIDRef) || (targetValueType == VT_PName);
         }
         /* row 3 of the table */
@@ -107,6 +107,9 @@ OFBool DSRKeyObjectDocConstraintChecker::checkContentRelationship(const E_ValueT
 /*
  *  CVS/RCS Log:
  *  $Log: dsrkeycc.cc,v $
+ *  Revision 1.4  2010-09-30 08:57:45  joergr
+ *  Renamed class and enumeration related to the Key Object Selection Document.
+ *
  *  Revision 1.3  2005-12-08 15:47:57  meichel
  *  Changed include path schema for all DCMTK header files
  *

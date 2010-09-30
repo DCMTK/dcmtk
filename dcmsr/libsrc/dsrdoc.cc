@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-29 15:16:50 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Update Date:      $Date: 2010-09-30 09:00:20 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -238,7 +238,7 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                 stream << OFendl;
             }
             /* Key Object Selection Documents do not contain the SR Document General Module */
-            if (getDocumentType() != DT_KeyObjectDoc)
+            if (getDocumentType() != DT_KeyObjectSelectionDocument)
             {
                 /* preliminary flag */
                 if (!PreliminaryFlag.isEmpty())
@@ -254,7 +254,7 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
             /* identical documents */
             if (!IdenticalDocuments.empty())
                 stream << "Identical Docs      : " << IdenticalDocuments.getNumberOfInstances() << OFendl;
-            if (getDocumentType() != DT_KeyObjectDoc)
+            if (getDocumentType() != DT_KeyObjectSelectionDocument)
             {
                 /* verification flag */
                 stream << "Verification Flag   : " << getStringValueFromElement(VerificationFlag, tmpString) << OFendl;
@@ -324,7 +324,7 @@ OFCondition DSRDocument::checkDatasetForReading(DcmItem &dataset,
     /* check modality */
     if (result.good())
     {
-        if (documentType == DT_KeyObjectDoc)
+        if (documentType == DT_KeyObjectSelectionDocument)
             result = getAndCheckElementFromDataset(dataset, modality, "1", "1", "KeyObjectDocumentSeriesModule");
         else
             result = getAndCheckElementFromDataset(dataset, modality, "1", "1", "SRDocumentSeriesModule");
@@ -401,7 +401,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
 
         // --- SR Document Series Module / Key Object Document Series Module ---
         getElementFromDataset(dataset, Modality);   /* already checked */
-        if (documentType == DT_KeyObjectDoc)
+        if (documentType == DT_KeyObjectSelectionDocument)
         {
             getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1", "KeyObjectDocumentSeriesModule");
             getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1", "KeyObjectDocumentSeriesModule");
@@ -422,7 +422,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         removeAttributeFromSequence(ReferencedPerformedProcedureStep, DCM_DigitalSignaturesSequence);
 
         // --- SR Document General Module / Key Object Document Module ---
-        if (documentType == DT_KeyObjectDoc)
+        if (documentType == DT_KeyObjectSelectionDocument)
         {
             getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "1", "KeyObjectDocumentModule");
             getAndCheckElementFromDataset(dataset, ContentDate, "1", "1", "KeyObjectDocumentModule");
@@ -453,7 +453,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         /* update internal enumerated values and perform additional checks */
         OFString tmpString;
         /* Key Object Selection Documents do not contain the SR Document General Module */
-        if (documentType != DT_KeyObjectDoc)
+        if (documentType != DT_KeyObjectSelectionDocument)
         {
             /* get and check PreliminaryFlag (if present) */
             if (!PreliminaryFlag.isEmpty())
@@ -538,7 +538,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         }
 
         // --- SR Document Series Module / Key Object Document Series Module ---
-        if (getDocumentType() == DT_KeyObjectDoc)
+        if (getDocumentType() == DT_KeyObjectSelectionDocument)
         {
             addElementToDataset(result, dataset, new DcmCodeString(Modality), "1", "1", "KeyObjectDocumentSeriesModule");
             addElementToDataset(result, dataset, new DcmUniqueIdentifier(SeriesInstanceUID), "1", "1", "KeyObjectDocumentSeriesModule");
@@ -558,7 +558,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         }
 
         // --- SR Document General Module / Key Object Document Module ---
-        if (getDocumentType() == DT_KeyObjectDoc)
+        if (getDocumentType() == DT_KeyObjectSelectionDocument)
         {
             addElementToDataset(result, dataset, new DcmIntegerString(InstanceNumber), "1", "1", "KeyObjectDocumentModule");
             addElementToDataset(result, dataset, new DcmDate(ContentDate), "1", "1", "KeyObjectDocumentModule");
@@ -704,7 +704,7 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                     result = CurrentRequestedProcedureEvidence.readXML(doc, cursor.getChild(), flags);
                 else if (typeString == "Pertinent Other")
                 {
-                    if (getDocumentType() != DT_KeyObjectDoc)
+                    if (getDocumentType() != DT_KeyObjectSelectionDocument)
                         result = PertinentOtherEvidence.readXML(doc, cursor.getChild(), flags);
                     else
                         doc.printUnexpectedNodeWarning(cursor);
@@ -899,14 +899,14 @@ OFCondition DSRDocument::readXMLDocumentData(const DSRXMLDocument &doc,
         {
             /* check for known element tags
                (Key Object Selection Documents do not contain the SR Document General Module) */
-            if ((documentType != DT_KeyObjectDoc) && doc.matchNode(cursor, "preliminary"))
+            if ((documentType != DT_KeyObjectSelectionDocument) && doc.matchNode(cursor, "preliminary"))
             {
                 /* Preliminary Flag */
                 PreliminaryFlagEnum = enumeratedValueToPreliminaryFlag(doc.getStringFromAttribute(cursor, tmpString, "flag"));
                 if (PreliminaryFlagEnum == PF_invalid)
                     printUnknownValueWarningMessage("PreliminaryFlag", tmpString.c_str());
             }
-            else if ((documentType != DT_KeyObjectDoc) && doc.matchNode(cursor, "completion"))
+            else if ((documentType != DT_KeyObjectSelectionDocument) && doc.matchNode(cursor, "completion"))
             {
                 /* Completion Flag */
                 CompletionFlagEnum = enumeratedValueToCompletionFlag(doc.getStringFromAttribute(cursor, tmpString, "flag"));
@@ -919,7 +919,7 @@ OFCondition DSRDocument::readXMLDocumentData(const DSRXMLDocument &doc,
                 } else
                     printUnknownValueWarningMessage("CompletionFlag", tmpString.c_str());
             }
-            else if ((documentType != DT_KeyObjectDoc) && doc.matchNode(cursor, "verification"))
+            else if ((documentType != DT_KeyObjectSelectionDocument) && doc.matchNode(cursor, "verification"))
             {
                 /* Verification Flag */
                 VerificationFlagEnum = enumeratedValueToVerificationFlag(doc.getStringFromAttribute(cursor, tmpString, "flag"));
@@ -933,7 +933,7 @@ OFCondition DSRDocument::readXMLDocumentData(const DSRXMLDocument &doc,
                 } else
                     printUnknownValueWarningMessage("VerificationFlag", tmpString.c_str());
             }
-            else if ((documentType != DT_KeyObjectDoc) && doc.matchNode(cursor, "predecessor"))
+            else if ((documentType != DT_KeyObjectSelectionDocument) && doc.matchNode(cursor, "predecessor"))
             {
                 /* Predecessor Documents Sequence (optional) */
                 result = PredecessorDocuments.readXML(doc, cursor.getChild(), flags);
@@ -1161,7 +1161,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
             CurrentRequestedProcedureEvidence.writeXML(stream, flags);
             stream << "</evidence>" << OFendl;
         }
-        if (getDocumentType() != DT_KeyObjectDoc)
+        if (getDocumentType() != DT_KeyObjectSelectionDocument)
         {
             if ((flags & XF_writeEmptyTags) || !PertinentOtherEvidence.empty())
             {
@@ -1172,7 +1172,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         }
 
         stream << "<document>" << OFendl;
-        if (getDocumentType() != DT_KeyObjectDoc)
+        if (getDocumentType() != DT_KeyObjectSelectionDocument)
         {
             if (!PreliminaryFlag.isEmpty())
                 stream << "<preliminary flag=\"" << getStringValueFromElement(PreliminaryFlag, tmpString) << "\"/>" << OFendl;
@@ -1496,7 +1496,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 stream << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
             }
-            if (getDocumentType() != DT_KeyObjectDoc)
+            if (getDocumentType() != DT_KeyObjectSelectionDocument)
             {
                 /* preliminary flag */
                 if (!PreliminaryFlag.isEmpty())
@@ -1537,7 +1537,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 renderHTMLReferenceList(stream, IdenticalDocuments, flags);
                 stream << "</tr>" << OFendl;
             }
-            if (getDocumentType() != DT_KeyObjectDoc)
+            if (getDocumentType() != DT_KeyObjectSelectionDocument)
             {
                 /* verification flag */
                 stream << "<tr>" << OFendl;
@@ -2141,7 +2141,7 @@ OFCondition DSRDocument::setPreliminaryFlag(const E_PreliminaryFlag flag)
 {
     OFCondition result = EC_IllegalCall;
     /* not applicable to Key Object Selection Documents */
-    if (getDocumentType() != DT_KeyObjectDoc)
+    if (getDocumentType() != DT_KeyObjectSelectionDocument)
     {
         PreliminaryFlagEnum = flag;
         result = EC_Normal;
@@ -2154,7 +2154,7 @@ OFCondition DSRDocument::setCompletionFlagDescription(const OFString &value)
 {
     OFCondition result = EC_IllegalCall;
     /* not applicable to Key Object Selection Documents */
-    if (getDocumentType() != DT_KeyObjectDoc)
+    if (getDocumentType() != DT_KeyObjectSelectionDocument)
     {
         if (value.empty())
         {
@@ -2353,31 +2353,35 @@ OFCondition DSRDocument::createNewDocument(const E_DocumentType documentType)
 OFCondition DSRDocument::createRevisedVersion(const OFBool clearList)
 {
     OFCondition result = EC_IllegalCall;
-    /* check whether document is already completed (or a Key Object Selection Document) */
-    if ((CompletionFlagEnum == CF_Complete) && (getDocumentType() != DT_KeyObjectDoc))
+    /* not applicable to Key Object Selection Documents */
+    if (getDocumentType() != DT_KeyObjectSelectionDocument)
     {
-        if (clearList)
-            PredecessorDocuments.clear();
-        /* add current document */
-        result = PredecessorDocuments.addItem(getStringValueFromElement(StudyInstanceUID),
-                                              getStringValueFromElement(SeriesInstanceUID),
-                                              getStringValueFromElement(SOPClassUID),
-                                              getStringValueFromElement(SOPInstanceUID));
-        if (result.good())
+        /* check whether document is already completed */
+        if (CompletionFlagEnum == CF_Complete)
         {
-            IdenticalDocuments.clear();
-            /* set completion flag to PARTIAL, delete description */
-            CompletionFlagEnum = CF_Partial;
-            CompletionFlagDescription.clear();
-            /* clear content date/time, will be set automatically in updateAttributes() */
-            ContentDate.clear();
-            ContentTime.clear();
-            /* clear list of verifying observers and set flag to UNVERIFIED */
-            removeVerification();
-            /* remove digital signatures from document tree */
-            DocumentTree.removeSignatures();
-            /* create new instance UID, update creation date/time and reset finalized flag */
-            createNewSOPInstance();
+            if (clearList)
+                PredecessorDocuments.clear();
+            /* add current document */
+            result = PredecessorDocuments.addItem(getStringValueFromElement(StudyInstanceUID),
+                                                  getStringValueFromElement(SeriesInstanceUID),
+                                                  getStringValueFromElement(SOPClassUID),
+                                                  getStringValueFromElement(SOPInstanceUID));
+            if (result.good())
+            {
+                IdenticalDocuments.clear();
+                /* set completion flag to PARTIAL, delete description */
+                CompletionFlagEnum = CF_Partial;
+                CompletionFlagDescription.clear();
+                /* clear content date/time, will be set automatically in updateAttributes() */
+                ContentDate.clear();
+                ContentTime.clear();
+                /* clear list of verifying observers and set flag to UNVERIFIED */
+                removeVerification();
+                /* remove digital signatures from document tree */
+                DocumentTree.removeSignatures();
+                /* create new instance UID, update creation date/time and reset finalized flag */
+                createNewSOPInstance();
+            }
         }
     }
     return result;
@@ -2395,7 +2399,7 @@ OFCondition DSRDocument::completeDocument(const OFString &description)
 {
     OFCondition result = EC_IllegalCall;
     /* not applicable to Key Object Selection Documents */
-    if (getDocumentType() != DT_KeyObjectDoc)
+    if (getDocumentType() != DT_KeyObjectSelectionDocument)
     {
         /* if document is not already completed */
         if (CompletionFlagEnum != CF_Complete)
@@ -2444,7 +2448,7 @@ OFCondition DSRDocument::verifyDocument(const OFString &observerName,
 {
     OFCondition result = EC_IllegalCall;
     /* not applicable to Key Object Selection Documents */
-    if (getDocumentType() != DT_KeyObjectDoc)
+    if (getDocumentType() != DT_KeyObjectSelectionDocument)
     {
         /* verify completed documents only */
         if (CompletionFlagEnum == CF_Complete)
@@ -2553,7 +2557,7 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
         if (ContentTime.isEmpty())
             ContentTime.putString(getStringValueFromElement(InstanceCreationTime));
     }
-    if (getDocumentType() != DT_KeyObjectDoc)
+    if (getDocumentType() != DT_KeyObjectSelectionDocument)
     {
         /* set preliminary flag */
         PreliminaryFlag.putString(preliminaryFlagToEnumeratedValue(PreliminaryFlagEnum));
@@ -2572,6 +2576,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.72  2010-09-30 09:00:20  joergr
+ *  Renamed class and enumeration related to the Key Object Selection Document.
+ *
  *  Revision 1.71  2010-09-29 15:16:50  joergr
  *  Enhanced checking and reporting of standard violations in write() methods.
  *

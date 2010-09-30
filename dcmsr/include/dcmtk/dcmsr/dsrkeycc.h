@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2005, OFFIS
+ *  Copyright (C) 2003-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -20,11 +20,11 @@
  *  Author: Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRKeyObjectDocConstraintChecker
+ *    classes: DSRKeyObjectSelectionDocumentConstraintChecker
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:08 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-30 08:57:14 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,9 +44,10 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the content relationship constraints of the Key Object Selection Document IOD
+/** Class for checking the content relationship constraints of the
+ *  Key Object Selection Document IOD
  */
-class DSRKeyObjectDocConstraintChecker
+class DSRKeyObjectSelectionDocumentConstraintChecker
   : public DSRIODConstraintChecker
 {
 
@@ -54,11 +55,11 @@ class DSRKeyObjectDocConstraintChecker
 
     /** default constructor
      */
-    DSRKeyObjectDocConstraintChecker();
+    DSRKeyObjectSelectionDocumentConstraintChecker();
 
     /** destructor
      */
-    virtual ~DSRKeyObjectDocConstraintChecker();
+    virtual ~DSRKeyObjectSelectionDocumentConstraintChecker();
 
     /** check whether by-reference relationships are allowed for this SR IOD
      ** @return always returns OFFalse, i.e. by-reference relationships are not allowed
@@ -71,12 +72,12 @@ class DSRKeyObjectDocConstraintChecker
     virtual OFBool isTemplateSupportRequired() const;
 
     /** get identifier of the root template
-     ** @return root template identifier (TID) "3001"
+     ** @return root template identifier (TID) "2010"
      */
     virtual const char *getRootTemplateIdentifier() const;
 
     /** get the associated document type of the SR IOD
-     ** @return document type (DSRTypes::DT_KeyObjectDoc)
+     ** @return document type (DSRTypes::DT_KeyObjectSelectionDocument)
      */
     virtual E_DocumentType getDocumentType() const;
 
@@ -101,6 +102,9 @@ class DSRKeyObjectDocConstraintChecker
 /*
  *  CVS/RCS Log:
  *  $Log: dsrkeycc.h,v $
+ *  Revision 1.4  2010-09-30 08:57:14  joergr
+ *  Renamed class and enumeration related to the Key Object Selection Document.
+ *
  *  Revision 1.3  2005-12-08 16:05:08  meichel
  *  Changed include path schema for all DCMTK header files
  *
