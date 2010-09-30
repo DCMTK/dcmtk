@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-29 15:07:06 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2010-09-30 08:49:40 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,6 +176,7 @@ class DSRDocument
     OFCondition renderHTML(STD_NAMESPACE ostream &stream,
                            const size_t flags = 0,
                            const char *styleSheet = NULL);
+
 
   // --- get/set misc attributes ---
 
@@ -349,6 +350,7 @@ class DSRDocument
      *  @return reference to list object
      */
     DSRCodingSchemeIdentificationList &getCodingSchemeIdentification();
+
 
   // --- get DICOM string attributes (C string) ---
   // --- (these functions return the whole string value,
@@ -681,7 +683,7 @@ class DSRDocument
     /** set document preliminary flag.
      *  According to the DICOM standard, the concept of "completeness" is independent of the
      *  concept of "preliminary" or "final".  Therefore, this flag can be specified separately.
-     ** @param  flag  preliminary flag to be set (use PF_invalid to omit this optional )
+     ** @param  flag  preliminary flag to be set (use PF_invalid to omit this optional value)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setPreliminaryFlag(const E_PreliminaryFlag flag);
@@ -1258,6 +1260,9 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.52  2010-09-30 08:49:40  joergr
+ *  Fixed incomplete comment.
+ *
  *  Revision 1.51  2010-09-29 15:07:06  joergr
  *  Enhanced comments on attributes from Enhanced General Equipment Module.
  *

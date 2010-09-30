@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.30 (riesmeier)
 
+- Fixed incomplete comment.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+
 - Fixed typo in the name of a Storage SOP Class (copied from DICOM part 6).
   Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
            dcmdata/libsrc/dcddirif.cc
