@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-30 07:53:23 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2010-09-30 17:18:15 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -604,6 +604,15 @@ static OFString recordTypeToName(const E_DirRecType recordType)
         case ERT_Stereometric:
             recordName = "Stereometric";
             break;
+        case ERT_HL7StrucDoc:
+            recordName = "HL7StrucDoc";
+            break;
+        case ERT_Palette:
+            recordName = "Palette";
+            break;
+        case ERT_Surface:
+            recordName = "Surface";
+            break;
         default:
             recordName = "(unknown-directory-record-type)";
             break;
@@ -646,7 +655,8 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_ColorSoftcopyPresentationStateStorage) ||
              compare(sopClass, UID_PseudoColorSoftcopyPresentationStateStorage) ||
              compare(sopClass, UID_BlendingSoftcopyPresentationStateStorage) ||
-             compare(sopClass, UID_XAXRFGrayscaleSoftcopyPresentationStateStorage))
+             compare(sopClass, UID_XAXRFGrayscaleSoftcopyPresentationStateStorage) ||
+             compare(sopClass, UID_BasicStructuredDisplayStorage))
     {
         result = ERT_Presentation;
     }
@@ -693,14 +703,21 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_RawData;
     else if (compare(sopClass, UID_MRSpectroscopyStorage))
         result = ERT_Spectroscopy;
-    else if (compare(sopClass, UID_EncapsulatedPDFStorage))
+    else if (compare(sopClass, UID_EncapsulatedPDFStorage) ||
+             compare(sopClass, UID_EncapsulatedCDAStorage))
+    {
         result = ERT_EncapDoc;
+    }
     else if (compare(sopClass, UID_RealWorldValueMappingStorage))
         result = ERT_ValueMap;
     else if (compare(sopClass, UID_HangingProtocolStorage))
         result = ERT_HangingProtocol;
     else if (compare(sopClass, UID_StereometricRelationshipStorage))
         result = ERT_Stereometric;
+    else if (compare(sopClass, UID_ColorPaletteStorage))
+        result = ERT_Palette;
+    else if (compare(sopClass, UID_SurfaceSegmentationStorage))
+        result = ERT_Surface;
     return result;
 }
 
@@ -1328,7 +1345,9 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     break;
                 case AP_DentalRadiograph:
                     found = compare(mediaSOPClassUID, UID_DigitalIntraOralXRayImageStorageForPresentation) ||
-                            compare(mediaSOPClassUID, UID_DigitalXRayImageStorageForPresentation);
+                            compare(mediaSOPClassUID, UID_DigitalXRayImageStorageForPresentation) ||
+                            compare(mediaSOPClassUID, UID_BasicStructuredDisplayStorage) ||
+                            compare(mediaSOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage);
                     break;
                 case AP_CTandMR:
                     /* transfer syntax needs to be checked later */
@@ -1412,14 +1431,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_ArterialPulseWaveformStorage) ||
                                 compare(mediaSOPClassUID, UID_RespiratoryWaveformStorage);
                     }
-                    /* is it one of the spatial registration SOP Classes? */
-                    if (!found)
-                    {
-                        found = compare(mediaSOPClassUID, UID_SpatialRegistrationStorage) ||
-                                compare(mediaSOPClassUID, UID_SpatialFiducialsStorage) ||
-                                compare(mediaSOPClassUID, UID_DeformableSpatialRegistrationStorage);
-                    }
-                    /* is it any other SOP class? */
+                    /* is it one of the presentation state SOP Classes? */
                     if (!found)
                     {
                         found = compare(mediaSOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage) ||
@@ -1427,21 +1439,43 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_PseudoColorSoftcopyPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_BlendingSoftcopyPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_XAXRFGrayscaleSoftcopyPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_RETIRED_StoredPrintStorage) ||
-                                compare(mediaSOPClassUID, UID_KeyObjectSelectionDocumentStorage) ||
+                                compare(mediaSOPClassUID, UID_BasicStructuredDisplayStorage);
+                    }
+                    /* is it one of the encapsulated document SOP Classes? */
+                    if (!found)
+                    {
+                        found = compare(mediaSOPClassUID, UID_EncapsulatedPDFStorage) ||
+                                compare(mediaSOPClassUID, UID_EncapsulatedCDAStorage);
+                    }
+                    /* is it one of the spatial registration SOP Classes? */
+                    if (!found)
+                    {
+                        found = compare(mediaSOPClassUID, UID_SpatialRegistrationStorage) ||
+                                compare(mediaSOPClassUID, UID_SpatialFiducialsStorage) ||
+                                compare(mediaSOPClassUID, UID_DeformableSpatialRegistrationStorage);
+                    }
+                    /* is it one of the segmentation SOP Classes? */
+                    if (!found)
+                    {
+                        found = compare(mediaSOPClassUID, UID_SegmentationStorage) ||  // will be mapped to IMAGE record
+                                compare(mediaSOPClassUID, UID_SurfaceSegmentationStorage);
+                    }
+                    /* is it any other SOP class? */
+                    if (!found)
+                    {
+                        found = compare(mediaSOPClassUID, UID_KeyObjectSelectionDocumentStorage) ||
                                 compare(mediaSOPClassUID, UID_RawDataStorage) ||
                                 compare(mediaSOPClassUID, UID_MRSpectroscopyStorage) ||
-                                compare(mediaSOPClassUID, UID_EncapsulatedPDFStorage) ||
                                 compare(mediaSOPClassUID, UID_RealWorldValueMappingStorage) ||
                                 compare(mediaSOPClassUID, UID_HangingProtocolStorage) ||
                                 compare(mediaSOPClassUID, UID_StereometricRelationshipStorage) ||
-                                compare(mediaSOPClassUID, UID_SegmentationStorage);  // will be mapped to IMAGE record
+                                compare(mediaSOPClassUID, UID_ColorPaletteStorage);
                     }
-                    /* the following SOP classes have been retired with DICOM 2006: */
+                    /* the following SOP classes have been retired with previous editions of the DICOM standard */
                     if (!found && RetiredSOPClassSupport)
                     {
-                        /* is it an overlay/curve/modality_lut/voi_lut etc.? */
-                        found = compare(mediaSOPClassUID, UID_RETIRED_StandaloneOverlayStorage) ||
+                        found = compare(mediaSOPClassUID, UID_RETIRED_StoredPrintStorage) ||
+                                compare(mediaSOPClassUID, UID_RETIRED_StandaloneOverlayStorage) ||
                                 compare(mediaSOPClassUID, UID_RETIRED_StandaloneCurveStorage) ||
                                 compare(mediaSOPClassUID, UID_RETIRED_StandaloneModalityLUTStorage) ||
                                 compare(mediaSOPClassUID, UID_RETIRED_StandaloneVOILUTStorage) ||
@@ -2058,8 +2092,8 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
         metainfo->findAndGetOFStringArray(DCM_TransferSyntaxUID, transferSyntax);
         metainfo->findAndGetOFStringArray(DCM_MediaStorageSOPClassUID, mediaSOPClassUID);
         E_DirRecType recordType = sopClassToRecordType(mediaSOPClassUID);
-        /* hanging protocol files are checked separately */
-        if (recordType == ERT_HangingProtocol)
+        /* hanging protocol and palette files are checked separately */
+        if ((recordType == ERT_HangingProtocol) || (recordType == ERT_Palette))
         {
             /* nothing to check since all type 1 and 2 attributes are identical */
         } else {
@@ -2302,6 +2336,12 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                 case ERT_Stereometric:
                     /* nothing to check */
                     break;
+                case ERT_Surface:
+                    if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                        result = EC_InvalidTag;
+                    break;
                 case ERT_Image:
                 default:
                     {
@@ -2516,6 +2556,8 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
             case ERT_ValueMap:
             case ERT_HangingProtocol:
             case ERT_Stereometric:
+            case ERT_Palette:
+            case ERT_Surface:
                 /* The attribute ReferencedSOPInstanceUID is automatically
                  * put into a Directory Record when a filename is present.
                 */
@@ -2856,7 +2898,8 @@ DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmDirectoryRecor
             copyElementType1(dataset, DCM_PresentationCreationDate, record, sourceFilename);
             copyElementType1(dataset, DCM_PresentationCreationTime, record, sourceFilename);
             copyElementType2(dataset, DCM_ContentCreatorName, record, sourceFilename);
-            copyElementType1(dataset, DCM_ReferencedSeriesSequence, record, sourceFilename);
+            copyElementType1C(dataset, DCM_ReferencedSeriesSequence, record, sourceFilename);
+            // TODO: add support for BlendingSequence (1C)
         } else {
             printRecordErrorMessage(record->error(), ERT_Presentation, "create");
             /* free memory */
@@ -3252,6 +3295,8 @@ DcmDirectoryRecord *DicomDirInterface::buildEncapDocRecord(DcmDirectoryRecord *r
             copyElementType2(dataset, DCM_ContentTime, record, sourceFilename);
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
             copyElementType2(dataset, DCM_DocumentTitle, record, sourceFilename);
+            /* required if encapsulated document is an HL7 Structured Document */
+            copyElementType1C(dataset, DCM_HL7InstanceIdentifier, record, sourceFilename);
             copyElementType1(dataset, DCM_MIMETypeOfEncapsulatedDocument, record, sourceFilename);
             /* baseline context group 7020 is not checked */
             copyElementType2(dataset, DCM_ConceptNameCodeSequence, record, sourceFilename);
@@ -3300,6 +3345,41 @@ DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmDirectoryRecord *r
 }
 
 
+// create or update hanging protocol record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildHangingProtocolRecord(DcmDirectoryRecord *record,
+                                                                  DcmItem *dataset,
+                                                                  const OFString &referencedFileID,
+                                                                  const OFString &sourceFilename)
+{
+    /* create new hanging protocol record */
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_HangingProtocol, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            copyElementType1(dataset, DCM_HangingProtocolName, record, sourceFilename);
+            copyElementType1(dataset, DCM_HangingProtocolDescription, record, sourceFilename);
+            copyElementType1(dataset, DCM_HangingProtocolLevel, record, sourceFilename);
+            copyElementType1(dataset, DCM_HangingProtocolCreator, record, sourceFilename);
+            copyElementType1(dataset, DCM_HangingProtocolCreationDateTime, record, sourceFilename);
+            // open issue: shall we do further checks on the sequence content?
+            copyElementType1(dataset, DCM_HangingProtocolDefinitionSequence, record, sourceFilename);
+            copyElementType1(dataset, DCM_NumberOfPriorsReferenced, record, sourceFilename);
+            copyElementType2(dataset, DCM_HangingProtocolUserIdentificationCodeSequence, record, sourceFilename);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_HangingProtocol, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        DCMDATA_ERROR("out of memory (creating patient record)");
+    return record;
+}
+
+
 // create or update stereometric record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildStereometricRecord(DcmDirectoryRecord *record,
                                                                DcmItem * /* dataset */ ,
@@ -3323,6 +3403,64 @@ DcmDirectoryRecord *DicomDirInterface::buildStereometricRecord(DcmDirectoryRecor
         }
     } else
         printRecordErrorMessage(EC_MemoryExhausted, ERT_Stereometric, "create");
+    return record;
+}
+
+
+// create or update palette record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildPaletteRecord(DcmDirectoryRecord *record,
+                                                          DcmItem *dataset,
+                                                          const OFString &referencedFileID,
+                                                          const OFString &sourceFilename)
+{
+    /* create new palette record */
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Palette, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* copy attribute values from dataset to palette record */
+            copyElementType1(dataset, DCM_ContentLabel, record, sourceFilename);
+            copyElementType2(dataset, DCM_ContentDescription, record, sourceFilename);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_Palette, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_Palette, "create");
+    return record;
+}
+
+
+// create or update surface record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildSurfaceRecord(DcmDirectoryRecord *record,
+                                                          DcmItem *dataset,
+                                                          const OFString &referencedFileID,
+                                                          const OFString &sourceFilename)
+{
+    /* create new surface record */
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Surface, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* copy attribute values from dataset to surface record */
+            copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
+            copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_Surface, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_Surface, "create");
     return record;
 }
 
@@ -3439,40 +3577,6 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *reco
         }
     } else
         DCMDATA_ERROR("out of memory (creating image record)");
-    return record;
-}
-
-
-// create or update hanging protocol record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildHangingProtocolRecord(DcmDirectoryRecord *record,
-                                                                  DcmItem *dataset,
-                                                                  const OFString &referencedFileID,
-                                                                  const OFString &sourceFilename)
-{
-    /* create new hanging protocol record */
-    if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_HangingProtocol, referencedFileID.c_str(), sourceFilename.c_str());
-    if (record != NULL)
-    {
-        /* check whether new record is ok */
-        if (record->error().good())
-        {
-            copyElementType1(dataset, DCM_HangingProtocolName, record, sourceFilename);
-            copyElementType1(dataset, DCM_HangingProtocolDescription, record, sourceFilename);
-            copyElementType1(dataset, DCM_HangingProtocolLevel, record, sourceFilename);
-            copyElementType1(dataset, DCM_HangingProtocolCreator, record, sourceFilename);
-            copyElementType1(dataset, DCM_HangingProtocolCreationDateTime, record, sourceFilename);
-            copyElementType1(dataset, DCM_HangingProtocolDefinitionSequence, record, sourceFilename);
-            copyElementType1(dataset, DCM_NumberOfPriorsReferenced, record, sourceFilename);
-            copyElementType2(dataset, DCM_HangingProtocolUserIdentificationCodeSequence, record, sourceFilename);
-        } else {
-            printRecordErrorMessage(record->error(), ERT_HangingProtocol, "create");
-            /* free memory */
-            delete record;
-            record = NULL;
-        }
-    } else
-        DCMDATA_ERROR("out of memory (creating patient record)");
     return record;
 }
 
@@ -3750,6 +3854,12 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                 case ERT_Stereometric:
                     record = buildStereometricRecord(record, dataset, referencedFileID, sourceFilename);
                     break;
+                case ERT_Palette:
+                    record = buildPaletteRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_Surface:
+                    record = buildSurfaceRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
                 default:
                     /* it can only be an image */
                     record = buildImageRecord(record, dataset, referencedFileID, sourceFilename);
@@ -3927,6 +4037,8 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
                 case ERT_EncapDoc:
                 case ERT_ValueMap:
                 case ERT_Stereometric:
+                case ERT_Palette:
+                case ERT_Surface:
                     /* nothing to do */
                     break;
                 default:
@@ -4880,6 +4992,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.45  2010-09-30 17:18:15  joergr
+ *  Added support for new non-image Storage SOP Classes that require the new
+ *  directory record types PALETTE and SURFACE. Also updated existing records.
+ *
  *  Revision 1.44  2010-09-30 07:53:23  joergr
  *  Fixed typo in the name of a Storage SOP Class (copied from DICOM part 6).
  *

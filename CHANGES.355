@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.30 (riesmeier)
 
+- Added support for new non-image Storage SOP Classes that require the new
+  directory record types PALETTE and SURFACE. Also updated existing records.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+
 - Added new directory record types HL7 STRUC DOC, PALETTE and SURFACE.
   Affects: dcmdata/include/dcmtk/dcmdata/dcdirrec.h
            dcmdata/libsrc/dcdirrec.cc

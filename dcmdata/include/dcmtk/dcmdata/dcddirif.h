@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-10 11:02:58 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-30 17:18:10 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -910,6 +910,18 @@ class DicomDirInterface
                                             const OFString &referencedFileID,
                                             const OFString &sourceFilename);
 
+    /** create or update hanging protocol record and copy required values from dataset
+     *  @param record record to be updated, use NULL to create a new one
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new or updated record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildHangingProtocolRecord(DcmDirectoryRecord *record,
+                                                   DcmItem *dataset,
+                                                   const OFString &referencedFileID,
+                                                   const OFString &sourceFilename);
+
     /** create or update stereometric record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
      *  @param dataset DICOM dataset of the current file
@@ -922,6 +934,30 @@ class DicomDirInterface
                                                 const OFString &referencedFileID,
                                                 const OFString &sourceFilename);
 
+    /** create or update palette record and copy required values from dataset
+     *  @param record record to be updated, use NULL to create a new one
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new or updated record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildPaletteRecord(DcmDirectoryRecord *record,
+                                           DcmItem *dataset,
+                                           const OFString &referencedFileID,
+                                           const OFString &sourceFilename);
+
+    /** create or update surface record and copy required values from dataset
+     *  @param record record to be updated, use NULL to create a new one
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new or updated record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildSurfaceRecord(DcmDirectoryRecord *record,
+                                           DcmItem *dataset,
+                                           const OFString &referencedFileID,
+                                           const OFString &sourceFilename);
+
     /** create or update image record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
      *  @param dataset DICOM dataset of the current file
@@ -933,18 +969,6 @@ class DicomDirInterface
                                          DcmItem *dataset,
                                          const OFString &referencedFileID,
                                          const OFString &sourceFilename);
-
-    /** create or update hanging protocol record and copy required values from dataset
-     *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
-     *  @param referencedFileID value of the Referenced File ID attribute
-     *  @param sourceFilename name of the source DICOM file
-     *  @return pointer to new or updated record, NULL if an error occurred
-     */
-    DcmDirectoryRecord *buildHangingProtocolRecord(DcmDirectoryRecord *record,
-                                                   DcmItem *dataset,
-                                                   const OFString &referencedFileID,
-                                                   const OFString &sourceFilename);
 
     /** create icon image from given PGM (portable gray map) file.
      *  Please note that only grayscale images in binary format are currently
@@ -1432,6 +1456,10 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.19  2010-09-30 17:18:10  joergr
+ * Added support for new non-image Storage SOP Classes that require the new
+ * directory record types PALETTE and SURFACE. Also updated existing records.
+ *
  * Revision 1.18  2010-08-10 11:02:58  uli
  * Removed undefined function printFileErrorMessage().
  *
