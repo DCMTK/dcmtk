@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:44 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-09-30 16:43:18 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 
+
 /// types of directory records in a DICOMDIR
 typedef enum {
     /// root
@@ -53,7 +54,7 @@ typedef enum {
     ERT_Image = 4,
     /// image box (retired)
     ERT_ImageBox = 5,
-    /// interpretation
+    /// interpretation (retired)
     ERT_Interpretation = 6,
     /// modality LUT (retired)
     ERT_ModalityLut = 7,
@@ -73,9 +74,9 @@ typedef enum {
     ERT_Series = 14,
     /// study
     ERT_Study = 15,
-    /// study component
+    /// study component (retired)
     ERT_StudyComponent = 16,
-    /// topic
+    /// topic (retired)
     ERT_Topic = 17,
     /// visit (retired)
     ERT_Visit = 18,
@@ -114,7 +115,13 @@ typedef enum {
     /// hanging protocol
     ERT_HangingProtocol = 35,
     /// stereometric relationships
-    ERT_Stereometric = 36
+    ERT_Stereometric = 36,
+    /// HL7 structured document
+    ERT_HL7StrucDoc = 37,
+    /// palette
+    ERT_Palette = 38,
+    /// surface
+    ERT_Surface = 39
 } E_DirRecType;
 
 
@@ -256,9 +263,9 @@ public:
      *  @param resultStack Depending on the search mode (see below), this parameter
      *     either serves as an input and output parameter, or as an output parameter
      *     only (the latter being the default). When used as an input parameter,
-     *     the cursor stack defines the start position for the search within a 
+     *     the cursor stack defines the start position for the search within a
      *     hierarchical DICOM dataset. Upon successful return, the stack contains
-     *     the position of the element found, in the form of a pointer to each dataset, 
+     *     the position of the element found, in the form of a pointer to each dataset,
      *     sequence, item and element from the main dataset down to the found element.
      *  @param mode search mode, controls how the search stack is handled.
      *     In the default mode, ESM_fromHere, the stack is ignored on input, and
@@ -269,7 +276,7 @@ public:
      *    into the sequences and items of the dataset. If false, only the current container
      *    (sequence or item) will be traversed.
      *  @return EC_Normal if found, EC_TagNotFound if not found, an error code is something went wrong.
-     */     
+     */
     virtual OFCondition search(const DcmTagKey &xtag,               // in
                                DcmStack &resultStack,               // inout
                                E_SearchMode mode = ESM_fromHere,    // in
@@ -309,7 +316,7 @@ public:
      *  @param where index where to insert object
      *  @param before flag indicating whether to insert the record before or after the element identified by where
      *  @return EC_Normal upon success, an error code otherwise
-     */     
+     */
     virtual OFCondition insertSub(DcmDirectoryRecord* dirRec,
                                   unsigned long where = DCM_EndOfListIndex,
                                   OFBool before = OFFalse);
@@ -342,7 +349,7 @@ public:
      *  DcmDirectoryRecord object.
      *  @param num index number of element, must be < cardSub()
      *  @return pointer to DcmDirectoryRecord if found, NULL otherwise
-     */    
+     */
     virtual DcmDirectoryRecord* removeSub(const unsigned long num);
 
     /** remove child directory record. If found, the record is not deleted but
@@ -356,15 +363,15 @@ public:
     /** remove child directory record and delete file referenced by that record, if any
      *  @param num index number of element, must be < cardSub()
      *  @return status, EC_Normal upon success, an error code otherwise
-     */     
+     */
     virtual OFCondition deleteSubAndPurgeFile(const unsigned long num);
 
     /** remove child directory record and delete file referenced by that record, if any
      *  @param dirRec pointer to element to be removed from list
      *  @return status, EC_Normal upon success, an error code otherwise
-     */     
+     */
     virtual OFCondition deleteSubAndPurgeFile(DcmDirectoryRecord *dirRec);
-    
+
     /// revert the list of child directory records to default constructed (empty) state
     virtual OFCondition clearSub();
 
@@ -441,6 +448,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
+** Revision 1.43  2010-09-30 16:43:18  joergr
+** Added new directory record types HL7 STRUC DOC, PALETTE and SURFACE.
+**
 ** Revision 1.42  2010-03-01 09:08:44  uli
 ** Removed some unnecessary include directives in the headers.
 **

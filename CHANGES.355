@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.30 (riesmeier)
 
+- Added new directory record types HL7 STRUC DOC, PALETTE and SURFACE.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/libsrc/dcdirrec.cc
+
 - Added two Model UIDs from Supplement 118 (Application Hosting).
   Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
            dcmdata/libsrc/dcuid.cc

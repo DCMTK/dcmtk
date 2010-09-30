@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-03 10:28:41 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Update Date:      $Date: 2010-09-30 16:43:21 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,7 +102,10 @@ static const char *DRTypeNames[] =
     "ENCAP DOC",
     "VALUE MAP",
     "HANGING PROTOCOL",
-    "STEREOMETRIC"
+    "STEREOMETRIC",
+    "HL7 STRUC DOC",
+    "PALETTE",
+    "SURFACE"
 };
 
 static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
@@ -326,9 +329,10 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
             {
                 case ERT_Patient:
                 case ERT_PrintQueue:
-                case ERT_Private:
                 case ERT_Topic:
                 case ERT_HangingProtocol:
+                case ERT_Palette:
+                case ERT_Private:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -363,8 +367,9 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_Patient:
             switch (lowerRecord)
             {
-                case ERT_Private:
                 case ERT_Study:
+                case ERT_HL7StrucDoc:
+                case ERT_Private:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -403,7 +408,6 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Image:
                 case ERT_ModalityLut:
                 case ERT_Overlay:
-                case ERT_Private:
                 case ERT_VoiLut:
                 case ERT_SRDocument:
                 case ERT_Presentation:
@@ -421,6 +425,8 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_EncapDoc:
                 case ERT_ValueMap:
                 case ERT_Stereometric:
+                case ERT_Surface:
+                case ERT_Private:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -432,11 +438,11 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
             switch (lowerRecord)
             {
                 case ERT_FilmSession:
-                case ERT_Private:
                 case ERT_Results:
                 case ERT_Series:
                 case ERT_StudyComponent:
                 case ERT_Visit:
+                case ERT_Private:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -452,7 +458,6 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Image:
                 case ERT_ModalityLut:
                 case ERT_Overlay:
-                case ERT_Private:
                 case ERT_Series:
                 case ERT_Study:
                 case ERT_VoiLut:
@@ -469,9 +474,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Fiducial:
                 case ERT_RawData:
                 case ERT_Spectroscopy:
-                case ERT_EncapDoc:
-                case ERT_ValueMap:
-                case ERT_Stereometric:
+                case ERT_Private:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -488,7 +491,6 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_Interpretation:
         case ERT_ModalityLut:
         case ERT_Overlay:
-        case ERT_Private:
         case ERT_StudyComponent:
         case ERT_Visit:
         case ERT_VoiLut:
@@ -509,6 +511,10 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_ValueMap:
         case ERT_HangingProtocol:
         case ERT_Stereometric:
+        case ERT_HL7StrucDoc:
+        case ERT_Palette:
+        case ERT_Surface:
+        case ERT_Private:
             switch (lowerRecord)
             {
                 case ERT_Private:
@@ -1521,6 +1527,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.71  2010-09-30 16:43:21  joergr
+ * Added new directory record types HL7 STRUC DOC, PALETTE and SURFACE.
+ *
  * Revision 1.70  2010-06-03 10:28:41  joergr
  * Replaced calls to strerror() by new helper function OFStandard::strerror()
  * which results in using the thread safe version of strerror() if available.
