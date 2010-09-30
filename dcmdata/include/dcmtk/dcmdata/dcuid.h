@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-28 07:55:53 $
- *  CVS/RCS Revision: $Revision: 1.85 $
+ *  Update Date:      $Date: 2010-09-30 07:53:17 $
+ *  CVS/RCS Revision: $Revision: 1.86 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,7 +426,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_KeratometryMeasurementsStorage                         "1.2.840.10008.5.1.4.1.1.78.3"
 #define UID_SubjectiveRefractionMeasurementsStorage                "1.2.840.10008.5.1.4.1.1.78.4"
 #define UID_VisualAcuityMeasurementsStorage                        "1.2.840.10008.5.1.4.1.1.78.5"
-#define UID_SpectaclePrescriptionReportsStorage                    "1.2.840.10008.5.1.4.1.1.78.6"
+#define UID_SpectaclePrescriptionReportStorage                     "1.2.840.10008.5.1.4.1.1.78.6"
 #define UID_OphthalmicAxialMeasurementsStorage                     "1.2.840.10008.5.1.4.1.1.78.7"
 #define UID_IntraocularLensCalculationsStorage                     "1.2.840.10008.5.1.4.1.1.78.8"
 #define UID_MacularGridThicknessAndVolumeReportStorage             "1.2.840.10008.5.1.4.1.1.79.1"
@@ -689,6 +689,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.86  2010-09-30 07:53:17  joergr
+** Fixed typo in the name of a Storage SOP Class (copied from DICOM part 6).
+**
 ** Revision 1.85  2010-09-28 07:55:53  joergr
 ** Added VL Whole Slide Microscopy Image Storage SOP Class (Supplement 145).
 **

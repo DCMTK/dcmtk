@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-28 08:45:08 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2010-09-30 07:53:23 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -637,7 +637,7 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_ChestCADSRStorage) ||
              compare(sopClass, UID_XRayRadiationDoseSRStorage) ||
              compare(sopClass, UID_ColonCADSRStorage) ||
-             compare(sopClass, UID_SpectaclePrescriptionReportsStorage) ||
+             compare(sopClass, UID_SpectaclePrescriptionReportStorage) ||
              compare(sopClass, UID_MacularGridThicknessAndVolumeReportStorage))
     {
         result = ERT_SRDocument;
@@ -1396,7 +1396,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_ChestCADSRStorage) ||
                                 compare(mediaSOPClassUID, UID_XRayRadiationDoseSRStorage) ||
                                 compare(mediaSOPClassUID, UID_ColonCADSRStorage) ||
-                                compare(mediaSOPClassUID, UID_SpectaclePrescriptionReportsStorage) ||
+                                compare(mediaSOPClassUID, UID_SpectaclePrescriptionReportStorage) ||
                                 compare(mediaSOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage);
                      }
                     /* is it one of the waveform SOP Classes? */
@@ -4880,6 +4880,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.44  2010-09-30 07:53:23  joergr
+ *  Fixed typo in the name of a Storage SOP Class (copied from DICOM part 6).
+ *
  *  Revision 1.43  2010-09-28 08:45:08  joergr
  *  Added new non-image Storage SOP Classes that do not require a new directory
  *  record type (e.g. SR DOCUMENT and WAVEFORM).

@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.09.30 (riesmeier)
+
+- Fixed typo in the name of a Storage SOP Class (copied from DICOM part 6).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
 **** Changes from 2010.09.29 (riesmeier)
 
 - Enhanced checking and reporting of standard violations in write() methods.
@@ -34,7 +46,7 @@ Changes between releases are documented here.
 
 - Enhanced comments on attributes from Enhanced General Equipment Module.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
-  
+
 - Fixed wrong by-reference relationships in constraint checker for Colon CAD.
   Affects: dcmsr/libsrc/dsrcolcc.cc
 

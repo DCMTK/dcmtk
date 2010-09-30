@@ -526,7 +526,7 @@ AutorefractionMeasurementsStorage                    1.2.840.10008.5.1.4.1.1.78.
 KeratometryMeasurementsStorage                       1.2.840.10008.5.1.4.1.1.78.3
 SubjectiveRefractionMeasurementsStorage              1.2.840.10008.5.1.4.1.1.78.4
 VisualAcuityMeasurementsStorage                      1.2.840.10008.5.1.4.1.1.78.5
-SpectaclePrescriptionReportsStorage                  1.2.840.10008.5.1.4.1.1.78.6
+SpectaclePrescriptionReportStorage                   1.2.840.10008.5.1.4.1.1.78.6
 OphthalmicAxialMeasurementsStorage                   1.2.840.10008.5.1.4.1.1.78.7
 IntraocularLensCalculationsStorage                   1.2.840.10008.5.1.4.1.1.78.8
 MacularGridThicknessAndVolumeReportStorage           1.2.840.10008.5.1.4.1.1.79.1
@@ -691,7 +691,7 @@ AutorefractionMeasurementsStorage                    1.2.840.10008.5.1.4.1.1.78.
 KeratometryMeasurementsStorage                       1.2.840.10008.5.1.4.1.1.78.3
 SubjectiveRefractionMeasurementsStorage              1.2.840.10008.5.1.4.1.1.78.4
 VisualAcuityMeasurementsStorage                      1.2.840.10008.5.1.4.1.1.78.5
-SpectaclePrescriptionReportsStorage                  1.2.840.10008.5.1.4.1.1.78.6
+SpectaclePrescriptionReportStorage                   1.2.840.10008.5.1.4.1.1.78.6
 OphthalmicAxialMeasurementsStorage                   1.2.840.10008.5.1.4.1.1.78.7
 IntraocularLensCalculationsStorage                   1.2.840.10008.5.1.4.1.1.78.8
 MacularGridThicknessAndVolumeReportStorage           1.2.840.10008.5.1.4.1.1.79.1

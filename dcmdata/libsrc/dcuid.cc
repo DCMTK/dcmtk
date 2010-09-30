@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-28 07:56:07 $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  Update Date:      $Date: 2010-09-30 07:53:23 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -217,7 +217,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_SegmentationStorage,                                 "SegmentationStorage" },
     { UID_SpatialFiducialsStorage,                             "SpatialFiducialsStorage" },
     { UID_SpatialRegistrationStorage,                          "SpatialRegistrationStorage" },
-    { UID_SpectaclePrescriptionReportsStorage,                 "SpectaclePrescriptionReportsStorage" },
+    { UID_SpectaclePrescriptionReportStorage,                  "SpectaclePrescriptionReportStorage" },
     { UID_StereometricRelationshipStorage,                     "StereometricRelationshipStorage" },
     { UID_SubjectiveRefractionMeasurementsStorage,             "SubjectiveRefractionMeasurementsStorage" },
     { UID_SurfaceSegmentationStorage,                          "SurfaceSegmentationStorage" },
@@ -548,7 +548,7 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_SegmentationStorage,
     UID_SpatialFiducialsStorage,
     UID_SpatialRegistrationStorage,
-    UID_SpectaclePrescriptionReportsStorage,
+    UID_SpectaclePrescriptionReportStorage,
     UID_StereometricRelationshipStorage,
     UID_SubjectiveRefractionMeasurementsStorage,
     UID_SurfaceSegmentationStorage,
@@ -679,7 +679,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_SegmentationStorage,
     UID_SpatialFiducialsStorage,
     UID_SpatialRegistrationStorage,
-    UID_SpectaclePrescriptionReportsStorage,
+    UID_SpectaclePrescriptionReportStorage,
     UID_StereometricRelationshipStorage,
     UID_SubjectiveRefractionMeasurementsStorage,
     UID_SurfaceSegmentationStorage,
@@ -975,7 +975,7 @@ static const DcmModalityTable modalities[] = {
     { UID_SegmentationStorage,                                     "SG",  4096 },
     { UID_SpatialFiducialsStorage,                                 "FID", 4096 },
     { UID_SpatialRegistrationStorage,                              "RGs", 4096 },
-    { UID_SpectaclePrescriptionReportsStorage,                     "SRs", 4096 },
+    { UID_SpectaclePrescriptionReportStorage,                      "SRs", 4096 },
     { UID_StereometricRelationshipStorage,                         "OPr", 4096 },
     { UID_SubjectiveRefractionMeasurementsStorage,                 "OPs", 4096 },
     { UID_SurfaceSegmentationStorage,                              "SGs", 4096 },
@@ -1592,6 +1592,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.84  2010-09-30 07:53:23  joergr
+** Fixed typo in the name of a Storage SOP Class (copied from DICOM part 6).
+**
 ** Revision 1.83  2010-09-28 07:56:07  joergr
 ** Added VL Whole Slide Microscopy Image Storage SOP Class (Supplement 145).
 **
