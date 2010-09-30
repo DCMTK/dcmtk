@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.09.30 (riesmeier)
 
+- Added two Model UIDs from Supplement 118 (Application Hosting).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+
 - Added support for the Spectacle Prescription Report IOD.
   Added:   dcmsr/include/dcmtk/dcmsr/dsrspecc.h
            dcmsr/libsrc/dsrspecc.cc

@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-30 07:53:23 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Update Date:      $Date: 2010-09-30 14:08:17 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -365,6 +365,10 @@ static const UIDNameMap uidNameMap[] = {
 
     // Instance Availability Notification
     { UID_InstanceAvailabilityNotificationSOPClass,            "InstanceAvailabilityNotificationSOPClass" },
+
+    // Application Hosting
+    { UID_NativeDICOMModel,                                    "NativeDICOMModel" },
+    { UID_AbstractMultiDimensionalImageModel,                  "AbstractMultiDimensionalImageModel" },
 
     // Other
     { UID_RETIRED_BasicStudyContentNotificationSOPClass,       "RETIRED_BasicStudyContentNotificationSOPClass" },
@@ -1592,6 +1596,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.85  2010-09-30 14:08:17  joergr
+** Added two Model UIDs from Supplement 118 (Application Hosting).
+**
 ** Revision 1.84  2010-09-30 07:53:23  joergr
 ** Fixed typo in the name of a Storage SOP Class (copied from DICOM part 6).
 **

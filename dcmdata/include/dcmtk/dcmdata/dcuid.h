@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-30 07:53:17 $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  Update Date:      $Date: 2010-09-30 14:08:19 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -574,6 +574,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 // Instance Availability Notification
 #define UID_InstanceAvailabilityNotificationSOPClass               "1.2.840.10008.5.1.4.33"
 
+// Application Hosting
+#define UID_NativeDICOMModel                                       "1.2.840.10008.7.1.1"
+#define UID_AbstractMultiDimensionalImageModel                     "1.2.840.10008.7.1.2"
+
 // Other
 #define UID_VerificationSOPClass                                   "1.2.840.10008.1.1"
 #define UID_RETIRED_BasicStudyContentNotificationSOPClass          "1.2.840.10008.1.9"
@@ -689,6 +693,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.87  2010-09-30 14:08:19  joergr
+** Added two Model UIDs from Supplement 118 (Application Hosting).
+**
 ** Revision 1.86  2010-09-30 07:53:17  joergr
 ** Fixed typo in the name of a Storage SOP Class (copied from DICOM part 6).
 **
