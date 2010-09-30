@@ -156,15 +156,17 @@ printing:
 The \b dsrdump utility supports the following SOP Classes:
 
 \verbatim
-BasicTextSRStorage                 1.2.840.10008.5.1.4.1.1.88.11
-EnhancedSRStorage                  1.2.840.10008.5.1.4.1.1.88.22
-ComprehensiveSRStorage             1.2.840.10008.5.1.4.1.1.88.33
-ProcedureLogStorage                1.2.840.10008.5.1.4.1.1.88.40
-MammographyCADSRStorage            1.2.840.10008.5.1.4.1.1.88.50
-KeyObjectSelectionDocumentStorage  1.2.840.10008.5.1.4.1.1.88.59
-ChestCADSRStorage                  1.2.840.10008.5.1.4.1.1.88.65
-XRayRadiationDoseSRStorage         1.2.840.10008.5.1.4.1.1.88.67
-ColonCADSRStorage                  1.2.840.10008.5.1.4.1.1.88.69
+SpectaclePrescriptionReportStorage          1.2.840.10008.5.1.4.1.1.78.6
+MacularGridThicknessAndVolumeReportStorage  1.2.840.10008.5.1.4.1.1.79.1
+BasicTextSRStorage                          1.2.840.10008.5.1.4.1.1.88.11
+EnhancedSRStorage                           1.2.840.10008.5.1.4.1.1.88.22
+ComprehensiveSRStorage                      1.2.840.10008.5.1.4.1.1.88.33
+ProcedureLogStorage                         1.2.840.10008.5.1.4.1.1.88.40
+MammographyCADSRStorage                     1.2.840.10008.5.1.4.1.1.88.50
+KeyObjectSelectionDocumentStorage           1.2.840.10008.5.1.4.1.1.88.59
+ChestCADSRStorage                           1.2.840.10008.5.1.4.1.1.88.65
+XRayRadiationDoseSRStorage                  1.2.840.10008.5.1.4.1.1.88.67
+ColonCADSRStorage                           1.2.840.10008.5.1.4.1.1.88.69
 \endverbatim
 
 \section logging LOGGING
