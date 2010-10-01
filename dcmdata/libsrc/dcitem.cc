@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-23 08:50:25 $
- *  CVS/RCS Revision: $Revision: 1.146 $
+ *  Update Date:      $Date: 2010-10-01 13:55:04 $
+ *  CVS/RCS Revision: $Revision: 1.147 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2819,6 +2819,28 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
 
 /* --- findAndXXX functions: find an element and do something with it --- */
 
+OFCondition DcmItem::findAndInsertCopyOfElement(const DcmTagKey &tagKey,
+                                                DcmItem *destItem,
+                                                const OFBool replaceOld)
+{
+    OFCondition status = EC_IllegalParameter;
+    if (destItem != NULL)
+    {
+        DcmElement *delem = NULL;
+        /* get copy of element from current dataset */
+        status = findAndGetElement(tagKey, delem, OFFalse /*searchIntoSub*/, OFTrue /*createCopy*/);
+        if (status.good())
+        {
+            /* ... and insert it into the destination dataset */
+            status = destItem->insert(delem, replaceOld);
+            if (status.bad())
+                delete delem;
+        }
+    }
+    return status;
+}
+
+
 OFCondition DcmItem::findAndDeleteElement(const DcmTagKey &tagKey,
                                           const OFBool allOccurrences,
                                           const OFBool searchIntoSub)
@@ -3622,6 +3644,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.147  2010-10-01 13:55:04  joergr
+** Added new helper function findAndInsertCopyOfElement().
+**
 ** Revision 1.146  2010-06-23 08:50:25  joergr
 ** Moved log output to another code line in order to avoid a possible NULL
 ** pointer dereference.

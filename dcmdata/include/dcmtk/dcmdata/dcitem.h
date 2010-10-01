@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:44 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-01 13:55:01 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -379,7 +379,8 @@ class DcmItem
      *  @param searchIntoSub if true, the search will be performed hierarchically descending
      *    into the sequences and items of the dataset. If false, only the current container
      *    (sequence or item) will be traversed.
-     *  @return EC_Normal if found, EC_TagNotFound if not found, an error code is something went wrong.
+     *  @return EC_Normal if found, EC_TagNotFound if not found, an error code is something
+     *    went wrong.
      */
     virtual OFCondition search(const DcmTagKey &xtag,              // in
                                DcmStack &resultStack,              // inout
@@ -438,9 +439,8 @@ class DcmItem
      *    if false only search through this dataset
      *  @return true if tag found, false otherwise
      */
-    OFBool tagExists(
-      const DcmTagKey &key,
-      OFBool searchIntoSub = OFFalse);
+    OFBool tagExists(const DcmTagKey &key,
+                     OFBool searchIntoSub = OFFalse);
 
     /** check if an element with the given attribute tag exists in the dataset
      *  and has a non-empty value (i.e., length > 0)
@@ -449,9 +449,8 @@ class DcmItem
      *    if false only search through this dataset
      *  @return true if tag found and element non-empty, false otherwise
      */
-    OFBool tagExistsWithValue(
-      const DcmTagKey &key,
-      OFBool searchIntoSub = OFFalse);
+    OFBool tagExistsWithValue(const DcmTagKey &key,
+                              OFBool searchIntoSub = OFFalse);
 
     /* --- findAndGet functions: find an element and get it or the value, respectively --- */
 
@@ -793,6 +792,21 @@ class DcmItem
 
     /* --- findAndXXX functions: find an element and do something with it --- */
 
+    /** find element, create a copy and insert it into the given destination dataset.
+     *  This functions never performs a deep search (i.e. does not search into sequence
+     *  of items). Empty elements are also copied. However, if the given tag is not
+     *  found in the current dataset, EC_TagNotFound is returned and the destination
+     *  dataset remains unchanged.
+     *  Applicable to all DICOM value representations (VR).
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param destItem destination dataset to which the copied element is inserted
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    OFCondition findAndInsertCopyOfElement(const DcmTagKey &tagKey,
+                                           DcmItem *destItem,
+                                           const OFBool replaceOld = OFTrue);
+
     /** find element, remove it from the dataset and free the associated memory.
      *  Applicable to all DICOM value representations (VR).
      *  @param tagKey DICOM tag specifying the attribute to be searched for
@@ -1078,7 +1092,8 @@ class DcmItem
      *  @param tag tag key to be searched
      *  @param resultStack upon successful return, pointer to element pushed onto this stack
      *  @param searchIntoSub flag indicating whether recursive search is desired
-     *  @return EC_Normal if tag found and stack modified, EC_TagNotFound if tag not found and stack unmodified
+     *  @return EC_Normal if tag found and stack modified, EC_TagNotFound if tag not found
+     *    and stack unmodified
      */
     OFCondition searchSubFromHere(const DcmTagKey &tag,          // in
                                   DcmStack &resultStack,         // inout
@@ -1150,6 +1165,9 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.81  2010-10-01 13:55:01  joergr
+** Added new helper function findAndInsertCopyOfElement().
+**
 ** Revision 1.80  2010-03-01 09:08:44  uli
 ** Removed some unnecessary include directives in the headers.
 **

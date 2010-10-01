@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.01 (riesmeier)
 
+- Added new helper function findAndInsertCopyOfElement().
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
 - Added support for new non-image Storage SOP Classes that require the new
   directory record type MEASUREMENT. Also fixed issues with other record types.
   Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
