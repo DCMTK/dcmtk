@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.01 (riesmeier)
+
+- Added new directory record type MEASUREMENT from Supplement 144.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/libsrc/dcdirrec.cc
+
 **** Changes from 2010.10.01 (schlachter)
 
 - Fix some code duplication in the FileAppenders.

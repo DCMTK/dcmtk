@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-30 16:43:21 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Update Date:      $Date: 2010-10-01 08:06:19 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,8 @@ static const char *DRTypeNames[] =
     "STEREOMETRIC",
     "HL7 STRUC DOC",
     "PALETTE",
-    "SURFACE"
+    "SURFACE",
+    "MEASUREMENT"
 };
 
 static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
@@ -426,6 +427,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_ValueMap:
                 case ERT_Stereometric:
                 case ERT_Surface:
+                case ERT_Measurement:
                 case ERT_Private:
                     l_error = EC_Normal;
                     break;
@@ -514,6 +516,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_HL7StrucDoc:
         case ERT_Palette:
         case ERT_Surface:
+        case ERT_Measurement:
         case ERT_Private:
             switch (lowerRecord)
             {
@@ -1527,6 +1530,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.72  2010-10-01 08:06:19  joergr
+ * Added new directory record type MEASUREMENT from Supplement 144.
+ *
  * Revision 1.71  2010-09-30 16:43:21  joergr
  * Added new directory record types HL7 STRUC DOC, PALETTE and SURFACE.
  *

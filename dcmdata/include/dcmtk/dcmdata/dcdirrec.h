@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-30 16:43:18 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2010-10-01 08:06:16 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,7 +121,9 @@ typedef enum {
     /// palette
     ERT_Palette = 38,
     /// surface
-    ERT_Surface = 39
+    ERT_Surface = 39,
+    /// measurement
+    ERT_Measurement = 40
 } E_DirRecType;
 
 
@@ -448,6 +450,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
+** Revision 1.44  2010-10-01 08:06:16  joergr
+** Added new directory record type MEASUREMENT from Supplement 144.
+**
 ** Revision 1.43  2010-09-30 16:43:18  joergr
 ** Added new directory record types HL7 STRUC DOC, PALETTE and SURFACE.
 **
