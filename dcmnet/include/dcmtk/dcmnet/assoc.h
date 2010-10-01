@@ -67,10 +67,10 @@
 **  Module Prefix: ASC_
 **
 **
-** Last Update:   $Author: joergr $
-** Update Date:   $Date: 2010-08-26 09:26:41 $
+** Last Update:   $Author: uli $
+** Update Date:   $Date: 2010-10-01 12:25:29 $
 ** Source File:   $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/assoc.h,v $
-** CVS/RCS Revision:  $Revision: 1.30 $
+** CVS/RCS Revision:  $Revision: 1.31 $
 ** Status:    $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -514,7 +514,7 @@ enum ASC_associateType
 {
     ASC_ASSOC_RQ,
     ASC_ASSOC_AC,
-    ASC_ASSOC_RJ,
+    ASC_ASSOC_RJ
 };
 
 OFString&
@@ -632,6 +632,9 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
+** Revision 1.31  2010-10-01 12:25:29  uli
+** Fixed most compiler warnings in remaining modules.
+**
 ** Revision 1.30  2010-08-26 09:26:41  joergr
 ** Fixed incorrect behavior of association acceptors during SCP/SCU role
 ** selection negotiation.

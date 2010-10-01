@@ -29,6 +29,16 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcxfer.cc
            dcmdata/libsrc/vrscani.h
 
+- Fixed most compiler warnings in remaining modules.
+  Affects: dcmnet/include/dcmtk/dcmnet/assoc.h
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+           dcmqrdb/libsrc/dcmqrcbg.cc
+           dcmqrdb/libsrc/dcmqrcbm.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmtls/include/dcmtk/dcmtls/tlsscu.h
+
 **** Changes from 2010.09.30 (riesmeier)
 
 - Added support for new non-image Storage SOP Classes that require the new

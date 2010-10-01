@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveGetContext
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-09 16:54:32 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-01 12:25:29 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-static void getSubOpProgressCallback(void * callbackData,
+static void getSubOpProgressCallback(void * /* callbackData */,
     T_DIMSE_StoreProgress *progress,
     T_DIMSE_C_StoreRQ * /*req*/)
 {
@@ -345,6 +345,9 @@ void DcmQueryRetrieveGetContext::buildFailedInstanceList(DcmDataset ** rspIds)
 /*
  * CVS Log
  * $Log: dcmqrcbg.cc,v $
+ * Revision 1.12  2010-10-01 12:25:29  uli
+ * Fixed most compiler warnings in remaining modules.
+ *
  * Revision 1.11  2010-09-09 16:54:32  joergr
  * Further code clean-up and minor changes to log messages.
  *

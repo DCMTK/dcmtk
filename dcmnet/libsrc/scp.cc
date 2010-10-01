@@ -21,9 +21,9 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-25 14:09:53 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-01 12:25:29 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,6 +165,10 @@ OFCondition DcmSCP::enableMultiProcessMode(int argc,
     return EC_IllegalParameter;
   m_cmd_argc = argc;
   m_cmd_argv = argv;
+#else
+  // Work around "Unused parameters"
+  (void) argc;
+  (void) argv;
 #endif
   m_singleProcess = OFFalse;
   return EC_Normal;
@@ -1277,7 +1281,7 @@ OFString DcmSCP::getPeerIP() const
 
 // ----------------------------------------------------------------------------
 
-OFBool DcmSCP::calledAETitleAccepted(const OFString &callingAE,
+OFBool DcmSCP::calledAETitleAccepted(const OFString & /* callingAE */,
                                      const OFString &calledAE)
 {
   if (m_respondWithCalledAETitle)  // default is to use the called AE title
@@ -1428,7 +1432,7 @@ void DcmSCP::dropAndDestroyAssociation()
 
 
 void DcmSCP::notifyAssociationRequest(const T_ASC_Parameters &params,
-                                      DcmSCPActionType &desiredAction)
+                                      DcmSCPActionType & /* desiredAction */)
 {
   // Dump some information if required
   DCMNET_INFO("Association Received " << params.DULparams.callingPresentationAddress << ": "
@@ -1490,6 +1494,9 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.12  2010-10-01 12:25:29  uli
+** Fixed most compiler warnings in remaining modules.
+**
 ** Revision 1.11  2010-08-25 14:09:53  joergr
 ** Output details on ASCE response parameters in case the association is
 ** rejected because of "No Acceptable Presentation Contexts".

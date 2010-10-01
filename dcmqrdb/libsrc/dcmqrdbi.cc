@@ -21,9 +21,9 @@
  *
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-24 13:34:17 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-01 12:25:29 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1359,8 +1359,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
                 )
 {
     DB_ElementList *plist ;
-    DB_LEVEL    XTagLevel ;
-    DB_KEY_TYPE XTagType ;
+    DB_LEVEL    XTagLevel = PATIENT_LEVEL; // DB_GetTagLevel() will set this correctly
+    DB_KEY_TYPE XTagType  = OPTIONAL_KEY;  // DB_GetTagKeyAttr() will set this
     int level ;
 
     /**** Query level must be at least the infLevel
@@ -1499,7 +1499,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
     int                 i ;
     DcmTagKey   XTag ;
     DB_ElementList *plist ;
-    DB_LEVEL    XTagLevel ;
+    DB_LEVEL    XTagLevel  = PATIENT_LEVEL; // DB_GetTagLevel() will set this correctly
 
     /**** If current level is above the QueryLevel
     ***/
@@ -2092,8 +2092,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
                 )
 {
     DB_ElementList *plist ;
-    DB_LEVEL    XTagLevel ;
-    DB_KEY_TYPE         XTagType ;
+    DB_LEVEL    XTagLevel = PATIENT_LEVEL; // DB_GetTagLevel() will set this correctly
+    DB_KEY_TYPE XTagType  = OPTIONAL_KEY;  // DB_GetTagKeyAttr() will set this
     int level ;
 
     /**** Query level must be at least the infLevel
@@ -3426,6 +3426,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.24  2010-10-01 12:25:29  uli
+ * Fixed most compiler warnings in remaining modules.
+ *
  * Revision 1.23  2010-09-24 13:34:17  joergr
  * Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
  * resulting name changes are mainly caused by the fact that the corresponding

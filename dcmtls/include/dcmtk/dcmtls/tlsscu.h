@@ -21,10 +21,10 @@
  *
  *  Purpose: Base class for TLS-enabled Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-22 15:49:38 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-01 12:25:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmtls/include/dcmtk/dcmtls/tlsscu.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,7 +226,7 @@ private:
   char* m_passwd;
 
   /// String containing all ciphersuites being (additionally? TODO) configured
-  OFString m_ciphersuites;;
+  OFString m_ciphersuites;
 
   /// TODO
   OFString m_readSeedFile;
@@ -251,6 +251,9 @@ private:
 /*
 ** CVS Log
 ** $Log: tlsscu.h,v $
+** Revision 1.3  2010-10-01 12:25:29  uli
+** Fixed most compiler warnings in remaining modules.
+**
 ** Revision 1.2  2010-06-22 15:49:38  joergr
 ** Introduced new enumeration type to be used for closeAssociation().
 **

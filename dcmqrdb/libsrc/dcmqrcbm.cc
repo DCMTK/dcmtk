@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-09 15:00:03 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-01 12:25:29 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 
-static void moveSubOpProgressCallback(void *callbackData,
+static void moveSubOpProgressCallback(void * /* callbackData */,
     T_DIMSE_StoreProgress *progress,
     T_DIMSE_C_StoreRQ * /*req*/)
 {
@@ -682,6 +682,9 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
+ * Revision 1.17  2010-10-01 12:25:29  uli
+ * Fixed most compiler warnings in remaining modules.
+ *
  * Revision 1.16  2010-09-09 15:00:03  joergr
  * Made log messages more consistent. Replaced '\n' by OFendl where appropriate.
  *

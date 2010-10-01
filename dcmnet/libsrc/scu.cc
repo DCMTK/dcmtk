@@ -22,8 +22,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-10 11:59:32 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2010-10-01 12:25:29 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -319,7 +319,7 @@ OFCondition DcmSCU::useSecureConnection(DcmTransportLayer *tlayer)
 
 // Reads association configuration from config file
 OFCondition readAssocConfigFromFile(const OFString &filename,
-                                    const OFString &profile)
+                                    const OFString & /* profile */)
 {
   DcmAssociationConfiguration assocConfig;
   OFCondition result = DcmAssociationConfigurationFile::initialize(assocConfig, filename.c_str());
@@ -516,8 +516,8 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
 OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
                                      const OFString &dicomFile,
                                      DcmDataset *dset,
-                                     DcmDataset *&rspCommandSet,    // TODO
-                                     DcmDataset *&rspStatusDetail,  // TODO
+                                     DcmDataset *& /* rspCommandSet */,    // TODO
+                                     DcmDataset *& /* rspStatusDetail */,  // TODO
                                      Uint16 &rspStatusCode)
 {
   // Do some basic validity checks
@@ -537,7 +537,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   req->MessageID = nextMessageID();
   /* Load file if necessary */
   OFString sopClass, sopInstance;
-  E_TransferSyntax transferSyntax;
+  E_TransferSyntax transferSyntax = EXS_Unknown; // Initialized in getDatasetInfo()
   DcmFileFormat *dcmff = NULL;
   if (!dicomFile.empty())
   {
@@ -747,7 +747,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
 
 
 // Standard handler for C-FIND message responses
-OFCondition DcmSCU::handleFINDResponse(Uint16 presContextID,
+OFCondition DcmSCU::handleFINDResponse(Uint16 /* presContextID */,
                                        FINDResponse *response,
                                        OFBool &waitForNextResponse)
 {
@@ -777,7 +777,7 @@ OFCondition DcmSCU::handleFINDResponse(Uint16 presContextID,
 
 
 // Send C-FIND-CANCEL and, therefore, ends current C-FIND session
-OFCondition DcmSCU::sendCANCELRequest(Uint16 presContextID)
+OFCondition DcmSCU::sendCANCELRequest(Uint16 /* presContextID */)
 {
   return EC_Normal;
 }
@@ -1314,6 +1314,9 @@ FINDResponse::~FINDResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.13  2010-10-01 12:25:29  uli
+** Fixed most compiler warnings in remaining modules.
+**
 ** Revision 1.12  2010-08-10 11:59:32  uli
 ** Fixed some cases where dcmFindNameOfUID() returning NULL could cause crashes.
 **

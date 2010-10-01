@@ -54,9 +54,9 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: joergr $, $Date: 2010-08-26 09:24:21 $
+** Last Update:   $Author: uli $, $Date: 2010-10-01 12:25:29 $
 ** Source File:   $RCSfile: dul.cc,v $
-** Revision:      $Revision: 1.90 $
+** Revision:      $Revision: 1.91 $
 ** Status:        $State: Exp $
 */
 
@@ -220,6 +220,10 @@ void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[])
 #ifdef _WIN32
   command_argc = argc;
   command_argv = argv;
+#else
+  // Work around "Unused parameters"
+  (void) argc;
+  (void) argv;
 #endif
 }
 
@@ -2717,6 +2721,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.91  2010-10-01 12:25:29  uli
+** Fixed most compiler warnings in remaining modules.
+**
 ** Revision 1.90  2010-08-26 09:24:21  joergr
 ** Fixed incorrect behavior of association acceptors during SCP/SCU role
 ** selection negotiation.
