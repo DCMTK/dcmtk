@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-01 10:33:53 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2010-10-01 10:21:05 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,7 @@ public:
    *  @return EC_Normal if information is available, error otherwise
    */
   virtual OFCondition getLossyComprInfo(OFBool& srcEncodingLossy,
-                                        OFString& srcLossyComprMethod) const
+                                        OFString& /* srcLossyComprMethod */) const
   {
     srcEncodingLossy = OFFalse;
     return EC_Normal;
@@ -241,6 +241,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.h,v $
+ * Revision 1.7  2010-10-01 10:21:05  uli
+ * Fixed most compiler warnings from -Wall -Wextra -pedantic in dcmdata.
+ *
  * Revision 1.6  2010-06-01 10:33:53  uli
  * Added support for indexed-color BMP images (bit depths 1, 4 and 8).
  *

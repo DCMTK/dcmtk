@@ -21,9 +21,9 @@
  *
  *  Purpose: decoder codec class for RLE
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-27 16:52:32 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-01 10:21:05 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -409,7 +409,7 @@ OFCondition DcmRLECodecDecoder::decode(
 
 
 OFCondition DcmRLECodecDecoder::decodeFrame(
-    const DcmRepresentationParameter * fromParam,
+    const DcmRepresentationParameter * /* fromParam */,
     DcmPixelSequence * fromPixSeq,
     const DcmCodecParameter * cp,
     DcmItem *dataset,
@@ -706,6 +706,9 @@ OFCondition DcmRLECodecDecoder::determineDecompressedColorModel(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
+ * Revision 1.16  2010-10-01 10:21:05  uli
+ * Fixed most compiler warnings from -Wall -Wextra -pedantic in dcmdata.
+ *
  * Revision 1.15  2010-05-27 16:52:32  joergr
  * Re-added comment that was accidentally removed by the last commit.
  *

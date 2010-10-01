@@ -21,9 +21,9 @@
  *
  *  Purpose: handling of transfer syntaxes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-15 08:53:05 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-01 10:21:05 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -304,6 +304,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       0L, 0L,
+      OFFalse,
       ESC_none },
     { UID_JPEG2000TransferSyntax,
       "JPEG 2000 (Lossless or Lossy)",
@@ -613,6 +614,9 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
+ * Revision 1.32  2010-10-01 10:21:05  uli
+ * Fixed most compiler warnings from -Wall -Wextra -pedantic in dcmdata.
+ *
  * Revision 1.31  2010-09-15 08:53:05  joergr
  * Added definition of XML encoding transfer syntax (Supplement 114) and JPIP
  * referenced transfer syntaxes (Supplement 106).

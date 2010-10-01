@@ -22,8 +22,8 @@
  *  Purpose: Internal header for vrscanl.c and vrscan.cc
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-03 07:26:19 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2010-10-01 10:21:05 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,7 @@
 #ifndef VRSCANI_H
 #define VRSCANI_H
 
-// This needs its own header because both vrscanl.c and vrscan.cc need it.
+/* This needs its own header because both vrscanl.c and vrscan.cc need it. */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include <setjmp.h>
@@ -52,11 +52,14 @@ struct vrscan_error {
 /* Don't try to include unistd.h which doesn't exist on windows */
 #define YY_NO_UNISTD_H
 
-#endif // VRSCANI_H
+#endif /* VRSCANI_H */
 
 /*
 ** CVS/RCS Log:
 ** $Log: vrscani.h,v $
+** Revision 1.3  2010-10-01 10:21:05  uli
+** Fixed most compiler warnings from -Wall -Wextra -pedantic in dcmdata.
+**
 ** Revision 1.2  2010-09-03 07:26:19  uli
 ** Make the VR scanner work on windows again.
 **

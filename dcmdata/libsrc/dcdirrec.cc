@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-01 08:06:19 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-01 10:21:05 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1073,8 +1073,9 @@ OFCondition DcmDirectoryRecord::purgeReferencedFile()
                 errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
             }
             delete[] localFileName;
-        } else                            // no referenced file exists
-            ;  // do nothing
+        } else {                          // no referenced file exists
+            // do nothing
+        }
     } else
         l_error = EC_IllegalCall;
 
@@ -1530,6 +1531,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.73  2010-10-01 10:21:05  uli
+ * Fixed most compiler warnings from -Wall -Wextra -pedantic in dcmdata.
+ *
  * Revision 1.72  2010-10-01 08:06:19  joergr
  * Added new directory record type MEASUREMENT from Supplement 144.
  *

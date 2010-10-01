@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-30 14:08:17 $
- *  CVS/RCS Revision: $Revision: 1.85 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-01 10:21:05 $
+ *  CVS/RCS Revision: $Revision: 1.86 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -446,10 +446,10 @@ static const UIDNameMap uidNameMap[] = {
     { UID_UniversalCoordinatedTimeSynchronizationFrameOfReference, "UniversalCoordinatedTimeSynchronizationFrameOfReference" },
 
     // Well-known SOP Instances for Color Palettes
-    { UID_HotIronColorPaletteSOPInstance                       "HotIronColorPaletteSOPInstance" },
-    { UID_HotMetalBlueColorPaletteSOPInstance                  "HotMetalBlueColorPaletteSOPInstance" },
-    { UID_PET20StepColorPaletteSOPInstance                     "PET20StepColorPaletteSOPInstance" },
-    { UID_PETColorPaletteSOPInstance                           "PETColorPaletteSOPInstance" },
+    { UID_HotIronColorPaletteSOPInstance,                      "HotIronColorPaletteSOPInstance" },
+    { UID_HotMetalBlueColorPaletteSOPInstance,                 "HotMetalBlueColorPaletteSOPInstance" },
+    { UID_PET20StepColorPaletteSOPInstance,                    "PET20StepColorPaletteSOPInstance" },
+    { UID_PETColorPaletteSOPInstance,                          "PETColorPaletteSOPInstance" },
 
     // Draft Supplements
     { UID_DRAFT_RTBeamsDeliveryInstructionStorage,             "DRAFT_RTBeamsDeliveryInstructionStorage" },
@@ -1596,6 +1596,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.86  2010-10-01 10:21:05  uli
+** Fixed most compiler warnings from -Wall -Wextra -pedantic in dcmdata.
+**
 ** Revision 1.85  2010-09-30 14:08:17  joergr
 ** Added two Model UIDs from Supplement 118 (Application Hosting).
 **

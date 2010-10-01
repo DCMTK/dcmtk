@@ -21,6 +21,14 @@ Changes between releases are documented here.
   Thanks to Michael Kraemer from GSI for the report.
   Affects: oflog/include/dcmtk/oflog/spi/factory.h
 
+- Fixed most compiler warnings from -Wall -Wextra -pedantic in dcmdata.
+  Affects: dcmdata/include/dcmtk/dcmdata/libi2d/i2dbmps.h
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcrleccd.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dcxfer.cc
+           dcmdata/libsrc/vrscani.h
+
 **** Changes from 2010.09.30 (riesmeier)
 
 - Added support for new non-image Storage SOP Classes that require the new
