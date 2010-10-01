@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-30 17:18:15 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2010-10-01 08:09:34 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -613,6 +613,9 @@ static OFString recordTypeToName(const E_DirRecType recordType)
         case ERT_Surface:
             recordName = "Surface";
             break;
+        case ERT_Measurement:
+            recordName = "Measurement";
+            break;
         default:
             recordName = "(unknown-directory-record-type)";
             break;
@@ -718,6 +721,17 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_Palette;
     else if (compare(sopClass, UID_SurfaceSegmentationStorage))
         result = ERT_Surface;
+    else if (compare(sopClass, UID_LensometryMeasurementsStorage) ||
+             compare(sopClass, UID_AutorefractionMeasurementsStorage) ||
+             compare(sopClass, UID_KeratometryMeasurementsStorage) ||
+             compare(sopClass, UID_SubjectiveRefractionMeasurementsStorage) ||
+             compare(sopClass, UID_VisualAcuityMeasurementsStorage) ||
+             compare(sopClass, UID_OphthalmicAxialMeasurementsStorage) ||
+             compare(sopClass, UID_IntraocularLensCalculationsStorage) ||
+             compare(sopClass, UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage))
+    {
+        result = ERT_Measurement;
+    }
     return result;
 }
 
@@ -861,6 +875,8 @@ static OFCondition insertSortedUnder(DcmDirectoryRecord *parent,
             case ERT_Spectroscopy:
             case ERT_EncapDoc:
             case ERT_ValueMap:
+            case ERT_Surface:
+            case ERT_Measurement:
                 /* try to insert based on InstanceNumber */
                 result = insertWithISCriterion(parent, child, DCM_InstanceNumber);
                 break;
@@ -1459,6 +1475,18 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     {
                         found = compare(mediaSOPClassUID, UID_SegmentationStorage) ||  // will be mapped to IMAGE record
                                 compare(mediaSOPClassUID, UID_SurfaceSegmentationStorage);
+                    }
+                    /* is it one of the measurement SOP Classes? */
+                    if (!found)
+                    {
+                        found = compare(mediaSOPClassUID, UID_LensometryMeasurementsStorage) ||
+                                compare(mediaSOPClassUID, UID_AutorefractionMeasurementsStorage) ||
+                                compare(mediaSOPClassUID, UID_KeratometryMeasurementsStorage) ||
+                                compare(mediaSOPClassUID, UID_SubjectiveRefractionMeasurementsStorage) ||
+                                compare(mediaSOPClassUID, UID_VisualAcuityMeasurementsStorage) ||
+                                compare(mediaSOPClassUID, UID_OphthalmicAxialMeasurementsStorage) ||
+                                compare(mediaSOPClassUID, UID_IntraocularLensCalculationsStorage) ||
+                                compare(mediaSOPClassUID, UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage);
                     }
                     /* is it any other SOP class? */
                     if (!found)
@@ -2270,26 +2298,6 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                     if (!checkExistsWithValue(dataset, DCM_ConceptNameCodeSequence, filename))
                         result = EC_InvalidTag;
                     break;
-                case ERT_Registration:
-                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                        result = EC_InvalidTag;
-                    if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                        result = EC_InvalidTag;
-                    if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                        result = EC_InvalidTag;
-                    if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
-                        result = EC_InvalidTag;
-                    break;
-                case ERT_Fiducial:
-                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                        result = EC_InvalidTag;
-                    if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                        result = EC_InvalidTag;
-                    if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                        result = EC_InvalidTag;
-                    if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
-                        result = EC_InvalidTag;
-                    break;
                 case ERT_RawData:
                     if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
                         result = EC_InvalidTag;
@@ -2323,23 +2331,21 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                     if (!checkExistsWithValue(dataset, DCM_MIMETypeOfEncapsulatedDocument, filename))
                         result = EC_InvalidTag;
                     break;
-                case ERT_ValueMap:
-                    if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                        result = EC_InvalidTag;
-                    if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                        result = EC_InvalidTag;
-                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                        result = EC_InvalidTag;
-                    if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
-                        result = EC_InvalidTag;
-                    break;
                 case ERT_Stereometric:
                     /* nothing to check */
                     break;
+                case ERT_Registration:
+                case ERT_Fiducial:
+                case ERT_ValueMap:
                 case ERT_Surface:
+                case ERT_Measurement:
+                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                        result = EC_InvalidTag;
                     if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
                         result = EC_InvalidTag;
                     if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
                         result = EC_InvalidTag;
                     break;
                 case ERT_Image:
@@ -2558,6 +2564,7 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
             case ERT_Stereometric:
             case ERT_Palette:
             case ERT_Surface:
+            case ERT_Measurement:
                 /* The attribute ReferencedSOPInstanceUID is automatically
                  * put into a Directory Record when a filename is present.
                 */
@@ -3453,6 +3460,10 @@ DcmDirectoryRecord *DicomDirInterface::buildSurfaceRecord(DcmDirectoryRecord *re
             /* copy attribute values from dataset to surface record */
             copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
+            copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
+            copyElementType1(dataset, DCM_ContentLabel, record, sourceFilename);
+            copyElementType2(dataset, DCM_ContentDescription, record, sourceFilename);
+            copyElementType2(dataset, DCM_ContentCreatorName, record, sourceFilename);
         } else {
             printRecordErrorMessage(record->error(), ERT_Surface, "create");
             /* free memory */
@@ -3461,6 +3472,39 @@ DcmDirectoryRecord *DicomDirInterface::buildSurfaceRecord(DcmDirectoryRecord *re
         }
     } else
         printRecordErrorMessage(EC_MemoryExhausted, ERT_Surface, "create");
+    return record;
+}
+
+
+// create or update measurement record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildMeasurementRecord(DcmDirectoryRecord *record,
+                                                              DcmItem *dataset,
+                                                              const OFString &referencedFileID,
+                                                              const OFString &sourceFilename)
+{
+    /* create new measurement record */
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Measurement, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* copy attribute values from dataset to measurement record */
+            copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
+            copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
+            copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
+            copyElementType1(dataset, DCM_ContentLabel, record, sourceFilename);
+            copyElementType2(dataset, DCM_ContentDescription, record, sourceFilename);
+            copyElementType2(dataset, DCM_ContentCreatorName, record, sourceFilename);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_Measurement, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_Measurement, "create");
     return record;
 }
 
@@ -3860,6 +3904,9 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                 case ERT_Surface:
                     record = buildSurfaceRecord(record, dataset, referencedFileID, sourceFilename);
                     break;
+                case ERT_Measurement:
+                    record = buildMeasurementRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
                 default:
                     /* it can only be an image */
                     record = buildImageRecord(record, dataset, referencedFileID, sourceFilename);
@@ -4009,6 +4056,7 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
                 case ERT_RTStructureSet:
                 case ERT_RTPlan:
                 case ERT_StoredPrint:
+                case ERT_Surface:
                     if (!record->tagExistsWithValue(DCM_InstanceNumber))
                         setDefaultValue(record, DCM_InstanceNumber, AutoInstanceNumber++);
                     break;
@@ -4037,8 +4085,7 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
                 case ERT_EncapDoc:
                 case ERT_ValueMap:
                 case ERT_Stereometric:
-                case ERT_Palette:
-                case ERT_Surface:
+                case ERT_Measurement:
                     /* nothing to do */
                     break;
                 default:
@@ -4992,6 +5039,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.46  2010-10-01 08:09:34  joergr
+ *  Added support for new non-image Storage SOP Classes that require the new
+ *  directory record type MEASUREMENT. Also fixed issues with other record types.
+ *
  *  Revision 1.45  2010-09-30 17:18:15  joergr
  *  Added support for new non-image Storage SOP Classes that require the new
  *  directory record types PALETTE and SURFACE. Also updated existing records.

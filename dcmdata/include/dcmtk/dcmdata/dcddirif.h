@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-30 17:18:10 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2010-10-01 08:09:31 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -958,6 +958,18 @@ class DicomDirInterface
                                            const OFString &referencedFileID,
                                            const OFString &sourceFilename);
 
+    /** create or update measurement record and copy required values from dataset
+     *  @param record record to be updated, use NULL to create a new one
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new or updated record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildMeasurementRecord(DcmDirectoryRecord *record,
+                                               DcmItem *dataset,
+                                               const OFString &referencedFileID,
+                                               const OFString &sourceFilename);
+
     /** create or update image record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
      *  @param dataset DICOM dataset of the current file
@@ -1456,6 +1468,10 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.20  2010-10-01 08:09:31  joergr
+ * Added support for new non-image Storage SOP Classes that require the new
+ * directory record type MEASUREMENT. Also fixed issues with other record types.
+ *
  * Revision 1.19  2010-09-30 17:18:10  joergr
  * Added support for new non-image Storage SOP Classes that require the new
  * directory record types PALETTE and SURFACE. Also updated existing records.
