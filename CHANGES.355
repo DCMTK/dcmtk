@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.01 (schlachter)
+
+- Fix some code duplication in the FileAppenders.
+  Affects: oflog/libsrc/fileap.cc
+
 **** Changes from 2010.09.30 (riesmeier)
 
 - Added support for new non-image Storage SOP Classes that require the new
