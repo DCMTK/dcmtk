@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-01 08:09:34 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2010-10-01 14:01:56 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -797,6 +797,42 @@ static void addConceptModContentItems(DcmDirectoryRecord *record,
 }
 
 
+// copy relevant attributes from the blending sequence
+static void addBlendingSequence(DcmDirectoryRecord *record,
+                                DcmItem *dataset)
+{
+    if ((record != NULL) && (dataset != NULL))
+    {
+        signed long i = 0;
+        DcmItem *ditem = NULL;
+        /* create new BlendingSequence */
+        DcmSequenceOfItems *newSeq = new DcmSequenceOfItems(DCM_BlendingSequence);
+        if (newSeq != NULL)
+        {
+            do {
+                /* get sequence item (not very efficient, but it works) */
+                if (dataset->findAndGetSequenceItem(DCM_BlendingSequence, ditem, i++).good())
+                {
+                    DcmItem *newItem = new DcmItem();
+                    if (newItem != NULL)
+                    {
+                        if (newSeq->append(newItem).good())
+                        {
+                            ditem->findAndInsertCopyOfElement(DCM_StudyInstanceUID, newItem);
+                            ditem->findAndInsertCopyOfElement(DCM_ReferencedSeriesSequence, newItem);
+                        } else
+                            delete newItem;
+                    }
+                }
+            } while ((ditem != NULL) && (i <= 2));  // terminate after two items
+            /* try to insert blending sequence into record (if not empty) */
+            if ((newSeq->card() == 0) || (record->insert(newSeq, OFTrue /*replaceOld*/).bad()))
+                delete newSeq;
+        }
+    }
+}
+
+
 // insert child record into the parent's list based on the numeric value of the criterionKey
 static OFCondition insertWithISCriterion(DcmDirectoryRecord *parent,
                                          DcmDirectoryRecord *child,
@@ -1369,11 +1405,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     /* transfer syntax needs to be checked later */
                     found = compare(mediaSOPClassUID, UID_CTImageStorage) ||
                             compare(mediaSOPClassUID, UID_MRImageStorage) ||
-                            compare(mediaSOPClassUID, UID_SecondaryCaptureImageStorage) ||
-                            compare(mediaSOPClassUID, UID_MultiframeSingleBitSecondaryCaptureImageStorage) ||
-                            compare(mediaSOPClassUID, UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage) ||
-                            compare(mediaSOPClassUID, UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage) ||
-                            compare(mediaSOPClassUID, UID_MultiframeTrueColorSecondaryCaptureImageStorage);
+                            compare(mediaSOPClassUID, UID_SecondaryCaptureImageStorage);
                     if (!found && RetiredSOPClassSupport)
                     {
                         /* the following SOP class has been retired with DICOM 2004: */
@@ -2243,8 +2275,6 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                         result = EC_InvalidTag;
                     if (!checkExistsWithValue(dataset, DCM_PresentationCreationTime, filename))
                         result = EC_InvalidTag;
-                    if (!checkExistsWithValue(dataset, DCM_ReferencedSeriesSequence, filename))
-                        result = EC_InvalidTag;
                     break;
                 case ERT_Waveform:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
@@ -2906,7 +2936,7 @@ DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmDirectoryRecor
             copyElementType1(dataset, DCM_PresentationCreationTime, record, sourceFilename);
             copyElementType2(dataset, DCM_ContentCreatorName, record, sourceFilename);
             copyElementType1C(dataset, DCM_ReferencedSeriesSequence, record, sourceFilename);
-            // TODO: add support for BlendingSequence (1C)
+            addBlendingSequence(record, dataset);
         } else {
             printRecordErrorMessage(record->error(), ERT_Presentation, "create");
             /* free memory */
@@ -2967,6 +2997,7 @@ DcmDirectoryRecord *DicomDirInterface::buildRTDoseRecord(DcmDirectoryRecord *rec
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
             copyElementType1(dataset, DCM_DoseSummationType, record, sourceFilename);
             copyElementType3(dataset, DCM_DoseComment, record, sourceFilename);
+            /* copy existing icon image (if present) */
             copyElementType3(dataset, DCM_IconImageSequence, record, sourceFilename);
         } else {
             printRecordErrorMessage(record->error(), ERT_RTDose, "create");
@@ -3088,7 +3119,7 @@ DcmDirectoryRecord *DicomDirInterface::buildStoredPrintRecord(DcmDirectoryRecord
         {
             /* copy attribute values from dataset to stored print record */
             copyElementType2(dataset, DCM_InstanceNumber, record, sourceFilename);
-            copyElementType3(dataset, DCM_IconImageSequence, record, sourceFilename);
+            /* IconImageSequence (type 3) is not created for the referenced images */
         } else {
             printRecordErrorMessage(record->error(), ERT_StoredPrint, "create");
             /* free memory */
@@ -3217,6 +3248,7 @@ DcmDirectoryRecord *DicomDirInterface::buildRawDataRecord(DcmDirectoryRecord *re
             copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
             copyElementType2(dataset, DCM_InstanceNumber, record, sourceFilename);
+            /* IconImageSequence (type 3) is not created for the raw data */
         } else {
             printRecordErrorMessage(record->error(), ERT_RawData, "create");
             /* free memory */
@@ -3254,6 +3286,7 @@ DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmDirectoryRecor
             copyElementType1(dataset, DCM_Columns, record, sourceFilename);
             copyElementType1(dataset, DCM_DataPointRows, record, sourceFilename);
             copyElementType1(dataset, DCM_DataPointColumns, record, sourceFilename);
+            /* IconImageSequence (type 3) is not created for the spectroscopy data */
             /* application profile specific attributes */
             if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
                 (ApplicationProfile == AP_USBandFlash))
@@ -3304,9 +3337,9 @@ DcmDirectoryRecord *DicomDirInterface::buildEncapDocRecord(DcmDirectoryRecord *r
             copyElementType2(dataset, DCM_DocumentTitle, record, sourceFilename);
             /* required if encapsulated document is an HL7 Structured Document */
             copyElementType1C(dataset, DCM_HL7InstanceIdentifier, record, sourceFilename);
-            copyElementType1(dataset, DCM_MIMETypeOfEncapsulatedDocument, record, sourceFilename);
             /* baseline context group 7020 is not checked */
             copyElementType2(dataset, DCM_ConceptNameCodeSequence, record, sourceFilename);
+            copyElementType1(dataset, DCM_MIMETypeOfEncapsulatedDocument, record, sourceFilename);
         } else {
             printRecordErrorMessage(record->error(), ERT_EncapDoc, "create");
             /* free memory */
@@ -5039,6 +5072,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.47  2010-10-01 14:01:56  joergr
+ *  Added support for the BlendingSequence required for directory records of the
+ *  Blending Softcopy Presentation State Storage SOP Class.
+ *
  *  Revision 1.46  2010-10-01 08:09:34  joergr
  *  Added support for new non-image Storage SOP Classes that require the new
  *  directory record type MEASUREMENT. Also fixed issues with other record types.

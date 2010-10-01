@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.01 (riesmeier)
 
+- Added support for the BlendingSequence required for directory records of the
+  Blending Softcopy Presentation State Storage SOP Class.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 - Added new helper function findAndInsertCopyOfElement().
   Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
            dcmdata/libsrc/dcitem.cc
