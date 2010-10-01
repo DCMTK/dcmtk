@@ -123,7 +123,7 @@ namespace log4cplus {
          * <b>Note:</b>  This class is Thread-safe.
          */
         template<class T>
-        class LOG4CPLUS_EXPORT FactoryRegistry : ObjectRegistryBase {
+        class LOG4CPLUS_EXPORT FactoryRegistry : private ObjectRegistryBase {
         public:
             typedef T product_type;
 

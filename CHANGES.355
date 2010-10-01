@@ -17,6 +17,10 @@ Changes between releases are documented here.
 - Fix some code duplication in the FileAppenders.
   Affects: oflog/libsrc/fileap.cc
 
+- Added an explicit "private" to work around AIX 5.2's IBM compiler.
+  Thanks to Michael Kraemer from GSI for the report.
+  Affects: oflog/include/dcmtk/oflog/spi/factory.h
+
 **** Changes from 2010.09.30 (riesmeier)
 
 - Added support for new non-image Storage SOP Classes that require the new
