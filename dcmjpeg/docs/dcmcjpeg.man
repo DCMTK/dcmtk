@@ -550,8 +550,8 @@ allows to convert an image to secondary capture - this SOP class does not pose
 restrictions as the ones mentioned above.
 
 With version DCMTK 3.5.4 a new encoder for truely lossless JPEG compression was
-added (\e --true-lossless). Compared to the old (\e --pseudo-lossless) encoder,
-that creates sligtly lossy images caused from internal color space conversions,
+added (\e --true-lossless).  Compared to the old (\e --pseudo-lossless) encoder,
+that creates slightly lossy images caused from internal color space conversions,
 windowing etc., there are a some issues to consider:
 
 \li Only source images with Bits Allocated 8 or 16 are supported

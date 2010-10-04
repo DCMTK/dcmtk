@@ -7,6 +7,9 @@ Changes between releases are documented here.
   trying to copy certain data elements from it).
   Affects: dcmdata/libsrc/dcddirif.cc
 
+- Fixed typo.
+  Affects: dcmjpeg/docs/dcmcjpeg.man
+
 **** Changes from 2010.10.01 (riesmeier)
 
 - Added support for the BlendingSequence required for directory records of the
