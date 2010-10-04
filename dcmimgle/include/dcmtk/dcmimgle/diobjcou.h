@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomObjectCounter (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:47 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-04 14:44:45 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
 #include "dcmtk/ofstd/ofthread.h"
 #endif
 
@@ -58,11 +58,11 @@ class DiObjectCounter
      */
     inline void addReference()
     {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
         theMutex.lock();
 #endif
         ++Counter;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
         theMutex.unlock();
 #endif
     }
@@ -72,16 +72,16 @@ class DiObjectCounter
      */
     inline void removeReference()
     {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
         theMutex.lock();
 #endif
         if (--Counter == 0)
         {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
             theMutex.unlock();
 #endif
             delete this;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
         } else {
             theMutex.unlock();
 #endif
@@ -96,7 +96,7 @@ class DiObjectCounter
      */
     DiObjectCounter()
       : Counter(1)
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
        ,theMutex()
 #endif
     {
@@ -114,7 +114,7 @@ class DiObjectCounter
     /// internal counter
     unsigned long Counter;
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     /** if compiled for multi-thread operation, the Mutex protecting
      *  access to the value of this object.
      */
@@ -130,6 +130,10 @@ class DiObjectCounter
  *
  * CVS/RCS Log:
  * $Log: diobjcou.h,v $
+ * Revision 1.13  2010-10-04 14:44:45  joergr
+ * Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+ * in all cases where OFMutex, OFReadWriteLock, etc. are used).
+ *
  * Revision 1.12  2010-03-01 09:08:47  uli
  * Removed some unnecessary include directives in the headers.
  *

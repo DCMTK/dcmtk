@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Define alias for cout, cerr and clog
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:46 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-04 14:44:49 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@ OFConsole::OFConsole()
 , currentCerr(&STD_NAMESPACE cerr)
 #endif
 , joined(0)
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
 , coutMutex()
 , cerrMutex()
 #endif
@@ -106,7 +106,7 @@ void OFConsole::split()
   lockCerr();
   if (joined)
   {
-  	// since status is joined, lockCerr() has locked both mutexes
+    // since status is joined, lockCerr() has locked both mutexes
     joined = 0;
 
     // now status is unjoined, we have to unlock both mutexes manually
@@ -137,7 +137,7 @@ class OFConsoleInitializer
 public:
   OFConsoleInitializer()
   {
-  	OFConsole::instance();
+    OFConsole::instance();
   }
 };
 
@@ -152,7 +152,11 @@ OFConsoleInitializer ofConsoleInitializer;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.cc,v $
- * Revision 1.13  2006-08-14 16:42:46  meichel
+ * Revision 1.14  2010-10-04 14:44:49  joergr
+ * Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+ * in all cases where OFMutex, OFReadWriteLock, etc. are used).
+ *
+ * Revision 1.13  2006/08/14 16:42:46  meichel
  * Updated all code in module ofstd to correctly compile if the standard
  *   namespace has not included into the global one with a "using" directive.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface for loadable DICOM data dictionary
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-05 13:13:51 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2010-10-04 14:44:39 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -280,7 +280,7 @@ private:
    */
   DcmDataDictionary dataDict;
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   /** the read/write lock used to protect access from multiple threads
    */
   OFReadWriteLock dataDictLock;
@@ -307,6 +307,10 @@ extern GlobalDcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
+** Revision 1.23  2010-10-04 14:44:39  joergr
+** Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+** in all cases where OFMutex, OFReadWriteLock, etc. are used).
+**
 ** Revision 1.22  2009-02-05 13:13:51  joergr
 ** Added reload method to data dictionary class.
 **

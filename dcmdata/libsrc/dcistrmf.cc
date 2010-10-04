@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2008, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DcmInputFileStream and related classes,
  *    implements streamed input from files.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:39:41 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-04 14:44:42 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ OFCondition DcmFileProducer::status() const
   return status_;
 }
 
-OFBool DcmFileProducer::eos() 
+OFBool DcmFileProducer::eos()
 {
   if (file_.open())
   {
@@ -198,12 +198,12 @@ DcmInputStream *DcmTempFileHandler::create() const
     return new DcmInputFileStream(filename_.c_str(), 0);
 }
 
-DcmTempFileHandler::DcmTempFileHandler(const char *fname) 
+DcmTempFileHandler::DcmTempFileHandler(const char *fname)
 : refCount_(1), filename_(fname)
 {
 }
 
-DcmTempFileHandler::~DcmTempFileHandler() 
+DcmTempFileHandler::~DcmTempFileHandler()
 {
     unlink(filename_.c_str());
 }
@@ -215,22 +215,22 @@ DcmTempFileHandler *DcmTempFileHandler::newInstance(const char *fname)
 
 void DcmTempFileHandler::increaseRefCount()
 {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     mutex_.lock();
 #endif
     ++refCount_;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     mutex_.unlock();
 #endif
 }
 
 void DcmTempFileHandler::decreaseRefCount()
 {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     mutex_.lock();
 #endif
     size_t result = --refCount_;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     mutex_.unlock();
 #endif
     if (result == 0) delete this;
@@ -239,7 +239,7 @@ void DcmTempFileHandler::decreaseRefCount()
 /* ======================================================================= */
 
 DcmInputTempFileStreamFactory::DcmInputTempFileStreamFactory(DcmTempFileHandler *handler)
-: DcmInputStreamFactory() 
+: DcmInputStreamFactory()
 , fileHandler_(handler)
 {
     fileHandler_->increaseRefCount();
@@ -250,7 +250,7 @@ DcmInputTempFileStreamFactory::DcmInputTempFileStreamFactory(const DcmInputTempF
 , fileHandler_(arg.fileHandler_)
 {
     fileHandler_->increaseRefCount();
-}    
+}
 
 DcmInputTempFileStreamFactory::~DcmInputTempFileStreamFactory()
 {
@@ -270,6 +270,10 @@ DcmInputStreamFactory *DcmInputTempFileStreamFactory::clone() const
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.cc,v $
+ * Revision 1.8  2010-10-04 14:44:42  joergr
+ * Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+ * in all cases where OFMutex, OFReadWriteLock, etc. are used).
+ *
  * Revision 1.7  2008-05-29 10:39:41  meichel
  * Implemented new classes DcmTempFileHandler and DcmInputTempFileStreamFactory
  *   that perform thread-safe reference counted life cycle management of a

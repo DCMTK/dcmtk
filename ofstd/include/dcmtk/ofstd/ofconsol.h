@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2006, OFFIS
+ *  Copyright (C) 1999-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,7 +25,7 @@
  *  provide access to the standard console output and error streams
  *  in a way that allows multiple threads to concurrently create output
  *  even if that output is redirected, e. g. to file or memory.
- *  Protection is implemented if the module is compiled with -D_REENTRANT
+ *  Protection is implemented if the module is compiled with -DWITH_THREADS
  *  and is based on Mutexes.
  *
  *  In cases where DCMTK is used for GUI development, the fact that the
@@ -51,9 +51,9 @@
  *  Caveat 2: The direct use of the COUT and CERR macros is unsafe
  *  in multithread applications. Use ofConsole instead.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:26 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-04 14:44:47 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@
 /** Singleton class which provides thread-safe access to the standard console
  *  output and error streams. Allows multiple threads to concurrently create
  *  output even if that output is redirected to file or memory.
- *  Protection is implemented if the module is compiled with -D_REENTRANT
+ *  Protection is implemented if the module is compiled with -DWITH_THREADS
  *  and is based on Mutexes.
  *  Use of the singleton prior to start of main (i.e. from global constructors)
  *  is allowed, but any use after the end of main is undefined.
@@ -94,7 +94,7 @@ public:
    */
   STD_NAMESPACE ostream& lockCout()
   {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     coutMutex.lock();
 #endif
     return *currentCout;
@@ -104,7 +104,7 @@ public:
    */
   void unlockCout()
   {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     coutMutex.unlock();
 #endif
   }
@@ -138,12 +138,12 @@ public:
    */
   STD_NAMESPACE ostream& lockCerr()
   {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     cerrMutex.lock();
 #endif
     if (joined)
     {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
       coutMutex.lock();
 #endif
       return *currentCout;
@@ -166,7 +166,7 @@ public:
    */
   void unlockCerr()
   {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     if (joined) coutMutex.unlock();
     cerrMutex.unlock();
 #endif
@@ -237,7 +237,7 @@ private:
   /** true if streams are combined, false otherwise */
   int joined;
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   /** mutex protecting access to cout */
   OFMutex coutMutex;
 
@@ -280,7 +280,11 @@ extern OFOStringStream CERR;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.19  2006-08-14 16:42:26  meichel
+ * Revision 1.20  2010-10-04 14:44:47  joergr
+ * Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+ * in all cases where OFMutex, OFReadWriteLock, etc. are used).
+ *
+ * Revision 1.19  2006/08/14 16:42:26  meichel
  * Updated all code in module ofstd to correctly compile if the standard
  *   namespace has not included into the global one with a "using" directive.
  *

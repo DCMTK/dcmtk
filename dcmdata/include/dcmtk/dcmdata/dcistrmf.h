@@ -22,10 +22,9 @@
  *  Purpose: DcmInputFileStream and related classes,
  *    implements streamed input from files.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:44 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcistrmf.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-04 14:44:39 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,19 +81,19 @@ public:
   /** reads as many bytes as possible into the given block.
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
-   *  @return number of bytes actually read. 
+   *  @return number of bytes actually read.
    */
   virtual offile_off_t read(void *buf, offile_off_t buflen);
 
   /** skips over the given number of bytes (or less)
    *  @param skiplen number of bytes to skip
-   *  @return number of bytes actually skipped. 
+   *  @return number of bytes actually skipped.
    */
   virtual offile_off_t skip(offile_off_t skiplen);
 
   /** resets the stream to the position by the given number of bytes.
    *  @param num number of bytes to putback. If the putback operation
-   *    fails, the producer status becomes bad. 
+   *    fails, the producer status becomes bad.
    */
   virtual void putback(offile_off_t num);
 
@@ -158,7 +157,7 @@ private:
 
   /// offset in file
   offile_off_t offset_;
-  
+
 };
 
 
@@ -202,7 +201,7 @@ private:
   OFString filename_;
 };
 
-/** class that manages the life cycle of a temporary file. 
+/** class that manages the life cycle of a temporary file.
  *  It maintains a thread-safe reference counter, and when this counter
  *  is decreased to zero, unlinks (deletes) the file and then the handler
  *  object itself.
@@ -216,7 +215,7 @@ public:
    *  A newly created instance always has a reference counter of 1.
    *  @param fname path to temporary file
    */
-      
+
   static DcmTempFileHandler *newInstance(const char *fname);
 
   /** create an input stream that permits reading from the temporary file
@@ -239,7 +238,7 @@ private:
   /** private constructor.
    *  Instances of this class are always created through newInstance().
    *  @param fname path to temporary file
-   */  
+   */
   DcmTempFileHandler(const char *fname);
 
   /** private destructor. Instances of this class
@@ -253,12 +252,12 @@ private:
   /// private undefined copy assignment operator
   DcmTempFileHandler& operator=(const DcmTempFileHandler& arg);
 
-  /** number of references to temporary file. 
+  /** number of references to temporary file.
    *  Default initialized to 1 upon construction of this object
    */
   size_t refCount_;
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   /// mutex for MT-safe reference counting
   OFMutex mutex_;
 #endif
@@ -276,7 +275,7 @@ public:
 
   /** constructor
    *  @param handler pointer to temporary file handler.
-   *    Reference counter of temporary file handler is increased by this operation.   
+   *    Reference counter of temporary file handler is increased by this operation.
    */
   DcmInputTempFileStreamFactory(DcmTempFileHandler *handler);
 
@@ -311,6 +310,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.h,v $
+ * Revision 1.8  2010-10-04 14:44:39  joergr
+ * Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+ * in all cases where OFMutex, OFReadWriteLock, etc. are used).
+ *
  * Revision 1.7  2010-03-01 09:08:44  uli
  * Removed some unnecessary include directives in the headers.
  *

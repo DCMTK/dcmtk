@@ -21,9 +21,9 @@
  *
  *  Purpose: loadable DICOM data dictionary
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-07-06 16:19:37 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-04 14:44:42 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -805,7 +805,7 @@ DcmDataDictionary::findEntry(const char *name) const
 
 GlobalDcmDataDictionary::GlobalDcmDataDictionary(OFBool loadBuiltin, OFBool loadExternal)
   : dataDict(loadBuiltin, loadExternal)
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   , dataDictLock()
 #endif
 {
@@ -817,7 +817,7 @@ GlobalDcmDataDictionary::~GlobalDcmDataDictionary()
 
 const DcmDataDictionary& GlobalDcmDataDictionary::rdlock()
 {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   dataDictLock.rdlock();
 #endif
   return dataDict;
@@ -825,7 +825,7 @@ const DcmDataDictionary& GlobalDcmDataDictionary::rdlock()
 
 DcmDataDictionary& GlobalDcmDataDictionary::wrlock()
 {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   dataDictLock.wrlock();
 #endif
   return dataDict;
@@ -833,7 +833,7 @@ DcmDataDictionary& GlobalDcmDataDictionary::wrlock()
 
 void GlobalDcmDataDictionary::unlock()
 {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   dataDictLock.unlock();
 #endif
 }
@@ -855,6 +855,10 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
+** Revision 1.47  2010-10-04 14:44:42  joergr
+** Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+** in all cases where OFMutex, OFReadWriteLock, etc. are used).
+**
 ** Revision 1.46  2010-07-06 16:19:37  onken
 ** Fixed status flag in dictionary denoting that a dictionary is loaded which
 ** was not set if a single dictionary was loaded explicitly with

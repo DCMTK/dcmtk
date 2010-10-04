@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-01 10:21:05 $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-04 14:44:42 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1490,7 +1490,7 @@ static unsigned long hostIdentifier = 0;
 */
 
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
 static OFMutex uidCounterMutex;  // mutex protecting access to counterOfCurrentUID and hostIdentifier
 #endif
 
@@ -1553,7 +1553,7 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 
     uid[0] = '\0'; /* initialise */
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     uidCounterMutex.lock();
 #endif
     if (hostIdentifier == 0)
@@ -1566,7 +1566,7 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
         initCounterOfCurrentUID();
 
     unsigned int counter = counterOfCurrentUID++;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     uidCounterMutex.unlock();
 #endif
 
@@ -1596,6 +1596,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.87  2010-10-04 14:44:42  joergr
+** Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+** in all cases where OFMutex, OFReadWriteLock, etc. are used).
+**
 ** Revision 1.86  2010-10-01 10:21:05  uli
 ** Fixed most compiler warnings from -Wall -Wextra -pedantic in dcmdata.
 **

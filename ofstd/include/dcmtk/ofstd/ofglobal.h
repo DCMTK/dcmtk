@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,9 +25,9 @@
  *           class T must have copy constructor and assignment operator.
  *
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:57 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-04 14:44:47 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 
 /** Template class which allows to declare global objects that are
  *  protected by a Mutex if used in multi-thread applications.
- *  Must be compiled with -D_REENTRANT for multi-thread-operation.
+ *  Must be compiled with -DWITH_THREADS for multi-thread-operation.
  *  Template class T must have copy constructor and assignment operator.
  */
 template <class T> class OFGlobal
@@ -55,7 +55,7 @@ public:
    */
   OFGlobal(const T &arg)
   : val(arg)
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   , theMutex()
 #endif
   {
@@ -71,11 +71,11 @@ public:
    */
   void set(const T& arg)
   {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     theMutex.lock();
 #endif
     val = arg;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     theMutex.unlock();
 #endif
   }
@@ -86,11 +86,11 @@ public:
    */
   void xget(T& arg)
   {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     theMutex.lock();
 #endif
     arg = val;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     theMutex.unlock();
 #endif
   }
@@ -102,11 +102,11 @@ public:
    */
   T get()
   {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     theMutex.lock();
 #endif
     T result(val);
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     theMutex.unlock();
 #endif
     return result;
@@ -118,7 +118,7 @@ private:
    */
   T val;
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   /** if compiled for multi-thread operation, the Mutex protecting
    *  access to the value of this object.
    */
@@ -143,7 +143,11 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofglobal.h,v $
- * Revision 1.6  2005-12-08 16:05:57  meichel
+ * Revision 1.7  2010-10-04 14:44:47  joergr
+ * Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+ * in all cases where OFMutex, OFReadWriteLock, etc. are used).
+ *
+ * Revision 1.6  2005/12/08 16:05:57  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.5  2003/12/05 10:37:41  joergr

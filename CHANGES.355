@@ -16,6 +16,18 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dccodec.h
            dcmdata/libsrc/dccodec.cc
 
+- Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+  in all cases where OFMutex, OFReadWriteLock, etc. are used).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdict.h
+           dcmdata/include/dcmtk/dcmdata/dcistrmf.h
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcistrmf.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmimgle/include/dcmtk/dcmimgle/diobjcou.h
+           ofstd/include/dcmtk/ofstd/ofconsol.h
+           ofstd/include/dcmtk/ofstd/ofglobal.h
+           ofstd/libsrc/ofconsol.cc
+
 - Further enhancements on BlendingSequence (e.g. check whether it exists before
   trying to copy certain data elements from it).
   Affects: dcmdata/libsrc/dcddirif.cc
