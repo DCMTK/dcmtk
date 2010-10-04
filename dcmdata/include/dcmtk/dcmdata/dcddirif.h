@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-01 08:09:31 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2010-10-04 16:14:53 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,7 +131,7 @@ class DicomDirInterface
         AP_GeneralPurposeMIME,
         /// General Purpose USB and Flash Memory with Compression Interchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)
         AP_USBandFlash,
-        /// DVD Interchange with MPEG2 MP@ML (STD-DVD-MPEG2-MPML)
+        /// DVD Interchange with MPEG2 MP\@ML (STD-DVD-MPEG2-MPML)
         AP_MPEG2MPatMLDVD,
         /// Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
         AP_BasicCardiac,
@@ -1087,8 +1087,8 @@ class DicomDirInterface
     void deleteDicomDirBackup();
 
     /** print a message that the value of a given tag is unexpected.
-     *  The output format is: "{Error|Warning}: attribute <key.tagName()> <key>
-     *  has other value than expected[ in file: <filename>]"
+     *  The output format is: "{Error|Warning}: attribute \<key.tagName()\> \<key\>
+     *  has other value than expected[ in file: \<filename\>]"
      *  @param key affected tag
      *  @param filename name of the file (optional, might be NULL)
      *  @param errorMsg print error message if OFTrue, a warning message otherwise
@@ -1098,8 +1098,8 @@ class DicomDirInterface
                                      const OFBool errorMsg = OFTrue);
 
     /** print an error message that a required attribute is missing/empty.
-     *  The output format is: "Error: <error.text()>: required attribute <key.tagName()>
-     *  <key> {empty|missing}[ in file: <filename>]"
+     *  The output format is: "Error: <error.text()>: required attribute \<key.tagName()\>
+     *  \<key>\ {empty|missing}[ in file: \<filename\>]"
      *  @param key affected tag
      *  @param filename name of the file (optional, might be NULL)
      *  @param emptyMsg print "empty" if OFTrue, "missing" otherwise
@@ -1109,8 +1109,8 @@ class DicomDirInterface
                                        const OFBool emptyMsg = OFFalse);
 
     /** print an error message that something went wrong with an attribute.
-     *  The output format is: "Error: <error.text()>: [cannot <operation> ]<key.tagName()>
-     *  <key>"
+     *  The output format is: "Error: \<error.text()\>: [cannot \<operation\> ]\<key.tagName()\>
+     *  \<key\>"
      *  @param key affected tag
      *  @param error status to be reported (only if ".bad()")
      *  @param operation name of the operation that failed (optional, might be NULL)
@@ -1120,7 +1120,7 @@ class DicomDirInterface
                                     const char *operation);
 
     /** print an error message that something went wrong with a given record.
-     *  The output format is: "Error: <error.text()>: [cannot <operation> ]<recordType>
+     *  The output format is: "Error: \<error.text()\>: [cannot \<operation\> ]\<recordType\>
      *  directory record"
      *  @param error status to be reported (only if ".bad()")
      *  @param recordType type of directory record which caused the error
@@ -1468,6 +1468,9 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.21  2010-10-04 16:14:53  joergr
+ * Fixed various Doxygen API documentation issues.
+ *
  * Revision 1.20  2010-10-01 08:09:31  joergr
  * Added support for new non-image Storage SOP Classes that require the new
  * directory record type MEASUREMENT. Also fixed issues with other record types.

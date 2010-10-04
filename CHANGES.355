@@ -42,6 +42,10 @@ Changes between releases are documented here.
   Affects: dcmdata/tests/tstpread.cc
            dcmsign/libsrc/simaccon.cc
 
+- Fixed various Doxygen API documentation issues.
+  Affecs: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+          dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+
 - Fixed typo.
   Affects: dcmjpeg/docs/dcmcjpeg.man
 

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-30 08:59:21 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Update Date:      $Date: 2010-10-04 16:16:16 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -254,7 +254,7 @@ class DSRTypes
     /// internal: create footnote references
     static const size_t HF_createFootnoteReferences;
 
-    /// internal: convert non-ASCII characters (> #127) to &#nnn;
+    /// internal: convert non-ASCII characters (> #127) to &\#nnn;
     static const size_t HF_convertNonASCIICharacters;
 
     /// shortcut: render all codes
@@ -381,7 +381,7 @@ class DSRTypes
         /// DICOM IOD: Procedure Log
         DT_ProcedureLog,
         /// DICOM IOD: X-Ray Radiation Dose SR
-        DT_XRayRadiationDoseSR,        
+        DT_XRayRadiationDoseSR,
         /// DICOM IOD: Spectacle Prescription Report
         DT_SpectaclePrescriptionReport,
         /// DICOM IOD: Macular Grid Thickness and Volume Report
@@ -938,9 +938,9 @@ class DSRTypes
                                                      OFString &readablePersonName);
 
     /** convert DICOM person name to XML format.
-     *  The tags <prefix>, <first>, <middle>, <last> and <suffix> are used for the XML format
-     *  of a person name.  The string is automatically converted to the markup notation (see
-     *  convertToMarkupString()).  Two tags are separated by a newline.
+     *  The tags \<prefix\>, \<first\>, \<middle\>, \<last\> and \<suffix\> are used for the XML
+     *  format of a person name.  The string is automatically converted to the markup notation
+     *  (see convertToMarkupString()).  Two tags are separated by a newline.
      *  Please note that only the first component group (characters before the first '=') of
      *  the DICOM person name is used - see DcmPersonName::getNameComponents() for details.
      ** @param  dicomPersonName  person name in DICOM PN format (ln^fn^mn^p^s)
@@ -968,7 +968,7 @@ class DSRTypes
 
     /** convert character string to print string.
      *  This method is used to convert character strings for text "print" output.  Newline characters
-     *  '\n' are replaced by "\\n", return characters '\r' by "\\r", etc.
+     *  "\n" are replaced by "\\n", return characters "\r" by "\\r", etc.
      ** @param  sourceString  source string to be converted
      *  @param  printString   reference to character string where the result should be stored
      ** @return reference to resulting 'printString' (might be empty if 'sourceString' was empty)
@@ -1098,7 +1098,7 @@ class DSRTypes
     /** get string value from element and convert to HTML/XML
      ** @param  delem            reference to DICOM element from which the string value should be retrieved
      *  @param  stringValue      reference to character string where the result should be stored
-     *  @param  convertNonASCII  convert non-ASCII characters (> #127) to numeric value (&#nnn;) if OFTrue
+     *  @param  convertNonASCII  convert non-ASCII characters (> #127) to numeric value (&\#nnn;) if OFTrue
      ** @return reference character string if successful, empty string otherwise
      */
     static const OFString &getMarkupStringFromElement(const DcmElement &delem,
@@ -1298,6 +1298,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.64  2010-10-04 16:16:16  joergr
+ *  Fixed various Doxygen API documentation issues.
+ *
  *  Revision 1.63  2010-09-30 08:59:21  joergr
  *  Added support for the Spectacle Prescription Report IOD.
  *  Added support for the Macular Grid Thickness and Volume Report IOD.
