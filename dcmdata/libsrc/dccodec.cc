@@ -22,8 +22,8 @@
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:01:22 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2010-10-04 14:26:19 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@
 // static member variables
 OFList<DcmCodecList *> DcmCodecList::registeredCodecs;
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
 OFReadWriteLock DcmCodecList::codecLock;
 #endif
 
@@ -106,11 +106,11 @@ OFCondition DcmCodec::convertToSecondaryCapture(DcmItem *dataset)
 
 
 OFCondition DcmCodec::insertCodeSequence(
-    DcmItem *dataset,
-    const DcmTagKey &tagKey,
-    const char *codingSchemeDesignator,
-    const char *codeValue,
-    const char *codeMeaning)
+  DcmItem *dataset,
+  const DcmTagKey &tagKey,
+  const char *codingSchemeDesignator,
+  const char *codeValue,
+  const char *codeMeaning)
 {
   if (dataset == NULL || codingSchemeDesignator == NULL ||
      codeValue == NULL || codeMeaning == NULL) return EC_IllegalCall;
@@ -236,90 +236,90 @@ OFCondition DcmCodec::updateImageType(DcmItem *dataset)
 
 
 OFCondition DcmCodec::determineStartFragment(
-    Uint32 frameNo,
-    Sint32 numberOfFrames,
-    DcmPixelSequence * fromPixSeq,
-    Uint32& currentItem)
+  Uint32 frameNo,
+  Sint32 numberOfFrames,
+  DcmPixelSequence * fromPixSeq,
+  Uint32& currentItem)
 {
-    Uint32 numberOfFragments = fromPixSeq->card();
-    if (numberOfFrames < 1 || numberOfFragments <= OFstatic_cast(Uint32, numberOfFrames) || frameNo >= OFstatic_cast(Uint32, numberOfFrames)) return EC_IllegalCall;
+  Uint32 numberOfFragments = fromPixSeq->card();
+  if (numberOfFrames < 1 || numberOfFragments <= OFstatic_cast(Uint32, numberOfFrames) || frameNo >= OFstatic_cast(Uint32, numberOfFrames)) return EC_IllegalCall;
 
-    if (frameNo == 0)
-    {
-      // simple case: first frame is always at second fragment
-      currentItem = 1;
-      return EC_Normal;
-    }
+  if (frameNo == 0)
+  {
+    // simple case: first frame is always at second fragment
+    currentItem = 1;
+    return EC_Normal;
+  }
 
-    if (numberOfFragments == OFstatic_cast(Uint32, numberOfFrames) + 1)
-    {
-      // standard case: there is one fragment per frame.
-      currentItem = frameNo + 1;
-      return EC_Normal;
-    }
+  if (numberOfFragments == OFstatic_cast(Uint32, numberOfFrames) + 1)
+  {
+    // standard case: there is one fragment per frame.
+    currentItem = frameNo + 1;
+    return EC_Normal;
+  }
 
-    // non-standard case: multiple fragments per frame.
-    // We now try to consult the offset table.
-    DcmPixelItem *pixItem = NULL;
-    Uint8 * rawOffsetTable = NULL;
+  // non-standard case: multiple fragments per frame.
+  // We now try to consult the offset table.
+  DcmPixelItem *pixItem = NULL;
+  Uint8 * rawOffsetTable = NULL;
 
-    // get first pixel item, i.e. the fragment containing the offset table
-    OFCondition result = fromPixSeq->getItem(pixItem, 0);
+  // get first pixel item, i.e. the fragment containing the offset table
+  OFCondition result = fromPixSeq->getItem(pixItem, 0);
+  if (result.good())
+  {
+    Uint32 tableLength = pixItem->getLength();
+    result = pixItem->getUint8Array(rawOffsetTable);
     if (result.good())
     {
-      Uint32 tableLength = pixItem->getLength();
-      result = pixItem->getUint8Array(rawOffsetTable);
-      if (result.good())
+      // check if the offset table has the right size: 4 bytes for each frame (not fragment!)
+      if (tableLength != 4* OFstatic_cast(Uint32, numberOfFrames)) return EC_IllegalCall;
+
+      // byte swap offset table into local byte order. In file, the offset table is always in little endian
+      swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rawOffsetTable, tableLength, sizeof(Uint32));
+
+      // cast offset table to Uint32.
+      Uint32 *offsetTable = OFreinterpret_cast(Uint32 *, rawOffsetTable);
+
+      // now access offset of the frame we're looking for
+      Uint32 offset = offsetTable[frameNo];
+
+      // OK, now let's look if we can find a fragment that actually corresponds to that offset.
+      // In counter we compute the offset for each frame by adding all fragment lenghts
+      Uint32 counter = 0;
+      // now iterate over all fragments except the index table. The start of the first fragment
+      // is defined as zero.
+      for (Uint32 idx = 1; idx < numberOfFragments; ++idx)
       {
-        // check if the offset table has the right size: 4 bytes for each frame (not fragment!)
-        if (tableLength != 4* OFstatic_cast(Uint32, numberOfFrames)) return EC_IllegalCall;
-
-        // byte swap offset table into local byte order. In file, the offset table is always in little endian
-        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rawOffsetTable, tableLength, sizeof(Uint32));
-
-        // cast offset table to Uint32.
-        Uint32 *offsetTable = OFreinterpret_cast(Uint32 *, rawOffsetTable);
-
-        // now access offset of the frame we're looking for
-        Uint32 offset = offsetTable[frameNo];
-
-        // OK, now let's look if we can find a fragment that actually corresponds to that offset.
-        // In counter we compute the offset for each frame by adding all fragment lenghts
-        Uint32 counter = 0;
-        // now iterate over all fragments except the index table. The start of the first fragment
-        // is defined as zero.
-        for (Uint32 idx = 1; idx < numberOfFragments; ++idx)
+        if (counter == offset)
         {
-          if (counter == offset)
-          {
-            // hooray, we are lucky. We have found the fragment we're looking for
-            currentItem = idx;
-            return EC_Normal;
-          }
-
-          // access pixel item in order to determine its length
-          result = fromPixSeq->getItem(pixItem, idx);
-          if (result.bad()) return result;
-
-          // add pixel item length plus 8 bytes overhead for the item tag and length field
-          counter += pixItem->getLength() + 8;
+          // hooray, we are lucky. We have found the fragment we're looking for
+          currentItem = idx;
+          return EC_Normal;
         }
 
-        // bad luck. We have not found a fragment corresponding to the offset in the offset table.
-        // Either we cannot correctly add numbers, or they cannot :-)
-        return EC_TagNotFound;
+        // access pixel item in order to determine its length
+        result = fromPixSeq->getItem(pixItem, idx);
+        if (result.bad()) return result;
+
+        // add pixel item length plus 8 bytes overhead for the item tag and length field
+        counter += pixItem->getLength() + 8;
       }
+
+      // bad luck. We have not found a fragment corresponding to the offset in the offset table.
+      // Either we cannot correctly add numbers, or they cannot :-)
+      return EC_TagNotFound;
     }
-    return result;
+  }
+  return result;
 }
 
 
 /* --------------------------------------------------------------- */
 
 DcmCodecList::DcmCodecList(
-    const DcmCodec *aCodec,
-    const DcmRepresentationParameter *aDefaultRepParam,
-    const DcmCodecParameter *aCodecParameter)
+  const DcmCodec *aCodec,
+  const DcmRepresentationParameter *aDefaultRepParam,
+  const DcmCodecParameter *aCodecParameter)
 : codec(aCodec)
 , defaultRepParam(aDefaultRepParam)
 , codecParameter(aCodecParameter)
@@ -331,18 +331,18 @@ DcmCodecList::~DcmCodecList()
 }
 
 OFCondition DcmCodecList::registerCodec(
-    const DcmCodec *aCodec,
-    const DcmRepresentationParameter *aDefaultRepParam,
-    const DcmCodecParameter *aCodecParameter)
+  const DcmCodec *aCodec,
+  const DcmRepresentationParameter *aDefaultRepParam,
+  const DcmCodecParameter *aCodecParameter)
 {
   if ((aCodec == NULL)||(aCodecParameter == NULL)) return EC_IllegalParameter;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
 #endif
 
   // acquire write lock on codec list.  Will block if some codec is currently active.
   OFCondition result = EC_Normal;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   OFReadWriteLocker locker(codecLock);
   if (0 == locker.wrlock())
   {
@@ -364,7 +364,7 @@ OFCondition DcmCodecList::registerCodec(
       }
       if (result.good()) registeredCodecs.push_back(listEntry); else delete listEntry;
     } else result = EC_MemoryExhausted;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   } else result = EC_IllegalCall;
 #endif
   return result;
@@ -373,13 +373,13 @@ OFCondition DcmCodecList::registerCodec(
 OFCondition DcmCodecList::deregisterCodec(const DcmCodec *aCodec)
 {
   if (aCodec == NULL) return EC_IllegalParameter;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
 #endif
   // acquire write lock on codec list.  Will block if some codec is currently active.
   OFCondition result = EC_Normal;
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   OFReadWriteLocker locker(codecLock);
   if (0 == locker.wrlock())
   {
@@ -390,28 +390,28 @@ OFCondition DcmCodecList::deregisterCodec(const DcmCodec *aCodec)
     {
       if ((*first)->codec == aCodec)
       {
-      	delete *first;
-      	first = registeredCodecs.erase(first);
+        delete *first;
+        first = registeredCodecs.erase(first);
       } else ++first;
     }
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   } else result = EC_IllegalCall;
 #endif
   return result;
 }
 
 OFCondition DcmCodecList::updateCodecParameter(
-    const DcmCodec *aCodec,
-    const DcmCodecParameter *aCodecParameter)
+  const DcmCodec *aCodec,
+  const DcmCodecParameter *aCodecParameter)
 {
   if ((aCodec == NULL)||(aCodecParameter == NULL)) return EC_IllegalParameter;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
 #endif
   // acquire write lock on codec list.  Will block if some codec is currently active.
   OFCondition result = EC_Normal;
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   OFReadWriteLocker locker(codecLock);
   if (0 == locker.wrlock())
   {
@@ -423,7 +423,7 @@ OFCondition DcmCodecList::updateCodecParameter(
       if ((*first)->codec == aCodec) (*first)->codecParameter = aCodecParameter;
       ++first;
     }
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   } else result = EC_IllegalCall;
 #endif
   return result;
@@ -431,19 +431,19 @@ OFCondition DcmCodecList::updateCodecParameter(
 
 
 OFCondition DcmCodecList::decode(
-    const DcmXfer & fromType,
-    const DcmRepresentationParameter * fromParam,
-    DcmPixelSequence * fromPixSeq,
-    DcmPolymorphOBOW& uncompressedPixelData,
-    DcmStack & pixelStack)
+  const DcmXfer & fromType,
+  const DcmRepresentationParameter * fromParam,
+  DcmPixelSequence * fromPixSeq,
+  DcmPolymorphOBOW& uncompressedPixelData,
+  DcmStack & pixelStack)
 {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
 #endif
   OFCondition result = EC_CannotChangeRepresentation;
 
   // acquire write lock on codec list.  Will block if some write lock is currently active.
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   OFReadWriteLocker locker(codecLock);
   if (0 == locker.rdlock())
   {
@@ -459,7 +459,7 @@ OFCondition DcmCodecList::decode(
         first = last;
       } else ++first;
     }
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   } else result = EC_IllegalCall;
 #endif
   return result;
@@ -467,23 +467,23 @@ OFCondition DcmCodecList::decode(
 
 
 OFCondition DcmCodecList::decodeFrame(
-    const DcmXfer & fromType,
-    const DcmRepresentationParameter * fromParam,
-    DcmPixelSequence * fromPixSeq,
-    DcmItem *dataset,
-    Uint32 frameNo,
-    Uint32& startFragment,
-    void *buffer,
-    Uint32 bufSize,
-    OFString& decompressedColorModel)
+  const DcmXfer & fromType,
+  const DcmRepresentationParameter * fromParam,
+  DcmPixelSequence * fromPixSeq,
+  DcmItem *dataset,
+  Uint32 frameNo,
+  Uint32& startFragment,
+  void *buffer,
+  Uint32 bufSize,
+  OFString& decompressedColorModel)
 {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
 #endif
   OFCondition result = EC_CannotChangeRepresentation;
 
   // acquire write lock on codec list.  Will block if some write lock is currently active.
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   OFReadWriteLocker locker(codecLock);
   if (0 == locker.rdlock())
   {
@@ -500,7 +500,7 @@ OFCondition DcmCodecList::decodeFrame(
         first = last;
       } else ++first;
     }
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   } else result = EC_IllegalCall;
 #endif
   return result;
@@ -508,22 +508,22 @@ OFCondition DcmCodecList::decodeFrame(
 
 
 OFCondition DcmCodecList::encode(
-    const E_TransferSyntax fromRepType,
-    const DcmRepresentationParameter * fromParam,
-    DcmPixelSequence * fromPixSeq,
-    const E_TransferSyntax toRepType,
-    const DcmRepresentationParameter * toRepParam,
-    DcmPixelSequence * & toPixSeq,
-    DcmStack & pixelStack)
+  const E_TransferSyntax fromRepType,
+  const DcmRepresentationParameter * fromParam,
+  DcmPixelSequence * fromPixSeq,
+  const E_TransferSyntax toRepType,
+  const DcmRepresentationParameter * toRepParam,
+  DcmPixelSequence * & toPixSeq,
+  DcmStack & pixelStack)
 {
   toPixSeq = NULL;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
 #endif
   OFCondition result = EC_CannotChangeRepresentation;
 
   // acquire write lock on codec list.  Will block if some write lock is currently active.
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   OFReadWriteLocker locker(codecLock);
   if (0 == locker.rdlock())
   {
@@ -540,7 +540,7 @@ OFCondition DcmCodecList::encode(
         first = last;
       } else ++first;
     }
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   } else result = EC_IllegalCall;
 #endif
 
@@ -548,22 +548,22 @@ OFCondition DcmCodecList::encode(
 }
 
 OFCondition DcmCodecList::encode(
-    const E_TransferSyntax fromRepType,
-    const Uint16 * pixelData,
-    const Uint32 length,
-    const E_TransferSyntax toRepType,
-    const DcmRepresentationParameter * toRepParam,
-    DcmPixelSequence * & toPixSeq,
-    DcmStack & pixelStack)
+  const E_TransferSyntax fromRepType,
+  const Uint16 * pixelData,
+  const Uint32 length,
+  const E_TransferSyntax toRepType,
+  const DcmRepresentationParameter * toRepParam,
+  DcmPixelSequence * & toPixSeq,
+  DcmStack & pixelStack)
 {
   toPixSeq = NULL;
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
 #endif
   OFCondition result = EC_CannotChangeRepresentation;
 
   // acquire write lock on codec list.  Will block if some write lock is currently active.
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   OFReadWriteLocker locker(codecLock);
   if (0 == locker.rdlock())
   {
@@ -580,7 +580,7 @@ OFCondition DcmCodecList::encode(
         first = last;
       } else ++first;
     }
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   } else result = EC_IllegalCall;
 #endif
 
@@ -588,16 +588,16 @@ OFCondition DcmCodecList::encode(
 }
 
 OFBool DcmCodecList::canChangeCoding(
-    const E_TransferSyntax fromRepType,
-    const E_TransferSyntax toRepType)
+  const E_TransferSyntax fromRepType,
+  const E_TransferSyntax toRepType)
 {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   if (! codecLock.initialized()) return OFFalse; // should never happen
 #endif
   OFBool result = OFFalse;
 
   // acquire write lock on codec list.  Will block if some write lock is currently active.
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   OFReadWriteLocker locker(codecLock);
   if (0 == locker.rdlock())
   {
@@ -608,11 +608,11 @@ OFBool DcmCodecList::canChangeCoding(
     {
       if ((*first)->codec->canChangeCoding(fromRepType, toRepType))
       {
-      	result = OFTrue;
+        result = OFTrue;
         first = last;
       } else ++first;
     }
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   }
 #endif
 
@@ -626,13 +626,13 @@ OFCondition DcmCodecList::determineDecompressedColorModel(
   DcmItem *dataset,
   OFString &decompressedColorModel)
 {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
 #endif
   OFCondition result = EC_CannotChangeRepresentation;
 
   // acquire write lock on codec list.  Will block if some write lock is currently active.
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   OFReadWriteLocker locker(codecLock);
   if (0 == locker.rdlock())
   {
@@ -649,7 +649,7 @@ OFCondition DcmCodecList::determineDecompressedColorModel(
         first = last;
       } else ++first;
     }
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   } else result = EC_IllegalCall;
 #endif
   return result;
@@ -659,6 +659,10 @@ OFCondition DcmCodecList::determineDecompressedColorModel(
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
+** Revision 1.21  2010-10-04 14:26:19  joergr
+** Fixed issue with codec registry when compiled on Linux x86_64 with "configure
+** --disable-threads" (replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS").
+**
 ** Revision 1.20  2010-08-09 13:01:22  joergr
 ** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
 ** the official "keyword" is used for the attribute name which results in a

@@ -9,6 +9,13 @@ Changes between releases are documented here.
   Affects: dcmnet/apps/storescp.cc
            dcmnet/docs/storescp.man
 
+- Fixed issue with codec registry when compiled on Linux x86_64 with "configure
+  --disable-threads" (replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS").
+  Thanks to forum user "mask" for the original report and Andreas Barth
+  <andreas.barth@bruker-biospin.de> for the suggested fix.
+  Affects: dcmdata/include/dcmtk/dcmdata/dccodec.h
+           dcmdata/libsrc/dccodec.cc
+
 - Further enhancements on BlendingSequence (e.g. check whether it exists before
   trying to copy certain data elements from it).
   Affects: dcmdata/libsrc/dcddirif.cc

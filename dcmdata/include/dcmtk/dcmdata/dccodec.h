@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:44 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-04 14:26:21 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -513,7 +513,7 @@ private:
   /// singleton list of registered codecs
   static OFList<DcmCodecList *> registeredCodecs;
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   /// read/write lock guarding access to singleton list
   static OFReadWriteLock codecLock;
 #endif
@@ -529,6 +529,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
+** Revision 1.23  2010-10-04 14:26:21  joergr
+** Fixed issue with codec registry when compiled on Linux x86_64 with "configure
+** --disable-threads" (replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS").
+**
 ** Revision 1.22  2010-03-01 09:08:44  uli
 ** Removed some unnecessary include directives in the headers.
 **
