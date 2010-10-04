@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-01 14:01:56 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2010-10-04 09:49:39 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -803,31 +803,35 @@ static void addBlendingSequence(DcmDirectoryRecord *record,
 {
     if ((record != NULL) && (dataset != NULL))
     {
-        signed long i = 0;
-        DcmItem *ditem = NULL;
-        /* create new BlendingSequence */
-        DcmSequenceOfItems *newSeq = new DcmSequenceOfItems(DCM_BlendingSequence);
-        if (newSeq != NULL)
+        /* make sure that the sequence is really present in the original dataset */
+        if (dataset->tagExistsWithValue(DCM_BlendingSequence))
         {
-            do {
-                /* get sequence item (not very efficient, but it works) */
-                if (dataset->findAndGetSequenceItem(DCM_BlendingSequence, ditem, i++).good())
-                {
-                    DcmItem *newItem = new DcmItem();
-                    if (newItem != NULL)
+            signed long i = 0;
+            DcmItem *ditem = NULL;
+            /* create new BlendingSequence */
+            DcmSequenceOfItems *newSeq = new DcmSequenceOfItems(DCM_BlendingSequence);
+            if (newSeq != NULL)
+            {
+                do {
+                    /* get sequence item (not very efficient, but it works) */
+                    if (dataset->findAndGetSequenceItem(DCM_BlendingSequence, ditem, i++).good())
                     {
-                        if (newSeq->append(newItem).good())
+                        DcmItem *newItem = new DcmItem();
+                        if (newItem != NULL)
                         {
-                            ditem->findAndInsertCopyOfElement(DCM_StudyInstanceUID, newItem);
-                            ditem->findAndInsertCopyOfElement(DCM_ReferencedSeriesSequence, newItem);
-                        } else
-                            delete newItem;
+                            if (newSeq->append(newItem).good())
+                            {
+                                ditem->findAndInsertCopyOfElement(DCM_StudyInstanceUID, newItem);
+                                ditem->findAndInsertCopyOfElement(DCM_ReferencedSeriesSequence, newItem);
+                            } else
+                                delete newItem;
+                        }
                     }
-                }
-            } while ((ditem != NULL) && (i <= 2));  // terminate after two items
-            /* try to insert blending sequence into record (if not empty) */
-            if ((newSeq->card() == 0) || (record->insert(newSeq, OFTrue /*replaceOld*/).bad()))
-                delete newSeq;
+                } while ((ditem != NULL) && (i <= 2));  // terminate after two items
+                /* try to insert blending sequence into record (if not empty) */
+                if ((newSeq->card() == 0) || (record->insert(newSeq, OFTrue /*replaceOld*/).bad()))
+                    delete newSeq;
+            }
         }
     }
 }
@@ -4642,8 +4646,8 @@ OFBool DicomDirInterface::warnAboutInconsistentAttributes(DcmDirectoryRecord *re
                 {
                     if (delem->getTag().getEVR() == EVR_SQ)
                     {
-                        /* do not check ContentSequence (see addConceptModContentItems()) */
-                        if (delem->getTag() != DCM_ContentSequence)
+                        /* do not check particular sequences (because they will always deviate) */
+                        if ((delem->getTag() != DCM_ContentSequence) && (delem->getTag() != DCM_BlendingSequence))
                             result &= compareSequenceAttributes(dataset, tag, record, sourceFilename);
                     } else {
                         /* everything else can be compared as a string */
@@ -5072,6 +5076,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.48  2010-10-04 09:49:39  joergr
+ *  Further enhancements on BlendingSequence (e.g. check whether it exists before
+ *  trying to copy certain data elements from it).
+ *
  *  Revision 1.47  2010-10-01 14:01:56  joergr
  *  Added support for the BlendingSequence required for directory records of the
  *  Blending Softcopy Presentation State Storage SOP Class.

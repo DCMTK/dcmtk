@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.04 (riesmeier)
+
+- Further enhancements on BlendingSequence (e.g. check whether it exists before
+  trying to copy certain data elements from it).
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 **** Changes from 2010.10.01 (riesmeier)
 
 - Added support for the BlendingSequence required for directory records of the
