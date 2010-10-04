@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2007, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: SiMACConstructor
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:42:21 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-04 13:23:07 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@ SiMACConstructor::SiMACConstructor()
 {
 }
 
- 
+
 SiMACConstructor::~SiMACConstructor()
 {
   delete[] buf;
@@ -70,10 +70,10 @@ OFCondition SiMACConstructor::flushBuffer(SiMAC& mac)
   void *bufptr = NULL;
   offile_off_t bufLen = 0;
   stream.flushBuffer(bufptr, bufLen);
-  if (bufLen > 0) 
+  if (bufLen > 0)
   {
     if (dumpFile) fwrite(bufptr, 1, (size_t)bufLen, dumpFile);
-    result = mac.digest((unsigned char *)bufptr, bufLen);
+    result = mac.digest((unsigned char *)bufptr, (unsigned long)bufLen);
   }
   return result;
 }
@@ -85,16 +85,16 @@ OFCondition SiMACConstructor::encodeElement(DcmElement *element, SiMAC& mac, E_T
   DcmWriteCache wcache;
   OFCondition result = EC_Normal;
   OFBool last = OFFalse;
-  element->transferInit(); 
-  while (!last) 
+  element->transferInit();
+  while (!last)
   {
     result = element->writeSignatureFormat(stream, oxfer, EET_ExplicitLength, &wcache);
-    if (result == EC_StreamNotifyClient) result = flushBuffer(mac); 
-    else 
+    if (result == EC_StreamNotifyClient) result = flushBuffer(mac);
+    else
     {
       last=OFTrue;
     }
-  }    
+  }
   element->transferEnd();
   return result;
 }
@@ -128,11 +128,11 @@ OFBool SiMACConstructor::inTagList(const DcmElement *element, DcmAttributeTag *t
 }
 
 OFCondition SiMACConstructor::encodeDigitalSignatureItem(
-  DcmItem& signatureItem, 
-  SiMAC& mac, 
+  DcmItem& signatureItem,
+  SiMAC& mac,
   E_TransferSyntax oxfer)
 {
-  if (! signatureItem.canWriteXfer(oxfer, EXS_Unknown)) return SI_EC_WrongTransferSyntax;  
+  if (! signatureItem.canWriteXfer(oxfer, EXS_Unknown)) return SI_EC_WrongTransferSyntax;
   OFCondition result = EC_Normal;
   signatureItem.transferInit();
   unsigned long numElements = signatureItem.card();
@@ -140,17 +140,17 @@ OFCondition SiMACConstructor::encodeDigitalSignatureItem(
   DcmTagKey tagkey;
   for (unsigned long i=0; i < numElements; i++)
   {
-    element = signatureItem.getElement(i);    
+    element = signatureItem.getElement(i);
     if (result.good())
     {
       if (element->isSignable())
       {
-      	tagkey = element->getTag().getXTag();
-      	if ((tagkey != DCM_CertificateOfSigner) && 
-      	    (tagkey != DCM_Signature) && 
-      	    (tagkey != DCM_CertifiedTimestampType) && 
-      	    (tagkey != DCM_CertifiedTimestamp))
-      	{
+        tagkey = element->getTag().getXTag();
+        if ((tagkey != DCM_CertificateOfSigner) &&
+            (tagkey != DCM_Signature) &&
+            (tagkey != DCM_CertifiedTimestampType) &&
+            (tagkey != DCM_CertifiedTimestamp))
+        {
           result = encodeElement(element, mac, oxfer);
         }
       }
@@ -159,28 +159,28 @@ OFCondition SiMACConstructor::encodeDigitalSignatureItem(
 
   /* done, flush stream buffer */
   result = flushBuffer(mac);
-  signatureItem.transferEnd();    
-  return result;  
+  signatureItem.transferEnd();
+  return result;
 }
 
 
 OFCondition SiMACConstructor::encodeDataset(
-  DcmItem& item, 
-  SiMAC& mac, 
+  DcmItem& item,
+  SiMAC& mac,
   E_TransferSyntax oxfer,
   DcmAttributeTag &tagListOut,
   DcmAttributeTag *tagListIn)
 {
   tagListOut.clear();
-  if (! item.canWriteXfer(oxfer, EXS_Unknown)) return SI_EC_WrongTransferSyntax;  
+  if (! item.canWriteXfer(oxfer, EXS_Unknown)) return SI_EC_WrongTransferSyntax;
   OFCondition result = EC_Normal;
   item.transferInit();
   unsigned long numElements = item.card();
   DcmElement *element;
   for (unsigned long i=0; i < numElements; i++)
   {
-    element = item.getElement(i);    
-    if (result.good() && (inTagList(element, tagListIn))) 
+    element = item.getElement(i);
+    if (result.good() && (inTagList(element, tagListIn)))
     {
       // if the element is signable, we should encode it
       if (element->isSignable())
@@ -196,8 +196,8 @@ OFCondition SiMACConstructor::encodeDataset(
 
   /* done, flush stream buffer */
   result = flushBuffer(mac);
-  item.transferEnd();    
-  return result;  
+  item.transferEnd();
+  return result;
 }
 
 #else /* WITH_OPENSSL */
@@ -208,6 +208,9 @@ int simaccon_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: simaccon.cc,v $
+ *  Revision 1.11  2010-10-04 13:23:07  joergr
+ *  Added explicit type cast in order to keep VisualStudio 2008 quiet.
+ *
  *  Revision 1.10  2007-11-29 14:42:21  meichel
  *  Write methods now handle large raw data elements (such as pixel data)
  *    without loading everything into memory. This allows very large images to
@@ -246,4 +249,3 @@ int simaccon_cc_dummy_to_keep_linker_from_moaning = 0;
  *
  *
  */
-

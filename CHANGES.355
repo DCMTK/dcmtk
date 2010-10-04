@@ -21,6 +21,7 @@ Changes between releases are documented here.
 
 - Added explicit type cast in order to keep VisualStudio 2008 quiet.
   Affects: dcmdata/tests/tstpread.cc
+           dcmsign/libsrc/simaccon.cc
 
 - Fixed typo.
   Affects: dcmjpeg/docs/dcmcjpeg.man
