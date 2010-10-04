@@ -13,6 +13,12 @@ Changes between releases are documented here.
   trying to copy certain data elements from it).
   Affects: dcmdata/libsrc/dcddirif.cc
 
+- Undefine macro FAR before defining it in order to avoid compiler warnings
+  (C4005 - macro redefinition) reported by VisualStudio 2008.
+  Affects: dcmjpeg/libijg12/jmorecfg12.h
+           dcmjpeg/libijg16/jmorecfg16.h
+           dcmjpeg/libijg8/jmorecfg8.h
+
 - Added explicit type cast in order to keep VisualStudio 2008 quiet.
   Affects: dcmdata/tests/tstpread.cc
 
