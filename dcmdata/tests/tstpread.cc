@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Test application for partial element access API
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2010-08-23 07:22:56 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-04 12:51:34 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -383,7 +383,7 @@ int main(int argc, char *argv[])
 
     unsigned char *buffer = new unsigned char[BUFSIZE];
     unsigned char *bufptr = buffer;
-    srand(time(NULL));
+    srand(OFstatic_cast(unsigned int, time(NULL)));
     for (int i = BUFSIZE; i; --i)
     {
       *bufptr++ = OFstatic_cast(unsigned char, rand());
@@ -470,6 +470,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: tstpread.cc,v $
+ * Revision 1.7  2010-10-04 12:51:34  joergr
+ * Added explicit type cast in order to keep VisualStudio 2008 quiet.
+ *
  * Revision 1.6  2010-08-23 07:22:56  meichel
  * Minor changes needed for compilation on MSVC6
  *

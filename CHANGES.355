@@ -13,6 +13,9 @@ Changes between releases are documented here.
   trying to copy certain data elements from it).
   Affects: dcmdata/libsrc/dcddirif.cc
 
+- Added explicit type cast in order to keep VisualStudio 2008 quiet.
+  Affects: dcmdata/tests/tstpread.cc
+
 - Fixed typo.
   Affects: dcmjpeg/docs/dcmcjpeg.man
 
