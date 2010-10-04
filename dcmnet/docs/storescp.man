@@ -395,14 +395,14 @@ detailed descriptions which will be given in this passage.
 Option \e --sort-conc-studies enables a user to sort all received DICOM objects
 into different subdirectories.  The sorting will be done with regard to the
 studies the individual objects belong to, i.e. objects that belong to the same
-study will be stored in the same subdirectory. In general, a DICOM object d_n+1
-is considered to belong to the same study as a DICOM object d_n if and only if
-d_n and d_n+1 show the exact same values in attribute Study Instance UID. The
-names of the resulting subdirectories always start with a prefix p which was
-passed to this option as a parameter. In addition to this prefix, the
-subdirectory names contain time stamp information with regard to the date and
-time of reception of this particular study's first DICOM object. In detail, the
-determination of the subdirectory names pertains to the pattern
+study will be stored in the same subdirectory.  In general, a DICOM object
+d_n+1 is considered to belong to the same study as a DICOM object d_n if and
+only if d_n and d_n+1 show the exact same values in attribute Study Instance
+UID.  The names of the resulting subdirectories always start with a prefix p
+which was passed to this option as a parameter.  In addition to this prefix,
+the subdirectory names contain time stamp information with regard to the date
+and time of reception of this particular study's first DICOM object.  In
+detail, the determination of the subdirectory names pertains to the pattern
 
 \verbatim
   [prefix]_[YYYYMMDD]_[HHMMSSPPP]
@@ -410,11 +410,12 @@ determination of the subdirectory names pertains to the pattern
 
 where YYYY refers to year (4 digits), MM to month (01-12), DD to day (01-31),
 HH to hour (00-23), MM to minute (00-59), SS to second (00-59) and PPP to
-milliseconds (000-999). If the prefix is an empty string, the first "_" is
+milliseconds (000-999).  If the prefix is an empty string, the first "_" is
 omitted.
 
 The other \e --sort-xxx options work in a similar manner, only the subdirectory
-names are created differently. For option \e --sort-on-study-uid the pattern is
+names are created differently.  For option \e --sort-on-study-uid the pattern
+is
 
 \verbatim
   [prefix]_[StudyInstanceUID]
@@ -426,36 +427,36 @@ and for option \e --sort-on-patientname
   [PatientName]_[YYYYMMDD]_[HHMMSSPPP]
 \endverbatim
 
-where 'PatientName' is replaced by "ANONYMOUS" if the data element is empty
-or absent in the data set. Please note, however, that for option
+where 'PatientName' is replaced by "ANONYMOUS" if the data element is empty or
+absent in the data set.  Please note, however, that for option
 \e --sort-on-study-uid the same subdirectory will be used for all DICOM objects
 that belong to the same study, i.e. in contrast to the other \e --sort-xxx
 options there is no guarantee that a study directory is ever completed.
 
 Option \e --timenames creates filenames from timestamps corresponding to the
-time, \b storescp writes a file to disk. The format is
+time, \b storescp writes a file to disk.  The format is
 
 \verbatim
   [YYYYMMDDHHMMSSPPP]_[SERIALNO].[MD]
 \endverbatim
 
-where YYYY, MM, DD, HH, MM, SS, PPP are interpreted as described above.
-If more files are created at the same time, SERIALNO is inserted. It
-consists of a 4-digit, consecutive number (0000 to 9999). For the first file,
-that exists for a specific time, no number (and no "_") is inserted at all. MD
-represents an identification code (2 letters) for the kind of object stored
-in the file (see notes on \e --rename-on-eostudy).
+where YYYY, MM, DD, HH, MM, SS, PPP are interpreted as described above.  If
+more files are created at the same time, SERIALNO is inserted.  It consists of
+a 4-digit, consecutive number (0000 to 9999).  For the first file, that exists
+for a specific time, no number (and no "_") is inserted at all.  MD represents
+an identification code (2 letters) for the kind of object stored in the file
+(see notes on \e --rename-on-eostudy).
 
-Option \e --filename-extension appends a specified suffix to each filename
-(a dot "." is not added automatically). This suffix is not appended to
-the filenames created by \e --rename-on-eostudy to maintain the length
-of 8 characters.
+Option \e --filename-extension appends a specified suffix to each filename (a
+dot "." is not added automatically).  This suffix is not appended to the
+filenames created by \e --rename-on-eostudy to maintain the length of 8
+characters.
 
-Option \e --exec-on-reception allows to execute a certain command line
-after having received and processed one DICOM object (through a
-C-STORE-RQ message). The command line to be executed is passed to
-this option as a parameter. The specified command line may contain a
-number of placeholders which will be replaced at run time:
+Option \e --exec-on-reception allows to execute a certain command line after
+having received and processed one DICOM object (through a C-STORE-RQ message).
+The command line to be executed is passed to this option as a parameter.  The
+specified command line may contain a number of placeholders which will be
+replaced at run time:
 
 \li \b \#p: complete path to the output directory into which the last DICOM
             object was stored (not available with option \e --ignore though)
@@ -463,7 +464,9 @@ number of placeholders which will be replaced at run time:
             \e --ignore though)
 \li \b \#a: calling application entity title of the peer Storage SCU
 \li \b \#c: called application entity title used by the peer Storage SCU to
-            address \b storescp.
+            address \b storescp
+\li \b \#r: calling presentation address, i.e. hostname or IP address of the
+            peer Storage SCU
 
 The specified command line is executed as a separate process, so that the
 execution of \b storescp will not be held back.
@@ -473,7 +476,7 @@ DICOM objects that belong to one study have been received by \b storescp.
 The same placeholders as with \e --exec-on-reception may be used, except for
 '\#f', which is not supported.  A study is considered complete by \b storescp
 when an object belonging to a different study is received or the timeout
-specified with \e --eostudy-timeout takes place. If option
+specified with \e --eostudy-timeout takes place.  If option
 \e --rename-on-eostudy is in force, the renaming takes place before the
 external command is executed.
 
@@ -482,7 +485,7 @@ options and can only be used in combination with one of these options.
 If a user specifies option \e --rename-on-eostudy and \b storescp
 determines that all DICOM objects that belong to a certain study have
 been received, all DICOM files that belong to the last study will be
-renamed in the corresponding output directory. The filenames into which
+renamed in the corresponding output directory.  The filenames into which
 the files are being renamed will be calculated using the pattern
 
 \verbatim
@@ -499,9 +502,9 @@ such a case, d_n+1 is considered to belong to a new study.
 
 Using option \e --eostudy-timeout a user can modify the determination process
 to figure out if all DICOM objects that belong to one study have already been
-received by \b storescp. With regard to this fact, it is clear that this option
-can only be used in combination with at least one of the following options:
-\e --sort-xxx, \e --exec-on-eostudy and \e --rename-on-eostudy.
+received by \b storescp.  With regard to this fact, it is clear that this
+option can only be used in combination with at least one of the following
+options: \e --sort-xxx, \e --exec-on-eostudy and \e --rename-on-eostudy.
 If option \e --eostudy-timeout is specified, the end of a study is considered
 to have occurred not only if two consecutively received DICOM objects d_n and
 d_n+1 do not show the same values in attribute Study Instance UID, but also if

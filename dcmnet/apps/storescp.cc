@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-16 08:28:40 $
- *  CVS/RCS Revision: $Revision: 1.133 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-04 10:51:46 $
+ *  CVS/RCS Revision: $Revision: 1.134 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,6 +116,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERS
 #define FILENAME_PLACEHOLDER "#f"
 #define CALLING_AETITLE_PLACEHOLDER "#a"
 #define CALLED_AETITLE_PLACEHOLDER "#c"
+#define CALLING_PRESENTATION_ADDRESS_PLACEHOLDER "#r"
 
 static OFCondition processCommands(T_ASC_Association *assoc);
 static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfiguration& asccfg);
@@ -172,10 +173,12 @@ OFBool             opt_abortAfterStore = OFFalse;
 OFBool             opt_promiscuous = OFFalse;
 OFBool             opt_correctUIDPadding = OFFalse;
 OFBool             opt_inetd_mode = OFFalse;
-OFString           callingAETitle;       // calling application entity title will be stored here
+OFString           callingAETitle;                    // calling application entity title will be stored here
 OFString           lastCallingAETitle;
-OFString           calledAETitle;        // called application entity title will be stored here
+OFString           calledAETitle;                     // called application entity title will be stored here
 OFString           lastCalledAETitle;
+OFString           callingPresentationAddress;        // remote hostname or IP address will be stored here
+OFString           lastCallingPresentationAddress;
 const char *       opt_respondingAETitle = APPLICATIONTITLE;
 static OFBool      opt_secureConnection = OFFalse;    // default: no secure connection
 static OFString    opt_outputDirectory = ".";         // default: output directory equals "."
@@ -1600,6 +1603,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   // store previous values for later use
   lastCallingAETitle = callingAETitle;
   lastCalledAETitle = calledAETitle;
+  lastCallingPresentationAddress = callingPresentationAddress;
   // store calling and called aetitle in global variables to enable
   // the --exec options using them. Enclose in quotation marks because
   // aetitles may contain space characters.
@@ -1608,10 +1612,10 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   if (ASC_getAPTitles(assoc->params, callingTitle, calledTitle, NULL).good())
   {
     callingAETitle = "\"";
-    callingAETitle += callingTitle;
+    callingAETitle += OFSTRING_GUARD(callingTitle);
     callingAETitle += "\"";
     calledAETitle = "\"";
-    calledAETitle += calledTitle;
+    calledAETitle += OFSTRING_GUARD(calledTitle);
     calledAETitle += "\"";
   }
   else
@@ -1620,6 +1624,8 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     callingAETitle.clear();
     calledAETitle.clear();
   }
+  // store calling presentation address (i.e. remote hostname)
+  callingPresentationAddress = OFSTRING_GUARD(assoc->params->DULparams.callingPresentationAddress);
 
   /* now do the real work, i.e. receive DIMSE commmands over the network connection */
   /* which was established and handle these commands correspondingly. In case of */
@@ -2327,6 +2333,9 @@ static void executeOnReception()
   // perform substitution for placeholder #c
   cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), calledAETitle );
 
+  // perform substitution for placeholder #r
+  cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), callingPresentationAddress );
+
   // Execute command in a new process
   executeCommand( cmd );
 }
@@ -2436,6 +2445,9 @@ static void executeOnEndOfStudy()
 
   // perform substitution for placeholder #c
   cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? calledAETitle : lastCalledAETitle );
+
+  // perform substitution for placeholder #r
+  cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? callingPresentationAddress : lastCallingPresentationAddress );
 
   // Execute command in a new process
   executeCommand( cmd );
@@ -2727,6 +2739,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.134  2010-10-04 10:51:46  joergr
+** Introduced new substitution variable "#r" for the calling presentation
+** address (i.e. the hostname or IP address of the peer storage SCU).
+**
 ** Revision 1.133  2010-09-16 08:28:40  uli
 ** Log DUL errors on the ERROR level instead of INFO.
 **

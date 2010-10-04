@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.04 (riesmeier)
 
+- Introduced new substitution variable "#r" for the calling presentation
+  address (i.e. the hostname or IP address of the peer storage SCU).
+  Thanks to Gerhard Holzinger <gerhard.holzinger@earchive.at> for the proposal.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+
 - Further enhancements on BlendingSequence (e.g. check whether it exists before
   trying to copy certain data elements from it).
   Affects: dcmdata/libsrc/dcddirif.cc
