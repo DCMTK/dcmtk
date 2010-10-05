@@ -21,9 +21,9 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:47 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-05 15:24:02 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -267,6 +267,19 @@ enum EM_Overlay
 };
 
 
+/** VOI LUT functions
+ */
+enum EF_VoiLutFunction
+{
+    /// default function (not explicitly set)
+    EFV_Default,
+    /// function LINEAR
+    EFV_Linear,
+    /// function SIGMOID
+    EFV_Sigmoid
+};
+
+
 /** presentation LUT shapes
  */
 enum ES_PresentationLut
@@ -435,6 +448,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
+ * Revision 1.41  2010-10-05 15:24:02  joergr
+ * Added preliminary support for VOI LUT function. Please note, however, that
+ * the sigmoid transformation is not yet implemented.
+ *
  * Revision 1.40  2010-03-01 09:08:47  uli
  * Removed some unnecessary include directives in the headers.
  *

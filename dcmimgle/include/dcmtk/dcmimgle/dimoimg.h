@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-21 13:08:56 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2010-10-05 15:24:02 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -278,6 +278,24 @@ class DiMonoImage
     {
         return WindowCount;
     }
+
+    /** get VOI LUT function.
+     *  possible values are: EFV_Default, EFV_Linear, EFV_Sigmoid.
+     *
+     ** @return currently active VOI LUT function
+     */
+    EF_VoiLutFunction getVoiLutFunction() const;
+
+    /** set VOI LUT function
+     *
+     ** @param  function  type of VOI LUT function (default, linear or sigmoid).
+     *                    'default' basically means the same as 'linear'.
+     *
+     ** @return true if successful (1 = function has changed,
+     *                              2 = function has not changed)
+     *          false otherwise
+     */
+    int setVoiLutFunction(const EF_VoiLutFunction function);
 
     /** set VOI LUT (given by dcmdata elements).
      *  possibly active window/center is implicitly disabled.
@@ -1104,8 +1122,9 @@ class DiMonoImage
 
     /// free text explanation of current VOI transformation
     OFString VoiExplanation;
-
-    /// presentation LUT shape (identity or inverse)
+    /// VOI LUT function (linear or sigmoid)
+    EF_VoiLutFunction VoiLutFunction;
+    /// presentation LUT shape (identity, inverse or lin od)
     ES_PresentationLut PresLutShape;
 
     /// minimum density of a print-out (in hundreds of Optical Density)
@@ -1151,6 +1170,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
+ * Revision 1.56  2010-10-05 15:24:02  joergr
+ * Added preliminary support for VOI LUT function. Please note, however, that
+ * the sigmoid transformation is not yet implemented.
+ *
  * Revision 1.55  2010-07-21 13:08:56  joergr
  * Fixed memory leak when using processNextFrames(): DiOverlay object was
  * created multiple times.

@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-07-26 07:24:08 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Update Date:      $Date: 2010-10-05 15:24:06 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,6 +79,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    VoiLutFunction(EFV_Default),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -114,6 +115,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    VoiLutFunction(EFV_Default),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -150,6 +152,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    VoiLutFunction(EFV_Default),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -188,6 +191,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    VoiLutFunction(EFV_Default),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -219,6 +223,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     VoiExplanation(image->VoiExplanation),
+    VoiLutFunction(image->VoiLutFunction),
     PresLutShape(image->PresLutShape),
     MinDensity(image->MinDensity),
     MaxDensity(image->MaxDensity),
@@ -286,6 +291,7 @@ DiMonoImage::DiMonoImage(const DiColorImage *image,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    VoiLutFunction(EFV_Default),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -330,6 +336,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     VoiExplanation(image->VoiExplanation),
+    VoiLutFunction(image->VoiLutFunction),
     PresLutShape(image->PresLutShape),
     MinDensity(image->MinDensity),
     MaxDensity(image->MaxDensity),
@@ -414,6 +421,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     VoiExplanation(image->VoiExplanation),
+    VoiLutFunction(image->VoiLutFunction),
     PresLutShape(image->PresLutShape),
     MinDensity(image->MinDensity),
     MaxDensity(image->MaxDensity),
@@ -480,6 +488,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     VoiExplanation(image->VoiExplanation),
+    VoiLutFunction(image->VoiLutFunction),
     PresLutShape(image->PresLutShape),
     MinDensity(image->MinDensity),
     MaxDensity(image->MaxDensity),
@@ -551,6 +560,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    VoiLutFunction(EFV_Default),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -584,6 +594,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    VoiLutFunction(EFV_Default),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -713,8 +724,18 @@ void DiMonoImage::Init(DiMonoModality *modality,
                 /* VOI LUT */
                 DcmSequenceOfItems *seq = NULL;
                 VoiLutCount = Document->getSequence(DCM_VOILUTSequence, seq);
-                /* Presentation LUT Shape */
+                /* VOI LUT Function */
                 OFString str;
+                if (Document->getValue(DCM_VOILUTFunction, str))
+                {
+                    if (str == "LINEAR")
+                        VoiLutFunction = EFV_Linear;
+                    else if (str == "SIGMOID")
+                        VoiLutFunction = EFV_Sigmoid;
+                    else
+                        DCMIMGLE_WARN("unknown value for 'VOILUTFunction' (" << str << ") ... ignoring");
+                }
+                /* Presentation LUT Shape */
                 if (Document->getValue(DCM_PresentationLUTShape, str))
                 {
                     if (str == "IDENTITY")
@@ -1152,6 +1173,23 @@ int DiMonoImage::getWindow(double &center, double &width)
         return 1;
     }
     return 0;
+}
+
+
+EF_VoiLutFunction DiMonoImage::getVoiLutFunction() const
+{
+    return VoiLutFunction;
+}
+
+
+int DiMonoImage::setVoiLutFunction(const EF_VoiLutFunction function)
+{
+    if (function != VoiLutFunction)
+    {
+        VoiLutFunction = function;
+        return 1;
+    }
+    return 2;
 }
 
 
@@ -2139,6 +2177,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.83  2010-10-05 15:24:06  joergr
+ * Added preliminary support for VOI LUT function. Please note, however, that
+ * the sigmoid transformation is not yet implemented.
+ *
  * Revision 1.82  2010-07-26 07:24:08  joergr
  * Made sure that no NULL pointer is passed to the OFString constructor.
  *

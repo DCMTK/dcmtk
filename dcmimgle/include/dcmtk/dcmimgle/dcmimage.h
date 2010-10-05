@@ -22,8 +22,8 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-02 09:23:32 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Update Date:      $Date: 2010-10-05 15:24:02 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -701,6 +701,34 @@ class DicomImage
             Image->getMonoImagePtr()->getWindowCount() : 0;
     }
 
+    /** set VOI LUT function.
+     *  NB: Implementation of sigmoid transformation in "dimoopxt.h" is still missing.
+     *
+     ** @param  function  type of VOI LUT function (default, linear or sigmoid).
+     *                    'default' basically means the same as 'linear'.
+     *
+     ** @return true if successful (1 = function has changed,
+     *                              2 = function has not changed),
+     *          false otherwise
+     */
+    inline int setVoiLutFunction(const EF_VoiLutFunction function)
+    {
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setVoiLutFunction(function) : 0;
+    }
+
+    /** get VOI LUT function.
+     *  possible values are: EFV_Default, EFV_Linear, EFV_Sigmoid.
+     *  NB: Implementation of sigmoid transformation in "dimoopxt.h" is still missing.
+     *
+     ** @return currently active VOI LUT function or EFV_Default if not set
+     */
+    inline EF_VoiLutFunction getVoiLutFunction() const
+    {
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getVoiLutFunction() : EFV_Default;
+    }
+
     /** set VOI LUT (given by dcmdata elements).
      *  possibly active window/center is implicitly disabled.
      *  Given data is only referenced and not copied! Make sure that the corresponding DcmXXX
@@ -1360,7 +1388,7 @@ class DicomImage
 
     /** create scaled copy of specified (clipping) area of the current image object.
      *  memory is not handled internally - must be deleted from calling program.
-     *  NB: clipping and interpolated scaling at the same moment is not yet fully implemented!
+     *  NB: Clipping and interpolated scaling at the same moment is not yet fully implemented!
      *
      ** @param  left_pos      x coordinate of top left corner of area to be scaled
      *                        (referring to image origin, negative values create a border around the image)
@@ -1392,7 +1420,7 @@ class DicomImage
 
     /** create scaled copy of specified (clipping) area of the current image object.
      *  memory is not handled internally - must be deleted from calling program.
-     *  NB: clipping and interpolated scaling at the same moment is not yet fully implemented!
+     *  NB: Clipping and interpolated scaling at the same moment is not yet fully implemented!
      *
      ** @param  left_pos     x coordinate of top left corner of area to be scaled
      *                       (referring to image orgin, negative values create a border around the image)
@@ -1864,6 +1892,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
+ * Revision 1.64  2010-10-05 15:24:02  joergr
+ * Added preliminary support for VOI LUT function. Please note, however, that
+ * the sigmoid transformation is not yet implemented.
+ *
  * Revision 1.63  2010-03-02 09:23:32  joergr
  * Enhanced comments of some methods, e.g. processNextFrames().
  *
