@@ -191,16 +191,22 @@ VOI LUT transformation:
   +Ww   --set-window  [c]enter [w]idth: float
           compute VOI window using center c and width w
 
+  +Wfl  --linear-function
+          set VOI LUT function to LINEAR
+
+  +Wfs  --sigmoid-function
+          set VOI LUT function to SIGMOID
+
 presentation LUT transformation:
 
   +Pid  --identity-shape
-          presentation LUT shape IDENTITY
+          set presentation LUT shape to IDENTITY
 
   +Piv  --inverse-shape
-          presentation LUT shape INVERSE
+          set presentation LUT shape to INVERSE
 
   +Pod  --lin-od-shape
-          presentation LUT shape LIN OD
+          set presentation LUT shape to LIN OD
 
 overlay:
 
