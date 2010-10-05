@@ -1,21 +1,36 @@
 /*
-**
-** Author: Michael Onken
-**
-** Module: dcmnet
-**
-** Purpose:
-**   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
-**
-** Last Update:         $Author: uli $
-** Update Date:         $Date: 2010-10-05 10:15:20 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcuserid.cc,v $
-** CVS/RCS Revision:    $Revision: 1.6 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1997-2010, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ * Author: Michael Onken
+ *
+ * Module: dcmnet
+ *
+ * Purpose:
+ *   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
+ *
+ * Last Update:         $Author: uli $
+ * Update Date:         $Date: 2010-10-05 11:01:04 $
+ * Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcuserid.cc,v $
+ * CVS/RCS Revision:    $Revision: 1.7 $
+ * Status:              $State: Exp $
+ *
+ * CVS/RCS Log at end of file
+ *
+ */
 
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
@@ -32,20 +47,6 @@ UserIdentityNegotiationSubItem::UserIdentityNegotiationSubItem() :
   m_itemType (DUL_TYPENEGOTIATIONOFUSERIDENTITY),
   m_reserved(0)
 {
-}
-
-// Assignment operator
-UserIdentityNegotiationSubItem& UserIdentityNegotiationSubItem::operator= (const UserIdentityNegotiationSubItem& /* rhs */)
-{
-  return *this;
-}
-
-// Copy Constructor
-UserIdentityNegotiationSubItem::UserIdentityNegotiationSubItem(const UserIdentityNegotiationSubItem& rhs) :
-  m_itemType(DUL_TYPENEGOTIATIONOFUSERIDENTITY),
-  m_reserved(0)
-{
-  *this = rhs;
 }
 
 /* ************************************************************************* */
@@ -643,6 +644,9 @@ UserIdentityNegotiationSubItemAC::~UserIdentityNegotiationSubItemAC()
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.cc,v $
+** Revision 1.7  2010-10-05 11:01:04  uli
+** Removed a unused copy-constructor and a unused operator=.
+**
 ** Revision 1.6  2010-10-05 10:15:20  uli
 ** Fixed all remaining warnings from -Wall -Wextra -pedantic.
 **

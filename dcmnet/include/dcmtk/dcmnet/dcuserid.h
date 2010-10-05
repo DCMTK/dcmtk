@@ -1,21 +1,37 @@
 /*
-**
-** Author: Michael Onken
-**
-** Module: dcmnet
-**
-** Purpose:
-**   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
-**
-** Last Update:         $Author: uli $
-** Update Date:         $Date: 2010-09-14 11:42:14 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dcuserid.h,v $
-** CVS/RCS Revision:    $Revision: 1.5 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 2008-2010, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *
+ * Author: Michael Onken
+ *
+ * Module: dcmnet
+ *
+ * Purpose:
+ *   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
+ *
+ * Last Update:         $Author: uli $
+ * Update Date:         $Date: 2010-10-05 11:01:04 $
+ * Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dcuserid.h,v $
+ * CVS/RCS Revision:    $Revision: 1.6 $
+ * Status:              $State: Exp $
+ *
+ * CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCUSERID_H
 #define DCUSERID_H
@@ -101,18 +117,6 @@ public:
     * @return none
     */
   virtual void dump(STD_NAMESPACE ostream& outstream) const =0;
-
-  /** Assignment operator, does a deep copy of a class instance
-   * @param rhs - [in] Right hand side of assignment
-   * @return none
-   */
-  UserIdentityNegotiationSubItem& operator= (const UserIdentityNegotiationSubItem& rhs);
-
-  /** Copy constructor, does a deep copy of a class instance
-   * @param rhs - [in] The class instance to copy from
-   * @return none
-   */
-  UserIdentityNegotiationSubItem(const UserIdentityNegotiationSubItem& rhs);
 
   /** Destructor, nothing to clean up
    */
@@ -378,6 +382,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.h,v $
+** Revision 1.6  2010-10-05 11:01:04  uli
+** Removed a unused copy-constructor and a unused operator=.
+**
 ** Revision 1.5  2010-09-14 11:42:14  uli
 ** Verify the length fields in the PDUs that we receive.
 **

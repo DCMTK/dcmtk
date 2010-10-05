@@ -9,6 +9,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.05 (schlachter)
 
+- Removed a unused copy-constructor and a unused operator=.
+  Affects: dcmnet/include/dcmtk/dcmnet/dcuserid.h
+           dcmnet/libsrc/dcuserid.cc
+
 - Fixed all remaining warnings from -Wall -Wextra -pedantic.
   Affects: dcmjpls/libsrc/djcodecd.cc
            dcmjpls/libsrc/djcodece.cc
