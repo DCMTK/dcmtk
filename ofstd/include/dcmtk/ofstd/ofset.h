@@ -22,18 +22,17 @@
  *  Purpose: Template class for administrating a set of elements of an
  *           arbitrary type.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:51 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/ofset.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-05 08:36:51 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef OFSet_h
-#define OFSet_h
+#ifndef OFSET_H
+#define OFSET_H
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oftypes.h"
@@ -49,8 +48,11 @@
 template <class T> class OFSet
 {
   protected:
+    /// array containing the entries
     T **items;
+    /// number of entries in the set
     unsigned int num;
+    /// current size of the set (always >= num)
     unsigned int size;
 
   public:
@@ -86,7 +88,7 @@ template <class T> class OFSet
       /** This function is a workaround for avoiding a compiler warning on
        *  Solaris 2.5.1 using compiler SC 2.0.1.
        */
-    void init( const OFSet<T> &src )    
+    void init( const OFSet<T> &src )
       {
         items = new T*[size];
         for( unsigned int i=0 ; i<size ; i++ )
@@ -263,6 +265,9 @@ template <class T> class OFSet
 /*
 ** CVS/RCS Log:
 ** $Log: ofset.h,v $
+** Revision 1.12  2010-10-05 08:36:51  joergr
+** Fixed various Doxygen API documentation issues.
+**
 ** Revision 1.11  2010-03-01 09:08:51  uli
 ** Removed some unnecessary include directives in the headers.
 **

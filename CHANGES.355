@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.05 (riesmeier)
+
+- Fixed various Doxygen API documentation issues.
+  Affecs: ofstd/include/dcmtk/ofstd/ofset.h
+          ofstd/include/dcmtk/ofstd/ofsetit.h
+
 **** Changes from 2010.10.05 (schlachter)
 
 - Update dcmjpls to newest CharLS snapshot.

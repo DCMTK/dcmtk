@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2005, OFFIS
+ *  Copyright (C) 2003-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,18 +22,17 @@
  *  Purpose: Template class which represents an iterator class for corres-
  *           ponding set data structures in ofstd.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:06:02 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/ofsetit.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-05 08:36:51 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef OFSetIterator_h
-#define OFSetIterator_h
+#ifndef OFSETIT_H
+#define OFSETIT_H
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oftypes.h"
@@ -56,7 +55,9 @@
 template <class T> class OFSetIterator
 {
   protected:
+    /// reference to the set instance
     OFSet<T> &ofset;
+    /// current position in the set
     unsigned int pos;
 
   public:
@@ -153,12 +154,14 @@ template <class T> class OFSetIterator
 /*
 ** CVS/RCS Log:
 ** $Log: ofsetit.h,v $
-** Revision 1.2  2005-12-08 16:06:02  meichel
+** Revision 1.3  2010-10-05 08:36:51  joergr
+** Fixed various Doxygen API documentation issues.
+**
+** Revision 1.2  2005/12/08 16:06:02  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.1  2003/08/20 14:45:25  wilkens
 ** Added new class OFSetIterator, an iterator class for OFxxxSet data structures.
-**
 **
 **
 */
