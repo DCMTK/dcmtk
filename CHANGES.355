@@ -27,6 +27,10 @@ Changes between releases are documented here.
 - Output information on conversion process to the logger (debug mode).
   Affects: dcmimage/include/dcmtk/dcmimage/dicoopxt.h
 
+- Added section listing the supported input transfer syntaxes.
+  Affects: dcmimage/docs/dcm2pnm.man
+           dcmjpeg/docs/dcmj2pnm.man
+
 - Also remove PixelPaddingRangeLimit element from the dataset (if required).
   Affects: dcmimage/libsrc/diquant.cc
            dcmimgle/libsrc/diimage.cc

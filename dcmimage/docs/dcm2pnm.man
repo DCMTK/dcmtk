@@ -402,6 +402,20 @@ and compiled with support for the external \b libpng PNG library.  Option
 \e --interlace enables progressive image view while loading the PNG file.
 Only a few applications take care of the meta info (TEXT) in a PNG file.
 
+\section transfer_syntaxes TRANSFER SYNTAXES
+
+\b dcm2pnm supports the following transfer syntaxes for input (\e dcmfile-in):
+
+\verbatim
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
+\endverbatim
+
+(*) if compiled with zlib support enabled
+
 \section logging LOGGING
 
 The level of logging output of the various command line tools and underlying

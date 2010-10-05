@@ -211,16 +211,22 @@ VOI LUT transformation:
   +Ww   --set-window  [c]enter [w]idth: float
           compute VOI window using center c and width w
 
+  +Wfl  --linear-function
+          set VOI LUT function to LINEAR
+
+  +Wfs  --sigmoid-function
+          set VOI LUT function to SIGMOID
+
 presentation LUT transformation:
 
   +Pid  --identity-shape
-          presentation LUT shape IDENTITY
+          set presentation LUT shape to IDENTITY
 
   +Piv  --inverse-shape
-          presentation LUT shape INVERSE
+          set presentation LUT shape to INVERSE
 
   +Pod  --lin-od-shape
-          presentation LUT shape LIN OD
+          set presentation LUT shape to LIN OD
 
 overlay:
 
@@ -434,6 +440,26 @@ The \e --write-png option is only available when DCMTK has been configured
 and compiled with support for the external \b libpng PNG library.  Option
 \e --interlace enables progressive image view while loading the PNG file.
 Only a few applications take care of the meta info (TEXT) in a PNG file.
+
+\section transfer_syntaxes TRANSFER SYNTAXES
+
+\b dcmj2pnm supports the following transfer syntaxes for input (\e dcmfile-in):
+
+\verbatim
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                     1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                   1.2.840.10008.1.2.4.51
+JPEGProcess6_8TransferSyntax                   1.2.840.10008.1.2.4.53
+JPEGProcess10_12TransferSyntax                 1.2.840.10008.1.2.4.55
+JPEGProcess14TransferSyntax                    1.2.840.10008.1.2.4.57
+JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
+RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
+\endverbatim
+
+(*) if compiled with zlib support enabled
 
 \section logging LOGGING
 
