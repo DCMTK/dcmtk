@@ -9,6 +9,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.05 (schlachter)
 
+- Removed Sint64 and Uint64 since there is no 64bit int available everywhere.
+  Affects: ofstd/include/dcmtk/ofstd/oftypes.h
+
 - Update dcmjpls to newest CharLS snapshot.
   Added:   dcmjpls/libcharls/pubtypes.h
   Affects: dcmjpls/apps/Makefile.dep

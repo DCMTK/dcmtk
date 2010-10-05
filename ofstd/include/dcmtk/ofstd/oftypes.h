@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *      supported by all C++ Compilers
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-05-25 10:02:36 $
+ *  Update Date:      $Date: 2010-10-05 08:49:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/oftypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,51 +63,6 @@ typedef unsigned short  Uint16;
 
 typedef float           Float32;    /* 32 Bit Floating Point Single */
 typedef double          Float64;    /* 64 Bit Floating Point Double */
-
-#ifdef HAVE_LONGLONG
-typedef longlong        Sint64;
-#elif defined(__GNUC__)
-/* GNU C defines long long */
-typedef long long       Sint64;
-#elif defined(_WIN32)
-/* Win32 (MSVC) defines __int64 */
-typedef __int64         Sint64;
-#elif defined(HAVE_INT64_T)
-/* many platforms define int64_t in <stdint.h> */
-typedef int64_t         Sint64;
-#elif SIZEOF_LONG == 8
-/* on some platforms, long is 64 bits */
-typedef long            Sint64;
-#else
-/* again on some other platforms (including gcc), long long is defined
- * this is our last resort - if this breaks, we have not found any
- * 64-bit int type and there is not much we can do anyway.
- */
-typedef long long       Sint64;
-#endif
-
-#ifdef HAVE_ULONGLONG
-typedef ulonglong       Uint64;
-#endif
-#ifdef __GNUC__
-/* GNU C defines long long */
-typedef unsigned long long Uint64;
-#elif defined(_WIN32)
-/* Win32 (MSVC) defines __int64 */
-typedef unsigned __int64 Uint64;
-#elif defined(HAVE_INT64_T)
-/* many platforms define uint64_t in <stdint.h> */
-typedef uint64_t        Uint64;
-#elif SIZEOF_LONG == 8
-/* on some platforms, long is 64 bits */
-typedef unsigned long   Uint64;
-#else
-/* again on some other platforms (including gcc), long long is defined
- * this is our last resort - if this breaks, we have not found any
- * 64-bit int type and there is not much we can do anyway.
- */
-typedef unsigned long long Uint64;
-#endif
 
 // Definition of type OFBool
 
@@ -146,6 +101,9 @@ typedef int OFBool;
 /*
  * CVS/RCS Log:
  * $Log: oftypes.h,v $
+ * Revision 1.11  2010-10-05 08:49:45  uli
+ * Removed Sint64 and Uint64 since there is no 64bit int available everywhere.
+ *
  * Revision 1.10  2010-05-25 10:02:36  uli
  * Added a missing include before the use of int64_t.
  *
