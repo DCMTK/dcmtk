@@ -32,7 +32,8 @@ Changes between releases are documented here.
            dcmimgle/libsrc/diimage.cc
 
 - Fixed various Doxygen API documentation issues.
-  Affecs: dcmimage/include/dcmtk/dcmimage/dicoopxt.h
+  Affecs: dcmdata/include/dcmtk/dcmdata/dcdatset.h
+          dcmimage/include/dcmtk/dcmimage/dicoopxt.h
           dcmimgle/include/dcmtk/dcmimgle/dibaslut.h
           dcmimgle/include/dcmtk/dcmimgle/diimage.h
           ofstd/include/dcmtk/ofstd/ofset.h

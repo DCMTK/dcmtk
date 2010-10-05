@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of the class DcmDataset
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:44 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-05 16:20:47 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ class DcmDataset
     virtual ~DcmDataset();
 
     /** assignment operator
-     *  @param the dataset to be copied
+     *  @param obj the dataset to be copied
      */
     DcmDataset& operator=(const DcmDataset& obj);
 
@@ -320,6 +320,9 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.34  2010-10-05 16:20:47  joergr
+** Fixed various Doxygen API documentation issues.
+**
 ** Revision 1.33  2010-03-01 09:08:44  uli
 ** Removed some unnecessary include directives in the headers.
 **
