@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:47 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-05 15:25:10 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,6 +77,7 @@ class DiMonoOutputPixelTemplate
      *  @param  vlut      VOI LUT (optional, maybe NULL)
      *  @param  plut      presentation LUT (optional, maybe NULL)
      *  @param  disp      display function (optional, maybe NULL)
+     *  @param  vfunc     VOI LUT function (optional)
      *  @param  center    window center (optional, invalid if 'width' < 1)
      *  @param  width     window width (optional, invalid if < 1)
      *  @param  low       lowest pixel value for the output data (e.g. 0)
@@ -84,7 +85,7 @@ class DiMonoOutputPixelTemplate
      *  @param  columns   image's width (in pixels)
      *  @param  rows      image's height
      *  @param  frame     frame to be rendered
-     *  #param  frames    total number of frames present in intermediate representation
+     * (#)param frames    total number of frames present in intermediate representation
      *  @param  pastel    flag indicating whether to use not only 'real' grayscale values (optional, experimental)
      */
     DiMonoOutputPixelTemplate(void *buffer,
@@ -93,6 +94,7 @@ class DiMonoOutputPixelTemplate
                               const DiLookupTable *vlut,
                               const DiLookupTable *plut,
                               DiDisplayFunction *disp,
+                              const EF_VoiLutFunction vfunc,
                               const double center,
                               const double width,
                               const Uint32 low,
@@ -129,7 +131,9 @@ class DiMonoOutputPixelTemplate
                 {
                     if (width < 1)                                  // no valid window according to supplement 33
                         nowindow(pixel, frame * FrameSize, plut, disp, OFstatic_cast(T3, low), OFstatic_cast(T3, high));
-                    else
+                    else if (vfunc == EFV_Sigmoid)
+                        sigmoid(pixel, frame * FrameSize, plut, disp, center, width, OFstatic_cast(T3, low), OFstatic_cast(T3, high));
+                    else // linear
                         window(pixel, frame * FrameSize, plut, disp, center, width, OFstatic_cast(T3, low), OFstatic_cast(T3, high));
                 }
                 overlay(overlays, disp, columns, rows, frame);      // add (visible) overlay planes to output bitmap
@@ -737,8 +741,32 @@ class DiMonoOutputPixelTemplate
             Data = NULL;
     }
 
+    /** apply the currently active sigmoid VOI window to the output data
+     *
+     ** @param  inter   pointer to intermediate pixel representation
+     *  @param  start   offset of the first pixel to be processed
+     *  @param  plut    presentation LUT (optional, maybe NULL)
+     *  @param  disp    display function (optional, maybe NULL)
+     *  @param  center  window center
+     *  @param  width   window width (>= 1)
+     *  @param  low     lowest pixel value for the output data (e.g. 0)
+     *  @param  high    highest pixel value for the output data (e.g. 255)
+     */
+    void sigmoid(const DiMonoPixel *inter,
+                 const Uint32 start,
+                 const DiLookupTable *plut,
+                 DiDisplayFunction *disp,
+                 const double center,
+                 const double width,
+                 const T3 low,
+                 const T3 high)
+    {
+        DCMIMGLE_WARN("sigmoid VOI transformation not yet implemented, using linear VOI LUT function instead");
+        // tbd: as long as the implementation is missing, apply the linear VOI window
+        window(inter, start, plut, disp, center, width, low, high);
+    }
 
-    /** apply the currently active VOI window to the output data
+    /** apply the currently active linear VOI window to the output data
      *
      ** @param  inter   pointer to intermediate pixel representation
      *  @param  start   offset of the first pixel to be processed
@@ -765,7 +793,7 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[FrameSize];                                             // create new output buffer
             if (Data != NULL)
             {
-                DCMIMGLE_DEBUG("applying VOI transformation with window center = " << center << ", width = " << width);
+                DCMIMGLE_DEBUG("applying linear VOI transformation with window center = " << center << ", width = " << width);
                 const DiDisplayLUT *dlut = NULL;
                 const double absmin = inter->getAbsMinimum();
                 const double width_1 = width - 1;
@@ -978,6 +1006,7 @@ class DiMonoOutputPixelTemplate
                             {
                                 case EMO_Replace:
                                 {
+                                    DCMIMGLE_DEBUG("applying overlay plane " << (i + 1) << " with 'replace' mode");
                                     const T3 fore = OFstatic_cast(T3, plane->getForeground() * maxvalue);
                                     for (y = ymin; y < ymax; ++y)
                                     {
@@ -993,6 +1022,7 @@ class DiMonoOutputPixelTemplate
                                 }
                                 case EMO_ThresholdReplace:
                                 {
+                                    DCMIMGLE_DEBUG("applying overlay plane " << (i + 1) << " with 'threshold replace' mode");
                                     const T3 fore = OFstatic_cast(T3, plane->getForeground() * maxvalue);
                                     const T3 thresh = OFstatic_cast(T3, plane->getThreshold() * maxvalue);
                                     for (y = ymin; y < ymax; ++y)
@@ -1009,6 +1039,7 @@ class DiMonoOutputPixelTemplate
                                 }
                                 case EMO_Complement:
                                 {
+                                    DCMIMGLE_DEBUG("applying overlay plane " << (i + 1) << " with 'complement' mode");
                                     const T3 thresh = OFstatic_cast(T3, DicomImageClass::maxval(bitsof(T3) / 2));
                                     for (y = ymin; y < ymax; ++y)
                                     {
@@ -1024,6 +1055,7 @@ class DiMonoOutputPixelTemplate
                                 }
                                 case EMO_InvertBitmap:
                                 {
+                                    DCMIMGLE_DEBUG("applying overlay plane " << (i + 1) << " with 'invert bitmap' mode");
                                     const T3 fore = OFstatic_cast(T3, plane->getForeground() * maxvalue);
                                     for (y = ymin; y < ymax; ++y)
                                     {
@@ -1039,6 +1071,7 @@ class DiMonoOutputPixelTemplate
                                 }
                                 case EMO_RegionOfInterest:
                                 {
+                                    DCMIMGLE_DEBUG("applying overlay plane " << (i + 1) << " with 'region of interest' mode");
                                     const int dim = bitsof(T3) / 2;
                                     for (y = ymin; y < ymax; ++y)
                                     {
@@ -1054,6 +1087,7 @@ class DiMonoOutputPixelTemplate
                                 }
                                 case EMO_BitmapShutter:
                                 {
+                                    DCMIMGLE_DEBUG("applying overlay plane " << (i + 1) << " with 'bitmap shutter' mode");
                                     register T3 fore = OFstatic_cast(T3, OFstatic_cast(double, maxvalue) * OFstatic_cast(double, plane->getPValue()) / OFstatic_cast(double, DicomImageClass::maxval(WIDTH_OF_PVALUES)));
                                     if ((disp != NULL) && (disp->isValid()))
                                     {
@@ -1110,6 +1144,11 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
+ * Revision 1.52  2010-10-05 15:25:10  joergr
+ * Added preliminary support for VOI LUT function. Please note, however, that
+ * the sigmoid transformation is not yet implemented.
+ * In debug mode, output more details on overlay plane to the logger.
+ *
  * Revision 1.51  2010-03-01 09:08:47  uli
  * Removed some unnecessary include directives in the headers.
  *
