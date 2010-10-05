@@ -1,19 +1,22 @@
-header.o: header.cc header.h streams.h util.h config.h intrface.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+header.o: header.cc config.h util.h pubtypes.h header.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h decodstr.h procline.h \
-  clrtrans.h encodstr.h
-intrface.o: intrface.cc intrface.h header.h streams.h util.h config.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h streams.h decodstr.h \
+  procline.h clrtrans.h encodstr.h
+intrface.o: intrface.cc config.h util.h pubtypes.h intrface.h header.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h
-jpegls.o: jpegls.cc streams.h util.h config.h intrface.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h streams.h
+jpegls.o: jpegls.cc config.h util.h pubtypes.h streams.h header.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h header.h decodstr.h \
-  procline.h clrtrans.h encodstr.h context.h ctxtrmod.h lokuptbl.h \
-  lltraits.h deftrait.h scan.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h decodstr.h procline.h \
+  clrtrans.h encodstr.h context.h ctxtrmod.h lokuptbl.h lltraits.h \
+  deftrait.h scan.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h

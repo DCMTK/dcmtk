@@ -1,11 +1,12 @@
 //
-// (C) Jan de Vaan 2007-2009, all rights reserved. See the accompanying "License.txt" for licensed use.
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
 //
 
 
 #ifndef CHARLS_HEADER
 #define CHARLS_HEADER
 
+#include "dcmtk/ofstd/ofaptr.h"
 #include "streams.h"
 
 #define JPEG_SOI  0xD8
@@ -30,12 +31,12 @@ template<class STRATEGY>
 class JlsCodecFactory
 {
 public:
-	STRATEGY* GetCodec(const JlsParamaters& info, const JlsCustomParameters&);
+	OFauto_ptr<STRATEGY> GetCodec(const JlsParameters& info, const JlsCustomParameters&);
 private:
-	STRATEGY* GetCodecImpl(const JlsParamaters& info);
+	STRATEGY* GetCodecImpl(const JlsParameters& info);
 };
 
-JLS_ERROR CheckParameterCoherent(const JlsParamaters* pparams);
+JLS_ERROR CheckParameterCoherent(const JlsParameters* pparams);
 
 
 //

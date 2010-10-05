@@ -1,5 +1,5 @@
 //
-// (C) Jan de Vaan 2007-2009, all rights reserved. See the accompanying "License.txt" for licensed use.
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
 //
 
 
@@ -8,10 +8,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "config.h"
-#include "intrface.h"
-
-#include "dcmtk/ofstd/oftypes.h"
+#include "pubtypes.h"
 
 
 #ifndef MAX
@@ -113,31 +110,18 @@ struct Quad : public Triplet<sample>
 
 
 
-template <int size>
+template<typename T>
 struct FromBigEndian
 {
-};
-
-template <>
-struct FromBigEndian<4>
-{
-	inlinehint static unsigned int Read(BYTE* pbyte)
+	inlinehint static T Read(BYTE* pbyte)
 	{
-		return  (pbyte[0] << 24) + (pbyte[1] << 16) + (pbyte[2] << 8) + (pbyte[3] << 0);
-	}
-};
-
-
-
-template <>
-struct FromBigEndian<8>
-{
-	typedef Uint64 UINT64;
-
-	inlinehint static UINT64 Read(BYTE* pbyte)
-	{
-		return  (UINT64(pbyte[0]) << 56) + (UINT64(pbyte[1]) << 48) + (UINT64(pbyte[2]) << 40) + (UINT64(pbyte[3]) << 32) +
-		  		(UINT64(pbyte[4]) << 24) + (UINT64(pbyte[5]) << 16) + (UINT64(pbyte[6]) <<  8) + (UINT64(pbyte[7]) << 0);
+		T ret = pbyte[0];
+		for (unsigned int i = 1; i < sizeof(i); i++)
+		{
+			ret <<= 8;
+			ret |= pbyte[i];
+		}
+		return ret;
 	}
 };
 

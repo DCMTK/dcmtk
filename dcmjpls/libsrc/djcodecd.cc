@@ -21,9 +21,9 @@
  *
  *  Purpose: codec classes for JPEG-LS decoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-24 13:40:18 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-05 08:25:41 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -254,7 +254,7 @@ OFCondition DJLSDecoderBase::decode(
 
       if (result.good())
       {
-        JlsParamaters params;
+        JlsParameters params;
         JLS_ERROR err;
 
         err = JpegLsReadHeader(jlsData, compressedSize, &params);
@@ -662,6 +662,9 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.11  2010-10-05 08:25:41  uli
+ * Update dcmjpls to newest CharLS snapshot.
+ *
  * Revision 1.10  2010-09-24 13:40:18  joergr
  * Compared names of SOP Class UIDs with 2009 edition of the DICOM standard. The
  * resulting name changes are mainly caused by the fact that the corresponding

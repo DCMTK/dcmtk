@@ -1,9 +1,10 @@
 //
-// (C) Jan de Vaan 2007-2009, all rights reserved. See the accompanying "License.txt" for licensed use.
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
 //
 #ifndef CHARLS_STREAMS
 #define CHARLS_STREAMS
 
+#include <memory>
 #include <vector>
 #include "util.h"
 
@@ -42,8 +43,8 @@ public:
 	JLSOutputStream();
 	virtual ~JLSOutputStream();
 
-	void Init(Size size, LONG cbpp, LONG ccomp);
-	void AddScan(const void* pbyteComp, const JlsParamaters* pparams);
+	void Init(Size size, LONG bitsPerSample, LONG ccomp);
+	void AddScan(const void* compareData, const JlsParameters* pparams);
 	void AddLSE(const JlsCustomParameters* pcustom);
 	void AddColorTransform(int i);
 	size_t GetBytesWritten()
@@ -82,8 +83,8 @@ private:
 	}
 
 
-    void Seek(size_t cbyte)
-		{ _cbyteOffset += cbyte; }
+    void Seek(size_t byteCount)
+		{ _cbyteOffset += byteCount; }
 
 	bool _bCompare;
 
@@ -122,7 +123,7 @@ public:
 	size_t GetBytesRead()
 		{ return _cbyteOffset; }
 
-	const JlsParamaters& GetMetadata() const
+	const JlsParameters& GetMetadata() const
 		{ return _info; }
 
 	const JlsCustomParameters& GetCustomPreset() const
@@ -134,7 +135,10 @@ public:
 	void EnableCompare(bool bCompare)
 		{ _bCompare = bCompare;	}
 
-	void SetInfo(JlsParamaters* info) { _info = *info; }
+	void SetInfo(JlsParameters* info) { _info = *info; }
+
+	void SetRect(JlsRect rect) { _rect = rect; }
+
 private:
 	void ReadPixels(void* pvoid, LONG cbyteAvailable);
 	void ReadScan(void*);
@@ -157,7 +161,8 @@ private:
 	size_t _cbyteOffset;
 	size_t _cbyteLength;
 	bool _bCompare;
-	JlsParamaters _info;
+	JlsParameters _info;
+	JlsRect _rect;
 };
 
 

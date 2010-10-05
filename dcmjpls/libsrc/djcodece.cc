@@ -22,8 +22,8 @@
  *  Purpose: codec classes for JPEG-LS encoders.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-26 10:54:42 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2010-10-05 08:25:41 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -569,7 +569,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   Uint32 frameSize = width*height*bytesAllocated*samplesPerPixel;
   Uint32 fragmentSize = djcp->getFragmentSize();
   OFBool opt_use_custom_options = djcp->getUseCustomOptions();
-  JlsParamaters jls_params = {0};
+  JlsParameters jls_params = {0};
   Uint8 *frameBuffer = NULL;
 
   // Set up the information structure for CharLS
@@ -983,7 +983,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
       break;
   }
 
-  JlsParamaters jls_params = {0};
+  JlsParameters jls_params = {0};
 
   // Set up the information structure for CharLS
   jls_params.height = height;
@@ -1139,6 +1139,9 @@ OFCondition DJLSEncoderBase::convertToSampleInterleaved(
 /*
  * CVS/RCS Log:
  * $Log: djcodece.cc,v $
+ * Revision 1.10  2010-10-05 08:25:41  uli
+ * Update dcmjpls to newest CharLS snapshot.
+ *
  * Revision 1.9  2010-02-26 10:54:42  uli
  * Fixed a compiler warning with MSVC about unsafe casts.
  *

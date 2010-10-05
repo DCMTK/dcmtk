@@ -3,7 +3,7 @@ DCMTK module is based on the CharLS library (see http://charls.codeplex.com/).
 
 The CharLS library is available under the following license:
 -------------------------------------------------------------------------------
-Copyright (c) 2007-2009, Jan de Vaan
+Copyright (c) 2007-2010, Jan de Vaan
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-The current CharLS version used is revision 42448 dated 2010-02-22.
+The current CharLS version used is revision 55020 dated 2010-10-05.
 
 The following modifications have been applied to the library:
 - removed "test" directory

@@ -1,5 +1,5 @@
 //
-// (C) Jan de Vaan 2007-2009, all rights reserved. See the accompanying "License.txt" for licensed use.
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
 //
 
 
@@ -54,9 +54,7 @@ struct LosslessTraitsImplT
 
 // For some weird reason MSVC6 doesn't like these templates
 #if defined(_MSC_VER) && _MSC_VER <= 1200
-
 #  define DISABLE_SPECIALIZATIONS
-
 #else
 
 template <class SAMPLE, LONG bpp>

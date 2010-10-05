@@ -1,5 +1,5 @@
 //
-// (C) Jan de Vaan 2007-2009, all rights reserved. See the accompanying "License.txt" for licensed use.
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
 //
 #ifndef CHARLS_PROCESSLINE
 #define CHARLS_PROCESSLINE
@@ -27,30 +27,31 @@ public:
 class PostProcesSingleComponent : public ProcessLine
 {
 public:
-	PostProcesSingleComponent(void* pbyteOutput, const JlsParamaters& info, int bytesPerPixel) :
+	PostProcesSingleComponent(void* pbyteOutput, const JlsParameters& info, int bytesPerPixel) :
 		_pbyteOutput((BYTE*)pbyteOutput),
 		_bytesPerPixel(bytesPerPixel),
-		_info(info)
+		_bytesPerLine(info.bytesperline)
 	{
 	}
 
 	void NewLineRequested(void* pDst, int pixelCount, int /*byteStride*/)
 	{
 		::memcpy(pDst, _pbyteOutput, pixelCount * _bytesPerPixel);
-		_pbyteOutput += _info.bytesperline;
+		_pbyteOutput += _bytesPerLine;
 	}
 
 	void NewLineDecoded(const void* pSrc, int pixelCount, int /*byteStride*/)
 	{
 		::memcpy(_pbyteOutput, pSrc, pixelCount * _bytesPerPixel);
-		_pbyteOutput += _info.bytesperline;
+		_pbyteOutput += _bytesPerLine;
 	}
 
 private:
 	BYTE* _pbyteOutput;
 	int _bytesPerPixel;
-	const JlsParamaters& _info;
+	int _bytesPerLine;
 };
+
 
 template<class TRANSFORM, class SAMPLE>
 void TransformLineToQuad(const SAMPLE* ptypeInput, LONG pixelStrideIn, Quad<SAMPLE>* pbyteBuffer, LONG pixelStride, TRANSFORM& transform)
@@ -65,6 +66,7 @@ void TransformLineToQuad(const SAMPLE* ptypeInput, LONG pixelStrideIn, Quad<SAMP
 		ptypeBuffer[x] = pixel;
 	}
 }
+
 
 template<class TRANSFORM, class SAMPLE>
 void TransformQuadToLine(const Quad<SAMPLE>* pbyteInput, LONG pixelStrideIn, SAMPLE* ptypeBuffer, LONG pixelStride, TRANSFORM& transform)
@@ -95,6 +97,7 @@ void TransformRgbToBgr(SAMPLE* pDest, int samplesPerPixel, int pixelCount)
 	}
 }
 
+
 template<class TRANSFORM, class SAMPLE>
 void TransformLine(Triplet<SAMPLE>* pDest, const Triplet<SAMPLE>* pSrc, int pixelCount, TRANSFORM& transform)
 {
@@ -116,6 +119,7 @@ void TransformLineToTriplet(const SAMPLE* ptypeInput, LONG pixelStrideIn, Triple
 		ptypeBuffer[x] = transform(ptypeInput[x], ptypeInput[x + pixelStrideIn], ptypeInput[x + 2*pixelStrideIn]);
 	}
 }
+
 
 template<class TRANSFORM, class SAMPLE>
 void TransformTripletToLine(const Triplet<SAMPLE>* pbyteInput, LONG pixelStrideIn, SAMPLE* ptypeBuffer, LONG pixelStride, TRANSFORM& transform)
@@ -142,7 +146,7 @@ class ProcessTransformed : public ProcessLine
 
 	ProcessTransformed(const ProcessTransformed&) {}
 public:
-	ProcessTransformed(void* pbyteOutput, const JlsParamaters& info, TRANSFORM transform) :
+	ProcessTransformed(void* pbyteOutput, const JlsParameters& info, TRANSFORM transform) :
 		_pbyteOutput((BYTE*)pbyteOutput),
 		_info(info),
 		_templine(info.width *  info.components),
@@ -152,7 +156,8 @@ public:
 //		ASSERT(_info.components == sizeof(TRIPLET)/sizeof(TRIPLET::SAMPLE));
 	}
 
-	void NewLineRequested(void* pDst, int pixelCount, int byteStride)
+
+	void NewLineRequested(void* pDst, int pixelCount, int stride)
 	{
 		SAMPLE* pLine = (SAMPLE*)_pbyteOutput;
 		if (_info.outputBgr)
@@ -170,15 +175,16 @@ public:
 			}
 			else
 			{
-				TransformTripletToLine((const Triplet<SAMPLE>*)pLine, pixelCount, (SAMPLE*)pDst, byteStride, _transform);
+				TransformTripletToLine((const Triplet<SAMPLE>*)pLine, pixelCount, (SAMPLE*)pDst, stride, _transform);
 			}
 		}
 		else if (_info.components == 4 && _info.ilv == ILV_LINE)
 		{
-			TransformQuadToLine((const Quad<SAMPLE>*)pLine, pixelCount, (SAMPLE*)pDst, byteStride, _transform);
+			TransformQuadToLine((const Quad<SAMPLE>*)pLine, pixelCount, (SAMPLE*)pDst, stride, _transform);
 		}
 		_pbyteOutput += _info.bytesperline;
 	}
+
 
 	void NewLineDecoded(const void* pSrc, int pixelCount, int byteStride)
 	{
@@ -192,7 +198,6 @@ public:
 			{
 				TransformLineToTriplet((const SAMPLE*)pSrc, byteStride, (Triplet<SAMPLE>*)_pbyteOutput, pixelCount, _inverseTransform);
 			}
-
 		}
 		else if (_info.components == 4 && _info.ilv == ILV_LINE)
 		{
@@ -206,9 +211,10 @@ public:
 		_pbyteOutput += _info.bytesperline;
 	}
 
+
 private:
 	BYTE* _pbyteOutput;
-	const JlsParamaters& _info;
+	const JlsParameters& _info;
 	std::vector<SAMPLE> _templine;
 	TRANSFORM _transform;
 	typename TRANSFORM::INVERSE _inverseTransform;

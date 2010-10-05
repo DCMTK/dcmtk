@@ -1,6 +1,37 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.05 (schlachter)
+
+- Update dcmjpls to newest CharLS snapshot.
+  Added:   dcmjpls/libcharls/pubtypes.h
+  Affects: dcmjpls/apps/Makefile.dep
+           dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmjpls/docs/charls-readme.txt
+           dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libcharls/clrtrans.h
+           dcmjpls/libcharls/config.h
+           dcmjpls/libcharls/context.h
+           dcmjpls/libcharls/ctxtrmod.h
+           dcmjpls/libcharls/decodstr.h
+           dcmjpls/libcharls/deftrait.h
+           dcmjpls/libcharls/encodstr.h
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/header.h
+           dcmjpls/libcharls/intrface.cc
+           dcmjpls/libcharls/intrface.h
+           dcmjpls/libcharls/jpegls.cc
+           dcmjpls/libcharls/lltraits.h
+           dcmjpls/libcharls/lokuptbl.h
+           dcmjpls/libcharls/procline.h
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libcharls/streams.h
+           dcmjpls/libcharls/util.h
+           dcmjpls/libsrc/Makefile.dep
+           dcmjpls/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodece.cc
+
 **** Changes from 2010.10.04 (riesmeier)
 
 - Introduced new substitution variable "#r" for the calling presentation

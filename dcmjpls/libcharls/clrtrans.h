@@ -1,5 +1,5 @@
 //
-// (C) Jan de Vaan 2007-2009, all rights reserved. See the accompanying "License.txt" for licensed use.
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
 //
 #ifndef CHARLS_COLORTRANSFORM
 #define CHARLS_COLORTRANSFORM
@@ -151,11 +151,6 @@ struct TransformShifted
 		typename TRANSFORM::INVERSE _inverseTransform;
 	};
 
-	TransformShifted(const TransformShifted& transform) :
-		_shift(transform._shift),
-		_colortransform(transform._colortransform)
-	{
-	}
 
 	TransformShifted(int shift) :
 		 _shift(shift)

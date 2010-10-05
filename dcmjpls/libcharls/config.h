@@ -1,22 +1,28 @@
+//
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
+//
+
 
 #ifndef CHARLS_CONFIG
 #define CHARLS_CONFIG
 
-
-
-#ifdef _DEBUG
-#include <assert.h>
-#define ASSERT(t) assert(t)
-#else
+#ifdef NDEBUG
 #  ifndef ASSERT
 #    define ASSERT(t) { }
 #  endif
+#  ifndef assert
+#    define assert(t) { }
+#  endif
+#else
+#include <assert.h>
+#define ASSERT(t) assert(t)
 #endif
 
 #if defined(_WIN32)
 #ifdef _MSC_VER
 #pragma warning (disable:4512)
 #endif
+
 #endif
 
 // Typedef used by Charls for the default integral type.
@@ -36,10 +42,10 @@ typedef unsigned short USHORT;
 
 #ifndef inlinehint
 #  ifdef _MSC_VER
-#    ifdef _DEBUG
-#      define inlinehint
-#    else
+#    ifdef NDEBUG
 #      define inlinehint __forceinline
+#    else
+#      define inlinehint
 #    endif
 #  elif defined(__GNUC__) && (__GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ > 0)
 #    define inlinehint inline
@@ -47,12 +53,10 @@ typedef unsigned short USHORT;
 #    define inlinehint inline
 #  endif
 #endif
-// must try __attribute__((always_inline)) for GCC!
 
 #if defined(i386) || defined(__i386__) || defined(_M_IX86) || defined(__amd64__) || defined(_M_X64)
 #define ARCH_HAS_UNALIGNED_MEM_ACCESS /* TODO define this symbol for more architectures */
 #endif
-
 
 #endif
 

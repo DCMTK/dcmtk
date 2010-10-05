@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2009, OFFIS
+ *  Copyright (C) 2007-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Decompress DICOM file with JPEG-LS transfer syntax
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 13:16:47 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2010-10-05 08:25:40 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -175,7 +175,7 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
 #ifdef WITH_ZLIB
           COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-          COUT << "- " << "CharLS, Revision 27770 (modified)" << OFendl;
+          COUT << "- " << "CharLS, Revision 55020 (modified)" << OFendl;
           return 0;
         }
       }
@@ -362,6 +362,9 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpls.cc,v $
+ * Revision 1.7  2010-10-05 08:25:40  uli
+ * Update dcmjpls to newest CharLS snapshot.
+ *
  * Revision 1.6  2009-10-07 13:16:47  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
