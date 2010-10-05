@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:46 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-05 15:34:41 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,7 +94,7 @@ class DiColorOutputPixelTemplate
      *  @param  pixel   pointer to intermediate pixel representation
      *  @param  count   number of pixels per frame
      *  @param  frame   frame to be rendered
-     *  #param  frames  (total number of frames present in intermediate representation)
+     * (#)param frames  (total number of frames present in intermediate representation)
      *  @param  planar  flag indicating whether data shall be stored color-by-pixel or color-by-plane
      */
     DiColorOutputPixelTemplate(void *buffer,
@@ -253,6 +253,7 @@ class DiColorOutputPixelTemplate
                 Data = new T2[FrameSize * 3];
             if (Data != NULL)
             {
+                DCMIMAGE_DEBUG("converting color pixel data to output format");
                 register T2 *q = Data;
                 register unsigned long i;
                 const T2 max2 = OFstatic_cast(T2, DicomImageClass::maxval(bits2));
@@ -431,6 +432,10 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
+ * Revision 1.27  2010-10-05 15:34:41  joergr
+ * Output information on conversion process to the logger (debug mode).
+ * Fixed various Doxygen API documentation issues.
+ *
  * Revision 1.26  2010-03-01 09:08:46  uli
  * Removed some unnecessary include directives in the headers.
  *
