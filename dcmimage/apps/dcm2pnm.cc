@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-24 15:06:53 $
- *  CVS/RCS Revision: $Revision: 1.98 $
+ *  Update Date:      $Date: 2010-10-05 15:36:29 $
+ *  CVS/RCS Revision: $Revision: 1.99 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,6 +159,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt    opt_roiLeft = 0, opt_roiTop = 0, opt_roiWidth = 0, opt_roiHeight = 0;
     OFCmdFloat          opt_windowCenter = 0.0, opt_windowWidth = 0.0;
 
+    EF_VoiLutFunction   opt_voiFunction = EFV_Default;
     ES_PresentationLut  opt_presShape = ESP_Default;
     OFString            opt_displayFile;
     int                 opt_displayFunction = 0;          /* default: GSDF */
@@ -299,11 +300,13 @@ int main(int argc, char *argv[])
                                                        "compute VOI window using Histogram algorithm,\nignoring n percent");
       cmd.addOption("--set-window",         "+Ww",  2, "[c]enter [w]idth: float",
                                                        "compute VOI window using center c and width w");
+      cmd.addOption("--linear-function",    "+Wfl",    "set VOI LUT function to LINEAR");
+      cmd.addOption("--sigmoid-function",   "+Wfs",    "set VOI LUT function to SIGMOID");
 
      cmd.addSubGroup("presentation LUT transformation:");
-      cmd.addOption("--identity-shape",     "+Pid",    "presentation LUT shape IDENTITY");
-      cmd.addOption("--inverse-shape",      "+Piv",    "presentation LUT shape INVERSE");
-      cmd.addOption("--lin-od-shape",       "+Pod",    "presentation LUT shape LIN OD");
+      cmd.addOption("--identity-shape",     "+Pid",    "set presentation LUT shape to IDENTITY");
+      cmd.addOption("--inverse-shape",      "+Piv",    "set presentation LUT shape to INVERSE");
+      cmd.addOption("--lin-od-shape",       "+Pod",    "set presentation LUT shape to LIN OD");
 
      cmd.addSubGroup("overlay:");
       cmd.addOption("--no-overlays",        "-O",      "do not display overlays");
@@ -662,6 +665,12 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValueAndCheckMin(opt_windowWidth, 1.0));
         }
         cmd.endOptionBlock();
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--linear-function"))
+            opt_voiFunction = EFV_Linear;
+        if (cmd.findOption("--sigmoid-function"))
+            opt_voiFunction = EFV_Sigmoid;
+        cmd.endOptionBlock();
 
         /* image processing options: presentation LUT transformation */
 
@@ -984,6 +993,7 @@ int main(int argc, char *argv[])
         char aspectRatio[30];
         OFStandard::ftoa(aspectRatio, sizeof(aspectRatio), di->getHeightWidthRatio(), OFStandard::ftoa_format_f, 0, 2);
 
+        /* dump some general information */
         OFLOG_INFO(dcm2pnmLogger, "  filename            : " << opt_ifname << OFendl
             << "  transfer syntax     : " << XferText << OFendl
             << "  SOP class           : " << SOPClassText << OFendl
@@ -996,8 +1006,21 @@ int main(int argc, char *argv[])
 
         /* dump VOI windows */
         unsigned long count;
-        OFString explStr;
+        OFString explStr, funcStr;
         count = di->getWindowCount();
+        switch (di->getVoiLutFunction())
+        {
+            case EFV_Default:
+                funcStr = "<default>";
+                break;
+            case EFV_Linear:
+                funcStr = "LINEAR";
+                break;
+            case EFV_Sigmoid:
+                funcStr = "SIGMOID";
+                break;
+        }
+        OFLOG_INFO(dcm2pnmLogger, "  VOI LUT function    : " << funcStr);
         OFLOG_INFO(dcm2pnmLogger, "  VOI windows in file : " << di->getWindowCount());
         for (i = 0; i < count; i++)
         {
@@ -1018,6 +1041,26 @@ int main(int argc, char *argv[])
                 OFLOG_INFO(dcm2pnmLogger, "  - " << explStr);
         }
 
+        /* dump presentation LUT shape */
+        OFString shapeStr;
+        switch (di->getPresentationLutShape())
+        {
+            case ESP_Default:
+                shapeStr = "<default>";
+                break;
+            case ESP_Identity:
+                shapeStr = "IDENTITY";
+                break;
+            case ESP_Inverse:
+                shapeStr = "INVERSE";
+                break;
+            case ESP_LinOD:
+                shapeStr = "LIN OD";
+                break;
+        }
+        OFLOG_INFO(dcm2pnmLogger, "  presentation shape  : " << shapeStr);
+
+        /* dump overlays */
         OFLOG_INFO(dcm2pnmLogger, "  overlays in file    : " << di->getOverlayCount());
 
         if (minmaxValid)
@@ -1035,7 +1078,7 @@ int main(int argc, char *argv[])
         /* try to select frame */
         if (opt_frame != di->getFirstFrame() + 1)
         {
-            OFLOG_FATAL(dcm2pnmLogger, "cannot select frame no. " << opt_frame << ", invalid frame number");
+            OFLOG_FATAL(dcm2pnmLogger, "cannot select frame " << opt_frame << ", invalid frame number");
             return 1;
         }
 
@@ -1089,24 +1132,24 @@ int main(int argc, char *argv[])
             case 1: /* use the n-th VOI window from the image file */
                 if ((opt_windowParameter < 1) || (opt_windowParameter > di->getWindowCount()))
                 {
-                    OFLOG_FATAL(dcm2pnmLogger, "cannot select VOI window no. " << opt_windowParameter << ", only "
-                        << di->getWindowCount() << " window(s) in file.");
+                    OFLOG_FATAL(dcm2pnmLogger, "cannot select VOI window " << opt_windowParameter << ", only "
+                        << di->getWindowCount() << " window(s) in file");
                     return 1;
                 }
                 OFLOG_INFO(dcm2pnmLogger, "activating VOI window " << opt_windowParameter);
                 if (!di->setWindow(opt_windowParameter - 1))
-                    OFLOG_WARN(dcm2pnmLogger, "cannot select VOI window no. " << opt_windowParameter);
+                    OFLOG_WARN(dcm2pnmLogger, "cannot select VOI window " << opt_windowParameter);
                 break;
             case 2: /* use the n-th VOI look up table from the image file */
                 if ((opt_windowParameter < 1) || (opt_windowParameter > di->getVoiLutCount()))
                 {
-                    OFLOG_FATAL(dcm2pnmLogger, "cannot select VOI LUT no. " << opt_windowParameter << ", only "
-                        << di->getVoiLutCount() << " LUT(s) in file.");
+                    OFLOG_FATAL(dcm2pnmLogger, "cannot select VOI LUT " << opt_windowParameter << ", only "
+                        << di->getVoiLutCount() << " LUT(s) in file");
                     return 1;
                 }
                 OFLOG_INFO(dcm2pnmLogger, "activating VOI LUT " << opt_windowParameter);
                 if (!di->setVoiLut(opt_windowParameter - 1, opt_ignoreVoiLutDepth ? ELM_IgnoreValue : ELM_UseValue))
-                    OFLOG_WARN(dcm2pnmLogger, "cannot select VOI LUT no. " << opt_windowParameter);
+                    OFLOG_WARN(dcm2pnmLogger, "cannot select VOI LUT " << opt_windowParameter);
                 break;
             case 3: /* Compute VOI window using min-max algorithm */
                 OFLOG_INFO(dcm2pnmLogger, "activating VOI window min-max algorithm");
@@ -1118,13 +1161,10 @@ int main(int argc, char *argv[])
                 if (!di->setHistogramWindow(OFstatic_cast(double, opt_windowParameter)/100.0))
                     OFLOG_WARN(dcm2pnmLogger, "cannot compute histogram VOI window");
                 break;
-            case 5: /* Compute VOI window using center r and width s */
+            case 5: /* Compute VOI window using center and width */
                 OFLOG_INFO(dcm2pnmLogger, "activating VOI window center=" << opt_windowCenter << ", width=" << opt_windowWidth);
                 if (!di->setWindow(opt_windowCenter, opt_windowWidth))
-                {
-                    OFLOG_FATAL(dcm2pnmLogger, "cannot set VOI window center=" << opt_windowCenter << " width=" << opt_windowWidth);
-                    return 1;
-                }
+                    OFLOG_WARN(dcm2pnmLogger, "cannot set VOI window to specified values");
                 break;
             case 6: /* Compute VOI window using min-max algorithm ignoring extremes */
                 OFLOG_INFO(dcm2pnmLogger, "activating VOI window min-max algorithm, ignoring extreme values");
@@ -1140,10 +1180,20 @@ int main(int argc, char *argv[])
                 if (di->isMonochrome())
                 {
                     OFLOG_INFO(dcm2pnmLogger, "disabling VOI window computation");
-                    if (! di->setNoVoiTransformation())
+                    if (!di->setNoVoiTransformation())
                         OFLOG_WARN(dcm2pnmLogger, "cannot ignore VOI window");
                 }
                 break;
+        }
+        /* VOI LUT function */
+        if (opt_voiFunction != EFV_Default)
+        {
+            if (opt_voiFunction == EFV_Linear)
+                OFLOG_INFO(dcm2pnmLogger, "setting VOI LUT function to LINEAR");
+            else if (opt_voiFunction == EFV_Sigmoid)
+                OFLOG_INFO(dcm2pnmLogger, "setting VOI LUT function to SIGMOID");
+            if (!di->setVoiLutFunction(opt_voiFunction))
+                OFLOG_WARN(dcm2pnmLogger, "cannot set VOI LUT function");
         }
 
         /* process presentation LUT parameters */
@@ -1155,14 +1205,16 @@ int main(int argc, char *argv[])
                 OFLOG_INFO(dcm2pnmLogger, "setting presentation LUT shape to INVERSE");
             else if (opt_presShape == ESP_LinOD)
                 OFLOG_INFO(dcm2pnmLogger, "setting presentation LUT shape to LIN OD");
-            di->setPresentationLutShape(opt_presShape);
+            if (!di->setPresentationLutShape(opt_presShape))
+                OFLOG_WARN(dcm2pnmLogger, "cannot set presentation LUT shape");
         }
 
         /* change polarity */
         if (opt_changePolarity)
         {
             OFLOG_INFO(dcm2pnmLogger, "setting polarity to REVERSE");
-            di->setPolarity(EPP_Reverse);
+            if (!di->setPolarity(EPP_Reverse))
+                OFLOG_WARN(dcm2pnmLogger, "cannot set polarity");
         }
 
         /* perform clipping */
@@ -1174,7 +1226,7 @@ int main(int argc, char *argv[])
              if (newimage == NULL)
              {
                  OFLOG_FATAL(dcm2pnmLogger, "clipping to (" << opt_left << "," << opt_top << "," << opt_width
-                     << "," << opt_height << ") failed.");
+                     << "," << opt_height << ") failed");
                  return 1;
              } else if (newimage->getStatus() != EIS_Normal)
              {
@@ -1192,7 +1244,8 @@ int main(int argc, char *argv[])
         if (opt_rotateDegree > 0)
         {
             OFLOG_INFO(dcm2pnmLogger, "rotating image by " << opt_rotateDegree << " degrees");
-            di->rotateImage(opt_rotateDegree);
+            if (!di->rotateImage(opt_rotateDegree))
+                OFLOG_WARN(dcm2pnmLogger, "cannot rotate image");
         }
 
         /* perform flipping */
@@ -1202,15 +1255,18 @@ int main(int argc, char *argv[])
             {
                 case 1:
                     OFLOG_INFO(dcm2pnmLogger, "flipping image horizontally");
-                    di->flipImage(1, 0);
+                    if (!di->flipImage(1, 0))
+                        OFLOG_WARN(dcm2pnmLogger, "cannot flip image");
                     break;
                 case 2:
                     OFLOG_INFO(dcm2pnmLogger, "flipping image vertically");
-                    di->flipImage(0, 1);
+                    if (!di->flipImage(0, 1))
+                        OFLOG_WARN(dcm2pnmLogger, "cannot flip image");
                     break;
                 case 3:
                     OFLOG_INFO(dcm2pnmLogger, "flipping image horizontally and vertically");
-                    di->flipImage(1, 1);
+                    if (!di->flipImage(1, 1))
+                        OFLOG_WARN(dcm2pnmLogger, "cannot flip image");
                     break;
                 default:
                     break;
@@ -1454,6 +1510,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.99  2010-10-05 15:36:29  joergr
+ * Added preliminary support for VOI LUT function. Please note, however, that
+ * the sigmoid transformation is not yet implemented.
+ * Output more information on the image, e.g. value of PresentationLUTShape.
+ * Also slightly changed the error handling for some image transformations.
+ *
  * Revision 1.98  2010-03-24 15:06:53  joergr
  * Added new options for the color space conversion during decompression based
  * on the color model that is "guessed" by the underlying JPEG library (IJG).
