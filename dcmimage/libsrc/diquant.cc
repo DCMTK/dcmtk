@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2009, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DcmQuant
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 14:44:03 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2010-10-05 14:55:26 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ OFCondition DcmQuant::createPaletteColorImage(
     DcmLargestDimensionType largeType,
     DcmRepresentativeColorType repType)
 {
-	// make sure we're operating on a color image
+    // make sure we're operating on a color image
     if (sourceImage.isMonochrome()) return EC_IllegalCall;
 
     // make sure numberOfColors is in range
@@ -119,7 +119,7 @@ OFCondition DcmQuant::createPaletteColorImage(
        result = pixelData->createUint16Array(totalSize/sizeof(Uint16), imageData16);
        if (result.good())
        {
-       	 imageData16[(totalSize/sizeof(Uint16)) -1] = 0; // make sure pad byte is zero
+         imageData16[(totalSize/sizeof(Uint16)) -1] = 0; // make sure pad byte is zero
          imageData8 = OFreinterpret_cast(Uint8 *, imageData16);
          result = target.insert(pixelData, OFTrue);
          if (result.good())
@@ -178,6 +178,7 @@ OFCondition DcmQuant::createPaletteColorImage(
     delete target.remove(DCM_SmallestImagePixelValue);
     delete target.remove(DCM_LargestImagePixelValue);
     delete target.remove(DCM_PixelPaddingValue);
+    delete target.remove(DCM_PixelPaddingRangeLimit);
     delete target.remove(DCM_SmallestPixelValueInSeries);
     delete target.remove(DCM_LargestPixelValueInSeries);
     delete target.remove(DCM_PaletteColorLookupTableUID);
@@ -235,6 +236,9 @@ OFCondition DcmQuant::updateDerivationDescription(DcmItem *dataset, const char *
  *
  * CVS/RCS Log:
  * $Log: diquant.cc,v $
+ * Revision 1.8  2010-10-05 14:55:26  joergr
+ * Also remove PixelPaddingRangeLimit element from the dataset (if required).
+ *
  * Revision 1.7  2009-11-25 14:44:03  joergr
  * Added new source and header file for the module logger.
  * Removed inclusion of header file "ofconsol.h".

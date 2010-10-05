@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-05 13:33:08 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2010-10-05 14:56:19 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -660,6 +660,7 @@ void DiImage::updateImagePixelModuleAttributes(DcmItem &dataset)
     delete dataset.remove(DCM_LargestImagePixelValue);
 /*
     delete dataset.remove(DCM_PixelPaddingValue);
+    delete dataset.remove(DCM_PixelPaddingRangeLimit);
     delete dataset.remove(DCM_SmallestPixelValueInSeries);
     delete dataset.remove(DCM_LargestPixelValueInSeries);
 */
@@ -850,6 +851,9 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
+ * Revision 1.45  2010-10-05 14:56:19  joergr
+ * Also remove PixelPaddingRangeLimit element from the dataset (if required).
+ *
  * Revision 1.44  2010-03-05 13:33:08  joergr
  * Fixed issue with processNextFrames() when called with non-default parameter.
  *
