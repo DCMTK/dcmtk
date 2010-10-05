@@ -9,6 +9,12 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.05 (schlachter)
 
+- Fixed all remaining warnings from -Wall -Wextra -pedantic.
+  Affects: dcmjpls/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodece.cc
+           dcmjpls/libsrc/djutils.cc
+           dcmnet/libsrc/dcuserid.cc
+
 - Re-apply build fixes for MSVC6.
   Affects: dcmjpls/libcharls/intrface.h
            dcmjpls/libcharls/scan.h

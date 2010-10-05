@@ -8,9 +8,9 @@
 **   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
 **
 ** Last Update:         $Author: uli $
-** Update Date:         $Date: 2010-09-14 11:42:14 $
+** Update Date:         $Date: 2010-10-05 10:15:20 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcuserid.cc,v $
-** CVS/RCS Revision:    $Revision: 1.5 $
+** CVS/RCS Revision:    $Revision: 1.6 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -35,7 +35,7 @@ UserIdentityNegotiationSubItem::UserIdentityNegotiationSubItem() :
 }
 
 // Assignment operator
-UserIdentityNegotiationSubItem& UserIdentityNegotiationSubItem::operator= (const UserIdentityNegotiationSubItem& rhs)
+UserIdentityNegotiationSubItem& UserIdentityNegotiationSubItem::operator= (const UserIdentityNegotiationSubItem& /* rhs */)
 {
   return *this;
 }
@@ -429,7 +429,8 @@ UserIdentityNegotiationSubItemRQ& UserIdentityNegotiationSubItemRQ::operator= (c
 
 
 // Copy Constructor
-UserIdentityNegotiationSubItemRQ::UserIdentityNegotiationSubItemRQ(const UserIdentityNegotiationSubItemRQ& rhs)
+UserIdentityNegotiationSubItemRQ::UserIdentityNegotiationSubItemRQ(const UserIdentityNegotiationSubItemRQ& rhs) :
+  UserIdentityNegotiationSubItem(rhs)
 {
   *this = rhs;
 }
@@ -623,7 +624,8 @@ UserIdentityNegotiationSubItemAC& UserIdentityNegotiationSubItemAC::operator= (c
 
 
 // Copy constructor
-UserIdentityNegotiationSubItemAC::UserIdentityNegotiationSubItemAC(const UserIdentityNegotiationSubItemAC& rhs)
+UserIdentityNegotiationSubItemAC::UserIdentityNegotiationSubItemAC(const UserIdentityNegotiationSubItemAC& rhs) :
+  UserIdentityNegotiationSubItem(rhs)
 {
   *this = rhs;
 }
@@ -641,6 +643,9 @@ UserIdentityNegotiationSubItemAC::~UserIdentityNegotiationSubItemAC()
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.cc,v $
+** Revision 1.6  2010-10-05 10:15:20  uli
+** Fixed all remaining warnings from -Wall -Wextra -pedantic.
+**
 ** Revision 1.5  2010-09-14 11:42:14  uli
 ** Verify the length fields in the PDUs that we receive.
 **

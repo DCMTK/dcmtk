@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2009, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Support code for dcmjpls
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-25 08:50:38 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-10-05 10:15:19 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@ OFLogger DCM_dcmjplsGetLogger()
 
 #define MAKE_DCMJPLS_ERROR(number, name, description)  \
 const OFConditionConst ECC_ ## name (OFM_dcmjpls, number, OF_error, description); \
-const OFCondition      EC_  ## name (ECC_ ## name);
+const OFCondition      EC_  ## name (ECC_ ## name)
 
 MAKE_DCMJPLS_ERROR( 1, JLSUncompressedBufferTooSmall, "Uncompressed pixel data too short for uncompressed image");
 MAKE_DCMJPLS_ERROR( 2, JLSCompressedBufferTooSmall, "Allocated too small buffer for compressed image data");
@@ -66,6 +66,9 @@ MAKE_DCMJPLS_ERROR(15, JLSTooMuchCompressedData, "Too much compressed data, trai
 /*
  * CVS/RCS Log:
  * $Log: djutils.cc,v $
+ * Revision 1.5  2010-10-05 10:15:19  uli
+ * Fixed all remaining warnings from -Wall -Wextra -pedantic.
+ *
  * Revision 1.4  2010-02-25 08:50:38  uli
  * Updated to latest CharLS version.
  *

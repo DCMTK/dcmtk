@@ -22,8 +22,8 @@
  *  Purpose: codec classes for JPEG-LS encoders.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-05 08:25:41 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2010-10-05 10:15:19 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/offile.h"      /* for class OFFile */
+#include "dcmtk/ofstd/ofbmanip.h"
 
 #define INCLUDE_CMATH
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -558,7 +559,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   Uint16 height,
   Uint16 samplesPerPixel,
   Uint16 planarConfiguration,
-  const OFString& photometricInterpretation,
+  const OFString& /* photometricInterpretation */,
   DcmPixelSequence *pixelSequence,
   DcmOffsetList &offsetList,
   unsigned long &compressedSize,
@@ -569,10 +570,11 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   Uint32 frameSize = width*height*bytesAllocated*samplesPerPixel;
   Uint32 fragmentSize = djcp->getFragmentSize();
   OFBool opt_use_custom_options = djcp->getUseCustomOptions();
-  JlsParameters jls_params = {0};
+  JlsParameters jls_params;
   Uint8 *frameBuffer = NULL;
 
   // Set up the information structure for CharLS
+  OFBitmanipTemplate<char>::zeroMem((char *) &jls_params, sizeof(jls_params));
   jls_params.bitspersample = bitsAllocated;
   jls_params.height = height;
   jls_params.width = width;
@@ -844,7 +846,7 @@ OFCondition DJLSEncoderBase::losslessCookedEncode(
 OFCondition DJLSEncoderBase::compressCookedFrame(
   DcmPixelSequence *pixelSequence,
   DicomImage *dimage,
-  const OFString& photometricInterpretation,
+  const OFString& /* photometricInterpretation */,
   DcmOffsetList &offsetList,
   unsigned long &compressedSize,
   const DJLSCodecParameter *djcp,
@@ -983,9 +985,10 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
       break;
   }
 
-  JlsParameters jls_params = {0};
+  JlsParameters jls_params;
 
   // Set up the information structure for CharLS
+  OFBitmanipTemplate<char>::zeroMem((char *) &jls_params, sizeof(jls_params));
   jls_params.height = height;
   jls_params.width = width;
   jls_params.allowedlossyerror = nearLosslessDeviation;
@@ -1139,6 +1142,9 @@ OFCondition DJLSEncoderBase::convertToSampleInterleaved(
 /*
  * CVS/RCS Log:
  * $Log: djcodece.cc,v $
+ * Revision 1.11  2010-10-05 10:15:19  uli
+ * Fixed all remaining warnings from -Wall -Wextra -pedantic.
+ *
  * Revision 1.10  2010-10-05 08:25:41  uli
  * Update dcmjpls to newest CharLS snapshot.
  *

@@ -22,8 +22,8 @@
  *  Purpose: codec classes for JPEG-LS decoders.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-05 08:25:41 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2010-10-05 10:15:19 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ OFBool DJLSDecoderBase::canChangeCoding(
 
 
 OFCondition DJLSDecoderBase::decode(
-    const DcmRepresentationParameter * fromRepParam,
+    const DcmRepresentationParameter * /* fromRepParam */,
     DcmPixelSequence * pixSeq,
     DcmPolymorphOBOW& uncompressedPixelData,
     const DcmCodecParameter * cp,
@@ -392,11 +392,11 @@ OFCondition DJLSDecoderBase::encode(
 
 
 OFCondition DJLSDecoderBase::determineDecompressedColorModel(
-    const DcmRepresentationParameter *fromParam,
-    DcmPixelSequence *fromPixSeq,
-    const DcmCodecParameter *cp,
-    DcmItem *dataset,
-    OFString &decompressedColorModel) const
+    const DcmRepresentationParameter * /* fromParam */,
+    DcmPixelSequence * /* fromPixSeq */,
+    const DcmCodecParameter * /* cp */,
+    DcmItem * /* dataset */,
+    OFString & /* decompressedColorModel */) const
 {
   // decodeFrame() is not yet implemented for this class
   return EC_IllegalCall;
@@ -662,6 +662,9 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.12  2010-10-05 10:15:19  uli
+ * Fixed all remaining warnings from -Wall -Wextra -pedantic.
+ *
  * Revision 1.11  2010-10-05 08:25:41  uli
  * Update dcmjpls to newest CharLS snapshot.
  *
