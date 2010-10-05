@@ -8,16 +8,9 @@
 
 #include "pubtypes.h"
 
-#if defined(_WIN32)
-#ifndef CHARLS_IMEXPORT
-#define CHARLS_IMEXPORT(returntype) __declspec(dllimport) returntype __stdcall
-#pragma comment (lib,"charls.lib")
-#endif
-#else
 #ifndef CHARLS_IMEXPORT
 #define CHARLS_IMEXPORT(returntype) returntype
 #endif
-#endif /* _WIN32 */
 
 
 #ifdef __cplusplus
