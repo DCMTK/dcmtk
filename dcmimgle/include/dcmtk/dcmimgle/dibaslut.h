@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomBaseLUT (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:32 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-05 15:26:28 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ class DiBaseLUT
      *  First input value mapped (FIV) in LUT descriptor is US -> 16 bit unsigned.
      *  ... or the previous pixel transformation requires an unsigned LUT input value.
      *
-     ** #param  dummy (used to distinguish between signed and unsigned methods)
+     ** (#)param  dummy (used to distinguish between signed and unsigned methods)
      *
      ** @return index of first LUT entry
      */
@@ -108,7 +108,7 @@ class DiBaseLUT
      *  First input value mapped (FIV) in LUT descriptor is SS -> 16 bit signed.
      *  ... or the previous pixel transformation requires a signed LUT input value.
      *
-     ** #param  dummy (used to distinguish between signed and unsigned methods)
+     ** (#)param  dummy (used to distinguish between signed and unsigned methods)
      *
      ** @return index of first LUT entry
      */
@@ -121,7 +121,7 @@ class DiBaseLUT
      *  FIV in LUT descriptor is US -> 16 bit unsigned.
      *  ... or the previous pixel transformation requires an unsigned LUT input value.
      *
-     ** #param  dummy (used to distinguish between signed and unsigned methods)
+     ** (#)param  dummy (used to distinguish between signed and unsigned methods)
      *
      ** @return index of last LUT entry
      */
@@ -134,7 +134,7 @@ class DiBaseLUT
      *  FIV in LUT descriptor is SS -> 16 bit signed.
      *  ... or the previous pixel transformation requires a signed LUT input value.
      *
-     ** #param  dummy (used to distinguish between signed and unsigned methods)
+     ** (#)param  dummy (used to distinguish between signed and unsigned methods)
      *
      ** @return index of first LUT entry
      */
@@ -325,7 +325,10 @@ class DiBaseLUT
  *
  * CVS/RCS Log:
  * $Log: dibaslut.h,v $
- * Revision 1.16  2005-12-08 16:47:32  meichel
+ * Revision 1.17  2010-10-05 15:26:28  joergr
+ * Fixed various Doxygen API documentation issues.
+ *
+ * Revision 1.16  2005/12/08 16:47:32  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.15  2003/12/08 18:40:32  joergr

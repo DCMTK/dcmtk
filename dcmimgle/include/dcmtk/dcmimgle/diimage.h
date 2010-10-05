@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomImage (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:46 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-05 15:26:28 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -310,7 +310,7 @@ class DiImage
 
     /** get pointer to the object managing the overlay planes
      *
-     ** #param  idx  index of overlay group (here: not used, since only applicable for monochrome images)
+     ** (#)param  idx  index of overlay group (here: not used, since only applicable for monochrome images)
      *
      ** @return pointer to the overlay managing object, here: NULL
      */
@@ -671,6 +671,9 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
+ * Revision 1.46  2010-10-05 15:26:28  joergr
+ * Fixed various Doxygen API documentation issues.
+ *
  * Revision 1.45  2010-03-01 09:08:46  uli
  * Removed some unnecessary include directives in the headers.
  *
