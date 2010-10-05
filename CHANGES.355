@@ -15,6 +15,7 @@ Changes between releases are documented here.
            dcmimgle/libsrc/dimoimg3.cc
            dcmimgle/libsrc/dimoimg4.cc
            dcmimgle/libsrc/dimoimg5.cc
+           dcmjpeg/docs/dcmj2pnm.man
 
 - Output more information on the image, e.g. value of PresentationLUTShape.
   Also slightly changed the error handling for some image transformations.
