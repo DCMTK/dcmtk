@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.06 (riesmeier)
 
+- Removed definition of HAVE_STD_STRING for non-Windows systems.
+  Affects: CMake/osconfig.h.in
+
 - Added text on the fact that the --key option also supports attribute paths.
   Affects: dcmdata/apps/img2dcm.cc
            dcmdata/docs/img2dcm.man
