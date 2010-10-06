@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 16:38:19 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2010-10-06 14:48:47 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,7 +171,7 @@ void DiLookupTable::Init(const DiDocument *docu,
         docu->getValue(descriptor, us, 2, obj, OFTrue /*allowSigned*/);         // bits per entry (only informational)
         unsigned long count = docu->getValue(data, Data, obj);
         OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));     // store pointer to original data
-        if (explanation != DcmTagKey(0, 0))
+        if (explanation != DCM_UndefinedTagKey)
             docu->getValue(explanation, Explanation, 0 /*vm pos*/, obj);        // explanation (free form text)
         checkTable(count, us, descripMode, status);
     } else {
@@ -560,6 +560,9 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
+ * Revision 1.39  2010-10-06 14:48:47  joergr
+ * Use DCM_UndefinedTagKey if no explanation tag can be specified for a LUT.
+ *
  * Revision 1.38  2009-11-25 16:38:19  joergr
  * Fixed issue with LUT Descriptor elements using the value representation SS.
  * Revised logging messages.
