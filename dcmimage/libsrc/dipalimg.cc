@@ -22,8 +22,8 @@
  *  Purpose: DicomPaletteImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-26 14:12:02 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2010-10-06 14:50:25 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,12 +63,12 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
             /* wrong palette attribute tags used */
             if (Document->getFlags() & CIF_WrongPaletteAttributeTags)
             {
-                Palette[0] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1111), DcmTagKey(0x0028, 0x1211),
-                    DcmTagKey(0,0) /*explanation*/, descMode, &ImageStatus);
-                Palette[1] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1112), DcmTagKey(0x0028, 0x1212),
-                    DcmTagKey(0,0) /*explanation*/, descMode, &ImageStatus);
-                Palette[2] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1113), DcmTagKey(0x0028, 0x1213),
-                    DcmTagKey(0,0) /*explanation*/, descMode, &ImageStatus);
+                Palette[0] = new DiLookupTable(Document, DCM_RETIRED_LargeRedPaletteColorLookupTableDescriptor,
+                    DCM_RETIRED_LargeRedPaletteColorLookupTableData, DCM_UndefinedTagKey /*explanation*/, descMode, &ImageStatus);
+                Palette[1] = new DiLookupTable(Document, DCM_RETIRED_LargeGreenPaletteColorLookupTableDescriptor,
+                    DCM_RETIRED_LargeGreenPaletteColorLookupTableData, DCM_UndefinedTagKey /*explanation*/, descMode, &ImageStatus);
+                Palette[2] = new DiLookupTable(Document, DCM_RETIRED_LargeBluePaletteColorLookupTableDescriptor,
+                    DCM_RETIRED_LargeBluePaletteColorLookupTableData, DCM_UndefinedTagKey /*explanation*/, descMode, &ImageStatus);
             } else {
                 const Uint16 *dummy = NULL;
                 /* check for (non-empty) segmented palette */
@@ -80,11 +80,11 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                 }
                 /* read data from non-segmented palettes (if present) */
                 Palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
-                    DCM_RedPaletteColorLookupTableData, DcmTagKey(0, 0) /*explanation*/, descMode, &ImageStatus);
+                    DCM_RedPaletteColorLookupTableData, DCM_UndefinedTagKey /*explanation*/, descMode, &ImageStatus);
                 Palette[1] = new DiLookupTable(Document, DCM_GreenPaletteColorLookupTableDescriptor,
-                    DCM_GreenPaletteColorLookupTableData, DcmTagKey(0, 0) /*explanation*/, descMode, &ImageStatus);
+                    DCM_GreenPaletteColorLookupTableData, DCM_UndefinedTagKey /*explanation*/, descMode, &ImageStatus);
                 Palette[2] = new DiLookupTable(Document, DCM_BluePaletteColorLookupTableDescriptor,
-                    DCM_BluePaletteColorLookupTableData, DcmTagKey(0, 0) /*explanation*/, descMode, &ImageStatus);
+                    DCM_BluePaletteColorLookupTableData, DCM_UndefinedTagKey /*explanation*/, descMode, &ImageStatus);
             }
             if ((ImageStatus == EIS_Normal) && (Palette[0] != NULL) && (Palette[1] != NULL) && (Palette[2] != NULL))
             {
@@ -184,6 +184,10 @@ int DiPaletteImage::processNextFrames(const unsigned long fcount)
  *
  * CVS/RCS Log:
  * $Log: dipalimg.cc,v $
+ * Revision 1.25  2010-10-06 14:50:25  joergr
+ * Replaced numeric tags by pre-defined tag names for old ACR/NEMA palettes.
+ * Use DCM_UndefinedTagKey if no explanation tag can be specified for a LUT.
+ *
  * Revision 1.24  2010-03-26 14:12:02  joergr
  * Fixed missing initialization of color palette LUTs in case of invalid
  * images.

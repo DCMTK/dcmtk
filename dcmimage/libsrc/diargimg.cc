@@ -22,8 +22,8 @@
  *  Purpose: DiARGBImage (Source) - UNTESTED !!!
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-26 14:12:02 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2010-10-06 14:50:25 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,11 +60,11 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
         {
             const EL_BitsPerTableEntry descMode = (Document->getFlags() & CIF_CheckLutBitDepth) ? ELM_CheckValue : ELM_UseValue;
             Palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
-                DCM_RedPaletteColorLookupTableData, DcmTagKey(0, 0), descMode, &ImageStatus);
+                DCM_RedPaletteColorLookupTableData, DCM_UndefinedTagKey, descMode, &ImageStatus);
             Palette[1] = new DiLookupTable(Document, DCM_GreenPaletteColorLookupTableDescriptor,
-                DCM_GreenPaletteColorLookupTableData, DcmTagKey(0, 0), descMode, &ImageStatus);
+                DCM_GreenPaletteColorLookupTableData, DCM_UndefinedTagKey, descMode, &ImageStatus);
             Palette[2] = new DiLookupTable(Document, DCM_BluePaletteColorLookupTableDescriptor,
-                DCM_BluePaletteColorLookupTableData, DcmTagKey(0, 0), descMode, &ImageStatus);
+                DCM_BluePaletteColorLookupTableData, DCM_UndefinedTagKey, descMode, &ImageStatus);
             if ((ImageStatus == EIS_Normal) && (Palette[0] != NULL) && (Palette[1] != NULL) && (Palette[2] != NULL))
             {
                 BitsPerSample = BitsStored;
@@ -167,6 +167,10 @@ int DiARGBImage::processNextFrames(const unsigned long fcount)
  *
  * CVS/RCS Log:
  * $Log: diargimg.cc,v $
+ * Revision 1.24  2010-10-06 14:50:25  joergr
+ * Replaced numeric tags by pre-defined tag names for old ACR/NEMA palettes.
+ * Use DCM_UndefinedTagKey if no explanation tag can be specified for a LUT.
+ *
  * Revision 1.23  2010-03-26 14:12:02  joergr
  * Fixed missing initialization of color palette LUTs in case of invalid
  * images.

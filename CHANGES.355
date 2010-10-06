@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.06 (riesmeier)
 
+- Replaced numeric tags by pre-defined tag names for old ACR/NEMA palettes.
+  Affects: dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/dipalimg.cc
+
+- Use DCM_UndefinedTagKey if no explanation tag can be specified for a LUT.
+  Affects: dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/dipalimg.cc
+           dcmimgle/libsrc/diluptab.cc
+
 - Removed definition of HAVE_STD_STRING for non-Windows systems.
   Affects: CMake/osconfig.h.in
 
