@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.06 (riesmeier)
+
+- Added text on the fact that the --key option also supports attribute paths.
+  Affects: dcmdata/apps/img2dcm.cc
+           dcmdata/docs/img2dcm.man
+
+- Introduced meaningful sub groups for the processing command line options.
+  Affects: dcmdata/apps/img2dcm.cc
+           dcmdata/docs/img2dcm.man
+
 **** Changes from 2010.10.05 (riesmeier)
 
 - Added preliminary support for VOI LUT function. Please note, however, that

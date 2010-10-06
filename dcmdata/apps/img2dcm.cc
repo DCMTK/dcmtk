@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2009, OFFIS
+ *  Copyright (C) 2007-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-13 13:20:23 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2010-10-06 09:14:23 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,15 +123,18 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--keep-appn",           "-ka",     "keep APPn sections (except JFIF)");
 
   cmd.addGroup("processing options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--do-checks",                       "enable attribute validity checking (default)");
-     cmd.addOption("--no-checks",                       "disable attribute validity checking");
-     cmd.addOption("--insert-type2",         "+i2",     "insert missing type 2 attributes (default)\n(only with --do-checks)");
-     cmd.addOption("--no-type2-insert",      "-i2",     "do not insert missing type 2 attributes \n(only with --do-checks)");
-     cmd.addOption("--invent-type1",         "+i1",     "invent missing type 1 attributes (default)\n(only with --do-checks)");
-     cmd.addOption("--no-type1-invent",      "-i1",     "do not invent missing type 1 attributes\n(only with --do-checks)");
-     cmd.addOption("--latin1",               "+l1",     "set latin-1 as standard character set (default)");
-     cmd.addOption("--no-latin1",            "-l1",     "keep 7-bit ASCII as standard character set");
-     cmd.addOption("--key",                  "-k",   1, "[k]ey: gggg,eeee=\"str\" or dictionary name=\"str\"",
+    cmd.addSubGroup("attribute checking:");
+      cmd.addOption("--do-checks",                      "enable attribute validity checking (default)");
+      cmd.addOption("--no-checks",                      "disable attribute validity checking");
+      cmd.addOption("--insert-type2",        "+i2",     "insert missing type 2 attributes (default)\n(only with --do-checks)");
+      cmd.addOption("--no-type2-insert",     "-i2",     "do not insert missing type 2 attributes \n(only with --do-checks)");
+      cmd.addOption("--invent-type1",        "+i1",     "invent missing type 1 attributes (default)\n(only with --do-checks)");
+      cmd.addOption("--no-type1-invent",     "-i1",     "do not invent missing type 1 attributes\n(only with --do-checks)");
+    cmd.addSubGroup("character set:");
+      cmd.addOption("--latin1",              "+l1",     "set latin-1 as standard character set (default)");
+      cmd.addOption("--no-latin1",           "-l1",     "keep 7-bit ASCII as standard character set");
+    cmd.addSubGroup("other processing options:");
+      cmd.addOption("--key",                 "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
                                                         "add further attribute");
 
   cmd.addGroup("output options:");
@@ -381,8 +384,8 @@ static OFCondition startConversion(OFCommandLine& cmd,
   /* make sure data dictionary is loaded */
   if (!dcmDataDict.isDictionaryLoaded())
   {
-      OFLOG_WARN(img2dcmLogger, "no data dictionary loaded, check environment variable: "
-          << DCM_DICT_ENVIRONMENT_VARIABLE);
+    OFLOG_WARN(img2dcmLogger, "no data dictionary loaded, check environment variable: "
+      << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
   DcmDataset *resultObject = NULL;
@@ -432,6 +435,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.19  2010-10-06 09:14:23  joergr
+ * Added text on the fact that the --key option also supports attribute paths.
+ * Introduced meaningful sub groups for the processing command line options.
+ *
  * Revision 1.18  2009-11-13 13:20:23  joergr
  * Fixed minor issues in log output.
  *
