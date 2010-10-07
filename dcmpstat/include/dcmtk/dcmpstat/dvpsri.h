@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSReferencedImage
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSRI_H__
-#define __DVPSRI_H__
+#ifndef DVPSRI_H
+#define DVPSRI_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcvrui.h"
@@ -49,7 +49,7 @@ class DVPSReferencedImage
 public:
   /// default constructor
   DVPSReferencedImage();
-  
+
   /// copy constructor
   DVPSReferencedImage(const DVPSReferencedImage& copy);
 
@@ -72,7 +72,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition read(DcmItem &dset);
-  
+
   /** writes the image reference managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
    *  the DICOM dataset.
@@ -80,7 +80,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition write(DcmItem &dset);
-  
+
   /** check if the passed SOP Class UID is equal to the one stored in this object.
    *  If sopclassuid is empty, the referencedSOPClassUID is assigned to it and the method returns
    *  OFTrue. Otherwise the passed UID is compared with the referencedSOPClassUID.
@@ -101,7 +101,7 @@ public:
    *  @param uid a pointer to the UID, which is copied into this object.
    */
   void setSOPInstanceUID(const char *uid);
-    
+
   /** set the list of frame numbers of this image reference.
    *  @param frames a list of frame numbers in DICOM IS format
    *    (integer numbers separated by '\' characters)
@@ -123,7 +123,7 @@ public:
    */
   OFCondition getImageReference(
     OFString& sopclassUID,
-    OFString& instanceUID, 
+    OFString& instanceUID,
     OFString& frames);
 
   /** checks whether this image reference applies to the given frame number.
@@ -147,7 +147,7 @@ public:
    *  @return OFTrue if the image reference applies to all frames, OFFalse otherwise.
    */
   OFBool appliesToAllFrames();
-  
+
   /** update the reference such that the given frame is not referenced any more.
    *  @param frame the frame reference
    *  @param numberOfFrames the number of frames of the image reference
@@ -166,7 +166,7 @@ private:
   /** updated the frame cache.
    */
   void updateCache();
-  
+
   /// VR=UI, VM=1, Type 1c
   DcmUniqueIdentifier      referencedSOPClassUID;
   /// VR=UI, VM=1, Type 1c
@@ -184,6 +184,9 @@ private:
 
 /*
  *  $Log: dvpsri.h,v $
+ *  Revision 1.12  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.11  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

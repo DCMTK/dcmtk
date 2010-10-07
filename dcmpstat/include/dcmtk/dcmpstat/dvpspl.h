@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSPL_H__
-#define __DVPSPL_H__
+#ifndef DVPSPL_H
+#define DVPSPL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmpstat/dvpstyp.h"     /* for enum types */
@@ -259,6 +259,9 @@ private:
 
 /*
  *  $Log: dvpspl.h,v $
+ *  Revision 1.15  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.14  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -307,4 +310,3 @@ private:
  *
  *
  */
-

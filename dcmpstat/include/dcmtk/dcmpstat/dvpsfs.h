@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSFilmSession
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:35 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSFS_H__
-#define __DVPSFS_H__
+#ifndef DVPSFS_H
+#define DVPSFS_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dctk.h"
@@ -190,6 +190,9 @@ private:
 
 /*
  *  $Log: dvpsfs.h,v $
+ *  Revision 1.8  2010-10-07 14:31:35  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.7  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -214,4 +217,3 @@ private:
  *
  *
  */
-

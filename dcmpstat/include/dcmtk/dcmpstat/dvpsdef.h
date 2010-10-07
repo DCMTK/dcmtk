@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    definitions of constants and macros for pstat module
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-12-15 14:50:49 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:35 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSDEF_H__
-#define __DVPSDEF_H__
+#ifndef DVPSDEF_H
+#define DVPSDEF_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -197,6 +197,9 @@ if (result==EC_Normal)                                              \
 
 /*
  *  $Log: dvpsdef.h,v $
+ *  Revision 1.11  2010-10-07 14:31:35  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.10  2009-12-15 14:50:49  uli
  *  Fixes some issues with --logfile and the config's log options.
  *

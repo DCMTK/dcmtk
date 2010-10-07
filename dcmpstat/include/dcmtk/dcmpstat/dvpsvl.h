@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSVOILUT
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:58 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSVL_H__
-#define __DVPSVL_H__
+#ifndef DVPSVL_H
+#define DVPSVL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmpstat/dvpstyp.h"
@@ -42,14 +42,14 @@
 class DVPSSoftcopyVOI;
 
 /** the representation of one VOI LUT in a DICOM image.
- */  
+ */
 
 class DVPSVOILUT
 {
 public:
   /// default constructor
   DVPSVOILUT();
-  
+
   /// copy constructor
   DVPSVOILUT(const DVPSVOILUT& copy);
 
@@ -72,13 +72,13 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition read(DcmItem &dset);
-  
+
   /** resets the object to initial state.
    *  After this call, the object is in the same state as after
    *  creation with the default constructor.
    */
   void clear();
-  
+
   /** gets the LUT explanation for this VOI LUT.
    *  If no explanation exists, NULL is returned.
    *  @return LUT explanation or NULL
@@ -96,11 +96,11 @@ private:
   /// private undefined assignment operator
   DVPSVOILUT& operator=(const DVPSVOILUT&);
 
-  /// Module=VOI_LUT, VR=xs, VM=3, Type 1c 
+  /// Module=VOI_LUT, VR=xs, VM=3, Type 1c
   DcmUnsignedShort         voiLUTDescriptor;
-  /// Module=VOI_LUT, VR=LO, VM=1, Type 3 
+  /// Module=VOI_LUT, VR=LO, VM=1, Type 3
   DcmLongString            voiLUTExplanation;
-  /// Module=VOI_LUT, VR=xs, VM=1-n, Type 1c 
+  /// Module=VOI_LUT, VR=xs, VM=1-n, Type 1c
   DcmUnsignedShort         voiLUTData;
 };
 
@@ -108,6 +108,9 @@ private:
 
 /*
  *  $Log: dvpsvl.h,v $
+ *  Revision 1.9  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.8  2009-11-24 14:12:58  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -136,4 +139,3 @@ private:
  *
  *
  */
-

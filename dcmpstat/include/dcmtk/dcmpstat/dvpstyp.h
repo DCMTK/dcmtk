@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,20 +21,20 @@
  *
  *  Purpose:
  *    enums: DVPSoverlayActivation, DVPSVOIActivation, DVPSGraphicLayering
- *           DVPSPresentationLUTType, DVPSRotationType, 
+ *           DVPSPresentationLUTType, DVPSRotationType,
  *           DVPSShutterType
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:58 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSTYP_H__
-#define __DVPSTYP_H__
+#ifndef DVPSTYP_H
+#define DVPSTYP_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -42,7 +42,7 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 /** describes how to handle overlays when creating a default presentation state
- *  for an image. 
+ *  for an image.
  */
 enum DVPSoverlayActivation
 {
@@ -59,16 +59,16 @@ enum DVPSoverlayActivation
   /** if overlays are present in the image, copy them.
    *  If the image contains overlays which are not embedded in the pixel
    *  data but use the OverlayData element, the overlays are copied to the
-   *  presentation state and activated. 
+   *  presentation state and activated.
    *  Overlays that are embedded in the image pixel data are not copied
    *  but also activated.
-   */ 
+   */
   DVPSO_copyOverlays
 };
 
 
 /** describes how to handle VOI transformations when creating a default presentation state
- *  for an image. 
+ *  for an image.
  */
 enum DVPSVOIActivation
 {
@@ -85,17 +85,17 @@ enum DVPSVOIActivation
    */
   DVPSV_preferVOIWindow,
   /** select the first VOI LUT if present, VOI Window alternatively.
-   *  If the image contains one or more VOI LUTs, 
+   *  If the image contains one or more VOI LUTs,
    *  the first VOI LUT is copied to the presentation
    *  state. If the image contains no VOI LUT but does contain
-   *  one or more settings for window center/width, the first 
+   *  one or more settings for window center/width, the first
    *  window center and width are copied to the presentation state.
    */
   DVPSV_preferVOILUT
 };
 
-/** describes how to handle layering of curves and overlays 
- *  when creating a default presentation state for an image. 
+/** describes how to handle layering of curves and overlays
+ *  when creating a default presentation state for an image.
  */
 enum DVPSGraphicLayering
 {
@@ -133,13 +133,13 @@ enum DVPSPresentationLUTType
   DVPSP_table,
   /** Presentation LUT Shape with value 'LIN OD'
    */
-  DVPSP_lin_od 
-  
+  DVPSP_lin_od
+
 };
 
 /** some Print SCPs which support Presentation LUTs require that the number
  *  of entries in a Presentation LUT matches the bit depth of the image pixel
- *  data (4096 entries for 12 bit pixel data, 256 entries for 8 bit pixel 
+ *  data (4096 entries for 12 bit pixel data, 256 entries for 8 bit pixel
  *  data). An instance of this enumeration describes the characteristics
  *  of a Presentation LUT with regard to this matching rule.
  */
@@ -148,11 +148,11 @@ enum DVPSPrintPresentationLUTAlignment
   /** Presentation LUT Shape, matches all kinds of image data
    */
   DVPSK_shape,
-  /** Presentation LUT with 256 entries and first entry mapped to 0, 
+  /** Presentation LUT with 256 entries and first entry mapped to 0,
    *  matches 8 bit image data
    */
   DVPSK_table8,
-  /** Presentation LUT with 4096 entries and first entry mapped to 0, 
+  /** Presentation LUT with 4096 entries and first entry mapped to 0,
    *  matches 12 bit image data
    */
   DVPSK_table12,
@@ -195,7 +195,7 @@ enum DVPSShutterType
   DVPSU_polygonal,
   /** bitmap shutter
    */
-  DVPSU_bitmap 
+  DVPSU_bitmap
 };
 
 /** describes the different types of annotation units
@@ -251,7 +251,7 @@ enum DVPScharacterSet
   DVPSC_japanese,
   /** unrecognized term or code extension
    */
-  DVPSC_other 
+  DVPSC_other
 };
 
 /** describes the different types of graphic objects
@@ -499,14 +499,14 @@ enum DVPSSignatureStatus
   /** one or more digital signatures are present and have been successfully verified
    */
   DVPSW_signed_OK,
-  
+
   /** one or more digital signatures are present, and all of them are valid.
    *  However, at least one of them was created
    *  with a certificate issued by an unknown CA.
    */
   DVPSW_signed_unknownCA,
 
-  /** one or more digital signatures are present and at least one of them 
+  /** one or more digital signatures are present and at least one of them
    *  could not be successfully verified because it was corrupt.
    */
   DVPSW_signed_corrupt
@@ -535,6 +535,9 @@ enum DVPSVerifyAndSignMode
 
 /*
  *  $Log: dvpstyp.h,v $
+ *  Revision 1.20  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.19  2009-11-24 14:12:58  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

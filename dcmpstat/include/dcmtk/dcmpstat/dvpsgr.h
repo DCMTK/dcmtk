@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSGraphicObject
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:35 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSGR_H__
-#define __DVPSGR_H__
+#ifndef DVPSGR_H
+#define DVPSGR_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dctk.h"
@@ -49,7 +49,7 @@ class DVPSGraphicObject
 public:
   /// default constructor
   DVPSGraphicObject();
-  
+
   /// copy constructor
   DVPSGraphicObject(const DVPSGraphicObject& copy);
 
@@ -94,7 +94,7 @@ public:
   /** gets one point from the graphic data.
    *  @param idx index of the graphic point, must be < getNumberOfPoints();
    *  @param x upon success the x value of the point is returned in this parameter
-   *  @param y upon success the y value of the point is returned in this parameter   
+   *  @param y upon success the y value of the point is returned in this parameter
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition getPoint(size_t idx, Float32& x, Float32& y);
@@ -108,7 +108,7 @@ public:
    *  @return OFTrue if graphic is filled.
    */
   OFBool isFilled();
-  
+
   /** sets the graphic data for this graphic object.
    *  @param number number of graphic points in parameter "data"
    *  @param data pointer to an array of Float32 values with a size of (at least)
@@ -135,15 +135,15 @@ private:
   /// private undefined assignment operator
   DVPSGraphicObject& operator=(const DVPSGraphicObject&);
 
-  /// VR=CS, VM=1, Type 1 
+  /// VR=CS, VM=1, Type 1
   DcmCodeString            graphicAnnotationUnits;
-  /// VR=US, VM=1, Type 1 
+  /// VR=US, VM=1, Type 1
   DcmUnsignedShort         numberOfGraphicPoints;
-  /// VR=FL, VM=2-n, Type 1 
+  /// VR=FL, VM=2-n, Type 1
   DcmFloatingPointSingle   graphicData;
-  /// VR=CS, VM=1, Type 1 
+  /// VR=CS, VM=1, Type 1
   DcmCodeString            graphicType;
-  /// VR=CS, VM=1, Type 1c 
+  /// VR=CS, VM=1, Type 1c
   DcmCodeString            graphicFilled;
 };
 
@@ -151,6 +151,9 @@ private:
 
 /*
  *  $Log: dvpsgr.h,v $
+ *  Revision 1.9  2010-10-07 14:31:35  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.8  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -178,4 +181,3 @@ private:
  *
  *
  */
-

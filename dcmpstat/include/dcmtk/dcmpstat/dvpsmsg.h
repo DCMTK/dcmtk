@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,25 +22,25 @@
  *  Purpose:
  *    classes: DVPSIPCMessage
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:03:52 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSMSG_H__
-#define __DVPSMSG_H__
+#ifndef DVPSMSG_H
+#define DVPSMSG_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dctypes.h"     /* for Uint32 */
-#include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
+#include "dcmtk/dcmdata/dctypes.h"    /* for Uint32 */
+#include "dcmtk/ofstd/ofstring.h"     /* for class OFString */
 
 class DcmTransportConnection;
 
-/** class for IPC message exchange between different processes of the 
+/** class for IPC message exchange between different processes of the
  *  DICOMscope application
  */
 class DVPSIPCMessage
@@ -49,7 +49,7 @@ public:
 
   /// default constructor
   DVPSIPCMessage();
-  
+
   /// copy constructor
   DVPSIPCMessage(const DVPSIPCMessage& copy);
 
@@ -63,7 +63,7 @@ public:
    *  @param msgtype new message type
    */
   void setMessageType(Uint32 msgtype) { messageType = msgtype; }
-  
+
   /** returns the message type
    *  @return message type
    */
@@ -76,7 +76,7 @@ public:
 
   /** adds an integer into the message payload.
    *  @param value to write
-   */  
+   */
   void addIntToPayload(Uint32 i);
 
   /** extracts a string from the message payload
@@ -94,8 +94,8 @@ public:
 
   /** rewinds the read offset to the beginning of the message payload
    */
-  void rewindPayload();  
-  
+  void rewindPayload();
+
   /** removes all payload
    */
   void erasePayload();
@@ -114,7 +114,7 @@ public:
    */
   OFBool receive(DcmTransportConnection &connection);
 
- 
+
   // constants for message type
   static const Uint32 OK;
   static const Uint32 requestApplicationID;
@@ -141,14 +141,14 @@ public:
   static const Uint32 clientPrintSCP; // client is Print SCP
   static const Uint32 clientPrintSCU; // client is Print SCU
   static const Uint32 clientQRSCP;    // client is Query/Retrieve (Find/Move/Get) SCP
-  
+
 private:
 
   /** resize payload if necessary such that at least i bytes can be written
    *  @param i number of bytes required in buffer
    */
   void resizePayload(Uint32 i);
-  
+
   /// type of message
   Uint32 messageType;
 
@@ -166,7 +166,7 @@ private:
 };
 
 
-/** a client for IPC message exchange between different processes of the 
+/** a client for IPC message exchange between different processes of the
  *  DICOMscope application
  */
 class DVPSIPCClient
@@ -181,7 +181,7 @@ public:
    *    open all the time or should be opened/closed for each transaction.
    */
   DVPSIPCClient(Uint32 clientType, const char *txt, int thePort, OFBool keepOpen);
-  
+
   /// destructor
   virtual ~DVPSIPCClient();
 
@@ -262,19 +262,19 @@ private:
    *  @return OFTrue if successful, OFFalse otherwise
    */
   OFBool performTransaction(DVPSIPCMessage& msg);
-  
+
   /// TCP/IP port number on which the server is listening
   int port;
-  
+
   /// true if the first connection attempt has succeeded, false otherwise
   OFBool serverActive;
-  
+
   /// application ID assigned by the server
   Uint32 applicationID;
 
   /// flag indicating whether we want to keep the connection open
   OFBool keepConnectionOpen;
-  
+
   /// current transport connection
   DcmTransportConnection *connection;
 };
@@ -284,7 +284,10 @@ private:
 
 /*
  *  $Log: dvpsmsg.h,v $
- *  Revision 1.5  2005-12-08 16:03:52  meichel
+ *  Revision 1.6  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
+ *  Revision 1.5  2005/12/08 16:03:52  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.4  2003/07/04 13:27:38  meichel

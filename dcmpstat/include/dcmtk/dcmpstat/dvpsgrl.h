@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSGraphicObject_PList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:35 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSGRL_H__
-#define __DVPSGRL_H__
+#ifndef DVPSGRL_H
+#define DVPSGRL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcitem.h"
@@ -50,7 +50,7 @@ class DVPSGraphicObject_PList
 public:
   /// default constructor
   DVPSGraphicObject_PList();
-  
+
   /// copy constructor
   DVPSGraphicObject_PList(const DVPSGraphicObject_PList& copy);
 
@@ -81,17 +81,17 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition write(DcmItem &dset);
-  
+
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
    *  creation with the default constructor.
    */
   void clear();
-  
+
   /** get number of graphic objects in this list.
    *  @return the number of graphic objects.
    */
-  size_t size() const { return list_.size(); }  
+  size_t size() const { return list_.size(); }
 
   /** returns a pointer to the graphic object with the given
    *  index or NULL if it does not exist.
@@ -105,7 +105,7 @@ public:
    *  @param text graphic object to be inserted.
    */
   void addGraphicObject(DVPSGraphicObject *graphic);
-  
+
   /** returns a pointer to the graphic object with the given
    *  index (or NULL if it does not exist) and removes it from the list.
    *  @param idx index, must be < size()
@@ -127,6 +127,9 @@ private:
 
 /*
  *  $Log: dvpsgrl.h,v $
+ *  Revision 1.11  2010-10-07 14:31:35  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.10  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -161,4 +164,3 @@ private:
  *
  *
  */
-

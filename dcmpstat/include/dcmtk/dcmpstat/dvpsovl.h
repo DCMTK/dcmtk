@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSOverlay_PList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSOVL_H__
-#define __DVPSOVL_H__
+#ifndef DVPSOVL_H
+#define DVPSOVL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcitem.h"
@@ -50,7 +50,7 @@ class DVPSOverlay_PList
 public:
   /// default constructor
   DVPSOverlay_PList();
-  
+
   /// copy constructor
   DVPSOverlay_PList(const DVPSOverlay_PList& copy);
 
@@ -74,7 +74,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition read(DcmItem &dset);
-  
+
   /** writes the overlays managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
    *  the DICOM dataset.
@@ -88,29 +88,29 @@ public:
    *  creation with the default constructor.
    */
   void clear();
-  
+
   /** check presence of overlay group
    *  @param group overlay repeating group to be checked
    *  @return OFTrue if the specified overlay group is present in the
    *     list of overlays managed by this object.
    */
   OFBool haveOverlayGroup(Uint16 group);
-  
+
   /** gets the number of overlays in managed by this object.
    *  @return number of overlays in this list.
    */
   size_t size() const { return list_.size(); }
-  
+
   /** gets the overlay object with the given index.
    *  @param idx index of the overlay, must be < size().
    *  @return pointer to overlay object or NULL.
-   */  
+   */
   DVPSOverlay *getOverlay(size_t idx);
 
   /** removes the overlay object with the given index.
    *  @param idx index of the overlay, must be < size().
    *  @return EC_Normal upon success, an error code otherwise
-   */ 
+   */
   OFCondition removeOverlay(size_t idx);
 
   /** changes the repeating group used for an overlay.
@@ -121,7 +121,7 @@ public:
   OFCondition changeOverlayGroup(size_t idx, Uint16 newGroup);
 
   /** adds a new overlay bitmap.
-   *  The overlay is read from a DICOM dataset which must contain the 
+   *  The overlay is read from a DICOM dataset which must contain the
    *  attributes required for a graphic or ROI overlay, see class DVPSOverlay.
    *  The dataset can be an image or standalone overlay IOD.
    *  The overlay data is copied into the presentation state, i.e. the DICOM dataset
@@ -156,6 +156,9 @@ private:
 
 /*
  *  $Log: dvpsovl.h,v $
+ *  Revision 1.13  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.12  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -198,4 +201,3 @@ private:
  *
  *
  */
-

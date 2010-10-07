@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSGraphicAnnotation_PList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:35 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSGAL_H__
-#define __DVPSGAL_H__
+#ifndef DVPSGAL_H
+#define DVPSGAL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcitem.h"
@@ -52,7 +52,7 @@ class DVPSGraphicAnnotation_PList
 public:
   /// default constructor
   DVPSGraphicAnnotation_PList();
-  
+
   /// copy constructor
   DVPSGraphicAnnotation_PList(const DVPSGraphicAnnotation_PList& copy);
 
@@ -83,7 +83,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition write(DcmItem &dset);
-  
+
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
    *  creation with the default constructor.
@@ -99,7 +99,7 @@ public:
    */
   void renameLayer(const char *oldName, const char *newName);
 
-  /** deletes all graphic annotation layers belonging to the given 
+  /** deletes all graphic annotation layers belonging to the given
    *  graphic annotation layer name.
    *  @param name name of the graphic annotation layers to be deleted
    */
@@ -109,7 +109,7 @@ public:
    *  no text and no graphic object. Called before writing a presentation state.
    */
   void cleanupLayers();
-  
+
   /** checks if the given layer name is used for any of the
    *  graphic annotation layers managed by this object.
    *  @param name name of the layer
@@ -123,22 +123,22 @@ public:
    *  @param instanceUID SOP instance UID of the current image
    *  @param frame number of the current frame
    *  @return number of text objects
-   */   
+   */
   size_t getNumberOfTextObjects(const char *layer, const char *instanceUID, unsigned long frame);
 
-  /** gets the text object (applicable to the current image and frame) 
-   *  with the given index on the given layer. 
+  /** gets the text object (applicable to the current image and frame)
+   *  with the given index on the given layer.
    *  If the text object or the graphic layer does not exist, NULL is returned.
    *  @param layer name of the graphic layer
    *  @param instanceUID SOP instance UID of the current image
    *  @param frame number of the current frame
    *  @param idx index of the text object, must be < getNumberOfTextObjects(layer)
    *  @return a pointer to the text object
-   */   
+   */
   DVPSTextObject *getTextObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx);
 
-  /** creates a new text object on the given layer. 
-   *  Returns a pointer to the new text object. 
+  /** creates a new text object on the given layer.
+   *  Returns a pointer to the new text object.
    *  If no graphic layer with appropriate applicability exists, it is created.
    *  If the creation of the layer or text object fails, NULL is returned.
    *  @param layer name of the graphic layer
@@ -151,27 +151,27 @@ public:
    *    it gets owned by this graphic annotation object and will be deleted
    *    upon destruction of the annotation or if this method fails (returns NULL).
    *  @return a pointer to the new text object
-   */   
+   */
   DVPSTextObject *addTextObject(
-    const char *layer, 
-    const char *sopclassUID, 
-    const char *instanceUID, 
-    unsigned long frame, 
-    DVPSObjectApplicability applicability, 
+    const char *layer,
+    const char *sopclassUID,
+    const char *instanceUID,
+    unsigned long frame,
+    DVPSObjectApplicability applicability,
     DVPSTextObject *text=NULL);
 
   /** deletes the text object (applicable to the current image and frame) with the given index
-   *  on the given layer. 
+   *  on the given layer.
    *  @param layer name of the graphic layer
    *  @param instanceUID SOP instance UID of the current image
    *  @param frame number of the current frame
    *  @param idx index of the text object, must be < getNumberOfTextObjects(layer)
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFCondition removeTextObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx);
 
-  /** moves the text object (applicable to the current image and frame) with the given index 
-   *  on the given layer to a different layer. 
+  /** moves the text object (applicable to the current image and frame) with the given index
+   *  on the given layer to a different layer.
    *  @param old_layer name of the graphic layer on which the text object is
    *  @param sopclassUID SOP class UID of the current image
    *  @param instanceUID SOP instance UID of the current image
@@ -180,23 +180,23 @@ public:
    *  @param applicability new applicability of the text object
    *  @param new_layer name of the graphic layer to which the text object is moved
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFCondition moveTextObject(
-    const char *old_layer, 
-    const char *sopclassUID, 
+    const char *old_layer,
+    const char *sopclassUID,
     const char *instanceUID,
     unsigned long frame,
     size_t idx,
-    DVPSObjectApplicability applicability, 
+    DVPSObjectApplicability applicability,
     const char *new_layer);
 
   /** returns the number of graphic objects for the given
-   *  graphic layer. 
+   *  graphic layer.
    *  @param layer name of the graphic layer
    *  @param instanceUID SOP instance UID of the current image
    *  @param frame number of the current frame
    *  @return number of graphic objects
-   */   
+   */
   size_t getNumberOfGraphicObjects(const char *layer, const char *instanceUID, unsigned long frame);
 
   /** gets the graphic object with the given index
@@ -207,10 +207,10 @@ public:
    *  @param frame number of the current frame
    *  @param idx index of the graphic object, must be < getNumberOfGraphicObjects(layer)
    *  @return a pointer to the graphic object
-   */   
+   */
   DVPSGraphicObject *getGraphicObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx);
 
-  /** creates a new graphic object on the given layer. 
+  /** creates a new graphic object on the given layer.
    *  Returns a pointer to the new graphic object. If the graphic layer
    *  does not exist or if the creation of the graphic object fails, NULL is returned.
    *  @param layer name of the graphic layer
@@ -223,27 +223,27 @@ public:
    *    it gets owned by this graphic annotation object and will be deleted
    *    upon destruction of the annotation or if this method fails (returns NULL).
    *  @return a pointer to the new graphic object
-   */   
+   */
   DVPSGraphicObject *addGraphicObject(
-    const char *layer, 
-    const char *sopclassUID, 
-    const char *instanceUID, 
-    unsigned long frame, 
-    DVPSObjectApplicability applicability, 
+    const char *layer,
+    const char *sopclassUID,
+    const char *instanceUID,
+    unsigned long frame,
+    DVPSObjectApplicability applicability,
     DVPSGraphicObject *graphic=NULL);
 
   /** deletes the graphic object with the given index
-   *  on the given layer. 
+   *  on the given layer.
    *  @param layer name of the graphic layer
    *  @param instanceUID SOP instance UID of the current image
    *  @param frame number of the current frame
    *  @param idx index of the graphic object, must be < getNumberOfGraphicObjects(layer)
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFCondition removeGraphicObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx);
 
   /** moves the graphic object with the given index on the given
-   *  layer to a different layer. 
+   *  layer to a different layer.
    *  @param old_layer name of the graphic layer on which the graphic object is
    *  @param sopclassUID SOP class UID of the current image
    *  @param instanceUID SOP instance UID of the current image
@@ -252,14 +252,14 @@ public:
    *  @param applicability new applicability of the graphic object
    *  @param new_layer name of the graphic layer to which the graphic object is moved
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFCondition moveGraphicObject(
-    const char *old_layer, 
-    const char *sopclassUID, 
+    const char *old_layer,
+    const char *sopclassUID,
     const char *instanceUID,
     unsigned long frame,
     size_t idx,
-    DVPSObjectApplicability applicability, 
+    DVPSObjectApplicability applicability,
     const char *new_layer);
 
 private:
@@ -277,6 +277,9 @@ private:
 
 /*
  *  $Log: dvpsgal.h,v $
+ *  Revision 1.12  2010-10-07 14:31:35  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.11  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -314,4 +317,3 @@ private:
  *
  *
  */
-

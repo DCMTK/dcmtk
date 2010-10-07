@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSReferencedSeries
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:49 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSRS_H__
-#define __DVPSRS_H__
+#ifndef DVPSRS_H
+#define DVPSRS_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmpstat/dvpsril.h"   /* for DVPSReferencedImage_PList */
@@ -50,7 +50,7 @@ class DVPSReferencedSeries
 public:
   /// default constructor
   DVPSReferencedSeries();
-  
+
   /// copy constructor
   DVPSReferencedSeries(const DVPSReferencedSeries& copy);
 
@@ -73,7 +73,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition read(DcmItem &dset);
-  
+
   /** writes the series reference managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
    *  the DICOM dataset.
@@ -81,7 +81,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition write(DcmItem &dset);
-  
+
   /** check if the passed SOP Class UID is equal to the ones stored in this object.
    *  This method checks whether this object contains at least one image reference
    *  and whether all image references use the same SOP class UID as the one passed.
@@ -91,14 +91,14 @@ public:
    *  @return OFTrue if successful, OFFalse if unsuccessful.
    */
   OFBool isValid(OFString& sopclassuid);
-  
+
   /** compare SOP Instance UID.
    *  @param uid the UID to be compared
    *  @return OFTrue if the SeriesInstanceUID of this object is
    *    equal to uid, OFFalse otherwise.
    */
   OFBool isSeriesUID(const char *uid);
-  
+
 
   /** checks if an image reference with the given SOP instance UID exists
    *  in the ReferencedImageSequence of this series reference.
@@ -106,7 +106,7 @@ public:
    *  @return a pointer to the matching DVPSReferencedImage if found, NULL otherwise.
    */
   DVPSReferencedImage *findImageReference(const char *sopinstanceuid);
-  
+
   /** remove image reference from this series reference if present.
    *  If an image reference with a SOP instance UID corresponding to the
    *  passed UID is found, it is removed from this series reference.
@@ -125,7 +125,7 @@ public:
    *  @param filesetUID the storageMediaFileSetUID, must be a valid DICOM UID. Default: value absent.
    */
   void setRetrieveLocation(const char *aetitle=NULL, const char *filesetID=NULL, const char *filesetUID=NULL);
-  
+
    /** gets the retrieveAETitle for this series reference.
     *  @return retrieveAETitle if present, NULL otherwise.
     */
@@ -140,7 +140,7 @@ public:
     *  @return storageMediaFileSetUID if present, NULL otherwise.
     */
   const char *getStorageMediaFileSetUID();
-  
+
   /** add image reference to this series reference.
    *  A new image reference for this series is created.
    *  The image SOP instance UID must be unique (must not yet exist
@@ -156,7 +156,7 @@ public:
    */
   OFCondition addImageReference(
     const char *sopclassUID,
-    const char *instanceUID, 
+    const char *instanceUID,
     const char *frames=NULL);
 
   /** gets the number of image references in this object.
@@ -179,7 +179,7 @@ public:
     size_t idx,
     OFString& seriesUID,
     OFString& sopclassUID,
-    OFString& instanceUID, 
+    OFString& instanceUID,
     OFString& frames,
     OFString& aetitle,
     OFString& filesetID,
@@ -193,7 +193,7 @@ private:
   /// Referenced Image Sequence
   DVPSReferencedImage_PList referencedImageList;
   /// VR=UI, VM=1, Type 1c
-  DcmUniqueIdentifier       seriesInstanceUID; 
+  DcmUniqueIdentifier       seriesInstanceUID;
   /// VR=AE, VM=1, Type 3
   DcmApplicationEntity      retrieveAETitle;
   /// VR=SH, VM=1, Type 3
@@ -207,6 +207,9 @@ private:
 
 /*
  *  $Log: dvpsrs.h,v $
+ *  Revision 1.13  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.12  2010-03-01 09:08:49  uli
  *  Removed some unnecessary include directives in the headers.
  *
@@ -249,4 +252,3 @@ private:
  *
  *
  */
-

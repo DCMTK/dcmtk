@@ -8,6 +8,48 @@ Changes between releases are documented here.
   Affects: dcmnet/include/dcmtk/dcmnet/scp.h
            dcmnet/include/dcmtk/dcmnet/scu.h
 
+- Removed leading underscore characters from preprocessor symbols (reserved).
+  Affects: dcmpstat/include/dcmtk/dcmpstat/dcmpstat.h
+           dcmpstat/include/dcmtk/dcmpstat/dvcache.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsab.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsabl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsal.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsall.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpscu.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpscul.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsda.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsdal.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsdef.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsfs.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsga.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsgal.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsgl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsgll.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsgr.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsgrl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsib.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsibl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsmsg.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsov.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsovl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpspl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpspll.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpspr.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsri.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsril.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsrs.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsrsl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsspl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpssv.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpssvl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpstx.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpstxl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpstyp.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsvl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsvll.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsvw.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsvwl.h
+
 **** Changes from 2010.10.06 (riesmeier)
 
 - Replaced numeric tags by pre-defined tag names for old ACR/NEMA palettes.

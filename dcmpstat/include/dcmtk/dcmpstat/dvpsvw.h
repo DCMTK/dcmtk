@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSVOIWindow
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:58 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSVW_H__
-#define __DVPSVW_H__
+#ifndef DVPSVW_H
+#define DVPSVW_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstring.h"
@@ -42,14 +42,14 @@ class DcmDecimalString;
 class DcmLongString;
 
 /** the representation of one VOI Window in a DICOM image.
- */  
+ */
 
 class DVPSVOIWindow
 {
 public:
   /// default constructor
   DVPSVOIWindow();
-  
+
   /// copy constructor
   DVPSVOIWindow(const DVPSVOIWindow& copy);
 
@@ -89,7 +89,7 @@ public:
    *  @return window center
    */
   double getWindowCenter() { return windowCenter; }
-  
+
   /** gets the Window Width of this VOI Window.
    *  @return window width
    */
@@ -111,6 +111,9 @@ private:
 
 /*
  *  $Log: dvpsvw.h,v $
+ *  Revision 1.8  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.7  2009-11-24 14:12:58  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -136,4 +139,3 @@ private:
  *
  *
  */
-

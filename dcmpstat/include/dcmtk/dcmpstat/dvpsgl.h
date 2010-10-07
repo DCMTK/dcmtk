@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSGraphicLayer
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:35 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSGL_H__
-#define __DVPSGL_H__
+#ifndef DVPSGL_H
+#define DVPSGL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dctk.h"
@@ -48,7 +48,7 @@ class DVPSGraphicLayer
 public:
   /// default constructor
   DVPSGraphicLayer();
-  
+
   /// copy constructor
   DVPSGraphicLayer(const DVPSGraphicLayer& copy);
 
@@ -71,7 +71,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition read(DcmItem &dset);
-  
+
   /** writes the graphic layer managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
    *  the DICOM dataset.
@@ -79,7 +79,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition write(DcmItem &dset);
-  
+
   /** get graphic layer name of this layer.
    *  @return a pointer to the graphic layer name
    */
@@ -109,7 +109,7 @@ public:
    */
   OFCondition getGLRecommendedDisplayValueGray(Uint16& gray);
 
-  /** gets the recommended RGB display value. 
+  /** gets the recommended RGB display value.
    *  If the graphic layer contains a grayscale display value but no RGB
    *  display value, the grayscale value is implicitly converted to RGB.
    *  @param r returns the R component of the recommended display value as unsigned 16-bit P-value
@@ -118,7 +118,7 @@ public:
    *  @return EC_Normal upon success, an error code otherwise
    */
   OFCondition getGLRecommendedDisplayValueRGB(Uint16& r, Uint16& g, Uint16& b);
-  
+
   /** removes recommended display values.
    *  @param rgb if true, the RGB recommended display value is removed
    *  @param monochrome if true the monochrome recommended display value is removed
@@ -178,6 +178,9 @@ private:
 
 /*
  *  $Log: dvpsgl.h,v $
+ *  Revision 1.10  2010-10-07 14:31:35  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.9  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

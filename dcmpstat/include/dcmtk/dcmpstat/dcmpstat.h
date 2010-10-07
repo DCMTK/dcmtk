@@ -23,16 +23,16 @@
  *    classes: DcmPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:20:50 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2010-10-07 14:31:35 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef DCMPSTAT_H__
-#define DCMPSTAT_H__
+#ifndef DCMPSTAT_H
+#define DCMPSTAT_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dctk.h"
@@ -992,6 +992,9 @@ protected:
 
 /*
  *  $Log: dcmpstat.h,v $
+ *  Revision 1.6  2010-10-07 14:31:35  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.5  2010-08-09 13:20:50  joergr
  *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
  *  the official "keyword" is used for the attribute name which results in a

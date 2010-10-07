@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSReferencedSeries_PList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSRSL_H__
-#define __DVPSRSL_H__
+#ifndef DVPSRSL_H
+#define DVPSRSL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcitem.h"
@@ -51,7 +51,7 @@ class DVPSReferencedSeries_PList
 public:
   /// default constructor
   DVPSReferencedSeries_PList();
-  
+
   /// copy constructor
   DVPSReferencedSeries_PList(const DVPSReferencedSeries_PList& copy);
 
@@ -73,7 +73,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition read(DcmItem &dset);
-  
+
   /** writes the list of series references managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
    *  the DICOM dataset.
@@ -87,19 +87,19 @@ public:
    *  creation with the default constructor.
    */
   void clear();
-  
+
   /** checks whether at least one series is referenced, whether all referenced
     * series contain image references and whether all references images use the same
     * SOP class.
     */
   OFBool isValid();
-  
+
   /** checks whether all images referenced in this series use the passed SOP class UID.
    *  @param uid the SOP class UID to be checked
    *  @return result of the test
    */
   OFBool checkSOPClass(const char *uid);
- 
+
   /** find series reference in this list.
    *  This method checks if a series reference with the given Series Instance UID exists
    *  in this ReferencedSeriesSequence.
@@ -109,14 +109,14 @@ public:
   DVPSReferencedSeries *findSeriesReference(const char *seriesUID);
 
   /** find image reference in this list.
-   *  This method checks if an image reference with the given Series Instance UID and 
+   *  This method checks if an image reference with the given Series Instance UID and
    *  SOP instance UID exists in this ReferencedImageSequence.
    *  @param seriesUID the Series Instance UID of the searched image reference
    *  @param instanceUID the SOP Instance UID of the searched image reference
    *  @return a pointer to the matching DVPSReferencedImage if found, NULL otherwise.
    */
   DVPSReferencedImage *findImageReference(const char *seriesUID, const char *instanceUID);
-  
+
   /** removes series reference.
    *  This method checks if an series reference with the given Series Instance UID exists
    *  in this ReferencedSeriesSequence and deletes it (including its image references).
@@ -131,7 +131,7 @@ public:
    *  @param instanceUID the SOP instance UID of the image reference to be removed.
    */
   void removeImageReference(const char *seriesUID, const char *instanceUID);
-  
+
   /** add new image reference.
    *  This method checks if the given SOP class matches the SOP class of all
    *  other existing image references and whether the image reference exists.
@@ -151,17 +151,17 @@ public:
   OFCondition addImageReference(
     const char *seriesUID,
     const char *sopclassUID,
-    const char *instanceUID, 
+    const char *instanceUID,
     const char *frames=NULL,
-    const char *aetitle=NULL, 
-    const char *filesetID=NULL, 
+    const char *aetitle=NULL,
+    const char *filesetID=NULL,
     const char *filesetUID=NULL);
 
   /** gets the number of image references in all series managed by this list.
    *  @return number of image references
    */
   size_t numberOfImageReferences();
-  
+
   /** gets an image reference with the given index.
    *  @param idx index, must be < numberOfImageReferences().
    *  @param seriesUID the Series Instance UID is returned in this string
@@ -177,7 +177,7 @@ public:
     size_t idx,
     OFString& seriesUID,
     OFString& sopclassUID,
-    OFString& instanceUID, 
+    OFString& instanceUID,
     OFString& frames,
     OFString& aetitle,
     OFString& filesetID,
@@ -197,6 +197,9 @@ private:
 
 /*
  *  $Log: dvpsrsl.h,v $
+ *  Revision 1.13  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.12  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -239,4 +242,3 @@ private:
  *
  *
  */
-

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSVOIWindow_PList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:58 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSVWL_H__
-#define __DVPSVWL_H__
+#ifndef DVPSVWL_H
+#define DVPSVWL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcitem.h"
@@ -50,7 +50,7 @@ class DVPSVOIWindow_PList
 public:
   /// default constructor
   DVPSVOIWindow_PList();
-  
+
   /// copy constructor
   DVPSVOIWindow_PList(const DVPSVOIWindow_PList& copy);
 
@@ -77,11 +77,11 @@ public:
    *  creation with the default constructor.
    */
   void clear();
-  
+
   /** get number of VOI Windows in this list.
    *  @return the number of VOI Windows.
    */
-  size_t size() const { return list_.size(); }  
+  size_t size() const { return list_.size(); }
 
   /** returns a pointer to the VOI Window with the given
    *  index or NULL if it does not exist.
@@ -105,6 +105,9 @@ private:
 
 /*
  *  $Log: dvpsvwl.h,v $
+ *  Revision 1.10  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.9  2009-11-24 14:12:58  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -137,4 +140,3 @@ private:
  *
  *
  */
-

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-07 12:51:40 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2010-10-07 14:31:35 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,8 +31,8 @@
  */
 
 
-#ifndef __DVCACHE_H
-#define __DVCACHE_H
+#ifndef DVCACHE_H
+#define DVCACHE_H
 
 #include "dcmtk/config/osconfig.h"
 
@@ -912,6 +912,9 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
+ * Revision 1.19  2010-10-07 14:31:35  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  * Revision 1.18  2009-09-07 12:51:40  joergr
  * Converted Windows line breaks to Unix format.
  *

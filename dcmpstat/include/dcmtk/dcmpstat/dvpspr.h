@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSPrintMessageHandler
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSPR_H__
-#define __DVPSPR_H__
+#ifndef DVPSPR_H
+#define DVPSPR_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/dimse.h"
@@ -46,7 +46,7 @@ public:
 
   /// destructor
   virtual ~DVPSPrintEventHandler() {}
-	
+
   /** handles an N-EVENT-REPORT-RQ message. This method is called
    *  from DVPSPrintMessageHandler whenever an event report is received.
    *  The event message, information and status detail elements must be copied
@@ -59,8 +59,8 @@ public:
    *  @return the status code to be sent back as part of the N-EVENT-REPORT-RSP message, usually STATUS_Success.
    */
   virtual DIC_US handleEvent(
-    T_DIMSE_N_EventReportRQ& eventMessage, 
-    DcmDataset *eventInformation, 
+    T_DIMSE_N_EventReportRQ& eventMessage,
+    DcmDataset *eventInformation,
     DcmDataset *statusDetail)=0;
 };
 
@@ -77,102 +77,102 @@ public:
   virtual ~DVPSPrintMessageHandler();
 
   /** sends an N-CREATE-RQ message and receives response.
-   *  Any event report requests incoming before the expected response message are handled. 
+   *  Any event report requests incoming before the expected response message are handled.
    *  @param sopclassUID the affected SOP class UID, must be one of the supported print classes.
    *  @param sopinstanceUID the affected SOP instance UID. May be empty in which case the
    *    UID is assigned by the SCP and returned in this parameter.
    *  @param attributeListIn the attribute list dataset, may be NULL.
-   *  @param status the response message status code is passed back in this parameter 
+   *  @param status the response message status code is passed back in this parameter
    *    if the method returns with success status. Content is undefined otherwise.
-   *  @param attributeListOut a pointer to the attribute list returned by the SCP is passed back 
+   *  @param attributeListOut a pointer to the attribute list returned by the SCP is passed back
    *    in this parameter if the method returns with success status. Content is undefined otherwise.
    *    May return NULL if the SCP has not returned an attribute list. If a DICOM dataset is returned,
    *    it must be deleted by the caller.
    *  @return DIMSE_NORMAL if successful (e.g. no protocol failure), an error code otherwise.
    */
   OFCondition createRQ(
-    const char *sopclassUID, 
-    OFString& sopinstanceUID, 
-    DcmDataset *attributeListIn, 
-    Uint16& status, 
+    const char *sopclassUID,
+    OFString& sopinstanceUID,
+    DcmDataset *attributeListIn,
+    Uint16& status,
     DcmDataset* &attributeListOut);
 
   /** sends an N-SET-RQ message and receives response.
-   *  Any event report requests incoming before the expected response message are handled. 
+   *  Any event report requests incoming before the expected response message are handled.
    *  @param sopclassUID the requested SOP class UID, must be one of the supported print classes.
    *  @param sopinstanceUID the requested SOP instance UID
    *  @param modificationList the modification list dataset, must not be NULL.
-   *  @param status the response message status code is passed back in this parameter 
+   *  @param status the response message status code is passed back in this parameter
    *    if the method returns with success status. Content is undefined otherwise.
-   *  @param attributeListOut a pointer to the attribute list returned by the SCP is passed back 
+   *  @param attributeListOut a pointer to the attribute list returned by the SCP is passed back
    *    in this parameter if the method returns with success status. Content is undefined otherwise.
    *    May return NULL if the SCP has not returned an attribute list. If a DICOM dataset is returned,
    *    it must be deleted by the caller.
    *  @return DIMSE_NORMAL if successful (e.g. no protocol failure), an error code otherwise.
    */
   OFCondition setRQ(
-    const char *sopclassUID, 
-    const char *sopinstanceUID, 
-    DcmDataset *modificationList, 
-    Uint16& status, 
+    const char *sopclassUID,
+    const char *sopinstanceUID,
+    DcmDataset *modificationList,
+    Uint16& status,
     DcmDataset* &attributeListOut);
 
   /** sends an N-GET-RQ message and receives response.
-   *  Any event report requests incoming before the expected response message are handled. 
+   *  Any event report requests incoming before the expected response message are handled.
    *  @param sopclassUID the requested SOP class UID, must be one of the supported print classes.
    *  @param sopinstanceUID the requested SOP instance UID
    *  @param attributeIdentifierList the list of DICOM attributes to get, may be NULL.
    *    The attributes should be coded in pairs along the array (e.g. {g,e,g,e,g,e,...}).
    *  @param numShorts the number of Uint16 values in the array (not the number of pairs).
-   *  @param status the response message status code is passed back in this parameter 
+   *  @param status the response message status code is passed back in this parameter
    *    if the method returns with success status. Content is undefined otherwise.
-   *  @param attributeListOut a pointer to the attribute list returned by the SCP is passed back 
+   *  @param attributeListOut a pointer to the attribute list returned by the SCP is passed back
    *    in this parameter if the method returns with success status. Content is undefined otherwise.
    *    May return NULL if the SCP has not returned an attribute list. If a DICOM dataset is returned,
    *    it must be deleted by the caller.
    *  @return DIMSE_NORMAL if successful (e.g. no protocol failure), an error code otherwise.
    */
   OFCondition getRQ(
-    const char *sopclassUID, 
-    const char *sopinstanceUID, 
+    const char *sopclassUID,
+    const char *sopinstanceUID,
     const Uint16 *attributeIdentifierList,
     size_t numShorts,
-    Uint16& status, 
+    Uint16& status,
     DcmDataset* &attributeListOut);
 
   /** sends an N-ACTION-RQ message and receives response.
-   *  Any event report requests incoming before the expected response message are handled. 
+   *  Any event report requests incoming before the expected response message are handled.
    *  @param sopclassUID the requested SOP class UID, must be one of the supported print classes.
    *  @param sopinstanceUID the requested SOP instance UID
    *  @param actionTypeID the action type ID
    *  @param actionInformation the action information dataset, may be NULL.
-   *  @param status the response message status code is passed back in this parameter 
+   *  @param status the response message status code is passed back in this parameter
    *    if the method returns with success status. Content is undefined otherwise.
-   *  @param actionReply a pointer to the action reply dataset returned by the SCP is passed back 
+   *  @param actionReply a pointer to the action reply dataset returned by the SCP is passed back
    *    in this parameter if the method returns with success status. Content is undefined otherwise.
    *    May return NULL if the SCP has not returned an attribute list. If a DICOM dataset is returned,
    *    it must be deleted by the caller.
    *  @return DIMSE_NORMAL if successful (e.g. no protocol failure), an error code otherwise.
    */
   OFCondition actionRQ(
-    const char *sopclassUID, 
-    const char *sopinstanceUID, 
-    Uint16 actionTypeID, 
+    const char *sopclassUID,
+    const char *sopinstanceUID,
+    Uint16 actionTypeID,
     DcmDataset *actionInformation,
-    Uint16& status, 
+    Uint16& status,
     DcmDataset* &actionReply);
 
   /** sends an N-DELETE-RQ message and receives response.
-   *  Any event report requests incoming before the expected response message are handled. 
+   *  Any event report requests incoming before the expected response message are handled.
    *  @param sopclassUID the requested SOP class UID, must be one of the supported print classes.
    *  @param sopinstanceUID the requested SOP instance UID
-   *  @param status the response message status code is passed back in this parameter 
+   *  @param status the response message status code is passed back in this parameter
    *    if the method returns with success status. Content is undefined otherwise.
    *  @return DIMSE_NORMAL if successful (e.g. no protocol failure), an error code otherwise.
    */
   OFCondition deleteRQ(
-    const char *sopclassUID, 
-    const char *sopinstanceUID, 
+    const char *sopclassUID,
+    const char *sopinstanceUID,
     Uint16& status);
 
   /** opens a DICOM association to a remote printer.
@@ -203,7 +203,7 @@ public:
     OFBool negotiatePresentationLUT,
     OFBool negotiateAnnotationBox,
     OFBool implicitOnly);
-  
+
   /** releases the current association.
    *  @return ASC_NORMAL or ASC_RELEASECONFIRMED upon success, an error code otherwise.
    */
@@ -216,7 +216,7 @@ public:
 
   /** registers an event handler object for incoming N-EVENT-REPORTs.
    *  @param handler pointer to the new handler object. May be NULL.
-   */  
+   */
   void setEventHandler(DVPSPrintEventHandler *handler) { eventHandler = handler; }
 
   /** sets the blocking and timeout mode for receive operations.
@@ -226,13 +226,13 @@ public:
   void setTimeout(T_DIMSE_BlockingMode blocking, int timeOut) { blockMode=blocking; timeout=timeOut; }
 
   /** checks if the remote printer supports the Presentation LUT SOP class.
-   *  May only be called if association in place. 
+   *  May only be called if association in place.
    *  @return true if presentation context for presentation LUT exists, false otherwise.
    */
   OFBool printerSupportsPresentationLUT();
 
   /** checks if the remote printer supports the Basic Annotation Box SOP class.
-   *  May only be called if association in place. 
+   *  May only be called if association in place.
    *  @return true if presentation context for Basic Annotation Box exists, false otherwise.
    */
   OFBool printerSupportsAnnotationBox();
@@ -253,9 +253,9 @@ private:
    *    N-Action action information, or N-Create attribute list. Not applicable to N-Get or N-Delete.
    *  @param response the received response is passed back in this parameter if the method returns
    *    with success status. Content is undefined otherwise.
-   *  @param statusDetail the status detail dataset of the received response is passed back in this 
+   *  @param statusDetail the status detail dataset of the received response is passed back in this
    *    parameter if the method returns with success status. Content is undefined otherwise.
-   *  @param rspDataset the received response dataset is passed back in this 
+   *  @param rspDataset the received response dataset is passed back in this
    *    parameter if the method returns with success status. Content is undefined otherwise.
    *  @return DIMSE_NORMAL if successful, an error code otherwise.
    */
@@ -274,20 +274,20 @@ private:
    *  @return presentation context if found, 0 otherwise.
    */
   T_ASC_PresentationContextID findAcceptedPC(const char *sopclassuid);
-  
+
   /** dumps the given message to the dump stream if it exists.
    *  @param msg message to be dumped, should be DIMSE-N
    *  @param dataset option dataset to be dumped, may be NULL
    *  @param outgoing OFTrue if message is outgoing, OFFalse if incoming.
    */
   void dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool outgoing);
-  
+
   /// the association to be used for message communication. Can be NULL.
   T_ASC_Association *assoc;
-  
+
   /// the network used for establishing associations. Can be NULL.
   T_ASC_Network *net;
-  
+
   /// the current event handler. Can be NULL.
   DVPSPrintEventHandler *eventHandler;
 
@@ -302,6 +302,9 @@ private:
 
 /*
  *  $Log: dvpspr.h,v $
+ *  Revision 1.16  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.15  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

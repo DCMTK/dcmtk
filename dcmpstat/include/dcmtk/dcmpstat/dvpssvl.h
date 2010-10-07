@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSSoftcopyVOI_PList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSSVL_H__
-#define __DVPSSVL_H__
+#ifndef DVPSSVL_H
+#define DVPSSVL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcitem.h"
@@ -51,7 +51,7 @@ class DVPSSoftcopyVOI_PList
 public:
   /// default constructor
   DVPSSoftcopyVOI_PList();
-  
+
   /// copy constructor
   DVPSSoftcopyVOI_PList(const DVPSSoftcopyVOI_PList& copy);
 
@@ -73,7 +73,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition read(DcmItem &dset);
-  
+
   /** writes the list of softcopy VOI LUTs managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
    *  the DICOM dataset.
@@ -87,7 +87,7 @@ public:
    *  creation with the default constructor.
    */
   void clear();
-      
+
   /** gets the number of softcopy VOI LUTs in this list.
    *  @return the number of softcopy VOI LUTs.
    */
@@ -105,10 +105,10 @@ public:
    *  @return EC_Normal upon success, an error code otherwise.
    */
   OFCondition createFromImage(
-    DcmItem &dset, 
+    DcmItem &dset,
     DVPSReferencedSeries_PList& allReferences,
-    const char *sopclassUID, 
-    const char *instanceUID, 
+    const char *sopclassUID,
+    const char *instanceUID,
     DVPSVOIActivation voiActivation);
 
   /** checks if a softcopy VOI LUT item exists for the given image and frame.
@@ -135,10 +135,10 @@ public:
    */
   DVPSSoftcopyVOI *createSoftcopyVOI(
     DVPSReferencedSeries_PList& allReferences,
-    const char *sopclassUID, 
-    const char *instanceUID, 
-    unsigned long frame, 
-    unsigned long numberOfFrames, 
+    const char *sopclassUID,
+    const char *instanceUID,
+    unsigned long frame,
+    unsigned long numberOfFrames,
     DVPSObjectApplicability applicability);
 
   /** removes the softcopy VOI for a set of references
@@ -154,9 +154,9 @@ public:
    */
   void removeSoftcopyVOI(
     DVPSReferencedSeries_PList& allReferences,
-    const char *instanceUID, 
-    unsigned long frame, 
-    unsigned long numberOfFrames, 
+    const char *instanceUID,
+    unsigned long frame,
+    unsigned long numberOfFrames,
     DVPSObjectApplicability applicability);
 
 private:
@@ -175,6 +175,9 @@ private:
 
 /*
  *  $Log: dvpssvl.h,v $
+ *  Revision 1.11  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.10  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -208,4 +211,3 @@ private:
  *
  *
  */
-

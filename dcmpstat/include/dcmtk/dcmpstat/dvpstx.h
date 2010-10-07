@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSTextObject
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:58 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSTX_H__
-#define __DVPSTX_H__
+#ifndef DVPSTX_H
+#define DVPSTX_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dctk.h"
@@ -49,7 +49,7 @@ class DVPSTextObject
 public:
   /// default constructor
   DVPSTextObject();
-  
+
   /// copy constructor
   DVPSTextObject(const DVPSTextObject& copy);
 
@@ -80,7 +80,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition write(DcmItem &dset);
-  
+
    /** checks if this text object contains an anchor point.
     *  @return OFTrue if anchor point present
     */
@@ -90,7 +90,7 @@ public:
     *  @return OFTrue if bounding box present
     */
    OFBool haveBoundingBox();
-   
+
    /** sets an anchor point for this text object.
     *  @param x anchor point X value
     *  @param y anchor point Y value
@@ -109,15 +109,15 @@ public:
     *  @param justification bounding box horizontal justification (left/right/center)
     *  @return EC_Normal if successful, an error code otherwise.
     */
-   OFCondition setBoundingBox(double TLHC_x, double TLHC_y, double BRHC_x, 
-     double BRHC_y, DVPSannotationUnit unit, DVPSTextJustification justification); 
+   OFCondition setBoundingBox(double TLHC_x, double TLHC_y, double BRHC_x,
+     double BRHC_y, DVPSannotationUnit unit, DVPSTextJustification justification);
 
    /** assigns a new "unformatted text value" for this text object.
     *  @param text unformatted text value. Must not be NULL or empty string.
     *  @return EC_Normal if successful, an error code otherwise.
     */
    OFCondition setText(const char *text);
-   
+
    /** removes any anchor point from the text object.
     *  Attention: A text object must always contain either anchor point, bounding box
     *  or both. This property is not asserted by the text object itself.
@@ -129,7 +129,7 @@ public:
     *  or both. This property is not asserted by the text object itself.
     */
    void removeBoundingBox();
- 
+
    /** gets the unformatted text value for this text object.
     *  @return unformatted text value
     */
@@ -158,37 +158,37 @@ public:
     *  @return bounding box BRHC y value
     */
    double getBoundingBoxBRHC_y();
-   
+
    /** gets the bounding box annotation units.
     *  May only be called when a bounding box is present (haveBoundingBox()==OFTrue)
     *  @return bounding box annotation units
     */
    DVPSannotationUnit getBoundingBoxAnnotationUnits();
- 
+
    /** gets the bounding box horizontal justification.
     *  May only be called when a bounding box is present (haveBoundingBox()==OFTrue)
     *  @return bounding box horizontal justification
     */
    DVPSTextJustification getBoundingBoxHorizontalJustification();
-   
+
    /** gets the anchor point x value.
     *  May only be called when an anchor point is present (haveAnchorPoint()==OFTrue)
     *  @return anchor point x value
     */
-   double getAnchorPoint_x();  
- 
+   double getAnchorPoint_x();
+
    /** gets the anchor point y value.
     *  May only be called when an anchor point is present (haveAnchorPoint()==OFTrue)
     *  @return anchor point y value
     */
    double getAnchorPoint_y();
- 
+
    /** gets the anchor point visibility
     *  May only be called when an anchor point is present (haveAnchorPoint()==OFTrue)
     *  @return OFTrue if anchor point is visible
     */
    OFBool anchorPointIsVisible();
- 
+
    /** gets the anchor point annotation units.
     *  May only be called when an anchor point is present (haveAnchorPoint()==OFTrue)
     *  @return anchor point annotation units
@@ -223,6 +223,9 @@ private:
 
 /*
  *  $Log: dvpstx.h,v $
+ *  Revision 1.10  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.9  2009-11-24 14:12:58  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -253,4 +256,3 @@ private:
  *
  *
  */
-

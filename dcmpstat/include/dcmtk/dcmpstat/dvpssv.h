@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSSoftcopyVOI
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSSV_H__
-#define __DVPSSV_H__
+#ifndef DVPSSV_H
+#define DVPSSV_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcvrus.h"
@@ -44,14 +44,14 @@
 class DVPSReferencedSeries_PList;
 
 /** the representation of one item of the Softcopy VOI LUT Sequence
- */  
+ */
 
 class DVPSSoftcopyVOI
 {
 public:
   /// default constructor
   DVPSSoftcopyVOI();
-  
+
   /// copy constructor
   DVPSSoftcopyVOI(const DVPSSoftcopyVOI& copy);
 
@@ -74,7 +74,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition read(DcmItem &dset);
-  
+
   /** writes the dsoftcopy VOI LUT item managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
    *  the DICOM dataset.
@@ -110,7 +110,7 @@ public:
    */
   OFCondition addImageReference(
     const char *sopclassUID,
-    const char *instanceUID, 
+    const char *instanceUID,
     unsigned long frame,
     DVPSObjectApplicability applicability);
 
@@ -123,7 +123,7 @@ public:
    *  @param allReferences list of series/instance references registered for the presentation state.
    *  @param instanceUID SOP instance UID of the current image
    *  @param frame number of the current frame
-   *  @param numberOfFrames the number of frames of the current image   
+   *  @param numberOfFrames the number of frames of the current image
    *  @param applicability applicability of the new displayed area selection
    *  @param applicability the applicability of the image reference to be removed
    *    (DVPSB_currentFrame or DVPSB_currentImage)
@@ -131,14 +131,14 @@ public:
   void removeImageReference(
     DVPSReferencedSeries_PList& allReferences,
     const char *instanceUID,
-    unsigned long frame, 
-    unsigned long numberOfFrames, 
+    unsigned long frame,
+    unsigned long numberOfFrames,
     DVPSObjectApplicability applicability);
 
   /** removes all image references for this displayed area.
    */
   void clearImageReferences() { referencedImageList.clear(); }
-  
+
   /** checks if the list of image references for this displayed area is empty.
    *  @return OFTrue if list of image references is empty, OFFalse otherwise.
    */
@@ -159,26 +159,26 @@ public:
    *  May only be called if haveLUT() is OFFalse.
    *  @param w the window width is returned in this parameter
    *  @return EC_Normal upon success, an error code otherwise.
-   */  
+   */
   OFCondition getCurrentWindowWidth(double &w);
-  
+
   /** get the center of the current VOI window.
    *  May only be called if haveLUT() is OFFalse.
    *  @param c the window center is returned in this parameter
    *  @return EC_Normal upon success, an error code otherwise.
-   */  
+   */
   OFCondition getCurrentWindowCenter(double &c);
 
-  /** returns a reference to the current VOI LUT descriptor. 
+  /** returns a reference to the current VOI LUT descriptor.
    *  May only be called if haveLUT() is OFTrue.
    *  @return reference to the current VOI LUT descriptor
-   */  
+   */
   DcmUnsignedShort& getLUTDescriptor() { return voiLUTDescriptor; }
 
-  /** returns a reference to the current VOI LUT data. 
+  /** returns a reference to the current VOI LUT data.
    *  May only be called if haveLUT() is OFTrue.
    *  @return reference to the current VOI LUT data
-   */  
+   */
   DcmUnsignedShort& getLUTData() { return voiLUTData; }
 
   /** sets a user defined VOI window center and width.
@@ -195,8 +195,8 @@ public:
    *  @param lutData the LUT Data in DICOM format
    *  @param lutExplanation the LUT Explanation in DICOM format, may be empty.
    *  @return EC_Normal if successful, an error code otherwise.
-   */ 
-  OFCondition setVOILUT( 
+   */
+  OFCondition setVOILUT(
     DcmUnsignedShort& lutDescriptor,
     DcmUnsignedShort& lutData,
     DcmLongString& lutExplanation);
@@ -213,18 +213,18 @@ private:
   /// ReferencedImageSequence, Type 1c
   DVPSReferencedImage_PList referencedImageList;
   /// If true, a VOI LUT is set, otherwise a VOI Window is set.
-  OFBool                   useLUT;   
-  /// Module=VOI_LUT, VR=xs, VM=3, Type 1c 
+  OFBool                   useLUT;
+  /// Module=VOI_LUT, VR=xs, VM=3, Type 1c
   DcmUnsignedShort         voiLUTDescriptor;
-  /// Module=VOI_LUT, VR=LO, VM=1, Type 3 
+  /// Module=VOI_LUT, VR=LO, VM=1, Type 3
   DcmLongString            voiLUTExplanation;
-  /// Module=VOI_LUT, VR=xs, VM=1-n, Type 1c 
+  /// Module=VOI_LUT, VR=xs, VM=1-n, Type 1c
   DcmUnsignedShort         voiLUTData;
-  /// Module=VOI_LUT, VR=DS, VM=1-n, Type 1c (unlike VOI LUT module!) 
+  /// Module=VOI_LUT, VR=DS, VM=1-n, Type 1c (unlike VOI LUT module!)
   DcmDecimalString         windowCenter;
-  /// Module=VOI_LUT, VR=DS, VM=1-n, Type 1c 
+  /// Module=VOI_LUT, VR=DS, VM=1-n, Type 1c
   DcmDecimalString         windowWidth;
-  /// Module=VOI_LUT, VR=LO, VM=1-n, Type 3 
+  /// Module=VOI_LUT, VR=LO, VM=1-n, Type 3
   DcmLongString            windowCenterWidthExplanation;
 
 };
@@ -233,6 +233,9 @@ private:
 
 /*
  *  $Log: dvpssv.h,v $
+ *  Revision 1.9  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.8  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -260,4 +263,3 @@ private:
  *
  *
  */
-

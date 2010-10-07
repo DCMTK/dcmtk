@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSReferencedImage_PList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSRIL_H__
-#define __DVPSRIL_H__
+#ifndef DVPSRIL_H
+#define DVPSRIL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcitem.h"
@@ -52,7 +52,7 @@ class DVPSReferencedImage_PList
 public:
   /// default constructor
   DVPSReferencedImage_PList();
-  
+
   /// copy constructor
   DVPSReferencedImage_PList(const DVPSReferencedImage_PList& copy);
 
@@ -74,7 +74,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition read(DcmItem &dset);
-  
+
   /** writes the list of image references managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
    *  the DICOM dataset.
@@ -88,8 +88,8 @@ public:
    *  creation with the default constructor.
    */
   void clear();
-  
-  /** checks if images are referenced within this ReferencedImageSequence 
+
+  /** checks if images are referenced within this ReferencedImageSequence
    *  and whether all images share the same SOP class UID.
    *  @param sopclassuid should be an empty string when called.
    *    Returns the SOP class UID of the images in the list.
@@ -111,7 +111,7 @@ public:
    *  @param numberOfFrames the number of frames of the image reference
    */
   void removeFrameReference(const char *sopinstanceuid, unsigned long frame, unsigned long numberOfFrames);
-  
+
   /** checks if an image reference with the given SOP instance UID exists
    *  in this ReferencedImageSequence and deletes it.
    *  @param sopinstanceuid the SOP instance UID of the image reference to be removed.
@@ -130,7 +130,7 @@ public:
    */
   OFCondition addImageReference(
     const char *sopclassUID,
-    const char *instanceUID, 
+    const char *instanceUID,
     const char *frames=NULL);
 
   /** add a new image reference.
@@ -145,7 +145,7 @@ public:
    */
   OFCondition addImageReference(
     const char *sopclassUID,
-    const char *instanceUID, 
+    const char *instanceUID,
     unsigned long frame,
     DVPSObjectApplicability applicability);
 
@@ -157,22 +157,22 @@ public:
    *  @param allReferences list of series/instance references registered for the presentation state.
    *  @param instanceUID SOP instance UID of the current image
    *  @param frame number of the current frame
-   *  @param numberOfFrames the number of frames of the current image   
+   *  @param numberOfFrames the number of frames of the current image
    *  @param applicability the applicability of the image reference to be removed
    *    (DVPSB_currentFrame or DVPSB_currentImage)
    */
   void removeImageReference(
     DVPSReferencedSeries_PList& allReferences,
     const char *instanceUID,
-    unsigned long frame, 
-    unsigned long numberOfFrames, 
+    unsigned long frame,
+    unsigned long numberOfFrames,
     DVPSObjectApplicability applicability);
-    
+
   /** gets the number of image references in this list.
    *  @return the number of image references.
    */
   size_t size() const { return list_.size(); }
-  
+
   /** gets an image reference with the given index.
    *  @param idx index, must be < size().
    *  @param sopclassUID the SOP Class UID is returned in this string
@@ -183,10 +183,10 @@ public:
   OFCondition getImageReference(
     size_t idx,
     OFString& sopclassUID,
-    OFString& instanceUID, 
+    OFString& instanceUID,
     OFString& frames);
 
-  /** checks if the object containing this list of image references 
+  /** checks if the object containing this list of image references
    *  is applicable to the given image and frame.
    *  @param instanceUID SOP instance UID of the current image
    *  @param frame number of the current frame
@@ -194,7 +194,7 @@ public:
    */
   OFBool isApplicable(const char *instanceUID, unsigned long frame);
 
-  /** checks if the object containing this list of image references 
+  /** checks if the object containing this list of image references
    *  matches exactly the applicability
    *  defined by the instanceUID, frame and applicability parameters.
    *  @param instanceUID SOP instance UID of the current image
@@ -219,6 +219,9 @@ private:
 
 /*
  *  $Log: dvpsril.h,v $
+ *  Revision 1.13  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.12  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -261,4 +264,3 @@ private:
  *
  *
  */
-

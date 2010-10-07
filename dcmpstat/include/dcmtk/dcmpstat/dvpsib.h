@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:35 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSIB_H__
-#define __DVPSIB_H__
+#ifndef DVPSIB_H
+#define DVPSIB_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstring.h"
@@ -44,14 +44,14 @@ class DVPSPresentationLUT_PList;
 class DVConfiguration;
 
 /** the representation of a Image Box Content SQ item for Stored Print
- */  
+ */
 
 class DVPSImageBoxContent
 {
 public:
  /// default constructor
   DVPSImageBoxContent();
-  
+
   /// copy constructor
   DVPSImageBoxContent(const DVPSImageBoxContent& copy);
 
@@ -81,7 +81,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList);
-  
+
   /** writes the image box managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
    *  the DICOM dataset.
@@ -96,13 +96,13 @@ public:
 
   /** create default values for all missing type 1 elements.
    *  Called before a stored print object is written.
-   *  @param renumber if true, a new imageBoxPosition values is created 
+   *  @param renumber if true, a new imageBoxPosition values is created
    *  @param number new imageBoxPosition to be assigned
    *  @param ignoreEmptyImages if true, an empty image box position does not cause an error.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition createDefaultValues(OFBool renumber, unsigned long number, OFBool ignoreEmptyImages);
-  
+
   /** returns the referencedSOPClassUID from the ReferencedImageSequence
    *  @return referencedSOPClassUID string
    */
@@ -130,14 +130,14 @@ public:
     const char *requestedimagesize,
     const char *patientid,
     const char *presentationlutreference);
-    
+
   /** sets the (optional) requested decimate/crop behaviour for this image box.
    *  @param value new enumerated value. The caller is responsible for
    *    making sure that the selected printer supports decimate/crop
    *    if a non-default value is set.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  OFCondition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value); 
+  OFCondition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value);
 
   /** gets the current requested decimate/crop behaviour setting
    *  that is used for this image box.
@@ -145,7 +145,7 @@ public:
    */
   DVPSDecimateCropBehaviour getRequestedDecimateCropBehaviour();
 
-  /** checks whether image box has additional settings 
+  /** checks whether image box has additional settings
    *  that are not default.
    *  @return OFTrue if additional settings exist, OFFalse otherwise.
    */
@@ -190,7 +190,7 @@ public:
    *  @return image box position
    */
   Uint16 getImageBoxPosition();
-  
+
   /** sets the polarity.
    *  @param value new attribute value (NORMAL or REVERSE), may be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
@@ -210,7 +210,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition setMagnificationType(const char *value);
-  
+
   /** sets the (optional) smoothing type.
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
@@ -218,7 +218,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition setSmoothingType(const char *value);
-  
+
   /** sets the (optional) configuration information.
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
@@ -240,13 +240,13 @@ public:
 
   /** returns the image UIDs that are required to look up the referenced image in the database
    *  @param studyUID Study UID of the image
-   *  @param seriesUID series UID of the image 
+   *  @param seriesUID series UID of the image
    *  @param instanceUID instance UID of the image
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition getImageReference(const char *&studyUID, const char *&seriesUID, const char *&instanceUID);
 
-  /** writes the attributes managed by this objects that are part of a 
+  /** writes the attributes managed by this objects that are part of a
    *  basic grayscale image box N-SET request into the DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
    *  the DICOM dataset.
@@ -264,7 +264,7 @@ public:
   OFBool matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align) const;
 
   /** performs a Print SCP Basic Grayscale Image Box N-SET operation.
-   *  The results of the N-SET operation are stored in the objects passed as 
+   *  The results of the N-SET operation are stored in the objects passed as
    *  rsp and rspDataset.
    *  @param cfg config file facility
    *  @param cfgname symbolic printer name in config file
@@ -272,13 +272,13 @@ public:
    *  @param rsp N-SET response message
    *  @param rspDataset N-SET response dataset passed back in this parameter
    *  @param imageDataset a hardcopy grayscale image (without general study
-   *     and general series modules which must be added by the caller) 
-   *     containing the image data from the N-SET request is written to 
+   *     and general series modules which must be added by the caller)
+   *     containing the image data from the N-SET request is written to
    *     this dataset if the method returns successfully.
    *  @param align describes the current Presentation LUT. Used if the Print
    *     SCP has been configured to enforce a matching of Presentation LUT
    *     and pixel data bit depth.
-   *  @param presentationLUTnegotiated 
+   *  @param presentationLUTnegotiated
    *    OFTrue if support for the Presentation LUT SOP class
    *    has been negotiated at association negotiation
    *  @return OFTrue if N-SET operation was successful, OFFalse otherwise.
@@ -292,17 +292,17 @@ public:
     DcmDataset &imageDataset,
     DVPSPrintPresentationLUTAlignment align,
     OFBool presentationLUTnegotiated);
- 
+
   /** assigns new values for study instance UID, series instance UID
    *  and retrieve aetitle.
    *  @param studyUID new studyUID
    *  @param seriesUID new seriesUID
    *  @param aetitle new retrieve aetitle, must not be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
-   */   
+   */
   OFCondition setUIDsAndAETitle(
-    DcmUniqueIdentifier& studyUID, 
-    DcmUniqueIdentifier& seriesUID, 
+    DcmUniqueIdentifier& studyUID,
+    DcmUniqueIdentifier& seriesUID,
     const char *aetitle);
 
 private:
@@ -324,13 +324,13 @@ private:
    *  @param rqDataset first item of the Basic Grayscale Image Sequence
    *  @param rsp N-SET response message
    *  @param imageDataset a hardcopy grayscale image (without general study
-   *     and general series modules which must be added by the caller) 
-   *     containing the image data from the N-SET request is written to 
+   *     and general series modules which must be added by the caller)
+   *     containing the image data from the N-SET request is written to
    *     this dataset if the method returns successfully.
    *  @param align describes the current Presentation LUT. Used if the Print
    *     SCP has been configured to enforce a matching of Presentation LUT
    *     and pixel data bit depth.
-   *  @param presentationLUTnegotiated 
+   *  @param presentationLUTnegotiated
    *    OFTrue if support for the Presentation LUT SOP class
    *    has been negotiated at association negotiation
    *  @return OFTrue if N-SET operation was successful, OFFalse otherwise.
@@ -344,9 +344,9 @@ private:
    DVPSPrintPresentationLUTAlignment align,
    OFBool presentationLUTnegotiated);
 
-  /// Module=Image_Box_List, VR=UI, VM=1, Type 1(c) 
+  /// Module=Image_Box_List, VR=UI, VM=1, Type 1(c)
   DcmUniqueIdentifier      sOPInstanceUID;
-  /// Module=Image_Box_List, VR=US, VM=1, Type 1 
+  /// Module=Image_Box_List, VR=US, VM=1, Type 1
   DcmUnsignedShort         imageBoxPosition;
   /// Module=Image_Box_List, VR=CS, VM=1, Type 2
   DcmCodeString            polarity;
@@ -364,15 +364,15 @@ private:
   /* the following attributes belong to the ReferencedImageSequence
    * which must have exactly one item here.
    */
-  /// Module=Image_Box_List, VR=AE, VM=1-n, Type 1 
+  /// Module=Image_Box_List, VR=AE, VM=1-n, Type 1
   DcmApplicationEntity     retrieveAETitle;
-  /// Module=Image_Box_List, VR=UI, VM=1, Type 1 
+  /// Module=Image_Box_List, VR=UI, VM=1, Type 1
   DcmUniqueIdentifier      referencedSOPClassUID;
-  /// Module=Image_Box_List, VR=UI, VM=1, Type 1 
+  /// Module=Image_Box_List, VR=UI, VM=1, Type 1
   DcmUniqueIdentifier      referencedSOPInstanceUID;
-  /// Module=Image_Box_List, VR=UI, VM=1, Type 1 
+  /// Module=Image_Box_List, VR=UI, VM=1, Type 1
   DcmUniqueIdentifier      studyInstanceUID;
-  /// Module=Image_Box_List, VR=UI, VM=1, Type 1 
+  /// Module=Image_Box_List, VR=UI, VM=1, Type 1
   DcmUniqueIdentifier      seriesInstanceUID;
   /// Module=Image_Box_List, VR=IS, VM=1, Type 1c
   DcmIntegerString         referencedFrameNumber;
@@ -393,6 +393,9 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
+ *  Revision 1.23  2010-10-07 14:31:35  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.22  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -467,4 +470,3 @@ private:
  *
  *
  */
-

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2009, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSOverlay
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:57 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSOV_H__
-#define __DVPSOV_H__
+#ifndef DVPSOV_H
+#define DVPSOV_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dctk.h"
@@ -67,7 +67,7 @@ public:
    *  The DICOM elements of the Overlay Plane module are copied
    *  from the dataset to this object. The OverlayData element, which is
    *  optional in the Overlay Plane Module but required for presentation states,
-   *  must be present. 
+   *  must be present.
    *  The completeness of the overlay plane (presence of all required elements,
    *  value multiplicity) is checked.
    *  If this method returns an error code, the object is in undefined state afterwards.
@@ -78,7 +78,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup=0xFF);
-  
+
   /** writes the overlay plane managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
    *  the DICOM dataset.
@@ -86,7 +86,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition write(DcmItem &dset);
-  
+
   /** get group number of overlay repeating group managed by this object.
    *  @return the lower byte of the overlay group
    */
@@ -97,7 +97,7 @@ public:
    *  @param newGroup lower byte of the repeating group number.
    */
   void setOverlayGroup(Uint8 newGroup) { overlayGroup = newGroup; }
-  
+
   /** checks if the overlay is suitable as a bitmap shutter
    *  for an image with the given image size. Checks overlay type,
    *  origin and size.
@@ -112,13 +112,13 @@ public:
    *  @return overlay label
    */
   const char *getOverlayLabel();
-  
+
   /** gets the overlay description if present.
    *  If the label string is absent, this method returns NULL.
    *  @return overlay description
    */
   const char *getOverlayDescription();
-  
+
   /** checks whether this overlay is ROI type.
    *  @return OFTrue if overlay is ROI, OFFalse if overlay is Graphic.
    */
@@ -178,6 +178,9 @@ private:
 
 /*
  *  $Log: dvpsov.h,v $
+ *  Revision 1.12  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.11  2009-11-24 14:12:57  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
@@ -217,4 +220,3 @@ private:
  *
  *
  */
-

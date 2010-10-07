@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:49 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-07 14:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVPSIBL_H__
-#define __DVPSIBL_H__
+#ifndef DVPSIBL_H
+#define DVPSIBL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcitem.h"
@@ -53,7 +53,7 @@ public:
 
   /// default constructor
   DVPSImageBoxContent_PList();
-  
+
   /// copy constructor
   DVPSImageBoxContent_PList(const DVPSImageBoxContent_PList& copy);
 
@@ -76,7 +76,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList);
-  
+
   /** writes the list of image boxes managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
    *  the DICOM dataset.
@@ -111,21 +111,21 @@ public:
 
   /** create default values for all missing type 1 elements.
    *  Called before a stored print object is written.
-   *  @param renumber if true, new imageBoxPosition values are created 
+   *  @param renumber if true, new imageBoxPosition values are created
    *  @param ignoreEmptyImages if true, an empty image box position does not cause an error.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition createDefaultValues(OFBool renumber, OFBool ignoreEmptyImages);
-  
+
   /** adds all image SOP classes referenced in the image box list to
    *  the given sequence. Duplicate entries are suppressed.
    *  @param seq sequence to be added to, should be a PrintManagementCapabilitiesSequence.
    *  @param numItems number of items of this list to be taken into account.
    *    Default: all items.
    *  @return EC_Normal if successful, an error code otherwise.
-   */   
+   */
   OFCondition addImageSOPClasses(DcmSequenceOfItems& seq, size_t numItems=0);
-  
+
   /** creates a new image box object and sets the content of this image box object.
    *  @param instanceuid SOP instance UID of this image box
    *  @param retrieveaetitle retrieve AETITLE of the referenced image
@@ -153,7 +153,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition addImageBox(DVPSImageBoxContent *box);
-  
+
   /** sets the (optional) requested decimate/crop behaviour
    *  for all image boxes managed by this object.
    *  @param value new enumerated value. The caller is responsible for
@@ -161,14 +161,14 @@ public:
    *    if a non-default value is set.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  OFCondition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value); 
+  OFCondition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value);
 
   /** deletes one of the registered images.
    *  @param idx index, must be < size()
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition deleteImage(size_t idx);
-  
+
   /** deletes multiple of the registered images, starting with the first one.
    *  @param number number of images to delete, must be <= size()
    *  @return EC_Normal if successful, an error code otherwise.
@@ -188,14 +188,14 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition setImagePolarity(size_t idx, const char *value);
-  
+
   /** sets the requested size for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value, may be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition setImageRequestedSize(size_t idx, const char *value);
-  
+
   /** sets the (optional) magnification type for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value, may be NULL.
@@ -204,7 +204,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition setImageMagnificationType(size_t idx, const char *value);
-  
+
   /** sets the (optional) smoothing type for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value, may be NULL.
@@ -213,7 +213,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition setImageSmoothingType(size_t idx, const char *value);
-  
+
   /** sets the (optional) configuration information for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value, may be NULL.
@@ -281,13 +281,13 @@ public:
   /** returns the image UIDs that are required to look up the referenced image in the database
    *  @param idx index, must be < getNumberOfImages()
    *  @param studyUID Study UID of the image
-   *  @param seriesUID series UID of the image 
+   *  @param seriesUID series UID of the image
    *  @param instanceUID instance UID of the image
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition getImageReference(size_t idx, const char *&studyUID, const char *&seriesUID, const char *&instanceUID);
 
-  /** writes the attributes managed by the referenced object that are part of a 
+  /** writes the attributes managed by the referenced object that are part of a
    *  basic grayscale image box N-SET request into the DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
    *  the DICOM dataset.
@@ -297,7 +297,7 @@ public:
    */
   OFCondition prepareBasicImageBox(size_t idx, DcmItem &dset);
 
-  /** checks whether the given SOP instance UID is used as 
+  /** checks whether the given SOP instance UID is used as
    *  referenced Presentation LUT SOP Instance UID inside the list of
    *  image boxes managed by this object.
    *  @param uid name of UID
@@ -314,7 +314,7 @@ public:
    */
   const char *haveSinglePresentationLUTUsed(const char *filmBox);
 
-  /** creates a number of image boxes as part of a Print SCP N-CREATE operation. 
+  /** creates a number of image boxes as part of a Print SCP N-CREATE operation.
    *  The previous content of the list is deleted.
    *  @param numBoxes number of boxes to be created
    *  @param studyUID study instance UID under which Hardcopy Grayscale images will be saved
@@ -324,8 +324,8 @@ public:
    */
   OFBool printSCPCreate(
     unsigned long numBoxes,
-    DcmUniqueIdentifier& studyUID, 
-    DcmUniqueIdentifier& seriesUID, 
+    DcmUniqueIdentifier& studyUID,
+    DcmUniqueIdentifier& seriesUID,
     const char *aetitle);
 
   /** writes a Referenced Image Box Sequence for the image boxes
@@ -336,7 +336,7 @@ public:
   OFCondition writeReferencedImageBoxSQ(DcmItem &dset);
 
   /** checks whether the given Presentation LUT type could be used together
-   *  with all image boxes in this list on a Print SCP that requires a matching 
+   *  with all image boxes in this list on a Print SCP that requires a matching
    *  alignment between a Presentation LUT and the image pixel data.
    *  @param align LUT alignment type
    *  @return OFTrue if matching, OFFalse otherwise
@@ -374,19 +374,19 @@ public:
    *  @return OFTrue if empty page (no image box position assigned), OFFalse otherwise.
    */
   OFBool emptyPageWarning();
-  
+
 private:
 
   /** private undefined assignment operator
    */
   DVPSImageBoxContent_PList& operator=(const DVPSImageBoxContent_PList&);
-  
+
   /** returns a pointer to the image box with the given
    *  index or NULL if it does not exist.
    *  @param idx index, must be < size()
    *  @return pointer to image box object or NULL
    */
-  DVPSImageBoxContent *getImageBox(size_t idx); 
+  DVPSImageBoxContent *getImageBox(size_t idx);
 
   /** the list maintained by this object
    */
@@ -399,6 +399,9 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
+ *  Revision 1.27  2010-10-07 14:31:36  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved).
+ *
  *  Revision 1.26  2010-03-01 09:08:49  uli
  *  Removed some unnecessary include directives in the headers.
  *
@@ -487,4 +490,3 @@ private:
  *
  *
  */
-
