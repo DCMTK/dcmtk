@@ -23,8 +23,8 @@
  *           applications.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-22 15:44:55 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2010-10-07 12:54:07 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,7 +145,7 @@ public:
   virtual ~DcmSCP();
 
 #ifdef _WIN32
-  /** Marks this SCP as being a forked child under Windows, i.e. it handles an association
+  /** Marks this SCP as being a forked child under Windows, i.e.\ it handles an association
    *  received by the parent.
    *  @return EC_Normal if marking was successful, an error code otherwise
    */
@@ -191,7 +191,7 @@ public:
    */
   void setAETitle(const OFString &aetitle);
 
-  /** Set SCP to use the called AETitle from the SCU request for the response, i.e. the SCP
+  /** Set SCP to use the called AETitle from the SCU request for the response, i.e.\ the SCP
    *  will always respond with setting it's own name to the one the SCU used for calling.
    *  Overrides any AETitle eventually set with setAETitle().
    *  @param useCalled [in] If OFTrue, the SCP will use the called AE title from the request
@@ -372,7 +372,7 @@ public:
    */
   OFString getPeerIP() const;
 
-  /** Returns maximum PDU size the communication peer (i.e. the SCU) is able to receive
+  /** Returns maximum PDU size the communication peer (i.e.\ the SCU) is able to receive
    *  @return Maximum PDU size the SCU is able to receive. Returns zero if SCP is currently
    *          not connected.
    */
@@ -386,7 +386,7 @@ protected:
    * ***********************************************************************
    */
 
-  /** Handle incoming command set and react accordingly, e.g. sending response via
+  /** Handle incoming command set and react accordingly, e.g.\ sending response via
    *  DIMSE_sendXXXResponse(). The standard handler only knows how to handle an Echo request
    *  by calling handleEchoRequest(). This function is most likely to be implemented by a
    *  derived class implementing a specific SCP behaviour.
@@ -730,6 +730,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.8  2010-10-07 12:54:07  joergr
+ *  Fixed minor Doxygen API documentation issues (added backslash in order to
+ *  avoid that the short description ends at the first period).
+ *
  *  Revision 1.7  2010-06-22 15:44:55  joergr
  *  Added support for handling N-EVENT-REPORT request.
  *  Added support for stopping after the current association is finished.

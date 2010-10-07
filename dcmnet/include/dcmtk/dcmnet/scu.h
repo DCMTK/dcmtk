@@ -22,8 +22,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-24 09:21:54 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2010-10-07 12:54:07 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,7 +133,7 @@ public:
   OFCondition addPresentationContext(const OFString &abstractSyntax,
                                      const OFList<OFString> &xferSyntaxes);
 
-  /** Initialize network, i.e. prepare for association negotiation
+  /** Initialize network, i.e.\ prepare for association negotiation
    *  @return EC_Normal if initialization was successful, otherwise error code
    */
   virtual OFCondition initNetwork();
@@ -228,7 +228,7 @@ public:
                                          FINDResponse *response,
                                          OFBool &waitForNextResponse);
 
-  /** Send C-FIND-CANCEL and, therefore, ends the C-FIND session, i.e. no further responses
+  /** Send C-FIND-CANCEL and, therefore, ends the C-FIND session, i.e.\ no further responses
    *  will be handled. A call to this function only makes sense if an association is open,
    *  the given presentation context represents a valid C-FIND-enabled SOP class and usually
    *  only, if the last command send on that presentation context was a C-FIND message.
@@ -595,6 +595,10 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.12  2010-10-07 12:54:07  joergr
+** Fixed minor Doxygen API documentation issues (added backslash in order to
+** avoid that the short description ends at the first period).
+**
 ** Revision 1.11  2010-06-24 09:21:54  joergr
 ** Revised comment to make clear that the parameter "presID" shall never be 0
 ** for the sendACTIONRequest() method.

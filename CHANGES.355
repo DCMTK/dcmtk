@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.06 (riesmeier)
 
+- Fixed minor Doxygen API documentation issues (added backslash in order to
+  avoid that the short description ends at the first period).
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+
+**** Changes from 2010.10.06 (riesmeier)
+
 - Replaced numeric tags by pre-defined tag names for old ACR/NEMA palettes.
   Affects: dcmimage/libsrc/diargimg.cc
            dcmimage/libsrc/dipalimg.cc
