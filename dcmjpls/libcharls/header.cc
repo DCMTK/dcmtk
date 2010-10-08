@@ -59,10 +59,10 @@ JLS_ERROR CheckParameterCoherent(const JlsParameters* pparams)
 class JpegMarkerSegment : public JpegSegment
 {
 public:
-	JpegMarkerSegment(BYTE marker, std::vector<BYTE> vecbyte)
+	JpegMarkerSegment(BYTE marker, OFVector<BYTE> vecbyte)
 	{
 		_marker = marker;
-		std::swap(_vecbyte, vecbyte);
+		_vecbyte.swap(vecbyte);
 	}
 
 	virtual void Write(JLSOutputStream* pstream)
@@ -74,14 +74,14 @@ public:
 	}
 
 	BYTE _marker;
-	std::vector<BYTE> _vecbyte;
+	OFVector<BYTE> _vecbyte;
 };
 
 
 //
 // push_back()
 //
-void push_back(std::vector<BYTE>& vec, USHORT value)
+void push_back(OFVector<BYTE>& vec, USHORT value)
 {
 	vec.push_back(BYTE(value / 0x100));
 	vec.push_back(BYTE(value % 0x100));
@@ -93,7 +93,7 @@ void push_back(std::vector<BYTE>& vec, USHORT value)
 //
 JpegSegment* CreateMarkerStartOfFrame(Size size, LONG bitsPerSample, LONG ccomp)
 {
-	std::vector<BYTE> vec;
+	OFVector<BYTE> vec;
 	vec.push_back(static_cast<BYTE>(bitsPerSample));
 	push_back(vec, static_cast<USHORT>(size.cy));
 	push_back(vec, static_cast<USHORT>(size.cx));
@@ -155,7 +155,7 @@ void JLSOutputStream::Init(Size size, LONG bitsPerSample, LONG ccomp)
 
 void JLSOutputStream::AddColorTransform(int i)
 {
-	std::vector<BYTE> rgbyteXform;
+	OFVector<BYTE> rgbyteXform;
 	rgbyteXform.push_back('m');
 	rgbyteXform.push_back('r');
 	rgbyteXform.push_back('f');
@@ -254,7 +254,7 @@ void JLSInputStream::ReadPixels(void* pvoid, LONG cbyteAvailable)
 
 // ReadNBytes()
 //
-void JLSInputStream::ReadNBytes(std::vector<char>& dst, int byteCount)
+void JLSInputStream::ReadNBytes(OFVector<char>& dst, int byteCount)
 {
 	for (int i = 0; i < byteCount; ++i)
 	{
@@ -311,7 +311,7 @@ JpegMarkerSegment* EncodeStartOfScan(const JlsParameters* pparams, LONG icompone
 {
 	BYTE itable		= 0;
 
-	std::vector<BYTE> rgbyte;
+	OFVector<BYTE> rgbyte;
 
 	if (icomponent < 0)
 	{
@@ -340,7 +340,7 @@ JpegMarkerSegment* EncodeStartOfScan(const JlsParameters* pparams, LONG icompone
 
 JpegMarkerSegment* CreateLSE(const JlsCustomParameters* pcustom)
 {
-	std::vector<BYTE> rgbyte;
+	OFVector<BYTE> rgbyte;
 
 	rgbyte.push_back(1);
 	push_back(rgbyte, (USHORT)pcustom->MAXVAL);
@@ -430,7 +430,7 @@ void JLSInputStream::ReadJfif()
 	_info.jfif.Ythumb = ReadByte();
 	if(_info.jfif.Xthumb > 0 && _info.jfif.pdataThumbnail)
 	{
-		std::vector<char> tempbuff((char*)_info.jfif.pdataThumbnail, (char*)_info.jfif.pdataThumbnail+3*_info.jfif.Xthumb*_info.jfif.Ythumb);
+		OFVector<char> tempbuff((char*)_info.jfif.pdataThumbnail, (char*)_info.jfif.pdataThumbnail+3*_info.jfif.Xthumb*_info.jfif.Ythumb);
 		ReadNBytes(tempbuff, 3*_info.jfif.Xthumb*_info.jfif.Ythumb);
 	}
 }
@@ -441,7 +441,7 @@ void JLSInputStream::ReadJfif()
 JpegMarkerSegment* CreateJFIF(const JfifParameters* jfif)
 {
 	const BYTE jfifID[] = {'J','F','I','F','\0'};
-	std::vector<BYTE> rgbyte;
+	OFVector<BYTE> rgbyte;
 	for(int i = 0; i < (int)sizeof(jfifID); i++)
 	{
 		rgbyte.push_back(jfifID[i]);
@@ -574,7 +574,7 @@ void JLSInputStream::ReadColorSpace()
 //
 void JLSInputStream::ReadColorXForm()
 {
-	std::vector<char> sourceTag;
+	OFVector<char> sourceTag;
 	ReadNBytes(sourceTag, 4);
 
 	if(strncmp(&sourceTag[0],"mrfx", 4) != 0)

@@ -19,10 +19,10 @@
 
 
 extern CTable decodingTables[16];
-extern std::vector<signed char> rgquant8Ll;
-extern std::vector<signed char> rgquant10Ll;
-extern std::vector<signed char> rgquant12Ll;
-extern std::vector<signed char> rgquant16Ll;
+extern OFVector<signed char> rgquant8Ll;
+extern OFVector<signed char> rgquant10Ll;
+extern OFVector<signed char> rgquant12Ll;
+extern OFVector<signed char> rgquant16Ll;
 //
 // Apply
 //
@@ -312,7 +312,7 @@ protected:
 
 	// quantization lookup table
 	signed char* _pquant;
-	std::vector<signed char> _rgquant;
+	OFVector<signed char> _rgquant;
 
 	// debugging
 	bool _bCompare;
@@ -728,8 +728,8 @@ void JlsCodec<TRAITS,STRATEGY>::DoScan(BYTE* compressedBytes, size_t compressedL
 	LONG pixelstride = _width + 4;
 	int components = Info().ilv == ILV_LINE ? Info().components : 1;
 
-	std::vector<PIXEL> vectmp(2 * components * pixelstride);
-	std::vector<LONG> rgRUNindex(components);
+	OFVector<PIXEL> vectmp(2 * components * pixelstride);
+	OFVector<LONG> rgRUNindex(components);
 
 	for (LONG line = 0; line < Info().height; ++line)
 	{
@@ -737,7 +737,9 @@ void JlsCodec<TRAITS,STRATEGY>::DoScan(BYTE* compressedBytes, size_t compressedL
 		_currentLine			= &vectmp[1 + components * pixelstride];
 		if ((line & 1) == 1)
 		{
-			std::swap(_previousLine, _currentLine);
+			PIXEL *tmp = _previousLine;
+			_previousLine = _currentLine;
+			_currentLine = tmp;
 		}
 
 		STRATEGY::OnLineBegin(_width, _currentLine, pixelstride);

@@ -46,12 +46,12 @@ signed char QuantizeGratientOrg(const Presets& preset, LONG NEAR, LONG Di)
 
 
 
-std::vector<signed char> CreateQLutLossless(LONG cbit)
+OFVector<signed char> CreateQLutLossless(LONG cbit)
 {
 	Presets preset = ComputeDefault((1 << cbit) - 1, 0);
 	LONG range = preset.MAXVAL + 1;
 
-	std::vector<signed char> lut(range * 2);
+	OFVector<signed char> lut(range * 2);
 
 	for (LONG diff = -range; diff < range; diff++)
 	{
@@ -72,10 +72,10 @@ CTable decodingTables[16] = { InitTable(0), InitTable(1), InitTable(2), InitTabl
 
 
 // Lookup tables: sample differences to bin indexes.
-std::vector<signed char> rgquant8Ll = CreateQLutLossless(8);
-std::vector<signed char> rgquant10Ll = CreateQLutLossless(10);
-std::vector<signed char> rgquant12Ll = CreateQLutLossless(12);
-std::vector<signed char> rgquant16Ll = CreateQLutLossless(16);
+OFVector<signed char> rgquant8Ll = CreateQLutLossless(8);
+OFVector<signed char> rgquant10Ll = CreateQLutLossless(10);
+OFVector<signed char> rgquant12Ll = CreateQLutLossless(12);
+OFVector<signed char> rgquant16Ll = CreateQLutLossless(16);
 
 
 

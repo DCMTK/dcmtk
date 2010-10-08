@@ -92,7 +92,9 @@ void TransformRgbToBgr(SAMPLE* pDest, int samplesPerPixel, int pixelCount)
 {
 	for (int i = 0; i < pixelCount; ++i)
 	{
-		std::swap(pDest[0], pDest[2]);
+		SAMPLE tmp = pDest[0];
+		pDest[0] = pDest[2];
+		pDest[2] = tmp;
 		pDest += samplesPerPixel;
 	}
 }
@@ -215,7 +217,7 @@ public:
 private:
 	BYTE* _pbyteOutput;
 	const JlsParameters& _info;
-	std::vector<SAMPLE> _templine;
+	OFVector<SAMPLE> _templine;
 	TRANSFORM _transform;
 	typename TRANSFORM::INVERSE _inverseTransform;
 };

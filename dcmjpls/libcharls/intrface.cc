@@ -170,7 +170,7 @@ CHARLS_IMEXPORT(JLS_ERROR) JpegLsVerifyEncode(const void* uncompressedData, size
 		stream.AddScan(uncompressedData, &info);
 	}
 
-	std::vector<BYTE> rgbyteCompressed(compressedLength + 16);
+	OFVector<BYTE> rgbyteCompressed(compressedLength + 16);
 
 	memcpy(&rgbyteCompressed[0], compressedData, compressedLength);
 

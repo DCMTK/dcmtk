@@ -4,7 +4,7 @@
 #ifndef CHARLS_STREAMS
 #define CHARLS_STREAMS
 
-#include <vector>
+#include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "util.h"
 
@@ -68,7 +68,7 @@ private:
 		_pdata[_cbyteOffset++] = val;
 	}
 
-	void WriteBytes(const std::vector<BYTE>& rgbyte)
+	void WriteBytes(const OFVector<BYTE>& rgbyte)
 	{
 		for (size_t i = 0; i < rgbyte.size(); ++i)
 		{
@@ -93,7 +93,7 @@ private:
 	size_t _cbyteOffset;
 	size_t _cbyteLength;
 	LONG _icompLast;
-	std::vector<JpegSegment*> _segments;
+	OFVector<JpegSegment*> _segments;
 };
 
 
@@ -148,7 +148,7 @@ private:
 	void ReadStartOfFrame();
 	BYTE ReadByte();
 	int ReadWord();
-	void ReadNBytes(std::vector<char>& dst, int byteCount);
+	void ReadNBytes(OFVector<char>& dst, int byteCount);
 
 	// JFIF
 	void ReadJfif();

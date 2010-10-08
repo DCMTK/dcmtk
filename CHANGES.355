@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.08 (schlachter)
 
+- Use OFVector instead of using std::vector directly.
+  Affects: dcmjpls/libcharls/context.h
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/intrface.cc
+           dcmjpls/libcharls/jpegls.cc
+           dcmjpls/libcharls/procline.h
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libcharls/streams.h
+
 - Implement OFVector.
   Added:   ofstd/tests/tvec.cc
   Affects: ofstd/include/dcmtk/ofstd/ofvector.h

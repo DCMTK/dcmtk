@@ -99,7 +99,7 @@ public:
 
 	static signed char* CreateTableC()
 	{
-		static std::vector<signed char> rgtableC;
+		static OFVector<signed char> rgtableC;
 
 		rgtableC.reserve(256 + 2);
 
