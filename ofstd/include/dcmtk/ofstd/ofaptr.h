@@ -23,8 +23,8 @@
  *           of scope.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-08 12:35:59 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2010-10-08 12:45:19 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,16 +153,6 @@ template <class T> class OFauto_ptr
         return OFauto_ptr_ref<T>(release());
     }
 
-    /** assigns a new pointer to this OFauto_ptr
-     *  @param p our new pointer
-     *  @return reference to this object
-     */
-    OFauto_ptr& operator=(T* p)
-    {
-        reset(p);
-        return *this;
-    }
-
     /** assigns the other pointer to this OFauto_ptr
      *  @param other other Ofauto_ptr which will be invalidated
      *  @return reference to this object
@@ -203,6 +193,9 @@ template <class T> class OFauto_ptr
 /*
 ** CVS/RCS Log:
 ** $Log: ofaptr.h,v $
+** Revision 1.7  2010-10-08 12:45:19  uli
+** Removed an invalid function which isn't part of std::auto_ptr.
+**
 ** Revision 1.6  2010-10-08 12:35:59  uli
 ** Added macro HAVE_STL_AUTO_PTR which defines OFauto_ptr to std::auto_ptr.
 **

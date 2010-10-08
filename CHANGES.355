@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.08 (schlachter)
 
+- Removed an invalid function which isn't part of std::auto_ptr.
+  Affects: ofstd/include/dcmtk/ofstd/ofaptr.h
+
 - Fixed an invalid use of OFauto_ptr.
   Affects: oflog/libsrc/oflog.cc
 
