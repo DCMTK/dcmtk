@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.08 (schlachter)
 
+- Fixed an invalid use of OFauto_ptr.
+  Affects: oflog/libsrc/oflog.cc
+
 - Added macro HAVE_STL_AUTO_PTR which defines OFauto_ptr to std::auto_ptr.
   Affects: config/docs/macros.txt
            ofstd/include/dcmtk/ofstd/ofaptr.h

@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-05-14 12:29:55 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2010-10-08 12:37:34 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -209,7 +209,7 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
 
         // This does the same stuff that line above would have done, but it also
         // does some sanity checks on the config file.
-        configProperties_ = new log4cplus::helpers::Properties(logConfig);
+        configProperties_.reset(new log4cplus::helpers::Properties(logConfig));
         if (configProperties_->size() == 0)
             app.printError("Specified --log-config file does not contain any settings");
         if (configProperties_->getPropertySubset("log4cplus.").size() == 0)
@@ -277,6 +277,9 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.13  2010-10-08 12:37:34  uli
+ * Fixed an invalid use of OFauto_ptr.
+ *
  * Revision 1.12  2010-05-14 12:29:55  uli
  * Added new function OFLog::reconfigure() which reinterprets the logger config
  * file. This can e.g. be useful for logging to a different file after fork().
