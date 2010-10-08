@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.08 (schlachter)
 
+- Fixed all doxygen warnings for OFPair and OFauto_ptr.
+  Affects: ofstd/include/dcmtk/ofstd/ofaptr.h
+           ofstd/include/dcmtk/ofstd/ofmap.h
+
 - Make OFString(NULL) construct an empty string. Previously, this was the
   default, but it was changed to match the behavior of std::string.
   This adds a new define USE_NULL_SAFE_OFSTRING which is always defined by

@@ -23,8 +23,8 @@
  *           of scope.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-04-26 12:22:30 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-10-08 12:27:07 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,6 +139,9 @@ template <class T> class OFauto_ptr
      */
     T& operator*() const { return *get(); }
 
+    /** this is used automatically by the compiler, don't call directly.
+     *  @return an OFauto_ptr_ref that stores this objects's pointer.
+     */
     operator OFauto_ptr_ref<T>()
     {
         return OFauto_ptr_ref<T>(release());
@@ -192,6 +195,9 @@ template <class T> class OFauto_ptr
 /*
 ** CVS/RCS Log:
 ** $Log: ofaptr.h,v $
+** Revision 1.5  2010-10-08 12:27:07  uli
+** Fixed all doxygen warnings for OFPair and OFauto_ptr.
+**
 ** Revision 1.4  2010-04-26 12:22:30  uli
 ** Fixed a some minor doxygen warnings.
 **

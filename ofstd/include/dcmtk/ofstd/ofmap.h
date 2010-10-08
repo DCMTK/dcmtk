@@ -23,9 +23,9 @@
  *           Standard
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-06 08:41:36 $
+ *  Update Date:      $Date: 2010-10-08 12:27:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/ofmap.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,6 +70,10 @@ public:
     /** default constructor */
     OFPair() { }
 
+    /** construct a OFPair for the two given values
+     *  @param f the value for first.
+     *  @param s the value for second.
+     */
     OFPair(const K& f, const V& s) : first(f), second(s) { }
 
     /** copy assignment operator
@@ -268,6 +272,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofmap.h,v $
+** Revision 1.4  2010-10-08 12:27:07  uli
+** Fixed all doxygen warnings for OFPair and OFauto_ptr.
+**
 ** Revision 1.3  2010-08-06 08:41:36  uli
 ** Fixed some more compiler warnings.
 **
