@@ -169,9 +169,8 @@ HAVE_STL_VECTOR
   Affected: ofstd
   Type of modification: Activates feature
   Explanation: When this macro is defined, the STL (standard template
-    library) vector class can be used.  Also see HAVE_STL.  Please note
-    that there is currently no alternative implementation for this
-    standard class (unlike the list class for example).
+    library) vector class is used instead of DCMTK's own implementation.
+    Also see HAVE_STL.
 
 LOCK_IMAGE_FILES
   Affected: dcmpstat, dcmqrdb

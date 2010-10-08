@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.08 (schlachter)
 
+- Documented that we now have our own OFVector class.
+  Affects: config/docs/macros.txt
+
 - Use OFVector instead of using std::vector directly.
   Affects: dcmjpls/libcharls/context.h
            dcmjpls/libcharls/header.cc
