@@ -1,7 +1,13 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2010.10.06 (riesmeier)
+**** Changes from 2010.10.08 (riesmeier)
+
+- Enhanced documentation on pixel-related parameters.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+
+**** Changes from 2010.10.07 (riesmeier)
 
 - Fixed minor Doxygen API documentation issues (added backslash in order to
   avoid that the short description ends at the first period).

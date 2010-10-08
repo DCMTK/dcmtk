@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmFileFormat
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 09:08:44 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-08 08:37:01 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,7 +112,7 @@ class DcmFileFormat
     virtual OFCondition clear();
 
     /** remove all elements with an invalid group number from the meta information header
-     *  and dataset 
+     *  and dataset
      */
     virtual void removeInvalidGroups();
 
@@ -120,8 +120,8 @@ class DcmFileFormat
      *  @param out output stream
      *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
      *  @param level current level of nested items. Used for indentation.
-     *  @param pixelFileName not used
-     *  @param pixelCounter not used
+     *  @param pixelFileName optional filename used to write the raw pixel data file
+     *  @param pixelCounter optional counter used for automatic pixel data filename creation
      */
     virtual void print(STD_NAMESPACE ostream&out,
                        const size_t flags = 0,
@@ -390,6 +390,9 @@ class DcmFileFormat
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
+** Revision 1.35  2010-10-08 08:37:01  joergr
+** Enhanced documentation on pixel-related parameters.
+**
 ** Revision 1.34  2010-03-01 09:08:44  uli
 ** Removed some unnecessary include directives in the headers.
 **

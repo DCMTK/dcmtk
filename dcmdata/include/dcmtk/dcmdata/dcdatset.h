@@ -22,8 +22,8 @@
  *  Purpose: Interface of the class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-05 16:20:47 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2010-10-08 08:37:00 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,8 +117,8 @@ class DcmDataset
      *  @param out output stream
      *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
      *  @param level current level of nested items. Used for indentation.
-     *  @param pixelFileName not used
-     *  @param pixelCounter not used
+     *  @param pixelFileName optional filename used to write the raw pixel data file
+     *  @param pixelCounter optional counter used for automatic pixel data filename creation
      */
     virtual void print(STD_NAMESPACE ostream&out,
                        const size_t flags = 0,
@@ -320,6 +320,9 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.35  2010-10-08 08:37:00  joergr
+** Enhanced documentation on pixel-related parameters.
+**
 ** Revision 1.34  2010-10-05 16:20:47  joergr
 ** Fixed various Doxygen API documentation issues.
 **
