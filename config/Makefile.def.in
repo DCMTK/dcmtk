@@ -51,7 +51,8 @@ DEBUG = @DEBUG@
 # Global definitions
 #
 
-GLOBALDEFS = @DEFS@
+# We want the old behavior of OFString(NULL) for now, no crashes.
+GLOBALDEFS = @DEFS@ -DUSE_NULL_SAFE_OFSTRING
 # -DDCMTK_BUILD_DATE=\"YYYY-MM-DD\"
 
 #

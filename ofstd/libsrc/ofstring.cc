@@ -22,8 +22,8 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-19 12:07:55 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2010-10-08 10:52:28 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,20 @@
 #define INCLUDE_CCTYPE
 #include "dcmtk/ofstd/ofstdinc.h"
 
+static const char* verify_string(const char *s)
+{
+    if (s == NULL)
+    {
+#ifdef DEBUG
+        fprintf(stderr, "WARNING: OFString constructed from NULL, this is deprecated.\n");
+#endif
+#ifdef USE_NULL_SAFE_OFSTRING
+        s = "";
+#endif
+    }
+    return s;
+}
+
 /*
 ** Constructors
 */
@@ -69,7 +83,7 @@ OFString::OFString(const OFString& str, size_t pos, size_t n)
 OFString::OFString (const char* s, size_t n)
     : theCString(NULL), theSize(0), theCapacity(0)
 {
-    assert(s != NULL);
+    s = verify_string(s);
     if (n == OFString_npos) {
         n = strlen(s);
     }
@@ -82,7 +96,7 @@ OFString::OFString (const char* s, size_t n)
 OFString::OFString (const char* s)
     : theCString(NULL), theSize(0), theCapacity(0)
 {
-    assert(s != NULL);
+    s = verify_string(s);
     const size_t n = strlen(s);
     reserve(n);
     // Because we used strlen() to figure out the length we can use strcpy()
@@ -1049,6 +1063,13 @@ int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
+** Revision 1.31  2010-10-08 10:52:28  uli
+** Make OFString(NULL) construct an empty string. Previously, this was the
+** default, but it was changed to match the behavior of std::string.
+** This adds a new define USE_NULL_SAFE_OFSTRING which is always defined by
+** our Makefiles. Passing NULL to OFString now also generates a warning in
+** DEBUG builds.
+**
 ** Revision 1.30  2010-08-19 12:07:55  uli
 ** Made OFString follow the C++ standard for std::string::assign().
 **

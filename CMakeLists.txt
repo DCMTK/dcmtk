@@ -103,6 +103,9 @@ ENDIF(COMMAND CMAKE_POLICY)
 # pass optional build date to compiler
 #ADD_DEFINITIONS("-DDCMTK_BUILD_DATE=\\\"YYYY-MM-DD\\\"")
 
+# make OFString(NULL) safe by default
+ADD_DEFINITIONS("-DUSE_NULL_SAFE_OFSTRING")
+
 #-----------------------------------------------------------------------------
 # Platform-specific settings
 #-----------------------------------------------------------------------------

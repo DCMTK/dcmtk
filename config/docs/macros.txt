@@ -340,6 +340,15 @@ USE_BINARY_MODE_FOR_STDOUT_ON_WINDOWS
     However, this causes newlines in the textual output to be converted to LF
     only (instead of CR LF which would be the usual translation for Windows).
 
+USE_NULL_SAFE_OFSTRING
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, OFString(NULL) results in an
+    empty string. If this macro is not defined, OFString(NULL) causes a
+    NULL pointer dereference. This macro has no effect when
+    HAVE_STD_STRING is also defined. Currently, this macro is always defined
+    by DCMTK's Makefiles. This will change in future releases.
+
 USING_STD_NAMESPACE
   Affected: all modules
   Type of modification: Re-activated behaviour of earlier DCMTK releases.

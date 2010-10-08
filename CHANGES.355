@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.08 (schlachter)
 
+- Make OFString(NULL) construct an empty string. Previously, this was the
+  default, but it was changed to match the behavior of std::string.
+  This adds a new define USE_NULL_SAFE_OFSTRING which is always defined by
+  our Makefiles. Passing NULL to OFString now also generates a warning in
+  DEBUG builds.
+  Affects: CMakeLists.txt
+           config/Makefile.def.in
+           config/docs/macros.txt
+           ofstd/libsrc/ofstring.cc
+
 - Don't directly include system header files.
   Affects: dcmjpls/libcharls/config.h
            dcmjpls/libcharls/context.h
