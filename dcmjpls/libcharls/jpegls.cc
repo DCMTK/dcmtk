@@ -7,19 +7,11 @@
 #include "streams.h"
 #include "header.h"
 
-
-#include <math.h>
-
-#include <vector>
-#include <stdio.h>
-#include <iostream>
-
 #include "decodstr.h"
 #include "encodstr.h"
 #include "context.h"
 #include "ctxtrmod.h"
 #include "lokuptbl.h"
-
 
 signed char* JlsContext::_tableC = CreateTableC();
 

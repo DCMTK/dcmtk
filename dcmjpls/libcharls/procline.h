@@ -36,13 +36,13 @@ public:
 
 	void NewLineRequested(void* pDst, int pixelCount, int /*byteStride*/)
 	{
-		::memcpy(pDst, _pbyteOutput, pixelCount * _bytesPerPixel);
+		OFBitmanipTemplate<BYTE>::copyMem(_pbyteOutput, (BYTE*) pDst, pixelCount * _bytesPerPixel);
 		_pbyteOutput += _bytesPerLine;
 	}
 
 	void NewLineDecoded(const void* pSrc, int pixelCount, int /*byteStride*/)
 	{
-		::memcpy(_pbyteOutput, pSrc, pixelCount * _bytesPerPixel);
+		OFBitmanipTemplate<BYTE>::copyMem((BYTE*) pSrc, _pbyteOutput, pixelCount * _bytesPerPixel);
 		_pbyteOutput += _bytesPerLine;
 	}
 

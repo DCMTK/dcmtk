@@ -63,13 +63,13 @@ public:
 	}
 
 	inlinehint bool IsNear(LONG lhs, LONG rhs) const
-		{ return abs(lhs-rhs) <=NEAR; }
+		{ return ABS(lhs-rhs) <=NEAR; }
 
 	bool IsNear(Triplet<SAMPLE> lhs, Triplet<SAMPLE> rhs) const
 	{
-		return abs(lhs.v1-rhs.v1) <=NEAR &&
-			abs(lhs.v2-rhs.v2) <=NEAR &&
-			abs(lhs.v3-rhs.v3) <=NEAR;
+		return ABS(lhs.v1-rhs.v1) <=NEAR &&
+			ABS(lhs.v2-rhs.v2) <=NEAR &&
+			ABS(lhs.v3-rhs.v3) <=NEAR;
 	}
 
 	inlinehint LONG CorrectPrediction(LONG Pxc) const
@@ -82,14 +82,14 @@ public:
 
 	inlinehint LONG ModRange(LONG Errval) const
 	{
-		ASSERT(abs(Errval) <= RANGE);
+		ASSERT(ABS(Errval) <= RANGE);
 		if (Errval < 0)
 			Errval = Errval + RANGE;
 
 		if (Errval >= ((RANGE + 1) / 2))
 			Errval = Errval - RANGE;
 
-		ASSERT(abs(Errval) <= RANGE/2);
+		ASSERT(ABS(Errval) <= RANGE/2);
 
 		return Errval;
 	}

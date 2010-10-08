@@ -4,8 +4,8 @@
 #ifndef CHARLS_STREAMS
 #define CHARLS_STREAMS
 
-#include <memory>
 #include <vector>
+#include "dcmtk/ofstd/ofbmanip.h"
 #include "util.h"
 
 

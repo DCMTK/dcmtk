@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.08 (schlachter)
+
+- Don't directly include system header files.
+  Affects: dcmjpls/libcharls/config.h
+           dcmjpls/libcharls/context.h
+           dcmjpls/libcharls/deftrait.h
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/intrface.h
+           dcmjpls/libcharls/jpegls.cc
+           dcmjpls/libcharls/procline.h
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libcharls/streams.h
+           dcmjpls/libcharls/util.h
+
 **** Changes from 2010.10.08 (riesmeier)
 
 - Enhanced documentation on pixel-related parameters.

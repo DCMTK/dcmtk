@@ -44,11 +44,11 @@ public:
 
 		// For performance work on copies of A,B,N (compiler will use registers).
 		int b = B + errorValue * (2 * NEAR + 1);
-		int a = A + abs(errorValue);
+		int a = A + ABS(errorValue);
 		int n = N;
 
 		ASSERT(a < 65536 * 256);
-		ASSERT(abs(b) < 65536 * 256);
+		ASSERT(ABS(b) < 65536 * 256);
 
 		if (n == NRESET)
 		{

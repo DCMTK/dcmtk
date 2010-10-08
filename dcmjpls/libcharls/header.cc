@@ -8,7 +8,6 @@
 #include "streams.h"
 #include "decodstr.h"
 #include "encodstr.h"
-#include <memory>
 
 
 bool IsDefault(const JlsCustomParameters* pcustom)

@@ -6,10 +6,7 @@
 #ifndef CHARLS_UTIL
 #define CHARLS_UTIL
 
-#include <stdlib.h>
-#include <string.h>
 #include "pubtypes.h"
-
 
 #ifndef MAX
 #define MAX(a,b)            (((a) > (b)) ? (a) : (b))
@@ -17,6 +14,10 @@
 
 #ifndef MIN
 #define MIN(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+
+#ifndef ABS
+#define ABS(a)              ((a > 0) ? a : -a)
 #endif
 
 
