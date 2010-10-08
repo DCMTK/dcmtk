@@ -23,8 +23,8 @@
  *           of scope.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-08 12:27:07 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2010-10-08 12:35:59 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,9 +36,15 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#if defined(HAVE_STL) || defined(HAVE_STL_AUTO_PTR)
+// std::auto_ptr has an identicaly interface so it can be used as an alternative
+#include <memory>
+#define OFauto_ptr std::auto_ptr
+
+#else
+
 #define INCLUDE_CSTDDEF               /* For NULL */
 #include "dcmtk/ofstd/ofstdinc.h"
-
 
 /** internal class, don't ever use this directly!
  *  This is needed to make the following code work:
@@ -191,10 +197,15 @@ template <class T> class OFauto_ptr
 
 #endif
 
+#endif
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: ofaptr.h,v $
+** Revision 1.6  2010-10-08 12:35:59  uli
+** Added macro HAVE_STL_AUTO_PTR which defines OFauto_ptr to std::auto_ptr.
+**
 ** Revision 1.5  2010-10-08 12:27:07  uli
 ** Fixed all doxygen warnings for OFPair and OFauto_ptr.
 **

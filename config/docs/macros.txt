@@ -137,6 +137,13 @@ HAVE_STL_ALGORITHMS
     library) algorithms are used instead of DCMTK's own implementation.
     Also see HAVE_STL.
 
+HAVE_STL_AUTO_PTR
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, the STL (standard template
+    library) auto_ptr class is used instead of DCMTK's own implementation.
+    Also see HAVE_STL.
+
 HAVE_STL_LIST
   Affected: ofstd
   Type of modification: Activates feature

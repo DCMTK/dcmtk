@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.08 (schlachter)
 
+- Added macro HAVE_STL_AUTO_PTR which defines OFauto_ptr to std::auto_ptr.
+  Affects: config/docs/macros.txt
+           ofstd/include/dcmtk/ofstd/ofaptr.h
+
 - Fixed all doxygen warnings for OFPair and OFauto_ptr.
   Affects: ofstd/include/dcmtk/ofstd/ofaptr.h
            ofstd/include/dcmtk/ofstd/ofmap.h
