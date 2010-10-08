@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.08 (schlachter)
 
+- Updated documentation for HAVE_STL macro.
+  Affects: config/docs/macros.txt
+
 - Removed an invalid function which isn't part of std::auto_ptr.
   Affects: ofstd/include/dcmtk/ofstd/ofaptr.h
 

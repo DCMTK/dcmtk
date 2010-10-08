@@ -127,8 +127,8 @@ HAVE_STL
   Affected: ofstd
   Type of modification: Activates feature
   Explanation: When this macro is defined, the STL (standard template
-    library) list, map, stack and vector classes as well as the STL
-    algorithms are used instead of DCMTK's own implementations.
+    library) list, map, stack, vector and auto_ptr classes as well as
+    the STL algorithms are used instead of DCMTK's own implementations.
 
 HAVE_STL_ALGORITHMS
   Affected: ofstd
@@ -351,10 +351,10 @@ USE_NULL_SAFE_OFSTRING
   Affected: ofstd
   Type of modification: Activates feature
   Explanation: When this macro is defined, OFString(NULL) results in an
-    empty string. If this macro is not defined, OFString(NULL) causes a
-    NULL pointer dereference. This macro has no effect when
-    HAVE_STD_STRING is also defined. Currently, this macro is always defined
-    by DCMTK's Makefiles. This will change in future releases.
+    empty string.  If this macro is not defined, OFString(NULL) causes a
+    NULL pointer dereference.  This macro has no effect when
+    HAVE_STD_STRING is also defined.  Currently, this macro is always defined
+    by DCMTK's Makefiles.  This will change in future releases.
 
 USING_STD_NAMESPACE
   Affected: all modules
