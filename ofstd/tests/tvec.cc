@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009, OFFIS
+ *  Copyright (C) 2010, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: test programm for class OFVec
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-08 13:25:33 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2010-10-08 13:52:14 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,6 +137,9 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tvec.cc,v $
+** Revision 1.2  2010-10-08 13:52:14  uli
+** Fixed an invalid copyright date.
+**
 ** Revision 1.1  2010-10-08 13:25:33  uli
 ** Implement OFVector.
 **

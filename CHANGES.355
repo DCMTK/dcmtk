@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.08 (schlachter)
 
+- Fixed an invalid copyright date.
+  Affects: ofstd/tests/tvec.cc
+
 - Documented that we now have our own OFVector class.
   Affects: config/docs/macros.txt
 
