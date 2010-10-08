@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.08 (schlachter)
 
+- Implement OFVector.
+  Added:   ofstd/tests/tvec.cc
+  Affects: ofstd/include/dcmtk/ofstd/ofvector.h
+           ofstd/tests/Makefile.dep
+           ofstd/tests/Makefile.in
+
 - Updated documentation for HAVE_STL macro.
   Affects: config/docs/macros.txt
 
