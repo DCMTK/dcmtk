@@ -22,8 +22,8 @@
  *  Purpose: codec classes for JPEG-LS decoders.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-12 10:17:32 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2010-10-12 12:32:22 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ OFBool DJLSDecoderBase::canChangeCoding(
 
 
 OFCondition DJLSDecoderBase::decode(
-    const DcmRepresentationParameter * fromRepParam,
+    const DcmRepresentationParameter * /* fromRepParam */,
     DcmPixelSequence * pixSeq,
     DcmPolymorphOBOW& uncompressedPixelData,
     const DcmCodecParameter * cp,
@@ -171,11 +171,10 @@ OFCondition DJLSDecoderBase::decode(
 
   while (result.good() && !done)
   {
-      DCMJPLS_INFO("Current Frame Number: " << currentFrame+1);
+      DCMJPLS_INFO("Current Frame Number: " << currentFrame);
 
-      OFString dummy;
-      result = decodeFrame(fromRepParam, pixSeq, cp, dataset, currentFrame,
-          currentItem, pixeldata8, frameSize, dummy);
+      result = decodeFrame(pixSeq, djcp, dataset, currentFrame, currentItem, pixeldata8, frameSize,
+          imageFrames, imageColumns, imageRows, imageSamplesPerPixel, bytesPerSample);
 
       if (result.good())
       {
@@ -221,17 +220,10 @@ OFCondition DJLSDecoderBase::decodeFrame(
     Uint32 bufSize,
     OFString& decompressedColorModel) const
 {
-  DcmPixelItem *pixItem = NULL;
-  Uint8 * jlsData = NULL;
-  Uint8 * jlsFragmentData = NULL;
-  Uint32 fragmentLength = 0;
-  Uint32 fragmentsForThisFrame = 0;
-  size_t compressedSize;
   OFCondition result = EC_Normal;
 
   // assume we can cast the codec parameter to what we need
   const DJLSCodecParameter *djcp = OFreinterpret_cast(const DJLSCodecParameter *, cp);
-  OFBool ignoreOffsetTable = djcp->ignoreOffsetTable();
 
   // determine properties of uncompressed dataset
   Uint16 imageSamplesPerPixel = 0;
@@ -277,6 +269,46 @@ OFCondition DJLSDecoderBase::decodeFrame(
     result = determineStartFragment(frameNo, imageFrames, fromPixSeq, currentItem);
   }
 
+  if (result.good())
+  {
+    // We got all the data we need from the dataset, let's start decoding
+    DCMJPLS_DEBUG("Starting to decode frame " << frameNo << " with fragment " << currentItem);
+    result = decodeFrame(fromPixSeq, djcp, dataset, frameNo, currentItem, buffer, bufSize,
+        imageFrames, imageColumns, imageRows, imageSamplesPerPixel, bytesPerSample);
+  }
+
+  if (result.good())
+  {
+    // retrieve color model from given dataset
+    result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, decompressedColorModel);
+  }
+
+  return result;
+}
+
+OFCondition DJLSDecoderBase::decodeFrame(
+    DcmPixelSequence * fromPixSeq,
+    const DJLSCodecParameter *cp,
+    DcmItem *dataset,
+    Uint32 frameNo,
+    Uint32& currentItem,
+    void * buffer,
+    Uint32 bufSize,
+    Sint32 imageFrames,
+    Uint16 imageColumns,
+    Uint16 imageRows,
+    Uint16 imageSamplesPerPixel,
+    Uint16 bytesPerSample)
+{
+  DcmPixelItem *pixItem = NULL;
+  Uint8 * jlsData = NULL;
+  Uint8 * jlsFragmentData = NULL;
+  Uint32 fragmentLength = 0;
+  size_t compressedSize = 0;
+  Uint32 fragmentsForThisFrame = 0;
+  OFCondition result = EC_Normal;
+  OFBool ignoreOffsetTable = cp->ignoreOffsetTable();
+
   // compute the number of JPEG-LS fragments we need in order to decode the next frame
   fragmentsForThisFrame = computeNumberOfFragments(imageFrames, frameNo, currentItem, ignoreOffsetTable, fromPixSeq);
   if (fragmentsForThisFrame == 0) result = EC_JLSCannotComputeNumberOfFragments;
@@ -290,7 +322,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
 
   if (imageSamplesPerPixel > 1)
   {
-    switch (djcp->getPlanarConfiguration())
+    switch (cp->getPlanarConfiguration())
     {
       case EJLSPC_restore:
         // get planar configuration from dataset
@@ -312,11 +344,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
     }
   }
 
-  // We got all the data we need from the dataset, let's start decoding
-  DCMJPLS_DEBUG("Starting to decode frame " << frameNo + 1 << " with fragment " << currentItem);
-
   // get the size of all the fragments
-  compressedSize = 0;
   if (result.good())
   {
     // Don't modify the original values for now
@@ -390,7 +418,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
         {
           // The dataset says this should be planarConfiguration == 1, but
           // it isn't -> convert it.
-          DCMJPLS_INFO("different planar configuration in JPEG stream, converting to \"1\"");
+          DCMJPLS_WARN("different planar configuration in JPEG stream, converting to \"1\"");
           if (bytesPerSample == 1)
             result = createPlanarConfiguration1Byte(OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
           else
@@ -400,7 +428,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
         {
           // The dataset says this should be planarConfiguration == 0, but
           // it isn't -> convert it.
-          DCMJPLS_INFO("different planar configuration in JPEG stream, converting to \"0\"");
+          DCMJPLS_WARN("different planar configuration in JPEG stream, converting to \"0\"");
           if (bytesPerSample == 1)
             result = createPlanarConfiguration0Byte(OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
           else
@@ -418,12 +446,6 @@ OFCondition DJLSDecoderBase::decodeFrame(
           }
       }
     }
-  }
-
-  if (result.good())
-  {
-    // retrieve color model from given dataset
-    result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, decompressedColorModel);
   }
 
   return result;
@@ -464,8 +486,8 @@ OFCondition DJLSDecoderBase::determineDecompressedColorModel(
     DcmItem * dataset,
     OFString & decompressedColorModel) const
 {
-  OFCondition result = EC_InvalidTag;
-  if (dataset != NULL )
+  OFCondition result = EC_IllegalParameter;
+  if (dataset != NULL)
   {
     // retrieve color model from given dataset
     result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, decompressedColorModel);
@@ -733,6 +755,9 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.14  2010-10-12 12:32:22  uli
+ * Avoid redundant findAndGet*() calls.
+ *
  * Revision 1.13  2010-10-12 10:17:32  uli
  * Added working implementation of DJLSDecoderBase::decodeFrame().
  *

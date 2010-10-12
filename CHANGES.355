@@ -6,6 +6,10 @@ Changes between releases are documented here.
 - Added working implementation of DJLSDecoderBase::decodeFrame().
   Affects: dcmjpls/libsrc/djcodecd.cc
 
+- Avoid redundant findAndGet*() calls.
+  Affects: dcmjpls/include/dcmtk/dcmjpls/djcodecd.h
+           dcmjpls/libsrc/djcodecd.cc
+
 **** Changes from 2010.10.08 (schlachter)
 
 - Fixed an invalid copyright date.

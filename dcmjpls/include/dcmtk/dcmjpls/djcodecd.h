@@ -22,8 +22,8 @@
  *  Purpose: codec classes for JPEG-LS decoders.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 10:35:28 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-10-12 12:32:22 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,9 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dccodec.h"  /* for class DcmCodec */
 #include "dcmtk/ofstd/ofstring.h"
+
+/* forward declaration */
+class DJLSCodecParameter;
 
 /** abstract codec class for JPEG-LS decoders.
  *  This abstract class contains most of the application logic
@@ -186,6 +189,45 @@ private:
 
   // static private helper methods
 
+  /** decompresses a single frame from the given pixel sequence and
+   *  stores the result in the given buffer.
+   *  @param fromPixSeq compressed pixel sequence
+   *  @param cp codec parameters for this codec
+   *  @param dataset pointer to dataset in which pixel data element is contained
+   *  @param frameNo number of frame, starting with 0 for the first frame
+   *  @param startFragment index of the compressed fragment that contains
+   *    all or the first part of the compressed bitstream for the given frameNo.
+   *    Upon successful return this parameter is updated to contain the index
+   *    of the first compressed fragment of the next frame.
+   *    When unknown, zero should be passed. In this case the decompression
+   *    algorithm will try to determine the index by itself, which will always
+   *    work if frames are decompressed in increasing order from first to last,
+   *    but may fail if frames are decompressed in random order, multiple fragments
+   *    per frame and multiple frames are present in the dataset, and the offset
+   *    table is empty.
+   *  @param buffer pointer to buffer where frame is to be stored
+   *  @param bufSize size of buffer in bytes
+   *  @param imageFrames number of frames in this image
+   *  @param imageColumns number of columns for each frame
+   *  @param imageRows number of rows for each frame
+   *  @param imageSamplesPerPixel number of samples per pixel
+   *  @param bytesPerSample number of bytes per sample
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  static OFCondition decodeFrame(
+    DcmPixelSequence * fromPixSeq,
+    const DJLSCodecParameter *cp,
+    DcmItem *dataset,
+    Uint32 frameNo,
+    Uint32& startFragment,
+    void *buffer,
+    Uint32 bufSize,
+    Sint32 imageFrames,
+    Uint16 imageColumns,
+    Uint16 imageRows,
+    Uint16 imageSamplesPerPixel,
+    Uint16 bytesPerSample);
+
   /** determines if a given image requires color-by-plane planar configuration
    *  depending on SOP Class UID (DICOM IOD) and photometric interpretation.
    *  All SOP classes defined in the 2003 edition of the DICOM standard or earlier
@@ -305,6 +347,9 @@ class DJLSNearLosslessDecoder : public DJLSDecoderBase
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.h,v $
+ * Revision 1.5  2010-10-12 12:32:22  uli
+ * Avoid redundant findAndGet*() calls.
+ *
  * Revision 1.4  2010-03-01 10:35:28  uli
  * Renamed include guards to avoid name clash with e.g. dcmjpeg.
  *
