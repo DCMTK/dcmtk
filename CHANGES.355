@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.12 (schlachter)
 
+- Make dcml2pnm build correctly with cmake.
+  Affects: dcmjpls/apps/CMakeLists.txt
+
 - Added dcml2pnm which is a dcmjpls-enabled dcm2pnm.
   Added:   dcmjpls/apps/dcml2pnm.cc
            dcmjpls/docs/dcml2pnm.man
