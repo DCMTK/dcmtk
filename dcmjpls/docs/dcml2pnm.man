@@ -1,9 +1,9 @@
 /*!
 
 \if MANPAGES
-\page dcml2pnm Convert DICOM images to PGM/PPM, PNG, TIFF, JPEG or BMP
+\page dcml2pnm Convert DICOM images to PGM/PPM, PNG, TIFF or BMP
 \else
-\page dcml2pnm dcml2pnm: Convert DICOM images to PGM/PPM, PNG, TIFF, JPEG or BMP
+\page dcml2pnm dcml2pnm: Convert DICOM images to PGM/PPM, PNG, TIFF or BMP
 \endif
 
 \section synopsis SYNOPSIS
