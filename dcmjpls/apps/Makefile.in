@@ -51,9 +51,10 @@ LIBDIRS = -L$(top_srcdir)/libsrc $(dcmjplslibdir) $(libcharlslibdir) $(dcmimagel
 	$(dcmimglelibdir) $(dcmdatalibdir) $(ofloglibdir) $(ofstdlibdir)
 LOCALLIBS = $(dcmjplslib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
 	$(libcharlslib) $(ZLIBLIBS)
+PNMLIBS = $(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS)
 
-objs = dcmdjpls.o dcmcjpls.o
-progs = dcmdjpls dcmcjpls
+objs = dcmdjpls.o dcmcjpls.o dcml2pnm.o
+progs = dcmdjpls dcmcjpls dcml2pnm
 
 all: $(progs)
 
@@ -62,6 +63,9 @@ dcmdjpls: dcmdjpls.o
 
 dcmcjpls: dcmcjpls.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+
+dcml2pnm: dcml2pnm.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(PNMLIBS) $(MATHLIBS) $(LIBS)
 
 
 install: all

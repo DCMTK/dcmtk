@@ -20,6 +20,7 @@ The main interface classes are:
 This module contains the following command line tools:
 \li \ref dcmcjpls
 \li \ref dcmdjpls
+\li \ref dcml2pnm
 
 \section Examples
 

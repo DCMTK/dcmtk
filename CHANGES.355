@@ -3,6 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.12 (schlachter)
 
+- Added dcml2pnm which is a dcmjpls-enabled dcm2pnm.
+  Added:   dcmjpls/apps/dcml2pnm.cc
+           dcmjpls/docs/dcml2pnm.man
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmjpls/apps/CMakeLists.txt
+           dcmjpls/apps/Makefile.dep
+           dcmjpls/apps/Makefile.in
+           dcmjpls/docs/dcmjpls.dox
+           dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libsrc/Makefile.dep
+
 - Added working implementation of DJLSDecoderBase::decodeFrame().
   Affects: dcmjpls/libsrc/djcodecd.cc
 

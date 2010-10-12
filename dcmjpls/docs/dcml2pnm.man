@@ -1,0 +1,492 @@
+/*!
+
+\if MANPAGES
+\page dcml2pnm Convert DICOM images to PGM/PPM, PNG, TIFF, JPEG or BMP
+\else
+\page dcml2pnm dcml2pnm: Convert DICOM images to PGM/PPM, PNG, TIFF, JPEG or BMP
+\endif
+
+\section synopsis SYNOPSIS
+
+\verbatim
+dcml2pnm [options] dcmfile-in [bitmap-out]
+\endverbatim
+
+\section description DESCRIPTION
+
+The \b dcml2pnm utility reads a DICOM image, converts the pixel data according
+to the selected image processing options and writes back an image in the
+well-known PGM/PPM (portable gray map / portable pix map), PNG, TIFF or
+Windows BMP format.  This utility supports uncompressed as well as JPEG-LS
+and RLE compressed DICOM images.
+
+\section parameters PARAMETERS
+
+\verbatim
+dcmfile-in  DICOM input filename to be converted
+
+bitmap-out  output filename to be written (default: stdout)
+\endverbatim
+
+\section options OPTIONS
+
+\subsection general_options general options
+\verbatim
+  -h    --help
+          print this help text and exit
+
+        --version
+          print version information and exit
+
+        --arguments
+          print expanded command line arguments
+
+  -q    --quiet
+          quiet mode, print no warnings and errors
+
+  -v    --verbose
+          verbose mode, print processing details
+
+  -d    --debug
+          debug mode, print debug information
+
+  -ll   --log-level  [l]evel: string constant
+          (fatal, error, warn, info, debug, trace)
+          use level l for the logger
+
+  -lc   --log-config  [f]ilename: string
+          use config file f for the logger
+\endverbatim
+
+\subsection input_options input options
+\verbatim
+input file format:
+
+  +f    --read-file
+          read file format or data set (default)
+
+  +fo   --read-file-only
+          read file format only
+
+  -f    --read-dataset
+          read data set without file meta information
+
+input transfer syntax:
+
+  -t=   --read-xfer-auto
+          use TS recognition (default)
+
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
+
+  -te   --read-xfer-little
+          read with explicit VR little endian TS
+
+  -tb   --read-xfer-big
+          read with explicit VR big endian TS
+
+  -ti   --read-xfer-implicit
+          read with implicit VR little endian TS
+\endverbatim
+
+\subsection image_processing_options image processing options
+\verbatim
+frame selection:
+
+  +F    --frame  [n]umber: integer
+          select specified frame (default: 1)
+
+  +Fr   --frame-range  [n]umber [c]ount: integer
+          select c frames beginning with frame n
+
+  +Fa   --all-frames
+          select all frames
+
+rotation:
+
+  +Rl   --rotate-left
+          rotate image left (-90 degrees)
+
+  +Rr   --rotate-right
+          rotate image right (+90 degrees)
+
+  +Rtd  --rotate-top-down
+          rotate image top-down (180 degrees)
+
+flipping:
+
+  +Lh   --flip-horizontally
+          flip image horizontally
+
+  +Lv   --flip-vertically
+          flip image vertically
+
+  +Lhv  --flip-both-axes
+          flip image horizontally and vertically
+
+scaling:
+
+  +a    --recognize-aspect
+          recognize pixel aspect ratio (default)
+
+  -a    --ignore-aspect
+          ignore pixel aspect ratio when scaling
+
+  +i    --interpolate  [n]umber of algorithm: integer
+          use interpolation when scaling (1..4, default: 1)
+
+  -i    --no-interpolation
+          no interpolation when scaling
+
+  -S    --no-scaling
+          no scaling, ignore pixel aspect ratio (default)
+
+  +Sxf  --scale-x-factor  [f]actor: float
+          scale x axis by factor, auto-compute y axis
+
+  +Syf  --scale-y-factor  [f]actor: float
+          scale y axis by factor, auto-compute x axis
+
+  +Sxv  --scale-x-size  [n]umber: integer
+          scale x axis to n pixels, auto-compute y axis
+
+  +Syv  --scale-y-size  [n]umber: integer
+          scale y axis to n pixels, auto-compute x axis
+
+modality LUT transformation:
+
+  -M    --no-modality
+          ignore stored modality LUT transformation
+
+  +M    --use-modality
+          use modality LUT transformation (default)
+
+VOI LUT transformation:
+
+  -W    --no-windowing
+          no VOI windowing (default)
+
+  +Wi   --use-window  [n]umber: integer
+          use the n-th VOI window from image file
+
+  +Wl   --use-voi-lut  [n]umber: integer
+          use the n-th VOI look up table from image file
+
+  +Wm   --min-max-window
+          compute VOI window using min-max algorithm
+
+  +Wn   --min-max-window-n
+          compute VOI window using min-max algorithm,
+          ignoring extreme values
+
+  +Wr   --roi-min-max-window  [l]eft [t]op [w]idth [h]eight: integer
+          compute ROI window using min-max algorithm,
+          region of interest is specified by l,t,w,h
+
+  +Wh   --histogram-window  [n]umber: integer
+          compute VOI window using Histogram algorithm,
+          ignoring n percent
+
+  +Ww   --set-window  [c]enter [w]idth: float
+          compute VOI window using center c and width w
+
+  +Wfl  --linear-function
+          set VOI LUT function to LINEAR
+
+  +Wfs  --sigmoid-function
+          set VOI LUT function to SIGMOID
+
+presentation LUT transformation:
+
+  +Pid  --identity-shape
+          set presentation LUT shape to IDENTITY
+
+  +Piv  --inverse-shape
+          set presentation LUT shape to INVERSE
+
+  +Pod  --lin-od-shape
+          set presentation LUT shape to LIN OD
+
+overlay:
+
+  -O    --no-overlays
+          do not display overlays
+
+  +O    --display-overlay  [n]umber: integer
+          display overlay n (0..16, 0=all, default: +O 0)
+
+  +Omr  --ovl-replace
+          use overlay mode "Replace"
+          (default for Graphic overlays)
+
+  +Omt  --ovl-threshold
+          use overlay mode "Threshold Replace"
+
+  +Omc  --ovl-complement
+          use overlay mode "Complement"
+
+  +Omv  --ovl-invert
+          use overlay mode "Invert Bitmap"
+
+  +Omi  --ovl-roi
+          use overlay mode "Region of Interest"
+          (default for ROI overlays)
+
+  +Osf  --set-foreground  [d]ensity: float
+          set overlay foreground density (0..1, default: 1)
+
+  +Ost  --set-threshold  [d]ensity: float
+          set overlay threshold density (0..1, default: 0.5)
+
+display LUT transformation:
+
+  +Dm   --monitor-file  [f]ilename: string
+          calibrate output according to monitor characteristics
+          defined in f
+
+  +Dp   --printer-file  [f]ilename: string
+          calibrate output according to printer characteristics
+          defined in f
+
+  +Da   --ambient-light  [a]mbient light: float
+          ambient light value (cd/m^2, default: file f)
+
+  +Di   --illumination  [i]llumination: float
+          illumination value (cd/m^2, default: file f)
+
+  +Dn   --min-density  [m]inimum optical density: float
+          Dmin value (default: off, only with +Dp)
+
+  +Dx   --max-density  [m]aximum optical density: float
+          Dmax value (default: off, only with +Dp)
+
+  +Dg   --gsd-function
+          use GSDF for calibration (default for +Dm/+Dp)
+
+  +Dc   --cielab-function
+          use CIELAB function for calibration
+
+compatibility:
+
+  +Ma   --accept-acr-nema
+          accept ACR-NEMA images without photometric
+          interpretation
+
+  +Mp   --accept-palettes
+          accept incorrect palette attribute tags
+          (0028,111x) and (0028,121x)
+
+  +Mc   --check-lut-depth
+          check 3rd value of the LUT descriptor, compare
+          with expected bit depth based on LUT data
+
+  +Mm   --ignore-mlut-depth
+          ignore 3rd value of the modality LUT descriptor,
+          determine bits per table entry automatically
+
+  +Mv   --ignore-vlut-depth
+          ignore 3rd value of the VOI LUT descriptor,
+          determine bits per table entry automatically
+
+TIFF format:
+
+  +Tl   --compr-lzw
+          LZW compression (default)
+
+  +Tr   --compr-rle
+          RLE compression
+
+  +Tn   --compr-none
+          uncompressed
+
+  +Pd   --predictor-default
+          no LZW predictor (default)
+
+  +Pn   --predictor-none
+          LZW predictor 1 (no prediction)
+
+  +Ph   --predictor-horz
+          LZW predictor 2 (horizontal differencing)
+
+  +Rs   --rows-per-strip  [r]ows: integer (default: 0)
+          rows per strip, default 8K per strip
+
+PNG format:
+
+  +il   --interlace
+          create interlaced file (default)
+
+  -il   --nointerlace
+          create non-interlaced file
+
+  +mf   --meta-file
+          create PNG file meta information (default)
+
+  -mf   --meta-none
+          no PNG file meta information
+
+other transformations:
+
+  +G    --grayscale
+          convert to grayscale if necessary
+
+  +P    --change-polarity
+          change polarity (invert pixel output)
+
+  +C    --clip-region  [l]eft [t]op [w]idth [h]eight: integer
+          clip image region (l, t, w, h)
+\endverbatim
+
+\subsection output_options output options
+\verbatim
+general:
+
+  -im   --image-info
+          print image details (requires verbose mode)
+
+  -o    --no-output
+          do not create any output (useful with -im)
+
+image format:
+
+  +op   --write-raw-pnm
+          write 8-bit binary PGM/PPM (default for files)
+
+  +opb  --write-8-bit-pnm
+          write 8-bit ASCII PGM/PPM (default for stdout)
+
+  +opw  --write-16-bit-pnm
+          write 16-bit ASCII PGM/PPM
+
+  +opn  --write-n-bit-pnm  [n]umber: integer
+          write n-bit ASCII PGM/PPM (1..32)
+
+  +ob   --write-bmp
+          write 8-bit (monochrome) or 24-bit (color) BMP
+
+  +obp  --write-8-bit-bmp
+          write 8-bit palette BMP (monochrome only)
+
+  +obt  --write-24-bit-bmp
+          write 24-bit truecolor BMP
+
+  +obr  --write-32-bit-bmp
+          write 32-bit truecolor BMP
+
+  +ot   --write-tiff
+          write 8-bit (monochrome) or 24-bit (color) TIFF
+
+  +on   --write-png
+          write 8-bit (monochrome) or 24-bit (color) PNG
+\endverbatim
+
+\section notes NOTES
+
+The following preferred interpolation algorithms can be selected using the
+\e --interpolate option:
+
+\li 1 = free scaling algorithm with interpolation from pbmplus toolkit
+\li 2 = free scaling algorithm with interpolation from c't magazine
+\li 3 = magnification algorithm with bilinear interpolation from Eduard Stanescu
+\li 4 = magnification algorithm with bicubic interpolation from Eduard Stanescu
+
+The \e --write-tiff option is only available when DCMTK has been configured
+and compiled with support for the external \b libtiff TIFF library.  The
+availability of the TIFF compression options depends on the \b libtiff
+configuration.  In particular, the patented LZW algorithm may not be
+available.
+
+The \e --write-png option is only available when DCMTK has been configured
+and compiled with support for the external \b libpng PNG library.  Option
+\e --interlace enables progressive image view while loading the PNG file.
+Only a few applications take care of the meta info (TEXT) in a PNG file.
+
+\section transfer_syntaxes TRANSFER SYNTAXES
+
+\b dcml2pnm supports the following transfer syntaxes for input (\e dcmfile-in):
+
+\verbatim
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+JPEGLSLosslessTransferSyntax                   1.2.840.10008.1.2.4.80
+JPEGLSLossyTransferSyntax                      1.2.840.10008.1.2.4.81
+RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
+\endverbatim
+
+(*) if compiled with zlib support enabled
+
+\section logging LOGGING
+
+The level of logging output of the various command line tools and underlying
+libraries can be specified by the user.  By default, only errors and warnings
+are written to the standard error stream.  Using option \e --verbose also
+informational messages like processing details are reported.  Option
+\e --debug can be used to get more details on the internal activity, e.g. for
+debugging purposes.  Other logging levels can be selected using option
+\e --log-level.  In \e --quiet mode only fatal errors are reported.  In such
+very severe error events, the application will usually terminate.  For more
+details on the different logging levels, see documentation of module "oflog".
+
+In case the logging output should be written to file (optionally with logfile
+rotation), to syslog (Unix) or the event log (Windows) option \e --log-config
+can be used.  This configuration file also allows for directing only certain
+messages to a particular output stream and for filtering certain messages
+based on the module or application where they are generated.  An example
+configuration file is provided in <em>\<etcdir\>/logger.cfg</em>).
+
+\section command_line COMMAND LINE
+
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
+multiple values are allowed (1-n), a combination of both means 0 to n values.
+
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively.  Usually, order and position of command line options are
+arbitrary (i.e. they can appear anywhere).  However, if options are mutually
+exclusive the rightmost appearance is used.  This behaviour conforms to the
+standard evaluation rules of common Unix shells.
+
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator unless they appear between two
+quotation marks) prior to any further evaluation.  Please note that a command
+file cannot contain another command file.  This simple but effective approach
+allows to summarize common combinations of options/parameters and avoids
+longish and confusing command lines (an example is provided in file
+<em>\<datadir\>/dumppat.txt</em>).
+
+\section environment ENVIRONMENT
+
+The \b dcml2pnm utility will attempt to load DICOM data dictionaries specified
+in the \e DCMDICTPATH environment variable.  By default, i.e. if the
+\e DCMDICTPATH environment variable is not set, the file
+<em>\<datadir\>/dicom.dic</em> will be loaded unless the dictionary is built
+into the application (default for Windows).
+
+The default behaviour should be preferred and the \e DCMDICTPATH environment
+variable only used when alternative data dictionaries are required.  The
+\e DCMDICTPATH environment variable has the same format as the Unix shell
+\e PATH variable in that a colon (":") separates entries.  On Windows systems,
+a semicolon (";") is used as a separator.  The data dictionary code will
+attempt to load each file specified in the \e DCMDICTPATH environment variable.
+It is an error if no data dictionary can be loaded.
+
+\section files FILES
+
+<em>\<datadir\>/camera.lut</em> - sample characteristics file of a camera
+\n<em>\<datadir\>/monitor.lut</em> - sample characteristics file of a monitor
+\n<em>\<datadir\>/printer.lut</em> - sample characteristics file of a printer
+\n<em>\<datadir\>/scanner.lut</em> - sample characteristics file of a scanner
+
+\section see_also SEE ALSO
+
+<b>dcm2pnm</b>(1), <b>img2dcm</b>(1)
+
+\section copyright COPYRIGHT
+
+Copyright (C) 2001-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+
+*/

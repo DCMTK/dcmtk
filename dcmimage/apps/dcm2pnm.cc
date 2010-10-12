@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-05 15:36:29 $
- *  CVS/RCS Revision: $Revision: 1.99 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-12 13:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.100 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,6 +61,10 @@
 #include "dcmtk/dcmjpeg/dipijpeg.h"      /* for dcmimage JPEG plugin */
 #endif
 
+#ifdef BUILD_DCM2PNM_AS_DCML2PNM
+#include "dcmtk/dcmjpls/djdecode.h"      /* for dcmjpls decoders */
+#endif
+
 #ifdef WITH_LIBTIFF
 #include "dcmtk/dcmimage/dipitiff.h"     /* for dcmimage TIFF plugin */
 #endif
@@ -78,7 +82,9 @@
 
 #define OFFIS_OUTFILE_DESCRIPTION "output filename to be written (default: stdout)"
 
-#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+#ifdef BUILD_DCM2PNM_AS_DCML2PNM
+# define OFFIS_CONSOLE_APPLICATION "dcml2pnm"
+#elif defined(BUILD_DCM2PNM_AS_DCMJ2PNM)
 # define OFFIS_CONSOLE_APPLICATION "dcmj2pnm"
 #else
 # define OFFIS_CONSOLE_APPLICATION "dcm2pnm"
@@ -887,6 +893,10 @@ int main(int argc, char *argv[])
     // register JPEG decompression codecs
     DJDecoderRegistration::registerCodecs(opt_decompCSconversion);
 #endif
+#ifdef BUILD_DCM2PNM_AS_DCML2PNM
+    // register JPEG-LS decompression codecs
+    DJLSDecoderRegistration::registerCodecs();
+#endif
 
     DcmFileFormat *dfile = new DcmFileFormat();
     OFCondition cond = dfile->loadFile(opt_ifname, opt_transferSyntax, EGL_withoutGL, DCM_MaxReadLength, opt_readMode);
@@ -1502,6 +1512,10 @@ int main(int argc, char *argv[])
     // deregister JPEG decompression codecs
     DJDecoderRegistration::cleanup();
 #endif
+#ifdef BUILD_DCM2PNM_AS_DCML2PNM
+    // deregister JPEG-LS decompression codecs
+    DJLSDecoderRegistration::cleanup();
+#endif
 
     return 0;
 }
@@ -1510,6 +1524,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.100  2010-10-12 13:12:57  uli
+ * Added dcml2pnm which is a dcmjpls-enabled dcm2pnm.
+ *
  * Revision 1.99  2010-10-05 15:36:29  joergr
  * Added preliminary support for VOI LUT function. Please note, however, that
  * the sigmoid transformation is not yet implemented.
