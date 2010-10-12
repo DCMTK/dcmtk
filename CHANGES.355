@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.12 (schlachter)
+
+- Added working implementation of DJLSDecoderBase::decodeFrame().
+  Affects: dcmjpls/libsrc/djcodecd.cc
+
 **** Changes from 2010.10.08 (schlachter)
 
 - Fixed an invalid copyright date.

@@ -22,8 +22,8 @@
  *  Purpose: codec classes for JPEG-LS decoders.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-05 10:15:19 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2010-10-12 10:17:32 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ OFBool DJLSDecoderBase::canChangeCoding(
 
 
 OFCondition DJLSDecoderBase::decode(
-    const DcmRepresentationParameter * /* fromRepParam */,
+    const DcmRepresentationParameter * fromRepParam,
     DcmPixelSequence * pixSeq,
     DcmPolymorphOBOW& uncompressedPixelData,
     const DcmCodecParameter * cp,
@@ -153,7 +153,133 @@ OFCondition DJLSDecoderBase::decode(
   // assume we can cast the codec parameter to what we need
   const DJLSCodecParameter *djcp = OFreinterpret_cast(const DJLSCodecParameter *, cp);
 
+  // determine planar configuration for uncompressed data
+  OFString imageSopClass;
+  OFString imagePhotometricInterpretation;
+  dataset->findAndGetOFString(DCM_SOPClassUID, imageSopClass);
+  dataset->findAndGetOFString(DCM_PhotometricInterpretation, imagePhotometricInterpretation);
+
+  // allocate space for uncompressed pixel data element
+  Uint16 *pixeldata16 = NULL;
+  OFCondition result = uncompressedPixelData.createUint16Array(totalSize/sizeof(Uint16), pixeldata16);
+  if (result.bad()) return result;
+
+  Uint8 *pixeldata8 = OFreinterpret_cast(Uint8 *, pixeldata16);
+  Sint32 currentFrame = 0;
+  Uint32 currentItem = 1; // item 0 contains the offset table
+  OFBool done = OFFalse;
+
+  while (result.good() && !done)
+  {
+      DCMJPLS_INFO("Current Frame Number: " << currentFrame+1);
+
+      OFString dummy;
+      result = decodeFrame(fromRepParam, pixSeq, cp, dataset, currentFrame,
+          currentItem, pixeldata8, frameSize, dummy);
+
+      if (result.good())
+      {
+        // increment frame number, check if we're finished
+        if (++currentFrame == imageFrames) done = OFTrue;
+        pixeldata8 += frameSize;
+      }
+  }
+
+  // Number of Frames might have changed in case the previous value was wrong
+  if (result.good() && (numberOfFramesPresent || (imageFrames > 1)))
+  {
+    char numBuf[20];
+    sprintf(numBuf, "%ld", OFstatic_cast(long, imageFrames));
+    result = ((DcmItem *)dataset)->putAndInsertString(DCM_NumberOfFrames, numBuf);
+  }
+
+  if (result.good())
+  {
+    // the following operations do not affect the Image Pixel Module
+    // but other modules such as SOP Common.  We only perform these
+    // changes if we're on the main level of the dataset,
+    // which should always identify itself as dataset, not as item.
+    if ((dataset->ident() == EVR_dataset) && (djcp->getUIDCreation() == EJLSUC_always))
+    {
+        // create new SOP instance UID
+        result = DcmCodec::newInstance((DcmItem *)dataset, NULL, NULL, NULL);
+    }
+  }
+
+  return result;
+}
+
+
+OFCondition DJLSDecoderBase::decodeFrame(
+    const DcmRepresentationParameter * /* fromParam */,
+    DcmPixelSequence *fromPixSeq,
+    const DcmCodecParameter *cp,
+    DcmItem *dataset,
+    Uint32 frameNo,
+    Uint32& currentItem,
+    void * buffer,
+    Uint32 bufSize,
+    OFString& decompressedColorModel) const
+{
+  DcmPixelItem *pixItem = NULL;
+  Uint8 * jlsData = NULL;
+  Uint8 * jlsFragmentData = NULL;
+  Uint32 fragmentLength = 0;
+  Uint32 fragmentsForThisFrame = 0;
+  size_t compressedSize;
+  OFCondition result = EC_Normal;
+
+  // assume we can cast the codec parameter to what we need
+  const DJLSCodecParameter *djcp = OFreinterpret_cast(const DJLSCodecParameter *, cp);
   OFBool ignoreOffsetTable = djcp->ignoreOffsetTable();
+
+  // determine properties of uncompressed dataset
+  Uint16 imageSamplesPerPixel = 0;
+  if (dataset->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel).bad()) return EC_TagNotFound;
+  // we only handle one or three samples per pixel
+  if ((imageSamplesPerPixel != 3) && (imageSamplesPerPixel != 1)) return EC_InvalidTag;
+
+  Uint16 imageRows = 0;
+  if (dataset->findAndGetUint16(DCM_Rows, imageRows).bad()) return EC_TagNotFound;
+  if (imageRows < 1) return EC_InvalidTag;
+
+  Uint16 imageColumns = 0;
+  if (dataset->findAndGetUint16(DCM_Columns, imageColumns).bad()) return EC_TagNotFound;
+  if (imageColumns < 1) return EC_InvalidTag;
+
+  Uint16 imageBitsStored = 0;
+  if (dataset->findAndGetUint16(DCM_BitsStored, imageBitsStored).bad()) return EC_TagNotFound;
+
+  Uint16 imageBitsAllocated = 0;
+  if (dataset->findAndGetUint16(DCM_BitsAllocated, imageBitsAllocated).bad()) return EC_TagNotFound;
+
+  //we only support up to 16 bits per sample
+  if ((imageBitsStored < 1) || (imageBitsStored > 16)) return EC_JLSUnsupportedBitDepth;
+
+  // determine the number of bytes per sample (bits allocated) for the de-compressed object.
+  Uint16 bytesPerSample = 1;
+  if (imageBitsStored > 8) bytesPerSample = 2;
+  else if (imageBitsAllocated > 8) bytesPerSample = 2;
+
+  // number of frames is an optional attribute - we don't mind if it isn't present.
+  Sint32 imageFrames = 0;
+  dataset->findAndGetSint32(DCM_NumberOfFrames, imageFrames).good();
+
+  if (imageFrames >= OFstatic_cast(Sint32, fromPixSeq->card()))
+    imageFrames = fromPixSeq->card() - 1; // limit number of frames to number of pixel items - 1
+  if (imageFrames < 1)
+    imageFrames = 1; // default in case the number of frames attribute is absent or contains garbage
+
+  // if the user has provided this information, we trust him.
+  // If the user has passed a zero, try to find out ourselves.
+  if (currentItem == 0)
+  {
+    result = determineStartFragment(frameNo, imageFrames, fromPixSeq, currentItem);
+  }
+
+  // compute the number of JPEG-LS fragments we need in order to decode the next frame
+  fragmentsForThisFrame = computeNumberOfFragments(imageFrames, frameNo, currentItem, ignoreOffsetTable, fromPixSeq);
+  if (fragmentsForThisFrame == 0) result = EC_JLSCannotComputeNumberOfFragments;
 
   // determine planar configuration for uncompressed data
   OFString imageSopClass;
@@ -186,181 +312,121 @@ OFCondition DJLSDecoderBase::decode(
     }
   }
 
-  // allocate space for uncompressed pixel data element
-  Uint16 *pixeldata16 = NULL;
-  OFCondition result = uncompressedPixelData.createUint16Array(totalSize/sizeof(Uint16), pixeldata16);
-  if (result.bad()) return result;
+  // We got all the data we need from the dataset, let's start decoding
+  DCMJPLS_DEBUG("Starting to decode frame " << frameNo + 1 << " with fragment " << currentItem);
 
-  Uint8 *pixeldata8 = OFreinterpret_cast(Uint8 *, pixeldata16);
-  DcmPixelItem *pixItem = NULL;
-  Uint8 * jlsData = NULL;
-  Uint8 * jlsFragmentData = NULL;
-  Sint32 currentFrame = 0;
-  Uint32 currentItem = 1; // item 0 contains the offset table
-  Uint32 fragmentLength = 0;
-  OFBool done = OFFalse;
-  Uint32 fragmentsForThisFrame = 0;
-  size_t compressedSize;
-
-  while (result.good() && !done)
+  // get the size of all the fragments
+  compressedSize = 0;
+  if (result.good())
   {
-      DCMJPLS_INFO("Current Frame Number: " << currentFrame+1);
+    // Don't modify the original values for now
+    Uint32 fragmentsForThisFrame2 = fragmentsForThisFrame;
+    Uint32 currentItem2 = currentItem;
 
-      // compute the number of JPEG-LS fragments we need in order to decode the next frame
-      fragmentsForThisFrame = computeNumberOfFragments(imageFrames, currentFrame, currentItem, ignoreOffsetTable, pixSeq);
-      if (fragmentsForThisFrame == 0) result = EC_JLSCannotComputeNumberOfFragments;
-
-      // get the size of all the fragments
-      compressedSize = 0;
-      if (result.good())
+    while (result.good() && fragmentsForThisFrame2--)
+    {
+      result = fromPixSeq->getItem(pixItem, currentItem2++);
+      if (result.good() && pixItem)
       {
-        // Don't modify the original values for now
-        Uint32 fragmentsForThisFrame2 = fragmentsForThisFrame;
-        Uint32 currentItem2 = currentItem;
-
-        while (result.good() && fragmentsForThisFrame2--)
-        {
-          result = pixSeq->getItem(pixItem, currentItem2++);
-          if (result.good() && pixItem)
-          {
-            fragmentLength = pixItem->getLength();
-            if (result.good())
-              compressedSize += fragmentLength;
-          }
-        } /* while */
-      }
-
-      // get the compressed data
-      if (result.good())
-      {
-        Uint32 offset = 0;
-        jlsData = new Uint8[compressedSize];
-
-        while (result.good() && fragmentsForThisFrame--)
-        {
-          result = pixSeq->getItem(pixItem, currentItem++);
-          if (result.good() && pixItem)
-          {
-            fragmentLength = pixItem->getLength();
-            result = pixItem->getUint8Array(jlsFragmentData);
-            if (result.good() && jlsFragmentData)
-            {
-              memcpy(&jlsData[offset], jlsFragmentData, fragmentLength);
-              offset += fragmentLength;
-            }
-          }
-        } /* while */
-      }
-
-      if (result.good())
-      {
-        JlsParameters params;
-        JLS_ERROR err;
-
-        err = JpegLsReadHeader(jlsData, compressedSize, &params);
-        result = DJLSError::convert(err);
-
+        fragmentLength = pixItem->getLength();
         if (result.good())
-        {
-          if (params.width != imageColumns) result = EC_JLSImageDataMismatch;
-          else if (params.height != imageRows) result = EC_JLSImageDataMismatch;
-          else if (params.components != imageSamplesPerPixel) result = EC_JLSImageDataMismatch;
-          else if ((bytesPerSample == 1) && (params.bitspersample > 8)) result = EC_JLSImageDataMismatch;
-          else if ((bytesPerSample == 2) && (params.bitspersample <= 8)) result = EC_JLSImageDataMismatch;
-        }
-
-        if (!result.good())
-        {
-          delete[] jlsData;
-        }
-        else
-        {
-          err = JpegLsDecode(pixeldata8, totalSize, jlsData, compressedSize, &params);
-          result = DJLSError::convert(err);
-          delete[] jlsData;
-
-          if (result.good() && imageSamplesPerPixel == 3)
-          {
-            if (imagePlanarConfiguration == 1 && params.ilv != ILV_NONE)
-            {
-              // The dataset says this should be planarConfiguration == 1, but
-              // it isn't -> convert it.
-              DCMJPLS_INFO("different planar configuration in JPEG stream, converting to \"1\"");
-              if (bytesPerSample == 1)
-                result = createPlanarConfiguration1Byte(pixeldata8, imageColumns, imageRows);
-              else
-                result = createPlanarConfiguration1Word(OFreinterpret_cast(Uint16*, pixeldata8), imageColumns, imageRows);
-            }
-            else if (imagePlanarConfiguration == 0 && params.ilv != ILV_SAMPLE && params.ilv != ILV_LINE)
-            {
-              // The dataset says this should be planarConfiguration == 0, but
-              // it isn't -> convert it.
-              DCMJPLS_INFO("different planar configuration in JPEG stream, converting to \"0\"");
-              if (bytesPerSample == 1)
-                result = createPlanarConfiguration0Byte(pixeldata8, imageColumns, imageRows);
-              else
-                result = createPlanarConfiguration0Word(OFreinterpret_cast(Uint16*, pixeldata8), imageColumns, imageRows);
-            }
-          }
-
-          if (result.good())
-          {
-              // decompression is complete, finally adjust byte order if necessary
-              if (bytesPerSample == 1) // we're writing bytes into words
-              {
-                  result = swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, pixeldata8,
-                          totalSize, sizeof(Uint16));
-              }
-          }
-
-          if (result.good())
-          {
-            // increment frame number, check if we're finished
-            if (++currentFrame == imageFrames) done = OFTrue;
-            pixeldata8 += frameSize;
-          }
-        }
+          compressedSize += fragmentLength;
       }
+    } /* while */
   }
 
-  // Number of Frames might have changed in case the previous value was wrong
-  if (result.good() && (numberOfFramesPresent || (imageFrames > 1)))
+  // get the compressed data
+  if (result.good())
   {
-    char numBuf[20];
-    sprintf(numBuf, "%ld", OFstatic_cast(long, imageFrames));
-    result = ((DcmItem *)dataset)->putAndInsertString(DCM_NumberOfFrames, numBuf);
+    Uint32 offset = 0;
+    jlsData = new Uint8[compressedSize];
+
+    while (result.good() && fragmentsForThisFrame--)
+    {
+      result = fromPixSeq->getItem(pixItem, currentItem++);
+      if (result.good() && pixItem)
+      {
+        fragmentLength = pixItem->getLength();
+        result = pixItem->getUint8Array(jlsFragmentData);
+        if (result.good() && jlsFragmentData)
+        {
+          memcpy(&jlsData[offset], jlsFragmentData, fragmentLength);
+          offset += fragmentLength;
+        }
+      }
+    } /* while */
   }
 
   if (result.good())
   {
-    // the following operations do not affect the Image Pixel Module
-    // but other modules such as SOP Common.  We only perform these
-    // changes if we're on the main level of the dataset,
-    // which should always identify itself as dataset, not as item.
-    if ((dataset->ident() == EVR_dataset) && (djcp->getUIDCreation() == EJLSUC_always))
+    JlsParameters params;
+    JLS_ERROR err;
+
+    err = JpegLsReadHeader(jlsData, compressedSize, &params);
+    result = DJLSError::convert(err);
+
+    if (result.good())
     {
-        // create new SOP instance UID
-        result = DcmCodec::newInstance((DcmItem *)dataset, NULL, NULL, NULL);
+      if (params.width != imageColumns) result = EC_JLSImageDataMismatch;
+      else if (params.height != imageRows) result = EC_JLSImageDataMismatch;
+      else if (params.components != imageSamplesPerPixel) result = EC_JLSImageDataMismatch;
+      else if ((bytesPerSample == 1) && (params.bitspersample > 8)) result = EC_JLSImageDataMismatch;
+      else if ((bytesPerSample == 2) && (params.bitspersample <= 8)) result = EC_JLSImageDataMismatch;
+    }
+
+    if (!result.good())
+    {
+      delete[] jlsData;
+    }
+    else
+    {
+      err = JpegLsDecode(buffer, bufSize, jlsData, compressedSize, &params);
+      result = DJLSError::convert(err);
+      delete[] jlsData;
+
+      if (result.good() && imageSamplesPerPixel == 3)
+      {
+        if (imagePlanarConfiguration == 1 && params.ilv != ILV_NONE)
+        {
+          // The dataset says this should be planarConfiguration == 1, but
+          // it isn't -> convert it.
+          DCMJPLS_INFO("different planar configuration in JPEG stream, converting to \"1\"");
+          if (bytesPerSample == 1)
+            result = createPlanarConfiguration1Byte(OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
+          else
+            result = createPlanarConfiguration1Word(OFreinterpret_cast(Uint16*, buffer), imageColumns, imageRows);
+        }
+        else if (imagePlanarConfiguration == 0 && params.ilv != ILV_SAMPLE && params.ilv != ILV_LINE)
+        {
+          // The dataset says this should be planarConfiguration == 0, but
+          // it isn't -> convert it.
+          DCMJPLS_INFO("different planar configuration in JPEG stream, converting to \"0\"");
+          if (bytesPerSample == 1)
+            result = createPlanarConfiguration0Byte(OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
+          else
+            result = createPlanarConfiguration0Word(OFreinterpret_cast(Uint16*, buffer), imageColumns, imageRows);
+        }
+      }
+
+      if (result.good())
+      {
+          // decompression is complete, finally adjust byte order if necessary
+          if (bytesPerSample == 1) // we're writing bytes into words
+          {
+              result = swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, buffer,
+                      bufSize, sizeof(Uint16));
+          }
+      }
     }
   }
 
+  if (result.good())
+  {
+    // retrieve color model from given dataset
+    result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, decompressedColorModel);
+  }
+
   return result;
-}
-
-
-OFCondition DJLSDecoderBase::decodeFrame(
-    const DcmRepresentationParameter * /* fromParam */ ,
-    DcmPixelSequence * /* fromPixSeq */ ,
-    const DcmCodecParameter * /* cp */ ,
-    DcmItem * /* dataset */ ,
-    Uint32 /* frameNo */ ,
-    Uint32& /* startFragment */ ,
-    void * /* buffer */ ,
-    Uint32 /* bufSize */ ,
-    OFString& /* decompressedColorModel */ ) const
-{
-  // UNIMPLEMENTED
-  return EC_IllegalCall;
 }
 
 
@@ -395,11 +461,16 @@ OFCondition DJLSDecoderBase::determineDecompressedColorModel(
     const DcmRepresentationParameter * /* fromParam */,
     DcmPixelSequence * /* fromPixSeq */,
     const DcmCodecParameter * /* cp */,
-    DcmItem * /* dataset */,
-    OFString & /* decompressedColorModel */) const
+    DcmItem * dataset,
+    OFString & decompressedColorModel) const
 {
-  // decodeFrame() is not yet implemented for this class
-  return EC_IllegalCall;
+  OFCondition result = EC_InvalidTag;
+  if (dataset != NULL )
+  {
+    // retrieve color model from given dataset
+    result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, decompressedColorModel);
+  }
+  return result;
 }
 
 
@@ -662,6 +733,9 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.13  2010-10-12 10:17:32  uli
+ * Added working implementation of DJLSDecoderBase::decodeFrame().
+ *
  * Revision 1.12  2010-10-05 10:15:19  uli
  * Fixed all remaining warnings from -Wall -Wextra -pedantic.
  *
