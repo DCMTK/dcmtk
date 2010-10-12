@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.12 (riesmeier)
+
+- Added man page file for the new command line tool "dcml2pnm".
+  Added: doxygen/manpages/man1/dcml2pnm.1
+
+- Removed wrong reference to JPEG output format.
+  Affects: dcmjpls/docs/dcml2pnm.man
+
 **** Changes from 2010.10.12 (schlachter)
 
 - Make dcml2pnm build correctly with cmake.
