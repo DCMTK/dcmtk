@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.13 (riesmeier)
 
+- Revised copyright text to make clear that the DCMTK uses the BSD License.
+  Affects: COPYRIGHT
+
 - Replaced copyright header since source code has been rewritten completely.
   Previously: "Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM"
   Affects: dcmnet/libsrc/dimdump.cc
