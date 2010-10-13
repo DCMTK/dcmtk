@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.13 (riesmeier)
 
+- Separated license text of the CharLS library from general "readme" text.
+  Added:   dcmjpls/docs/License.txt
+           dcmjpls/docs/readme.txt
+  Removed: dcmjpls/docs/charls-readme.txt
+
 - Added explaining sentence on modules that are not part of the free toolkit.
   Affects: COPYRIGHT
 

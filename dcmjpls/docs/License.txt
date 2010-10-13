@@ -1,4 +1,4 @@
-The libcharls library containing the JPEG-LS encoder and decoder in this 
+The libcharls library containing the JPEG-LS encoder and decoder in this
 DCMTK module is based on the CharLS library (see http://charls.codeplex.com/).
 
 The CharLS library is available under the following license:
@@ -31,13 +31,3 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-
-The current CharLS version used is revision 55020 dated 2010-10-05.
-
-The following modifications have been applied to the library:
-- removed "test" directory
-- removed project files (CharLS.sln, CharLS.vcproj)
-- renamed implementation file extensions from .cpp to .cc
-- made file names fit into 8.3 characters
-- converted file to use UNIX line feeds instead of Windows CR/LF
-- removed trailing whitespace, purified tab usage
