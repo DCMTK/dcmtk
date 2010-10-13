@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.13 (riesmeier)
+
+- Replaced copyright header since source code has been rewritten completely.
+  Previously: "Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM"
+  Affects: dcmnet/libsrc/dimdump.cc
+
 **** Changes from 2010.10.12 (riesmeier)
 
 - Added man page file for the new command line tool "dcml2pnm".
