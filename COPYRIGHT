@@ -5,7 +5,7 @@ Unless otherwise specified, the DCMTK software package has the following
 copyright:
 
 /*
- *  Copyright (C) 1994-2010, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
  *  All rights reserved.
  *
  *  This software and supporting documentation were developed by
@@ -43,6 +43,10 @@ copyright:
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
+Please note that some DCMTK modules, especially those that are not part
+of the free toolkit, are covered by a separate license which can be found
+in the COPYRIGHT file in the corresponding module directory.
 
 Some portions of the DCMTK software package are derived from earlier
 versions of this software with the following copyright, and can be
@@ -283,8 +287,8 @@ from an implementation which carries the following copyright notice:
  *  provided the authors copyright notice remains intact.
  */
 
-The oflog sub-package is based on the log4cplus library which is covered by the
-following two copyright notices (for details see oflog/docs/LICENSE):
+The oflog sub-package is based on the log4cplus library which is covered by
+the following two copyright notices (for details see oflog/docs/LICENSE):
 
 /*
  *     Copyright (C) 1999-2009 Contributors to log4cplus project.
