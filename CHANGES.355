@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.13 (riesmeier)
 
+- Added introducing sentence on Log4cplus library used for oflog.
+  Affects: oflog/docs/LICENSE
+
 - Separated license text of the CharLS library from general "readme" text.
   Added:   dcmjpls/docs/License.txt
            dcmjpls/docs/readme.txt

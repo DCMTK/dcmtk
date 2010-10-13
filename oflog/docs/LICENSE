@@ -1,3 +1,8 @@
+The oflog library is based on Log4cplus (see http://log4cplus.sourceforge.net/).
+
+The Log4cplus library is available under the following license:
+-------------------------------------------------------------------------------
+
 Contents
 ========
 
@@ -450,3 +455,5 @@ or Apache license 2.0.
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+-------------------------------------------------------------------------------
