@@ -3,8 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.14 (riesmeier)
 
-- Added missing CVS log to end of file.
+- Fixed wording on the use of variables.
   Affects: oflog/etc/logger.cfg
+
+- Added missing CVS log to end of file.
+  Affects: oflog/etc/filelog.cfg
 
 - Removed the word "Kuratorium" from the name of the OFFIS institute.
   Affects: dcmdata/docs/datadict.txt
