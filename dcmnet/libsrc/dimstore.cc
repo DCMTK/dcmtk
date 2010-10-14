@@ -56,10 +56,9 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: uli $
-** Update Date:		$Date: 2010-05-21 11:47:52 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 2010-10-14 13:14:28 $
+** CVS/RCS Revision:	$Revision: 1.22 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -516,6 +515,9 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
+** Revision 1.22  2010-10-14 13:14:28  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.21  2010-05-21 11:47:52  uli
 ** Replaced DU_fileSize() with OFStandard::getFileSize().
 **

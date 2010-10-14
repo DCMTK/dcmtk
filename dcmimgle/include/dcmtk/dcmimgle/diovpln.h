@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmimgle
  *
@@ -22,8 +18,8 @@
  *  Purpose: DicomOverlayPlane (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-16 08:10:53 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2010-10-14 13:16:27 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -564,6 +560,9 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
+ * Revision 1.32  2010-10-14 13:16:27  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.31  2010-06-16 08:10:53  joergr
  * Removed inline declaration from place() function.
  *

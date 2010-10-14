@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2000-2008, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmsr
  *
@@ -23,8 +19,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-30 10:08:55 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2010-10-14 13:14:41 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -673,6 +669,9 @@ void DSRDocumentTree::resetReferenceTargetFlag()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
+ *  Revision 1.36  2010-10-14 13:14:41  joergr
+ *  Updated copyright header. Added reference to COPYRIGHT file.
+ *
  *  Revision 1.35  2009-10-30 10:08:55  joergr
  *  Output processing details in verbose mode and not as a warning message.
  *

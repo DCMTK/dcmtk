@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
  *    OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmjpls
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: representation parameters for JPEG-LS
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-03-01 10:35:28 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:17:19 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,6 +105,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djrparam.h,v $
+ * Revision 1.4  2010-10-14 13:17:19  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.3  2010-03-01 10:35:28  uli
  * Renamed include guards to avoid name clash with e.g. dcmjpeg.
  *

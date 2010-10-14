@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmsr
  *
@@ -22,9 +18,9 @@
  *  Purpose:
  *    classes: DSRContentItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:39 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:40 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -648,6 +644,9 @@ OFCondition DSRContentItem::setTemplateIdentification(const OFString &templateId
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
+ *  Revision 1.15  2010-10-14 13:14:40  joergr
+ *  Updated copyright header. Added reference to COPYRIGHT file.
+ *
  *  Revision 1.14  2005-12-08 15:47:39  meichel
  *  Changed include path schema for all DCMTK header files
  *

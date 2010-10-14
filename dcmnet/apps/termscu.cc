@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2005-2010, OFFIS
+ *  Copyright (C) 2005-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmnet
  *
@@ -23,8 +19,8 @@
  *           SOP class in order to shutdown server applications)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-05-18 16:10:25 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2010-10-14 13:13:43 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -310,6 +306,9 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: termscu.cc,v $
+** Revision 1.13  2010-10-14 13:13:43  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.12  2010-05-18 16:10:25  joergr
 ** Replaced '\n' by OFendl in log messages.
 **

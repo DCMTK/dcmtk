@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -22,8 +18,8 @@
  *  Purpose: Implementation of class DcmLongText
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-04-23 14:30:34 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2010-10-14 13:14:10 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,6 +135,9 @@ OFCondition DcmLongText::checkStringValue(const OFString &value)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlt.cc,v $
+** Revision 1.20  2010-10-14 13:14:10  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.19  2010-04-23 14:30:34  joergr
 ** Added new method to all VR classes which checks whether the stored value
 ** conforms to the VR definition and to the specified VM.

@@ -64,9 +64,8 @@
 **
 **
 ** Last Update:		$Author: joergr $
-** Update Date:		$Date: 2010-06-02 14:52:03 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.33 $
+** Update Date:		$Date: 2010-10-14 13:14:28 $
+** CVS/RCS Revision:	$Revision: 1.34 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -470,6 +469,9 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
+** Revision 1.34  2010-10-14 13:14:28  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.33  2010-06-02 14:52:03  joergr
 ** Replaced calls to strerror() by new helper function OFStandard::strerror()
 ** which results in using the thread safe version of strerror() if available.

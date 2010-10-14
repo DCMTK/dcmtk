@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2009, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: stack class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:09 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -277,6 +273,9 @@ OFBool DcmStack::operator==(const DcmStack& arg) const
 /*
  * CVS/RCS Log:
  * $Log: dcstack.cc,v $
+ * Revision 1.20  2010-10-14 13:14:09  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.19  2009-11-04 09:58:10  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

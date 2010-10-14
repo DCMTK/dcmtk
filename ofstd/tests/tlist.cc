@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1997-2006, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: test programm for classes OFList and OFListIterator
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:48 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:15 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -181,7 +177,10 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tlist.cc,v $
-** Revision 1.11  2006-08-14 16:42:48  meichel
+** Revision 1.12  2010-10-14 13:15:15  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.11  2006/08/14 16:42:48  meichel
 ** Updated all code in module ofstd to correctly compile if the standard
 **   namespace has not included into the global one with a "using" directive.
 **

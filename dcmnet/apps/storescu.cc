@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmnet
  *
@@ -22,8 +18,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-02 12:12:48 $
- *  CVS/RCS Revision: $Revision: 1.95 $
+ *  Update Date:      $Date: 2010-10-14 13:13:42 $
+ *  CVS/RCS Revision: $Revision: 1.96 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1739,6 +1735,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.96  2010-10-14 13:13:42  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.95  2010-09-02 12:12:48  joergr
 ** Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
 **

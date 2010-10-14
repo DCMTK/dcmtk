@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module: dcmsr
  *
@@ -22,8 +18,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-08-09 13:27:21 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2010-10-14 13:15:11 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -219,7 +215,7 @@ static void generate_ki(DSRDocument *doc,
 
     doc->setPatientName("Last Name^First Name");
     doc->setPatientSex("O");
-    doc->setManufacturer("Kuratorium OFFIS e.V.");
+    doc->setManufacturer("OFFIS e.V.");
     doc->setReferringPhysicianName("Last Name^First Name");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -260,7 +256,7 @@ static void generate_si(DSRDocument *doc,
 
     doc->setPatientName("Last Name^First Name");
     doc->setPatientSex("O");
-    doc->setManufacturer("Kuratorium OFFIS e.V.");
+    doc->setManufacturer("OFFIS e.V.");
     doc->setReferringPhysicianName("Last Name^First Name");
 
     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -1272,6 +1268,9 @@ static void generate_19(DSRDocument *doc)
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
+ *  Revision 1.29  2010-10-14 13:15:11  joergr
+ *  Updated copyright header. Added reference to COPYRIGHT file.
+ *
  *  Revision 1.28  2010-08-09 13:27:21  joergr
  *  Updated data dictionary to 2009 edition of the DICOM standard. From now on,
  *  the official "keyword" is used for the attribute name which results in a

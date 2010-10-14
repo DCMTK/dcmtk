@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: decoder codec class for RLE
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-01 10:21:05 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:09 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -706,6 +702,9 @@ OFCondition DcmRLECodecDecoder::determineDecompressedColorModel(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
+ * Revision 1.17  2010-10-14 13:14:09  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.16  2010-10-01 10:21:05  uli
  * Fixed most compiler warnings from -Wall -Wextra -pedantic in dcmdata.
  *

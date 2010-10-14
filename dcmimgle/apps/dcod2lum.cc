@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmimgle
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: convert hardcopy characteristic curve file to softcopy format
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-06-25 09:15:19 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:13:36 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -189,6 +185,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcod2lum.cc,v $
+ * Revision 1.9  2010-10-14 13:13:36  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.8  2010-06-25 09:15:19  uli
  * Fixed issues with compiling with HAVE_STD_STRING.
  *

@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -22,10 +18,9 @@
  *  Purpose: Template class for administrating an unordered set of elements
  *           of an arbitrary type.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-12 09:24:27 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/ofuoset.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:51 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -451,7 +446,10 @@ template <class T> class OFUnorderedSet : public OFSet<T>
 /*
 ** CVS/RCS Log:
 ** $Log: ofuoset.h,v $
-** Revision 1.6  2005-12-12 09:24:27  meichel
+** Revision 1.7  2010-10-14 13:15:51  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.6  2005/12/12 09:24:27  meichel
 ** Added explicit references to parent template class, needed for
 **   gcc 3.4.2 (MinGW port)
 **

@@ -46,9 +46,8 @@
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
 ** Intent:        Define tables and provide functions that implement
 **                the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:   $Author: uli $, $Date: 2010-09-16 08:51:41 $
-** Source File:   $RCSfile: dulfsm.cc,v $
-** Revision:      $Revision: 1.72 $
+** Last Update:   $Author: joergr $, $Date: 2010-10-14 13:14:29 $
+** Revision:      $Revision: 1.73 $
 ** Status:        $State: Exp $
 */
 
@@ -3949,6 +3948,9 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.73  2010-10-14 13:14:29  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.72  2010-09-16 08:51:41  uli
 ** Handle empty PDVs correctly again.
 **

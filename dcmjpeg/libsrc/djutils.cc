@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmjpeg
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: (STATUS: OK)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-07 12:44:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:22 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,6 +91,9 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
 /*
  * CVS/RCS Log
  * $Log: djutils.cc,v $
+ * Revision 1.6  2010-10-14 13:14:22  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.5  2009-10-07 12:44:34  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

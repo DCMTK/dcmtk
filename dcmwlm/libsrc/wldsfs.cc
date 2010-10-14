@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmwlm
  *
@@ -22,8 +18,8 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-03 10:31:21 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2010-10-14 13:14:49 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -791,6 +787,9 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
+** Revision 1.27  2010-10-14 13:14:49  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.26  2010-06-03 10:31:21  joergr
 ** Replaced calls to strerror() by new helper function OFStandard::strerror()
 ** which results in using the thread safe version of strerror() if available.

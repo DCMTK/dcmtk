@@ -54,9 +54,8 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: uli $, $Date: 2010-10-01 12:25:29 $
-** Source File:   $RCSfile: dul.cc,v $
-** Revision:      $Revision: 1.91 $
+** Last Update:   $Author: joergr $, $Date: 2010-10-14 13:14:28 $
+** Revision:      $Revision: 1.92 $
 ** Status:        $State: Exp $
 */
 
@@ -2721,6 +2720,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.92  2010-10-14 13:14:28  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.91  2010-10-01 12:25:29  uli
 ** Fixed most compiler warnings in remaining modules.
 **

@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmqrdb
  *
@@ -22,8 +18,8 @@
  *  Purpose: classes DcmQueryRetrieveProcessSlot, DcmQueryRetrieveProcessTable
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-03 10:34:57 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2010-10-14 13:14:36 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -241,6 +237,9 @@ void DcmQueryRetrieveProcessTable::cleanChildren()
 /*
  * CVS Log
  * $Log: dcmqrptb.cc,v $
+ * Revision 1.9  2010-10-14 13:14:36  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.8  2010-06-03 10:34:57  joergr
  * Replaced calls to strerror() by new helper function OFStandard::strerror()
  * which results in using the thread safe version of strerror() if available.

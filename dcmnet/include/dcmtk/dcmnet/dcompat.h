@@ -61,10 +61,9 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: uli $
-** Update Date:		$Date: 2010-01-20 13:49:47 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.24 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 2010-10-14 13:17:22 $
+** CVS/RCS Revision:	$Revision: 1.25 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -385,6 +384,9 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
+** Revision 1.25  2010-10-14 13:17:22  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.24  2010-01-20 13:49:47  uli
 ** Added OFStandard::getProcessID().
 **

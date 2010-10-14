@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmsr
  *
@@ -23,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-30 08:59:55 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Update Date:      $Date: 2010-10-14 13:14:42 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1579,6 +1575,9 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.70  2010-10-14 13:14:42  joergr
+ *  Updated copyright header. Added reference to COPYRIGHT file.
+ *
  *  Revision 1.69  2010-09-30 08:59:55  joergr
  *  Added support for the Spectacle Prescription Report IOD.
  *  Added support for the Macular Grid Thickness and Volume Report IOD.

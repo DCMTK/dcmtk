@@ -50,9 +50,8 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-** Last Update:   $Author: onken $, $Date: 2008-04-17 15:27:36 $
-** Source File:   $RCSfile: dulstruc.h,v $
-** Revision:    $Revision: 1.11 $
+** Last Update:   $Author: joergr $, $Date: 2010-10-14 13:19:29 $
+** Revision:    $Revision: 1.12 $
 ** Status:    $State: Exp $
 */
 
@@ -318,6 +317,9 @@ typedef struct dul_datapdu {
 /*
 ** CVS Log
 ** $Log: dulstruc.h,v $
+** Revision 1.12  2010-10-14 13:19:29  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.11  2008-04-17 15:27:36  onken
 ** Reworked and extended User Identity Negotiation code.
 **

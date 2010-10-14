@@ -51,9 +51,8 @@
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
 **
-** Last Update:		$Author: uli $, $Date: 2009-11-18 11:53:59 $
-** Source File:		$RCSfile: dulpriv.h,v $
-** Revision:		$Revision: 1.9 $
+** Last Update:		$Author: joergr $, $Date: 2010-10-14 13:19:29 $
+** Revision:		$Revision: 1.10 $
 ** Status:		$State: Exp $
 */
 
@@ -108,6 +107,9 @@ PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association,
 /*
 ** CVS Log
 ** $Log: dulpriv.h,v $
+** Revision 1.10  2010-10-14 13:19:29  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.9  2009-11-18 11:53:59  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **

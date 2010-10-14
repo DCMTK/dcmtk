@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1999-2009, OFFIS
+ *  Copyright (C) 1999-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module: dcmpstat
  *
@@ -22,9 +18,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-24 14:12:59 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:32 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -467,6 +463,9 @@ OFBool DVPSPresentationLUT::printSCPCreate(
 
 /*
  *  $Log: dvpspl.cc,v $
+ *  Revision 1.31  2010-10-14 13:14:32  joergr
+ *  Updated copyright header. Added reference to COPYRIGHT file.
+ *
  *  Revision 1.30  2009-11-24 14:12:59  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

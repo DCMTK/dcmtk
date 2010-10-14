@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmnet
  *
@@ -22,8 +18,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-04 10:51:46 $
- *  CVS/RCS Revision: $Revision: 1.134 $
+ *  Update Date:      $Date: 2010-10-14 13:13:42 $
+ *  CVS/RCS Revision: $Revision: 1.135 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2739,6 +2735,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.135  2010-10-14 13:13:42  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.134  2010-10-04 10:51:46  joergr
 ** Introduced new substitution variable "#r" for the calling presentation
 ** address (i.e. the hostname or IP address of the peer storage SCU).

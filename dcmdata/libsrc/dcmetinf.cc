@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -22,8 +18,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-06-07 13:55:53 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2010-10-14 13:14:08 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -619,6 +615,9 @@ OFCondition DcmMetaInfo::loadFile(const char *fileName,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.53  2010-10-14 13:14:08  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.52  2010-06-07 13:55:53  joergr
 ** Added new method that allows for loading the meta-header only.
 **

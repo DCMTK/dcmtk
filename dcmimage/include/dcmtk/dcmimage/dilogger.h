@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2009, OFFIS
+ *  Copyright (C) 2009-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmimage
  *
@@ -22,8 +18,8 @@
  *  Purpose: Logger (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-11-25 14:32:47 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2010-10-14 13:16:29 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,9 +50,11 @@ OFLogger DCM_dcmimageGetLogger();
  *
  * CVS/RCS Log:
  * $Log: dilogger.h,v $
+ * Revision 1.2  2010-10-14 13:16:29  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.1  2009-11-25 14:32:47  joergr
  * Added new source and header file for the module logger.
- *
  *
  *
  */

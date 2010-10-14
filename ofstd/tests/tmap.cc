@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2009, OFFIS
+ *  Copyright (C) 2009-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: test programm for class OFMap
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-29 13:59:34 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:15 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,14 +95,16 @@ int main()
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: tmap.cc,v $
-** Revision 1.1  2009-09-29 13:59:34  uli
-** Fix an invalid iterator use in OFMap. A iterator was used after it was passed
-** to erase().
-** Add a test case which verifies some of OFMap's implementation.
-**
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: tmap.cc,v $
+ * Revision 1.2  2010-10-14 13:15:15  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.1  2009-09-29 13:59:34  uli
+ * Fix an invalid iterator use in OFMap. A iterator was used after it was passed
+ * to erase().
+ * Add a test case which verifies some of OFMap's implementation.
+ *
+ *
+ */

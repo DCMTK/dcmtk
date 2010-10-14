@@ -45,9 +45,8 @@
 ** Intent:          This file contains functions for parsing Dicom
 **                  Upper Layer (DUL) Protocol Data Units (PDUs)
 **                  into logical in-memory structures.
-** Last Update:     $Author: uli $, $Date: 2010-09-14 11:42:14 $
-** Source File:     $RCSfile: dulparse.cc,v $
-** Revision:        $Revision: 1.31 $
+** Last Update:     $Author: joergr $, $Date: 2010-10-14 13:14:29 $
+** Revision:        $Revision: 1.32 $
 ** Status:          $State: Exp $
 */
 
@@ -828,6 +827,9 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
+** Revision 1.32  2010-10-14 13:14:29  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.31  2010-09-14 11:42:14  uli
 ** Verify the length fields in the PDUs that we receive.
 **

@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2010, OFFIS
+ *  Copyright (C) 2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmsr
  *
@@ -23,8 +19,8 @@
  *    classes: DSRSpatialCoordinates3DValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-09-28 14:15:20 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2010-10-14 13:14:41 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -348,6 +344,9 @@ OFBool DSRSpatialCoordinates3DValue::checkData(const DSRTypes::E_GraphicType3D g
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsc3vl.cc,v $
+ *  Revision 1.3  2010-10-14 13:14:41  joergr
+ *  Updated copyright header. Added reference to COPYRIGHT file.
+ *
  *  Revision 1.2  2010-09-28 14:15:20  joergr
  *  Removed old CVS log entries (copied from master file).
  *

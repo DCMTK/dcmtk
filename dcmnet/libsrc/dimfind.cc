@@ -56,10 +56,9 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: uli $
-** Update Date:         $Date: 2009-11-18 11:53:59 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimfind.cc,v $
-** CVS/RCS Revision:    $Revision: 1.13 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2010-10-14 13:14:28 $
+** CVS/RCS Revision:    $Revision: 1.14 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -450,6 +449,9 @@ DIMSE_findProvider(
 /*
 ** CVS Log
 ** $Log: dimfind.cc,v $
+** Revision 1.14  2010-10-14 13:14:28  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.13  2009-11-18 11:53:59  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **

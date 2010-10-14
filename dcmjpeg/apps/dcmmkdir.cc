@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2001-2008, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmjpeg
  *
@@ -42,8 +38,8 @@
  *  - Hemodynamic Waveform Interchange on Diskette (STD-WVFM-HD-FD)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 13:53:24 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-10-14 13:13:38 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,6 +57,9 @@
 /*
  * CVS/RCS Log:
  * $Log: dcmmkdir.cc,v $
+ * Revision 1.5  2010-10-14 13:13:38  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.4  2008-09-25 13:53:24  joergr
  * Updated comment header (list of supported profiles).
  *

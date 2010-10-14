@@ -57,10 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2005-12-08 15:44:37 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcancl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 2010-10-14 13:14:28 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -134,7 +133,10 @@ DIMSE_checkForCancelRQ(T_ASC_Association * assoc,
 /*
 ** CVS Log
 ** $Log: dimcancl.cc,v $
-** Revision 1.7  2005-12-08 15:44:37  meichel
+** Revision 1.8  2010-10-14 13:14:28  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.7  2005/12/08 15:44:37  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.6  2002/11/27 13:04:38  meichel

@@ -67,10 +67,9 @@
 **	OFFIS/University of Oldenburg, Germany.
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2005-12-08 16:02:20 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dicom.h,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 2010-10-14 13:17:22 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -168,7 +167,10 @@ typedef char	DIC_NODENAME[DIC_NODENAME_LEN + 1];
 /*
 ** CVS Log
 ** $Log: dicom.h,v $
-** Revision 1.12  2005-12-08 16:02:20  meichel
+** Revision 1.13  2010-10-14 13:17:22  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.12  2005/12/08 16:02:20  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.11  2004/08/03 11:42:43  meichel

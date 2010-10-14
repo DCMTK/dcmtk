@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module: dcmnet
  *
@@ -22,9 +18,9 @@
  *  Purpose:
  *    classes: DcmTransportLayer
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:02:16 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:17:22 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +112,10 @@ private:
 
 /*
  *  $Log: dcmlayer.h,v $
- *  Revision 1.7  2005-12-08 16:02:16  meichel
+ *  Revision 1.8  2010-10-14 13:17:22  joergr
+ *  Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ *  Revision 1.7  2005/12/08 16:02:16  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.6  2004/08/03 11:42:43  meichel

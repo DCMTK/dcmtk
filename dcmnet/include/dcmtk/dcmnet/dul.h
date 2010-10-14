@@ -44,9 +44,8 @@
 ** Intent:        This file defines the public structures and constants
 **                and the function prototypes for the DUL (DICOM Upper
 **                Layer) facility.
-** Last Update:   $Author: joergr $, $Date: 2010-08-26 09:28:02 $
-** Source File:   $RCSfile: dul.h,v $
-** Revision:      $Revision: 1.29 $
+** Last Update:   $Author: joergr $, $Date: 2010-10-14 13:17:22 $
+** Revision:      $Revision: 1.30 $
 ** Status:        $State: Exp $
 */
 
@@ -502,6 +501,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
+** Revision 1.30  2010-10-14 13:17:22  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.29  2010-08-26 09:28:02  joergr
 ** Fixed incorrect behavior of association acceptors during SCP/SCU role
 ** selection negotiation.

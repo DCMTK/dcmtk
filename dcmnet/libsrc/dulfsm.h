@@ -34,19 +34,18 @@
 ** @$=@$=@$=
 */
 /*
-**				DICOM 93
-**		     Electronic Radiology Laboratory
-**		   Mallinckrodt Institute of Radiology
-**		Washington University School of Medicine
+**          DICOM 93
+**        Electronic Radiology Laboratory
+**      Mallinckrodt Institute of Radiology
+**    Washington University School of Medicine
 **
 ** Module Name(s):
-** Author, Date:	Stephen M. Moore, 11-May-92
-** Intent:		This module defines structures and constants needed
-**			to implement the DICOM Upper Layer state machine.
-** Last Update:		$Author: meichel $, $Date: 2005-12-08 15:48:09 $
-** Source File:		$RCSfile: dulfsm.h,v $
-** Revision:		$Revision: 1.4 $
-** Status:		$State: Exp $
+** Author, Date:  Stephen M. Moore, 11-May-92
+** Intent:        This module defines structures and constants needed
+**                to implement the DICOM Upper Layer state machine.
+** Last Update:   $Author: joergr $, $Date: 2010-10-14 13:19:29 $
+** Revision:      $Revision: 1.5 $
+** Status:        $State: Exp $
 */
 
 #ifndef DULFSM_H
@@ -107,7 +106,7 @@ typedef struct {
 typedef struct {
     DUL_FSM_ACTION action;
     OFCondition (*actionFunction)(PRIVATE_NETWORKKEY **network,
-				PRIVATE_ASSOCIATIONKEY **association, 
+				PRIVATE_ASSOCIATIONKEY **association,
 				int nextState, void *params);
     char actionName[64];
 }   FSM_FUNCTION;
@@ -120,7 +119,7 @@ typedef struct {
     char eventName[64];
     char actionName[64];
     OFCondition (*actionFunction)(PRIVATE_NETWORKKEY **network,
-				PRIVATE_ASSOCIATIONKEY **association, 
+				PRIVATE_ASSOCIATIONKEY **association,
 				int nextState, void *params);
 
 }   FSM_ENTRY;
@@ -130,7 +129,10 @@ typedef struct {
 /*
 ** CVS Log
 ** $Log: dulfsm.h,v $
-** Revision 1.4  2005-12-08 15:48:09  meichel
+** Revision 1.5  2010-10-14 13:19:29  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.4  2005/12/08 15:48:09  meichel
 ** Updated Makefiles to correctly install header files
 **
 ** Revision 1.3  2001/10/12 10:18:39  meichel

@@ -1,19 +1,14 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
- *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *
  *  As an exception of the above notice, the code for OFStandard::strlcpy
@@ -21,7 +16,7 @@
  *  implementation which carries the following copyright notice:
  *
  *  Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
- *  All rights reserved.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -62,7 +57,7 @@
  *  which carries the following copyright notice:
  *
  *  Copyright (c) 1988 Regents of the University of California.
- *  All rights reserved.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Redistribution and use in source and binary forms are permitted
  *  provided that the above copyright notice and this paragraph are
@@ -92,9 +87,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-08-19 08:43:09 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:53 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1868,6 +1863,9 @@ long OFStandard::getProcessID()
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.63  2010-10-14 13:14:53  joergr
+ *  Updated copyright header. Added reference to COPYRIGHT file.
+ *
  *  Revision 1.62  2010-08-19 08:43:09  uli
  *  Fixed a comparision that checks for a valid buffer.
  *

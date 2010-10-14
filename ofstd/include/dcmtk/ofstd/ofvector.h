@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2010, OFFIS
+ *  Copyright (C) 2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Defines a template vector class based on the STL vector class
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-08 13:25:33 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:51 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -374,13 +370,15 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: ofvector.h,v $
+ * Revision 1.3  2010-10-14 13:15:51  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.2  2010-10-08 13:25:33  uli
  * Implement OFVector.
  *
  * Revision 1.1  2010-04-26 11:57:35  joergr
  * Added initial definitions for using the STL vector class. Please note that
  * there is currently no alternative implementation to this standard class.
- *
  *
  *
  */

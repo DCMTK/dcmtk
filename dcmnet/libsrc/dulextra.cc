@@ -53,10 +53,9 @@
 ** Purpose: 
 **      Supplementary DUL functions.
 **
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2005-12-08 15:44:50 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dulextra.cc,v $
-** CVS/RCS Revision:    $Revision: 1.15 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2010-10-14 13:14:29 $
+** CVS/RCS Revision:    $Revision: 1.16 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -158,7 +157,10 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 /*
 ** CVS Log
 ** $Log: dulextra.cc,v $
-** Revision 1.15  2005-12-08 15:44:50  meichel
+** Revision 1.16  2010-10-14 13:14:29  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.15  2005/12/08 15:44:50  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.14  2003/07/03 14:21:10  meichel

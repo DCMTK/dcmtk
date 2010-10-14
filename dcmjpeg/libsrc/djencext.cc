@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmjpeg
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: Codec class for encoding JPEG Extended Sequential (lossy, 8/12-bit)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-06-01 16:17:57 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djencext.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:22 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,6 +96,9 @@ DJEncoder *DJEncoderExtended::createEncoderInstance(
 /*
  * CVS/RCS Log
  * $Log: djencext.cc,v $
+ * Revision 1.4  2010-10-14 13:14:22  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.3  2010-06-01 16:17:57  onken
  * Added some comments and line breaks (improved code readability).
  *

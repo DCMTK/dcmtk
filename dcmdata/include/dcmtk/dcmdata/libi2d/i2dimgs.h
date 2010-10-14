@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2001-2009, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -22,9 +18,9 @@
  *  Purpose: Base Class for plugins extracting pixel data from standard
  *           image files
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-02-22 11:39:54 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:46 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,6 +127,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dimgs.h,v $
+ * Revision 1.9  2010-10-14 13:15:46  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.8  2010-02-22 11:39:54  uli
  * Remove some unneeded includes.
  *

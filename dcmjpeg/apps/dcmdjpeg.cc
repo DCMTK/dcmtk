@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmjpeg
  *
@@ -22,8 +18,8 @@
  *  Purpose: Decompress DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-03-24 15:05:32 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2010-10-14 13:13:38 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -371,6 +367,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
+ * Revision 1.26  2010-10-14 13:13:38  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.25  2010-03-24 15:05:32  joergr
  * Added new options for the color space conversion during decompression based
  * on the color model that is "guessed" by the underlying JPEG library (IJG).

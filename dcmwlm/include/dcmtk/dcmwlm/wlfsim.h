@@ -1,34 +1,30 @@
 /*
-*
-*  Copyright (C) 1996-2010, OFFIS
-*
-*  This software and supporting documentation were developed by
-*
-*    Kuratorium OFFIS e.V.
-*    Healthcare Information and Communication Systems
-*    Escherweg 2
-*    D-26121 Oldenburg, Germany
-*
-*  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
-*  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
-*  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
-*  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
-*  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
-*
-*  Module:  dcmwlm
-*
-*  Author:  Thomas Wilkens
-*
-*  Purpose: Class for managing file system interaction.
-*
-*  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2010-08-09 13:29:39 $
-*  CVS/RCS Revision: $Revision: 1.17 $
-*  Status:           $State: Exp $
-*
-*  CVS/RCS Log at end of file
-*
-*/
+ *
+ *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *
+ *  Module:  dcmwlm
+ *
+ *  Author:  Thomas Wilkens
+ *
+ *  Purpose: Class for managing file system interaction.
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:16:39 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef WlmFileSystemInteractionManager_h
 #define WlmFileSystemInteractionManager_h
@@ -457,6 +453,9 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
+** Revision 1.18  2010-10-14 13:16:39  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.17  2010-08-09 13:29:39  joergr
 ** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
 ** the official "keyword" is used for the attribute name which results in a

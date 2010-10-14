@@ -67,10 +67,9 @@
 **  Module Prefix: ASC_
 **
 **
-** Last Update:   $Author: uli $
-** Update Date:   $Date: 2010-10-01 12:25:29 $
-** Source File:   $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/assoc.h,v $
-** CVS/RCS Revision:  $Revision: 1.31 $
+** Last Update:   $Author: joergr $
+** Update Date:   $Date: 2010-10-14 13:17:21 $
+** CVS/RCS Revision:  $Revision: 1.32 $
 ** Status:    $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -632,6 +631,9 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
+** Revision 1.32  2010-10-14 13:17:21  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.31  2010-10-01 12:25:29  uli
 ** Fixed most compiler warnings in remaining modules.
 **

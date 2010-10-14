@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2001-2009, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmjpeg
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Implements TIFF interface for plugable image formats
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-06-07 12:49:51 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:14 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -220,6 +216,9 @@ int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
  *
  * CVS/RCS Log:
  * $Log: dipitiff.cc,v $
+ * Revision 1.11  2010-10-14 13:14:14  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.10  2010-06-07 12:49:51  onken
  * Fixed crash in dcmimage's TIFF plugin on some windows systems
  * that was caused by closing the output file more than once.

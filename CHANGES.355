@@ -3,6 +3,29 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.14 (riesmeier)
 
+- Updated copyright header. Added reference to COPYRIGHT file.
+  Affects: <all modules>/*.cc
+           <all modules>/*.h
+           dcmdata/data/dcm2xml.dtd
+           dcmdata/data/dicom.dic
+           dcmdata/data/diconde.dic
+           dcmdata/data/private.dic
+           dcmdata/libsrc/dcdictbi.nul
+           dcmdata/libsrc/vrscanl.l
+           dcmdata/libsrc/vrscanl.c
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmpstat/etc/dcmpstat.cfg
+           dcmpstat/etc/printers.cfg
+           dcmsr/data/dsr2xml.xsd
+           dcmsr/data/report.css
+           dcmsr/data/reportx.css
+           dcmtls/tests/dcmtk_ca.pl
+           dcmwlm/perl/*.ph
+           dcmwlm/perl/*.pl
+           oflog/etc/filelog.cfg
+           oflog/etc/logger.cfg
+
 - Updated man pages.
   Affects: doxygen/manpages/man1/*
 

@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2005-2007, OFFIS
+ *  Copyright (C) 2005-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module: dcmsr
  *
@@ -23,8 +19,8 @@
  *    classes: DSRXRayRadiationDoseSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-01-08 09:35:35 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2010-10-14 13:16:33 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,6 +97,9 @@ class DSRXRayRadiationDoseSRConstraintChecker
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxrdcc.h,v $
+ *  Revision 1.4  2010-10-14 13:16:33  joergr
+ *  Updated copyright header. Added reference to COPYRIGHT file.
+ *
  *  Revision 1.3  2008-01-08 09:35:35  joergr
  *  Fixed reference to wrong SR IOD in API documentation.
  *

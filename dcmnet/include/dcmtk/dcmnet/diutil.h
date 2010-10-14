@@ -57,10 +57,9 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: uli $
-** Update Date:		$Date: 2010-05-21 11:47:52 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/diutil.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 2010-10-14 13:17:22 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -125,6 +124,9 @@ const char *DU_neventReportStatusString(Uint16 statusCode);
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
+** Revision 1.11  2010-10-14 13:17:22  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.10  2010-05-21 11:47:52  uli
 ** Replaced DU_fileSize() with OFStandard::getFileSize().
 **

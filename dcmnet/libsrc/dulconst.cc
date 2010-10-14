@@ -49,9 +49,8 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-1993
 ** Intent:    This file contains functions for construction of
 **      DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:   $Author: uli $, $Date: 2010-09-08 07:31:29 $
-** Source File:   $RCSfile: dulconst.cc,v $
-** Revision:    $Revision: 1.26 $
+** Last Update:   $Author: joergr $, $Date: 2010-10-14 13:14:28 $
+** Revision:    $Revision: 1.27 $
 ** Status:    $State: Exp $
 */
 
@@ -1533,6 +1532,9 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
+** Revision 1.27  2010-10-14 13:14:28  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.26  2010-09-08 07:31:29  uli
 ** Fix wrong use of logical invert. A bit-wise invert is meant here.
 **

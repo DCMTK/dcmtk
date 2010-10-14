@@ -1,19 +1,14 @@
 /*
  *
- *  Copyright (C) 2008-2010, OFFIS
+ *  Copyright (C) 2008-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
- *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *
  * Author: Michael Onken
@@ -23,10 +18,9 @@
  * Purpose:
  *   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
  *
- * Last Update:         $Author: uli $
- * Update Date:         $Date: 2010-10-05 11:01:04 $
- * Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dcuserid.h,v $
- * CVS/RCS Revision:    $Revision: 1.6 $
+ * Last Update:         $Author: joergr $
+ * Update Date:         $Date: 2010-10-14 13:17:22 $
+ * CVS/RCS Revision:    $Revision: 1.7 $
  * Status:              $State: Exp $
  *
  * CVS/RCS Log at end of file
@@ -382,6 +376,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.h,v $
+** Revision 1.7  2010-10-14 13:17:22  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.6  2010-10-05 11:01:04  uli
 ** Removed a unused copy-constructor and a unused operator=.
 **

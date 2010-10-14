@@ -40,7 +40,7 @@ dcmimagelib = -ldcmimage
 dcmjplsdir = $(top_srcdir)/../dcmjpls
 dcmjplsinc = -I$(dcmjplsdir)/include
 dcmjplslibdir = -L$(dcmjplsdir)/libsrc
-dcmjplslib = -ldcmjpls 
+dcmjplslib = -ldcmjpls
 
 libcharlsdir = $(dcmjplsdir)
 libcharlslibdir = -L$(dcmjplsdir)/libcharls

@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1996-2009, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmimgle
  *
@@ -22,8 +18,8 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-01-05 11:35:33 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2010-10-14 13:14:18 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -408,6 +404,9 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
+ * Revision 1.25  2010-10-14 13:14:18  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.24  2010-01-05 11:35:33  joergr
  * Moved determination of pixel data length to the body of a logging macro
  * (since the length value is only used for logging purposes).

@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2002-2008, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -22,8 +18,8 @@
  *  Purpose: test program for classes OFDate, OFTime and OFDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-21 16:32:42 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2010-10-14 13:15:15 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,6 +167,9 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tofdatim.cc,v $
+ * Revision 1.11  2010-10-14 13:15:15  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.10  2008-05-21 16:32:42  joergr
  * Reimplemented tests for OFDate, OFTime and OFDateTime classes.
  *

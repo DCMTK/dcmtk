@@ -56,10 +56,9 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: uli $
-** Update Date:         $Date: 2009-11-18 11:53:58 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dimse.h,v $
-** CVS/RCS Revision:    $Revision: 1.21 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2010-10-14 13:17:22 $
+** CVS/RCS Revision:    $Revision: 1.22 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1093,6 +1092,9 @@ DIMSE_COMPAT_WRAP_R(DIMSE_printNDelete, T_DIMSE_N_Delete)
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
+** Revision 1.22  2010-10-14 13:17:22  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.21  2009-11-18 11:53:58  uli
 ** Switched to logging mechanism provided by the "new" oflog module.
 **

@@ -68,9 +68,8 @@
 **
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-09-09 08:32:06 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.57 $
+** Update Date:         $Date: 2010-10-14 13:14:27 $
+** CVS/RCS Revision:    $Revision: 1.58 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -2197,6 +2196,9 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
+** Revision 1.58  2010-10-14 13:14:27  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.57  2010-09-09 08:32:06  joergr
 ** Fixed typo in OFCondition constants for SCP/SCU role selection failures.
 **

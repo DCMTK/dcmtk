@@ -55,10 +55,9 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: uli $
-** Update Date:		$Date: 2010-03-01 09:08:48 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 2010-10-14 13:14:28 $
+** CVS/RCS Revision:	$Revision: 1.22 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -2058,6 +2057,9 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
+** Revision 1.22  2010-10-14 13:14:28  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.21  2010-03-01 09:08:48  uli
 ** Removed some unnecessary include directives in the headers.
 **

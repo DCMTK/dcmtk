@@ -7,10 +7,9 @@
 ** Purpose:
 **   Extended Negotiation for A-ASSOCIATE
 **
-** Last Update:         $Author: onken $
-** Update Date:         $Date: 2010-07-06 14:50:17 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/extneg.cc,v $
-** CVS/RCS Revision:    $Revision: 1.6 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2010-10-14 13:14:29 $
+** CVS/RCS Revision:    $Revision: 1.7 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -47,6 +46,9 @@ void deleteListMembers(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS/RCS Log:
 ** $Log: extneg.cc,v $
+** Revision 1.7  2010-10-14 13:14:29  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.6  2010-07-06 14:50:17  onken
 ** Fixed memory leaked in extended negotiaton code.
 **

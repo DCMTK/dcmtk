@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -22,9 +18,9 @@
  *  Purpose: general purpose 32-bit CRC in C++
  *           Code is based on the CRC32 implementation (C)1986 Gary S. Brown
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-07-24 15:43:52 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:08 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,7 +116,10 @@ void DcmPrivateTagCache::updateCache(DcmObject *dobj)
 /*
  * CVS/RCS Log:
  * $Log: dcpcache.cc,v $
- * Revision 1.6  2006-07-24 15:43:52  meichel
+ * Revision 1.7  2010-10-14 13:14:08  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.6  2006/07/24 15:43:52  meichel
  * Fixed memory leak in private tag lookup cache.
  *
  * Revision 1.5  2005/12/08 15:41:24  meichel

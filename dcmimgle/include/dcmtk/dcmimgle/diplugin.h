@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2001-2005, OFFIS
+ *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmimgle
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Provides abstract interface to plugable image output formats
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:48:05 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:16:27 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +88,10 @@ class DiPluginFormat
  *
  * CVS/RCS Log:
  * $Log: diplugin.h,v $
- * Revision 1.4  2005-12-08 16:48:05  meichel
+ * Revision 1.5  2010-10-14 13:16:27  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.4  2005/12/08 16:48:05  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.3  2003/12/08 19:29:29  joergr

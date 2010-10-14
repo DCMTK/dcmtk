@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1993-2009, OFFIS
+ *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmqrdb
  *
@@ -22,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveStoreContext
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:50:07 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2010-10-14 13:16:41 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,6 +141,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcbs.h,v $
+ * Revision 1.5  2010-10-14 13:16:41  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
  * Revision 1.4  2009-08-21 09:50:07  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

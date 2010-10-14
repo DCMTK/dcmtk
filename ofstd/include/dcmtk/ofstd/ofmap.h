@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2009-2010, OFFIS
+ *  Copyright (C) 2009-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -22,10 +18,9 @@
  *  Purpose: Defines a template map class with interfaces similar to the C++
  *           Standard
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-08 12:27:07 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/ofmap.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:50 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -272,6 +267,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofmap.h,v $
+** Revision 1.5  2010-10-14 13:15:50  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.4  2010-10-08 12:27:07  uli
 ** Fixed all doxygen warnings for OFPair and OFauto_ptr.
 **
