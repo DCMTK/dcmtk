@@ -1,4 +1,4 @@
-.TH "img2dcm" 1 "24 Sep 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "img2dcm" 1 "14 Oct 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 img2dcm \- Convert standard image formats into DICOM format
@@ -95,6 +95,8 @@ JPEG format:
 .PP
 .nf
 
+attribute checking:
+
         --do-checks
           enable attribute validity checking (default)
 
@@ -117,13 +119,17 @@ JPEG format:
           do not invent missing type 1 attributes
           (only with --do-checks)
 
+character set:
+
   +l1   --latin1
           set latin-1 as standard character set (default)
 
   -l1   --no-latin1
           keep 7-bit ASCII as standard character set
 
-  -k    --key  [k]ey: gggg,eeee="str" or dictionary name="str"
+other processing options:
+
+  -k    --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
           add further attribute
 .fi
 .PP
@@ -224,7 +230,7 @@ With the \fI--insert-type2\fP and \fI--invent-type1\fP options (both enabled per
 .PP
 .PD 0
 .IP "\(bu" 2
-The \fI--key\fP option can be used to add additional attributes to the DICOM output file. This option is applied at the very end, just before saving the DICOM file.
+The \fI--key\fP option can be used to add further attributes to the DICOM output file. This option is applied at the very end, just before saving the DICOM file. It is also possible to specify sequences, items and nested attributes using the \fI--key\fP option. In these cases, a special 'path' notation has to be used. Details on this path notation can be found in the documentation of \fBdcmodify\fP.
 .PP
 .SS "UIDs"
 New Study and Series Instance UIDs are generated \fBif necessary\fP after applying the \fI--study-from\fP and \fI--series\fP options. If Study Instance UID or Series Instance UID are not present after these steps, they are newly generated, independently from each other. A contrary behaviour is choosen for the SOP Instance UID that one could expect to be taken over when using the \fI--dataset-from\fP option. This is \fBnot\fP the case, the SOP Instance UID is \fBnot\fP copied to the new object. This should be the desirable behaviour for most use cases. However, if a certain SOP Instance UID should be inserted into the new object, the \fI--key\fP option should be used.
@@ -343,7 +349,7 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fI<datadir>/VLP.dump\fP - Sample dump file for Visible Light Photographic images
 .SH "SEE ALSO"
 .PP
-\fBdcm2pnm\fP(1), \fBdcmj2pnm\fP(1), \fBdump2dcm\fP(1), \fBdcmconv\fP(1)
+\fBdcm2pnm\fP(1), \fBdcmj2pnm\fP(1), \fBdump2dcm\fP(1), \fBdcmconv\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
 Copyright (C) 2007-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

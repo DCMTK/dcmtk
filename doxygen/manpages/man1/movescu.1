@@ -1,4 +1,4 @@
-.TH "movescu" 1 "24 Sep 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "movescu" 1 "14 Oct 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 movescu \- DICOM retrieve (C-MOVE) SCU
@@ -381,9 +381,11 @@ UltrasoundMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.3.1
 MRImageStorage                                       1.2.840.10008.5.1.4.1.1.4
 EnhancedMRImageStorage                               1.2.840.10008.5.1.4.1.1.4.1
 MRSpectroscopyStorage                                1.2.840.10008.5.1.4.1.1.4.2
+EnhancedMRColorImageStorage                          1.2.840.10008.5.1.4.1.1.4.3
 RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
 RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
 UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
+EnhancedUSVolumeStorage                              1.2.840.10008.5.1.4.1.1.6.2
 SecondaryCaptureImageStorage                         1.2.840.10008.5.1.4.1.1.7
 MultiframeSingleBitSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.1
 MultiframeGrayscaleByteSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.2
@@ -398,21 +400,31 @@ AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1
 HemodynamicWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.2.1
 CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3.1
 BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
+GeneralAudioWaveformStorage                          1.2.840.10008.5.1.4.1.1.9.4.2
+ArterialPulseWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.5.1
+RespiratoryWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.6.1
 RETIRED_StandaloneModalityLUTStorage                 1.2.840.10008.5.1.4.1.1.10
 RETIRED_StandaloneVOILUTStorage                      1.2.840.10008.5.1.4.1.1.11
 GrayscaleSoftcopyPresentationStateStorage            1.2.840.10008.5.1.4.1.1.11.1
 ColorSoftcopyPresentationStateStorage                1.2.840.10008.5.1.4.1.1.11.2
 PseudoColorSoftcopyPresentationStateStorage          1.2.840.10008.5.1.4.1.1.11.3
 BlendingSoftcopyPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.4
+XAXRFGrayscaleSoftcopyPresentationStateStorage       1.2.840.10008.5.1.4.1.1.11.5
 XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
 EnhancedXAImageStorage                               1.2.840.10008.5.1.4.1.1.12.1.1
 XRayRadiofluoroscopicImageStorage                    1.2.840.10008.5.1.4.1.1.12.2
 EnhancedXRFImageStorage                              1.2.840.10008.5.1.4.1.1.12.2.1
+XRay3DAngiographicImageStorage                       1.2.840.10008.5.1.4.1.1.13.1.1
+XRay3DCraniofacialImageStorage                       1.2.840.10008.5.1.4.1.1.13.1.2
+BreastTomosynthesisImageStorage                      1.2.840.10008.5.1.4.1.1.13.1.3
 RETIRED_XRayAngiographicBiPlaneImageStorage          1.2.840.10008.5.1.4.1.1.12.3
 NuclearMedicineImageStorage                          1.2.840.10008.5.1.4.1.1.20
 RawDataStorage                                       1.2.840.10008.5.1.4.1.1.66
 SpatialRegistrationStorage                           1.2.840.10008.5.1.4.1.1.66.1
 SpatialFiducialsStorage                              1.2.840.10008.5.1.4.1.1.66.2
+DeformableSpatialRegistrationStorage                 1.2.840.10008.5.1.4.1.1.66.3
+SegmentationStorage                                  1.2.840.10008.5.1.4.1.1.66.4
+SurfaceSegmentationStorage                           1.2.840.10008.5.1.4.1.1.66.5
 RealWorldValueMappingStorage                         1.2.840.10008.5.1.4.1.1.67
 RETIRED_VLImageStorage                               1.2.840.10008.5.1.4.1.1.77.1
 VLEndoscopicImageStorage                             1.2.840.10008.5.1.4.1.1.77.1.1
@@ -426,7 +438,18 @@ OphthalmicPhotography8BitImageStorage                1.2.840.10008.5.1.4.1.1.77.
 OphthalmicPhotography16BitImageStorage               1.2.840.10008.5.1.4.1.1.77.1.5.2
 StereometricRelationshipStorage                      1.2.840.10008.5.1.4.1.1.77.1.5.3
 OphthalmicTomographyImageStorage                     1.2.840.10008.5.1.4.1.1.77.1.5.4
+VLWholeSlideMicroscopyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.6
 RETIRED_VLMultiFrameImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
+LensometryMeasurementsStorage                        1.2.840.10008.5.1.4.1.1.78.1
+AutorefractionMeasurementsStorage                    1.2.840.10008.5.1.4.1.1.78.2
+KeratometryMeasurementsStorage                       1.2.840.10008.5.1.4.1.1.78.3
+SubjectiveRefractionMeasurementsStorage              1.2.840.10008.5.1.4.1.1.78.4
+VisualAcuityMeasurementsStorage                      1.2.840.10008.5.1.4.1.1.78.5
+SpectaclePrescriptionReportStorage                   1.2.840.10008.5.1.4.1.1.78.6
+OphthalmicAxialMeasurementsStorage                   1.2.840.10008.5.1.4.1.1.78.7
+IntraocularLensCalculationsStorage                   1.2.840.10008.5.1.4.1.1.78.8
+MacularGridThicknessAndVolumeReportStorage           1.2.840.10008.5.1.4.1.1.79.1
+OphthalmicVisualFieldStaticPerimetryMeasurementsSt.  1.2.840.10008.5.1.4.1.1.80.1
 DRAFT_SRTextStorage                                  1.2.840.10008.5.1.4.1.1.88.1
 DRAFT_SRAudioStorage                                 1.2.840.10008.5.1.4.1.1.88.2
 DRAFT_SRDetailStorage                                1.2.840.10008.5.1.4.1.1.88.3
@@ -439,9 +462,13 @@ MammographyCADSRStorage                              1.2.840.10008.5.1.4.1.1.88.
 KeyObjectSelectionDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.59
 ChestCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.65
 XRayRadiationDoseSRStorage                           1.2.840.10008.5.1.4.1.1.88.67
+ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.69
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
+EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
 PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
 RETIRED_StandalonePETCurveStorage                    1.2.840.10008.5.1.4.1.1.129
+EnhancedPETImageStorage                              1.2.840.10008.5.1.4.1.1.130
+BasicStructuredDisplayStorage                        1.2.840.10008.5.1.4.1.1.131
 RTImageStorage                                       1.2.840.10008.5.1.4.1.1.481.1
 RTDoseStorage                                        1.2.840.10008.5.1.4.1.1.481.2
 RTStructureSetStorage                                1.2.840.10008.5.1.4.1.1.481.3
@@ -449,6 +476,9 @@ RTBeamsTreatmentRecordStorage                        1.2.840.10008.5.1.4.1.1.481
 RTPlanStorage                                        1.2.840.10008.5.1.4.1.1.481.5
 RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481.6
 RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
+RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481.8
+RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
+DRAFT_RTBeamsDeliveryInstructionStorage              1.2.840.10008.5.1.4.34.1
 .fi
 .PP
 .PP

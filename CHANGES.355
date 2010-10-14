@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.14 (riesmeier)
 
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 - Updated copyright date.
   Affects: dcmdata/docs/dcm2pdf.man
            dcmdata/docs/dcm2xml.man

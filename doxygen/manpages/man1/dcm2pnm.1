@@ -1,4 +1,4 @@
-.TH "dcm2pnm" 1 "24 Sep 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2pnm" 1 "14 Oct 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2pnm \- Convert DICOM images to PGM/PPM, PNG, TIFF or BMP
@@ -191,16 +191,22 @@ VOI LUT transformation:
   +Ww   --set-window  [c]enter [w]idth: float
           compute VOI window using center c and width w
 
+  +Wfl  --linear-function
+          set VOI LUT function to LINEAR
+
+  +Wfs  --sigmoid-function
+          set VOI LUT function to SIGMOID
+
 presentation LUT transformation:
 
   +Pid  --identity-shape
-          presentation LUT shape IDENTITY
+          set presentation LUT shape to IDENTITY
 
   +Piv  --inverse-shape
-          presentation LUT shape INVERSE
+          set presentation LUT shape to INVERSE
 
   +Pod  --lin-od-shape
-          presentation LUT shape LIN OD
+          set presentation LUT shape to LIN OD
 
 overlay:
 
@@ -394,6 +400,22 @@ The following preferred interpolation algorithms can be selected using the \fI--
 The \fI--write-tiff\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibtiff\fP TIFF library. The availability of the TIFF compression options depends on the \fBlibtiff\fP configuration. In particular, the patented LZW algorithm may not be available.
 .PP
 The \fI--write-png\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibpng\fP PNG library. Option \fI--interlace\fP enables progressive image view while loading the PNG file. Only a few applications take care of the meta info (TEXT) in a PNG file.
+.SH "TRANSFER SYNTAXES"
+.PP
+\fBdcm2pnm\fP supports the following transfer syntaxes for input (\fIdcmfile-in\fP):
+.PP
+.PP
+.nf
+
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
+.fi
+.PP
+.PP
+(*) if compiled with zlib support enabled
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
@@ -425,4 +447,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmj2pnm\fP(1), \fBimg2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1998-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1998-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
