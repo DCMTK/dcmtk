@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.14 (riesmeier)
 
+- Added support for "new" SR Storage SOP Classes to storeRequest().
+  Affects: dcmqrdb/libsrc/dcmqrdbi.cc
+
 - Fixed wording on the use of variables.
   Affects: oflog/etc/logger.cfg
 

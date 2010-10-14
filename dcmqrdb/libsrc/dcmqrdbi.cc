@@ -15,11 +15,12 @@
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
+ *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle,
+ *                   DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:35 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2010-10-14 15:03:38 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2867,13 +2868,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     const char  *SOPClassUID,
     const char  * /*SOPInstanceUID*/,
     const char  *imageFileName,
-    DcmQueryRetrieveDatabaseStatus   *status,
+    DcmQueryRetrieveDatabaseStatus *status,
     OFBool      isNew)
 {
-    IdxRecord           idxRec ;
-    StudyDescRecord     *pStudyDesc ;
-    int                 i ;
-    struct stat         buf ;
+    IdxRecord        idxRec ;
+    StudyDescRecord  *pStudyDesc ;
+    int              i ;
+    struct stat      buf ;
 
     /**** Initialize an IdxRecord
     ***/
@@ -2939,7 +2940,15 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
             useDescrTag = OFFalse;
         } else if ((strcmp(SOPClassUID, UID_BasicTextSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_EnhancedSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_ComprehensiveSRStorage) == 0))
+                   (strcmp(SOPClassUID, UID_ComprehensiveSRStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_ProcedureLogStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_MammographyCADSRStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_KeyObjectSelectionDocumentStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_ChestCADSRStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_ColonCADSRStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_XRayRadiationDoseSRStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_SpectaclePrescriptionReportStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage) == 0))
         {
             OFString string;
             OFString description = "unknown SR";
@@ -3422,6 +3431,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.26  2010-10-14 15:03:38  joergr
+ * Added support for "new" SR Storage SOP Classes to storeRequest().
+ *
  * Revision 1.25  2010-10-14 13:14:35  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
