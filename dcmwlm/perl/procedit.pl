@@ -1,30 +1,17 @@
 #!/usr/local/bin/perl
 #
-#  Copyright (C) 1996-2002, OFFIS
+#  Copyright (C) 1996-2010, OFFIS e.V.
+#  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
 #
-#    Kuratorium OFFIS e.V.
-#    Forschungsbereich 2: Kommunikationssysteme
+#    OFFIS e.V.
+#    R&D Division Health
 #    Escherweg 2
 #    D-26121 Oldenburg, Germany
 #
 #  for CEN/TC251/WG4 as a contribution to the Computer Assisted Radiology
 #  (CAR) 1996 DICOM Demonstration.
-#
-#  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
-#  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
-#  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
-#  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
-#  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
-#
-#  Copyright of the software  and  supporting  documentation  is,  unless
-#  otherwise stated, owned by OFFIS, and free access is hereby granted as
-#  a license to  use  this  software,  copy  this  software  and  prepare
-#  derivative works based upon this software.  However, any  distribution
-#  of this software source code or supporting documentation or derivative
-#  works  (source code and  supporting documentation)  must  include  the
-#  three paragraphs of this copyright notice.
 #
 #
 # Module: dcmwlm (WWW Component)
@@ -32,17 +19,19 @@
 # Author: Marco Eichelberg
 #
 # Purpose:
-#   This perl script allows to create and update procedure data 
+#   This perl script allows to create and update procedure data
 #
-# Last Update:      $Author: wilkens $
-# Update Date:      $Date: 2002-12-03 12:16:12 $
-# Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/perl/procedit.pl,v $
-# CVS/RCS Revision: $Revision: 1.1 $
+# Last Update:      $Author: joergr $
+# Update Date:      $Date: 2010-10-14 13:02:01 $
+# CVS/RCS Revision: $Revision: 1.2 $
 # Status:           $State: Exp $
 #
 # CVS/RCS Log
 #   $Log: procedit.pl,v $
-#   Revision 1.1  2002-12-03 12:16:12  wilkens
+#   Revision 1.2  2010-10-14 13:02:01  joergr
+#   Updated copyright header. Added reference to COPYRIGHT file.
+#
+#   Revision 1.1  2002/12/03 12:16:12  wilkens
 #   Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
 #   so that dcmwlm can now completely replace wlistctn in the public domain part
 #   of dcmtk. Pertaining to this replacement requirement, another optional return
@@ -65,7 +54,7 @@ $path_info=$ENV{'PATH_INFO'};
 $aetitle = '';
 $passwd = '';
 $procid = '';
-if ($path_info ne '')  
+if ($path_info ne '')
 {
   ($dummy, $aetitle, $passwd, $procid, $rest) = split(/\//, $path_info);
 }
@@ -86,14 +75,14 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
     if ($rqpairs{'action'} eq 'Cancel')
     {
       printf("Location: %s/%s/%s\n\n", $prefs{'procedur.pl'}, $aetitle, $passwd);
-    } else {    
+    } else {
       # We have received a filled-in form.
       # We save/update it and return a URL to the updated form.
       $title = &makeLO($rqpairs{'title'});
       $titleOK = (&checkLO($title))&&(length($title)>0);
       $description = &makeLO($rqpairs{'description'});
       $descriptionOK = (&checkLO($description))&&(length($description)>0);
-      
+
       if (($titleOK)&&($descriptionOK))
       {
         &set_writelock("$prefs{'data_path'}/$aetitle");
@@ -104,7 +93,7 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
         $decodedid = pack("H*",$procid);
         $newentry = 1;
         foreach(@PROCEDURE_KEYS) { if ($decodedid eq $_) { $newentry = 0; } }
-        if ($newentry) { push(@PROCEDURE_KEYS, $decodedid); }            
+        if ($newentry) { push(@PROCEDURE_KEYS, $decodedid); }
         $PROCEDURE_VALUES{"$decodedid\\title"} = $title;
         $PROCEDURE_VALUES{"$decodedid\\description"} = $description;
         $PROCEDURE_VALUES{"$decodedid\\priority"} = $rqpairs{'priority'};
@@ -145,7 +134,7 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
 #   5 bool titleOK,
 #   6 bool descriptionOK,
 #   7 bool isNewProcedure)
-# 
+#
 sub create_procedure_form
 {
   &page_title("Procedure Form");
@@ -181,7 +170,7 @@ sub create_procedure_form
   printf("<option value=\"MEDIUM\" %s>MEDIUM\n",(@_[4] eq 'MEDIUM' ? 'selected' : ''));
   printf("<option value=\"LOW\" %s>LOW\n",(@_[4] eq 'LOW' ? 'selected' : ''));
   printf("</select></TD></TR></TABLE><P>\n");
-  
+
   if (! @_[7])
   {
     printf("<P><INPUT TYPE=SUBMIT name=\"action\" value=\"Update\">\n");

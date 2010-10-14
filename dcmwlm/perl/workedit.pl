@@ -1,30 +1,17 @@
 #!/usr/local/bin/perl
 #
-#  Copyright (C) 1996-2002, OFFIS
+#  Copyright (C) 1996-2010, OFFIS e.V.
+#  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
 #
-#    Kuratorium OFFIS e.V.
-#    Forschungsbereich 2: Kommunikationssysteme
+#    OFFIS e.V.
+#    R&D Division Health
 #    Escherweg 2
 #    D-26121 Oldenburg, Germany
 #
 #  for CEN/TC251/WG4 as a contribution to the Computer Assisted Radiology
 #  (CAR) 1996 DICOM Demonstration.
-#
-#  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
-#  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
-#  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
-#  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
-#  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
-#
-#  Copyright of the software  and  supporting  documentation  is,  unless
-#  otherwise stated, owned by OFFIS, and free access is hereby granted as
-#  a license to  use  this  software,  copy  this  software  and  prepare
-#  derivative works based upon this software.  However, any  distribution
-#  of this software source code or supporting documentation or derivative
-#  works  (source code and  supporting documentation)  must  include  the
-#  three paragraphs of this copyright notice.
 #
 #
 # Module: dcmwlm (WWW Component)
@@ -32,17 +19,19 @@
 # Author: Marco Eichelberg
 #
 # Purpose:
-#   This perl script allows to create and update worklist entries 
+#   This perl script allows to create and update worklist entries
 #
-# Last Update:      $Author: wilkens $
-# Update Date:      $Date: 2002-12-03 12:16:19 $
-# Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/perl/workedit.pl,v $
-# CVS/RCS Revision: $Revision: 1.1 $
+# Last Update:      $Author: joergr $
+# Update Date:      $Date: 2010-10-14 13:02:02 $
+# CVS/RCS Revision: $Revision: 1.2 $
 # Status:           $State: Exp $
 #
 # CVS/RCS Log
 #   $Log: workedit.pl,v $
-#   Revision 1.1  2002-12-03 12:16:19  wilkens
+#   Revision 1.2  2010-10-14 13:02:02  joergr
+#   Updated copyright header. Added reference to COPYRIGHT file.
+#
+#   Revision 1.1  2002/12/03 12:16:19  wilkens
 #   Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
 #   so that dcmwlm can now completely replace wlistctn in the public domain part
 #   of dcmtk. Pertaining to this replacement requirement, another optional return
@@ -66,7 +55,7 @@ $path_info=$ENV{'PATH_INFO'};
 $aetitle = '';
 $passwd = '';
 $dicomfile = '';
-if ($path_info ne '')  
+if ($path_info ne '')
 {
   ($dummy, $aetitle, $passwd, $dicomfile, $rest) = split(/\//, $path_info);
 }
@@ -110,7 +99,7 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
           $scheduled_station_name = "$scheduled_station_name$temp_name";
         }
       }
-       
+
       &create_worklist_form(
         "$prefs{'workedit.pl'}$path_info",
         $procedureID,
@@ -120,32 +109,32 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
         '', # Accession No.
         '', # Req. Physician
         $PATIENT_VALUES{"$patientID\\name"},
-        $patientID, 
+        $patientID,
         $PATIENT_VALUES{"$patientID\\birthdate"},
         $PATIENT_VALUES{"$patientID\\sex"},
         $PATIENT_VALUES{"$patientID\\alerts"},
         $PATIENT_VALUES{"$patientID\\allergies"},
-        1, 1, 1, 1, 1, 1,      
+        1, 1, 1, 1, 1, 1,
         $scheduled_station_AEtitle,
         $datenow,
         $timenow,
         $PROCEDURESTEP_VALUES{"$procedurestepID\\modality"},
         '',
-        $PROCEDURESTEP_VALUES{"$procedurestepID\\title"},    
+        $PROCEDURESTEP_VALUES{"$procedurestepID\\title"},
         $scheduled_station_name,
         $PROCEDURESTEP_VALUES{"$procedurestepID\\location"},
         $PROCEDURESTEP_VALUES{"$procedurestepID\\medication"},
         $procedurestepID,
         $PROCEDURESTEP_VALUES{"$procedurestepID\\contrast"},
         $PROCEDURESTEP_VALUES{"$procedurestepID\\comments"},
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);   
-    }    
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+    }
     elsif ($rqpairs{'action'} eq 'Cancel')
     {
-      printf("Location: %s/%s/%s\n\n", $prefs{'worklist.pl'}, $aetitle, $passwd);      
+      printf("Location: %s/%s/%s\n\n", $prefs{'worklist.pl'}, $aetitle, $passwd);
     } else {
       # Action = Save or Update.
-      
+
       $scheduled_station_AEtitle = '';
       $scheduled_station_name = '';
       local($key);
@@ -157,20 +146,20 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
           if (length($scheduled_station_AEtitle)==0)
           {
             $scheduled_station_AEtitle = $_;
-            $scheduled_station_name = $STATION_VALUES{"$_\\name"};         
+            $scheduled_station_name = $STATION_VALUES{"$_\\name"};
           } else {
             $scheduled_station_AEtitle = join("\\", $scheduled_station_AEtitle, $_);
             $scheduled_station_name = join("\\", $scheduled_station_name, $STATION_VALUES{"$_\\name"});
           }
         }
       }
-      
+
       $requested_procedure_ID = &makeSH($rqpairs{'requested_procedure_ID'});
       $requested_procedure_description = &makeLO($rqpairs{'requested_procedure_description'});
       $study_instance_UID = $rqpairs{'study_instance_UID'};
       $requested_procedure_Priority = &makeSH($rqpairs{'requested_procedure_priority'});
       $accession_no = &makeSH($rqpairs{'accession_no'});
-      $requesting_physician = &makePN($rqpairs{'requesting_physician'}); 
+      $requesting_physician = &makePN($rqpairs{'requesting_physician'});
       $patients_name = &makePN($rqpairs{'patients_name'});
       $patient_ID = &makeLO($rqpairs{'patient_ID'});
       $patients_birthdate = &makeDA($rqpairs{'patients_birthdate'});
@@ -179,7 +168,7 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
       $medical_alerts =~ s/\015\012/\\/g;
       $contrast_allergies = &makeLON($rqpairs{'contrast_allergies'});
       $contrast_allergies =~ s/\015\012/\\/g;
-                    
+
       $scheduled_procedure_step_start_date = &makeDA($rqpairs{'scheduled_procedure_step_start_date'});
       $scheduled_procedure_step_start_time = &makeTM($rqpairs{'scheduled_procedure_step_start_time'});
       $modality = $rqpairs{'modality'};
@@ -190,17 +179,17 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
       $scheduled_procedure_step_ID = &makeSH($rqpairs{'scheduled_procedure_step_ID'});
       $requested_contrast_agent = &makeLO($rqpairs{'requested_contrast_agent'});
       $scheduled_procedure_step_comments = &makeLT($rqpairs{'scheduled_procedure_step_comments'});
-            
-      $scheduled_station_AEtitle_OK = (length($scheduled_station_AEtitle) >0);      
+
+      $scheduled_station_AEtitle_OK = (length($scheduled_station_AEtitle) >0);
       $requested_procedure_description_OK = &checkLO($requested_procedure_description);
-      $requesting_physician_OK = (length($requesting_physician)==0) || 
+      $requesting_physician_OK = (length($requesting_physician)==0) ||
         &checkPN($requesting_physician);
       $patients_name_OK = &checkPN($patients_name);
-      $patients_birthdate_OK = (length($patients_birthdate)==0) || 
+      $patients_birthdate_OK = (length($patients_birthdate)==0) ||
         &checkDA($patients_birthdate);
       $medical_alerts_OK = &checkLON($medical_alerts);
       $contrast_allergies_OK = &checkLON($contrast_allergies);
-      
+
       $scheduled_procedure_step_start_date_OK = &checkDA($scheduled_procedure_step_start_date);
       $scheduled_procedure_step_start_time_OK = &checkTM($scheduled_procedure_step_start_time);
       $scheduled_performing_physicians_name_OK = (length($scheduled_performing_physicians_name)==0) ||
@@ -212,7 +201,7 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
       $scheduled_procedure_step_ID_OK = &checkSH($scheduled_procedure_step_ID);
       $requested_contrast_agent_OK = &checkLO($requested_contrast_agent);
       $scheduled_procedure_step_comments_OK = &checkLT($scheduled_procedure_step_comments);
-         
+
       if ($requested_procedure_description_OK
         && $requesting_physician_OK
         && $patients_name_OK
@@ -238,14 +227,14 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
           $dicomfilename = pack("H*",$dicomfile);
         }
         $temppath = "$prefs{'data_path'}/$aetitle/tempfile.tmp";
-        
+
         if ($accession_no eq '') { $accession_no = &nextAccNr($aetitle); }
         if ($study_instance_UID eq '') { $study_instance_UID = &nextUID($aetitle); }
         &set_writelock("$prefs{'data_path'}/$aetitle");
         &write_environment($filename);
-        
-        # Write DICOM data to temporary file        
-        if (open(TMPFILE,">$temppath"))        
+
+        # Write DICOM data to temporary file
+        if (open(TMPFILE,">$temppath"))
         {
           printf(TMPFILE "\\%s\\%s\\%s\\%s\\%s\\%s\\%s\\%s\\%s\\%s\\%s\\%s",
             unpack("H*", &html_to_iso($requested_procedure_ID)),
@@ -259,10 +248,10 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
             unpack("H*", &html_to_iso($patients_birthdate)),
             unpack("H*", &html_to_iso($patients_sex)),
             unpack("H*", &html_to_iso($medical_alerts)),
-            unpack("H*", &html_to_iso($contrast_allergies)));                    
+            unpack("H*", &html_to_iso($contrast_allergies)));
           printf(TMPFILE "\\%s\\%s\\%s\\%s\\%s\\%s\\%s\\%s\\%s\\%s\\%s\\%s\\\n",
             unpack("H*", &html_to_iso($scheduled_station_AEtitle)),
-            unpack("H*", &html_to_iso($scheduled_procedure_step_start_date)), 
+            unpack("H*", &html_to_iso($scheduled_procedure_step_start_date)),
             unpack("H*", &html_to_iso($scheduled_procedure_step_start_time)),
             unpack("H*", &html_to_iso($modality)),
             unpack("H*", &html_to_iso($scheduled_performing_physicians_name)),
@@ -325,7 +314,7 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
           $requested_contrast_agent_OK,
           $scheduled_procedure_step_comments_OK,
           0);
-      }      
+      }
     }
   } else {
     # We have received a request for a form.
@@ -337,7 +326,7 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
       # Read DICOM file and display editor.
       $dicomfile = pack("H*",$dicomfile);
       $encodeddata=`$prefs{'readwlst'} $prefs{'data_path'}/$aetitle/$dicomfile`;
-      ($dummy, $encodeddata) = split(/\\/,$encodeddata, 2);           
+      ($dummy, $encodeddata) = split(/\\/,$encodeddata, 2);
       @arglist = ();
       for (1..10) # Argument 1-10 can be copied directly
       {
@@ -354,19 +343,19 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
       $dummy = pack("H*",$value);
       $dummy =~ s/\\/\015\012/g;
       push(@arglist, &iso_to_html($dummy));
-        
+
       for (1..6) { push(@arglist,1); }
-      
+
       # Attention: AETitles must not be converted to HTML format!
       ($value, $encodeddata) = split(/\\/,$encodeddata, 2);
       push(@arglist, pack("H*",$value));
-      
+
       for (1..11) # Argument 20-30 can also be copied directly
       {
         ($value, $encodeddata) = split(/\\/,$encodeddata, 2);
         push(@arglist, &iso_to_html(pack("H*",$value)));
       }
-      for (1..10) { push(@arglist,1); }      
+      for (1..10) { push(@arglist,1); }
       &create_worklist_form(
         "$prefs{'workedit.pl'}$path_info", @arglist, 0);
     }
@@ -382,7 +371,7 @@ sub create_new_form
   &page_title("Create New Worklist Form");
   printf("<FORM METHOD=get ACTION=\"%s\">\n",@_[0]);
   printf("<TABLE  CELLSPACING=\"3\" BORDER=0  WIDTH=80%%>\n");
- 
+
   printf("<TR><TD nowrap>Patient:</TD><TD nowrap>");
   printf("<select name=\"patient\">\n");
 
@@ -411,7 +400,7 @@ sub create_new_form
   printf("<P><INPUT TYPE=SUBMIT name=\"action\" value=\"Create\">\n");
   printf("<INPUT TYPE=RESET value=\"Reset Form\"></FORM>\n");
   &page_footer;
-}  
+}
 
 
 #
@@ -459,11 +448,11 @@ sub create_new_form
 #  39 bool requested_contrast_agent_OK
 #  40 bool scheduled_procedure_step_comments_OK
 #  41 int isNewWorklist
-# 
+#
 sub create_worklist_form
 {
   &page_title("Worklist Form");
-  
+
   local($arg_action) = @_[0];
   local($arg_requested_procedure_ID) = @_[1];
   local($arg_requested_procedure_description) = @_[2];
@@ -507,12 +496,12 @@ sub create_worklist_form
   local($arg_scheduled_procedure_step_comments_OK) = @_[40];
   local($arg_isNewWorklist) = @_[41];
 
-  $no_errors = 
-    $arg_requested_procedure_description_OK 
+  $no_errors =
+    $arg_requested_procedure_description_OK
     && $arg_requesting_physician_OK
-    && $arg_patients_name_OK 
+    && $arg_patients_name_OK
     && $arg_patients_birthdate_OK
-    && $arg_medical_alerts_OK 
+    && $arg_medical_alerts_OK
     && $arg_contrast_allergies_OK
     && $arg_scheduled_station_AEtitle_OK
     && $arg_requested_contrast_agent_OK
@@ -520,18 +509,18 @@ sub create_worklist_form
     && $arg_scheduled_procedure_step_start_time_OK
     && $arg_scheduled_performing_physicians_name_OK
     && $arg_scheduled_procedure_step_description_OK
-    && $arg_scheduled_procedure_step_location_OK 
+    && $arg_scheduled_procedure_step_location_OK
     && $arg_pre_medication_OK
     && $arg_scheduled_procedure_step_ID_OK
     && $arg_scheduled_procedure_step_comments_OK;
-  
+
   if (! $no_errors)
   {
     printf("<b>Errors</b> have been found in the data you typed in.\n");
     printf("The labels of the offending fields have been marked bold/italic.\n");
     printf("Please correct the data and press the update button.<p>\n");
   }
-  
+
   printf("<FORM METHOD=get ACTION=\"%s\">\n",$arg_action);
 
   # ----- IMAGING SERVICE REQUEST SECTION -----
@@ -541,10 +530,10 @@ sub create_worklist_form
 
   # Accession Number
   printf("<TR><TD nowrap>Accession Number:</TD>\n<TD nowrap>");
-  printf("%s</TD></TR>", (($arg_accession_no eq '') ? 
+  printf("%s</TD></TR>", (($arg_accession_no eq '') ?
     'will be assigned automatically.' : $arg_accession_no));
   printf("<INPUT name=\"accession_no\" type=hidden value=\"%s\">\n", $arg_accession_no);
-  # Requesting Physician 
+  # Requesting Physician
   printf("<TR><TD nowrap>");
   if (! $arg_requesting_physician_OK) { printf("<b><i>"); }
   printf("Requesting Physician:");
@@ -556,7 +545,7 @@ sub create_worklist_form
   # ----- PATIENT SECTION -----
   printf("<HR><H3>Patient Data</H3>\n");
   printf("<TABLE  CELLSPACING=\"3\" BORDER=0  WIDTH=80%%>\n");
- 
+
   # Patient ID
   printf("<TR><TD nowrap>Patient ID:</TD>\n");
   printf("<TD nowrap>%s</TD></TR>\n", $arg_patient_ID);
@@ -598,7 +587,7 @@ sub create_worklist_form
   printf("Contrast Allergies:<br>\n");
   if (! $arg_contrast_allergies_OK) { printf("</i></b>"); }
   printf("<textarea name=\"contrast_allergies\" rows=6 cols=64>%s</textarea><p>\n",$arg_contrast_allergies);
-    
+
   # ----- PROCEDURE SECTION -----
   printf("<HR><H3>Requested Procedure</H3>\n");
   printf("<TABLE  CELLSPACING=\"3\" BORDER=0  WIDTH=80%%>\n");
@@ -618,7 +607,7 @@ sub create_worklist_form
 
   # Study Instance UID
   printf("<TR><TD nowrap>Study Instance UID:</TD>\n<TD nowrap>");
-  printf("%s</TD></TR>", (($arg_study_instance_UID eq '') ? 
+  printf("%s</TD></TR>", (($arg_study_instance_UID eq '') ?
     'will be assigned automatically.' : $arg_study_instance_UID));
   printf("<INPUT name=\"study_instance_UID\" type=hidden value=\"%s\">\n", $arg_study_instance_UID);
 
@@ -634,12 +623,12 @@ sub create_worklist_form
   printf("</select></TD></TR></TABLE><P>\n");
 
   # ----- PROCEDURE STEP SECTION -----
-  
+
   @keys = @STATION_KEYS;
   @values = ();
   for (@keys){ push(@values,join("\000",$STATION_VALUES{"$_\\name"},$_)); }
   @SORTED_STATIONS = sort(@values);
-  
+
   printf("<HR><H3>Scheduled Procedure Step</H3>\n");
   printf("<TABLE  CELLSPACING=\"3\" BORDER=0  WIDTH=80%%>\n");
 
@@ -650,7 +639,7 @@ sub create_worklist_form
   if (! $arg_scheduled_procedure_step_ID_OK) { printf("</i></b>"); }
   printf("</TD>\n<TD nowrap>");
   printf("<input name=\"scheduled_procedure_step_ID\" maxlength=16 size=16 value=\"%s\"></TD></TR>\n", $arg_scheduled_procedure_step_ID);
-    
+
   # Modality
   printf("<TR><TD nowrap>Modality:</TD>\n<TD nowrap>");
   printf("<select name=\"modality\">\n");
@@ -691,7 +680,7 @@ sub create_worklist_form
   printf("<option value=\"VF\" %s>Videofluorography\n",($arg_modality eq 'VF' ? 'selected' : ''));
   printf("<option value=\"XA\" %s>X-Ray Angiography\n",($arg_modality eq 'XA' ? 'selected' : ''));
   printf("</select></TD></TR>\n");
-    
+
   # Scheduled Procedure Step Description
   printf("<TR><TD nowrap>");
   if (! $arg_scheduled_procedure_step_description_OK) { printf("<b><i>"); }
@@ -708,7 +697,7 @@ sub create_worklist_form
   printf("</TD>\n<TD nowrap>");
   printf("<input name=\"pre_medication\" maxlength=64 size=64 value=\"%s\"></TD></TR>\n", $arg_pre_medication);
 
-  # Requested Contrast Agent    
+  # Requested Contrast Agent
   printf("<TR><TD nowrap>");
   if (! $arg_requested_contrast_agent_OK) { printf("<b><i>"); }
   printf("Requested Contrast Agent:");
@@ -755,7 +744,7 @@ sub create_worklist_form
   if (! $arg_scheduled_station_AEtitle_OK) { printf("</i></b>"); }
   printf("<TABLE  CELLSPACING=\"3\" BORDER=0  WIDTH=80%%>\n");
   $arg_scheduled_station_AEtitle = "\\$arg_scheduled_station_AEtitle\\";
-  
+
   for (@SORTED_STATIONS)
   {
       ($name, $key) = split(/\000/);
@@ -765,15 +754,15 @@ sub create_worklist_form
         $name, $STATION_VALUES{"$key\\modality"}, $key);
   }
   printf("</TABLE><P>\n");
-    
+
   # Comments on the Scheduled Procedure Step
   if (! $arg_scheduled_procedure_step_comments_OK) { printf("<b><i>"); }
   printf("Comments on the Scheduled Procedure Step:<br>\n");
   if (! $arg_scheduled_procedure_step_comments_OK) { printf("</i></b>"); }
   printf("<textarea name=\"scheduled_procedure_step_comments\" rows=6 cols=64>%s</textarea><p>\n", $arg_scheduled_procedure_step_comments);
-    
+
   # ----- FINISH -----
-  
+
   printf("<HR>");
   if ($arg_isNewWorklist)
   {

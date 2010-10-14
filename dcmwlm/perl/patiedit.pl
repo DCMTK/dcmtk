@@ -1,30 +1,17 @@
 #!/usr/local/bin/perl
 #
-#  Copyright (C) 1996-2002, OFFIS
+#  Copyright (C) 1996-2010, OFFIS e.V.
+#  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
 #
-#    Kuratorium OFFIS e.V.
-#    Forschungsbereich 2: Kommunikationssysteme
+#    OFFIS e.V.
+#    R&D Division Health
 #    Escherweg 2
 #    D-26121 Oldenburg, Germany
 #
 #  for CEN/TC251/WG4 as a contribution to the Computer Assisted Radiology
 #  (CAR) 1996 DICOM Demonstration.
-#
-#  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
-#  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
-#  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
-#  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
-#  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
-#
-#  Copyright of the software  and  supporting  documentation  is,  unless
-#  otherwise stated, owned by OFFIS, and free access is hereby granted as
-#  a license to  use  this  software,  copy  this  software  and  prepare
-#  derivative works based upon this software.  However, any  distribution
-#  of this software source code or supporting documentation or derivative
-#  works  (source code and  supporting documentation)  must  include  the
-#  three paragraphs of this copyright notice.
 #
 #
 # Module: dcmwlm (WWW Component)
@@ -32,17 +19,19 @@
 # Author: Marco Eichelberg
 #
 # Purpose:
-#   This perl script allows to create and update patient data 
+#   This perl script allows to create and update patient data
 #
-# Last Update:      $Author: wilkens $
-# Update Date:      $Date: 2002-12-03 12:16:09 $
-# Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/perl/patiedit.pl,v $
-# CVS/RCS Revision: $Revision: 1.1 $
+# Last Update:      $Author: joergr $
+# Update Date:      $Date: 2010-10-14 13:02:01 $
+# CVS/RCS Revision: $Revision: 1.2 $
 # Status:           $State: Exp $
 #
 # CVS/RCS Log
 #   $Log: patiedit.pl,v $
-#   Revision 1.1  2002-12-03 12:16:09  wilkens
+#   Revision 1.2  2010-10-14 13:02:01  joergr
+#   Updated copyright header. Added reference to COPYRIGHT file.
+#
+#   Revision 1.1  2002/12/03 12:16:09  wilkens
 #   Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
 #   so that dcmwlm can now completely replace wlistctn in the public domain part
 #   of dcmtk. Pertaining to this replacement requirement, another optional return
@@ -65,7 +54,7 @@ $path_info=$ENV{'PATH_INFO'};
 $aetitle = '';
 $passwd = '';
 $patientid = '';
-if ($path_info ne '')  
+if ($path_info ne '')
 {
   ($dummy, $aetitle, $passwd, $patientid, $rest) = split(/\//, $path_info);
 }
@@ -86,7 +75,7 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
     if ($rqpairs{'action'} eq 'Cancel')
     {
       printf("Location: %s/%s/%s\n\n", $prefs{'patient.pl'}, $aetitle, $passwd);
-    } else {    
+    } else {
       # We have received a filled-in form.
       # We save/update it and return a URL to the updated form.
       $birthdate = &makeDA($rqpairs{'birthdate'});
@@ -110,7 +99,7 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
         $PATIENT_VALUES{"$decodedid\\birthdate"} = $birthdate;
         $PATIENT_VALUES{"$decodedid\\sex"} = $rqpairs{'sex'};
         $PATIENT_VALUES{"$decodedid\\alerts"} = $medicalalerts;
-        $PATIENT_VALUES{"$decodedid\\allergies"} = $contrastallergies;      
+        $PATIENT_VALUES{"$decodedid\\allergies"} = $contrastallergies;
         &write_environment($filename);
         printf("Location: %s/%s/%s\n\n", $prefs{'patient.pl'}, $aetitle, $passwd);
       } else {
@@ -160,7 +149,7 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
 #  11 bool medicalalertsOK,
 #  12 bool contrastallergiesOK
 #  13 bool isNewPatient)
-# 
+#
 sub create_patient_form
 {
   &page_title("Patient Form");
@@ -202,7 +191,7 @@ sub create_patient_form
   printf("<option value=\"M\" %s>male\n",  (@_[5] eq 'M' ? 'selected' : ''));
   printf("<option value=\"O\" %s>other\n", (@_[5] eq 'O' ? 'selected' : ''));
   printf("</select></TD></TR></TABLE><P>\n");
-  
+
   if (! @_[11]) { printf("<b><i>"); }
   printf("Medical Alerts:<br>\n");
   if (! @_[11]) { printf("</i></b>"); }

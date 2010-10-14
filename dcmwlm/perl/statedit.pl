@@ -1,30 +1,17 @@
 #!/usr/local/bin/perl
 #
-#  Copyright (C) 1996-2002, OFFIS
+#  Copyright (C) 1996-2010, OFFIS e.V.
+#  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
 #
-#    Kuratorium OFFIS e.V.
-#    Forschungsbereich 2: Kommunikationssysteme
+#    OFFIS e.V.
+#    R&D Division Health
 #    Escherweg 2
 #    D-26121 Oldenburg, Germany
 #
 #  for CEN/TC251/WG4 as a contribution to the Computer Assisted Radiology
 #  (CAR) 1996 DICOM Demonstration.
-#
-#  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
-#  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
-#  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
-#  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
-#  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
-#
-#  Copyright of the software  and  supporting  documentation  is,  unless
-#  otherwise stated, owned by OFFIS, and free access is hereby granted as
-#  a license to  use  this  software,  copy  this  software  and  prepare
-#  derivative works based upon this software.  However, any  distribution
-#  of this software source code or supporting documentation or derivative
-#  works  (source code and  supporting documentation)  must  include  the
-#  three paragraphs of this copyright notice.
 #
 #
 # Module: dcmwlm (WWW Component)
@@ -32,17 +19,19 @@
 # Author: Marco Eichelberg
 #
 # Purpose:
-#   This perl script allows to create and update station data 
+#   This perl script allows to create and update station data
 #
-# Last Update:      $Author: wilkens $
-# Update Date:      $Date: 2002-12-03 12:16:16 $
-# Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/perl/statedit.pl,v $
-# CVS/RCS Revision: $Revision: 1.1 $
+# Last Update:      $Author: joergr $
+# Update Date:      $Date: 2010-10-14 13:02:02 $
+# CVS/RCS Revision: $Revision: 1.2 $
 # Status:           $State: Exp $
 #
 # CVS/RCS Log
 #   $Log: statedit.pl,v $
-#   Revision 1.1  2002-12-03 12:16:16  wilkens
+#   Revision 1.2  2010-10-14 13:02:02  joergr
+#   Updated copyright header. Added reference to COPYRIGHT file.
+#
+#   Revision 1.1  2002/12/03 12:16:16  wilkens
 #   Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
 #   so that dcmwlm can now completely replace wlistctn in the public domain part
 #   of dcmtk. Pertaining to this replacement requirement, another optional return
@@ -65,7 +54,7 @@ $path_info=$ENV{'PATH_INFO'};
 $aetitle = '';
 $passwd = '';
 $stationid = '';
-if ($path_info ne '')  
+if ($path_info ne '')
 {
   ($dummy, $aetitle, $passwd, $stationid, $rest) = split(/\//, $path_info);
 }
@@ -86,14 +75,14 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
     if ($rqpairs{'action'} eq 'Cancel')
     {
       printf("Location: %s/%s/%s\n\n", $prefs{'station.pl'}, $aetitle, $passwd);
-    } else {    
+    } else {
       # We have received a filled-in form.
       # We save/update it and return a URL to the updated form.
-    
+
       $name = &makeSH($rqpairs{'name'});
       $nameOK = &checkSH($name);
-      if ($stationid eq '') 
-      { 
+      if ($stationid eq '')
+      {
         $id = &makeAE($rqpairs{'stationid'});
         $idOK = &checkAE($id);
         $idProtected = 0;
@@ -104,7 +93,7 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
         $idOK = 1;
         $idProtected = 1;
         $idUnique = 1;
-      } 
+      }
       if (($idOK)&&($idUnique)&&($nameOK))
       {
         &set_writelock("$prefs{'data_path'}/$aetitle");
@@ -117,10 +106,10 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
         printf("Location: %s/%s/%s\n\n", $prefs{'station.pl'}, $aetitle, $passwd);
       } else {
         &create_station_form("$prefs{'statedit.pl'}$path_info",
-          $id, $name, $rqpairs{'modality'}, 
+          $id, $name, $rqpairs{'modality'},
           $idOK, $idUnique, $idProtected, $nameOK, 0);
       }
-    }    
+    }
   } else {
     # We have received a request for a form.
     if ($stationid eq '')
@@ -130,7 +119,7 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
     } else {
       $key = pack("H*",$stationid);
       &create_station_form("$prefs{'statedit.pl'}/$aetitle/$passwd/$stationid",
-        $key, 
+        $key,
         $STATION_VALUES{"$key\\name"},
         $STATION_VALUES{"$key\\modality"},
         1, 1, 1, 1, 0);
@@ -150,7 +139,7 @@ if (($passwd eq '') || (! &checkurlcode($passwd, $aetitle)))
 #   6 bool stationidProtected,
 #   7 bool nameOK,
 #   8 bool isNewStation)
-# 
+#
 sub create_station_form
 {
   &page_title("Station Form");
@@ -170,7 +159,7 @@ sub create_station_form
   {
     printf("</TD><TD nowrap><input name=\"stationid\" maxlength=16 size=16 value=\"%s\">\n",@_[1]);
   } else {
-    printf("</TD><TD nowrap>%s\n",@_[1]);  
+    printf("</TD><TD nowrap>%s\n",@_[1]);
   }
   if (! @_[5]) { printf(" (AE Title already in use!)\n"); }
   printf("</TD></TR><TR><TD nowrap>");

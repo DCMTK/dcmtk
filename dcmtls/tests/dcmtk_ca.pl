@@ -1,19 +1,15 @@
 #!/usr/local/bin/perl
 #
-#  Copyright (C) 1998-2001, OFFIS
+#  Copyright (C) 1998-2010, OFFIS e.V.
+#  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
 #
-#   Kuratorium OFFIS e.V.
-#   Healthcare Information and Communication Systems
+#   OFFIS e.V.
+#   R&D Division Health
 #   Escherweg 2
 #   D-26121 Oldenburg, Germany
 #
-#  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
-#  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
-#  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
-#  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
-#  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
 #
 #  Module: dcmpstat
 #
@@ -24,9 +20,9 @@
 #    Authority by means of OpenSSL, for use with the TLS-enhanced
 #    DCMTK DICOM Tools.
 #
-#  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2001-06-01 16:51:53 $
-#  CVS/RCS Revision: $Revision: 1.3 $
+#  Last Update:      $Author: joergr $
+#  Update Date:      $Date: 2010-10-14 13:02:47 $
+#  CVS/RCS Revision: $Revision: 1.4 $
 #  Status:           $State: Exp $
 #
 #  CVS/RCS Log at end of file
@@ -83,7 +79,7 @@ sub usageAndExit
 print <<eof;
 usage: dcmtk_ca.pl command [options] arguments
   known commands are:
-    newca [options] directory 
+    newca [options] directory
       generate a new Certification Authority; directory must not yet exist.
       -type rsa|dsa                      type of CA certificate (default:rsa)
       -days days                         validity of CA certificate (365)
@@ -137,7 +133,7 @@ sub createNewCA
   open OUT, ">${ca_directory}/index.txt";
   close OUT;
   &createNewConfigFile($ca_directory);
-  system ("$const_openssl rand -out ${ca_directory}/private/$const_ca_seed 1024");  
+  system ("$const_openssl rand -out ${ca_directory}/private/$const_ca_seed 1024");
   if ($type eq 'dsa')
   {
     system ("$const_openssl dsaparam -out ${ca_directory}/private/dsaparam.pem $bits");
@@ -172,7 +168,7 @@ sub createNewCertificate
   local($pkcs12) = $options{'-pkcs12'};
   local($pkcs12name) = $options{'-pkcs12name'};
   if ($pkcs12name eq '') { $pkcs12name = "OpenSSL generated DCMTK Certificate"; }
-  
+
   if ($des eq 'no')
   {
     $encryption = '-nodes';
@@ -204,11 +200,11 @@ sub createNewCertificate
   {
     chop;
     system("mv ${ca_directory}/newcerts/$_ ${ca_directory}/certs");
-    system("cd ${ca_directory}/certs; ln -s $_ `$const_openssl x509 -hash -noout -in $_`.0");    
-  } 
+    system("cd ${ca_directory}/certs; ln -s $_ `$const_openssl x509 -hash -noout -in $_`.0");
+  }
   if ($pkcs12 ne '')
   {
-    system ("$const_openssl pkcs12 -in $certfile -inkey $certkey -certfile ${ca_directory}/$const_ca_cert -out $pkcs12 -export -name \"$pkcs12name\"");    
+    system ("$const_openssl pkcs12 -in $certfile -inkey $certkey -certfile ${ca_directory}/$const_ca_cert -out $pkcs12 -export -name \"$pkcs12name\"");
   }
   return $?;
 }
@@ -230,7 +226,7 @@ print OUT <<END_OF_CONFIGURATION_FILE;
 # OpenSSL configuration file for DCMTK
 # This is mostly being used for generation of certificate requests.
 #
- 
+
 # This definition stops the following lines choking if HOME isn't
 # defined.
 HOME			= .
@@ -243,7 +239,7 @@ oid_section		= new_oids
 # To use this configuration file with the "-extfile" option of the
 # "openssl x509" utility, name here the section containing the
 # X.509v3 extensions to use:
-# extensions		= 
+# extensions		=
 # (Alternatively, use a configuration file that has only
 # X.509v3 extensions in its main [= default] section.)
 
@@ -324,7 +320,7 @@ x509_extensions	= v3_ca	# The extentions to add to the self signed cert
 # input_password = secret
 # output_password = secret
 
-# This sets a mask for permitted string types. There are several options. 
+# This sets a mask for permitted string types. There are several options.
 # default: PrintableString, T61String, BMPString.
 # pkix	 : PrintableString, BMPString.
 # utf8only: only UTF8Strings.
@@ -474,7 +470,10 @@ END_OF_CONFIGURATION_FILE
 
 #
 #  $Log: dcmtk_ca.pl,v $
-#  Revision 1.3  2001-06-01 16:51:53  meichel
+#  Revision 1.4  2010-10-14 13:02:47  joergr
+#  Updated copyright header. Added reference to COPYRIGHT file.
+#
+#  Revision 1.3  2001/06/01 16:51:53  meichel
 #  Fixed bug in CA perl script. mkcert -days option now works.
 #
 #  Revision 1.2  2001/06/01 15:51:14  meichel

@@ -5489,20 +5489,16 @@ static yyconst flex_int16_t yy_chk[19183] =
 #line 1 "vrscanl.l"
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module: dcmdata
  *
@@ -5511,13 +5507,19 @@ static yyconst flex_int16_t yy_chk[19183] =
  *  Purpose:
  *    These are the regular expressions for the value representations
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-09-03 07:26:19 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:07:00 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log:
  *  $Log: vrscanl.c,v $
+ *  Revision 1.6  2010-10-14 13:07:00  joergr
+ *  Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ *  Revision 1.6  2010-10-14 13:04:24  joergr
+ *  Updated copyright header. Added reference to COPYRIGHT file.
+ *
  *  Revision 1.5  2010-09-03 07:26:19  uli
  *  Make the VR scanner work on windows again.
  *
@@ -5592,7 +5594,7 @@ static yyconst flex_int16_t yy_chk[19183] =
  */
 /* Avoid compiler warnings about unused functions */
 #define YY_NO_INPUT 1
-#line 107 "vrscanl.l"
+#line 109 "vrscanl.l"
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "vrscani.h"
@@ -5600,9 +5602,9 @@ static yyconst flex_int16_t yy_chk[19183] =
 /* This seems to be a bug: The .c file won't include it, but .h will still.
  * %option nounistd
  */
-#line 118 "vrscanl.l"
+#line 120 "vrscanl.l"
 static int isatty(int fd) { return 0; }
-#line 5603 "vrscanl.c"
+#line 5605 "vrscanl.c"
 
 #define INITIAL 0
 
@@ -5817,10 +5819,10 @@ YY_DECL
 	register int yy_act;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-#line 174 "vrscanl.l"
+#line 176 "vrscanl.l"
 
 
-#line 5821 "vrscanl.c"
+#line 5823 "vrscanl.c"
 
 	if ( !yyg->yy_init )
 		{
@@ -5901,101 +5903,101 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 176 "vrscanl.l"
+#line 178 "vrscanl.l"
 {return 1;  /* AS */}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 177 "vrscanl.l"
+#line 179 "vrscanl.l"
 {return 2;  /* DA */}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 178 "vrscanl.l"
+#line 180 "vrscanl.l"
 {return 3;  /* OLD_DA */}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 179 "vrscanl.l"
+#line 181 "vrscanl.l"
 {return 17; /* dubious DA */}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 180 "vrscanl.l"
+#line 182 "vrscanl.l"
 {return 4;  /* TM */}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 181 "vrscanl.l"
+#line 183 "vrscanl.l"
 {return 5;  /* OLD_TM */}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 182 "vrscanl.l"
+#line 184 "vrscanl.l"
 {return 6;  /* DS */}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 183 "vrscanl.l"
+#line 185 "vrscanl.l"
 {return 7;  /* DT */}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 184 "vrscanl.l"
+#line 186 "vrscanl.l"
 {return 18; /* dubious DT */}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 185 "vrscanl.l"
+#line 187 "vrscanl.l"
 {return 8;  /* IS */}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 186 "vrscanl.l"
+#line 188 "vrscanl.l"
 {return 9;  /* UI */}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 187 "vrscanl.l"
+#line 189 "vrscanl.l"
 {return 10; /* CS */}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 188 "vrscanl.l"
+#line 190 "vrscanl.l"
 {return 11; /* PN */}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 189 "vrscanl.l"
+#line 191 "vrscanl.l"
 {return 15; /* OLD_PN */}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 190 "vrscanl.l"
+#line 192 "vrscanl.l"
 {return 12; /* LO | SH */}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 191 "vrscanl.l"
+#line 193 "vrscanl.l"
 {return 13; /* AE */}
 	YY_BREAK
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 192 "vrscanl.l"
+#line 194 "vrscanl.l"
 {return 14; /* LT | ST | UT */}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 193 "vrscanl.l"
+#line 195 "vrscanl.l"
 {return 16; /* UNKNOWN */;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 195 "vrscanl.l"
+#line 197 "vrscanl.l"
 ECHO;
 	YY_BREAK
-#line 5996 "vrscanl.c"
+#line 5998 "vrscanl.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -7065,7 +7067,7 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 195 "vrscanl.l"
+#line 197 "vrscanl.l"
 
 
 
