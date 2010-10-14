@@ -1,6 +1,42 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.14 (riesmeier)
+
+- Updated copyright date.
+  Affects: dcmdata/docs/dcm2pdf.man
+           dcmdata/docs/dcm2xml.man
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmcrle.man
+           dcmdata/docs/dcmdrle.man
+           dcmdata/docs/dcmdump.man
+           dcmdata/docs/dcmftest.man
+           dcmdata/docs/dcmgpdir.man
+           dcmdata/docs/dump2dcm.man
+           dcmdata/docs/pdf2dcm.man
+           dcmdata/docs/xml2dcm.man
+           dcmimage/docs/dcm2pnm.man
+           dcmimage/docs/dcmquant.man
+           dcmimage/docs/dcmscale.man
+           dcmimgle/docs/dcmdspfn.man
+           dcmimgle/docs/dcod2lum.man
+           dcmimgle/docs/dconvlum.man
+           dcmnet/docs/echoscu.man
+           dcmnet/docs/termscu.man
+           dcmpstat/docs/dcmmkcrv.man
+           dcmpstat/docs/dcmmklut.man
+           dcmpstat/docs/dcmp2pgm.man
+           dcmpstat/docs/dcmprscp.man
+           dcmpstat/docs/dcmpschk.man
+           dcmpstat/docs/dcmpsmk.man
+           dcmpstat/docs/dcmpsprt.man
+           dcmpstat/docs/dcmpsrcv.man
+           dcmpstat/docs/dcmpssnd.man
+           dcmpstat/docs/dcmpsrcv.man
+           dcmpstat/docs/dcmpssnd.man
+           dcmqrdb/docs/dcmqridx.man
+           dcmsign/docs/dcmsign.man
+
 **** Changes from 2010.10.13 (riesmeier)
 
 - Added introducing sentence on Log4cplus library used for oflog.
