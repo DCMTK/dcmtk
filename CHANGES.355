@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.14 (riesmeier)
 
+- Removed the word "Kuratorium" from the name of the OFFIS institute.
+  Affects: dcmdata/docs/datadict.txt
+
 - Updated copyright header. Added reference to COPYRIGHT file.
   Affects: <all modules>/*.cc
            <all modules>/*.h

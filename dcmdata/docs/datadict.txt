@@ -100,6 +100,6 @@ useful technique if you want to override built-in data dictionary values.
 
 ------------
 
-Kuratorium OFFIS e.V., Oldenburg, Germany
+OFFIS e.V., Oldenburg, Germany
 
-Last revised: 2006-07-13 (Riesmeier).
+Last revised: 2010-10-14 (Riesmeier).
