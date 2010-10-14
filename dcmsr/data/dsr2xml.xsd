@@ -10,7 +10,8 @@
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
       XML Schema for DCMTK tools dsr2xml and xml2dsr.
-      Copyright (C) 2003-2010 OFFIS. See COPYRIGHT file for details.
+      Copyright (C) 2003-2010, OFFIS e.V.
+      All rights reserved.  See COPYRIGHT file for details.
     </xsd:documentation>
   </xsd:annotation>
 
