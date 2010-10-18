@@ -117,7 +117,7 @@ struct FromBigEndian
 	inlinehint static T Read(BYTE* pbyte)
 	{
 		T ret = pbyte[0];
-		for (unsigned int i = 1; i < sizeof(i); i++)
+		for (unsigned int i = 1; i < sizeof(T); i++)
 		{
 			ret <<= 8;
 			ret |= pbyte[i];

@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.18 (schlachter)
+
+- Correctly read bytestreams on 64-bit platforms.
+  Affects: dcmjpls/libcharls/util.h
+
 **** Changes from 2010.10.14 (riesmeier)
 
 - Added support for "new" SR Storage SOP Classes to storeRequest().
