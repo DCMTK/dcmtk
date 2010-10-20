@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmUnsignedLong
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:11 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2010-10-20 16:44:18 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ OFCondition DcmUnsignedLong::copyFrom(const DcmObject& rhs)
   if (this != &rhs)
   {
     if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = (DcmUnsignedLong&) rhs;
+    *this = OFstatic_cast(const DcmUnsignedLong &, rhs);
   }
   return EC_Normal;
 }
@@ -314,6 +314,9 @@ OFCondition DcmUnsignedLong::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
+** Revision 1.33  2010-10-20 16:44:18  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
 ** Revision 1.32  2010-10-14 13:14:11  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

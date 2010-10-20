@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmUnsignedShort
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:11 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2010-10-20 16:44:18 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,7 @@ OFCondition DcmUnsignedShort::copyFrom(const DcmObject& rhs)
   if (this != &rhs)
   {
     if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = (DcmUnsignedShort&) rhs;
+    *this = OFstatic_cast(const DcmUnsignedShort &, rhs);
   }
   return EC_Normal;
 }
@@ -299,6 +299,9 @@ OFCondition DcmUnsignedShort::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.cc,v $
+** Revision 1.31  2010-10-20 16:44:18  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
 ** Revision 1.30  2010-10-14 13:14:11  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

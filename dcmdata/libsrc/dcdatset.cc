@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:07 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2010-10-20 16:44:16 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ OFCondition DcmDataset::copyFrom(const DcmObject& rhs)
   if (this != &rhs)
   {
     if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = (DcmDataset&) rhs;
+    *this = OFstatic_cast(const DcmDataset &, rhs);
   }
   return EC_Normal;
 }
@@ -637,6 +637,9 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
+** Revision 1.50  2010-10-20 16:44:16  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
 ** Revision 1.49  2010-10-14 13:14:07  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

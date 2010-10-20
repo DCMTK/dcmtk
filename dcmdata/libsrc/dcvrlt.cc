@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmLongText
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:10 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2010-10-20 16:44:17 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,7 @@ OFCondition DcmLongText::copyFrom(const DcmObject& rhs)
   if (this != &rhs)
   {
     if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = (DcmLongText&) rhs;
+    *this = OFstatic_cast(const DcmLongText &, rhs);
   }
   return EC_Normal;
 }
@@ -135,6 +135,9 @@ OFCondition DcmLongText::checkStringValue(const OFString &value)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlt.cc,v $
+** Revision 1.21  2010-10-20 16:44:17  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
 ** Revision 1.20  2010-10-14 13:14:10  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

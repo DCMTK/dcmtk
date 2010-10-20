@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmCodeString
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:35 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-20 16:44:17 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ OFCondition DcmCodeString::copyFrom(const DcmObject& rhs)
   if (this != &rhs)
   {
     if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = (DcmCodeString&) rhs;
+    *this = OFstatic_cast(const DcmCodeString &, rhs);
   }
   return EC_Normal;
 }
@@ -154,6 +154,9 @@ OFCondition DcmCodeString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.cc,v $
+** Revision 1.24  2010-10-20 16:44:17  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
 ** Revision 1.23  2010-10-20 07:41:35  uli
 ** Made sure isalpha() & friends are only called with valid arguments.
 **

@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:09 $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  Update Date:      $Date: 2010-10-20 16:44:17 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,7 @@ OFCondition DcmSequenceOfItems::copyFrom(const DcmObject& rhs)
   if (this != &rhs)
   {
       if (rhs.ident() != ident()) return EC_IllegalCall;
-      *this = (DcmSequenceOfItems&) rhs;
+      *this = OFstatic_cast(const DcmSequenceOfItems &, rhs);
   }
   return EC_Normal;
 }
@@ -1301,6 +1301,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.93  2010-10-20 16:44:17  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
 ** Revision 1.92  2010-10-14 13:14:09  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

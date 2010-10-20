@@ -19,8 +19,8 @@
  *           Value Representation UT is defined in Correction Proposal 101
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:11 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2010-10-20 16:44:18 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ OFCondition DcmUnlimitedText::copyFrom(const DcmObject& rhs)
   if (this != &rhs)
   {
     if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = (DcmUnlimitedText&) rhs;
+    *this = OFstatic_cast(const DcmUnlimitedText &, rhs);
   }
   return EC_Normal;
 }
@@ -137,6 +137,9 @@ OFCondition DcmUnlimitedText::checkStringValue(const OFString &value)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.cc,v $
+** Revision 1.16  2010-10-20 16:44:18  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
 ** Revision 1.15  2010-10-14 13:14:11  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

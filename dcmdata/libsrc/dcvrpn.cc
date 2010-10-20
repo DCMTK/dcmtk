@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmPersonName
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:10 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2010-10-20 16:44:17 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ OFCondition DcmPersonName::copyFrom(const DcmObject& rhs)
   if (this != &rhs)
   {
     if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = (DcmPersonName&) rhs;
+    *this = OFstatic_cast(const DcmPersonName &, rhs);
   }
   return EC_Normal;
 }
@@ -376,6 +376,9 @@ OFCondition DcmPersonName::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
+** Revision 1.25  2010-10-20 16:44:17  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
 ** Revision 1.24  2010-10-14 13:14:10  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

@@ -21,8 +21,8 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:10 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2010-10-20 16:44:17 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ OFCondition DcmPolymorphOBOW::copyFrom(const DcmObject& rhs)
   if (this != &rhs)
   {
     if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = (DcmPolymorphOBOW&) rhs;
+    *this = OFstatic_cast(const DcmPolymorphOBOW &, rhs);
   }
   return EC_Normal;
 }
@@ -321,6 +321,9 @@ OFCondition DcmPolymorphOBOW::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
+** Revision 1.23  2010-10-20 16:44:17  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
 ** Revision 1.22  2010-10-14 13:14:10  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:35 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-20 16:44:16 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,7 +226,7 @@ OFCondition DcmDirectoryRecord::copyFrom(const DcmObject& rhs)
   if (this != &rhs)
   {
     if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = (DcmDirectoryRecord&) rhs;
+    *this = OFstatic_cast(const DcmDirectoryRecord &, rhs);
   }
   return EC_Normal;
 }
@@ -1527,6 +1527,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.76  2010-10-20 16:44:16  joergr
+ * Use type cast macros (e.g. OFstatic_cast) where appropriate.
+ *
  * Revision 1.75  2010-10-20 07:41:35  uli
  * Made sure isalpha() & friends are only called with valid arguments.
  *
