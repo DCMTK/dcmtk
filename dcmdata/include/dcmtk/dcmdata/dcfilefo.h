@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:41 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2010-10-20 16:31:25 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,7 +125,7 @@ class DcmFileFormat
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
-    /** make sure that all data elements of the meta header information are existent
+    /** make sure that all data elements of the file meta information header are existent
      *  in metainfo and contain correct values.
      *  @param oxfer the transfer syntax which shall be used
      *  @param writeMode flag indicating whether to update the file meta information or not
@@ -133,9 +133,21 @@ class DcmFileFormat
     virtual OFCondition validateMetaInfo(const E_TransferSyntax oxfer,
                                          const E_FileWriteMode writeMode = EWM_fileformat);
 
+    /** get file meta information header part of the fileformat
+     *  @return reference to internally stored file meta information header
+     */
     DcmMetaInfo *getMetaInfo();
-    DcmDataset  *getDataset();
-    DcmDataset  *getAndRemoveDataset();
+
+    /** get dataset part of the fileformat
+     *  @return reference to internally stored dataset
+     */
+    DcmDataset *getDataset();
+
+    /** get dataset part and remove it from the fileformat.
+     *  Please note that a new, initially empty dataset is also added to the fileformat.
+     *  @return reference to previously stored but now removed dataset
+     */
+    DcmDataset *getAndRemoveDataset();
 
     /** calculate the length of this DICOM element when encoded with the
      *  given transfer syntax and the given encoding type for sequences.
@@ -195,8 +207,8 @@ class DcmFileFormat
      *  @param subPadlen padding structure set for sequence items
      *  @param instanceLength number of extra bytes added to the item/dataset
      *    length used when computing the padding. This parameter is for instance
-     *    used to pass the length of the file meta header from the DcmFileFormat
-     *    to the DcmDataset object.
+     *    used to pass the length of the file meta information header from the
+     *    DcmFileFormat to the DcmDataset object.
      *  @param writeMode write file with or without meta header. Also allows for
      *    updating the information in the file meta information header.
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -349,8 +361,8 @@ class DcmFileFormat
 
   private:
 
-    /** This function checks if a particular data element of the meta header information is existent
-     *  in metainfo. If the element is not existent, it will be inserted. Additionally, this function
+    /** This function checks if a particular data element of the file meta information header is
+     *  existent.  If the element is not existent, it will be inserted.  Additionally, this function
      *  makes sure that the corresponding data element will contain a correct value.
      *  @param metainfo  the meta header information
      *  @param dataset   the data set information
@@ -368,8 +380,7 @@ class DcmFileFormat
                            const E_TransferSyntax oxfer,
                            const E_FileWriteMode writeMode);
 
-    /** read DCM_TransferSyntaxUID from meta header dataset and return as
-     *  E_TransferSyntax value
+    /** read DCM_TransferSyntaxUID from meta header dataset and return as E_TransferSyntax value
      *  @param metainfo meta-header dataset
      *  @return E_TransferSyntax value for DCM_TransferSyntaxUID, EXS_Unknown if not found or unknown
      */
@@ -386,6 +397,9 @@ class DcmFileFormat
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
+** Revision 1.37  2010-10-20 16:31:25  joergr
+** Added missing API documentation.
+**
 ** Revision 1.36  2010-10-14 13:15:41  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

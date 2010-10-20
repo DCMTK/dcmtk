@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.20 (riesmeier)
+
+- Added missing API documentation.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+
 **** Changes from 2010.10.20 (schlachter)
 
 - Made sure isalpha() & friends are only called with valid arguments.
