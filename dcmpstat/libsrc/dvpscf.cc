@@ -17,9 +17,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:31 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 08:09:34 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -162,7 +162,7 @@ static DVPSPeerType getConfigTargetType(const char *val)
   OFString pstring(val);
   OFString ostring;
   size_t len = pstring.length();
-  char c;
+  unsigned char c;
   for (size_t i=0; i<len; i++)
   {
     c = pstring[i];
@@ -1489,6 +1489,9 @@ const char *DVConfiguration::getUserCodeMeaning(const char *userID, OFString& va
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
+ *  Revision 1.47  2010-10-20 08:09:34  uli
+ *  Also made sure toupper() and tolower() get a valid argument.
+ *
  *  Revision 1.46  2010-10-14 13:14:31  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

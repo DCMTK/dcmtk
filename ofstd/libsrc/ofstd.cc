@@ -88,8 +88,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:37 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Update Date:      $Date: 2010-10-20 08:09:34 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -344,7 +344,10 @@ OFString &OFStandard::toUpper(OFString &value)
 {
     const size_t length = value.length();
     for (size_t i = 0; i < length; i++)
-        value.at(i) = OFstatic_cast(char, toupper(value.at(i)));
+    {
+        unsigned char c = value.at(i);
+        value.at(i) = OFstatic_cast(char, toupper(c));
+    }
     return value;
 }
 
@@ -361,7 +364,10 @@ OFString &OFStandard::toLower(OFString &value)
 {
     const size_t length = value.length();
     for (size_t i = 0; i < length; i++)
-        value.at(i) = OFstatic_cast(char, tolower(value.at(i)));
+    {
+        unsigned char c = value.at(i);
+        value.at(i) = OFstatic_cast(char, tolower(c));
+    }
     return value;
 }
 
@@ -1863,6 +1869,9 @@ long OFStandard::getProcessID()
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.65  2010-10-20 08:09:34  uli
+ *  Also made sure toupper() and tolower() get a valid argument.
+ *
  *  Revision 1.64  2010-10-20 07:41:37  uli
  *  Made sure isalpha() & friends are only called with valid arguments.
  *

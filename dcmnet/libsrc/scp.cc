@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:36 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2010-10-20 08:09:34 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1388,7 +1388,7 @@ OFCondition DcmSCP::addPresentationContext(const OFString &abstractSyntax,
     result = m_assocConfig->addRole(DCMSCP_RO_KEY, abstractSyntax.c_str(), role);
   }
   /* perform name mangling for config file key */
-  const char *c = profile.c_str();
+  const unsigned char *c = OFreinterpret_cast(const unsigned char *, profile.c_str());
   OFString mangledName;
   while (*c)
   {
@@ -1490,6 +1490,9 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.15  2010-10-20 08:09:34  uli
+** Also made sure toupper() and tolower() get a valid argument.
+**
 ** Revision 1.14  2010-10-20 07:41:36  uli
 ** Made sure isalpha() & friends are only called with valid arguments.
 **

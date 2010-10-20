@@ -19,8 +19,8 @@
  *    class DcmAssociationConfigurationFile
  * 
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:35 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2010-10-20 08:09:34 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -209,6 +209,7 @@ OFCondition DcmAssociationConfigurationFile::parsePresentationContexts(
 }
 
 
+#define TO_UCHAR(s) OFstatic_cast(unsigned char, (s))
 OFCondition DcmAssociationConfigurationFile::parseRoleSelectionItems(
   DcmAssociationConfiguration& cfg,
   OFConfigFile& config)
@@ -260,7 +261,7 @@ OFCondition DcmAssociationConfigurationFile::parseRoleSelectionItems(
         while (++i < len)
         {
           c = abstractSyntaxUID.at(i);
-          roleKey += (char) (toupper(c));
+          roleKey += (char) (toupper(TO_UCHAR(c)));
         }
 
         // finally cut abstract syntax name           
@@ -405,7 +406,6 @@ OFCondition DcmAssociationConfigurationFile::parseExtendedNegotiationItems(
 }
 
 
-#define TO_UCHAR(s) OFstatic_cast(unsigned char, (s))
 OFCondition DcmAssociationConfigurationFile::parseProfiles(
   DcmAssociationConfiguration& cfg,
   OFConfigFile& config)
@@ -451,7 +451,7 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
     scontext.clear();
     while (*c)
     {
-      if (! isspace(TO_UCHAR(*c))) scontext += (char) (toupper(*c));
+      if (! isspace(TO_UCHAR(*c))) scontext += (char) (toupper(TO_UCHAR(*c)));
       ++c;
     }
     context = scontext.c_str();
@@ -463,7 +463,7 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
       srole.clear();
       while (*c)
       {
-        if (! isspace(TO_UCHAR(*c))) srole += (char) (toupper(*c));
+        if (! isspace(TO_UCHAR(*c))) srole += (char) (toupper(TO_UCHAR(*c)));
         ++c;
       }
       role = srole.c_str();
@@ -476,7 +476,7 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
       sextneg.clear();
       while (*c)
       {
-        if (! isspace(TO_UCHAR(*c))) sextneg += (char) (toupper(*c));
+        if (! isspace(TO_UCHAR(*c))) sextneg += (char) (toupper(TO_UCHAR(*c)));
         ++c;
       }
       extneg = sextneg.c_str();
@@ -495,6 +495,9 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
 /*
  * CVS/RCS Log
  * $Log: dcasccff.cc,v $
+ * Revision 1.7  2010-10-20 08:09:34  uli
+ * Also made sure toupper() and tolower() get a valid argument.
+ *
  * Revision 1.6  2010-10-20 07:41:35  uli
  * Made sure isalpha() & friends are only called with valid arguments.
  *

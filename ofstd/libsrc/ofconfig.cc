@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: OFConfigFileNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:53 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 08:09:34 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -349,7 +349,7 @@ OFBool OFConfigFile::get_bool_value(OFBool defaultvalue)
   OFString pstring(val);
   OFString ostring;
   size_t len = pstring.length();
-  char c;
+  unsigned char c;
   for (size_t i = 0; i<len; i++)
   {
     c = pstring[i];
@@ -645,6 +645,9 @@ OFConfigFile::~OFConfigFile()
 
 /*
  *  $Log: ofconfig.cc,v $
+ *  Revision 1.10  2010-10-20 08:09:34  uli
+ *  Also made sure toupper() and tolower() get a valid argument.
+ *
  *  Revision 1.9  2010-10-14 13:14:53  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -33,6 +33,13 @@ Changes between releases are documented here.
            ofstd/libsrc/ofstd.cc
            ofstd/libsrc/ofstring.cc
 
+- Also made sure toupper() and tolower() get a valid argument.
+  Affects: dcmnet/libsrc/dcasccff.cc
+           dcmnet/libsrc/scp.cc
+           dcmpstat/libsrc/dvpscf.cc
+           ofstd/libsrc/ofconfig.cc
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2010.10.18 (schlachter)
 
 - Correctly read bytestreams on 64-bit platforms.
