@@ -18,8 +18,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:07 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2010-10-20 16:34:12 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -191,15 +191,15 @@ OFCondition DcmFileFormat::writeXML(STD_NAMESPACE ostream &out,
 // ********************************
 
 
-OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
-                                      DcmDataset *dataset,
-                                      const DcmTagKey &atagkey,
-                                      DcmObject *obj,
-                                      const E_TransferSyntax oxfer,
-                                      const E_FileWriteMode writeMode)
+OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
+                                                DcmDataset *dataset,
+                                                const DcmTagKey &atagkey,
+                                                DcmObject *obj,
+                                                const E_TransferSyntax oxfer,
+                                                const E_FileWriteMode writeMode)
     /*
-     * This function checks if a particular data element of the meta header information is existent
-     * in metainfo. If the element is not existent, it will be inserted. Additionally, this function
+     * This function checks if a particular data element of the file meta information header is
+     * existent.  If the element is not existent, it will be inserted.  Additionally, this function
      * makes sure that the corresponding data element will contain a correct value.
      *
      * Parameters:
@@ -257,7 +257,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
             if (((currVers[0] & version[0] & 0xff) == version[0]) &&
                 ((currVers[1] & version[1] & 0xff) == version[1]))
             {
-                DCMDATA_DEBUG("DcmFileFormat::checkValue() Version of MetaHeader is ok: 0x"
+                DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() Version of MetaHeader is ok: 0x"
                     << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                     << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
                     << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0]));
@@ -287,12 +287,12 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                     char *uid = NULL;
                     l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
-                    DCMDATA_DEBUG("DcmFileFormat::checkValue() use SOPClassUID [" << uid << "]");
+                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() use SOPClassUID [" << uid << "]");
                 }
                 else if (elem->getLength() == 0)
                 {
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(UID_PrivateGenericFileSOPClass);
-                    DCMDATA_DEBUG("DcmFileFormat::checkValue() No SOPClassUID in Dataset, using PrivateGenericFileSOPClass");
+                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() No SOPClassUID in Dataset, using PrivateGenericFileSOPClass");
                 }
             }
         }
@@ -310,14 +310,14 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                     char* uid = NULL;
                     l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
-                    DCMDATA_DEBUG("DcmFileFormat::checkValue() use SOPInstanceUID [" << uid << "] from Dataset");
+                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() use SOPInstanceUID [" << uid << "] from Dataset");
                 }
                 else if (elem->getLength() == 0)
                 {
                     char uid[128];
                     dcmGenerateUniqueIdentifier(uid);       // from dcuid.h
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
-                    DCMDATA_DEBUG("DcmFileFormat::checkValue() use new generated SOPInstanceUID [" << uid << "]");
+                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() use new generated SOPInstanceUID [" << uid << "]");
                 }
             }
         }
@@ -334,12 +334,12 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 char * uidtmp = NULL;
                 OFstatic_cast(DcmUniqueIdentifier *, elem)->getString(uidtmp);
                 if (uidtmp != NULL)
-                    DCMDATA_DEBUG("DcmFileFormat::checkValue() found old TransferSyntaxUID [" << uidtmp << "]");
+                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() found old TransferSyntaxUID [" << uidtmp << "]");
 #endif
                 DcmXfer dcXfer(oxfer);
                 const char *uid = dcXfer.getXferID();
                 elem->putString(uid);
-                DCMDATA_DEBUG("DcmFileFormat::checkValue() use new TransferSyntaxUID ["
+                DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() use new TransferSyntaxUID ["
                     << dcXfer.getXferName() << "] on writing following Dataset");
             }
         }
@@ -450,31 +450,31 @@ OFCondition DcmFileFormat::validateMetaInfo(const E_TransferSyntax oxfer,
 
             /* DCM_FileMetaInformationGroupLength */
             metinf->search(DCM_FileMetaInformationGroupLength, stack, ESM_fromHere, OFFalse);
-            checkValue(metinf, datset, DCM_FileMetaInformationGroupLength, stack.top(), oxfer, writeMode);
+            checkMetaHeaderValue(metinf, datset, DCM_FileMetaInformationGroupLength, stack.top(), oxfer, writeMode);
 
             /* DCM_FileMetaInformationVersion */
             metinf->search(DCM_FileMetaInformationVersion, stack, ESM_fromHere, OFFalse);
-            checkValue(metinf, datset, DCM_FileMetaInformationVersion, stack.top(), oxfer, writeMode);
+            checkMetaHeaderValue(metinf, datset, DCM_FileMetaInformationVersion, stack.top(), oxfer, writeMode);
 
             /* DCM_MediaStorageSOPClassUID */
             metinf->search(DCM_MediaStorageSOPClassUID, stack, ESM_fromHere, OFFalse);
-            checkValue(metinf, datset, DCM_MediaStorageSOPClassUID, stack.top(), oxfer, writeMode);
+            checkMetaHeaderValue(metinf, datset, DCM_MediaStorageSOPClassUID, stack.top(), oxfer, writeMode);
 
             /* DCM_MediaStorageSOPInstanceUID */
             metinf->search(DCM_MediaStorageSOPInstanceUID, stack, ESM_fromHere, OFFalse);
-            checkValue(metinf, datset, DCM_MediaStorageSOPInstanceUID, stack.top(), oxfer, writeMode);
+            checkMetaHeaderValue(metinf, datset, DCM_MediaStorageSOPInstanceUID, stack.top(), oxfer, writeMode);
 
             /* DCM_TransferSyntaxUID */
             metinf->search(DCM_TransferSyntaxUID, stack, ESM_fromHere, OFFalse);
-            checkValue(metinf, datset, DCM_TransferSyntaxUID, stack.top(), oxfer, writeMode);
+            checkMetaHeaderValue(metinf, datset, DCM_TransferSyntaxUID, stack.top(), oxfer, writeMode);
 
             /* DCM_ImplementationClassUID */
             metinf->search(DCM_ImplementationClassUID, stack, ESM_fromHere, OFFalse);
-            checkValue(metinf, datset, DCM_ImplementationClassUID, stack.top(), oxfer, writeMode);
+            checkMetaHeaderValue(metinf, datset, DCM_ImplementationClassUID, stack.top(), oxfer, writeMode);
 
             /* DCM_ImplementationVersionName */
             metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, OFFalse);
-            checkValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer, writeMode);
+            checkMetaHeaderValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer, writeMode);
 
             /* dump some information if required */
             DCMDATA_DEBUG("DcmFileFormat: Found " << metinf->card() << " Elements in DcmMetaInfo 'metinf'");
@@ -914,6 +914,9 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.61  2010-10-20 16:34:12  joergr
+** Renamed method to avoid warnings reported by gcc with additional flags.
+**
 ** Revision 1.60  2010-10-14 13:14:07  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

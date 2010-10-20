@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:31:25 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2010-10-20 16:34:08 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -373,12 +373,12 @@ class DcmFileFormat
      *  @param writeMode flag indicating whether to update the file meta information or not
      *  @return EC_Normal if successful, an error code otherwise
      */
-    static OFCondition checkValue(DcmMetaInfo *metainfo,
-                           DcmDataset *dataset,
-                           const DcmTagKey &atagkey,
-                           DcmObject *obj,
-                           const E_TransferSyntax oxfer,
-                           const E_FileWriteMode writeMode);
+    static OFCondition checkMetaHeaderValue(DcmMetaInfo *metainfo,
+                                            DcmDataset *dataset,
+                                            const DcmTagKey &atagkey,
+                                            DcmObject *obj,
+                                            const E_TransferSyntax oxfer,
+                                            const E_FileWriteMode writeMode);
 
     /** read DCM_TransferSyntaxUID from meta header dataset and return as E_TransferSyntax value
      *  @param metainfo meta-header dataset
@@ -397,6 +397,9 @@ class DcmFileFormat
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
+** Revision 1.38  2010-10-20 16:34:08  joergr
+** Renamed method to avoid warnings reported by gcc with additional flags.
+**
 ** Revision 1.37  2010-10-20 16:31:25  joergr
 ** Added missing API documentation.
 **
