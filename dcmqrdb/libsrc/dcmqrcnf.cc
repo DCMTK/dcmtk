@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:35 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:36 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -630,7 +630,7 @@ char *DcmQueryRetrieveConfig::skipmnemonic (char *rcline)
       else break;
     }
    while(*help != '\0') {
-      if (!isspace(*help)) help++;    /* Mnemonic */
+      if (!isspace(OFstatic_cast(unsigned char, *help))) help++;    /* Mnemonic */
       else break;
    }
    while(*help != '\0') {
@@ -643,7 +643,9 @@ char *DcmQueryRetrieveConfig::skipmnemonic (char *rcline)
 
 int DcmQueryRetrieveConfig::isgap (char gap)
 {
-   if (isspace(gap) || gap == '=' || gap == ',' || gap == 10 || gap == 13)
+   if (isspace(OFstatic_cast(unsigned char, gap)))
+      return(1);
+   if (gap == '=' || gap == ',' || gap == 10 || gap == 13)
       return(1);
    else
       return(0);
@@ -1006,6 +1008,9 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
+ * Revision 1.13  2010-10-20 07:41:36  uli
+ * Made sure isalpha() & friends are only called with valid arguments.
+ *
  * Revision 1.12  2010-10-14 13:14:35  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

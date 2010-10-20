@@ -87,9 +87,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:53 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:37 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1089,7 +1089,7 @@ double OFStandard::atof(const char *s, OFBool *success)
     int fracExp = 0;
 
     // Strip off leading blanks and check for a sign.
-    while (isspace(OFstatic_cast(int, *p))) ++p;
+    while (isspace(OFstatic_cast(unsigned char, *p))) ++p;
 
     if (*p == '-')
     {
@@ -1109,7 +1109,7 @@ double OFStandard::atof(const char *s, OFBool *success)
     for (mantSize = 0; ; ++mantSize)
     {
         c = *p;
-        if (!isdigit(OFstatic_cast(int, c)))
+        if (!isdigit(OFstatic_cast(unsigned char, c)))
         {
             if ((c != '.') || (decPt >= 0)) break;
             decPt = mantSize;
@@ -1190,7 +1190,7 @@ double OFStandard::atof(const char *s, OFBool *success)
             if (*p == '+') ++p;
             expSign = 0;
         }
-        while (isdigit(OFstatic_cast(int, *p)))
+        while (isdigit(OFstatic_cast(unsigned char, *p)))
         {
             exponent = exponent * 10 + (*p - '0');
             ++p;
@@ -1863,6 +1863,9 @@ long OFStandard::getProcessID()
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.64  2010-10-20 07:41:37  uli
+ *  Made sure isalpha() & friends are only called with valid arguments.
+ *
  *  Revision 1.63  2010-10-14 13:14:53  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

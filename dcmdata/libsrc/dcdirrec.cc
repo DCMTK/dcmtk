@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:07 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:35 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -594,7 +594,7 @@ static void hostToDicomFilename(char *fname)
     char c = '\0';
     for (int i = 0; i < len; i++)
     {
-        c = fname[i];
+        c = OFstatic_cast(unsigned char, fname[i]);
         /* the PATH_SEPARATOR depends on the OS (see <osconfig.h>) */
         if (c == PATH_SEPARATOR)
         {
@@ -1527,6 +1527,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.75  2010-10-20 07:41:35  uli
+ * Made sure isalpha() & friends are only called with valid arguments.
+ *
  * Revision 1.74  2010-10-14 13:14:07  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

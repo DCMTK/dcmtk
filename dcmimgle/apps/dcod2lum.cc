@@ -17,9 +17,9 @@
  *
  *  Purpose: convert hardcopy characteristic curve file to softcopy format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:36 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:35 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
                     {
                         while (input.get(c) && (c != '\n') && (c != '\r'));     // skip comments
                     }
-                    else if (!isspace(c))                                       // skip whitespaces
+                    else if (!isspace(OFstatic_cast(unsigned char, c)))         // skip whitespaces
                     {
                         input.putback(c);
                         if (maxddl == 0)                                        // read maxvalue
@@ -185,6 +185,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcod2lum.cc,v $
+ * Revision 1.10  2010-10-20 07:41:35  uli
+ * Made sure isalpha() & friends are only called with valid arguments.
+ *
  * Revision 1.9  2010-10-14 13:13:36  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

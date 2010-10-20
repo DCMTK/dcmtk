@@ -17,9 +17,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:49 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:36 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,7 +127,7 @@ static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
   OFString aString;
   int lpos = pos;
   int spos = 0;
-  while(isspace(c[lpos])) ++lpos; // ignore leading space
+  while(isspace(OFstatic_cast(unsigned char, c[lpos]))) ++lpos; // ignore leading space
 
   if (c[lpos]=='\0') return -1; // EOF
   if (c[lpos]=='.')
@@ -1171,6 +1171,9 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
+ *  Revision 1.38  2010-10-20 07:41:36  uli
+ *  Made sure isalpha() & friends are only called with valid arguments.
+ *
  *  Revision 1.37  2010-10-14 13:13:49  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

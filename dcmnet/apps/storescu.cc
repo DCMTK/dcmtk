@@ -17,9 +17,9 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:42 $
- *  CVS/RCS Revision: $Revision: 1.96 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:35 $
+ *  CVS/RCS Revision: $Revision: 1.97 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -923,7 +923,7 @@ int main(int argc, char *argv[])
     {
       /* perform name mangling for config file key */
       OFString sprofile;
-      const char *c = opt_profileName;
+      const unsigned char *c = OFreinterpret_cast(const unsigned char *, opt_profileName);
       while (*c)
       {
         if (!isspace(*c)) sprofile += (char) (toupper(*c));
@@ -1735,6 +1735,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.97  2010-10-20 07:41:35  uli
+** Made sure isalpha() & friends are only called with valid arguments.
+**
 ** Revision 1.96  2010-10-14 13:13:42  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

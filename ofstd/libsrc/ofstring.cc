@@ -17,9 +17,9 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:53 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:37 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -813,15 +813,15 @@ STD_NAMESPACE istream& operator>> (STD_NAMESPACE istream& i, OFString& s)
     }
     // skip white space before word
     i.get(c);
-    while (i.good() && isspace(c)) {
+    while (i.good() && isspace(OFstatic_cast(unsigned char, c))) {
         i.get(c);
     }
     // get the word
-    while (i.good() && !isspace(c) && n--) {
+    while (i.good() && !isspace(OFstatic_cast(unsigned char, c)) && n--) {
         s += c;
         i.get(c);
     }
-    if (isspace(c)) {
+    if (isspace(OFstatic_cast(unsigned char, c))) {
         i.putback(c);
     }
     i.width(0);
@@ -1059,6 +1059,9 @@ int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
+** Revision 1.33  2010-10-20 07:41:37  uli
+** Made sure isalpha() & friends are only called with valid arguments.
+**
 ** Revision 1.32  2010-10-14 13:14:53  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

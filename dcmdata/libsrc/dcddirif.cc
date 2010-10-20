@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:07 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:34 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,7 +140,7 @@ static OFBool locateInvalidFilenameChars(const OFString &filename,
                                          const OFBool mapFilenames,
                                          const char separator = PATH_SEPARATOR)
 {
-    char c;
+    unsigned char c;
     size_t i = 0;
     size_t length = filename.length();
     /* disregard trailing point */
@@ -176,7 +176,7 @@ static OFString &hostToDicomFilename(const OFString &hostFilename,
     const size_t length = hostFilename.length();
     for (size_t i = 0; i < length; i++)
     {
-        const char c = hostFilename.at(i);
+        const unsigned char c = hostFilename.at(i);
         if (c == PATH_SEPARATOR)
         {
             /* the PATH_SEPARATOR depends on the OS (see <osconfig.h>) */
@@ -5072,6 +5072,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.50  2010-10-20 07:41:34  uli
+ *  Made sure isalpha() & friends are only called with valid arguments.
+ *
  *  Revision 1.49  2010-10-14 13:14:07  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

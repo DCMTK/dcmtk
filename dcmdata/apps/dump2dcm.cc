@@ -17,9 +17,9 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:30 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:34 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,6 +140,7 @@ const unsigned int DCM_DumpMaxLineSize = 4096;
 #define DCM_DumpOpenFile '<'
 #define DCM_DumpCloseFile '>'
 
+#define TO_UCHAR(s) OFstatic_cast(unsigned char, (s))
 static void
 stripWhitespace(char *s)
 {
@@ -149,7 +150,7 @@ stripWhitespace(char *s)
 
     p = s;
     while (*s != '\0') {
-        if (isspace(*s) == OFFalse) {
+        if (isspace(TO_UCHAR(*s)) == OFFalse) {
             *p++ = *s;
         }
         s++;
@@ -164,7 +165,7 @@ stripTrailingWhitespace(char *s)
     if (s == NULL) return s;
 
     n = strlen(s);
-    for (i = n - 1; i >= 0 && isspace(s[i]); i--)
+    for (i = n - 1; i >= 0 && isspace(TO_UCHAR(s[i])); i--)
         s[i] = '\0';
     return s;
 }
@@ -176,7 +177,7 @@ stripPrecedingWhitespace(char *s)
     char *p;
     if (s == NULL) return s;
 
-    for(p = s; *p && isspace(*p); p++)
+    for(p = s; *p && isspace(TO_UCHAR(*p)); p++)
         ;
 
     return p;
@@ -189,7 +190,7 @@ onlyWhitespace(const char *s)
     int charsFound = OFFalse;
 
     for (int i = 0; (!charsFound) && (i < len); i++) {
-        charsFound = !isspace(s[i]);
+        charsFound = !isspace(TO_UCHAR(s[i]));
     }
     return (!charsFound) ? OFTrue : OFFalse;
 }
@@ -222,7 +223,7 @@ isaCommentLine(const char *s)
     OFBool isComment = OFFalse; /* assumption */
     int len = strlen(s);
     int i = 0;
-    for (i = 0; i < len && isspace(s[i]); i++) /*loop*/;
+    for (i = 0; i < len && isspace(TO_UCHAR(s[i])); i++) /*loop*/;
         isComment = (s[i] == DCM_DumpCommentChar);
     return isComment;
 }
@@ -265,7 +266,7 @@ parseVR(char *&s, DcmEVR &vr)
     s = stripPrecedingWhitespace(s);
 
     // Are there two upper characters?
-    if (isupper(*s) && isupper(*(s + 1)))
+    if (isupper(TO_UCHAR(*s)) && isupper(TO_UCHAR(*(s + 1))))
     {
         char c_vr[3];
         OFStandard::strlcpy(c_vr, s, 3);
@@ -292,6 +293,7 @@ parseVR(char *&s, DcmEVR &vr)
 
     return ok;
 }
+#undef TO_UCHAR
 
 
 static int
@@ -1116,6 +1118,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
+** Revision 1.70  2010-10-20 07:41:34  uli
+** Made sure isalpha() & friends are only called with valid arguments.
+**
 ** Revision 1.69  2010-10-14 13:13:30  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

@@ -17,9 +17,9 @@
  *
  *  Purpose: (STATUS: OK)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:22 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:35 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,8 +68,9 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
       int i=0; // current character
       while (*c && (i<16))
       {
-        if (isalpha(*c)) cp[i++] = toupper(*c);
-        else if (isdigit(*c)) cp[i++] = *c;
+        unsigned char cur = OFstatic_cast(unsigned char, *c);
+        if (isalpha(cur)) cp[i++] = toupper(cur);
+        else if (isdigit(cur)) cp[i++] = cur;
         c++;
       }
       cp[i] = 0; // write terminating zero
@@ -91,6 +92,9 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
 /*
  * CVS/RCS Log
  * $Log: djutils.cc,v $
+ * Revision 1.7  2010-10-20 07:41:35  uli
+ * Made sure isalpha() & friends are only called with valid arguments.
+ *
  * Revision 1.6  2010-10-14 13:14:22  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

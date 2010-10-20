@@ -17,9 +17,9 @@
  *
  *  Purpose: DicomDisplayFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:17 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:35 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -357,7 +357,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                 {
                     while (file.get(c) && (c != '\n') && (c != '\r'));      // skip comments
                 }
-                else if (!isspace(c))                                       // skip whitespaces
+                else if (!isspace(OFstatic_cast(unsigned char, c)))         // skip whitespaces
                 {
                     file.putback(c);
                     if (MaxDDLValue == 0)                                   // read maxvalue
@@ -690,6 +690,9 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
+ * Revision 1.51  2010-10-20 07:41:35  uli
+ * Made sure isalpha() & friends are only called with valid arguments.
+ *
  * Revision 1.50  2010-10-14 13:14:17  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

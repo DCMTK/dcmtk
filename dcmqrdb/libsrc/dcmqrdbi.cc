@@ -18,9 +18,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle,
  *                   DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 15:03:38 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:36 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -888,7 +888,7 @@ static double DB_TimeToDouble (char *thetime)
         double f;
 
         *pc = '\0';
-        for (pc++, f = 1.; (*pc) && (isdigit (*pc)); pc++) {
+        for (pc++, f = 1.; (*pc) && (isdigit (OFstatic_cast(unsigned char, *pc))); pc++) {
             f /= 10.;
             result += (*pc - '0') * f;
         }
@@ -3431,6 +3431,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.27  2010-10-20 07:41:36  uli
+ * Made sure isalpha() & friends are only called with valid arguments.
+ *
  * Revision 1.26  2010-10-14 15:03:38  joergr
  * Added support for "new" SR Storage SOP Classes to storeRequest().
  *

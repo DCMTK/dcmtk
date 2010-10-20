@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:29 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:36 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,7 +151,7 @@ OFCondition DcmSCU::initNetwork()
     {
       /* perform name mangling for config file key */
       OFString profileName;
-      const char *c = m_assocConfigProfile.c_str();
+      const unsigned char *c = OFreinterpret_cast(const unsigned char *, m_assocConfigProfile.c_str());
       while (*c)
       {
         if (! isspace(*c)) profileName += OFstatic_cast(char, toupper(*c));
@@ -1310,6 +1310,9 @@ FINDResponse::~FINDResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.15  2010-10-20 07:41:36  uli
+** Made sure isalpha() & friends are only called with valid arguments.
+**
 ** Revision 1.14  2010-10-14 13:14:29  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

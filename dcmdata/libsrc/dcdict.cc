@@ -17,9 +17,9 @@
  *
  *  Purpose: loadable DICOM data dictionary
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:07 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:35 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,10 +150,10 @@ stripWhitespace(char* s)
 {
   if (s)
   {
-    register char c;
-    register char *t;
-    register char *p;
-    t=p=s;
+    register unsigned char c;
+    register unsigned char *t;
+    register unsigned char *p;
+    t=p=OFreinterpret_cast(unsigned char *, s);
     while ((c = *t++)) if (!isspace(c)) *p++ = c;
     *p = '\0';
   }
@@ -167,7 +167,7 @@ stripTrailingWhitespace(char* s)
     if (s == NULL) return s;
 
     n = strlen(s);
-    for (i = n - 1; i >= 0 && isspace(s[i]); i--)
+    for (i = n - 1; i >= 0 && isspace(OFstatic_cast(unsigned char, s[i])); i--)
         s[i] = '\0';
     return s;
 }
@@ -177,9 +177,10 @@ stripLeadingWhitespace(char* s)
 {
   if (s)
   {
-    register char c;
-    register char *t=s;
-    register char *p=s;
+    register unsigned char c;
+    register unsigned char *t;
+    register unsigned char *p;
+    t=p=OFreinterpret_cast(unsigned char *, s);
     while (isspace(*t)) t++;
     while ((c = *t++)) *p++ = c;
     *p = '\0';
@@ -389,7 +390,7 @@ onlyWhitespace(const char* s)
     int charsFound = OFFalse;
 
     for (int i = 0; (!charsFound) && (i < len); i++) {
-        charsFound = !isspace(s[i]);
+        charsFound = !isspace(OFstatic_cast(unsigned char, s[i]));
     }
     return (!charsFound)? (OFTrue) : (OFFalse);
 }
@@ -413,7 +414,7 @@ isaCommentLine(const char* s)
     OFBool isComment = OFFalse; /* assumption */
     int len = strlen(s);
     int i = 0;
-    for (i = 0; i < len && isspace(s[i]); i++) /*loop*/;
+    for (i = 0; i < len && isspace(OFstatic_cast(unsigned char, s[i])); i++) /*loop*/;
     isComment = (s[i] == DCM_DICT_COMMENT_CHAR);
     return isComment;
 }
@@ -851,6 +852,9 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
+** Revision 1.49  2010-10-20 07:41:35  uli
+** Made sure isalpha() & friends are only called with valid arguments.
+**
 ** Revision 1.48  2010-10-14 13:14:07  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

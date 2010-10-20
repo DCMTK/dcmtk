@@ -57,9 +57,9 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 2010-10-14 13:14:28 $
-** CVS/RCS Revision:	$Revision: 1.28 $
+** Last Update:		$Author: uli $
+** Update Date:		$Date: 2010-10-20 07:41:36 $
+** CVS/RCS Revision:	$Revision: 1.29 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -109,6 +109,7 @@ OFLogger DCM_dcmnetGetLogger()
     return DCM_dcmnetLogger;
 }
 
+#define TO_UCHAR(s) OFstatic_cast(unsigned char, (s))
 char* 
 DU_stripTrailingSpaces(char *s)
 {
@@ -117,7 +118,7 @@ DU_stripTrailingSpaces(char *s)
     if (s == NULL) return s;
     
     n = strlen(s);
-    for (i = n - 1; i >= 0 && isspace(s[i]); i--)
+    for (i = n - 1; i >= 0 && isspace(TO_UCHAR(s[i])); i--)
 	s[i] = '\0';
     return s;
 }
@@ -133,7 +134,7 @@ DU_stripLeadingSpaces(char *s)
     if (!isspace(s[0])) return s;	/* no leading space */
     
     /* first non-space */
-    for (i=0; i<n && isspace(s[i]); i++)
+    for (i=0; i<n && isspace(TO_UCHAR(s[i])); i++)
         /* do nothing, just iterate */
 	;
     if (i<n) {
@@ -155,6 +156,7 @@ DU_stripLeadingAndTrailingSpaces(char *s)
     DU_stripTrailingSpaces(s);
     return s;
 }
+#undef TO_UCHAR
 
 OFBool
 DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
@@ -794,6 +796,9 @@ DU_neventReportStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
+** Revision 1.29  2010-10-20 07:41:36  uli
+** Made sure isalpha() & friends are only called with valid arguments.
+**
 ** Revision 1.28  2010-10-14 13:14:28  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

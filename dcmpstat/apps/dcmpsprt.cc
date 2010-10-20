@@ -21,9 +21,9 @@
  *    stored print and hardcopy grayscale images.
  *    Non-grayscale transformations in the presentation state are ignored.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:45 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:36 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,7 +94,7 @@ int addOverlay(const char *filename,
                     {
                         for (unsigned long xs = 0; xs < xsize; xs++)
                         {
-                            while (input.get(c) && !isdigit(c));                            // skip non-numeric chars
+                            while (input.get(c) && !isdigit(OFstatic_cast(unsigned char, c)));  // skip non-numeric chars
                             input.putback(c);
                             input >> value;
                             if (value)
@@ -693,6 +693,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
+ * Revision 1.45  2010-10-20 07:41:36  uli
+ * Made sure isalpha() & friends are only called with valid arguments.
+ *
  * Revision 1.44  2010-10-14 13:13:45  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

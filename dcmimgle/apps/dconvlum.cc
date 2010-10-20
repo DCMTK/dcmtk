@@ -17,9 +17,9 @@
  *
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:36 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:35 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,10 +80,10 @@ int main(int argc, char *argv[])
                 unsigned int i = 0;
                 while ((i <= maxddl) && input.good() && output.good())
                 {
-                    while (input.get(c) && !isdigit(c));                            // skip non-numeric chars
+                    while (input.get(c) && !isdigit(OFstatic_cast(unsigned char, c))); // skip non-numeric chars
                     input.putback(c);
                     input >> ddl;                                                   // read DDL value
-                    while (input.get(c) && !isdigit(c));                            // skip non-numeric chars
+                    while (input.get(c) && !isdigit(OFstatic_cast(unsigned char, c))); // skip non-numeric chars
                     input.putback(c);
                     input >> lum;                                                   // read luminance value
                     output.width(5);
@@ -120,6 +120,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
+ * Revision 1.27  2010-10-20 07:41:35  uli
+ * Made sure isalpha() & friends are only called with valid arguments.
+ *
  * Revision 1.26  2010-10-14 13:13:36  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

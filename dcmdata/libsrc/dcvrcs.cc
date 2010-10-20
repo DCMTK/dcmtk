@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmCodeString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:10 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:35 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,7 +121,7 @@ OFBool DcmCodeString::checkVR(const OFString &value,
                               size_t *pos,
                               const OFBool checkLength)
 {
-    char c;
+    unsigned char c;
     size_t i;
     const size_t length = value.length();
     const size_t maxlen = (length < MAX_CS_LENGTH) || (!checkLength) ? length : MAX_CS_LENGTH;
@@ -154,6 +154,9 @@ OFCondition DcmCodeString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.cc,v $
+** Revision 1.23  2010-10-20 07:41:35  uli
+** Made sure isalpha() & friends are only called with valid arguments.
+**
 ** Revision 1.22  2010-10-14 13:14:10  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

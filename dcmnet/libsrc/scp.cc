@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:29 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:36 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1326,7 +1326,7 @@ OFCondition DcmSCP::setAndCheckAssociationProfile(const OFString &profileName)
   OFCondition result;
 
   /* perform name mangling for config file key */
-  const char *c = profileName.c_str();
+  const unsigned char *c = OFreinterpret_cast(const unsigned char *, profileName.c_str());
   while (*c)
   {
     if (! isspace(*c)) mangledName += OFstatic_cast(char, toupper(*c));
@@ -1490,6 +1490,9 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.14  2010-10-20 07:41:36  uli
+** Made sure isalpha() & friends are only called with valid arguments.
+**
 ** Revision 1.13  2010-10-14 13:14:29  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

@@ -1,6 +1,38 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.20 (schlachter)
+
+- Made sure isalpha() & friends are only called with valid arguments.
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcvrcs.cc
+           dcmdata/libsrc/dcvrui.cc
+           dcmdata/libsrc/mkdeftag.cc
+           dcmimgle/apps/dcod2lum.cc
+           dcmimgle/apps/dconvlum.cc
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmjpeg/libsrc/djutils.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/libsrc/dcasccff.cc
+           dcmnet/libsrc/diutil.cc
+           dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+           dcmpstat/apps/dcmmklut.cc
+           dcmpstat/apps/dcmpsprt.cc
+           dcmqrdb/libsrc/dcmqrcnf.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmsign/apps/dcmsign.cc
+           dcmsr/libsrc/dsrtypes.cc
+           oflog/libsrc/property.cc
+           ofstd/libsrc/ofdatime.cc
+           ofstd/libsrc/ofstd.cc
+           ofstd/libsrc/ofstring.cc
+
 **** Changes from 2010.10.18 (schlachter)
 
 - Correctly read bytestreams on 64-bit platforms.

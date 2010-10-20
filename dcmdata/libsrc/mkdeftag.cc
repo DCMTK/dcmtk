@@ -17,9 +17,9 @@
  *
  *  Purpose: Generate a C++ header defining symbolic names for DICOM Tags.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:11 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:35 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,10 +65,10 @@ convertToIdentifier(char* s)
     }
     int len = strlen(s);
     int i=0;
-    char c;
+    unsigned char c;
 
     for (i=0; i<len; i++) {
-        c = s[i];
+        c = OFstatic_cast(unsigned char, s[i]);
         if (!(isalnum(c) || (c == '_'))) {
             /* replace char with '_' */
             s[i] = '_';
@@ -348,6 +348,9 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
+** Revision 1.31  2010-10-20 07:41:35  uli
+** Made sure isalpha() & friends are only called with valid arguments.
+**
 ** Revision 1.30  2010-10-14 13:14:11  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

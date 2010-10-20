@@ -17,9 +17,9 @@
  *
  *  Purpose: DicomImage-Interface (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:17 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -210,12 +210,13 @@ void DicomImage::Init()
             if (cstr != NULL)
             {
                 char *q = cstr;
-                for (const char *p = str; *p != 0; p++)             // remove invalid chars
+                for (const char *p = str; *p != 0; p++)    // remove invalid chars
                 {
-                    if (isalpha(*p))
-                        *(q++) = toupper(*p);
-                    else if (isdigit(*p))
-                        *(q++) = *p;
+                    unsigned char c = OFstatic_cast(unsigned char, *p);
+                    if (isalpha(c))
+                        *(q++) = toupper(c);
+                    else if (isdigit(c))
+                        *(q++) = c;
                 }
                 *q = '\0';                                          // end of C string
                 while ((pin->Name != NULL) && (strcmp(pin->Name, cstr) != 0))
@@ -804,6 +805,9 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
+ * Revision 1.36  2010-10-20 07:41:35  uli
+ * Made sure isalpha() & friends are only called with valid arguments.
+ *
  * Revision 1.35  2010-10-14 13:14:17  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

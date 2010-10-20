@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for date and time functions (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:53 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:37 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -199,7 +199,7 @@ OFBool OFDateTime::setISOFormattedDateTime(const OFString &formattedDateTime)
         {
             size_t pos = 10;
             /* search for first digit of the time value (skip arbitrary separators) */
-            while ((pos < length) && !isdigit(formattedDateTime.at(pos)))
+            while ((pos < length) && !isdigit(OFstatic_cast(unsigned char, formattedDateTime.at(pos))))
                 ++pos;
             if ((pos < length) && Time.setISOFormattedTime(formattedDateTime.substr(pos)))
                 result = OFTrue;
@@ -284,6 +284,9 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDateTim
  *
  * CVS/RCS Log:
  * $Log: ofdatime.cc,v $
+ * Revision 1.14  2010-10-20 07:41:37  uli
+ * Made sure isalpha() & friends are only called with valid arguments.
+ *
  * Revision 1.13  2010-10-14 13:14:53  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

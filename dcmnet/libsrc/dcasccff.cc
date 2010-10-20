@@ -18,9 +18,9 @@
  *  Purpose: 
  *    class DcmAssociationConfigurationFile
  * 
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:27 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:35 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,7 +158,7 @@ OFCondition DcmAssociationConfigurationFile::parsePresentationContexts(
   size_t separator = 0;
   size_t i;
   size_t len;
-  char c;
+  unsigned char c;
   OFCondition result = EC_Normal;
 
   config.first_section(1);
@@ -405,6 +405,7 @@ OFCondition DcmAssociationConfigurationFile::parseExtendedNegotiationItems(
 }
 
 
+#define TO_UCHAR(s) OFstatic_cast(unsigned char, (s))
 OFCondition DcmAssociationConfigurationFile::parseProfiles(
   DcmAssociationConfiguration& cfg,
   OFConfigFile& config)
@@ -450,7 +451,7 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
     scontext.clear();
     while (*c)
     {
-      if (! isspace(*c)) scontext += (char) (toupper(*c));
+      if (! isspace(TO_UCHAR(*c))) scontext += (char) (toupper(*c));
       ++c;
     }
     context = scontext.c_str();
@@ -462,7 +463,7 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
       srole.clear();
       while (*c)
       {
-        if (! isspace(*c)) srole += (char) (toupper(*c));
+        if (! isspace(TO_UCHAR(*c))) srole += (char) (toupper(*c));
         ++c;
       }
       role = srole.c_str();
@@ -475,7 +476,7 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
       sextneg.clear();
       while (*c)
       {
-        if (! isspace(*c)) sextneg += (char) (toupper(*c));
+        if (! isspace(TO_UCHAR(*c))) sextneg += (char) (toupper(*c));
         ++c;
       }
       extneg = sextneg.c_str();
@@ -488,11 +489,15 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
 
   return result;
 }
+#undef TO_UCHAR
 
 
 /*
  * CVS/RCS Log
  * $Log: dcasccff.cc,v $
+ * Revision 1.6  2010-10-20 07:41:35  uli
+ * Made sure isalpha() & friends are only called with valid arguments.
+ *
  * Revision 1.5  2010-10-14 13:14:27  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -17,9 +17,9 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:42 $
- *  CVS/RCS Revision: $Revision: 1.135 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:35 $
+ *  CVS/RCS Revision: $Revision: 1.136 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -640,7 +640,7 @@ int main(int argc, char *argv[])
 
       /* perform name mangling for config file key */
       OFString sprofile;
-      const char *c = opt_profileName;
+      const unsigned char *c = OFreinterpret_cast(const unsigned char *, opt_profileName);
       while (*c)
       {
         if (! isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
@@ -1473,7 +1473,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   if (opt_profileName)
   {
     /* perform name mangling for config file key */
-    const char *c = opt_profileName;
+    const unsigned char *c = OFreinterpret_cast(const unsigned char *, opt_profileName);
     while (*c)
     {
       if (!isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
@@ -2735,6 +2735,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.136  2010-10-20 07:41:35  uli
+** Made sure isalpha() & friends are only called with valid arguments.
+**
 ** Revision 1.135  2010-10-14 13:13:42  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

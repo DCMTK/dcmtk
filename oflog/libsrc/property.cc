@@ -43,7 +43,7 @@ static
 int
 is_space (tchar ch)
 {
-    return isspace (ch);
+    return isspace (OFstatic_cast(unsigned char, ch));
 }
 
 

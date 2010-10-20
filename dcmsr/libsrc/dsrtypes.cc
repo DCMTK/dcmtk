@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:42 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:36 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1232,7 +1232,7 @@ OFBool DSRTypes::checkForValidUIDFormat(const OFString &stringValue)
     /* empty strings are invalid */
     if (!stringValue.empty())
     {
-        const char *p = stringValue.c_str();
+        const unsigned char *p = OFreinterpret_cast(const unsigned char *, stringValue.c_str());
         if (p != NULL)
         {
             /* check for leading number */
@@ -1575,6 +1575,9 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.71  2010-10-20 07:41:36  uli
+ *  Made sure isalpha() & friends are only called with valid arguments.
+ *
  *  Revision 1.70  2010-10-14 13:14:42  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
