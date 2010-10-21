@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:33 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2010-10-21 09:06:48 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -631,6 +631,13 @@ class DSRTypes
         /// add new node below current one (after last child)
         AM_belowCurrent
     };
+
+
+  // --- destructor ---
+
+    /** destructor. (only needed to avoid compiler warnings)
+     */
+    virtual ~DSRTypes();
 
 
   // --- conversion functions ---
@@ -1294,6 +1301,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.66  2010-10-21 09:06:48  joergr
+ *  Added virtual destructor in order to avoid warnings reported by gcc with
+ *  additional flags.
+ *
  *  Revision 1.65  2010-10-14 13:16:33  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

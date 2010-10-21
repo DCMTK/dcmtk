@@ -23,6 +23,8 @@ Changes between releases are documented here.
 - Added virtual destructor in order to avoid warnings reported by gcc with
   additional flags.
   Affects: dcmdata/include/dcmtk/dcmdata/dctagkey.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrtypes.cc
 
 **** Changes from 2010.10.20 (riesmeier)
 

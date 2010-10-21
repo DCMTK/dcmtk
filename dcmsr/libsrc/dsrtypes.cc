@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:36 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-21 09:06:51 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -417,6 +417,11 @@ static const S_CharacterSetNameMap CharacterSetNameMap[] =
 /*------------------*
  *  implementation  *
  *------------------*/
+
+DSRTypes::~DSRTypes()
+{
+}
+
 
 const char *DSRTypes::documentTypeToSOPClassUID(const E_DocumentType documentType)
 {
@@ -1575,6 +1580,10 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.72  2010-10-21 09:06:51  joergr
+ *  Added virtual destructor in order to avoid warnings reported by gcc with
+ *  additional flags.
+ *
  *  Revision 1.71  2010-10-20 07:41:36  uli
  *  Made sure isalpha() & friends are only called with valid arguments.
  *
