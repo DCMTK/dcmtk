@@ -18,8 +18,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:30 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2010-10-21 08:35:41 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,6 @@ static xmlCharEncodingHandlerPtr EncodingHandler = NULL;
 extern "C" void errorFunction(void * ctx, const char *msg, ...)
 {
     OFString &buffer = *OFstatic_cast(OFString*, ctx);
-    OFLogger xmlLogger = OFLog::getLogger("dcmtk.dcmsr.libxml");
 
     if (!xmlLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
         return;
@@ -995,6 +994,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.33  2010-10-21 08:35:41  joergr
+ * Removed redundant definition of logger variable for libxml.
+ *
  * Revision 1.32  2010-10-14 13:13:30  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

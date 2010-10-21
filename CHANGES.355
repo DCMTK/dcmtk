@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.21 (riesmeier)
 
+- Removed redundant definition of logger variable for libxml.
+  Affects: dcmdata/apps/xml2dcm.cc
+
 - Renamed variable to avoid warning reported by gcc with additional flags.
   Affects: dcmdata/apps/dcm2pdf.cc
 
