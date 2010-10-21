@@ -19,8 +19,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:51 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2010-10-21 09:10:08 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,24 +80,24 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                           << "but extended characters used in file: " << ifname);
                       result = EC_IllegalCall;
                     } else {
-                        OFString charset(defaultCharset);
-                        if (charset == "latin-1")
+                        OFString charsetStr(defaultCharset);
+                        if (charsetStr == "latin-1")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
-                        else if (charset == "latin-2")
+                        else if (charsetStr == "latin-2")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin2);
-                        else if (charset == "latin-3")
+                        else if (charsetStr == "latin-3")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin3);
-                        else if (charset == "latin-4")
+                        else if (charsetStr == "latin-4")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin4);
-                        else if (charset == "latin-5")
+                        else if (charsetStr == "latin-5")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin5);
-                        else if (charset == "cyrillic")
+                        else if (charsetStr == "cyrillic")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Cyrillic);
-                        else if (charset == "arabic")
+                        else if (charsetStr == "arabic")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Arabic);
-                        else if (charset == "greek")
+                        else if (charsetStr == "greek")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Greek);
-                        else if (charset == "hebrew")
+                        else if (charsetStr == "hebrew")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Hebrew);
                     }
                 }
@@ -342,6 +342,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
+ * Revision 1.42  2010-10-21 09:10:08  joergr
+ * Renamed variable to avoid warning reported by gcc with additional flags.
+ *
  * Revision 1.41  2010-10-14 13:13:51  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

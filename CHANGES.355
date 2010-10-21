@@ -13,6 +13,8 @@ Changes between releases are documented here.
 
 - Renamed variable to avoid warning reported by gcc with additional flags.
   Affects: dcmdata/apps/dcm2pdf.cc
+           dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
 
 - Use type cast macros (e.g. OFstatic_cast) where appropriate.
   Affects: dcmdata/include/dcmtk/dcmdata/dcovlay.h
