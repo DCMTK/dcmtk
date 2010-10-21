@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.21 (riesmeier)
 
+- Replaced tab characters by spaces.
+  Affects: ofstd/libsrc/oflist.cc
+
 - Added private undefined copy constructor and assignment operator in order to
   avoid compiler warnings (reported by gcc with additional flags).
   Affects: dcmimage/include/dcmtk/dcmimage/diargimg.h
