@@ -18,8 +18,8 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:42 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2010-10-21 07:52:40 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,7 @@
 class DcmTagKey
 {
 public:
+
     /** default constructor
      */
     DcmTagKey();
@@ -60,6 +61,10 @@ public:
      *  @param e element
      */
     DcmTagKey(Uint16 g, Uint16 e);
+
+    /** destructor
+     */
+    virtual ~DcmTagKey();
 
     /** set value to given tag key
      *  @param key attribute tag to copy
@@ -186,6 +191,7 @@ public:
     OFBool isSignableTag() const;
 
 protected:
+
     /// less-than operation comparing only group numbers
     int groupLT(const DcmTagKey& key) const;
 
@@ -205,6 +211,7 @@ protected:
     int elementEQ(const DcmTagKey& key) const;
 
 private:
+
     /// tag group number
     Uint16 group;
     /// tag element number
@@ -223,7 +230,7 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k);
 ** inline versions of functions
 */
 
-/* Constructors */
+/* constructors and destructor */
 
 inline
 DcmTagKey::DcmTagKey()
@@ -243,6 +250,11 @@ inline
 DcmTagKey::DcmTagKey(Uint16 g, Uint16 e)
   : group(g),
     element(e)
+{
+}
+
+inline
+DcmTagKey::~DcmTagKey()
 {
 }
 
@@ -301,8 +313,8 @@ DcmTagKey::isPrivate() const
 inline OFBool
 DcmTagKey::isPrivateReservation() const
 {
-  // private reservation has element number ranging from 0x0010 to 0x00FF
-  return isPrivate() && (element >= 0x10) && (element <= 0xFF);
+    // private reservation has element number ranging from 0x0010 to 0x00FF
+    return isPrivate() && (element >= 0x10) && (element <= 0xFF);
 }
 
 inline OFBool
@@ -411,6 +423,10 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
+** Revision 1.23  2010-10-21 07:52:40  joergr
+** Added virtual destructor in order to avoid warnings reported by gcc with
+** additional flags.
+**
 ** Revision 1.22  2010-10-14 13:15:42  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.21 (riesmeier)
+
+- Added virtual destructor in order to avoid warnings reported by gcc with
+  additional flags.
+  Affects: dcmdata/include/dcmtk/dcmdata/dctagkey.h
+
 **** Changes from 2010.10.20 (riesmeier)
 
 - Use type cast macros (e.g. OFstatic_cast) where appropriate.
