@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmOverlayData
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:41 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2010-10-21 08:21:13 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcvrpobw.h"
 
-/** a class used to represent overlay data (60xx,3000) 
+/** a class used to represent overlay data (60xx,3000)
  */
 class DcmOverlayData : public DcmPolymorphOBOW
 {
@@ -42,23 +42,34 @@ public:
      *  @param tag attribute tag
      *  @param len length of the attribute value
      */
-    DcmOverlayData(
-	const DcmTag & tag, 
-	const Uint32 len = 0)
-	: DcmPolymorphOBOW(tag, len) {}
+    DcmOverlayData(const DcmTag &tag,
+                   const Uint32 len = 0)
+      : DcmPolymorphOBOW(tag, len)
+    {
+    }
 
-    /// copy constructor
-    DcmOverlayData(
-	const DcmOverlayData & oldObj)
-	: DcmPolymorphOBOW(oldObj) {}
+    /** copy constructor
+     *  @param oldObj element to be copied
+     */
+    DcmOverlayData(const DcmOverlayData &oldObj)
+      : DcmPolymorphOBOW(oldObj)
+    {
+    }
 
-    /// destructor
-    virtual ~DcmOverlayData() {}
+    /** destructor
+     */
+    virtual ~DcmOverlayData()
+    {
+    }
 
     /** copy assignment operator
      *  @param obj element to be copied
      */
-    DcmOverlayData &operator=(const DcmOverlayData &obj) { DcmPolymorphOBOW::operator=(obj); return *this; }
+    DcmOverlayData &operator=(const DcmOverlayData &obj)
+    {
+      DcmPolymorphOBOW::operator=(obj);
+      return *this;
+    }
 
     /** clone method
      *  @return deep copy of this object
@@ -66,7 +77,7 @@ public:
     virtual DcmObject *clone() const
     {
       return new DcmOverlayData(*this);
-    } 
+    }
 
     /** Virtual object copying. This method can be used for DcmObject
      *  and derived classes to get a deep copy of an object. Internally
@@ -80,14 +91,14 @@ public:
      *                class type as "this" object
      *  @return EC_Normal if copying was successful, error otherwise
      */
-    virtual OFCondition copyFrom(const DcmObject& rhs)
+    virtual OFCondition copyFrom(const DcmObject &rhs)
     {
       if (this != &rhs)
       {
         if (rhs.ident() != ident()) return EC_IllegalCall;
-        *this = (DcmOverlayData&) rhs;
+        *this = OFstatic_cast(const DcmOverlayData &, rhs);
       }
-      return EC_Normal;    
+      return EC_Normal;
     }
 
     /** return identifier for this class. Every class derived from this class
@@ -96,7 +107,10 @@ public:
      *  this class even on compilers not supporting RTTI.
      *  @return type identifier of this class
      */
-    virtual DcmEVR ident() const { return EVR_OverlayData; }
+    virtual DcmEVR ident() const
+    {
+      return EVR_OverlayData;
+    }
 };
 
 #endif
@@ -104,6 +118,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcovlay.h,v $
+** Revision 1.13  2010-10-21 08:21:13  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+** Added missing API documentation and slightly reformatted source code.
+**
 ** Revision 1.12  2010-10-14 13:15:41  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
@@ -143,5 +161,5 @@ public:
 ** - Support for CP 14. PixelData and OverlayData can have VR OW or OB
 **   (depending on the transfer syntax). New internal value
 **   representation (only for ident()) for OverlayData.
-** 
+**
 */

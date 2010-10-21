@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.21 (riesmeier)
 
+- Use type cast macros (e.g. OFstatic_cast) where appropriate.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcovlay.h
+
+- Added missing API documentation and slightly reformatted source code.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcovlay.h
+
 - Added virtual destructor in order to avoid warnings reported by gcc with
   additional flags.
   Affects: dcmdata/include/dcmtk/dcmdata/dctagkey.h
