@@ -18,8 +18,8 @@
  *  Purpose: Exctract PDF file from DICOM encapsulated PDF storage object
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:30 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2010-10-21 08:32:21 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,42 +114,42 @@ int main(int argc, char *argv[])
   cmd.addParam("pdffile-out", "PDF output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
-   OFLog::addOptions(cmd);
+    cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
+    OFLog::addOptions(cmd);
 
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
-     cmd.addOption("--read-file",          "+f",     "read file format or data set (default)");
-     cmd.addOption("--read-file-only",     "+fo",    "read file format only");
-     cmd.addOption("--read-dataset",       "-f",     "read data set without file meta information");
+      cmd.addOption("--read-file",          "+f",     "read file format or data set (default)");
+      cmd.addOption("--read-file-only",     "+fo",    "read file format only");
+      cmd.addOption("--read-dataset",       "-f",     "read data set without file meta information");
     cmd.addSubGroup("input transfer syntax:", LONGCOL, SHORTCOL);
-     cmd.addOption("--read-xfer-auto",     "-t=",    "use TS recognition (default)");
-     cmd.addOption("--read-xfer-detect",   "-td",    "ignore TS specified in the file meta header");
-     cmd.addOption("--read-xfer-little",   "-te",    "read with explicit VR little endian TS");
-     cmd.addOption("--read-xfer-big",      "-tb",    "read with explicit VR big endian TS");
-     cmd.addOption("--read-xfer-implicit", "-ti",    "read with implicit VR little endian TS");
+      cmd.addOption("--read-xfer-auto",     "-t=",    "use TS recognition (default)");
+      cmd.addOption("--read-xfer-detect",   "-td",    "ignore TS specified in the file meta header");
+      cmd.addOption("--read-xfer-little",   "-te",    "read with explicit VR little endian TS");
+      cmd.addOption("--read-xfer-big",      "-tb",    "read with explicit VR big endian TS");
+      cmd.addOption("--read-xfer-implicit", "-ti",    "read with implicit VR little endian TS");
     cmd.addSubGroup("parsing of odd-length attributes:");
-     cmd.addOption("--accept-odd-length",  "+ao",    "accept odd length attributes (default)");
-     cmd.addOption("--assume-even-length", "+ae",    "assume real length is one byte larger");
+      cmd.addOption("--accept-odd-length",  "+ao",    "accept odd length attributes (default)");
+      cmd.addOption("--assume-even-length", "+ae",    "assume real length is one byte larger");
     cmd.addSubGroup("handling of undefined length UN elements:");
-     cmd.addOption("--enable-cp246",       "+ui",    "read undefined len UN as implicit VR (default)");
-     cmd.addOption("--disable-cp246",      "-ui",    "read undefined len UN as explicit VR");
+      cmd.addOption("--enable-cp246",       "+ui",    "read undefined len UN as implicit VR (default)");
+      cmd.addOption("--disable-cp246",      "-ui",    "read undefined len UN as explicit VR");
     cmd.addSubGroup("handling of defined length UN elements:");
-     cmd.addOption("--retain-un",          "-uc",    "retain elements as UN (default)");
-     cmd.addOption("--convert-un",         "+uc",    "convert to real VR if known");
+      cmd.addOption("--retain-un",          "-uc",    "retain elements as UN (default)");
+      cmd.addOption("--convert-un",         "+uc",    "convert to real VR if known");
     cmd.addSubGroup("automatic data correction:");
-     cmd.addOption("--enable-correction",  "+dc",    "enable automatic data correction (default)");
-     cmd.addOption("--disable-correction", "-dc",    "disable automatic data correction");
+      cmd.addOption("--enable-correction",  "+dc",    "enable automatic data correction (default)");
+      cmd.addOption("--disable-correction", "-dc",    "disable automatic data correction");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("bitstream format of deflated input:");
-     cmd.addOption("--bitstream-deflated", "+bd",    "expect deflated bitstream (default)");
-     cmd.addOption("--bitstream-zlib",     "+bz",    "expect deflated zlib bitstream");
+      cmd.addOption("--bitstream-deflated", "+bd",    "expect deflated bitstream (default)");
+      cmd.addOption("--bitstream-zlib",     "+bz",    "expect deflated zlib bitstream");
 #endif
 
    cmd.addGroup("execution options:", LONGCOL, SHORTCOL + 2);
-    cmd.addOption(  "--exec",              "-x",  1, "[c]ommand: string",
-                                                     "execute command c after PDF extraction" );
+     cmd.addOption("--exec",                "-x",  1, "[c]ommand: string",
+                                                      "execute command c after PDF extraction");
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
@@ -210,44 +210,44 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--accept-odd-length"))
       {
-        dcmAcceptOddAttributeLength.set(OFTrue);
+          dcmAcceptOddAttributeLength.set(OFTrue);
       }
       if (cmd.findOption("--assume-even-length"))
       {
-        dcmAcceptOddAttributeLength.set(OFFalse);
+          dcmAcceptOddAttributeLength.set(OFFalse);
       }
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-cp246"))
       {
-        dcmEnableCP246Support.set(OFTrue);
+          dcmEnableCP246Support.set(OFTrue);
       }
       if (cmd.findOption("--disable-cp246"))
       {
-        dcmEnableCP246Support.set(OFFalse);
+          dcmEnableCP246Support.set(OFFalse);
       }
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--retain-un"))
       {
-        dcmEnableUnknownVRConversion.set(OFFalse);
+          dcmEnableUnknownVRConversion.set(OFFalse);
       }
       if (cmd.findOption("--convert-un"))
       {
-        dcmEnableUnknownVRConversion.set(OFTrue);
+          dcmEnableUnknownVRConversion.set(OFTrue);
       }
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-correction"))
       {
-        dcmEnableAutomaticInputDataCorrection.set(OFTrue);
+          dcmEnableAutomaticInputDataCorrection.set(OFTrue);
       }
       if (cmd.findOption("--disable-correction"))
       {
-        dcmEnableAutomaticInputDataCorrection.set(OFFalse);
+          dcmEnableAutomaticInputDataCorrection.set(OFFalse);
       }
       cmd.endOptionBlock();
 
@@ -255,11 +255,11 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--bitstream-deflated"))
       {
-        dcmZlibExpectRFC1950Encoding.set(OFFalse);
+          dcmZlibExpectRFC1950Encoding.set(OFFalse);
       }
       if (cmd.findOption("--bitstream-zlib"))
       {
-        dcmZlibExpectRFC1950Encoding.set(OFTrue);
+          dcmZlibExpectRFC1950Encoding.set(OFTrue);
       }
       cmd.endOptionBlock();
 #endif
@@ -328,21 +328,21 @@ int main(int argc, char *argv[])
      */
     if (pdfDocument[len-1] != 10 && pdfDocument[len-1] != 13)
     {
-      --len;
+        --len;
     }
 
     FILE *pdffile = fopen(opt_ofname, "wb");
     if (pdffile == NULL)
     {
-      OFLOG_FATAL(dcm2pdfLogger, "unable to create file " << opt_ofname);
-      return 1;
+        OFLOG_FATAL(dcm2pdfLogger, "unable to create file " << opt_ofname);
+        return 1;
     }
 
     if (len != fwrite(pdfDocument, 1, len, pdffile))
     {
-      OFLOG_FATAL(dcm2pdfLogger, "write error in file " << opt_ofname);
-      fclose(pdffile);
-      return 1;
+        OFLOG_FATAL(dcm2pdfLogger, "write error in file " << opt_ofname);
+        fclose(pdffile);
+        return 1;
     }
 
     fclose(pdffile);
@@ -351,11 +351,11 @@ int main(int argc, char *argv[])
 
     if (opt_execString)
     {
-      OFString cmd = opt_execString;
-      cmd = replaceChars( cmd, OFString(FILENAME_PLACEHOLDER), opt_ofname );
+        OFString cmdStr = opt_execString;
+        cmdStr = replaceChars(cmdStr, OFString(FILENAME_PLACEHOLDER), opt_ofname);
 
-      // Execute command and return result
-      return system(cmd.c_str());
+        // Execute command and return result
+        return system(cmdStr.c_str());
     }
 
     return 0;
@@ -365,6 +365,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pdf.cc,v $
+ * Revision 1.8  2010-10-21 08:32:21  joergr
+ * Renamed variable to avoid warning reported by gcc with additional flags.
+ *
  * Revision 1.7  2010-10-14 13:13:30  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

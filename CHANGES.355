@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.21 (riesmeier)
 
+- Renamed variable to avoid warning reported by gcc with additional flags.
+  Affects: dcmdata/apps/dcm2pdf.cc
+
 - Use type cast macros (e.g. OFstatic_cast) where appropriate.
   Affects: dcmdata/include/dcmtk/dcmdata/dcovlay.h
 
