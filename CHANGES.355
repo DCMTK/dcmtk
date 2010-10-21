@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.21 (riesmeier)
 
+- Added private undefined copy constructor and assignment operator in order to
+  avoid compiler warnings (reported by gcc with additional flags).
+  Affects: dcmimage/include/dcmtk/dcmimage/diargimg.h
+           dcmimage/include/dcmtk/dcmimage/dipalimg.h
+
 - Removed redundant definition of logger variable for libxml.
   Affects: dcmdata/apps/xml2dcm.cc
 

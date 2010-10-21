@@ -18,8 +18,8 @@
  *  Purpose: DiARGBImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:29 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2010-10-21 08:55:45 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,9 +83,14 @@ class DiARGBImage
 
 
  private:
-    
+
     /// three color palettes for R, G and B
     DiLookupTable *Palette[3];
+
+ // --- declarations to avoid compiler warnings
+
+    DiARGBImage(const DiARGBImage &);
+    DiARGBImage &operator=(const DiARGBImage &);
 };
 
 
@@ -96,6 +101,10 @@ class DiARGBImage
  *
  * CVS/RCS Log:
  * $Log: diargimg.h,v $
+ * Revision 1.12  2010-10-21 08:55:45  joergr
+ * Added private undefined copy constructor and assignment operator in order to
+ * avoid compiler warnings (reported by gcc with additional flags).
+ *
  * Revision 1.11  2010-10-14 13:16:29  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
