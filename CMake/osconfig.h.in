@@ -25,13 +25,6 @@
 #define NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND 1
 #endif
 
-/* MinGW needs some special handling because it is a mixture of WIN32 and Posix.
- * The following settings are not tested by configure but need to be set for MinGW.
- */
-#ifdef __MINGW32__
-#define NO_IOS_BASE_ASSIGN
-#endif
-
 /* Define the canonical host system type as a string constant */
 #define CANONICAL_HOST_TYPE "@CANONICAL_HOST_TYPE@"
 

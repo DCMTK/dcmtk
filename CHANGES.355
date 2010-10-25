@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.25 (onken)
+
+- Removed superfluous NO_IOS_BASE_ASSIGN definition for MinGW since it is
+  always set if standard c++ includes are available on the system.
+  Affects: CMake/osconfig.h.in
+
 **** Changes from 2010.10.21 (riesmeier)
 
 - Replaced tab characters by spaces.
