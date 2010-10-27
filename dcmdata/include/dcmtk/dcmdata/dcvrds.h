@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmDecimalString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:42 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2010-10-27 09:18:27 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/dcmdata/dcbytstr.h"
 
 
@@ -111,6 +112,17 @@ class DcmDecimalString
     virtual OFCondition getFloat64(Float64 &doubleVal,
                                    const unsigned long pos = 0);
 
+    /** get stored float values as a vector.
+     *  Please note that only an element value consisting of zero or more spaces is considered
+     *  as being empty and, therefore, results in an empty vector with status ".good()"; use
+     *  isEmpty() before calling this method if you also want to check for other non-significant
+     *  characters (e.g. the backslash).
+     *  @param doubleVals reference to result variable
+     *    (cleared automatically before entries are added)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getFloat64Vector(OFVector<Float64> &doubleVals);
+
     /** get a particular value as a character string
      *  @param stringVal variable in which the result value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -150,6 +162,11 @@ class DcmDecimalString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.h,v $
+** Revision 1.26  2010-10-27 09:18:27  joergr
+** Added getFloat64Vector() method which allows for retrieving the stored
+** floating point values more efficiently (especially when there are many
+** values).
+**
 ** Revision 1.25  2010-10-14 13:15:42  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDecimalString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:17 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2010-10-27 09:18:31 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,6 +120,54 @@ OFCondition DcmDecimalString::getFloat64(Float64 &doubleVal,
 }
 
 
+OFCondition DcmDecimalString::getFloat64Vector(OFVector<Float64> &doubleVals)
+{
+    /* get stored value */
+    char *strVal = NULL;
+    OFCondition l_error = getString(strVal);
+    /* clear result variable */
+    doubleVals.clear();
+    if (l_error.good() && (strVal != NULL))
+    {
+        /* determine number of stored values */
+        const unsigned long vm = getVM();
+        if (vm > 0)
+        {
+            char c;
+            Float64 doubleVal;
+            OFString doubleStr;
+            char *p = strVal;
+            OFBool success = OFFalse;
+            /* avoid memory re-allocations by specifying the expected size */
+            doubleVals.reserve(vm);
+            /* iterate over the string value and search for delimiters */
+            do {
+                c = *p;
+                if ((c == '\\') || (c == '\0'))
+                {
+                    /* extract single value and convert it to floating point */
+                    doubleStr.assign(strVal, p - strVal);
+                    doubleVal = OFStandard::atof(doubleStr.c_str(), &success);
+                    if (success)
+                    {
+                        /* store floating point value in result variable */
+                        doubleVals.push_back(doubleVal);
+                        strVal = p + 1;
+                    }
+                    else
+                    {
+                        l_error = EC_CorruptedData;
+                        break;
+                    }
+                }
+                ++p;
+            } while (c != '\0');
+        }
+    }
+    return l_error;
+}
+
+
 // ********************************
 
 
@@ -179,6 +227,11 @@ OFCondition DcmDecimalString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
+** Revision 1.28  2010-10-27 09:18:31  joergr
+** Added getFloat64Vector() method which allows for retrieving the stored
+** floating point values more efficiently (especially when there are many
+** values).
+**
 ** Revision 1.27  2010-10-20 16:44:17  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

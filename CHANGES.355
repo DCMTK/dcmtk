@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.27 (riesmeier)
 
+- Added getFloat64Vector() method which allows for retrieving the stored
+  floating point values more efficiently (especially when there are many
+  values). Thanks to forum user "budric" for the original report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcvrds.h
+           dcmdata/libsrc/dcvrds.cc
+
 - Rebuilt Makefile dependencies.
   Affects: dcmdata/apps/Makefile.dep
            dcmdata/libi2d/Makefile.dep
