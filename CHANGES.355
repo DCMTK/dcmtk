@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.27 (riesmeier)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/libi2d/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/tests/Makefile.dep
+
 **** Changes from 2010.10.25 (onken)
 
 - Removed superfluous NO_IOS_BASE_ASSIGN definition for MinGW since it is
