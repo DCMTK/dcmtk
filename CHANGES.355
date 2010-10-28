@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.28 (riesmeier)
+
+- Implemented missing rendering code for sigmoid VOI LUT function.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+
+- Added more trace log messages which might be helpful for detailed debugging.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+
 **** Changes from 2010.10.27 (riesmeier)
 
 - Added getFloat64Vector() method which allows for retrieving the stored

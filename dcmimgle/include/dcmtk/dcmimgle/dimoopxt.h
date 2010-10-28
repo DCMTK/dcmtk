@@ -18,8 +18,8 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:26 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2010-10-28 10:58:38 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,6 +120,9 @@ class DiMonoOutputPixelTemplate
 #endif
             else
             {
+                DCMIMGLE_TRACE("monochrome output image - columns: " << columns << ", rows: " << rows << ", frame: " << frame);
+                DCMIMGLE_TRACE("monochrome output values - low: " << OFstatic_cast(unsigned long, low) << ", high: "
+                    << OFstatic_cast(unsigned long, high) << ((low > high) ? " (inverted)" : ""));
                 Data = OFstatic_cast(T3 *, buffer);
                 if ((vlut != NULL) && (vlut->isValid()))            // valid VOI LUT ?
                     voilut(pixel, frame * FrameSize, vlut, plut, disp, OFstatic_cast(T3, low), OFstatic_cast(T3, high));
@@ -292,7 +295,7 @@ class DiMonoOutputPixelTemplate
             lut = new T3[ocnt];
             if (lut != NULL)
             {
-                DCMIMGLE_DEBUG("using optimized routine with additional LUT");
+                DCMIMGLE_DEBUG("using optimized routine with additional LUT (" << ocnt << " entries)");
                 result = 1;
             }
         }
@@ -351,25 +354,28 @@ class DiMonoOutputPixelTemplate
                         const Uint32 value2 = OFstatic_cast(Uint32, (minvalue / OFstatic_cast(double, vlut->getAbsMaxRange())) * plut->getCount());
                         if (dlut != NULL)                                               // perform display transformation
                         {
-                            /* UNTESTED !! */
+                            DCMIMGLE_TRACE("monochrome rendering: VOI LUT #1 - UNTESTED");
                             if (low > high)                                             // invers
                                 value = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, plut->getAbsMaxRange() - plut->getValue(value2) - 1)));
                             else                                                        // normal
                                 value = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, plut->getValue(value2))));
                         } else {                                                        // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI LUT #2");
                             value = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value2)) * outrange / OFstatic_cast(double, plut->getAbsMaxRange()));
                         }
                     } else {                                                            // has no presentation LUT
                         createDisplayLUT(dlut, disp, vlut->getBits());
                         if (dlut != NULL)                                               // perform display transformation
                         {
-                            /* UNTESTED !! */
+                            DCMIMGLE_TRACE("monochrome rendering: VOI LUT #3 - UNTESTED");
                             if (low > high)                                             // invers
                                 value = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, vlut->getAbsMaxRange() - minvalue - 1)));
                             else                                                        // normal
                                 value = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, minvalue)));
-                        } else                                                          // don't use display: invalid or absent
+                        } else {                                                        // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI LUT #4");
                             value = OFstatic_cast(T3, OFstatic_cast(double, low) + (minvalue / OFstatic_cast(double, vlut->getAbsMaxRange())) * outrange);
+                        }
                     }
                     OFBitmanipTemplate<T3>::setMem(Data, value, Count);                 // set output pixels to LUT value
                 } else {
@@ -395,6 +401,7 @@ class DiMonoOutputPixelTemplate
                             q = lut;
                             if (dlut != NULL)                                             // perform display transformation
                             {
+                                DCMIMGLE_TRACE("monochrome rendering: VOI LUT #5");
                                 if (low > high)                                           // inverse
                                 {
                                     const Uint16 maxvalue = OFstatic_cast(Uint16, plut->getAbsMaxRange() - 1);
@@ -423,6 +430,7 @@ class DiMonoOutputPixelTemplate
                                     }
                                 }
                             } else {                                                      // don't use display: invalid or absent
+                                DCMIMGLE_TRACE("monochrome rendering: VOI LUT #6");
                                 const double gradient2 = outrange / OFstatic_cast(double, plut->getAbsMaxRange());
                                 for (i = 0; i < ocnt; ++i)
                                 {
@@ -445,6 +453,7 @@ class DiMonoOutputPixelTemplate
                         {
                             if (dlut != NULL)                                             // perform display transformation
                             {
+                                DCMIMGLE_TRACE("monochrome rendering: VOI LUT #7");
                                 if (low > high)                                           // inverse
                                 {
                                     const Uint16 maxvalue = OFstatic_cast(Uint16, vlut->getAbsMaxRange() - 1);
@@ -473,6 +482,7 @@ class DiMonoOutputPixelTemplate
                                     }
                                 }
                             } else {                                                      // don't use display: invalid or absent
+                                DCMIMGLE_TRACE("monochrome rendering: VOI LUT #8");
                                 const double gradient2 = outrange / OFstatic_cast(double, plut->getAbsMaxRange());
                                 for (i = Count; i != 0; --i)
                                 {
@@ -497,6 +507,7 @@ class DiMonoOutputPixelTemplate
                             q = lut;
                             if (dlut != NULL)                                             // perform display transformation
                             {
+                                DCMIMGLE_TRACE("monochrome rendering: VOI LUT #9");
                                 if (low > high)                                           // inverse
                                 {
                                     const Uint16 maxvalue = OFstatic_cast(Uint16, vlut->getAbsMaxRange() - 1);
@@ -521,6 +532,7 @@ class DiMonoOutputPixelTemplate
                                     }
                                 }
                             } else {                                                      // don't use display: invalid or absent
+                                DCMIMGLE_TRACE("monochrome rendering: VOI LUT #10");
                                 for (i = 0; i < ocnt; ++i)                                // calculating LUT entries
                                 {
                                     value = OFstatic_cast(T2, i) + absmin;
@@ -541,6 +553,7 @@ class DiMonoOutputPixelTemplate
                         {
                             if (dlut != NULL)                                             // perform display transformation
                             {
+                                DCMIMGLE_TRACE("monochrome rendering: VOI LUT #11");
                                 if (low > high)                                           // inverse
                                 {
                                     const Uint16 maxvalue = OFstatic_cast(Uint16, vlut->getAbsMaxRange() - 1);
@@ -565,6 +578,7 @@ class DiMonoOutputPixelTemplate
                                     }
                                 }
                             } else {                                                      // don't use display: invalid or absent
+                                DCMIMGLE_TRACE("monochrome rendering: VOI LUT #12");
                                 for (i = 0; i < Count; ++i)
                                 {
                                     value = OFstatic_cast(T2, *(p++));
@@ -632,6 +646,7 @@ class DiMonoOutputPixelTemplate
                         q = lut;
                         if (dlut != NULL)                                             // perform display transformation
                         {
+                            DCMIMGLE_TRACE("monochrome rendering: VOI NONE #1");
                             if (low > high)                                           // inverse
                             {
                                 const Uint16 maxvalue = OFstatic_cast(Uint16, plut->getAbsMaxRange() - 1);
@@ -648,6 +663,7 @@ class DiMonoOutputPixelTemplate
                                 }
                             }
                         } else {                                                      // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI NONE #2");
                             for (i = 0; i < ocnt; ++i)
                             {
                                 value = OFstatic_cast(Uint32, OFstatic_cast(double, i) * gradient1);
@@ -663,6 +679,7 @@ class DiMonoOutputPixelTemplate
                     {
                         if (dlut != NULL)                                             // perform display transformation
                         {
+                            DCMIMGLE_TRACE("monochrome rendering: VOI NONE #3");
                             if (low > high)                                           // inverse
                             {
                                 const Uint16 maxvalue = OFstatic_cast(Uint16, plut->getAbsMaxRange() - 1);
@@ -679,6 +696,7 @@ class DiMonoOutputPixelTemplate
                                 }
                             }
                         } else {                                                      // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI NONE #4");
                             for (i = Count; i != 0; --i)
                             {
                                 value = OFstatic_cast(Uint32, (OFstatic_cast(double, *(p++)) - absmin) * gradient1);
@@ -694,6 +712,7 @@ class DiMonoOutputPixelTemplate
                         q = lut;
                         if (dlut != NULL)                                             // perform display transformation
                         {
+                            DCMIMGLE_TRACE("monochrome rendering: VOI NONE #5");
                             if (low > high)                                           // inverse
                             {
                                 for (i = ocnt; i != 0; --i)                           // calculating LUT entries
@@ -703,6 +722,7 @@ class DiMonoOutputPixelTemplate
                                     *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, i)));
                             }
                         } else {                                                      // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI NONE #6");
                             for (i = 0; i < ocnt; ++i)                                // calculating LUT entries
                                 *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, i) * gradient);
                         }
@@ -715,6 +735,7 @@ class DiMonoOutputPixelTemplate
                     {
                         if (dlut != NULL)                                             // perform display transformation
                         {
+                            DCMIMGLE_TRACE("monochrome rendering: VOI NONE #7");
                             if (low > high)                                           // inverse
                             {
                                 for (i = Count; i != 0; --i)
@@ -724,6 +745,7 @@ class DiMonoOutputPixelTemplate
                                     *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, OFstatic_cast(double, *(p++)) - absmin)));
                             }
                         } else {                                                      // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI NONE #8");
                             for (i = Count; i != 0; --i)
                                 *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + (OFstatic_cast(double, *(p++)) - absmin) * gradient);
                         }
@@ -757,9 +779,143 @@ class DiMonoOutputPixelTemplate
                  const T3 low,
                  const T3 high)
     {
-        DCMIMGLE_WARN("sigmoid VOI transformation not yet implemented, using linear VOI LUT function instead");
-        // tbd: as long as the implementation is missing, apply the linear VOI window
-        window(inter, start, plut, disp, center, width, low, high);
+        const T1 *pixel = OFstatic_cast(const T1 *, inter->getData());
+        if (pixel != NULL)
+        {
+            if (Data == NULL)
+                Data = new T3[FrameSize];                                             // create new output buffer
+            if (Data != NULL)
+            {
+                DCMIMGLE_DEBUG("applying sigmoid VOI transformation with window center = " << center << ", width = " << width);
+                const DiDisplayLUT *dlut = NULL;
+                const double absmin = inter->getAbsMinimum();
+                const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low);  // output range
+                const unsigned long ocnt = OFstatic_cast(unsigned long, inter->getAbsMaxRange());  // number of LUT entries
+                register const T1 *p = pixel + start;
+                register T3 *q = Data;
+                register unsigned long i;
+                register double value;
+                T3 *lut = NULL;
+                if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
+                {
+                    DCMIMGLE_DEBUG("applying presentation LUT transformation");
+                    createDisplayLUT(dlut, disp, plut->getBits());
+                    register Uint32 value2;                                           // presentation LUT is always unsigned
+                    const double plutcnt_1 = OFstatic_cast(double, plut->getCount() - 1);
+                    const double plutmax_1 = OFstatic_cast(double, plut->getAbsMaxRange() - 1);
+                    if (initOptimizationLUT(lut, ocnt))
+                    {                                                                 // use LUT for optimization
+                        q = lut;
+                        if (dlut != NULL)                                             // perform display transformation
+                        {
+                            DCMIMGLE_TRACE("monochrome rendering: VOI SIGMOID #1");
+                            const double maxvalue = OFstatic_cast(double, dlut->getCount() - 1);
+                            const double offset = (low > high) ? maxvalue : 0;
+                            const double gradient = (low > high) ? (-maxvalue / plutmax_1) : (maxvalue / plutmax_1);
+                            for (i = 0; i < ocnt; ++i)
+                            {
+                                value = OFstatic_cast(double, i) + absmin;
+                                value2 = OFstatic_cast(Uint32, plutcnt_1 / (1 + exp(-4 * (value - center) / width)));
+                                *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, offset + OFstatic_cast(double, plut->getValue(value2)) * gradient)));
+                            }
+                        } else {                                                      // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI SIGMOID #2");
+                            const double gradient = outrange / plutmax_1;
+                            for (i = 0; i < ocnt; ++i)
+                            {
+                                value = OFstatic_cast(double, i) + absmin;
+                                value2 = OFstatic_cast(Uint32, plutcnt_1 / (1 + exp(-4 * (value - center) / width)));
+                                *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value2)) * gradient);
+                            }
+                        }
+                        const T3 *lut0 = lut - OFstatic_cast(T2, absmin);             // points to 'zero' entry
+                        q = Data;
+                        for (i = Count; i != 0; --i)                                  // apply LUT
+                            *(q++) = *(lut0 + (*(p++)));
+                    }
+                    if (lut == NULL)                                                  // use "normal" transformation
+                    {
+                        if (dlut != NULL)                                             // perform display transformation
+                        {
+                            DCMIMGLE_TRACE("monochrome rendering: VOI SIGMOID #3");
+                            const double maxvalue = OFstatic_cast(double, dlut->getCount() - 1);
+                            const double offset = (low > high) ? maxvalue : 0;
+                            const double gradient = (low > high) ? (-maxvalue / plutmax_1) : (maxvalue / plutmax_1);
+                            for (i = Count; i != 0; --i)
+                            {
+                                value = OFstatic_cast(double, *(p++));
+                                value2 = OFstatic_cast(Uint32, plutcnt_1 / (1 + exp(-4 * (value - center) / width)));
+                                *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, offset + OFstatic_cast(double, plut->getValue(value2)) * gradient)));
+                            }
+                        } else {                                                      // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI SIGMOID #4");
+                            const double gradient = outrange / plutmax_1;
+                            for (i = Count; i != 0; --i)
+                            {
+                                value = OFstatic_cast(double, *(p++));
+                                value2 = OFstatic_cast(Uint32, plutcnt_1 / (1 + exp(-4 * (value - center) / width)));
+                                *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value2)) * gradient);
+                            }
+                        }
+                    }
+                } else {                                                              // has no presentation LUT
+                    createDisplayLUT(dlut, disp, bitsof(T1));
+                    if (initOptimizationLUT(lut, ocnt))
+                    {                                                                 // use LUT for optimization
+                        q = lut;
+                        if (dlut != NULL)                                             // perform display transformation
+                        {
+                            DCMIMGLE_TRACE("monochrome rendering: VOI SIGMOID #5");
+                            const double maxvalue = OFstatic_cast(double, dlut->getCount() - 1);
+                            const double outrange2 = (low > high) ? -maxvalue : maxvalue;
+                            const double offset = (low > high) ? maxvalue : 0;
+                            for (i = 0; i < ocnt; ++i)                                // calculating LUT entries
+                            {
+                                value = OFstatic_cast(double, i) + absmin;
+                                *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, offset + outrange2 / (1 + exp(-4 * (value - center) / width)))));
+                            }
+                        } else {                                                      // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI SIGMOID #6");
+                            for (i = 0; i < ocnt; ++i)                                // calculating LUT entries
+                            {
+                                value = OFstatic_cast(double, i) + absmin;
+                                *(q++) = OFstatic_cast(T3, outrange / (1 + exp(-4 * (value - center) / width)));
+                            }
+                        }
+                        const T3 *lut0 = lut - OFstatic_cast(T2, absmin);             // points to 'zero' entry
+                        q = Data;
+                        for (i = Count; i != 0; --i)                                  // apply LUT
+                            *(q++) = *(lut0 + (*(p++)));
+                    }
+                    if (lut == NULL)                                                  // use "normal" transformation
+                    {
+                        if (dlut != NULL)                                             // perform display transformation
+                        {
+                            DCMIMGLE_TRACE("monochrome rendering: VOI SIGMOID #7");
+                            const double maxvalue = OFstatic_cast(double, dlut->getCount() - 1);
+                            const double outrange2 = (low > high) ? -maxvalue : maxvalue;
+                            const double offset = (low > high) ? maxvalue : 0;
+                            for (i = Count; i != 0; --i)
+                            {
+                                value = OFstatic_cast(double, *(p++));
+                                *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, offset + outrange2 / (1 + exp(-4 * (value - center) / width)))));
+                            }
+                        } else {                                                      // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI SIGMOID #8");
+                            for (i = Count; i != 0; --i)
+                            {
+                                value = OFstatic_cast(double, *(p++));
+                                *(q++) = OFstatic_cast(T3, outrange / (1 + exp(-4 * (value - center) / width)));
+                            }
+                        }
+                    }
+                }
+                delete[] lut;
+                if (Count < FrameSize)
+                    OFBitmanipTemplate<T3>::zeroMem(Data + Count, FrameSize - Count);        // set remaining pixels of frame to zero
+            }
+        } else
+            Data = NULL;
     }
 
     /** apply the currently active linear VOI window to the output data
@@ -815,6 +971,7 @@ class DiMonoOutputPixelTemplate
                         q = lut;
                         if (dlut != NULL)                                             // perform display transformation
                         {
+                            DCMIMGLE_TRACE("monochrome rendering: VOI LINEAR #1");
                             const double maxvalue = OFstatic_cast(double, dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
                             const double gradient2 = (low > high) ? (-maxvalue / plutmax_1) : (maxvalue / plutmax_1);
@@ -830,6 +987,7 @@ class DiMonoOutputPixelTemplate
                                 *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, offset + OFstatic_cast(double, plut->getValue(value2)) * gradient2)));
                             }
                         } else {                                                      // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI LINEAR #2");
                             const double gradient2 = outrange / plutmax_1;
                             for (i = 0; i < ocnt; ++i)
                             {
@@ -852,6 +1010,7 @@ class DiMonoOutputPixelTemplate
                     {
                         if (dlut != NULL)                                             // perform display transformation
                         {
+                            DCMIMGLE_TRACE("monochrome rendering: VOI LINEAR #3");
                             const double maxvalue = OFstatic_cast(double, dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
                             const double gradient2 = (low > high) ? (-maxvalue / plutmax_1) : (maxvalue / plutmax_1);
@@ -867,6 +1026,7 @@ class DiMonoOutputPixelTemplate
                                 *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, offset + OFstatic_cast(double, plut->getValue(value2)) * gradient2)));
                             }
                         } else {                                                      // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI LINEAR #4");
                             const double gradient2 = outrange / plutmax_1;
                             for (i = Count; i != 0; --i)
                             {
@@ -888,6 +1048,7 @@ class DiMonoOutputPixelTemplate
                         q = lut;
                         if (dlut != NULL)                                             // perform display transformation
                         {
+                            DCMIMGLE_TRACE("monochrome rendering: VOI LINEAR #5");
                             const double maxvalue = OFstatic_cast(double, dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
                             const double gradient = (width_1 == 0) ? 0 : ((low > high) ? (-maxvalue / width_1) : (maxvalue / width_1));
@@ -901,6 +1062,7 @@ class DiMonoOutputPixelTemplate
                                 *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, offset + value * gradient)));  // calculate value
                             }
                         } else {                                                       // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI LINEAR #6");
                             const double offset = (width_1 == 0) ? 0 : (high - ((center - 0.5) / width_1 + 0.5) * outrange);
                             const double gradient = (width_1 == 0) ? 0 : outrange / width_1;
                             for (i = 0; i < ocnt; ++i)                                 // calculating LUT entries
@@ -923,6 +1085,7 @@ class DiMonoOutputPixelTemplate
                     {
                         if (dlut != NULL)                                             // perform display transformation
                         {
+                            DCMIMGLE_TRACE("monochrome rendering: VOI LINEAR #7");
                             const double maxvalue = OFstatic_cast(double, dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
                             const double gradient = (width_1 == 0) ? 0 : ((low > high) ? (-maxvalue / width_1) : (maxvalue / width_1));
@@ -936,6 +1099,7 @@ class DiMonoOutputPixelTemplate
                                 *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, offset + value * gradient)));  // calculate value
                             }
                         } else {                                                      // don't use display: invalid or absent
+                            DCMIMGLE_TRACE("monochrome rendering: VOI LINEAR #8");
                             const double offset = (width_1 == 0) ? 0 : (high - ((center - 0.5) / width_1 + 0.5) * outrange);
                             const double gradient = (width_1 == 0) ? 0 : outrange / width_1;
                             for (i = Count; i != 0; --i)
@@ -1140,6 +1304,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
+ * Revision 1.54  2010-10-28 10:58:38  joergr
+ * Implemented missing rendering code for sigmoid VOI LUT function.
+ * Added more trace log messages which might be helpful for detailed debugging.
+ *
  * Revision 1.53  2010-10-14 13:16:26  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
