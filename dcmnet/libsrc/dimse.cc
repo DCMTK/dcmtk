@@ -57,8 +57,8 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-09-02 12:12:54 $
-** CVS/RCS Revision:    $Revision: 1.60 $
+** Update Date:         $Date: 2010-10-29 13:36:00 $
+** CVS/RCS Revision:    $Revision: 1.61 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -91,7 +91,7 @@
 #endif
 
 #include "dcmtk/dcmnet/diutil.h"
-#include "dcmtk/dcmnet/dimse.h"              /* always include the module header */
+#include "dcmtk/dcmnet/dimse.h"        /* always include the module header */
 #include "dcmtk/dcmnet/cond.h"
 #include "dimcmd.h"
 #include "dcmtk/dcmdata/dcdeftag.h"    /* for tag names */
@@ -480,8 +480,7 @@ validateMessage(
             DCMNET_WARN(DIMSE_warn_str(assoc) << "C-Store RQ: DataSetType == NULL");
             cond = DIMSE_BADMESSAGE;
         }
-        if (! IN_RANGE(strlen(msg->msg.CStoreRQ.AffectedSOPInstanceUID),
-                1, DIC_UI_LEN)) {
+        if (! IN_RANGE(strlen(msg->msg.CStoreRQ.AffectedSOPInstanceUID), 1, DIC_UI_LEN)) {
             DCMNET_WARN(DIMSE_warn_str(assoc) << "C-Store RQ: AffectedSOPInstanceUID: bad size");
             cond = DIMSE_BADMESSAGE;
         }
@@ -492,8 +491,7 @@ validateMessage(
             cond = DIMSE_BADMESSAGE;
         }
         if ((msg->msg.CStoreRSP.opts & O_STORE_AFFECTEDSOPINSTANCEUID) &&
-            (! IN_RANGE(strlen(msg->msg.CStoreRSP.AffectedSOPInstanceUID),
-                1, DIC_UI_LEN))) {
+            (! IN_RANGE(strlen(msg->msg.CStoreRSP.AffectedSOPInstanceUID), 1, DIC_UI_LEN))) {
             DCMNET_WARN(DIMSE_warn_str(assoc) << "C-Store RSP: AffectedSOPInstanceUID: bad size");
             cond = DIMSE_BADMESSAGE;
         }
@@ -916,7 +914,13 @@ DIMSE_sendMessage(
       /* transfer syntax. In detail, every single item of the data object will be checked. */
       if (dataObject)
       {
-        if (! dataObject->canWriteXfer(xferSyntax))
+        if (dataObject->isEmpty())
+        {
+          /* if dataset is empty, i.e. it contains no data elements, create a warning. */
+          DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: dataset is empty");
+          cond = DIMSE_SENDFAILED;
+        }
+        else if (! dataObject->canWriteXfer(xferSyntax))
         {
           /* if we cannot write all elements in the required transfer syntax, create a warning. */
           DcmXfer writeXferSyntax(xferSyntax);
@@ -934,10 +938,10 @@ DIMSE_sendMessage(
           cond = DIMSE_SENDFAILED;
         }
       } else {
-          /* if there is neither a data object nor a file name, create a warning, since */
-          /* the information in msg specified that instance data should be present. */
-          DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: no dataset to send");
-          cond = DIMSE_SENDFAILED;
+        /* if there is neither a data object nor a file name, create a warning, since */
+        /* the information in msg specified that instance data should be present. */
+        DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: no dataset to send");
+        cond = DIMSE_SENDFAILED;
       }
     }
 
@@ -953,8 +957,8 @@ DIMSE_sendMessage(
       if (commandSet) *commandSet = new DcmDataset(*cmdObj);
 
       /* dump information if required */
-      DCMNET_TRACE("DIMSE Command to be sent on Presentation Context ID:" << OFstatic_cast(Uint16, presID));
-      DCMNET_TRACE("DIMSE Command to Send:" << OFendl << DcmObject::PrintHelper(*cmdObj));
+      DCMNET_TRACE("DIMSE Command to be sent on Presentation Context ID: " << OFstatic_cast(Uint16, presID));
+      DCMNET_TRACE("DIMSE Command to send:" << OFendl << DcmObject::PrintHelper(*cmdObj));
 
       /* Send the DIMSE command. DIMSE commands are always little endian implicit. */
       cond = sendDcmDataset(assoc, cmdObj, presID, EXS_LittleEndianImplicit, DUL_COMMANDPDV, NULL, NULL);
@@ -1236,8 +1240,7 @@ DIMSE_receiveCommand(
     cmdSet->transferEnd();
 
     /* dump information if required */
-    DCMNET_TRACE("DIMSE receiveCommand: " << pdvCount << " PDVs ("
-        << bytesRead << " bytes), PresID=" << (int) pid);
+    DCMNET_TRACE("DIMSE receiveCommand: " << pdvCount << " PDVs (" << bytesRead << " bytes), PresID=" << (int) pid);
 
     /* check if this is a valid presentation context */
     cond = getTransferSyntax(assoc, pid, &xferSyntax);
@@ -1761,6 +1764,10 @@ OFString DIMSE_warn_str(T_ASC_Association *assoc)
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.61  2010-10-29 13:36:00  joergr
+** Fixed issue when sending a message with an empty dataset. Now, a warning
+** message is reported to the log and an error code is returned in such cases.
+**
 ** Revision 1.60  2010-09-02 12:12:54  joergr
 ** Added support for "MPEG2 Main Profile @ High Level" transfer syntax.
 **
