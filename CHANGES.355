@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.29 (riesmeier)
 
+- Removed new --print-color option for Windows system since the ANSI escape
+  codes are not supported by the standard command shell.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+
 - Fixed issue when sending a message with an empty dataset. Now, a warning
   message is reported to the log and an error code is returned in such cases.
   Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report.
