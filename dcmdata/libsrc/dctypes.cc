@@ -18,8 +18,8 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:09 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2010-10-29 10:57:21 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@ const size_t DCMTypes::PF_shortenLongTagValues = 1 << 0;
 const size_t DCMTypes::PF_showTreeStructure    = 1 << 1;
 const size_t DCMTypes::PF_doNotMapUIDsToNames  = 1 << 2;
 const size_t DCMTypes::PF_convertToMarkup      = 1 << 3;
+const size_t DCMTypes::PF_useANSIEscapeCodes   = 1 << 4;
 
 /* writeXML flags */
 const size_t DCMTypes::XF_addDocumentType      = 1 << 0;
@@ -58,6 +59,9 @@ const size_t DCMTypes::XF_omitDataElementName  = 1 << 5;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.cc,v $
+ * Revision 1.13  2010-10-29 10:57:21  joergr
+ * Added support for colored output to the print() method.
+ *
  * Revision 1.12  2010-10-14 13:14:09  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

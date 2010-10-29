@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:16 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2010-10-29 10:57:21 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,11 +178,14 @@ void DcmDataset::print(STD_NAMESPACE ostream&out,
                        size_t *pixelCounter)
 {
     out << OFendl;
+    if (flags & DCMTypes::PF_useANSIEscapeCodes)
+        out << ANSI_ESCAPE_CODE_COMMENT;
     printNestingLevel(out, flags, level);
     out << "# Dicom-Data-Set" << OFendl;
     printNestingLevel(out, flags, level);
-    out << "# Used TransferSyntax: " << DcmXfer(Xfer).getXferName();
-    out << OFendl;
+    out << "# Used TransferSyntax: " << DcmXfer(Xfer).getXferName() << OFendl;
+    if (flags & DCMTypes::PF_useANSIEscapeCodes)
+        out << ANSI_ESCAPE_CODE_RESET;
     if (!elementList->empty())
     {
         DcmObject *dO;
@@ -637,6 +640,9 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
+** Revision 1.51  2010-10-29 10:57:21  joergr
+** Added support for colored output to the print() method.
+**
 ** Revision 1.50  2010-10-20 16:44:16  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

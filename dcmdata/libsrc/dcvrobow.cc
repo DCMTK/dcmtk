@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:17 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Update Date:      $Date: 2010-10-29 10:57:21 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,7 +203,7 @@ void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream&out,
         /* create reference to pixel data file in dump output */
         OFString str = "=";
         str += fname;
-        printInfoLine(out, flags, level, str.c_str());
+        printInfoLine(out, flags, level, str.c_str(), NULL /*tag*/, OFFalse /*isInfo*/);
         /* check whether pixel data file already exists */
         if (!OFStandard::fileExists(fname))
         {
@@ -734,6 +734,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.64  2010-10-29 10:57:21  joergr
+** Added support for colored output to the print() method.
+**
 ** Revision 1.63  2010-10-20 16:44:17  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

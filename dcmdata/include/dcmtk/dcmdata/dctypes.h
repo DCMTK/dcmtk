@@ -18,8 +18,8 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:42 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2010-10-29 10:57:17 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,6 +62,22 @@ OFLogger DCM_dcmdataGetLogger();
 
 /// XML namespace URI for the dcmtk
 #define DCMTK_XML_NAMESPACE_URI "http://dicom.offis.de/dcmtk"
+
+// ANSI escape codes for color output of the print() method
+#define ANSI_ESCAPE_CODE_RESET      "\033[0m"
+#define ANSI_ESCAPE_CODE_TAG        "\033[22m\033[32m"
+#define ANSI_ESCAPE_CODE_VR         "\033[22m\033[31m"
+#define ANSI_ESCAPE_CODE_VALUE      "\033[1m\033[37m"
+#define ANSI_ESCAPE_CODE_INFO       "\033[1m\033[30m"
+#define ANSI_ESCAPE_CODE_LENGTH     "\033[22m\033[36m"
+#define ANSI_ESCAPE_CODE_VM         "\033[22m\033[35m"
+#define ANSI_ESCAPE_CODE_NAME       "\033[22m\033[33m"
+#define ANSI_ESCAPE_CODE_NAME_1     "\033[1m\033[33m"
+#define ANSI_ESCAPE_CODE_SEQUENCE   "\033[22m\033[32m"
+#define ANSI_ESCAPE_CODE_SEQUENCE_1 "\033[1m\033[32m"
+#define ANSI_ESCAPE_CODE_ITEM       "\033[1m\033[30m"
+#define ANSI_ESCAPE_CODE_LINE       "\033[1m\033[30m"
+#define ANSI_ESCAPE_CODE_COMMENT    "\033[1m\033[30m"
 
 
 /*
@@ -170,6 +186,9 @@ struct DCMTypes
 
     /// quote non-ASCII string content as XML markup
     static const size_t PF_convertToMarkup;
+
+    /// use ANSI escape codes for output
+    static const size_t PF_useANSIEscapeCodes;
     //@}
 
     /** @name writeXML() flags.
@@ -208,6 +227,9 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.35  2010-10-29 10:57:17  joergr
+ * Added support for colored output to the print() method.
+ *
  * Revision 1.34  2010-10-14 13:15:42  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

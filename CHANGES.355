@@ -1,6 +1,21 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.10.29 (riesmeier)
+
+- Added support for colored output to the print() method.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dctypes.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrui.cc
+
 **** Changes from 2010.10.28 (riesmeier)
 
 - Implemented missing rendering code for sigmoid VOI LUT function.

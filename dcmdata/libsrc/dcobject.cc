@@ -20,8 +20,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:08 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2010-10-29 10:57:21 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcobject.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcvr.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcswap.h"
@@ -166,6 +167,8 @@ void DcmObject::printNestingLevel(STD_NAMESPACE ostream&out,
 {
     if (flags & DCMTypes::PF_showTreeStructure)
     {
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_LINE;
         /* show vertical bar for the tree structure */
         for (int i = 1; i < level; i++)
             out << "| ";
@@ -190,6 +193,21 @@ void DcmObject::printInfoLineStart(STD_NAMESPACE ostream &out,
     printNestingLevel(out, flags, level);
     if (flags & DCMTypes::PF_showTreeStructure)
     {
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+        {
+            if (*tag == DCM_Item)
+                out << ANSI_ESCAPE_CODE_ITEM;
+            else if ((vr.getEVR() == EVR_SQ) || (vr.getEVR() == EVR_pixelSQ))
+            {
+                if (level == 1)
+                    out << ANSI_ESCAPE_CODE_SEQUENCE_1;
+                else
+                    out << ANSI_ESCAPE_CODE_SEQUENCE;
+            } else if (level == 1)
+                out << ANSI_ESCAPE_CODE_NAME_1;
+            else
+                out << ANSI_ESCAPE_CODE_NAME;
+        }
         /* print tag name */
         out << tag->getTagName() << ' ';
         /* add padding spaces if required */
@@ -197,13 +215,21 @@ void DcmObject::printInfoLineStart(STD_NAMESPACE ostream &out,
         if (padLength > 0)
             out << OFString(OFstatic_cast(size_t, padLength), ' ');
     } else {
-        /* print line start: tag and VR */
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_TAG;
+        /* print line start: tag */
         out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << "("
             << STD_NAMESPACE setw(4) << tag->getGTag() << ","
-            << STD_NAMESPACE setw(4) << tag->getETag() << ") "
-            << vr.getVRName() << " "
+            << STD_NAMESPACE setw(4) << tag->getETag() << ") ";
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_VR;
+        /* print line start: VR */
+        out << vr.getVRName() << " "
             << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
     }
+    /* set color for subsequent element value */
+    if (flags & DCMTypes::PF_useANSIEscapeCodes)
+        out << ANSI_ESCAPE_CODE_VALUE;
 }
 
 
@@ -229,14 +255,31 @@ void DcmObject::printInfoLineEnd(STD_NAMESPACE ostream &out,
         /* fill with spaces if necessary */
         if (printedLength < DCM_OptPrintValueLength)
             out << OFString(OFstatic_cast(size_t, DCM_OptPrintValueLength - printedLength), ' ');
-        /* print line end: length, VM and tag name */
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_COMMENT;
         out << " # ";
+        /* print line end: length */
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_LENGTH;
         if (length == DCM_UndefinedLength)
             out << "u/l";   // means "undefined/length"
         else
             out << STD_NAMESPACE setw(3) << length;
-        out << "," << STD_NAMESPACE setw(2) << vm << " " << tag->getTagName() << OFendl;
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_COMMENT;
+        out << ",";
+        /* print line end: VM */
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_VM;
+        out << STD_NAMESPACE setw(2) << vm << " ";
+        /* print line end: name */
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_NAME;
+        out << tag->getTagName() << OFendl;
     }
+    /* reset all colors and styles */
+    if (flags & DCMTypes::PF_useANSIEscapeCodes)
+        out << ANSI_ESCAPE_CODE_RESET;
 }
 
 
@@ -244,7 +287,8 @@ void DcmObject::printInfoLine(STD_NAMESPACE ostream &out,
                               const size_t flags,
                               const int level,
                               const char *info,
-                              DcmTag *tag)
+                              DcmTag *tag,
+                              const OFBool isInfo)
 {
     /* print tag and VR */
     printInfoLineStart(out, flags, level, tag);
@@ -253,6 +297,8 @@ void DcmObject::printInfoLine(STD_NAMESPACE ostream &out,
     /* check for valid info text */
     if (info != NULL)
     {
+        if (isInfo && (flags & DCMTypes::PF_useANSIEscapeCodes))
+            out << ANSI_ESCAPE_CODE_INFO;
         /* check info text length */
         printedLength = strlen(info);
         if (printedLength > DCM_OptPrintValueLength)
@@ -478,6 +524,9 @@ OFBool DcmObject::isEmpty(const OFBool /*normalize*/)
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.68  2010-10-29 10:57:21  joergr
+ * Added support for colored output to the print() method.
+ *
  * Revision 1.67  2010-10-14 13:14:08  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

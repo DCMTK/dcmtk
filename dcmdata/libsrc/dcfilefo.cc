@@ -18,8 +18,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:16 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2010-10-29 10:57:21 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,8 +141,12 @@ void DcmFileFormat::print(STD_NAMESPACE ostream &out,
                           size_t *pixelCounter)
 {
     out << OFendl;
+    if (flags & DCMTypes::PF_useANSIEscapeCodes)
+        out << ANSI_ESCAPE_CODE_COMMENT;
     printNestingLevel(out, flags, level);
     out << "# Dicom-File-Format" << OFendl;
+    if (flags & DCMTypes::PF_useANSIEscapeCodes)
+        out << ANSI_ESCAPE_CODE_RESET;
     if (!itemList->empty())
     {
         DcmObject *dO;
@@ -152,9 +156,12 @@ void DcmFileFormat::print(STD_NAMESPACE ostream &out,
             dO->print(out, flags, level, pixelFileName, pixelCounter);
         } while (itemList->seek(ELP_next));
     } else {
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_COMMENT;
         printNestingLevel(out, flags, level);
-        out << "# Dicom-File-Format has been erased";
-        out << OFendl;
+        out << "# Dicom-File-Format has been erased" << OFendl;
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_RESET;
     }
 }
 
@@ -914,6 +921,9 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.63  2010-10-29 10:57:21  joergr
+** Added support for colored output to the print() method.
+**
 ** Revision 1.62  2010-10-20 16:44:16  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

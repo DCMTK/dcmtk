@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:18 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2010-10-29 10:57:21 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,7 +138,7 @@ void DcmUniqueIdentifier::print(STD_NAMESPACE ostream &out,
                     /* concatenate "=" and the UID name */
                     OFStandard::strlcpy(buffer, "=", bufSize);
                     OFStandard::strlcat(buffer, symbol, bufSize);
-                    printInfoLine(out, flags, level, buffer);
+                    printInfoLine(out, flags, level, buffer, NULL /*tag*/, OFFalse /*isInfo*/);
                     /* delete temporary character buffer */
                     delete[] buffer;
                 } else /* could not allocate buffer */
@@ -212,6 +212,9 @@ OFCondition DcmUniqueIdentifier::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
+** Revision 1.35  2010-10-29 10:57:21  joergr
+** Added support for colored output to the print() method.
+**
 ** Revision 1.34  2010-10-20 16:44:18  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

@@ -20,8 +20,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:41 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Update Date:      $Date: 2010-10-29 10:57:17 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -550,12 +550,15 @@ class DcmObject
      *  @param level current level of nested items. Used for indentation.
      *  @param info text to be printed
      *  @param tag optional tag used to print the data element information
+     *  @param isInfo optional flag indicating whether this text is really given for
+     *    informational purposes only. Used to choose the correct output color.
      */
     virtual void printInfoLine(STD_NAMESPACE ostream &out,
                                const size_t flags,
                                const int level = 0,
                                const char *info = NULL,
-                               DcmTag *tag = NULL);
+                               DcmTag *tag = NULL,
+                               const OFBool isInfo = OFTrue);
 
     /** static helper function that writes a given attribute tag to a binary
      *  output stream using the byte order indicated by the transfer syntax.
@@ -693,6 +696,9 @@ static inline STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream &stream, D
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.70  2010-10-29 10:57:17  joergr
+ * Added support for colored output to the print() method.
+ *
  * Revision 1.69  2010-10-14 13:15:41  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:16 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Update Date:      $Date: 2010-10-29 10:57:21 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1129,6 +1129,8 @@ void DcmDirectoryRecord::print(STD_NAMESPACE ostream&out,
         printInfoLine(out, flags, level, tmpString);
         OFSTRINGSTREAM_FREESTR(tmpString)
         /* print record comment line */
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_INFO;
         printNestingLevel(out, flags, level);
         out << "#  offset=$" << getFileOffset();
         if (referencedMRDR != NULL)
@@ -1527,6 +1529,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.77  2010-10-29 10:57:21  joergr
+ * Added support for colored output to the print() method.
+ *
  * Revision 1.76  2010-10-20 16:44:16  joergr
  * Use type cast macros (e.g. OFstatic_cast) where appropriate.
  *
