@@ -18,8 +18,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:30 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Update Date:      $Date: 2010-10-29 10:59:34 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -251,6 +251,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--no-uid-names",        "-Un",    "do not map well-known UID numbers to names");
         cmd.addOption("--quote-nonascii",      "+Qn",    "quote non-ASCII and control chars as XML markup");
         cmd.addOption("--print-nonascii",      "-Qn",    "print non-ASCII and control chars (default)");
+        cmd.addOption("--print-color",         "+C",     "use ANSI escape codes for colored output");
 
       cmd.addSubGroup("error handling:");
         cmd.addOption("--stop-on-error",       "-E",     "do not print if file is damaged (default)");
@@ -479,6 +480,8 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--print-nonascii")) printFlags &= ~DCMTypes::PF_convertToMarkup;
       cmd.endOptionBlock();
 
+      if (cmd.findOption("--print-color")) printFlags |= DCMTypes::PF_useANSIEscapeCodes;
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--stop-on-error")) stopOnErrors = OFTrue;
       if (cmd.findOption("--ignore-errors")) stopOnErrors = OFFalse;
@@ -533,6 +536,7 @@ int main(int argc, char *argv[])
         prependSequenceHierarchy = OFFalse;
       }
       cmd.endOptionBlock();
+      app.checkConflict("--prepend", "--print-tree", prependSequenceHierarchy && (printFlags & DCMTypes::PF_showTreeStructure) > 0);
 
       if (cmd.findOption("--write-pixel"))
         app.checkValue(cmd.getValue(pixelDirectory));
@@ -624,6 +628,8 @@ static void printResult(STD_NAMESPACE ostream &out,
     }
 
     if (prependSequenceHierarchy) {
+        if (printFlags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_TAG;
         /* print the path leading up to the top stack elem */
         for (unsigned long i = n - 1; i >= 1; i--) {
             DcmObject *dobj = stack.elem(i);
@@ -739,6 +745,9 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.85  2010-10-29 10:59:34  joergr
+ * Added new option for colored output of the textual dump.
+ *
  * Revision 1.84  2010-10-14 13:13:30  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

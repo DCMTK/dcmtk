@@ -236,6 +236,9 @@ printing:
   -Qn  --print-nonascii
          print non-ASCII and control chars (default)
 
+  +C   --print-color
+         use ANSI escape codes for colored output
+
 error handling:
 
   -E   --stop-on-error

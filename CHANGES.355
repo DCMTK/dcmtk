@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.10.29 (riesmeier)
 
+- Added new option for colored output of the textual dump.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+
 - Added support for colored output to the print() method.
   Affects: dcmdata/include/dcmtk/dcmdata/dcobject.h
            dcmdata/include/dcmtk/dcmdata/dctypes.h
