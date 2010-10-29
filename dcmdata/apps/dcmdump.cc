@@ -18,8 +18,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-29 10:59:34 $
- *  CVS/RCS Revision: $Revision: 1.85 $
+ *  Update Date:      $Date: 2010-10-29 13:54:22 $
+ *  CVS/RCS Revision: $Revision: 1.86 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,11 +41,15 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef WITH_ZLIB
-#include <zlib.h>        /* for zlibVersion() */
+#include <zlib.h>                     /* for zlibVersion() */
 #endif
 
 #if defined (HAVE_WINDOWS_H) || defined(HAVE_FNMATCH_H)
 #define PATTERN_MATCHING_AVAILABLE
+#endif
+
+#ifndef HAVE_WINDOWS_H
+#define ANSI_ESCAPE_CODES_AVAILABLE
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmdump"
@@ -251,7 +255,9 @@ int main(int argc, char *argv[])
         cmd.addOption("--no-uid-names",        "-Un",    "do not map well-known UID numbers to names");
         cmd.addOption("--quote-nonascii",      "+Qn",    "quote non-ASCII and control chars as XML markup");
         cmd.addOption("--print-nonascii",      "-Qn",    "print non-ASCII and control chars (default)");
+#ifdef ANSI_ESCAPE_CODES_AVAILABLE
         cmd.addOption("--print-color",         "+C",     "use ANSI escape codes for colored output");
+#endif
 
       cmd.addSubGroup("error handling:");
         cmd.addOption("--stop-on-error",       "-E",     "do not print if file is damaged (default)");
@@ -480,7 +486,9 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--print-nonascii")) printFlags &= ~DCMTypes::PF_convertToMarkup;
       cmd.endOptionBlock();
 
+#ifdef ANSI_ESCAPE_CODES_AVAILABLE
       if (cmd.findOption("--print-color")) printFlags |= DCMTypes::PF_useANSIEscapeCodes;
+#endif
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--stop-on-error")) stopOnErrors = OFTrue;
@@ -745,6 +753,10 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.86  2010-10-29 13:54:22  joergr
+ * Remove new --print-color option for Windows system since the ANSI escape
+ * codes are not supported by the standard command shell.
+ *
  * Revision 1.85  2010-10-29 10:59:34  joergr
  * Added new option for colored output of the textual dump.
  *
