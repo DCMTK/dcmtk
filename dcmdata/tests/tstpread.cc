@@ -17,9 +17,9 @@
  *
  *  Purpose: Test application for partial element access API
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:07 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 10:42:44 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,9 +206,9 @@ OFCondition randomRead(DcmElement *delem, DcmFileCache *dcache, unsigned char *b
         OFOStringStream str;
         str << "Error: unexpected sequence of " << bytes_to_read << " bytes found at offset " << offset << OFendl;
         str << "Expected: ";
-        for (Uint32 i=0; i<bytes_to_read; ++i)
+        for (Uint32 k=0; k<bytes_to_read; ++k)
         {
-          str << STD_NAMESPACE hex << OFstatic_cast(int, buffer[offset+i]) << " ";
+          str << STD_NAMESPACE hex << OFstatic_cast(int, buffer[offset+k]) << " ";
         }
         str << OFendl << "Found   : ";
         for (Uint32 j=0; j<bytes_to_read; ++j)
@@ -466,6 +466,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: tstpread.cc,v $
+ * Revision 1.9  2010-11-01 10:42:44  uli
+ * Fixed some compiler warnings reported by gcc with additional flags.
+ *
  * Revision 1.8  2010-10-14 13:15:07  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

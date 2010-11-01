@@ -17,9 +17,9 @@
  *
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:28 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 10:42:44 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -192,7 +192,7 @@ OFCondition DcmFindSCU::performQuery(
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
     gethostname(localHost, sizeof(localHost) - 1);
-    sprintf(peerHost, "%s:%d", peer, (int)port);
+    sprintf(peerHost, "%s:%d", peer, OFstatic_cast(int, port));
     ASC_setPresentationAddresses(params, localHost, peerHost);
 
     /* Set the presentation contexts which will be negotiated */
@@ -473,7 +473,7 @@ OFCondition DcmFindSCU::findSCU(
     int n = repeatCount;
 
     /* prepare C-FIND-RQ message */
-    bzero((char*)&req, sizeof(req));
+    bzero(OFreinterpret_cast(char*, &req), sizeof(req));
     strcpy(req.AffectedSOPClassUID, abstractSyntax);
     req.DataSetType = DIMSE_DATASET_PRESENT;
     req.Priority = DIMSE_PRIORITY_LOW;
@@ -498,7 +498,7 @@ OFCondition DcmFindSCU::findSCU(
         DCMNET_INFO("Find SCU Request Identifiers:" << OFendl << DcmObject::PrintHelper(*dset));
 
         /* finally conduct transmission of data */
-        OFCondition cond = DIMSE_findUser(assoc, presId, &req, dset,
+        cond = DIMSE_findUser(assoc, presId, &req, dset,
             progressCallback, callback, blockMode, dimse_timeout,
             &rsp, &statusDetail);
 
@@ -536,6 +536,9 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.13  2010-11-01 10:42:44  uli
+ * Fixed some compiler warnings reported by gcc with additional flags.
+ *
  * Revision 1.12  2010-10-14 13:14:28  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

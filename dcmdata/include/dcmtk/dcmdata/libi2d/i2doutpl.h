@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for converter from image file to DICOM
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:46 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 10:42:44 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +119,6 @@ protected:
                                              DcmDataset* targetDset,
                                              const OFString& defaultValue ="") const
   {
-    OFString err;
     OFBool exists = targetDset->tagExists(key);
     if (!exists && !m_inventMissingType1Attribs)
     {
@@ -132,13 +131,14 @@ protected:
     {
       if (!m_inventMissingType1Attribs)
       {
+        OFString err;
         err += "I2DOutputPlug: Empty value for type 1 attribute: ";
         err += DcmTag(key).getTagName();
         err += "\n";
         return err;
       }
       //holds element to insert in item
-      DcmElement *elem = NULL;
+      elem = NULL;
       DcmTag tag(key); OFBool wasError = OFFalse;
       //if dicom element could be created, insert in to item and modify to value
       if ( newDicomElement(elem, tag).good())
@@ -153,10 +153,12 @@ protected:
       } else wasError = OFTrue;
       if (wasError)
       {
-        err += "Unable to insert type 1 attribute "; err += tag.getTagName(); err += " with value "; err += defaultValue; err += "\n";
+        OFString err = "Unable to insert type 1 attribute ";
+        err += tag.getTagName(); err += " with value "; err += defaultValue; err += "\n";
+        return err;
       }
     }
-    return err;
+    return "";
   };
 
 
@@ -228,6 +230,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2doutpl.h,v $
+ * Revision 1.11  2010-11-01 10:42:44  uli
+ * Fixed some compiler warnings reported by gcc with additional flags.
+ *
  * Revision 1.10  2010-10-14 13:15:46  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -17,9 +17,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:42 $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 10:42:44 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -322,14 +322,14 @@ main(int argc, char *argv[])
       cmd.addOption("--dimse-timeout",       "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
       OFString opt3 = "set max receive pdu to n bytes (default: ";
-      sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
       opt3 += tempstr;
       opt3 += ")";
       OFString opt4 = "[n]umber of bytes: integer (";
-      sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += "..";
-      sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += ")";
       cmd.addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
@@ -476,7 +476,7 @@ main(int argc, char *argv[])
       {
         OFCmdSignedInt opt_timeout = 0;
         app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
-        dcmConnectionTimeout.set((Sint32) opt_timeout);
+        dcmConnectionTimeout.set(OFstatic_cast(Sint32, opt_timeout));
       }
 
       if (cmd.findOption("--acse-timeout"))
@@ -751,7 +751,7 @@ main(int argc, char *argv[])
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
     gethostname(localHost, sizeof(localHost) - 1);
-    sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
+    sprintf(peerHost, "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
     ASC_setPresentationAddresses(params, localHost, peerHost);
 
     /*
@@ -1179,14 +1179,14 @@ storeSCPCallback(
     if ((opt_abortDuringStore && progress->state != DIMSE_StoreBegin) ||
         (opt_abortAfterStore && progress->state == DIMSE_StoreEnd)) {
         OFLOG_INFO(movescuLogger, "ABORT initiated (due to command line options)");
-        ASC_abortAssociation(((StoreCallbackData*) callbackData)->assoc);
+        ASC_abortAssociation(OFstatic_cast(StoreCallbackData*, callbackData)->assoc);
         rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
         return;
     }
 
     if (opt_sleepDuring > 0)
     {
-      OFStandard::sleep((unsigned int)opt_sleepDuring);
+      OFStandard::sleep(OFstatic_cast(unsigned int, opt_sleepDuring));
     }
 
     // dump some information if required (depending on the progress state)
@@ -1226,7 +1226,7 @@ storeSCPCallback(
 
        if ((imageDataSet != NULL) && (*imageDataSet != NULL) && !opt_bitPreserving && !opt_ignore)
        {
-         StoreCallbackData *cbdata = (StoreCallbackData*) callbackData;
+         StoreCallbackData *cbdata = OFstatic_cast(StoreCallbackData*, callbackData);
          /* create full path name for the output file */
          OFString ofname;
          OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, cbdata->imageFileName, OFTrue /* allowEmptyDirName */);
@@ -1315,10 +1315,10 @@ static OFCondition storeSCP(
     if (opt_bitPreserving)
     {
       cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader,
-        NULL, storeSCPCallback, (void*)&callbackData, opt_blockMode, opt_dimse_timeout);
+        NULL, storeSCPCallback, OFreinterpret_cast(void*, &callbackData), opt_blockMode, opt_dimse_timeout);
     } else {
-      cond = DIMSE_storeProvider(assoc, presID, req, (char *)NULL, opt_useMetaheader,
-        &dset, storeSCPCallback, (void*)&callbackData, opt_blockMode, opt_dimse_timeout);
+      cond = DIMSE_storeProvider(assoc, presID, req, NULL, opt_useMetaheader,
+        &dset, storeSCPCallback, OFreinterpret_cast(void*, &callbackData), opt_blockMode, opt_dimse_timeout);
     }
 
     if (cond.bad())
@@ -1337,7 +1337,7 @@ static OFCondition storeSCP(
 
     if (opt_sleepAfter > 0)
     {
-      OFStandard::sleep((unsigned int)opt_sleepAfter);
+      OFStandard::sleep(OFstatic_cast(unsigned int, opt_sleepDuring));
     }
     return cond;
 }
@@ -1420,7 +1420,7 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
     OFCondition cond = EC_Normal;
     MyCallbackInfo *myCallbackData;
 
-    myCallbackData = (MyCallbackInfo*)callbackData;
+    myCallbackData = OFstatic_cast(MyCallbackInfo*, callbackData);
 
     OFString temp_str;
     OFLOG_INFO(movescuLogger, "Move Response " << responseCount << ":" << OFendl << DIMSE_dumpMessage(temp_str, *response, DIMSE_INCOMING));
@@ -1451,7 +1451,7 @@ substituteOverrideKeys(DcmDataset *dset)
     /* put the override keys into dset replacing existing tags */
     unsigned long elemCount = keys.card();
     for (unsigned long i = 0; i < elemCount; i++) {
-        DcmElement *elem = keys.remove((unsigned long)0);
+        DcmElement *elem = keys.remove(OFstatic_cast(unsigned long, 0));
 
         dset->insert(elem, OFTrue);
     }
@@ -1537,7 +1537,7 @@ static OFCondition
 cmove(T_ASC_Association * assoc, const char *fname)
 {
     OFCondition cond = EC_Normal;
-    int n = (int)opt_repeatCount;
+    int n = OFstatic_cast(int, opt_repeatCount);
     while (cond.good() && n--)
         cond = moveSCU(assoc, fname);
     return cond;
@@ -1548,6 +1548,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.87  2010-11-01 10:42:44  uli
+** Fixed some compiler warnings reported by gcc with additional flags.
+**
 ** Revision 1.86  2010-10-14 13:13:42  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

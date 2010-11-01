@@ -4,7 +4,21 @@ Changes between releases are documented here.
 **** Changes from 2010.11.01 (schlachter)
 
 - Fixed some compiler warnings reported by gcc with additional flags.
-  Affects: oflog/libsrc/patlay.cc
+  Affects: dcmdata/apps/mdfdsman.cc
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2doutpl.h
+           dcmdata/libi2d/i2d.cc
+           dcmdata/libsrc/dcpath.cc
+           dcmdata/libsrc/dcrleccd.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/tests/tstpread.cc
+           dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/apps/termscu.cc
+           dcmnet/libsrc/dcuserid.cc
+           dcmnet/libsrc/dfindscu.cc
+           oflog/libsrc/patlay.cc
            oflog/libsrc/unixsock.cc
            ofstd/include/dcmtk/ofstd/ofaptr.h
 

@@ -17,9 +17,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:42 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 10:42:44 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,14 +154,14 @@ int main(int argc, char *argv[])
       cmd.addOption("--propose-implicit",  "-xi",     "propose implicit VR little endian TS only");
     cmd.addSubGroup("other network options:");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
-      sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
       opt3 += tempstr;
       opt3 += ")";
       OFString opt4 = "[n]umber of bytes: integer (";
-      sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += "..";
-      sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += ")";
       cmd.addOption("--timeout",           "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
@@ -286,7 +286,7 @@ int main(int argc, char *argv[])
       {
         OFCmdSignedInt opt_timeout = 0;
         app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
-        dcmConnectionTimeout.set((Sint32) opt_timeout);
+        dcmConnectionTimeout.set(OFstatic_cast(Sint32, opt_timeout));
       }
 
       if (cmd.findOption("--acse-timeout"))
@@ -583,6 +583,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
+** Revision 1.62  2010-11-01 10:42:44  uli
+** Fixed some compiler warnings reported by gcc with additional flags.
+**
 ** Revision 1.61  2010-10-14 13:13:42  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

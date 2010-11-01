@@ -18,9 +18,9 @@
  *  Purpose: Class definitions for accessing DICOM dataset structures (items,
  *           sequences and leaf elements via string-based path access.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:08 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 10:42:44 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -213,7 +213,6 @@ OFCondition DcmPath::parseTagFromPath(OFString& path,           // inout
                                       DcmTag& tag)              // out
 {
   OFCondition result;
-  OFString errMsg = "";
   size_t pos = OFString_npos;
 
   // In case we have a tag "(gggg,xxxx)"
@@ -928,6 +927,9 @@ OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem *item /* in */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.14  2010-11-01 10:42:44  uli
+** Fixed some compiler warnings reported by gcc with additional flags.
+**
 ** Revision 1.13  2010-10-14 13:14:08  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:35 $
- *  CVS/RCS Revision: $Revision: 1.97 $
+ *  Update Date:      $Date: 2010-11-01 10:42:44 $
+ *  CVS/RCS Revision: $Revision: 1.98 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -500,7 +500,7 @@ int main(int argc, char *argv[])
       {
         OFCmdSignedInt opt_timeout = 0;
         app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
-        dcmConnectionTimeout.set((Sint32) opt_timeout);
+        dcmConnectionTimeout.set(OFstatic_cast(Sint32, opt_timeout));
       }
 
       if (cmd.findOption("--acse-timeout"))
@@ -524,7 +524,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--max-send-pdu"))
       {
         app.checkValue(cmd.getValueAndCheckMinMax(opt_maxSendPDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
-        dcmMaxOutgoingPDUSize.set((Uint32)opt_maxSendPDULength);
+        dcmMaxOutgoingPDUSize.set(OFstatic_cast(Uint32, opt_maxSendPDULength));
       }
 
       if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
@@ -908,7 +908,7 @@ int main(int argc, char *argv[])
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
     gethostname(localHost, sizeof(localHost) - 1);
-    sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
+    sprintf(peerHost, "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
     ASC_setPresentationAddresses(params, localHost, peerHost);
 
     /* Configure User Identity Negotiation*/
@@ -926,7 +926,7 @@ int main(int argc, char *argv[])
       const unsigned char *c = OFreinterpret_cast(const unsigned char *, opt_profileName);
       while (*c)
       {
-        if (!isspace(*c)) sprofile += (char) (toupper(*c));
+        if (!isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
         ++c;
       }
 
@@ -1290,7 +1290,7 @@ static int
 secondsSince1970()
 {
   time_t t = time(NULL);
-  return (int)t;
+  return OFstatic_cast(int, t);
 }
 
 static OFString
@@ -1324,7 +1324,7 @@ updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &key, OFString &val
     return OFFalse;
   }
 
-  DcmElement *elem = (DcmElement *)stack.top();
+  DcmElement *elem = OFstatic_cast(DcmElement *, stack.top());
 
   DcmVR vr(elem->ident());
   if (elem->getLength() > vr.getMaxValueLength()) {
@@ -1359,37 +1359,37 @@ replaceSOPInstanceInformation(DcmDataset *dataset)
   static OFString patientID;
   static OFString patientName;
 
-  if (seriesInstanceUID.length() == 0) seriesInstanceUID=makeUID(SITE_SERIES_UID_ROOT, (int)seriesCounter);
-  if (seriesNumber.length() == 0) seriesNumber = intToString((int)seriesCounter);
-  if (studyInstanceUID.length() == 0) studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, (int)studyCounter);
-  if (studyID.length() == 0) studyID = studyIDPrefix + intToString((int)secondsSince1970()) + intToString((int)studyCounter);
-  if (accessionNumber.length() == 0) accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString((int)studyCounter);
-  if (patientID.length() == 0) patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
-  if (patientName.length() == 0) patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
+  if (seriesInstanceUID.length() == 0) seriesInstanceUID=makeUID(SITE_SERIES_UID_ROOT, OFstatic_cast(int, seriesCounter));
+  if (seriesNumber.length() == 0) seriesNumber = intToString(OFstatic_cast(int, seriesCounter));
+  if (studyInstanceUID.length() == 0) studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, OFstatic_cast(int, studyCounter));
+  if (studyID.length() == 0) studyID = studyIDPrefix + intToString(OFstatic_cast(int, secondsSince1970())) + intToString(OFstatic_cast(int, studyCounter));
+  if (accessionNumber.length() == 0) accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, studyCounter));
+  if (patientID.length() == 0) patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, patientCounter));
+  if (patientName.length() == 0) patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, patientCounter));
 
   if (imageCounter >= opt_inventSeriesCount) {
     imageCounter = 0;
     seriesCounter++;
-    seriesInstanceUID = makeUID(SITE_SERIES_UID_ROOT, (int)seriesCounter);
-    seriesNumber = intToString((int)seriesCounter);
+    seriesInstanceUID = makeUID(SITE_SERIES_UID_ROOT, OFstatic_cast(int, seriesCounter));
+    seriesNumber = intToString(OFstatic_cast(int, seriesCounter));
   }
   if (seriesCounter >= opt_inventStudyCount) {
     seriesCounter = 0;
     studyCounter++;
-    studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, (int)studyCounter);
-    studyID = studyIDPrefix + intToString(secondsSince1970()) + intToString((int)studyCounter);
-    accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString((int)studyCounter);
+    studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, OFstatic_cast(int, studyCounter));
+    studyID = studyIDPrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, studyCounter));
+    accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, studyCounter));
   }
   if (studyCounter >= opt_inventPatientCount) {
     // we create as many patients as necessary */
     studyCounter = 0;
     patientCounter++;
-    patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
-    patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
+    patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, patientCounter));
+    patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, patientCounter));
   }
 
-  OFString sopInstanceUID = makeUID(SITE_INSTANCE_UID_ROOT, (int)imageCounter);
-  OFString imageNumber = intToString((int)imageCounter);
+  OFString sopInstanceUID = makeUID(SITE_INSTANCE_UID_ROOT, OFstatic_cast(int, imageCounter));
+  OFString imageNumber = intToString(OFstatic_cast(int, imageCounter));
 
   OFLOG_INFO(storescuLogger, "Inventing Identifying Information ("
          << "pa" << patientCounter << ", st" << studyCounter
@@ -1533,7 +1533,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
 #endif
 
   /* prepare the transmission of data */
-  bzero((char *)&req, sizeof(req));
+  bzero(OFreinterpret_cast(char *, &req), sizeof(req));
   req.MessageID = msgId;
   strcpy(req.AffectedSOPClassUID, sopClass);
   strcpy(req.AffectedSOPInstanceUID, sopInstance);
@@ -1598,7 +1598,7 @@ cstore(T_ASC_Association *assoc, const OFString &fname)
   OFCondition cond = EC_Normal;
 
   /* opt_repeatCount specifies how many times a certain file shall be processed */
-  int n = (int)opt_repeatCount;
+  int n = OFstatic_cast(int, opt_repeatCount);
 
   /* as long as no error occured and the counter does not equal 0 */
   while ((cond.good()) && n-- && !(opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered))
@@ -1677,8 +1677,8 @@ configureUserIdentityRequest(T_ASC_Parameters *params)
         filesize = 65535;
       }
 
-      char *buf = new char[(unsigned int)filesize];
-      size_t bytesRead = identFile.fread(buf, 1, (size_t)filesize);
+      char *buf = new char[OFstatic_cast(unsigned int, filesize)];
+      size_t bytesRead = identFile.fread(buf, 1, OFstatic_cast(size_t, filesize));
       identFile.fclose();
       if (bytesRead == 0)
       {
@@ -1735,6 +1735,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.98  2010-11-01 10:42:44  uli
+** Fixed some compiler warnings reported by gcc with additional flags.
+**
 ** Revision 1.97  2010-10-20 07:41:35  uli
 ** Made sure isalpha() & friends are only called with valid arguments.
 **

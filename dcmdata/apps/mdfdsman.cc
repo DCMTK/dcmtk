@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:30 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 10:42:43 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -345,7 +345,7 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
   resultPath = resultPaths.begin();
   while (resultPath != resultPaths.end())
   {
-      DcmPathNode *lastElement = (*resultPath)->back();
+      lastElement = (*resultPath)->back();
       if (lastElement == NULL) return EC_IllegalCall;
       // if tag is already present, start modify operation
       DcmElement *elem = OFstatic_cast(DcmElement*, lastElement->m_obj);
@@ -414,7 +414,7 @@ OFCondition MdfDatasetManager::modifyOrInsertFromFile(OFString tag_path,
   resultPath = resultPaths.begin();
   while (resultPath != resultPaths.end())
   {
-      DcmPathNode *lastElement = (*resultPath)->back();
+      lastElement = (*resultPath)->back();
       if (lastElement == NULL) return EC_IllegalCall;
       // if tag is already present, start modify operation
       DcmElement *elem = OFstatic_cast(DcmElement*, lastElement->m_obj);
@@ -572,7 +572,7 @@ OFCondition MdfDatasetManager::deletePrivateData()
       if (tag.getGroup() & 1) // private tag ?
       {
           stack.pop();
-          delete ((DcmItem *)(stack.top()))->remove(dobj);
+          delete OFstatic_cast(DcmItem *, (stack.top()))->remove(dobj);
       }
       status = dset->nextObject(stack, OFTrue);
   }
@@ -731,6 +731,9 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
+** Revision 1.29  2010-11-01 10:42:43  uli
+** Fixed some compiler warnings reported by gcc with additional flags.
+**
 ** Revision 1.28  2010-10-14 13:13:30  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

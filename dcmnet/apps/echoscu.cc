@@ -17,9 +17,9 @@
  *
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:42 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 10:42:44 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,7 +124,7 @@ main(int argc, char *argv[])
     OFBool           opt_abortAssociation    = OFFalse;
     OFCmdUnsignedInt opt_numXferSyntaxes     = 1;
     OFCmdUnsignedInt opt_numPresentationCtx  = 1;
-    OFCmdUnsignedInt maxXferSyntaxes         = (OFCmdUnsignedInt)(DIM_OF(transferSyntaxes));
+    OFCmdUnsignedInt maxXferSyntaxes         = OFstatic_cast(OFCmdUnsignedInt, (DIM_OF(transferSyntaxes)));
     OFBool           opt_secureConnection    = OFFalse; /* default: no secure connection */
     int opt_acse_timeout = 30;
 
@@ -191,7 +191,7 @@ main(int argc, char *argv[])
       cmd.addOption("--call",              "-aec", 1, "[a]etitle: string", opt2.c_str());
     cmd.addSubGroup("association negotiation debugging:");
       OFString opt5 = "[n]umber: integer (1..";
-      sprintf(tempstr, "%ld", (long)maxXferSyntaxes);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, maxXferSyntaxes));
       opt5 += tempstr;
       opt5 += ")";
       cmd.addOption("--propose-ts",        "-pts", 1, opt5.c_str(), "propose n transfer syntaxes");
@@ -203,14 +203,14 @@ main(int argc, char *argv[])
       cmd.addOption("--dimse-timeout",     "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
       OFString opt3 = "set max receive pdu to n bytes (default: ";
-      sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
       opt3 += tempstr;
       opt3 += ")";
       OFString opt4 = "[n]umber of bytes: integer (";
-      sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += "..";
-      sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += ")";
       cmd.addOption("--max-pdu",           "-pdu", 1, opt4.c_str(), opt3.c_str());
@@ -294,7 +294,7 @@ main(int argc, char *argv[])
       {
         OFCmdSignedInt opt_timeout = 0;
         app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
-        dcmConnectionTimeout.set((Sint32) opt_timeout);
+        dcmConnectionTimeout.set(OFstatic_cast(Sint32, opt_timeout));
       }
 
       if (cmd.findOption("--acse-timeout"))
@@ -541,7 +541,7 @@ main(int argc, char *argv[])
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
     gethostname(localHost, sizeof(localHost) - 1);
-    sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
+    sprintf(peerHost, "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
     ASC_setPresentationAddresses(params, localHost, peerHost);
 
     /* Set the presentation contexts which will be negotiated */
@@ -550,7 +550,7 @@ main(int argc, char *argv[])
     for (unsigned long ii=0; ii<opt_numPresentationCtx; ii++)
     {
         cond = ASC_addPresentationContext(params, presentationContextID, UID_VerificationSOPClass,
-                 transferSyntaxes, (int)opt_numXferSyntaxes);
+                 transferSyntaxes, OFstatic_cast(int, opt_numXferSyntaxes));
         presentationContextID += 2;
         if (cond.bad())
         {
@@ -745,6 +745,9 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
+** Revision 1.53  2010-11-01 10:42:44  uli
+** Fixed some compiler warnings reported by gcc with additional flags.
+**
 ** Revision 1.52  2010-10-14 13:13:42  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

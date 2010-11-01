@@ -17,9 +17,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:18:23 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 10:42:44 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -406,9 +406,9 @@ OFCondition Image2Dcm::generateUIDs(DcmDataset *dset)
 }
 
 
-void Image2Dcm::setISOLatin1(OFBool insertLatin1)
+void Image2Dcm::setISOLatin1(OFBool insLatin1)
 {
-  m_insertLatin1 = insertLatin1;
+  m_insertLatin1 = insLatin1;
 }
 
 
@@ -676,7 +676,6 @@ OFString Image2Dcm::checkAndInventType1Attrib(const DcmTagKey& key,
                                               DcmDataset* targetDset,
                                               const OFString& defaultValue) const
 {
-  OFString err;
   OFBool exists = targetDset->tagExists(key);
   if (!exists)
   {
@@ -689,13 +688,13 @@ OFString Image2Dcm::checkAndInventType1Attrib(const DcmTagKey& key,
   {
     if (!m_inventMissingType1Attribs)
     {
-      err += "Image2Dcm: Empty value for type 1 attribute: ";
+      OFString err = "Image2Dcm: Empty value for type 1 attribute: ";
       err += DcmTag(key).getTagName();
       err += "\n";
       return err;
     }
     //holds element to insert in item
-    DcmElement *elem = NULL;
+    elem = NULL;
     DcmTag tag(key); OFBool wasError = OFFalse;
     //if dicom element could be created, insert in to item and modify to value
     if ( newDicomElement(elem, tag).good())
@@ -711,10 +710,11 @@ OFString Image2Dcm::checkAndInventType1Attrib(const DcmTagKey& key,
     } else wasError = OFTrue;
     if (wasError)
     {
-      err += "Unable to insert type 1 attribute "; err += tag.getTagName(); err += " with value "; err += defaultValue; err += "\n";
+      OFString err = "Unable to insert type 1 attribute "; err += tag.getTagName(); err += " with value "; err += defaultValue; err += "\n";
+      return err;
     }
   }
-  return err;
+  return "";
 }
 
 
@@ -750,6 +750,9 @@ Image2Dcm::~Image2Dcm()
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
+ * Revision 1.15  2010-11-01 10:42:44  uli
+ * Fixed some compiler warnings reported by gcc with additional flags.
+ *
  * Revision 1.14  2010-10-14 13:18:23  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

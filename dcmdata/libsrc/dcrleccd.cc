@@ -17,9 +17,9 @@
  *
  *  Purpose: decoder codec class for RLE
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:09 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 10:42:44 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -383,7 +383,7 @@ OFCondition DcmRLECodecDecoder::decode(
           {
             char numBuf[20];
             sprintf(numBuf, "%ld", OFstatic_cast(long, imageFrames));
-            result = ((DcmItem *)dataset)->putAndInsertString(DCM_NumberOfFrames, numBuf);
+            result = OFstatic_cast(DcmItem *, dataset)->putAndInsertString(DCM_NumberOfFrames, numBuf);
           }
         }
       }
@@ -702,6 +702,9 @@ OFCondition DcmRLECodecDecoder::determineDecompressedColorModel(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
+ * Revision 1.18  2010-11-01 10:42:44  uli
+ * Fixed some compiler warnings reported by gcc with additional flags.
+ *
  * Revision 1.17  2010-10-14 13:14:09  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

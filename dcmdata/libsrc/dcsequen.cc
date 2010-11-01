@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:17 $
- *  CVS/RCS Revision: $Revision: 1.93 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 10:42:44 $
+ *  CVS/RCS Revision: $Revision: 1.94 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,11 +178,11 @@ OFCondition DcmSequenceOfItems::copyFrom(const DcmObject& rhs)
 // ********************************
 
 
-OFCondition DcmSequenceOfItems::checkValue(const OFString &card,
+OFCondition DcmSequenceOfItems::checkValue(const OFString &cardinality,
                                            const OFBool /*oldFormat*/)
 {
     /* check cardinality (number of items) only */
-    return DcmElement::checkVM(this->card(), card);
+    return DcmElement::checkVM(this->card(), cardinality);
 }
 
 
@@ -1301,6 +1301,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.94  2010-11-01 10:42:44  uli
+** Fixed some compiler warnings reported by gcc with additional flags.
+**
 ** Revision 1.93  2010-10-20 16:44:17  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **
