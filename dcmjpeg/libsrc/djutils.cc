@@ -18,8 +18,8 @@
  *  Purpose: (STATUS: OK)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:35 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2010-11-01 08:55:56 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,10 +65,11 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
     {
       const char *c = photometric.c_str(); // guaranteed to be zero-terminated
       char cp[17]; // legal CS cannot be larger than 16 characters plus 0 byte
-      int i=0; // current character
+      int i=0; // current character index
+      unsigned char cur; // current character
       while (*c && (i<16))
       {
-        unsigned char cur = OFstatic_cast(unsigned char, *c);
+        cur = OFstatic_cast(unsigned char, *c);
         if (isalpha(cur)) cp[i++] = toupper(cur);
         else if (isdigit(cur)) cp[i++] = cur;
         c++;
@@ -92,6 +93,9 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
 /*
  * CVS/RCS Log
  * $Log: djutils.cc,v $
+ * Revision 1.8  2010-11-01 08:55:56  uli
+ * Moved variable declarations in front of their loop.
+ *
  * Revision 1.7  2010-10-20 07:41:35  uli
  * Made sure isalpha() & friends are only called with valid arguments.
  *

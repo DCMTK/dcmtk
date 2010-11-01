@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.01 (schlachter)
+
+- Moved variable declarations in front of their loop.
+  Affects: dcmimgle/libsrc/dcmimage.cc
+           dcmjpeg/libsrc/djutils.cc
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2010.10.29 (riesmeier)
 
 - Removed new --print-color option for Windows system since the ANSI escape

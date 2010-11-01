@@ -88,8 +88,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 08:09:34 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2010-11-01 08:55:56 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -343,9 +343,10 @@ OFString &OFStandard::toUpper(OFString &result,
 OFString &OFStandard::toUpper(OFString &value)
 {
     const size_t length = value.length();
+    unsigned char c;
     for (size_t i = 0; i < length; i++)
     {
-        unsigned char c = value.at(i);
+        c = value.at(i);
         value.at(i) = OFstatic_cast(char, toupper(c));
     }
     return value;
@@ -363,9 +364,10 @@ OFString &OFStandard::toLower(OFString &result,
 OFString &OFStandard::toLower(OFString &value)
 {
     const size_t length = value.length();
+    unsigned char c;
     for (size_t i = 0; i < length; i++)
     {
-        unsigned char c = value.at(i);
+        c = value.at(i);
         value.at(i) = OFstatic_cast(char, tolower(c));
     }
     return value;
@@ -1869,6 +1871,9 @@ long OFStandard::getProcessID()
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.66  2010-11-01 08:55:56  uli
+ *  Moved variable declarations in front of their loop.
+ *
  *  Revision 1.65  2010-10-20 08:09:34  uli
  *  Also made sure toupper() and tolower() get a valid argument.
  *

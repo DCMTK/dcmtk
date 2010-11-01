@@ -18,8 +18,8 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:35 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2010-11-01 08:55:56 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -210,9 +210,10 @@ void DicomImage::Init()
             if (cstr != NULL)
             {
                 char *q = cstr;
+                unsigned char c;
                 for (const char *p = str; *p != 0; p++)    // remove invalid chars
                 {
-                    unsigned char c = OFstatic_cast(unsigned char, *p);
+                    c = OFstatic_cast(unsigned char, *p);
                     if (isalpha(c))
                         *(q++) = toupper(c);
                     else if (isdigit(c))
@@ -805,6 +806,9 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
+ * Revision 1.37  2010-11-01 08:55:56  uli
+ * Moved variable declarations in front of their loop.
+ *
  * Revision 1.36  2010-10-20 07:41:35  uli
  * Made sure isalpha() & friends are only called with valid arguments.
  *
