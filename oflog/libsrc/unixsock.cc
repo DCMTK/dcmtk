@@ -68,7 +68,9 @@ namespace
 {
 
 
+#if !defined (LOG4CPLUS_HAVE_GETADDRINFO)
 static LOG4CPLUS_MUTEX_PTR_DECLARE ghbn_mutex = LOG4CPLUS_MUTEX_CREATE;
+#endif
 
 
 static
@@ -85,7 +87,7 @@ get_host_by_name (char const * hostname, OFString* name,
     hints.ai_flags = AI_CANONNAME;
 
     if (inet_addr (hostname) != static_cast<in_addr_t>(-1))
-	hints.ai_flags |= AI_NUMERICHOST;
+        hints.ai_flags |= AI_NUMERICHOST;
 
     struct addrinfo * res = 0;
     int ret = getaddrinfo (hostname, 0, &hints, &res);
@@ -147,7 +149,7 @@ log4cplus::helpers::openSocket(unsigned short port, SocketState& state)
     server.sin_port = htons(port);
 
     int optval = 1;
-    setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, (char*)&optval, sizeof(optval) );
+    setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, OFreinterpret_cast(char*, &optval), sizeof(optval) );
 
     if(bind(sock, OFreinterpret_cast(struct sockaddr*, &server), sizeof(server)) < 0) {
         return INVALID_SOCKET;

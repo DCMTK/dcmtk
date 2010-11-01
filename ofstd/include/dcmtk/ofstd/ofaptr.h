@@ -18,9 +18,9 @@
  *  Purpose: Template class for automatically deleting pointers when they go out
  *           of scope.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:49 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 09:38:19 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,9 +64,8 @@ public:
     /** constructs a OFauto_ptr_ref from a pointer.
      *  @param p the pointer to use.
      */
-    explicit OFauto_ptr_ref(T* p)
+    explicit OFauto_ptr_ref(T* p) : ptr(p)
     {
-        this->ptr = p;
     }
 };
 
@@ -85,26 +84,23 @@ template <class T> class OFauto_ptr
      *  You must not call delete on a pointer that is managed by OFauto_ptr!
      *  @param p the pointer
      */
-    explicit OFauto_ptr(T* p = NULL)
+    explicit OFauto_ptr(T* p = NULL) : ptr(p)
     {
-        this->ptr = p;
     }
 
     /** constructs a OFauto_ptr from another OFauto_ptr. The other OFauto_ptr
      *  will be invalidated. This means he will point to NULL from now on!.
      *  @param other the OFauto_ptr to get the pointer from.
      */
-    OFauto_ptr(OFauto_ptr<T>& other)
+    OFauto_ptr(OFauto_ptr<T>& other) : ptr(other.release())
     {
-        this->ptr = other.release();
     }
 
     /** constructs a OFauto_ptr from an OFauto_ptr_ref.
      *  @param other the OFauto_ptr_ref to get the pointer from.
      */
-    OFauto_ptr(OFauto_ptr_ref<T> other)
+    OFauto_ptr(OFauto_ptr_ref<T> other) : ptr(other.ptr)
     {
-        this->ptr = other.ptr;
     }
 
     /** destructor. Destroys the pointer that is managed by this instance,
@@ -189,6 +185,9 @@ template <class T> class OFauto_ptr
 /*
 ** CVS/RCS Log:
 ** $Log: ofaptr.h,v $
+** Revision 1.9  2010-11-01 09:38:19  uli
+** Fixed some compiler warnings reported by gcc with additional flags.
+**
 ** Revision 1.8  2010-10-14 13:15:49  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

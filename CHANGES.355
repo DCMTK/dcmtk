@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.11.01 (schlachter)
 
+- Fixed some compiler warnings reported by gcc with additional flags.
+  Affects: oflog/libsrc/patlay.cc
+           oflog/libsrc/unixsock.cc
+           ofstd/include/dcmtk/ofstd/ofaptr.h
+
 - Moved variable declarations in front of their loop.
   Affects: dcmimgle/libsrc/dcmimage.cc
            dcmjpeg/libsrc/djutils.cc

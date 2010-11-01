@@ -796,9 +796,9 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
 // PatternLayout methods:
 ////////////////////////////////////////////////
 
-PatternLayout::PatternLayout(const log4cplus::tstring& pattern_, bool formatEachLine)
+PatternLayout::PatternLayout(const log4cplus::tstring& pattern_, bool formatEachLine_)
 {
-    init(pattern_, formatEachLine);
+    init(pattern_, formatEachLine_);
 }
 
 
@@ -807,12 +807,12 @@ PatternLayout::PatternLayout(const log4cplus::helpers::Properties& properties, l
     bool hasPattern = properties.exists( LOG4CPLUS_TEXT("Pattern") );
     bool hasConversionPattern = properties.exists( LOG4CPLUS_TEXT("ConversionPattern") );
     log4cplus::tstring eachLine = properties.getProperty( LOG4CPLUS_TEXT("FormatEachLine"), "yes");
-    bool formatEachLine = true;
+    bool formatEachLine_ = true;
 
     if (eachLine == LOG4CPLUS_TEXT("yes"))
-        formatEachLine = true;
+        formatEachLine_ = true;
     else if (eachLine == LOG4CPLUS_TEXT("no"))
-        formatEachLine = false;
+        formatEachLine_ = false;
     else
         getLogLog().warn( LOG4CPLUS_TEXT("PatternLayout- the \"FormatEachLine\" property has an invalid value, assuming \"yes\""));
 
@@ -821,10 +821,10 @@ PatternLayout::PatternLayout(const log4cplus::helpers::Properties& properties, l
     }
 
     if(hasConversionPattern) {
-        init(properties.getProperty( LOG4CPLUS_TEXT("ConversionPattern") ), formatEachLine);
+        init(properties.getProperty( LOG4CPLUS_TEXT("ConversionPattern") ), formatEachLine_);
     }
     else if(hasPattern) {
-        init(properties.getProperty( LOG4CPLUS_TEXT("Pattern") ), formatEachLine);
+        init(properties.getProperty( LOG4CPLUS_TEXT("Pattern") ), formatEachLine_);
     }
     else {
         error = LOG4CPLUS_TEXT("ConversionPattern not specified in properties");
