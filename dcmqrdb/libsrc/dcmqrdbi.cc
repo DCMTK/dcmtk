@@ -19,8 +19,8 @@
  *                   DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:36 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2010-11-01 13:37:32 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2874,7 +2874,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     IdxRecord        idxRec ;
     StudyDescRecord  *pStudyDesc ;
     int              i ;
-    struct stat      buf ;
+    struct stat      stat_buf ;
 
     /**** Initialize an IdxRecord
     ***/
@@ -3034,8 +3034,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     bzero((char *)pStudyDesc, SIZEOF_STUDYDESC);
     DB_GetStudyDesc(pStudyDesc) ;
 
-    stat(imageFileName, &buf) ;
-    idxRec. ImageSize = (int)(buf. st_size) ;
+    stat(imageFileName, &stat_buf) ;
+    idxRec. ImageSize = (int)(stat_buf. st_size) ;
 
     /* we only have second accuracy */
     idxRec. RecordedDate =  (double) time(NULL);
@@ -3431,6 +3431,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.28  2010-11-01 13:37:32  uli
+ * Fixed some compiler warnings reported by gcc with additional flags.
+ *
  * Revision 1.27  2010-10-20 07:41:36  uli
  * Made sure isalpha() & friends are only called with valid arguments.
  *

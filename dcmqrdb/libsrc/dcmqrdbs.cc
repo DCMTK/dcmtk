@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveDatabaseStatus
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:36 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 13:37:32 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +34,8 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
-DcmQueryRetrieveDatabaseStatus::DcmQueryRetrieveDatabaseStatus(Uint16 status)
-: status_(status)
+DcmQueryRetrieveDatabaseStatus::DcmQueryRetrieveDatabaseStatus(Uint16 s)
+: status_(s)
 , statusDetail_(NULL)
 {
 }
@@ -82,6 +82,9 @@ DcmDataset *DcmQueryRetrieveDatabaseStatus::extractStatusDetail()
 /*
  * CVS Log
  * $Log: dcmqrdbs.cc,v $
+ * Revision 1.5  2010-11-01 13:37:32  uli
+ * Fixed some compiler warnings reported by gcc with additional flags.
+ *
  * Revision 1.4  2010-10-14 13:14:36  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

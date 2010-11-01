@@ -18,6 +18,14 @@ Changes between releases are documented here.
            dcmnet/apps/termscu.cc
            dcmnet/libsrc/dcuserid.cc
            dcmnet/libsrc/dfindscu.cc
+           dcmqrdb/apps/dcmqridx.cc
+           dcmqrdb/apps/dcmqrti.cc
+           dcmqrdb/libsrc/dcmqrcbm.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmqrdb/libsrc/dcmqrdbs.cc
+           dcmwlm/apps/wlcefs.cc
+           dcmwlm/tests/wltest.cc
+           dcmwlm/wwwapps/writwlst.cc
            oflog/libsrc/patlay.cc
            oflog/libsrc/unixsock.cc
            ofstd/include/dcmtk/ofstd/ofaptr.h

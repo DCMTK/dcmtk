@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:35 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 13:37:32 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -320,7 +320,6 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     if (cond.good()) {
         cond = ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU);
         if (cond.bad()) {
-            OFString temp_str;
             DCMQRDB_ERROR("moveSCP: Cannot create Association-params for sub-ops: " << DimseCondition::dump(temp_str, cond));
         }
     }
@@ -678,6 +677,9 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
+ * Revision 1.19  2010-11-01 13:37:32  uli
+ * Fixed some compiler warnings reported by gcc with additional flags.
+ *
  * Revision 1.18  2010-10-14 13:14:35  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -17,9 +17,9 @@
  *
  *  Purpose: Worklist Database Test Program
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:13 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 13:37:32 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,7 +112,7 @@ addOverrideKey(DcmDataset& overrideKeys, char* s)
         usage(); /* does not return */
     }
 
-    DcmTag tag(g,e);
+    DcmTag tag(OFstatic_cast(Uint16, g), OFstatic_cast(Uint16, e));
     if (tag.error() != EC_Normal) {
         errmsg("unknown tag: (%04x,%04x)", g, e);
         usage();
@@ -366,6 +366,9 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
 /*
 ** CVS Log
 ** $Log: wltest.cc,v $
+** Revision 1.11  2010-11-01 13:37:32  uli
+** Fixed some compiler warnings reported by gcc with additional flags.
+**
 ** Revision 1.10  2010-10-14 13:15:13  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

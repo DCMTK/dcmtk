@@ -18,9 +18,9 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:53 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 13:37:32 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,7 +160,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       cmd->addOption("--dimse-timeout",       "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
       OFString opt6 = "[a]ssocs: integer (default: ";
-      sprintf(tempstr, "%ld", (long)opt_maxAssociations);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, opt_maxAssociations));
       opt6 += tempstr;
       opt6 += ")";
       cmd->addOption("--max-associations",            1, opt6.c_str(), "limit maximum number of parallel associations");
@@ -170,14 +170,14 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       cmd->addOption("--sleep-after",                 1, "[s]econds: integer", "sleep s seconds after find (default: 0)");
       cmd->addOption("--sleep-during",                1, "[s]econds: integer", "sleep s seconds during find (default: 0)");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
-      sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
       opt3 += tempstr;
       opt3 += ")";
       OFString opt4 = "[n]umber of bytes: integer (";
-      sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += "..";
-      sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += ")";
       cmd->addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
@@ -399,6 +399,9 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
+** Revision 1.29  2010-11-01 13:37:32  uli
+** Fixed some compiler warnings reported by gcc with additional flags.
+**
 ** Revision 1.28  2010-10-14 13:13:53  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

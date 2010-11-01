@@ -19,9 +19,9 @@
  *   Program to create a worklist file from a WWW CGI perl script generated
  *   hexedecimal encoded string.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:20:03 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 13:37:32 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -357,13 +357,13 @@ parseWorklist(FILE* f, DcmDataset& dset)
 	    val.clear();
 	    valCount++;
 	} else if (isxdigit(c)) {
-	    hexChar.append(c);
+	    hexChar.append(OFstatic_cast(char, c));
 	    if (hexChar.length() == 2) {
 		/* convert into normal character */
 		unsigned int h;
 		const char *s = hexChar.c_str();
 		sscanf(s, "%x", &h);
-		char newc = (h & 0xff);
+		char newc = OFstatic_cast(char, h & 0xff);
 		val.append(newc);
 		hexChar.clear();
 	    }
@@ -578,6 +578,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: writwlst.cc,v $
+ *   Revision 1.10  2010-11-01 13:37:32  uli
+ *   Fixed some compiler warnings reported by gcc with additional flags.
+ *
  *   Revision 1.9  2010-10-14 13:20:03  joergr
  *   Updated copyright header. Added reference to COPYRIGHT file.
  *

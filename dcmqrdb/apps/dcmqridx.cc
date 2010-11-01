@@ -17,9 +17,9 @@
  *
  *  Purpose: This test program registers image files in the image database.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:47 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 13:37:32 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -183,7 +183,7 @@ int main (int argc, char *argv[])
         if (opt_print)
         {
             COUT << "-- DB Index File --" << OFendl;
-            hdl.printIndexFile((char *)opt_storageArea);
+            hdl.printIndexFile(OFconst_cast(char *, opt_storageArea));
         }
         return 0;
     }
@@ -195,6 +195,9 @@ int main (int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqridx.cc,v $
+ * Revision 1.15  2010-11-01 13:37:32  uli
+ * Fixed some compiler warnings reported by gcc with additional flags.
+ *
  * Revision 1.14  2010-10-14 13:13:47  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

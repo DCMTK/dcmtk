@@ -17,9 +17,9 @@
  *
  *  Purpose: Telnet Initiator (ti) Main Program
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:47 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 13:37:32 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,10 +154,10 @@ int main( int argc, char *argv[] )
     opt1 += ")";
     cmd.addOption( "--aetitle",                   "-aet", 1, "[a]etitle: string", opt1.c_str() );
     OFString opt2 = "[n]umber of bytes: integer (";
-    sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
+    sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
     opt2 += tempstr;
     opt2 += "..";
-    sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
+    sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
     opt2 += tempstr;
     opt2 += ")";
     cmd.addOption( "--max-pdu",                   "-pdu", 1, opt2.c_str(), "set max receive pdu to n bytes\n(default: use value from configuration file)" );
@@ -215,7 +215,7 @@ int main( int argc, char *argv[] )
     {
       OFCmdSignedInt opt_timeout = 0;
       app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
-      dcmConnectionTimeout.set((Sint32) opt_timeout);
+      dcmConnectionTimeout.set(OFstatic_cast(Sint32, opt_timeout));
     }
 
     if (cmd.findOption("--acse-timeout"))
@@ -412,6 +412,9 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
+ * Revision 1.20  2010-11-01 13:37:32  uli
+ * Fixed some compiler warnings reported by gcc with additional flags.
+ *
  * Revision 1.19  2010-10-14 13:13:47  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
