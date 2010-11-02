@@ -18,8 +18,8 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:18 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2010-11-02 11:27:08 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,8 @@ DiDocument::DiDocument(DcmObject *object,
 void DiDocument::convertPixelData()
 {
     DcmStack pstack;
-    DCMIMGLE_DEBUG("transfer syntax of DICOM dataset: " << DcmXfer(Xfer).getXferName());
+    DcmXfer xfer(Xfer);
+    DCMIMGLE_DEBUG("transfer syntax of DICOM dataset: " << xfer.getXferName() << " (" << xfer.getXferID() << ")");
     if (search(DCM_PixelData, pstack))
     {
         PixelData = OFstatic_cast(DcmPixelData *, pstack.top());
@@ -135,8 +136,12 @@ void DiDocument::convertPixelData()
                     DCMIMGLE_ERROR("can't change to unencapsulated representation for pixel data");
             }
             // determine color model of the decompressed image
-            if (PixelData->getDecompressedColorModel(OFstatic_cast(DcmDataset *, Object), PhotometricInterpretation).bad())
+            OFCondition status = PixelData->getDecompressedColorModel(OFstatic_cast(DcmDataset *, Object), PhotometricInterpretation);
+            if (status.bad())
+            {
                 DCMIMGLE_ERROR("can't determine 'PhotometricInterpretation' of decompressed image");
+                DCMIMGLE_DEBUG("DcmPixelData::getDecompressedColorModel() returned: " << status.text());
+            }
         } else
             DCMIMGLE_ERROR("invalid pixel data in DICOM dataset");
     } else
@@ -404,6 +409,9 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
+ * Revision 1.26  2010-11-02 11:27:08  joergr
+ * Enhanced output to debug logger: Added more details in case of failures.
+ *
  * Revision 1.25  2010-10-14 13:14:18  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.02 (riesmeier)
+
+- Enhanced output to debug logger: Added more details in case of failures.
+  Affects: dcmimgle/libsrc/didocu.cc
+
 **** Changes from 2010.11.01 (schlachter)
 
 - Fixed some compiler warnings reported by gcc with additional flags.
