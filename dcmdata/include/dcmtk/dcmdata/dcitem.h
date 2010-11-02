@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:41 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Update Date:      $Date: 2010-11-02 15:31:06 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1079,6 +1079,17 @@ class DcmItem
      */
     E_TransferSyntax checkTransferSyntax(DcmInputStream &inStream);
 
+    /** check whether the given tag requires some special handling regarding the VR
+     *  (i.e. in case it is undefined and multiple values are possible). If required,
+     *  the VR of the given element tag is then updated according to the DICOM
+     *  standard, e.g. the VR of PixelPaddingValue (if undefined) is set to 'SS' or
+     *  'US' depending on the value of PixelRepresentation.
+     *  @param item dataset or item that can be used to lookup other element values
+     *  @param tag tag of the element to be checked and updated (if required)
+     */
+    void checkAndUpdateVR(DcmItem &item,
+                          DcmTag &tag);
+
 
   private:
 
@@ -1161,6 +1172,11 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.83  2010-11-02 15:31:06  joergr
+** Added special handling for data elements that are associated with different
+** VRs (according to the data dictinary) when read with an implicit transfer
+** syntax, e.g. PixelPaddingValue or WaveformData.
+**
 ** Revision 1.82  2010-10-14 13:15:41  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

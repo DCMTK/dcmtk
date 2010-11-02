@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2010.11.02 (riesmeier)
 
+- Added special handling for data elements that are associated with different
+  VRs (according to the data dictinary) when read with an implicit transfer
+  syntax, e.g. PixelPaddingValue or WaveformData.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
 - Enhanced output to debug logger: Added more details in case of failures.
   Affects: dcmimgle/libsrc/didocu.cc
 

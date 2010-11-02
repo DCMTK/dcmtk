@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:16 $
- *  CVS/RCS Revision: $Revision: 1.149 $
+ *  Update Date:      $Date: 2010-11-02 15:31:09 $
+ *  CVS/RCS Revision: $Revision: 1.150 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -293,6 +293,65 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
 
     /* return determined transfer syntax */
     return transferSyntax;
+}
+
+
+// ********************************
+
+
+void DcmItem::checkAndUpdateVR(DcmItem &item,
+                               DcmTag &tag)
+{
+    /* handle special cases where the VR can be determined by some other element values */
+    if (((tag == DCM_WaveformData) || (tag == DCM_WaveformPaddingValue)) && (tag.getEVR() == EVR_ox))
+    {
+        /* case 1 (WaveformData and others): see section 8.3 in PS 3.5 */
+        Uint16 bitsAlloc;
+        if (item.findAndGetUint16(DCM_WaveformBitsAllocated, bitsAlloc).good())
+        {
+            if (bitsAlloc == 8)
+            {
+                DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OB' because WaveformBitsAllocated "
+                    << DCM_WaveformBitsAllocated << " has a value of 8");
+                tag.setVR(EVR_OB);
+            } else {
+                DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OW' because WaveformBitsAllocated "
+                    << DCM_WaveformBitsAllocated << " has a value that is different from 8");
+                tag.setVR(EVR_OW);
+            }
+        }
+    }
+    else if (((tag == DCM_PixelPaddingValue) || (tag == DCM_PixelPaddingRangeLimit) ||
+        (tag == DCM_HistogramFirstBinValue) || (tag == DCM_HistogramLastBinValue)) && (tag.getEVR() == EVR_xs))
+    {
+        /* case 2 (PixelPaddingValue and others): see section C.7.5.1 and C.11.5 in PS 3.3 */
+        Uint16 pixelRep;
+        if (item.findAndGetUint16(DCM_PixelRepresentation, pixelRep).good())
+        {
+            if (pixelRep == 0x0001)
+            {
+                DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'SS' because PixelRepresentation "
+                    << DCM_PixelRepresentation << " has a value of 1");
+                tag.setVR(EVR_SS);
+            } else {
+                DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'US' because PixelRepresentation "
+                    << DCM_PixelRepresentation << " has a value that is different from 1");
+                tag.setVR(EVR_US);
+            }
+        }
+    }
+    else if (((tag == DCM_OverlayData) || (tag == DCM_PixelData)) && (tag.getEVR() == EVR_ox))
+    {
+        /* case 3 (OverlayData and PixelData): see section 8.1.2 and 8.2 in PS 3.5 */
+        DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OW'");
+        tag.setVR(EVR_OW);
+    }
+    else if ((tag == DCM_RETIRED_CurveData) && (tag.getEVR() == EVR_ox))
+    {
+        /* case 4 (CurveData): see section A.1 in PS 3.5-2004 */
+        DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OB'");
+        tag.setVR(EVR_OB);
+    }
 }
 
 
@@ -1103,6 +1162,9 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                     /* If we get to this point, we just started reading the first part */
                     /* of an element; hence, lastElementComplete is not longer true */
                     lastElementComplete = OFFalse;
+                    /* in case of implicit VR, check whether the "default VR" is really appropriate */
+                    if (DcmXfer(xfer).isImplicitVR())
+                        checkAndUpdateVR(*this, newTag);
                     /* read the actual data value which belongs to this element */
                     /* (attribute) and insert this information into the elementList */
                     errorFlag = readSubElement(inStream, newTag, newValueLength, xfer, glenc, maxReadLength);
@@ -3640,6 +3702,11 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.150  2010-11-02 15:31:09  joergr
+** Added special handling for data elements that are associated with different
+** VRs (according to the data dictinary) when read with an implicit transfer
+** syntax, e.g. PixelPaddingValue or WaveformData.
+**
 ** Revision 1.149  2010-10-20 16:44:16  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **
