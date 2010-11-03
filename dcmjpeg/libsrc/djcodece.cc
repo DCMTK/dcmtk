@@ -18,8 +18,8 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:21 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2010-11-03 11:22:38 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,21 +205,13 @@ OFCondition DJCodecEncoder::encode(
 
       if (result.good())
       {
-        if (isLosslessProcess())
-        {
-          // lossless process - create new UID if mode is EUC_always or if we're converting to Secondary Capture
-          if (djcp->getConvertToSC() || (djcp->getUIDCreation() == EUC_always)) result =
-            DcmCodec::newInstance((DcmItem *)dataset, "DCM", "121320", "Uncompressed predecessor");
-        }
-        else
-        {
-          // lossy process - create new UID unless mode is EUC_never and we're not converting to Secondary Capture
-          if (djcp->getConvertToSC() || (djcp->getUIDCreation() != EUC_never))
-            result = DcmCodec::newInstance((DcmItem *)dataset, "DCM", "121320", "Uncompressed predecessor");
+        // lossy process - create new UID unless mode is EUC_never and we're not converting to Secondary Capture
+        // (pseudo-lossless mode may also result in lossy compression, so treat it the same way)
+        if (djcp->getConvertToSC() || (djcp->getUIDCreation() != EUC_never))
+          result = DcmCodec::newInstance((DcmItem *)dataset, "DCM", "121320", "Uncompressed predecessor");
 
-          // update lossy compression ratio
-          if (result.good()) result = updateLossyCompressionRatio((DcmItem *)dataset, compressionRatio);
-        }
+        // update lossy compression ratio
+        if (result.good()) result = updateLossyCompressionRatio((DcmItem *)dataset, compressionRatio);
       }
 
       // convert to Secondary Capture if requested by user.
@@ -812,7 +804,7 @@ OFCondition DJCodecEncoder::updateDerivationDescription(
 
     if (djcp->getTrueLosslessMode())
       result = DcmCodec::insertCodeSequence(dataset, DCM_DerivationCodeSequence, "DCM", "121327", "Full fidelity image");
-    else
+    else // pseudo-lossless mode may also result in lossy compression
       result = DcmCodec::insertCodeSequence(dataset, DCM_DerivationCodeSequence, "DCM", "113040", "Lossy Compression");
   }
   return result;
@@ -1508,6 +1500,11 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
+ * Revision 1.36  2010-11-03 11:22:38  joergr
+ * Since the pseudo-lossless encoder is not guaranteed to result in lossless
+ * compression, the modifications to the DICOM header are treated in the same
+ * way as for lossy compression (e.g Lossy Compression Flag is set to "01").
+ *
  * Revision 1.35  2010-10-14 13:14:21  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

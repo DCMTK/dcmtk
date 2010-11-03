@@ -1,10 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.03 (riesmeier)
+
+- Since the pseudo-lossless encoder is not guaranteed to result in lossless
+  compression, the modifications to the DICOM header are treated in the same
+  way as for lossy compression (e.g Lossy Compression Flag is set to "01").
+  Affects: dcmjpeg/docs/dcmcjpeg.man
+           dcmjpeg/libsrc/djcodece.cc
+           dcmjpeg/libsrc/djenclol.cc
+           dcmjpeg/libsrc/djencsv1.cc
+
 **** Changes from 2010.11.02 (riesmeier)
 
 - Added special handling for data elements that are associated with different
-  VRs (according to the data dictinary) when read with an implicit transfer
+  VRs (according to the data dictionary) when read with an implicit transfer
   syntax, e.g. PixelPaddingValue or WaveformData.
   Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
            dcmdata/libsrc/dcitem.cc

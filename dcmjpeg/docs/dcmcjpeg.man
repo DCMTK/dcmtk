@@ -471,7 +471,7 @@ SOP Instance UID:
   +ud   --uid-default
           assign new UID if lossy compression (default)
 
-  # Assigns a new SOP instance UID if the compression is lossy JPEG.
+  # Assigns a new SOP instance UID if the compression is lossy.
 
   +ua   --uid-always
           always assign new UID
@@ -563,8 +563,15 @@ windowing etc., there are a some issues to consider:
     necessary
 \li The compression ratio can be lower than in \e --pseudo-lossless mode
 
-However, when using the new encoder (default), you can be sure, that compression
-does not affect image quality.
+However, when using the new encoder (default), you can be sure, that
+compression does not affect image quality.
+
+In order to be on the safe side, the Lossy Compression Flag is always set to
+"01" and a new SOP instance UID is assigned (by default) for the old
+pseudo-lossless encoder.  The output of the old and new lossless encoder can
+also be distinguished by the Derivation Description in the resulting DICOM
+image, which contains the term "Lossless JPEG compression" for the new and
+"Pseudo-Lossless JPEG compression" for the old encoder.
 
 \section transfer_syntaxes TRANSFER SYNTAXES
 

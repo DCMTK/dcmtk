@@ -18,8 +18,8 @@
  *  Purpose: Codec class for encoding JPEG Lossless Selection Value 1 (8/12/16-bit)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:22 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2010-11-03 11:22:38 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ OFBool DJEncoderP14SV1::isLosslessProcess() const
 
 void DJEncoderP14SV1::createDerivationDescription(
   const DcmRepresentationParameter * toRepParam,
-  const DJCodecParameter * /* cp */ ,
+  const DJCodecParameter *cp,
   Uint8 /* bitsPerSample */,
   double ratio,
   OFString& derivationDescription) const
@@ -68,8 +68,11 @@ void DJEncoderP14SV1::createDerivationDescription(
   DJ_RPLossless defaultRP;
   const DJ_RPLossless *rp = toRepParam ? (const DJ_RPLossless *)toRepParam : &defaultRP ;
   char buf[64];
- 
-  derivationDescription =  "Lossless JPEG compression, selection value 1, point transform ";
+
+  if (cp->getTrueLosslessMode())
+    derivationDescription = "Lossless JPEG compression, selection value 1, point transform ";
+  else
+    derivationDescription = "Pseudo-Lossless JPEG compression, selection value 1, point transform ";
   sprintf(buf, "%u", rp->getPointTransformation());
   derivationDescription += buf;
   derivationDescription += ", compression ratio ";
@@ -78,20 +81,20 @@ void DJEncoderP14SV1::createDerivationDescription(
 
 
 DJEncoder *DJEncoderP14SV1::createEncoderInstance(
-    const DcmRepresentationParameter * toRepParam,
-    const DJCodecParameter *cp,
-    Uint8 bitsPerSample) const
+  const DcmRepresentationParameter * toRepParam,
+  const DJCodecParameter *cp,
+  Uint8 bitsPerSample) const
 {
   DJ_RPLossless defaultRP;
   const DJ_RPLossless *rp = toRepParam ? (const DJ_RPLossless *)toRepParam : &defaultRP ;
-  DJEncoder * result = NULL;
+  DJEncoder *result = NULL;
   // prediction/selection value is always 1 for this transfer syntax
   if (bitsPerSample > 12)
     result = new DJCompressIJG16Bit(*cp, EJM_lossless, 1, rp->getPointTransformation());
   else if (bitsPerSample > 8)
     result = new DJCompressIJG12Bit(*cp, EJM_lossless, 1, rp->getPointTransformation());
-  else 
-    result = new DJCompressIJG8Bit(*cp, EJM_lossless, 1, rp->getPointTransformation());  
+  else
+    result = new DJCompressIJG8Bit(*cp, EJM_lossless, 1, rp->getPointTransformation());
   return result;
 }
 
@@ -99,6 +102,11 @@ DJEncoder *DJEncoderP14SV1::createEncoderInstance(
 /*
  * CVS/RCS Log
  * $Log: djencsv1.cc,v $
+ * Revision 1.4  2010-11-03 11:22:38  joergr
+ * Since the pseudo-lossless encoder is not guaranteed to result in lossless
+ * compression, the modifications to the DICOM header are treated in the same
+ * way as for lossy compression (e.g Lossy Compression Flag is set to "01").
+ *
  * Revision 1.3  2010-10-14 13:14:22  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
