@@ -18,8 +18,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:36 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2010-11-03 12:32:07 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,7 +142,7 @@ static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
     if (c[lpos] != ']') return 0; // parse error
     unsigned long newindex = 0;
     if (1 != sscanf(c+spos,"%lu", &newindex)) return 0; // parse error
-    idx = (Uint32)newindex;
+    idx = OFstatic_cast(Uint32, newindex);
     pos = ++lpos;
     return 2; // index
   }
@@ -198,7 +198,7 @@ static char *readTextFile(const char *filename)
     result = new char[numBytes];
     if (result)
     {
-      if ((size_t)numBytes != fread(result, 1, (size_t)numBytes, file))
+      if (OFstatic_cast(size_t, numBytes) != fread(result, 1, OFstatic_cast(size_t, numBytes), file))
       {
         OFLOG_WARN(dcmsignLogger, "read error in file " << filename);
         delete[] result;
@@ -297,7 +297,7 @@ static DcmItem *locateItemforSignatureCreation(DcmItem& dataset, const char *loc
       }
       if (stack.top()->ident() == EVR_SQ)
       {
-        sq = (DcmSequenceOfItems *)(stack.top());
+        sq = OFstatic_cast(DcmSequenceOfItems *, (stack.top()));
       } else {
         OFLOG_ERROR(dcmsignLogger, "attribute " << key << " is not a sequence (item location string is '" << location << "')");
         return NULL;
@@ -409,7 +409,7 @@ static void printSignatureItemPosition(DcmStack& stack, OFString& str)
         else
         {
           if (str.size() > 0) str.append(".");
-          sq = (DcmSequenceOfItems *)elem;
+          sq = OFstatic_cast(DcmSequenceOfItems *, elem);
           DcmTag currentTag(elem->getTag());
           tagname = currentTag.getTagName();
           if (tagname) str.append(tagname); else
@@ -417,7 +417,7 @@ static void printSignatureItemPosition(DcmStack& stack, OFString& str)
             sprintf(buf, "(%04x,%04x)", elem->getTag().getGroup(), elem->getTag().getElement());
             str.append(buf);
           }
-          if (elem->ident() == EVR_SQ) sq = (DcmSequenceOfItems *)elem; else sq = NULL;
+          if (elem->ident() == EVR_SQ) sq = OFstatic_cast(DcmSequenceOfItems *, elem); else sq = NULL;
         }
       }
     }
@@ -1142,7 +1142,7 @@ int main(int argc, char *argv[])
       return 1;
     }
 
-    sicond = fileformat->saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
+    sicond = fileformat->saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad));
     if (sicond.bad())
     {
       OFLOG_FATAL(dcmsignLogger, sicond.text() << ": writing file: " <<  opt_ofname);
@@ -1171,6 +1171,9 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
+ *  Revision 1.39  2010-11-03 12:32:07  uli
+ *  Fixed some more warnings by gcc with by additional flags.
+ *
  *  Revision 1.38  2010-10-20 07:41:36  uli
  *  Made sure isalpha() & friends are only called with valid arguments.
  *

@@ -17,9 +17,9 @@
  *
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:45 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-03 12:32:06 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -766,7 +766,6 @@ int main(int argc, char *argv[])
         if (cond == DUL_ASSOCIATIONREJECTED)
         {
             T_ASC_RejectParameters rej;
-            OFString temp_str;
 
             ASC_getRejectParameters(params, &rej);
             OFLOG_ERROR(dcmpssndLogger, "Association Rejected" << OFendl << ASC_printRejectParameters(temp_str, &rej));
@@ -988,6 +987,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
+ * Revision 1.48  2010-11-03 12:32:06  uli
+ * Fixed some more warnings by gcc with by additional flags.
+ *
  * Revision 1.47  2010-10-14 13:13:45  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

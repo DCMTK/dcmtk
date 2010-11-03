@@ -17,9 +17,9 @@
  *
  *  Purpose: codec parameter class for JPEG-LS codecs
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:24 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-03 12:32:06 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@ DJLSCodecParameter::DJLSCodecParameter(
      JLS_UIDCreation uidCreation,
      OFBool convertToSC,
      JLS_PlanarConfiguration planarConfiguration,
-     OFBool ignoreOffsetTable,
+     OFBool ignoreOffsetTble,
      interleaveMode jplsInterleaveMode)
 : DcmCodecParameter()
 , jpls_optionsEnabled_(jpls_optionsEnabled)
@@ -59,7 +59,7 @@ DJLSCodecParameter::DJLSCodecParameter(
 , convertToSC_(convertToSC)
 , jplsInterleaveMode_(jplsInterleaveMode)
 , planarConfiguration_(planarConfiguration)
-, ignoreOffsetTable_(ignoreOffsetTable)
+, ignoreOffsetTable_(ignoreOffsetTble)
 {
 }
 
@@ -67,7 +67,7 @@ DJLSCodecParameter::DJLSCodecParameter(
 DJLSCodecParameter::DJLSCodecParameter(
     JLS_UIDCreation uidCreation,
     JLS_PlanarConfiguration planarConfiguration,
-    OFBool ignoreOffsetTable)
+    OFBool ignoreOffsetTble)
 : DcmCodecParameter()
 , jpls_optionsEnabled_(OFFalse)
 , jpls_t1_(3)
@@ -82,7 +82,7 @@ DJLSCodecParameter::DJLSCodecParameter(
 , convertToSC_(OFFalse)
 , jplsInterleaveMode_(interleaveDefault)
 , planarConfiguration_(planarConfiguration)
-, ignoreOffsetTable_(ignoreOffsetTable)
+, ignoreOffsetTable_(ignoreOffsetTble)
 {
 }
 
@@ -123,6 +123,9 @@ const char *DJLSCodecParameter::className() const
 /*
  * CVS/RCS Log:
  * $Log: djcparam.cc,v $
+ * Revision 1.5  2010-11-03 12:32:06  uli
+ * Fixed some more warnings by gcc with by additional flags.
+ *
  * Revision 1.4  2010-10-14 13:14:24  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

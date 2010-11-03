@@ -424,7 +424,7 @@ get_dht (j_decompress_ptr cinfo)
   IJG_INT32 length;
   UINT8 bits[17];
   UINT8 huffval[256];
-  int i, index, count;
+  int i, idx, count;
   JHUFF_TBL **htblptr;
   INPUT_VARS(cinfo);
 
@@ -432,9 +432,9 @@ get_dht (j_decompress_ptr cinfo)
   length -= 2;
   
   while (length > 16) {
-    INPUT_BYTE(cinfo, index, return FALSE);
+    INPUT_BYTE(cinfo, idx, return FALSE);
 
-    TRACEMS1(cinfo, 1, JTRC_DHT, index);
+    TRACEMS1(cinfo, 1, JTRC_DHT, idx);
       
     bits[0] = 0;
     count = 0;
@@ -463,15 +463,15 @@ get_dht (j_decompress_ptr cinfo)
 
     length -= count;
 
-    if (index & 0x10) {		/* AC table definition */
-      index -= 0x10;
-      htblptr = &cinfo->ac_huff_tbl_ptrs[index];
+    if (idx & 0x10) {		/* AC table definition */
+      idx -= 0x10;
+      htblptr = &cinfo->ac_huff_tbl_ptrs[idx];
     } else {			/* DC table definition */
-      htblptr = &cinfo->dc_huff_tbl_ptrs[index];
+      htblptr = &cinfo->dc_huff_tbl_ptrs[idx];
     }
 
-    if (index < 0 || index >= NUM_HUFF_TBLS)
-      ERREXIT1(cinfo, JERR_DHT_INDEX, index);
+    if (idx < 0 || idx >= NUM_HUFF_TBLS)
+      ERREXIT1(cinfo, JERR_DHT_INDEX, idx);
 
     if (*htblptr == NULL)
       *htblptr = jpeg_alloc_huff_table((j_common_ptr) cinfo);

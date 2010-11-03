@@ -1,6 +1,27 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.01 (schlachter)
+
+- Fixed some more warnings by gcc with by additional flags.
+  Affects: dcmjpeg/libijg12/jcdiffct.c
+           dcmjpeg/libijg12/jcmarker.c
+           dcmjpeg/libijg12/jdmarker.c
+           dcmjpeg/libijg12/jdscale.c
+           dcmjpeg/libijg16/jcdiffct.c
+           dcmjpeg/libijg16/jcmarker.c
+           dcmjpeg/libijg16/jdmarker.c
+           dcmjpeg/libijg16/jdscale.c
+           dcmjpeg/libijg8/jcdiffct.c
+           dcmjpeg/libijg8/jcmarker.c
+           dcmjpeg/libijg8/jdmarker.c
+           dcmjpeg/libijg8/jdscale.c
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libsrc/djcparam.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/tests/msgserv.cc
+           dcmsign/apps/dcmsign.cc
+
 **** Changes from 2010.11.03 (riesmeier)
 
 - Since the pseudo-lossless encoder is not guaranteed to result in lossless

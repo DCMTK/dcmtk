@@ -17,9 +17,9 @@
  *
  *  Purpose: Sample message server for class DVPSIPCClient
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:09 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-03 12:32:07 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -328,9 +328,9 @@ int main(int argc, char *argv[])
                 if (msg.extractIntFromPayload(i)) oss << statusString(i) << OFendl; else oss << "(none)" << OFendl;
             }
             oss << OFStringStream_ends;
-            OFSTRINGSTREAM_GETSTR(oss, str);
-            OFLOG_INFO(msgservLogger, str);
-            OFSTRINGSTREAM_FREESTR(str);
+            OFSTRINGSTREAM_GETSTR(oss, result);
+            OFLOG_INFO(msgservLogger, result);
+            OFSTRINGSTREAM_FREESTR(result);
             msg.erasePayload();
             if (msg.getMessageType() == DVPSIPCMessage::requestApplicationID)
             {
@@ -363,6 +363,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
+ * Revision 1.19  2010-11-03 12:32:07  uli
+ * Fixed some more warnings by gcc with by additional flags.
+ *
  * Revision 1.18  2010-10-14 13:15:09  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -386,9 +386,6 @@ jinit_c_diff_controller (j_compress_ptr cinfo, boolean need_full_buffer)
 #ifdef FULL_SAMP_BUFFER_SUPPORTED
     /* Allocate a full-image virtual array for each component, */
     /* padded to a multiple of samp_factor differences in each direction. */
-    int ci;
-    jpeg_component_info *compptr;
-
     for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
 	 ci++, compptr++) {
       diff->whole_image[ci] = (*cinfo->mem->request_virt_sarray)
