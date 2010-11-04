@@ -1,7 +1,12 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2010.11.01 (schlachter)
+**** Changes from 2010.11.03 (riesmeier)
+
+- Removed superfluous path separator.
+  Affects: doxygen/CMakeLists.txt
+
+**** Changes from 2010.11.03 (schlachter)
 
 - Fixed some more warnings by gcc with by additional flags.
   Affects: dcmjpeg/libijg12/jcdiffct.c
