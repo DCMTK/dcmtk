@@ -36,24 +36,32 @@ IF(WIN32 AND NOT CYGWIN AND NOT MINGW)
   # Set path and multiple path separator being used in dictionary code etc.
   SET(PATH_SEPARATOR "\\\\")
   SET(ENVIRONMENT_PATH_SEPARATOR ";")
-   # Set dictionary path to the data dir inside install main dir (prefix)
-  SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}${INSTALL_DATDIR}/dicom.dic")
-  # If private dictionary should be utilized, add it to default dictionary path
+  # Set dictionary path to the data dir inside install main dir (prefix)
+  SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}${INSTALL_DATDIR}${PATH_SEPARATOR}dicom.dic")
+  # If private dictionary should be utilized, add it to default dictionary path.
   IF(WITH_PRIVATE_TAGS)
-    SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}${ENVIRONMENT_PATH_SEPARATOR}${DCMTK_PREFIX}${INSTALL_DATDIR}${PATH_SEPARATOR}private.dic" )
+    SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}${ENVIRONMENT_PATH_SEPARATOR}${DCMTK_PREFIX}${INSTALL_DATDIR}${PATH_SEPARATOR}private.dic")
   ENDIF(WITH_PRIVATE_TAGS)
   # Again, for windows strip all / from path and replace it with \\.
   STRING(REGEX REPLACE "/" "\\\\\\\\" DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}")
+  # Set default directory for configuration and support data.
+  SET(DCMTK_DEFAULT_CONFIGURATION_DIR "")
+  SET(DCMTK_DEFAULT_SUPPORT_DATA_DIR "")
 ELSE(WIN32 AND NOT CYGWIN AND NOT MINGW)
+  # Set DCMTK_PREFIX needed within some code.
+  SET(DCMTK_PREFIX "${CMAKE_INSTALL_PREFIX}")
   # Set path and multiple path separator being used in dictionary code etc.
   SET(PATH_SEPARATOR "/")
   SET(ENVIRONMENT_PATH_SEPARATOR ":")
-  SET(DCMTK_PREFIX "${CMAKE_INSTALL_PREFIX}")
+  # Set dictionary path to the data dir inside install main dir (prefix)
   SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}${INSTALL_DATDIR}${PATH_SEPARATOR}dicom.dic")
-  # If private dictionary should be utilized, add it to default dictionary path
+  # If private dictionary should be utilized, add it to default dictionary path.
   IF(WITH_PRIVATE_TAGS)
-    SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}${ENVIRONMENT_PATH_SEPARATOR}${DCMTK_PREFIX}${INSTALL_DATDIR}${PATH_SEPARATOR}private.dic" )
+    SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}${ENVIRONMENT_PATH_SEPARATOR}${DCMTK_PREFIX}${INSTALL_DATDIR}${PATH_SEPARATOR}private.dic")
   ENDIF(WITH_PRIVATE_TAGS)
+  # Set default directory for configuration and support data.
+  SET(DCMTK_DEFAULT_CONFIGURATION_DIR "${DCMTK_PREFIX}${INSTALL_ETCDIR}${PATH_SEPARATOR}")
+  SET(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${DCMTK_PREFIX}${INSTALL_DATDIR}${PATH_SEPARATOR}")
 ENDIF(WIN32 AND NOT CYGWIN AND NOT MINGW)
 
 # Check the sizes of various types
@@ -220,11 +228,11 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_FUNCTION_EXISTS(usleep HAVE_USLEEP)
   CHECK_FUNCTION_EXISTS(waitpid HAVE_WAITPID)
   CHECK_FUNCTION_EXISTS(_findfirst HAVE__FINDFIRST)
-  
+
   SET(HEADERS)
 
   IF(HAVE_IOSTREAM_H)
-     SET(HEADERS ${HEADERS} iostream.h)
+    SET(HEADERS ${HEADERS} iostream.h)
   ENDIF(HAVE_IOSTREAM_H)
 
   IF(HAVE_MATH_H)
@@ -355,17 +363,17 @@ ENDIF(WIN32 AND NOT CYGWIN)
   #CHECK_LIBRARY_EXISTS(iostream "" "" HAVE_LIBIOSTREAM)
   #CHECK_LIBRARY_EXISTS(nsl "" "" HAVE_LIBNSL)
   #CHECK_LIBRARY_EXISTS(socket "" "" HAVE_LIBSOCKET)
-  
+
   # Check for some type definitions needed by JasPer and defines them if necessary
   # Even if not functions but types are looked for, the script works fine.
   # "definition" is an (exchangeable) identifier that is needed for successful compile test
-  CHECK_FUNCTIONWITHHEADER_EXISTS("uchar definition" "${HEADERS}"        HAVE_UCHAR_TYPEDEF)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("ushort definition" "${HEADERS}"       HAVE_USHORT_TYPEDEF)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("uint definition" "${HEADERS}"         HAVE_UINT_TYPEDEF)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("ulong definition" "${HEADERS}"        HAVE_ULONG_TYPEDEF)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("longlong definition" "${HEADERS}"     HAVE_LONGLONG)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("ulonglong definition" "${HEADERS}"    HAVE_ULONGLONG)  
-  
+  CHECK_FUNCTIONWITHHEADER_EXISTS("uchar definition" "${HEADERS}" HAVE_UCHAR_TYPEDEF)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("ushort definition" "${HEADERS}" HAVE_USHORT_TYPEDEF)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("uint definition" "${HEADERS}" HAVE_UINT_TYPEDEF)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("ulong definition" "${HEADERS}" HAVE_ULONG_TYPEDEF)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("longlong definition" "${HEADERS}" HAVE_LONGLONG)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("ulonglong definition" "${HEADERS}" HAVE_ULONGLONG)
+
 # tests that require a try-compile
 
 # check for HAVE_CXX_BOOL

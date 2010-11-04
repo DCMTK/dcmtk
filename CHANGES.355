@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.11.03 (riesmeier)
 
+- Moved settings for default configuration and support data directory, and
+  used same default values for non-Windows systems as for GNU autoconf.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMakeLists.txt
+
 - Removed superfluous path separator.
   Affects: doxygen/CMakeLists.txt
 
