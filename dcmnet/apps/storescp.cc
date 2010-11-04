@@ -17,9 +17,9 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:35 $
- *  CVS/RCS Revision: $Revision: 1.136 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-11-04 10:22:50 $
+ *  CVS/RCS Revision: $Revision: 1.137 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -857,12 +857,18 @@ int main(int argc, char *argv[])
 
     if (cmd.findOption("--exec-on-eostudy"))
     {
+#ifdef _WIN32
+      app.checkConflict("--exec-on-eostudy", "--fork on Windows systems", opt_forkMode);
+#endif
       app.checkDependence("--exec-on-eostudy", "--sort-conc-studies, --sort-on-study-uid or --sort-on-patientname", opt_sortStudyMode != ESM_None );
       app.checkValue(cmd.getValue(opt_execOnEndOfStudy));
     }
 
     if (cmd.findOption("--rename-on-eostudy"))
     {
+#ifdef _WIN32
+      app.checkConflict("--rename-on-eostudy", "--fork on Windows systems", opt_forkMode);
+#endif
       app.checkDependence("--rename-on-eostudy", "--sort-conc-studies, --sort-on-study-uid or --sort-on-patientname", opt_sortStudyMode != ESM_None );
       opt_renameOnEndOfStudy = OFTrue;
     }
@@ -2735,6 +2741,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.137  2010-11-04 10:22:50  joergr
+** Made sure that options --exec/rename-on-eostudy are never used with --fork on
+** Windows systems (since this does not work due to the current implementation).
+**
 ** Revision 1.136  2010-10-20 07:41:35  uli
 ** Made sure isalpha() & friends are only called with valid arguments.
 **

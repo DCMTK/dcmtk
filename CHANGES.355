@@ -1,7 +1,11 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2010.11.03 (riesmeier)
+**** Changes from 2010.11.04 (riesmeier)
+
+- Made sure that options --exec/rename-on-eostudy are never used with --fork on
+  Windows systems (since this does not work due to the current implementation).
+  Affects: dcmnet/apps/storescp.cc
 
 - Moved settings for default configuration and support data directory, and
   used same default values for non-Windows systems as for GNU autoconf.
