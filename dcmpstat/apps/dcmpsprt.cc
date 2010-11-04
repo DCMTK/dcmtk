@@ -21,9 +21,9 @@
  *    stored print and hardcopy grayscale images.
  *    Non-grayscale transformations in the presentation state are ignored.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:36 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-11-04 13:56:50 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,15 +144,15 @@ int main(int argc, char *argv[])
     const char *              opt_maxdensity = NULL;
     const char *              opt_mindensity = NULL;
     const char *              opt_plutname = NULL;
-    OFList<char *>            opt_filenames;
+    OFList<const char *>      opt_filenames;
     int                       opt_LUTshape = 0; // 0=use SCP default, 1=IDENTITY, 2=LIN OD.
     OFBool                    opt_inverse_plut = OFFalse;
     OFBool                    opt_spool = OFFalse;
     const char *              opt_mediumtype = NULL;
-    const char *              opt_destination     = NULL;
-    const char *              opt_sessionlabel    = NULL;
-    const char *              opt_priority        = NULL;
-    const char *              opt_ownerID         = NULL;
+    const char *              opt_destination = NULL;
+    const char *              opt_sessionlabel = NULL;
+    const char *              opt_priority = NULL;
+    const char *              opt_ownerID = NULL;
 
     OFBool                    opt_annotation = OFFalse;
     OFBool                    opt_annotationDatetime = OFTrue;
@@ -165,10 +165,10 @@ int main(int argc, char *argv[])
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Read DICOM images and presentation states and render print job", rcsid);
     OFCommandLine cmd;
-    cmd.setOptionColumns(LONGCOL, SHORTCOL+2);
+    cmd.setOptionColumns(LONGCOL, SHORTCOL + 2);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmfile-in", "DICOM image file(s) to be printed", OFCmdParam::PM_MultiOptional);
+    cmd.addParam("dcmfile-in", "DICOM image file(s) to be printed", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:");
      cmd.addOption("--help",              "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
@@ -306,7 +306,7 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--portrait"))  opt_filmorientation = DVPSF_portrait;
       if (cmd.findOption("--landscape")) opt_filmorientation = DVPSF_landscape;
-      if (cmd.findOption("--default-orientation"))  opt_filmorientation = DVPSF_default;
+      if (cmd.findOption("--default-orientation")) opt_filmorientation = DVPSF_default;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -427,16 +427,16 @@ int main(int argc, char *argv[])
          app.checkValue(cmd.getValueAndCheckMin(opt_rows, 1));
       }
 
-      const char *imageFile=NULL;
-      const char *pstateFile=NULL;
+      const char *imageFile = NULL;
+      const char *pstateFile = NULL;
       int paramCount = cmd.getParamCount();
-      for (int param=1; param<=paramCount; param++)
+      for (int param = 1; param <= paramCount; param++)
       {
         cmd.getParam(param, imageFile);
         pstateFile = NULL;
         if (cmd.findOption("--pstate", -param)) app.checkValue(cmd.getValue(pstateFile));
-        opt_filenames.push_back((char *)imageFile);
-        opt_filenames.push_back((char *)pstateFile);
+        opt_filenames.push_back(imageFile);
+        opt_filenames.push_back(pstateFile);
       }
     }
 
@@ -510,8 +510,8 @@ int main(int argc, char *argv[])
     if ((opt_spool)&&(EC_Normal != dvi.startPrintSpooler()))
       OFLOG_WARN(dcmpsprtLogger, "unable to start print spooler, ignoring.");
 
-    OFListIterator(char *) first = opt_filenames.begin();
-    OFListIterator(char *) last = opt_filenames.end();
+    OFListIterator(const char *) first = opt_filenames.begin();
+    OFListIterator(const char *) last = opt_filenames.end();
     const char *currentImage = NULL;
     const char *currentPState = NULL;
     OFCondition status = EC_Normal;
@@ -521,7 +521,7 @@ int main(int argc, char *argv[])
     unsigned long bitmapSize = 0;
     double pixelAspectRatio;
 
-    while ((EC_Normal == status)&&(first != last))
+    while ((EC_Normal == status) && (first != last))
     {
       currentImage = *first;
       ++first;
@@ -598,7 +598,7 @@ int main(int argc, char *argv[])
                     app.checkValue(cmd.getValue(x));
                     app.checkValue(cmd.getValue(y));
                     if (fn != NULL)
-                        addOverlay(fn, x, y, (Uint16 *)pixelData, width, height, (unsigned int)opt_ovl_graylevel);
+                        addOverlay(fn, x, y, OFstatic_cast(Uint16 *, pixelData), width, height, OFstatic_cast(unsigned int, opt_ovl_graylevel));
                 } while (cmd.findOption("--overlay", 0, OFCommandLine::FOM_Next));
             }
 
@@ -608,7 +608,7 @@ int main(int argc, char *argv[])
               OFLOG_FATAL(dcmpsprtLogger, "error during creation of DICOM grayscale hardcopy image file");
               return 10;
             }
-            delete[] (char *)pixelData;
+            delete[] OFstatic_cast(char *, pixelData);
         } else {
           OFLOG_FATAL(dcmpsprtLogger, "out of memory error: cannot allocate print bitmap");
           return 10;
@@ -693,6 +693,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
+ * Revision 1.46  2010-11-04 13:56:50  joergr
+ * Changed mode of parameter dcmfile-in from multi-optional to multi-mandatory.
+ * Use type cast macros (e.g. OFstatic_cast) where appropriate.
+ *
  * Revision 1.45  2010-10-20 07:41:36  uli
  * Made sure isalpha() & friends are only called with valid arguments.
  *

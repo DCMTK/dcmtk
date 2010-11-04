@@ -7,6 +7,13 @@ Changes between releases are documented here.
   Windows systems (since this does not work due to the current implementation).
   Affects: dcmnet/apps/storescp.cc
 
+- Changed mode of parameter dcmfile-in from multi-optional to multi-mandatory.
+  Affects: dcmpstat/apps/dcmpsprt.cc
+           dcmpstat/docs/dcmpsprt.man
+
+- Use type cast macros (e.g. OFstatic_cast) where appropriate.
+  Affects: dcmpstat/apps/dcmpsprt.cc
+
 - Moved settings for default configuration and support data directory, and
   used same default values for non-Windows systems as for GNU autoconf.
   Affects: CMake/GenerateDCMTKConfigure.cmake
