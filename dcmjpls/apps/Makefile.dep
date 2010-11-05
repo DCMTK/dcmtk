@@ -108,6 +108,7 @@ dcmcjpls.o: dcmcjpls.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
   ../../ofstd/include/dcmtk/ofstd/ofdate.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
   ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
   ../../ofstd/include/dcmtk/ofstd/ofdate.h \
@@ -268,6 +269,7 @@ dcmdjpls.o: dcmdjpls.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
   ../../ofstd/include/dcmtk/ofstd/ofdate.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
   ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
   ../../ofstd/include/dcmtk/ofstd/ofdate.h \
@@ -424,6 +426,7 @@ dcml2pnm.o: dcml2pnm.cc ../../dcmimage/apps/dcm2pnm.cc \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
   ../../ofstd/include/dcmtk/ofstd/ofdate.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
   ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
   ../../ofstd/include/dcmtk/ofstd/ofdate.h \
