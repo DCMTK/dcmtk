@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-21 09:06:51 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Update Date:      $Date: 2010-11-05 11:06:57 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,6 +58,7 @@
 #include "dcmtk/dcmsr/dsrxrdcc.h"
 #include "dcmtk/dcmsr/dsrspecc.h"
 #include "dcmtk/dcmsr/dsrmaccc.h"
+#include "dcmtk/dcmsr/dsrimpcc.h"
 
 #include "dcmtk/ofstd/ofstd.h"
 
@@ -286,7 +287,8 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
     {DSRTypes::DT_ProcedureLog,                        UID_ProcedureLogStorage,                        OFFalse, "SR", "Procedure Log"},
     {DSRTypes::DT_XRayRadiationDoseSR,                 UID_XRayRadiationDoseSRStorage,                 OFTrue,  "SR", "X-Ray Radiation Dose SR"},
     {DSRTypes::DT_SpectaclePrescriptionReport,         UID_SpectaclePrescriptionReportStorage,         OFTrue,  "SR", "Spectacle Prescription Report"},
-    {DSRTypes::DT_MacularGridThicknessAndVolumeReport, UID_MacularGridThicknessAndVolumeReportStorage, OFTrue,  "SR", "Macular Grid Thickness and Volume Report"}
+    {DSRTypes::DT_MacularGridThicknessAndVolumeReport, UID_MacularGridThicknessAndVolumeReportStorage, OFTrue,  "SR", "Macular Grid Thickness and Volume Report"},
+    {DSRTypes::DT_ImplantationPlanSRDocument,          UID_ImplantationPlanSRDocumentStorage,          OFTrue,  "SR", "Implantation Plan SR Document"}
 };
 
 
@@ -1306,6 +1308,9 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
         case DT_MacularGridThicknessAndVolumeReport:
             checker = new DSRMacularGridThicknessAndVolumeReportConstraintChecker();
             break;
+        case DT_ImplantationPlanSRDocument:
+            checker = new DSRImplantationPlanSRDocumentConstraintChecker();
+            break;
         default:
             break;
     }
@@ -1580,6 +1585,9 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.73  2010-11-05 11:06:57  joergr
+ *  Added support for new Implantation Plan SR Document Storage SOP Class.
+ *
  *  Revision 1.72  2010-10-21 09:06:51  joergr
  *  Added virtual destructor in order to avoid warnings reported by gcc with
  *  additional flags.

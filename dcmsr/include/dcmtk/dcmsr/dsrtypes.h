@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 09:30:27 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2010-11-05 11:06:53 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -382,8 +382,10 @@ class DSRTypes
         DT_SpectaclePrescriptionReport,
         /// DICOM IOD: Macular Grid Thickness and Volume Report
         DT_MacularGridThicknessAndVolumeReport,
+        /// DICOM IOD: Implantation Plan SR Document
+        DT_ImplantationPlanSRDocument,
         /// internal type used to mark the last entry
-        DT_last = DT_MacularGridThicknessAndVolumeReport
+        DT_last = DT_ImplantationPlanSRDocument
     };
 
     /** SR relationship types
@@ -1301,6 +1303,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.68  2010-11-05 11:06:53  joergr
+ *  Added support for new Implantation Plan SR Document Storage SOP Class.
+ *
  *  Revision 1.67  2010-11-05 09:30:27  joergr
  *  Added support for checking the value multiplicity "9" (see Supplement 131).
  *

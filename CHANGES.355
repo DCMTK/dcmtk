@@ -12,6 +12,20 @@ Changes between releases are documented here.
            dcmnet/etc/storescu.cfg
            dcmqrdb/docs/dcmqrscp.man
 
+- Added support for new Implantation Plan SR Document Storage SOP Class.
+  Added:   dcmsr/include/dcmtk/dcmsr/dsrimpcc.h
+           dcmsr/libsrc/dsrimpcc.cc
+  Affects: dcmdata/libsrc/dcddirif.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsrdump.man
+           dcmsr/docs/xml2dsr.man
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dsrtypes.cc
+
 - Added support for Supplement 131 (Implant Templates) to data dictionary.
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h
@@ -42,6 +56,11 @@ Changes between releases are documented here.
            dcmdata/include/dcmtk/dcmdata/dcvrus.h
            dcmdata/libsrc/dcelem.cc
            dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmsr/apps/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/tests/Makefile.dep
 
 **** Changes from 2010.11.04 (riesmeier)
 
