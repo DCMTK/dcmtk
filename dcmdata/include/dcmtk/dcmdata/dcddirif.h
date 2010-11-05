@@ -18,8 +18,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:40 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2010-11-05 13:11:11 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -966,6 +966,42 @@ class DicomDirInterface
                                                const OFString &referencedFileID,
                                                const OFString &sourceFilename);
 
+    /** create or update implant record and copy required values from dataset
+     *  @param record record to be updated, use NULL to create a new one
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new or updated record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildImplantRecord(DcmDirectoryRecord *record,
+                                           DcmItem *dataset,
+                                           const OFString &referencedFileID,
+                                           const OFString &sourceFilename);
+
+    /** create or update implant group record and copy required values from dataset
+     *  @param record record to be updated, use NULL to create a new one
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new or updated record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildImplantGroupRecord(DcmDirectoryRecord *record,
+                                                DcmItem *dataset,
+                                                const OFString &referencedFileID,
+                                                const OFString &sourceFilename);
+
+    /** create or update implant assy record and copy required values from dataset
+     *  @param record record to be updated, use NULL to create a new one
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new or updated record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildImplantAssyRecord(DcmDirectoryRecord *record,
+                                               DcmItem *dataset,
+                                               const OFString &referencedFileID,
+                                               const OFString &sourceFilename);
+
     /** create or update image record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
      *  @param dataset DICOM dataset of the current file
@@ -1464,6 +1500,10 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.23  2010-11-05 13:11:11  joergr
+ * Added support for new directory record types IMPLANT, IMPLANT GROUP and
+ * IMPLANT ASSY from Supplement 131 (Implant Templates).
+ *
  * Revision 1.22  2010-10-14 13:15:40  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -31,6 +31,13 @@ Changes between releases are documented here.
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h
            dcmdata/libsrc/dcdictzz.cc
 
+- Added support for new directory record types IMPLANT, IMPLANT GROUP and
+  IMPLANT ASSY from Supplement 131 (Implant Templates).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdirrec.cc
+
 - Added support for checking the value multiplicity "9" (see Supplement 131).
   Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
            dcmdata/include/dcmtk/dcmdata/dcelem.h

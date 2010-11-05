@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:40 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2010-11-05 13:11:11 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +119,13 @@ typedef enum {
     /// surface
     ERT_Surface = 39,
     /// measurement
-    ERT_Measurement = 40
+    ERT_Measurement = 40,
+    /// implant
+    ERT_Implant = 41,
+    /// implant group
+    ERT_ImplantGroup = 42,
+    /// implant assembly
+    ERT_ImplantAssy = 43
 } E_DirRecType;
 
 
@@ -446,6 +452,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
+** Revision 1.46  2010-11-05 13:11:11  joergr
+** Added support for new directory record types IMPLANT, IMPLANT GROUP and
+** IMPLANT ASSY from Supplement 131 (Implant Templates).
+**
 ** Revision 1.45  2010-10-14 13:15:40  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

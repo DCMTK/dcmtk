@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-29 10:57:21 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2010-11-05 13:11:16 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,7 +102,10 @@ static const char *DRTypeNames[] =
     "HL7 STRUC DOC",
     "PALETTE",
     "SURFACE",
-    "MEASUREMENT"
+    "MEASUREMENT",
+    "IMPLANT",
+    "IMPLANT GROUP",
+    "IMPLANT ASSY"
 };
 
 static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
@@ -329,6 +332,9 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Topic:
                 case ERT_HangingProtocol:
                 case ERT_Palette:
+                case ERT_Implant:
+                case ERT_ImplantGroup:
+                case ERT_ImplantAssy:
                 case ERT_Private:
                     l_error = EC_Normal;
                     break;
@@ -513,6 +519,9 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_Palette:
         case ERT_Surface:
         case ERT_Measurement:
+        case ERT_Implant:
+        case ERT_ImplantGroup:
+        case ERT_ImplantAssy:
         case ERT_Private:
             switch (lowerRecord)
             {
@@ -1529,6 +1538,10 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.78  2010-11-05 13:11:16  joergr
+ * Added support for new directory record types IMPLANT, IMPLANT GROUP and
+ * IMPLANT ASSY from Supplement 131 (Implant Templates).
+ *
  * Revision 1.77  2010-10-29 10:57:21  joergr
  * Added support for colored output to the print() method.
  *

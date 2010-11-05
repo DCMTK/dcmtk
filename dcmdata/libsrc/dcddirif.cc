@@ -18,8 +18,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 10:30:08 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2010-11-05 13:11:16 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -612,6 +612,15 @@ static OFString recordTypeToName(const E_DirRecType recordType)
         case ERT_Measurement:
             recordName = "Measurement";
             break;
+        case ERT_Implant:
+            recordName = "Implant";
+            break;
+        case ERT_ImplantGroup:
+            recordName = "ImplantGroup";
+            break;
+        case ERT_ImplantAssy:
+            recordName = "ImplantAssy";
+            break;
         default:
             recordName = "(unknown-directory-record-type)";
             break;
@@ -729,6 +738,12 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     {
         result = ERT_Measurement;
     }
+    else if (compare(sopClass, UID_GenericImplantTemplateStorage))
+        result = ERT_Implant;
+    else if (compare(sopClass, UID_ImplantTemplateGroupStorage))
+        result = ERT_ImplantGroup;
+    else if (compare(sopClass, UID_ImplantAssemblyTemplateStorage))
+        result = ERT_ImplantAssy;
     return result;
 }
 
@@ -1522,6 +1537,13 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_IntraocularLensCalculationsStorage) ||
                                 compare(mediaSOPClassUID, UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage);
                     }
+                    /* is it one of the implant SOP Classes? */
+                    if (!found)
+                    {
+                        found = compare(mediaSOPClassUID, UID_GenericImplantTemplateStorage) ||
+                                compare(mediaSOPClassUID, UID_ImplantAssemblyTemplateStorage) ||
+                                compare(mediaSOPClassUID, UID_ImplantTemplateGroupStorage);
+                    }
                     /* is it any other SOP class? */
                     if (!found)
                     {
@@ -2154,8 +2176,9 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
         metainfo->findAndGetOFStringArray(DCM_TransferSyntaxUID, transferSyntax);
         metainfo->findAndGetOFStringArray(DCM_MediaStorageSOPClassUID, mediaSOPClassUID);
         E_DirRecType recordType = sopClassToRecordType(mediaSOPClassUID);
-        /* hanging protocol and palette files are checked separately */
-        if ((recordType == ERT_HangingProtocol) || (recordType == ERT_Palette))
+        /* hanging protocol, palette and implant files are checked separately */
+        if ((recordType == ERT_HangingProtocol) || (recordType == ERT_Palette) ||
+            (recordType == ERT_Implant) || (recordType == ERT_ImplantGroup) || (recordType == ERT_ImplantAssy))
         {
             /* nothing to check since all type 1 and 2 attributes are identical */
         } else {
@@ -2597,6 +2620,9 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
             case ERT_Palette:
             case ERT_Surface:
             case ERT_Measurement:
+            case ERT_Implant:
+            case ERT_ImplantGroup:
+            case ERT_ImplantAssy:
                 /* The attribute ReferencedSOPInstanceUID is automatically
                  * put into a Directory Record when a filename is present.
                 */
@@ -3544,6 +3570,98 @@ DcmDirectoryRecord *DicomDirInterface::buildMeasurementRecord(DcmDirectoryRecord
 }
 
 
+// create or update implant record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildImplantRecord(DcmDirectoryRecord *record,
+                                                          DcmItem *dataset,
+                                                          const OFString &referencedFileID,
+                                                          const OFString &sourceFilename)
+{
+    /* create new implant record */
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Implant, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* copy attribute values from dataset to implant record */
+            copyElementType1(dataset, DCM_Manufacturer, record, sourceFilename);
+            copyElementType1(dataset, DCM_ImplantName, record, sourceFilename);
+            copyElementType1C(dataset, DCM_ImplantSize, record, sourceFilename);
+            copyElementType1(dataset, DCM_ImplantPartNumber, record, sourceFilename);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_Implant, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_Implant, "create");
+    return record;
+}
+
+
+// create or update implant group record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildImplantGroupRecord(DcmDirectoryRecord *record,
+                                                               DcmItem *dataset,
+                                                               const OFString &referencedFileID,
+                                                               const OFString &sourceFilename)
+{
+    /* create new implant group record */
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_ImplantGroup, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* copy attribute values from dataset to implant group record */
+            copyElementType1(dataset, DCM_ImplantAssemblyTemplateName, record, sourceFilename);
+            // open issue: where does the value for manufacturer come from?
+            copyElementType1(dataset, DCM_Manufacturer, record, sourceFilename);
+            copyElementType1(dataset, DCM_ProcedureTypeCodeSequence, record, sourceFilename);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_ImplantGroup, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_ImplantGroup, "create");
+    return record;
+}
+
+
+// create or update implant assy record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildImplantAssyRecord(DcmDirectoryRecord *record,
+                                                              DcmItem *dataset,
+                                                              const OFString &referencedFileID,
+                                                              const OFString &sourceFilename)
+{
+    /* create new implant assy record */
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_ImplantAssy, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* copy attribute values from dataset to implant assy record */
+            copyElementType1(dataset, DCM_ImplantTemplateGroupName, record, sourceFilename);
+            copyElementType3(dataset, DCM_ImplantTemplateGroupDescription, record, sourceFilename);
+            copyElementType1(dataset, DCM_ImplantTemplateGroupIssuer, record, sourceFilename);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_ImplantAssy, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_ImplantAssy, "create");
+    return record;
+}
+
+
 // create or update image record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *record,
                                                         DcmItem *dataset,
@@ -3942,6 +4060,15 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                 case ERT_Measurement:
                     record = buildMeasurementRecord(record, dataset, referencedFileID, sourceFilename);
                     break;
+                case ERT_Implant:
+                    record = buildImplantRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_ImplantGroup:
+                    record = buildImplantGroupRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_ImplantAssy:
+                    record = buildImplantAssyRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
                 default:
                     /* it can only be an image */
                     record = buildImageRecord(record, dataset, referencedFileID, sourceFilename);
@@ -4159,12 +4286,35 @@ OFCondition DicomDirInterface::addDicomFile(const char *filename,
             /* what kind of object (SOP Class) is stored in the file */
             OFString sopClass;
             metainfo->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass);
-            /* if hanging protocol file then attach it to the root record and stop */
+            /* if hanging protocol, palette or implant file then attach it to the root record and stop */
             if (compare(sopClass, UID_HangingProtocolStorage))
             {
-                /* add a patient record below the root */
-                DcmDirectoryRecord *hangingRecord = addRecord(rootRecord, ERT_HangingProtocol, dataset, fileID, pathname);
-                if (hangingRecord == NULL)
+                /* add a hanging protocol record below the root */
+                if (addRecord(rootRecord, ERT_HangingProtocol, dataset, fileID, pathname) == NULL)
+                    result = EC_CorruptedData;
+            }
+            else if (compare(sopClass, UID_ColorPaletteStorage))
+            {
+                /* add a palette record below the root */
+                if (addRecord(rootRecord, ERT_Palette, dataset, fileID, pathname) == NULL)
+                    result = EC_CorruptedData;
+            }
+            else if (compare(sopClass, UID_GenericImplantTemplateStorage))
+            {
+                /* add an implant record below the root */
+                if (addRecord(rootRecord, ERT_Implant, dataset, fileID, pathname) == NULL)
+                    result = EC_CorruptedData;
+            }
+            else if (compare(sopClass, UID_ImplantAssemblyTemplateStorage))
+            {
+                /* add an implant group record below the root */
+                if (addRecord(rootRecord, ERT_ImplantGroup, dataset, fileID, pathname) == NULL)
+                    result = EC_CorruptedData;
+            }
+            else if (compare(sopClass, UID_ImplantTemplateGroupStorage))
+            {
+                /* add an implant assy record below the root */
+                if (addRecord(rootRecord, ERT_ImplantAssy, dataset, fileID, pathname) == NULL)
                     result = EC_CorruptedData;
             } else {
                 /* add a patient record below the root */
@@ -5074,6 +5224,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.52  2010-11-05 13:11:16  joergr
+ *  Added support for new directory record types IMPLANT, IMPLANT GROUP and
+ *  IMPLANT ASSY from Supplement 131 (Implant Templates).
+ *
  *  Revision 1.51  2010-11-05 10:30:08  joergr
  *  Added support for new Implantation Plan SR Document Storage SOP Class.
  *
