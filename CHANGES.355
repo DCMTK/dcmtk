@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2010.11.05 (riesmeier)
 
+- Added new SOP Class UIDs from Supplement 131 and 134 (Implant Templates).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
 - Added support for Supplement 131 (Implant Templates) to data dictionary.
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h

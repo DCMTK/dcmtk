@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:42 $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  Update Date:      $Date: 2010-11-05 10:26:10 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -436,6 +436,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_ChestCADSRStorage                                      "1.2.840.10008.5.1.4.1.1.88.65"
 #define UID_XRayRadiationDoseSRStorage                             "1.2.840.10008.5.1.4.1.1.88.67"
 #define UID_ColonCADSRStorage                                      "1.2.840.10008.5.1.4.1.1.88.69"
+#define UID_ImplantationPlanSRDocumentStorage                      "1.2.840.10008.5.1.4.1.1.88.70"
 #define UID_EncapsulatedPDFStorage                                 "1.2.840.10008.5.1.4.1.1.104.1"
 #define UID_EncapsulatedCDAStorage                                 "1.2.840.10008.5.1.4.1.1.104.2"
 #define UID_PositronEmissionTomographyImageStorage                 "1.2.840.10008.5.1.4.1.1.128"
@@ -451,6 +452,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_RTTreatmentSummaryRecordStorage                        "1.2.840.10008.5.1.4.1.1.481.7"
 #define UID_RTIonPlanStorage                                       "1.2.840.10008.5.1.4.1.1.481.8"
 #define UID_RTIonBeamsTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.9"
+#define UID_GenericImplantTemplateStorage                          "1.2.840.10008.5.1.4.43.1"
+#define UID_ImplantAssemblyTemplateStorage                         "1.2.840.10008.5.1.4.44.1"
+#define UID_ImplantTemplateGroupStorage                            "1.2.840.10008.5.1.4.45.1"
 
 // DICOMDIR; was UID_BasicDirectoryStorageSOPClass in DCMTK versions prior to 3.5.3
 #define UID_MediaStorageDirectoryStorage                           "1.2.840.10008.1.3.10"
@@ -515,6 +519,17 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_FINDColorPaletteInformationModel                       "1.2.840.10008.5.1.4.39.2"
 #define UID_MOVEColorPaletteInformationModel                       "1.2.840.10008.5.1.4.39.3"
 #define UID_GETColorPaletteInformationModel                        "1.2.840.10008.5.1.4.39.4"
+
+// Implant Template Query/Retrieve
+#define UID_FINDGenericImplantTemplateInformationModel             "1.2.840.10008.5.1.4.43.2"
+#define UID_MOVEGenericImplantTemplateInformationModel             "1.2.840.10008.5.1.4.43.3"
+#define UID_GETGenericImplantTemplateInformationModel              "1.2.840.10008.5.1.4.43.4"
+#define UID_FINDImplantAssemblyTemplateInformationModel            "1.2.840.10008.5.1.4.44.2"
+#define UID_MOVEImplantAssemblyTemplateInformationModel            "1.2.840.10008.5.1.4.44.3"
+#define UID_GETImplantAssemblyTemplateInformationModel             "1.2.840.10008.5.1.4.44.4"
+#define UID_FINDImplantTemplateGroupInformationModel               "1.2.840.10008.5.1.4.45.2"
+#define UID_MOVEImplantTemplateGroupInformationModel               "1.2.840.10008.5.1.4.45.3"
+#define UID_GETImplantTemplateGroupInformationModel                "1.2.840.10008.5.1.4.45.4"
 
 // Print
 #define UID_BasicFilmSessionSOPClass                               "1.2.840.10008.5.1.1.1"
@@ -689,6 +704,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.89  2010-11-05 10:26:10  joergr
+** Added new SOP Class UIDs from Supplement 131 and 134 (Implant Templates).
+**
 ** Revision 1.88  2010-10-14 13:15:42  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

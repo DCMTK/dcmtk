@@ -619,6 +619,7 @@ KeyObjectSelectionDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.
 ChestCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.65
 XRayRadiationDoseSRStorage                           1.2.840.10008.5.1.4.1.1.88.67
 ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.69
+ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.70
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
 PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
@@ -635,6 +636,9 @@ RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481
 RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481.8
 RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
 DRAFT_RTBeamsDeliveryInstructionStorage              1.2.840.10008.5.1.4.34.1
+GenericImplantTemplateStorage                        1.2.840.10008.5.1.4.43.1
+ImplantAssemblyTemplateStorage                       1.2.840.10008.5.1.4.44.1
+ImplantTemplateGroupStorage                          1.2.840.10008.5.1.4.45.1
 \endverbatim
 
 The \b storescp application will accept presentation contexts for all of the

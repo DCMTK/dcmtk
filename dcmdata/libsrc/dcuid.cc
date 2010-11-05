@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:09 $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  Update Date:      $Date: 2010-11-05 10:26:08 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,9 +172,13 @@ static const UIDNameMap uidNameMap[] = {
     { UID_EnhancedXRFImageStorage,                             "EnhancedXRFImageStorage" },
     { UID_GeneralAudioWaveformStorage,                         "GeneralAudioWaveformStorage" },
     { UID_GeneralECGWaveformStorage,                           "GeneralECGWaveformStorage" },
+    { UID_GenericImplantTemplateStorage,                       "GenericImplantTemplateStorage" },
     { UID_GrayscaleSoftcopyPresentationStateStorage,           "GrayscaleSoftcopyPresentationStateStorage" },
     { UID_HangingProtocolStorage,                              "HangingProtocolStorage" },
     { UID_HemodynamicWaveformStorage,                          "HemodynamicWaveformStorage" },
+    { UID_ImplantAssemblyTemplateStorage,                      "ImplantAssemblyTemplateStorage" },
+    { UID_ImplantationPlanSRDocumentStorage,                   "ImplantationPlanSRDocumentStorage" },
+    { UID_ImplantTemplateGroupStorage,                         "ImplantTemplateGroupStorage" },
     { UID_IntraocularLensCalculationsStorage,                  "IntraocularLensCalculationsStorage" },
     { UID_KeratometryMeasurementsStorage,                      "KeratometryMeasurementsStorage" },
     { UID_KeyObjectSelectionDocumentStorage,                   "KeyObjectSelectionDocumentStorage" },
@@ -307,6 +311,17 @@ static const UIDNameMap uidNameMap[] = {
     { UID_FINDColorPaletteInformationModel,                    "FINDColorPaletteInformationModel" },
     { UID_MOVEColorPaletteInformationModel,                    "MOVEColorPaletteInformationModel" },
     { UID_GETColorPaletteInformationModel,                     "GETColorPaletteInformationModel" },
+
+    // Implant Template Query/Retrieve
+    { UID_FINDGenericImplantTemplateInformationModel,          "FINDGenericImplantTemplateInformationModel" },
+    { UID_MOVEGenericImplantTemplateInformationModel,          "MOVEGenericImplantTemplateInformationModel" },
+    { UID_GETGenericImplantTemplateInformationModel,           "GETGenericImplantTemplateInformationModel" },
+    { UID_FINDImplantAssemblyTemplateInformationModel,         "FINDImplantAssemblyTemplateInformationModel" },
+    { UID_MOVEImplantAssemblyTemplateInformationModel,         "MOVEImplantAssemblyTemplateInformationModel" },
+    { UID_GETImplantAssemblyTemplateInformationModel,          "GETImplantAssemblyTemplateInformationModel" },
+    { UID_FINDImplantTemplateGroupInformationModel,            "FINDImplantTemplateGroupInformationModel" },
+    { UID_MOVEImplantTemplateGroupInformationModel,            "MOVEImplantTemplateGroupInformationModel" },
+    { UID_GETImplantTemplateGroupInformationModel,             "GETImplantTemplateGroupInformationModel" },
 
     // Print
     { UID_BasicAnnotationBoxSOPClass,                          "BasicAnnotationBoxSOPClass" },
@@ -509,8 +524,12 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_EnhancedXRFImageStorage,
     UID_GeneralAudioWaveformStorage,
     UID_GeneralECGWaveformStorage,
+    UID_GenericImplantTemplateStorage,
     UID_GrayscaleSoftcopyPresentationStateStorage,
     UID_HemodynamicWaveformStorage,
+    UID_ImplantAssemblyTemplateStorage,
+    UID_ImplantationPlanSRDocumentStorage,
+    UID_ImplantTemplateGroupStorage,
     UID_IntraocularLensCalculationsStorage,
     UID_KeratometryMeasurementsStorage,
     UID_KeyObjectSelectionDocumentStorage,
@@ -602,7 +621,8 @@ const int numberOfAllDcmStorageSOPClassUIDs = (sizeof(dcmAllStorageSOPClassUIDs)
  *  are proposed by default by those Storage SCU components in DCMTK
  *  that always propose one presentation context for each SOP class,
  *  e.g. movescu or dcmqrdb. This list is guaranteed to have at most
- *  120 entries (to leave room for FIND/MOVE presentation contexts).
+ *  120 entries (currently: 119) to leave enough room for FIND/MOVE
+ *  presentation contexts.
  */
 const char* dcmLongSCUStorageSOPClassUIDs[] =
 {
@@ -640,8 +660,12 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_EnhancedXRFImageStorage,
     UID_GeneralAudioWaveformStorage,
     UID_GeneralECGWaveformStorage,
+    UID_GenericImplantTemplateStorage,
     UID_GrayscaleSoftcopyPresentationStateStorage,
     UID_HemodynamicWaveformStorage,
+    UID_ImplantAssemblyTemplateStorage,
+    UID_ImplantationPlanSRDocumentStorage,
+    UID_ImplantTemplateGroupStorage,
     UID_IntraocularLensCalculationsStorage,
     UID_KeratometryMeasurementsStorage,
     UID_KeyObjectSelectionDocumentStorage,
@@ -936,8 +960,12 @@ static const DcmModalityTable modalities[] = {
     { UID_EnhancedXRFImageStorage,                                 "RFe", 256 * 512 * 512 },
     { UID_GeneralAudioWaveformStorage,                             "AUG", 4096 },
     { UID_GeneralECGWaveformStorage,                               "ECG", 4096 },
+    { UID_GenericImplantTemplateStorage,                           "IT",  4096 },
     { UID_GrayscaleSoftcopyPresentationStateStorage,               "PSg", 4096 },
     { UID_HemodynamicWaveformStorage,                              "WVh", 4096 },
+    { UID_ImplantAssemblyTemplateStorage,                          "ITa", 4096 },
+    { UID_ImplantationPlanSRDocumentStorage,                       "SRi", 4096 },
+    { UID_ImplantTemplateGroupStorage,                             "ITg", 4096 },
     { UID_IntraocularLensCalculationsStorage,                      "OPc", 4096 },
     { UID_KeratometryMeasurementsStorage,                          "OPk", 4096 },
     { UID_KeyObjectSelectionDocumentStorage,                       "KO",  4096 },
@@ -1592,6 +1620,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.89  2010-11-05 10:26:08  joergr
+** Added new SOP Class UIDs from Supplement 131 and 134 (Implant Templates).
+**
 ** Revision 1.88  2010-10-14 13:14:09  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
