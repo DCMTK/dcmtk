@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:34 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-11-05 10:30:08 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -646,7 +646,8 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_XRayRadiationDoseSRStorage) ||
              compare(sopClass, UID_ColonCADSRStorage) ||
              compare(sopClass, UID_SpectaclePrescriptionReportStorage) ||
-             compare(sopClass, UID_MacularGridThicknessAndVolumeReportStorage))
+             compare(sopClass, UID_MacularGridThicknessAndVolumeReportStorage) ||
+             compare(sopClass, UID_ImplantationPlanSRDocumentStorage))
     {
         result = ERT_SRDocument;
     }
@@ -1464,7 +1465,8 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_XRayRadiationDoseSRStorage) ||
                                 compare(mediaSOPClassUID, UID_ColonCADSRStorage) ||
                                 compare(mediaSOPClassUID, UID_SpectaclePrescriptionReportStorage) ||
-                                compare(mediaSOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage);
+                                compare(mediaSOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage) ||
+                                compare(mediaSOPClassUID, UID_ImplantationPlanSRDocumentStorage);
                      }
                     /* is it one of the waveform SOP Classes? */
                     if (!found)
@@ -5072,6 +5074,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.51  2010-11-05 10:30:08  joergr
+ *  Added support for new Implantation Plan SR Document Storage SOP Class.
+ *
  *  Revision 1.50  2010-10-20 07:41:34  uli
  *  Made sure isalpha() & friends are only called with valid arguments.
  *

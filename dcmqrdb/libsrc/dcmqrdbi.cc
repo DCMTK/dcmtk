@@ -18,9 +18,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle,
  *                   DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 13:37:32 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-11-05 10:29:55 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2948,7 +2948,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
                    (strcmp(SOPClassUID, UID_ColonCADSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_XRayRadiationDoseSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_SpectaclePrescriptionReportStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage) == 0))
+                   (strcmp(SOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_ImplantationPlanSRDocumentStorage) == 0))
         {
             OFString string;
             OFString description = "unknown SR";
@@ -3431,6 +3432,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.29  2010-11-05 10:29:55  joergr
+ * Added support for new Implantation Plan SR Document Storage SOP Class.
+ *
  * Revision 1.28  2010-11-01 13:37:32  uli
  * Fixed some compiler warnings reported by gcc with additional flags.
  *
