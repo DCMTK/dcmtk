@@ -112,6 +112,7 @@ mkreport.o: mkreport.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
   ../../ofstd/include/dcmtk/ofstd/ofdate.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
   ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
   ../../ofstd/include/dcmtk/ofstd/ofdate.h \
