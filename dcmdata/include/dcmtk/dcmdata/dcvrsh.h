@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmShortString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:43 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2010-11-05 09:34:11 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,7 +96,7 @@ class DcmShortString
     /** check whether stored value conforms to the VR and to the specified VM
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
      *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                   "3", "3-n", "3-3n", "4", "6", "16", "32")
+     *                   "3", "3-n", "3-3n", "4", "6", "9", "16", "32")
      *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
@@ -120,7 +120,7 @@ class DcmShortString
      *  @param value string value to be checked (possibly multi-valued)
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
      *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                   "3", "3-n", "3-3n", "4", "6", "16", "32")
+     *                   "3", "3-n", "3-3n", "4", "6", "9", "16", "32")
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
     static OFCondition checkStringValue(const OFString &value,
@@ -134,6 +134,9 @@ class DcmShortString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsh.h,v $
+** Revision 1.23  2010-11-05 09:34:11  joergr
+** Added support for checking the value multiplicity "9" (see Supplement 131).
+**
 ** Revision 1.22  2010-10-14 13:15:43  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

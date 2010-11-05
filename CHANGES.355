@@ -8,6 +8,32 @@ Changes between releases are documented here.
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h
            dcmdata/libsrc/dcdictzz.cc
 
+- Added support for checking the value multiplicity "9" (see Supplement 131).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/include/dcmtk/dcmdata/dcvrae.h
+           dcmdata/include/dcmtk/dcmdata/dcvras.h
+           dcmdata/include/dcmtk/dcmdata/dcvrat.h
+           dcmdata/include/dcmtk/dcmdata/dcvrcs.h
+           dcmdata/include/dcmtk/dcmdata/dcvrda.h
+           dcmdata/include/dcmtk/dcmdata/dcvrds.h
+           dcmdata/include/dcmtk/dcmdata/dcvrdt.h
+           dcmdata/include/dcmtk/dcmdata/dcvrfd.h
+           dcmdata/include/dcmtk/dcmdata/dcvrfl.h
+           dcmdata/include/dcmtk/dcmdata/dcvris.h
+           dcmdata/include/dcmtk/dcmdata/dcvrlo.h
+           dcmdata/include/dcmtk/dcmdata/dcvrpn.h
+           dcmdata/include/dcmtk/dcmdata/dcvrsh.h
+           dcmdata/include/dcmtk/dcmdata/dcvrsl.h
+           dcmdata/include/dcmtk/dcmdata/dcvrss.h
+           dcmdata/include/dcmtk/dcmdata/dcvrtm.h
+           dcmdata/include/dcmtk/dcmdata/dcvrui.h
+           dcmdata/include/dcmtk/dcmdata/dcvrul.h
+           dcmdata/include/dcmtk/dcmdata/dcvrus.h
+           dcmdata/libsrc/dcelem.cc
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+
 **** Changes from 2010.11.04 (riesmeier)
 
 - Made sure that options --exec/rename-on-eostudy are never used with --fork on

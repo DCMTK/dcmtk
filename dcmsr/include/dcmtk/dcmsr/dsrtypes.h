@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-21 09:06:48 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Update Date:      $Date: 2010-11-05 09:30:27 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1045,7 +1045,7 @@ class DSRTypes
      *  @param  delem       pointer to DICOM element which should be added. deleted if not inserted.
      *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
      *                      (valid value: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                                    "3", "3-n", "3-3n", "4", "6", "16", "32"),
+     *                                    "3", "3-n", "3-3n", "4", "6", "9", "16", "32"),
      *                      interpreted as cardinality (number of items) for sequence attributes
      *  @param  type        value type (valid value: "1", "2" or something else which is not checked)
      *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
@@ -1137,7 +1137,7 @@ class DSRTypes
      ** @param  delem       DICOM element to be checked
      *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
      *                      (valid value: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                                    "3", "3-n", "3-3n", "4", "6", "16", "32"),
+     *                                    "3", "3-n", "3-3n", "4", "9", "6", "16", "32"),
      *                      interpreted as cardinality (number of items) for sequence attributes
      *  @param  type        value type (valid value: "1", "1C", "2", something else)
      *  @param  searchCond  optional flag indicating the status of a previous 'search' function call
@@ -1156,7 +1156,7 @@ class DSRTypes
      *  @param  delem       DICOM element used to store the value
      *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
      *                      (valid value: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                                    "3", "3-n", "3-3n", "4", "6", "16", "32"),
+     *                                    "3", "3-n", "3-3n", "4", "6", "9", "16", "32"),
      *                      interpreted as cardinality (number of items) for sequence attributes
      *  @param  type        value type (valid value: "1", "1C", "2", something else which is not checked)
      *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
@@ -1176,7 +1176,7 @@ class DSRTypes
      *                       (This parameter is automatically cleared if the tag could not be found.)
      *  @param  vm           value multiplicity (according to the data dictionary) to be checked for.
      *                       (valid value: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                                     "3", "3-n", "3-3n", "4", "6", "16", "32"),
+     *                                     "3", "3-n", "3-3n", "4", "6", "9", "16", "32"),
      *                       interpreted as cardinality (number of items) for sequence attributes
      *  @param  type         value type (valid value: "1", "1C", "2", something else which is not checked)
      *  @param  moduleName   optional module name to be printed (default: "SR document" if NULL)
@@ -1301,6 +1301,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.67  2010-11-05 09:30:27  joergr
+ *  Added support for checking the value multiplicity "9" (see Supplement 131).
+ *
  *  Revision 1.66  2010-10-21 09:06:48  joergr
  *  Added virtual destructor in order to avoid warnings reported by gcc with
  *  additional flags.

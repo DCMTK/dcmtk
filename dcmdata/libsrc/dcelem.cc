@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:16 $
- *  CVS/RCS Revision: $Revision: 1.87 $
+ *  Update Date:      $Date: 2010-11-05 09:34:14 $
+ *  CVS/RCS Revision: $Revision: 1.88 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1691,6 +1691,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     {
       if (vmNum != 6) result = EC_ValueMultiplicityViolated;
     }
+    else if (vmStr == "9")
+    {
+      if (vmNum != 9) result = EC_ValueMultiplicityViolated;
+    }
     else if (vmStr == "16")
     {
       if (vmNum != 16) result = EC_ValueMultiplicityViolated;
@@ -1712,6 +1716,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.88  2010-11-05 09:34:14  joergr
+** Added support for checking the value multiplicity "9" (see Supplement 131).
+**
 ** Revision 1.87  2010-10-20 16:44:16  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **
