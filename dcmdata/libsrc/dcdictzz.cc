@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2010-09-14 18:52:13
+**   Date: 2010-11-05 10:08:50
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2010-09-14 18:52:13";
+const char* dcmBuiltinDictBuildDate = "2010-11-05 10:08:50";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -18621,6 +18621,286 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LO, "AlgorithmName", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0068, 0x6210, 0x0068, 0x6210,
+      EVR_LO, "ImplantSize", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6221, 0x0068, 0x6221,
+      EVR_LO, "ImplantTemplateVersion", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6222, 0x0068, 0x6222,
+      EVR_SQ, "ReplacedImplantTemplateSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6223, 0x0068, 0x6223,
+      EVR_CS, "ImplantType", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6224, 0x0068, 0x6224,
+      EVR_SQ, "DerivationImplantTemplateSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6225, 0x0068, 0x6225,
+      EVR_SQ, "OriginalImplantTemplateSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6226, 0x0068, 0x6226,
+      EVR_DT, "EffectiveDateTime", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6230, 0x0068, 0x6230,
+      EVR_SQ, "ImplantTargetAnatomySequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6260, 0x0068, 0x6260,
+      EVR_SQ, "InformationFromManufacturerSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6265, 0x0068, 0x6265,
+      EVR_SQ, "NotificationFromManufacturerSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6270, 0x0068, 0x6270,
+      EVR_DT, "InformationIssueDateTime", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6280, 0x0068, 0x6280,
+      EVR_ST, "InformationSummary", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x62a0, 0x0068, 0x62a0,
+      EVR_SQ, "ImplantRegulatoryDisapprovalCodeSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x62a5, 0x0068, 0x62a5,
+      EVR_FD, "OverallTemplateSpatialTolerance", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x62c0, 0x0068, 0x62c0,
+      EVR_SQ, "HPGLDocumentSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x62d0, 0x0068, 0x62d0,
+      EVR_US, "HPGLDocumentID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x62d5, 0x0068, 0x62d5,
+      EVR_LO, "HPGLDocumentLabel", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x62e0, 0x0068, 0x62e0,
+      EVR_SQ, "ViewOrientationCodeSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x62f0, 0x0068, 0x62f0,
+      EVR_FD, "ViewOrientationModifier", 9, 9, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x62f2, 0x0068, 0x62f2,
+      EVR_FD, "HPGLDocumentScaling", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6300, 0x0068, 0x6300,
+      EVR_OB, "HPGLDocument", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6310, 0x0068, 0x6310,
+      EVR_US, "HPGLContourPenNumber", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6320, 0x0068, 0x6320,
+      EVR_SQ, "HPGLPenSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6330, 0x0068, 0x6330,
+      EVR_US, "HPGLPenNumber", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6340, 0x0068, 0x6340,
+      EVR_LO, "HPGLPenLabel", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6345, 0x0068, 0x6345,
+      EVR_ST, "HPGLPenDescription", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6346, 0x0068, 0x6346,
+      EVR_FD, "RecommendedRotationPoint", 2, 2, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6347, 0x0068, 0x6347,
+      EVR_FD, "BoundingRectangle", 4, 4, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6350, 0x0068, 0x6350,
+      EVR_US, "ImplantTemplate3DModelSurfaceNumber", 1, -1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6360, 0x0068, 0x6360,
+      EVR_SQ, "SurfaceModelDescriptionSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6380, 0x0068, 0x6380,
+      EVR_LO, "SurfaceModelLabel", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6390, 0x0068, 0x6390,
+      EVR_FD, "SurfaceModelScalingFactor", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x63a0, 0x0068, 0x63a0,
+      EVR_SQ, "MaterialsCodeSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x63a4, 0x0068, 0x63a4,
+      EVR_SQ, "CoatingMaterialsCodeSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x63a8, 0x0068, 0x63a8,
+      EVR_SQ, "ImplantTypeCodeSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x63ac, 0x0068, 0x63ac,
+      EVR_SQ, "FixationMethodCodeSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x63b0, 0x0068, 0x63b0,
+      EVR_SQ, "MatingFeatureSetsSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x63c0, 0x0068, 0x63c0,
+      EVR_US, "MatingFeatureSetID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x63d0, 0x0068, 0x63d0,
+      EVR_LO, "MatingFeatureSetLabel", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x63e0, 0x0068, 0x63e0,
+      EVR_SQ, "MatingFeatureSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x63f0, 0x0068, 0x63f0,
+      EVR_US, "MatingFeatureID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6400, 0x0068, 0x6400,
+      EVR_SQ, "MatingFeatureDegreeOfFreedomSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6410, 0x0068, 0x6410,
+      EVR_US, "DegreeOfFreedomID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6420, 0x0068, 0x6420,
+      EVR_CS, "DegreeOfFreedomType", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6430, 0x0068, 0x6430,
+      EVR_SQ, "TwoDMatingFeatureCoordinatesSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6440, 0x0068, 0x6440,
+      EVR_US, "ReferencedHPGLDocumentID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6450, 0x0068, 0x6450,
+      EVR_FD, "TwoDMatingPoint", 2, 2, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6460, 0x0068, 0x6460,
+      EVR_FD, "TwoDMatingAxes", 4, 4, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6470, 0x0068, 0x6470,
+      EVR_SQ, "TwoDDegreeOfFreedomSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6490, 0x0068, 0x6490,
+      EVR_FD, "ThreeDDegreeOfFreedomAxis", 3, 3, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x64a0, 0x0068, 0x64a0,
+      EVR_FD, "RangeOfFreedom", 2, 2, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x64c0, 0x0068, 0x64c0,
+      EVR_FD, "ThreeDMatingPoint", 3, 3, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x64d0, 0x0068, 0x64d0,
+      EVR_FD, "ThreeDMatingAxes", 9, 9, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x64f0, 0x0068, 0x64f0,
+      EVR_FD, "TwoDDegreeOfFreedomAxis", 3, 3, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6500, 0x0068, 0x6500,
+      EVR_SQ, "PlanningLandmarkPointSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6510, 0x0068, 0x6510,
+      EVR_SQ, "PlanningLandmarkLineSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6520, 0x0068, 0x6520,
+      EVR_SQ, "PlanningLandmarkPlaneSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6530, 0x0068, 0x6530,
+      EVR_US, "PlanningLandmarkID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6540, 0x0068, 0x6540,
+      EVR_LO, "PlanningLandmarkDescription", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6545, 0x0068, 0x6545,
+      EVR_SQ, "PlanningLandmarkIdentificationCodeSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6550, 0x0068, 0x6550,
+      EVR_SQ, "TwoDPointCoordinatesSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6560, 0x0068, 0x6560,
+      EVR_FD, "TwoDPointCoordinates", 2, 2, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6590, 0x0068, 0x6590,
+      EVR_FD, "ThreeDPointCoordinates", 3, 3, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x65a0, 0x0068, 0x65a0,
+      EVR_SQ, "TwoDLineCoordinatesSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x65b0, 0x0068, 0x65b0,
+      EVR_FD, "TwoDLineCoordinates", 4, 4, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x65d0, 0x0068, 0x65d0,
+      EVR_FD, "ThreeDLineCoordinates", 6, 6, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x65e0, 0x0068, 0x65e0,
+      EVR_SQ, "TwoDPlaneCoordinatesSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x65f0, 0x0068, 0x65f0,
+      EVR_FD, "TwoDPlaneIntersection", 4, 4, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6610, 0x0068, 0x6610,
+      EVR_FD, "ThreeDPlaneOrigin", 3, 3, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x6620, 0x0068, 0x6620,
+      EVR_FD, "ThreeDPlaneNormal", 3, 3, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0070, 0x0001, 0x0070, 0x0001,
       EVR_SQ, "GraphicAnnotationSequence", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -19643,6 +19923,170 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0074, 0x1246, 0x0074, 0x1246,
       EVR_CS, "UnifiedProcedureStepListStatus", 1, 1, "DICOM_2009",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0001, 0x0076, 0x0001,
+      EVR_LO, "ImplantAssemblyTemplateName", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0003, 0x0076, 0x0003,
+      EVR_LO, "ImplantAssemblyTemplateIssuer", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0006, 0x0076, 0x0006,
+      EVR_LO, "ImplantAssemblyTemplateVersion", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0008, 0x0076, 0x0008,
+      EVR_SQ, "ReplacedImplantAssemblyTemplateSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x000a, 0x0076, 0x000a,
+      EVR_CS, "ImplantAssemblyTemplateType", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x000c, 0x0076, 0x000c,
+      EVR_SQ, "OriginalImplantAssemblyTemplateSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x000e, 0x0076, 0x000e,
+      EVR_SQ, "DerivationImplantAssemblyTemplateSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0010, 0x0076, 0x0010,
+      EVR_SQ, "ImplantAssemblyTemplateTargetAnatomySequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0020, 0x0076, 0x0020,
+      EVR_SQ, "ProcedureTypeCodeSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0030, 0x0076, 0x0030,
+      EVR_LO, "SurgicalTechnique", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0032, 0x0076, 0x0032,
+      EVR_SQ, "ComponentTypesSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0034, 0x0076, 0x0034,
+      EVR_CS, "ComponentTypeCodeSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0036, 0x0076, 0x0036,
+      EVR_CS, "ExclusiveComponentType", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0038, 0x0076, 0x0038,
+      EVR_CS, "MandatoryComponentType", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0040, 0x0076, 0x0040,
+      EVR_SQ, "ComponentSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0055, 0x0076, 0x0055,
+      EVR_US, "ComponentID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0060, 0x0076, 0x0060,
+      EVR_SQ, "ComponentAssemblySequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0070, 0x0076, 0x0070,
+      EVR_US, "Component1ReferencedID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0080, 0x0076, 0x0080,
+      EVR_US, "Component1ReferencedMatingFeatureSetID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x0090, 0x0076, 0x0090,
+      EVR_US, "Component1ReferencedMatingFeatureID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x00a0, 0x0076, 0x00a0,
+      EVR_US, "Component2ReferencedID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x00b0, 0x0076, 0x00b0,
+      EVR_US, "Component2ReferencedMatingFeatureSetID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0076, 0x00c0, 0x0076, 0x00c0,
+      EVR_US, "Component2ReferencedMatingFeatureID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x0000, 0x0078, 0x0000,
+      EVR_LO, "ImplantTemplateGroupName", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x0010, 0x0078, 0x0010,
+      EVR_ST, "ImplantTemplateGroupDescription", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x0020, 0x0078, 0x0020,
+      EVR_LO, "ImplantTemplateGroupIssuer", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x0024, 0x0078, 0x0024,
+      EVR_LO, "ImplantTemplateGroupVersion", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x0026, 0x0078, 0x0026,
+      EVR_SQ, "ReplacedImplantTemplateGroupSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x0028, 0x0078, 0x0028,
+      EVR_SQ, "ImplantTemplateGroupTargetAnatomySequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x002a, 0x0078, 0x002a,
+      EVR_SQ, "ImplantTemplateGroupMembersSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x002e, 0x0078, 0x002e,
+      EVR_US, "ImplantTemplateGroupMemberID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x0050, 0x0078, 0x0050,
+      EVR_FD, "ThreeDImplantTemplateGroupMemberMatchingPoint", 3, 3, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x0060, 0x0078, 0x0060,
+      EVR_FD, "ThreeDImplantTemplateGroupMemberMatchingAxes", 9, 9, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x0070, 0x0078, 0x0070,
+      EVR_SQ, "ImplantTemplateGroupMemberMatching2DCoordinatesSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x0090, 0x0078, 0x0090,
+      EVR_FD, "TwoDImplantTemplateGroupMemberMatchingPoint", 2, 2, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x00a0, 0x0078, 0x00a0,
+      EVR_FD, "TwoDImplantTemplateGroupMemberMatchingAxes", 4, 4, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x00b0, 0x0078, 0x00b0,
+      EVR_SQ, "ImplantTemplateGroupVariationDimensionSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x00b2, 0x0078, 0x00b2,
+      EVR_LO, "ImplantTemplateGroupVariationDimensionName", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x00b4, 0x0078, 0x00b4,
+      EVR_SQ, "ImplantTemplateGroupVariationDimensionRankSequence", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x00b6, 0x0078, 0x00b6,
+      EVR_US, "ReferencedImplantTemplateGroupMemberID", 1, 1, "Supplement_131",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0078, 0x00b8, 0x0078, 0x00b8,
+      EVR_US, "ImplantTemplateGroupVariationDimensionRank", 1, 1, "Supplement_131",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef WITH_PRIVATE_TAGS

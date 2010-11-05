@@ -18,15 +18,15 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2010-10-14 13:03:44 $
-#  CVS/RCS Revision: $Revision: 1.8 $
+#  Update Date:      $Date: 2010-11-05 09:11:22 $
+#  CVS/RCS Revision: $Revision: 1.9 $
 #  Status:           $State: Exp $
 #
 # This file contains the complete data dictionary from the 2009 edition
 # of the DICOM standard.
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
-# - Supplement 120, 144, 145, 146.
+# - Supplement 120, 131, 144, 145, 146.
 # - CP 650, 988, 1010, 1024.
 #
 # Each line represents an entry in the data dictionary.  Each line
@@ -2686,6 +2686,122 @@
 (0070,0289)	SH	TickLabel	1	Supplement_120
 (0070,0294)	CS	CompoundGraphicType	1	Supplement_120
 (0070,0295)	UL	GraphicGroupID	1	Supplement_120
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 131 (Implant Templates)
+#
+(0068,6210)	LO	ImplantSize	1	Supplement_131
+(0068,6221)	LO	ImplantTemplateVersion	1	Supplement_131
+(0068,6222)	SQ	ReplacedImplantTemplateSequence	1	Supplement_131
+(0068,6223)	CS	ImplantType	1	Supplement_131
+(0068,6224)	SQ	DerivationImplantTemplateSequence	1	Supplement_131
+(0068,6225)	SQ	OriginalImplantTemplateSequence	1	Supplement_131
+(0068,6226)	DT	EffectiveDateTime	1	Supplement_131
+(0068,6230)	SQ	ImplantTargetAnatomySequence	1	Supplement_131
+(0068,6260)	SQ	InformationFromManufacturerSequence	1	Supplement_131
+(0068,6265)	SQ	NotificationFromManufacturerSequence	1	Supplement_131
+(0068,6270)	DT	InformationIssueDateTime	1	Supplement_131
+(0068,6280)	ST	InformationSummary	1	Supplement_131
+(0068,62A0)	SQ	ImplantRegulatoryDisapprovalCodeSequence	1	Supplement_131
+(0068,62A5)	FD	OverallTemplateSpatialTolerance	1	Supplement_131
+(0068,62C0)	SQ	HPGLDocumentSequence	1	Supplement_131
+(0068,62D0)	US	HPGLDocumentID	1	Supplement_131
+(0068,62D5)	LO	HPGLDocumentLabel	1	Supplement_131
+(0068,62E0)	SQ	ViewOrientationCodeSequence	1	Supplement_131
+(0068,62F0)	FD	ViewOrientationModifier	9	Supplement_131
+(0068,62F2)	FD	HPGLDocumentScaling	1	Supplement_131
+(0068,6300)	OB	HPGLDocument	1	Supplement_131
+(0068,6310)	US	HPGLContourPenNumber	1	Supplement_131
+(0068,6320)	SQ	HPGLPenSequence	1	Supplement_131
+(0068,6330)	US	HPGLPenNumber	1	Supplement_131
+(0068,6340)	LO	HPGLPenLabel	1	Supplement_131
+(0068,6345)	ST	HPGLPenDescription	1	Supplement_131
+(0068,6346)	FD	RecommendedRotationPoint	2	Supplement_131
+(0068,6347)	FD	BoundingRectangle	4	Supplement_131
+(0068,6350)	US	ImplantTemplate3DModelSurfaceNumber	1-n	Supplement_131
+(0068,6360)	SQ	SurfaceModelDescriptionSequence	1	Supplement_131
+(0068,6380)	LO	SurfaceModelLabel	1	Supplement_131
+(0068,6390)	FD	SurfaceModelScalingFactor	1	Supplement_131
+(0068,63A0)	SQ	MaterialsCodeSequence	1	Supplement_131
+(0068,63A4)	SQ	CoatingMaterialsCodeSequence	1	Supplement_131
+(0068,63A8)	SQ	ImplantTypeCodeSequence	1	Supplement_131
+(0068,63AC)	SQ	FixationMethodCodeSequence	1	Supplement_131
+(0068,63B0)	SQ	MatingFeatureSetsSequence	1	Supplement_131
+(0068,63C0)	US	MatingFeatureSetID	1	Supplement_131
+(0068,63D0)	LO	MatingFeatureSetLabel	1	Supplement_131
+(0068,63E0)	SQ	MatingFeatureSequence	1	Supplement_131
+(0068,63F0)	US	MatingFeatureID	1	Supplement_131
+(0068,6400)	SQ	MatingFeatureDegreeOfFreedomSequence	1	Supplement_131
+(0068,6410)	US	DegreeOfFreedomID	1	Supplement_131
+(0068,6420)	CS	DegreeOfFreedomType	1	Supplement_131
+(0068,6430)	SQ	TwoDMatingFeatureCoordinatesSequence	1	Supplement_131
+(0068,6440)	US	ReferencedHPGLDocumentID	1	Supplement_131
+(0068,6450)	FD	TwoDMatingPoint	2	Supplement_131
+(0068,6460)	FD	TwoDMatingAxes	4	Supplement_131
+(0068,6470)	SQ	TwoDDegreeOfFreedomSequence	1	Supplement_131
+(0068,6490)	FD	ThreeDDegreeOfFreedomAxis	3	Supplement_131
+(0068,64A0)	FD	RangeOfFreedom	2	Supplement_131
+(0068,64C0)	FD	ThreeDMatingPoint	3	Supplement_131
+(0068,64D0)	FD	ThreeDMatingAxes	9	Supplement_131
+(0068,64F0)	FD	TwoDDegreeOfFreedomAxis	3	Supplement_131
+(0068,6500)	SQ	PlanningLandmarkPointSequence	1	Supplement_131
+(0068,6510)	SQ	PlanningLandmarkLineSequence	1	Supplement_131
+(0068,6520)	SQ	PlanningLandmarkPlaneSequence	1	Supplement_131
+(0068,6530)	US	PlanningLandmarkID	1	Supplement_131
+(0068,6540)	LO	PlanningLandmarkDescription	1	Supplement_131
+(0068,6545)	SQ	PlanningLandmarkIdentificationCodeSequence	1	Supplement_131
+(0068,6550)	SQ	TwoDPointCoordinatesSequence	1	Supplement_131
+(0068,6560)	FD	TwoDPointCoordinates	2	Supplement_131
+(0068,6590)	FD	ThreeDPointCoordinates	3	Supplement_131
+(0068,65A0)	SQ	TwoDLineCoordinatesSequence	1	Supplement_131
+(0068,65B0)	FD	TwoDLineCoordinates	4	Supplement_131
+(0068,65D0)	FD	ThreeDLineCoordinates	6	Supplement_131
+(0068,65E0)	SQ	TwoDPlaneCoordinatesSequence	1	Supplement_131
+(0068,65F0)	FD	TwoDPlaneIntersection	4	Supplement_131
+(0068,6610)	FD	ThreeDPlaneOrigin	3	Supplement_131
+(0068,6620)	FD	ThreeDPlaneNormal	3	Supplement_131
+(0076,0001)	LO	ImplantAssemblyTemplateName	1	Supplement_131
+(0076,0003)	LO	ImplantAssemblyTemplateIssuer	1	Supplement_131
+(0076,0006)	LO	ImplantAssemblyTemplateVersion	1	Supplement_131
+(0076,0008)	SQ	ReplacedImplantAssemblyTemplateSequence	1	Supplement_131
+(0076,000A)	CS	ImplantAssemblyTemplateType	1	Supplement_131
+(0076,000C)	SQ	OriginalImplantAssemblyTemplateSequence	1	Supplement_131
+(0076,000E)	SQ	DerivationImplantAssemblyTemplateSequence	1	Supplement_131
+(0076,0010)	SQ	ImplantAssemblyTemplateTargetAnatomySequence	1	Supplement_131
+(0076,0020)	SQ	ProcedureTypeCodeSequence	1	Supplement_131
+(0076,0030)	LO	SurgicalTechnique	1	Supplement_131
+(0076,0032)	SQ	ComponentTypesSequence	1	Supplement_131
+(0076,0034)	CS	ComponentTypeCodeSequence	1	Supplement_131
+(0076,0036)	CS	ExclusiveComponentType	1	Supplement_131
+(0076,0038)	CS	MandatoryComponentType	1	Supplement_131
+(0076,0040)	SQ	ComponentSequence	1	Supplement_131
+(0076,0055)	US	ComponentID	1	Supplement_131
+(0076,0060)	SQ	ComponentAssemblySequence	1	Supplement_131
+(0076,0070)	US	Component1ReferencedID	1	Supplement_131
+(0076,0080)	US	Component1ReferencedMatingFeatureSetID	1	Supplement_131
+(0076,0090)	US	Component1ReferencedMatingFeatureID	1	Supplement_131
+(0076,00A0)	US	Component2ReferencedID	1	Supplement_131
+(0076,00B0)	US	Component2ReferencedMatingFeatureSetID	1	Supplement_131
+(0076,00C0)	US	Component2ReferencedMatingFeatureID	1	Supplement_131
+(0078,0000)	LO	ImplantTemplateGroupName	1	Supplement_131
+(0078,0010)	ST	ImplantTemplateGroupDescription	1	Supplement_131
+(0078,0020)	LO	ImplantTemplateGroupIssuer	1	Supplement_131
+(0078,0024)	LO	ImplantTemplateGroupVersion	1	Supplement_131
+(0078,0026)	SQ	ReplacedImplantTemplateGroupSequence	1	Supplement_131
+(0078,0028)	SQ	ImplantTemplateGroupTargetAnatomySequence	1	Supplement_131
+(0078,002A)	SQ	ImplantTemplateGroupMembersSequence	1	Supplement_131
+(0078,002E)	US	ImplantTemplateGroupMemberID	1	Supplement_131
+(0078,0050)	FD	ThreeDImplantTemplateGroupMemberMatchingPoint	3	Supplement_131
+(0078,0060)	FD	ThreeDImplantTemplateGroupMemberMatchingAxes	9	Supplement_131
+(0078,0070)	SQ	ImplantTemplateGroupMemberMatching2DCoordinatesSequence	1	Supplement_131
+(0078,0090)	FD	TwoDImplantTemplateGroupMemberMatchingPoint	2	Supplement_131
+(0078,00A0)	FD	TwoDImplantTemplateGroupMemberMatchingAxes	4	Supplement_131
+(0078,00B0)	SQ	ImplantTemplateGroupVariationDimensionSequence	1	Supplement_131
+(0078,00B2)	LO	ImplantTemplateGroupVariationDimensionName	1	Supplement_131
+(0078,00B4)	SQ	ImplantTemplateGroupVariationDimensionRankSequence	1	Supplement_131
+(0078,00B6)	US	ReferencedImplantTemplateGroupMemberID	1	Supplement_131
+(0078,00B8)	US	ImplantTemplateGroupVariationDimensionRank	1	Supplement_131
 #
 #---------------------------------------------------------------------------
 #
