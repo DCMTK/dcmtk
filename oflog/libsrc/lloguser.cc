@@ -42,13 +42,13 @@ LogLogUser::LogLogUser()
 
 LogLogUser::LogLogUser(const LogLogUser& rhs)
 {
-    loglogRef = new SharedObjectPtr<LogLog>(*static_cast<LogLogPtr*>(rhs.loglogRef));
+    loglogRef = new SharedObjectPtr<LogLog>(*OFstatic_cast(LogLogPtr*, rhs.loglogRef));
 }
 
 
 LogLogUser::~LogLogUser()
 {
-    delete static_cast<LogLogPtr*>(loglogRef);
+    delete OFstatic_cast(LogLogPtr*, loglogRef);
 }
 
 
@@ -60,7 +60,7 @@ LogLogUser::~LogLogUser()
 LogLog&
 LogLogUser::getLogLog() const
 {
-    LogLogPtr* ptr = static_cast<LogLogPtr*>(loglogRef);
+    LogLogPtr* ptr = OFstatic_cast(LogLogPtr*, loglogRef);
     return **ptr;
 }
 
@@ -72,8 +72,8 @@ LogLogUser::operator=(const LogLogUser& rhs)
         return *this;
     }
 
-    delete static_cast<LogLogPtr*>(loglogRef);
-    loglogRef = new SharedObjectPtr<LogLog>(*static_cast<LogLogPtr*>(rhs.loglogRef));
+    delete OFstatic_cast(LogLogPtr*, loglogRef);
+    loglogRef = new SharedObjectPtr<LogLog>(*OFstatic_cast(LogLogPtr*, rhs.loglogRef));
 
     return *this;
 }

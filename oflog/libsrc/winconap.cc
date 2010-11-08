@@ -108,7 +108,7 @@ Win32ConsoleAppender::write_handle (HANDLE out, tchar const * s, size_t str_len)
 {
     char const * const cstr = s;
 
-    DWORD const total_to_write = static_cast<DWORD>(str_len);
+    DWORD const total_to_write = OFstatic_cast(DWORD, str_len);
     DWORD total_written = 0;
 
     do
@@ -136,7 +136,7 @@ void
 Win32ConsoleAppender::write_console (HANDLE console_out, tchar const * s,
     size_t str_len)
 {
-    DWORD const total_to_write = static_cast<DWORD>(str_len);
+    DWORD const total_to_write = OFstatic_cast(DWORD, str_len);
     DWORD total_written = 0;
 
     do

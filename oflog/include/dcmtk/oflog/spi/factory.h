@@ -147,12 +147,12 @@ namespace log4cplus {
              * owns the returned pointer.)
              */
             T* get(const log4cplus::tstring& name) const {
-                return static_cast<T*>(getVal(name));
+                return OFstatic_cast(T*, getVal(name));
             }
 
         protected:
             virtual void deleteObject(void *object) const {
-                delete static_cast<T*>(object);
+                delete OFstatic_cast(T*, object);
             }
         };
 

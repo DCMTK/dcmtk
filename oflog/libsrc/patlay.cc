@@ -308,7 +308,7 @@ log4cplus::pattern::PatternConverter::formatAndAppend
     if(len > maxLen) {
         output << s.substr(len - maxLen);
     }
-    else if(static_cast<int>(len) < minLen) {
+    else if(OFstatic_cast(int, len) < minLen) {
         if(leftAlign) {
             output << s;
             output << log4cplus::tstring(minLen - len, LOG4CPLUS_TEXT(' '));

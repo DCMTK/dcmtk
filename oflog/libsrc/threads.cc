@@ -167,7 +167,7 @@ ThreadStart::threadStartFuncWorker(void * arg)
         loglog->error(LOG4CPLUS_TEXT("threadStartFunc()- arg is NULL"));
     else
     {
-        AbstractThread * ptr = static_cast<AbstractThread*>(arg);
+        AbstractThread * ptr = OFstatic_cast(AbstractThread*, arg);
         AbstractThreadPtr thread(ptr);
 
         // Decrease reference count increased by AbstractThread::start().
@@ -253,7 +253,7 @@ AbstractThread::start()
 #if defined (_WIN32_WCE)
     h = ::CreateThread  (0, 0, threadStartFunc, this, 0, &thread_id);
 #else
-    h = reinterpret_cast<HANDLE>(
+    h = OFreinterpret_cast(HANDLE,
         ::_beginthreadex (0, 0, threadStartFunc, this, 0, &thread_id));
 #endif
     if (! h)

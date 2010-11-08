@@ -270,8 +270,8 @@ convertToBuffer(const spi::InternalLoggingEvent& event,
     buffer.appendString(event.getNDC());
     buffer.appendString(event.getMessage());
     buffer.appendString(event.getThread());
-    buffer.appendInt( static_cast<unsigned int>(event.getTimestamp().sec()) );
-    buffer.appendInt( static_cast<unsigned int>(event.getTimestamp().usec()) );
+    buffer.appendInt( OFstatic_cast(unsigned int, event.getTimestamp().sec()) );
+    buffer.appendInt( OFstatic_cast(unsigned int, event.getTimestamp().usec()) );
     buffer.appendString(event.getFile());
     buffer.appendInt(event.getLine());
 

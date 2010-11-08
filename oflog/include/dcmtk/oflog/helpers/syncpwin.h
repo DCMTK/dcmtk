@@ -162,7 +162,7 @@ inline
 bool
 ManualResetEvent::timed_wait (unsigned long msec) const
 {
-    DWORD ret = WaitForSingleObject (ev, static_cast<DWORD>(msec));
+    DWORD ret = WaitForSingleObject (ev, OFstatic_cast(DWORD, msec));
     switch(ret)
     {
     case WAIT_OBJECT_0:

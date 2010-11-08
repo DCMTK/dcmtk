@@ -87,7 +87,7 @@ log4cplus::helpers::SocketBuffer::operator=(const SocketBuffer& rhs)
 void
 log4cplus::helpers::SocketBuffer::copy(const SocketBuffer& r)
 {
-    SocketBuffer& rhs = const_cast<SocketBuffer&>(r);
+    SocketBuffer& rhs = OFconst_cast(SocketBuffer&, r);
     maxsize = rhs.maxsize;
     size = rhs.size;
     pos = rhs.pos;
@@ -198,7 +198,7 @@ log4cplus::helpers::SocketBuffer::readString(unsigned char sizeOfChar)
         tstring ret;
         for(tstring::size_type i=0; i<strlen; ++i) {
             unsigned short tmp = readShort();
-            ret += static_cast<char>(tmp < 256 ? tmp : ' ');
+            ret += OFstatic_cast(char, tmp < 256 ? tmp : ' ');
         }
         return ret;
     }
@@ -278,7 +278,7 @@ log4cplus::helpers::SocketBuffer::appendSize_t(size_t val)
         return;
     }
 
-    unsigned st = htonl(static_cast<unsigned>(val));
+    unsigned st = htonl(OFstatic_cast(unsigned, val));
     memcpy(buffer + pos, &st, sizeof(st));
     pos += sizeof(st);
     size = pos;
@@ -295,7 +295,7 @@ log4cplus::helpers::SocketBuffer::appendString(const tstring& str)
         return;
     }
 
-    appendInt(static_cast<unsigned>(strlen));
+    appendInt(OFstatic_cast(unsigned, strlen));
     memcpy(&buffer[pos], str.data(), strlen);
     pos += strlen;
     size = pos;

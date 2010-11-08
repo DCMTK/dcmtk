@@ -86,7 +86,7 @@ get_host_by_name (char const * hostname, OFString* name,
     hints.ai_protocol = IPPROTO_TCP;
     hints.ai_flags = AI_CANONNAME;
 
-    if (inet_addr (hostname) != static_cast<in_addr_t>(-1))
+    if (inet_addr (hostname) != OFstatic_cast(in_addr_t, -1))
         hints.ai_flags |= AI_NUMERICHOST;
 
     struct addrinfo * res = 0;
@@ -187,7 +187,7 @@ log4cplus::helpers::connectSocket(const log4cplus::tstring& hostn,
     }
 
     while ((retval = ::connect(sock,
-                reinterpret_cast<struct sockaddr *>(&server), sizeof (server))) == -1
+                OFreinterpret_cast(struct sockaddr *, &server), sizeof (server))) == -1
           && (errno == EINTR))
         ;
     if(retval == INVALID_SOCKET) {
@@ -242,7 +242,7 @@ log4cplus::helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
             return res;
         }
         read += res;
-    } while( read < static_cast<long>(buffer.getMaxSize()) );
+    } while( read < OFstatic_cast(long, buffer.getMaxSize()) );
 
     return read;
 }
@@ -271,7 +271,7 @@ log4cplus::helpers::getHostname (bool fqdn)
 
     while (true)
     {
-        ret = ::gethostname (&hn[0], static_cast<int>(hn_size) - 1);
+        ret = ::gethostname (&hn[0], OFstatic_cast(int, hn_size) - 1);
         if (ret == 0)
         {
             hostname = &hn[0];

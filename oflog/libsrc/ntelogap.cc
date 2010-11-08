@@ -120,7 +120,7 @@ namespace {
                       0,
                       REG_SZ,
                       (LPBYTE)value.c_str(),
-                      static_cast<DWORD>(value.length() * sizeof(tchar)));
+                      OFstatic_cast(DWORD, value.length() * sizeof(tchar)));
     }
 
 

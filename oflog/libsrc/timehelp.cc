@@ -219,7 +219,7 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
 
     log4cplus::tstring fmt (fmt_orig);
     log4cplus::tstring ret;
-    ret.reserve (static_cast<size_t>(fmt.size () * 1.35));
+    ret.reserve (OFstatic_cast(size_t, fmt.size () * 1.35));
     State state = TEXT;
 
     log4cplus::tstring q_str;
@@ -340,11 +340,11 @@ Time::operator-=(const Time& rhs)
 Time&
 Time::operator/=(long rhs)
 {
-    long rem_secs = static_cast<long>(tv_sec % rhs);
+    long rem_secs = OFstatic_cast(long, tv_sec % rhs);
     tv_sec /= rhs;
 
     tv_usec /= rhs;
-    tv_usec += static_cast<long>((rem_secs * ONE_SEC_IN_USEC) / rhs);
+    tv_usec += OFstatic_cast(long, (rem_secs * ONE_SEC_IN_USEC) / rhs);
 
     return *this;
 }

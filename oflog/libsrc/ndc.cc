@@ -308,8 +308,8 @@ NDC::setMaxDepth(size_t maxDepth)
 
 DiagnosticContextStack* NDC::getPtr()
 {
-    return static_cast<DiagnosticContextStack*>
-        (LOG4CPLUS_GET_THREAD_LOCAL_VALUE( threadLocal ));
+    return OFstatic_cast(DiagnosticContextStack*,
+        LOG4CPLUS_GET_THREAD_LOCAL_VALUE( threadLocal ));
 }
 
 

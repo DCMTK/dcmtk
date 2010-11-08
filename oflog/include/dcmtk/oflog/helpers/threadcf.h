@@ -75,7 +75,7 @@ namespace log4cplus {
 #   define LOG4CPLUS_THREAD_LOCAL_INIT(cleanup) TlsAlloc()
 #   define LOG4CPLUS_GET_THREAD_LOCAL_VALUE(key) TlsGetValue(key)
 #   define LOG4CPLUS_SET_THREAD_LOCAL_VALUE(key, value) \
-    TlsSetValue(key, static_cast<LPVOID>(value))
+    TlsSetValue(key, OFstatic_cast(LPVOID, value))
 #   define LOG4CPLUS_THREAD_LOCAL_CLEANUP(key) TlsFree(key)
 #   if defined (_MSC_VER)
 #     undef LOG4CPLUS_HAVE_TLS_SUPPORT

@@ -73,7 +73,7 @@ init_winsock ()
 
     // Try to change the state to WS_INITIALIZING.
     LONG val = DoInterlockedCompareExchange (
-        const_cast<LPLONG>(&winsock_state), WS_INITIALIZING, WS_UNINITIALIZED);
+        OFconst_cast(LPLONG, &winsock_state), WS_INITIALIZING, WS_UNINITIALIZED);
     switch (val)
     {
     case WS_UNINITIALIZED:
@@ -84,7 +84,7 @@ init_winsock ()
             // Revert the state back to WS_UNINITIALIZED to unblock other
             // threads and let them throw exception.
             val = DoInterlockedCompareExchange (
-                const_cast<LPLONG>(&winsock_state), WS_UNINITIALIZED,
+                OFconst_cast(LPLONG, &winsock_state), WS_UNINITIALIZED,
                 WS_INITIALIZING);
             assert (val == WS_INITIALIZING);
             throw STD_NAMESPACE runtime_error ("Could not initialize WinSock.");
@@ -92,7 +92,7 @@ init_winsock ()
 
         // WinSock is initialized, change the state to WS_INITIALIZED.
         val = DoInterlockedCompareExchange (
-            const_cast<LPLONG>(&winsock_state), WS_INITIALIZED,
+            OFconst_cast(LPLONG, &winsock_state), WS_INITIALIZED,
             WS_INITIALIZING);
         assert (val == WS_INITIALIZING);
         return;
@@ -256,12 +256,12 @@ log4cplus::helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
     do
     {
         long res = ::recv(sock, buffer.getBuffer() + read,
-            static_cast<int>(buffer.getMaxSize() - read), 0);
+            OFstatic_cast(int, buffer.getMaxSize() - read), 0);
         if( res <= 0 ) {
             return res;
         }
         read += res;
-    } while( read < static_cast<long>(buffer.getMaxSize()) );
+    } while( read < OFstatic_cast(long, buffer.getMaxSize()) );
 
     return read;
 }
@@ -271,7 +271,7 @@ log4cplus::helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
 long
 log4cplus::helpers::write(SOCKET_TYPE sock, const SocketBuffer& buffer)
 {
-    return ::send(sock, buffer.getBuffer(), static_cast<int>(buffer.getSize()), 0);
+    return ::send(sock, buffer.getBuffer(), OFstatic_cast(int, buffer.getSize()), 0);
 }
 
 
@@ -285,7 +285,7 @@ log4cplus::helpers::getHostname (bool fqdn)
 
     while (true)
     {
-        ret = ::gethostname (&hn[0], static_cast<int>(hn_size) - 1);
+        ret = ::gethostname (&hn[0], OFstatic_cast(int, hn_size) - 1);
         if (ret == 0)
         {
             hostname = &hn[0];

@@ -37,8 +37,8 @@ using namespace log4cplus::helpers;
 #define _NOTSET_STRING LOG4CPLUS_TEXT("NOTSET")
 #define _UNKNOWN_STRING LOG4CPLUS_TEXT("UNKNOWN")
 
-#define GET_TO_STRING_NODE static_cast<ToStringNode*>(this->toStringMethods)
-#define GET_FROM_STRING_NODE static_cast<FromStringNode*>(this->fromStringMethods)
+#define GET_TO_STRING_NODE OFstatic_cast(ToStringNode*, this->toStringMethods)
+#define GET_FROM_STRING_NODE OFstatic_cast(FromStringNode*, this->fromStringMethods)
 
 
 

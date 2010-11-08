@@ -15,6 +15,25 @@ Changes between releases are documented here.
 - Made dcmjpls successfully read images with spurious padding bytes.
   Affects: dcmjpls/libcharls/decodstr.h
 
+- Made oflog use ofstd's cast macros.
+  Affects: oflog/include/dcmtk/oflog/helpers/strhelp.h
+           oflog/include/dcmtk/oflog/helpers/syncpwin.h
+           oflog/include/dcmtk/oflog/helpers/threadcf.h
+           oflog/include/dcmtk/oflog/spi/factory.h
+           oflog/libsrc/lloguser.cc
+           oflog/libsrc/loglevel.cc
+           oflog/libsrc/ndc.cc
+           oflog/libsrc/ntelogap.cc
+           oflog/libsrc/patlay.cc
+           oflog/libsrc/sockbuff.cc
+           oflog/libsrc/socket.cc
+           oflog/libsrc/socketap.cc
+           oflog/libsrc/threads.cc
+           oflog/libsrc/timehelp.cc
+           oflog/libsrc/unixsock.cc
+           oflog/libsrc/winconap.cc
+           oflog/libsrc/winsock.cc
+
 **** Changes from 2010.11.08 (riesmeier)
 
 - Fixed inconsistency in the list of attributes for the implant group directory

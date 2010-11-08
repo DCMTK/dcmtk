@@ -120,7 +120,7 @@ namespace log4cplus {
                     intType const mod = 0-(a + value);
                     value = 0-r;
 
-                    *(it - 1) = static_cast<tchar>(LOG4CPLUS_TEXT('0') + mod);
+                    *(it - 1) = OFstatic_cast(tchar, LOG4CPLUS_TEXT('0') + mod);
                     --it;
                 }
                 else
@@ -153,7 +153,7 @@ namespace log4cplus {
             {
                 intType mod = value % 10;
                 value = value / 10;
-                *(it - 1) = static_cast<tchar>(LOG4CPLUS_TEXT('0') + mod);
+                *(it - 1) = OFstatic_cast(tchar, LOG4CPLUS_TEXT('0') + mod);
             }
 
             if (negative)
@@ -162,7 +162,7 @@ namespace log4cplus {
                 *it = LOG4CPLUS_TEXT('-');
             }
 
-            str.assign (static_cast<tchar const *>(it), buf_end - it);
+            str.assign (OFstatic_cast(tchar const *, it), buf_end - it);
         }
 
 

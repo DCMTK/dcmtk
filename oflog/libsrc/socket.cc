@@ -113,7 +113,7 @@ log4cplus::helpers::AbstractSocket::operator=(const log4cplus::helpers::Abstract
 void
 log4cplus::helpers::AbstractSocket::copy(const log4cplus::helpers::AbstractSocket& r)
 {
-    AbstractSocket& rhs = const_cast<AbstractSocket&>(r);
+    AbstractSocket& rhs = OFconst_cast(AbstractSocket&, r);
     sock = rhs.sock;
     state = rhs.state;
     err = rhs.err;
