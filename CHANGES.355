@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.08 (riesmeier)
+
+- Fixed inconsistency in the list of attributes for the implant group directory
+  record (this has been corrected with the "FT2" version of Supplement 131).
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 **** Changes from 2010.11.05 (riesmeier)
 
 - Added new SOP Class UIDs from Supplement 131 and 134 (Implant Templates).

@@ -18,8 +18,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 13:11:16 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2010-11-08 09:15:57 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3617,8 +3617,7 @@ DcmDirectoryRecord *DicomDirInterface::buildImplantGroupRecord(DcmDirectoryRecor
         {
             /* copy attribute values from dataset to implant group record */
             copyElementType1(dataset, DCM_ImplantAssemblyTemplateName, record, sourceFilename);
-            // open issue: where does the value for manufacturer come from?
-            copyElementType1(dataset, DCM_Manufacturer, record, sourceFilename);
+            copyElementType1(dataset, DCM_ImplantAssemblyTemplateIssuer, record, sourceFilename);
             copyElementType1(dataset, DCM_ProcedureTypeCodeSequence, record, sourceFilename);
         } else {
             printRecordErrorMessage(record->error(), ERT_ImplantGroup, "create");
@@ -5224,6 +5223,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.53  2010-11-08 09:15:57  joergr
+ *  Fixed inconsistency in the list of attributes for the implant group directory
+ *  record (this has been corrected with the "FT2" version of Supplement 131).
+ *
  *  Revision 1.52  2010-11-05 13:11:16  joergr
  *  Added support for new directory record types IMPLANT, IMPLANT GROUP and
  *  IMPLANT ASSY from Supplement 131 (Implant Templates).
