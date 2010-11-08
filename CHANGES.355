@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.08 (schlachter)
+
+- Made dcmjpls successfully read images with spurious padding bytes.
+  Affects: dcmjpls/libcharls/decodstr.h
+
 **** Changes from 2010.11.08 (riesmeier)
 
 - Fixed inconsistency in the list of attributes for the implant group directory

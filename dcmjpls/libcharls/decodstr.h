@@ -62,7 +62,12 @@ public:
 	  void EndScan()
 	  {
 		  if ((*_position) != 0xFF)
-			throw JlsException(TooMuchCompressedData);
+		  {
+			ReadBit();
+
+			if ((*_position) != 0xFF)
+				throw JlsException(TooMuchCompressedData);
+		  }
 
 		  if (_readCache != 0)
 		     throw JlsException(TooMuchCompressedData);
