@@ -332,6 +332,8 @@ namespace log4cplus
         }
 
     private:
+        TraceLogger(const TraceLogger&);
+        TraceLogger& operator=(const TraceLogger&);
         Logger logger;
         log4cplus::tstring msg;
         const char* file;

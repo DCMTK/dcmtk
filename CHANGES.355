@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2010.11.08 (schlachter)
 
+- Fixed even more gcc warnings caused by additional compiler flags.
+  Affects: dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcistrmf.cc
+           dcmdata/libsrc/dcpath.cc
+           oflog/include/dcmtk/oflog/logger.h
+           oflog/include/dcmtk/oflog/helpers/strhelp.h
+           ofstd/include/dcmtk/ofstd/ofmap.h
+
 - Made dcmjpls successfully read images with spurious padding bytes.
   Affects: dcmjpls/libcharls/decodstr.h
 

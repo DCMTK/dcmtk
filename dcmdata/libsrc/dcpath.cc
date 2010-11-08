@@ -19,8 +19,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 10:42:44 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2010-11-08 09:49:03 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@ DcmPath::DcmPath() : m_path()
 
 // Construct from existing path (kind of copy constructor)
 DcmPath::DcmPath(const OFList<DcmPathNode*>& currentPath)
+    : m_path()
 {
   OFListConstIterator(DcmPathNode*) it = currentPath.begin();
   OFListConstIterator(DcmPathNode*) endOfPath = currentPath.end();
@@ -927,6 +928,9 @@ OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem *item /* in */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.15  2010-11-08 09:49:03  uli
+** Fixed even more gcc warnings caused by additional compiler flags.
+**
 ** Revision 1.14  2010-11-01 10:42:44  uli
 ** Fixed some compiler warnings reported by gcc with additional flags.
 **

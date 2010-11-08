@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-08 09:15:57 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-08 09:49:03 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,7 +185,7 @@ static OFString &hostToDicomFilename(const OFString &hostFilename,
         else if (isalpha(c))
         {
             /* filenames in DICOM must always be in uppercase */
-            dicomFilename += toupper(c);
+            dicomFilename += OFstatic_cast(char, toupper(c));
         }
         else if (isdigit(c) || (c == '_') || (c == '\\'))
         {
@@ -211,7 +211,7 @@ static OFString &dicomToHostFilename(const OFString &dicomFilename,
         if (c == '\\')
             hostFilename += PATH_SEPARATOR;
         else if (mapToLower)
-            hostFilename += tolower(c);
+            hostFilename += OFstatic_cast(char, tolower(c));
         else
             hostFilename += c;
     }
@@ -5223,6 +5223,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.54  2010-11-08 09:49:03  uli
+ *  Fixed even more gcc warnings caused by additional compiler flags.
+ *
  *  Revision 1.53  2010-11-08 09:15:57  joergr
  *  Fixed inconsistency in the list of attributes for the implant group directory
  *  record (this has been corrected with the "FT2" version of Supplement 131).

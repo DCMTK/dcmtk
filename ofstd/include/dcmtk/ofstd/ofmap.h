@@ -18,9 +18,9 @@
  *  Purpose: Defines a template map class with interfaces similar to the C++
  *           Standard
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-08 09:49:03 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ public:
     V second;
 
     /** default constructor */
-    OFPair() { }
+    OFPair() : first(), second() { }
 
     /** construct a OFPair for the two given values
      *  @param f the value for first.
@@ -267,6 +267,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofmap.h,v $
+** Revision 1.6  2010-11-08 09:49:03  uli
+** Fixed even more gcc warnings caused by additional compiler flags.
+**
 ** Revision 1.5  2010-10-14 13:15:50  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

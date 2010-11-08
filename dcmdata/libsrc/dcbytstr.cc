@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmByteString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:16 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-08 09:49:03 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,8 @@ DcmByteString::DcmByteString(const DcmByteString &old)
     paddingChar(old.paddingChar),
     maxLength(old.maxLength),
     realLength(old.realLength),
-    fStringMode(old.fStringMode)
+    fStringMode(old.fStringMode),
+    nonSignificantChars()
 {
 }
 
@@ -726,6 +727,9 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.61  2010-11-08 09:49:03  uli
+** Fixed even more gcc warnings caused by additional compiler flags.
+**
 ** Revision 1.60  2010-10-20 16:44:16  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

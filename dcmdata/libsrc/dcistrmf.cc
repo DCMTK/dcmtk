@@ -18,9 +18,9 @@
  *  Purpose: DcmInputFileStream and related classes,
  *    implements streamed input from files.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:08 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-08 09:49:03 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -195,7 +195,11 @@ DcmInputStream *DcmTempFileHandler::create() const
 }
 
 DcmTempFileHandler::DcmTempFileHandler(const char *fname)
+#ifdef WITH_THREADS
+: refCount_(1), mutex_(), filename_(fname)
+#else
 : refCount_(1), filename_(fname)
+#endif
 {
 }
 
@@ -266,6 +270,9 @@ DcmInputStreamFactory *DcmInputTempFileStreamFactory::clone() const
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.cc,v $
+ * Revision 1.10  2010-11-08 09:49:03  uli
+ * Fixed even more gcc warnings caused by additional compiler flags.
+ *
  * Revision 1.9  2010-10-14 13:14:08  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
