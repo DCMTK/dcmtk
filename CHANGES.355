@@ -21,6 +21,9 @@ Changes between releases are documented here.
   record (this has been corrected with the "FT2" version of Supplement 131).
   Affects: dcmdata/libsrc/dcddirif.cc
 
+- Replaced non-ASCII characters by their ASCII equivalents.
+  Affects: dcmtls/docs/ciphers.txt
+
 **** Changes from 2010.11.05 (riesmeier)
 
 - Added new SOP Class UIDs from Supplement 131 and 134 (Implant Templates).

@@ -98,7 +98,7 @@ policy there is a number of aspects users should be aware of.
   application is a matter of the local security policy, though.
 
   Users in Europe should be aware of the European Prestandard ENV 13608-3
-  "Health informatics - Security for healthcare communication – Part 3:
+  "Health informatics - Security for healthcare communication - Part 3:
   Secure data channels" which requires that no TLS ciphersuite providing
   less than 80 bits of symmetric effective key space or less than 768 bits
   of RSA or DH asymmetric key strength may be negotiated if conformance to
@@ -123,7 +123,7 @@ policy there is a number of aspects users should be aware of.
 
   Users in Europe who want to use forward secrecy should be aware of the
   European Prestandard ENV 13608-3 "Health informatics - Security for
-  healthcare communication – Part 3: Secure data channels" which requires
+  healthcare communication - Part 3: Secure data channels" which requires
   that the TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA ciphersuite must be supported
   if forward secrecy is desired and must be negotiated before ciphersuites
   not offering forward secrecy if conformance to ENV 13608-3 is claimed by
