@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-08 09:49:03 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-11-09 09:50:42 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2176,11 +2176,58 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
         metainfo->findAndGetOFStringArray(DCM_TransferSyntaxUID, transferSyntax);
         metainfo->findAndGetOFStringArray(DCM_MediaStorageSOPClassUID, mediaSOPClassUID);
         E_DirRecType recordType = sopClassToRecordType(mediaSOPClassUID);
-        /* hanging protocol, palette and implant files are checked separately */
-        if ((recordType == ERT_HangingProtocol) || (recordType == ERT_Palette) ||
-            (recordType == ERT_Implant) || (recordType == ERT_ImplantGroup) || (recordType == ERT_ImplantAssy))
+        /* hanging protocol, palette and implant files are handled separately */
+        if (recordType == ERT_HangingProtocol)
         {
-            /* nothing to check since all type 1 and 2 attributes are identical */
+            /* check whether all type 1 elements are really present */
+            if (!checkExistsWithValue(dataset, DCM_HangingProtocolName, filename))
+                result = EC_InvalidTag;
+            if (!checkExistsWithValue(dataset, DCM_HangingProtocolDescription, filename))
+                result = EC_InvalidTag;
+            if (!checkExistsWithValue(dataset, DCM_HangingProtocolLevel, filename))
+                result = EC_InvalidTag;
+            if (!checkExistsWithValue(dataset, DCM_HangingProtocolCreator, filename))
+                result = EC_InvalidTag;
+            if (!checkExistsWithValue(dataset, DCM_HangingProtocolCreationDateTime, filename))
+                result = EC_InvalidTag;
+            if (!checkExistsWithValue(dataset, DCM_HangingProtocolDefinitionSequence, filename))
+                result = EC_InvalidTag;
+            if (!checkExistsWithValue(dataset, DCM_NumberOfPriorsReferenced, filename))
+                result = EC_InvalidTag;
+        }
+        else if (recordType == ERT_Palette)
+        {
+            /* check whether all type 1 elements are really present */
+            if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
+                result = EC_InvalidTag;
+        }
+        else if (recordType == ERT_Implant)
+        {
+            /* check whether all type 1 elements are really present */
+            if (!checkExistsWithValue(dataset, DCM_Manufacturer, filename))
+                result = EC_InvalidTag;
+            if (!checkExistsWithValue(dataset, DCM_ImplantName, filename))
+                result = EC_InvalidTag;
+            if (!checkExistsWithValue(dataset, DCM_ImplantPartNumber, filename))
+                result = EC_InvalidTag;
+        }
+        else if (recordType == ERT_ImplantGroup)
+        {
+            /* check whether all type 1 elements are really present */
+            if (!checkExistsWithValue(dataset, DCM_ImplantAssemblyTemplateName, filename))
+                result = EC_InvalidTag;
+            if (!checkExistsWithValue(dataset, DCM_ImplantAssemblyTemplateIssuer, filename))
+                result = EC_InvalidTag;
+            if (!checkExistsWithValue(dataset, DCM_ProcedureTypeCodeSequence, filename))
+                result = EC_InvalidTag;
+        }
+        else if (recordType == ERT_ImplantAssy)
+        {
+            /* check whether all type 1 elements are really present */
+            if (!checkExistsWithValue(dataset, DCM_ImplantTemplateGroupName, filename))
+                result = EC_InvalidTag;
+            if (!checkExistsWithValue(dataset, DCM_ImplantTemplateGroupIssuer, filename))
+                result = EC_InvalidTag;
         } else {
             /* PatientID is type 1 in DICOMDIR and type 2 in images */
             if (!InventMode)
@@ -2231,6 +2278,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                     result = EC_InvalidTag;
             }
             /* image and other numbers are type 1 in DICOMDIR but type 2 in images */
+            /* (basically, check whether all type 1 elements are really present) */
             switch (recordType)
             {
                 case ERT_Overlay:
@@ -5223,6 +5271,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.55  2010-11-09 09:50:42  joergr
+ *  Added check whether all type 1 attributes are really present and have a
+ *  non-empty value; this check was missing for the following record types:
+ *  HANGING PROTOCOL, PALETTE, IMPLANT, IMPLANT GROUP, IMPLANT ASSY.
+ *
  *  Revision 1.54  2010-11-08 09:49:03  uli
  *  Fixed even more gcc warnings caused by additional compiler flags.
  *
