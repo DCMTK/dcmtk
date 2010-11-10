@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.08 (schlachter)
+
+- Made DcmHashDictIterator::stepUp correctly stop at the end of the dict.
+  Affects: dcmdata/libsrc/dchashdi.cc
+
 **** Changes from 2010.11.09 (riesmeier)
 
 - Added check whether all type 1 attributes are really present and have a

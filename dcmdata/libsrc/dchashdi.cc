@@ -17,9 +17,9 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:08 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-10 12:02:01 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,6 +151,8 @@ DcmHashDictIterator::stepUp()
     while (hindex <= dict->highestBucket) {
         DcmDictEntryList* bucket = dict->hashTab[hindex];
         if (bucket == NULL) {
+            if (hindex == dict->highestBucket)
+                return; /* We reached the end of the dictionary */
             hindex++; // move on to next bucket
             iterating = OFFalse;
         } else {
@@ -162,6 +164,8 @@ DcmHashDictIterator::stepUp()
                 }
             }
             if (iter == bucket->end()) {
+                if (hindex == dict->highestBucket)
+                    return; /* We reached the end of the dictionary */
                 iterating = OFFalse;
                 hindex++;
             } else {
@@ -527,6 +531,9 @@ DcmHashDict::loadSummary(STD_NAMESPACE ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
+** Revision 1.26  2010-11-10 12:02:01  uli
+** Made DcmHashDictIterator::stepUp correctly stop at the end of the dict.
+**
 ** Revision 1.25  2010-10-14 13:14:08  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
