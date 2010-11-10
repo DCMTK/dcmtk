@@ -17,9 +17,9 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:41 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-10 12:04:06 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,8 +161,8 @@ public:
         { return (hindex == x.hindex) && (iter == x.iter); }
 
     /// comparison non-equality
-    OFBool operator!=(const DcmHashDictIterator& x) const 
-        { return /* to be fixed: (hindex != x.hindex) || */ (iter != x.iter); }
+    OFBool operator!=(const DcmHashDictIterator& x) const
+        { return !(*this == x); }
 
     /// dereferencing of iterator
     const DcmDictEntry* operator*() const
@@ -321,6 +321,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
+** Revision 1.22  2010-11-10 12:04:06  uli
+** Corrected DcmHashDictIterator::operator!=. Previously it ignored hindex.
+**
 ** Revision 1.21  2010-10-14 13:15:41  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

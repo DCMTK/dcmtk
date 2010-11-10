@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Made DcmHashDictIterator::stepUp correctly stop at the end of the dict.
   Affects: dcmdata/libsrc/dchashdi.cc
 
+- Corrected DcmHashDictIterator::operator!=. Previously it ignored hindex.
+  Affects: dcmdata/include/dcmtk/dcmdata/dchashdi.h
+
 **** Changes from 2010.11.09 (riesmeier)
 
 - Added check whether all type 1 attributes are really present and have a
