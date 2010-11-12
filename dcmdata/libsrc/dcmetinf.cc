@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-29 10:57:21 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2010-11-12 12:16:11 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,6 +153,8 @@ void DcmMetaInfo::print(STD_NAMESPACE ostream&out,
         out << ANSI_ESCAPE_CODE_COMMENT;
     printNestingLevel(out, flags, level);
     out << "# Dicom-Meta-Information-Header" << OFendl;
+    if (flags & DCMTypes::PF_useANSIEscapeCodes)
+        out << ANSI_ESCAPE_CODE_COMMENT;
     printNestingLevel(out, flags, level);
     out << "# Used TransferSyntax: " << DcmXfer(Xfer).getXferName() << OFendl;
     if (flags & DCMTypes::PF_useANSIEscapeCodes)
@@ -618,6 +620,10 @@ OFCondition DcmMetaInfo::loadFile(const char *fileName,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.56  2010-11-12 12:16:11  joergr
+** Output ANSI escape codes at the beginnig of each line in order to make sure
+** that always the correct color is used in case of truncated multi-line output.
+**
 ** Revision 1.55  2010-10-29 10:57:21  joergr
 ** Added support for colored output to the print() method.
 **

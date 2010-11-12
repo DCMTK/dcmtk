@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-29 10:57:21 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2010-11-12 12:16:11 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,6 +182,8 @@ void DcmDataset::print(STD_NAMESPACE ostream&out,
         out << ANSI_ESCAPE_CODE_COMMENT;
     printNestingLevel(out, flags, level);
     out << "# Dicom-Data-Set" << OFendl;
+    if (flags & DCMTypes::PF_useANSIEscapeCodes)
+        out << ANSI_ESCAPE_CODE_COMMENT;
     printNestingLevel(out, flags, level);
     out << "# Used TransferSyntax: " << DcmXfer(Xfer).getXferName() << OFendl;
     if (flags & DCMTypes::PF_useANSIEscapeCodes)
@@ -640,6 +642,10 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
+** Revision 1.52  2010-11-12 12:16:11  joergr
+** Output ANSI escape codes at the beginnig of each line in order to make sure
+** that always the correct color is used in case of truncated multi-line output.
+**
 ** Revision 1.51  2010-10-29 10:57:21  joergr
 ** Added support for colored output to the print() method.
 **

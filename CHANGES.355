@@ -1,7 +1,14 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2010.11.08 (schlachter)
+**** Changes from 2010.11.12 (riesmeier)
+
+- Output ANSI escape codes at the beginnig of each line in order to make sure
+  that always the correct color is used in case of truncated multi-line output.
+  Affects: dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcmetinf.cc
+
+**** Changes from 2010.11.10 (schlachter)
 
 - Made DcmHashDictIterator::stepUp correctly stop at the end of the dict.
   Affects: dcmdata/libsrc/dchashdi.cc
