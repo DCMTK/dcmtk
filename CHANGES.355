@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.15 (schlachter)
+
+- Removed a useless and potentially dangerous use of sscanf().
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 **** Changes from 2010.11.12 (riesmeier)
 
 - Output ANSI escape codes at the beginnig of each line in order to make sure

@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-09 09:50:42 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-15 12:57:20 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3842,16 +3842,16 @@ OFBool DicomDirInterface::getIconFromFile(const OFString &filename,
         {
             /* according to the pgm format no line should be longer than 70 characters */
             const int maxline = 256;
-            char line[maxline], text[maxline];
+            char line[maxline];
             /* read magic number */
-            if ((fgets(line, maxline, file) != NULL) && (sscanf(line, "%s", text) > 0) && (strcmp(text, "P5") == 0))
+            if ((fgets(line, maxline, file) != NULL) && (strcmp(line, "P5\n") == 0))
             {
                 OFBool corrupt = OFTrue;
-                if ((fgets(line, maxline, file) != NULL) && (sscanf(line, "%s", text) > 0))
+                if ((fgets(line, maxline, file) != NULL) && (line[0] != '\0'))
                 {
                     unsigned int pgmWidth, pgmHeight = 0;
                     /* skip optional comment line and get width and height */
-                    if (((*text != '#') || (fgets(line, maxline, file) != NULL)) &&
+                    if (((*line != '#') || (fgets(line, maxline, file) != NULL)) &&
                         (sscanf(line, "%u %u", &pgmWidth, &pgmHeight) > 0) && (pgmWidth > 0) && (pgmHeight > 0))
                     {
                         unsigned int pgmMax = 0;
@@ -5271,6 +5271,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.56  2010-11-15 12:57:20  uli
+ *  Removed a useless and potentially dangerous use of sscanf().
+ *
  *  Revision 1.55  2010-11-09 09:50:42  joergr
  *  Added check whether all type 1 attributes are really present and have a
  *  non-empty value; this check was missing for the following record types:
