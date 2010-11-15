@@ -17,9 +17,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:46 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-15 13:58:43 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,9 @@
 #include "dcmtk/dcmdata/libi2d/i2dimgs.h"
 #include "dcmtk/ofstd/offile.h"
 
+/** This is a I2DImgSource implementation that can parse BMP files and convert
+ *  them into DICOM images.
+ */
 class I2DBmpSource : public I2DImgSource
 {
 
@@ -144,8 +147,8 @@ protected:
                                Uint16 &colors    /*out*/);
 
   /** Read the color palette from the file.
-   * @param colors - [in] number of colors to read
-   * @param palette - [out] the read color palette is stored here
+   *  @param colors - [in] number of colors to read
+   *  @param palette - [out] the read color palette is stored here
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition readColorPalette(Uint16 colors,
@@ -159,7 +162,7 @@ protected:
    *  @param isTopDown - [in] If true, this is a top down bitmap
    *  @param colors - [in] Number of color palette entries
    *  @param palette - [in] Color palette
-   *  @param data - [out] Image data
+   *  @param pixData - [out] Image data
    *  @param length - [out] Length of data
    *  @return EC_Normal, if successful, error otherwise
    */
@@ -237,6 +240,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.h,v $
+ * Revision 1.9  2010-11-15 13:58:43  uli
+ * Fixed some errors in doxygen comments.
+ *
  * Revision 1.8  2010-10-14 13:15:46  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

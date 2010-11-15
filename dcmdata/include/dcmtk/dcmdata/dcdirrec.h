@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 13:11:11 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-15 13:58:43 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,7 +173,7 @@ public:
     DcmDirectoryRecord(const DcmDirectoryRecord &oldDirRec);
 
     /** assignment operator
-     *  @param the directory record to be copied
+     *  @param obj the directory record to be copied
      */
     DcmDirectoryRecord &operator=(const DcmDirectoryRecord &obj);
 
@@ -306,7 +306,7 @@ public:
      *  (SOP Class UID, SOP instance UID, Transfer Syntax UID) are inserted
      *  into the directory record.
      *  @param referencedFileID referenced file ID in DICOM format
-     *  @param referencedFileID path to file in operating system specific format
+     *  @param sourceFileName path to file in operating system specific format
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition assignToSOPFile(const char *referencedFileID,
@@ -359,7 +359,7 @@ public:
     /** remove child directory record. If found, the record is not deleted but
      *  returned to the caller who is responsible for further management of the
      *  DcmDirectoryRecord object.
-     *  @param elem pointer to element to be removed from list
+     *  @param dirRec pointer to element to be removed from list
      *  @return pointer to element if found, NULL otherwise
      */
     virtual DcmDirectoryRecord* removeSub(DcmDirectoryRecord *dirRec);
@@ -452,6 +452,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
+** Revision 1.47  2010-11-15 13:58:43  uli
+** Fixed some errors in doxygen comments.
+**
 ** Revision 1.46  2010-11-05 13:11:11  joergr
 ** Added support for new directory record types IMPLANT, IMPLANT GROUP and
 ** IMPLANT ASSY from Supplement 131 (Implant Templates).

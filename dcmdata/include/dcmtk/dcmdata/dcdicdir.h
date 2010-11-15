@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmDicomDir
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:40 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-15 13:58:43 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,9 +117,9 @@ public:
     virtual DcmDirectoryRecord* matchOrCreateMRDR( const char *filename );
 
     /** writes DICOMDIR to file
-     *  @param oxfer, must be DICOMDIR_DEFAULT_TRANSFERSYNTAX
+     *  @param oxfer must be DICOMDIR_DEFAULT_TRANSFERSYNTAX
      *  @param enctype encoding type for sequences
-     *  @param enctype encoding type for group lengths
+     *  @param glenc encoding type for group lengths
      *  @return status, EC_Normal if value length is correct, an error code otherwise
      */
     virtual OFCondition write(
@@ -232,6 +232,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
+** Revision 1.28  2010-11-15 13:58:43  uli
+** Fixed some errors in doxygen comments.
+**
 ** Revision 1.27  2010-10-14 13:15:40  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

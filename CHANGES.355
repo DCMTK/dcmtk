@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.11.15 (schlachter)
 
+- Fixed some errors in doxygen comments.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdicdir.h
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dbmps.h
+
 - Removed a useless and potentially dangerous use of sscanf().
   Affects: dcmdata/libsrc/dcddirif.cc
 
