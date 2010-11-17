@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.17 (schlachter)
+
+- Removed some uses of "%s" with sscanf().
+  Affects: dcmnet/apps/movescu.cc
+           dcmwlm/tests/wltest.cc
+
 **** Changes from 2010.11.15 (schlachter)
 
 - Fixed some errors in doxygen comments.

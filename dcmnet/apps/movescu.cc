@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 10:42:44 $
- *  CVS/RCS Revision: $Revision: 1.87 $
+ *  Update Date:      $Date: 2010-11-17 13:01:21 $
+ *  CVS/RCS Revision: $Revision: 1.88 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,14 +135,12 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
     unsigned int g = 0xffff;
     unsigned int e = 0xffff;
     int n = 0;
-    char val[1024];
     OFString dicName, valStr;
     OFString msg;
     char msg2[200];
-    val[0] = '\0';
 
     // try to parse group and element number
-    n = sscanf(s, "%x,%x=%s", &g, &e, val);
+    n = sscanf(s, "%x,%x=", &g, &e);
     OFString toParse = s;
     size_t eqPos = toParse.find('=');
     if (n < 2)  // if at least no tag could be parsed
@@ -1548,6 +1546,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.88  2010-11-17 13:01:21  uli
+** Removed some uses of "%s" with sscanf().
+**
 ** Revision 1.87  2010-11-01 10:42:44  uli
 ** Fixed some compiler warnings reported by gcc with additional flags.
 **

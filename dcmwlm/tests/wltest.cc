@@ -18,8 +18,8 @@
  *  Purpose: Worklist Database Test Program
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 13:37:32 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2010-11-17 13:01:22 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,11 +102,10 @@ addOverrideKey(DcmDataset& overrideKeys, char* s)
     unsigned int g = 0xffff;
     unsigned int e = 0xffff;
     int n = 0;
-    char val[1024];
 
-    val[0] = '\0';
-    n = sscanf(s, "%x,%x=%s", &g, &e, val);
-
+    n = sscanf(s, "%x,%x=", &g, &e);
+    OFString toParse = s;
+    size_t eqPos = toParse.find('=');
     if (n < 2) {
         errmsg("bad key format: %s", s);
         usage(); /* does not return */
@@ -122,7 +121,9 @@ addOverrideKey(DcmDataset& overrideKeys, char* s)
         errmsg("cannot create element for tag: (%04x,%04x)", g, e);
         usage();
     }
-    if (strlen(val) > 0) {
+    if (eqPos != OFString_npos) {
+        // Make this point to the first character after the '='
+        const char *val = s + eqPos + 1;
         if (elem->putString(val).bad()) {
             errmsg("cannot put tag value: (%04x,%04x)=\"%s\"", g, e, val);
             usage();
@@ -366,6 +367,9 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
 /*
 ** CVS Log
 ** $Log: wltest.cc,v $
+** Revision 1.12  2010-11-17 13:01:22  uli
+** Removed some uses of "%s" with sscanf().
+**
 ** Revision 1.11  2010-11-01 13:37:32  uli
 ** Fixed some compiler warnings reported by gcc with additional flags.
 **
