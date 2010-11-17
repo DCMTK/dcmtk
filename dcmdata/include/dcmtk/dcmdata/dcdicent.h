@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface for a dictionary entry in the loadable DICOM data dictionary
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:40 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2010-11-17 15:17:51 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -313,9 +313,11 @@ public:
             return OFFalse;
         else
         {
-            return
-                DCM_INRANGE(key.getGroup(), getGroup(), getUpperGroup()) &&
-                DCM_INRANGE(key.getElement(), getElement(), getUpperElement());
+            const OFBool groupMatches=DCM_INRANGE(key.getGroup(), getGroup(), getUpperGroup());
+            OFBool found=groupMatches && DCM_INRANGE(key.getElement(), getElement(), getUpperElement());
+            if (!found && groupMatches && privCreator)
+                found=DCM_INRANGE(key.getElement() & 0xFF, getElement(), getUpperElement());
+            return found;
         }
     }
 
@@ -408,6 +410,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
+** Revision 1.26  2010-11-17 15:17:51  meichel
+** Fixed issue with data dictionary causing private tags with group number
+**   range and flexible element number not to be found in the dictionary.
+**
 ** Revision 1.25  2010-10-14 13:15:40  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
