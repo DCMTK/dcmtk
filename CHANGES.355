@@ -1,8 +1,12 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2010.11.17 (eichelberg)
+**** Changes from 2010.11.19 (eichelberg)
 
+- Added several new private tags from Philips documented in a recent conformance statement.
+  Thanks to Per Inge Mathisen <perim@sonowand.com> for the contribution.
+
+**** Changes from 2010.11.17 (eichelberg)
 
 - Fixed issue with data dictionary causing private tags with group number 
   range and flexible element number not to be found in the dictionary.
