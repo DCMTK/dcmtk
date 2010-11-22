@@ -22,6 +22,12 @@ Changes between releases are documented here.
   Affects: CMake/GenerateDCMTKConfigure.cmake
            CMake/osconfig.h.in
 
+- Check whether accept(), getsockopt() and select() accept int* arguments.
+  Added:   CMake/dcmtkTestSelectIntP.cc
+           CMake/dcmtkTestSocketIntP.cc
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+
 **** Changes from 2010.11.22 (riesmeier)
 
 - Updated builtin dictionary (because of recently added private tags).

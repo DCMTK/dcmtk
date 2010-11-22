@@ -18,7 +18,6 @@
   #cmakedefine HAVE_WINDOWS_H @HAVE_WINDOWS_H@
   /* Define if you have the <winsock.h> header file. */
   #cmakedefine HAVE_WINSOCK_H @HAVE_WINSOCK_H@
-  #define windows 1
 #endif
 
 #ifdef __CYGWIN__
@@ -200,15 +199,15 @@
 
 /* Define if your system declares argument 3 of accept() as int * instead of
    size_t * or socklen_t * */
-#define HAVE_INTP_ACCEPT 1
+#cmakedefine HAVE_INTP_ACCEPT @HAVE_INTP_ACCEPT@
 
 /* Define if your system declares argument 5 of getsockopt() as int * instead
    of size_t * or socklen_t */
-#define HAVE_INTP_GETSOCKOPT 1
+#cmakedefine HAVE_INTP_GETSOCKOPT @HAVE_INTP_GETSOCKOPT@
 
 /* Define if your system declares argument 2-4 of select() as int * instead of
    struct fd_set * */
-/* #undef HAVE_INTP_SELECT */
+#cmakedefine HAVE_INTP_SELECT @HAVE_INTP_SELECT@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #cmakedefine HAVE_INTTYPES_H @HAVE_INTTYPES_H@
