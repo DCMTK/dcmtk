@@ -1,16 +1,24 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.22 (riesmeier)
+
+- Added missing private tag from Philips to second spelling variant of the
+  private creator element (also see last commit).
+  Affects: dcmdata/data/private.dic
+
 **** Changes from 2010.11.19 (eichelberg)
 
-- Added several new private tags from Philips documented in a recent conformance statement.
+- Added several new private tags from Philips documented in a recent
+  conformance statement.
   Thanks to Per Inge Mathisen <perim@sonowand.com> for the contribution.
+  Affects: dcmdata/data/private.dic
 
 **** Changes from 2010.11.17 (eichelberg)
 
-- Fixed issue with data dictionary causing private tags with group number 
-  range and flexible element number not to be found in the dictionary.
-  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report and patch.
+- Fixed issue with data dictionary causing private tags with group number
+  range and flexible element number not to be found in the dictionary. Thanks
+  to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report and patch.
   Affects: dcmdata/include/dcmtk/dcmdata/dcdicent.h
 
 **** Changes from 2010.11.17 (schlachter)

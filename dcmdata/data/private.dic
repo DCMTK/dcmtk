@@ -17,9 +17,9 @@
 #  Purpose:
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2010-11-19 14:58:54 $
-#  CVS/RCS Revision: $Revision: 1.9 $
+#  Last Update:      $Author: joergr $
+#  Update Date:      $Date: 2010-11-22 10:39:26 $
+#  CVS/RCS Revision: $Revision: 1.10 $
 #  Status:           $State: Exp $
 #
 #
@@ -1245,6 +1245,7 @@
 (2005,"PHILIPS MR IMAGING DD 001",35)	SS	StackSliceNumber	1
 (2005,"PHILIPS MR IMAGING DD 001",36)	CS	StackType	1
 (2005,"PHILIPS MR IMAGING DD 001",a1)	CS	SyncraScanType	1
+(2005,"PHILIPS MR IMAGING DD 001",5f)	SQ	StackSequence	1
 (2005,"PHILIPS MR IMAGING DD 001",83)	SQ	Unknown	1
 
 (0019,"PHILIPS MR R5.5/PART",1000)	DS	FieldOfView	1
