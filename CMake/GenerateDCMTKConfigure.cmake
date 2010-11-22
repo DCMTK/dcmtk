@@ -543,3 +543,27 @@ IF("HAVE_VLA" MATCHES "^HAVE_VLA$")
       "${OUTPUT}\n")
   ENDIF(HAVE_VLA)
 ENDIF("HAVE_VLA" MATCHES "^HAVE_VLA$")
+
+# check if std::ios::nocreate exists
+IF("HAVE_IOS_NOCREATE" MATCHES "^HAVE_IOS_NOCREATE$")
+  MESSAGE(STATUS "Checking whether std::ios::nocreate exists")
+  TRY_COMPILE(HAVE_IOS_NOCREATE
+    ${CMAKE_BINARY_DIR}/CMakeTmp/IosNocreate
+    ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestStdIosNocreate.cc
+    OUTPUT_VARIABLE OUTPUT)
+  IF(HAVE_IOS_NOCREATE)
+    MESSAGE(STATUS "Checking whether std::ios::nocreate exists -- yes")
+    SET(HAVE_IOS_NOCREATE 1 CACHE INTERNAL "Set if std::ios::nocreate is supported")
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
+      "Determining if std::ios::nocreate is supported "
+      "passed with the following output:\n"
+      "${OUTPUT}\n")
+  ELSE(HAVE_IOS_NOCREATE)
+    MESSAGE(STATUS "Checking whether std::ios::nocreate exists -- no")
+    SET(HAVE_IOS_NOCREATE 0 CACHE INTERNAL "Set if std::ios::nocreate is supported")
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+      "Determining if std::ios::nocreate is supported "
+      "failed with the following output:\n"
+      "${OUTPUT}\n")
+  ENDIF(HAVE_IOS_NOCREATE)
+ENDIF("HAVE_IOS_NOCREATE" MATCHES "^HAVE_IOS_NOCREATE$")

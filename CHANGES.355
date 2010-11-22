@@ -17,6 +17,11 @@ Changes between releases are documented here.
 - Use a macro instead of repeating the filename of the test file.
   Affects: ofstd/tests/toffile.cc
 
+- Add definition for delete (std::nothrow) and check for std::ios::nocreate.
+  Added:   CMake/dcmtkTestStdIosNocreate.cc
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+
 **** Changes from 2010.11.22 (riesmeier)
 
 - Updated builtin dictionary (because of recently added private tags).
