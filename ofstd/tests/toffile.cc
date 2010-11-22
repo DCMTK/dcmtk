@@ -18,9 +18,9 @@
  *  Purpose: test program for the non-trivial fseek and ftell implementations
  *           in class OFFile
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:15 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-22 13:08:08 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -362,9 +362,9 @@ int main()
   else
   {
     COUT << "\nCreating a 6 GByte data file." << OFendl << STD_NAMESPACE flush;
-    if (!file.fopen("testfile.$$$", "w+b"))
+    if (!file.fopen(FILENAME, "w+b"))
     {
-      COUT << "Error: Unable to create file testfile.$$$. LFS test failed." << OFendl;
+      COUT << "Error: Unable to create file " << FILENAME << ". LFS test failed." << OFendl;
       return 10;    
     }
     
@@ -387,9 +387,9 @@ int main()
 
   COUT << "Re-opening file in read-only mode." << OFendl << STD_NAMESPACE flush;
  
-  if (!file.fopen("testfile.$$$", "rb"))
+  if (!file.fopen(FILENAME, "rb"))
   {
-    COUT << "Error: Unable to open file testfile.$$$. LFS test failed." << OFendl;
+    COUT << "Error: Unable to open file " << FILENAME << ". LFS test failed." << OFendl;
     return 10;    
   }
 
@@ -406,6 +406,9 @@ int main()
 /*
  * CVS/RCS Log:
  * $Log: toffile.cc,v $
+ * Revision 1.5  2010-11-22 13:08:08  uli
+ * Use a macro instead of repeating the filename of the test file.
+ *
  * Revision 1.4  2010-10-14 13:15:15  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
