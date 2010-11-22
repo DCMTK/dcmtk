@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2010-11-05 10:08:50
+**   Date: 2010-11-22 11:44:46
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2010-11-05 10:08:50";
+const char* dcmBuiltinDictBuildDate = "2010-11-22 11:44:46";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -20768,6 +20768,22 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SL, "NumberOfStacks", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x0061, 0x2001, 0x0061,
+      EVR_CS, "SeriesTransmitted", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x0061, 0x2001, 0x0061,
+      EVR_CS, "SeriesTransmitted", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x0062, 0x2001, 0x0062,
+      EVR_CS, "SeriesCommitted", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x0062, 0x2001, 0x0062,
+      EVR_CS, "SeriesCommitted", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
   , { 0x2001, 0x0063, 0x2001, 0x0063,
       EVR_CS, "ExaminationSource", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -20804,12 +20820,76 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "SynergyReconstructionType", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR IMAGING DD 001" }
+  , { 0x2005, 0x001e, 0x2005, 0x001e,
+      EVR_SH, "MIPProtocol", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x001e, 0x2005, 0x001e,
+      EVR_SH, "MIPProtocol", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
+  , { 0x2005, 0x001f, 0x2005, 0x001f,
+      EVR_SH, "MPRProtocol", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x001f, 0x2005, 0x001f,
+      EVR_SH, "MPRProtocol", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
   , { 0x2005, 0x0020, 0x2005, 0x0020,
       EVR_SL, "NumberOfChemicalShifts", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Philips MR Imaging DD 001" }
   , { 0x2005, 0x0020, 0x2005, 0x0020,
       EVR_SL, "NumberOfChemicalShifts", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
+  , { 0x2005, 0x002d, 0x2005, 0x002d,
+      EVR_SS, "NumberOfStackSlices", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x002d, 0x2005, 0x002d,
+      EVR_SS, "NumberOfStackSlices", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
+  , { 0x2005, 0x0032, 0x2005, 0x0032,
+      EVR_FL, "StackRadialAngle", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x0032, 0x2005, 0x0032,
+      EVR_FL, "StackRadialAngle", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
+  , { 0x2005, 0x0033, 0x2005, 0x0033,
+      EVR_CS, "StackRadialAxis", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x0033, 0x2005, 0x0033,
+      EVR_CS, "StackRadialAxis", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
+  , { 0x2005, 0x0035, 0x2005, 0x0035,
+      EVR_SS, "StackSliceNumber", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x0035, 0x2005, 0x0035,
+      EVR_SS, "StackSliceNumber", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
+  , { 0x2005, 0x0036, 0x2005, 0x0036,
+      EVR_CS, "StackType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x0036, 0x2005, 0x0036,
+      EVR_CS, "StackType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
+  , { 0x2005, 0x005f, 0x2005, 0x005f,
+      EVR_SQ, "StackSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x005f, 0x2005, 0x005f,
+      EVR_SQ, "StackSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR IMAGING DD 001" }
   , { 0x2005, 0x0083, 0x2005, 0x0083,

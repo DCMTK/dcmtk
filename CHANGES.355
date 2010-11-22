@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.11.22 (riesmeier)
 
+- Updated builtin dictionary (because of recently added private tags).
+  Affects: dcmdata/libsrc/dcdictzz.cc
+
 - Added missing private tag from Philips to second spelling variant of the
   private creator element (also see last commit).
   Affects: dcmdata/data/private.dic
