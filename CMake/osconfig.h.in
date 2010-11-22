@@ -409,11 +409,17 @@
 /* Define if your system has a prototype for std::vfprintf in stdarg.h */
 #cmakedefine HAVE_PROTOTYPE_STD__VFPRINTF @HAVE_PROTOTYPE_STD__VFPRINTF@
 
+/* Define if your system has a prototype for std::vsnprintf in stdio.h */
+#cmakedefine HAVE_PROTOTYPE_STD__VSNPRINTF @HAVE_PROTOTYPE_STD__VSNPRINTF@
+
 /* Define if your system has a prototype for strcasecmp in string.h */
 #cmakedefine HAVE_PROTOTYPE_STRCASECMP @HAVE_PROTOTYPE_STRCASECMP@
 
 /* Define if your system has a prototype for strncasecmp in string.h */
 #cmakedefine HAVE_PROTOTYPE_STRNCASECMP @HAVE_PROTOTYPE_STRNCASECMP@
+
+/* Define if your system has a prototype for strerror_r in string.h */
+#cmakedefine HAVE_PROTOTYPE_STRERROR_R @HAVE_PROTOTYPE_STRERROR_R@
 
 /* Define if your system has a prototype for usleep in libc.h unistd.h
    stdlib.h */
@@ -640,6 +646,9 @@
 
 /* Define if <math.h> fails if included extern "C" */
 #define INCLUDE_MATH_H_AS_CXX 1
+
+/* Define to 1 if you have variable length arrays. */
+#cmakedefine HAVE_VLA @HAVE_VLA@
 
 /* Define to the address where bug reports for this package should be sent. */
 /* #undef PACKAGE_BUGREPORT */

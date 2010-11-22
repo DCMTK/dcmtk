@@ -357,6 +357,7 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_FUNCTIONWITHHEADER_EXISTS(select "${HEADERS}" HAVE_PROTOTYPE_SELECT)
   CHECK_FUNCTIONWITHHEADER_EXISTS(strcasecmp "${HEADERS}" HAVE_PROTOTYPE_STRCASECMP)
   CHECK_FUNCTIONWITHHEADER_EXISTS(strncasecmp "${HEADERS}" HAVE_PROTOTYPE_STRNCASECMP)
+  CHECK_FUNCTIONWITHHEADER_EXISTS(strerror_r "${HEADERS}" HAVE_PROTOTYPE_STRERROR_R)
   # "definition" is an (exchangeable) identifier that is needed for successful compile test
   CHECK_FUNCTIONWITHHEADER_EXISTS("std::ios_base::openmode definition" "${HEADERS}" HAVE_DECLARATION_STD__IOS_BASE__OPENMODE)
   CHECK_FUNCTIONWITHHEADER_EXISTS(pthread_rwlock_init "${HEADERS}" HAVE_PTHREAD_RWLOCK)
@@ -499,7 +500,7 @@ ENDIF("HAVE_ENAMETOOLONG" MATCHES "^HAVE_ENAMETOOLONG$")
 IF("HAVE_CHARP_STRERROR_R" MATCHES "^HAVE_CHARP_STRERROR_R$")
   MESSAGE(STATUS "Checking whether strerror_r returns an int")
   TRY_COMPILE(HAVE_CHARP_STRERROR_R
-    ${CMAKE_BINARY_DIR}/CMakeTmp/NameTooLong
+    ${CMAKE_BINARY_DIR}/CMakeTmp/CharPStrerror
     ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestCharPStrerror.cc
     OUTPUT_VARIABLE OUTPUT)
   IF(HAVE_CHARP_STRERROR_R)
@@ -518,3 +519,27 @@ IF("HAVE_CHARP_STRERROR_R" MATCHES "^HAVE_CHARP_STRERROR_R$")
       "${OUTPUT}\n")
   ENDIF(HAVE_CHARP_STRERROR_R)
 ENDIF("HAVE_CHARP_STRERROR_R" MATCHES "^HAVE_CHARP_STRERROR_R$")
+
+# check if variable length arrays are supported.
+IF("HAVE_VLA" MATCHES "^HAVE_VLA$")
+  MESSAGE(STATUS "Checking whether variable length arrays are supported")
+  TRY_COMPILE(HAVE_VLA
+    ${CMAKE_BINARY_DIR}/CMakeTmp/VariableLengthArray
+    ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestVariableLengthArrays.cc
+    OUTPUT_VARIABLE OUTPUT)
+  IF(HAVE_VLA)
+    MESSAGE(STATUS "Checking whether variable length arrays are supported -- yes")
+    SET(HAVE_VLA 1 CACHE INTERNAL "Set if variable length arrays are supported")
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
+      "Determining if variable length arrays are supported "
+      "passed with the following output:\n"
+      "${OUTPUT}\n")
+  ELSE(HAVE_VLA)
+    MESSAGE(STATUS "Checking whether variable length arrays are supported -- no")
+    SET(HAVE_VLA 0 CACHE INTERNAL "Set if variable length arrays are supported")
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+      "Determining if variable length arrays are supported "
+      "failed with the following output:\n"
+      "${OUTPUT}\n")
+  ENDIF(HAVE_VLA)
+ENDIF("HAVE_VLA" MATCHES "^HAVE_VLA$")

@@ -9,6 +9,11 @@ Changes between releases are documented here.
   Affects: CMake/GenerateDCMTKConfigure.cmake
            CMake/osconfig.h.in
 
+- Add checks for strerror_r, std::vsnprintf and variable length arrays to CMake.
+  Added:   CMake/dcmtkTestVariableLengthArrays.cc
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+
 **** Changes from 2010.11.22 (riesmeier)
 
 - Updated builtin dictionary (because of recently added private tags).
