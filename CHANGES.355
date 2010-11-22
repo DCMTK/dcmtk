@@ -28,6 +28,10 @@ Changes between releases are documented here.
   Affects: CMake/GenerateDCMTKConfigure.cmake
            CMake/osconfig.h.in
 
+- Made the new CMake checks work on Windows.
+  Affects: CMake/dcmtkTestSelectIntP.cc
+           CMake/dcmtkTestSocketIntP.cc
+
 **** Changes from 2010.11.22 (riesmeier)
 
 - Updated builtin dictionary (because of recently added private tags).

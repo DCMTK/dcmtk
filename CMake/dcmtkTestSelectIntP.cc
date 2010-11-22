@@ -1,7 +1,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifdef _WIN32
+/* Windows is pure evil */
+#include <windows.h>
+#else
 #include <sys/socket.h>
+#endif
 #ifdef __cplusplus
 }
 #endif
