@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.22 (schlachter)
+
+- Add checks for cstdio, cstdarg, ENAMETOOLONG and strerror_r's return value.
+  Added:   CMake/dcmtkTestCharPStrerror.cc
+           CMake/dcmtkTestNameTooLong.cc
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+
 **** Changes from 2010.11.22 (riesmeier)
 
 - Updated builtin dictionary (because of recently added private tags).

@@ -121,6 +121,7 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_INCLUDE_FILE_CXX("stddef.h" HAVE_STDDEF_H)
   CHECK_INCLUDE_FILE_CXX("stdint.h" HAVE_STDINT_H)
   CHECK_INCLUDE_FILE_CXX("stdio.h" HAVE_STDIO_H)
+  CHECK_INCLUDE_FILE_CXX("cstdio" HAVE_CSTDIO)
   CHECK_INCLUDE_FILE_CXX("strings.h" HAVE_STRINGS_H)
   CHECK_INCLUDE_FILE_CXX("string.h" HAVE_STRING_H)
   CHECK_INCLUDE_FILE_CXX("strstream.h" HAVE_STRSTREAM_H)
@@ -155,6 +156,7 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_INCLUDE_FILE_CXX("libc.h" HAVE_LIBC_H)
   CHECK_INCLUDE_FILE_CXX("stdlib.h" HAVE_STDLIB_H)
   CHECK_INCLUDE_FILE_CXX("stdarg.h" HAVE_STDARG_H)
+  CHECK_INCLUDE_FILE_CXX("cstdarg" HAVE_CSTDARG)
   CHECK_INCLUDE_FILE_CXX("signal.h" HAVE_SIGNAL_H)
 
   # there is no CMake macro to take care of these yet
@@ -316,13 +318,13 @@ ENDIF(WIN32 AND NOT CYGWIN)
   # We just assume they exist when the C version was found
   SET(CXXHEADERS)
 
-  IF(HAVE_STDIO_H)
+  IF(HAVE_CSTDIO)
     SET(CXXHEADERS ${CXXHEADERS} cstdio)
-  ENDIF(HAVE_STDIO_H)
+  ENDIF(HAVE_CSTDIO)
 
-  IF(HAVE_STDARG_H)
+  IF(HAVE_CSTDARG)
     SET(CXXHEADERS ${CXXHEADERS} cstdarg)
-  ENDIF(HAVE_STDARG_H)
+  ENDIF(HAVE_CSTDARG)
 
   CHECK_FUNCTIONWITHHEADER_EXISTS(isinf "${HEADERS}" HAVE_PROTOTYPE_ISINF)
   CHECK_FUNCTIONWITHHEADER_EXISTS(isnan "${HEADERS}" HAVE_PROTOTYPE_ISNAN)
@@ -456,15 +458,63 @@ IF("HAVE_TYPENAME" MATCHES "^HAVE_TYPENAME$")
     MESSAGE(STATUS "Checking whether typename works correctly -- yes")
     SET(HAVE_TYPENAME 1 CACHE INTERNAL "Set if typename works correctly")
     FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
-      "Determining if the C++ compiler supports typename"
+      "Determining if the C++ compiler supports typename "
       "passed with the following output:\n"
       "${OUTPUT}\n")
   ELSE(HAVE_TYPENAME)
     MESSAGE(STATUS "Checking whether typename works correctly -- no")
     SET(HAVE_TYPENAME 0 CACHE INTERNAL "Set if typename works correctly")
     FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-      "Determining if the C++ compiler supports typename"
+      "Determining if the C++ compiler supports typename "
       "failed with the following output:\n"
       "${OUTPUT}\n")
   ENDIF(HAVE_TYPENAME)
 ENDIF("HAVE_TYPENAME" MATCHES "^HAVE_TYPENAME$")
+
+# check if ENAMETOOLONG is defined.
+IF("HAVE_ENAMETOOLONG" MATCHES "^HAVE_ENAMETOOLONG$")
+  MESSAGE(STATUS "Checking whether ENAMETOOLONG is defined")
+  TRY_COMPILE(HAVE_ENAMETOOLONG
+    ${CMAKE_BINARY_DIR}/CMakeTmp/NameTooLong
+    ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestNameTooLong.cc
+    OUTPUT_VARIABLE OUTPUT)
+  IF(HAVE_ENAMETOOLONG)
+    MESSAGE(STATUS "Checking whether ENAMETOOLONG is defined -- yes")
+    SET(HAVE_ENAMETOOLONG 1 CACHE INTERNAL "Set if ENAMETOOLONG is defined")
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
+      "Determining if ENAMETOOLONG is defined "
+      "passed with the following output:\n"
+      "${OUTPUT}\n")
+  ELSE(HAVE_ENAMETOOLONG)
+    MESSAGE(STATUS "Checking whether ENAMETOOLONG is defined -- no")
+    SET(HAVE_ENAMETOOLONG 0 CACHE INTERNAL "Set if ENAMETOOLONG is defined")
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+      "Determining if ENAMETOOLONG is defined "
+      "failed with the following output:\n"
+      "${OUTPUT}\n")
+  ENDIF(HAVE_ENAMETOOLONG)
+ENDIF("HAVE_ENAMETOOLONG" MATCHES "^HAVE_ENAMETOOLONG$")
+
+# check if strerror_r returns a char* is defined.
+IF("HAVE_CHARP_STRERROR_R" MATCHES "^HAVE_CHARP_STRERROR_R$")
+  MESSAGE(STATUS "Checking whether strerror_r returns an int")
+  TRY_COMPILE(HAVE_CHARP_STRERROR_R
+    ${CMAKE_BINARY_DIR}/CMakeTmp/NameTooLong
+    ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestCharPStrerror.cc
+    OUTPUT_VARIABLE OUTPUT)
+  IF(HAVE_CHARP_STRERROR_R)
+    MESSAGE(STATUS "Checking whether strerror_r returns an int -- yes")
+    SET(HAVE_CHARP_STRERROR_R 1 CACHE INTERNAL "Set if strerror_r returns an int")
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
+      "Determining if strerror_r returns an int "
+      "passed with the following output:\n"
+      "${OUTPUT}\n")
+  ELSE(HAVE_CHARP_STRERROR_R)
+    MESSAGE(STATUS "Checking whether strerror_r returns an int -- no")
+    SET(HAVE_CHARP_STRERROR_R 0 CACHE INTERNAL "Set if strerror_r returns an int")
+    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+      "Determining if strerror_r returns an int "
+      "failed with the following output:\n"
+      "${OUTPUT}\n")
+  ENDIF(HAVE_CHARP_STRERROR_R)
+ENDIF("HAVE_CHARP_STRERROR_R" MATCHES "^HAVE_CHARP_STRERROR_R$")

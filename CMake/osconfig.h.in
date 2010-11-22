@@ -128,6 +128,9 @@
 /* Define to 1 if you have the <errno.h> header file. */
 #cmakedefine HAVE_ERRNO_H @HAVE_ERRNO_H@
 
+/* Define to 1 if <errno.h> defined ENAMETOOLONG. */
+#cmakedefine HAVE_ENAMETOOLONG @HAVE_ENAMETOOLONG@
+
 /* Define if your C++ compiler supports the explicit template specialization
    syntax */
 #define HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION 1
@@ -485,6 +488,9 @@
 /* Define to 1 if you have the <stdarg.h> header file. */
 #cmakedefine HAVE_STDARG_H @HAVE_STDARG_H@
 
+/* Define to 1 if you have the <cstdarg> header file. */
+#cmakedefine HAVE_CSTDARG @HAVE_CSTDARG@
+
 /* Define to 1 if you have the <stddef.h> header file. */
 #cmakedefine HAVE_STDDEF_H @HAVE_STDDEF_H@
 
@@ -493,6 +499,9 @@
 
 /* Define to 1 if you have the <stdio.h> header file. */
 #cmakedefine HAVE_STDIO_H @HAVE_STDIO_H@
+
+/* Define to 1 if you have the <cstdio> header file. */
+#cmakedefine HAVE_CSTDIO @HAVE_CSTDIO@
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #cmakedefine HAVE_STDLIB_H @HAVE_STDLIB_H@
@@ -511,6 +520,9 @@
 
 /* Define to 1 if you have the `strerror' function. */
 #cmakedefine HAVE_STRERROR @HAVE_STRERROR@
+
+/* Define to 1 if `strerror_r' returns a char*. */
+#cmakedefine HAVE_CHARP_STRERROR_R @HAVE_CHARP_STRERROR_R@
 
 /* Define to 1 if you have the <strings.h> header file. */
 #cmakedefine HAVE_STRINGS_H @HAVE_STRINGS_H@
