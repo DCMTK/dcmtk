@@ -23,6 +23,9 @@ Changes between releases are documented here.
 - Add a previously missing include directive.
   Affects: oflog/include/dcmtk/oflog/helpers/syncpwin.h
 
+- Fix config/changext so that dcml2pnm compiles on windows.
+  Affects: config/changext
+
 **** Changes from 2010.11.22 (schlachter)
 
 - Add checks for cstdio, cstdarg, ENAMETOOLONG and strerror_r's return value.

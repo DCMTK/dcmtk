@@ -31,6 +31,12 @@ do
   `mv $file $newfile`
 done
 
+if [ -f dcmjpls/apps/dcml2pnm.$newext ] ; then
+  echo "updating implementation include in dcml2pnm.$newext"
+  `cat dcmjpls/apps/dcml2pnm.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmimage\/apps\/dcm2pnm\.$oldext\"/#include \"..\/..\/dcmimage\/apps\/dcm2pnm.$newext\"/g" >dcmjpls/apps/dcml2pnm.new`
+  `mv dcmjpls/apps/dcml2pnm.new dcmjpls/apps/dcml2pnm.$newext`
+fi
+
 if [ -f dcmjpeg/apps/dcmj2pnm.$newext ] ; then
   echo "updating implementation include in dcmj2pnm.$newext"
   `cat dcmjpeg/apps/dcmj2pnm.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmimage\/apps\/dcm2pnm\.$oldext\"/#include \"..\/..\/dcmimage\/apps\/dcm2pnm.$newext\"/g" >dcmjpeg/apps/dcmj2pnm.new`
