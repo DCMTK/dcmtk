@@ -21,6 +21,8 @@
 //   (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
 //   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "dcmtk/ofstd/ofcast.h"
+
 //! @file
 //! This file contains implementations of synchronization
 //! primitives using the Win32 API. It does not contain any include

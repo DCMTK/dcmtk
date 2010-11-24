@@ -13,6 +13,9 @@ Changes between releases are documented here.
 - Reintroduce some MSC6 specific defines that were lost.
   Affects: CMake/osconfig.h.in
 
+- Add a previously missing include directive.
+  Affects: oflog/include/dcmtk/oflog/helpers/syncpwin.h
+
 **** Changes from 2010.11.22 (schlachter)
 
 - Add checks for cstdio, cstdarg, ENAMETOOLONG and strerror_r's return value.
