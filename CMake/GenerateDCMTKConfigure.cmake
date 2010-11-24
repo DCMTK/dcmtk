@@ -568,52 +568,60 @@ IF("HAVE_IOS_NOCREATE" MATCHES "^HAVE_IOS_NOCREATE$")
   ENDIF(HAVE_IOS_NOCREATE)
 ENDIF("HAVE_IOS_NOCREATE" MATCHES "^HAVE_IOS_NOCREATE$")
 
-# check if socket functions accept an int*
-IF("HAVE_INTP_SOCKET" MATCHES "^HAVE_INTP_SOCKET$")
-  MESSAGE(STATUS "Checking whether socket functions accept an int* argument")
-  TRY_COMPILE(HAVE_INTP_SOCKET
-    ${CMAKE_BINARY_DIR}/CMakeTmp/testSocketIntP
-    ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestSocketIntP.cc
-    OUTPUT_VARIABLE OUTPUT)
-  IF(HAVE_INTP_SOCKET)
-    MESSAGE(STATUS "Checking whether socket functions accept an int* argument -- yes")
-    SET(HAVE_INTP_ACCEPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
-    SET(HAVE_INTP_GETSOCKOPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
-      "Determining if socket functions accept an int* argument "
-      "passed with the following output:\n"
-      "${OUTPUT}\n")
-  ELSE(HAVE_INTP_SOCKET)
-    MESSAGE(STATUS "Checking whether socket functions accept an int* argument -- no")
-    SET(HAVE_INTP_ACCEPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
-    SET(HAVE_INTP_GETSOCKOPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-      "Determining if socket functions accept an int* argument "
-      "failed with the following output:\n"
-      "${OUTPUT}\n")
-  ENDIF(HAVE_INTP_SOCKET)
-ENDIF("HAVE_INTP_SOCKET" MATCHES "^HAVE_INTP_SOCKET$")
+IF(WIN32)
+  # If someone can tell me how to convince TRY_COMPILE to link against winsock,
+  # we could use tests for these. Until then, here is what would be the result:
+  SET(HAVE_INTP_ACCEPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
+  SET(HAVE_INTP_GETSOCKOPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
+  SET(HAVE_INTP_SELECT 0 CACHE INTERNAL "Set if select() accepts an int* argument")
+ELSE(WIN32)
+  # check if socket functions accept an int*
+  IF("HAVE_INTP_SOCKET" MATCHES "^HAVE_INTP_SOCKET$")
+    MESSAGE(STATUS "Checking whether socket functions accept an int* argument")
+    TRY_COMPILE(HAVE_INTP_SOCKET
+      ${CMAKE_BINARY_DIR}/CMakeTmp/testSocketIntP
+      ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestSocketIntP.cc
+      OUTPUT_VARIABLE OUTPUT)
+    IF(HAVE_INTP_SOCKET)
+      MESSAGE(STATUS "Checking whether socket functions accept an int* argument -- yes")
+      SET(HAVE_INTP_ACCEPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
+      SET(HAVE_INTP_GETSOCKOPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
+      FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
+        "Determining if socket functions accept an int* argument "
+        "passed with the following output:\n"
+        "${OUTPUT}\n")
+    ELSE(HAVE_INTP_SOCKET)
+      MESSAGE(STATUS "Checking whether socket functions accept an int* argument -- no")
+      SET(HAVE_INTP_ACCEPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
+      SET(HAVE_INTP_GETSOCKOPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
+      FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+        "Determining if socket functions accept an int* argument "
+        "failed with the following output:\n"
+        "${OUTPUT}\n")
+    ENDIF(HAVE_INTP_SOCKET)
+  ENDIF("HAVE_INTP_SOCKET" MATCHES "^HAVE_INTP_SOCKET$")
 
-# check if select() accepts an int*
-IF("HAVE_INTP_SELECT" MATCHES "^HAVE_INTP_SELECT$")
-  MESSAGE(STATUS "Checking whether select() accepts an int* argument")
-  TRY_COMPILE(HAVE_INTP_SELECT
-    ${CMAKE_BINARY_DIR}/CMakeTmp/testSelectIntP
-    ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestSelectIntP.cc
-    OUTPUT_VARIABLE OUTPUT)
-  IF(HAVE_INTP_SELECT)
-    MESSAGE(STATUS "Checking whether select() accepts an int* argument -- yes")
-    SET(HAVE_INTP_SELECT 1 CACHE INTERNAL "Set if select() accepts an int* argument")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
-      "Determining if select() accepts an int* argument "
-      "passed with the following output:\n"
-      "${OUTPUT}\n")
-  ELSE(HAVE_INTP_SELECT)
-    MESSAGE(STATUS "Checking whether select() accepts an int* argument -- no")
-    SET(HAVE_INTP_SELECT 0 CACHE INTERNAL "Set if select() accepts an int* argument")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-      "Determining if select() accepts an int* argument "
-      "failed with the following output:\n"
-      "${OUTPUT}\n")
-  ENDIF(HAVE_INTP_SELECT)
-ENDIF("HAVE_INTP_SELECT" MATCHES "^HAVE_INTP_SELECT$")
+  # check if select() accepts an int*
+  IF("HAVE_INTP_SELECT" MATCHES "^HAVE_INTP_SELECT$")
+    MESSAGE(STATUS "Checking whether select() accepts an int* argument")
+    TRY_COMPILE(HAVE_INTP_SELECT
+      ${CMAKE_BINARY_DIR}/CMakeTmp/testSelectIntP
+      ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestSelectIntP.cc
+      OUTPUT_VARIABLE OUTPUT)
+    IF(HAVE_INTP_SELECT)
+      MESSAGE(STATUS "Checking whether select() accepts an int* argument -- yes")
+      SET(HAVE_INTP_SELECT 1 CACHE INTERNAL "Set if select() accepts an int* argument")
+      FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
+        "Determining if select() accepts an int* argument "
+        "passed with the following output:\n"
+        "${OUTPUT}\n")
+    ELSE(HAVE_INTP_SELECT)
+      MESSAGE(STATUS "Checking whether select() accepts an int* argument -- no")
+      SET(HAVE_INTP_SELECT 0 CACHE INTERNAL "Set if select() accepts an int* argument")
+      FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+        "Determining if select() accepts an int* argument "
+        "failed with the following output:\n"
+        "${OUTPUT}\n")
+    ENDIF(HAVE_INTP_SELECT)
+  ENDIF("HAVE_INTP_SELECT" MATCHES "^HAVE_INTP_SELECT$")
+ENDIF(WIN32)

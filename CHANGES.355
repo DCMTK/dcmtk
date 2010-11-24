@@ -7,6 +7,9 @@ Changes between releases are documented here.
   Affects: CMake/GenerateDCMTKConfigure.cmake
            CMake/dcmtkTestCharPStrerror.cc
 
+- Hardcode the windows result of some socket-related tests.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
 **** Changes from 2010.11.22 (schlachter)
 
 - Add checks for cstdio, cstdarg, ENAMETOOLONG and strerror_r's return value.
