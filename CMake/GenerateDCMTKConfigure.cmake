@@ -505,14 +505,14 @@ IF("HAVE_CHARP_STRERROR_R" MATCHES "^HAVE_CHARP_STRERROR_R$")
     OUTPUT_VARIABLE OUTPUT)
   IF(HAVE_CHARP_STRERROR_R)
     MESSAGE(STATUS "Checking whether strerror_r returns an int -- yes")
-    SET(HAVE_CHARP_STRERROR_R 1 CACHE INTERNAL "Set if strerror_r returns an int")
+    SET(HAVE_CHARP_STRERROR_R 0 CACHE INTERNAL "Set if strerror_r returns a char*")
     FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
       "Determining if strerror_r returns an int "
       "passed with the following output:\n"
       "${OUTPUT}\n")
   ELSE(HAVE_CHARP_STRERROR_R)
     MESSAGE(STATUS "Checking whether strerror_r returns an int -- no")
-    SET(HAVE_CHARP_STRERROR_R 0 CACHE INTERNAL "Set if strerror_r returns an int")
+    SET(HAVE_CHARP_STRERROR_R 1 CACHE INTERNAL "Set if strerror_r returns a char*")
     FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
       "Determining if strerror_r returns an int "
       "failed with the following output:\n"

@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.24 (schlachter)
+
+- Fix CMake's strerror_r test. It was backwards.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/dcmtkTestCharPStrerror.cc
+
 **** Changes from 2010.11.22 (schlachter)
 
 - Add checks for cstdio, cstdarg, ENAMETOOLONG and strerror_r's return value.
