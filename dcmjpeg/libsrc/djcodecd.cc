@@ -18,8 +18,8 @@
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:21 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2010-11-24 14:12:34 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,6 +88,7 @@ OFCondition DJCodecDecoder::decode(
     Uint16 imageRows = 0;
     Uint16 imageColumns = 0;
     Sint32 imageFrames = 1;
+    Uint16 imageBitsAllocated = 0;
     Uint16 imageBitsStored = 0;
     Uint16 imageHighBit = 0;
     const char *sopClassUID = NULL;
@@ -101,6 +102,7 @@ OFCondition DJCodecDecoder::decode(
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_Rows, imageRows);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_Columns, imageColumns);
+    if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsAllocated, imageBitsAllocated);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsStored, imageBitsStored);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_HighBit, imageHighBit);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_PixelRepresentation, pixelRep);
@@ -155,7 +157,16 @@ OFCondition DJCodecDecoder::decode(
                 Sint32 currentFrame = 0;
                 Uint32 currentItem = 1; // ignore offset table
 
-                result = uncompressedPixelData.createUint16Array(totalSize/sizeof(Uint16), imageData16);
+                if (isYBR && (imageBitsStored < imageBitsAllocated)) // check for a special case that is currently not handled properly
+                {
+                  if (djcp->getDecompressionColorSpaceConversion() != EDC_never)
+                  {
+                    DCMJPEG_WARN("BitsStored < BitsAllocated for JPEG compressed image with YCbCr color model, color space conversion will probably not work properly");
+                    DCMJPEG_DEBUG("workaround: use option --conv-never (for command line tools) or EDC_never (for the DJDecoderRegistration::registerCodecs() call)");
+                  }
+                }
+
+                result = uncompressedPixelData.createUint16Array(totalSize / sizeof(Uint16), imageData16);
                 if (result.good())
                 {
                   Uint8 *imageData8 = (Uint8 *)imageData16;
@@ -356,6 +367,7 @@ OFCondition DJCodecDecoder::decodeFrame(
     Uint16 imageRows = 0;
     Uint16 imageColumns = 0;
     Sint32 imageFrames = 1;
+    Uint16 imageBitsAllocated = 0;
     Uint16 imageBitsStored = 0;
     Uint16 imageHighBit = 0;
     Uint16 planarConfig = 0;
@@ -366,6 +378,7 @@ OFCondition DJCodecDecoder::decodeFrame(
     if (result.good()) result = dataset->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
     if (result.good()) result = dataset->findAndGetUint16(DCM_Rows, imageRows);
     if (result.good()) result = dataset->findAndGetUint16(DCM_Columns, imageColumns);
+    if (result.good()) result = dataset->findAndGetUint16(DCM_BitsAllocated, imageBitsAllocated);
     if (result.good()) result = dataset->findAndGetUint16(DCM_BitsStored, imageBitsStored);
     if (result.good()) result = dataset->findAndGetUint16(DCM_HighBit, imageHighBit);
     if (result.good()) result = dataset->findAndGetUint16(DCM_PixelRepresentation, pixelRep);
@@ -427,6 +440,15 @@ OFCondition DJCodecDecoder::decodeFrame(
               if (jpeg == NULL) result = EC_MemoryExhausted;
               else
               {
+                if (isYBR && (imageBitsStored < imageBitsAllocated)) // check for a special case that is currently not handled properly
+                {
+                  if (djcp->getDecompressionColorSpaceConversion() != EDC_never)
+                  {
+                    DCMJPEG_WARN("BitsStored < BitsAllocated for JPEG compressed image with YCbCr color model, color space conversion will probably not work properly");
+                    DCMJPEG_DEBUG("workaround: use option --conv-never (for command line tools) or EDC_never (for the DJDecoderRegistration::registerCodecs() call)");
+                  }
+                }
+
                 result = jpeg->init();
                 if (result.good())
                 {
@@ -817,6 +839,11 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
+ * Revision 1.18  2010-11-24 14:12:34  joergr
+ * Output a warning message when decompressing a JPEG compressed image with
+ * YCbCr color model and BitsStored < BitsAllocated because this is currently
+ * not handled properly (usually this only occurs for "true lossless" mode).
+ *
  * Revision 1.17  2010-10-14 13:14:21  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

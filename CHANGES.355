@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.24 (riesmeier)
+
+- Output a warning message when decompressing a JPEG compressed image with
+  YCbCr color model and BitsStored < BitsAllocated because this is currently
+  not handled properly (usually this only occurs for "true lossless" mode).
+  Affects: dcmjpeg/libsrc/djcodecd.cc
+
 **** Changes from 2010.11.24 (schlachter)
 
 - Fix CMake's strerror_r test. It was backwards.
