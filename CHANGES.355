@@ -10,6 +10,9 @@ Changes between releases are documented here.
 - Hardcode the windows result of some socket-related tests.
   Affects: CMake/GenerateDCMTKConfigure.cmake
 
+- Reintroduce some MSC6 specific defines that were lost.
+  Affects: CMake/osconfig.h.in
+
 **** Changes from 2010.11.22 (schlachter)
 
 - Add checks for cstdio, cstdarg, ENAMETOOLONG and strerror_r's return value.
