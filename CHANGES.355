@@ -7,6 +7,10 @@ Changes between releases are documented here.
   the way version dependent documentation files are installed.
   Affects: CMakeLists.txt
 
+- Changed the way version dependent documentation files are installed.
+  Affects: Makefile
+           config/rootconf
+
 **** Changes from 2010.11.24 (riesmeier)
 
 - Output a warning message when decompressing a JPEG compressed image with

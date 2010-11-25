@@ -31,7 +31,7 @@ install-support:  config-install-support ofstd-install-support oflog-install-sup
 
 dcmtk-install-doc:
 	$(configdir)/mkinstalldirs $(DESTDIR)$(docdir)
-	for file in ANNOUNCE.* CHANGES.* COPYRIGHT FAQ HISTORY VERSION; do \
+	for file in ANNOUNCE.$(PACKAGE_VERSION_NUMBER) CHANGES.$(PACKAGE_VERSION_NUMBER) COPYRIGHT FAQ HISTORY VERSION; do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(docdir) ;\
 	done
 
