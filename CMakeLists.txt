@@ -56,17 +56,11 @@ SET(DCMTK_INCLUDE_DIR
   ${DCMTK_SOURCE_DIR}/dcmjpls/include
   ${DCMTK_SOURCE_DIR}/dcmnet/include
   ${DCMTK_SOURCE_DIR}/dcmpstat/include
-  ${DCMTK_SOURCE_DIR}/dcmsr/include
   ${DCMTK_SOURCE_DIR}/dcmqrdb/include
   ${DCMTK_SOURCE_DIR}/dcmsign/include
-  ${DCMTK_SOURCE_DIR}/dcmwlm/include
+  ${DCMTK_SOURCE_DIR}/dcmsr/include
   ${DCMTK_SOURCE_DIR}/dcmtls/include
-  ${DCMTK_SOURCE_DIR}/dcmnet/include
-  ${DCMTK_SOURCE_DIR}/dcmqrdb/include
-  ${DCMTK_SOURCE_DIR}/dcmsign/include
-  ${DCMTK_SOURCE_DIR}/dcmsr/include
   ${DCMTK_SOURCE_DIR}/dcmwlm/include
-  ${DCMTK_SOURCE_DIR}/dcmpstat/include
 )
 INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR})
 
@@ -264,7 +258,7 @@ CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in
 # Thread support
 #-----------------------------------------------------------------------------
 
-# See dcmtk-3.5.4/config/configure.in
+# See dcmtk/config/configure.in
 IF(WITH_THREADS)
   ADD_DEFINITIONS(-D_REENTRANT)
   IF(HAVE_PTHREAD_RWLOCK)
@@ -305,13 +299,4 @@ ENDFOREACH(module)
 INSTALL_FILES(${INSTALL_INCDIR}/dcmtk/config FILES ${CMAKE_CURRENT_BINARY_DIR}/include/dcmtk/config/osconfig.h)
 
 # Install DCMTK's general documentation files
-INSTALL_FILES(${INSTALL_DOCDIR} FILES COPYRIGHT FAQ HISTORY VERSION ANNOUNCE.355 CHANGES.355)
-
-# Install headers and static libraries
-FOREACH(lib ${DCMTK_LIBS})
-  FILE(GLOB headers_to_install "${CMAKE_CURRENT_SOURCE_DIR}/${lib}/include/dcmtk/${lib}/*.h")
-  INSTALL(FILES
-    ${headers_to_install}
-    DESTINATION ${DCMTK_INSTALL_INCLUDE_DIR}/dcmtk/${lib} COMPONENT Development
-  )
-ENDFOREACH(lib)
+INSTALL_FILES(${INSTALL_DOCDIR} FILES ANNOUNCE.${DCMTK_PACKAGE_VERSION_NUMBER} CHANGES.${DCMTK_PACKAGE_VERSION_NUMBER} COPYRIGHT FAQ HISTORY VERSION)

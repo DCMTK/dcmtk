@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.25 (riesmeier)
+
+- Removed redundant include directories and installation commands. Also changed
+  the way version dependent documentation files are installed.
+  Affects: CMakeLists.txt
+
 **** Changes from 2010.11.24 (riesmeier)
 
 - Output a warning message when decompressing a JPEG compressed image with
