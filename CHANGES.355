@@ -11,6 +11,10 @@ Changes between releases are documented here.
   Affects: Makefile
            config/rootconf
 
+- Minor changes, e.g. fixed inconsistent whitespaces and newlines.
+  Affects: CMake/3rdparty.cmake
+           dcmdata/apps/CMakeLists.txt
+
 **** Changes from 2010.11.24 (riesmeier)
 
 - Output a warning message when decompressing a JPEG compressed image with

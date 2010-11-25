@@ -1,24 +1,29 @@
 IF(WIN32)
 
   # For Windows, we don't used FIND_PACKAGE because DCMTK usually is used with its
-  # own set of 3rd-party support libraries that can be downloaded from DCMTK
+  # own set of 3rd-party support libraries that can be downloaded from DCMTK's
   # website (pre-built).
 
   # libxml support: find out whether user has library
   GET_FILENAME_COMPONENT(LIBXML_DIR "${DCMTK_SOURCE_DIR}/../libxml2-2.7.7" ABSOLUTE)
   FIND_PATH(WITH_LIBXMLINC "/include/libxml/parser.h" "${LIBXML_DIR}"/ NO_DEFAULT_PATH)
+
   # libpng support: find out whether user has library
   GET_FILENAME_COMPONENT(LIBPNG_DIR "${DCMTK_SOURCE_DIR}/../libpng-1.4.2" ABSOLUTE)
   FIND_PATH(WITH_LIBPNGINC "include/png.h" "${LIBPNG_DIR}" NO_DEFAULT_PATH)
+
   # libtiff support: find out whether user has library
   GET_FILENAME_COMPONENT(LIBTIFF_DIR "${DCMTK_SOURCE_DIR}/../tiff-3.9.2" ABSOLUTE)
   FIND_PATH(WITH_LIBTIFFINC "include/tiff.h" "${LIBTIFF_DIR}" NO_DEFAULT_PATH)
+
   # OpenSSL support: find out whether user has library
   GET_FILENAME_COMPONENT(OPENSSL_DIR "${DCMTK_SOURCE_DIR}/../openssl-1.0.0" ABSOLUTE)
   FIND_PATH(WITH_OPENSSLINC "include/openssl/ssl.h" "${OPENSSL_DIR}" NO_DEFAULT_PATH)
+
   # zlib support: find out whether user has library
   GET_FILENAME_COMPONENT(ZLIB_DIR "${DCMTK_SOURCE_DIR}/../zlib-1.2.5" ABSOLUTE)
   FIND_PATH(WITH_ZLIBINC "include/zlib.h" "${ZLIB_DIR}" NO_DEFAULT_PATH)
+
   # sndfile support:: find out whether user has library. Needed for module dcmwave (not in public DCMTK yet, marked as advanced)
   GET_FILENAME_COMPONENT(SNDFILE_DIR "${DCMTK_SOURCE_DIR}/../libsndfile-1.0.17" ABSOLUTE)
   FIND_PATH(WITH_SNDFILEINC "sndfile.h" "${SNDFILE_DIR}" NO_DEFAULT_PATH)
@@ -69,7 +74,7 @@ IF(WIN32)
     ENDIF(WITH_LIBTIFFINC)
   ENDIF(DCMTK_WITH_TIFF)
 
- # OpenSSL support: configure compiler
+  # OpenSSL support: configure compiler
   IF(DCMTK_WITH_OPENSSL)
     IF(WITH_OPENSSLINC)
       SET(OPENSSL_BINDIR ${WITH_OPENSSLINC}/bin)
@@ -116,6 +121,7 @@ IF(WIN32)
   ENDIF(DCMTK_WITH_SNDFILE)
 
 ELSE(WIN32)
+
   # Find TIFF
   IF(DCMTK_WITH_TIFF)
     FIND_PACKAGE(TIFF)
@@ -191,13 +197,14 @@ ELSE(WIN32)
       SET(WITH_ZLIB 1)
     ENDIF(NOT ZLIB_LIBS)
   ENDIF(DCMTK_WITH_ZLIB)
+
 ENDIF(WIN32)
 
 # Find doxygen
 IF (DCMTK_WITH_DOXYGEN)
   FIND_PACKAGE(Doxygen) # will set variable DOXYGEN_EXECUTABLE
   IF(NOT DOXYGEN_EXECUTABLE)
-      MESSAGE(STATUS "Warning: DOXYGEN support will be disabled because doxygen could not be found.")
-      SET(DCMTK_WITH_DOXYGEN OFF CACHE BOOL "" FORCE)
+    MESSAGE(STATUS "Warning: DOXYGEN support will be disabled because doxygen was not found.")
+    SET(DCMTK_WITH_DOXYGEN OFF CACHE BOOL "" FORCE)
   ENDIF(NOT DOXYGEN_EXECUTABLE)
 ENDIF(DCMTK_WITH_DOXYGEN)
