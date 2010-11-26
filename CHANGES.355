@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.26 (riesmeier)
+
+- Added definition of "DEBUG" to debug mode (since CMake does not do this
+  automatically). Also did some further clean-up of the main CMake file.
+  Affects: CMakeLists.txt
+
 **** Changes from 2010.11.25 (riesmeier)
 
 - Removed redundant include directories and installation commands. Also changed
