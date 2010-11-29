@@ -3,24 +3,25 @@ PROJECT(doxygen)
 
 # doxygen support
 IF(DOXYGEN_EXECUTABLE)
+  ADD_CUSTOM_TARGET(html ${DOXYGEN_EXECUTABLE} htmldocs.tmp)
+  SET(DOXYGEN_TARGETS html)
+  IF(NOT WIN32) # For unix systems, also build manpages
+    ADD_CUSTOM_TARGET(man COMMAND ${DOXYGEN_EXECUTABLE} manpages.tmp
+                      COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/manpages/man1/*.man.1
+                      COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/patchman.sh WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    SET(DOXYGEN_TARGETS ${DOXYGEN_TARGETS} man)
+  ENDIF(NOT WIN32)
 
-IF(NOT WIN32) # For unix systems, also build manpages
-  ADD_CUSTOM_TARGET(DOXYGEN ${DOXYGEN_EXECUTABLE} htmldocs.tmp WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                    COMMAND ${DOXYGEN_EXECUTABLE} manpages.tmp WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                    COMMAND cd ${DCMTK_SOURCE_DIR}/doxygen
-                    COMMAND rm -f manpages/man1/*.man.1
-                    COMMAND ./patchman.sh)
-ELSE(NOT WIN32)  # For windows, only html documentation is built
-  ADD_CUSTOM_TARGET(DOXYGEN ${DOXYGEN_EXECUTABLE} htmldocs.tmp WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-ENDIF(NOT WIN32)
-
+  ADD_CUSTOM_TARGET(DOXYGEN DEPENDS ${DOXYGEN_TARGETS})
 ENDIF(DOXYGEN_EXECUTABLE)
 
 # create configuration files (expand variables)
 SET(DCMTK_VERSION "${DCMTK_PACKAGE_VERSION}${PACKAGE_VERSION_SUFFIX}")
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/htmldocs.cfg ${CMAKE_CURRENT_SOURCE_DIR}/htmldocs.tmp ESCAPE_QUOTES @ONLY)
+SET(DOXYGEN_INPUT_DIR "${CMAKE_SOURCE_DIR}")
+SET(DOXYGEN_TMPL_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+CONFIGURE_FILE(htmldocs.cfg htmldocs.tmp ESCAPE_QUOTES @ONLY)
 IF(NOT WIN32)
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/manpages.cfg ${CMAKE_CURRENT_SOURCE_DIR}/manpages.tmp ESCAPE_QUOTES @ONLY)
+  CONFIGURE_FILE(manpages.cfg manpages.tmp ESCAPE_QUOTES @ONLY)
 ENDIF(NOT WIN32)
 
 # declare directories to be installed

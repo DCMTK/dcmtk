@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.29 (schlachter)
+
+- Made CMake build the doxygen documentation in the binary dir and added new
+  targets "html" and "man" that only build parts of the available docs.
+  Affects: doxygen/CMakeLists.txt
+           doxygen/Makefile.in
+           doxygen/htmldocs.cfg
+           doxygen/manpages.cfg
+
 **** Changes from 2010.11.26 (riesmeier)
 
 - Added definition of "DEBUG" to debug mode (since CMake does not do this
