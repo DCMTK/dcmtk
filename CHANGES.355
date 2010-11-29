@@ -19,6 +19,10 @@ Changes between releases are documented here.
   Thanks to Jargo Koster <jargo@innovaatik.ee> for the report.
   Affects: dcmdata/libi2d/i2djpgs.cc
 
+- Correctly determine the remote address if only a socket fd is given.
+  Thanks to Alexander Haderer <alexander.haderer@charite.de> for the patch.
+  Affects: dcmnet/libsrc/dul.cc
+
 **** Changes from 2010.11.26 (riesmeier)
 
 - Added definition of "DEBUG" to debug mode (since CMake does not do this

@@ -54,8 +54,8 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: joergr $, $Date: 2010-10-14 13:14:28 $
-** Revision:      $Revision: 1.92 $
+** Last Update:   $Author: uli $, $Date: 2010-11-29 13:40:59 $
+** Revision:      $Revision: 1.93 $
 ** Status:        $State: Exp $
 */
 
@@ -1531,12 +1531,12 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
       connected = 1;
 
       len = sizeof(from);
-      if (getsockname(sock, &from, &len))
+      if (getpeername(sock, &from, &len))
       {
           char buf[256];
           OFOStringStream stream;
           stream << "TCP Initialization Error: " << OFStandard::strerror(errno, buf, sizeof(buf))
-                 << ", getsockname failed on socket " << sock << OFStringStream_ends;
+                 << ", getpeername failed on socket " << sock << OFStringStream_ends;
           OFSTRINGSTREAM_GETOFSTRING(stream, msg)
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
@@ -2720,6 +2720,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.93  2010-11-29 13:40:59  uli
+** Correctly determine the remote address if only a socket fd is given.
+**
 ** Revision 1.92  2010-10-14 13:14:28  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
