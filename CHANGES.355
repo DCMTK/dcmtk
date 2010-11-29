@@ -10,6 +10,11 @@ Changes between releases are documented here.
            doxygen/htmldocs.cfg
            doxygen/manpages.cfg
 
+- Fixed some new issues with doxygen and CMake.
+  Affects: doxygen/CMakeLists.txt
+           doxygen/htmldocs.cfg
+           doxygen/manpages.cfg
+
 **** Changes from 2010.11.26 (riesmeier)
 
 - Added definition of "DEBUG" to debug mode (since CMake does not do this
