@@ -15,6 +15,9 @@ Changes between releases are documented here.
            doxygen/htmldocs.cfg
            doxygen/manpages.cfg
 
+- Fixed stack overflow in libi2d with some JPEG data streams.
+  Affects: dcmdata/libi2d/i2djpgs.cc
+
 **** Changes from 2010.11.26 (riesmeier)
 
 - Added definition of "DEBUG" to debug mode (since CMake does not do this

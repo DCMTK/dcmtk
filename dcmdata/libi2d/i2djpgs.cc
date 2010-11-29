@@ -17,9 +17,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:18:23 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-29 13:10:00 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -603,6 +603,7 @@ OFCondition I2DJpegSource::createJPEGFileMap()
       m_jpegFileMap.push_back(entry);
       if (marker == E_JPGMARKER_SOS)
       {
+        // FIXME: reset this to OFFalse after the next marker?
         lastWasSOSMarker = OFTrue;
       }
       else if (marker == E_JPGMARKER_EOI)
@@ -727,32 +728,29 @@ OFCondition I2DJpegSource::nextMarker(const OFBool& lastWasSOSMarker,
   int discarded_bytes = 0;
   int oneByte;
 
-  /* Find 0xFF byte; count and skip any non-FFs. */
-  oneByte = read1Byte(c);
-  if (oneByte == EOF)
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
-
-  while (c != 0xFF)
-  {
-    if (!lastWasSOSMarker)
-      discarded_bytes++;
-    oneByte = read1Byte(c);
-    if (oneByte == EOF)
-      return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
-  }
-  /* Get marker code byte, swallowing any duplicate FF bytes.  Extra FFs
-   * are legal as pad bytes, so don't count them in discarded_bytes.
-   */
   do {
+    /* Find 0xFF byte; count and skip any non-FFs. */
     oneByte = read1Byte(c);
     if (oneByte == EOF)
       return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
-  } while (c == 0xFF);
 
-  if (lastWasSOSMarker && c == 0x00)
-  {
-    return nextMarker(lastWasSOSMarker, result);
-  }
+    while (c != 0xFF)
+    {
+      if (!lastWasSOSMarker)
+        discarded_bytes++;
+      oneByte = read1Byte(c);
+      if (oneByte == EOF)
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
+    }
+    /* Get marker code byte, swallowing any duplicate FF bytes.  Extra FFs
+     * are legal as pad bytes, so don't count them in discarded_bytes.
+     */
+    do {
+      oneByte = read1Byte(c);
+      if (oneByte == EOF)
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
+    } while (c == 0xFF);
+  } while (lastWasSOSMarker && c == 0x00);
 
   if (discarded_bytes != 0) {
     DCMDATA_LIBI2D_WARN("garbage data found in JPEG file");
@@ -902,6 +900,9 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.16  2010-11-29 13:10:00  uli
+ * Fixed stack overflow in libi2d with some JPEG data streams.
+ *
  * Revision 1.15  2010-10-14 13:18:23  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
