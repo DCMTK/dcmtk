@@ -24,7 +24,7 @@ IF(WIN32)
   GET_FILENAME_COMPONENT(ZLIB_DIR "${DCMTK_SOURCE_DIR}/../zlib-1.2.5" ABSOLUTE)
   FIND_PATH(WITH_ZLIBINC "include/zlib.h" "${ZLIB_DIR}" NO_DEFAULT_PATH)
 
-  # sndfile support:: find out whether user has library. Needed for module dcmwave (not in public DCMTK yet, marked as advanced)
+  # sndfile support: find out whether user has library. Needed for module dcmwave (not in public DCMTK yet, marked as advanced)
   GET_FILENAME_COMPONENT(SNDFILE_DIR "${DCMTK_SOURCE_DIR}/../libsndfile-1.0.17" ABSOLUTE)
   FIND_PATH(WITH_SNDFILEINC "sndfile.h" "${SNDFILE_DIR}" NO_DEFAULT_PATH)
   MARK_AS_ADVANCED(SNDFILE_DIR WITH_SNDFILEINC)
@@ -201,7 +201,7 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 # Find doxygen
-IF (DCMTK_WITH_DOXYGEN)
+IF(DCMTK_WITH_DOXYGEN)
   FIND_PACKAGE(Doxygen) # will set variable DOXYGEN_EXECUTABLE
   IF(NOT DOXYGEN_EXECUTABLE)
     MESSAGE(STATUS "Warning: DOXYGEN support will be disabled because doxygen was not found.")

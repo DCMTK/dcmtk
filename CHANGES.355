@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.11.30 (riesmeier)
+
+- Fixed minor typos.
+  Affects: CMake/3rdparty.cmake
+
 **** Changes from 2010.11.29 (riesmeier)
 
 - Fixed issue with CMake versions prior to 2.8 (or prior to 2.6?).
