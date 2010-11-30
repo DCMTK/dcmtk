@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2010.11.30 (riesmeier)
 
+- Made sure that CMake installs the correct documentation files. Also added
+  created files to the "make clean" target (only works partly for CMake 2.4).
+  Finally, "make DOXYGEN" now works again (as it did previously).
+  Affects: doxygen/CMakeLists.txt
+
 - Fixed minor typos.
   Affects: CMake/3rdparty.cmake
 
