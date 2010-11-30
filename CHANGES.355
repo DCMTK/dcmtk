@@ -8,6 +8,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.11.30 (riesmeier)
 
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 - Updated latest tested CMake version to 2.8.3.
   Affects: CMakeLists.txt
 
