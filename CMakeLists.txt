@@ -197,7 +197,7 @@ IF(WIN32)
       ENDIF(NOT MINGW)
     ENDIF(NOT CYGWIN)
   ENDIF(NOT BORLAND)
-ELIF(WIN32)   # compiler flags for non-windows systems
+ELSE(WIN32)   # compiler flags for non-Windows systems
   # Compiler flags for Mac OS X
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE")

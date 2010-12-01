@@ -44,6 +44,9 @@ Changes between releases are documented here.
            dcmnet/libsrc/dulpriv.h
            dcmnet/libsrc/dulstruc.h
 
+- Fixed syntax error introduced with yesterday's commit (flags for Mac OS X).
+  Affects: CMakeLists.txt
+
 - Fixed wrong name of dcmqrti tool (was "ti" in previous DCMTK versions).
   Affects: dcmqrdb/docs/dcmqrscp.man
            dcmqrdb/docs/dcmqrti.man
