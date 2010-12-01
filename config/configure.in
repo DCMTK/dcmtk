@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(dcmtk, 3.5.5, [dicom-bugs@offis.de], [dcmtk-3.5.5])
+AC_INIT(dcmtk, 3.6.0, [dicom-bugs@offis.de], [dcmtk-3.6.0])
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR(Makefile.in)
 AC_CONFIG_HEADER(include/dcmtk/config/cfunix.h)
@@ -8,9 +8,9 @@ dnl -------------------------------------------------------
 dnl Additional Package Information
 dnl -------------------------------------------------------
 
-PACKAGE_VERSION_NUMBER="355"
-PACKAGE_VERSION_SUFFIX=""
-PACKAGE_DATE="CVS"
+PACKAGE_VERSION_NUMBER="360"
+PACKAGE_VERSION_SUFFIX="-RC1"
+PACKAGE_DATE="2010-12-01"
 
 AC_DEFINE_UNQUOTED(PACKAGE_VERSION_NUMBER,"${PACKAGE_VERSION_NUMBER}",[Define to the version number of this package.])
 AC_DEFINE_UNQUOTED(PACKAGE_VERSION_SUFFIX,"${PACKAGE_VERSION_SUFFIX}",[Define to the version suffix of this package.])

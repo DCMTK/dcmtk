@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2010.12.01 (riesmeier)
 
+- Updated contents for DCMTK 3.6.0-RC1 (first release candidate).
+  Affects: CMakeLists.txt
+           VERSION
+           config/configure
+           config/configure.in
+
 - Updated contents for upcoming DCMTK 3.6.0 release.
   Added:   ANNOUNCE.360
            CHANGES.360
