@@ -175,11 +175,15 @@ IF(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS)
 
 ENDIF(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS)
 
-# On Visual Studio 8 MS deprecated C. This removes all 1.276E1265 security warnings.
-IF(WIN32)
-  IF(NOT BORLAND)
-    IF(NOT CYGWIN)
-      IF(NOT MINGW)
+IF(WIN32)   # special handling for Windows systems
+
+  IF(MINGW)
+    # Avoid auto-importing warnings on MinGW
+    SET(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,--enable-auto-import")
+  ELSE(MINGW)
+    # On Visual Studio 8 MS deprecated C. This removes all 1.276E1265 security warnings.
+    IF(NOT BORLAND)
+      IF(NOT CYGWIN)
         IF(NOT DCMTK_ENABLE_VISUAL_STUDIO_DEPRECATED_C_WARNINGS)
           ADD_DEFINITIONS(
             -D_CRT_FAR_MAPPINGS_NO_DEPRECATE
@@ -194,10 +198,12 @@ IF(WIN32)
             -D_SCL_SECURE_NO_DEPRECATE
             )
         ENDIF(NOT DCMTK_ENABLE_VISUAL_STUDIO_DEPRECATED_C_WARNINGS)
-      ENDIF(NOT MINGW)
-    ENDIF(NOT CYGWIN)
-  ENDIF(NOT BORLAND)
-ELSE(WIN32)   # compiler flags for non-Windows systems
+      ENDIF(NOT CYGWIN)
+    ENDIF(NOT BORLAND)
+  ENDIF(MINGW)
+
+ELSE(WIN32)   # ... for non-Windows systems
+
   # Compiler flags for Mac OS X
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE")
@@ -207,6 +213,7 @@ ELSE(WIN32)   # compiler flags for non-Windows systems
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L")
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L")
   ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
 ENDIF(WIN32)
 
 # define libraries that must be linked to most Windows applications

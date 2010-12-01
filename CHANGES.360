@@ -44,6 +44,9 @@ Changes between releases are documented here.
            dcmnet/libsrc/dulpriv.h
            dcmnet/libsrc/dulstruc.h
 
+- Added linker flags to avoid auto-importing warnings on MinGW systems.
+  Affects: CMakeLists.txt
+
 - Removed extra token after #endif directive (reported on a MinGW system).
   Affects: oflog/libsrc/winsock.cc
 
