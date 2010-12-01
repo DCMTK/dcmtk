@@ -48,6 +48,9 @@ Changes between releases are documented here.
   Affects: dcmqrdb/docs/dcmqrscp.man
            dcmqrdb/docs/dcmqrti.man
 
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2010.11.30 (onken)
 
 - Set extra flags for compiling without problems on Mac OS X.

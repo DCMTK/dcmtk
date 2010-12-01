@@ -1,4 +1,4 @@
-.TH "dcmqrti" 1 "30 Nov 2010" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrti" 1 "1 Dec 2010" "Version 3.6.0-RC1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmqrti \- The Terminal Initiator Telnet Client Program
@@ -142,7 +142,7 @@ Peer AE Titles:
 .PP
 The current peer AE is marked with an asterisk (*). Each peer AE has an index (second column) which can be used as an argument to the 'title' command in order to set the current peer AE. The third column gives the AE title of the peer AE. The fourth column shows the hostname and TCP/IP port number of the peer AE.
 .PP
-When invoked with an argument index, the 'title' command will set the current peer AE. The \fBti\fP program will attempt to initate an association to the current peer AE when asked to send a study/series/image or to send an echo.
+When invoked with an argument index, the 'title' command will set the current peer AE. The \fBdcmqrti\fP program will attempt to initate an association to the current peer AE when asked to send a study/series/image or to send an echo.
 .SS "'database' Command"
 The 'database' command without an argument allows the user to list the know local databases (these correspond to dcmqrscp's Application Entity Titles). An example output might look like:
 .PP
