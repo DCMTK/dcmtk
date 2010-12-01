@@ -24,8 +24,8 @@
 #include "dcmtk/oflog/helpers/loglog.h"
 // stdexcept header not included by default on mingw (needed for std::runtime_error)
 #ifdef __MINGW32__
-#include <stdexcept> 
-#endif __MINGW32__
+#include <stdexcept>
+#endif
 
 using namespace log4cplus;
 using namespace log4cplus::helpers;
