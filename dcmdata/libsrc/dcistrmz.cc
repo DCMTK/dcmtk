@@ -17,9 +17,9 @@
  *
  *  Purpose: zlib compression filter for input streams
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:08 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-12-01 13:21:18 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -314,7 +314,7 @@ offile_off_t DcmZLibInputFilter::decompress(const void *buf, offile_off_t buflen
             * (where PDVs always have even length).
             * Everything else generates a warning.
             */
-           DCMDATA_WARN("zlib: " << count-1 << " pending input bytes in buffer.");
+           DCMDATA_WARN("zlib: " << OFstatic_cast(ulong, count-1) << " pending input bytes in buffer.");
          }
        }
 #endif
@@ -359,7 +359,7 @@ offile_off_t DcmZLibInputFilter::decompress(const void *buf, offile_off_t buflen
                 * (where PDVs always have even length).
                 * Everything else generates a warning.
                 */
-               DCMDATA_WARN("zlib: " << count-1 << " pending input bytes in buffer.");
+               DCMDATA_WARN("zlib: " << OFstatic_cast(ulong, count-1) << " pending input bytes in buffer.");
              }
           }
 #endif
@@ -428,6 +428,9 @@ void dcistrmz_dummy_function()
 /*
  * CVS/RCS Log:
  * $Log: dcistrmz.cc,v $
+ * Revision 1.13  2010-12-01 13:21:18  uli
+ * Fixed build problem with MSC6 when zlib support is enabled.
+ *
  * Revision 1.12  2010-10-14 13:14:08  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

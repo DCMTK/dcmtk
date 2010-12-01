@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.01 (schlachter)
+
+- Fixed build problem with MSC6 when zlib support is enabled.
+  Affects: dcmdata/libsrc/dcistrmz.cc
+
 **** Changes from 2010.12.01 (riesmeier)
 
 - Updated contents for DCMTK 3.6.0-RC1 (first release candidate).
