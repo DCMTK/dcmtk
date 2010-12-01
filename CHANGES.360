@@ -10,6 +10,34 @@ Changes between releases are documented here.
            CHANGES.355
   Affects: INSTALL
 
+- Added OFFIS copyright header (beginning with the year 1994).
+  Affects: dcmnet/include/dcmtk/dcmnet/assoc.h
+           dcmnet/include/dcmtk/dcmnet/dcompat.h
+           dcmnet/include/dcmtk/dcmnet/dicom.h
+           dcmnet/include/dcmtk/dcmnet/dimse.h
+           dcmnet/include/dcmtk/dcmnet/diutil.h
+           dcmnet/include/dcmtk/dcmnet/dul.h
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dcompat.cc
+           dcmnet/libsrc/dimcancl.cc
+           dcmnet/libsrc/dimcmd.cc
+           dcmnet/libsrc/dimcmd.h
+           dcmnet/libsrc/dimecho.cc
+           dcmnet/libsrc/dimfind.cc
+           dcmnet/libsrc/dimmove.cc
+           dcmnet/libsrc/dimse.cc
+           dcmnet/libsrc/dimstore.cc
+           dcmnet/libsrc/diutil.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulconst.cc
+           dcmnet/libsrc/dulextra.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/libsrc/dulfsm.h
+           dcmnet/libsrc/dulparse.cc
+           dcmnet/libsrc/dulpres.cc
+           dcmnet/libsrc/dulpriv.h
+           dcmnet/libsrc/dulstruc.h
+
 - Fixed wrong name of dcmqrti tool (was "ti" in previous DCMTK versions).
   Affects: dcmqrdb/docs/dcmqrscp.man
            dcmqrdb/docs/dcmqrti.man

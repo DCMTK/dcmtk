@@ -1,4 +1,20 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
 **
 **  This software and supporting documentation were
@@ -44,6 +60,7 @@
 **  include the three paragraphs of this copyright notice.
 **
 */
+
 /*
 **
 ** Author: Andrew Hewett                Created: 03-06-93
@@ -64,12 +81,11 @@
 **      Each active association is represented by an T_ASC_Association
 **      structure which contains all relevant information.
 **
-**      Module Prefix: ASC_
-**
+** Module Prefix: ASC_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-10-14 13:14:27 $
-** CVS/RCS Revision:    $Revision: 1.58 $
+** Update Date:         $Date: 2010-12-01 08:26:35 $
+** CVS/RCS Revision:    $Revision: 1.59 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -2196,6 +2212,9 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
+** Revision 1.59  2010-12-01 08:26:35  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.58  2010-10-14 13:14:27  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

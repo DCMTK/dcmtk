@@ -1,4 +1,20 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
           Copyright (C) 1993, 1994, RSNA and Washington University
 
           The software and supporting documentation for the Radiological
@@ -29,10 +45,7 @@
           supporting documentation) must include the three paragraphs of
           the copyright notice.
 */
-/* Copyright marker.  Copyright will be inserted above.  Do not remove */
-/*
-** @$=@$=@$=
-*/
+
 /*
 **        DICOM 93
 **        Electronic Radiology Laboratory
@@ -44,8 +57,8 @@
 ** Intent:        This file defines the public structures and constants
 **                and the function prototypes for the DUL (DICOM Upper
 **                Layer) facility.
-** Last Update:   $Author: joergr $, $Date: 2010-10-14 13:17:22 $
-** Revision:      $Revision: 1.30 $
+** Last Update:   $Author: joergr $, $Date: 2010-12-01 08:26:10 $
+** Revision:      $Revision: 1.31 $
 ** Status:        $State: Exp $
 */
 
@@ -190,9 +203,9 @@ typedef enum {
     DUL_SC_ROLE_SCUSCP
 }   DUL_SC_ROLE;
 
-#define DUL_PRESENTATION_ACCEPT     0
-#define DUL_PRESENTATION_REJECT_USER    1
-#define DUL_PRESENTATION_REJECT_NOREASON  2
+#define DUL_PRESENTATION_ACCEPT                 0
+#define DUL_PRESENTATION_REJECT_USER            1
+#define DUL_PRESENTATION_REJECT_NOREASON        2
 #define DUL_PRESENTATION_REJECT_ABSTRACT_SYNTAX 3
 #define DUL_PRESENTATION_REJECT_TRANSFER_SYNTAX 4
 
@@ -328,6 +341,7 @@ typedef enum {
     DUL_K_INTEGER,    /* An integer type */
     DUL_K_STRING      /* A string type */
 }   DUL_DATA_TYPE;
+
 typedef enum {
     DUL_K_MAX_PDV_XMIT
 }   DUL_ASSOCIATION_PARAMETER;
@@ -340,7 +354,7 @@ typedef enum {
 */
 
 #define DUL_DULCOMPAT     2768240730UL
-#define DUL_DIMSECOMPAT   327680UL
+#define DUL_DIMSECOMPAT   655360UL
 #define DUL_MAXPDUCOMPAT  4278190335UL
 
 /* Define the function prototypes for this facility.
@@ -414,7 +428,7 @@ OFCondition
 DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
          DUL_SC_ROLE proposedSCRole, DUL_SC_ROLE acceptedSCRole,
 DUL_PRESENTATIONCONTEXTID ctxID, unsigned char reason, const char *abstractSyntax,
-      const char *transferSyntax,...);
+      const char *transferSyntax, ...);
 OFString& DUL_DumpParams(OFString& str, DUL_ASSOCIATESERVICEPARAMETERS * params);
 OFString& DUL_DumpConnectionParameters(OFString& str, DUL_ASSOCIATIONKEY *association);
 
@@ -501,6 +515,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
+** Revision 1.31  2010-12-01 08:26:10  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.30  2010-10-14 13:17:22  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

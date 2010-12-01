@@ -1,38 +1,54 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
-**  
+**
 **  This software and supporting documentation were
-**  developed by 
-**  
+**  developed by
+**
 **    Institut OFFIS
 **    Bereich Kommunikationssysteme
 **    Westerstr. 10-12
 **    26121 Oldenburg, Germany
-**    
+**
 **    Fachbereich Informatik
 **    Abteilung Prozessinformatik
-**    Carl von Ossietzky Universitaet Oldenburg 
+**    Carl von Ossietzky Universitaet Oldenburg
 **    Ammerlaender Heerstr. 114-118
 **    26111 Oldenburg, Germany
-**    
+**
 **    CERIUM
 **    Laboratoire SIM
 **    Faculte de Medecine
 **    2 Avenue du Pr. Leon Bernard
 **    35043 Rennes Cedex, France
-**  
-**  for CEN/TC251/WG4 as a contribution to the Radiological 
-**  Society of North America (RSNA) 1993 Digital Imaging and 
+**
+**  for CEN/TC251/WG4 as a contribution to the Radiological
+**  Society of North America (RSNA) 1993 Digital Imaging and
 **  Communications in Medicine (DICOM) Demonstration.
-**  
+**
 **  THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER OFFIS,
-**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING 
-**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR 
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER 
-**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE 
-**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE   
-**  IS WITH THE USER. 
-**  
+**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING
+**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR
+**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER
+**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE
+**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE
+**  IS WITH THE USER.
+**
 **  Copyright of the software and supporting documentation
 **  is, unless otherwise stated, jointly owned by OFFIS,
 **  Oldenburg University and CERIUM and free access is hereby
@@ -41,30 +57,31 @@
 **  software. However, any distribution of this software
 **  source code or supporting documentation or derivative
 **  works (source code and supporting documentation) must
-**  include the three paragraphs of this copyright notice. 
-** 
+**  include the three paragraphs of this copyright notice.
+**
 */
+
 /*
 **
 ** Author: Andrew Hewett                Created: 03-06-93
-** 
+**
 ** Module: dimfind
 **
-** Purpose: 
+** Purpose:
 **      This file contains the routines which help with
 **      query services using the C-FIND operation.
 **
-**      Module Prefix: DIMSE_
+** Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-10-14 13:14:28 $
-** CVS/RCS Revision:    $Revision: 1.14 $
+** Update Date:         $Date: 2010-12-01 08:26:36 $
+** CVS/RCS Revision:    $Revision: 1.15 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
 
-/* 
+/*
 ** Include Files
 */
 
@@ -87,11 +104,11 @@
 /*
 **
 */
- 
+
 
 OFCondition
 DIMSE_findUser(
-        T_ASC_Association *assoc, 
+        T_ASC_Association *assoc,
         T_ASC_PresentationContextID presID,
         T_DIMSE_C_FindRQ *request, DcmDataset *requestIdentifiers,
         DIMSE_FindUserCallback callback, void *callbackData,
@@ -106,7 +123,7 @@ DIMSE_findUser(
      * set information refers to one record that matches the search mask which was sent to the
      * SCP) and call the callback function which was passed. Having encountered a C-FIND-RSP
      * messages with a "success" status, this function terminates and returns to its caller.
-     * 
+     *
      * Parameters:
      *   assoc                - [in] The association (network connection to SCP).
      *   presId               - [in] The ID of the presentation context which shall be used
@@ -152,7 +169,7 @@ DIMSE_findUser(
 
     /* send C-FIND-RQ message and search mask data (requestIdentifiers) */
     OFCondition cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req,
-                                          NULL, requestIdentifiers, 
+                                          NULL, requestIdentifiers,
                                           NULL, NULL);
     if (cond.bad()) return cond;
 
@@ -168,9 +185,9 @@ DIMSE_findUser(
         }
 
         /* try to receive a C-FIND-RSP over the network. */
-        cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, 
+        cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID,
                 &rsp, statusDetail);
-        if (cond.bad()) return cond; 
+        if (cond.bad()) return cond;
 
         /* if everything was successful so far, the rsp variable contains the command */
         /* which was received; if we did not encounter a C-FIND-RSP, something is wrong */
@@ -180,9 +197,9 @@ DIMSE_findUser(
           sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
           return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
         }
-    
+
         /* if we get to here, we received a C-FIND-RSP; store this message in the reference parameter */
-        *response = rsp.msg.CFindRSP;        
+        *response = rsp.msg.CFindRSP;
 
         /* check if the response relates to the request which was sent earlier; if not, return an error */
         if (response->MessageIDBeingRespondedTo != msgId)
@@ -228,7 +245,7 @@ DIMSE_findUser(
 
             /* execute callback */
             if (callback) {
-                callback(callbackData, request, responseCount, 
+                callback(callbackData, request, responseCount,
                     response, rspIds);
             }
             break;
@@ -261,15 +278,15 @@ DIMSE_findUser(
 }
 
 OFCondition
-DIMSE_sendFindResponse(T_ASC_Association * assoc, 
+DIMSE_sendFindResponse(T_ASC_Association * assoc,
         T_ASC_PresentationContextID presID,
-        T_DIMSE_C_FindRQ *request, 
+        T_DIMSE_C_FindRQ *request,
         T_DIMSE_C_FindRSP *response, DcmDataset *rspIds,
         DcmDataset *statusDetail)
     /*
      * This function takes care of sending a C-FIND-RSP message over the network to the DICOM
      * application this application is connected with.
-     * 
+     *
      * Parameters:
      *   assoc        - [in] The association (network connection to another DICOM application).
      *   presID       - [in] The ID of the presentation context which was specified in the PDV
@@ -304,7 +321,7 @@ DIMSE_sendFindResponse(T_ASC_Association * assoc,
     rsp.msg.CFindRSP.DataSetType = (T_DIMSE_DataSetType)dtype;
 
     /* send C-FIND-RSP response message over the network */
-    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &rsp, 
+    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &rsp,
         statusDetail, rspIds, NULL, NULL);
 
     /* return result value */
@@ -314,7 +331,7 @@ DIMSE_sendFindResponse(T_ASC_Association * assoc,
 
 OFCondition
 DIMSE_findProvider(
-        T_ASC_Association *assoc, 
+        T_ASC_Association *assoc,
         T_ASC_PresentationContextID presIdCmd,
         T_DIMSE_C_FindRQ *request,
         DIMSE_FindProviderCallback callback, void *callbackData,
@@ -327,7 +344,7 @@ DIMSE_findProvider(
      * The selection of each matching record and the sending of a corresponding C-FIND-RSP message
      * is conducted in a loop since there can be more than one search result. In the end, also the
      * C-FIND-RSP message which indicates that there are no more search results will be sent.
-     * 
+     *
      * Parameters:
      *   assoc           - [in] The association (network connection to another DICOM application).
      *   presIDCmd       - [in] The ID of the presentation context which was specified in the PDV which contained
@@ -338,7 +355,7 @@ DIMSE_findProvider(
      *   blockMode       - [in] The blocking mode for receiving data (either DIMSE_BLOCKING or DIMSE_NONBLOCKING)
      *   timeout         - [in] Timeout interval for receiving data (if the blocking mode is DIMSE_NONBLOCKING).
      */
-{       
+{
     T_ASC_PresentationContextID presIdData;
     T_DIMSE_C_FindRSP rsp;
     DcmDataset *statusDetail = NULL;
@@ -353,7 +370,7 @@ DIMSE_findProvider(
 
     /* if no error occured while receiving data */
     if (cond.good())
-    {    
+    {
         /* check if the presentation context IDs of the C-FIND-RQ and */
         /* the search mask data are the same; if not, return an error */
         if (presIdData != presIdCmd)
@@ -366,7 +383,7 @@ DIMSE_findProvider(
             /* initialize the C-FIND-RSP message variable */
             bzero((char*)&rsp, sizeof(rsp));
             rsp.DimseStatus = STATUS_Pending;
-            
+
             /* as long as no error occured and the status of the C-FIND-RSP message which will */
             /* be/was sent is pending, perform this loop in which records that match the search */
             /* mask are selected (whithin the execution of the callback function) and sent over */
@@ -375,18 +392,18 @@ DIMSE_findProvider(
             {
                 /* increase the counter that counts the number of response messages */
                 responseCount++;
-            
+
                 /* check if a C-CANCEL-RQ is received */
                 cond = DIMSE_checkForCancelRQ(assoc, presIdCmd, request->MessageID);
                 if (cond.good())
                 {
                     /* if a C-CANCEL-RQ was received, we need to set status and an indicator variable */
                     rsp.DimseStatus = STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest;
-                    cancelled = OFTrue;     
+                    cancelled = OFTrue;
                 } else if (cond == DIMSE_NODATAAVAILABLE)
                 {
                     /* timeout */
-                } 
+                }
                 else
                 {
                     /* some execption condition occured, bail out */
@@ -394,32 +411,32 @@ DIMSE_findProvider(
                 }
 
                 /* if everything is still ok */
-                if (normal)            
+                if (normal)
                 {
                     /* execute callback function (note that this function always determines the next record */
                     /* which matches the search mask. This record will be available here through rspIds) */
                     if (callback) {
-                        callback(callbackData, cancelled, request, reqIds, 
+                        callback(callbackData, cancelled, request, reqIds,
                             responseCount, &rsp, &rspIds, &statusDetail);
                     } else {
                         return makeDcmnetCondition(DIMSEC_NULLKEY, OF_error, "DIMSE_findProvider: no callback function");
                     }
-                    
+
                     /* if we encountered a C-CANCEL-RQ earlier, set a variable and possibly delete the search mask */
                     if (cancelled) {
                         /* make sure */
-                        rsp.DimseStatus = 
+                        rsp.DimseStatus =
                             STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest;
                         if (rspIds != NULL) {
                             delete reqIds;
                             reqIds = NULL;
                         }
                     }
-                    
+
                     /* send a C-FIND-RSP message over the network to the other DICOM application */
                     cond = DIMSE_sendFindResponse(assoc, presIdCmd, request,
                         &rsp, rspIds, statusDetail);
-                        
+
                     /* if there are search results, delete them */
                     if (rspIds != NULL) {
                         delete rspIds;
@@ -449,6 +466,9 @@ DIMSE_findProvider(
 /*
 ** CVS Log
 ** $Log: dimfind.cc,v $
+** Revision 1.15  2010-12-01 08:26:36  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.14  2010-10-14 13:14:28  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

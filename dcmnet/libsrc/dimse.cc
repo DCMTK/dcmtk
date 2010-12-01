@@ -1,4 +1,20 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
 **
 **  This software and supporting documentation were
@@ -44,6 +60,7 @@
 **  include the three paragraphs of this copyright notice.
 **
 */
+
 /*
 **
 ** Author: Andrew Hewett                Created: 03-06-93
@@ -54,11 +71,11 @@
 **      This file contains the routines which provide dimse layer services
 **      for DICOM V.3 applications.
 **
-**      Module Prefix: DIMSE_
+** Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-10-29 13:36:00 $
-** CVS/RCS Revision:    $Revision: 1.61 $
+** Update Date:         $Date: 2010-12-01 08:26:36 $
+** CVS/RCS Revision:    $Revision: 1.62 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1764,6 +1781,9 @@ OFString DIMSE_warn_str(T_ASC_Association *assoc)
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.62  2010-12-01 08:26:36  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.61  2010-10-29 13:36:00  joergr
 ** Fixed issue when sending a message with an empty dataset. Now, a warning
 ** message is reported to the log and an error code is returned in such cases.

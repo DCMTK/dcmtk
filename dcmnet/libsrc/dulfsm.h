@@ -1,4 +1,20 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
           Copyright (C) 1993, 1994, RSNA and Washington University
 
           The software and supporting documentation for the Radiological
@@ -29,10 +45,7 @@
           supporting documentation) must include the three paragraphs of
           the copyright notice.
 */
-/* Copyright marker.  Copyright will be inserted above.  Do not remove */
-/*
-** @$=@$=@$=
-*/
+
 /*
 **          DICOM 93
 **        Electronic Radiology Laboratory
@@ -43,8 +56,8 @@
 ** Author, Date:  Stephen M. Moore, 11-May-92
 ** Intent:        This module defines structures and constants needed
 **                to implement the DICOM Upper Layer state machine.
-** Last Update:   $Author: joergr $, $Date: 2010-10-14 13:19:29 $
-** Revision:      $Revision: 1.5 $
+** Last Update:   $Author: joergr $, $Date: 2010-12-01 08:26:36 $
+** Revision:      $Revision: 1.6 $
 ** Status:        $State: Exp $
 */
 
@@ -129,6 +142,9 @@ typedef struct {
 /*
 ** CVS Log
 ** $Log: dulfsm.h,v $
+** Revision 1.6  2010-12-01 08:26:36  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.5  2010-10-14 13:19:29  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

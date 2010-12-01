@@ -1,4 +1,20 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
 **
 **  This software and supporting documentation were
@@ -44,17 +60,16 @@
 **  include the three paragraphs of this copyright notice.
 **
 */
+
 /*
 **
-** Author:Andrew Hewett		Created: 11-08-93
-** 	   Oldenburg University
-**	   Germany
+** Author: Andrew Hewett                Created: 11-08-93
 **
 ** Module: dcompat.cc
 **
 ** Purpose:
-** This is the place to declare compatability routines
-** which can be missing on some systems.
+**      This is the place to declare compatability routines
+**      which can be missing on some systems.
 **
 ** Base Reference System is SUNOS 4.1.3
 **
@@ -62,11 +77,10 @@
 **
 ** Module Prefix: none
 **
-**
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 2010-10-14 13:14:28 $
-** CVS/RCS Revision:	$Revision: 1.34 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2010-12-01 08:26:35 $
+** CVS/RCS Revision:    $Revision: 1.35 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
@@ -469,6 +483,9 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
+** Revision 1.35  2010-12-01 08:26:35  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.34  2010-10-14 13:14:28  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

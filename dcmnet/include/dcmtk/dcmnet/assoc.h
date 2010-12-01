@@ -1,4 +1,20 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
 **
 **  This software and supporting documentation were
@@ -44,33 +60,33 @@
 **  include the three paragraphs of this copyright notice.
 **
 */
+
 /*
 **
-** Author: Andrew Hewett    Created: 03-06-93
+** Author: Andrew Hewett                Created: 03-06-93
 **
 ** Module: association
 **
 ** Purpose:
-**  This file contains the routines which provide association management
-**  for DICOM applications.  It maintains structures which describe
-**  active associations and provides access to association specific
-**  informtion.  Also provided are routines for aiding association
-**  negotiation (presentation contexts, abstract syntaxes, transfer
-**  syntaxes, maximum PDU length, and other extended negotiation).
+**      This file contains the routines which provide association management
+**      for DICOM applications.  It maintains structures which describe
+**      active associations and provides access to association specific
+**      informtion.  Also provided are routines for aiding association
+**      negotiation (presentation contexts, abstract syntaxes, transfer
+**      syntaxes, maximum PDU length, and other extended negotiation).
 **
-**  This package uses the facilities of the DICOM Upper Layer for
-**  receiving/sending association requests/responses.
+**      This package uses the facilities of the DICOM Upper Layer for
+**      receiving/sending association requests/responses.
 **
-**  Each active association is represented by an T_ASC_Association
-**  structure which contains all relevant information.
+**      Each active association is represented by an T_ASC_Association
+**      structure which contains all relevant information.
 **
-**  Module Prefix: ASC_
+** Module Prefix: ASC_
 **
-**
-** Last Update:   $Author: joergr $
-** Update Date:   $Date: 2010-10-14 13:17:21 $
-** CVS/RCS Revision:  $Revision: 1.32 $
-** Status:    $State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2010-12-01 08:26:10 $
+** CVS/RCS Revision:    $Revision: 1.33 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
@@ -631,6 +647,9 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
+** Revision 1.33  2010-12-01 08:26:10  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.32  2010-10-14 13:17:21  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

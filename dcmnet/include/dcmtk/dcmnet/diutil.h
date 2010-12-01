@@ -1,38 +1,54 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
-**  
+**
 **  This software and supporting documentation were
-**  developed by 
-**  
+**  developed by
+**
 **    Institut OFFIS
 **    Bereich Kommunikationssysteme
 **    Westerstr. 10-12
 **    26121 Oldenburg, Germany
-**    
+**
 **    Fachbereich Informatik
 **    Abteilung Prozessinformatik
-**    Carl von Ossietzky Universitaet Oldenburg 
+**    Carl von Ossietzky Universitaet Oldenburg
 **    Ammerlaender Heerstr. 114-118
 **    26111 Oldenburg, Germany
-**    
+**
 **    CERIUM
 **    Laboratoire SIM
 **    Faculte de Medecine
 **    2 Avenue du Pr. Leon Bernard
 **    35043 Rennes Cedex, France
-**  
-**  for CEN/TC251/WG4 as a contribution to the Radiological 
-**  Society of North America (RSNA) 1993 Digital Imaging and 
+**
+**  for CEN/TC251/WG4 as a contribution to the Radiological
+**  Society of North America (RSNA) 1993 Digital Imaging and
 **  Communications in Medicine (DICOM) Demonstration.
-**  
+**
 **  THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER OFFIS,
-**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING 
-**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR 
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER 
-**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE 
-**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE   
-**  IS WITH THE USER. 
-**  
+**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING
+**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR
+**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER
+**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE
+**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE
+**  IS WITH THE USER.
+**
 **  Copyright of the software and supporting documentation
 **  is, unless otherwise stated, jointly owned by OFFIS,
 **  Oldenburg University and CERIUM and free access is hereby
@@ -41,26 +57,26 @@
 **  software. However, any distribution of this software
 **  source code or supporting documentation or derivative
 **  works (source code and supporting documentation) must
-**  include the three paragraphs of this copyright notice. 
-** 
+**  include the three paragraphs of this copyright notice.
+**
 */
+
 /*
 **
-** Author: Andrew Hewett		Created: 11-08-93
-** 
+** Author: Andrew Hewett                Created: 11-08-93
+**
 ** Module: diutil
 **
-** Purpose: 
-**     This file contains the interface to  
+** Purpose:
+**     This file contains the interface to
 **     some general useful dicom utility routines
 **
 ** Module Prefix: DU_
 **
-**
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 2010-10-14 13:17:22 $
-** CVS/RCS Revision:	$Revision: 1.11 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2010-12-01 08:26:10 $
+** CVS/RCS Revision:    $Revision: 1.12 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
@@ -97,13 +113,13 @@ OFBool DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us);
 
 OFBool DU_findSOPClassAndInstanceInDataSet(
   DcmItem *obj,
-  char* sopClass, 
+  char* sopClass,
   char* sopInstance,
   OFBool tolerateSpacePaddedUIDs = OFFalse);
 
 OFBool DU_findSOPClassAndInstanceInFile(
   const char *fname,
-  char* sopClass, 
+  char* sopClass,
   char* sopInstance,
   OFBool tolerateSpacePaddedUIDs = OFFalse);
 
@@ -124,6 +140,9 @@ const char *DU_neventReportStatusString(Uint16 statusCode);
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
+** Revision 1.12  2010-12-01 08:26:10  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.11  2010-10-14 13:17:22  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

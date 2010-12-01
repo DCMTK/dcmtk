@@ -1,38 +1,54 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
-**  
+**
 **  This software and supporting documentation were
-**  developed by 
-**  
+**  developed by
+**
 **    Institut OFFIS
 **    Bereich Kommunikationssysteme
 **    Westerstr. 10-12
 **    26121 Oldenburg, Germany
-**    
+**
 **    Fachbereich Informatik
 **    Abteilung Prozessinformatik
-**    Carl von Ossietzky Universitaet Oldenburg 
+**    Carl von Ossietzky Universitaet Oldenburg
 **    Ammerlaender Heerstr. 114-118
 **    26111 Oldenburg, Germany
-**    
+**
 **    CERIUM
 **    Laboratoire SIM
 **    Faculte de Medecine
 **    2 Avenue du Pr. Leon Bernard
 **    35043 Rennes Cedex, France
-**  
-**  for CEN/TC251/WG4 as a contribution to the Radiological 
-**  Society of North America (RSNA) 1993 Digital Imaging and 
+**
+**  for CEN/TC251/WG4 as a contribution to the Radiological
+**  Society of North America (RSNA) 1993 Digital Imaging and
 **  Communications in Medicine (DICOM) Demonstration.
-**  
+**
 **  THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER OFFIS,
-**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING 
-**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR 
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER 
-**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE 
-**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE   
-**  IS WITH THE USER. 
-**  
+**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING
+**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR
+**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER
+**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE
+**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE
+**  IS WITH THE USER.
+**
 **  Copyright of the software and supporting documentation
 **  is, unless otherwise stated, jointly owned by OFFIS,
 **  Oldenburg University and CERIUM and free access is hereby
@@ -41,32 +57,33 @@
 **  software. However, any distribution of this software
 **  source code or supporting documentation or derivative
 **  works (source code and supporting documentation) must
-**  include the three paragraphs of this copyright notice. 
-** 
+**  include the three paragraphs of this copyright notice.
+**
 */
+
 /*
 **
-** Author: Andrew Hewett		Created: 03-06-93
-** 
+** Author: Andrew Hewett                Created: 03-06-93
+**
 ** Module: dimstore
 **
-** Purpose: 
-**	This file contains the routines which help with
-**	storage services.
+** Purpose:
+**      This file contains the routines which help with
+**      storage services.
 **
-**	Module Prefix: DIMSE_
+** Module Prefix: DIMSE_
 **
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 2010-10-14 13:14:28 $
-** CVS/RCS Revision:	$Revision: 1.22 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2010-12-01 08:26:36 $
+** CVS/RCS Revision:    $Revision: 1.23 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
 */
 
 
-/* 
+/*
 ** Include Files
 */
 
@@ -93,7 +110,7 @@
  * in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
  * Affected SOP Instance UID field of the C-STORE-RQ message is retained
  * in the corresponding C-STORE-RSP message.
- * To enable the workaround, this flag must be set to OFTrue and 
+ * To enable the workaround, this flag must be set to OFTrue and
  * dcmEnableAutomaticInputDataCorrection must be set to OFFalse.
  * (see declaration in dcmdata/include/dcobject.h)
  */
@@ -103,7 +120,7 @@ OFGlobal<OFBool> dcmPeerRequiresExactUIDCopy(OFFalse);
 /*
 **
 */
- 
+
 typedef struct {
     void *callbackData;
     T_DIMSE_StoreProgress *progress;
@@ -112,7 +129,7 @@ typedef struct {
 } DIMSE_PrivateUserContext;
 
 
-static void 
+static void
 privateUserCallback(void *callbackData, unsigned long bytes)
 {
     DIMSE_PrivateUserContext *ctx;
@@ -140,7 +157,7 @@ DIMSE_storeUser(
      * This function transmits data from a file or a dataset to an SCP. The transmission is
      * conducted via network and using DIMSE C-STORE messages. Additionally, this function
      * evaluates C-STORE-Response messages which were received from the SCP.
-     * 
+     *
      * Parameters:
      *   assoc                - [in] The association (network connection to SCP).
      *   presId               - [in] The ID of the presentation context which shall be used
@@ -174,7 +191,7 @@ DIMSE_storeUser(
 
     /* if there is no image file or no data set, no data can be sent */
     if (imageFileName == NULL && imageDataSet == NULL) return DIMSE_NULLKEY;
-    
+
     /* initialize the variables which represent DIMSE C-STORE request and DIMSE C-STORE response messages */
     bzero((char*)&req, sizeof(req));
     bzero((char*)&rsp, sizeof(rsp));
@@ -194,7 +211,7 @@ DIMSE_storeUser(
         progress.state = DIMSE_StoreBegin;
 	progress.callbackCount = 1;
 	progress.progressBytes = 0;
-	if (imageFileTotalBytes > 0) progress.totalBytes = imageFileTotalBytes; 
+	if (imageFileTotalBytes > 0) progress.totalBytes = imageFileTotalBytes;
 	else
 	{
           if (imageFileName != NULL) progress.totalBytes = OFStandard::getFileSize(imageFileName);
@@ -210,16 +227,16 @@ DIMSE_storeUser(
         /* corresponding function will be called when progress shall be indicated. */
         privCallback = NULL;
     }
-    
+
     /* send C-STORE-RQ message and instance data using file data or data set */
     if (imageFileName != NULL) {
-        cond = DIMSE_sendMessageUsingFileData(assoc, presId, &req, 
+        cond = DIMSE_sendMessageUsingFileData(assoc, presId, &req,
 	    NULL, imageFileName, privCallback, &callbackCtx);
     } else {
-        cond = DIMSE_sendMessageUsingMemoryData(assoc, presId, &req, 
+        cond = DIMSE_sendMessageUsingMemoryData(assoc, presId, &req,
 	    NULL, imageDataSet, privCallback, &callbackCtx);
     }
-    
+
     if (cond != EC_Normal) {
 	return cond;
     }
@@ -244,7 +261,7 @@ DIMSE_storeUser(
         T_ASC_PresentationContextID thisPresId = presId;
 
         /* try to receive a C-STORE-RSP over the network. */
-        cond = DIMSE_receiveCommand(assoc, blockMode, timeout, 
+        cond = DIMSE_receiveCommand(assoc, blockMode, timeout,
             &thisPresId, &rsp, statusDetail);
         if (cond != EC_Normal) return cond;
 
@@ -265,9 +282,9 @@ DIMSE_storeUser(
               sprintf(buf, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
               return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf);
             }
-    
+
             /* if we get to here, we received a C-STORE-RSP; store this message in the reference parameter */
-            *response = rsp.msg.CStoreRSP;          // BoundsChecker warning !?	
+            *response = rsp.msg.CStoreRSP;          // BoundsChecker warning !?
 
             /* check if the response relates to the request which was sent earlier; if not, return an error */
             if (response->MessageIDBeingRespondedTo != request->MessageID)
@@ -278,7 +295,7 @@ DIMSE_storeUser(
             }
         }
     } while (checkForCancelParams != NULL && rsp.CommandField == DIMSE_C_CANCEL_RQ);
-    
+
     /* return result value */
     return EC_Normal;
 }
@@ -286,7 +303,7 @@ DIMSE_storeUser(
 
 
 OFCondition
-DIMSE_sendStoreResponse(T_ASC_Association * assoc, 
+DIMSE_sendStoreResponse(T_ASC_Association * assoc,
 	T_ASC_PresentationContextID presID,
 	T_DIMSE_C_StoreRQ *request,
 	T_DIMSE_C_StoreRSP *response,
@@ -294,7 +311,7 @@ DIMSE_sendStoreResponse(T_ASC_Association * assoc,
     /*
      * This function takes care of sending a C-STORE-RSP message over the network to the DICOM
      * application this application is connected with.
-     * 
+     *
      * Parameters:
      *   assoc        - [in] The association (network connection to another DICOM application).
      *   presID       - [in] The ID of the presentation context which was specified in the PDV
@@ -315,13 +332,13 @@ DIMSE_sendStoreResponse(T_ASC_Association * assoc,
     response->MessageIDBeingRespondedTo = request->MessageID;
     strcpy(response->AffectedSOPClassUID, request->AffectedSOPClassUID);
     strcpy(response->AffectedSOPInstanceUID, request->AffectedSOPInstanceUID);
-    response->opts = (O_STORE_AFFECTEDSOPCLASSUID | 
+    response->opts = (O_STORE_AFFECTEDSOPCLASSUID |
         O_STORE_AFFECTEDSOPINSTANCEUID);
     response->DataSetType = DIMSE_DATASET_NULL;
     rsp.msg.CStoreRSP = *response;
 
     /* send response message over the network */
-    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &rsp, 
+    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &rsp,
 		statusDetail, NULL, NULL, NULL);
 
     /* return reult value */
@@ -333,14 +350,14 @@ typedef struct {
     void *callbackData;
     T_DIMSE_StoreProgress *progress;
     T_DIMSE_C_StoreRQ *request;
-    char *imageFileName; 
+    char *imageFileName;
     DcmDataset **imageDataSet;
     T_DIMSE_C_StoreRSP *response;
     DcmDataset	**statusDetail;
     DIMSE_StoreProviderCallback	callback;
 } DIMSE_PrivateProviderContext;
 
-static void 
+static void
 privateProviderCallback(void *callbackData, unsigned long bytes)
 {
     DIMSE_PrivateProviderContext *ctx;
@@ -349,7 +366,7 @@ privateProviderCallback(void *callbackData, unsigned long bytes)
     ctx->progress->progressBytes = bytes;
     ctx->progress->callbackCount++;
     if (ctx->callback) {
-        ctx->callback(ctx->callbackData, ctx->progress, ctx->request, 
+        ctx->callback(ctx->callbackData, ctx->progress, ctx->request,
 	    ctx->imageFileName, ctx->imageDataSet, ctx->response,
 	    ctx->statusDetail);
     }
@@ -357,7 +374,7 @@ privateProviderCallback(void *callbackData, unsigned long bytes)
 
 
 OFCondition
-DIMSE_storeProvider( T_ASC_Association *assoc, 
+DIMSE_storeProvider( T_ASC_Association *assoc,
 	T_ASC_PresentationContextID presIdCmd,
 	T_DIMSE_C_StoreRQ *request,
 	const char* imageFileName, int writeMetaheader,
@@ -368,7 +385,7 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
      * This function receives a data set over the network and either stores this data in a file (exactly as it was
      * received) or it stores this data in memory. Before, during and after the process of receiving data, the callback
      * function which was provided by the caller (if it was provided) will be called to indicate progress.
-     * 
+     *
      * Parameters:
      *   assoc           - [in] The association (network connection to another DICOM application).
      *   presIDCmd       - [in] The ID of the presentation context which was specified in the PDV which contained
@@ -388,7 +405,7 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
      *   blockMode       - [in] The blocking mode for receiving data (either DIMSE_BLOCKING or DIMSE_NONBLOCKING)
      *   timeout         - [in] Timeout interval for receiving data (if the blocking mode is DIMSE_NONBLOCKING).
      */
-{	
+{
     OFCondition cond = EC_Normal;
     DIMSE_PrivateProviderContext callbackCtx;
     DIMSE_ProgressCallback privCallback = NULL;
@@ -425,13 +442,13 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
 	callbackCtx.statusDetail = &statusDetail;
         callbackCtx.callback = callback;
 	/* execute initial callback */
-	callback(callbackData, &progress, request, 
+	callback(callbackData, &progress, request,
 	    (char*)imageFileName, imageDataSet,
 	    &response, &statusDetail);
     } else {
         privCallback = NULL;
     }
-    
+
     /* in the following, we want to receive data over the network and do something with this data. If the */
     /* imageFileName does not equal NULL, the caller required that the data shall be written to a file */
     /* exactly the way it was received over the network. Hence, a filestream will be created and the data */
@@ -447,7 +464,7 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
         if (cond.bad())
         {
           /* We cannot create the filestream, so ignore the incoming dataset and return an out-of-resources error to the SCU */
-          DIC_UL bytesRead = 0; 
+          DIC_UL bytesRead = 0;
           DIC_UL pdvCount=0;
           cond = DIMSE_ignoreDataSet(assoc, blockMode, timeout, &bytesRead, &pdvCount);
           if (cond.good())
@@ -465,7 +482,7 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
             if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
           }
         }
-    } 
+    }
     else if (imageDataSet != NULL)
     {
         /* receive data and store it in memory */
@@ -491,30 +508,33 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
     } else {
         return cond;
     }
-   
+
     /* execute final callback (user does not have to provide callback) */
     if (callback) {
         progress.state = DIMSE_StoreEnd;
 	progress.callbackCount++;
 	/* execute final callback */
-	callback(callbackData, &progress, request, 
+	callback(callbackData, &progress, request,
 	    (char*)imageFileName, imageDataSet,
 	    &response, &statusDetail);
     }
-    
+
     /* send a C-STORE-RSP message over the network to the other DICOM application */
     OFCondition cond2 = DIMSE_sendStoreResponse(assoc, presIdCmd, request, &response, statusDetail);
- 
+
     /* if we already had an error condition, don't overwrite */
     if (cond.good()) cond = cond2;
 
-    /* return result value */    
+    /* return result value */
     return cond;
 }
 
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
+** Revision 1.23  2010-12-01 08:26:36  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.22  2010-10-14 13:14:28  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

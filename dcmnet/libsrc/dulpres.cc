@@ -1,4 +1,20 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
           Copyright (C) 1993, 1994, RSNA and Washington University
 
           The software and supporting documentation for the Radiological
@@ -29,23 +45,20 @@
           supporting documentation) must include the three paragraphs of
           the copyright notice.
 */
-/* Copyright marker.  Copyright will be inserted above.  Do not remove */
+
 /*
-** @$=@$=@$=
-*/
-/*
-**				DICOM 93
-**		     Electronic Radiology Laboratory
-**		   Mallinckrodt Institute of Radiology
-**		Washington University School of Medicine
+**          DICOM 93
+**        Electronic Radiology Laboratory
+**      Mallinckrodt Institute of Radiology
+**    Washington University School of Medicine
 **
-** Module Name(s):	DUL_MakePresentationCtx
-** Author, Date:	Stephen M. Moore, 15-Apr-93
-** Intent:		This module contains routines for the user to
-**			build and manipulate the public DUL structures.
-** Last Update:		$Author: joergr $, $Date: 2010-10-14 13:14:29 $
-** Revision:		$Revision: 1.13 $
-** Status:		$State: Exp $
+** Module Name(s):  DUL_MakePresentationCtx
+** Author, Date:    Stephen M. Moore, 15-Apr-93
+** Intent:          This module contains routines for the user to
+**                  build and manipulate the public DUL structures.
+** Last Update:     $Author: joergr $, $Date: 2010-12-01 08:26:37 $
+** Revision:        $Revision: 1.14 $
+** Status:          $State: Exp $
 */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -145,6 +158,9 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 /*
 ** CVS Log
 ** $Log: dulpres.cc,v $
+** Revision 1.14  2010-12-01 08:26:37  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.13  2010-10-14 13:14:29  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

@@ -1,4 +1,20 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
           Copyright (C) 1993, 1994, RSNA and Washington University
 
           The software and supporting documentation for the Radiological
@@ -29,15 +45,12 @@
           supporting documentation) must include the three paragraphs of
           the copyright notice.
 */
-/* Copyright marker.  Copyright will be inserted above.  Do not remove */
+
 /*
-** @$=@$=@$=
-*/
-/*
-**                              DICOM 93
-**                   Electronic Radiology Laboratory
-**                 Mallinckrodt Institute of Radiology
-**              Washington University School of Medicine
+**          DICOM 93
+**        Electronic Radiology Laboratory
+**      Mallinckrodt Institute of Radiology
+**    Washington University School of Medicine
 **
 ** Module Name(s):
 **                DUL_InitializeNetwork
@@ -54,8 +67,8 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: uli $, $Date: 2010-11-29 13:40:59 $
-** Revision:      $Revision: 1.93 $
+** Last Update:   $Author: joergr $, $Date: 2010-12-01 08:26:36 $
+** Revision:      $Revision: 1.94 $
 ** Status:        $State: Exp $
 */
 
@@ -2101,7 +2114,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
           msg += OFStandard::strerror(errno, buf, sizeof(buf));
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
-/* Find out assigned port number and print it out */
+        /* Find out assigned port number and print it out */
         length = sizeof(server);
         if (getsockname((*key)->networkSpecific.TCP.listenSocket,
                         (struct sockaddr *) & server, &length))
@@ -2720,6 +2733,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.94  2010-12-01 08:26:36  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.93  2010-11-29 13:40:59  uli
 ** Correctly determine the remote address if only a socket fd is given.
 **

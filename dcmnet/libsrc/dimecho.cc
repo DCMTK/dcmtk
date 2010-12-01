@@ -1,38 +1,54 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
-**  
+**
 **  This software and supporting documentation were
-**  developed by 
-**  
+**  developed by
+**
 **    Institut OFFIS
 **    Bereich Kommunikationssysteme
 **    Westerstr. 10-12
 **    26121 Oldenburg, Germany
-**    
+**
 **    Fachbereich Informatik
 **    Abteilung Prozessinformatik
-**    Carl von Ossietzky Universitaet Oldenburg 
+**    Carl von Ossietzky Universitaet Oldenburg
 **    Ammerlaender Heerstr. 114-118
 **    26111 Oldenburg, Germany
-**    
+**
 **    CERIUM
 **    Laboratoire SIM
 **    Faculte de Medecine
 **    2 Avenue du Pr. Leon Bernard
 **    35043 Rennes Cedex, France
-**  
-**  for CEN/TC251/WG4 as a contribution to the Radiological 
-**  Society of North America (RSNA) 1993 Digital Imaging and 
+**
+**  for CEN/TC251/WG4 as a contribution to the Radiological
+**  Society of North America (RSNA) 1993 Digital Imaging and
 **  Communications in Medicine (DICOM) Demonstration.
-**  
+**
 **  THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER OFFIS,
-**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING 
-**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR 
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER 
-**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE 
-**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE   
-**  IS WITH THE USER. 
-**  
+**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING
+**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR
+**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER
+**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE
+**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE
+**  IS WITH THE USER.
+**
 **  Copyright of the software and supporting documentation
 **  is, unless otherwise stated, jointly owned by OFFIS,
 **  Oldenburg University and CERIUM and free access is hereby
@@ -41,31 +57,32 @@
 **  software. However, any distribution of this software
 **  source code or supporting documentation or derivative
 **  works (source code and supporting documentation) must
-**  include the three paragraphs of this copyright notice. 
-** 
+**  include the three paragraphs of this copyright notice.
+**
 */
+
 /*
 **
-** Author: Andrew Hewett		Created: 03-06-93
-** 
+** Author: Andrew Hewett                Created: 03-06-93
+**
 ** Module: dimecho
 **
-** Purpose: 
-**	This file contains the routines which help with
-**	verification services.
+** Purpose:
+**      This file contains the routines which help with
+**      verification services.
 **
-**	Module Prefix: DIMSE_
+** Module Prefix: DIMSE_
 **
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 2010-10-14 13:14:28 $
-** CVS/RCS Revision:	$Revision: 1.10 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2010-12-01 08:26:36 $
+** CVS/RCS Revision:    $Revision: 1.11 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
 
 
-/* 
+/*
 ** Include Files
 */
 
@@ -83,8 +100,8 @@
 
 OFCondition
 DIMSE_echoUser(
-	/* in */ 
-	T_ASC_Association *assoc, DIC_US msgId, 
+	/* in */
+	T_ASC_Association *assoc, DIC_US msgId,
 	/* blocking info for response */
 	T_DIMSE_BlockingMode blockMode, int timeout,
 	/* out */
@@ -114,7 +131,7 @@ DIMSE_echoUser(
     strcpy(req.msg.CEchoRQ.AffectedSOPClassUID,
 	   sopClass);
     req.msg.CEchoRQ.DataSetType = DIMSE_DATASET_NULL;
-    
+
     OFCondition cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req, NULL, NULL, NULL, NULL);
     if (cond.bad()) return cond;
 
@@ -128,21 +145,21 @@ DIMSE_echoUser(
         sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
         return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
     }
- 
+
     if (rsp.msg.CEchoRSP.MessageIDBeingRespondedTo != msgId)
     {
         char buf1[256];
         sprintf(buf1, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", rsp.msg.CEchoRSP.MessageIDBeingRespondedTo, msgId);
         return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
     }
-    
+
     *status = rsp.msg.CEchoRSP.DimseStatus;
 
-    return EC_Normal;   
+    return EC_Normal;
 }
- 
+
 OFCondition
-DIMSE_sendEchoResponse(T_ASC_Association * assoc, 
+DIMSE_sendEchoResponse(T_ASC_Association * assoc,
 	T_ASC_PresentationContextID presID,
 	T_DIMSE_C_EchoRQ *req, DIC_US status, DcmDataset *statusDetail)
 {
@@ -166,6 +183,9 @@ DIMSE_sendEchoResponse(T_ASC_Association * assoc,
 /*
 ** CVS Log
 ** $Log: dimecho.cc,v $
+** Revision 1.11  2010-12-01 08:26:36  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.10  2010-10-14 13:14:28  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

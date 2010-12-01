@@ -1,4 +1,20 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
           Copyright (C) 1993, 1994, RSNA and Washington University
 
           The software and supporting documentation for the Radiological
@@ -29,14 +45,11 @@
           supporting documentation) must include the three paragraphs of
           the copyright notice.
 */
-/* Copyright marker.  Copyright will be inserted above.  Do not remove */
+
 /*
-** @$=@$=@$=
-*/
-/*
-**        DICOM 93
-**         Electronic Radiology Laboratory
-**       Mallinckrodt Institute of Radiology
+**          DICOM 93
+**        Electronic Radiology Laboratory
+**      Mallinckrodt Institute of Radiology
 **    Washington University School of Medicine
 **
 ** Module Name(s):
@@ -50,9 +63,9 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-** Last Update:   $Author: joergr $, $Date: 2010-10-14 13:19:29 $
-** Revision:    $Revision: 1.12 $
-** Status:    $State: Exp $
+** Last Update:   $Author: joergr $, $Date: 2010-12-01 08:26:37 $
+** Revision:      $Revision: 1.13 $
+** Status:        $State: Exp $
 */
 
 #ifndef DULSTRUC_H
@@ -317,6 +330,9 @@ typedef struct dul_datapdu {
 /*
 ** CVS Log
 ** $Log: dulstruc.h,v $
+** Revision 1.13  2010-12-01 08:26:37  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.12  2010-10-14 13:19:29  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

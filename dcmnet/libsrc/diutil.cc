@@ -1,38 +1,54 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
-**  
+**
 **  This software and supporting documentation were
-**  developed by 
-**  
+**  developed by
+**
 **    Institut OFFIS
 **    Bereich Kommunikationssysteme
 **    Westerstr. 10-12
 **    26121 Oldenburg, Germany
-**    
+**
 **    Fachbereich Informatik
 **    Abteilung Prozessinformatik
-**    Carl von Ossietzky Universitaet Oldenburg 
+**    Carl von Ossietzky Universitaet Oldenburg
 **    Ammerlaender Heerstr. 114-118
 **    26111 Oldenburg, Germany
-**    
+**
 **    CERIUM
 **    Laboratoire SIM
 **    Faculte de Medecine
 **    2 Avenue du Pr. Leon Bernard
 **    35043 Rennes Cedex, France
-**  
-**  for CEN/TC251/WG4 as a contribution to the Radiological 
-**  Society of North America (RSNA) 1993 Digital Imaging and 
+**
+**  for CEN/TC251/WG4 as a contribution to the Radiological
+**  Society of North America (RSNA) 1993 Digital Imaging and
 **  Communications in Medicine (DICOM) Demonstration.
-**  
+**
 **  THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER OFFIS,
-**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING 
-**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR 
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER 
-**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE 
-**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE   
-**  IS WITH THE USER. 
-**  
+**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING
+**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR
+**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER
+**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE
+**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE
+**  IS WITH THE USER.
+**
 **  Copyright of the software and supporting documentation
 **  is, unless otherwise stated, jointly owned by OFFIS,
 **  Oldenburg University and CERIUM and free access is hereby
@@ -41,26 +57,26 @@
 **  software. However, any distribution of this software
 **  source code or supporting documentation or derivative
 **  works (source code and supporting documentation) must
-**  include the three paragraphs of this copyright notice. 
-** 
+**  include the three paragraphs of this copyright notice.
+**
 */
+
 /*
 **
-** Author: Andrew Hewett		Created: 11-08-93
-** 
+** Author: Andrew Hewett                Created: 11-08-93
+**
 ** Module: diutil
 **
-** Purpose: 
-**     This file contains the interface to  
+** Purpose:
+**     This file contains the interface to
 **     some general useful dicom utility routines
 **
 ** Module Prefix: DU_
 **
-**
-** Last Update:		$Author: uli $
-** Update Date:		$Date: 2010-10-20 07:41:36 $
-** CVS/RCS Revision:	$Revision: 1.29 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2010-12-01 08:26:36 $
+** CVS/RCS Revision:    $Revision: 1.30 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
@@ -110,13 +126,13 @@ OFLogger DCM_dcmnetGetLogger()
 }
 
 #define TO_UCHAR(s) OFstatic_cast(unsigned char, (s))
-char* 
+char*
 DU_stripTrailingSpaces(char *s)
 {
     int i, n;
 
     if (s == NULL) return s;
-    
+
     n = strlen(s);
     for (i = n - 1; i >= 0 && isspace(TO_UCHAR(s[i])); i--)
 	s[i] = '\0';
@@ -132,7 +148,7 @@ DU_stripLeadingSpaces(char *s)
     n = strlen(s);
     if (n == 0) return s;
     if (!isspace(s[0])) return s;	/* no leading space */
-    
+
     /* first non-space */
     for (i=0; i<n && isspace(TO_UCHAR(s[i])); i++)
         /* do nothing, just iterate */
@@ -165,7 +181,7 @@ DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
     DcmStack stack;
     OFCondition ec = EC_Normal;
     char* aString;
-    
+
     ec = obj->search(t, stack);
     elem = (DcmByteString*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
@@ -185,7 +201,7 @@ DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s)
     OFCondition ec = EC_Normal;
     DcmElement *e = NULL;
     DcmTag tag(t);
-    
+
     ec = newDicomElement(e, tag);
     if (ec == EC_Normal && s != NULL) {
         ec = e->putString(s);
@@ -219,7 +235,7 @@ DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us)
     OFCondition ec = EC_Normal;
     DcmElement *e = NULL;
     DcmTag tag(t);
-    
+
     ec = newDicomElement(e, tag);
     if (ec == EC_Normal) {
         ec = e->putUint16(us);
@@ -233,7 +249,7 @@ DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us)
 OFBool
 DU_findSOPClassAndInstanceInDataSet(
   DcmItem *obj,
-  char* sopClass, 
+  char* sopClass,
   char* sopInstance,
   OFBool tolerateSpacePaddedUIDs)
 {
@@ -256,7 +272,7 @@ DU_findSOPClassAndInstanceInDataSet(
 OFBool
 DU_findSOPClassAndInstanceInFile(
   const char *fname,
-  char* sopClass, 
+  char* sopClass,
   char* sopInstance,
   OFBool tolerateSpacePaddedUIDs)
 {
@@ -272,7 +288,7 @@ DU_findSOPClassAndInstanceInFile(
         found = DU_findSOPClassAndInstanceInDataSet(
             ff.getDataset(), sopClass, sopInstance, tolerateSpacePaddedUIDs);
     }
-    
+
     return found;
 }
 
@@ -427,7 +443,7 @@ DU_cmoveStatusString(Uint16 statusCode)
 const char *
 DU_cgetStatusString(Uint16 statusCode)
 {
-    
+
     sprintf(staticBuf,  "Unknown Status: 0x%x", (unsigned int)statusCode);
     return staticBuf;
 }
@@ -638,13 +654,13 @@ DU_nactionStatusString(Uint16 statusCode)
 	    break;
      case STATUS_N_MistypedArgument:
 	    s = "Failure: MistypedArgument";
-	    break;     
+	    break;
      case STATUS_N_NoSuchAction:
 	    s = "Failure: NoSuchAction";
-	    break;     
+	    break;
      case STATUS_N_NoSuchArgument:
 	    s = "Failure: NoSuchArgument";
-	    break;       
+	    break;
     case STATUS_N_NoSuchSOPClass:
 	    s = "Failure: NoSuchSOPClass";
 	    break;
@@ -697,7 +713,7 @@ DU_ndeleteStatusString(Uint16 statusCode)
 	    break;
      case STATUS_N_MistypedArgument:
 	    s = "Failure: MistypedArgument";
-	    break;     
+	    break;
     case STATUS_N_NoSuchSOPClass:
 	    s = "Failure: NoSuchSOPClass";
 	    break;
@@ -753,13 +769,13 @@ DU_neventReportStatusString(Uint16 statusCode)
 	    break;
     case STATUS_N_MistypedArgument:
 	    s = "Failure: MistypedArgument";
-	    break;     
+	    break;
     case STATUS_N_NoSuchArgument:
 	    s = "Failure: NoSuchArgument";
-	    break;     
+	    break;
     case STATUS_N_NoSuchEventType:
 	    s = "Failure: NoSuchEventType";
-	    break;    
+	    break;
     case STATUS_N_NoSuchSOPClass:
 	    s = "Failure: NoSuchSOPClass";
 	    break;
@@ -796,6 +812,9 @@ DU_neventReportStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
+** Revision 1.30  2010-12-01 08:26:36  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.29  2010-10-20 07:41:36  uli
 ** Made sure isalpha() & friends are only called with valid arguments.
 **

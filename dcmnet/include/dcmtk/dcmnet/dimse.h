@@ -1,38 +1,54 @@
 /*
+ *
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were partly developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  For further copyrights, see the following paragraphs.
+ *
+ */
+
+/*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
-**  
+**
 **  This software and supporting documentation were
-**  developed by 
-**  
+**  developed by
+**
 **    Institut OFFIS
 **    Bereich Kommunikationssysteme
 **    Westerstr. 10-12
 **    26121 Oldenburg, Germany
-**    
+**
 **    Fachbereich Informatik
 **    Abteilung Prozessinformatik
-**    Carl von Ossietzky Universitaet Oldenburg 
+**    Carl von Ossietzky Universitaet Oldenburg
 **    Ammerlaender Heerstr. 114-118
 **    26111 Oldenburg, Germany
-**    
+**
 **    CERIUM
 **    Laboratoire SIM
 **    Faculte de Medecine
 **    2 Avenue du Pr. Leon Bernard
 **    35043 Rennes Cedex, France
-**  
-**  for CEN/TC251/WG4 as a contribution to the Radiological 
-**  Society of North America (RSNA) 1993 Digital Imaging and 
+**
+**  for CEN/TC251/WG4 as a contribution to the Radiological
+**  Society of North America (RSNA) 1993 Digital Imaging and
 **  Communications in Medicine (DICOM) Demonstration.
-**  
+**
 **  THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER OFFIS,
-**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING 
-**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR 
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER 
-**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE 
-**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE   
-**  IS WITH THE USER. 
-**  
+**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING
+**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR
+**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER
+**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE
+**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE
+**  IS WITH THE USER.
+**
 **  Copyright of the software and supporting documentation
 **  is, unless otherwise stated, jointly owned by OFFIS,
 **  Oldenburg University and CERIUM and free access is hereby
@@ -41,24 +57,25 @@
 **  software. However, any distribution of this software
 **  source code or supporting documentation or derivative
 **  works (source code and supporting documentation) must
-**  include the three paragraphs of this copyright notice. 
-** 
+**  include the three paragraphs of this copyright notice.
+**
 */
+
 /*
 **
 ** Author: Andrew Hewett                Created: 03-06-93
-** 
+**
 ** Module: dimse
 **
-** Purpose: 
+** Purpose:
 **      This file contains the routines which provide dimse layer services
-**      for DICOM applications.  
+**      for DICOM applications.
 **
-**      Module Prefix: DIMSE_
+** Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-10-14 13:17:22 $
-** CVS/RCS Revision:    $Revision: 1.22 $
+** Update Date:         $Date: 2010-12-01 08:26:10 $
+** CVS/RCS Revision:    $Revision: 1.23 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -72,7 +89,7 @@
 /*
  * Required Include Files
  */
- 
+
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmnet/dicom.h"
@@ -89,7 +106,7 @@ class DcmOutputFileStream;
  * in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
  * Affected SOP Instance UID field of the C-STORE-RQ message is retained
  * in the corresponding C-STORE-RSP message.
- * To enable the workaround, this flag must be set to OFTrue and 
+ * To enable the workaround, this flag must be set to OFTrue and
  * dcmEnableAutomaticInputDataCorrection must be set to OFFalse.
  * (see declaration in dcmdata/include/dcobject.h)
  */
@@ -104,8 +121,8 @@ extern OFGlobal<OFBool> dcmPeerRequiresExactUIDCopy; /* default OFFalse */
 extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
 
 
-/* 
- * General Status Codes 
+/*
+ * General Status Codes
  */
 #define STATUS_Success  0x0000
 #define STATUS_Pending  0xff00
@@ -113,16 +130,16 @@ extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
 #define DICOM_PENDING_STATUS(status) (((status)&0xff00) == 0xff00)
 #define DICOM_WARNING_STATUS(status) (((status)&0xf000) == 0xb000)
 
-/* 
- * Service Class Specific Status Codes 
- * NOTE: some codes are only significant in the high byte 
+/*
+ * Service Class Specific Status Codes
+ * NOTE: some codes are only significant in the high byte
  * or high nibble (4 bits).
  */
 /* Storage Specific Codes*/
-#define STATUS_STORE_Refused_OutOfResources             /* high byte */ 0xa700  
-#define STATUS_STORE_Refused_SOPClassNotSupported       /* high byte */ 0xa800 
-#define STATUS_STORE_Error_DataSetDoesNotMatchSOPClass  /* high byte */ 0xa900 
-#define STATUS_STORE_Error_CannotUnderstand           /* high nibble */ 0xc000  
+#define STATUS_STORE_Refused_OutOfResources             /* high byte */ 0xa700
+#define STATUS_STORE_Refused_SOPClassNotSupported       /* high byte */ 0xa800
+#define STATUS_STORE_Error_DataSetDoesNotMatchSOPClass  /* high byte */ 0xa900
+#define STATUS_STORE_Error_CannotUnderstand           /* high nibble */ 0xc000
 #define STATUS_STORE_Warning_CoersionOfDataElements                     0xb000
 #define STATUS_STORE_Warning_DataSetDoesNotMatchSOPClass                0xb007
 #define STATUS_STORE_Warning_ElementsDiscarded                          0xb006
@@ -131,7 +148,7 @@ extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
 #define STATUS_FIND_Refused_OutOfResources                              0xa700
 #define STATUS_FIND_Refused_SOPClassNotSupported                        0xa800
 #define STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass               0xa900
-#define STATUS_FIND_Failed_UnableToProcess            /* high nibble */ 0xc000  
+#define STATUS_FIND_Failed_UnableToProcess            /* high nibble */ 0xc000
 #define STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest         0xfe00
 #define STATUS_FIND_Pending_WarningUnsupportedOptionalKeys              0xff01
 
@@ -141,7 +158,7 @@ extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
 #define STATUS_MOVE_Failed_SOPClassNotSupported                         0xa800
 #define STATUS_MOVE_Failed_MoveDestinationUnknown                       0xa801
 #define STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass               0xa900
-#define STATUS_MOVE_Failed_UnableToProcess            /* high nibble */ 0xc000 
+#define STATUS_MOVE_Failed_UnableToProcess            /* high nibble */ 0xc000
 #define STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication 0xfe00
 #define STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures      0xb000
 
@@ -150,7 +167,7 @@ extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
 #define STATUS_GET_Refused_OutOfResourcesSubOperations                  0xa702
 #define STATUS_GET_Failed_SOPClassNotSupported                          0xa800
 #define STATUS_GET_Failed_IdentifierDoesNotMatchSOPClass                0xa900
-#define STATUS_GET_Failed_UnableToProcess             /* high nibble */ 0xc000 
+#define STATUS_GET_Failed_UnableToProcess             /* high nibble */ 0xc000
 #define STATUS_GET_Cancel_SubOperationsTerminatedDueToCancelIndication  0xfe00
 #define STATUS_GET_Warning_SubOperationsCompleteOneOrMoreFailures       0xb000
 
@@ -258,8 +275,8 @@ typedef enum {
 
 
 /*
- * DIMSE Messages 
- * 
+ * DIMSE Messages
+ *
  */
 
 /* C-STORE */
@@ -550,8 +567,8 @@ struct T_DIMSE_N_DeleteRSP {
 
 
 
-/* 
- * Composite  DIMSE Message 
+/*
+ * Composite  DIMSE Message
  */
 
 struct T_DIMSE_Message {
@@ -644,18 +661,18 @@ extern OFBool            g_dimse_save_dimse_data;              /* default: OFFal
 /*
  * Verification Service Class
  */
- 
+
 OFCondition
 DIMSE_echoUser(
-        /* in */ 
-        T_ASC_Association *assoc, DIC_US msgId, 
+        /* in */
+        T_ASC_Association *assoc, DIC_US msgId,
         /* blocking info for response */
         T_DIMSE_BlockingMode blockMode, int timeout,
         /* out */
         DIC_US *status, DcmDataset **statusDetail);
- 
+
 OFCondition
-DIMSE_sendEchoResponse(T_ASC_Association * assoc, 
+DIMSE_sendEchoResponse(T_ASC_Association * assoc,
         T_ASC_PresentationContextID presID,
         T_DIMSE_C_EchoRQ *request, DIC_US status, DcmDataset *statusDetail);
 
@@ -679,7 +696,7 @@ struct T_DIMSE_StoreProgress { /* progress structure for store callback routines
 
 
 typedef void (*DIMSE_StoreUserCallback)(
-    void *callbackData, 
+    void *callbackData,
     T_DIMSE_StoreProgress *progress,
     T_DIMSE_C_StoreRQ *request  /* original store request */
    );
@@ -692,7 +709,7 @@ struct T_DIMSE_DetectedCancelParameters {
 
 OFCondition
 DIMSE_storeUser(
-        /* in */ 
+        /* in */
         T_ASC_Association *assoc, T_ASC_PresentationContextID presId,
         T_DIMSE_C_StoreRQ *request,
         const char *imageFileName, DcmDataset *imageDataSet,
@@ -708,7 +725,7 @@ DIMSE_storeUser(
 
 typedef void (*DIMSE_StoreProviderCallback)(
     /* in */
-    void *callbackData, 
+    void *callbackData,
     T_DIMSE_StoreProgress *progress,    /* progress state */
     T_DIMSE_C_StoreRQ *request,         /* original store request */
     char *imageFileName, DcmDataset **imageDataSet, /* being received into */
@@ -719,7 +736,7 @@ typedef void (*DIMSE_StoreProviderCallback)(
 
 OFCondition
 DIMSE_storeProvider(/* in */
-        T_ASC_Association *assoc, 
+        T_ASC_Association *assoc,
         T_ASC_PresentationContextID presIdCmd,
         T_DIMSE_C_StoreRQ *request,
     const char* imageFileName, int writeMetaheader,
@@ -742,9 +759,9 @@ DIMSE_sendStoreResponse(T_ASC_Association * assoc,
 
 typedef void (*DIMSE_FindUserCallback)(
         /* in */
-        void *callbackData, 
+        void *callbackData,
         T_DIMSE_C_FindRQ *request,      /* original find request */
-        int responseCount, 
+        int responseCount,
         T_DIMSE_C_FindRSP *response,    /* pending response received */
         DcmDataset *responseIdentifiers /* pending response identifiers */
         );
@@ -752,7 +769,7 @@ typedef void (*DIMSE_FindUserCallback)(
 OFCondition
 DIMSE_findUser(
         /* in */
-        T_ASC_Association *assoc, 
+        T_ASC_Association *assoc,
         T_ASC_PresentationContextID presID,
         T_DIMSE_C_FindRQ *request, DcmDataset *requestIdentifiers,
         DIMSE_FindUserCallback callback, void *callbackData,
@@ -762,9 +779,9 @@ DIMSE_findUser(
         T_DIMSE_C_FindRSP *response, DcmDataset **statusDetail);
 
 typedef void (*DIMSE_FindProviderCallback)(
-        /* in */ 
-        void *callbackData,  
-        OFBool cancelled, T_DIMSE_C_FindRQ *request, 
+        /* in */
+        void *callbackData,
+        OFBool cancelled, T_DIMSE_C_FindRQ *request,
         DcmDataset *requestIdentifiers, int responseCount,
         /* out */
         T_DIMSE_C_FindRSP *response,
@@ -773,18 +790,18 @@ typedef void (*DIMSE_FindProviderCallback)(
 
 OFCondition
 DIMSE_findProvider(
-        /* in */ 
-        T_ASC_Association *assoc, 
+        /* in */
+        T_ASC_Association *assoc,
         T_ASC_PresentationContextID presIdCmd,
         T_DIMSE_C_FindRQ *request,
         DIMSE_FindProviderCallback callback, void *callbackData,
         /* blocking info for data set */
         T_DIMSE_BlockingMode blockMode, int timeout);
- 
+
 OFCondition
-DIMSE_sendFindResponse(T_ASC_Association * assoc, 
+DIMSE_sendFindResponse(T_ASC_Association * assoc,
         T_ASC_PresentationContextID presID,
-        T_DIMSE_C_FindRQ *request, 
+        T_DIMSE_C_FindRQ *request,
         T_DIMSE_C_FindRSP *response, DcmDataset *responseIdentifiers,
         DcmDataset *statusDetail);
 
@@ -793,9 +810,9 @@ DIMSE_sendFindResponse(T_ASC_Association * assoc,
  */
 
 typedef void (*DIMSE_MoveUserCallback)(
-        /* in */ 
-        void *callbackData,  
-        T_DIMSE_C_MoveRQ *request, 
+        /* in */
+        void *callbackData,
+        T_DIMSE_C_MoveRQ *request,
         int responseCount, T_DIMSE_C_MoveRSP *response);
 
 typedef void (*DIMSE_SubOpProviderCallback)(void *subOpCallbackData,
@@ -804,7 +821,7 @@ typedef void (*DIMSE_SubOpProviderCallback)(void *subOpCallbackData,
 OFCondition
 DIMSE_moveUser(
         /* in */
-        T_ASC_Association *assoc, 
+        T_ASC_Association *assoc,
         T_ASC_PresentationContextID presID,
         T_DIMSE_C_MoveRQ *request,
         DcmDataset *requestIdentifiers,
@@ -818,20 +835,20 @@ DIMSE_moveUser(
         T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
         DcmDataset **responseIdentifers,
         OFBool ignorePendingDatasets = OFFalse);
-        
+
 typedef void (*DIMSE_MoveProviderCallback)(
-        /* in */ 
-        void *callbackData,  
-        OFBool cancelled, T_DIMSE_C_MoveRQ *request, 
+        /* in */
+        void *callbackData,
+        OFBool cancelled, T_DIMSE_C_MoveRQ *request,
         DcmDataset *requestIdentifiers, int responseCount,
         /* out */
-        T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail, 
+        T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
         DcmDataset **responseIdentifiers);
 
 OFCondition
 DIMSE_moveProvider(
-        /* in */ 
-        T_ASC_Association *assoc, 
+        /* in */
+        T_ASC_Association *assoc,
         T_ASC_PresentationContextID presIdCmd,
         T_DIMSE_C_MoveRQ *request,
         DIMSE_MoveProviderCallback callback, void *callbackData,
@@ -839,9 +856,9 @@ DIMSE_moveProvider(
         T_DIMSE_BlockingMode blockMode, int timeout);
 
 OFCondition
-DIMSE_sendMoveResponse(T_ASC_Association * assoc, 
-        T_ASC_PresentationContextID presID, T_DIMSE_C_MoveRQ *request, 
-        T_DIMSE_C_MoveRSP *response, DcmDataset *rspIds, 
+DIMSE_sendMoveResponse(T_ASC_Association * assoc,
+        T_ASC_PresentationContextID presID, T_DIMSE_C_MoveRQ *request,
+        T_DIMSE_C_MoveRSP *response, DcmDataset *rspIds,
         DcmDataset *statusDetail);
 
 /*
@@ -849,9 +866,9 @@ DIMSE_sendMoveResponse(T_ASC_Association * assoc,
  */
 
 typedef void (*DIMSE_GetUserCallback)(
-        /* in */ 
-        void *callbackData,  
-        T_DIMSE_C_GetRQ *request, 
+        /* in */
+        void *callbackData,
+        T_DIMSE_C_GetRQ *request,
         int responseCount, T_DIMSE_C_GetRSP *response);
 
 typedef void (*DIMSE_SubOpProviderCallback)(void *subOpCallbackData,
@@ -860,7 +877,7 @@ typedef void (*DIMSE_SubOpProviderCallback)(void *subOpCallbackData,
 OFCondition
 DIMSE_getUser(
         /* in */
-        T_ASC_Association *assoc, 
+        T_ASC_Association *assoc,
         T_ASC_PresentationContextID presID,
         T_DIMSE_C_GetRQ *request,
         DcmDataset *requestIdentifiers,
@@ -873,20 +890,20 @@ DIMSE_getUser(
         /* out */
         T_DIMSE_C_GetRSP *response, DcmDataset **statusDetail,
         DcmDataset **responseIdentifers);
-        
+
 typedef void (*DIMSE_GetProviderCallback)(
-        /* in */ 
-        void *callbackData,  
-        OFBool cancelled, T_DIMSE_C_GetRQ *request, 
+        /* in */
+        void *callbackData,
+        OFBool cancelled, T_DIMSE_C_GetRQ *request,
         DcmDataset *requestIdentifiers, int responseCount,
         /* out */
-        T_DIMSE_C_GetRSP *response, DcmDataset **statusDetail,  
+        T_DIMSE_C_GetRSP *response, DcmDataset **statusDetail,
         DcmDataset **responseIdentifiers);
 
 OFCondition
 DIMSE_getProvider(
-        /* in */ 
-        T_ASC_Association *assoc, 
+        /* in */
+        T_ASC_Association *assoc,
         T_ASC_PresentationContextID presIdCmd,
         T_DIMSE_C_GetRQ *request,
         DIMSE_GetProviderCallback callback, void *callbackData,
@@ -894,28 +911,28 @@ DIMSE_getProvider(
         T_DIMSE_BlockingMode blockMode, int timeout);
 
 OFCondition
-DIMSE_sendGetResponse(T_ASC_Association * assoc, 
-        T_ASC_PresentationContextID presID, T_DIMSE_C_GetRQ *request, 
-        T_DIMSE_C_GetRSP *response, DcmDataset *rspIds, 
+DIMSE_sendGetResponse(T_ASC_Association * assoc,
+        T_ASC_PresentationContextID presID, T_DIMSE_C_GetRQ *request,
+        T_DIMSE_C_GetRSP *response, DcmDataset *rspIds,
         DcmDataset *statusDetail);
 
 /*
  * Query/Retrieve Service Class (CANCEL)
  */
- 
+
 OFCondition
-DIMSE_sendCancelRequest(T_ASC_Association * assoc, 
+DIMSE_sendCancelRequest(T_ASC_Association * assoc,
         T_ASC_PresentationContextID presId, DIC_US msgId);
 
 OFCondition
-DIMSE_checkForCancelRQ(T_ASC_Association * assoc, 
+DIMSE_checkForCancelRQ(T_ASC_Association * assoc,
     T_ASC_PresentationContextID presId, DIC_US msgId);
 
 
 /****
  *
  * Low Level DIMSE Messaging
- * With the exception of DIMSE_receiveCommand, 
+ * With the exception of DIMSE_receiveCommand,
  * the following function are only intended for use if you
  * wish to implement an alternative interface to the
  * higher level routines provided above.
@@ -925,11 +942,11 @@ DIMSE_checkForCancelRQ(T_ASC_Association * assoc,
  */
 
 
-typedef void (*DIMSE_ProgressCallback)(void *callbackContext, 
+typedef void (*DIMSE_ProgressCallback)(void *callbackContext,
     unsigned long byteCount);
 
 
-OFCondition 
+OFCondition
 DIMSE_sendMessageUsingFileData(T_ASC_Association *association,
                   T_ASC_PresentationContextID presID,
                   T_DIMSE_Message *msg, DcmDataset *statusDetail,
@@ -938,7 +955,7 @@ DIMSE_sendMessageUsingFileData(T_ASC_Association *association,
                   void *callbackContext,
                   DcmDataset **commandSet=NULL);
 
-OFCondition 
+OFCondition
 DIMSE_sendMessageUsingMemoryData(T_ASC_Association *association,
                   T_ASC_PresentationContextID presID,
                   T_DIMSE_Message *msg, DcmDataset *statusDetail,
@@ -952,14 +969,14 @@ DIMSE_receiveCommand(T_ASC_Association *association,
                      T_DIMSE_BlockingMode blocking,
                      int timeout,
                      T_ASC_PresentationContextID *presID,
-                     T_DIMSE_Message *msg, 
+                     T_DIMSE_Message *msg,
                      DcmDataset **statusDetail,
                      DcmDataset **commandSet=NULL);
 
 OFCondition
 DIMSE_receiveDataSetInMemory(T_ASC_Association *association,
                      T_DIMSE_BlockingMode blocking,
-                     int timeout, 
+                     int timeout,
                      T_ASC_PresentationContextID *presID,
                      DcmDataset **dataObject,
                      DIMSE_ProgressCallback callback,
@@ -970,7 +987,7 @@ DIMSE_createFilestream(
                      /* in */
                      const char *filename,
                      const T_DIMSE_C_StoreRQ *request,
-                     const T_ASC_Association *assoc, 
+                     const T_ASC_Association *assoc,
                      T_ASC_PresentationContextID presIdCmd,
                      int writeMetaheader,
                      /* out */
@@ -978,16 +995,16 @@ DIMSE_createFilestream(
 
 OFCondition
 DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
-                     T_DIMSE_BlockingMode blocking, int timeout, 
+                     T_DIMSE_BlockingMode blocking, int timeout,
                      T_ASC_PresentationContextID *presID,
                      DcmOutputStream *filestream,
                      DIMSE_ProgressCallback callback, void *callbackData);
 
-OFCondition 
+OFCondition
 DIMSE_ignoreDataSet( T_ASC_Association * assoc,
-                     T_DIMSE_BlockingMode blocking, 
+                     T_DIMSE_BlockingMode blocking,
                      int timeout,
-                     DIC_UL * bytesRead, 
+                     DIC_UL * bytesRead,
                      DIC_UL * pdvCount);
 
 /*
@@ -1092,6 +1109,9 @@ DIMSE_COMPAT_WRAP_R(DIMSE_printNDelete, T_DIMSE_N_Delete)
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
+** Revision 1.23  2010-12-01 08:26:10  joergr
+** Added OFFIS copyright header (beginning with the year 1994).
+**
 ** Revision 1.22  2010-10-14 13:17:22  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
