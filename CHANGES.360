@@ -49,6 +49,9 @@ Changes between releases are documented here.
            dcmnet/libsrc/dulpriv.h
            dcmnet/libsrc/dulstruc.h
 
+- Fixed wrong installation directory for HTML documentation and Manpages.
+  Affects: doxygen/CMakeLists.txt
+
 - Added linker flags to avoid auto-importing warnings on MinGW systems.
   Affects: CMakeLists.txt
 
