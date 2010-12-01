@@ -10,6 +10,10 @@ Changes between releases are documented here.
            CHANGES.355
   Affects: INSTALL
 
+- Fixed wrong name of dcmqrti tool (was "ti" in previous DCMTK versions).
+  Affects: dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/docs/dcmqrti.man
+
 **** Changes from 2010.11.30 (onken)
 
 - Set extra flags for compiling without problems on Mac OS X.

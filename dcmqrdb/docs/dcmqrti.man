@@ -158,7 +158,7 @@ peer AE.  The fourth column shows the hostname and TCP/IP port number of the
 peer AE.
 
 When invoked with an argument index, the "title" command will set the current
-peer AE.  The \b ti program will attempt to initate an association to the
+peer AE.  The \b dcmqrti program will attempt to initate an association to the
 current peer AE when asked to send a study/series/image or to send an echo.
 
 \subsubsection database_command "database" Command

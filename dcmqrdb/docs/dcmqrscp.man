@@ -832,8 +832,8 @@ Query/Retrieve Level: IMAGE
 
 \subsection configuration Configuration
 
-The \b dcmqrscp program uses the same configuration file as the \b ti program.
-See the documentation on configuration for more information.
+The \b dcmqrscp program uses the same configuration file as the \b dcmqrti
+program.  See the documentation on configuration for more information.
 
 \subsection access_control Access Control
 
