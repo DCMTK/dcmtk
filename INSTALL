@@ -4,14 +4,9 @@ DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
 
 -------------------------------------------------------------------------------
- Please note that most sections of this document refer to the official release
- DCMTK 3.5.4, i.e. they are not yet updated for the changes of the latest
- development snapshot (version 3.5.5).  This will be done for the next release.
-
- The toolkit should compile on Linux systems with gcc 4.1 since this is our
- main development platform.  Also on Windows systems it usually works with VS
- 2005/2008.  However, there is no guarantee that the software also compiles
- on your system.
+ Please note that some sections of this document still refer to the previous
+ release DCMTK 3.5.4, i.e. they are not yet updated for the changes of the
+ upcoming release (version 3.6.0).
 -------------------------------------------------------------------------------
 
 
@@ -152,9 +147,8 @@ Starting with release 3.4.2, DCMTK supports the "DICOM Security Enhancements
 One", i.e. DICOM network transmission "tunneled" through a secure TLSv1
 transport connection.  DCMTK relies on the OpenSSL toolkit (www.openssl.org)
 for the underlying cryptographic routines and the TLS protocol implementation.
-This release of DCMTK is known to compile with all 0.9.6, 0.9.7 and 0.9.8
-OpenSSL releases.  Due to security considerations we recommend that DCMTK
-should be compiled with OpenSSL 0.9.8a or newer.
+This release of DCMTK is known to compile with the OpenSSL releases 0.9.8 to
+1.0.0, although other releases may work as well.
 
 On Unix platforms, if support for security enhancements is desired, a compiled
 version of the OpenSSL libraries and include files must be available during
@@ -174,9 +168,8 @@ ZLIB SUPPORT
 Starting with release 3.5.2, DCMTK supports the "Deflated Explicit VR Little
 Endian" Transfer Syntax, i.e. ZIP-compressed network transmission and media
 storage.  DCMTK relies on the zlib toolkit (www.zlib.org) for the underlying
-compression routines.  Due to security considerations, we recommend that DCMTK
-should only be used with zlib 1.1.4 or newer.  This release also compiles with
-zlib 1.2.3.
+compression routines.  This release of DCMTK is known to compile with the
+zlib releases 1.2.3 to 1.2.5, although other releases may work as well.
 
 On Unix platforms, if support for zlib compression is desired, a compiled
 version of the zlib library and include files must be available during
@@ -194,7 +187,7 @@ LIBTIFF SUPPORT
 Starting with release 3.5.1, DCMTK supports the conversion of DICOM images
 to TIFF.  DCMTK relies on the libtiff toolkit (www.libtiff.org) for this
 purpose.  This release of DCMTK is known to compile with the libtiff releases
-3.5.7 to 3.7.4, although older releases may work as well.
+3.7.4 to 3.9.4, although other releases may work as well.
 
 On Unix platforms, if support for TIFF export is desired, a compiled version
 of the libtiff libraries and include files must be available during compilation
@@ -212,8 +205,8 @@ LIBPNG SUPPORT
 
 Starting with release 3.5.3, DCMTK supports the conversion of DICOM images to
 PNG.  DCMTK relies on the libpng toolkit (www.libpng.org) for this purpose.
-This release of DCMTK is known to compile with the current libpng release
-1.2.8, although older releases may work as well.
+This release of DCMTK is known to compile with the current libpng releases
+1.2.8 to 1.4.2, although other releases may work as well.
 
 On Unix platforms, if support for PNG export is desired, a compiled version of
 the libpng libraries and include files must be available during compilation of
@@ -233,7 +226,7 @@ LIBXML2 SUPPORT
 Starting with release 3.5.3, DCMTK supports the conversion of XML documents to
 DICOM files.  DCMTK relies on the libxml2 toolkit (www.xmlsoft.org) for this
 purpose.  This release of DCMTK is known to compile with the libxml2 releases
-2.5.7 to 2.6.26, although older or newer releases may work as well.
+2.6.26 to 2.7.7, although other releases may work as well.
 
 On Unix platforms, if support for XML import is desired, a compiled version of
 the libxml2 (and possibly iconv) libraries and include files must be available
@@ -280,7 +273,7 @@ install this software.  All the neccessary configure scripts are included in
 this distribution.  The configure scripts examine your system capabilities and
 automatically generate include files and Makefiles.
 
-Perform the following steps from the top level (dcmtk-3.5.4) directory to
+Perform the following steps from the top level (dcmtk-3.6.0) directory to
 compile and install the software:
 
 Step 1:
@@ -303,23 +296,23 @@ OpenSSL support.  The --with-opensslinc option allows to specify the directory
 in which OpenSSL is installed.  This is usually the directory that has been
 used as --prefix when compiling OpenSSL.
 For example, if you wish to enable the security enhancements, and OpenSSL is
-installed in "/usr/local/apps/openssl-0.9.8a", then you should start configure
+installed in "/usr/local/apps/openssl-1.0.0", then you should start configure
 as:
 
-    ./configure --with-opensslinc=/usr/local/apps/openssl-0.9.8a
+    ./configure --with-opensslinc=/usr/local/apps/openssl-1.0.0
 
 Configure will assume that the OpenSSL include files are installed in
-"/usr/local/apps/openssl-0.9.8a/include" and will expect the library in
-"/usr/local/apps/openssl-0.9.8a/lib".  Appropriate options will be passed to
+"/usr/local/apps/openssl-1.0.0/include" and will expect the library in
+"/usr/local/apps/openssl-1.0.0/lib".  Appropriate options will be passed to
 the compiler and the linker.
 
 Support for zlib, libtiff, libpng, libxml2 and libwrap can be enabled in a
 similar way (in case these libraries are not installed in the standard path):
 
-    ./configure --with-libzlibinc=/usr/local/apps/zlib-1.2.3
-                --with-libtiffinc=/usr/local/apps/libtiff-3.7.4
-                --with-libpnginc=/usr/local/apps/libpng-1.2.8
-                --with-libxmlinc=/usr/local/apps/libxml-2.6.26
+    ./configure --with-libzlibinc=/usr/local/apps/zlib-1.2.5
+                --with-libtiffinc=/usr/local/apps/libtiff-3.9.4
+                --with-libpnginc=/usr/local/apps/libpng-1.4.2
+                --with-libxmlinc=/usr/local/apps/libxml-2.7.7
                 --with-libwrapinc=/usr/local/apps/tcp_wrappers-7.6
 
 Different configure options can be combined in any order.  configure --help
@@ -392,6 +385,11 @@ in the config directory.  See the "config/docs" directory for more information.
 
 See also the FAQ at http://forum.dcmtk.org/faq for more hints.
 
+NOTE: Starting with DCMTK 3.6.0, CMake can also be used for non-Windows
+      systems.  However, this is not (yet) the recommended way since this
+      mechanism is not as mature and stable as the above described approach
+      using GNU autoconf.  Please feel free to test it and report any issue.
+
 
 BUILDING (Win32)
 ================
@@ -406,16 +404,16 @@ obtained free of charge from http://www.cmake.org/.  For configuring the support
 of external libraries in DCMTK on Windows platforms, the toolkit contains
 corresponding "CMakeLists.txt" files in all necessary directories.  In detail,
 these "CMakeLists.txt" files will serve as an input to CMake which will generate
-new ".dsp" and ".dsw" files (or ".sln" for Visual C++ .NET 2003/2005) for all of
-DCMTK's projects from these files, depending on a configuration which can be
-adjusted manually by the user.
+new ".dsp" and ".dsw" files (or ".sln" for Visual Studio) for all of DCMTK's
+projects from these files, depending on a configuration which can be adjusted
+manually by the user.
 
 In order to be able to use CMake for configuration purposes in DCMTK, perform
 the following steps to install CMake on your machine:
 
-1. Go to http://www.cmake.org/HTML/Download.html to download the latest release
-   version of CMake for Windows.  With regard to a certain CMake version, note
-   that CMake 2.4.8 or later can be used in conjunction with DCMTK.
+1. Go to http://www.cmake.org/ to download the latest release version of CMake
+   for Windows.  With regard to a certain CMake version, note that CMake 2.4.8
+   or later can be used in conjunction with DCMTK.
 2. Execute the file which was downloaded to install CMake on your machine.
    Follow all install instructions appropriately.
 
@@ -423,44 +421,46 @@ In order to manually configure the support for the above mentioned external
 libraries (OpenSSL, zlib, libtiff, libpng and libxml2) through CMake, perform
 the following steps:
 
-1. Go Start -> Programs -> CMake -> CMakeSetup to start the CMake utility
-   through which the configuration can be done.
+1. Go Start -> Programs -> CMake -> CMake or CMake (cmake-gui) to start the
+   CMake utility through which the configuration can be done.
 2. In the entry field "Where is the source code:" enter the directory in which
-   DCMTK is installed, e.g. "C:\dcmtk-3.5.4".
+   the DCMTK source code resides, e.g. "C:\dcmtk-3.6.0".
 3. In the entry field "Where to build the binaries:" enter the directory in
-   which DCMTK is installed, e.g. "C:\dcmtk-3.5.4".
-4. In the combobox "Build for:" select the corresponding development
-   environment which shall be used to compile DCMTK.
+   which the libraries and binaries are to be build, e.g. "C:\dcmtk-bin".
+4. In the combobox "Build for:" or "Specify the generator for this project:"
+   select the corresponding development environment which shall be used to
+   compile DCMTK.
 5. Go "Configure".  (CMake will look for a corresponding compiler and read in
-   all of DCMTK's "CMakeLists.txt" files.  The variables in the "Cache Values"
-   area will be displayed in red.  These variables can now be set in order to
-   turn the support for any of the external librares on or off).
+   all of DCMTK's "CMakeLists.txt" files.  The variables in the tabular area
+   will be displayed in red.  These variables can now be set in order to turn
+   the support for any of the external libraries on or off).
 6. Make the corresponding configurations in CMake's user interface.  For
    example, in order to turn on libxml2 support, set the value of variable
-   "WITH_LIBXML" to "ON" and set the value of variable "WITH_LIBXMLINC" to the
-   path where the include files and libraries of libxml2 can be found, e.g.
-   "C:\libxml2-2.5.7".  The support of all other external libraries can be
-   turned on in a similar way:
+   "DCMTK_WITH_LIBXML" to "ON" and set the value of variable "WITH_LIBXMLINC"
+   to the path where the include files and libraries of libxml2 can be found,
+   e.g. "C:\libxml2-2.7.7".  The support of all other external libraries can
+   be turned on in a similar way:
 
      libpng support:
-       set "WITH_LIBPNG" to "ON" and
-       set "WITH_LIBPNGINC" e.g. to "C:\libpng-1.2.8"
+       set "DCMTK_WITH_LIBPNG" to "ON" and
+       set "WITH_LIBPNGINC" e.g. to "C:\libpng-1.4.2"
 
      libtiff support:
-       set "WITH_LIBTIFF" to "ON" and
-       set "WITH_LIBTIFFINC" e.g. to "C:\tiff-3.7.4"
+       set "DCMTK_WITH_LIBTIFF" to "ON" and
+       set "WITH_LIBTIFFINC" e.g. to "C:\tiff-3.9.4"
 
      OpenSSL support:
-       set "WITH_OPENSSL" to "ON" and
-       set "WITH_OPENSSLINC" e.g. to "C:\openssl-0.9.8a"
+       set "DCMTK_WITH_OPENSSL" to "ON" and
+       set "WITH_OPENSSLINC" e.g. to "C:\openssl-1.0.0"
 
      zlib support:
-       set "WITH_ZLIB" to "ON" and
-       set "WITH_ZLIBINC" e.g. to "C:\zlib-1.2.3"
+       set "DCMTK_WITH_ZLIB" to "ON" and
+       set "WITH_ZLIBINC" e.g. to "C:\zlib-1.2.5"
 
    In order to turn the support of a certain external library off, set the
-   value of the corresponding variable ("WITH_LIBXML", "WITH_LIBPNG",
-   "WITH_LIBTIFF", "WITH_OPENSSL", or "WITH_ZLIB") to "OFF".
+   value of the corresponding variable ("DCMTK_WITH_LIBXML",
+   "DCMTK_WITH_LIBPNG", "DCMTK_WITH_LIBTIFF", "DCMTK_WITH_OPENSSL", or
+   "DCMTK_WITH_ZLIB") to "OFF".
 
    (Please note that the include files of all external libraries are always
    expected in a directory named "include" below the directory which is
@@ -502,12 +502,11 @@ the following steps:
    for the non-debug multithread runtime (/MT).  Precompiled versions of all
    libraries can be downloaded from http://dicom.offis.de/dcmtk).
 7. Go "Configure" a second time.  (CMake will adjust the configuration
-   according to the displayed specifications.  The variables in the "Cache
-   Values" area will be displayed in grey).
-8. Go "OK".  (CMake will generate new project files in the corresponding
-   directories.  These files will be adjusted according to the displayed
-   specifications, i.e. support for the external libraries will be turned on
-   or off).
+   according to the displayed specifications).
+8. Go "OK" or "Generate".  (CMake will generate new project files in the
+   corresponding directories.  These files will be adjusted according to the
+   displayed specifications, i.e. support for the external libraries will be
+   turned on or off).
 
 Having performed these steps, the Microsoft Developer Studio (IDE) can be
 started, DCMTK's workspace file can be opened, and one or more of DCMTK's
@@ -552,15 +551,16 @@ HTML DOCUMENTATION AND MAN PAGES
 Most DCMTK modules have been documented with Doxygen (www.doxygen.org), a free
 source code documentation system similar to Javadoc.  Unix users who have
 Doxygen installed can create a hypertext documentation with "make html" in the
-"dcmtk-3.5.4" or "doxygen" directory; Windows users should build the "DOXYGEN"
+"dcmtk-3.6.0" or "doxygen" directory; Windows users should build the "DOXYGEN"
 subproject.  A project file for Microsoft's HTML Help Workshop can also be
 generated allowing to create a single CHM file (compressed HTML) from the
 documentation.  Other output formats (e.g. LaTeX) can be enabled by changing
 the configuration file in the doxygen directory.
 
 At the current time, dcmimage, dcmimgle, dcmjpeg, dcmpstat, dcmsign, dcmsr,
-dcmtls, dcmwlm and ofstd are completely documented, dcmdata and dcmnet are
-partially documented.  See FAQ entry: "Where is rest of the documentation?"
+dcmtls, dcmwlm and ofstd are completely documented, dcmdata, dcmjpls, dcmnet
+and oflog are almost completely documented.  See FAQ entry: "Where is rest of
+the documentation?"
 
 DOC++ (docpp.sourceforge.net), another source code documentation system, is not
 actively supported any more.  However, it may still work.
@@ -591,7 +591,7 @@ dcmtk/envvars.txt").
 
 Have fun.
 
-Marco Eichelberg, Joerg Riesmeier, Michael Onken
+Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2010-05-19 (Riesmeier).
+Last revised: 2010-12-01 (Riesmeier).
