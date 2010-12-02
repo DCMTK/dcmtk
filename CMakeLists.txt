@@ -179,7 +179,7 @@ IF(WIN32)   # special handling for Windows systems
 
   IF(MINGW)
     # Avoid auto-importing warnings on MinGW
-    SET(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,--enable-auto-import")
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-auto-import")
   ELSE(MINGW)
     # On Visual Studio 8 MS deprecated C. This removes all 1.276E1265 security warnings.
     IF(NOT BORLAND)

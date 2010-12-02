@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.02 (riesmeier)
+
+- Added linker flags to a different CMake variable in order to avoid
+  auto-importing warnings on MinGW systems (previously, flags were ignored).
+  Affects: CMakeLists.txt
+
 **** Changes from 2010.12.01 (schlachter)
 
 - Fixed build problem with MSC6 when zlib support is enabled.
