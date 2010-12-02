@@ -7,6 +7,9 @@ Changes between releases are documented here.
   auto-importing warnings on MinGW systems (previously, flags were ignored).
   Affects: CMakeLists.txt
 
+- Updated latest tested version number of LIBPNG.
+  Affects: INSTALL
+
 **** Changes from 2010.12.01 (schlachter)
 
 - Fixed build problem with MSC6 when zlib support is enabled.

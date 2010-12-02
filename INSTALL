@@ -206,7 +206,7 @@ LIBPNG SUPPORT
 Starting with release 3.5.3, DCMTK supports the conversion of DICOM images to
 PNG.  DCMTK relies on the libpng toolkit (www.libpng.org) for this purpose.
 This release of DCMTK is known to compile with the current libpng releases
-1.2.8 to 1.4.2, although other releases may work as well.
+1.2.8 to 1.4.3, although other releases may work as well.
 
 On Unix platforms, if support for PNG export is desired, a compiled version of
 the libpng libraries and include files must be available during compilation of
@@ -447,7 +447,7 @@ the following steps:
 
      libtiff support:
        set "DCMTK_WITH_LIBTIFF" to "ON" and
-       set "WITH_LIBTIFFINC" e.g. to "C:\tiff-3.9.4"
+       set "WITH_LIBTIFFINC" e.g. to "C:\tiff-3.9.2"
 
      OpenSSL support:
        set "DCMTK_WITH_OPENSSL" to "ON" and
@@ -594,4 +594,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2010-12-01 (Riesmeier).
+Last revised: 2010-12-02 (Riesmeier).
