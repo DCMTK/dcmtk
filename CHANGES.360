@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.03 (riesmeier)
+
+- Fixed regular expression for the detection of old Mac OS X versions (Darwin
+  8 and 9). Thanks to Bernd Kuemmerlen <bernd.kuemmerlen@mevis.de> for the
+  report and suggested fix.
+  Affects: config/configure
+           config/configure.in
+
 **** Changes from 2010.12.02 (riesmeier)
 
 - Added linker flags to a different CMake variable in order to avoid
