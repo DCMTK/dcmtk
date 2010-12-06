@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.06 (riesmeier)
+
+- Fixed issue when calling "make install-html" without "make html".
+  Thanks to Juergen Salk <juergen.salk@uni-ulm.de> for pointing this out.
+  Affects: doxygen/Makefile.in
+
 **** Changes from 2010.12.03 (riesmeier)
 
 - Fixed regular expression for the detection of old Mac OS X versions (Darwin

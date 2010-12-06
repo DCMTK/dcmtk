@@ -46,7 +46,7 @@ install-man:
 install-html:
 	$(configdir)/mkinstalldirs $(DESTDIR)$(htmldir)
 	if [ ! -f htmldocs/index.html ] ; then \
-		$(DOXYGEN) htmldocs.cfg ;\
+		$(MAKE) html ;\
 	fi
 	for file in htmldocs/* ; do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir) ;\
