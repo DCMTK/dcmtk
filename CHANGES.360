@@ -11,6 +11,9 @@ Changes between releases are documented here.
 - Made the docs for the NDC clearer on how to avoid memleaks.
   Affects: oflog/include/dcmtk/oflog/ndc.h
 
+- Fixed a correct warning from Intel Compiler 11.1 for shifting a Uint8 by 8.
+  Affects: dcmdata/libi2d/i2dbmps.cc
+
 **** Changes from 2010.12.06 (riesmeier)
 
 - Fixed issue when calling "make install-html" without "make html".
