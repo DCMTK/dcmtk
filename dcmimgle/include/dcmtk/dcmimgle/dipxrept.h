@@ -18,8 +18,8 @@
  *  Purpose: DicomPixelRepresentationTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:27 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2010-12-06 10:07:42 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,6 +53,9 @@ class DiPixelRepresentationTemplate
 {
 
  public:
+
+    /// default constructor
+    DiPixelRepresentationTemplate() {}
 
     /// destructor
     virtual ~DiPixelRepresentationTemplate() {}
@@ -167,6 +170,9 @@ inline int DiPixelRepresentationTemplate<Sint32>::isSigned() const
  *
  * CVS/RCS Log:
  * $Log: dipxrept.h,v $
+ * Revision 1.17  2010-12-06 10:07:42  joergr
+ * Added explicit default constructor to keep Intel Compiler 11.1 quiet.
+ *
  * Revision 1.16  2010-10-14 13:16:27  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

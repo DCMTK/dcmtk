@@ -17,6 +17,9 @@ Changes between releases are documented here.
   Thanks to Juergen Salk <juergen.salk@uni-ulm.de> for pointing this out.
   Affects: doxygen/Makefile.in
 
+- Added explicit default constructor to keep Intel Compiler 11.1 quiet.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dipxrept.h
+
 **** Changes from 2010.12.03 (riesmeier)
 
 - Fixed regular expression for the detection of old Mac OS X versions (Darwin
