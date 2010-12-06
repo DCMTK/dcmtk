@@ -96,10 +96,6 @@ NDC::clear()
             LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, NULL );
         }
     }
-    catch(STD_NAMESPACE exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::clear()- exception occured: ")
-                          + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
-    }
     catch(...) {
         getLogLog().error(LOG4CPLUS_TEXT("NDC::clear()- exception occured"));
     }
@@ -114,10 +110,6 @@ NDC::cloneStack()
         if(ptr != NULL) {
             return DiagnosticContextStack(*ptr);
         }
-    }
-    catch(STD_NAMESPACE exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::cloneStack()- exception occured: ")
-                          + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
         getLogLog().error(LOG4CPLUS_TEXT("NDC::cloneStack()- exception occured"));
@@ -137,10 +129,6 @@ NDC::inherit(const DiagnosticContextStack& stack)
         ptr = new DiagnosticContextStack(stack);
         LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, ptr );
     }
-    catch(STD_NAMESPACE exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::inherit()- exception occured: ")
-                          + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
-    }
     catch(...) {
         getLogLog().error(LOG4CPLUS_TEXT("NDC::inherit()- exception occured"));
     }
@@ -155,10 +143,6 @@ NDC::get()
         if(ptr != NULL && !ptr->empty()) {
             return ptr->top().fullMessage;
         }
-    }
-    catch(STD_NAMESPACE exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::get()- exception occured: ")
-                          + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
         getLogLog().error(LOG4CPLUS_TEXT("NDC::get()- exception occured"));
@@ -176,10 +160,6 @@ NDC::getDepth()
         if(ptr != NULL) {
             return ptr->size();
         }
-    }
-    catch(STD_NAMESPACE exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::getDepth()- exception occured: ")
-                          + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
         getLogLog().error(LOG4CPLUS_TEXT("NDC::getDepth()- exception occured"));
@@ -206,10 +186,6 @@ NDC::pop()
             return dc.message;
         }
     }
-    catch(STD_NAMESPACE exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::pop()- exception occured: ")
-                          + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
-    }
     catch(...) {
         getLogLog().error(LOG4CPLUS_TEXT("NDC::pop()- exception occured"));
     }
@@ -226,10 +202,6 @@ NDC::peek()
         if(ptr != NULL && !ptr->empty()) {
             return ptr->top().message;
         }
-    }
-    catch(STD_NAMESPACE exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::peek()- exception occured: ")
-                          + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
         getLogLog().error(LOG4CPLUS_TEXT("NDC::peek()- exception occured"));
@@ -257,10 +229,6 @@ NDC::push(const log4cplus::tstring& message)
             ptr->push( DiagnosticContext(message, &dc) );
         }
     }
-    catch(STD_NAMESPACE exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::push()- exception occured: ")
-                          + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
-    }
     catch(...) {
         getLogLog().error(LOG4CPLUS_TEXT("NDC::push()- exception occured"));
     }
@@ -274,10 +242,6 @@ NDC::remove()
         DiagnosticContextStack* ptr = getPtr();
         delete ptr;
         LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, NULL );
-    }
-    catch(STD_NAMESPACE exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::remove()- exception occured: ")
-                          + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
         getLogLog().error(LOG4CPLUS_TEXT("NDC::remove()- exception occured"));
@@ -295,10 +259,6 @@ NDC::setMaxDepth(size_t maxDepth)
                 ptr->pop();
             }
         }
-    }
-    catch(STD_NAMESPACE exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::setMaxDepth()- exception occured: ")
-                          + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
         getLogLog().error(LOG4CPLUS_TEXT("NDC::setMaxDepth()- exception occured"));

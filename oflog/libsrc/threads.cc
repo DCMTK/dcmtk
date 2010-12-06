@@ -177,12 +177,6 @@ ThreadStart::threadStartFuncWorker(void * arg)
         {
             thread->run();
         }
-        catch(STD_NAMESPACE exception& e)
-        {
-            tstring err = LOG4CPLUS_TEXT("threadStartFunc()- run() terminated with an exception: ");
-            err += LOG4CPLUS_C_STR_TO_TSTRING(e.what());
-            loglog->warn(err);
-        }
         catch(...)
         {
             loglog->warn(LOG4CPLUS_TEXT("threadStartFunc()- run() terminated with an exception."));

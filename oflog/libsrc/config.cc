@@ -451,13 +451,13 @@ PropertyConfigurator::configureAppenders()
                     appenders[*it] = appender;
                 }
             }
-            catch(STD_NAMESPACE exception& e)
+            catch(...)
             {
                 tstring err =
                     LOG4CPLUS_TEXT("PropertyConfigurator::")
                     LOG4CPLUS_TEXT("configureAppenders()")
-                    LOG4CPLUS_TEXT("- Error while creating Appender: ");
-                getLogLog().error(err + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
+                    LOG4CPLUS_TEXT("- Exception caught while creating Appender");
+                getLogLog().error(err);
             }
         }
     } // end for loop

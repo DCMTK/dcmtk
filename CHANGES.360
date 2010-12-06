@@ -21,6 +21,12 @@ Changes between releases are documented here.
   Affects: oflog/include/dcmtk/oflog/fileap.h
            oflog/libsrc/fileap.cc
 
+- Don't explicitely try to catch std::exception.
+  Affects: oflog/libsrc/appender.cc
+           oflog/libsrc/config.cc
+           oflog/libsrc/ndc.cc
+           oflog/libsrc/threads.cc
+
 **** Changes from 2010.12.06 (riesmeier)
 
 - Fixed issue when calling "make install-html" without "make html".
