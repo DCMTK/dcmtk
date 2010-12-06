@@ -18,8 +18,8 @@
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2010-12-06 13:02:49 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,10 +61,11 @@ END_EXTERN_C
  * to handle large file support
  */
 #ifdef _LARGEFILE64_SOURCE
-// Mac OSX defines _LARGEFILE64_SOURCE but anyhow expects implicit 64 bit calls
-  #if !(defined(__MACH__) && defined(__APPLE__))
+  // Mac OS X defines _LARGEFILE64_SOURCE but anyhow expects implicit 64 bit calls.
+  // The same is true for current Cygwin versions (tested with version 1.7.7-1).
+  #if !(defined(__MACH__) && defined(__APPLE__)) && !defined(__CYGWIN__)
     #define EXPLICIT_LFS_64
-#endif
+  #endif
 #endif
 
 #if defined(_WIN32) && !defined(__MINGW32__)
@@ -835,6 +836,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.14  2010-12-06 13:02:49  joergr
+ * Fixed issue with large file support for current Cygwin systems (1.7.7-1).
+ *
  * Revision 1.13  2010-10-14 13:15:50  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -33,6 +33,9 @@ Changes between releases are documented here.
 - Moved option "-maxdepth" to beginning of find command to avoid warnings.
   Affects: dcmwlm/data/Makefile.in
 
+- Fixed issue with large file support for current Cygwin systems (1.7.7-1).
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+
 **** Changes from 2010.12.03 (riesmeier)
 
 - Fixed regular expression for the detection of old Mac OS X versions (Darwin
