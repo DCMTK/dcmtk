@@ -20,7 +20,7 @@ install:
 	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
 	for folder in $(folders); do \
 		$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/$$folder ;\
-		find $$folder -type f -maxdepth 1 -exec $(INSTALL_DATA) {} $(DESTDIR)$(datadir)/$$folder \; ;\
+		find $$folder -maxdepth 1 -type f -exec $(INSTALL_DATA) {} $(DESTDIR)$(datadir)/$$folder \; ;\
 	done
 
 clean:
