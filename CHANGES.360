@@ -36,6 +36,9 @@ Changes between releases are documented here.
 - Fixed issue with large file support for current Cygwin systems (1.7.7-1).
   Affects: ofstd/include/dcmtk/ofstd/offile.h
 
+- Restructured calculation of seek position in order to avoid warning messages.
+  Affects: ofstd/tests/toffile.cc
+
 **** Changes from 2010.12.03 (riesmeier)
 
 - Fixed regular expression for the detection of old Mac OS X versions (Darwin

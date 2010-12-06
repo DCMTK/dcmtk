@@ -18,9 +18,9 @@
  *  Purpose: test program for the non-trivial fseek and ftell implementations
  *           in class OFFile
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-22 13:08:08 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-12-06 13:10:27 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@
 // size of block (Uint32 values, not bytes): 1 MByte
 #define BLOCKSIZE 0x40000
 // size of file (in blocks): 6 GByte
-#define FILESIZE 0x1800 
+#define FILESIZE 0x1800
 
 #define FILENAME "testfile.$$$"
 
@@ -51,18 +51,18 @@ OFBool fillFile(OFFile& file)
   if (buf == NULL)
   {
     COUT << "unable to allocate buffer" << OFendl;
-    return OFFalse;    
+    return OFFalse;
   }
 
   // value counter. We can create 2^32 = 16 GByte of different values
-  Uint32 v = 0; 
+  Uint32 v = 0;
   Uint32 *current;
   Uint32 *end = buf + BLOCKSIZE; // pointer past end of buffer
 
   COUT << "[0%------------25%-------------50%--------------75%----------100%]\n[" << STD_NAMESPACE flush;
 
   // we will write FILESIZE blocks
-  for (Uint32 i=0; i < FILESIZE; ++i) 
+  for (Uint32 i = 0; i < FILESIZE; ++i)
   {
     current = buf;
     while (current != end) *current++ = v++;
@@ -70,7 +70,7 @@ OFBool fillFile(OFFile& file)
     {
       COUT << "write error after " << i << " blocks" << OFendl;
       delete[] buf;
-      return OFFalse;    
+      return OFFalse;
     }
     if (i % (FILESIZE / 64) == 0) COUT << "*" << STD_NAMESPACE flush;
   }
@@ -94,12 +94,12 @@ OFBool seekFile(OFFile &file)
   Uint32 v;
   Uint32 block;
   Uint32 offset;
-  
-  COUT << "Seeking to start of blocks using SEEK_SET\n" 
+
+  COUT << "Seeking to start of blocks using SEEK_SET\n"
        << "[0%------------25%-------------50%--------------75%----------100%]\n[" << STD_NAMESPACE flush;
-  
+
   // fseek to each 4th block using SEEK_SET
-  for (i=0; i <= FILESIZE; i += 4)
+  for (i = 0; i <= FILESIZE; i += 4)
   {
     pos = i * BLOCKSIZE * sizeof(Uint32);
     result = file.fseek(pos, SEEK_SET);
@@ -113,7 +113,7 @@ OFBool seekFile(OFFile &file)
       // successfully read value. Now check if the value is correct.
       if (v != pos / sizeof(Uint32))
       {
-        COUT << "\nError: unexpected data read after fseek(SEEK_SET) to block " << i << ": expected " 
+        COUT << "\nError: unexpected data read after fseek(SEEK_SET) to block " << i << ": expected "
              << OFstatic_cast(unsigned long, pos / sizeof(Uint32)) << ", found " << v << OFendl;
         return OFFalse;
       }
@@ -133,17 +133,17 @@ OFBool seekFile(OFFile &file)
       }
     }
     if ((i % (FILESIZE / 64) == 0) && (i != FILESIZE)) COUT << "*" << STD_NAMESPACE flush;
-  }  
+  }
   COUT << "]" << OFendl << OFendl;
 
-  COUT << "Seeking to random positions using SEEK_SET\n" 
+  COUT << "Seeking to random positions using SEEK_SET\n"
        << "[0%------------25%-------------50%--------------75%----------100%]\n[" << STD_NAMESPACE flush;
 
   // fseek to random blocks using SEEK_SET
-  for (i=0; i < 1024; ++i)
+  for (i = 0; i < 1024; ++i)
   {
-    block = myRand(FILESIZE-1);
-    offset = myRand(BLOCKSIZE-1);    
+    block = myRand(FILESIZE - 1);
+    offset = myRand(BLOCKSIZE - 1);
     pos = block * BLOCKSIZE * sizeof(Uint32) + offset * sizeof(Uint32);
     result = file.fseek(pos, SEEK_SET);
     if (result)
@@ -156,8 +156,8 @@ OFBool seekFile(OFFile &file)
       // successfully read value. Now check if the value is correct.
       if (v != pos / sizeof(Uint32))
       {
-        COUT << "\nError: unexpected data read after fseek(SEEK_SET) to block " << block 
-             << " offset " << offset << ": expected " 
+        COUT << "\nError: unexpected data read after fseek(SEEK_SET) to block " << block
+             << " offset " << offset << ": expected "
              << OFstatic_cast(unsigned long, pos / sizeof(Uint32)) << ", found " << v << OFendl;
         return OFFalse;
       }
@@ -168,16 +168,16 @@ OFBool seekFile(OFFile &file)
         return OFFalse;
     }
     if (i % (1024 / 64) == 0) COUT << "*" << STD_NAMESPACE flush;
-  }  
+  }
   COUT << "]" << OFendl << OFendl;
 
-  COUT << "Seeking to start of blocks using SEEK_END\n" 
+  COUT << "Seeking to start of blocks using SEEK_END\n"
        << "[0%------------25%-------------50%--------------75%----------100%]\n[" << STD_NAMESPACE flush;
 
   // fseek to each 4th block using SEEK_END
-  for (i=0; i < FILESIZE; i += 4)
+  for (i = 0; i < FILESIZE; i += 4)
   {
-    pos = OFstatic_cast(offile_off_t, -1 * (FILESIZE - i) * BLOCKSIZE * sizeof(Uint32));
+    pos = -1 * OFstatic_cast(offile_off_t, (FILESIZE - i) * BLOCKSIZE * sizeof(Uint32));
 
     result = file.fseek(pos, SEEK_END);
     if (result)
@@ -191,7 +191,7 @@ OFBool seekFile(OFFile &file)
       expected = OFstatic_cast(offile_off_t, BLOCKSIZE * i);
       if (v != expected)
       {
-        COUT << "\nError: unexpected data read after fseek(SEEK_END) to block " << FILESIZE-i << ": expected " 
+        COUT << "\nError: unexpected data read after fseek(SEEK_END) to block " << FILESIZE-i << ": expected "
              << OFstatic_cast(unsigned long, expected) << ", found " << v << OFendl;
         return OFFalse;
       }
@@ -211,18 +211,18 @@ OFBool seekFile(OFFile &file)
       }
     }
     if ((i % (FILESIZE / 64) == 0) && (i != FILESIZE)) COUT << "*" << STD_NAMESPACE flush;
-  }  
+  }
   COUT << "]" << OFendl << OFendl;
 
-  COUT << "Seeking to random positions using SEEK_END\n" 
+  COUT << "Seeking to random positions using SEEK_END\n"
        << "[0%------------25%-------------50%--------------75%----------100%]\n[" << STD_NAMESPACE flush;
 
   // fseek to random blocks using SEEK_END
-  for (i=0; i < 1024; ++i)
+  for (i = 0; i < 1024; ++i)
   {
-    block = myRand(FILESIZE-2); // this avoids that pos can ever be 0, which would cause us to read after the end of file.
-    offset = myRand(BLOCKSIZE-1);    
-    pos = OFstatic_cast(offile_off_t, -1 * (FILESIZE - block - 1) * BLOCKSIZE * sizeof(Uint32) + offset * sizeof(Uint32));
+    block = myRand(FILESIZE - 2); // this avoids that pos can ever be 0, which would cause us to read after the end of file.
+    offset = myRand(BLOCKSIZE - 1);
+    pos = -1 * OFstatic_cast(offile_off_t, (FILESIZE - block - 1) * BLOCKSIZE * sizeof(Uint32) + offset * sizeof(Uint32));
     result = file.fseek(pos, SEEK_END);
     if (result)
     {
@@ -235,8 +235,8 @@ OFBool seekFile(OFFile &file)
       expected = OFstatic_cast(offile_off_t, FILESIZE * BLOCKSIZE * sizeof(Uint32) + pos) / sizeof(Uint32);
       if (v != expected)
       {
-        COUT << "\nError: unexpected data read after fseek(SEEK_END) to block " << block 
-             << " offset " << offset << ": expected " 
+        COUT << "\nError: unexpected data read after fseek(SEEK_END) to block " << block
+             << " offset " << offset << ": expected "
              << OFstatic_cast(unsigned long, expected) << ", found " << v << OFendl;
         return OFFalse;
       }
@@ -247,16 +247,16 @@ OFBool seekFile(OFFile &file)
         return OFFalse;
     }
     if (i % (1024 / 64) == 0) COUT << "*" << STD_NAMESPACE flush;
-  }  
+  }
   COUT << "]" << OFendl << OFendl;
 
-  COUT << "Seeking to start of blocks using SEEK_CUR\n" 
+  COUT << "Seeking to start of blocks using SEEK_CUR\n"
        << "[0%------------25%-------------50%--------------75%----------100%]\n[" << STD_NAMESPACE flush;
 
   // fseek to each 4th block using SEEK_CUR
   pos = BLOCKSIZE * sizeof(Uint32) * 4;
   file.rewind();
-  for (i=0; i <= FILESIZE; i += 4)
+  for (i = 0; i <= FILESIZE; i += 4)
   {
     if (i > 0) result = file.fseek(pos-sizeof(Uint32), SEEK_CUR); else result = 0;
     if (result)
@@ -270,7 +270,7 @@ OFBool seekFile(OFFile &file)
       expected = BLOCKSIZE * i;
       if (v != expected)
       {
-        COUT << "\nError: unexpected data read after fseek(SEEK_CUR) to block " << i << ": expected " 
+        COUT << "\nError: unexpected data read after fseek(SEEK_CUR) to block " << i << ": expected "
              << OFstatic_cast(unsigned long, expected) << ", found " << v << OFendl;
         return OFFalse;
       }
@@ -290,19 +290,19 @@ OFBool seekFile(OFFile &file)
       }
     }
     if ((i % (FILESIZE / 64) == 0) && (i != FILESIZE)) COUT << "*" << STD_NAMESPACE flush;
-  }  
+  }
   COUT << "]" << OFendl << OFendl;
 
-  COUT << "Seeking to random positions using SEEK_CUR\n" 
+  COUT << "Seeking to random positions using SEEK_CUR\n"
        << "[0%------------25%-------------50%--------------75%----------100%]\n[" << STD_NAMESPACE flush;
 
   // fseek to random blocks using SEEK_CUR
   file.rewind();
   lastpos = 0;
-  for (i=0; i < 1024; ++i)
+  for (i = 0; i < 1024; ++i)
   {
-    block = myRand(FILESIZE-1);
-    offset = myRand(BLOCKSIZE-1);    
+    block = myRand(FILESIZE - 1);
+    offset = myRand(BLOCKSIZE - 1);
     pos = block * BLOCKSIZE * sizeof(Uint32) + offset * sizeof(Uint32);
     result = file.fseek((pos-lastpos), SEEK_CUR);
     if (result)
@@ -315,8 +315,8 @@ OFBool seekFile(OFFile &file)
       // successfully read value. Now check if the value is correct.
       if (v != pos / sizeof(Uint32))
       {
-        COUT << "\nError: unexpected data read after fseek(SEEK_CUR) to block " << block 
-             << " offset " << offset << ": expected " 
+        COUT << "\nError: unexpected data read after fseek(SEEK_CUR) to block " << block
+             << " offset " << offset << ": expected "
              << OFstatic_cast(unsigned long, pos / sizeof(Uint32)) << ", found " << v << OFendl;
         return OFFalse;
       }
@@ -328,7 +328,7 @@ OFBool seekFile(OFFile &file)
         return OFFalse;
     }
     if (i % (1024 / 64) == 0) COUT << "*" << STD_NAMESPACE flush;
-  }  
+  }
   COUT << "]" << OFendl << OFendl;
 
   return OFTrue;
@@ -337,7 +337,7 @@ OFBool seekFile(OFFile &file)
 int main()
 {
   COUT << "Test program for LFS support in DCMTK class OFFile\n" << OFendl;
-  
+
   // initialize random generator
   srand(OFstatic_cast(unsigned int, time(NULL)));
 
@@ -351,61 +351,64 @@ int main()
   {
     COUT << "No LFS support available. LFS test failed." << OFendl;
     return 10;
-  } 
+  }
 
   OFFile file;
 
   if (OFStandard::fileExists(FILENAME))
   {
     COUT << "\nData file " << FILENAME << " already exists, let's just use it." << OFendl << STD_NAMESPACE flush;
-  } 
+  }
   else
   {
     COUT << "\nCreating a 6 GByte data file." << OFendl << STD_NAMESPACE flush;
     if (!file.fopen(FILENAME, "w+b"))
     {
       COUT << "Error: Unable to create file " << FILENAME << ". LFS test failed." << OFendl;
-      return 10;    
+      return 10;
     }
-    
+
     if (! fillFile(file))
     {
       COUT << "Error: Unable to write 6 GByte of data. LFS test failed." << OFendl;
-      return 10;    
+      return 10;
     }
 
     if (! seekFile(file))
     {
       COUT << "Error: fseek() tests unsuccessful. LFS test failed." << OFendl;
-      return 10;    
+      return 10;
     }
-    
+
     COUT << "Closing file." << OFendl << STD_NAMESPACE flush;
-    
-    file.fclose();  
-  } 
+
+    file.fclose();
+  }
 
   COUT << "Re-opening file in read-only mode." << OFendl << STD_NAMESPACE flush;
- 
+
   if (!file.fopen(FILENAME, "rb"))
   {
     COUT << "Error: Unable to open file " << FILENAME << ". LFS test failed." << OFendl;
-    return 10;    
+    return 10;
   }
 
   if (! seekFile(file))
   {
     COUT << "Error: fseek() tests unsuccessful. LFS test failed." << OFendl;
-    return 10;    
+    return 10;
   }
 
-  
+
   return 0;
 }
 
 /*
  * CVS/RCS Log:
  * $Log: toffile.cc,v $
+ * Revision 1.6  2010-12-06 13:10:27  joergr
+ * Restructured calculation of seek position in order to avoid warning messages.
+ *
  * Revision 1.5  2010-11-22 13:08:08  uli
  * Use a macro instead of repeating the filename of the test file.
  *
