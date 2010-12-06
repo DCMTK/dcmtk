@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.06 (schlachter)
+
+- Fixed crash in oflog on Mac OS X 10.4.1 with gcc 4.0.1 due to different order
+  of execution of global destructors.
+  Thanks to Bernd Kuemmerlen <bernd.kuemmerlen@mevis.de> for the report.
+
 **** Changes from 2010.12.06 (riesmeier)
 
 - Fixed issue when calling "make install-html" without "make html".

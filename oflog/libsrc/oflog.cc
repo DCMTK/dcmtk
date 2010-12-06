@@ -17,9 +17,9 @@
  *
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:51 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-12-06 09:47:30 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,12 +82,6 @@ class static_OFLog_initializer
      static_OFLog_initializer()
      {
          OFLog_init();
-     }
-
-     ~static_OFLog_initializer()
-     {
-         // without this we leak some small amounts of memory
-         log4cplus::getNDC().remove();
      }
 } static initializer;
 
@@ -273,6 +267,10 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.15  2010-12-06 09:47:30  uli
+ * Fixed crash in oflog on Mac OS X 10.4.1 with gcc 4.0.1 due to different order
+ * of execution of global destructors.
+ *
  * Revision 1.14  2010-10-14 13:14:51  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
