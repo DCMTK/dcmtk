@@ -14,6 +14,9 @@ Changes between releases are documented here.
 - Fixed a correct warning from Intel Compiler 11.1 for shifting a Uint8 by 8.
   Affects: dcmdata/libi2d/i2dbmps.cc
 
+- Fixed the i2dbmp test case for windows by opening files in binary mode.
+  Affects: dcmdata/tests/i2dbmp.cc
+
 **** Changes from 2010.12.06 (riesmeier)
 
 - Fixed issue when calling "make install-html" without "make html".
