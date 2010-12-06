@@ -199,6 +199,10 @@ namespace log4cplus {
          * The contents of the <code>message</code> parameter is
          * determined solely by the client.
          *
+         * Please note that the calling thread should either call {@link #pop}
+         * once for each call to this method or call {@link #remove} before
+         * exiting. Otherwise, a small amount of memory will be leaked.
+         *
          * @param message The new diagnostic context information.
          *
          * @see NDCContextCreator
@@ -210,7 +214,9 @@ namespace log4cplus {
          *
          * Each thread that created a diagnostic context by calling
          * {@link #push} should call this method before exiting. Otherwise,
-         * the memory used by the thread cannot be reclaimed.
+         * the memory used by the thread cannot be reclaimed. However, this is
+         * only necessary if not all calls to {@link #push} are balanced with a
+         * call to {@link #pop}.
          */
         void remove();
 
