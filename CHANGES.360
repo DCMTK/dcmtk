@@ -17,6 +17,10 @@ Changes between releases are documented here.
 - Fixed the i2dbmp test case for windows by opening files in binary mode.
   Affects: dcmdata/tests/i2dbmp.cc
 
+- Removed BufferSize option from FileAppender due to problems with gcc 2.95.3.
+  Affects: oflog/include/dcmtk/oflog/fileap.h
+           oflog/libsrc/fileap.cc
+
 **** Changes from 2010.12.06 (riesmeier)
 
 - Fixed issue when calling "make install-html" without "make html".

@@ -160,8 +160,6 @@ FileAppender::FileAppender(const tstring& filename_,
     LOG4CPLUS_OPEN_MODE_TYPE mode, bool immediateFlush_)
     : immediateFlush(immediateFlush_)
     , reopenDelay(1)
-    , bufferSize (0)
-    , buffer (0)
 {
     init(filename_, mode);
 }
@@ -173,8 +171,6 @@ FileAppender::FileAppender(const Properties& properties,
     : Appender(properties)
     , immediateFlush(true)
     , reopenDelay(1)
-    , bufferSize (0)
-    , buffer (0)
 {
     bool append_ = (mode == STD_NAMESPACE ios::app);
     tstring filename_ = properties.getProperty( LOG4CPLUS_TEXT("File") );
@@ -195,10 +191,6 @@ FileAppender::FileAppender(const Properties& properties,
         tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("ReopenDelay") );
         reopenDelay = atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
     }
-    if(properties.exists( LOG4CPLUS_TEXT("BufferSize") )) {
-        tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("BufferSize") );
-        bufferSize = atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
-    }
 
     init(filename_, (append_ ? STD_NAMESPACE ios::app : STD_NAMESPACE ios::trunc));
 }
@@ -211,13 +203,6 @@ FileAppender::init(const tstring& filename_,
 {
     this->filename = filename_;
     open(mode);
-
-    if (bufferSize != 0)
-    {
-        delete[] buffer;
-        buffer = new tchar[bufferSize];
-        out.rdbuf ()->pubsetbuf (buffer, bufferSize);
-    }
 
     if(!out.good()) {
         getErrorHandler()->error(  LOG4CPLUS_TEXT("Unable to open file: ")
@@ -245,8 +230,6 @@ FileAppender::close()
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
         out.close();
-        delete[] buffer;
-        buffer = 0;
         closed = true;
     LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
