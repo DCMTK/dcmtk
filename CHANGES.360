@@ -39,6 +39,11 @@ Changes between releases are documented here.
 - Restructured calculation of seek position in order to avoid warning messages.
   Affects: ofstd/tests/toffile.cc
 
+- Fixed little inconsistency regarding the libsndfile configure options.
+  Thanks to Juergen Salk <juergen.salk@uni-ulm.de> for the report and fix.
+  Affects: config/configure
+           config/configure.in
+
 **** Changes from 2010.12.03 (riesmeier)
 
 - Fixed regular expression for the detection of old Mac OS X versions (Darwin

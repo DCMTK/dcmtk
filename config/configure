@@ -1320,9 +1320,9 @@ Optional Packages:
   --with-libwrap          include libwrap (TCP wrapper) support (default: auto)
   --without-libwrap       don't include libwrap support
   --with-libwrapinc=DIR   location of libwrap includes and libraries
-  --with-sndfile          include libsndfile support (default: auto)
-  --without-sndfile       don't include libsndfile support
-  --with-sndfileinc=DIR   location of libsndfile includes and libraries
+  --with-libsndfile       include libsndfile support (default: auto)
+  --without-libsndfile    don't include libsndfile support
+  --with-libsndfileinc=DIR   location of libsndfile includes and libraries
 
 Some influential environment variables:
   CC          C compiler command

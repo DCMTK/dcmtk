@@ -1234,9 +1234,9 @@ AC_MSG_CHECKING(whether to include sndfile support)
 
 AC_ARG_WITH(sndfile,
 
-  [  --with-sndfile          include libsndfile support (default: auto)
-  --without-sndfile       don't include libsndfile support
-  --with-sndfileinc=DIR   location of libsndfile includes and libraries],
+  [  --with-libsndfile          include libsndfile support (default: auto)
+  --without-libsndfile       don't include libsndfile support
+  --with-libsndfileinc=DIR   location of libsndfile includes and libraries],
 
   [ case "$withval" in
     yes)
