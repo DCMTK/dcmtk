@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.07 (riesmeier)
+
+- Updated list of tested Windows systems and some other related sections.
+  Affects: INSTALL
+
 **** Changes from 2010.12.06 (schlachter)
 
 - Fixed crash in oflog on Mac OS X 10.4.1 with gcc 4.0.1 due to different order

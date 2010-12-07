@@ -3,12 +3,6 @@
 DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
 
--------------------------------------------------------------------------------
- Please note that some sections of this document still refer to the previous
- release DCMTK 3.5.4, i.e. they are not yet updated for the changes of the
- upcoming release (version 3.6.0).
--------------------------------------------------------------------------------
-
 
 PRE-REQUISITES
 ==============
@@ -16,14 +10,14 @@ PRE-REQUISITES
 The DICOM toolkit (DCMTK) needs to be compiled with a C++ compiler.  We
 recommend using the GNU C++ compiler in versions higher than 2.95 (most of the
 development was done using GNU C++ 4.1.2 on Linux 2.6).  The software is also
-known to compile using the SUNPro C++ compiler and the Microsoft Visual C++
-compiler.
+known to compile using the SUNPro C++ compiler, the Intel C++ compiler and the
+Microsoft Visual C++ compiler.
 
 Compatibility with other C++ compilers is unknown, however, we have tried to
-keep language demands to a minimum (newer C++ features such as ANSI C++
-Library, Exceptions and RTTI have been avoided).
+keep language demands to a minimum (newer C++ features such as ANSI C++ Library,
+Exceptions and RTTI have been avoided).
 
-You will need between 100 and 250 Mb of disk space to compile all the software.
+You will need several hundred Mbytes of disk space to compile all the software.
 
 
 SUPPORTED SYSTEMS
@@ -32,14 +26,19 @@ SUPPORTED SYSTEMS
 Microsoft Windows
 -----------------
 
-The DCMTK software can be compiled under a native Windows 9x/Me/NT/2000/XP
-environment (see section "BUILDING (Win32)" below for more information).
+The DCMTK software can be compiled under a native Microsoft Windows environment
+(see section "BUILDING (Windows)" below for more information).
+
 The current release successfully compiles on the following systems:
 
-    Windows NT 4.0 / Intel x86 / Microsoft Visual C++ 6.0 (Service Pack 6)
-    Windows XP     / Intel x86 / Microsoft Visual C++ 6.0 (Service Pack 6)
-    Windows XP     / Intel x86 / Microsoft Visual C++ .NET 2003 (VS 7.1)
-    Windows XP     / Intel x86 / Microsoft Visual C++ .NET 2005 (VS 8)
+    Windows XP     / Intel x86    / Microsoft Visual C++ 6.0 (Service Pack 6)
+    Windows XP     / Intel x86    / Microsoft Visual C++ 2005 Standard (VS 8)
+    Windows XP     / Intel x86    / Microsoft Visual C++ 2008 Express (VS 9)
+    Windows XP     / Intel x86    / Microsoft Visual C++ 2010 Express (VS 10)
+    Windows Vista  / Intel x86    / Microsoft Visual C++ 2008 Professional (VS 9)
+    Windows 7      / Intel x86    / Microsoft Visual C++ 2010 Express (VS 10)
+    Windows 7      / x86_64       / Microsoft Visual C++ 2010 Express (VS 10)
+    Windows 7      / x86_64       / Microsoft Visual C++ 2010 Ultimate (VS 10)
 
 The dcmqrscp and wlmscpfs tools have been ported to Windows, but do not support
 multi-processing (i.e. multiple clients concurrently) under Windows.  The
@@ -54,12 +53,14 @@ The current DCMTK software release successfully compiles on the following
 operating system / hardware / compiler combinations using the instructions
 given below:
 
+<<< NOT YET UPDATED SECTION - BEGIN >>>
+
     FreeBSD 4.11   / Intel x86    / GNU gcc 2.95.4
     FreeBSD 6.0    / Intel x86    / GNU gcc 3.4.4
     HP-UX 10.20    / HP PA-RISC   / GNU gcc 2.95.3
     IRIX 5.3       / SGI Indy     / GNU gcc 2.95.2    (see note *2)
     Linux 2.4.20   / Intel x86    / GNU gcc 2.95.4, 3.2.3, 3.3.6, 3.4.5 and 4.0.3 (Debian)
-    Linux 2.6.1    / x86_64       / GNU gcc 4.0 (Fedora Core 4)
+    Linux 2.6.1    / x86_64       / GNU gcc 4.0       (Fedora Core 4)
     MacOS X 10.4.3 / Power Mac G4 / Apple gcc 4.0.1
     NetBSD 1.6.2   / Intel x86    / GNU gcc 2.95.3
     NetBSD 2.1     / Intel x86    / GNU gcc 3.3.3
@@ -95,6 +96,10 @@ are not available to us for testing purposes any more:
     SunOS 4.1.3    / Sun Sparc    / GNU gcc 2.7.2
     Ultrix 4.4     / DEC MIPS     / GNU gcc 2.95.2    (see notes *2,*3)
     Windows 9x     / Intel x86    / Microsoft Visual C++ 5.0
+    Windows NT 4.0 / Intel x86    / Microsoft Visual C++ 6.0 (Service Pack 6)
+    Windows XP     / Intel x86    / Microsoft Visual C++ .NET 2003 (VS 7.1)
+
+<<< NOT YET UPDATED SECTION - END >>>
 
 Platform Notes
 --------------
@@ -391,8 +396,8 @@ NOTE: Starting with DCMTK 3.6.0, CMake can also be used for non-Windows
       using GNU autoconf.  Please feel free to test it and report any issue.
 
 
-BUILDING (Win32)
-================
+BUILDING (Windows)
+==================
 
 Starting with DCMTK 3.5.4, no project files for Visual Studio are provided
 anymore.  Project files for all supported compilers can be generated with
@@ -426,7 +431,7 @@ the following steps:
 2. In the entry field "Where is the source code:" enter the directory in which
    the DCMTK source code resides, e.g. "C:\dcmtk-3.6.0".
 3. In the entry field "Where to build the binaries:" enter the directory in
-   which the libraries and binaries are to be build, e.g. "C:\dcmtk-bin".
+   which the libraries and binaries are to be built, e.g. "C:\dcmtk-bin".
 4. In the combobox "Build for:" or "Specify the generator for this project:"
    select the corresponding development environment which shall be used to
    compile DCMTK.
@@ -508,12 +513,12 @@ the following steps:
    displayed specifications, i.e. support for the external libraries will be
    turned on or off).
 
-Having performed these steps, the Microsoft Developer Studio (IDE) can be
-started, DCMTK's workspace file can be opened, and one or more of DCMTK's
-subprojects can be built.  In case you want to build all libraries and
-applications, mark the "ALL_BUILD" subproject and build it.  The "INSTALL"
-subproject installs the executables, libraries, include and some support
-files (similar to "make install install-lib" on Unix systems).
+Having performed these steps, the Microsoft Visual Studio IDE can be started,
+DCMTK's workspace file can be opened, and one or more of DCMTK's subprojects
+can be built.  In case you want to build all libraries and applications, mark
+the "ALL_BUILD" subproject and build it.  The "INSTALL" subproject installs
+the executables, libraries, include and some support files (very similar to
+"make install install-lib" on Unix systems).
 
 Please note that other Windows compilers, e.g. Borland C++ Builder, are
 currently not actively supported.  However, they may work.
@@ -536,8 +541,8 @@ Known limitations of DCMTK on the Windows platform.
    implementation uses the traditional cfront header files <iostream.h> etc.
    The new implementation uses <iostream> etc. as defined in ANSI/ISO C++.
    DCMTK can be configured to use either of the two interfaces.  This behaviour
-   can be changed in "config/include/dcmtk/config/cfwin32.h" where the symbol
-   USE_STD_CXX_INCLUDES is declared.
+   can be changed in "include/dcmtk/config/osconfig.h" in the build directory
+   where the symbol USE_STD_CXX_INCLUDES is declared.
 
    NOTE: Previous releases of DCMTK (3.5.1 and older) used the old interface
          when compiled with Visual C++ 6.0.  When updating software that uses
@@ -594,4 +599,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2010-12-02 (Riesmeier).
+Last revised: 2010-12-07 (Riesmeier).
