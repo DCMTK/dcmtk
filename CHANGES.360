@@ -17,6 +17,11 @@ Changes between releases are documented here.
 - Fixed issue when linking "oflog" on Cygwin with CMake build system.
   Affects: oflog/libsrc/CMakeLists.txt
 
+- Disable currently unused wide character file I/O functions in order to avoid
+  problems with old compilers (e.g. gcc 2.95.3).
+  Affects: config/docs/macros.txt
+           ofstd/include/dcmtk/ofstd/offile.h
+
 **** Changes from 2010.12.07 (riesmeier)
 
 - Updated list of tested Windows systems and some other related sections.

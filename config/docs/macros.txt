@@ -357,7 +357,7 @@ USE_NULL_SAFE_OFSTRING
 
 USING_STD_NAMESPACE
   Affected: all modules
-  Type of modification: Re-activated behaviour of earlier DCMTK releases.
+  Type of modification: Re-activated behaviour of earlier DCMTK releases
   Explanation: DCMTK by default does not anymore pollute the default namespace
     by importing namespace std.  Earlier releases did this to simplify
     compatibility with older compilers where STL classes were not consistently
@@ -365,9 +365,17 @@ USING_STD_NAMESPACE
     for this.  If user code still relies on namespace std to be included,
     compile with this macro defined.
 
+WIDE_CHAR_FILE_IO_FUNCTIONS
+  Affects: ofstd
+  Type of modification: Activates currently unused feature
+  Explanation: In addition to the standard file I/O functions, the OFFile class
+    also defines the corresponding wide character functions from C99 standard.
+    Since these functions are currently not used within DCMTK and also not yet
+    supported by all compilers, this feature is disabled by default.
+
 WRITE_VERY_LARGE_CHUNKS
   Affects: dcmdata
-  Type of modification: Re-activated behaviour of earlier DCMTK releases.
+  Type of modification: Re-activated behaviour of earlier DCMTK releases
   Explanation: On Windows (at least for some versions of MSVC), calls to
     fwrite() for more than 67,076,095 bytes (a bit less than 64 MByte) fail if
     we're writing to a network share.  See MSDN KB899149.  As a workaround, we

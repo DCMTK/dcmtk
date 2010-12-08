@@ -18,8 +18,8 @@
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-12-06 13:02:49 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2010-12-08 16:04:35 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,12 +39,12 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
 #define INCLUDE_CERRNO
-#define INCLUDE_CWCHAR
+//#define INCLUDE_CWCHAR    /* not yet implemented in "ofstdinc.h" */
 #include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
-#include <sys/stat.h>   /* needed for struct _stati64 on Win32 */
+#include <sys/stat.h>       /* needed for struct _stati64 on Win32 */
 #endif
 END_EXTERN_C
 
@@ -141,7 +141,7 @@ public:
     return (file_ != NULL);
   }
 
-#ifdef _WIN32
+#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
   /** opens the file whose name is the wide character string pointed to by path and associates
    *  a stream with it. This function is Win32 specific and only exists on WinNT and newer.
    *  @param filename Unicode filename path to file
@@ -703,8 +703,8 @@ public:
     s = OFStandard::strerror(lasterror_, buf, 1000);
   }
 
-// Cygwin does not support the wide character functions
-#ifndef __CYGWIN__
+// wide character functions (disabled by default, since currently not used within DCMTK)
+#ifdef WIDE_CHAR_FILE_IO_FUNCTIONS
 
   /** When mode is zero, the fwide function determines the current orientation
    *  of stream. It returns a value > 0 if stream is wide-character oriented,
@@ -803,7 +803,7 @@ public:
   // we cannot emulate fwscanf because we would need vfwscanf for this
   // purpose, which does not exist, e.g. on Win32.
 
-#endif /* __CYGWIN__ */
+#endif /* WIDE_CHAR_FILE_IO_FUNCTIONS */
 
 private:
 
@@ -836,6 +836,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.15  2010-12-08 16:04:35  joergr
+ * Disable currently unused wide character file I/O functions in order to avoid
+ * problems with old compilers (e.g. gcc 2.95.3).
+ *
  * Revision 1.14  2010-12-06 13:02:49  joergr
  * Fixed issue with large file support for current Cygwin systems (1.7.7-1).
  *
