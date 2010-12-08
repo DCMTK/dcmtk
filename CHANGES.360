@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Added note that libtiff releases prior to version 3.7.0 will not work.
   Affects: INSTALL
 
+- Fixed issue when linking "oflog" on Cygwin with CMake build system.
+  Affects: oflog/libsrc/CMakeLists.txt
+
 **** Changes from 2010.12.07 (riesmeier)
 
 - Updated list of tested Windows systems and some other related sections.
