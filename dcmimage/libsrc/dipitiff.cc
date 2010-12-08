@@ -17,9 +17,9 @@
  *
  *  Purpose: Implements TIFF interface for plugable image formats
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:14 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-12-08 13:26:43 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,6 +86,9 @@ int DiTIFFPlugin::write(
  *   stream_fd =OFstatic_cast(int, _get_osfhandle(stream_fd));
  * #endif
  */
+
+#elif TIFFLIB_VERSION < 20041016
+#error TIFF library versions prior to 3.7.0 are not supported by DCMTK - TIFFCleanup is missing!
 #endif
 
     /* create bitmap with 8 bits per sample */
@@ -216,6 +219,9 @@ int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
  *
  * CVS/RCS Log:
  * $Log: dipitiff.cc,v $
+ * Revision 1.12  2010-12-08 13:26:43  uli
+ * Explicitely check for libtiff 3.7.0 or newer.
+ *
  * Revision 1.11  2010-10-14 13:14:14  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

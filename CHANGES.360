@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.08 (schlachter)
+
+- Explicitely check for libtiff 3.7.0 or newer.
+  Affects: dcmimage/libsrc/dipitiff.cc
+
 **** Changes from 2010.12.08 (riesmeier)
 
 - Added note that libtiff releases prior to version 3.7.0 will not work.
