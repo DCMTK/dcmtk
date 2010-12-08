@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.08 (riesmeier)
+
+- Added note that libtiff releases prior to version 3.7.0 will not work.
+  Affects: INSTALL
+
 **** Changes from 2010.12.07 (riesmeier)
 
 - Updated list of tested Windows systems and some other related sections.

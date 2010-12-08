@@ -192,7 +192,9 @@ LIBTIFF SUPPORT
 Starting with release 3.5.1, DCMTK supports the conversion of DICOM images
 to TIFF.  DCMTK relies on the libtiff toolkit (www.libtiff.org) for this
 purpose.  This release of DCMTK is known to compile with the libtiff releases
-3.7.4 to 3.9.4, although other releases may work as well.
+3.7.4 to 3.9.4, although other releases may work as well.  However, libtiff
+releases prior to version 3.7.0 will not work since the TIFFCleanup() function
+was not yet available.
 
 On Unix platforms, if support for TIFF export is desired, a compiled version
 of the libtiff libraries and include files must be available during compilation
