@@ -194,7 +194,8 @@ to TIFF.  DCMTK relies on the libtiff toolkit (www.libtiff.org) for this
 purpose.  This release of DCMTK is known to compile with the libtiff releases
 3.7.4 to 3.9.4, although other releases may work as well.  However, libtiff
 releases prior to version 3.7.0 will not work since the TIFFCleanup() function
-was not yet available.
+was not yet available. On Windows, libtiff 3.7.4 or higher is required due to
+incompatible API changes in libtiff.
 
 On Unix platforms, if support for TIFF export is desired, a compiled version
 of the libtiff libraries and include files must be available during compilation
@@ -601,4 +602,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2010-12-07 (Riesmeier).
+Last revised: 2010-12-08 (Schlachter).
