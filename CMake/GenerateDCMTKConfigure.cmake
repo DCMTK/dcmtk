@@ -1,4 +1,4 @@
-# PRIVATE_TAGS
+# Private tags
 IF(DCMTK_WITH_PRIVATE_TAGS)
   SET(WITH_PRIVATE_TAGS 1)
   MESSAGE(STATUS "Info: DCMTK's builtin private dictionary support will be enabled")
@@ -7,7 +7,7 @@ ELSE(DCMTK_WITH_PRIVATE_TAGS)
   MESSAGE(STATUS "Info: DCMTK's builtin private dictionary support will be disabled")
 ENDIF(DCMTK_WITH_PRIVATE_TAGS)
 
-# THREADS
+# Thread support
 IF(DCMTK_WITH_THREADS)
   SET(WITH_THREADS 1)
   MESSAGE(STATUS "Info: Thread support will be enabled")
@@ -16,7 +16,7 @@ ELSE(DCMTK_WITH_THREADS)
   MESSAGE(STATUS "Info: Thread support will be disabled")
 ENDIF(DCMTK_WITH_THREADS)
 
-# ANSI C++
+# Standard C++ headers (currently hard-coded)
 #IF(VTK_USE_ANSI_STDLIB)
   SET(USE_STD_CXX_INCLUDES 1)
 #ELSE(VTK_USE_ANSI_STDLIB)
@@ -42,7 +42,7 @@ IF(WIN32 AND NOT CYGWIN AND NOT MINGW)
   IF(WITH_PRIVATE_TAGS)
     SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}${ENVIRONMENT_PATH_SEPARATOR}${DCMTK_PREFIX}${INSTALL_DATDIR}${PATH_SEPARATOR}private.dic")
   ENDIF(WITH_PRIVATE_TAGS)
-  # Again, for windows strip all / from path and replace it with \\.
+  # Again, for Windows strip all / from path and replace it with \\.
   STRING(REGEX REPLACE "/" "\\\\\\\\" DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}")
   # Set default directory for configuration and support data.
   SET(DCMTK_DEFAULT_CONFIGURATION_DIR "")
@@ -53,7 +53,7 @@ ELSE(WIN32 AND NOT CYGWIN AND NOT MINGW)
   # Set path and multiple path separator being used in dictionary code etc.
   SET(PATH_SEPARATOR "/")
   SET(ENVIRONMENT_PATH_SEPARATOR ":")
-  # Set dictionary path to the data dir inside install main dir (prefix)
+  # Set dictionary path to the data dir inside install main dir (prefix).
   SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}${INSTALL_DATDIR}${PATH_SEPARATOR}dicom.dic")
   # If private dictionary should be utilized, add it to default dictionary path.
   IF(WITH_PRIVATE_TAGS)
@@ -74,17 +74,17 @@ CHECK_TYPE_SIZE("long" SIZEOF_LONG)
 CHECK_TYPE_SIZE("short" SIZEOF_SHORT)
 CHECK_TYPE_SIZE("void*" SIZEOF_VOID_P)
 
-# check for include files, libraries, and functions
+# Check for include files, libraries, and functions
 INCLUDE(${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake)
 INCLUDE(${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 INCLUDE(${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake)
 INCLUDE(${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
 INCLUDE(${DCMTK_SOURCE_DIR}/CMake/CheckFunctionWithHeaderExists.cmake)
 
-# For windows, hardcode these values to avoid long search times
+# For Windows, hardcode these values to avoid long search times
 IF(WIN32 AND NOT CYGWIN)
-  CHECK_INCLUDE_FILE_CXX("windows.h"  HAVE_WINDOWS_H)
-  CHECK_INCLUDE_FILE_CXX("winsock.h"  HAVE_WINSOCK_H)
+  CHECK_INCLUDE_FILE_CXX("windows.h" HAVE_WINDOWS_H)
+  CHECK_INCLUDE_FILE_CXX("winsock.h" HAVE_WINSOCK_H)
 ENDIF(WIN32 AND NOT CYGWIN)
 
   CHECK_INCLUDE_FILE_CXX("errno.h" HAVE_ERRNO_H)
@@ -115,7 +115,7 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_INCLUDE_FILE_CXX("new.h" HAVE_NEW_H)
   CHECK_INCLUDE_FILE_CXX("semaphore.h" HAVE_SEMAPHORE_H)
   CHECK_INCLUDE_FILE_CXX("setjmp.h" HAVE_SETJMP_H)
-  CHECK_INCLUDE_FILE_CXX(sstream HAVE_SSTREAM)
+  CHECK_INCLUDE_FILE_CXX("sstream" HAVE_SSTREAM)
   CHECK_INCLUDE_FILE_CXX("sstream.h" HAVE_SSTREAM_H)
   CHECK_INCLUDE_FILE_CXX("stat.h" HAVE_STAT_H)
   CHECK_INCLUDE_FILE_CXX("stddef.h" HAVE_STDDEF_H)
@@ -159,8 +159,7 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_INCLUDE_FILE_CXX("cstdarg" HAVE_CSTDARG)
   CHECK_INCLUDE_FILE_CXX("signal.h" HAVE_SIGNAL_H)
 
-  # there is no CMake macro to take care of these yet
-
+  # There is no CMake macro to take care of these yet
 
   IF(WIN32 AND NOT CYGWIN AND NOT MINGW)
     SET(HAVE_NO_TYPEDEF_SSIZE_T TRUE)
@@ -377,9 +376,9 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_FUNCTIONWITHHEADER_EXISTS("longlong definition" "${HEADERS}" HAVE_LONGLONG)
   CHECK_FUNCTIONWITHHEADER_EXISTS("ulonglong definition" "${HEADERS}" HAVE_ULONGLONG)
 
-# tests that require a try-compile
+# Tests that require a try-compile
 
-# check for HAVE_CXX_BOOL
+# Check for HAVE_CXX_BOOL
 IF("HAVE_CXX_BOOL" MATCHES "^HAVE_CXX_BOOL$")
   MESSAGE(STATUS "Checking support for C++ type bool")
   TRY_COMPILE(HAVE_CXX_BOOL
@@ -420,7 +419,7 @@ IF("C_CHAR_UNSIGNED" MATCHES "^C_CHAR_UNSIGNED$")
   ENDIF(C_CHAR_SIGNED_COMPILED)
 ENDIF("C_CHAR_UNSIGNED" MATCHES "^C_CHAR_UNSIGNED$")
 
-# check for thread type
+# Check for thread type
 IF("HAVE_POINTER_TYPE_PTHREAD_T" MATCHES "^HAVE_POINTER_TYPE_PTHREAD_T$")
   MESSAGE(STATUS "Checking whether pthread_t is a pointer type")
   IF (HAVE_WINDOWS_H)
@@ -448,7 +447,7 @@ IF("HAVE_POINTER_TYPE_PTHREAD_T" MATCHES "^HAVE_POINTER_TYPE_PTHREAD_T$")
   ENDIF(NOT HAVE_INT_TYPE_PTHREAD_T)
 ENDIF("HAVE_POINTER_TYPE_PTHREAD_T" MATCHES "^HAVE_POINTER_TYPE_PTHREAD_T$")
 
-# check if typename works properly. Only MSC6 really fails here.
+# Check if typename works properly. Only MSC6 really fails here.
 IF("HAVE_TYPENAME" MATCHES "^HAVE_TYPENAME$")
   MESSAGE(STATUS "Checking whether typename works correctly")
   TRY_COMPILE(HAVE_TYPENAME
@@ -472,7 +471,7 @@ IF("HAVE_TYPENAME" MATCHES "^HAVE_TYPENAME$")
   ENDIF(HAVE_TYPENAME)
 ENDIF("HAVE_TYPENAME" MATCHES "^HAVE_TYPENAME$")
 
-# check if ENAMETOOLONG is defined.
+# Check if ENAMETOOLONG is defined.
 IF("HAVE_ENAMETOOLONG" MATCHES "^HAVE_ENAMETOOLONG$")
   MESSAGE(STATUS "Checking whether ENAMETOOLONG is defined")
   TRY_COMPILE(HAVE_ENAMETOOLONG
@@ -496,7 +495,7 @@ IF("HAVE_ENAMETOOLONG" MATCHES "^HAVE_ENAMETOOLONG$")
   ENDIF(HAVE_ENAMETOOLONG)
 ENDIF("HAVE_ENAMETOOLONG" MATCHES "^HAVE_ENAMETOOLONG$")
 
-# check if strerror_r returns a char* is defined.
+# Check if strerror_r returns a char* is defined.
 IF("HAVE_CHARP_STRERROR_R" MATCHES "^HAVE_CHARP_STRERROR_R$")
   MESSAGE(STATUS "Checking whether strerror_r returns an int")
   TRY_COMPILE(HAVE_CHARP_STRERROR_R
@@ -520,7 +519,7 @@ IF("HAVE_CHARP_STRERROR_R" MATCHES "^HAVE_CHARP_STRERROR_R$")
   ENDIF(HAVE_CHARP_STRERROR_R)
 ENDIF("HAVE_CHARP_STRERROR_R" MATCHES "^HAVE_CHARP_STRERROR_R$")
 
-# check if variable length arrays are supported.
+# Check if variable length arrays are supported.
 IF("HAVE_VLA" MATCHES "^HAVE_VLA$")
   MESSAGE(STATUS "Checking whether variable length arrays are supported")
   TRY_COMPILE(HAVE_VLA
@@ -544,7 +543,7 @@ IF("HAVE_VLA" MATCHES "^HAVE_VLA$")
   ENDIF(HAVE_VLA)
 ENDIF("HAVE_VLA" MATCHES "^HAVE_VLA$")
 
-# check if std::ios::nocreate exists
+# Check if std::ios::nocreate exists
 IF("HAVE_IOS_NOCREATE" MATCHES "^HAVE_IOS_NOCREATE$")
   MESSAGE(STATUS "Checking whether std::ios::nocreate exists")
   TRY_COMPILE(HAVE_IOS_NOCREATE
@@ -575,7 +574,7 @@ IF(WIN32)
   SET(HAVE_INTP_GETSOCKOPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
   SET(HAVE_INTP_SELECT 0 CACHE INTERNAL "Set if select() accepts an int* argument")
 ELSE(WIN32)
-  # check if socket functions accept an int*
+  # Check if socket functions accept an int*
   IF("HAVE_INTP_SOCKET" MATCHES "^HAVE_INTP_SOCKET$")
     MESSAGE(STATUS "Checking whether socket functions accept an int* argument")
     TRY_COMPILE(HAVE_INTP_SOCKET
@@ -601,7 +600,7 @@ ELSE(WIN32)
     ENDIF(HAVE_INTP_SOCKET)
   ENDIF("HAVE_INTP_SOCKET" MATCHES "^HAVE_INTP_SOCKET$")
 
-  # check if select() accepts an int*
+  # Check if select() accepts an int*
   IF("HAVE_INTP_SELECT" MATCHES "^HAVE_INTP_SELECT$")
     MESSAGE(STATUS "Checking whether select() accepts an int* argument")
     TRY_COMPILE(HAVE_INTP_SELECT

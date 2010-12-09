@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.09 (riesmeier)
+
+- Fixed minor inconsistencies (mainly in comments).
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
 **** Changes from 2010.12.08 (schlachter)
 
 - Explicitely check for libtiff 3.7.0 or newer.
