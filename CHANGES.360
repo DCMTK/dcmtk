@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.12.09 (riesmeier)
 
+- Updated content of anouncement file to be used for the official release.
+  However, this is only a first version that will certainly be updated again.
+  Affects: ANNOUNCE.360
+
 - Fixed minor inconsistencies (mainly in comments).
   Affects: CMake/GenerateDCMTKConfigure.cmake
 
@@ -2290,9 +2294,9 @@ Changes between releases are documented here.
            dcmdata/apps/CMakeLists.txt
            dcmimage/apps/CMakeLists.txt
            dcmimgle/apps/CMakeLists.txt
-           dcmjpeg/apps/
-           dcmjpls/apps
-           dcmnet/apps
+           dcmjpeg/apps/CMakeLists.txt
+           dcmjpls/apps/CMakeLists.txt
+           dcmnet/apps/CMakeLists.txt
            dcmpstat/CMakeLists.txt
            dcmpstat/apps/CMakeLists.txt
            dcmqrdb/apps/CMakeLists.txt
