@@ -40,11 +40,11 @@ The current release successfully compiles on the following systems:
     Windows 7      / x86_64       / Microsoft Visual C++ 2010 Express (VS 10)
     Windows 7      / x86_64       / Microsoft Visual C++ 2010 Ultimate (VS 10)
 
-The dcmqrscp and wlmscpfs tools have been ported to Windows, but do not support
+The dcmqrscp tool has been ported to Windows, but does not yet support
 multi-processing (i.e. multiple clients concurrently) under Windows.  The
-worklist WWW scripts require an HTTP server and a Perl interpreter and have not
-been tested under Windows (file locking interaction with the wlmscpfs server
-may or may not work).
+worklist WWW scripts require an HTTP server and a Perl interpreter and have
+not been tested under Windows (file locking interaction with the wlmscpfs
+server may or may not work).
 
 Unix (or lookalikes)
 --------------------
@@ -194,7 +194,7 @@ to TIFF.  DCMTK relies on the libtiff toolkit (www.libtiff.org) for this
 purpose.  This release of DCMTK is known to compile with the libtiff releases
 3.7.4 to 3.9.4, although other releases may work as well.  However, libtiff
 releases prior to version 3.7.0 will not work since the TIFFCleanup() function
-was not yet available. On Windows, libtiff 3.7.4 or higher is required due to
+was not yet available.  On Windows, libtiff 3.7.4 or higher is required due to
 incompatible API changes in libtiff.
 
 On Unix platforms, if support for TIFF export is desired, a compiled version
@@ -528,9 +528,8 @@ currently not actively supported.  However, they may work.
 
 Known limitations of DCMTK on the Windows platform.
 
-1. The dcmqrscp and wlmscpfs tools cannot spark multiple processes.  Every
-   association must be handled completely before a new association is
-   possible.
+1. The dcmqrscp tool cannot spark multiple processes.  Every association must
+   be handled completely before a new association is possible.
 2. On Windows 95, dcmqrscp always uses exclusive file locking (the LockFileEx
    API call is available on Windows NT only).  This is no problem if only one
    single process exists.
@@ -602,4 +601,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2010-12-08 (Schlachter).
+Last revised: 2010-12-09 (Riesmeier).

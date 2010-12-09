@@ -15,6 +15,10 @@ Changes between releases are documented here.
            config/configure
            config/configure.in
 
+- Removed outdated note that wlmscpfs does not support multi-processing on
+  Windows systems.
+  Affects: INSTALL
+
 **** Changes from 2010.12.08 (schlachter)
 
 - Explicitely check for libtiff 3.7.0 or newer.
