@@ -1320,8 +1320,8 @@ Optional Packages:
   --with-libwrap          include libwrap (TCP wrapper) support (default: auto)
   --without-libwrap       don't include libwrap support
   --with-libwrapinc=DIR   location of libwrap includes and libraries
-  --with-libsndfile       include libsndfile support (default: auto)
-  --without-libsndfile    don't include libsndfile support
+  --with-libsndfile          include libsndfile support (default: auto)
+  --without-libsndfile       don't include libsndfile support
   --with-libsndfileinc=DIR   location of libsndfile includes and libraries
 
 Some influential environment variables:
@@ -9286,8 +9286,8 @@ fi
 
 
 
-{ echo "$as_me:$LINENO: checking whether the compiler supports supports operator delete (std::nothrow)" >&5
-echo $ECHO_N "checking whether the compiler supports supports operator delete (std::nothrow)... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking whether the compiler supports operator delete (std::nothrow)" >&5
+echo $ECHO_N "checking whether the compiler supports operator delete (std::nothrow)... $ECHO_C" >&6; }
 if test "${ac_cv_cxx_nothrow_delete+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -9430,8 +9430,8 @@ fi
 
 
 LFSSUPPORT="auto"
-{ echo "$as_me:$LINENO: checking whether to enable long file support" >&5
-echo $ECHO_N "checking whether to enable long file support... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking whether to enable large file support" >&5
+echo $ECHO_N "checking whether to enable large file support... $ECHO_C" >&6; }
 # Check whether --enable-lfs was given.
 if test "${enable_lfs+set}" = set; then
   enableval=$enable_lfs;  case "$enableval" in

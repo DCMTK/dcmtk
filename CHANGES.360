@@ -6,6 +6,15 @@ Changes between releases are documented here.
 - Fixed minor inconsistencies (mainly in comments).
   Affects: CMake/GenerateDCMTKConfigure.cmake
 
+- Consistently use "large file support" for LFS instead of "long file support".
+  Affects: config/configure
+           config/configure.in
+
+- Fixed typo in checking message.
+  Affects: config/aclocal.m4
+           config/configure
+           config/configure.in
+
 **** Changes from 2010.12.08 (schlachter)
 
 - Explicitely check for libtiff 3.7.0 or newer.
