@@ -18,7 +18,7 @@ previous version 3.5.4:
   - FreeBSD on x86 and x86_64
   - Mac OS X on x86_64
   - Windows on x86 and x86_64
-  - Cygwin and MinGW/MSys
+  - Cygwin and MinGW/MSys on x86
 
   For a complete list of tested systems and compilers, see the INSTALL file.
 
@@ -27,8 +27,8 @@ previous version 3.5.4:
   systems where the CMake project files fail.
 
 - New module oflog introduces a unified DCMTK-wide approach for logging based
-  the log4cplus library.  Direct output to console, file, syslog and event log.
-  All DCMTK command line tools now have the same set of logging options.
+  on the log4cplus library.  Direct output to console, file, syslog and event
+  log.  All DCMTK command line tools now have the same set of logging options.
 
 - New module dcmjpls adds support for JPEG-LS compressed DICOM images based on
   the CharLS library.  The tools dcmcjpls and dcmdjpls allow for compressing
@@ -53,21 +53,20 @@ previous version 3.5.4:
 - The tool dcmodify now also supports reading the value of insert and modify
   statements from a file.  This is especially useful for large element values.
 
-- The tool dsr2html now also supports the output in XHTML 1.1 and HTML 4.01
-  format.  There are also new options that affect the (X)HTML rendering result.
+- The tool dsr2html now also supports the output in HTML 4.01 and XHTML 1.1
+  format.  There are also new options that affect the rendering result.
 
 - The tool dump2dcm now also supports compressed pixel data.  In addition,
   the memory requirements for very large data elements have been reduced.
 
 - The tool xml2dcm can now also read binary data (e.g. pixel data) from a
-  separate file.  This corresponding feature is not yet available in dcm2xml.
+  separate file.  The corresponding feature is not yet available in dcm2xml.
 
 - The tool storescp now has a new option that allows for accepting all
   supported transfer syntaxes on a single association.
 
 - The tool wlmscpfs now supports multi-process mode both on Posix and Windows
-  platforms where a separate client process is forked for each incoming
-  association.
+  platforms where a new child process is created for each incoming association.
 
 - Refactored code of the tool findscu into a C++ class.  This facilitates
   re-use of the findscu code in other applications.
@@ -99,7 +98,7 @@ previous version 3.5.4:
   dcmsr module.
 
 - Incorporated fixes to dcmsr module which were introduced by various
-  correction proposals.  Added support for optional Preliminary Flag.
+  correction proposals.  Added support for the new optional Preliminary Flag.
 
 - DICOMDIR tools and classes now support all new SOP classes and directory
   record types.  Also added a new operating mode that allows for updating
@@ -109,10 +108,10 @@ previous version 3.5.4:
   line tools like findscu or dcmodify.
 
 - Added methods for checking the value representation (VR) and value
-  multiplicity (VM) of data elements for conformance to the DICOM standard.
+  multiplicity (VM) of data elements for conformance with the DICOM standard.
 
-- Network tools support transmission and receipt of JPEG-LS and MPEG2 transfer
-  syntaxes.
+- Network tools now support transmission and receipt of JPEG-LS and MPEG2
+  transfer syntaxes.
 
 - Added support for the extended negotiation of user identity to the dcmnet
   module.  The first tool that makes use of this new feature is storescu.
@@ -156,4 +155,4 @@ The DCMTK software can be downloaded via:
 
   http://dicom.offis.de/dcmtk or http://www.dcmtk.org/
 
-OFFIS e.V., Oldenburg, Germany, 2010-12-09
+OFFIS e.V., Oldenburg, Germany, 2010-12-10
