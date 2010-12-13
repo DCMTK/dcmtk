@@ -5,8 +5,8 @@ dnl Purpose: additional M4 macros for GNU autoconf
 dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
-dnl Last Update:  $Author: joergr $
-dnl Revision:     $Revision: 1.44 $
+dnl Last Update:  $Author: uli $
+dnl Revision:     $Revision: 1.45 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -1560,17 +1560,21 @@ AC_TYPEDEF_HELPER([$1],[],[AC_DEFINE_UNQUOTED(AC_TYPEDEF_TEMP)])
 AC_DEFUN([AC_LFS64],
 [ AH_TEMPLATE([HAVE_LFS_SUPPORT], [Define if LFS (long file support) is available])
   AH_TEMPLATE([_LARGEFILE64_SOURCE], [Define to enable LFS64 (explicit long file support) if available])
+  AC_MSG_CHECKING([for explicit large file support])
   ac_cv_lfs64_support=no
   AC_LANG_SAVE
   AC_LANG_C
-  AC_TRY_COMPILE([#define _LARGEFILE64_SOURCE
+  AC_TRY_LINK([#define _LARGEFILE64_SOURCE
     #include <stdio.h>],[FILE *f = fopen64("name", "r");],
   ac_cv_lfs64_support=yes, ac_cv_lfs64_support=no)
   AC_LANG_RESTORE
 
   if test "$ac_cv_lfs64_support" = yes; then
+    AC_MSG_RESULT([yes])
     AC_DEFINE(HAVE_LFS_SUPPORT,, [Define if LFS (long file support) is available])
     AC_DEFINE(_LARGEFILE64_SOURCE, 1, [Define to enable LFS64 (explicit long file support) if available])
+  else
+    AC_MSG_RESULT([no])
   fi
 ])
 
@@ -1747,6 +1751,9 @@ fi
 
 dnl
 dnl $Log: aclocal.m4,v $
+dnl Revision 1.45  2010-12-13 11:19:02  uli
+dnl Fixed the explicit LFS test which produced wrong results on FreeBSD.
+dnl
 dnl Revision 1.44  2010-12-09 11:57:59  joergr
 dnl Fixed typo in checking message.
 dnl

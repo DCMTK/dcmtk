@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.13 (schlachter)
+
+- Fixed the explicit LFS test which produced wrong results on FreeBSD.
+  Affects: config/aclocal.m4
+           config/configure
+
 **** Changes from 2010.12.13 (riesmeier)
 
 - Removed FreeBSD flags introduced a couple of months ago since they caused

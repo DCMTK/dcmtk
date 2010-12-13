@@ -21474,6 +21474,8 @@ if test $LFSSUPPORT = auto -o $LFSSUPPORT = lfs64; then
 
 
 
+  { echo "$as_me:$LINENO: checking for explicit large file support" >&5
+echo $ECHO_N "checking for explicit large file support... $ECHO_C" >&6; }
   ac_cv_lfs64_support=no
 
   ac_ext=c
@@ -21498,14 +21500,14 @@ FILE *f = fopen64("name", "r");
   return 0;
 }
 _ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
 case "(($ac_try" in
   *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
   *) ac_try_echo=$ac_try;;
 esac
 eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
+  (eval "$ac_link") 2>conftest.er1
   ac_status=$?
   grep -v '^ *+' conftest.er1 >conftest.err
   rm -f conftest.er1
@@ -21514,7 +21516,8 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
   (exit $ac_status); } && {
 	 test -z "$ac_c_werror_flag" ||
 	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
   ac_cv_lfs64_support=yes
 else
   echo "$as_me: failed program was:" >&5
@@ -21523,7 +21526,8 @@ sed 's/^/| /' conftest.$ac_ext >&5
 	ac_cv_lfs64_support=no
 fi
 
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
   ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -21532,6 +21536,8 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
   if test "$ac_cv_lfs64_support" = yes; then
+    { echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6; }
 
 cat >>confdefs.h <<\_ACEOF
 #define HAVE_LFS_SUPPORT
@@ -21542,6 +21548,9 @@ cat >>confdefs.h <<\_ACEOF
 #define _LARGEFILE64_SOURCE 1
 _ACEOF
 
+  else
+    { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
   fi
 
   if test $ac_cv_lfs64_support = yes ; then
@@ -28549,7 +28558,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 28552 "configure"
+#line 28561 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -29222,7 +29231,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 29225 "configure"
+#line 29234 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -29295,7 +29304,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 29298 "configure"
+#line 29307 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -29368,7 +29377,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 29371 "configure"
+#line 29380 "configure"
 #include "confdefs.h"
 
 template <class T>
