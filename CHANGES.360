@@ -7,6 +7,9 @@ Changes between releases are documented here.
   Affects: config/aclocal.m4
            config/configure
 
+- Fix toffile by moving some casts to the correct position.
+  Affects: ofstd/tests/toffile.cc
+
 **** Changes from 2010.12.13 (riesmeier)
 
 - Removed FreeBSD flags introduced a couple of months ago since they caused

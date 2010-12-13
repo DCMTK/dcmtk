@@ -18,9 +18,9 @@
  *  Purpose: test program for the non-trivial fseek and ftell implementations
  *           in class OFFile
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-12-06 13:10:27 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-12-13 13:08:37 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,7 +177,7 @@ OFBool seekFile(OFFile &file)
   // fseek to each 4th block using SEEK_END
   for (i = 0; i < FILESIZE; i += 4)
   {
-    pos = -1 * OFstatic_cast(offile_off_t, (FILESIZE - i) * BLOCKSIZE * sizeof(Uint32));
+    pos = OFstatic_cast(offile_off_t, -1) * (FILESIZE - i) * BLOCKSIZE * sizeof(Uint32);
 
     result = file.fseek(pos, SEEK_END);
     if (result)
@@ -188,7 +188,7 @@ OFBool seekFile(OFFile &file)
     if (1 == file.fread(&v, sizeof(Uint32), 1))
     {
       // successfully read value. Now check if the value is correct.
-      expected = OFstatic_cast(offile_off_t, BLOCKSIZE * i);
+      expected = OFstatic_cast(offile_off_t, BLOCKSIZE) * i;
       if (v != expected)
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_END) to block " << FILESIZE-i << ": expected "
@@ -222,7 +222,7 @@ OFBool seekFile(OFFile &file)
   {
     block = myRand(FILESIZE - 2); // this avoids that pos can ever be 0, which would cause us to read after the end of file.
     offset = myRand(BLOCKSIZE - 1);
-    pos = -1 * OFstatic_cast(offile_off_t, (FILESIZE - block - 1) * BLOCKSIZE * sizeof(Uint32) + offset * sizeof(Uint32));
+    pos = OFstatic_cast(offile_off_t, -1) * (FILESIZE - block - 1) * BLOCKSIZE * sizeof(Uint32) + offset * sizeof(Uint32);
     result = file.fseek(pos, SEEK_END);
     if (result)
     {
@@ -232,7 +232,7 @@ OFBool seekFile(OFFile &file)
     if (1 == file.fread(&v, sizeof(Uint32), 1))
     {
       // successfully read value. Now check if the value is correct.
-      expected = OFstatic_cast(offile_off_t, FILESIZE * BLOCKSIZE * sizeof(Uint32) + pos) / sizeof(Uint32);
+      expected = (OFstatic_cast(offile_off_t, FILESIZE) * BLOCKSIZE * sizeof(Uint32) + pos) / sizeof(Uint32);
       if (v != expected)
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_END) to block " << block
@@ -406,6 +406,9 @@ int main()
 /*
  * CVS/RCS Log:
  * $Log: toffile.cc,v $
+ * Revision 1.7  2010-12-13 13:08:37  uli
+ * Fix toffile by moving some casts to the correct position.
+ *
  * Revision 1.6  2010-12-06 13:10:27  joergr
  * Restructured calculation of seek position in order to avoid warning messages.
  *
