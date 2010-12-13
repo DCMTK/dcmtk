@@ -254,8 +254,8 @@ TCP WRAPPER (LIBWRAP) SUPPORT
 Starting with release 3.5.3, DCMTK supports Wietse Venema's TCP wrappers
 library (libwrap) which is freely available for most Unix platforms and part
 of the default installation of most recent Linux distributions.  This library
-allows to enforce host-based access control via the "/etc/hosts_deny" and
-"/etc/hosts_allow" configuration files.  See hosts_access(5) man page for
+allows to enforce host-based access control via the "/etc/hosts.deny" and
+"/etc/hosts.allow" configuration files.  See hosts_access(5) man page for
 details.
 
 On Unix platforms, if support for TCP wrappers is desired, a compiled version
@@ -319,18 +319,21 @@ similar way (in case these libraries are not installed in the standard path):
 
     ./configure --with-libzlibinc=/usr/local/apps/zlib-1.2.5
                 --with-libtiffinc=/usr/local/apps/libtiff-3.9.4
-                --with-libpnginc=/usr/local/apps/libpng-1.4.2
+                --with-libpnginc=/usr/local/apps/libpng-1.4.3
                 --with-libxmlinc=/usr/local/apps/libxml-2.7.7
                 --with-libwrapinc=/usr/local/apps/tcp_wrappers-7.6
 
 Different configure options can be combined in any order.  configure --help
-will print a list of all existing configure options.  Useful configure
+will print a list of all existing configure options.  configure --help=short
+will display only those options specific to the DCMTK.  Useful configure
 options are:
 
   --enable-debug          compile with debug code, don't optimize
   --disable-debug         compile without debug code (default)
   --enable-threads=TYPE   compile with MT support (posix/solaris/auto=default)
   --disable-threads       compile without MT support
+  --enable-lfs=TYPE       compile with LFS support (lfs/lfs64/auto=default)
+  --disable-lfs           compile without LFS support
   --enable-std-includes   use C++ ANSI standard includes
   --disable-std-includes  use old C++ includes
 
@@ -429,7 +432,7 @@ In order to manually configure the support for the above mentioned external
 libraries (OpenSSL, zlib, libtiff, libpng and libxml2) through CMake, perform
 the following steps:
 
-1. Go Start -> Programs -> CMake -> CMake or CMake (cmake-gui) to start the
+1. Go Start -> Programs -> CMake -> "CMake" or "CMake (cmake-gui)" to start the
    CMake utility through which the configuration can be done.
 2. In the entry field "Where is the source code:" enter the directory in which
    the DCMTK source code resides, e.g. "C:\dcmtk-3.6.0".
@@ -478,10 +481,10 @@ the following steps:
    (Please note also that the library files of all external libraries are
    always expected in directory named "lib" below the directory which is
    specified in "WITH_LIBXMLINC", "WITH_LIBPNGINC", "WITH_LIBTIFFINC",
-   "WITH_OPENSSLINC", or "WITH_ZLIBINC".  Moreover note that the following
+   "WITH_OPENSSLINC", or "WITH_ZLIBINC".  Moreover, note that the following
    filenames must be used for the corresponding lib files:
 
-     libxml:
+     libxml2:
        "iconv_d.lib"    - debug version
        "iconv_o.lib"    - release version (optimized)
        "libxml2_d.lib"  - debug version
@@ -601,4 +604,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2010-12-09 (Riesmeier).
+Last revised: 2010-12-13 (Riesmeier).
