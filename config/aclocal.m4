@@ -1,12 +1,12 @@
-dnl 
+dnl
 dnl Filename: aclocal.m4
 dnl
 dnl Purpose: additional M4 macros for GNU autoconf
 dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
-dnl Last Update:  $Author: uli $
-dnl Revision:     $Revision: 1.45 $
+dnl Last Update:  $Author: joergr $
+dnl Revision:     $Revision: 1.46 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -28,7 +28,7 @@ LIBS="$ac_save_LIBS"
 ])dnl
 if eval "test \"`echo '$ac_cv_lib_gxx'`\" = yes"; then
   AC_MSG_RESULT(yes)
-  ifelse([$3], , 
+  ifelse([$3], ,
 [changequote(, )dnl
   ac_tr_lib=HAVE_LIBGXX
 changequote([, ])dnl
@@ -45,13 +45,13 @@ fi
 dnl AC_CHECK_PROTOTYPE checks if there is a prototype declaration
 dnl   for the given function. If header file(s) are given as argument 2, they
 dnl   are #included in the search. Otherwise only predefined functions will
-dnl   be found.  The header files are only included in the search if they 
-dnl   have already been found using the AC_CHECK_HEADERS(header) macro.  
+dnl   be found.  The header files are only included in the search if they
+dnl   have already been found using the AC_CHECK_HEADERS(header) macro.
 dnl Note:
 dnl   Since GNU autoheader does not support this macro, you must create entries
 dnl   in your acconfig.h for each function which is tested.
 dnl Examples:
-dnl   in configure.in: 
+dnl   in configure.in:
 dnl     AC_CHECK_PROTOTYPE(setsockopt, sys/types.h sys/socket.h)
 dnl     AC_CHECK_PROTOTYPE(gethostid)
 dnl   in acconfig.h:
@@ -71,7 +71,7 @@ for ac_header in $2
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes 
+    ac_includes="$ac_includes
 #include<$ac_header>"
   fi
 done])
@@ -149,8 +149,8 @@ fi
 dnl AC_CHECK_DECLARATION checks if a certain type is declared in the include files given as argument 2 or 3.
 dnl   Files given as argument 2 are included extern "C" in C++ mode,
 dnl   files given as argument 3 are included "as is".
-dnl   Header files are only included in the search if they 
-dnl   have already been found using the AC_CHECK_HEADERS(header) macro.  
+dnl   Header files are only included in the search if they
+dnl   have already been found using the AC_CHECK_HEADERS(header) macro.
 
 dnl AC_CHECK_DECLARATION(FUNCTION, C-HEADER-FILE..., C++-HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_DECLARATION,
@@ -164,7 +164,7 @@ for ac_header in $2
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes 
+    ac_includes="$ac_includes
 #include<$ac_header>"
   fi
 done
@@ -176,7 +176,7 @@ for ac_header in $3
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_cpp_includes="$ac_cpp_includes 
+    ac_cpp_includes="$ac_cpp_includes
 #include<$ac_header>"
   fi
 done
@@ -218,7 +218,7 @@ dnl   This is true for HP UX 9.x and causes C++ code to break.
 
 dnl AC_CHECK_INTP_SELECT(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_INTP_SELECT,
-[AC_MSG_CHECKING([ifelse([$1], , [if select() needs int* parameters], 
+[AC_MSG_CHECKING([ifelse([$1], , [if select() needs int* parameters],
 [if select() needs int* parameters (in $1)])])
 AH_TEMPLATE([HAVE_INTP_SELECT], [Define if your system declares argument 2-4 of select()
    as int * instead of struct fd_set *])
@@ -229,7 +229,7 @@ for ac_header in $1
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes 
+    ac_includes="$ac_includes
 #include<$ac_header>"
   fi
 done])
@@ -249,7 +249,7 @@ $ac_includes
   fd_set fds;
   i = select(1, &fds, &fds, &fds, NULL);
 ],
-eval "ac_cv_prototype_intp_select=no", 
+eval "ac_cv_prototype_intp_select=no",
 [AC_TRY_COMPILE(
 [#ifdef __cplusplus
 extern "C" {
@@ -283,10 +283,10 @@ fi
 
 dnl AC_TRY_COMPILE_AND_LINK compiles a Source file into an object file
 dnl  and links the object file. This can create a different behaviour
-dnl  than compiling and linking the object file directly (e.g. 
+dnl  than compiling and linking the object file directly (e.g.
 dnl  Sun C++ 3.0.1 with template functions)
 
-dnl AC_TRY_COMPILE_AND_LINK(SOURCE, MAIN_BODY 
+dnl AC_TRY_COMPILE_AND_LINK(SOURCE, MAIN_BODY
 dnl                         [, ACTION-IF-FOUND [,ACTION-IF-NOT-FOUND]])
 AC_DEFUN(AC_TRY_COMPILE_AND_LINK,
 [ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&AC_FD_CC'
@@ -346,7 +346,7 @@ else
 fi
 ])
 
- 
+
 
 dnl AC_CHECK_CLASS_TEMPLATE checks if the C++-Compiler is capable of
 dnl   using class templates in the easiest form i. e. all methods are
@@ -388,7 +388,7 @@ else
 fi
 ])
 
- 
+
 
 dnl AC_CHECK_FUNCTION_TEMPLATE checks if the C++-Compiler is capable of
 dnl   using function templates.
@@ -423,7 +423,7 @@ fi
 
 
 dnl AC_CHECK_STATIC_TEMPLATE_METHOD checks if the C++-Compiler is capable of
-dnl   using static methods in template classes 
+dnl   using static methods in template classes
 
 dnl AC_CHECK_STATIC_TEMPLATE_METHOD
 AC_DEFUN(AC_CHECK_STATIC_TEMPLATE_METHOD,
@@ -617,7 +617,7 @@ dnl   specifies arguments 2-4 to be int* instead of size_t *.
 
 dnl AC_CHECK_INTP_ACCEPT(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_INTP_ACCEPT,
-[AC_MSG_CHECKING([ifelse([$1], , [if accept() needs int* parameters], 
+[AC_MSG_CHECKING([ifelse([$1], , [if accept() needs int* parameters],
 [if accept() needs int* parameters (in $1)])])
 AH_TEMPLATE([HAVE_INTP_ACCEPT], [Define if your system declares argument 3 of accept()
    as int * instead of size_t * or socklen_t *])
@@ -649,7 +649,7 @@ $ac_includes
   addrlen = 0;
   i = accept(1, addr, &addrlen);
 ],
-eval "ac_cv_prototype_intp_accept=no", 
+eval "ac_cv_prototype_intp_accept=no",
 [AC_TRY_COMPILE(
 [#ifdef __cplusplus
 extern "C" {
@@ -686,7 +686,7 @@ fi
 
 
 
-dnl AC_CHECK_PTHREAD_OPTION checks whether the compiler requires the 
+dnl AC_CHECK_PTHREAD_OPTION checks whether the compiler requires the
 dnl -pthread option to correctly link code containing posix thread calls.
 dnl This is true for example on FreeBSD.
 dnl This test assumes that <pthread.h> is available.
@@ -710,7 +710,7 @@ extern "C" {
 ,
 [
   (void) pthread_create(NULL, NULL, NULL, NULL);
-], , 
+], ,
 SAVE_CXXFLAGS="$CXXFLAGS"
 SAVE_CFLAGS="$CFLAGS"
 CXXFLAGS="-pthread $CXXFLAGS"
@@ -728,9 +728,9 @@ extern "C" {
 ,
 [
   (void) pthread_create(NULL, NULL, NULL, NULL);
-], 
+],
 REQUIRES_PTHREAD_OPTION="yes"
-, ) 
+, )
 CXXFLAGS="$SAVE_CXXFLAGS"
 CFLAGS="$SAVE_CFLAGS"
 )
@@ -989,7 +989,7 @@ dnl   specifies arguments 5 to be int* instead of size_t *.
 
 dnl AC_CHECK_INTP_GETSOCKOPT(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_INTP_GETSOCKOPT,
-[AC_MSG_CHECKING([ifelse([$1], , [if getsockopt() needs int* parameters], 
+[AC_MSG_CHECKING([ifelse([$1], , [if getsockopt() needs int* parameters],
 [if getsockopt() needs int* parameters (in $1)])])
 AH_TEMPLATE([HAVE_INTP_GETSOCKOPT], [Define if your system declares argument 5 of getsockopt()
    as int * instead of size_t * or socklen_t])
@@ -1017,7 +1017,7 @@ $ac_includes
   size_t optlen;
   i = getsockopt(0, 0, 0, 0, &optlen);
 ],
-eval "ac_cv_prototype_intp_getsockopt=no", 
+eval "ac_cv_prototype_intp_getsockopt=no",
 [AC_TRY_COMPILE(
 [#ifdef __cplusplus
 extern "C" {
@@ -1055,7 +1055,7 @@ dnl   The header files for signal() have to be specified.
 
 dnl AC_CHECK_ELLIPSE_SIGNAL_HANDLER(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_ELLIPSE_SIGNAL_HANDLER,
-[AC_MSG_CHECKING([ifelse([$1], , [if signal() callback needs ellipse], 
+[AC_MSG_CHECKING([ifelse([$1], , [if signal() callback needs ellipse],
 [if signal() callback needs ellipse (in $1)])])
 AH_TEMPLATE([SIGNAL_HANDLER_WITH_ELLIPSE], [Define if signal handlers need ellipse (...) parameters])
 ifelse([$1], , [ac_includes=""
@@ -1084,7 +1084,7 @@ $ac_includes
 [
  (void) signal(0, signal_handler);
 ],
-eval "ac_cv_signal_handler_with_ellipse=no", 
+eval "ac_cv_signal_handler_with_ellipse=no",
 [AC_TRY_COMPILE(
 [#ifdef __cplusplus
 extern "C" {
@@ -1118,7 +1118,7 @@ fi
 
 
 
-dnl AC_INCLUDE_MATH_H_AS_CXX checks if <math.h> must be included as a C++ 
+dnl AC_INCLUDE_MATH_H_AS_CXX checks if <math.h> must be included as a C++
 dnl   include file (i.e. without extern "C"). Some sytems (Win32, HP/UX 10)
 dnl   use C++ language features in <math.h>
 
@@ -1135,7 +1135,7 @@ extern "C"
 ],
 [
 ],
-eval "ac_cv_include_math_h_as_cxx=no", 
+eval "ac_cv_include_math_h_as_cxx=no",
 [AC_TRY_COMPILE([
 #include<math.h>
 ],
@@ -1168,7 +1168,7 @@ AC_CACHE_VAL(ac_cv_have_cxx_bool,
 bool b1 = true;
 bool b2 = false;
 ],
-eval "ac_cv_have_cxx_bool=yes", 
+eval "ac_cv_have_cxx_bool=yes",
 eval "ac_cv_have_cxx_bool=no")])
 if eval "test \"`echo $ac_cv_have_cxx_bool`\" = yes"; then
   AC_MSG_RESULT(yes)
@@ -1195,7 +1195,7 @@ AC_CACHE_VAL(ac_cv_have_cxx_volatile,
 [AC_TRY_COMPILE([],[
 volatile int i=0;
 ],
-eval "ac_cv_have_cxx_volatile=yes", 
+eval "ac_cv_have_cxx_volatile=yes",
 eval "ac_cv_have_cxx_volatile=no")])
 if eval "test \"`echo $ac_cv_have_cxx_volatile`\" = yes"; then
   AC_MSG_RESULT(yes)
@@ -1375,7 +1375,7 @@ extern "C" {
 int main()
 {
   const char *data[256];
-  for (int j=0; j<256; ++j) data[j]= 0;        
+  for (int j=0; j<256; ++j) data[j]= 0;
 
   int OK = 1;
   TIFF *tif = TIFFOpen("lzwtest.tif", "w");
@@ -1439,7 +1439,7 @@ fi
 dnl AC_CHECK_POINTER_TYPE checks if a given type is a pointer type.
 dnl   If header file(s) are given as argument 2, they
 dnl   are #included in the search. The header files are only included in the search if they
-dnl   have already been found using the AC_CHECK_HEADERS(header) macro.  
+dnl   have already been found using the AC_CHECK_HEADERS(header) macro.
 dnl Examples:
 dnl     AC_CHECK_POINTER_TYPE(pthread_d, pthread.h)
 dnl     AC_CHECK_POINTER_TYPE(void *)
@@ -1461,7 +1461,7 @@ for ac_header in $2
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes 
+    ac_includes="$ac_includes
 #include<$ac_header>"
   fi
 done])
@@ -1551,15 +1551,15 @@ AC_TYPEDEF_HELPER([$1],[],[AC_DEFINE_UNQUOTED(AC_TYPEDEF_TEMP)])
 ])# AC_TYPEDEF
 
 
-# 
+#
 # AC_LFS64
-# 
-# This macro checks with the C compiler whether fopen64 is declared in <stdio.h> 
+#
+# This macro checks with the C compiler whether fopen64 is declared in <stdio.h>
 # when _LARGEFILE64_SOURCE is defined
 #
 AC_DEFUN([AC_LFS64],
-[ AH_TEMPLATE([HAVE_LFS_SUPPORT], [Define if LFS (long file support) is available])
-  AH_TEMPLATE([_LARGEFILE64_SOURCE], [Define to enable LFS64 (explicit long file support) if available])
+[ AH_TEMPLATE([HAVE_LFS_SUPPORT], [Define if LFS (large file support) is available])
+  AH_TEMPLATE([_LARGEFILE64_SOURCE], [Define to enable LFS64 (explicit large file support) if available])
   AC_MSG_CHECKING([for explicit large file support])
   ac_cv_lfs64_support=no
   AC_LANG_SAVE
@@ -1571,8 +1571,8 @@ AC_DEFUN([AC_LFS64],
 
   if test "$ac_cv_lfs64_support" = yes; then
     AC_MSG_RESULT([yes])
-    AC_DEFINE(HAVE_LFS_SUPPORT,, [Define if LFS (long file support) is available])
-    AC_DEFINE(_LARGEFILE64_SOURCE, 1, [Define to enable LFS64 (explicit long file support) if available])
+    AC_DEFINE(HAVE_LFS_SUPPORT,, [Define if LFS (large file support) is available])
+    AC_DEFINE(_LARGEFILE64_SOURCE, 1, [Define to enable LFS64 (explicit large file support) if available])
   else
     AC_MSG_RESULT([no])
   fi
@@ -1650,11 +1650,11 @@ AC_DEFUN([MY_AC_SYS_LARGEFILE],
     fi])
   if test "$ac_cv_sys_largefile_CC" != no; then
     CC=$CC$ac_cv_sys_largefile_CC
-    CXX=$CXX$ac_cv_sys_largefile_CC    
+    CXX=$CXX$ac_cv_sys_largefile_CC
   fi
 
   ac_cv_lfs64_support=no
-  AH_TEMPLATE([HAVE_LFS_SUPPORT], [Define if LFS (long file support) is available])
+  AH_TEMPLATE([HAVE_LFS_SUPPORT], [Define if LFS (large file support) is available])
   MY_AC_SYS_LARGEFILE_MACRO_VALUE(_FILE_OFFSET_BITS, 64,
     ac_cv_sys_file_offset_bits,
     [Number of bits in a file offset, on hosts where this is settable.],
@@ -1665,15 +1665,15 @@ AC_DEFUN([MY_AC_SYS_LARGEFILE],
     [MY_AC_SYS_LARGEFILE_TEST_INCLUDES])
 
   if test "$ac_cv_lfs_support" = yes; then
-    AC_DEFINE(HAVE_LFS_SUPPORT,, [Define if LFS (long file support) is available])
+    AC_DEFINE(HAVE_LFS_SUPPORT,, [Define if LFS (large file support) is available])
   fi
-  
+
 ])# MY_AC_SYS_LARGEFILE
 
 
-# 
+#
 # AC_STDIO_NAMESPACE
-# 
+#
 # This macro checks with the C++ compiler whether fopen() in <cstdio> is
 # in namespace standard or in global namespace.
 #
@@ -1706,7 +1706,7 @@ dnl for the GNU version, whereas the XOPEN (XSI-compliant) version returns int.
 
 dnl AC_CHECK_CHARP_STRERROR_R(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_CHARP_STRERROR_R,
-[AC_MSG_CHECKING([ifelse([$1], , [if strerror_r() returns a char *], 
+[AC_MSG_CHECKING([ifelse([$1], , [if strerror_r() returns a char *],
 [if strerror_r() returns a char * (in $1)])])
 AH_TEMPLATE([HAVE_CHARP_STRERROR_R], [Define if your system declares the return type of strerror_r
    as char * instead of int])
@@ -1733,7 +1733,7 @@ $ac_includes
   char *buf = 0;
   int i = strerror_r(0, buf, 100)
 ],
-eval "ac_cv_prototype_charp_strerror_r=no", 
+eval "ac_cv_prototype_charp_strerror_r=no",
 eval "ac_cv_prototype_charp_strerror_r=yes"
 )])
 if eval "test \"`echo $ac_cv_prototype_charp_strerror_r`\" = yes"; then
@@ -1751,6 +1751,9 @@ fi
 
 dnl
 dnl $Log: aclocal.m4,v $
+dnl Revision 1.46  2010-12-13 11:40:28  joergr
+dnl Consistently use "large file support" for LFS instead of "long file support".
+dnl
 dnl Revision 1.45  2010-12-13 11:19:02  uli
 dnl Fixed the explicit LFS test which produced wrong results on FreeBSD.
 dnl

@@ -15,6 +15,11 @@ Changes between releases are documented here.
   Affects: config/configure
            config/configure.in
 
+- Consistently use "large file support" for LFS instead of "long file support".
+  Affects: config/aclocal.m4
+           config/configure
+           config/include/dcmtk/config/cfunix.h.in
+
 **** Changes from 2010.12.10 (riesmeier)
 
 - Slightly revised wording after further proof-reading.

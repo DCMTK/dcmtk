@@ -277,7 +277,7 @@
 /* Define to 1 if you have the `itoa' function. */
 #undef HAVE_ITOA
 
-/* Define if LFS (long file support) is available */
+/* Define if LFS (large file support) is available */
 #undef HAVE_LFS_SUPPORT
 
 /* Define to 1 if you have the <libc.h> header file. */
@@ -881,7 +881,7 @@ typedef unsigned short ushort;
 /* Number of bits in a file offset, on hosts where this is settable. */
 #undef _FILE_OFFSET_BITS
 
-/* Define to enable LFS64 (explicit long file support) if available */
+/* Define to enable LFS64 (explicit large file support) if available */
 #undef _LARGEFILE64_SOURCE
 
 /* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
