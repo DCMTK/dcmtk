@@ -600,9 +600,6 @@ if test $THREADSUPPORT = posix ; then
 	  CFLAGS="-D_POSIX_C_SOURCE=199506L $CFLAGS"
 	  ;;
 	*-*-freebsd*)
-	  dnl On FreeBSD we need to have _XOPEN_SOURCE defined to 600 in order to enable certain features of unistd.h
-	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=600 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
-	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=600 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"
 	  ;;
 	*-*-netbsdelf2*)
 	  ;;
@@ -642,6 +639,10 @@ if test $THREADSUPPORT = posix ; then
 	*-*-openbsd3*)
 	  CXXFLAGS="-D_POSIX_C_SOURCE=199506L $CXXFLAGS"
 	  CFLAGS="-D_POSIX_C_SOURCE=199506L $CFLAGS"
+	  ;;
+	*-*-freebsd*)
+	  ;;
+	*-*-netbsdelf2*)
 	  ;;
 	*-*-darwin[[8-9]].*|*-*-darwin10.*)
 	  dnl On Mac OS X we need to have _DARWIN_C_SOURCE source defined to enable UNIX standard API for system headers

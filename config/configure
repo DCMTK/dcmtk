@@ -21333,13 +21333,11 @@ _ACEOF
 	  CFLAGS="-D_POSIX_C_SOURCE=199506L $CFLAGS"
 	  ;;
 	*-*-freebsd*)
-	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=600 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
-	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=600 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"
 	  ;;
 	*-*-netbsdelf2*)
 	  ;;
 	*-*-darwin[8-9].*|*-*-darwin10.*)
-	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
+	  	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
 	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
 	  ;;
 	*)
@@ -21404,8 +21402,12 @@ _ACEOF
 	  CXXFLAGS="-D_POSIX_C_SOURCE=199506L $CXXFLAGS"
 	  CFLAGS="-D_POSIX_C_SOURCE=199506L $CFLAGS"
 	  ;;
+	*-*-freebsd*)
+	  ;;
+	*-*-netbsdelf2*)
+	  ;;
 	*-*-darwin[8-9].*|*-*-darwin10.*)
-	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
+	  	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
 	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
 	  ;;
 	*)
@@ -28547,7 +28549,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 28550 "configure"
+#line 28552 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -29220,7 +29222,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 29223 "configure"
+#line 29225 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -29293,7 +29295,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 29296 "configure"
+#line 29298 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -29366,7 +29368,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 29369 "configure"
+#line 29371 "configure"
 #include "confdefs.h"
 
 template <class T>

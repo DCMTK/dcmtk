@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.13 (riesmeier)
+
+- Removed FreeBSD flags introduced a couple of months ago since they caused
+  more problems than they solved.
+  Thanks to Alexander Haderer <alexander.haderer@charite.de> for the hint.
+  Affects: config/configure
+           config/configure.in
+
 **** Changes from 2010.12.10 (riesmeier)
 
 - Slightly revised wording after further proof-reading.
