@@ -17,9 +17,9 @@
  *
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-12-08 16:04:35 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-12-15 11:29:07 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,13 @@ BEGIN_EXTERN_C
 #include <sys/stat.h>       /* needed for struct _stati64 on Win32 */
 #endif
 END_EXTERN_C
+
+/* HP-UX has clearerr both as macro and as a function definition. We have to
+ * undef the macro so that we can define a function called "clearerr".
+ */
+#if defined(__hpux) && defined(clearerr)
+#undef clearerr
+#endif
 
 /* When using the ISO C++ include files such as <cstdio>, <cstdarg> etc.,
  * all ANSI C functions like fopen() are declared in namespace std,
@@ -338,7 +345,7 @@ public:
    */
   void setlinebuf()
   {
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__hpux)
     this->setvbuf(NULL, _IOLBF, 0);
 #else
     :: setlinebuf(file_);
@@ -363,7 +370,7 @@ public:
    */
   int eof() const
   {
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__hpux)
     // feof is a macro on Win32. Macros never have namespaces.
     return feof(file_);
 #else
@@ -379,7 +386,7 @@ public:
    */
   int error()
   {
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__hpux)
     // ferror is a macro on Win32. Macros never have namespaces.
     return ferror(file_);
 #else
@@ -452,7 +459,7 @@ public:
    */
   void setbuffer(char *buf, size_t size)
   {
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__hpux)
     this->setvbuf(NULL, buf ? _IOFBF : _IONBF, size);
 #else
     :: setbuffer(file_, buf, size);
@@ -836,6 +843,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.16  2010-12-15 11:29:07  uli
+ * Made OFFile compile successfully on HP-UX.
+ *
  * Revision 1.15  2010-12-08 16:04:35  joergr
  * Disable currently unused wide character file I/O functions in order to avoid
  * problems with old compilers (e.g. gcc 2.95.3).

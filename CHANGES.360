@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.15 (schlachter)
+
+- Made OFFile compile successfully on HP-UX.
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+
 **** Changes from 2010.12.15 (riesmeier)
 
 - Updated list of tested Unix-like systems (some are still marked with a '?').
