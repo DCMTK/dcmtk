@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.15 (riesmeier)
+
+- Updated list of tested Unix-like systems (some are still marked with a '?').
+  Affects: INSTALL
+
 **** Changes from 2010.12.13 (schlachter)
 
 - Fixed the explicit LFS test which produced wrong results on FreeBSD.
