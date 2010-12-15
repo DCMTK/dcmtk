@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.15 (riesmeier)
+
+- Updated list of tested Unix-like systems (some are still marked with a '?').
+  Affects: INSTALL
+
+- Added missing prefix "ios::" to I/O manipulator "fixed" (reported on HP-UX).
+  Affects: dcmpstat/apps/dcmmklut.cc
+
 **** Changes from 2010.12.15 (schlachter)
 
 - Fixed a compile time error on HP-UX in oflog.
@@ -16,11 +24,6 @@ Changes between releases are documented here.
            dcmdata/apps/xml2dcm.cc
            dcmqrdb/libsrc/dcmqrcnf.cc
            dcmsr/libsrc/dsrxmld.cc
-
-**** Changes from 2010.12.15 (riesmeier)
-
-- Updated list of tested Unix-like systems (some are still marked with a '?').
-  Affects: INSTALL
 
 **** Changes from 2010.12.13 (schlachter)
 

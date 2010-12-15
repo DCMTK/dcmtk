@@ -20,9 +20,9 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:36 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-12-15 17:03:38 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -230,12 +230,12 @@ OFCondition readTextFile(const char *filename,
                                     if ((inputXMax != 0) && (inputXData[count] > inputXMax))
                                     {
                                         OFLOG_DEBUG(dcmmklutLogger, "x value (" << inputXData[count] << ") exceeds maximum value ("
-                                                << inputXMax << ") in text file ..." << OFendl << "         ... ignoring value !");
+                                            << inputXMax << ") in text file ..." << OFendl << "         ... ignoring value !");
                                     }
                                     else if ((inputYMax != 0) && (inputYData[count] > inputYMax))
                                     {
                                         OFLOG_DEBUG(dcmmklutLogger, "y value (" << inputYData[count] << ") exceeds maximum value ("
-                                                << inputYMax << ") in text file ..." << OFendl << "         ... ignoring value !");
+                                            << inputYMax << ") in text file ..." << OFendl << "         ... ignoring value !");
                                     } else
                                         count++;
                                 }
@@ -324,7 +324,7 @@ OFCondition convertInputLUT(const unsigned int numberOfBits,
         if (factor != 1.0)
         {
             OFLOG_INFO(dcmmklutLogger, "multiplying input values by "
-                    << STD_NAMESPACE fixed << factor << " ...");
+                << STD_NAMESPACE ios::fixed << factor << " ...");
             for (unsigned long i = 0; i < inputEntries; i++)
                 inputYData[i] *= factor;
         }
@@ -1063,6 +1063,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
+ * Revision 1.47  2010-12-15 17:03:38  joergr
+ * Added missing prefix "ios::" to I/O manipulator "fixed" (reported on HP-UX).
+ *
  * Revision 1.46  2010-10-20 07:41:36  uli
  * Made sure isalpha() & friends are only called with valid arguments.
  *
