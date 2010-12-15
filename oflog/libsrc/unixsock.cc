@@ -26,12 +26,6 @@
 #include "dcmtk/oflog/helpers/threads.h"
 #include "dcmtk/oflog/spi/logevent.h"
 
-#if defined(__hpux__)
-# ifndef _XOPEN_SOURCE_EXTENDED
-# define _XOPEN_SOURCE_EXTENDED
-# endif
-#endif
-
 #ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
@@ -205,7 +199,14 @@ SOCKET_TYPE
 log4cplus::helpers::acceptSocket(SOCKET_TYPE sock, SocketState& state)
 {
     struct sockaddr_in net_client;
-    socklen_t len = sizeof(struct sockaddr);
+#ifdef HAVE_DECLARATION_SOCKLEN_T
+    socklen_t len;
+#elif !defined(HAVE_PROTOTYPE_ACCEPT) || defined(HAVE_INTP_ACCEPT)
+    int len;
+#else
+    size_t len;
+#endif
+    len = sizeof(net_client);
     SOCKET_TYPE clientSock;
 
     while(   (clientSock = ::accept(sock, OFreinterpret_cast(struct sockaddr*, &net_client), &len)) == -1

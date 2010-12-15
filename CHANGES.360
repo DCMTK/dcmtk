@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2010.12.15 (schlachter)
 
+- Fixed a compile time error on HP-UX in oflog.
+  Affects: oflog/libsrc/unixsock.cc
+
 - Made OFFile compile successfully on HP-UX.
   Affects: ofstd/include/dcmtk/ofstd/offile.h
 
