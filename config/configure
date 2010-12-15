@@ -1775,8 +1775,8 @@ ac_config_headers="$ac_config_headers include/dcmtk/config/cfunix.h"
 
 
 PACKAGE_VERSION_NUMBER="360"
-PACKAGE_VERSION_SUFFIX="-RC1"
-PACKAGE_DATE="2010-12-01"
+PACKAGE_VERSION_SUFFIX="-RC2"
+PACKAGE_DATE="2010-12-15"
 
 
 cat >>confdefs.h <<_ACEOF
@@ -28580,7 +28580,6 @@ fi
 fi
 
 
-
 { echo "$as_me:$LINENO: checking whether to use C++ standard includes" >&5
 echo $ECHO_N "checking whether to use C++ standard includes... $ECHO_C" >&6; }
 ac_use_std_includes="auto"
@@ -28647,7 +28646,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 28650 "configure"
+#line 28649 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -29320,7 +29319,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 29323 "configure"
+#line 29322 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -29393,7 +29392,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 29396 "configure"
+#line 29395 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -29466,7 +29465,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 29469 "configure"
+#line 29468 "configure"
 #include "confdefs.h"
 
 template <class T>
