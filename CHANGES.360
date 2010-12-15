@@ -9,6 +9,14 @@ Changes between releases are documented here.
 - Made OFFile compile successfully on HP-UX.
   Affects: ofstd/include/dcmtk/ofstd/offile.h
 
+- Fixed a problem with a missing prototype for vsnprintf on HP-UX.
+  Affects: config/configure
+           config/configure.in
+           config/include/dcmtk/config/cfunix.h.in
+           dcmdata/apps/xml2dcm.cc
+           dcmqrdb/libsrc/dcmqrcnf.cc
+           dcmsr/libsrc/dsrxmld.cc
+
 **** Changes from 2010.12.15 (riesmeier)
 
 - Updated list of tested Unix-like systems (some are still marked with a '?').

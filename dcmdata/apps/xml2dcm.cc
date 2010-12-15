@@ -17,9 +17,9 @@
  *
  *  Purpose: Convert XML document to DICOM file or data set
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-21 08:35:41 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-12-15 13:59:57 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,7 @@ extern "C" void errorFunction(void * ctx, const char *msg, ...)
     if (!xmlLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
         return;
 
-#ifdef HAVE_VSNPRINTF
+#if defined(HAVE_VSNPRINTF) && defined(HAVE_PROTOTYPE_VSNPRINTF)
     // libxml calls us multiple times for one line of log output which would
     // result in garbled output. To avoid this, we buffer the output in a local
     // string in the caller which we get through our 'ctx' parameter. Then, we
@@ -994,6 +994,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.34  2010-12-15 13:59:57  uli
+ * Fixed a problem with a missing prototype for vsnprintf on HP-UX.
+ *
  * Revision 1.33  2010-10-21 08:35:41  joergr
  * Removed redundant definition of logger variable for libxml.
  *

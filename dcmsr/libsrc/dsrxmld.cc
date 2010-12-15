@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRXMLDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:42 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-12-15 13:59:58 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@ extern "C" void errorFunction(void * ctx, const char *msg, ...)
     if (!xmlLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
         return;
 
-#ifdef HAVE_VSNPRINTF
+#if defined(HAVE_VSNPRINTF) && defined(HAVE_PROTOTYPE_VSNPRINTF)
     // libxml calls us multiple times for one line of log output which would
     // result in garbled output. To avoid this, we buffer the output in a local
     // string in the caller which we get through our 'ctx' parameter. Then, we
@@ -723,6 +723,9 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
+ *  Revision 1.19  2010-12-15 13:59:58  uli
+ *  Fixed a problem with a missing prototype for vsnprintf on HP-UX.
+ *
  *  Revision 1.18  2010-10-14 13:14:42  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

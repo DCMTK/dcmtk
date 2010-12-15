@@ -529,6 +529,9 @@ typedef unsigned short ushort;
    stdlib.h */
 #undef HAVE_PROTOTYPE_USLEEP
 
+/* Define if your system has a prototype for vsnprintf in stdio.h stdarg.h */
+#undef HAVE_PROTOTYPE_VSNPRINTF
+
 /* Define if your system has a prototype for wait3 in libc.h sys/wait.h
    sys/time.h sys/resource.h */
 #undef HAVE_PROTOTYPE_WAIT3

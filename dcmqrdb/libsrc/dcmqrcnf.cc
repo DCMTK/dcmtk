@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveConfig
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:36 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2010-12-15 13:59:58 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,7 +205,7 @@ void DcmQueryRetrieveConfig::panic(const char *fmt, ...)
    va_list  ap;
    va_start(ap, fmt);
 
-#ifdef HAVE_VSNPRINTF
+#if defined(HAVE_VSNPRINTF) && defined(HAVE_PROTOTYPE_VSNPRINTF)
    char buf[4096];
 
 #ifdef HAVE_PROTOTYPE_STD__VSNPRINTF
@@ -1008,6 +1008,9 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
+ * Revision 1.14  2010-12-15 13:59:58  uli
+ * Fixed a problem with a missing prototype for vsnprintf on HP-UX.
+ *
  * Revision 1.13  2010-10-20 07:41:36  uli
  * Made sure isalpha() & friends are only called with valid arguments.
  *
