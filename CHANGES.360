@@ -10,6 +10,9 @@ Changes between releases are documented here.
 - Added another Linux system to the list of tested Unix-like systems.
   Affects: INSTALL
 
+- Slightly revised contents of the HISTORY file.
+  Affects: HISTORY
+
 **** Changes from 2010.12.15 (riesmeier)
 
 - Updated contents for DCMTK 3.6.0-RC2 (second release candidate).

@@ -1,37 +1,37 @@
 
 The OFFIS DICOM Toolkit DCMTK
 
-In 1993, Institute OFFIS & Oldenburg University, Germany supported by CERIUM,
-Rennes, France, developed a DICOM implementation on behalf of CEN/TC251/WG4 as
-part of a DICOM demonstration at RSNA'93. The software started with a early
-version of the DICOM Upper Layer Protocol facility developed by the
-Mallinckrodt Institute of Radiology in St. Louis, USA. The rest of this
-software was developed independently and successfully demonstrated for the
-first time at RSNA'93. Interoperability was demonstrated with around 20
-implementations from vendors of medical imaging equipment, with both this
-software and the Mallinckrodt Institute of Radiology's own implementation. This
-implementation became known as the European CTN (Central Test Node).
+In 1993, the OFFIS institute and Oldenburg University, Germany supported by
+CERIUM, Rennes, France, developed a DICOM implementation on behalf of
+CEN/TC251/WG4 as part of a DICOM demonstration at RSNA'93.  The software
+started with a early version of the DICOM Upper Layer Protocol facility
+developed by the Mallinckrodt Institute of Radiology in St. Louis, USA.  The
+rest of this software was developed independently and successfully demonstrated
+for the first time at RSNA'93.  Interoperability was demonstrated with around
+20 implementations from vendors of medical imaging equipment, with both this
+software and the Mallinckrodt Institute of Radiology's own implementation.
+This implementation became known as the European CTN (Central Test Node).
 
 The European CTN software was further extended by OFFIS in 1994 and 1995 and
 used as part of DICOM demonstrations at EuroPACS'94 in Geneva, ECR'95 in Vienna
 and CAR'95 in Berlin where even more vendors of imaging equipment were able to
 demonstrate interoperability.
 
-During 1996 the software was rewritten by OFFIS to use a new C++ based DICOM
+During 1996, the software was rewritten by OFFIS to use a new C++ based DICOM
 encoding/decoding library and has been supplemented with a Modality Worklist
-CTN, demonstrated for the first time at CAR'96 in Paris, France. The CAR'96
+CTN, demonstrated for the first time at CAR'96 in Paris, France.  The CAR'96
 DICOM demonstration featured Modality Worklist Management and Image
-Storage/Query/Retrieval. The available software includes source code and
+Storage/Query/Retrieval.  The available software includes source code and
 documentation for the worklist management and image storage/query/retrieve
 server applications, a number of test applications, and the necessary
-libraries. A similar industry demonstrations also took place at the European
+libraries.  A similar industry demonstration also took place at the European
 Congress of Radiology (ECR '97) in Vienna and at CAR'97 in Berlin.
 
 Beginning with release 3.0 (1996), the software package was renamed to DCMTK
-(DiCoM ToolKit). It contains a number of improvements over the "European CTN"
-software previously available from OFFIS/Oldenburg
-University, the most important being:
-  - configuration using GNU-Configure
+(DiCoM ToolKit).  It contains a number of improvements over the "European CTN"
+software previously available from OFFIS/Oldenburg University, the most
+important being:
+  - configuration using GNU autoconf
   - a modality worklist SCP and SCU
   - a new C++ encoding/decoding library
   - support for offline media
@@ -39,25 +39,27 @@ University, the most important being:
   - a user-extensible data dictionary
   - support for all balloted image SOP classes
 
-In 1997 a tool allowing to create DICOMDIRs according to the "General Purpose
-CD-R Image Interchange Profile" was added. This tool was used to master the
+In 1997, a tool allowing to create DICOMDIRs according to the "General Purpose
+CD-R Image Interchange Profile" was added.  This tool was used to master the
 CAR' 97 and NEMA '97 DICOM Demonstration CDs.
 
 Beginning in 1998, new libraries for efficient rendering of DICOM grayscale
 images, display calibration according to DICOM part 14 and an implementation of
 the Grayscale Softcopy Presentation State (GSPS) supplement were added and
-demonstrated at ECR '99 and RSNA InfoRAD '99. Together with an implementation
-of DICOM basic grayscale print (SCU and SCP, both supporting presentation LUT)
-and a small GSPS checker these tools were used for testing purposes for the
-"softcopy and hardcopy consistency" part of the IHE (Integrating the Healthcare
-Enterprise), an initiative of RSNA and HIMSS.
+demonstrated at ECR '99 and RSNA InfoRAD '99.  Together with an implementation
+of DICOM basic grayscale print management (SCU and SCP, both supporting
+presentation LUT) and a small GSPS checker these tools were used for testing
+purposes for the "softcopy and hardcopy consistency" part of the IHE
+(Integrating the Healthcare Enterprise), an initiative of RSNA and HIMSS.
 
-For the RSNA 2000 and the ECR 2001 DICOM's new security extensions on secure
+For the RSNA 2000 and the ECR 2001, DICOM's new security extensions on secure
 transport connections (TLS - Transport Layer Security) and Digital Signatures
-were added together with a library for DICOM Structured Reporting. Furthermore,
+were added together with a library for DICOM Structured Reporting.  Furthermore,
 support for color images has been moved to the public part of the toolkit
 (required separate licensing before).
 
+To be continued ...
+
 In addition to the freely available DCMTK software, OFFIS has also developed
-other DICOM software which must be licensed separately. These separate packages
+other DICOM software which must be licensed separately.  These separate packages
 build on the facilities provided by DCMTK. -- See: http://dicom.offis.de/
