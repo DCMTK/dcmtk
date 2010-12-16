@@ -17,9 +17,9 @@
  *
  *  Purpose: test program for class I2DBmpSource
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-12-06 11:26:43 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-12-16 12:52:34 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,7 +123,7 @@ static void setDWord(int offset, int width, bool sign = false)
 
     for (int i = 0; i < 4; i++)
     {
-        bmpHeader[offset++] = w & 0xff;
+        bmpHeader[offset++] = OFstatic_cast(Uint8, w & 0xff);
         w >>= 8;
     }
 }
@@ -393,6 +393,9 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: i2dbmp.cc,v $
+ * Revision 1.4  2010-12-16 12:52:34  joergr
+ * Added explicit type cast in order to keep VisualStudio 2005 quiet.
+ *
  * Revision 1.3  2010-12-06 11:26:43  uli
  * Fixed the i2dbmp test case for windows by opening files in binary mode.
  *

@@ -13,6 +13,9 @@ Changes between releases are documented here.
 - Slightly revised contents of the HISTORY file.
   Affects: HISTORY
 
+- Added explicit type cast in order to keep VisualStudio 2005 quiet.
+  Affects: dcmdata/tests/i2dbmp.cc
+
 **** Changes from 2010.12.15 (riesmeier)
 
 - Updated contents for DCMTK 3.6.0-RC2 (second release candidate).
