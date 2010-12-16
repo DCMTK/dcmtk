@@ -1,7 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.16 (riesmeier)
+
+- Fixed initialization of OFString variable (reported by gcc 2.95.3).
+  Thanks to Andreas Barth <andreas.barth@bruker-biospin.de> for the hint.
+  Affects: dcmtls/libsrc/tlsscu.cc
+
 **** Changes from 2010.12.15 (riesmeier)
+
+- Updated contents for DCMTK 3.6.0-RC2 (second release candidate).
+  Affects: CMakeLists.txt
+           VERSION
+           config/configure
+           config/configure.in
+           doxygen/manpages/man1/*
 
 - Updated list of tested Unix-like systems (some are still marked with a '?').
   Affects: INSTALL

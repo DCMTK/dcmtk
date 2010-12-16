@@ -18,8 +18,8 @@
  *  Purpose: Base class for TLS-enabled Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:46 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2010-12-16 08:34:06 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ DcmTLSSCU::DcmTLSSCU() :
   m_ciphersuites += ":";
   m_ciphersuites += SSL3_TXT_RSA_DES_192_CBC3_SHA;
 #else
-  m_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+  m_ciphersuites = SSL3_TXT_RSA_DES_192_CBC3_SHA;
 #endif
 }
 
@@ -80,7 +80,7 @@ DcmTLSSCU::DcmTLSSCU(const OFString& peerHost,
   m_ciphersuites += ":";
   m_ciphersuites += SSL3_TXT_RSA_DES_192_CBC3_SHA;
 #else
-  m_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+  m_ciphersuites = SSL3_TXT_RSA_DES_192_CBC3_SHA;
 #endif
   setPeerHostName(peerHost);
   setPeerAETitle(peerAETitle);
@@ -372,6 +372,9 @@ OFString DcmTLSSCU::getDHParam() const
 /*
 ** CVS Log
 ** $Log: tlsscu.cc,v $
+** Revision 1.4  2010-12-16 08:34:06  joergr
+** Fixed initialization of OFString variable (reported by gcc 2.95.3).
+**
 ** Revision 1.3  2010-10-14 13:14:46  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
