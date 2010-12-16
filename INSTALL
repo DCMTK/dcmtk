@@ -59,13 +59,14 @@ given below:
    FreeBSD 7.3     / Intel x86    / GNU gcc 4.2.1
 ?  FreeBSD 8.1     / Intel x86    / GNU gcc 4.2.1
 ?  FreeBSD 8.1     / amd64|x86_64 / GNU gcc 4.2.1
-?  HP-UX 10.20     / HP PA-RISC   / GNU gcc 2.95.3    (see note *1,*2)
+   HP-UX 10.20     / HP PA-RISC   / GNU gcc 2.95.3    (see note *1,*2)
 ?  IRIX 6.3        / SGI Indy (?) / GNU gcc 2.95.3    (see note *1)
-?  Linux 2.4.20    / Intel x86    / GNU gcc 2.95.3    (RHEL 7.3)
-?  Linux 2.4.21    / Intel x86    / GNU gcc 3.4.6     (CentOS 3.9)
+   Linux 2.4.20    / Intel x86    / GNU gcc 2.95.3    (RHEL 7.3)
+   Linux 2.4.21    / Intel x86    / GNU gcc 3.4.6     (CentOS 3.9)
    Linux 2.6.18    / Intel x86    / GNU gcc 4.1.2     (Debian 4.0)
 ?  Linux 2.6.18    / amd64|x86_64 / Intel Compiler 11.1 (Scientific Linux 5.5)
    Linux 2.6.18    / amd64|x86_64 / GNU gcc 4.1.2     (Debian 4.0)
+   Linux 2.6.18    / amd64|x86_64 / GNU gcc 4.5.1     (CentOS 5.5)
    Linux 2.6.26    / amd64|x86_64 / GNU gcc 4.3.2     (Debian 5.0)
 ?  Linux 2.6.34    / amd64|x86_64 / Intel Compiler 11.1 (SuSE 11.3, see note *3)
    Linux 2.6.35    / amd64|x86_64 / GNU gcc 4.4.5     (Ubuntu 10.10)
@@ -625,4 +626,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2010-12-15 (Riesmeier).
+Last revised: 2010-12-16 (Riesmeier).
