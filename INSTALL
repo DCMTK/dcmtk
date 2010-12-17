@@ -134,8 +134,7 @@ Platform Notes
 (*3) Requires installation of the GNU C++ Standard Library.  Tested with
      version 4.3 of this library.
 (*4) IRIX 6 users are recommended to consult SGI's Notes on building Open
-     Source software on IRIX, available from:
-       http://toolbox.sgi.com/TasteOfDT/public/freeware/shared/howto.html
+     Source software on IRIX, available from: http://freeware.sgi.com/howto.html
      In short, after running configure, the following modifications are
      required in "config/Makefile.def" before DCMTK can be compiled:
        - remove "-lsocket -lnsl" from LIBS
@@ -626,4 +625,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2010-12-16 (Riesmeier).
+Last revised: 2010-12-17 (Riesmeier).
