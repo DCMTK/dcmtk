@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.17 (riesmeier)
+
+- Include another system header (stdio.h) needed for IRIX 6.3 with gcc 2.95.3.
+  Affects: dcmwlm/wwwapps/Makefile.dep
+           dcmwlm/wwwapps/preplock.cc
+
 **** Changes from 2010.12.16 (riesmeier)
 
 - Fixed initialization of OFString variable (reported by gcc 2.95.3).

@@ -33,11 +33,11 @@
  *
  *   A perl fcntl call using these (packed binary) values will lock/unlock a
  *   whole file, which must be a successfully opened perl  file  descriptor.
- *   See perl man page for details. 
+ *   See perl man page for details.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:20:03 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2010-12-17 10:07:45 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,9 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofstream.h"
+
+#define INCLUDE_CSTDIO
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #include <fcntl.h>
@@ -61,7 +64,7 @@ int main()
   unsigned int i;
   unsigned char *c;
 
-  /* first, we initialize the data */  
+  /* first, we initialize the data */
   c = (unsigned char *)(&lockdata);
   for (i=0; i<sizeof(struct flock); i++) c[i]=0;
 
@@ -78,14 +81,14 @@ int main()
   printf("\"");
   for (i=0; i<sizeof(struct flock); i++) printf(",%d",(int)(c[i]));
   printf(");\n");
-  
+
   lockdata.l_type = F_WRLCK;
   printf("$const_WRLCK_STRUCT = pack(\"");
   for (i=0; i<sizeof(struct flock); i++) printf("c");
   printf("\"");
   for (i=0; i<sizeof(struct flock); i++) printf(",%d",(int)(c[i]));
   printf(");\n");
-  
+
   lockdata.l_type = F_UNLCK;
   printf("$const_UNLCK_STRUCT = pack(\"");
   for (i=0; i<sizeof(struct flock); i++) printf("c");
@@ -94,12 +97,15 @@ int main()
   printf(");\n");
 
 #endif
-  return 0;  
+  return 0;
 }
 
 /*
  * CVS/RCS Log
  *   $Log: preplock.cc,v $
+ *   Revision 1.6  2010-12-17 10:07:45  joergr
+ *   Include another system header (stdio.h) needed for IRIX 6.3 with gcc 2.95.3.
+ *
  *   Revision 1.5  2010-10-14 13:20:03  joergr
  *   Updated copyright header. Added reference to COPYRIGHT file.
  *
