@@ -17,9 +17,9 @@
  *
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-12-15 11:29:07 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-12-17 10:50:30 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -365,13 +365,13 @@ public:
   /** tests the end-of-file indicator for the stream, returning non-zero if it
    *  is set. The end-of-file indicator can only be cleared by the function
    *  clearerr. This method is called eof, not feof, because feof() is a macro
-   *  on Win32 and, therefore, cannot be used as a method name.
+   *  on some systems and, therefore, cannot be used as a method name.
    *  @return non-zero if EOF, zero otherwise
    */
   int eof() const
   {
-#if defined(_WIN32) || defined(__hpux)
-    // feof is a macro on Win32. Macros never have namespaces.
+#ifdef feof
+    // feof is a macro on some systems. Macros never have namespaces.
     return feof(file_);
 #else
     return STDIO_NAMESPACE feof(file_);
@@ -380,14 +380,14 @@ public:
 
   /** tests the error indicator for the stream, returning non-zero if it is set.
    *  This method is named error, not ferror, because ferror() is a macro
-   *  on Win32 and, therefore, cannot be used as a method name.
+   *  on some systems and, therefore, cannot be used as a method name.
    *  The error indicator can only be reset by the clearerr function.
    *  @return non-zero if error flag is set, zero otherwise
    */
   int error()
   {
-#if defined(_WIN32) || defined(__hpux)
-    // ferror is a macro on Win32. Macros never have namespaces.
+#ifdef ferror
+    // ferror is a macro on some systems. Macros never have namespaces.
     return ferror(file_);
 #else
     return STDIO_NAMESPACE ferror(file_);
@@ -843,6 +843,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.17  2010-12-17 10:50:30  joergr
+ * Check whether "feof" and "ferror" are defined as macros (e.g. on IRIX 6.3).
+ *
  * Revision 1.16  2010-12-15 11:29:07  uli
  * Made OFFile compile successfully on HP-UX.
  *
