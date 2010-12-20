@@ -21,6 +21,7 @@ Changes between releases are documented here.
 
 - Added explicit type casts in order to keep gcc 2.95.3 quiet.
   Affects: ofstd/tests/toffile.cc
+           dcmdata/libsrc/dcmetinf.cc
 
 - Added short description on environment variables CC and CFLAGS.
   Affects: INSTALL

@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-12 12:16:11 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2010-12-20 13:41:27 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -390,7 +390,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
             }
             if (getTransferState() == ERW_inWork && getLengthField() == 0)
             {
-                if (inStream.avail() < DCM_GroupLengthElementLength)
+                if (inStream.avail() < OFstatic_cast(offile_off_t, DCM_GroupLengthElementLength))
                     errorFlag = EC_StreamNotifyClient;
                 else
                 {
@@ -620,6 +620,9 @@ OFCondition DcmMetaInfo::loadFile(const char *fileName,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.57  2010-12-20 13:41:27  joergr
+** Added explicit type cast in order to keep gcc 2.95.3 quiet.
+**
 ** Revision 1.56  2010-11-12 12:16:11  joergr
 ** Output ANSI escape codes at the beginnig of each line in order to make sure
 ** that always the correct color is used in case of truncated multi-line output.
