@@ -16,6 +16,9 @@ Changes between releases are documented here.
   tool) and output the resource identifier in debug mode to the logger.
   Affects: dcmdata/tests/tstpread.cc
 
+- Added explicit type casts in order to keep gcc 2.95.3 quiet.
+  Affects: ofstd/tests/toffile.cc
+
 - Added short description on environment variables CC and CFLAGS.
   Affects: INSTALL
 

@@ -18,9 +18,9 @@
  *  Purpose: test program for the non-trivial fseek and ftell implementations
  *           in class OFFile
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-12-13 13:08:37 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-12-20 12:05:20 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -189,7 +189,7 @@ OFBool seekFile(OFFile &file)
     {
       // successfully read value. Now check if the value is correct.
       expected = OFstatic_cast(offile_off_t, BLOCKSIZE) * i;
-      if (v != expected)
+      if (v != OFstatic_cast(Uint32, expected))
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_END) to block " << FILESIZE-i << ": expected "
              << OFstatic_cast(unsigned long, expected) << ", found " << v << OFendl;
@@ -233,7 +233,7 @@ OFBool seekFile(OFFile &file)
     {
       // successfully read value. Now check if the value is correct.
       expected = (OFstatic_cast(offile_off_t, FILESIZE) * BLOCKSIZE * sizeof(Uint32) + pos) / sizeof(Uint32);
-      if (v != expected)
+      if (v != OFstatic_cast(Uint32, expected))
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_END) to block " << block
              << " offset " << offset << ": expected "
@@ -267,8 +267,8 @@ OFBool seekFile(OFFile &file)
     if (1 == file.fread(&v, sizeof(Uint32), 1))
     {
       // successfully read value. Now check if the value is correct.
-      expected = BLOCKSIZE * i;
-      if (v != expected)
+      expected = OFstatic_cast(offile_off_t, BLOCKSIZE) * i;
+      if (v != OFstatic_cast(Uint32, expected))
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_CUR) to block " << i << ": expected "
              << OFstatic_cast(unsigned long, expected) << ", found " << v << OFendl;
@@ -406,6 +406,9 @@ int main()
 /*
  * CVS/RCS Log:
  * $Log: toffile.cc,v $
+ * Revision 1.8  2010-12-20 12:05:20  joergr
+ * Added explicit type casts in order to keep gcc 2.95.3 quiet.
+ *
  * Revision 1.7  2010-12-13 13:08:37  uli
  * Fix toffile by moving some casts to the correct position.
  *
