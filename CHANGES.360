@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.20 (schlachter)
+
+- Fixed on FreeBSD by removing flags that hide strlcpy() and strlcat().
+  Affects: CMakeLists.txt
+
 **** Changes from 2010.12.20 (riesmeier)
 
 - Added short description on environment variables CC and CFLAGS.
