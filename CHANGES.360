@@ -12,6 +12,10 @@ Changes between releases are documented here.
   version (and no data dictionary is loaded).
   Affects: dcmdata/libsrc/dcfilefo.cc
 
+- Fixed wrong console application description (apparently copied from another
+  tool) and output the resource identifier in debug mode to the logger.
+  Affects: dcmdata/tests/tstpread.cc
+
 - Added short description on environment variables CC and CFLAGS.
   Affects: INSTALL
 

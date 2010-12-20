@@ -17,9 +17,9 @@
  *
  *  Purpose: Test application for partial element access API
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 10:42:44 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-12-20 11:19:40 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -333,12 +333,12 @@ int main(int argc, char *argv[])
   GUSISetup(GUSIwithInternetSockets);
 #endif
 
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert DICOM file encoding", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Test partial element access API", rcsid);
   OFCommandLine cmd;
 
   cmd.addGroup("general options:");
-   cmd.addOption("--help",      "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--help",    "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--version",       "print version information and exit", OFCommandLine::AF_Exclusive);
    OFLog::addOptions(cmd);
 
     /* evaluate command line */
@@ -350,27 +350,29 @@ int main(int argc, char *argv[])
       {
         if (cmd.findOption("--version"))
         {
-            app.printHeader(OFTrue /*print host identifier*/);
-            COUT << OFendl << "External libraries used:";
+          app.printHeader(OFTrue /*print host identifier*/);
+          COUT << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-            COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
+          COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-            COUT << " none" << OFendl;
+          COUT << " none" << OFendl;
 #endif
-            return 0;
-         }
+          return 0;
+        }
       }
+
+      /* command line parameters */
+      OFLog::configureFromCommandLine(cmd, app);
     }
 
-    /* command line parameters */
-    OFLog::configureFromCommandLine(cmd, app);
+    /* print resource identifier */
+    OFLOG_DEBUG(tstpreadLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(tstpreadLogger, "no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE);
+      OFLOG_WARN(tstpreadLogger, "no data dictionary loaded, check environment variable: "
+        << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     OFLOG_INFO(tstpreadLogger, "Creating test dataset");
@@ -466,6 +468,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: tstpread.cc,v $
+ * Revision 1.10  2010-12-20 11:19:40  joergr
+ * Fixed wrong console application description (apparently copied from another
+ * tool) and output the resource identifier in debug mode to the logger.
+ *
  * Revision 1.9  2010-11-01 10:42:44  uli
  * Fixed some compiler warnings reported by gcc with additional flags.
  *
