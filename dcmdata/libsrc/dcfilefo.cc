@@ -18,8 +18,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-29 10:57:21 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Update Date:      $Date: 2010-12-20 11:05:15 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -259,25 +259,30 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 OFstatic_cast(DcmOtherByteOtherWord *, elem)->putUint8Array(version, 2);
 
             // check version of meta header
-            Uint8 *currVers;
+            Uint8 *currVers = NULL;
             l_error = OFstatic_cast(DcmOtherByteOtherWord *, elem)->getUint8Array(currVers);
-            if (((currVers[0] & version[0] & 0xff) == version[0]) &&
-                ((currVers[1] & version[1] & 0xff) == version[1]))
+            if (l_error.good() && (currVers != NULL))
             {
-                DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() Version of MetaHeader is ok: 0x"
-                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                    << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
-                    << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0]));
+                if (((currVers[0] & version[0] & 0xff) == version[0]) &&
+                    ((currVers[1] & version[1] & 0xff) == version[1]))
+                {
+                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() Version of MetaHeader is ok: 0x"
+                        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0]));
+                } else {
+                    currVers[0] = OFstatic_cast(Uint8, currVers[0] | version[0]); // direct manipulation
+                    currVers[1] = OFstatic_cast(Uint8, currVers[1] | version[1]); // of data
+                    DCMDATA_WARN ("DcmFileFormat: Unknown Version of MetaHeader detected: 0x"
+                        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0])
+                        << " supported: 0x"
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[1])
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[0]));
+                }
             } else {
-                currVers[0] = OFstatic_cast(Uint8, currVers[0] | version[0]); // direct manipulation
-                currVers[1] = OFstatic_cast(Uint8, currVers[1] | version[1]); // of data
-                DCMDATA_WARN ("DcmFileFormat: Unknown Version of MetaHeader detected: 0x"
-                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                    << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
-                    << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0])
-                    << " supported: 0x"
-                    << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[1])
-                    << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[0]));
+                DCMDATA_ERROR("DcmFileFormat: Cannot determine Version of MetaHeader");
             }
         }
         else if (xtag == DCM_MediaStorageSOPClassUID)       // (0002,0002)
@@ -299,7 +304,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 else if (elem->getLength() == 0)
                 {
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(UID_PrivateGenericFileSOPClass);
-                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() No SOPClassUID in Dataset, using PrivateGenericFileSOPClass");
+                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() no SOPClassUID in Dataset, using PrivateGenericFileSOPClass");
                 }
             }
         }
@@ -921,6 +926,10 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.64  2010-12-20 11:05:15  joergr
+** Fixed possible NULL pointer dereferencing when checking the meta-header
+** version (and no data dictionary is loaded).
+**
 ** Revision 1.63  2010-10-29 10:57:21  joergr
 ** Added support for colored output to the print() method.
 **

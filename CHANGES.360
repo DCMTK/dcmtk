@@ -8,6 +8,10 @@ Changes between releases are documented here.
 
 **** Changes from 2010.12.20 (riesmeier)
 
+- Fixed possible NULL pointer dereferencing when checking the meta-header
+  version (and no data dictionary is loaded).
+  Affects: dcmdata/libsrc/dcfilefo.cc
+
 - Added short description on environment variables CC and CFLAGS.
   Affects: INSTALL
 
