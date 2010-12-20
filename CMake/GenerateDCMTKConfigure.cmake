@@ -76,6 +76,7 @@ CHECK_TYPE_SIZE("void*" SIZEOF_VOID_P)
 
 # Check for include files, libraries, and functions
 INCLUDE(${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake)
+INCLUDE(${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake)
 INCLUDE(${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 INCLUDE(${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake)
 INCLUDE(${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
@@ -109,9 +110,6 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_INCLUDE_FILE_CXX("locale.h" HAVE_LOCALE_H)
   CHECK_INCLUDE_FILE_CXX("ndir.h" HAVE_NDIR_H)
   CHECK_INCLUDE_FILE_CXX("netdb.h" HAVE_NETDB_H)
-  CHECK_INCLUDE_FILE_CXX("netinet/in.h" HAVE_NETINET_IN_H)
-  CHECK_INCLUDE_FILE_CXX("netinet/in_systm.h" HAVE_NETINET_IN_SYSTM_H)
-  CHECK_INCLUDE_FILE_CXX("netinet/tcp.h" HAVE_NETINET_TCP_H)
   CHECK_INCLUDE_FILE_CXX("new.h" HAVE_NEW_H)
   CHECK_INCLUDE_FILE_CXX("semaphore.h" HAVE_SEMAPHORE_H)
   CHECK_INCLUDE_FILE_CXX("setjmp.h" HAVE_SETJMP_H)
@@ -158,6 +156,23 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_INCLUDE_FILE_CXX("stdarg.h" HAVE_STDARG_H)
   CHECK_INCLUDE_FILE_CXX("cstdarg" HAVE_CSTDARG)
   CHECK_INCLUDE_FILE_CXX("signal.h" HAVE_SIGNAL_H)
+
+  # This mimics the autoconf test. There are systems out there
+  # (e.g. FreeBSD and NeXT) where tcp.h can't be compiled on its own.
+  SET(TCP_H_DEPS "")
+  IF(HAVE_SYS_TYPES_H)
+    # This one is needed to make FreeBSD happy
+    SET(TCP_H_DEPS "sys/types.h")
+  ENDIF(HAVE_SYS_TYPES_H)
+  CHECK_INCLUDE_FILES("${TCP_H_DEPS};netinet/in_systm.h" HAVE_NETINET_IN_SYSTM_H)
+  IF(HAVE_NETINET_IN_SYSTM_H)
+    SET(TCP_H_DEPS "${TCP_H_DEPS};netinet/in_systm.h")
+  ENDIF(HAVE_NETINET_IN_SYSTM_H)
+  CHECK_INCLUDE_FILES("${TCP_H_DEPS};netinet/in.h" HAVE_NETINET_IN_H)
+  IF(HAVE_NETINET_IN_H)
+    SET(TCP_H_DEPS "${TCP_H_DEPS};netinet/in.h")
+  ENDIF(HAVE_NETINET_IN_H)
+  CHECK_INCLUDE_FILES("${TCP_H_DEPS};netinet/tcp.h" HAVE_NETINET_TCP_H)
 
   # There is no CMake macro to take care of these yet
 

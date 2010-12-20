@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Fixed on FreeBSD by removing flags that hide strlcpy() and strlcat().
   Affects: CMakeLists.txt
 
+- Correctly detect netinet/tcp.h and other headers on FreeBSD.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
 **** Changes from 2010.12.20 (riesmeier)
 
 - Fixed possible NULL pointer dereferencing when checking the meta-header
