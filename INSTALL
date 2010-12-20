@@ -404,13 +404,16 @@ prototypes.
 You can set environment variables to initialize configure before it is called
 (before Step 1 above):
 
+  Set environment variable CC to the name of your C compiler.
+  Set environment variable CFLAGS to the compile flags of your C compiler.
   Set environment variable CXX to the name of your C++ compiler.
   Set environment variable CXXFLAGS to the compile flags of your C++ compiler.
   Set environment variable LDFLAGS to your linker flags.
   Set environment variable CPPFLAGS to you preprocessor flags.
 
 You do not need to specify all the above environment variables since the
-default settings are sensible for most Unix compilers.
+default settings are sensible for most Unix compilers.  Further influential
+environment variables are listed in the output of configure --help.
 
 If the configure script fails you may have to change the configuration settings
 in the config directory.  See the "config/docs" directory for more information.
@@ -625,4 +628,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2010-12-17 (Riesmeier).
+Last revised: 2010-12-20 (Riesmeier).
