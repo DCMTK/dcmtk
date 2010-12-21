@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.21 (onken)
+
+- Fixed wrong response assignment in DcmSCU's C-STORE code. Thanks to
+  forum user "takeos" for the hint and fix.
+  Affects: dcmnet/libsrc/scu.cc
+
 **** Changes from 2010.12.20 (schlachter)
 
 - Fixed on FreeBSD by removing flags that hide strlcpy() and strlcat().

@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:36 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2010-12-21 09:37:36 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -609,7 +609,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
     return DIMSE_BADCOMMANDTYPE;
   }
-  T_DIMSE_C_StoreRSP storeRsp = msg.msg.CStoreRSP;
+  T_DIMSE_C_StoreRSP storeRsp = rsp.msg.CStoreRSP;
   rspStatusCode = storeRsp.DimseStatus;
   if (statusDetail != NULL)
   {
@@ -1310,6 +1310,10 @@ FINDResponse::~FINDResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.16  2010-12-21 09:37:36  onken
+** Fixed wrong response assignment in DcmSCU's C-STORE code. Thanks to
+** forum user "takeos" for the hint and fix.
+**
 ** Revision 1.15  2010-10-20 07:41:36  uli
 ** Made sure isalpha() & friends are only called with valid arguments.
 **
