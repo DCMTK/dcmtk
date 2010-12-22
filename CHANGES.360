@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2010.12.22 (riesmeier)
+
+- Added list of people who have contributed to this new release of the DCMTK.
+  Affects: ANNOUNCE.360
+
 **** Changes from 2010.12.21 (onken)
 
 - Fixed wrong response assignment in DcmSCU's C-STORE code. Thanks to
