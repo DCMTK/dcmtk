@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Added list of people who have contributed to this new release of the DCMTK.
   Affects: ANNOUNCE.360
 
+- Fixed some typos and little inconsistencies. Updated homepage of libxml.
+  Affects: INSTALL
+
 **** Changes from 2010.12.21 (onken)
 
 - Fixed wrong response assignment in DcmSCU's C-STORE code. Thanks to

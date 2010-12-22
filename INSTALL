@@ -208,7 +208,7 @@ below.
 
 
 LIBTIFF SUPPORT
-==============
+===============
 
 Starting with release 3.5.1, DCMTK supports the conversion of DICOM images
 to TIFF.  DCMTK relies on the libtiff toolkit (www.libtiff.org) for this
@@ -253,7 +253,7 @@ LIBXML2 SUPPORT
 ===============
 
 Starting with release 3.5.3, DCMTK supports the conversion of XML documents to
-DICOM files.  DCMTK relies on the libxml2 toolkit (www.xmlsoft.org) for this
+DICOM files.  DCMTK relies on the libxml2 toolkit (www.libxml.org) for this
 purpose.  This release of DCMTK is known to compile with the libxml2 releases
 2.6.26 to 2.7.7, although other releases may work as well.
 
@@ -288,7 +288,7 @@ Since DCMTK uses the TCP wrappers from C++ code, an ANSI C compatible header
 file <tcpd.h> is required.  The official release 7.6 of the TCP wrappers
 library is not ANSI C compatible and does not work with DCMTK (i.e. will not be
 recognized by DCMTK's configure script).  However, many current Linux and BSD
-distributions ship with a ANSI C compatible header file.
+distributions ship with an ANSI C compatible header file.
 
 On Windows platforms, TCP wrappers are currently not supported.
 
@@ -323,7 +323,7 @@ enabled or disabled.  By default, all libraries installed in the standard
 path are enabled automatically.  Use the --without-openssl switch to disable
 OpenSSL support.  The --with-opensslinc option allows to specify the directory
 in which OpenSSL is installed.  This is usually the directory that has been
-used as --prefix when compiling OpenSSL.
+used as --prefix when compiling and installing OpenSSL.
 For example, if you wish to enable the security enhancements, and OpenSSL is
 installed in "/usr/local/apps/openssl-1.0.0", then you should start configure
 as:
@@ -382,7 +382,7 @@ Step 4:
 Step 4 will revert the source tree to the state prior to Step 1.  If you just
 want to get rid of object files and local executables use "make clean" instead.
 
-Note: In case you do not want to compile all modules you can remove those
+Note: In case you do not want to compile all modules, you can remove those
 modules from the text file "config/modules" prior to Step 1 and execute the
 following commands:
 
@@ -465,23 +465,23 @@ the following steps:
 4. In the combobox "Build for:" or "Specify the generator for this project:"
    select the corresponding development environment which shall be used to
    compile DCMTK.
-5. Go "Configure".  (CMake will look for a corresponding compiler and read in
-   all of DCMTK's "CMakeLists.txt" files.  The variables in the tabular area
-   will be displayed in red.  These variables can now be set in order to turn
-   the support for any of the external libraries on or off).
+5. Go "Configure".  (CMake will look for a corresponding compiler, read in all
+   of DCMTK's "CMakeLists.txt" files and perform some tests.  The variables in
+   the tabular area will be displayed in red.  These variables can now be set
+   in order to turn the support for any of the external libraries on or off).
 6. Make the corresponding configurations in CMake's user interface.  For
    example, in order to turn on libxml2 support, set the value of variable
-   "DCMTK_WITH_LIBXML" to "ON" and set the value of variable "WITH_LIBXMLINC"
+   "DCMTK_WITH_XML" to "ON" and set the value of variable "WITH_LIBXMLINC"
    to the path where the include files and libraries of libxml2 can be found,
    e.g. "C:\libxml2-2.7.7".  The support of all other external libraries can
    be turned on in a similar way:
 
      libpng support:
-       set "DCMTK_WITH_LIBPNG" to "ON" and
+       set "DCMTK_WITH_PNG" to "ON" and
        set "WITH_LIBPNGINC" e.g. to "C:\libpng-1.4.2"
 
      libtiff support:
-       set "DCMTK_WITH_LIBTIFF" to "ON" and
+       set "DCMTK_WITH_TIFF" to "ON" and
        set "WITH_LIBTIFFINC" e.g. to "C:\tiff-3.9.2"
 
      OpenSSL support:
@@ -493,9 +493,8 @@ the following steps:
        set "WITH_ZLIBINC" e.g. to "C:\zlib-1.2.5"
 
    In order to turn the support of a certain external library off, set the
-   value of the corresponding variable ("DCMTK_WITH_LIBXML",
-   "DCMTK_WITH_LIBPNG", "DCMTK_WITH_LIBTIFF", "DCMTK_WITH_OPENSSL", or
-   "DCMTK_WITH_ZLIB") to "OFF".
+   value of the corresponding variable ("DCMTK_WITH_XML", "DCMTK_WITH_PNG",
+   "DCMTK_WITH_TIFF", "DCMTK_WITH_OPENSSL", or "DCMTK_WITH_ZLIB") to "OFF".
 
    (Please note that the include files of all external libraries are always
    expected in a directory named "include" below the directory which is
@@ -547,8 +546,8 @@ Having performed these steps, the Microsoft Visual Studio IDE can be started,
 DCMTK's workspace file can be opened, and one or more of DCMTK's subprojects
 can be built.  In case you want to build all libraries and applications, mark
 the "ALL_BUILD" subproject and build it.  The "INSTALL" subproject installs
-the executables, libraries, include and some support files (very similar to
-"make install install-lib" on Unix systems).
+the executables, libraries, include, support and documentation files (very
+similar to "make install-all" on Unix systems).
 
 Please note that other Windows compilers, e.g. Borland C++ Builder, are
 currently not actively supported.  However, they may work.
@@ -564,8 +563,8 @@ Known limitations of DCMTK on the Windows platform.
    network name and a TCP/IP address.  If SLIP or PPP is used the applications
    can only work if a connection to a provider exists (since the internet
    addresses and names are given dynamically).
-4. Visual C++ contains two different implementations of iostreams which should
-   never be mixed within one application because this may cause
+4. Visual C++ contains two different implementations of I/O streams which
+   should never be mixed within one application because this may cause
    application errors that are hard to find.  The old, now deprecated
    implementation uses the traditional cfront header files <iostream.h> etc.
    The new implementation uses <iostream> etc. as defined in ANSI/ISO C++.
@@ -585,19 +584,16 @@ HTML DOCUMENTATION AND MAN PAGES
 Most DCMTK modules have been documented with Doxygen (www.doxygen.org), a free
 source code documentation system similar to Javadoc.  Unix users who have
 Doxygen installed can create a hypertext documentation with "make html" in the
-"dcmtk-3.6.0" or "doxygen" directory; Windows users should build the "DOXYGEN"
-subproject.  A project file for Microsoft's HTML Help Workshop can also be
-generated allowing to create a single CHM file (compressed HTML) from the
-documentation.  Other output formats (e.g. LaTeX) can be enabled by changing
-the configuration file in the doxygen directory.
+"dcmtk-3.6.0" or "doxygen" directory; Windows and other CMake users should
+build the "DOXYGEN" subproject.  A project file for Microsoft's HTML Help
+Workshop can also be generated allowing to create a single CHM file (compressed
+HTML) from the documentation.  Other output formats (e.g. LaTeX) can be enabled
+by changing the configuration file in the doxygen directory.
 
 At the current time, dcmimage, dcmimgle, dcmjpeg, dcmpstat, dcmsign, dcmsr,
 dcmtls, dcmwlm and ofstd are completely documented, dcmdata, dcmjpls, dcmnet
 and oflog are almost completely documented.  See FAQ entry: "Where is rest of
 the documentation?"
-
-DOC++ (docpp.sourceforge.net), another source code documentation system, is not
-actively supported any more.  However, it may still work.
 
 On Unix platforms, man pages for all command line tools are installed during
 the "make install" step.  In order to use them, just add the directory (e.g.
@@ -628,4 +624,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2010-12-20 (Riesmeier).
+Last revised: 2010-12-22 (Riesmeier).
