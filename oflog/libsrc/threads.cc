@@ -131,11 +131,11 @@ blockAllSignals()
 #if defined (LOG4CPLUS_USE_PTHREADS)
     // Block all signals.
     ::sigset_t signal_set;
-#if defined (_DARWIN_C_SOURCE)
+#if defined (_DARWIN_C_SOURCE) || defined (__OpenBSD__)
     sigfillset (&signal_set);
 #else
     ::sigfillset (&signal_set);
-#endif // _DARWIN_C_SOURCE
+#endif // _DARWIN_C_SOURCE || __OpenBSD__
     ::pthread_sigmask (SIG_BLOCK, &signal_set, 0);
 #endif
 }
