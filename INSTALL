@@ -72,6 +72,7 @@ given below:
    Linux 2.6.35    / amd64|x86_64 / GNU gcc 4.4.5     (Ubuntu 10.10)
    MacOS X 10.4.10 / amd64|x86_64 / Apple gcc 4.0.1
    MacOS X 10.6.5  / amd64|x86_64 / Apple gcc 4.2.1
+   OpenBSD 4.4     / Intel x86    / GNU gcc 3.3.5 propolice
    Solaris 9       / Sun Sparc    / SunPro CC 5.8     (Sun Studio 11)
 ?  Solaris 10      / Sun Sparc    / SunPro CC 5.9     (Sun Studio 12u2)
 ?  Solaris 10      / Sun Sparc    / GNU gcc 4.3.4

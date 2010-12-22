@@ -16,6 +16,9 @@ Changes between releases are documented here.
 - OpenBSD does not like sigfillset() to be called with :: namespace prefix.
   Affects: oflog/libsrc/threads.cc
 
+- Added OpenBSD 4.4 with gcc 3.3.5 (propolice) to the list of tested systems.
+  Affects: INSTALL
+
 **** Changes from 2010.12.21 (onken)
 
 - Fixed wrong response assignment in DcmSCU's C-STORE code. Thanks to
