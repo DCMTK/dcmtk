@@ -9,6 +9,10 @@ Changes between releases are documented here.
 - Fixed some typos and little inconsistencies. Updated homepage of libxml.
   Affects: INSTALL
 
+- Added support for OpenBSD 4.x: Do not specify any additional C/C++ flags.
+  Affects: config/configure
+           config/configure.in
+
 **** Changes from 2010.12.21 (onken)
 
 - Fixed wrong response assignment in DcmSCU's C-STORE code. Thanks to

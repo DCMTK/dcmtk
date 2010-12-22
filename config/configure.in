@@ -599,6 +599,8 @@ if test $THREADSUPPORT = posix ; then
 	  CXXFLAGS="-D_POSIX_C_SOURCE=199506L $CXXFLAGS"
 	  CFLAGS="-D_POSIX_C_SOURCE=199506L $CFLAGS"
 	  ;;
+	*-*-openbsd4*)
+	  ;;
 	*-*-freebsd*)
 	  ;;
 	*-*-netbsdelf2*)
@@ -639,6 +641,8 @@ if test $THREADSUPPORT = posix ; then
 	*-*-openbsd3*)
 	  CXXFLAGS="-D_POSIX_C_SOURCE=199506L $CXXFLAGS"
 	  CFLAGS="-D_POSIX_C_SOURCE=199506L $CFLAGS"
+	  ;;
+	*-*-openbsd4*)
 	  ;;
 	*-*-freebsd*)
 	  ;;
