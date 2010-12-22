@@ -13,6 +13,9 @@ Changes between releases are documented here.
   Affects: config/configure
            config/configure.in
 
+- OpenBSD does not like sigfillset() to be called with :: namespace prefix.
+  Affects: oflog/libsrc/threads.cc
+
 **** Changes from 2010.12.21 (onken)
 
 - Fixed wrong response assignment in DcmSCU's C-STORE code. Thanks to
