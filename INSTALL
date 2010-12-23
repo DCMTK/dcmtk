@@ -54,10 +54,9 @@ operating system / hardware / compiler combinations using the instructions
 given below:
 
 ?  FreeBSD 4.8     / Intel x86    / GNU gcc 2.95.4
-?  FreeBSD 6.2     / Intel x86    / GNU gcc 3.4.6
-?  FreeBSD 7.2-p4  / Intel x86    / GNU gcc 4.2.1
+   FreeBSD 6.4     / Intel x86    / GNU gcc 3.4.6
    FreeBSD 7.3     / Intel x86    / GNU gcc 4.2.1
-?  FreeBSD 8.1     / Intel x86    / GNU gcc 4.2.1
+   FreeBSD 8.1     / Intel x86    / GNU gcc 4.2.1
 ?  FreeBSD 8.1     / amd64|x86_64 / GNU gcc 4.2.1
    HP-UX 10.20     / HP PA-RISC   / GNU gcc 2.95.3    (see note *1,*2)
    IRIX 6.3        / SGI O2       / GNU gcc 2.95.3    (see note *1)
@@ -625,4 +624,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2010-12-22 (Riesmeier).
+Last revised: 2010-12-23 (Riesmeier).
