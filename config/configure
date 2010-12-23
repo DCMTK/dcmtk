@@ -1775,8 +1775,8 @@ ac_config_headers="$ac_config_headers include/dcmtk/config/cfunix.h"
 
 
 PACKAGE_VERSION_NUMBER="360"
-PACKAGE_VERSION_SUFFIX="-RC2"
-PACKAGE_DATE="2010-12-15"
+PACKAGE_VERSION_SUFFIX="-RC3"
+PACKAGE_DATE="2010-12-23"
 
 
 cat >>confdefs.h <<_ACEOF

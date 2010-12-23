@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2010.12.23 (riesmeier)
 
+- Updated contents for DCMTK 3.6.0-RC3 (third release candidate).
+  Affects: CMakeLists.txt
+           VERSION
+           config/configure
+           config/configure.in
+           doxygen/manpages/man1/*
+
 - Added FreeBSD 6.4 and 8.1 (x86) with gcc to the list of tested systems.
   Affects: INSTALL
 
