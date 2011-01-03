@@ -9,6 +9,9 @@ Changes between releases are documented here.
 - Updated details on tested systems based on feedback from external testers.
   Affects: INSTALL
 
+- Commented out unused variable in order to avoid warning message (gcc 2.95.3).
+  Affects: dcmjpls/libcharls/header.cc
+
 **** Changes from 2010.12.23 (riesmeier)
 
 - Updated contents for DCMTK 3.6.0-RC3 (third release candidate).
