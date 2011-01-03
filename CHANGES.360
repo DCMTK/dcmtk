@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Updated copyright date to the current year.
   Affects: COPYRIGHT
 
+- Updated details on tested systems based on feedback from external testers.
+  Affects: INSTALL
+
 **** Changes from 2010.12.23 (riesmeier)
 
 - Updated contents for DCMTK 3.6.0-RC3 (third release candidate).
