@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.01.03 (riesmeier)
+
+- Updated copyright date to the current year.
+  Affects: COPYRIGHT
+
 **** Changes from 2010.12.23 (riesmeier)
 
 - Updated contents for DCMTK 3.6.0-RC3 (third release candidate).
