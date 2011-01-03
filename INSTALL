@@ -65,7 +65,7 @@ given below:
    Linux 2.6.18    / Intel x86    / GNU gcc 4.1.2     (Debian 4.0)
    Linux 2.6.18    / amd64|x86_64 / Intel Compiler 11.1 (Scientific Linux 5.5)
    Linux 2.6.18    / amd64|x86_64 / GNU gcc 4.1.2     (Debian 4.0)
-   Linux 2.6.18    / amd64|x86_64 / GNU gcc 4.5.1     (CentOS 5.5)
+   Linux 2.6.18    / amd64|x86_64 / GNU gcc 4.5.2     (CentOS 5.5)
    Linux 2.6.26    / amd64|x86_64 / GNU gcc 4.3.2     (Debian 5.0)
    Linux 2.6.32    / amd64|x86_64 / GNU gcc 4.4.4     (RHEL 6.0)
    Linux 2.6.34    / amd64|x86_64 / Intel Compiler 11.1 (SuSE 11.3, see note *3)
