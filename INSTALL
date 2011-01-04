@@ -164,7 +164,7 @@ Platform Notes
       it is compiling but not working on MacOS X. The reason is that semaphores
       must be named in MacOS X and thus the current implementation fails to
       construct semaphores in the OFSemaphore constructor. However, the toolkit
-      _so far_ does not any use of this class.
+      so far does not make any use of this class.
 
 Please note: Due to resource limitations it is not practical for us to ensure
 that the newest release of DCMTK is problem free under all the above

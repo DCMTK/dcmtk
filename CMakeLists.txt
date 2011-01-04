@@ -229,13 +229,6 @@ IF(WIN32)
   ENDIF(CMAKE_CXX_COMPILER MATCHES bcc32)
 ENDIF(WIN32)
 
-# settings for Apple
-IF(APPLE)
-  # Need to fix ofstd/libsrc/ofthread.cxx
-  MESSAGE(STATUS "APPLE - FORCE THREADS OFF") # semaphores must be named in OS X!
-  SET(DCMTK_WITH_THREADS OFF CACHE BOOL "" FORCE)
-ENDIF(APPLE)
-
 # add definition of "DEBUG" to debug mode (since CMake does not do this automatically)
 SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
