@@ -70,8 +70,8 @@ given below:
    Linux 2.6.32    / amd64|x86_64 / GNU gcc 4.4.4     (RHEL 6.0)
    Linux 2.6.34    / amd64|x86_64 / Intel Compiler 11.1 (SuSE 11.3, see note *3)
    Linux 2.6.35    / amd64|x86_64 / GNU gcc 4.4.5     (Ubuntu 10.10)
-   MacOS X 10.4.10 / amd64|x86_64 / Apple gcc 4.0.1
-   MacOS X 10.6.5  / amd64|x86_64 / Apple gcc 4.2.1
+   MacOS X 10.4.10 / amd64|x86_64 / Apple gcc 4.0.1   (see note *10)
+   MacOS X 10.6.5  / amd64|x86_64 / Apple gcc 4.2.1   (see note *10)
    OpenBSD 4.4     / Intel x86    / GNU gcc 3.3.5 propolice
    Solaris 9       / Sun Sparc    / SunPro CC 5.8     (Sun Studio 11)
    Solaris 10      / Sun Sparc    / SunPro CC 5.9     (Sun Studio 12u2)
@@ -160,6 +160,14 @@ Platform Notes
      support in DCMTK by calling configure --without-zlib.
 (*9) Requires -fpermissive when compiled with GNU gcc due to the X11R5 header
      files which are not ANSI compliant.
+(*10) For MacOS X 10.4.X and 10.6.X it is recommended to build with
+      --disable-threads because the OFSemaphore class is compiling but not
+      working on MacOS X. The reason is that semaphores must be named in
+      MacOS X and thus the current implementation fails to construct semaphores
+      in the OFSemaphore constructor. However, the toolkit _so far_ does not
+      make use of this class so threads might be enabled anyway. When compiling
+      with CMake, threads are automatically disabled during configuration
+      phase.
 
 Please note: Due to resource limitations it is not practical for us to ensure
 that the newest release of DCMTK is problem free under all the above
