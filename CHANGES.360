@@ -4,8 +4,10 @@ Changes between releases are documented here.
 **** Changes from 2011.01.03 (onken)
 
 - Disabled class OFSemaphore under Mac OS X since semaphores must be named
-  in Mac OS X to work properly (currently, they are not).
-  Affects: INSTALL
+  in Mac OS X to work properly (currently, they are not). Threads are now
+  again enabled by default in Mac OS X.
+  Affects: CMakeLists.txt
+           INSTALL
            ofstd/include/dcmtk/ofstd/ofthread.h
            ofstd/libsrc/ofthread.cc
 
