@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,9 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-01-04 14:47:09 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -259,6 +259,13 @@ private:
 };
 
 
+/* Mac OS X only permits named Semaphores. The code below compiles on Mac OS X
+   but does not work. This will be corrected in the next snapshot. For now, the
+   semaphore code is completely disabled for that OS (it is not used in other
+   parts of the toolkit so far.
+ */
+#ifndef _DARWIN_C_SOURCE
+
 /** provides an operating system independent abstraction for semaphores.
  *  A semaphore is a non-negative integer counter that is used
  *  to coordinate access to resources. The initial and maximum value of the counter
@@ -331,6 +338,8 @@ private:
   OFSemaphore& operator=(const OFSemaphore& arg);
 };
 
+
+#endif // _DARWIN_C_SOURCE
 
 /** provides an operating system independent abstraction for mutexes
  *  (mutual exclusion locks).
@@ -564,6 +573,10 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofthread.h,v $
+ * Revision 1.12  2011-01-04 14:47:09  onken
+ * Disable and hide OFSemaphore class on Mac OS X since implementation is
+ * broken on that OS (needs named semaphores instead).
+ *
  * Revision 1.11  2010-10-14 13:15:50  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

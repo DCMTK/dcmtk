@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,9 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:53 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-01-04 14:47:11 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -400,6 +400,12 @@ void OFThreadSpecificData::errorstr(OFString& description, int /* code */ )
 
 /* ------------------------------------------------------------------------- */
 
+/* Mac OS X only permits named Semaphores. The code below compiles on Mac OS X
+   but does not work. This will be corrected in the next snapshot. For now, the
+   semaphore code is completely disabled for that OS (it is not used in other
+   parts of the toolkit so far.
+ */
+#ifndef _DARWIN_C_SOURCE
 
 #ifdef WINDOWS_INTERFACE
   const int OFSemaphore::busy = -1;
@@ -541,6 +547,7 @@ void OFSemaphore::errorstr(OFString& description, int /* code */ )
   return;
 }
 
+#endif // _DARWIN_C_SOURCE
 
 /* ------------------------------------------------------------------------- */
 
@@ -1001,6 +1008,10 @@ int OFReadWriteLocker::unlock()
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
+ * Revision 1.22  2011-01-04 14:47:11  onken
+ * Disable and hide OFSemaphore class on Mac OS X since implementation is
+ * broken on that OS (needs named semaphores instead).
+ *
  * Revision 1.21  2010-10-14 13:14:53  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
