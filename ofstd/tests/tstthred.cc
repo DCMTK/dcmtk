@@ -19,9 +19,9 @@
  *           as used by most multithread implementations
  *
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:16 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-01-05 11:03:45 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,6 +126,10 @@ void mutex_test()
   CERR << "mutex test passed." << OFendl;
 }
 
+/* Currently OFSemaphore is not working and disabled on Mac OS X. Thus,
+ * it is not tested on Mac OS X.
+ */
+#ifndef _DARWIN_C_SOURCE
 
 static OFSemaphore *semaphore=NULL;
 static int sem_cond1=0;
@@ -213,6 +217,8 @@ void semaphore_test()
   delete semaphore;
   CERR << "semaphore test passed." << OFendl;
 }
+
+#endif //_DARWIN_C_SOURCE
 
 static OFReadWriteLock *rwlock=NULL;
 static OFMutex *mutex2=NULL;
@@ -565,7 +571,9 @@ void tsdata_test()
 int main()
 {
   mutex_test();
+#ifndef _DARWIN_C_SOURCE  
   semaphore_test(); // may assume that mutexes work correctly
+#endif
   rwlock_test();    // may assume that mutexes and semaphores work correctly
   rwlocker_test();  // may assume that mutexes, semaphores and read/write locks work correctly
   tsdata_test();
@@ -578,6 +586,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstthred.cc,v $
+ * Revision 1.14  2011-01-05 11:03:45  onken
+ * Updated thread test in order to reflect missing OFSemaphore class
+ * on Mac OS X.
+ *
  * Revision 1.13  2010-10-14 13:15:16  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
