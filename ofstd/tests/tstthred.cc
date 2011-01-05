@@ -19,9 +19,9 @@
  *           as used by most multithread implementations
  *
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-01-05 11:03:45 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-01-05 12:31:30 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -586,6 +586,9 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstthred.cc,v $
+ * Revision 1.15  2011-01-05 12:31:30  uli
+ * Remove all windows line endings that were recently introduced.
+ *
  * Revision 1.14  2011-01-05 11:03:45  onken
  * Updated thread test in order to reflect missing OFSemaphore class
  * on Mac OS X.

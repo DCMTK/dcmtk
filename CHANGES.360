@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.01.05 (schlachter)
+
+- Remove all windows line endings that were recently introduced.
+  Affects: ofstd/tests/tstthred.cc
+
 **** Changes from 2011.01.05 (onken)
 
 - Updated thread test in order to reflect missing OFSemaphore class
