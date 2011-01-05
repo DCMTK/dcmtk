@@ -53,11 +53,10 @@ The current DCMTK software release successfully compiles on the following
 operating system / hardware / compiler combinations using the instructions
 given below:
 
-?  FreeBSD 4.8     / Intel x86    / GNU gcc 2.95.4
    FreeBSD 6.4     / Intel x86    / GNU gcc 3.4.6
    FreeBSD 7.3     / Intel x86    / GNU gcc 4.2.1
    FreeBSD 8.1     / Intel x86    / GNU gcc 4.2.1
-?  FreeBSD 8.1     / amd64|x86_64 / GNU gcc 4.2.1
+   FreeBSD 8.1     / amd64|x86_64 / GNU gcc 4.2.1
    HP-UX 10.20     / HP PA-RISC   / GNU gcc 2.95.3    (see note *1,*2)
    IRIX 6.3        / SGI O2       / GNU gcc 2.95.3    (see note *1)
    Linux 2.4.20    / Intel x86    / GNU gcc 2.95.3    (RedHat 7.3)
@@ -83,6 +82,7 @@ Earlier releases are known to also compile on the following platforms which
 are not available to us for testing purposes any more:
 
    FreeBSD 4.11    / Intel x86    / GNU gcc 2.95.4
+   FreeBSD 6.0     / Intel x86    / GNU gcc 3.4.4
    HP-UX 9.05      / HP PA 1.1    / GNU gcc 2.7.2.1
    IBM AIX 3.2     / RS 6000      / IBM AIX XL C++ Compiler/6000 V1.0
    IRIX 5.3        / SGI Indy     / GNU gcc 2.95.2    (see note *1)
@@ -160,11 +160,11 @@ Platform Notes
      support in DCMTK by calling configure --without-zlib.
 (*9) Requires -fpermissive when compiled with GNU gcc due to the X11R5 header
      files which are not ANSI compliant.
-(*10) For MacOS X 10.4.X and 10.6.X the OFSemaphore class is not available since 
-      it is compiling but not working on MacOS X. The reason is that semaphores
-      must be named in MacOS X and thus the current implementation fails to
-      construct semaphores in the OFSemaphore constructor. However, the toolkit
-      so far does not make any use of this class.
+(*10) For MacOS X 10.4 and 10.6 the OFSemaphore class is not available since it
+     is compiling but not working on MacOS X.  The reason is that semaphores
+     must be named in MacOS X and thus the current implementation fails to
+     construct semaphores in the OFSemaphore constructor.  However, the toolkit
+     so far does not make any use of this class.
 
 Please note: Due to resource limitations it is not practical for us to ensure
 that the newest release of DCMTK is problem free under all the above
@@ -630,4 +630,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2011-01-03 (Riesmeier).
+Last revised: 2011-01-05 (Riesmeier)
