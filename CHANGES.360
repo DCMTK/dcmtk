@@ -1,5 +1,14 @@
 
-Changes between releases are documented here.
+Release 3.6.0 (Public Release - 2011-01-06)
+
+- Updated contents for the final release version of DCMTK 3.6.0.
+  Affects: ANNOUNCE.360
+           CMakeLists.txt
+           INSTALL
+           VERSION
+           config/configure
+           config/configure.in
+           doxygen/manpages/man1/*
 
 **** Changes from 2011.01.05 (schlachter)
 
