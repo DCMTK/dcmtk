@@ -1,4 +1,15 @@
 
+Changes between releases are documented here.
+
+**** Changes from 2011.01.13 (riesmeier)
+
+- Added non-public modules "dcmprint", "dcmprscp" and "dcmppscu" as an optional
+  extension to the documentation.
+  Affects: doxygen/htmldocs.cfg
+           doxygen/htmldocs.dox
+
+-------------------------------------------------------------------------------
+
 Release 3.6.0 (Public Release - 2011-01-06)
 
 - Updated contents for the final release version of DCMTK 3.6.0.

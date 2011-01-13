@@ -25,7 +25,10 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 \li \ref mod_ofstd
 
 \if MODULE_DCMJP2K \li \ref mod_dcmjp2k \endif
+\if MODULE_DCMPRINT \li \ref mod_dcmprint \endif
+\if MODULE_DCMPRSCP \li \ref mod_dcmprscp \endif
 \if MODULE_DCMPPS \li \ref mod_dcmpps \endif
+\if MODULE_DCMPPSCU \li \ref mod_dcmppscu \endif
 \if MODULE_DCMSTCOM \li \ref mod_dcmstcom \endif
 \if MODULE_DCMRT \li \ref mod_dcmrt \endif
 
