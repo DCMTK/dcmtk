@@ -1,0 +1,20 @@
+
+Changes between releases are documented here.
+
+**** Changes from 2011.02.01 (riesmeier)
+
+- Created new change log for version 3.6.1.
+  Added:   CHANGES.361
+
+- Moved old announcement and change log for release 3.6.0 to "docs".
+  Removed: ANNOUNCE.360
+           CHANGES.360
+  Added:   docs/ANNOUNCE.360
+           docs/CHANGES.360
+
+**** Changes from 2011.01.13 (riesmeier)
+
+- Added non-public modules "dcmprint", "dcmprscp" and "dcmppscu" as an optional
+  extension to the documentation.
+  Affects: doxygen/htmldocs.cfg
+           doxygen/htmldocs.dox
