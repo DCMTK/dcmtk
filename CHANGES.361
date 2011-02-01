@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.01 (riesmeier)
 
+- Renamed library "libi2d" to "i2d" for reasons of consistency.
+  Thanks to Pietro Cerutti <gahr@FreeBSD.org> for pointing this out.
+  Affects: dcmdata/apps/CMakeLists.txt
+           dcmdata/libi2d/CMakeLists.txt
+           dcmdata/tests/CMakeLists.tx
+
 - Added optional support for building shared libraries with CMake.
   Affects: CMakeLists.txt
            dcmimage/apps/CMakeLists.txt

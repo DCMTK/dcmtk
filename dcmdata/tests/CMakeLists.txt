@@ -11,7 +11,7 @@ FOREACH(PROGRAM tstpath tstchval tstpread tvrdatim)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmdata oflog ofstd ${ZLIB_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})
 ENDFOREACH(PROGRAM)
 
-TARGET_LINK_LIBRARIES(i2dbmp libi2d dcmdata oflog ofstd ${ZLIB_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})
+TARGET_LINK_LIBRARIES(i2dbmp i2d dcmdata oflog ofstd ${ZLIB_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})
 
 # declare installation files
 #FOREACH(PROGRAM i2dbmp tstpath tstchval tstpread tvrdatim)
