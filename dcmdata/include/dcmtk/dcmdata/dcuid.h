@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 10:26:10 $
- *  CVS/RCS Revision: $Revision: 1.89 $
+ *  Update Date:      $Date: 2011-02-01 17:01:33 $
+ *  CVS/RCS Revision: $Revision: 1.90 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,16 +165,21 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #error Required compiler definition PACKAGE_VERSION_NUMBER undefined
 #endif
 
+// helper macros for version number conversion
+
+#define PACKAGE_VERSION_NUMBER_TO_STRING_( x ) #x
+#define PACKAGE_VERSION_NUMBER_TO_STRING( x ) PACKAGE_VERSION_NUMBER_TO_STRING_( x )
+
 /* NOTE: Implementation version name VR=SH may not be longer than 16 chars
  *       The second name is used to identify files written without dcmdata
  *       (i.e. using the --bit-preserving switch in various tools)
  */
 
 /// implementation version name for this version of the toolkit
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_" PACKAGE_VERSION_NUMBER
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_" PACKAGE_VERSION_NUMBER_TO_STRING(PACKAGE_VERSION_NUMBER)
 
 /// implementation version name for this version of the toolkit, used for files received in "bit preserving" mode
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_" PACKAGE_VERSION_NUMBER
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_" PACKAGE_VERSION_NUMBER_TO_STRING(PACKAGE_VERSION_NUMBER)
 
 /// release date of current toolkit release
 #ifdef DCMTK_BUILD_DATE
@@ -704,6 +709,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.90  2011-02-01 17:01:33  joergr
+** Made sure that OFFIS_DCMTK_VERSION_NUMBER is really a number and not a
+** string.
+**
 ** Revision 1.89  2010-11-05 10:26:10  joergr
 ** Added new SOP Class UIDs from Supplement 131 and 134 (Implant Templates).
 **

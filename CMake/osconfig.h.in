@@ -677,7 +677,7 @@
 #define PACKAGE_VERSION_SUFFIX "@DCMTK_PACKAGE_VERSION_SUFFIX@"
 
 /* Define to the version number of this package. */
-#define PACKAGE_VERSION_NUMBER "@DCMTK_PACKAGE_VERSION_NUMBER@"
+#define PACKAGE_VERSION_NUMBER @DCMTK_PACKAGE_VERSION_NUMBER@
 
 /* Define path separator */
 #define PATH_SEPARATOR '@PATH_SEPARATOR@'

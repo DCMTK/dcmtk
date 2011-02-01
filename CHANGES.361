@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.01 (riesmeier)
 
+- Made sure that OFFIS_DCMTK_VERSION_NUMBER is really a number and not a
+  string. Thanks to forum user "poupofa" for the report and suggested fix.
+  Affects: CMakeLists.txt
+           CMake/osconfig.h.in
+           config/configure.in
+           config/configure
+           dcmdata/include/dcmtk/dcmdata/dcuid.h
+
 - Renamed library "libi2d" to "i2d" for reasons of consistency.
   Thanks to Pietro Cerutti <gahr@FreeBSD.org> for pointing this out.
   Affects: dcmdata/apps/CMakeLists.txt
