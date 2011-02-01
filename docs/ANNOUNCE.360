@@ -1,0 +1,238 @@
+
+ANNOUNCEMENT
+
+Version 3.6.0 of the OFFIS DCMTK (DICOM ToolKit) software is now available for
+public release.  This release includes the following main changes over the
+previous version 3.5.4:
+
+- DCMTK 3.6.0 now also builds correctly with GNU gcc 4.1 (and higher), Visual
+  Studio 2008 and 2010.
+
+- Tested with latest versions of the following operating systems/environments:
+
+  - Linux on x86 and x86_64
+  - FreeBSD on x86 and x86_64
+  - MacOS X on x86_64
+  - Windows on x86 and x86_64
+  - Cygwin and MinGW/MSys on x86
+
+  For a complete list of tested systems and compilers, see the INSTALL file.
+
+- The CMake build system can now also be used with other operating systems than
+  Windows.  However, GNU autoconf is still supported and should be preferred on
+  systems where the CMake project files fail.
+
+- New module oflog introduces a unified DCMTK-wide approach for logging based
+  on the log4cplus library.  Direct output to console, file, syslog and event
+  log.  All DCMTK command line tools now have the same set of logging options.
+
+- New module dcmjpls adds support for JPEG-LS compressed DICOM images based on
+  the CharLS library.  The tools dcmcjpls and dcmdjpls allow for compressing
+  and decompressing DICOM images with JPEG-LS from the command line.
+
+- New tool img2dcm allows for converting JPEG and BMP images to various DICOM
+  image IODs, e.g. old and new Secondary Capture, Visible Light Photographic.
+  The underlying C++ class library can also be used separately.
+
+- New tool dcm2pdf allows for extracting PDF files from DICOM Encapsulated PDF
+  Storage SOP instances.
+
+- New tool dcml2pnm allows for converting JPEG-LS compressed DICOM images to
+  standard image formats like TIFF or BMP.
+
+- The tools dcmdump and storescu have new options for searching directories
+  recursively for DICOM files.
+
+- The tool dcmdump now also has a colored output of the textual dump.  So far,
+  this option is available on non-Windows systems only (uses ANSI escape code).
+
+- The tool dcmodify now also supports reading the value of insert and modify
+  statements from a file.  This is especially useful for large element values.
+
+- The tool dsr2html now also supports the output in HTML 4.01 and XHTML 1.1
+  format.  There are also new options that affect the rendering result.
+
+- The tool dump2dcm now also supports compressed pixel data.  In addition,
+  the memory requirements for very large data elements have been reduced.
+
+- The tool xml2dcm can now also read binary data (e.g. pixel data) from a
+  separate file.  The corresponding feature is not yet available in dcm2xml.
+
+- The tool storescp now has a new option that allows for accepting all
+  supported transfer syntaxes on a single association.
+
+- The tool wlmscpfs now supports multi-process mode both on Posix and Windows
+  platforms where a new child process is created for each incoming association.
+
+- Refactored code of the tool findscu into a C++ class.  This facilitates
+  re-use of the findscu code in other applications.
+
+- Added further "switches" to the dcmdata module which allow to better cope
+  with incorrectly encoded DICOM files or datasets.  These switches are also
+  available as new options to the tools dcmdump and dcmconv.
+
+- The dcmdata module now also gives access to partial attribute values without
+  loading the complete attribute value into memory, if kept in file.
+
+- The write methods in dcmdata now handle large raw data elements without
+  loading everything into memory.  This allows very large images to be sent
+  over a network connection or to be copied without ever being fully in memory.
+
+- The dcmdata module now has a common interface for the frame-wise access to
+  compressed and uncompressed pixel data without ever loading the complete
+  object into main memory.
+
+- The dcmimgle/dcmimage module makes use of the new partial access to pixel
+  data for processing large multi-frame images in a stepwise manner.
+
+- The dcmimgle/dcmimage module and related tools now also support a new
+  bilinear and a bicubic scaling algorithm for image magnification.
+  Furthermore, the sigmoid VOI LUT function has been implemented.
+
+- Added support for Colon CAD SR, Spectacle Prescription Report, Macular Grid
+  Thickness and Volume Report as well as Implantation Plan SR documents to the
+  dcmsr module.
+
+- Incorporated fixes to dcmsr module which were introduced by various
+  correction proposals.  Added support for the new optional Preliminary Flag.
+
+- DICOMDIR tools and classes now support all new SOP classes and directory
+  record types.  Also added a new operating mode that allows for updating
+  existing entries in a DICOMDIR.
+
+- Introduced general path syntax for accessing nested elements from command
+  line tools like findscu or dcmodify.
+
+- Added methods for checking the value representation (VR) and value
+  multiplicity (VM) of data elements for conformance with the DICOM standard.
+
+- Network tools now support transmission and receipt of JPEG-LS and MPEG2
+  transfer syntaxes.
+
+- Added support for the extended negotiation of user identity to the dcmnet
+  module.  The first tool that makes use of this new feature is storescu.
+
+- Introduced new experimental SCU and SCP classes that act as a C++ wrapper to
+  the still C-based dcmnet module.
+
+- Added new class OFFile that provides a simple encapsulation layer for file
+  based stream I/O and, in particular, provides large file support (LFS) if
+  available on the underlying operating system/platform through a single API.
+
+- Out of the box compilation with OpenSSL 1.0.0 is now supported.
+
+- Revised installation directory scheme in order to be more compliant with the
+  Filesystem Hierarchy Standard (FHS) and derived file system standards.
+
+- Added data dictionary including private ASTM tags from DICONDE (Digital
+  Imaging and Communication in Nondestructive Evaluation) standard.
+
+- The DICOM data dictionary as well as the list of SOP classes and transfer
+  syntaxes have been re-worked based on the latest edition of the DICOM
+  standard plus all additionally approved supplements and correction proposals
+  (as of 2010-11-30).  Please note that there have been minor name changes!
+
+- Many bug fixes and minor improvements as usual - see the more than 12,000
+  lines long CHANGES.360 file for more details.
+
+
+Many people have contributed to this new release of DCMTK, appearing here in
+alphabetical order.  Thank you very much for your support!
+
+  Adrian Vogt <adrian.vogt@varian.com>
+  Alexander Fedotov <fedotov@elektron.ru>
+  Alexander Haderer <alexander.haderer@charite.de>
+  Anders Israelsson <anders@nud.se>
+  Andreas Barth <andreas.barth@bruker-biospin.de>
+  Andreas Bohne <andreas.bohne@mevis.de>
+  Anibal Jodorcovsky <anibal@intelerad.com>
+  Bernd Kuemmerlen <bernd.kuemmerlen@mevis.de>
+  Christian Fremgen <christian.fremgen@ith-icoserve.com>
+  Christian Schwerin <cs@sonowin.de>
+  Colby Dillion <colby.dillion@gmail.com>
+  David Clunie <dclunie@dclunie.com>
+  Dennis Kregel <dennis.kregel@uni-oldenburg.de>
+  Dennis Schlevoigt <schlevoigt@visus-tt.com>
+  Eduard Stanescu <eduard_stanescu@yahoo.com>
+  Evgeny Sabelskiy <evgeny.sabelskiy@gmail.com>
+  Ewald de Vries <ewald.de.vries@medstreaming.com>
+  Gerhard Holzinger <gerhard.holzinger@earchive.at>
+  Gerold Gruber <geroldgruber@h-p-eurosoft.de>
+  Gilles Mevel <gilles.mevel@etiam.com>
+  Henning Meyer <henning.meyer@uhn.on.ca>
+  J. Carnulfo <jca@vertigoeng.com>
+  Jacob Foshee <jacobf@gmail.com>
+  Jargo Koster <jargo@innovaatik.ee>
+  Jeff Solomon <jsolomon@medicalnumerics.com>
+  Jeroen Eggermont <j.eggermont@lumc.nl>
+  Jesper Bojesen <jbb@medical-insight.com>
+  Jose Salavert Torres <josator@fiv.upv.es>
+  Juergen Salk <juergen.salk@uni-ulm.de>
+  Karen Rei Pease <karen-pease@uiowa.edu>
+  Keith Bailey <keith.bailey@kodak.com>
+  Kevin Jamieson <kjamieson@bycast.com>
+  Marc Schlimbach <marc.schlimbach@uni-siegen.de>
+  Mark Smith <mark@corestudycast.com>
+  Markus Erbacher <markus.erbacher@gmx.de>
+  Markus Mertens <markus.mertens@evkb.de>
+  Markus Sabin <msabin@digithurst.de>
+  Mathieu Malaterre <mathieu.malaterre@gmail.com>
+  Michael Doppler <m.doppler@synedra.com>
+  Michael Kraemer <m.kraemer@gsi.de>
+  Niels Dekker <dicomrelatedmail@xs4all.nl>
+  Nils Gladitz <gladitz@scivis.de>
+  Paul Wijntjes <paul.wijntjes@med.ge.com>
+  Per Inge Mathisen <perim@sonowand.com>
+  Peter Klotz <peter.klotz@ith-icoserve.com>
+  Pietro Cerutti <gahr@freebsd.org>
+  Pim Philipse <pphilipse@delftdi.com>
+  Prashant Nair <prashant.nair@philips.com>
+  Radoslaw Garbacz <rgarbacz@aycan.de>
+  Razvan Costea-Barlutiu <cbrazvan@laitek.com>
+  Roelant Visser <r.visser@lrcb.nl>
+  Spencer Gunn <spencer.gunn@googlemail.com>
+  Stefan Allers <stefan.allers@gmx.de>
+  Steffen Benndorf <steffen.benndorf@siemens.com>
+  Stephan Karacson <stkaopen@gmx.at>
+  Steve Pieper <pieper@bwh.harvard.edu>
+  Svilen Nedev <svilenn@gmail.com>
+  Takeo Satomi <takeo.satomi@gmail.com>
+  Thies Jochimsen <thies@jochimsen.de>
+  Tom Clune <tom.clune@teracorp.com>
+  Vladimir Kharam <vladimir@rssdimed.com>
+  Yves Neumann <neumann@image-systems.biz>
+
+  Forum user "Aaron1"
+  Forum user "budric"
+  Forum user "bwiklak"
+  Forum user "Chichon"
+  Forum user "ecoto"
+  Forum user "eludias"
+  Forum user "focus"
+  Forum user "gurbuz"
+  Forum user "liuxinming"
+  Forum user "marlam"
+  Forum user "mask"
+  Forum user "parameter"
+  Forum user "parigaud"
+  Forum user "popu"
+  Forum user "rhinojunk"
+  Forum user "semi-newbie"
+  Forum user "Shaeto"
+  Forum user "spasmous"
+  Forum user "takeos"
+  Forum user "Vrenn"
+  Forum user "yeganeh"
+
+Members of the OFFIS DICOM Team who have worked on this release are:
+
+  Marco Eichelberg <eichelberg@offis.de>
+  Joerg Riesmeier <riesmeier@icsmed.de>
+  Michael Onken <onken@offis.de>
+  Uli Schlachter <psychon@znc.in>
+
+The DCMTK software can be downloaded via:
+
+  http://dicom.offis.de/dcmtk or http://www.dcmtk.org/
+
+OFFIS e.V., Oldenburg, Germany, 2011-01-06
