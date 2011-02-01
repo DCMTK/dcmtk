@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.01 (riesmeier)
 
+- Made sure that created file "lzwtest.tif" is deleted for "make distclean".
+  Affects: config/Makefile.in
+
 - Always link LIBTIFF and LIBPNG to the command line tools in order to avoid
   linker errors when using DCMTK with shared libraries (see FAQ #13).
   Affects: dcmjpls/apps/Makefile.in

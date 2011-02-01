@@ -51,6 +51,6 @@ clean:
 
 distclean:
 	(cd include/dcmtk/config && rm -f $(DISTTRASH) cfunix.h)
-	rm -rf $(DISTTRASH) Makefile.def
+	rm -rf $(DISTTRASH) Makefile.def lzwtest.tif
 
 dependencies:
