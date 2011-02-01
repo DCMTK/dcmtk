@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.01 (riesmeier)
 
+- Added "const" specifier to parameter in order to be consistent with the
+  source file (caused warnings/errors with certain compilers).
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+
 - Updated version number to 3.6.1 (the new development snapshot).
   Affects: CMakeLists.txt
            config/configure

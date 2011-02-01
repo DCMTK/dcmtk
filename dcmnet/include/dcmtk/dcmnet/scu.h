@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2010, OFFIS e.V.
+ *  Copyright (C) 2008-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:22 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2011-02-01 09:01:19 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,7 +206,7 @@ public:
    *  @param TODO
    *  @return TODO
    */
-  virtual OFCondition sendFINDRequest(T_ASC_PresentationContextID presID,
+  virtual OFCondition sendFINDRequest(const T_ASC_PresentationContextID presID,
                                       DcmDataset *queryKeys,
                                       FINDResponses *responses);
 
@@ -591,6 +591,10 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.14  2011-02-01 09:01:19  joergr
+** Added "const" specifier to parameter in order to be consistent with the
+** source file (caused warnings/errors with certain compilers).
+**
 ** Revision 1.13  2010-10-14 13:17:22  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
