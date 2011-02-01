@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.01 (riesmeier)
 
+- Added explanatory section on the development snapshot.
+  Affects: INSTALL
+
 - Created new preliminary annnouncement file for version 3.6.1.
   Added:   ANNOUNCE.361
 

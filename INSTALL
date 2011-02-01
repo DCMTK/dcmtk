@@ -3,6 +3,17 @@
 DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
 
+-------------------------------------------------------------------------------
+ Please note that most sections of this document refer to the official release
+ DCMTK 3.6.0, i.e. they are not yet updated for the changes of the latest
+ development snapshot (version 3.6.1).  This will be done for the next release.
+
+ The toolkit should compile on Linux systems with gcc 4.1 since this is our
+ main development platform.  Also on Windows systems, it usually works with
+ VisualStudio 2008.  However, there is no guarantee that the software also
+ compiles on your system.
+-------------------------------------------------------------------------------
+
 
 PRE-REQUISITES
 ==============
@@ -630,4 +641,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2011-01-06 (Riesmeier)
+Last revised: 2011-02-01 (Riesmeier)
