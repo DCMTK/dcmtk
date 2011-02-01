@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.01 (riesmeier)
 
+- Updated version number to 3.6.1 (the new development snapshot).
+  Affects: CMakeLists.txt
+           config/configure
+           config/configure.in
+           VERSION
+
 - Added explanatory section on the development snapshot.
   Affects: INSTALL
 
