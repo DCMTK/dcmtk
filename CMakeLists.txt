@@ -26,6 +26,9 @@ SET(DCMTK_PACKAGE_VERSION_SUFFIX "")
 #SET(DCMTK_PACKAGE_STRING "dcmtk 3.6.1")
 #SET(DCMTK_PACKAGE_BUGREPORT "dicom-bugs@offis.de")
 
+# General build options
+OPTION(BUILD_SHARED_LIBS "Build with shared libraries." OFF)
+
 # DCMTK build options
 OPTION(DCMTK_WITH_TIFF "Configure DCMTK with support for TIFF." ON)
 OPTION(DCMTK_WITH_PNG "Configure DCMTK with support for PNG." ON)

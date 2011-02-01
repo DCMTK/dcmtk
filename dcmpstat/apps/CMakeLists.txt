@@ -17,11 +17,5 @@ ENDFOREACH(PROGRAM)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmmkcrv dcmmklut dcmp2pgm dcmprscp dcmprscu dcmpsmk dcmpschk dcmpsprt dcmpsrcv dcmpssnd)
-  TARGET_LINK_LIBRARIES(${PROGRAM} dcmpstat dcmimgle dcmqrdb dcmnet dcmdata oflog ofstd ${ZLIB_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
-ENDFOREACH(PROGRAM)
-FOREACH(PROGRAM dcmmklut dcmp2pgm dcmprscp dcmprscu dcmpschk dcmpsmk dcmpsprt dcmpsrcv dcmpssnd)
-  TARGET_LINK_LIBRARIES(${PROGRAM} dcmsr)
-ENDFOREACH(PROGRAM)
-FOREACH(PROGRAM dcmp2pgm dcmprscp dcmprscu dcmpsprt dcmpsrcv dcmpssnd)
-  TARGET_LINK_LIBRARIES(${PROGRAM} dcmtls dcmdsig ${LIBXML_LIBS} ${OPENSSL_LIBS})
+  TARGET_LINK_LIBRARIES(${PROGRAM} dcmpstat dcmdsig dcmsr dcmimgle dcmqrdb dcmnet dcmtls dcmdata oflog ofstd ${LIBXML_LIBS} ${OPENSSL_LIBS} ${ZLIB_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
 ENDFOREACH(PROGRAM)

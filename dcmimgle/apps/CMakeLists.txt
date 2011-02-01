@@ -13,6 +13,5 @@ ENDFOREACH(PROGRAM)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmdspfn dcod2lum dconvlum)
-  TARGET_LINK_LIBRARIES(${PROGRAM} dcmimgle oflog ofstd ${ZLIB_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+  TARGET_LINK_LIBRARIES(${PROGRAM} dcmimgle dcmdata oflog ofstd ${ZLIB_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
 ENDFOREACH(PROGRAM)
-TARGET_LINK_LIBRARIES(dcmdspfn dcmdata)
