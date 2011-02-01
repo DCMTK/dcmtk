@@ -50,8 +50,7 @@ LOCALINCLUDES = $(dcmjplsinc) $(ofstdinc) $(ofloginc) $(dcmdatainc) $(dcmimagein
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmjplslibdir) $(libcharlslibdir) $(dcmimagelibdir) \
 	$(dcmimglelibdir) $(dcmdatalibdir) $(ofloglibdir) $(ofstdlibdir)
 LOCALLIBS = $(dcmjplslib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
-	$(libcharlslib) $(ZLIBLIBS)
-PNMLIBS = $(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS)
+	$(libcharlslib) $(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS)
 
 objs = dcmdjpls.o dcmcjpls.o dcml2pnm.o
 progs = dcmdjpls dcmcjpls dcml2pnm
@@ -65,7 +64,7 @@ dcmcjpls: dcmcjpls.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcml2pnm: dcml2pnm.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(PNMLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
 install: all
