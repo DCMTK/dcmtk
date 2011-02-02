@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 09:34:11 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2011-02-02 15:13:51 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,8 +96,7 @@ class DcmTime
 
     /** check whether stored value conforms to the VR and to the specified VM
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
-     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                   "3", "3-n", "3-3n", "4", "6", "9", "16", "32")
+     *    (See DcmElement::checkVM() for a list of valid values.)
      *  @param oldFormat support old ACR/NEMA format if OFTrue (':' as a separator)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
@@ -266,8 +265,7 @@ class DcmTime
      *  and to the specified VM.
      *  @param value string value to be checked (possibly multi-valued)
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
-     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                   "3", "3-n", "3-3n", "4", "6", "9", "16", "32")
+     *    (See DcmElement::checkVM() for a list of valid values.)
      *  @param oldFormat support old ACR/NEMA time format if OFTrue (i.e. with ":" and "." delimiters)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
@@ -283,6 +281,10 @@ class DcmTime
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.h,v $
+** Revision 1.27  2011-02-02 15:13:51  joergr
+** Moved documentation of valid values for the VMs that can be checked to a
+** central place, i.e. DcmElement::checkVM().
+**
 ** Revision 1.26  2010-11-05 09:34:11  joergr
 ** Added support for checking the value multiplicity "9" (see Supplement 131).
 **

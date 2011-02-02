@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 09:34:11 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2011-02-02 15:13:49 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -281,8 +281,7 @@ class DcmByteString: public DcmElement
     /** check whether given string value conforms to a certain VR and VM.
      *  @param value string value to be checked (possibly multi-valued)
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
-     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                   "3", "3-n", "3-3n", "4", "6", "9", "16", "32" or "" for no check)
+     *    (See DcmElement::checkVM() for a list of valid values; "" for no check.)
      *  @param vr two-character identifier of the VR to be checked (lower case)
      *  @param vrID expected numeric identifier of the VR
      *  @param maxLen maximum number of characters allowed for a single value (0 = no check)
@@ -360,6 +359,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
+** Revision 1.47  2011-02-02 15:13:49  joergr
+** Moved documentation of valid values for the VMs that can be checked to a
+** central place, i.e. DcmElement::checkVM().
+**
 ** Revision 1.46  2010-11-05 09:34:11  joergr
 ** Added support for checking the value multiplicity "9" (see Supplement 131).
 **

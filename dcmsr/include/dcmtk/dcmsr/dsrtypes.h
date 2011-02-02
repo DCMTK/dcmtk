@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 11:06:53 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Update Date:      $Date: 2011-02-02 15:13:54 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1046,9 +1046,8 @@ class DSRTypes
      *  @param  dataset     reference to DICOM dataset to which the element should be added
      *  @param  delem       pointer to DICOM element which should be added. deleted if not inserted.
      *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
-     *                      (valid value: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                                    "3", "3-n", "3-3n", "4", "6", "9", "16", "32"),
-     *                      interpreted as cardinality (number of items) for sequence attributes
+     *                      (See DcmElement::checkVM() for a list of valid values.)
+     *                      Interpreted as cardinality (number of items) for sequence attributes.
      *  @param  type        value type (valid value: "1", "2" or something else which is not checked)
      *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
      ** @return current value of 'result', EC_Normal if successful, an error code otherwise
@@ -1138,9 +1137,8 @@ class DSRTypes
     /** check element value for correct value multipicity and type.
      ** @param  delem       DICOM element to be checked
      *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
-     *                      (valid value: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                                    "3", "3-n", "3-3n", "4", "9", "6", "16", "32"),
-     *                      interpreted as cardinality (number of items) for sequence attributes
+     *                      (See DcmElement::checkVM() for a list of valid values.)
+     *                      Interpreted as cardinality (number of items) for sequence attributes.
      *  @param  type        value type (valid value: "1", "1C", "2", something else)
      *  @param  searchCond  optional flag indicating the status of a previous 'search' function call
      *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
@@ -1157,9 +1155,8 @@ class DSRTypes
      *                      (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
      *  @param  delem       DICOM element used to store the value
      *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
-     *                      (valid value: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                                    "3", "3-n", "3-3n", "4", "6", "9", "16", "32"),
-     *                      interpreted as cardinality (number of items) for sequence attributes
+     *                      (See DcmElement::checkVM() for a list of valid values.)
+     *                      Interpreted as cardinality (number of items) for sequence attributes.
      *  @param  type        value type (valid value: "1", "1C", "2", something else which is not checked)
      *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
      ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
@@ -1177,9 +1174,8 @@ class DSRTypes
      *  @param  stringValue  reference to character string in which the result should be stored.
      *                       (This parameter is automatically cleared if the tag could not be found.)
      *  @param  vm           value multiplicity (according to the data dictionary) to be checked for.
-     *                       (valid value: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                                     "3", "3-n", "3-3n", "4", "6", "9", "16", "32"),
-     *                       interpreted as cardinality (number of items) for sequence attributes
+     *                       (See DcmElement::checkVM() for a list of valid values.)
+     *                       Interpreted as cardinality (number of items) for sequence attributes.
      *  @param  type         value type (valid value: "1", "1C", "2", something else which is not checked)
      *  @param  moduleName   optional module name to be printed (default: "SR document" if NULL)
      ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
@@ -1303,6 +1299,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.69  2011-02-02 15:13:54  joergr
+ *  Moved documentation of valid values for the VMs that can be checked to a
+ *  central place, i.e. DcmElement::checkVM().
+ *
  *  Revision 1.68  2010-11-05 11:06:53  joergr
  *  Added support for new Implantation Plan SR Document Storage SOP Class.
  *
