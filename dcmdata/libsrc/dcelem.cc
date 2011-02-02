@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 09:34:14 $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  Update Date:      $Date: 2011-02-02 15:03:01 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1687,9 +1687,29 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     {
       if (vmNum != 4) result = EC_ValueMultiplicityViolated;
     }
+    else if (vmStr == "5")
+    {
+      if (vmNum != 5) result = EC_ValueMultiplicityViolated;
+    }
+    else if (vmStr == "5-n")
+    {
+      if (vmNum < 5) result = EC_ValueMultiplicityViolated;
+    }
     else if (vmStr == "6")
     {
       if (vmNum != 6) result = EC_ValueMultiplicityViolated;
+    }
+    else if (vmStr == "7")
+    {
+      if (vmNum != 7) result = EC_ValueMultiplicityViolated;
+    }
+    else if (vmStr == "7-7n")
+    {
+      if ((vmNum % 7) != 0) result = EC_ValueMultiplicityViolated;
+    }
+    else if (vmStr == "8")
+    {
+      if (vmNum != 8) result = EC_ValueMultiplicityViolated;
     }
     else if (vmStr == "9")
     {
@@ -1699,9 +1719,17 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     {
       if (vmNum != 16) result = EC_ValueMultiplicityViolated;
     }
+    else if (vmStr == "24")
+    {
+      if (vmNum != 24) result = EC_ValueMultiplicityViolated;
+    }
     else if (vmStr == "32")
     {
       if (vmNum != 32) result = EC_ValueMultiplicityViolated;
+    }
+    else if (vmStr == "256")
+    {
+      if (vmNum != 256) result = EC_ValueMultiplicityViolated;
     }
     else if (vmStr != "1-n")
     {
@@ -1716,6 +1744,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.89  2011-02-02 15:03:01  joergr
+** Added support for further VMs required for tags in the private dictionary.
+**
 ** Revision 1.88  2010-11-05 09:34:14  joergr
 ** Added support for checking the value multiplicity "9" (see Supplement 131).
 **

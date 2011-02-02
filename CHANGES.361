@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.02 (riesmeier)
 
+- Added support for further VMs required for tags in the private dictionary.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 - Added description column with text "PrivateTag" to all entries.
   Affects: dcmdata/data/private.dic
            dcmdata/libsrc/dcdictzz.cc

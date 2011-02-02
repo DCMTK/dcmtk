@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 09:34:11 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2011-02-02 15:04:04 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,9 +211,8 @@ class DcmElement
 
     /** check whether stored value conforms to the VR and to the specified VM
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
-     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                   "3", "3-n", "3-3n", "4", "6", "9", "16", "32"),
-     *    interpreted as cardinality (number of items) for sequence attributes
+     *    (See DcmElement::checkVM() for a list of valid values.)
+     *    Interpreted as cardinality (number of items) for sequence attributes.
      *  @param oldFormat support old ACR/NEMA format for certain VRs (DA, TM, PN) if OFTrue
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
@@ -788,7 +787,8 @@ class DcmElement
      *    For empty values (vmNum=0), the status of the check is always EC_Normal (i.e. no error).
      *  @param vmStr value multiplicity (according to the data dictionary) to be checked for.
      *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                   "3", "3-n", "3-3n", "4", "6", "9", "16", "32")
+     *                   "3", "3-n", "3-3n", "4", "5", "5-n", "6", "7", "7-7n", "8", "9",
+     *                   "16", "24", "32", "256")
      *  @return status of the check, EC_ValueMultiplicityViolated in case of error
      */
     static OFCondition checkVM(const unsigned long vmNum,
@@ -813,6 +813,9 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
+** Revision 1.50  2011-02-02 15:04:04  joergr
+** Added support for further VMs required for tags in the private dictionary.
+**
 ** Revision 1.49  2010-11-05 09:34:11  joergr
 ** Added support for checking the value multiplicity "9" (see Supplement 131).
 **
