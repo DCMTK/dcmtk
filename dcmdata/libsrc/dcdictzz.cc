@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-02-02 15:55:51
+**   Date: 2011-02-02 16:00:26
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2011-02-02 15:55:51";
+const char* dcmBuiltinDictBuildDate = "2011-02-02 16:00:26";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -24185,7 +24185,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
   , { 0x7ff1, 0x000d, 0x7ff1, 0x000d,
-      EVR_US, "Unknown", 1, -1, "DICOM",
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
   , { 0x7ff1, 0x0010, 0x7ff1, 0x0010,

@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.02 (riesmeier)
 
+- Added description column with text "PrivateTag" to all entries.
+  Affects: dcmdata/data/private.dic
+           dcmdata/libsrc/dcdictzz.cc
+
 - Added private tags from recent conformance statements from GE and Siemens.
   Thanks to Per Inge Mathisen <perim@sonowand.com> for this contribution.
   Affects: dcmdata/data/private.dic
