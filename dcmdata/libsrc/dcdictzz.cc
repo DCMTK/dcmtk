@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2010-11-22 11:44:46
+**   Date: 2011-02-02 15:50:27
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2010-11-22 11:44:46";
+const char* dcmBuiltinDictBuildDate = "2011-02-02 15:50:27";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -9397,7 +9397,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00f9, 0x0019, 0x00f9,
-      EVR_DS, "TransmissionGain", 1, 1, "DICOM",
+      EVR_DS, "TransmitGain", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00ff, 0x0019, 0x00ff,
@@ -15069,6 +15069,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED MG" }
   , { 0x0029, 0x0070, 0x0029, 0x0070,
+      EVR_SQ, "SiemensLinkSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0070, 0x0029, 0x0070,
       EVR_LT, "WindowID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
@@ -15076,6 +15080,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
+  , { 0x0029, 0x0071, 0x0029, 0x0071,
+      EVR_AT, "ReferencedTag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x0071, 0x0029, 0x0071,
       EVR_CS, "VideoInvertSubtracted", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15085,9 +15093,29 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
   , { 0x0029, 0x0072, 0x0029, 0x0072,
+      EVR_CS, "ReferencedTagType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0072, 0x0029, 0x0072,
       EVR_CS, "VideoInvertNonsubtracted", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x0029, 0x0073, 0x0029, 0x0073,
+      EVR_UL, "ReferencedValueLength", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0074, 0x0029, 0x0074,
+      EVR_CS, "ReferencedObjectDeviceType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0075, 0x0029, 0x0075,
+      EVR_OB, "ReferencedObjectDeviceLocation", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0076, 0x0029, 0x0076,
+      EVR_OB, "ReferencedObjectDeviceID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x0077, 0x0029, 0x0077,
       EVR_CS, "WindowSelectStatus", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -17185,19 +17213,211 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_PARM_01" }
   , { 0x0043, 0x0060, 0x0043, 0x0060,
-      EVR_IS, "Unknown", 8, 8, "DICOM",
+      EVR_IS, "SlopInteger10ToSlopInteger17", 8, 8, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_PARM_01" }
   , { 0x0043, 0x0061, 0x0043, 0x0061,
-      EVR_UI, "Unknown", 1, 1, "DICOM",
+      EVR_UI, "ScannerStudyEntityUID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_PARM_01" }
   , { 0x0043, 0x0062, 0x0043, 0x0062,
-      EVR_SH, "Unknown", 1, 1, "DICOM",
+      EVR_SH, "ScannerStudyID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_PARM_01" }
   , { 0x0043, 0x006f, 0x0043, 0x006f,
-      EVR_DS, "Unknown", 3, 3, "DICOM",
+      EVR_DS, "ScannerTableEntry", 3, 3, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0070, 0x0043, 0x0070,
+      EVR_LO, "ParadigmName", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0071, 0x0043, 0x0071,
+      EVR_ST, "ParadigmDescription", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0072, 0x0043, 0x0072,
+      EVR_UI, "ParadigmUID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0073, 0x0043, 0x0073,
+      EVR_US, "ExperimentType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0074, 0x0043, 0x0074,
+      EVR_US, "NumberOfRestVolumes", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0075, 0x0043, 0x0075,
+      EVR_US, "NumberOfActiveVolumes", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0076, 0x0043, 0x0076,
+      EVR_US, "NumberOfDummyScans", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0077, 0x0043, 0x0077,
+      EVR_SH, "ApplicationName", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0078, 0x0043, 0x0078,
+      EVR_SH, "ApplicationVersion", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0079, 0x0043, 0x0079,
+      EVR_US, "SlicesPerVolume", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x007a, 0x0043, 0x007a,
+      EVR_US, "ExpectedTimePoints", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x007b, 0x0043, 0x007b,
+      EVR_FL, "RegressorValues", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x007c, 0x0043, 0x007c,
+      EVR_FL, "DelayAfterSliceGroup", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x007d, 0x0043, 0x007d,
+      EVR_US, "ReconModeFlagWord", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x007e, 0x0043, 0x007e,
+      EVR_LO, "PACCSpecificInformation", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x007f, 0x0043, 0x007f,
+      EVR_DS, "EDWIScaleFactor", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0080, 0x0043, 0x0080,
+      EVR_LO, "CoilIDData", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0081, 0x0043, 0x0081,
+      EVR_LO, "GECoilName", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0082, 0x0043, 0x0082,
+      EVR_LO, "SystemConfigurationInformation", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0083, 0x0043, 0x0083,
+      EVR_DS, "AssetRFactors", 1, 2, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0084, 0x0043, 0x0084,
+      EVR_LO, "AdditionalAssetData", 5, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0085, 0x0043, 0x0085,
+      EVR_UT, "DebugDataTextFormat", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0086, 0x0043, 0x0086,
+      EVR_OB, "DebugDataBinaryFormat", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0087, 0x0043, 0x0087,
+      EVR_UT, "ScannerSoftwareVersionLongForm", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0088, 0x0043, 0x0088,
+      EVR_UI, "PUREAcquisitionCalibrationSeriesUID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0089, 0x0043, 0x0089,
+      EVR_LO, "GoverningBodydBdtAndSARDefinition", 3, 3, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x008a, 0x0043, 0x008a,
+      EVR_CS, "PrivateInPlanePhaseEncodingDirection", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x008b, 0x0043, 0x008b,
+      EVR_OB, "FMRIBinaryDataBlock", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x008c, 0x0043, 0x008c,
+      EVR_DS, "VoxelLocation", 6, 6, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x008d, 0x0043, 0x008d,
+      EVR_DS, "SATBandLocations", 7, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x008e, 0x0043, 0x008e,
+      EVR_DS, "SpectroPrescanValues", 3, 3, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x008f, 0x0043, 0x008f,
+      EVR_DS, "SpectroParameters", 3, 3, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0090, 0x0043, 0x0090,
+      EVR_LO, "SARDefinition", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0091, 0x0043, 0x0091,
+      EVR_DS, "SARValue", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0092, 0x0043, 0x0092,
+      EVR_LO, "ImageErrorText", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0093, 0x0043, 0x0093,
+      EVR_DS, "SpectroQuantitationValues", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0094, 0x0043, 0x0094,
+      EVR_DS, "SpectroRatioValues", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0095, 0x0043, 0x0095,
+      EVR_LO, "PrescanReuseString", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0096, 0x0043, 0x0096,
+      EVR_CS, "ContentQualification", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0097, 0x0043, 0x0097,
+      EVR_LO, "ImageFilteringParameters", 9, 9, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0098, 0x0043, 0x0098,
+      EVR_UI, "ASSETAcquisitionCalibrationSeriesUID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0099, 0x0043, 0x0099,
+      EVR_LO, "ExtendedOptions", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x009a, 0x0043, 0x009a,
+      EVR_IS, "RxStackIdentification", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x009b, 0x0043, 0x009b,
+      EVR_DS, "NPWFactor", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x009c, 0x0043, 0x009c,
+      EVR_OB, "ResearchTag1", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x009d, 0x0043, 0x009d,
+      EVR_OB, "ResearchTag2", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x009e, 0x0043, 0x009e,
+      EVR_OB, "ResearchTag3", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x009f, 0x0043, 0x009f,
+      EVR_OB, "ResearchTag4", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_PARM_01" }
 #endif

@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.02.02 (riesmeier)
+
+- Added private tags from recent conformance statements from GE and Siemens.
+  Thanks to Per Inge Mathisen <perim@sonowand.com> for this contribution.
+  Affects: dcmdata/data/private.dic
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2011.02.01 (riesmeier)
 
 - Made sure that OFFIS_DCMTK_VERSION_NUMBER is really a number and not a

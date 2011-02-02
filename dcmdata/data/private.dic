@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2010, OFFIS e.V.
+#  Copyright (C) 1994-2011, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2010-11-22 10:39:26 $
-#  CVS/RCS Revision: $Revision: 1.10 $
+#  Update Date:      $Date: 2011-02-02 14:53:53 $
+#  CVS/RCS Revision: $Revision: 1.11 $
 #  Status:           $State: Exp $
 #
 #
@@ -540,7 +540,7 @@
 (0019,"GEMS_ACQU_01",f2)	SS	FastPhases	1
 (0019,"GEMS_ACQU_01",f3)	LT	Unknown	1
 (0019,"GEMS_ACQU_01",f4)	LT	Unknown	1
-(0019,"GEMS_ACQU_01",f9)	DS	TransmissionGain	1
+(0019,"GEMS_ACQU_01",f9)	DS	TransmitGain	1
 
 (0023,"GEMS_ACRQA_1.0 BLOCK1",00)	LO	CRExposureMenuCode	1
 (0023,"GEMS_ACRQA_1.0 BLOCK1",10)	LO	CRExposureMenuString	1
@@ -894,10 +894,58 @@
 (0043,"GEMS_PARM_01",4c)	SS	TGGCTriggerMode	4
 (0043,"GEMS_PARM_01",4d)	FL	StartScanToXrayOnDelay	4
 (0043,"GEMS_PARM_01",4e)	FL	DurationOfXrayOn	4
-(0043,"GEMS_PARM_01",60)	IS	Unknown	8
-(0043,"GEMS_PARM_01",61)	UI	Unknown	1
-(0043,"GEMS_PARM_01",62)	SH	Unknown	1
-(0043,"GEMS_PARM_01",6f)	DS	Unknown	3
+(0043,"GEMS_PARM_01",60)	IS	SlopInteger10ToSlopInteger17	8
+(0043,"GEMS_PARM_01",61)	UI	ScannerStudyEntityUID	1
+(0043,"GEMS_PARM_01",62)	SH	ScannerStudyID	1
+(0043,"GEMS_PARM_01",6f)	DS	ScannerTableEntry	3
+(0043,"GEMS_PARM_01",70)	LO	ParadigmName	1
+(0043,"GEMS_PARM_01",71)	ST	ParadigmDescription	1
+(0043,"GEMS_PARM_01",72)	UI	ParadigmUID	1
+(0043,"GEMS_PARM_01",73)	US	ExperimentType	1
+(0043,"GEMS_PARM_01",74)	US	NumberOfRestVolumes	1
+(0043,"GEMS_PARM_01",75)	US	NumberOfActiveVolumes	1
+(0043,"GEMS_PARM_01",76)	US	NumberOfDummyScans	1
+(0043,"GEMS_PARM_01",77)	SH	ApplicationName	1
+(0043,"GEMS_PARM_01",78)	SH	ApplicationVersion	1
+(0043,"GEMS_PARM_01",79)	US	SlicesPerVolume	1
+(0043,"GEMS_PARM_01",7a)	US	ExpectedTimePoints	1
+(0043,"GEMS_PARM_01",7b)	FL	RegressorValues	1-n
+(0043,"GEMS_PARM_01",7c)	FL	DelayAfterSliceGroup	1
+(0043,"GEMS_PARM_01",7d)	US	ReconModeFlagWord	1
+(0043,"GEMS_PARM_01",7e)	LO	PACCSpecificInformation	1-n
+(0043,"GEMS_PARM_01",7f)	DS	EDWIScaleFactor	1-n
+(0043,"GEMS_PARM_01",80)	LO	CoilIDData	1-n
+(0043,"GEMS_PARM_01",81)	LO	GECoilName	1
+(0043,"GEMS_PARM_01",82)	LO	SystemConfigurationInformation	1-n
+(0043,"GEMS_PARM_01",83)	DS	AssetRFactors	1-2
+(0043,"GEMS_PARM_01",84)	LO	AdditionalAssetData	5-n
+(0043,"GEMS_PARM_01",85)	UT	DebugDataTextFormat	1
+(0043,"GEMS_PARM_01",86)	OB	DebugDataBinaryFormat	1
+(0043,"GEMS_PARM_01",87)	UT	ScannerSoftwareVersionLongForm	1
+(0043,"GEMS_PARM_01",88)	UI	PUREAcquisitionCalibrationSeriesUID	1
+(0043,"GEMS_PARM_01",89)	LO	GoverningBodydBdtAndSARDefinition	3
+(0043,"GEMS_PARM_01",8a)	CS	PrivateInPlanePhaseEncodingDirection	1
+(0043,"GEMS_PARM_01",8b)	OB	FMRIBinaryDataBlock	1
+(0043,"GEMS_PARM_01",8c)	DS	VoxelLocation	6
+(0043,"GEMS_PARM_01",8d)	DS	SATBandLocations	7-7n
+(0043,"GEMS_PARM_01",8e)	DS	SpectroPrescanValues	3
+(0043,"GEMS_PARM_01",8f)	DS	SpectroParameters	3
+(0043,"GEMS_PARM_01",90)	LO	SARDefinition	1-n
+(0043,"GEMS_PARM_01",91)	DS	SARValue	1-n
+(0043,"GEMS_PARM_01",92)	LO	ImageErrorText	1
+(0043,"GEMS_PARM_01",93)	DS	SpectroQuantitationValues	1-n
+(0043,"GEMS_PARM_01",94)	DS	SpectroRatioValues	1-n
+(0043,"GEMS_PARM_01",95)	LO	PrescanReuseString	1
+(0043,"GEMS_PARM_01",96)	CS	ContentQualification	1
+(0043,"GEMS_PARM_01",97)	LO	ImageFilteringParameters	9
+(0043,"GEMS_PARM_01",98)	UI	ASSETAcquisitionCalibrationSeriesUID	1
+(0043,"GEMS_PARM_01",99)	LO	ExtendedOptions	1-n
+(0043,"GEMS_PARM_01",9a)	IS	RxStackIdentification	1
+(0043,"GEMS_PARM_01",9b)	DS	NPWFactor	1
+(0043,"GEMS_PARM_01",9c)	OB	ResearchTag1	1
+(0043,"GEMS_PARM_01",9d)	OB	ResearchTag2	1
+(0043,"GEMS_PARM_01",9e)	OB	ResearchTag3	1
+(0043,"GEMS_PARM_01",9f)	OB	ResearchTag4	1
 
 (0011,"GEMS_PATI_01",10)	SS	PatientStatus	1
 
@@ -1835,6 +1883,13 @@
 (0029,"SIEMENS MEDCOM HEADER",53)	CS	ImageLocationStatus	1
 (0029,"SIEMENS MEDCOM HEADER",54)	DS	EstimatedRetrieveTime	1
 (0029,"SIEMENS MEDCOM HEADER",55)	DS	DataSizeOfRetrievedImages	1
+(0029,"SIEMENS MEDCOM HEADER",70)	SQ	SiemensLinkSequence	1
+(0029,"SIEMENS MEDCOM HEADER",71)	AT	ReferencedTag	1
+(0029,"SIEMENS MEDCOM HEADER",72)	CS	ReferencedTagType	1
+(0029,"SIEMENS MEDCOM HEADER",73)	UL	ReferencedValueLength	1
+(0029,"SIEMENS MEDCOM HEADER",74)	CS	ReferencedObjectDeviceType	1
+(0029,"SIEMENS MEDCOM HEADER",75)	OB	ReferencedObjectDeviceLocation	1
+(0029,"SIEMENS MEDCOM HEADER",76)	OB	ReferencedObjectDeviceID	1
 
 (0029,"SIEMENS MEDCOM HEADER2",60)	LO	SeriesWorkflowStatus	1
 
