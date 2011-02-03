@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.02.03 (riesmeier)
+
+- Fixed incomplete path to header file in include statement of the sample code.
+  Affects: dcmimage/docs/dcmimage.dox
+
 **** Changes from 2011.02.02 (riesmeier)
 
 - Moved documentation of valid values for the VMs that can be checked to a

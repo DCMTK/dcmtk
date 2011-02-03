@@ -23,7 +23,7 @@ The following example shows how to load a DICOM single-frame image (monochrome
 or color) and render its pixel data:
 
 \code
-#include "diregist.h"   /* required to support color images */
+#include "dcmtk/dcmimage/diregist.h"   /* required to support color images */
 /* ... */
 DicomImage *image = new DicomImage("test.dcm");
 if (image != NULL)
