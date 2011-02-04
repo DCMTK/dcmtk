@@ -18,9 +18,9 @@
  *  Purpose:
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 11:18:00 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ struct OFListLinkBase
     OFListLinkBase * prev;
     OFBool dummy;
     OFListLinkBase(): next(NULL), prev(NULL), dummy(OFFalse) { }
-    virtual ~OFListLinkBase() {}
+    ~OFListLinkBase() {}
 
   private:
     /* undefined */ OFListLinkBase(const OFListLinkBase&);
@@ -123,7 +123,7 @@ protected:
     void base_recalcListSize();
 public:
     OFListBase();
-    virtual ~OFListBase();
+    ~OFListBase();
     OFListLinkBase * base_begin() const { return afterLast->next; }
     OFListLinkBase * base_end() const { return afterLast; }
     OFBool base_empty() const { return afterLast == afterLast->next; }
@@ -149,7 +149,7 @@ struct OFListLink : public OFListLinkBase
 {
     T info;
     OFListLink(const T& i) : OFListLinkBase(), info(i)  { }
-    virtual ~OFListLink() {}
+    ~OFListLink() {}
   private:
     /* undefined */ OFListLink(const OFListLink<T>&);
     /* undefined */ OFListLink<T>& operator=(const OFListLink<T>&);
@@ -561,6 +561,9 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
+** Revision 1.27  2011-02-04 11:18:00  uli
+** Made OFList's destructor non-virtual to match std::list.
+**
 ** Revision 1.26  2010-10-14 13:15:50  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
