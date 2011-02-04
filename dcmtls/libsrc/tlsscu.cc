@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for TLS-enabled Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-12-16 08:34:06 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:57:41 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,6 +43,7 @@ DcmTLSSCU::DcmTLSSCU() :
   m_certificateFile(""),
   m_certKeyFileFormat(SSL_FILETYPE_PEM),
   m_passwd(NULL),
+  m_ciphersuites(""),
   m_readSeedFile(""),
   m_writeSeedFile(""),
   m_certVerification(DCV_requireCertificate),
@@ -70,6 +71,7 @@ DcmTLSSCU::DcmTLSSCU(const OFString& peerHost,
   m_certificateFile(""),
   m_certKeyFileFormat(SSL_FILETYPE_PEM),
   m_passwd(NULL),
+  m_ciphersuites(""),
   m_readSeedFile(""),
   m_writeSeedFile(""),
   m_certVerification(DCV_requireCertificate),
@@ -372,6 +374,9 @@ OFString DcmTLSSCU::getDHParam() const
 /*
 ** CVS Log
 ** $Log: tlsscu.cc,v $
+** Revision 1.5  2011-02-04 12:57:41  uli
+** Made sure all members are initialized in the constructor (-Weffc++).
+**
 ** Revision 1.4  2010-12-16 08:34:06  joergr
 ** Fixed initialization of OFString variable (reported by gcc 2.95.3).
 **

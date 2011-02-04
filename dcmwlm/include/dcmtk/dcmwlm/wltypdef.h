@@ -17,9 +17,9 @@
  *
  *  Purpose: Type definitions and macros for dcmwlm project.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:39 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:57:41 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,6 +127,9 @@ const OFCondition WLM_EC_CannotConnectToDataSource                 ( WLM_ECC_Can
   /// structure for handling arbitrary types of superior sequences in query result datasets
 struct WlmSuperiorSequenceInfoType
 {
+  WlmSuperiorSequenceInfoType() : sequenceTag(), numOfItems(0), currentItem(0)
+  { }
+
   /// pointer to sequence element
   DcmTagKey sequenceTag;
   /// number of items within this sequence element
@@ -141,6 +144,9 @@ struct WlmSuperiorSequenceInfoType
 /*
 ** CVS Log
 ** $Log: wltypdef.h,v $
+** Revision 1.16  2011-02-04 12:57:41  uli
+** Made sure all members are initialized in the constructor (-Weffc++).
+**
 ** Revision 1.15  2010-10-14 13:16:39  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

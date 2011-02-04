@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:41 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:57:40 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,6 +134,18 @@ class DcmQueryRetrieveConfig
 {
 
 public:
+
+  DcmQueryRetrieveConfig()
+  : UserName_()
+  , GroupName_()
+  , networkTCPPort_(0)
+  , maxPDUSize_(0)
+  , maxAssociations_(0)
+  , CNF_Config()
+  , CNF_HETable()
+  , CNF_VendorTable()
+  {
+  }
 
   /*
    *  read configuration file and initialize the
@@ -438,6 +450,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcnf.h,v $
+ * Revision 1.8  2011-02-04 12:57:40  uli
+ * Made sure all members are initialized in the constructor (-Weffc++).
+ *
  * Revision 1.7  2010-10-14 13:16:41  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -17,9 +17,9 @@
  *
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:21 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:57:40 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,6 +111,8 @@ DJCodecParameter::DJCodecParameter(const DJCodecParameter& arg)
 , roiHeight(arg.roiHeight)
 , usePixelValues(arg.usePixelValues)
 , useModalityRescale(arg.useModalityRescale)
+, acceptWrongPaletteTags(arg.acceptWrongPaletteTags)
+, acrNemaCompatibility(arg.acrNemaCompatibility)
 , trueLosslessMode(arg.trueLosslessMode)
 , predictor6WorkaroundEnabled_(arg.predictor6WorkaroundEnabled_)
 {
@@ -134,6 +136,9 @@ const char *DJCodecParameter::className() const
 /*
  * CVS/RCS Log
  * $Log: djcparam.cc,v $
+ * Revision 1.11  2011-02-04 12:57:40  uli
+ * Made sure all members are initialized in the constructor (-Weffc++).
+ *
  * Revision 1.10  2010-10-14 13:14:21  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

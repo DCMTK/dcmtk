@@ -18,8 +18,8 @@
  *   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
  *
  * Last Update:         $Author: uli $
- * Update Date:         $Date: 2010-11-01 10:42:44 $
- * CVS/RCS Revision:    $Revision: 1.9 $
+ * Update Date:         $Date: 2011-02-04 12:57:40 $
+ * CVS/RCS Revision:    $Revision: 1.10 $
  * Status:              $State: Exp $
  *
  * CVS/RCS Log at end of file
@@ -425,7 +425,13 @@ UserIdentityNegotiationSubItemRQ& UserIdentityNegotiationSubItemRQ::operator= (c
 
 // Copy Constructor
 UserIdentityNegotiationSubItemRQ::UserIdentityNegotiationSubItemRQ(const UserIdentityNegotiationSubItemRQ& rhs) :
-  UserIdentityNegotiationSubItem(rhs)
+  UserIdentityNegotiationSubItem(rhs),
+  m_userIdentityType(ASC_USER_IDENTITY_NONE),
+  m_posRspRequested(0),
+  m_primField(NULL),
+  m_primFieldLength(0),
+  m_secField(NULL),
+  m_secFieldLength(0)
 {
   *this = rhs;
 }
@@ -620,7 +626,9 @@ UserIdentityNegotiationSubItemAC& UserIdentityNegotiationSubItemAC::operator= (c
 
 // Copy constructor
 UserIdentityNegotiationSubItemAC::UserIdentityNegotiationSubItemAC(const UserIdentityNegotiationSubItemAC& rhs) :
-  UserIdentityNegotiationSubItem(rhs)
+  UserIdentityNegotiationSubItem(rhs),
+  m_serverRsp(NULL),
+  m_rspLength(0)
 {
   *this = rhs;
 }
@@ -638,6 +646,9 @@ UserIdentityNegotiationSubItemAC::~UserIdentityNegotiationSubItemAC()
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.cc,v $
+** Revision 1.10  2011-02-04 12:57:40  uli
+** Made sure all members are initialized in the constructor (-Weffc++).
+**
 ** Revision 1.9  2010-11-01 10:42:44  uli
 ** Fixed some compiler warnings reported by gcc with additional flags.
 **

@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2010-12-21 09:37:36 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:57:40 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@ DcmSCU::DcmSCU() :
   m_assocConfigFilename(),
   m_assocConfigProfile(),
   m_presContexts(),
+  m_assocConfigFile(),
   m_openDIMSERequest(NULL),
   m_maxReceivePDULength(ASC_DEFAULTMAXPDU),
   m_blockMode(DIMSE_BLOCKING),
@@ -1238,6 +1239,7 @@ OFCondition DcmSCU::getDatasetInfo(DcmDataset *dataset,
 /* ************************************************************************ */
 
 FINDResponses::FINDResponses()
+: m_responses()
 {
   // Nothing to do :-)
 }
@@ -1310,6 +1312,9 @@ FINDResponse::~FINDResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.17  2011-02-04 12:57:40  uli
+** Made sure all members are initialized in the constructor (-Weffc++).
+**
 ** Revision 1.16  2010-12-21 09:37:36  onken
 ** Fixed wrong response assignment in DcmSCU's C-STORE code. Thanks to
 ** forum user "takeos" for the hint and fix.

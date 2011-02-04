@@ -3,6 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.04 (schlachter)
 
+- Made sure all members are initialized in the constructor (-Weffc++).
+  Affects: dcmjpeg/libsrc/djcparam.cc
+           dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/dcuserid.cc
+           dcmnet/libsrc/scu.cc
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcnf.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrptb.h
+           dcmqrdb/libsrc/dcmqrsrv.cc
+           dcmtls/libsrc/tlsscu.cc
+           dcmwlm/include/dcmtk/dcmwlm/wltypdef.h
+
 - Made sure we only save assignable classes in STL containers.
   Affects: dcmdata/apps/mdfconen.cc
            dcmdata/apps/mdfconen.h

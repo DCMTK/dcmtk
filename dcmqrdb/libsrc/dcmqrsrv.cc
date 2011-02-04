@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveSCP
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:36 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:57:41 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,6 +108,7 @@ DcmQueryRetrieveSCP::DcmQueryRetrieveSCP(
   const DcmQueryRetrieveOptions& options,
   const DcmQueryRetrieveDatabaseHandleFactory& factory)
 : config_(&config)
+, processtable_()
 , dbCheckFindIdentifier_(OFFalse)
 , dbCheckMoveIdentifier_(OFFalse)
 , factory_(factory)
@@ -1090,6 +1091,9 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrsrv.cc,v $
+ * Revision 1.13  2011-02-04 12:57:41  uli
+ * Made sure all members are initialized in the constructor (-Weffc++).
+ *
  * Revision 1.12  2010-10-14 13:14:36  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

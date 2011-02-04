@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 11:24:40 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-02-04 12:57:40 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -544,6 +544,12 @@ private:
   /// Defines presentation context, consisting of one abstract syntax name
   /// and a list of transfer syntaxes for this abstract syntax
   struct DcmSCUPresContext {
+    DcmSCUPresContext()
+    : abstractSyntaxName()
+    , transferSyntaxes()
+    {
+    }
+
     /// Abstract Syntax Name of Presentation Context
     OFString abstractSyntaxName;
     /// List of Transfer Syntaxes for Presentation Context
@@ -599,6 +605,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.16  2011-02-04 12:57:40  uli
+** Made sure all members are initialized in the constructor (-Weffc++).
+**
 ** Revision 1.15  2011-02-04 11:24:40  uli
 ** Added private undefined functions where gcc's -Weffc++ warns otherwise.
 **

@@ -18,9 +18,9 @@
  *  Purpose: General SCP class that can be used to implement derived SCP
  *           applications.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:22 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:57:40 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,6 +105,15 @@ enum DcmRefuseReasonType
  */
 struct DcmPresentationContextInfo
 {
+  DcmPresentationContextInfo()
+    : presentationContextID(0)
+    , abstractSyntax()
+    , proposedSCRole(0)
+    , acceptedSCRole(0)
+    , acceptedTransferSyntax()
+  {
+  }
+
   /// Presentation Context ID as proposed by SCU
   Uint8 presentationContextID;
   /// Abstract Syntax name (UID) as proposed by SCU
@@ -726,6 +735,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.10  2011-02-04 12:57:40  uli
+ *  Made sure all members are initialized in the constructor (-Weffc++).
+ *
  *  Revision 1.9  2010-10-14 13:17:22  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

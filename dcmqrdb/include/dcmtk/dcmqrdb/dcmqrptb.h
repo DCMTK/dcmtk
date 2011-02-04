@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveProcessTable
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:41 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:57:41 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ class DcmQueryRetrieveProcessTable
 {
 public:
   /// default constructor
-  DcmQueryRetrieveProcessTable() { }
+  DcmQueryRetrieveProcessTable() : table_() { }
 
   /// destructor
   virtual ~DcmQueryRetrieveProcessTable();
@@ -104,6 +104,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrptb.h,v $
+ * Revision 1.6  2011-02-04 12:57:41  uli
+ * Made sure all members are initialized in the constructor (-Weffc++).
+ *
  * Revision 1.5  2010-10-14 13:16:41  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
