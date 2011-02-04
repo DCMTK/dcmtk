@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:37 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 11:24:40 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1177,6 +1177,12 @@ public:
 
 private:
 
+   /// private undefined copy constructor
+   DVPresentationState(const DVPresentationState& other);
+
+   /// private undefined assignment operator
+   DVPresentationState& operator=(const DVPresentationState& other);
+
    /** helper method that activates the given overlay in the given image
     *  @param ovl overlay to activate
     *  @param image image to be rendered
@@ -1332,6 +1338,9 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
+ *  Revision 1.48  2011-02-04 11:24:40  uli
+ *  Added private undefined functions where gcc's -Weffc++ warns otherwise.
+ *
  *  Revision 1.47  2010-10-14 13:16:37  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

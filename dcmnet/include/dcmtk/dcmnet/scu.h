@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-01 09:01:19 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 11:24:40 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,6 +81,14 @@ public:
 
   /// Mandatory Response Field
   Uint16 m_status;
+
+private:
+
+  /// private undefined copy constructor
+  FINDResponse(const FINDResponse& other);
+
+  /// private undefined assignment operator
+  FINDResponse& operator=(const FINDResponse& other);
 };
 
 
@@ -591,6 +599,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.15  2011-02-04 11:24:40  uli
+** Added private undefined functions where gcc's -Weffc++ warns otherwise.
+**
 ** Revision 1.14  2011-02-01 09:01:19  joergr
 ** Added "const" specifier to parameter in order to be consistent with the
 ** source file (caused warnings/errors with certain compilers).

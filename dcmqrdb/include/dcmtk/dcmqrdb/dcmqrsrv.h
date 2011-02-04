@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveSCP
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:41 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 11:24:40 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,6 +98,12 @@ public:
 
 private:
 
+  /// private undefined copy constructor
+  DcmQueryRetrieveSCP(const DcmQueryRetrieveSCP& other);
+
+  /// private undefined assignment operator
+  DcmQueryRetrieveSCP& operator=(const DcmQueryRetrieveSCP& other);
+
   /** perform association negotiation for an incoming A-ASSOCIATE request based
    *  on the SCP configuration and option flags. No A-ASSOCIATE response is generated,
    *  this is left to the caller.
@@ -172,6 +178,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrsrv.h,v $
+ * Revision 1.5  2011-02-04 11:24:40  uli
+ * Added private undefined functions where gcc's -Weffc++ warns otherwise.
+ *
  * Revision 1.4  2010-10-14 13:16:41  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

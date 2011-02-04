@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveOptions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:41 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 11:24:40 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,13 @@ extern const OFCondition APP_INVALIDPEER;
  */
 class DcmQueryRetrieveOptions
 {
+private:
+  /// private undefined copy constructor
+  DcmQueryRetrieveOptions(const DcmQueryRetrieveOptions& other);
+
+  /// private undefined assignment operator
+  DcmQueryRetrieveOptions& operator=(const DcmQueryRetrieveOptions& other);
+
 public:
   /// default constructor
   DcmQueryRetrieveOptions();
@@ -167,6 +174,9 @@ public:
 /*
  * CVS Log
  * $Log: dcmqropt.h,v $
+ * Revision 1.9  2011-02-04 11:24:40  uli
+ * Added private undefined functions where gcc's -Weffc++ warns otherwise.
+ *
  * Revision 1.8  2010-10-14 13:16:41  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

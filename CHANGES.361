@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.04 (schlachter)
 
+- Added private undefined functions where gcc's -Weffc++ warns otherwise.
+  Affects: dcmnet/include/dcmtk/dcmnet/dfindscu.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpstat.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbg.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbm.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqropt.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrsrv.h
+
 - Made OFList's destructor non-virtual to match std::list.
   Affects: ofstd/include/dcmtk/ofstd/oflist.h
 

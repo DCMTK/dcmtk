@@ -17,9 +17,9 @@
  *
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:22 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 11:24:40 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,6 +98,15 @@ protected: /* the two member variables are protected and can be accessed from de
 
    /// current presentation context ID. Will contain valid value when callback() is called.
    T_ASC_PresentationContextID presId_;
+
+private:
+
+  /// private undefined copy constructor
+  DcmFindSCUCallback(const DcmFindSCUCallback& other);
+
+  /// private undefined assignment operator
+  DcmFindSCUCallback& operator=(const DcmFindSCUCallback& other);
+
 };
 
 
@@ -297,6 +306,12 @@ private:
     OFList<OFString> *overrideKeys,
     DcmFindSCUCallback *callback = NULL) const;
 
+  /// Private undefined copy constructor
+  DcmFindSCU(const DcmFindSCU& other);
+
+  /// Private undefined assignment operator
+  DcmFindSCU& operator=(const DcmFindSCU& other);
+
 private:
 	
   /// pointer to network structure
@@ -309,6 +324,9 @@ private:
 /*
  * CVS Log
  * $Log: dfindscu.h,v $
+ * Revision 1.6  2011-02-04 11:24:40  uli
+ * Added private undefined functions where gcc's -Weffc++ warns otherwise.
+ *
  * Revision 1.5  2010-10-14 13:17:22  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
