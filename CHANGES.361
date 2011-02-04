@@ -3,6 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.04 (schlachter)
 
+- Made sure we only save assignable classes in STL containers.
+  Affects: dcmdata/apps/mdfconen.cc
+           dcmdata/apps/mdfconen.h
+           dcmnet/include/dcmtk/dcmnet/dccfenmp.h
+           dcmnet/include/dcmtk/dcmnet/dccfpcmp.h
+           dcmnet/include/dcmtk/dcmnet/dccfrsmp.h
+           dcmnet/libsrc/dccfenmp.cc
+           dcmnet/libsrc/dccfpcmp.cc
+           dcmnet/libsrc/dccfrsmp.cc
+           oflog/include/dcmtk/oflog/logger.h
+
 - Added private undefined functions where gcc's -Weffc++ warns otherwise.
   Affects: dcmnet/include/dcmtk/dcmnet/dfindscu.h
            dcmnet/include/dcmtk/dcmnet/scu.h

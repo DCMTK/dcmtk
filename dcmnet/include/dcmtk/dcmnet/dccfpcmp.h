@@ -19,9 +19,9 @@
  *    class DcmPresentationContextItem
  *    class DcmPresentationContextMap
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:22 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:07:46 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,6 +58,9 @@ public:
  
   /// destructor
   ~DcmPresentationContextItem();
+
+  /// assignment operator
+  DcmPresentationContextItem& operator=(const DcmPresentationContextItem& arg);
 
   /** checks if the given argument matches the abstract syntax UID
    *  maintained by this object
@@ -96,9 +99,6 @@ public:
   }
 
 private:
-
-  /// private undefined copy assignment operator
-  DcmPresentationContextItem& operator=(const DcmPresentationContextItem& arg);
 
   /// abstract syntax UID
   DcmUIDHandler uid_;
@@ -176,6 +176,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dccfpcmp.h,v $
+ * Revision 1.5  2011-02-04 12:07:46  uli
+ * Made sure we only save assignable classes in STL containers.
+ *
  * Revision 1.4  2010-10-14 13:17:22  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

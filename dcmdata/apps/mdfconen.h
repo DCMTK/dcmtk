@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:52 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:07:46 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,13 +51,15 @@ public :
     OFString path;
     OFString value;
 
+    MdfJob() : option(), path(), value() { }
+
+    MdfJob(const MdfJob& other);
+
     /** Comparison operator between Jobs
      */
     OFBool operator==(const MdfJob &j) const;
 
-private :
-
-    /** private undefined copy constructor
+    /** Assignment operator
      */
     MdfJob &operator=(const MdfJob &j);
 };
@@ -227,6 +229,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
+** Revision 1.20  2011-02-04 12:07:46  uli
+** Made sure we only save assignable classes in STL containers.
+**
 ** Revision 1.19  2010-10-14 13:17:52  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

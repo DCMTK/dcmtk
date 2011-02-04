@@ -51,12 +51,6 @@ namespace log4cplus
     }
 
 
-    /** \typedef OFList<Logger> LoggerList
-     * This is a list of {@link Logger Loggers}. */
-    typedef OFList<Logger> LoggerList;
-    typedef OFListIterator(Logger) LoggerListIterator;
-
-
     /**
      * This is the central class in the log4cplus package. One of the
      * distintive features of log4cplus are hierarchical loggers and their
@@ -85,7 +79,7 @@ namespace log4cplus
          * The root logger is <em>not</em> included in the returned
          * list.
         */
-        static LoggerList getCurrentLoggers();
+        static OFList<Logger> getCurrentLoggers();
 
         /**
          * Return the default Hierarchy instance.
@@ -293,6 +287,12 @@ namespace log4cplus
         friend class log4cplus::HierarchyLocker;
         friend class log4cplus::DefaultLoggerFactory;
     };
+
+
+    /** \typedef OFList<Logger> LoggerList
+     * This is a list of {@link Logger Loggers}. */
+    typedef OFList<Logger> LoggerList;
+    typedef OFListIterator(Logger) LoggerListIterator;
 
 
     /**

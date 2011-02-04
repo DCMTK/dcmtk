@@ -19,9 +19,9 @@
  *    class DcmExtendedNegotiationItem
  *    class DcmExtendedNegotiationMap
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:28 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:07:46 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,24 @@ DcmExtendedNegotiationItem::DcmExtendedNegotiationItem(const DcmExtendedNegotiat
 DcmExtendedNegotiationItem::~DcmExtendedNegotiationItem()
 {
   delete[] raw_;
+}
+
+DcmExtendedNegotiationItem& DcmExtendedNegotiationItem::operator=(const DcmExtendedNegotiationItem& arg)
+{
+  if (raw_)
+    delete[] raw_;
+  if (arg.length_ && arg.raw_)
+  {
+    length_ = arg.length_;
+    raw_ = new unsigned char[length_];
+    (void) memcpy(raw_, arg.raw_, OFstatic_cast(size_t, length_));
+  }
+  else
+  {
+    raw_ = NULL;
+    length_ = 0;
+  }
+  return *this;
 }
 
 OFBool DcmExtendedNegotiationItem::operator==(const DcmExtendedNegotiationItem& arg) const
@@ -207,6 +225,9 @@ const DcmExtendedNegotiationList *DcmExtendedNegotiationMap::getExtendedNegotiat
 /*
  * CVS/RCS Log
  * $Log: dccfenmp.cc,v $
+ * Revision 1.9  2011-02-04 12:07:46  uli
+ * Made sure we only save assignable classes in STL containers.
+ *
  * Revision 1.8  2010-10-14 13:14:28  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

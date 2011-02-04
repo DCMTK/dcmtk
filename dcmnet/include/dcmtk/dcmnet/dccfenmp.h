@@ -19,9 +19,9 @@
  *    class DcmExtendedNegotiationItem
  *    class DcmExtendedNegotiationMap
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:22 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:07:46 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,9 @@ public:
  
   /// destructor
   ~DcmExtendedNegotiationItem();
+
+  /// assignment operator
+  DcmExtendedNegotiationItem& operator=(const DcmExtendedNegotiationItem& arg);
 
   /** checks if the given argument matches the abstract syntax UID
    *  maintained by this object
@@ -110,9 +113,6 @@ public:
   OFBool operator==(const DcmExtendedNegotiationItem& arg) const;
 
 private:
-
-  /// private undefined copy assignment operator
-  DcmExtendedNegotiationItem& operator=(const DcmExtendedNegotiationItem& arg);
 
   /// pointer to raw data block
   unsigned char *raw_;
@@ -200,6 +200,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dccfenmp.h,v $
+ * Revision 1.5  2011-02-04 12:07:46  uli
+ * Made sure we only save assignable classes in STL containers.
+ *
  * Revision 1.4  2010-10-14 13:17:22  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -19,9 +19,9 @@
  *    class DcmRoleSelectionItem
  *    class DcmRoleSelectionMap
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:28 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:07:46 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,6 +49,13 @@ DcmRoleSelectionItem::DcmRoleSelectionItem(const DcmRoleSelectionItem& arg)
 
 DcmRoleSelectionItem::~DcmRoleSelectionItem()
 {
+}
+
+DcmRoleSelectionItem& DcmRoleSelectionItem::operator=(const DcmRoleSelectionItem& arg)
+{
+  role_ = arg.role_;
+  uid_ = arg.uid_;
+  return *this;
 }
 
 /* ========================================================= */
@@ -183,6 +190,9 @@ const DcmRoleSelectionList *DcmRoleSelectionMap::getRoleSelectionList(const char
 /*
  * CVS/RCS Log
  * $Log: dccfrsmp.cc,v $
+ * Revision 1.6  2011-02-04 12:07:46  uli
+ * Made sure we only save assignable classes in STL containers.
+ *
  * Revision 1.5  2010-10-14 13:14:28  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

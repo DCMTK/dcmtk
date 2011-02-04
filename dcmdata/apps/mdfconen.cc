@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:30 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-04 12:07:46 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,10 +45,22 @@ END_EXTERN_C
 
 static OFLogger dcmodifyLogger = OFLog::getLogger("dcmtk.apps.dcmodify");
 
+MdfJob::MdfJob(const MdfJob& other)
+: option(other.option), path(other.path), value(other.value)
+{
+}
 
 OFBool MdfJob::operator==(const MdfJob &j) const
 {
     return (option == j.option) && (path == j.path) && (value == j.value);
+}
+
+MdfJob &MdfJob::operator=(const MdfJob &j)
+{
+    option = j.option;
+    path = j.path;
+    value = j.value;
+    return *this;
 }
 
 
@@ -662,6 +674,9 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.39  2011-02-04 12:07:46  uli
+** Made sure we only save assignable classes in STL containers.
+**
 ** Revision 1.38  2010-10-14 13:13:30  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
