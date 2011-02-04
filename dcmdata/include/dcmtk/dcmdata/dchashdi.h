@@ -18,8 +18,8 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-10 12:04:06 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2011-02-04 11:14:38 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,72 +40,58 @@ class DcmHashDict;
 /** the default size for a data dictionary hash table */
 const int DCMHASHDICT_DEFAULT_HASHSIZE = 2047;
 
-/// typedefs needed for MSVC5
-typedef OFListIterator(DcmDictEntry *) OFListIteratorPDcmDictEntry;
-typedef OFListConstIterator(DcmDictEntry *) OFListConstIteratorPDcmDictEntry;
-
-
-/** iterator class for traversing a DcmDictEntryList
- */
-class DcmDictEntryListIterator: public OFListIteratorPDcmDictEntry
-{
-public:
-
-    /// default constructor
-    DcmDictEntryListIterator() {}
-
-    /** constructor
-     *  @param iter reference to an object of the base class
-     */
-    DcmDictEntryListIterator(const OFListIterator(DcmDictEntry*)& iter) 
-    : OFListIterator(DcmDictEntry*)(iter) {}
-
-    /// copy assignment operator
-    DcmDictEntryListIterator& operator=(const DcmDictEntryListIterator& i)
-    {
-      OFListIteratorPDcmDictEntry::operator=(i);
-      return *this;
-    }
-};
-
-/** const_iterator class for traversing a DcmDictEntryList
- */
-class DcmDictEntryListConstIterator: public OFListConstIteratorPDcmDictEntry
-{
-public:
-
-    /// default constructor
-    DcmDictEntryListConstIterator() {}
-
-    /** constructor
-     *  @param iter reference to an object of the base class
-     */
-    DcmDictEntryListConstIterator(const OFListConstIterator(DcmDictEntry*)& iter) 
-    : OFListConstIterator(DcmDictEntry*)(iter) {}
-
-    /// copy assignment operator
-    DcmDictEntryListConstIterator& operator=(const DcmDictEntryListConstIterator& i)
-    {
-      OFListConstIteratorPDcmDictEntry::operator=(i);
-      return *this;
-    }
-};
-
+typedef OFListIterator(DcmDictEntry *) DcmDictEntryListIterator;
+typedef OFListConstIterator(DcmDictEntry *) DcmDictEntryListConstIterator;
 
 /** an ordered list of pointers to DcmDictEntry objects
  */
-class DcmDictEntryList : public OFList<DcmDictEntry *>
+class DcmDictEntryList
 {
 public:
 
     /// constructor
-    DcmDictEntryList() {}
+    DcmDictEntryList() : list_() {}
 
     /// destructor
     ~DcmDictEntryList();
 
     /// clears list and deletes all entries
     void clear();
+
+    /// @return the number of elements in this list
+    unsigned int size() const;
+
+    /// @return True if this list is empty
+    OFBool empty() const;
+
+    /// @return Iterator to the beginning of the list
+    DcmDictEntryListIterator begin();
+
+    /// @return Iterator past the end of the list
+    DcmDictEntryListIterator end();
+
+    /// @return Iterator to the beginning of the list
+    DcmDictEntryListConstIterator begin() const;
+
+    /// @return Iterator past the end of the list
+    DcmDictEntryListConstIterator end() const;
+
+    /** Insert a new element in the list
+     *  @param position Position to insert after
+     *  @param entry Entry to insert
+     *  @return Iterator to the new entry
+     */
+    DcmDictEntryListIterator insert(DcmDictEntryListIterator position, DcmDictEntry *entry);
+
+    /** Remove an element from the list.
+     *  @param entry The entry to remove
+     */
+    void remove(DcmDictEntry *entry);
+
+    /** Append a new entry to the list.
+     *  @param entry The entry to append.
+     */
+    void push_back(DcmDictEntry *entry);
 
     /** inserts an entry into the list and returns any replaced entry
      *  @param e new list entry
@@ -120,9 +106,11 @@ private:
 
     /// private undefined copy constructor
     DcmDictEntryList(const DcmDictEntryList&);
-  
+
     /// private undefined copy assignment operator
     DcmDictEntryList& operator=(const DcmDictEntryList&);
+
+    OFList<DcmDictEntry *> list_;
 };
 
 
@@ -321,6 +309,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
+** Revision 1.23  2011-02-04 11:14:38  uli
+** Stop inheriting from OFList and OFListIterator.
+**
 ** Revision 1.22  2010-11-10 12:04:06  uli
 ** Corrected DcmHashDictIterator::operator!=. Previously it ignored hindex.
 **

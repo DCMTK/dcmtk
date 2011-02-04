@@ -18,8 +18,8 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-10 12:02:01 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2011-02-04 11:14:38 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,8 +47,8 @@ void
 DcmDictEntryList::clear()
 {
     while (!empty()) {
-        delete front();
-        pop_front();
+        delete list_.front();
+        list_.pop_front();
     }
 }
 
@@ -56,7 +56,7 @@ DcmDictEntry*
 DcmDictEntryList::insertAndReplace(DcmDictEntry* e)
 {
     if (empty()) {
-        push_front(e);
+        list_.push_front(e);
     } else {
         DcmDictEntryListIterator iter(begin());
         DcmDictEntryListIterator last(end());
@@ -115,6 +115,59 @@ DcmDictEntry *DcmDictEntryList::find(const DcmTagKey& k, const char *privCreator
     return NULL;
 }
 
+unsigned int
+DcmDictEntryList::size() const
+{
+    return list_.size();
+}
+
+OFBool
+DcmDictEntryList::empty() const
+{
+    return list_.empty();
+}
+
+DcmDictEntryListIterator
+DcmDictEntryList::begin()
+{
+    return list_.begin();
+}
+
+DcmDictEntryListIterator
+DcmDictEntryList::end()
+{
+    return list_.end();
+}
+
+DcmDictEntryListConstIterator
+DcmDictEntryList::begin() const
+{
+    return list_.begin();
+}
+
+DcmDictEntryListConstIterator
+DcmDictEntryList::end() const
+{
+    return list_.end();
+}
+
+DcmDictEntryListIterator
+DcmDictEntryList::insert(DcmDictEntryListIterator position, DcmDictEntry *entry)
+{
+    return list_.insert(position, entry);
+}
+
+void
+DcmDictEntryList::remove(DcmDictEntry *entry)
+{
+    list_.remove(entry);
+}
+
+void
+DcmDictEntryList::push_back(DcmDictEntry *entry)
+{
+    list_.push_back(entry);
+}
 
 /*
 ** DcmHashDictIterator
@@ -531,6 +584,9 @@ DcmHashDict::loadSummary(STD_NAMESPACE ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
+** Revision 1.27  2011-02-04 11:14:38  uli
+** Stop inheriting from OFList and OFListIterator.
+**
 ** Revision 1.26  2010-11-10 12:02:01  uli
 ** Made DcmHashDictIterator::stepUp correctly stop at the end of the dict.
 **

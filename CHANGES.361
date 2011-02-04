@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.02.04 (schlachter)
+
+- Stop inheriting from OFList and OFListIterator.
+  Affects: dcmdata/include/dcmtk/dcmdata/dchashdi.h
+           dcmdata/libsrc/dchashdi.cc
+
 **** Changes from 2011.02.03 (riesmeier)
 
 - Fixed incomplete path to header file in include statement of the sample code.
