@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.09 (riesmeier)
 
+- Output version information on CharLS library if compiled as "dcml2pnm".
+  Affects: dcmimage/apps/dcm2pnm.cc
+
 - If DEBUG is defined, report on the presence of debug code when printing the
   host information, e.g. by calling command line tools with option --version.
   Affects: ofstd/include/dcmtk/ofstd/ofconapp.h

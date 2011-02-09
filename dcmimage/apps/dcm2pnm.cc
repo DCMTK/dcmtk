@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:33 $
- *  CVS/RCS Revision: $Revision: 1.101 $
+ *  Update Date:      $Date: 2011-02-09 09:58:44 $
+ *  CVS/RCS Revision: $Revision: 1.102 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -423,7 +423,7 @@ int main(int argc, char *argv[])
             {
                 app.printHeader(OFTrue /*print host identifier*/);
                 COUT << OFendl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(BUILD_DCM2PNM_AS_DCMJ2PNM) && !defined(WITH_LIBTIFF) && !defined(WITH_LIBPNG)
+#if !defined(WITH_ZLIB) && !defined(BUILD_DCM2PNM_AS_DCMJ2PNM) && !defined(BUILD_DCM2PNM_AS_DCML2PNM) && !defined(WITH_LIBTIFF) && !defined(WITH_LIBPNG)
                 COUT << " none" << OFendl;
 #else
                 COUT << OFendl;
@@ -433,6 +433,9 @@ int main(int argc, char *argv[])
 #endif
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
                 COUT << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
+#endif
+#ifdef BUILD_DCM2PNM_AS_DCML2PNM
+                COUT << "- " << "CharLS, Revision 55020 (modified)" << OFendl;
 #endif
 #ifdef WITH_LIBTIFF
                 COUT << "- " << DiTIFFPlugin::getLibraryVersionString() << OFendl;
@@ -1520,6 +1523,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.102  2011-02-09 09:58:44  joergr
+ * Output version information on CharLS library if compiled as "dcml2pnm".
+ *
  * Revision 1.101  2010-10-14 13:13:33  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
