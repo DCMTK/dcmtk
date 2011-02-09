@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-02 11:27:08 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2011-02-09 14:16:03 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,34 +113,44 @@ void DiDocument::convertPixelData()
     DCMIMGLE_DEBUG("transfer syntax of DICOM dataset: " << xfer.getXferName() << " (" << xfer.getXferID() << ")");
     if (search(DCM_PixelData, pstack))
     {
-        PixelData = OFstatic_cast(DcmPixelData *, pstack.top());
-        if (PixelData != NULL)
+        DcmObject *pobject = pstack.top();
+        if (pobject != NULL)
         {
-            // convert pixel data to uncompressed format (if required)
-            if ((Flags & CIF_DecompressCompletePixelData) || !(Flags & CIF_UsePartialAccessToPixelData))
+            // check for correct class before type casting
+            if (pobject->ident() == EVR_PixelData)
             {
-                pstack.clear();
-                // push reference to DICOM dataset on the stack (required for decompression process)
-                pstack.push(Object);
-                // dummy stack entry
-                pstack.push(PixelData);
-                if (PixelData->chooseRepresentation(EXS_LittleEndianExplicit, NULL, pstack).good())
+                PixelData = OFstatic_cast(DcmPixelData *, pobject);
+                // convert pixel data to uncompressed format (if required)
+                if ((Flags & CIF_DecompressCompletePixelData) || !(Flags & CIF_UsePartialAccessToPixelData))
                 {
-                    // set transfer syntax to unencapsulated/uncompressed
-                    if (DcmXfer(Xfer).isEncapsulated())
+                    pstack.clear();
+                    // push reference to DICOM dataset on the stack (required for decompression process)
+                    pstack.push(Object);
+                    // dummy stack entry
+                    pstack.push(PixelData);
+                    if (PixelData->chooseRepresentation(EXS_LittleEndianExplicit, NULL, pstack).good())
                     {
-                        Xfer = EXS_LittleEndianExplicit;
-                        DCMIMGLE_DEBUG("decompressed complete pixel data in memory: " << PixelData->getLength(Xfer) << " bytes");
-                    }
-                } else
-                    DCMIMGLE_ERROR("can't change to unencapsulated representation for pixel data");
-            }
-            // determine color model of the decompressed image
-            OFCondition status = PixelData->getDecompressedColorModel(OFstatic_cast(DcmDataset *, Object), PhotometricInterpretation);
-            if (status.bad())
-            {
-                DCMIMGLE_ERROR("can't determine 'PhotometricInterpretation' of decompressed image");
-                DCMIMGLE_DEBUG("DcmPixelData::getDecompressedColorModel() returned: " << status.text());
+                        // set transfer syntax to unencapsulated/uncompressed
+                        if (DcmXfer(Xfer).isEncapsulated())
+                        {
+                            Xfer = EXS_LittleEndianExplicit;
+                            DCMIMGLE_DEBUG("decompressed complete pixel data in memory: " << PixelData->getLength(Xfer) << " bytes");
+                        }
+                    } else
+                        DCMIMGLE_ERROR("can't change to unencapsulated representation for pixel data");
+                }
+                // determine color model of the decompressed image
+                OFCondition status = PixelData->getDecompressedColorModel(OFstatic_cast(DcmDataset *, Object), PhotometricInterpretation);
+                if (status.bad())
+                {
+                    DCMIMGLE_ERROR("can't determine 'PhotometricInterpretation' of decompressed image");
+                    DCMIMGLE_DEBUG("DcmPixelData::getDecompressedColorModel() returned: " << status.text());
+                }
+            } else {
+                DCMIMGLE_ERROR("invalid pixel data in DICOM dataset (wrong class)");
+                DCMIMGLE_DEBUG("found PixelData " << DCM_PixelData << " as an instance of the class for VR '"
+                    << OFSTRING_GUARD(DcmVR(pobject->ident()).getVRName()) << "' instead of '"
+                    << OFSTRING_GUARD(DcmVR(EVR_PixelData).getVRName()) << "'");
             }
         } else
             DCMIMGLE_ERROR("invalid pixel data in DICOM dataset");
@@ -409,6 +419,9 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
+ * Revision 1.27  2011-02-09 14:16:03  joergr
+ * Added check on class of PixelData element before casting to DcmPixelData.
+ *
  * Revision 1.26  2010-11-02 11:27:08  joergr
  * Enhanced output to debug logger: Added more details in case of failures.
  *

@@ -8,6 +8,9 @@ Changes between releases are documented here.
   Thanks to Tilman Vogel <tilman@circlecvi.com> for the report & suggested fix.
   Affects: dcmimage/libsrc/dicoimg.cc
 
+- Added check on class of PixelData element before casting to DcmPixelData.
+  Affects: dcmimgle/libsrc/didocu.cc
+
 - Output version information on CharLS library if compiled as "dcml2pnm".
   Affects: dcmimage/apps/dcm2pnm.cc
 
