@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.09 (riesmeier)
 
+- Create a new instance of DcmPixelData instead of DcmPolymorphOBOW in method
+  writeImageToDataset() in order to avoid problems with later type casts.
+  Thanks to Tilman Vogel <tilman@circlecvi.com> for the report & suggested fix.
+  Affects: dcmimage/libsrc/dicoimg.cc
+
 - Output version information on CharLS library if compiled as "dcml2pnm".
   Affects: dcmimage/apps/dcm2pnm.cc
 

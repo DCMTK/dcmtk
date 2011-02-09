@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:14 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2011-02-09 13:53:53 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -520,7 +520,7 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
     if ((InterData != NULL) && (InterData->getCount() > 0) && (BitsPerSample > 0))
     {
         /* create new pixel data element */
-        DcmPolymorphOBOW *pixel = new DcmPolymorphOBOW(DCM_PixelData);
+        DcmPixelData *pixel = new DcmPixelData(DCM_PixelData);
         if (pixel != NULL)
         {
             OFBool ok = OFFalse;
@@ -710,6 +710,10 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
+ * Revision 1.46  2011-02-09 13:53:53  joergr
+ * Create a new instance of DcmPixelData instead of DcmPolymorphOBOW in method
+ * writeImageToDataset() in order to avoid problems with later type casts.
+ *
  * Revision 1.45  2010-10-14 13:14:14  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
