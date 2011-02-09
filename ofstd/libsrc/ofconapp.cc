@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2010, OFFIS e.V.
+ *  Copyright (C) 1999-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:52 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2011-02-09 09:35:18 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,7 +108,12 @@ void OFConsoleApplication::printHeader(const OFBool hostInfo,
     (*output) << OFendl;
     /* print optional host information */
     if (hostInfo)
+    {
         (*output) << OFendl << "Host type: " << CANONICAL_HOST_TYPE << OFendl;
+#ifdef DEBUG
+        (*output) << OFendl << "Compiled with DEBUG defined, i.e. with debug code" << OFendl;
+#endif
+    }
     /* release output stream */
     if (stdError)
         ofConsole.unlockCerr();
@@ -290,6 +295,10 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
+ * Revision 1.31  2011-02-09 09:35:18  joergr
+ * If DEBUG is defined, report on the presence of debug code when printing the
+ * host information, e.g. by calling command line tools with option --version.
+ *
  * Revision 1.30  2010-10-14 13:14:52  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

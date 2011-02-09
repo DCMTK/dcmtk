@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2010, OFFIS e.V.
+ *  Copyright (C) 1999-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2011-02-09 09:35:16 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,8 @@ class OFConsoleApplication
 
     /** print header of console application (consisting of identifier, name and description)
      *
-     ** @param  hostInfo  print host information as reported by 'config.guess' if OFTrue
+     ** @param  hostInfo  print host information as reported by 'config.guess' if OFTrue.
+     *                    If DEBUG is defined, a note on the presence of debug code is given.
      *  @param  stdError  print to standard error stream if OFTrue (default: standard output)
      */
     void printHeader(const OFBool hostInfo = OFFalse,
@@ -211,6 +212,10 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
+ * Revision 1.26  2011-02-09 09:35:16  joergr
+ * If DEBUG is defined, report on the presence of debug code when printing the
+ * host information, e.g. by calling command line tools with option --version.
+ *
  * Revision 1.25  2010-10-14 13:15:50  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
