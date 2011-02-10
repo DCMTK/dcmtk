@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.02.01 (riesmeier)
+
+- Changed default name of CHM file (removed version number from the filename).
+  Affects: doxygen/htmldocs.cfg
+
 **** Changes from 2011.02.09 (riesmeier)
 
 - Create a new instance of DcmPixelData instead of DcmPolymorphOBOW in method
