@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.11 (riesmeier)
 
+- Moved retired data elements to the end of the dictionary in order to make
+  sure that the most recent definitions are used, even for old ACR/NEMA tags.
+  Please note that some names changed from "ACR_NEMA_..." to "RETIRED_...".
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Added support for CP 1036, 1037, 1044, 1057 and 1078 to data dictionary.
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h
