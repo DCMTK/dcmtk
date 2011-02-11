@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2010-11-05 10:08:45
+**   Date: 2011-02-11 10:29:55
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2010-11-05 10:08:45"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2011-02-11 10:29:55"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3250
+** Number of entries: 3255
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -679,6 +679,8 @@
 #define DCM_FieldOfViewOrigin                    DcmTagKey(0x0018, 0x7030)
 #define DCM_FieldOfViewRotation                  DcmTagKey(0x0018, 0x7032)
 #define DCM_FieldOfViewHorizontalFlip            DcmTagKey(0x0018, 0x7034)
+#define DCM_PixelDataAreaOriginRelativeToFOV     DcmTagKey(0x0018, 0x7036)
+#define DCM_PixelDataAreaRotationAngleRelativeToFOV DcmTagKey(0x0018, 0x7038)
 #define DCM_GridAbsorbingMaterial                DcmTagKey(0x0018, 0x7040)
 #define DCM_GridSpacingMaterial                  DcmTagKey(0x0018, 0x7041)
 #define DCM_GridThickness                        DcmTagKey(0x0018, 0x7042)
@@ -893,6 +895,7 @@
 #define DCM_PositionerPositionSequence           DcmTagKey(0x0018, 0x9405)
 #define DCM_TablePositionSequence                DcmTagKey(0x0018, 0x9406)
 #define DCM_CollimatorShapeSequence              DcmTagKey(0x0018, 0x9407)
+#define DCM_PlanesInAcquisition                  DcmTagKey(0x0018, 0x9410)
 #define DCM_XAXRFFrameCharacteristicsSequence    DcmTagKey(0x0018, 0x9412)
 #define DCM_FrameAcquisitionSequence             DcmTagKey(0x0018, 0x9417)
 #define DCM_XRayReceptorType                     DcmTagKey(0x0018, 0x9420)
@@ -1858,6 +1861,7 @@
 #define DCM_HL7InstanceIdentifier                DcmTagKey(0x0040, 0xe001)
 #define DCM_HL7DocumentEffectiveTime             DcmTagKey(0x0040, 0xe004)
 #define DCM_HL7DocumentTypeCodeSequence          DcmTagKey(0x0040, 0xe006)
+#define DCM_DocumentClassCodeSequence            DcmTagKey(0x0040, 0xe008)
 #define DCM_RetrieveURI                          DcmTagKey(0x0040, 0xe010)
 #define DCM_RetrieveLocationUID                  DcmTagKey(0x0040, 0xe011)
 #define DCM_DocumentTitle                        DcmTagKey(0x0042, 0x0010)
@@ -2031,6 +2035,7 @@
 #define DCM_Units                                DcmTagKey(0x0054, 0x1001)
 #define DCM_CountsSource                         DcmTagKey(0x0054, 0x1002)
 #define DCM_ReprojectionMethod                   DcmTagKey(0x0054, 0x1004)
+#define DCM_SUVType                              DcmTagKey(0x0054, 0x1006)
 #define DCM_RandomsCorrectionMethod              DcmTagKey(0x0054, 0x1100)
 #define DCM_AttenuationCorrectionMethod          DcmTagKey(0x0054, 0x1101)
 #define DCM_DecayCorrection                      DcmTagKey(0x0054, 0x1102)

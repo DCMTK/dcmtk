@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-02-02 16:00:26
+**   Date: 2011-02-11 10:30:07
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2011-02-02 16:00:26";
+const char* dcmBuiltinDictBuildDate = "2011-02-11 10:30:07";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -4079,6 +4079,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "FieldOfViewHorizontalFlip", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0018, 0x7036, 0x0018, 0x7036,
+      EVR_FL, "PixelDataAreaOriginRelativeToFOV", 2, 2, "CP_1044",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x7038, 0x0018, 0x7038,
+      EVR_FL, "PixelDataAreaRotationAngleRelativeToFOV", 1, 1, "CP_1044",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0018, 0x7040, 0x0018, 0x7040,
       EVR_LT, "GridAbsorbingMaterial", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -4933,6 +4941,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0018, 0x9407, 0x0018, 0x9407,
       EVR_SQ, "CollimatorShapeSequence", 1, 1, "DICOM_2009",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9410, 0x0018, 0x9410,
+      EVR_CS, "PlanesInAcquisition", 1, 1, "CP_1036",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x9412, 0x0018, 0x9412,
@@ -16725,6 +16737,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "HL7DocumentTypeCodeSequence", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0040, 0xe008, 0x0040, 0xe008,
+      EVR_SQ, "DocumentClassCodeSequence", 1, 1, "CP_1078",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0040, 0xe010, 0x0040, 0xe010,
       EVR_UT, "RetrieveURI", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -18441,6 +18457,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0054, 0x1004, 0x0054, 0x1004,
       EVR_CS, "ReprojectionMethod", 1, 1, "DICOM_2009",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0054, 0x1006, 0x0054, 0x1006,
+      EVR_CS, "SUVType", 1, 1, "CP_1037",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0054, 0x1100, 0x0054, 0x1100,

@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2010, OFFIS e.V.
+#  Copyright (C) 1994-2011, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2010-11-05 09:11:22 $
-#  CVS/RCS Revision: $Revision: 1.9 $
+#  Update Date:      $Date: 2011-02-11 09:33:53 $
+#  CVS/RCS Revision: $Revision: 1.10 $
 #  Status:           $State: Exp $
 #
 # This file contains the complete data dictionary from the 2009 edition
@@ -27,7 +27,7 @@
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
 # - Supplement 120, 131, 144, 145, 146.
-# - CP 650, 988, 1010, 1024.
+# - CP 650, 988, 1010, 1024, 1036, 1037, 1044, 1057, 1078.
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -3027,6 +3027,11 @@
 (0018,1411)	DS	ExposureIndex	1	CP_1024
 (0018,1412)	DS	TargetExposureIndex	1	CP_1024
 (0018,1413)	DS	DeviationIndex	1	CP_1024
+(0018,9410)	CS	PlanesInAcquisition	1	CP_1036
+(0054,1006)	CS	SUVType	1	CP_1037
+(0018,7036)	FL	PixelDataAreaOriginRelativeToFOV	2	CP_1044
+(0018,7038)	FL	PixelDataAreaRotationAngleRelativeToFOV	1	CP_1044
+(0040,E008)	SQ	DocumentClassCodeSequence	1	CP_1078
 #
 #---------------------------------------------------------------------------
 #
@@ -3048,7 +3053,7 @@
 # Retired data elements from previous editions of the DICOM standard
 #
 (0000,0001)	UL	RETIRED_CommandLengthToEnd	1	DICOM/retired
-(0000,0010)	CS	RETIRED_CommandRecognitionCode	1	DICOM/retired
+(0000,0010)	SH	RETIRED_CommandRecognitionCode	1	DICOM/retired
 (0000,0200)	AE	RETIRED_Initiator	1	DICOM/retired
 (0000,0300)	AE	RETIRED_Receiver	1	DICOM/retired
 (0000,0400)	AE	RETIRED_FindLocation	1	DICOM/retired
@@ -3072,7 +3077,7 @@
 (0004,1504)	up	RETIRED_MRDRDirectoryRecordOffset	1	DICOM/retired
 (0004,1600)	UL	RETIRED_NumberOfReferences	1	DICOM/retired
 (0008,0001)	UL	RETIRED_LengthToEnd	1	DICOM/retired
-(0008,0010)	CS	RETIRED_RecognitionCode	1	DICOM/retired
+(0008,0010)	SH	RETIRED_RecognitionCode	1	DICOM/retired
 (0008,0024)	DA	RETIRED_OverlayDate	1	DICOM/retired
 (0008,0025)	DA	RETIRED_CurveDate	1	DICOM/retired
 (0008,0034)	TM	RETIRED_OverlayTime	1	DICOM/retired
@@ -3149,7 +3154,7 @@
 (0020,1003)	IS	RETIRED_ImagesInSeries	1	DICOM/retired
 (0020,1004)	IS	RETIRED_AcquisitionsInStudy	1	DICOM/retired
 (0020,1005)	IS	RETIRED_ImagesInStudy	1	DICOM/retired
-(0020,1020)	CS	RETIRED_Reference	1-n	DICOM/retired
+(0020,1020)	LO	RETIRED_Reference	1-n	DICOM/retired
 (0020,1070)	IS	RETIRED_OtherStudyNumbers	1-n	DICOM/retired
 (0020,3100-31FF)	CS	RETIRED_SourceImageIDs	1-n	DICOM/retired
 (0020,3401)	CS	RETIRED_ModifyingDeviceID	1	DICOM/retired
@@ -3159,7 +3164,7 @@
 (0020,3405)	TM	RETIRED_ModifiedImageTime	1	DICOM/retired
 (0020,3406)	LO	RETIRED_ModifiedImageDescription	1	DICOM/retired
 (0020,5000)	AT	RETIRED_OriginalImageIdentification	1-n	DICOM/retired
-(0020,5002)	CS	RETIRED_OriginalImageIdentificationNomenclature	1-n	DICOM/retired
+(0020,5002)	LO	RETIRED_OriginalImageIdentificationNomenclature	1-n	DICOM/retired
 (0028,0005)	US	RETIRED_ImageDimensions	1	DICOM/retired
 (0028,0012)	US	RETIRED_Planes	1	DICOM/retired
 (0028,0040)	CS	RETIRED_ImageFormat	1	DICOM/retired

@@ -1,7 +1,14 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2011.02.01 (riesmeier)
+**** Changes from 2011.02.11 (riesmeier)
+
+- Added support for CP 1036, 1037, 1044, 1057 and 1078 to data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
+**** Changes from 2011.02.10 (riesmeier)
 
 - Changed default name of CHM file (removed version number from the filename).
   Affects: doxygen/htmldocs.cfg
