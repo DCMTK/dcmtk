@@ -74,8 +74,8 @@
 ** Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2011-02-11 12:11:21 $
-** CVS/RCS Revision:    $Revision: 1.63 $
+** Update Date:         $Date: 2011-02-11 13:33:24 $
+** CVS/RCS Revision:    $Revision: 1.64 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -338,24 +338,24 @@ getTransferSyntax(
         case EXS_LittleEndianImplicit:
         case EXS_LittleEndianExplicit:
         case EXS_BigEndianExplicit:
-        case EXS_JPEGProcess1TransferSyntax:
-        case EXS_JPEGProcess2_4TransferSyntax:
-        case EXS_JPEGProcess3_5TransferSyntax:
-        case EXS_JPEGProcess6_8TransferSyntax:
-        case EXS_JPEGProcess7_9TransferSyntax:
-        case EXS_JPEGProcess10_12TransferSyntax:
-        case EXS_JPEGProcess11_13TransferSyntax:
-        case EXS_JPEGProcess14TransferSyntax:
-        case EXS_JPEGProcess15TransferSyntax:
-        case EXS_JPEGProcess16_18TransferSyntax:
-        case EXS_JPEGProcess17_19TransferSyntax:
-        case EXS_JPEGProcess20_22TransferSyntax:
-        case EXS_JPEGProcess21_23TransferSyntax:
-        case EXS_JPEGProcess24_26TransferSyntax:
-        case EXS_JPEGProcess25_27TransferSyntax:
-        case EXS_JPEGProcess28TransferSyntax:
-        case EXS_JPEGProcess29TransferSyntax:
-        case EXS_JPEGProcess14SV1TransferSyntax:
+        case EXS_JPEGProcess1:
+        case EXS_JPEGProcess2_4:
+        case EXS_JPEGProcess3_5:
+        case EXS_JPEGProcess6_8:
+        case EXS_JPEGProcess7_9:
+        case EXS_JPEGProcess10_12:
+        case EXS_JPEGProcess11_13:
+        case EXS_JPEGProcess14:
+        case EXS_JPEGProcess15:
+        case EXS_JPEGProcess16_18:
+        case EXS_JPEGProcess17_19:
+        case EXS_JPEGProcess20_22:
+        case EXS_JPEGProcess21_23:
+        case EXS_JPEGProcess24_26:
+        case EXS_JPEGProcess25_27:
+        case EXS_JPEGProcess28:
+        case EXS_JPEGProcess29:
+        case EXS_JPEGProcess14SV1:
         case EXS_RLELossless:
         case EXS_JPEGLSLossless:
         case EXS_JPEGLSLossy:
@@ -1783,6 +1783,9 @@ OFString DIMSE_warn_str(T_ASC_Association *assoc)
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.64  2011-02-11 13:33:24  joergr
+** Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
+**
 ** Revision 1.63  2011-02-11 12:11:21  joergr
 ** Added initial support for the MPEG4 transfer syntaxes from Supplement 149.
 **

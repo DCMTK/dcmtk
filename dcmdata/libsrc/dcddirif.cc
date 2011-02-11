@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-15 12:57:20 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-02-11 13:33:16 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1036,8 +1036,8 @@ DicomDirInterface::DicomDirInterface()
 {
     /* check whether (possibly required) RLE/JPEG/JP2K decoders are registered */
     RLESupport  = DcmCodecList::canChangeCoding(EXS_RLELossless, EXS_LittleEndianExplicit);
-    JPEGSupport = DcmCodecList::canChangeCoding(EXS_JPEGProcess1TransferSyntax, EXS_LittleEndianExplicit) &&
-                  DcmCodecList::canChangeCoding(EXS_JPEGProcess14SV1TransferSyntax, EXS_LittleEndianExplicit);
+    JPEGSupport = DcmCodecList::canChangeCoding(EXS_JPEGProcess1, EXS_LittleEndianExplicit) &&
+                  DcmCodecList::canChangeCoding(EXS_JPEGProcess14SV1, EXS_LittleEndianExplicit);
     JP2KSupport = DcmCodecList::canChangeCoding(EXS_JPEG2000LosslessOnly, EXS_LittleEndianExplicit) &&
                   DcmCodecList::canChangeCoding(EXS_JPEG2000, EXS_LittleEndianExplicit);
 }
@@ -5271,6 +5271,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.57  2011-02-11 13:33:16  joergr
+ *  Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
+ *
  *  Revision 1.56  2010-11-15 12:57:20  uli
  *  Removed a useless and potentially dangerous use of sscanf().
  *

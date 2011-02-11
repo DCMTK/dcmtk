@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Codec class for decoding JPEG Lossless (8/12/16-bit)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:21 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-02-11 13:33:20 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ DJDecoderLossless::~DJDecoderLossless()
 
 E_TransferSyntax DJDecoderLossless::supportedTransferSyntax() const
 {
-  return EXS_JPEGProcess14TransferSyntax;
+  return EXS_JPEGProcess14;
 }
 
 
@@ -66,6 +66,9 @@ DJDecoder *DJDecoderLossless::createDecoderInstance(
 /*
  * CVS/RCS Log
  * $Log: djdeclol.cc,v $
+ * Revision 1.4  2011-02-11 13:33:20  joergr
+ * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
+ *
  * Revision 1.3  2010-10-14 13:14:21  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

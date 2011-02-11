@@ -18,8 +18,8 @@
  *  Purpose: Handling of transfer syntaxes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-11 11:56:31 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2011-02-11 13:33:11 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,41 +47,41 @@ typedef enum {
     /// Explicit VR Big Endian
     EXS_BigEndianExplicit = 3,
     /// JPEG Baseline (lossy)
-    EXS_JPEGProcess1TransferSyntax = 4,
+    EXS_JPEGProcess1 = 4,
     /// JPEG Extended Sequential (lossy, 8/12 bit)
-    EXS_JPEGProcess2_4TransferSyntax = 5,
+    EXS_JPEGProcess2_4 = 5,
     /// JPEG Extended Sequential (lossy, 8/12 bit), arithmetic coding
-    EXS_JPEGProcess3_5TransferSyntax = 6,
+    EXS_JPEGProcess3_5 = 6,
     /// JPEG Spectral Selection, Non-Hierarchical (lossy, 8/12 bit)
-    EXS_JPEGProcess6_8TransferSyntax = 7,
+    EXS_JPEGProcess6_8 = 7,
     /// JPEG Spectral Selection, Non-Hierarchical (lossy, 8/12 bit), arithmetic coding
-    EXS_JPEGProcess7_9TransferSyntax = 8,
+    EXS_JPEGProcess7_9 = 8,
     /// JPEG Full Progression, Non-Hierarchical (lossy, 8/12 bit)
-    EXS_JPEGProcess10_12TransferSyntax = 9,
+    EXS_JPEGProcess10_12 = 9,
     /// JPEG Full Progression, Non-Hierarchical (lossy, 8/12 bit), arithmetic coding
-    EXS_JPEGProcess11_13TransferSyntax = 10,
+    EXS_JPEGProcess11_13 = 10,
     /// JPEG Lossless with any selection value
-    EXS_JPEGProcess14TransferSyntax = 11,
+    EXS_JPEGProcess14 = 11,
     /// JPEG Lossless with any selection value, arithmetic coding
-    EXS_JPEGProcess15TransferSyntax = 12,
+    EXS_JPEGProcess15 = 12,
     /// JPEG Extended Sequential, Hierarchical (lossy, 8/12 bit)
-    EXS_JPEGProcess16_18TransferSyntax = 13,
+    EXS_JPEGProcess16_18 = 13,
     /// JPEG Extended Sequential, Hierarchical (lossy, 8/12 bit), arithmetic coding
-    EXS_JPEGProcess17_19TransferSyntax = 14,
+    EXS_JPEGProcess17_19 = 14,
     /// JPEG Spectral Selection, Hierarchical (lossy, 8/12 bit)
-    EXS_JPEGProcess20_22TransferSyntax = 15,
+    EXS_JPEGProcess20_22 = 15,
     /// JPEG Spectral Selection, Hierarchical (lossy, 8/12 bit), arithmetic coding
-    EXS_JPEGProcess21_23TransferSyntax = 16,
+    EXS_JPEGProcess21_23 = 16,
     /// JPEG Full Progression, Hierarchical (lossy, 8/12 bit)
-    EXS_JPEGProcess24_26TransferSyntax = 17,
+    EXS_JPEGProcess24_26 = 17,
     /// JPEG Full Progression, Hierarchical (lossy, 8/12 bit), arithmetic coding
-    EXS_JPEGProcess25_27TransferSyntax = 18,
+    EXS_JPEGProcess25_27 = 18,
     /// JPEG Lossless, Hierarchical
-    EXS_JPEGProcess28TransferSyntax = 19,
+    EXS_JPEGProcess28 = 19,
     /// JPEG Lossless, Hierarchical, arithmetic coding
-    EXS_JPEGProcess29TransferSyntax = 20,
+    EXS_JPEGProcess29 = 20,
     /// JPEG Lossless, Selection Value 1
-    EXS_JPEGProcess14SV1TransferSyntax = 21,
+    EXS_JPEGProcess14SV1 = 21,
     /// Run Length Encoding (lossless)
     EXS_RLELossless = 22,
     /// JPEG-LS (lossless)
@@ -301,6 +301,9 @@ extern const E_ByteOrder gLocalByteOrder;
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
+ * Revision 1.26  2011-02-11 13:33:11  joergr
+ * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
+ *
  * Revision 1.25  2011-02-11 11:56:31  joergr
  * Added initial support for the MPEG4 transfer syntaxes from Supplement 149.
  *

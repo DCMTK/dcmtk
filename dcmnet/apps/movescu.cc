@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-17 13:01:21 $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-02-11 13:33:22 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -434,9 +434,9 @@ main(int argc, char *argv[])
       }
       if (cmd.findOption("--prefer-little")) opt_in_networkTransferSyntax = EXS_LittleEndianExplicit;
       if (cmd.findOption("--prefer-big")) opt_in_networkTransferSyntax = EXS_BigEndianExplicit;
-      if (cmd.findOption("--prefer-lossless")) opt_in_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-      if (cmd.findOption("--prefer-jpeg8")) opt_in_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
-      if (cmd.findOption("--prefer-jpeg12")) opt_in_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
+      if (cmd.findOption("--prefer-lossless")) opt_in_networkTransferSyntax = EXS_JPEGProcess14SV1;
+      if (cmd.findOption("--prefer-jpeg8")) opt_in_networkTransferSyntax = EXS_JPEGProcess1;
+      if (cmd.findOption("--prefer-jpeg12")) opt_in_networkTransferSyntax = EXS_JPEGProcess2_4;
       if (cmd.findOption("--prefer-j2k-lossless")) opt_in_networkTransferSyntax = EXS_JPEG2000LosslessOnly;
       if (cmd.findOption("--prefer-j2k-lossy")) opt_in_networkTransferSyntax = EXS_JPEG2000;
       if (cmd.findOption("--prefer-jls-lossless")) opt_networkTransferSyntax = EXS_JPEGLSLossless;
@@ -528,9 +528,9 @@ main(int argc, char *argv[])
       {
         app.checkConflict("--write-xfer-little", "--accept-all", opt_acceptAllXfers);
         app.checkConflict("--write-xfer-little", "--bit-preserving", opt_bitPreserving);
-        app.checkConflict("--write-xfer-little", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
-        app.checkConflict("--write-xfer-little", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
-        app.checkConflict("--write-xfer-little", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-little", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1);
+        app.checkConflict("--write-xfer-little", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1);
+        app.checkConflict("--write-xfer-little", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4);
         app.checkConflict("--write-xfer-little", "--prefer-j2k-lossless", opt_networkTransferSyntax==EXS_JPEG2000LosslessOnly);
         app.checkConflict("--write-xfer-little", "--prefer-j2k-lossy", opt_networkTransferSyntax==EXS_JPEG2000);
         app.checkConflict("--write-xfer-little", "--prefer-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
@@ -545,9 +545,9 @@ main(int argc, char *argv[])
       {
         app.checkConflict("--write-xfer-big", "--accept-all", opt_acceptAllXfers);
         app.checkConflict("--write-xfer-big", "--bit-preserving", opt_bitPreserving);
-        app.checkConflict("--write-xfer-big", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
-        app.checkConflict("--write-xfer-big", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
-        app.checkConflict("--write-xfer-big", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-big", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1);
+        app.checkConflict("--write-xfer-big", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1);
+        app.checkConflict("--write-xfer-big", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4);
         app.checkConflict("--write-xfer-big", "--prefer-j2k-lossy", opt_networkTransferSyntax==EXS_JPEG2000);
         app.checkConflict("--write-xfer-big", "--prefer-j2k-lossless", opt_networkTransferSyntax==EXS_JPEG2000LosslessOnly);
         app.checkConflict("--write-xfer-big", "--prefer-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
@@ -562,9 +562,9 @@ main(int argc, char *argv[])
       {
         app.checkConflict("--write-xfer-implicit", "--accept-all", opt_acceptAllXfers);
         app.checkConflict("--write-xfer-implicit", "--bit-preserving", opt_bitPreserving);
-        app.checkConflict("--write-xfer-implicit", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
-        app.checkConflict("--write-xfer-implicit", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
-        app.checkConflict("--write-xfer-implicit", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-implicit", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1);
+        app.checkConflict("--write-xfer-implicit", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1);
+        app.checkConflict("--write-xfer-implicit", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4);
         app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossy", opt_networkTransferSyntax==EXS_JPEG2000);
         app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossless", opt_networkTransferSyntax==EXS_JPEG2000LosslessOnly);
         app.checkConflict("--write-xfer-implicit", "--prefer-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
@@ -580,9 +580,9 @@ main(int argc, char *argv[])
       {
         app.checkConflict("--write-xfer-deflated", "--accept-all", opt_acceptAllXfers);
         app.checkConflict("--write-xfer-deflated", "--bit-preserving", opt_bitPreserving);
-        app.checkConflict("--write-xfer-deflated", "--prefer-lossless", opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax);
-        app.checkConflict("--write-xfer-deflated", "--prefer-jpeg8", opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax);
-        app.checkConflict("--write-xfer-deflated", "--prefer-jpeg12", opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-deflated", "--prefer-lossless", opt_networkTransferSyntax == EXS_JPEGProcess14SV1);
+        app.checkConflict("--write-xfer-deflated", "--prefer-jpeg8", opt_networkTransferSyntax == EXS_JPEGProcess1);
+        app.checkConflict("--write-xfer-deflated", "--prefer-jpeg12", opt_networkTransferSyntax == EXS_JPEGProcess2_4);
         app.checkConflict("--write-xfer-deflated", "--prefer-j2k-lossless", opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly);
         app.checkConflict("--write-xfer-deflated", "--prefer-j2k-lossy", opt_networkTransferSyntax == EXS_JPEG2000);
         app.checkConflict("--write-xfer-deflated", "--prefer-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
@@ -975,7 +975,7 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
           transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
           numTransferSyntaxes = 3;
           break;
-        case EXS_JPEGProcess14SV1TransferSyntax:
+        case EXS_JPEGProcess14SV1:
           /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
           transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
           transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -983,7 +983,7 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
           transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
           numTransferSyntaxes = 4;
           break;
-        case EXS_JPEGProcess1TransferSyntax:
+        case EXS_JPEGProcess1:
           /* we prefer JPEGBaseline (default lossy for 8 bit images) */
           transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
           transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -991,7 +991,7 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
           transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
           numTransferSyntaxes = 4;
           break;
-        case EXS_JPEGProcess2_4TransferSyntax:
+        case EXS_JPEGProcess2_4:
           /* we prefer JPEGExtended (default lossy for 12 bit images) */
           transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
           transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -1546,6 +1546,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.89  2011-02-11 13:33:22  joergr
+** Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
+**
 ** Revision 1.88  2010-11-17 13:01:21  uli
 ** Removed some uses of "%s" with sscanf().
 **

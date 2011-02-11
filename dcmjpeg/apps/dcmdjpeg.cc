@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Decompress DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:38 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2011-02-11 13:33:18 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
         // some kind of JPEG bitstream supported by the underlying library, the
         // decompression will work. So we simply choose one of the lossless
         // transfer syntaxes, because these support all bit depths up to 16.
-        opt_ixfer = EXS_JPEGProcess14TransferSyntax;
+        opt_ixfer = EXS_JPEGProcess14;
       }
       cmd.endOptionBlock();
 
@@ -367,6 +367,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
+ * Revision 1.27  2011-02-11 13:33:18  joergr
+ * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
+ *
  * Revision 1.26  2010-10-14 13:13:38  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

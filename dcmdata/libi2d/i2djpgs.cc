@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2010, OFFIS e.V.
+ *  Copyright (C) 2007-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-29 13:10:00 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-02-11 13:33:14 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -840,11 +840,11 @@ E_TransferSyntax I2DJpegSource::associatedTS(const E_JPGMARKER& jpegEncoding)
   switch (jpegEncoding)
   {
     case E_JPGMARKER_SOF0: // Baseline
-      return EXS_JPEGProcess1TransferSyntax;
+      return EXS_JPEGProcess1;
     case E_JPGMARKER_SOF1: // Extended Sequential
-      return EXS_JPEGProcess2_4TransferSyntax;
+      return EXS_JPEGProcess2_4;
     case E_JPGMARKER_SOF2: // Progressive
-      return EXS_JPEGProcess10_12TransferSyntax;
+      return EXS_JPEGProcess10_12;
     default:
       return EXS_Unknown;
   }
@@ -900,6 +900,9 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.17  2011-02-11 13:33:14  joergr
+ * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
+ *
  * Revision 1.16  2010-11-29 13:10:00  uli
  * Fixed stack overflow in libi2d with some JPEG data streams.
  *

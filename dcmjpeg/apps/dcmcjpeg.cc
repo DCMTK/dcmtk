@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Compress DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:38 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2011-02-11 13:33:18 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 
 
   // JPEG options
-  E_TransferSyntax opt_oxfer = EXS_JPEGProcess14SV1TransferSyntax;
+  E_TransferSyntax opt_oxfer = EXS_JPEGProcess14SV1;
   OFCmdUnsignedInt opt_selection_value = 6;
   OFCmdUnsignedInt opt_point_transform = 0;
   OFCmdUnsignedInt opt_quality = 90;
@@ -318,16 +318,16 @@ int main(int argc, char *argv[])
       // JPEG options
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--encode-lossless-sv1")) opt_oxfer = EXS_JPEGProcess14SV1TransferSyntax;
-      if (cmd.findOption("--encode-lossless")) opt_oxfer = EXS_JPEGProcess14TransferSyntax;
-      if (cmd.findOption("--encode-baseline")) opt_oxfer = EXS_JPEGProcess1TransferSyntax;
-      if (cmd.findOption("--encode-extended")) opt_oxfer = EXS_JPEGProcess2_4TransferSyntax;
-      if (cmd.findOption("--encode-spectral")) opt_oxfer = EXS_JPEGProcess6_8TransferSyntax;
-      if (cmd.findOption("--encode-progressive")) opt_oxfer = EXS_JPEGProcess10_12TransferSyntax;
+      if (cmd.findOption("--encode-lossless-sv1")) opt_oxfer = EXS_JPEGProcess14SV1;
+      if (cmd.findOption("--encode-lossless")) opt_oxfer = EXS_JPEGProcess14;
+      if (cmd.findOption("--encode-baseline")) opt_oxfer = EXS_JPEGProcess1;
+      if (cmd.findOption("--encode-extended")) opt_oxfer = EXS_JPEGProcess2_4;
+      if (cmd.findOption("--encode-spectral")) opt_oxfer = EXS_JPEGProcess6_8;
+      if (cmd.findOption("--encode-progressive")) opt_oxfer = EXS_JPEGProcess10_12;
       cmd.endOptionBlock();
 
       // check for JPEG lossless output transfer syntaxes
-      lossless = (opt_oxfer == EXS_JPEGProcess14SV1TransferSyntax) || (opt_oxfer == EXS_JPEGProcess14TransferSyntax);
+      lossless = (opt_oxfer == EXS_JPEGProcess14SV1) || (opt_oxfer == EXS_JPEGProcess14);
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--true-lossless"))
@@ -349,7 +349,7 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--selection-value"))
       {
-        app.checkDependence("--selection-value", "--encode-lossless", opt_oxfer == EXS_JPEGProcess14TransferSyntax);
+        app.checkDependence("--selection-value", "--encode-lossless", opt_oxfer == EXS_JPEGProcess14);
         app.checkValue(cmd.getValueAndCheckMinMax(opt_selection_value, OFstatic_cast(OFCmdUnsignedInt, 1), OFstatic_cast(OFCmdUnsignedInt, 7)));
       }
 
@@ -389,16 +389,16 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--bits-force-12"))
       {
         app.checkConflict("--bits-force-12", "--true-lossless", opt_trueLossless);
-        app.checkConflict("--bits-force-12", "--encode-baseline", opt_oxfer == EXS_JPEGProcess1TransferSyntax);
+        app.checkConflict("--bits-force-12", "--encode-baseline", opt_oxfer == EXS_JPEGProcess1);
         opt_compressedBits = 12;
       }
       if (cmd.findOption("--bits-force-16"))
       {
         app.checkConflict("--bits-force-16", "--true-lossless", opt_trueLossless);
-        app.checkConflict("--bits-force-16", "--encode-baseline", opt_oxfer == EXS_JPEGProcess1TransferSyntax);
-        app.checkConflict("--bits-force-16", "--encode-extended", opt_oxfer == EXS_JPEGProcess2_4TransferSyntax);
-        app.checkConflict("--bits-force-16", "--encode-spectral", opt_oxfer == EXS_JPEGProcess6_8TransferSyntax);
-        app.checkConflict("--bits-force-16", "--encode-progressive", opt_oxfer == EXS_JPEGProcess10_12TransferSyntax);
+        app.checkConflict("--bits-force-16", "--encode-baseline", opt_oxfer == EXS_JPEGProcess1);
+        app.checkConflict("--bits-force-16", "--encode-extended", opt_oxfer == EXS_JPEGProcess2_4);
+        app.checkConflict("--bits-force-16", "--encode-spectral", opt_oxfer == EXS_JPEGProcess6_8);
+        app.checkConflict("--bits-force-16", "--encode-progressive", opt_oxfer == EXS_JPEGProcess10_12);
         opt_compressedBits = 16;
       }
       cmd.endOptionBlock();
@@ -728,6 +728,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
+ * Revision 1.30  2011-02-11 13:33:18  joergr
+ * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
+ *
  * Revision 1.29  2010-10-14 13:13:38  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

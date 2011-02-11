@@ -3,6 +3,33 @@ Changes between releases are documented here.
 
 **** Changes from 2011.02.11 (riesmeier)
 
+- Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcxfer.h
+           dcmdata/libi2d/i2djpgs.cc
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcxfer.cc
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpeg/libsrc/djdecbas.cc
+           dcmjpeg/libsrc/djdecext.cc
+           dcmjpeg/libsrc/djdeclol.cc
+           dcmjpeg/libsrc/djdecpro.cc
+           dcmjpeg/libsrc/djdecsps.cc
+           dcmjpeg/libsrc/djdecsv1.cc
+           dcmjpeg/libsrc/djencbas.cc
+           dcmjpeg/libsrc/djencext.cc
+           dcmjpeg/libsrc/djenclol.cc
+           dcmjpeg/libsrc/djencpro.cc
+           dcmjpeg/libsrc/djencsps.cc
+           dcmjpeg/libsrc/djencsv1.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/libsrc/dimse.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/libsrc/dcmqrcbm.cc
+           dcmqrdb/libsrc/dcmqrsrv.cc
+
 - Added initial support for the MPEG4 transfer syntaxes from Supplement 149.
   Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
            dcmdata/include/dcmtk/dcmdata/dcxfer.h

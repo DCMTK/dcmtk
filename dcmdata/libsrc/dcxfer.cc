@@ -18,8 +18,8 @@
  *  Purpose: handling of transfer syntaxes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-11 11:56:34 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2011-02-11 13:33:16 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess1TransferSyntax,
       "JPEG Baseline",
-      EXS_JPEGProcess1TransferSyntax,
+      EXS_JPEGProcess1,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -101,7 +101,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess2_4TransferSyntax,
       "JPEG Extended, Process 2+4",
-      EXS_JPEGProcess2_4TransferSyntax,
+      EXS_JPEGProcess2_4,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -110,7 +110,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess3_5TransferSyntax,
       "JPEG Extended, Process 3+5",
-      EXS_JPEGProcess3_5TransferSyntax,
+      EXS_JPEGProcess3_5,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -119,7 +119,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess6_8TransferSyntax,
       "JPEG Spectral Selection, Non-hierarchical, Process 6+8",
-      EXS_JPEGProcess6_8TransferSyntax,
+      EXS_JPEGProcess6_8,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -128,7 +128,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess7_9TransferSyntax,
       "JPEG Spectral Selection, Non-hierarchical, Process 7+9",
-      EXS_JPEGProcess7_9TransferSyntax,
+      EXS_JPEGProcess7_9,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -137,7 +137,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess10_12TransferSyntax,
       "JPEG Full Progression, Non-hierarchical, Process 10+12",
-      EXS_JPEGProcess10_12TransferSyntax,
+      EXS_JPEGProcess10_12,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -146,7 +146,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess11_13TransferSyntax,
       "JPEG Full Progression, Non-hierarchical, Process 11+13",
-      EXS_JPEGProcess11_13TransferSyntax,
+      EXS_JPEGProcess11_13,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -155,7 +155,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess14TransferSyntax,
       "JPEG Lossless, Non-hierarchical, Process 14",
-      EXS_JPEGProcess14TransferSyntax,
+      EXS_JPEGProcess14,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -164,7 +164,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess15TransferSyntax,
       "JPEG Lossless, Non-hierarchical, Process 15",
-      EXS_JPEGProcess15TransferSyntax,
+      EXS_JPEGProcess15,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -173,7 +173,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess16_18TransferSyntax,
       "JPEG Extended, Hierarchical, Process 16+18",
-      EXS_JPEGProcess16_18TransferSyntax,
+      EXS_JPEGProcess16_18,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -182,7 +182,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess17_19TransferSyntax,
       "JPEG Extended, Hierarchical, Process 17+19",
-      EXS_JPEGProcess17_19TransferSyntax,
+      EXS_JPEGProcess17_19,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -191,7 +191,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess20_22TransferSyntax,
       "JPEG Spectral Selection, Hierarchical, Process 20+22",
-      EXS_JPEGProcess20_22TransferSyntax,
+      EXS_JPEGProcess20_22,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -200,7 +200,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess21_23TransferSyntax,
       "JPEG Spectral Selection, Hierarchical, Process 21+23",
-      EXS_JPEGProcess21_23TransferSyntax,
+      EXS_JPEGProcess21_23,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -209,7 +209,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess24_26TransferSyntax,
       "JPEG Full Progression, Hierarchical, Process 24+26",
-      EXS_JPEGProcess24_26TransferSyntax,
+      EXS_JPEGProcess24_26,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -218,7 +218,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess25_27TransferSyntax,
       "JPEG Full Progression, Hierarchical, Process 25+27",
-      EXS_JPEGProcess25_27TransferSyntax,
+      EXS_JPEGProcess25_27,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -227,7 +227,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess28TransferSyntax,
       "JPEG Lossless, Hierarchical, Process 28",
-      EXS_JPEGProcess28TransferSyntax,
+      EXS_JPEGProcess28,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -236,7 +236,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess29TransferSyntax,
       "JPEG Lossless, Hierarchical, Process 29",
-      EXS_JPEGProcess29TransferSyntax,
+      EXS_JPEGProcess29,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -245,7 +245,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     { UID_JPEGProcess14SV1TransferSyntax,
       "JPEG Lossless, Non-hierarchical, 1st Order Prediction",
-      EXS_JPEGProcess14SV1TransferSyntax,
+      EXS_JPEGProcess14SV1,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -628,6 +628,9 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
+ * Revision 1.35  2011-02-11 13:33:16  joergr
+ * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
+ *
  * Revision 1.34  2011-02-11 11:56:34  joergr
  * Added initial support for the MPEG4 transfer syntaxes from Supplement 149.
  *

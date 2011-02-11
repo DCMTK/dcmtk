@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2010, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Codec class for encoding JPEG Lossless (8/12/16-bit)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-03 11:22:38 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2011-02-11 13:33:20 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@ DJEncoderLossless::~DJEncoderLossless()
 
 E_TransferSyntax DJEncoderLossless::supportedTransferSyntax() const
 {
-  return EXS_JPEGProcess14TransferSyntax;
+  return EXS_JPEGProcess14;
 }
 
 
@@ -104,6 +104,9 @@ DJEncoder *DJEncoderLossless::createEncoderInstance(
 /*
  * CVS/RCS Log
  * $Log: djenclol.cc,v $
+ * Revision 1.5  2011-02-11 13:33:20  joergr
+ * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
+ *
  * Revision 1.4  2010-11-03 11:22:38  joergr
  * Since the pseudo-lossless encoder is not guaranteed to result in lossless
  * compression, the modifications to the DICOM header are treated in the same

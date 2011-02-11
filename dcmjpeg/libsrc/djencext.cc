@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2010, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Codec class for encoding JPEG Extended Sequential (lossy, 8/12-bit)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:22 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2011-02-11 13:33:20 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ DJEncoderExtended::~DJEncoderExtended()
 
 E_TransferSyntax DJEncoderExtended::supportedTransferSyntax() const
 {
-  return EXS_JPEGProcess2_4TransferSyntax;
+  return EXS_JPEGProcess2_4;
 }
 
 
@@ -96,6 +96,9 @@ DJEncoder *DJEncoderExtended::createEncoderInstance(
 /*
  * CVS/RCS Log
  * $Log: djencext.cc,v $
+ * Revision 1.5  2011-02-11 13:33:20  joergr
+ * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
+ *
  * Revision 1.4  2010-10-14 13:14:22  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
