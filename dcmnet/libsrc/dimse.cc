@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -74,8 +74,8 @@
 ** Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-12-01 08:26:36 $
-** CVS/RCS Revision:    $Revision: 1.62 $
+** Update Date:         $Date: 2011-02-11 12:11:21 $
+** CVS/RCS Revision:    $Revision: 1.63 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -363,6 +363,8 @@ getTransferSyntax(
         case EXS_JPEG2000:
         case EXS_MPEG2MainProfileAtMainLevel:
         case EXS_MPEG2MainProfileAtHighLevel:
+        case EXS_MPEG4HighProfileLevel4_1:
+        case EXS_MPEG4BDcompatibleHighProfileLevel4_1:
         case EXS_JPEG2000MulticomponentLosslessOnly:
         case EXS_JPEG2000Multicomponent:
 #ifdef WITH_ZLIB
@@ -1781,6 +1783,9 @@ OFString DIMSE_warn_str(T_ASC_Association *assoc)
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.63  2011-02-11 12:11:21  joergr
+** Added initial support for the MPEG4 transfer syntaxes from Supplement 149.
+**
 ** Revision 1.62  2010-12-01 08:26:36  joergr
 ** Added OFFIS copyright header (beginning with the year 1994).
 **

@@ -8,6 +8,7 @@ Changes between releases are documented here.
            dcmdata/include/dcmtk/dcmdata/dcxfer.h
            dcmdata/libsrc/dcuid.cc
            dcmdata/libsrc/dcxfer.cc
+           dcmnet/libsrc/dimse.cc
 
 - Moved retired data elements to the end of the dictionary in order to make
   sure that the most recent definitions are used, even for old ACR/NEMA tags.
