@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Handling of transfer syntaxes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:43 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2011-02-11 11:56:31 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,14 +98,18 @@ typedef enum {
     EXS_MPEG2MainProfileAtMainLevel = 28,
     /// MPEG2 Main Profile at High Level
     EXS_MPEG2MainProfileAtHighLevel = 29,
+    /// MPEG4 High Profile / Level 4.1
+    EXS_MPEG4HighProfileLevel4_1 = 30,
+    /// MPEG4 BD-compatible High Profile / Level 4.1
+    EXS_MPEG4BDcompatibleHighProfileLevel4_1 = 31,
     /// JPEG 2000 part 2 multi-component extensions (lossless)
-    EXS_JPEG2000MulticomponentLosslessOnly = 30,
+    EXS_JPEG2000MulticomponentLosslessOnly = 32,
     /// JPEG 2000 part 2 multi-component extensions (lossless or lossy)
-    EXS_JPEG2000Multicomponent = 31,
+    EXS_JPEG2000Multicomponent = 33,
     /// JPIP Referenced
-    EXS_JPIPReferenced = 32,
+    EXS_JPIPReferenced = 34,
     /// JPIP Referenced Deflate
-    EXS_JPIPReferencedDeflate = 33
+    EXS_JPIPReferencedDeflate = 35
 } E_TransferSyntax;
 
 /** enumeration of byte orders
@@ -297,6 +301,9 @@ extern const E_ByteOrder gLocalByteOrder;
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
+ * Revision 1.25  2011-02-11 11:56:31  joergr
+ * Added initial support for the MPEG4 transfer syntaxes from Supplement 149.
+ *
  * Revision 1.24  2010-10-14 13:15:43  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

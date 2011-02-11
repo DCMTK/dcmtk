@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 10:26:08 $
- *  CVS/RCS Revision: $Revision: 1.89 $
+ *  Update Date:      $Date: 2011-02-11 11:56:34 $
+ *  CVS/RCS Revision: $Revision: 1.90 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,6 +130,8 @@ static const UIDNameMap uidNameMap[] = {
     { UID_JPEG2000TransferSyntax,                              "JPEG2000" },
     { UID_MPEG2MainProfileAtMainLevelTransferSyntax,           "MPEG2MainProfile@MainLevel" },
     { UID_MPEG2MainProfileAtHighLevelTransferSyntax,           "MPEG2MainProfile@HighLevel" },
+    { UID_MPEG4HighProfileLevel4_1TransferSyntax,              "MPEG4HighProfile/Level4.1" },
+    { UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,  "MPEG4BDcompatibleHighProfile/Level4.1" },
     { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax, "JPEG2000MulticomponentLosslessOnly" },
     { UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,             "JPEG2000Multicomponent" },
     { UID_JPIPReferencedTransferSyntax,                        "JPIPReferenced" },
@@ -1620,6 +1622,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.90  2011-02-11 11:56:34  joergr
+** Added initial support for the MPEG4 transfer syntaxes from Supplement 149.
+**
 ** Revision 1.89  2010-11-05 10:26:08  joergr
 ** Added new SOP Class UIDs from Supplement 131 and 134 (Implant Templates).
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: handling of transfer syntaxes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:11 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2011-02-11 11:56:34 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -329,6 +329,24 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFFalse,
       ESC_none },
+    { UID_MPEG4HighProfileLevel4_1TransferSyntax,
+      "MPEG-4 AVC/H.264 High Profile / Level 4.1",
+      EXS_MPEG4HighProfileLevel4_1,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFFalse,
+      ESC_none },
+    { UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
+      "MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1",
+      EXS_MPEG4BDcompatibleHighProfileLevel4_1,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFFalse,
+      ESC_none },
    { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
       "JPEG 2000 Part 2 Multicomponent Image Compression (Lossless only)",
       EXS_JPEG2000MulticomponentLosslessOnly,
@@ -351,7 +369,7 @@ const S_XferNames XferNames[] =
       "JPIP Referenced",
       EXS_JPIPReferenced,
       EBO_LittleEndian,
-      EVT_Explicit,      
+      EVT_Explicit,
       EJE_NotEncapsulated,  // in fact, pixel data shall be referenced via (0028,7FE0) Pixel Data Provider URL
       0L, 0L,
       OFFalse,
@@ -610,6 +628,9 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
+ * Revision 1.34  2011-02-11 11:56:34  joergr
+ * Added initial support for the MPEG4 transfer syntaxes from Supplement 149.
+ *
  * Revision 1.33  2010-10-14 13:14:11  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

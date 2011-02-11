@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-01 17:01:33 $
- *  CVS/RCS Revision: $Revision: 1.90 $
+ *  Update Date:      $Date: 2011-02-11 11:56:31 $
+ *  CVS/RCS Revision: $Revision: 1.91 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -326,6 +326,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_MPEG2MainProfileAtMainLevelTransferSyntax "1.2.840.10008.1.2.4.100"
 /// MPEG2 Main Profile @ High Level
 #define UID_MPEG2MainProfileAtHighLevelTransferSyntax "1.2.840.10008.1.2.4.101"
+/// MPEG-4 AVC/H.264 High Profile / Level 4.1
+#define UID_MPEG4HighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.102"
+/// MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1
+#define UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.103"
 /// RLE Lossless
 #define UID_RLELosslessTransferSyntax           "1.2.840.10008.1.2.5"
 
@@ -709,6 +713,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.91  2011-02-11 11:56:31  joergr
+** Added initial support for the MPEG4 transfer syntaxes from Supplement 149.
+**
 ** Revision 1.90  2011-02-01 17:01:33  joergr
 ** Made sure that OFFIS_DCMTK_VERSION_NUMBER is really a number and not a
 ** string.
