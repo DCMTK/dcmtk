@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2010, OFFIS e.V.
+ *  Copyright (C) 2008-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 12:57:40 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-02-16 08:55:17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -512,7 +512,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
 // Sends C-STORE request to another DICOM application
 OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
                                      const OFString &dicomFile,
-                                     DcmDataset *dset,
+                                     DcmDataset *dataset,
                                      DcmDataset *& /* rspCommandSet */,    // TODO
                                      DcmDataset *& /* rspStatusDetail */,  // TODO
                                      Uint16 &rspStatusCode)
@@ -543,18 +543,17 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     cond = dcmff->loadFile(dicomFile.c_str());
     if (cond.bad())
       return cond;
-    dset = dcmff->getDataset();
+    dataset = dcmff->getDataset();
   }
 
   /* Fill message according to dataset to be sent */
-
-  cond = getDatasetInfo(dset, sopClass, sopInstance, transferSyntax);
-  if ((dset == NULL) || sopClass.empty() || sopInstance.empty() || (transferSyntax == EXS_Unknown))
+  cond = getDatasetInfo(dataset, sopClass, sopInstance, transferSyntax);
+  if (cond.bad() || sopClass.empty() || sopInstance.empty() || ((pcid == 0) && (transferSyntax == EXS_Unknown)))
   {
     DCMNET_ERROR("Cannot send DICOM file, missing information:");
     DCMNET_ERROR("  SOP Class UID: " << sopClass);
     DCMNET_ERROR("  SOP Instance UID: " << sopInstance);
-    DCMNET_ERROR("  Transfersyntax: " << DcmXfer(transferSyntax).getXferName());
+    DCMNET_ERROR("  Transfer Syntax: " << DcmXfer(transferSyntax).getXferName());
     delete dcmff;
     dcmff = NULL;
     return EC_IllegalParameter;
@@ -577,10 +576,9 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   }
 
   /* Send request */
-
   DCMNET_INFO("Send C-STORE Request");
   DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, NULL, pcid));
-  cond = sendDIMSEMessage(pcid, &msg, dset, NULL /* callback */, NULL /* callbackContext */);
+  cond = sendDIMSEMessage(pcid, &msg, dataset, NULL /* callback */, NULL /* callbackContext */);
   delete dcmff;
   dcmff = NULL;
   if (cond.bad())
@@ -590,7 +588,6 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   }
 
   /* Receive response */
-
   T_DIMSE_Message rsp;
   cond = receiveDIMSECommand(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
   if (cond.bad())
@@ -1312,6 +1309,10 @@ FINDResponse::~FINDResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.18  2011-02-16 08:55:17  joergr
+** Fixed issue in sendSTORERequest() when sending a dataset that was created
+** in memory (and which has, therefore, an original transfer of EXS_Unknown).
+**
 ** Revision 1.17  2011-02-04 12:57:40  uli
 ** Made sure all members are initialized in the constructor (-Weffc++).
 **

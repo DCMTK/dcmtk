@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 12:57:40 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-02-16 08:55:13 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,13 +172,14 @@ public:
    *  @param presID          [in]  Contains in the end the ID of the presentation context which
    *                               was specified in the DIMSE command. If 0 is given, the
    *                               function tries to find an approriate presentation context
-   *                               itself.
+   *                               itself (based on SOP class and original transfer syntax of
+   *                               the 'dicomFile' or 'dataset').
    *  @param dicomFile       [in]  The filename of the DICOM file to be sent. Alternatively, a
    *                               dataset can be given in the next parameter. If both are
    *                               given the dataset from the file name is used.
-   *  @param dset            [in]  The dataset to be sent. Alternatively, a filename can be
+   *  @param dataset         [in]  The dataset to be sent. Alternatively, a filename can be
    *                               specified in the previous parameter. If both are given the
-   *                               dataset from the file name is used.
+   *                               dataset from the filename is used.
    *  @param rspCommandSet   [out] If this parameter is not NULL it will return a copy of the
    *                               DIMSE command which was received from the other DICOM
    *                               application.
@@ -197,7 +198,7 @@ public:
    */
   virtual OFCondition sendSTORERequest(const T_ASC_PresentationContextID presID,
                                        const OFString &dicomFile,
-                                       DcmDataset *dset,
+                                       DcmDataset *dataset,
                                        DcmDataset *&rspCommandSet,
                                        DcmDataset *&rspStatusDetail,
                                        Uint16 &rspStatusCode);
@@ -605,6 +606,10 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.17  2011-02-16 08:55:13  joergr
+** Fixed issue in sendSTORERequest() when sending a dataset that was created
+** in memory (and which has, therefore, an original transfer of EXS_Unknown).
+**
 ** Revision 1.16  2011-02-04 12:57:40  uli
 ** Made sure all members are initialized in the constructor (-Weffc++).
 **

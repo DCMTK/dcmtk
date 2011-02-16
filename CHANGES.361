@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.02.16 (riesmeier)
+
+- Fixed issue in sendSTORERequest() when sending a dataset that was created
+  in memory (and which has, therefore, an original transfer of EXS_Unknown).
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+
 **** Changes from 2011.02.11 (riesmeier)
 
 - Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
