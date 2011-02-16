@@ -260,7 +260,7 @@ be the desirable behaviour for most use cases. However, if a certain SOP
 Instance UID should be inserted into the new object, the \e --key option should
 be used.
 
-\subsection inputtemplates Input Templates
+\subsection input_templates Input Templates
 
 For supporting the conversion into DICOM, \b img2dcm comes with some
 pre-defined templates which can be used for the \e --dataset-from option (see
@@ -278,12 +278,12 @@ attributes are present which should be part of the constructed DICOM object.
 The SOP Class UID and the Pixel Data attributes (including attributes like
 Rows, Columns etc.) are not copied but replaced by \b img2dcm during conversion.
 
-\subsection inputplugins Input Plugins
+\subsection input_plugins Input Plugins
 
 The \b img2dcm application currently supports the JPEG and the BMP image format
 as input.
 
-\subsubsection jpeginputplugin JPEG Input Plugin
+\subsubsection jpeg_input_plugin JPEG Input Plugin
 
 For JPEG, the original JPEG from the source file is not decoded but extracted
 and slightly transformed (e. g. JFIF header is cut off) to allow fast
@@ -333,7 +333,7 @@ does the trick. It should also be slightly faster than cutting off APPn
 information, because it is not necessary to scan the whole JPEG stream for
 such data. JFIF information is \b always removed by \b img2dcm.
 
-\subsubsection bmpinputplugin BMP Input Plugin
+\subsubsection bmp_input_plugin BMP Input Plugin
 
 \b img2dcm supports BMP as input format. However, so far only the most commmon
 BMP images are supported.  In particular, BMP images which use bitfields or
@@ -341,7 +341,7 @@ run length encoding will be rejected. Such images are uncommon. All input images
 will be converted into a DICOM image with RGB color model and a bit depth of 24.
 There are no specific options for fine-tuning BMP format conversion.
 
-\subsection outputplugins Output Plugins
+\subsection output_plugins Output Plugins
 
 The desired output SOP Class can be selected on the command line. Currently,
 an export plugin for the Secondary Capture Image SOP class (default, option
@@ -491,6 +491,6 @@ images
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2007-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

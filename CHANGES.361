@@ -8,6 +8,9 @@ Changes between releases are documented here.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
            dcmnet/libsrc/scu.cc
 
+- Fixed some subsection names (introduced "_" where appropriate).
+  Affects: dcmdata/docs/img2dcm.man
+
 **** Changes from 2011.02.11 (riesmeier)
 
 - Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
