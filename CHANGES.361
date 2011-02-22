@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.02.22 (eichelberg)
+
+- Added new method SiPrivateKey::getRawPrivateKey()
+  Affects: dcmsign/include/dcmtk/dcmsign/siprivat.h
+           dcmsign/libsrc/siprivat.cc
+
 **** Changes from 2011.02.16 (riesmeier)
 
 - Fixed issue in sendSTORERequest() when sending a dataset that was created

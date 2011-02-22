@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: SiPrivateKey
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:38 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2011-02-22 15:43:57 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,6 +182,13 @@ OFBool SiPrivateKey::matchesCertificate(SiCertificate& cert)
   return OFFalse;
 }
 
+
+EVP_PKEY *SiPrivateKey::getRawPrivateKey()
+{
+  return pkey;
+}
+
+
 #else /* WITH_OPENSSL */
 
 int siprivat_cc_dummy_to_keep_linker_from_moaning = 0;
@@ -191,6 +198,9 @@ int siprivat_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: siprivat.cc,v $
+ *  Revision 1.9  2011-02-22 15:43:57  meichel
+ *  Added new method SiPrivateKey::getRawPrivateKey()
+ *
  *  Revision 1.8  2010-10-14 13:14:38  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
