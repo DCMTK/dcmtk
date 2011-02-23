@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.02.23 (riesmeier)
+
+- Fixed issue with undefined priority field in C-STORE and C-FIND request.
+  Thanks to forum user "kosborn" for the bug report.
+  Affects: dcmnet/libsrc/scu.cc
+
 **** Changes from 2011.02.22 (eichelberg)
 
 - Added new method SiPrivateKey::getRawPrivateKey()

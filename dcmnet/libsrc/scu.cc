@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-16 08:55:17 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2011-02-23 08:11:51 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -561,6 +561,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   OFStandard::strlcpy(req->AffectedSOPClassUID, sopClass.c_str(), sizeof(req->AffectedSOPClassUID));
   OFStandard::strlcpy(req->AffectedSOPInstanceUID, sopInstance.c_str(), sizeof(req->AffectedSOPInstanceUID));
   req->DataSetType = DIMSE_DATASET_PRESENT;
+  req->Priority = DIMSE_PRIORITY_LOW;
 
   /* If necessary, find appropriate presentation context */
   if (pcid == 0)
@@ -643,6 +644,8 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
   req->MessageID = nextMessageID();
   // Announce dataset
   req->DataSetType = DIMSE_DATASET_PRESENT;
+  // Specify priority
+  req->Priority = DIMSE_PRIORITY_LOW;
 
   // Determine SOP Class from presentation context
   OFString abstractSyntax, transferSyntax;
@@ -1309,6 +1312,9 @@ FINDResponse::~FINDResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.19  2011-02-23 08:11:51  joergr
+** Fixed issue with undefined priority field in C-STORE and C-FIND request.
+**
 ** Revision 1.18  2011-02-16 08:55:17  joergr
 ** Fixed issue in sendSTORERequest() when sending a dataset that was created
 ** in memory (and which has, therefore, an original transfer of EXS_Unknown).
