@@ -17,9 +17,9 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-09 09:58:44 $
- *  CVS/RCS Revision: $Revision: 1.102 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-02-25 11:54:02 $
+ *  CVS/RCS Revision: $Revision: 1.103 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -435,7 +435,7 @@ int main(int argc, char *argv[])
                 COUT << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
 #endif
 #ifdef BUILD_DCM2PNM_AS_DCML2PNM
-                COUT << "- " << "CharLS, Revision 55020 (modified)" << OFendl;
+                COUT << "- " << DJLSDecoderRegistration::getLibraryVersionString() << OFendl;
 #endif
 #ifdef WITH_LIBTIFF
                 COUT << "- " << DiTIFFPlugin::getLibraryVersionString() << OFendl;
@@ -1523,6 +1523,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.103  2011-02-25 11:54:02  uli
+ * Move the CharLS version string to a central place.
+ *
  * Revision 1.102  2011-02-09 09:58:44  joergr
  * Output version information on CharLS library if compiled as "dcml2pnm".
  *

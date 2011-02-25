@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.02.25 (schlachter)
+
+- Move the CharLS version string to a central place.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmjpls/include/dcmtk/dcmjpls/djdecode.h
+           dcmjpls/include/dcmtk/dcmjpls/djencode.h
+           dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/libsrc/djdecode.cc
+           dcmjpls/libsrc/djencode.cc
+
 **** Changes from 2011.02.23 (riesmeier)
 
 - Fixed issue with undefined priority field in C-STORE and C-FIND request.
