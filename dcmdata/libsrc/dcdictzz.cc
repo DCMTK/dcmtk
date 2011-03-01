@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-02-11 10:51:39
+**   Date: 2011-03-01 10:59:22
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2011-02-11 10:51:39";
+const char* dcmBuiltinDictBuildDate = "2011-03-01 10:59:22";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -20745,11 +20745,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS IMAGING DD 001" }
   , { 0x2001, 0x0003, 0x2001, 0x0003,
-      EVR_FL, "DiffusionB-Factor", 1, 1, "PrivateTag",
+      EVR_FL, "DiffusionBFactor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Philips Imaging DD 001" }
   , { 0x2001, 0x0003, 0x2001, 0x0003,
-      EVR_FL, "DiffusionB-Factor", 1, 1, "PrivateTag",
+      EVR_FL, "DiffusionBFactor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS IMAGING DD 001" }
   , { 0x2001, 0x0004, 0x2001, 0x0004,
@@ -20784,6 +20784,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "PhaseNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x0009, 0x2001, 0x0009,
+      EVR_FL, "ImagePrepulseDelay", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x0009, 0x2001, 0x0009,
+      EVR_FL, "ImagePrepulseDelay", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
   , { 0x2001, 0x000a, 0x2001, 0x000a,
       EVR_IS, "SliceNumberMR", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -20798,6 +20806,38 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       "Philips Imaging DD 001" }
   , { 0x2001, 0x000b, 0x2001, 0x000b,
       EVR_CS, "SliceOrientation", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x000c, 0x2001, 0x000c,
+      EVR_CS, "ArrhythmiaRejection", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x000c, 0x2001, 0x000c,
+      EVR_CS, "ArrhythmiaRejection", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x000e, 0x2001, 0x000e,
+      EVR_CS, "CardiacCycled", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x000e, 0x2001, 0x000e,
+      EVR_CS, "CardiacCycled", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x000f, 0x2001, 0x000f,
+      EVR_SS, "CardiacGateWidth", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x000f, 0x2001, 0x000f,
+      EVR_SS, "CardiacGateWidth", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x0010, 0x2001, 0x0010,
+      EVR_CS, "CardiacSync", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x0010, 0x2001, 0x0010,
+      EVR_CS, "CardiacSync", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS IMAGING DD 001" }
   , { 0x2001, 0x0011, 0x2001, 0x0011,
@@ -20912,6 +20952,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "RespirationSync", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x0020, 0x2001, 0x0020,
+      EVR_LO, "ScanningTechnique", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x0020, 0x2001, 0x0020,
+      EVR_LO, "ScanningTechnique", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
   , { 0x2001, 0x0021, 0x2001, 0x0021,
       EVR_CS, "SPIR", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -20936,12 +20984,28 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "FlipAnglePhilips", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x0024, 0x2001, 0x0024,
+      EVR_CS, "SeriesIsInteractive", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x0024, 0x2001, 0x0024,
+      EVR_CS, "SeriesIsInteractive", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
   , { 0x2001, 0x0025, 0x2001, 0x0025,
       EVR_SH, "EchoTimeDisplayMR", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Philips Imaging DD 001" }
   , { 0x2001, 0x0025, 0x2001, 0x0025,
       EVR_SH, "EchoTimeDisplayMR", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x0026, 0x2001, 0x0026,
+      EVR_CS, "PresentationStateSubtractionActive", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x0026, 0x2001, 0x0026,
+      EVR_CS, "PresentationStateSubtractionActive", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS IMAGING DD 001" }
   , { 0x2001, 0x002d, 0x2001, 0x002d,
@@ -20992,12 +21056,20 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "ZoomMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x0058, 0x2001, 0x0058,
+      EVR_UL, "ContrastTransferTaste", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x0058, 0x2001, 0x0058,
+      EVR_UL, "ContrastTransferTaste", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
   , { 0x2001, 0x005f, 0x2001, 0x005f,
-      EVR_SQ, "StackSequence", 1, -1, "PrivateTag",
+      EVR_SQ, "StackSequence", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Philips Imaging DD 001" }
   , { 0x2001, 0x005f, 0x2001, 0x005f,
-      EVR_SQ, "StackSequence", 1, -1, "PrivateTag",
+      EVR_SQ, "StackSequence", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS IMAGING DD 001" }
   , { 0x2001, 0x0060, 0x2001, 0x0060,
@@ -21032,6 +21104,22 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "ExaminationSource", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x0067, 0x2001, 0x0067,
+      EVR_CS, "LinearPresentationGLTrafoShapeSub", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x0067, 0x2001, 0x0067,
+      EVR_CS, "LinearPresentationGLTrafoShapeSub", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x0077, 0x2001, 0x0077,
+      EVR_CS, "GLTrafoType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x0077, 0x2001, 0x0077,
+      EVR_CS, "GLTrafoType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
   , { 0x2001, 0x007b, 0x2001, 0x007b,
       EVR_IS, "AcquisitionNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -21041,15 +21129,47 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS IMAGING DD 001" }
   , { 0x2001, 0x0081, 0x2001, 0x0081,
-      EVR_IS, "NumberOfDynamicScans", 1, 1, "DICOM",
+      EVR_IS, "NumberOfDynamicScans", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Philips Imaging DD 001" }
   , { 0x2001, 0x0081, 0x2001, 0x0081,
-      EVR_IS, "NumberOfDynamicScans", 1, 1, "DICOM",
+      EVR_IS, "NumberOfDynamicScans", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x009f, 0x2001, 0x009f,
+      EVR_US, "PixelProcessingKernelSize", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x009f, 0x2001, 0x009f,
+      EVR_US, "PixelProcessingKernelSize", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x00a1, 0x2001, 0x00a1,
+      EVR_CS, "IsRawImage", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x00a1, 0x2001, 0x00a1,
+      EVR_CS, "IsRawImage", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x00f1, 0x2001, 0x00f1,
+      EVR_FL, "ProspectiveMotionCorrection", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x00f1, 0x2001, 0x00f1,
+      EVR_FL, "ProspectiveMotionCorrection", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS IMAGING DD 001" }
+  , { 0x2001, 0x00f2, 0x2001, 0x00f2,
+      EVR_FL, "RetrospectiveMotionCorrection", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips Imaging DD 001" }
+  , { 0x2001, 0x00f2, 0x2001, 0x00f2,
+      EVR_FL, "RetrospectiveMotionCorrection", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS IMAGING DD 001" }
   , { 0x2005, 0x0002, 0x2005, 0x0002,
-      EVR_SQ, "Unknown", 1, 1, "DICOM",
+      EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Philips MR Imaging DD 005" }
   , { 0x2005, 0x0005, 0x2005, 0x0005,
@@ -21092,46 +21212,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "NumberOfStackSlices", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR IMAGING DD 001" }
-  , { 0x2005, 0x0032, 0x2005, 0x0032,
-      EVR_FL, "StackRadialAngle", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Philips MR Imaging DD 001" }
-  , { 0x2005, 0x0032, 0x2005, 0x0032,
-      EVR_FL, "StackRadialAngle", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR IMAGING DD 001" }
-  , { 0x2005, 0x0033, 0x2005, 0x0033,
-      EVR_CS, "StackRadialAxis", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Philips MR Imaging DD 001" }
-  , { 0x2005, 0x0033, 0x2005, 0x0033,
-      EVR_CS, "StackRadialAxis", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR IMAGING DD 001" }
-  , { 0x2005, 0x0035, 0x2005, 0x0035,
-      EVR_SS, "StackSliceNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Philips MR Imaging DD 001" }
-  , { 0x2005, 0x0035, 0x2005, 0x0035,
-      EVR_SS, "StackSliceNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR IMAGING DD 001" }
-  , { 0x2005, 0x0036, 0x2005, 0x0036,
-      EVR_CS, "StackType", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Philips MR Imaging DD 001" }
-  , { 0x2005, 0x0036, 0x2005, 0x0036,
-      EVR_CS, "StackType", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR IMAGING DD 001" }
-  , { 0x2005, 0x005f, 0x2005, 0x005f,
-      EVR_SQ, "StackSequence", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Philips MR Imaging DD 001" }
-  , { 0x2005, 0x005f, 0x2005, 0x005f,
-      EVR_SQ, "StackSequence", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR IMAGING DD 001" }
   , { 0x2005, 0x0083, 0x2005, 0x0083,
       EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -21146,6 +21226,30 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       "Philips MR Imaging DD 001" }
   , { 0x2005, 0x00a1, 0x2005, 0x00a1,
       EVR_CS, "SyncraScanType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
+  , { 0x2005, 0x00b0, 0x2005, 0x00b0,
+      EVR_FL, "DiffusionDirectionRL", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x00b0, 0x2005, 0x00b0,
+      EVR_FL, "DiffusionDirectionRL", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
+  , { 0x2005, 0x00b1, 0x2005, 0x00b1,
+      EVR_FL, "DiffusionDirectionAP", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x00b1, 0x2005, 0x00b1,
+      EVR_FL, "DiffusionDirectionAP", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
+  , { 0x2005, 0x00b2, 0x2005, 0x00b2,
+      EVR_FL, "DiffusionDirectionFH", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x00b2, 0x2005, 0x00b2,
+      EVR_FL, "DiffusionDirectionFH", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR IMAGING DD 001" }
 #endif

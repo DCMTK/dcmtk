@@ -18,8 +18,8 @@
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2011-02-02 15:01:14 $
-#  CVS/RCS Revision: $Revision: 1.12 $
+#  Update Date:      $Date: 2011-03-01 10:04:21 $
+#  CVS/RCS Revision: $Revision: 1.13 $
 #  Status:           $State: Exp $
 #
 #
@@ -35,6 +35,7 @@
 #   - Philips Digital Diagnost 1.3 conformance statement
 #   - Philips Integris H, catheterization laboratory, RIS-interface
 #   - Philips Intera Achieva Conformance Statement
+#   - Philips MR Achieva Conformance Statement
 #   - Siemens Somatom syngo VA40B conformance statement
 #   - Siemens AXIOM Artis VB30 conformance statement
 #   - SonoWand Invite 2.1.1 conformance statement
@@ -249,7 +250,7 @@
 
 (0009,"FDMS 1.0",04)	SH	ImageControlUnit	1	PrivateTag
 (0009,"FDMS 1.0",05)	OW	ImageUID	1	PrivateTag
-(0009,"FDMS 1.0",06)	OW	RouteImage UID	1	PrivateTag
+(0009,"FDMS 1.0",06)	OW	RouteImageUID	1	PrivateTag
 (0009,"FDMS 1.0",08)	UL	ImageDisplayInformationVersionNo	1	PrivateTag
 (0009,"FDMS 1.0",09)	UL	PatientInformationVersionNo	1	PrivateTag
 (0009,"FDMS 1.0",0C)	OW	FilmUID	1	PrivateTag
@@ -848,7 +849,7 @@
 (0043,"GEMS_PARM_01",15)	SS	TotalOutputViews	3	PrivateTag
 (0043,"GEMS_PARM_01",16)	SS	NumberOfOverranges	5	PrivateTag
 (0043,"GEMS_PARM_01",17)	DS	IBHImageScaleFactors	1	PrivateTag
-(0043,"GEMS_PARM_01",18)	DS	BBH Coefficients	3	PrivateTag
+(0043,"GEMS_PARM_01",18)	DS	BBHCoefficients	3	PrivateTag
 (0043,"GEMS_PARM_01",19)	SS	NumberOfBBHChainsToBlend	1	PrivateTag
 (0043,"GEMS_PARM_01",1a)	SL	StartingChannelNumber	1	PrivateTag
 (0043,"GEMS_PARM_01",1b)	SS	PPScanParameters	1	PrivateTag
@@ -1176,13 +1177,18 @@
 #
 (2001,"Philips Imaging DD 001",01)	FL	ChemicalShift	1	PrivateTag
 (2001,"Philips Imaging DD 001",02)	IS	ChemicalShiftNumberMR	1	PrivateTag
-(2001,"Philips Imaging DD 001",03)	FL	DiffusionB-Factor	1	PrivateTag
+(2001,"Philips Imaging DD 001",03)	FL	DiffusionBFactor	1	PrivateTag
 (2001,"Philips Imaging DD 001",04)	CS	DiffusionDirection	1	PrivateTag
 (2001,"Philips Imaging DD 001",06)	CS	ImageEnhanced	1	PrivateTag
 (2001,"Philips Imaging DD 001",07)	CS	ImageTypeEDES	1	PrivateTag
 (2001,"Philips Imaging DD 001",08)	IS	PhaseNumber	1	PrivateTag
+(2001,"Philips Imaging DD 001",09)	FL	ImagePrepulseDelay	1	PrivateTag
 (2001,"Philips Imaging DD 001",0a)	IS	SliceNumberMR	1	PrivateTag
 (2001,"Philips Imaging DD 001",0b)	CS	SliceOrientation	1	PrivateTag
+(2001,"Philips Imaging DD 001",0c)	CS	ArrhythmiaRejection	1	PrivateTag
+(2001,"Philips Imaging DD 001",0e)	CS	CardiacCycled	1	PrivateTag
+(2001,"Philips Imaging DD 001",0f)	SS	CardiacGateWidth	1	PrivateTag
+(2001,"Philips Imaging DD 001",10)	CS	CardiacSync	1	PrivateTag
 (2001,"Philips Imaging DD 001",11)	FL	DiffusionEchoTime	1	PrivateTag
 (2001,"Philips Imaging DD 001",12)	CS	DynamicSeries	1	PrivateTag
 (2001,"Philips Imaging DD 001",13)	SL	EPIFactor	1	PrivateTag
@@ -1197,23 +1203,33 @@
 (2001,"Philips Imaging DD 001",1c)	CS	PrepulseType	1	PrivateTag
 (2001,"Philips Imaging DD 001",1d)	IS	ReconstructionNumberMR	1	PrivateTag
 (2001,"Philips Imaging DD 001",1f)	CS	RespirationSync	1	PrivateTag
+(2001,"Philips Imaging DD 001",20)	LO	ScanningTechnique	1	PrivateTag
 (2001,"Philips Imaging DD 001",21)	CS	SPIR	1	PrivateTag
 (2001,"Philips Imaging DD 001",22)	FL	WaterFatShift	1	PrivateTag
 (2001,"Philips Imaging DD 001",23)	DS	FlipAnglePhilips	1	PrivateTag
+(2001,"Philips Imaging DD 001",24)	CS	SeriesIsInteractive	1	PrivateTag
 (2001,"Philips Imaging DD 001",25)	SH	EchoTimeDisplayMR	1	PrivateTag
+(2001,"Philips Imaging DD 001",26)	CS	PresentationStateSubtractionActive	1	PrivateTag
 (2001,"Philips Imaging DD 001",2d)	SS	StackNumberOfSlices	1	PrivateTag
 (2001,"Philips Imaging DD 001",32)	FL	StackRadialAngle	1	PrivateTag
 (2001,"Philips Imaging DD 001",33)	CS	StackRadialAxis	1	PrivateTag
 (2001,"Philips Imaging DD 001",35)	SS	StackSliceNumber	1	PrivateTag
 (2001,"Philips Imaging DD 001",36)	CS	StackType	1	PrivateTag
 (2001,"Philips Imaging DD 001",3f)	CS	ZoomMode	1	PrivateTag
-(2001,"Philips Imaging DD 001",5f)	SQ	StackSequence	1-n	PrivateTag
+(2001,"Philips Imaging DD 001",58)	UL	ContrastTransferTaste	1	PrivateTag
+(2001,"Philips Imaging DD 001",5f)	SQ	StackSequence	1	PrivateTag
 (2001,"Philips Imaging DD 001",60)	SL	NumberOfStacks	1	PrivateTag
 (2001,"Philips Imaging DD 001",61)	CS	SeriesTransmitted	1	PrivateTag
 (2001,"Philips Imaging DD 001",62)	CS	SeriesCommitted	1	PrivateTag
 (2001,"Philips Imaging DD 001",63)	CS	ExaminationSource	1	PrivateTag
+(2001,"Philips Imaging DD 001",67)	CS	LinearPresentationGLTrafoShapeSub	1	PrivateTag
+(2001,"Philips Imaging DD 001",77)	CS	GLTrafoType	1	PrivateTag
 (2001,"Philips Imaging DD 001",7b)	IS	AcquisitionNumber	1	PrivateTag
-(2001,"Philips Imaging DD 001",81)	IS	NumberOfDynamicScans	1
+(2001,"Philips Imaging DD 001",81)	IS	NumberOfDynamicScans	1	PrivateTag
+(2001,"Philips Imaging DD 001",9f)	US	PixelProcessingKernelSize	1	PrivateTag
+(2001,"Philips Imaging DD 001",a1)	CS	IsRawImage	1	PrivateTag
+(2001,"Philips Imaging DD 001",f1)	FL	ProspectiveMotionCorrection	1	PrivateTag
+(2001,"Philips Imaging DD 001",f2)	FL	RetrospectiveMotionCorrection	1	PrivateTag
 
 # Note: Some Philips devices use these private tags with reservation value
 # "Philips Imaging DD 001", others use "PHILIPS IMAGING DD 001". All attributes
@@ -1221,13 +1237,18 @@
 #
 (2001,"PHILIPS IMAGING DD 001",01)	FL	ChemicalShift	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",02)	IS	ChemicalShiftNumberMR	1	PrivateTag
-(2001,"PHILIPS IMAGING DD 001",03)	FL	DiffusionB-Factor	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",03)	FL	DiffusionBFactor	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",04)	CS	DiffusionDirection	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",06)	CS	ImageEnhanced	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",07)	CS	ImageTypeEDES	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",08)	IS	PhaseNumber	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",09)	FL	ImagePrepulseDelay	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",0a)	IS	SliceNumberMR	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",0b)	CS	SliceOrientation	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",0c)	CS	ArrhythmiaRejection	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",0e)	CS	CardiacCycled	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",0f)	SS	CardiacGateWidth	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",10)	CS	CardiacSync	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",11)	FL	DiffusionEchoTime	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",12)	CS	DynamicSeries	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",13)	SL	EPIFactor	1	PrivateTag
@@ -1242,23 +1263,33 @@
 (2001,"PHILIPS IMAGING DD 001",1c)	CS	PrepulseType	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",1d)	IS	ReconstructionNumberMR	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",1f)	CS	RespirationSync	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",20)	LO	ScanningTechnique	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",21)	CS	SPIR	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",22)	FL	WaterFatShift	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",23)	DS	FlipAnglePhilips	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",24)	CS	SeriesIsInteractive	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",25)	SH	EchoTimeDisplayMR	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",26)	CS	PresentationStateSubtractionActive	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",2d)	SS	StackNumberOfSlices	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",32)	FL	StackRadialAngle	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",33)	CS	StackRadialAxis	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",35)	SS	StackSliceNumber	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",36)	CS	StackType	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",3f)	CS	ZoomMode	1	PrivateTag
-(2001,"PHILIPS IMAGING DD 001",5f)	SQ	StackSequence	1-n	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",58)	UL	ContrastTransferTaste	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",5f)	SQ	StackSequence	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",60)	SL	NumberOfStacks	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",61)	CS	SeriesTransmitted	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",62)	CS	SeriesCommitted	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",63)	CS	ExaminationSource	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",67)	CS	LinearPresentationGLTrafoShapeSub	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",77)	CS	GLTrafoType	1	PrivateTag
 (2001,"PHILIPS IMAGING DD 001",7b)	IS	AcquisitionNumber	1	PrivateTag
-(2001,"PHILIPS IMAGING DD 001",81)	IS	NumberOfDynamicScans	1
+(2001,"PHILIPS IMAGING DD 001",81)	IS	NumberOfDynamicScans	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",9f)	US	PixelProcessingKernelSize	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",a1)	CS	IsRawImage	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",f1)	FL	ProspectiveMotionCorrection	1	PrivateTag
+(2001,"PHILIPS IMAGING DD 001",f2)	FL	RetrospectiveMotionCorrection	1	PrivateTag
 
 # Note: Some Philips devices use these private tags with reservation value
 # "Philips MR Imaging DD 001", others use "PHILIPS MR IMAGING DD 001". All attributes
@@ -1269,15 +1300,13 @@
 (2005,"Philips MR Imaging DD 001",1f)	SH	MPRProtocol	1	PrivateTag
 (2005,"Philips MR Imaging DD 001",20)	SL	NumberOfChemicalShifts	1	PrivateTag
 (2005,"Philips MR Imaging DD 001",2d)	SS	NumberOfStackSlices	1	PrivateTag
-(2005,"Philips MR Imaging DD 001",32)	FL	StackRadialAngle	1	PrivateTag
-(2005,"Philips MR Imaging DD 001",33)	CS	StackRadialAxis	1	PrivateTag
-(2005,"Philips MR Imaging DD 001",35)	SS	StackSliceNumber	1	PrivateTag
-(2005,"Philips MR Imaging DD 001",36)	CS	StackType	1	PrivateTag
-(2005,"Philips MR Imaging DD 001",a1)	CS	SyncraScanType	1	PrivateTag
-(2005,"Philips MR Imaging DD 001",5f)	SQ	StackSequence	1	PrivateTag
 (2005,"Philips MR Imaging DD 001",83)	SQ	Unknown	1	PrivateTag
+(2005,"Philips MR Imaging DD 001",a1)	CS	SyncraScanType	1	PrivateTag
+(2005,"Philips MR Imaging DD 001",b0)	FL	DiffusionDirectionRL	1	PrivateTag
+(2005,"Philips MR Imaging DD 001",b1)	FL	DiffusionDirectionAP	1	PrivateTag
+(2005,"Philips MR Imaging DD 001",b2)	FL	DiffusionDirectionFH	1	PrivateTag
 
-(2005,"Philips MR Imaging DD 005",02)	SQ	Unknown	1
+(2005,"Philips MR Imaging DD 005",02)	SQ	Unknown	1	PrivateTag
 
 # Note: Some Philips devices use these private tags with reservation value
 # "Philips MR Imaging DD 001", others use "PHILIPS MR IMAGING DD 001". All attributes
@@ -1288,13 +1317,11 @@
 (2005,"PHILIPS MR IMAGING DD 001",1f)	SH	MPRProtocol	1	PrivateTag
 (2005,"PHILIPS MR IMAGING DD 001",20)	SL	NumberOfChemicalShifts	1	PrivateTag
 (2005,"PHILIPS MR IMAGING DD 001",2d)	SS	NumberOfStackSlices	1	PrivateTag
-(2005,"PHILIPS MR IMAGING DD 001",32)	FL	StackRadialAngle	1	PrivateTag
-(2005,"PHILIPS MR IMAGING DD 001",33)	CS	StackRadialAxis	1	PrivateTag
-(2005,"PHILIPS MR IMAGING DD 001",35)	SS	StackSliceNumber	1	PrivateTag
-(2005,"PHILIPS MR IMAGING DD 001",36)	CS	StackType	1	PrivateTag
-(2005,"PHILIPS MR IMAGING DD 001",a1)	CS	SyncraScanType	1	PrivateTag
-(2005,"PHILIPS MR IMAGING DD 001",5f)	SQ	StackSequence	1	PrivateTag
 (2005,"PHILIPS MR IMAGING DD 001",83)	SQ	Unknown	1	PrivateTag
+(2005,"PHILIPS MR IMAGING DD 001",a1)	CS	SyncraScanType	1	PrivateTag
+(2005,"PHILIPS MR IMAGING DD 001",b0)	FL	DiffusionDirectionRL	1	PrivateTag
+(2005,"PHILIPS MR IMAGING DD 001",b1)	FL	DiffusionDirectionAP	1	PrivateTag
+(2005,"PHILIPS MR IMAGING DD 001",b2)	FL	DiffusionDirectionFH	1	PrivateTag
 
 (0019,"PHILIPS MR R5.5/PART",1000)	DS	FieldOfView	1	PrivateTag
 (0019,"PHILIPS MR R5.6/PART",1000)	DS	FieldOfView	1	PrivateTag

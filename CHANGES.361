@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.01 (riesmeier)
+
+- Fixed some private tags copied from Philips MR Achieva conformance statement.
+  Also added a couple of new private tags from the same conformance statement.
+  Affects: dcmdata/data/private.dic
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2011.02.25 (schlachter)
 
 - Move the CharLS version string to a central place.
