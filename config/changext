@@ -3,8 +3,8 @@
 # This script changes the file name extension for all C++ files
 # from .cc to a different extension. This is useful for C++ compilers
 # which do note recognise ".cc" as a valid extension for C++ code.
-# For instance, the IBM xlC compiler on AIX 3.x requires ".C"
-# and Microsofts Visual C++ needs ".cpp" or ".cxx"
+# For instance, the IBM xlC compiler on AIX 3.x requires ".C" and
+# older versions of Microsoft Visual C++ need ".cpp" or ".cxx".
 #
 # The script must be called from the "dcmtk/" directory, e.g.
 #   cd dcmtk
@@ -18,7 +18,7 @@
 #   old extension (default: cc). This is useful if you want
 #   to "rename back".
 #
-# Author: Marco Eichelberg, (C) 1997-2010 Kuratorium OFFIS e.V.
+# Author: Marco Eichelberg, (C) 1997-2011 Kuratorium OFFIS e.V.
 #
 
 newext=${1-C}
@@ -83,6 +83,12 @@ if [ -f dcmeval/apps/ppsscpfs_e.$newext ] ; then
   echo "updating implementation include in ppsscpfs_e.$newext"
   `cat dcmeval/apps/ppsscpfs_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmpps\/apps\/ppsscpfs\.$oldext\"/#include \"..\/..\/dcmpps\/apps\/ppsscpfs.$newext\"/g" | sed -e "s/#include \"\.\.\/\.\.\/dcmpps\/apps\/ppscefs\.$oldext\"/#include \"..\/..\/dcmpps\/apps\/ppscefs.$newext\"/g" >dcmeval/apps/ppsscpfs_e.new`
   `mv dcmeval/apps/ppsscpfs_e.new dcmeval/apps/ppsscpfs_e.$newext`
+fi
+
+if [ -f dcmeval/apps/ppsmgr_e.$newext ] ; then
+  echo "updating implementation include in ppsmgr_e.$newext"
+  `cat dcmeval/apps/ppsmgr_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmpps\/apps\/ppsmgr\.$oldext\"/#include \"..\/..\/dcmpps\/apps\/ppsmgr.$newext\"/g" | sed -e "s/#include \"\.\.\/\.\.\/dcmpps\/apps\/ppsmgrce\.$oldext\"/#include \"..\/..\/dcmpps\/apps\/ppsmgrce.$newext\"/g" >dcmeval/apps/ppsmgr_e.new`
+  `mv dcmeval/apps/ppsmgr_e.new dcmeval/apps/ppsmgr_e.$newext`
 fi
 
 if [ -f dcmeval/apps/pawscpfs_e.$newext ] ; then

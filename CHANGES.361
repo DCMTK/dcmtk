@@ -8,6 +8,9 @@ Changes between releases are documented here.
   Affects: dcmdata/data/private.dic
            dcmdata/libsrc/dcdictzz.cc
 
+- Added evaluation version of non-public DICOM tool "ppsmgr".
+  Affects: config/changext
+
 **** Changes from 2011.02.25 (schlachter)
 
 - Move the CharLS version string to a central place.
