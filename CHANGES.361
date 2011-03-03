@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.03 (riesmeier)
+
+- Fixed possible issue with overlay planes in multi-frame images. Also enhanced
+  log output (trace mode) in order to make it easier to analyze such problems.
+  Thanks to forum user "merlin" for the report and DICOM sample file.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diovpln.h
+           dcmimgle/libsrc/diovpln.cc
+
 **** Changes from 2011.03.01 (riesmeier)
 
 - Fixed some private tags copied from Philips MR Achieva conformance statement.

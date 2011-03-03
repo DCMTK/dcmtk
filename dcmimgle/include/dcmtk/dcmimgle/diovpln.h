@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomOverlayPlane (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:27 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2011-03-03 09:27:32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -430,6 +430,8 @@ class DiOverlayPlane
     Uint32 NumberOfFrames;
     /// number of starting frame
     Uint16 ImageFrameOrigin;
+    /// first frame to be processed (from DicomImage constructor)
+    Uint32 FirstFrame;
 
     /// y-coordinate of overlay plane's origin
     Sint16 Top;
@@ -509,18 +511,27 @@ class DiOverlayPlane
 inline int DiOverlayPlane::reset(const unsigned long frame)
 {
     int result = 0;
-    if (Valid && (Data != NULL) && (frame >= ImageFrameOrigin) && (frame < ImageFrameOrigin + NumberOfFrames))
+    if (Valid && (Data != NULL))
     {
-        const unsigned long bits = (OFstatic_cast(unsigned long, StartLeft) + OFstatic_cast(unsigned long, StartTop) *
-            OFstatic_cast(unsigned long, Columns) + frame * OFstatic_cast(unsigned long, Rows) *
-            OFstatic_cast(unsigned long, Columns)) * OFstatic_cast(unsigned long, BitsAllocated);
-        StartBitPos = BitPos = OFstatic_cast(unsigned long, BitPosition) + bits;
-        /* distinguish between embedded and separate overlay data */
-        if (BitsAllocated == 16)
-            StartPtr = Ptr = Data + (bits >> 4);
-        else
-            StartPtr = Data;
-        result = (getRight() > 0) && (getBottom() > 0);
+        const Uint32 frameNumber = FirstFrame + frame;
+        DCMIMGLE_TRACE("reset overlay plane in group 0x" << STD_NAMESPACE hex << GroupNumber << " to start position");
+        DCMIMGLE_TRACE("  frameNumber: " << frameNumber << " (" << FirstFrame << "+" << frame
+            << "), ImageFrameOrigin: " << ImageFrameOrigin << ", NumberOfFrames: " << NumberOfFrames);
+        if ((frameNumber >= ImageFrameOrigin) && (frameNumber < ImageFrameOrigin + NumberOfFrames))
+        {
+            const unsigned long bits = (OFstatic_cast(unsigned long, StartLeft) + OFstatic_cast(unsigned long, StartTop) *
+                OFstatic_cast(unsigned long, Columns) + (frameNumber - ImageFrameOrigin) * OFstatic_cast(unsigned long, Rows) *
+                OFstatic_cast(unsigned long, Columns)) * OFstatic_cast(unsigned long, BitsAllocated);
+            StartBitPos = BitPos = OFstatic_cast(unsigned long, BitPosition) + bits;
+            DCMIMGLE_TRACE("  StartBitPos: " << StartBitPos << ", BitPosition: " << BitPosition << ", bits: " << bits);
+            /* distinguish between embedded and separate overlay data */
+            if (BitsAllocated == 16)
+                StartPtr = Ptr = Data + (bits >> 4);
+            else
+                StartPtr = Data;
+            result = (getRight() > 0) && (getBottom() > 0);
+        } else
+            DCMIMGLE_TRACE("  -> overlay plane does not apply to this frame");
     }
     return result;
 }
@@ -560,6 +571,10 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
+ * Revision 1.33  2011-03-03 09:27:32  joergr
+ * Fixed possible issue with overlay planes in multi-frame images. Also enhanced
+ * log output (trace mode) in order to make it easier to analyze such problems.
+ *
  * Revision 1.32  2010-10-14 13:16:27  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

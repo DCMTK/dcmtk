@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomOverlayPlane (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:18 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2011-03-03 09:27:35 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
                                const Uint16 high)
   : NumberOfFrames(0),
     ImageFrameOrigin(0),
+    FirstFrame(0),
     Top(0),
     Left(0),
     Height(0),
@@ -79,6 +80,8 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
 {
     if (docu != NULL)
     {
+        /* determine first frame to be processed */
+        FirstFrame = docu->getFrameStart();
         /* specifiy overlay group number */
         DcmTagKey tag(group, DCM_OverlayRows.getElement() /* dummy */);
         /* get descriptive data */
@@ -193,6 +196,14 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
             } else
                 Valid = (Data != NULL);
         }
+        if (Valid)
+        {
+            /* report that this group contains a valid overlay plane */
+            DCMIMGLE_TRACE("overlay plane in group 0x" << STD_NAMESPACE hex << group << " is present and can be processed");
+        } else {
+            /* report that this group does not contain a valid overlay plane */
+            DCMIMGLE_TRACE("overlay plane in group 0x" << STD_NAMESPACE hex << group << " is missing or incomplete");
+        }
     }
 }
 
@@ -208,6 +219,7 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
                                const EM_Overlay mode)
   : NumberOfFrames(1),
     ImageFrameOrigin(0),
+    FirstFrame(0),
     Top(top_pos),
     Left(left_pos),
     Height(rows),
@@ -265,6 +277,7 @@ DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane,
                                const Uint16 rows)
   : NumberOfFrames(plane->NumberOfFrames),
     ImageFrameOrigin(plane->ImageFrameOrigin),
+    FirstFrame(plane->FirstFrame),
     Top(plane->Top),
     Left(plane->Left),
     Height(plane->Height),
@@ -611,6 +624,10 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
+ * Revision 1.38  2011-03-03 09:27:35  joergr
+ * Fixed possible issue with overlay planes in multi-frame images. Also enhanced
+ * log output (trace mode) in order to make it easier to analyze such problems.
+ *
  * Revision 1.37  2010-10-14 13:14:18  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
