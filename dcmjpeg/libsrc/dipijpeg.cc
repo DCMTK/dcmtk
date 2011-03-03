@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Implements JPEG interface for plugable image formats
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:21 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-03-03 11:17:16 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,14 +153,16 @@ int DiJPEGPlugin::write(DiImage *image,
             const OFBool isMono = (image->getInternalColorModel() == EPI_Monochrome1) ||
                                   (image->getInternalColorModel() == EPI_Monochrome2);
 
-            /* taking the address of the variable prevents register allocation
-             * which is needed here because otherwise longjmp might clobber
-             * the content of the variable
-             */
-            if (& isMono) { /* nothing */ };
-
             /* code derived from "cjpeg.c" (IJG) and "djeijg8.cc" (DCMJPEG) */
             struct jpeg_compress_struct cinfo;
+            jpeg_create_compress(&cinfo);
+            /* Initialize JPEG parameters. */
+            cinfo.image_width = image->getColumns();
+            cinfo.image_height = image->getRows();
+            cinfo.input_components = (isMono) ? 1 : 3;
+            cinfo.in_color_space = (isMono) ? JCS_GRAYSCALE : ((image->getInternalColorModel() == EPI_YBR_Full) ? JCS_YCbCr : JCS_RGB);
+
+            /* Set up the error handling. This has to be after all uses of isMono */
             struct DIEIJG8ErrorStruct jerr;
             /* Initialize the JPEG compression object with default error handling. */
             cinfo.err = jpeg_std_error(&jerr.pub);
@@ -180,12 +182,6 @@ int DiJPEGPlugin::write(DiImage *image,
                 /* return error code */
                 return 0;
             }
-            jpeg_create_compress(&cinfo);
-            /* Initialize JPEG parameters. */
-            cinfo.image_width = image->getColumns();
-            cinfo.image_height = image->getRows();
-            cinfo.input_components = (isMono) ? 1 : 3;
-            cinfo.in_color_space = (isMono) ? JCS_GRAYSCALE : ((image->getInternalColorModel() == EPI_YBR_Full) ? JCS_YCbCr : JCS_RGB);
             jpeg_set_defaults(&cinfo);
             cinfo.optimize_coding = TRUE;
             /* Set quantization tables for selected quality. */
@@ -256,6 +252,9 @@ OFString DiJPEGPlugin::getLibraryVersionString()
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.cc,v $
+ * Revision 1.15  2011-03-03 11:17:16  uli
+ * Avoid a warning about an always-true expression in an if statement.
+ *
  * Revision 1.14  2010-10-14 13:14:21  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
