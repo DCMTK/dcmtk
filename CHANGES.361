@@ -7,6 +7,11 @@ Changes between releases are documented here.
   Thanks to forum user "vsalomoni" for the report.
   Affects: ofstd/include/dcmtk/ofstd/oflist.h
 
+- Fixed crash in dcmjpls if no representation parameter is given. Thanks to
+  Christian Fremgen <Christian.Fremgen@ith-icoserve.com> for the report.
+  Affects: dcmjpls/include/dcmtk/dcmjpls/djrparam.h
+           dcmjpls/libsrc/djcodece.cc
+
 **** Changes from 2011.03.03 (schlachter)
 
 - Avoid a warning about an always-true expression in an if statement.

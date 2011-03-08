@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2010, OFFIS e.V.
+ *  Copyright (C) 2007-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: codec classes for JPEG-LS encoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:24 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-03-08 10:38:27 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,6 +160,7 @@ OFCondition DJLSEncoderBase::encode(
     DcmStack & objStack) const
 {
   OFCondition result = EC_Normal;
+  DJLSRepresentationParameter defRep;
 
   // retrieve pointer to dataset from parameter stack
   DcmStack localStack(objStack);
@@ -172,6 +173,9 @@ OFCondition DJLSEncoderBase::encode(
   const DJLSCodecParameter *djcp = OFreinterpret_cast(const DJLSCodecParameter *, cp);
   const DJLSRepresentationParameter *djrp = OFreinterpret_cast(const DJLSRepresentationParameter *, toRepParam);
   double compressionRatio = 0.0;
+
+  if (!djrp)
+    djrp = &defRep;
 
   if (supportedTransferSyntax() == EXS_JPEGLSLossless || djrp->useLosslessProcess())
   {
@@ -1138,6 +1142,9 @@ OFCondition DJLSEncoderBase::convertToSampleInterleaved(
 /*
  * CVS/RCS Log:
  * $Log: djcodece.cc,v $
+ * Revision 1.13  2011-03-08 10:38:27  uli
+ * Fixed crash in dcmjpls if no representation parameter is given.
+ *
  * Revision 1.12  2010-10-14 13:14:24  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

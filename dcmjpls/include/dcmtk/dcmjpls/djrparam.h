@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: representation parameters for JPEG-LS
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:19 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-03-08 10:38:27 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,8 +43,8 @@ public:
    *  @param losslessProcess true if lossless process is requested
    */
   DJLSRepresentationParameter(
-    Uint16 nearlosslessDeviation,
-    OFBool losslessProcess);
+    Uint16 nearlosslessDeviation = 2,
+    OFBool losslessProcess = OFTrue);
 
   /// copy constructor
   DJLSRepresentationParameter(const DJLSRepresentationParameter& arg);
@@ -105,6 +105,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djrparam.h,v $
+ * Revision 1.5  2011-03-08 10:38:27  uli
+ * Fixed crash in dcmjpls if no representation parameter is given.
+ *
  * Revision 1.4  2010-10-14 13:17:19  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
