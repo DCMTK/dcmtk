@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.08 (schlachter)
+
+- Made OFList's destructor virtual again to fix memory leaks.
+  Thanks to forum user "vsalomoni" for the report.
+  Affects: ofstd/include/dcmtk/ofstd/oflist.h
+
 **** Changes from 2011.03.03 (schlachter)
 
 - Avoid a warning about an always-true expression in an if statement.

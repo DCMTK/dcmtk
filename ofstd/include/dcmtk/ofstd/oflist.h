@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 11:18:00 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2011-03-08 10:10:19 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ struct OFListLinkBase
     OFListLinkBase * prev;
     OFBool dummy;
     OFListLinkBase(): next(NULL), prev(NULL), dummy(OFFalse) { }
-    ~OFListLinkBase() {}
+    virtual ~OFListLinkBase() {}
 
   private:
     /* undefined */ OFListLinkBase(const OFListLinkBase&);
@@ -123,7 +123,7 @@ protected:
     void base_recalcListSize();
 public:
     OFListBase();
-    ~OFListBase();
+    virtual ~OFListBase();
     OFListLinkBase * base_begin() const { return afterLast->next; }
     OFListLinkBase * base_end() const { return afterLast; }
     OFBool base_empty() const { return afterLast == afterLast->next; }
@@ -149,7 +149,7 @@ struct OFListLink : public OFListLinkBase
 {
     T info;
     OFListLink(const T& i) : OFListLinkBase(), info(i)  { }
-    ~OFListLink() {}
+    virtual ~OFListLink() {}
   private:
     /* undefined */ OFListLink(const OFListLink<T>&);
     /* undefined */ OFListLink<T>& operator=(const OFListLink<T>&);
@@ -561,6 +561,9 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
+** Revision 1.28  2011-03-08 10:10:19  uli
+** Made OFList's destructor virtual again to fix memory leaks.
+**
 ** Revision 1.27  2011-02-04 11:18:00  uli
 ** Made OFList's destructor non-virtual to match std::list.
 **
