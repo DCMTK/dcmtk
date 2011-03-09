@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+*** Changes from 2011.03.09 (onken)
+
+- Enhanced error message for missing data in store request.
+  Affects: dcmnet/libsrc/scu.cc
+
 **** Changes from 2011.03.08 (schlachter)
 
 - Made OFList's destructor virtual again to fix memory leaks.

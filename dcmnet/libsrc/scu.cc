@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-23 08:11:51 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-03-09 11:13:28 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -554,6 +554,10 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     DCMNET_ERROR("  SOP Class UID: " << sopClass);
     DCMNET_ERROR("  SOP Instance UID: " << sopInstance);
     DCMNET_ERROR("  Transfer Syntax: " << DcmXfer(transferSyntax).getXferName());
+    if (pcid == 0) 
+      DCMNET_ERROR("  Presentation Context ID: 0 (find via SOP Class and Transfer Syntax)");
+    else 
+      DCMNET_ERROR("  Presentation Context ID: " << pcid);
     delete dcmff;
     dcmff = NULL;
     return EC_IllegalParameter;
@@ -1312,6 +1316,9 @@ FINDResponse::~FINDResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.20  2011-03-09 11:13:28  onken
+** Enhanced error message for missing data in store request.
+**
 ** Revision 1.19  2011-02-23 08:11:51  joergr
 ** Fixed issue with undefined priority field in C-STORE and C-FIND request.
 **
