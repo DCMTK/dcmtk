@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.10 (riesmeier)
+
+- Reworked VisualStudio-specific settings: The new approach has less redundant
+  definitions and more reliability for future versions of the MS compiler.
+  Affects: CMakeLists.txt
+
 *** Changes from 2011.03.09 (onken)
 
 - Enhanced error message for missing data in store request.
