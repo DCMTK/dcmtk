@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.14 (riesmeier)
+
+- Output value of SOP Class UID in debug mode when reading a DICOM dataset.
+  Affects: dcmsr/libsrc/dsrdoc.cc
+
 **** Changes from 2011.03.10 (riesmeier)
 
 - Reworked VisualStudio-specific settings: The new approach has less redundant

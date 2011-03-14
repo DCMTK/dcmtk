@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Update Date:      $Date: 2011-03-14 10:33:34 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -303,6 +303,7 @@ OFCondition DSRDocument::checkDatasetForReading(DcmItem &dataset,
     if (result.good())
     {
         documentType = sopClassUIDToDocumentType(getStringValueFromElement(sopClassUID, tmpString));
+        DCMSR_DEBUG("Value of SOP Class UID: " << tmpString);
         if (documentType == DT_invalid)
         {
             DCMSR_ERROR("SOP Class UID does not match one of the known SR document classes");
@@ -2572,6 +2573,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.74  2011-03-14 10:33:34  joergr
+ *  Output value of SOP Class UID in debug mode when reading a DICOM dataset.
+ *
  *  Revision 1.73  2010-10-14 13:14:41  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
