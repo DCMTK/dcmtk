@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-29 10:57:21 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-03-15 11:23:49 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -254,11 +254,13 @@ OFCondition DcmOtherByteOtherWord::alignValue()
         // if this is part of a very large multi-frame object.
         Uint8 *bytes = OFstatic_cast(Uint8 *, getValue(getByteOrder()));
 
-        if (bytes)
+        // getValue() could call loadValue() which then calls postLoadValue()
+        // which in turn calls this function again. Thus, we have to make sure
+        // that the length field is still odd after getValue() returns.
+        if (bytes && (getLengthField() & 1) != 0)
         {
-            // set zero pad byte
-            bytes[getLengthField()] = 0;
-            // increase length field
+            // newValueField always allocates an even number of bytes
+            // and sets the pad byte to zero, so we can safely increase Length here
             setLengthField(getLengthField() + 1);
         }
     }
@@ -734,6 +736,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.65  2011-03-15 11:23:49  uli
+** Make sure we don't accidentally append a padding byte twice.
+**
 ** Revision 1.64  2010-10-29 10:57:21  joergr
 ** Added support for colored output to the print() method.
 **

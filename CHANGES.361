@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.15 (schlachter)
+
+- Make sure we don't accidentally append a padding byte twice. Thanks to
+  Gary Carter <gary.carter@eigen.com> for the report and suggested fix.
+  Affects: dcmdata/libsrc/dcvrobow.cc
+
 **** Changes from 2011.03.14 (riesmeier)
 
 - Output value of SOP Class UID in debug mode when reading a DICOM dataset.
