@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.15 (riesmeier)
+
+- Remove data element PixelPaddingRangeLimit together with PixelPaddingValue.
+  Affects: dcmjpeg/libsrc/djcodece.cc
+
 **** Changes from 2011.03.15 (schlachter)
 
 - Make sure we don't accidentally append a padding byte twice. Thanks to

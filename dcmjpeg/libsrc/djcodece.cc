@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-03 11:22:38 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2011-03-15 16:39:08 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,6 +426,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
     delete dataset->remove(DCM_GreenPaletteColorLookupTableData);
     delete dataset->remove(DCM_BluePaletteColorLookupTableData);
     delete dataset->remove(DCM_PixelPaddingValue);
+    delete dataset->remove(DCM_PixelPaddingRangeLimit);
     delete dataset->remove(DCM_SmallestPixelValueInSeries);
     delete dataset->remove(DCM_LargestPixelValueInSeries);
     delete dataset->remove(DCM_PaletteColorLookupTableUID);
@@ -1500,6 +1501,9 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
+ * Revision 1.37  2011-03-15 16:39:08  joergr
+ * Remove data element PixelPaddingRangeLimit together with PixelPaddingValue.
+ *
  * Revision 1.36  2010-11-03 11:22:38  joergr
  * Since the pseudo-lossless encoder is not guaranteed to result in lossless
  * compression, the modifications to the DICOM header are treated in the same
