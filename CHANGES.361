@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.16 (riesmeier)
+
+- Added support for MPEG4 transfer syntaxes to association negotiation profile.
+  Affects: dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+
 **** Changes from 2011.03.15 (riesmeier)
 
 - Remove data element PixelPaddingRangeLimit together with PixelPaddingValue.
