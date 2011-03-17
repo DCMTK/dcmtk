@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:03:01 $
- *  CVS/RCS Revision: $Revision: 1.89 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-03-17 10:39:29 $
+ *  CVS/RCS Revision: $Revision: 1.90 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -250,7 +250,9 @@ Uint32 DcmElement::calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype)
 {
     DcmXfer xferSyn(xfer);
-    const Uint32 headerLength = xferSyn.sizeofTagHeader(getVR());
+    /* getValidEVR() will e.g. convert EVR_UNKNOWN2B to "OB" or "UN" which
+     * means the length field might have 4 instead of 2 bytes length. */
+    const Uint32 headerLength = xferSyn.sizeofTagHeader(DcmVR(getVR()).getValidEVR());
     const Uint32 elemLength = getLength(xfer, enctype);
     if (OFStandard::check32BitAddOverflow(headerLength, elemLength))
       return DCM_UndefinedLength;
@@ -1744,6 +1746,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.90  2011-03-17 10:39:29  uli
+** Fixed a case where calcElementLength() used a wrong header length.
+**
 ** Revision 1.89  2011-02-02 15:03:01  joergr
 ** Added support for further VMs required for tags in the private dictionary.
 **

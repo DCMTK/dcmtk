@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.17 (schlachter)
+
+- Fixed a case where calcElementLength() used a wrong header length. Thanks
+  to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report and patch.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 **** Changes from 2011.03.17 (riesmeier)
 
 - Added support for MPEG4 transfer syntaxes to network tools.
