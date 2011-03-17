@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-17 09:46:02 $
- *  CVS/RCS Revision: $Revision: 1.90 $
+ *  Update Date:      $Date: 2011-03-17 11:06:40 $
+ *  CVS/RCS Revision: $Revision: 1.91 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -960,7 +960,7 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
     const char* knownAbstractSyntaxes[] = {
         UID_VerificationSOPClass
     };
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
     int numTransferSyntaxes;
 
     OFCondition cond = ASC_receiveAssociation(aNet, assoc, opt_maxPDU);
@@ -1576,6 +1576,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.91  2011-03-17 11:06:40  joergr
+** Made sure that the array "transferSyntaxes" is large enough (16 entries).
+**
 ** Revision 1.90  2011-03-17 09:46:02  joergr
 ** Added support for MPEG4 transfer syntaxes to network tools.
 **

@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-17 09:46:02 $
- *  CVS/RCS Revision: $Revision: 1.139 $
+ *  Update Date:      $Date: 2011-03-17 11:06:41 $
+ *  CVS/RCS Revision: $Revision: 1.140 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1236,7 +1236,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     UID_VerificationSOPClass
   };
 
-  const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+  const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
   int numTransferSyntaxes = 0;
 
   // try to receive an association. Here we either want to use blocking or
@@ -2773,6 +2773,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.140  2011-03-17 11:06:41  joergr
+** Made sure that the array "transferSyntaxes" is large enough (16 entries).
+**
 ** Revision 1.139  2011-03-17 09:46:02  joergr
 ** Added support for MPEG4 transfer syntaxes to network tools.
 **

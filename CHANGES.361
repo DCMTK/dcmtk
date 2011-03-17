@@ -23,6 +23,10 @@ Changes between releases are documented here.
            dcmqrdb/libsrc/dcmqrcbm.cc
            dcmqrdb/libsrc/dcmqrsrv.cc
 
+- Made sure that the array "transferSyntaxes" is large enough (16 entries).
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+
 **** Changes from 2011.03.16 (riesmeier)
 
 - Added support for MPEG4 transfer syntaxes to association negotiation profile.
