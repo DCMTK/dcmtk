@@ -18,8 +18,8 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-11 13:33:26 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2011-03-17 09:46:21 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,6 +206,8 @@ main(int argc, char *argv[])
       cmd.addOption("--prefer-jls-lossy",       "+xu",       "prefer JPEG-LS lossy TS");
       cmd.addOption("--prefer-mpeg2",           "+xm",       "prefer MPEG2 Main Profile @ Main Level TS");
       cmd.addOption("--prefer-mpeg2-high",      "+xh",       "prefer MPEG2 Main Profile @ High Level TS");
+      cmd.addOption("--prefer-mpeg4",           "+xn",       "prefer MPEG4 AVC/H.264 HP / Level 4.1 TS");
+      cmd.addOption("--prefer-mpeg4-bd",        "+xl",       "prefer MPEG4 AVC/H.264 BD-compatible TS");
       cmd.addOption("--prefer-rle",             "+xr",       "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
       cmd.addOption("--prefer-deflated",        "+xd",       "prefer deflated expl. VR little endian TS");
@@ -228,6 +230,8 @@ main(int argc, char *argv[])
       cmd.addOption("--propose-jls-lossy",      "-xu",       "propose JPEG-LS lossy TS\nand all uncompressed transfer syntaxes");
       cmd.addOption("--propose-mpeg2",          "-xm",       "propose MPEG2 Main Profile @ Main Level TS only");
       cmd.addOption("--propose-mpeg2-high",     "-xh",       "propose MPEG2 Main Profile @ High Level TS only");
+      cmd.addOption("--propose-mpeg4",          "-xn",       "propose MPEG4 AVC/H.264 HP / Level 4.1 TS only");
+      cmd.addOption("--propose-mpeg4-bd",       "-xl",       "propose MPEG4 AVC/H.264 BD-compatible TS only");
       cmd.addOption("--propose-rle",            "-xr",       "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
 #ifdef WITH_ZLIB
       cmd.addOption("--propose-deflated",       "-xd",       "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");
@@ -385,6 +389,8 @@ main(int argc, char *argv[])
       if (cmd.findOption("--prefer-jls-lossy")) options.networkTransferSyntax_ = EXS_JPEGLSLossy;
       if (cmd.findOption("--prefer-mpeg2")) options.networkTransferSyntax_ = EXS_MPEG2MainProfileAtMainLevel;
       if (cmd.findOption("--prefer-mpeg2-high")) options.networkTransferSyntax_ = EXS_MPEG2MainProfileAtHighLevel;
+      if (cmd.findOption("--prefer-mpeg4")) options.networkTransferSyntax_ = EXS_MPEG4HighProfileLevel4_1;
+      if (cmd.findOption("--prefer-mpeg4-bd")) options.networkTransferSyntax_ = EXS_MPEG4BDcompatibleHighProfileLevel4_1;
       if (cmd.findOption("--prefer-rle")) options.networkTransferSyntax_ = EXS_RLELossless;
 #ifdef WITH_ZLIB
       if (cmd.findOption("--prefer-deflated")) options.networkTransferSyntax_ = EXS_DeflatedLittleEndianExplicit;
@@ -404,10 +410,12 @@ main(int argc, char *argv[])
       if (cmd.findOption("--propose-jpeg12")) options.networkTransferSyntaxOut_ = EXS_JPEGProcess2_4;
       if (cmd.findOption("--propose-j2k-lossless")) options.networkTransferSyntaxOut_ = EXS_JPEG2000LosslessOnly;
       if (cmd.findOption("--propose-j2k-lossy")) options.networkTransferSyntaxOut_ = EXS_JPEG2000;
-      if (cmd.findOption("--propose-jls-lossless")) options.networkTransferSyntax_ = EXS_JPEGLSLossless;
-      if (cmd.findOption("--propose-jls-lossy")) options.networkTransferSyntax_ = EXS_JPEGLSLossy;
-      if (cmd.findOption("--propose-mpeg2")) options.networkTransferSyntax_ = EXS_MPEG2MainProfileAtMainLevel;
-      if (cmd.findOption("--propose-mpeg2-high")) options.networkTransferSyntax_ = EXS_MPEG2MainProfileAtHighLevel;
+      if (cmd.findOption("--propose-jls-lossless")) options.networkTransferSyntaxOut_ = EXS_JPEGLSLossless;
+      if (cmd.findOption("--propose-jls-lossy")) options.networkTransferSyntaxOut_ = EXS_JPEGLSLossy;
+      if (cmd.findOption("--propose-mpeg2")) options.networkTransferSyntaxOut_ = EXS_MPEG2MainProfileAtMainLevel;
+      if (cmd.findOption("--propose-mpeg2-high")) options.networkTransferSyntaxOut_ = EXS_MPEG2MainProfileAtHighLevel;
+      if (cmd.findOption("--propose-mpeg4")) options.networkTransferSyntaxOut_ = EXS_MPEG4HighProfileLevel4_1;
+      if (cmd.findOption("--propose-mpeg4-bd")) options.networkTransferSyntaxOut_ = EXS_MPEG4BDcompatibleHighProfileLevel4_1;
       if (cmd.findOption("--propose-rle")) options.networkTransferSyntaxOut_ = EXS_RLELossless;
 #ifdef WITH_ZLIB
       if (cmd.findOption("--propose-deflated")) options.networkTransferSyntaxOut_ = EXS_DeflatedLittleEndianExplicit;
@@ -489,6 +497,8 @@ main(int argc, char *argv[])
         app.checkConflict("--write-xfer-little", "--prefer-jls-lossy", options.networkTransferSyntax_ == EXS_JPEGLSLossy);
         app.checkConflict("--write-xfer-little", "--prefer-mpeg2", options.networkTransferSyntax_ == EXS_MPEG2MainProfileAtMainLevel);
         app.checkConflict("--write-xfer-little", "--prefer-mpeg2-high", options.networkTransferSyntax_ == EXS_MPEG2MainProfileAtHighLevel);
+        app.checkConflict("--write-xfer-little", "--prefer-mpeg4", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_1);
+        app.checkConflict("--write-xfer-little", "--prefer-mpeg4-bd", options.networkTransferSyntax_ == EXS_MPEG4BDcompatibleHighProfileLevel4_1);
         app.checkConflict("--write-xfer-little", "--prefer-rle", options.networkTransferSyntax_ == EXS_RLELossless);
         // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
 #endif
@@ -507,6 +517,8 @@ main(int argc, char *argv[])
         app.checkConflict("--write-xfer-big", "--prefer-jls-lossy", options.networkTransferSyntax_ == EXS_JPEGLSLossy);
         app.checkConflict("--write-xfer-big", "--prefer-mpeg2", options.networkTransferSyntax_ == EXS_MPEG2MainProfileAtMainLevel);
         app.checkConflict("--write-xfer-big", "--prefer-mpeg2-high", options.networkTransferSyntax_ == EXS_MPEG2MainProfileAtHighLevel);
+        app.checkConflict("--write-xfer-big", "--prefer-mpeg4", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_1);
+        app.checkConflict("--write-xfer-big", "--prefer-mpeg4-bd", options.networkTransferSyntax_ == EXS_MPEG4BDcompatibleHighProfileLevel4_1);
         app.checkConflict("--write-xfer-big", "--prefer-rle", options.networkTransferSyntax_ == EXS_RLELossless);
         // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
 #endif
@@ -525,6 +537,8 @@ main(int argc, char *argv[])
         app.checkConflict("--write-xfer-implicit", "--prefer-jls-lossy", options.networkTransferSyntax_ == EXS_JPEGLSLossy);
         app.checkConflict("--write-xfer-implicit", "--prefer-mpeg2", options.networkTransferSyntax_ == EXS_MPEG2MainProfileAtMainLevel);
         app.checkConflict("--write-xfer-implicit", "--prefer-mpeg2-high", options.networkTransferSyntax_ == EXS_MPEG2MainProfileAtHighLevel);
+        app.checkConflict("--write-xfer-implicit", "--prefer-mpeg4", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_1);
+        app.checkConflict("--write-xfer-implicit", "--prefer-mpeg4-bd", options.networkTransferSyntax_ == EXS_MPEG4BDcompatibleHighProfileLevel4_1);
         app.checkConflict("--write-xfer-implicit", "--prefer-rle", options.networkTransferSyntax_ == EXS_RLELossless);
         // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
 #endif
@@ -544,6 +558,8 @@ main(int argc, char *argv[])
         app.checkConflict("--write-xfer-deflated", "--prefer-jls-lossy", options.networkTransferSyntax_ == EXS_JPEGLSLossy);
         app.checkConflict("--write-xfer-deflated", "--prefer-mpeg2", options.networkTransferSyntax_ == EXS_MPEG2MainProfileAtMainLevel);
         app.checkConflict("--write-xfer-deflated", "--prefer-mpeg2-high", options.networkTransferSyntax_ == EXS_MPEG2MainProfileAtHighLevel);
+        app.checkConflict("--write-xfer-deflated", "--prefer-mpeg4", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_1);
+        app.checkConflict("--write-xfer-deflated", "--prefer-mpeg4-bd", options.networkTransferSyntax_ == EXS_MPEG4BDcompatibleHighProfileLevel4_1);
         app.checkConflict("--write-xfer-deflated", "--prefer-rle", options.networkTransferSyntax_ == EXS_RLELossless);
 #endif
         options.writeTransferSyntax_ = EXS_DeflatedLittleEndianExplicit;
@@ -746,6 +762,9 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
+ * Revision 1.26  2011-03-17 09:46:21  joergr
+ * Added support for MPEG4 transfer syntaxes to network tools.
+ *
  * Revision 1.25  2011-02-11 13:33:26  joergr
  * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
  *

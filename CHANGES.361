@@ -1,6 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.17 (riesmeier)
+
+- Added support for MPEG4 transfer syntaxes to network tools.
+  Affects: dcmnet/apps/echoscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/docs/echoscu.man
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/libsrc/dcmqrcbm.cc
+           dcmqrdb/libsrc/dcmqrsrv.cc
+
 **** Changes from 2011.03.16 (riesmeier)
 
 - Added support for MPEG4 transfer syntaxes to association negotiation profile.

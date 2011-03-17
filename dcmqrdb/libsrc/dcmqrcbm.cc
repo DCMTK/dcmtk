@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-11 13:33:28 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2011-03-17 09:46:26 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -627,6 +627,16 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
         transferSyntaxes[0] = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
         numTransferSyntaxes = 1;
         break;
+      case EXS_MPEG4HighProfileLevel4_1:
+        /* we only propose MPEG4 HP/L4.1 since we don't want to decompress */
+        transferSyntaxes[0] = UID_MPEG4HighProfileLevel4_1TransferSyntax;
+        numTransferSyntaxes = 1;
+        break;
+      case EXS_MPEG4BDcompatibleHighProfileLevel4_1:
+        /* we only propose MPEG4 BD HP/L4.1 since we don't want to decompress */
+        transferSyntaxes[0] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
+        numTransferSyntaxes = 1;
+        break;
       case EXS_RLELossless:
         /* we prefer RLE Lossless */
         transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
@@ -677,6 +687,9 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
+ * Revision 1.21  2011-03-17 09:46:26  joergr
+ * Added support for MPEG4 transfer syntaxes to network tools.
+ *
  * Revision 1.20  2011-02-11 13:33:28  joergr
  * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
  *

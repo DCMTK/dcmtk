@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 10:42:44 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-03-17 09:46:02 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,9 @@ static const char* transferSyntaxes[] = {
       UID_MPEG2MainProfileAtMainLevelTransferSyntax,
       UID_MPEG2MainProfileAtHighLevelTransferSyntax,
       UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
-      UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax
+      UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,
+      UID_MPEG4HighProfileLevel4_1TransferSyntax,
+      UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax
 };
 
 // ********************************************
@@ -745,6 +747,9 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
+** Revision 1.54  2011-03-17 09:46:02  joergr
+** Added support for MPEG4 transfer syntaxes to network tools.
+**
 ** Revision 1.53  2010-11-01 10:42:44  uli
 ** Fixed some compiler warnings reported by gcc with additional flags.
 **

@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveSCP
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-11 13:33:28 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2011-03-17 09:46:26 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,14 +40,14 @@
 
 
 static void findCallback(
-        /* in */
-        void *callbackData,
-        OFBool cancelled, T_DIMSE_C_FindRQ *request,
-        DcmDataset *requestIdentifiers, int responseCount,
-        /* out */
-        T_DIMSE_C_FindRSP *response,
-        DcmDataset **responseIdentifiers,
-        DcmDataset **stDetail)
+  /* in */
+  void *callbackData,
+  OFBool cancelled, T_DIMSE_C_FindRQ *request,
+  DcmDataset *requestIdentifiers, int responseCount,
+  /* out */
+  T_DIMSE_C_FindRSP *response,
+  DcmDataset **responseIdentifiers,
+  DcmDataset **stDetail)
 {
   DcmQueryRetrieveFindContext *context = OFstatic_cast(DcmQueryRetrieveFindContext *, callbackData);
   context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, responseIdentifiers, stDetail);
@@ -55,13 +55,13 @@ static void findCallback(
 
 
 static void getCallback(
-        /* in */
-        void *callbackData,
-        OFBool cancelled, T_DIMSE_C_GetRQ *request,
-        DcmDataset *requestIdentifiers, int responseCount,
-        /* out */
-        T_DIMSE_C_GetRSP *response, DcmDataset **stDetail,
-        DcmDataset **responseIdentifiers)
+  /* in */
+  void *callbackData,
+  OFBool cancelled, T_DIMSE_C_GetRQ *request,
+  DcmDataset *requestIdentifiers, int responseCount,
+  /* out */
+  T_DIMSE_C_GetRSP *response, DcmDataset **stDetail,
+  DcmDataset **responseIdentifiers)
 {
   DcmQueryRetrieveGetContext *context = OFstatic_cast(DcmQueryRetrieveGetContext *, callbackData);
   context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers);
@@ -69,13 +69,13 @@ static void getCallback(
 
 
 static void moveCallback(
-        /* in */
-        void *callbackData,
-        OFBool cancelled, T_DIMSE_C_MoveRQ *request,
-        DcmDataset *requestIdentifiers, int responseCount,
-        /* out */
-        T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
-        DcmDataset **responseIdentifiers)
+  /* in */
+  void *callbackData,
+  OFBool cancelled, T_DIMSE_C_MoveRQ *request,
+  DcmDataset *requestIdentifiers, int responseCount,
+  /* out */
+  T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
+  DcmDataset **responseIdentifiers)
 {
   DcmQueryRetrieveMoveContext *context = OFstatic_cast(DcmQueryRetrieveMoveContext *, callbackData);
   context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers);
@@ -83,15 +83,15 @@ static void moveCallback(
 
 
 static void storeCallback(
-    /* in */
-    void *callbackData,
-    T_DIMSE_StoreProgress *progress,    /* progress state */
-    T_DIMSE_C_StoreRQ *req,             /* original store request */
-    char *imageFileName,                /* being received into */
-    DcmDataset **imageDataSet,          /* being received into */
-    /* out */
-    T_DIMSE_C_StoreRSP *rsp,            /* final store response */
-    DcmDataset **stDetail)
+  /* in */
+  void *callbackData,
+  T_DIMSE_StoreProgress *progress,    /* progress state */
+  T_DIMSE_C_StoreRQ *req,             /* original store request */
+  char *imageFileName,                /* being received into */
+  DcmDataset **imageDataSet,          /* being received into */
+  /* out */
+  T_DIMSE_C_StoreRSP *rsp,            /* final store response */
+  DcmDataset **stDetail)
 {
   DcmQueryRetrieveStoreContext *context = OFstatic_cast(DcmQueryRetrieveStoreContext *, callbackData);
   context->callbackHandler(progress, req, imageFileName, imageDataSet, rsp, stDetail);
@@ -668,6 +668,22 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
+      case EXS_MPEG4HighProfileLevel4_1:
+        /* we prefer MPEG4 HP/L4.1 */
+        transferSyntaxes[0] = UID_MPEG4HighProfileLevel4_1TransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_MPEG4BDcompatibleHighProfileLevel4_1:
+        /* we prefer MPEG4 BD HP/L4.1 */
+        transferSyntaxes[0] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
       case EXS_RLELossless:
         /* we prefer RLE Lossless */
         transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
@@ -1091,6 +1107,9 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrsrv.cc,v $
+ * Revision 1.15  2011-03-17 09:46:26  joergr
+ * Added support for MPEG4 transfer syntaxes to network tools.
+ *
  * Revision 1.14  2011-02-11 13:33:28  joergr
  * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
  *

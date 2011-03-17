@@ -114,6 +114,12 @@ preferred network transfer syntaxes (not with --config-file):
   +xh   --prefer-mpeg2-high
           prefer MPEG2 Main Profile @ High Level TS
 
+  +xn   --prefer-mpeg4
+          prefer MPEG4 AVC/H.264 High Profile / Level 4.1 TS
+
+  +xl   --prefer-mpeg4-bd
+          prefer MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS
+
   +xr   --prefer-rle
           prefer RLE lossless TS
 
@@ -672,6 +678,8 @@ JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
 JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
 MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
 MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
+MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
+MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 \endverbatim
 
@@ -792,6 +800,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

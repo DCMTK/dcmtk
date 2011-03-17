@@ -69,7 +69,7 @@ application entity titles:
 
 association negotiation debugging:
 
-  -pts  --propose-ts  [n]umber: integer (1..28)
+  -pts  --propose-ts  [n]umber: integer (1..33)
           propose n transfer syntaxes
 
   -ppc  --propose-pc  [n]umber: integer (1..128)
@@ -242,6 +242,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
