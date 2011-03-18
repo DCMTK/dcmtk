@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2011-03-18 10:52:17 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -586,6 +586,8 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
     }
     if (result.good() || (flags & RF_ignoreContentItemErrors))
     {
+        if (result.bad())
+            DCMSR_DEBUG("Ignoring content item error because of read flag");
         /* read ContentItem (depending on ValueType) */
         result = readContentItem(dataset);
     }
@@ -595,10 +597,21 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
         printInvalidContentItemMessage("Reading", this, posString.c_str());
         /* ignore content item reading/parsing error if flag is set */
         if (flags & RF_ignoreContentItemErrors)
-           result = EC_Normal;
+        {
+            DCMSR_DEBUG("Ignoring content item error because of read flag");
+            result = EC_Normal;
+        }
         /* content item is not valid */
         else if (result.good())
-           result = SR_EC_InvalidValue;
+        {
+            result = SR_EC_InvalidValue;
+        }
+        /* accept invalid content item value if flag is set */
+        else if ((result == SR_EC_InvalidValue) && (flags & RF_acceptInvalidContentItemValue))
+        {
+            DCMSR_DEBUG("Ignoring invalid content item value because of read flag");
+            result = EC_Normal;
+        }
     }
     return result;
 }
@@ -1119,6 +1132,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.56  2011-03-18 10:52:17  joergr
+ *  Introduced new read flag that allows for accepting an invalid content item
+ *  value (e.g. violation of VR or VM definition).
+ *
  *  Revision 1.55  2010-10-14 13:14:41  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

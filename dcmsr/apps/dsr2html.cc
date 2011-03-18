@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-21 09:10:08 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2011-03-18 10:52:10 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -183,6 +183,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--processing-details",   "-Ip",    "show currently processed content item");
       cmd.addSubGroup("error handling:");
         cmd.addOption("--unknown-relationship", "-Er",    "accept unknown/missing relationship type");
+        cmd.addOption("--invalid-item-value",   "-Ev",    "accept invalid content item value\n(e.g. violation of VR or VM definition)");
         cmd.addOption("--ignore-constraints",   "-Ec",    "ignore relationship content constraints");
         cmd.addOption("--ignore-item-errors",   "-Ee",    "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
         cmd.addOption("--skip-invalid-items",   "-Ei",    "skip invalid content items (incl. sub-tree)");
@@ -280,6 +281,8 @@ int main(int argc, char *argv[])
         }
         if (cmd.findOption("--unknown-relationship"))
             opt_readFlags |= DSRTypes::RF_acceptUnknownRelationshipType;
+        if (cmd.findOption("--invalid-item-value"))
+            opt_readFlags |= DSRTypes::RF_acceptInvalidContentItemValue;
         if (cmd.findOption("--ignore-constraints"))
             opt_readFlags |= DSRTypes::RF_ignoreRelationshipConstraints;
         if (cmd.findOption("--ignore-item-errors"))
@@ -422,6 +425,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
+ * Revision 1.38  2011-03-18 10:52:10  joergr
+ * Introduced new read flag that allows for accepting an invalid content item
+ * value (e.g. violation of VR or VM definition).
+ *
  * Revision 1.37  2010-10-21 09:10:08  joergr
  * Renamed variable to avoid warning reported by gcc with additional flags.
  *

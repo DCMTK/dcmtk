@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 11:06:57 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Update Date:      $Date: 2011-03-18 10:52:17 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,10 +74,11 @@
 /* read flags */
 const size_t DSRTypes::RF_readDigitalSignatures          = 1 <<  0;
 const size_t DSRTypes::RF_acceptUnknownRelationshipType  = 1 <<  1;
-const size_t DSRTypes::RF_ignoreRelationshipConstraints  = 1 <<  2;
-const size_t DSRTypes::RF_ignoreContentItemErrors        = 1 <<  3;
-const size_t DSRTypes::RF_skipInvalidContentItems        = 1 <<  4;
-const size_t DSRTypes::RF_showCurrentlyProcessedItem     = 1 <<  5;
+const size_t DSRTypes::RF_acceptInvalidContentItemValue  = 1 <<  2;
+const size_t DSRTypes::RF_ignoreRelationshipConstraints  = 1 <<  3;
+const size_t DSRTypes::RF_ignoreContentItemErrors        = 1 <<  4;
+const size_t DSRTypes::RF_skipInvalidContentItems        = 1 <<  5;
+const size_t DSRTypes::RF_showCurrentlyProcessedItem     = 1 <<  6;
 
 /* renderHTML flags */
 const size_t DSRTypes::HF_neverExpandChildrenInline      = 1 <<  0;
@@ -1005,10 +1006,9 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
         DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
         if (delem != NULL)
         {
-            if (checkElementValue(*delem, vm, type, result, moduleName))
-                result = delem->getOFString(stringValue, 0);
-            else
+            if (!checkElementValue(*delem, vm, type, result, moduleName))
                 result = SR_EC_InvalidValue;
+            delem->getOFString(stringValue, 0);
         } else
             result = EC_CorruptedData;
     } else {
@@ -1019,7 +1019,8 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
             DCMSR_WARN(tagName << " " << tagKey << " absent in " << module << " (type " << type << ")");
         }
     }
-    if (result.bad())
+    /* clear return parameter if an error occurred, but not in case of invalid value */
+    if (result.bad() && (result != SR_EC_InvalidValue))
         stringValue.clear();
     return result;
 }
@@ -1585,6 +1586,10 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.74  2011-03-18 10:52:17  joergr
+ *  Introduced new read flag that allows for accepting an invalid content item
+ *  value (e.g. violation of VR or VM definition).
+ *
  *  Revision 1.73  2010-11-05 11:06:57  joergr
  *  Added support for new Implantation Plan SR Document Storage SOP Class.
  *

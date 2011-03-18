@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:54 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Update Date:      $Date: 2011-03-18 10:52:14 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,6 +165,9 @@ class DSRTypes
 
     /// accept unknown/missing relationship type
     static const size_t RF_acceptUnknownRelationshipType;
+
+    /// accept invalid content item value (e.g. violation of VR or VM definition)
+    static const size_t RF_acceptInvalidContentItemValue;
 
     /// ignore relationship constraints for this document class
     static const size_t RF_ignoreRelationshipConstraints;
@@ -1172,7 +1175,9 @@ class DSRTypes
      *                       (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
      *  @param  tagKey       DICOM tag specifying the attribute from which the string should be retrieved
      *  @param  stringValue  reference to character string in which the result should be stored.
-     *                       (This parameter is automatically cleared if the tag could not be found.)
+     *                       (This parameter is automatically cleared if the tag could not be found.
+     *                        It is not cleared if the retrieved string is invalid, e.g. violates VR or
+     *                        VM definition.)
      *  @param  vm           value multiplicity (according to the data dictionary) to be checked for.
      *                       (See DcmElement::checkVM() for a list of valid values.)
      *                       Interpreted as cardinality (number of items) for sequence attributes.
@@ -1299,6 +1304,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.70  2011-03-18 10:52:14  joergr
+ *  Introduced new read flag that allows for accepting an invalid content item
+ *  value (e.g. violation of VR or VM definition).
+ *
  *  Revision 1.69  2011-02-02 15:13:54  joergr
  *  Moved documentation of valid values for the VMs that can be checked to a
  *  central place, i.e. DcmElement::checkVM().

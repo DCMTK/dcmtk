@@ -108,6 +108,10 @@ error handling:
   -Er  --unknown-relationship
          accept unknown/missing relationship type
 
+  -Ev  --invalid-item-value
+         accept invalid content item value
+         (e.g. violation of VR or VM definition)
+
   -Ec  --ignore-constraints
          ignore relationship content constraints
 
@@ -293,6 +297,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2000-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

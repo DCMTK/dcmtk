@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.18 (riesmeier)
+
+- Introduced new read flag that allows for accepting an invalid content item
+  value (e.g. violation of VR or VM definition).
+  Thanks to forum user "Yves Neumann" for the original report and sample file.
+  Affects: dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsrdump.cc
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsrdump.man
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2011.03.17 (schlachter)
 
 - Fixed a case where calcElementLength() used a wrong header length. Thanks
