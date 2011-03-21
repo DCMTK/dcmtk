@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-12-20 11:05:15 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Update Date:      $Date: 2011-03-21 15:02:52 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,11 +142,12 @@ void DcmFileFormat::print(STD_NAMESPACE ostream &out,
 {
     out << OFendl;
     if (flags & DCMTypes::PF_useANSIEscapeCodes)
-        out << ANSI_ESCAPE_CODE_COMMENT;
+        out << DCMDATA_ANSI_ESCAPE_CODE_COMMENT;
     printNestingLevel(out, flags, level);
-    out << "# Dicom-File-Format" << OFendl;
+    out << "# Dicom-File-Format";
     if (flags & DCMTypes::PF_useANSIEscapeCodes)
-        out << ANSI_ESCAPE_CODE_RESET;
+        out << DCMDATA_ANSI_ESCAPE_CODE_RESET;
+    out << OFendl;
     if (!itemList->empty())
     {
         DcmObject *dO;
@@ -157,11 +158,12 @@ void DcmFileFormat::print(STD_NAMESPACE ostream &out,
         } while (itemList->seek(ELP_next));
     } else {
         if (flags & DCMTypes::PF_useANSIEscapeCodes)
-            out << ANSI_ESCAPE_CODE_COMMENT;
+            out << DCMDATA_ANSI_ESCAPE_CODE_COMMENT;
         printNestingLevel(out, flags, level);
-        out << "# Dicom-File-Format has been erased" << OFendl;
+        out << "# Dicom-File-Format has been erased";
         if (flags & DCMTypes::PF_useANSIEscapeCodes)
-            out << ANSI_ESCAPE_CODE_RESET;
+            out << DCMDATA_ANSI_ESCAPE_CODE_RESET;
+        out << OFendl;
     }
 }
 
@@ -926,6 +928,11 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.65  2011-03-21 15:02:52  joergr
+** Added module name "DCMDATA_" as a prefix to the ANSI escape code macros.
+** Moved ANSI escape code for "reset" to the end of each output line (before
+** "OFendl") in order to avoid unwanted output if the stream gets interrupted.
+**
 ** Revision 1.64  2010-12-20 11:05:15  joergr
 ** Fixed possible NULL pointer dereferencing when checking the meta-header
 ** version (and no data dictionary is loaded).

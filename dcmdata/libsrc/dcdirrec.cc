@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 13:11:16 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Update Date:      $Date: 2011-03-21 15:02:52 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1139,7 +1139,7 @@ void DcmDirectoryRecord::print(STD_NAMESPACE ostream&out,
         OFSTRINGSTREAM_FREESTR(tmpString)
         /* print record comment line */
         if (flags & DCMTypes::PF_useANSIEscapeCodes)
-            out << ANSI_ESCAPE_CODE_INFO;
+            out << DCMDATA_ANSI_ESCAPE_CODE_INFO;
         printNestingLevel(out, flags, level);
         out << "#  offset=$" << getFileOffset();
         if (referencedMRDR != NULL)
@@ -1149,6 +1149,8 @@ void DcmDirectoryRecord::print(STD_NAMESPACE ostream&out,
         const char *refFile = getReferencedFileName();
         if (refFile != NULL)
             out << "  refFileID=\"" << refFile << "\"";
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << DCMDATA_ANSI_ESCAPE_CODE_RESET;
         out << OFendl;
         /* print item content */
         if (!elementList->empty())
@@ -1538,6 +1540,11 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.79  2011-03-21 15:02:52  joergr
+ * Added module name "DCMDATA_" as a prefix to the ANSI escape code macros.
+ * Moved ANSI escape code for "reset" to the end of each output line (before
+ * "OFendl") in order to avoid unwanted output if the stream gets interrupted.
+ *
  * Revision 1.78  2010-11-05 13:11:16  joergr
  * Added support for new directory record types IMPLANT, IMPLANT GROUP and
  * IMPLANT ASSY from Supplement 131 (Implant Templates).

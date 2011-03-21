@@ -8,6 +8,23 @@ Changes between releases are documented here.
   Affects: dcmdata/apps/dcmdump.cc
            dcmdata/docs/dcmdump.man
 
+- Added module name "DCMDATA_" as a prefix to the ANSI escape code macros.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcobject.cc
+
+- Moved ANSI escape code for "reset" to the end of each output line (before
+  "OFendl") in order to avoid unwanted output if the stream gets interrupted.
+  Affects: dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcobject.cc
+
 **** Changes from 2011.03.18 (riesmeier)
 
 - Introduced new read flag that allows for accepting an invalid content item

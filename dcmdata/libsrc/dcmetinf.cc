@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-12-20 13:41:27 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2011-03-21 15:02:52 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,15 +150,16 @@ void DcmMetaInfo::print(STD_NAMESPACE ostream&out,
 {
     out << OFendl;
     if (flags & DCMTypes::PF_useANSIEscapeCodes)
-        out << ANSI_ESCAPE_CODE_COMMENT;
+        out << DCMDATA_ANSI_ESCAPE_CODE_COMMENT;
     printNestingLevel(out, flags, level);
     out << "# Dicom-Meta-Information-Header" << OFendl;
     if (flags & DCMTypes::PF_useANSIEscapeCodes)
-        out << ANSI_ESCAPE_CODE_COMMENT;
+        out << DCMDATA_ANSI_ESCAPE_CODE_COMMENT;
     printNestingLevel(out, flags, level);
-    out << "# Used TransferSyntax: " << DcmXfer(Xfer).getXferName() << OFendl;
+    out << "# Used TransferSyntax: " << DcmXfer(Xfer).getXferName();
     if (flags & DCMTypes::PF_useANSIEscapeCodes)
-        out << ANSI_ESCAPE_CODE_RESET;
+        out << DCMDATA_ANSI_ESCAPE_CODE_RESET;
+    out << OFendl;
     if (!elementList->empty())
     {
         DcmObject *dO;
@@ -620,6 +621,11 @@ OFCondition DcmMetaInfo::loadFile(const char *fileName,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.58  2011-03-21 15:02:52  joergr
+** Added module name "DCMDATA_" as a prefix to the ANSI escape code macros.
+** Moved ANSI escape code for "reset" to the end of each output line (before
+** "OFendl") in order to avoid unwanted output if the stream gets interrupted.
+**
 ** Revision 1.57  2010-12-20 13:41:27  joergr
 ** Added explicit type cast in order to keep gcc 2.95.3 quiet.
 **
