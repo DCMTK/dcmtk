@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-29 10:57:17 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2011-03-21 15:02:07 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,20 +64,20 @@ OFLogger DCM_dcmdataGetLogger();
 #define DCMTK_XML_NAMESPACE_URI "http://dicom.offis.de/dcmtk"
 
 // ANSI escape codes for color output of the print() method
-#define ANSI_ESCAPE_CODE_RESET      "\033[0m"
-#define ANSI_ESCAPE_CODE_TAG        "\033[22m\033[32m"
-#define ANSI_ESCAPE_CODE_VR         "\033[22m\033[31m"
-#define ANSI_ESCAPE_CODE_VALUE      "\033[1m\033[37m"
-#define ANSI_ESCAPE_CODE_INFO       "\033[1m\033[30m"
-#define ANSI_ESCAPE_CODE_LENGTH     "\033[22m\033[36m"
-#define ANSI_ESCAPE_CODE_VM         "\033[22m\033[35m"
-#define ANSI_ESCAPE_CODE_NAME       "\033[22m\033[33m"
-#define ANSI_ESCAPE_CODE_NAME_1     "\033[1m\033[33m"
-#define ANSI_ESCAPE_CODE_SEQUENCE   "\033[22m\033[32m"
-#define ANSI_ESCAPE_CODE_SEQUENCE_1 "\033[1m\033[32m"
-#define ANSI_ESCAPE_CODE_ITEM       "\033[1m\033[30m"
-#define ANSI_ESCAPE_CODE_LINE       "\033[1m\033[30m"
-#define ANSI_ESCAPE_CODE_COMMENT    "\033[1m\033[30m"
+#define DCMDATA_ANSI_ESCAPE_CODE_RESET      "\033[0m"
+#define DCMDATA_ANSI_ESCAPE_CODE_TAG        "\033[22m\033[32m"
+#define DCMDATA_ANSI_ESCAPE_CODE_VR         "\033[22m\033[31m"
+#define DCMDATA_ANSI_ESCAPE_CODE_VALUE      "\033[1m\033[37m"
+#define DCMDATA_ANSI_ESCAPE_CODE_INFO       "\033[1m\033[30m"
+#define DCMDATA_ANSI_ESCAPE_CODE_LENGTH     "\033[22m\033[36m"
+#define DCMDATA_ANSI_ESCAPE_CODE_VM         "\033[22m\033[35m"
+#define DCMDATA_ANSI_ESCAPE_CODE_NAME       "\033[22m\033[33m"
+#define DCMDATA_ANSI_ESCAPE_CODE_NAME_1     "\033[1m\033[33m"
+#define DCMDATA_ANSI_ESCAPE_CODE_SEQUENCE   "\033[22m\033[32m"
+#define DCMDATA_ANSI_ESCAPE_CODE_SEQUENCE_1 "\033[1m\033[32m"
+#define DCMDATA_ANSI_ESCAPE_CODE_ITEM       "\033[1m\033[30m"
+#define DCMDATA_ANSI_ESCAPE_CODE_LINE       "\033[1m\033[30m"
+#define DCMDATA_ANSI_ESCAPE_CODE_COMMENT    "\033[1m\033[30m"
 
 
 /*
@@ -227,6 +227,9 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.36  2011-03-21 15:02:07  joergr
+ * Added module name "DCMDATA_" as a prefix to the ANSI escape code macros.
+ *
  * Revision 1.35  2010-10-29 10:57:17  joergr
  * Added support for colored output to the print() method.
  *

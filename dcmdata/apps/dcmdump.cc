@@ -18,8 +18,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-21 11:57:38 $
- *  CVS/RCS Revision: $Revision: 1.87 $
+ *  Update Date:      $Date: 2011-03-21 15:02:05 $
+ *  CVS/RCS Revision: $Revision: 1.88 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -641,7 +641,7 @@ static void printResult(STD_NAMESPACE ostream &out,
 
     if (prependSequenceHierarchy) {
         if (printFlags & DCMTypes::PF_useANSIEscapeCodes)
-            out << ANSI_ESCAPE_CODE_TAG;
+            out << DCMDATA_ANSI_ESCAPE_CODE_TAG;
         /* print the path leading up to the top stack elem */
         for (unsigned long i = n - 1; i >= 1; i--) {
             DcmObject *dobj = stack.elem(i);
@@ -757,6 +757,9 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.88  2011-03-21 15:02:05  joergr
+ * Added module name "DCMDATA_" as a prefix to the ANSI escape code macros.
+ *
  * Revision 1.87  2011-03-21 11:57:38  joergr
  * Added new command line option that allows for disabling the output of ANSI
  * escape codes for colored output (which was and still is the default).
