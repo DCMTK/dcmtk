@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-29 13:54:22 $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  Update Date:      $Date: 2011-03-21 11:57:38 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -257,6 +257,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--print-nonascii",      "-Qn",    "print non-ASCII and control chars (default)");
 #ifdef ANSI_ESCAPE_CODES_AVAILABLE
         cmd.addOption("--print-color",         "+C",     "use ANSI escape codes for colored output");
+        cmd.addOption("--no-color",            "-C",     "do not use any ANSI escape codes (default)");
 #endif
 
       cmd.addSubGroup("error handling:");
@@ -487,7 +488,10 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
 #ifdef ANSI_ESCAPE_CODES_AVAILABLE
+      cmd.beginOptionBlock();
       if (cmd.findOption("--print-color")) printFlags |= DCMTypes::PF_useANSIEscapeCodes;
+      if (cmd.findOption("--no-color")) printFlags &= ~DCMTypes::PF_useANSIEscapeCodes;
+      cmd.endOptionBlock();
 #endif
 
       cmd.beginOptionBlock();
@@ -753,6 +757,10 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.87  2011-03-21 11:57:38  joergr
+ * Added new command line option that allows for disabling the output of ANSI
+ * escape codes for colored output (which was and still is the default).
+ *
  * Revision 1.86  2010-10-29 13:54:22  joergr
  * Remove new --print-color option for Windows system since the ANSI escape
  * codes are not supported by the standard command shell.

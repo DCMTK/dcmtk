@@ -241,6 +241,11 @@ printing:
 
          # not available on Windows systems
 
+  -C   --no-color
+         do not use any ANSI escape codes (default)
+
+         # not available on Windows systems
+
 error handling:
 
   -E   --stop-on-error
@@ -339,6 +344,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

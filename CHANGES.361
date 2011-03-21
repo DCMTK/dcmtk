@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.21 (riesmeier)
+
+- Added new command line option that allows for disabling the output of ANSI
+  escape codes for colored output (which was and still is the default).
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+
 **** Changes from 2011.03.18 (riesmeier)
 
 - Introduced new read flag that allows for accepting an invalid content item
