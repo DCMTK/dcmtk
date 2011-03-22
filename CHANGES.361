@@ -30,6 +30,9 @@ Changes between releases are documented here.
            dcmsr/libsrc/dsruidtn.cc
            dcmsr/libsrc/dsrwavtn.cc
 
+- Made sure that the header delimiter " : " is only printed when needed.
+  Affects: dcmsr/libsrc/dsrdoc.cc
+
 - Updated information on latest version of CMake that has been tested (2.8.4).
   Affects: CMakeLists.txt
 
