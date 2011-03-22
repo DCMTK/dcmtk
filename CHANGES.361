@@ -33,6 +33,9 @@ Changes between releases are documented here.
 - Made sure that the header delimiter " : " is only printed when needed.
   Affects: dcmsr/libsrc/dsrdoc.cc
 
+- Added note that the new color options are not available on Windows systems.
+  Affects: dcmsr/docs/dsrdump.man
+
 - Updated information on latest version of CMake that has been tested (2.8.4).
   Affects: CMakeLists.txt
 
