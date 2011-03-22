@@ -18,8 +18,8 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-18 10:52:10 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2011-03-22 16:56:09 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,10 @@
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
+#endif
+
+#ifndef HAVE_WINDOWS_H
+#define ANSI_ESCAPE_CODES_AVAILABLE
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dsrdump"
@@ -163,6 +167,10 @@ int main(int argc, char *argv[])
         cmd.addOption("--print-instance-uid",   "+Pu", "print SOP instance UID of referenced objects");
         cmd.addOption("--print-all-codes",      "+Pc", "print all codes (incl. concept name codes)");
         cmd.addOption("--print-template-id",    "+Pt", "print template identification information");
+#ifdef ANSI_ESCAPE_CODES_AVAILABLE
+        cmd.addOption("--print-color",          "+C",  "use ANSI escape codes for colored output");
+        cmd.addOption("--no-color",             "-C",  "do not use any ANSI escape codes (default)");
+#endif
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -223,7 +231,7 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--unknown-relationship"))
             opt_readFlags |= DSRTypes::RF_acceptUnknownRelationshipType;
         if (cmd.findOption("--invalid-item-value"))
-            opt_readFlags |= DSRTypes::RF_acceptInvalidContentItemValue;                
+            opt_readFlags |= DSRTypes::RF_acceptInvalidContentItemValue;
         if (cmd.findOption("--ignore-constraints"))
             opt_readFlags |= DSRTypes::RF_ignoreRelationshipConstraints;
         if (cmd.findOption("--ignore-item-errors"))
@@ -256,6 +264,15 @@ int main(int argc, char *argv[])
             opt_printFlags |= DSRTypes::PF_printAllCodes;
         if (cmd.findOption("--print-template-id"))
             opt_printFlags |= DSRTypes::PF_printTemplateIdentification;
+
+#ifdef ANSI_ESCAPE_CODES_AVAILABLE
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--print-color"))
+            opt_printFlags |= DSRTypes::PF_useANSIEscapeCodes;
+        if (cmd.findOption("--no-color"))
+            opt_printFlags &= ~DSRTypes::PF_useANSIEscapeCodes;
+        cmd.endOptionBlock();
+#endif
     }
 
     /* print resource identifier */
@@ -294,6 +311,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
+ * Revision 1.36  2011-03-22 16:56:09  joergr
+ * Added new option for colored output of the textual dump - Unix only.
+ *
  * Revision 1.35  2011-03-18 10:52:10  joergr
  * Introduced new read flag that allows for accepting an invalid content item
  * value (e.g. violation of VR or VM definition).

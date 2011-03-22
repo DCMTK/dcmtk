@@ -151,6 +151,12 @@ printing:
 
   +Pt  --print-template-id
          print template identification information
+
+  +C   --print-color
+         use ANSI escape codes for colored output
+
+  -C   --no-color
+         do not use any ANSI escape codes (default)
 \endverbatim
 
 \section notes NOTES

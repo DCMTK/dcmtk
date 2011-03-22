@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.03.22 (riesmeier)
 
+- Added new option for colored output of the textual dump - Unix only.
+  Affects: dcmsr/apps/dsrdump.cc
+           dcmsr/docs/dsrdump.man
+
 - Added support for colored output to the print() method - Unix only.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
            dcmsr/libsrc/dsrcodtn.cc
