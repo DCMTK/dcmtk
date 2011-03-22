@@ -88,6 +88,9 @@ port  tcp/ip port number to listen on (default: in config file)
 
         --fork
           fork child process for each association (default)
+
+  # Please note that the multi-process options are only available
+  # on systems that support the fork() call, i.e. not on Windows.
 \endverbatim
 
 \subsection database_options database options
@@ -278,7 +281,7 @@ proposed transmission transfer syntaxes (outgoing associations):
 
   -xn   --propose-mpeg4
           propose MPEG4 AVC/H.264 High Profile / Level 4.1 TS only
-          
+
   -xl   --propose-mpeg4-bd
           propose MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS only
 

@@ -36,6 +36,10 @@ Changes between releases are documented here.
 - Added note that the new color options are not available on Windows systems.
   Affects: dcmsr/docs/dsrdump.man
 
+- Added note that the multi-process options are only available on systems that
+  support the fork() call, i.e. not on Windows systems.
+  Affects: dcmqrdb/docs/dcmqrscp.man
+
 - Updated information on latest version of CMake that has been tested (2.8.4).
   Affects: CMakeLists.txt
 
