@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-18 10:52:17 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2011-03-22 16:55:18 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,11 +90,20 @@ OFCondition DSRDocumentTreeNode::print(STD_NAMESPACE ostream &stream,
                                        const size_t flags) const
 {
     if (RelationshipType != RT_isRoot)
+    {
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RELATIONSHIP_TYPE)
         stream << relationshipTypeToReadableName(RelationshipType) << " ";
-    stream << valueTypeToDefinedTerm(ValueType) << ":";
+    }
+    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_VALUE_TYPE)
+    stream << valueTypeToDefinedTerm(ValueType);
+    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
+    stream << ":";
     /* only print valid concept name codes */
     if (ConceptName.isValid())
+    {
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_CONCEPT_NAME)
         ConceptName.print(stream, (flags & PF_printConceptNameCodes) > 0);
+    }
     return EC_Normal;
 }
 
@@ -1132,6 +1141,9 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.57  2011-03-22 16:55:18  joergr
+ *  Added support for colored output to the print() method - Unix only.
+ *
  *  Revision 1.56  2011-03-18 10:52:17  joergr
  *  Introduced new read flag that allows for accepting an invalid content item
  *  value (e.g. violation of VR or VM definition).

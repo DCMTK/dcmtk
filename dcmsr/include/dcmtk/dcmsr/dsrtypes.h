@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-18 10:52:14 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Update Date:      $Date: 2011-03-22 16:55:15 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,6 +72,26 @@ OFLogger DCM_dcmsrGetLogger();
 #define DCMSR_XML_XSD_FILE "dsr2xml.xsd"
 // XML Schema Instance URI
 #define XML_SCHEMA_INSTANCE_URI "http://www.w3.org/2001/XMLSchema-instance"
+
+// ANSI escape codes for color output of the print() method
+#define DCMSR_ANSI_ESCAPE_CODE_RESET             "\033[0m"
+#define DCMSR_ANSI_ESCAPE_CODE_DOCUMENT_TYPE     "\033[22m\033[35m"
+#define DCMSR_ANSI_ESCAPE_CODE_HEADER_NAME       "\033[1m\033[34m"
+#define DCMSR_ANSI_ESCAPE_CODE_HEADER_VALUE      "\033[1m\033[37m"
+#define DCMSR_ANSI_ESCAPE_CODE_ITEM_POSITION     "\033[22m\033[36m"
+#define DCMSR_ANSI_ESCAPE_CODE_VALUE_TYPE        "\033[22m\033[31m"
+#define DCMSR_ANSI_ESCAPE_CODE_RELATIONSHIP_TYPE "\033[22m\033[32m"
+#define DCMSR_ANSI_ESCAPE_CODE_CONCEPT_NAME      "\033[22m\033[33m"
+#define DCMSR_ANSI_ESCAPE_CODE_ITEM_VALUE        "\033[1m\033[37m"
+#define DCMSR_ANSI_ESCAPE_CODE_TEMPLATE_ID       "\033[22m\033[35m"
+#define DCMSR_ANSI_ESCAPE_CODE_DELIMITER         "\033[1m\033[30m"
+
+// helper macro for the conditional usage of ANSI escape codes
+#define DCMSR_PRINT_ANSI_ESCAPE_CODE(ansi_code)  \
+    if (flags & PF_useANSIEscapeCodes)           \
+    {                                            \
+        stream << ansi_code;                     \
+    }
 
 
 /*------------------------*
@@ -331,6 +351,9 @@ class DSRTypes
 
     /// print template identification (TID and mapping resource)
     static const size_t PF_printTemplateIdentification;
+
+    /// use ANSI escape codes for output
+    static const size_t PF_useANSIEscapeCodes;
 
     /// shortcut: print all codes
     static const size_t PF_printAllCodes;
@@ -1304,6 +1327,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.71  2011-03-22 16:55:15  joergr
+ *  Added support for colored output to the print() method - Unix only.
+ *
  *  Revision 1.70  2011-03-18 10:52:14  joergr
  *  Introduced new read flag that allows for accepting an invalid content item
  *  value (e.g. violation of VR or VM definition).

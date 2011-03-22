@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRUIDRefTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:42 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2011-03-22 16:55:19 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,9 @@ OFCondition DSRUIDRefTreeNode::print(STD_NAMESPACE ostream &stream,
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
     if (result ==EC_Normal)
     {
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
         stream << "=";
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ITEM_VALUE)
         DSRStringValue::print(stream);
     }
     return result;
@@ -137,6 +139,9 @@ OFCondition DSRUIDRefTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docS
 /*
  *  CVS/RCS Log:
  *  $Log: dsruidtn.cc,v $
+ *  Revision 1.23  2011-03-22 16:55:19  joergr
+ *  Added support for colored output to the print() method - Unix only.
+ *
  *  Revision 1.22  2010-10-14 13:14:42  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

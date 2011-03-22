@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2011-03-22 16:55:18 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,12 @@ OFCondition DSRContainerTreeNode::print(STD_NAMESPACE ostream &stream,
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
     if (result.good())
-        stream << "=" << continuityOfContentToEnumeratedValue(ContinuityOfContent);
+    {
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
+        stream << "=";
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ITEM_VALUE)
+        stream << continuityOfContentToEnumeratedValue(ContinuityOfContent);
+    }
     return result;
 }
 
@@ -214,6 +219,9 @@ OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
+ *  Revision 1.29  2011-03-22 16:55:18  joergr
+ *  Added support for colored output to the print() method - Unix only.
+ *
  *  Revision 1.28  2010-10-14 13:14:41  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

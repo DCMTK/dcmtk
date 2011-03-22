@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-14 10:33:34 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Update Date:      $Date: 2011-03-22 16:55:18 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,26 @@
 #include "dcmtk/dcmsr/dsrdtitn.h"
 #include "dcmtk/dcmsr/dsrtimtn.h"
 
+
+/*---------------------*
+ *  macro definitions  *
+ *---------------------*/
+
+#define DCMSR_PRINT_HEADER_FIELD_START(header_name)                    \
+    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_HEADER_NAME)   \
+    stream << header_name;                                             \
+    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)     \
+    stream << " : ";                                                   \
+    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_HEADER_VALUE)
+
+#define DCMSR_PRINT_HEADER_FIELD_END                                   \
+    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RESET)         \
+    stream << OFendl;
+
+
+/*------------------*
+ *  implementation  *
+ *------------------*/
 
 DSRDocument::DSRDocument(const E_DocumentType documentType)
   : DocumentTree(documentType),
@@ -179,11 +199,15 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
         if (!(flags & PF_printNoDocumentHeader))
         {
             /* document type/title */
-            stream << documentTypeToDocumentTitle(getDocumentType(), tmpString) << OFendl << OFendl;
+            DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DOCUMENT_TYPE)
+            stream << documentTypeToDocumentTitle(getDocumentType(), tmpString);
+            DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RESET)
+            stream << OFendl << OFendl;
             /* patient related information */
             if (!PatientName.isEmpty())
             {
-                stream << "Patient             : " << getPrintStringFromElement(PatientName, tmpString);
+                DCMSR_PRINT_HEADER_FIELD_START("Patient            ")
+                stream << getPrintStringFromElement(PatientName, tmpString);
                 OFString patientStr;
                 if (!PatientSex.isEmpty())
                     patientStr += getPrintStringFromElement(PatientSex, tmpString);
@@ -202,23 +226,29 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                 }
                 if (!patientStr.empty())
                     stream << " (" << patientStr << ")";
-                stream << OFendl;
+                DCMSR_PRINT_HEADER_FIELD_END
             }
             /* referring physician */
             if (!ReferringPhysicianName.isEmpty())
-                stream << "Referring Physician : " << getPrintStringFromElement(ReferringPhysicianName, tmpString) << OFendl;
+             {
+                DCMSR_PRINT_HEADER_FIELD_START("Referring Physician")
+                stream << getPrintStringFromElement(ReferringPhysicianName, tmpString);
+                DCMSR_PRINT_HEADER_FIELD_END
+             }
             /* study related information  */
             if (!StudyDescription.isEmpty())
             {
-                stream << "Study               : " << getPrintStringFromElement(StudyDescription, tmpString);
+                DCMSR_PRINT_HEADER_FIELD_START("Study              ")
+                stream << getPrintStringFromElement(StudyDescription, tmpString);
                 if (!StudyID.isEmpty())
                     stream << " (#" << getPrintStringFromElement(StudyID, tmpString) << ")";
-                stream << OFendl;
+                DCMSR_PRINT_HEADER_FIELD_END
             }
             /* manufacturer and device */
             if (!Manufacturer.isEmpty())
             {
-                stream << "Manufacturer        : " << getPrintStringFromElement(Manufacturer, tmpString);
+                DCMSR_PRINT_HEADER_FIELD_START("Manufacturer       ")
+                stream << getPrintStringFromElement(Manufacturer, tmpString);
                 OFString deviceStr;
                 if (!ManufacturerModelName.isEmpty())
                     deviceStr += getPrintStringFromElement(ManufacturerModelName, tmpString);
@@ -231,29 +261,49 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                 }
                 if (!deviceStr.empty())
                     stream << " (" << deviceStr << ")";
-                stream << OFendl;
+                DCMSR_PRINT_HEADER_FIELD_END
             }
             /* Key Object Selection Documents do not contain the SR Document General Module */
             if (getDocumentType() != DT_KeyObjectSelectionDocument)
             {
                 /* preliminary flag */
                 if (!PreliminaryFlag.isEmpty())
-                    stream << "Preliminary Flag    : " << getStringValueFromElement(PreliminaryFlag, tmpString) << OFendl;
+                {
+                    DCMSR_PRINT_HEADER_FIELD_START("Preliminary Flag   ")
+                    stream << getStringValueFromElement(PreliminaryFlag, tmpString);
+                    DCMSR_PRINT_HEADER_FIELD_END
+                }
                 /* completion flag */
-                stream << "Completion Flag     : " << getStringValueFromElement(CompletionFlag, tmpString) << OFendl;
+                DCMSR_PRINT_HEADER_FIELD_START("Completion Flag    ")
+                stream << getStringValueFromElement(CompletionFlag, tmpString);
+                DCMSR_PRINT_HEADER_FIELD_END
                 if (!CompletionFlagDescription.isEmpty())
-                    stream << "                      " << getPrintStringFromElement(CompletionFlagDescription, tmpString) << OFendl;
+                {
+                    DCMSR_PRINT_HEADER_FIELD_START("                   ")
+                    stream << getPrintStringFromElement(CompletionFlagDescription, tmpString);
+                    DCMSR_PRINT_HEADER_FIELD_END
+                }
                 /* predecessor documents */
                 if (!PredecessorDocuments.empty())
-                    stream << "Predecessor Docs    : " << PredecessorDocuments.getNumberOfInstances() << OFendl;
+                {
+                    DCMSR_PRINT_HEADER_FIELD_START("Predecessor Docs   ")
+                    stream << PredecessorDocuments.getNumberOfInstances();
+                    DCMSR_PRINT_HEADER_FIELD_END
+                }
             }
             /* identical documents */
             if (!IdenticalDocuments.empty())
-                stream << "Identical Docs      : " << IdenticalDocuments.getNumberOfInstances() << OFendl;
+            {
+                DCMSR_PRINT_HEADER_FIELD_START("Identical Docs     ")
+                stream << IdenticalDocuments.getNumberOfInstances();
+                DCMSR_PRINT_HEADER_FIELD_END
+            }
             if (getDocumentType() != DT_KeyObjectSelectionDocument)
             {
                 /* verification flag */
-                stream << "Verification Flag   : " << getStringValueFromElement(VerificationFlag, tmpString) << OFendl;
+                DCMSR_PRINT_HEADER_FIELD_START("Verification Flag  ")
+                stream << getStringValueFromElement(VerificationFlag, tmpString);
+                DCMSR_PRINT_HEADER_FIELD_END
                 /* verifying observer */
                 const size_t obsCount = getNumberOfVerifyingObservers();
                 for (size_t i = 1; i <= obsCount; i++)
@@ -263,23 +313,29 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                     if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
                     {
                         if (i == 1)
-                            stream << "Verifying Observers : " << dateTime << ": " << obsName;
-                        else
-                            stream << "                      " << dateTime << ": " << obsName;
+                        {
+                            DCMSR_PRINT_HEADER_FIELD_START("Verifying Observers")
+                        } else {
+                            DCMSR_PRINT_HEADER_FIELD_START("                   ")
+                        }
+                        stream << dateTime << ": " << obsName;
                         if (obsCode.isValid())
                         {
                             stream << " ";
                             obsCode.print(stream, (flags & PF_printAllCodes) > 0 /*printCodeValue*/);
                         }
-                        stream << ", " << organization << OFendl;
+                        stream << ", " << organization;
+                        DCMSR_PRINT_HEADER_FIELD_END
                     }
                 }
             }
             /* content date and time */
             if (!ContentDate.isEmpty() && !ContentTime.isEmpty())
             {
-                stream << "Content Date/Time   : " << getPrintStringFromElement(ContentDate, tmpString) << " ";
-                stream <<                             getPrintStringFromElement(ContentTime, tmpString) << OFendl;
+                DCMSR_PRINT_HEADER_FIELD_START("Content Date/Time  ")
+                stream << getPrintStringFromElement(ContentDate, tmpString) << " "
+                       << getPrintStringFromElement(ContentTime, tmpString);
+                DCMSR_PRINT_HEADER_FIELD_END
             }
             stream << OFendl;
         }
@@ -2573,6 +2629,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.75  2011-03-22 16:55:18  joergr
+ *  Added support for colored output to the print() method - Unix only.
+ *
  *  Revision 1.74  2011-03-14 10:33:34  joergr
  *  Output value of SOP Class UID in debug mode when reading a DICOM dataset.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2011-03-22 16:55:18 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,17 +96,20 @@ OFCondition DSRDocumentTree::print(STD_NAMESPACE ostream &stream,
             {
                 /* print node position */
                 if (flags & PF_printItemPosition)
-                    stream << cursor.getPosition(tmpString) << "  ";
-                else
                 {
+                    DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ITEM_POSITION)
+                    stream << cursor.getPosition(tmpString) << "  ";
+                } else {
                     /* use line identation */
                     level = cursor.getLevel();
                     if (level > 0)  // valid ?
                         stream << OFString((level - 1) * 2, ' ');
                 }
                 /* print node content */
+                DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
                 stream << "<";
                 result = node->print(stream, flags);
+                DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
                 stream << ">";
                 if (flags & PF_printTemplateIdentification)
                 {
@@ -115,9 +118,15 @@ OFCondition DSRDocumentTree::print(STD_NAMESPACE ostream &stream,
                     if (node->getTemplateIdentification(templateIdentifier, mappingResource).good())
                     {
                         if (!templateIdentifier.empty() && !mappingResource.empty())
-                            stream << "  # TID " << templateIdentifier << " (" << mappingResource << ")";
+                        {
+                            DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
+                            stream << "  # ";
+                            DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_TEMPLATE_ID)
+                            stream << "TID " << templateIdentifier << " (" << mappingResource << ")";
+                        }
                     }
                 }
+                DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_RESET)
                 stream << OFendl;
             } else
                 result = SR_EC_InvalidDocumentTree;
@@ -669,6 +678,9 @@ void DSRDocumentTree::resetReferenceTargetFlag()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
+ *  Revision 1.37  2011-03-22 16:55:18  joergr
+ *  Added support for colored output to the print() method - Unix only.
+ *
  *  Revision 1.36  2010-10-14 13:14:41  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

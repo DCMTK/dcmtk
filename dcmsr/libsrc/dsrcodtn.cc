@@ -19,8 +19,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:40 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2011-03-22 16:55:18 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,9 @@ OFCondition DSRCodeTreeNode::print(STD_NAMESPACE ostream &stream,
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
     if (result.good())
     {
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
         stream << "=";
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ITEM_VALUE)
         DSRCodedEntryValue::print(stream, OFTrue /*printCodeValue*/, OFTrue /*printInvalid*/);
     }
     return result;
@@ -165,6 +167,9 @@ OFCondition DSRCodeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
+ *  Revision 1.27  2011-03-22 16:55:18  joergr
+ *  Added support for colored output to the print() method - Unix only.
+ *
  *  Revision 1.26  2010-10-14 13:14:40  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

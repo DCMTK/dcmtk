@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-18 10:52:17 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Update Date:      $Date: 2011-03-22 16:55:19 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,6 +139,7 @@ const size_t DSRTypes::PF_printSOPInstanceUID            = 1 << 2;
 const size_t DSRTypes::PF_printConceptNameCodes          = 1 << 3;
 const size_t DSRTypes::PF_printNoDocumentHeader          = 1 << 4;
 const size_t DSRTypes::PF_printTemplateIdentification    = 1 << 5;
+const size_t DSRTypes::PF_useANSIEscapeCodes             = 1 << 6;
 const size_t DSRTypes::PF_printAllCodes                  = DSRTypes::PF_printConceptNameCodes;
 
 /* checkByReferenceRelationships modes */
@@ -1586,6 +1587,9 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.75  2011-03-22 16:55:19  joergr
+ *  Added support for colored output to the print() method - Unix only.
+ *
  *  Revision 1.74  2011-03-18 10:52:17  joergr
  *  Introduced new read flag that allows for accepting an invalid content item
  *  value (e.g. violation of VR or VM definition).

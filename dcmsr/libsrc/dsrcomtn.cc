@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRCompositeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2011-03-22 16:55:18 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,9 @@ OFCondition DSRCompositeTreeNode::print(STD_NAMESPACE ostream &stream,
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
     if (result.good())
     {
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
         stream << "=";
+        DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_ITEM_VALUE)
         result = DSRCompositeReferenceValue::print(stream, flags);
     }
     return result;
@@ -132,6 +134,9 @@ OFCondition DSRCompositeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &d
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomtn.cc,v $
+ *  Revision 1.22  2011-03-22 16:55:18  joergr
+ *  Added support for colored output to the print() method - Unix only.
+ *
  *  Revision 1.21  2010-10-14 13:14:41  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
