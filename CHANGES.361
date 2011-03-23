@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.03.23 (riesmeier)
 
+- Added support for a library postfix when using debug builds (CMake only).
+  Thanks to forum user "jacobf" for the suggestion.
+  Affects: CMakeLists.txt
+
 - Made various installation sub-directories configurable by the CMake user.
   Affects: CMakeLists.txt
 

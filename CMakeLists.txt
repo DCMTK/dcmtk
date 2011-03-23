@@ -26,8 +26,9 @@ SET(DCMTK_PACKAGE_VERSION_SUFFIX "")
 #SET(DCMTK_PACKAGE_STRING "dcmtk 3.6.1")
 #SET(DCMTK_PACKAGE_BUGREPORT "dicom-bugs@offis.de")
 
-# General build options
+# General build options and settings
 OPTION(BUILD_SHARED_LIBS "Build with shared libraries." OFF)
+SET(CMAKE_DEBUG_POSTFIX "" CACHE STRING "Library postfix for debug builds. Usually left blank.")
 
 # DCMTK build options
 OPTION(DCMTK_WITH_TIFF "Configure DCMTK with support for TIFF." ON)
@@ -36,12 +37,14 @@ OPTION(DCMTK_WITH_XML "Configure DCMTK with support for XML." OFF)
 OPTION(DCMTK_WITH_ZLIB "Configure DCMTK with support for ZLIB." ON)
 OPTION(DCMTK_WITH_OPENSSL "Configure DCMTK with support for OPENSSL." OFF)
 OPTION(DCMTK_WITH_SNDFILE "Configure DCMTK with support for SNDFILE." OFF)
-MARK_AS_ADVANCED(SNDFILE_DIR DCMTK_WITH_SNDFILE) # not yet needed in public DCMTK
 OPTION(DCMTK_WITH_PRIVATE_TAGS "Configure DCMTK with support for DICOM private tags coming with DCMTK." OFF)
 OPTION(DCMTK_WITH_THREADS "Configure DCMTK with support for multi-threading." ON)
 OPTION(DCMTK_WITH_DOXYGEN "Build API documentation with doxygen." ON)
 
-#SET(CXX_TEST_PATH ${EXECUTABLE_OUTPUT_PATH})
+# Mark various settings as "advanced"
+MARK_AS_ADVANCED(CMAKE_DEBUG_POSTFIX)
+MARK_AS_ADVANCED(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
+MARK_AS_ADVANCED(SNDFILE_DIR DCMTK_WITH_SNDFILE) # not yet needed in public DCMTK
 
 #-----------------------------------------------------------------------------
 # Include directories
