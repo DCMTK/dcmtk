@@ -563,8 +563,9 @@ Having performed these steps, the Microsoft Visual Studio IDE can be started,
 DCMTK's workspace file can be opened, and one or more of DCMTK's subprojects
 can be built.  In case you want to build all libraries and applications, mark
 the "ALL_BUILD" subproject and build it.  The "INSTALL" subproject installs
-the executables, libraries, include, support and documentation files (very
-similar to "make install-all" on Unix systems).
+the executables, libraries, include, support and documentation files to the
+directory specified by the variable "CMAKE_INSTALL_PREFIX" (very similar to
+"make install-all" on Unix systems).
 
 Please note that other Windows compilers, e.g. Borland C++ Builder, are
 currently not actively supported.  However, they may work.
@@ -641,4 +642,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2011-02-01 (Riesmeier)
+Last revised: 2011-03-23 (Riesmeier)

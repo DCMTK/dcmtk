@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.23 (riesmeier)
+
+- Added short note on the CMake variable "CMAKE_INSTALL_PREFIX".
+  Affects: INSTALL
+
 **** Changes from 2011.03.22 (riesmeier)
 
 - Added new option for colored output of the textual dump - Unix only.
