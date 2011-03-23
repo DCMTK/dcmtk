@@ -74,14 +74,17 @@ INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR})
 # Installation sub-directories
 #-----------------------------------------------------------------------------
 
-SET(INSTALL_BINDIR "/bin")
-SET(INSTALL_INCDIR "/include")
-SET(INSTALL_LIBDIR "/lib")
-SET(INSTALL_ETCDIR "/etc/dcmtk")
-SET(INSTALL_DATDIR "/share/dcmtk")
-SET(INSTALL_DOCDIR "/share/doc/dcmtk")
-SET(INSTALL_HTMDIR "/share/doc/dcmtk/html")
-SET(INSTALL_MANDIR "/share/man")
+SET(DCMTK_INSTALL_BINDIR "/bin" CACHE STRING "Installation sub-directory for binary executables.")
+SET(DCMTK_INSTALL_INCDIR "/include" CACHE STRING "Installation sub-directory for header files.")
+SET(DCMTK_INSTALL_LIBDIR "/lib" CACHE STRING "Installation sub-directory for object code libraries.")
+SET(DCMTK_INSTALL_ETCDIR "/etc/dcmtk" CACHE STRING "Installation sub-directory for configuration files.")
+SET(DCMTK_INSTALL_DATDIR "/share/dcmtk" CACHE STRING "Installation sub-directory for sample files and the like.")
+SET(DCMTK_INSTALL_DOCDIR "/share/doc/dcmtk" CACHE STRING "Installation sub-directory for general documentation.")
+SET(DCMTK_INSTALL_HTMDIR "/share/doc/dcmtk/html" CACHE STRING "Installation sub-directory for HTML documentation.")
+SET(DCMTK_INSTALL_MANDIR "/share/man" CACHE STRING "Installation sub-directory for man pages.")
+
+MARK_AS_ADVANCED(DCMTK_INSTALL_BINDIR DCMTK_INSTALL_INCDIR DCMTK_INSTALL_LIBDIR DCMTK_INSTALL_ETCDIR
+                 DCMTK_INSTALL_DATDIR DCMTK_INSTALL_DOCDIR DCMTK_INSTALL_HTMDIR DCMTK_INSTALL_MANDIR)
 
 #-----------------------------------------------------------------------------
 # Platform-independent settings
@@ -279,7 +282,7 @@ ENDFOREACH(module)
 #-----------------------------------------------------------------------------
 
 # Install global headers
-INSTALL_FILES(${INSTALL_INCDIR}/dcmtk/config FILES ${CMAKE_CURRENT_BINARY_DIR}/include/dcmtk/config/osconfig.h)
+INSTALL_FILES(${DCMTK_INSTALL_INCDIR}/dcmtk/config FILES ${CMAKE_CURRENT_BINARY_DIR}/include/dcmtk/config/osconfig.h)
 
 # Install DCMTK's general documentation files
-INSTALL_FILES(${INSTALL_DOCDIR} FILES ANNOUNCE.${DCMTK_PACKAGE_VERSION_NUMBER} CHANGES.${DCMTK_PACKAGE_VERSION_NUMBER} COPYRIGHT FAQ HISTORY VERSION)
+INSTALL_FILES(${DCMTK_INSTALL_DOCDIR} FILES ANNOUNCE.${DCMTK_PACKAGE_VERSION_NUMBER} CHANGES.${DCMTK_PACKAGE_VERSION_NUMBER} COPYRIGHT FAQ HISTORY VERSION)
