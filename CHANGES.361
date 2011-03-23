@@ -3,6 +3,77 @@ Changes between releases are documented here.
 
 **** Changes from 2011.03.23 (riesmeier)
 
+- Made various installation sub-directories configurable by the CMake user.
+  Affects: CMakeLists.txt
+
+- Added prefix "DCMTK_" to various installation sub-directory CMake variables.
+  Affects: CMakeLists.txt
+           config/docs/CMakeLists.txt
+           dcmdata/apps/CMakeLists.txt
+           dcmdata/data/CMakeLists.txt
+           dcmdata/docs/CMakeLists.txt
+           dcmdata/include/dcmtk/dcmdata/CMakeLists.txt
+           dcmdata/include/dcmtk/dcmdata/libi2d/CMakeLists.txt
+           dcmdata/libi2d/CMakeLists.txt
+           dcmdata/libsrc/CMakeLists.txt
+           dcmdata/tests/CMakeLists.txt
+           dcmimage/apps/CMakeLists.txt
+           dcmimage/include/dcmtk/dcmimage/CMakeLists.txt
+           dcmimage/libsrc/CMakeLists.txt
+           dcmimgle/apps/CMakeLists.txt
+           dcmimgle/data/CMakeLists.txt
+           dcmimgle/include/dcmtk/dcmimgle/CMakeLists.txt
+           dcmimgle/libsrc/CMakeLists.txt
+           dcmjpeg/apps/CMakeLists.txt
+           dcmjpeg/include/dcmtk/dcmjpeg/CMakeLists.txt
+           dcmjpeg/libijg12/CMakeLists.txt
+           dcmjpeg/libijg16/CMakeLists.txt
+           dcmjpeg/libijg8/CMakeLists.txt
+           dcmjpeg/libsrc/CMakeLists.txt
+           dcmjpls/apps/CMakeLists.txt
+           dcmjpls/include/dcmtk/dcmjpls/CMakeLists.txt
+           dcmjpls/libcharls/CMakeLists.txt
+           dcmjpls/libsrc/CMakeLists.txt
+           dcmnet/apps/CMakeLists.txt
+           dcmnet/docs/CMakeLists.txt
+           dcmnet/etc/CMakeLists.txt
+           dcmnet/include/dcmtk/dcmnet/CMakeLists.txt
+           dcmnet/libsrc/CMakeLists.txt
+           dcmpstat/apps/CMakeLists.txt
+           dcmpstat/data/CMakeLists.txt
+           dcmpstat/etc/CMakeLists.txt
+           dcmpstat/include/dcmtk/dcmpstat/CMakeLists.txt
+           dcmpstat/libsrc/CMakeLists.txt
+           dcmqrdb/apps/CMakeLists.txt
+           dcmqrdb/docs/CMakeLists.txt
+           dcmqrdb/etc/CMakeLists.txt
+           dcmqrdb/include/dcmtk/dcmqrdb/CMakeLists.txt
+           dcmqrdb/libsrc/CMakeLists.txt
+           dcmsign/apps/CMakeLists.txt
+           dcmsign/include/dcmtk/dcmsign/CMakeLists.txt
+           dcmsign/libsrc/CMakeLists.txt
+           dcmsr/apps/CMakeLists.txt
+           dcmsr/data/CMakeLists.txt
+           dcmsr/include/dcmtk/dcmsr/CMakeLists.txt
+           dcmsr/libsrc/CMakeLists.txt
+           dcmtls/docs/CMakeLists.txt
+           dcmtls/include/dcmtk/dcmtls/CMakeLists.txt
+           dcmtls/libsrc/CMakeLists.txt
+           dcmwlm/apps/CMakeLists.txt
+           dcmwlm/data/CMakeLists.txt
+           dcmwlm/docs/CMakeLists.txt
+           dcmwlm/include/dcmtk/dcmwlm/CMakeLists.txt
+           dcmwlm/libsrc/CMakeLists.txt
+           doxygen/CMakeLists.txt
+           oflog/etc/CMakeLists.txt
+           oflog/include/dcmtk/oflog/CMakeLists.txt
+           oflog/include/dcmtk/oflog/config/CMakeLists.txt
+           oflog/include/dcmtk/oflog/helpers/CMakeLists.txt
+           oflog/include/dcmtk/oflog/spi/CMakeLists.txt
+           oflog/libsrc/CMakeLists.txt
+           ofstd/include/dcmtk/ofstd/CMakeLists.txt
+           ofstd/libsrc/CMakeLists.txt
+
 - Added short note on the CMake variable "CMAKE_INSTALL_PREFIX".
   Affects: INSTALL
 
