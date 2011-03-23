@@ -12,7 +12,7 @@ ADD_EXECUTABLE(dcmpschk dcmpschk)
 
 # declare installation files
 FOREACH(PROGRAM dcmmkcrv dcmmklut dcmp2pgm dcmprscp dcmprscu dcmpschk dcmpsmk dcmpsprt dcmpsrcv dcmpssnd)
-  INSTALL_TARGETS(${INSTALL_BINDIR} ${PROGRAM})
+  INSTALL_TARGETS(${DCMTK_INSTALL_BINDIR} ${PROGRAM})
 ENDFOREACH(PROGRAM)
 
 # make sure executables are linked to the corresponding libraries

@@ -1,2 +1,2 @@
 # declare installation files
-INSTALL_FILES(${INSTALL_INCDIR}/dcmtk/dcmwlm .h)
+INSTALL_FILES(${DCMTK_INSTALL_INCDIR}/dcmtk/dcmwlm .h)

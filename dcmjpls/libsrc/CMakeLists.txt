@@ -5,4 +5,4 @@ INCLUDE_DIRECTORIES(${dcmjpls_SOURCE_DIR}/include ${ofstd_SOURCE_DIR}/include ${
 ADD_LIBRARY(dcmjpls djcparam djdecode djencode djrparam djcodecd djutils djcodece)
 
 # declare installation files
-INSTALL_TARGETS(${INSTALL_LIBDIR} dcmjpls)
+INSTALL_TARGETS(${DCMTK_INSTALL_LIBDIR} dcmjpls)

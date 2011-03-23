@@ -15,5 +15,5 @@ TARGET_LINK_LIBRARIES(i2dbmp i2d dcmdata oflog ofstd ${ZLIB_LIBS} ${THREAD_LIBS}
 
 # declare installation files
 #FOREACH(PROGRAM i2dbmp tstpath tstchval tstpread tvrdatim)
-#  INSTALL_TARGETS(${INSTALL_BINDIR} ${PROGRAM})
+#  INSTALL_TARGETS(${DCMTK_INSTALL_BINDIR} ${PROGRAM})
 #ENDFOREACH(PROGRAM)

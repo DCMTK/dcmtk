@@ -1,2 +1,2 @@
 # declare installation files
-INSTALL_FILES(${INSTALL_ETCDIR} .cfg)
+INSTALL_FILES(${DCMTK_INSTALL_ETCDIR} .cfg)

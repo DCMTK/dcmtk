@@ -8,7 +8,7 @@ ENDFOREACH(PROGRAM)
 
 # declare installation files
 FOREACH(PROGRAM dsr2html dsr2xml dsrdump xml2dsr)
-  INSTALL_TARGETS(${INSTALL_BINDIR} ${PROGRAM})
+  INSTALL_TARGETS(${DCMTK_INSTALL_BINDIR} ${PROGRAM})
 ENDFOREACH(PROGRAM)
 
 # make sure executables are linked to the corresponding libraries

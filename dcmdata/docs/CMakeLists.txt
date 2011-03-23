@@ -1,2 +1,2 @@
 # declare installation files
-INSTALL_FILES(${INSTALL_DOCDIR} FILES datadict.txt)
+INSTALL_FILES(${DCMTK_INSTALL_DOCDIR} FILES datadict.txt)

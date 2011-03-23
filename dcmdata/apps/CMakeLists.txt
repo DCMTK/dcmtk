@@ -12,7 +12,7 @@ ADD_EXECUTABLE(dcmodify dcmodify mdfconen mdfdsman)
 
 # declare installation files
 FOREACH(PROGRAM dcm2xml dcmconv dcmcrle dcmdrle dcmdump dcmftest dcmgpdir dcmodify dump2dcm xml2dcm pdf2dcm dcm2pdf img2dcm)
-  INSTALL_TARGETS(${INSTALL_BINDIR} ${PROGRAM})
+  INSTALL_TARGETS(${DCMTK_INSTALL_BINDIR} ${PROGRAM})
 ENDFOREACH(PROGRAM)
 
 # make sure executables are linked to the corresponding libraries

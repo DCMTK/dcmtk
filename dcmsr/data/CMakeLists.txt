@@ -1,2 +1,2 @@
 # declare installation files
-INSTALL_FILES(${INSTALL_DATDIR} FILES dsr2xml.xsd report.css reportx.css)
+INSTALL_FILES(${DCMTK_INSTALL_DATDIR} FILES dsr2xml.xsd report.css reportx.css)
