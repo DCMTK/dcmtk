@@ -119,6 +119,9 @@ preferred network transfer syntaxes:
   +xb   --prefer-big
           prefer explicit VR big endian TS
 
+  +xd   --prefer-deflated
+          prefer deflated explicit VR little endian TS
+
   +xi   --implicit
           accept implicit VR little endian TS only
 
@@ -137,6 +140,11 @@ post-1993 value representations:
 
   -u    --disable-new-vr
           disable support for new VRs, convert to OB
+
+deflate compression level (only with --prefer-deflated):
+
+  +cl   --compression-level  [l]evel: integer (default: 6)
+          0=uncompressed, 1=fastest, 9=best compression
 
 other network options:
 
@@ -232,6 +240,14 @@ syntaxes having an explicit encoding over the default implicit transfer
 syntax.  If \b wlmscpfs is running on big-endian hardware it will prefer
 BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa).
 This behaviour can be changed with the \e --prefer options (see above).
+
+If compiled with zlib support enabled (see \e --version output) and if
+option \e --prefer-deflated is used, also the following transfer syntax
+is accepted.
+
+\verbatim
+DeflatedExplicitVRLittleEndianTransferSyntax  1.2.840.10008.1.2.1.99 (*)
+\endverbatim
 
 The \b wlmscpfs application does not support extended negotiation.
 
@@ -416,6 +432,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

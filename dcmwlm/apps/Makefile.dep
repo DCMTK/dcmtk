@@ -127,7 +127,9 @@ wlcefs.o: wlcefs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmwlm/wlmactmg.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
-  ../../dcmnet/include/dcmtk/dcmnet/dimse.h wlcefs.h
+  ../../dcmnet/include/dcmtk/dcmnet/dimse.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcostrmz.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h wlcefs.h
 wlmscpfs.o: wlmscpfs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmnet/include/dcmtk/dcmnet/dicom.h \

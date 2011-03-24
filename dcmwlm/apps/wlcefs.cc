@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 13:37:32 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-03-24 14:49:39 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,7 @@
 #include "dcmtk/dcmwlm/wldsfs.h"
 #include "dcmtk/dcmwlm/wlmactmg.h"
 #include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
 
 #include "wlcefs.h"
 
@@ -143,6 +144,9 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       cmd->addOption("--prefer-uncompr",      "+x=",     "prefer explicit VR local byte order (default)");
       cmd->addOption("--prefer-little",       "+xe",     "prefer explicit VR little endian TS");
       cmd->addOption("--prefer-big",          "+xb",     "prefer explicit VR big endian TS");
+#ifdef WITH_ZLIB
+      cmd->addOption("--prefer-deflated",     "+xd",     "prefer deflated explicit VR little endian TS");
+#endif
       cmd->addOption("--implicit",            "+xi",     "accept implicit VR little endian TS only");
 
 #ifdef WITH_TCPWRAPPER
@@ -154,6 +158,12 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     cmd->addSubGroup("post-1993 value representations:");
       cmd->addOption("--enable-new-vr",       "+u",      "enable support for new VRs (UN/UT) (default)");
       cmd->addOption("--disable-new-vr",      "-u",      "disable support for new VRs, convert to OB");
+
+#ifdef WITH_ZLIB
+    cmd->addSubGroup("deflate compression level (only with --prefer-deflated):");
+      cmd->addOption("--compression-level",   "+cl",  1, "[l]evel: integer (default: 6)",
+                                                         "0=uncompressed, 1=fastest, 9=best compression");
+#endif
 
     cmd->addSubGroup("other network options:");
       cmd->addOption("--acse-timeout",        "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
@@ -244,6 +254,9 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if( cmd->findOption("--prefer-little") ) opt_networkTransferSyntax = EXS_LittleEndianExplicit;
     if( cmd->findOption("--prefer-big") ) opt_networkTransferSyntax = EXS_BigEndianExplicit;
     if( cmd->findOption("--implicit") ) opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+#ifdef WITH_ZLIB
+    if (cmd->findOption("--prefer-deflated")) opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+#endif
     cmd->endOptionBlock();
 
 #ifdef WITH_TCPWRAPPER
@@ -265,6 +278,17 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
     }
     cmd->endOptionBlock();
+
+#ifdef WITH_ZLIB
+    if (cmd->findOption("--compression-level"))
+    {
+      OFCmdUnsignedInt opt_compressionLevel = 0;
+      app->checkDependence("--compression-level", "--prefer-deflated",
+        (opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit));
+      app->checkValue(cmd->getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
+      dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
+    }
+#endif
 
     if (cmd->findOption("--acse-timeout"))
     {
@@ -399,6 +423,11 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
+** Revision 1.30  2011-03-24 14:49:39  joergr
+** Added support for deflated transfer syntax (zlib compression) on incoming
+** associations. Also fixed some inconsistencies when preferring transfer
+** syntaxes with explicit VR.
+**
 ** Revision 1.29  2010-11-01 13:37:32  uli
 ** Fixed some compiler warnings reported by gcc with additional flags.
 **

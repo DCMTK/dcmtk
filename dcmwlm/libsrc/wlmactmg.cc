@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *           class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:49 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2011-03-24 14:49:43 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -575,7 +575,7 @@ OFCondition WlmActivityManager::NegotiateAssociation( T_ASC_Association *assoc )
 // Parameters   : assoc - [in] The association (network connection to another DICOM application).
 // Return Value : OFCondition value denoting success or error.
 {
-  const char* transferSyntaxes[] = { NULL, NULL, NULL };
+  const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
   int numTransferSyntaxes = 0;
 
   switch( opt_networkTransferSyntax )
@@ -588,15 +588,27 @@ OFCondition WlmActivityManager::NegotiateAssociation( T_ASC_Association *assoc )
     case EXS_LittleEndianExplicit:
       // we prefer Little Endian Explicit
       transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 2;
+      transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 3;
       break;
     case EXS_BigEndianExplicit:
       // we prefer Big Endian Explicit
       transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 2;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 3;
       break;
+#ifdef WITH_ZLIB
+    case EXS_DeflatedLittleEndianExplicit:
+      // we prefer Deflated Little Endian Explicit
+      transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+#endif
     default:
       // We prefer explicit transfer syntaxes.
       // If we are running on a Little Endian machine we prefer
@@ -1140,6 +1152,11 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.35  2011-03-24 14:49:43  joergr
+** Added support for deflated transfer syntax (zlib compression) on incoming
+** associations. Also fixed some inconsistencies when preferring transfer
+** syntaxes with explicit VR.
+**
 ** Revision 1.34  2010-10-14 13:14:49  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
