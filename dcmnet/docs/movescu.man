@@ -162,6 +162,10 @@ proposed transmission transfer syntaxes (outgoing associations):
   -xb   --propose-big
           propose all uncompressed TS, explicit VR big endian first
 
+  -xd   --propose-deflated
+          propose deflated explicit VR little endian TS
+          and all uncompressed transfer syntaxes
+
   -xi   --propose-implicit
           propose implicit VR little endian TS only
 
@@ -300,7 +304,8 @@ data set trailing padding
           align file on multiple of f bytes and items on
           multiple of i bytes
 
-deflate compression level (only with --write-xfer-deflated/same):
+deflate compression level
+(only with --propose-deflated or --write-xfer-deflated/same):
 
   +cl   --compression-level  [l]evel: integer (default: 6)
           0=uncompressed, 1=fastest, 9=best compression
@@ -377,16 +382,20 @@ MOVEPatientStudyOnlyQueryRetrieveInformationModel    1.2.840.10008.5.1.4.1.2.3.2
 
 The \b movescu application will propose presentation contexts for one of the
 abovementioned supported SOP Classes depending on command line options (\e -P,
-\e -S, or \e -O).  Each proposed presentation context will propose the transfer
-syntaxes:
+\e -S, or \e -O).  For outgoing associations, the following transfer syntaxes
+are supported:
 
 \verbatim
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99 (*)
 BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 \endverbatim
 
-This behaviour can be changed with the \e --propose options.
+(*) if compiled with zlib support enabled (see \e --version output)
+
+Which transfer syntaxes are actually proposed in what order, can be specified
+with the \e --propose options.
 
 \subsubsection scp_conformance SCP Conformance
 
@@ -516,8 +525,9 @@ ImplantAssemblyTemplateStorage                       1.2.840.10008.5.1.4.44.1
 ImplantTemplateGroupStorage                          1.2.840.10008.5.1.4.45.1
 \endverbatim
 
-The \b movescu application will accept presentation contexts for all of the
-abovementioned supported SOP Classes using any of the transfer syntaxes:
+The \b movescu application will usually accept presentation contexts for all
+of the abovementioned supported SOP Classes using any of the following transfer
+syntaxes:
 
 \verbatim
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
@@ -535,7 +545,7 @@ be changed with the \e --prefer options (see above).  Using option
 \verbatim
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99 (*)
 BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50
 JPEGProcess2_4TransferSyntax                         1.2.840.10008.1.2.4.51
@@ -550,6 +560,8 @@ MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
 MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 \endverbatim
+
+(*) if compiled with zlib support enabled (see \e --version output)
 
 The \b movescu application does not support extended negotiation.
 

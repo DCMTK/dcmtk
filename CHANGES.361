@@ -18,6 +18,12 @@ Changes between releases are documented here.
            dcmnet/docs/findscu.man
            dcmnet/libsrc/dfindscu.cc
 
+- Added support for deflated transfer syntax (zlib compression) on outgoing
+  associations. Also fixed some inconsistencies regarding the transfer syntax
+  for incoming associations, e.g. checking of command line option conflicts.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/docs/movescu.man
+
 **** Changes from 2011.03.23 (riesmeier)
 
 - Added support for a library postfix when using debug builds (CMake only).
