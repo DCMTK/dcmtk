@@ -111,8 +111,17 @@ proposed transmission transfer syntaxes:
           propose all uncompressed TS, explicit VR
           big endian first
 
+  -xd   --propose-deflated
+          propose deflated explicit VR little endian TS
+          and all uncompressed transfer syntaxes
+
   -xi   --propose-implicit
           propose implicit VR little endian TS only
+
+deflate compression level (only with --propose-deflated):
+
+  +cl   --compression-level  [l]evel: integer (default: 6)
+          0=uncompressed, 1=fastest, 9=best compression
 
 other network options:
 
@@ -285,14 +294,20 @@ FINDModalityWorklistInformationModel               1.2.840.10008.5.1.4.31
 
 The \b findscu application will propose presentation contexts for one of the
 abovementioned supported SOP Classes depending on command line options (\e -P,
-\e -S, \e -O or \e -W).  Each proposed presentation context will propose the
-transfer syntaxes:
+\e -S, \e -O or \e -W).  Basically, the following transfer syntaxes are
+supported:
 
 \verbatim
 LittleEndianImplicitTransferSyntax                 1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                 1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax       1.2.840.10008.1.2.1.99 (*)
 BigEndianExplicitTransferSyntax                    1.2.840.10008.1.2.2
 \endverbatim
+
+(*) if compiled with zlib support enabled (see \e --version output)
+
+Which transfer syntaxes are actually proposed in what order, can be specified
+with the \e --propose options.
 
 The \b findscu application does not support extended negotiation.
 
@@ -359,6 +374,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

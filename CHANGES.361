@@ -11,6 +11,13 @@ Changes between releases are documented here.
            dcmwlm/docs/wlmscpfs.man
            dcmwlm/libsrc/wlmactmg.cc
 
+- Added support for deflated transfer syntax (zlib compression) on outgoing
+  associations.
+  Affects: dcmnet/apps/findscu.cc
+           dcmnet/apps/Makefile.dep
+           dcmnet/docs/findscu.man
+           dcmnet/libsrc/dfindscu.cc
+
 **** Changes from 2011.03.23 (riesmeier)
 
 - Added support for a library postfix when using debug builds (CMake only).

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 10:42:44 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-03-24 14:54:22 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -321,10 +321,10 @@ OFCondition DcmFindSCU::addPresentationContext(
     **
     ** The presentation contexts proposed here are only used for
     ** C-FIND and C-MOVE, so there is no need to support compressed
-    ** transmission.
+    ** transmission (apart from deflated transfer syntax aka zlib).
     */
 
-    const char* transferSyntaxes[] = { NULL, NULL, NULL };
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
     int numTransferSyntaxes = 0;
 
     switch (preferredTransferSyntax) {
@@ -347,6 +347,16 @@ OFCondition DcmFindSCU::addPresentationContext(
         transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 3;
         break;
+#ifdef WITH_ZLIB
+    case EXS_DeflatedLittleEndianExplicit:
+        /* we prefer Deflated Little Endian Explicit */
+        transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+#endif
     default:
         /* We prefer explicit transfer syntaxes.
          * If we are running on a Little Endian machine we prefer
@@ -536,6 +546,10 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.14  2011-03-24 14:54:22  joergr
+ * Added support for deflated transfer syntax (zlib compression) on outgoing
+ * associations.
+ *
  * Revision 1.13  2010-11-01 10:42:44  uli
  * Fixed some compiler warnings reported by gcc with additional flags.
  *

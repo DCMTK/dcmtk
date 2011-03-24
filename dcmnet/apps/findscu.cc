@@ -17,9 +17,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 10:42:44 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-03-24 14:54:19 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,6 +31,7 @@
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -74,6 +75,10 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt      opt_repeatCount = 1;
     OFBool                opt_secureConnection = OFFalse; /* default: no secure connection */
     OFList<OFString>      overrideKeys;
+
+#ifdef WITH_ZLIB
+    OFCmdUnsignedInt      opt_compressionLevel = 0;
+#endif
 
 #ifdef WITH_OPENSSL
     const char *          opt_certificateFile = NULL;
@@ -151,7 +156,15 @@ int main(int argc, char *argv[])
       cmd.addOption("--propose-uncompr",   "-x=",     "propose all uncompressed TS, explicit VR\nwith local byte ordering first (default)");
       cmd.addOption("--propose-little",    "-xe",     "propose all uncompressed TS, explicit VR\nlittle endian first");
       cmd.addOption("--propose-big",       "-xb",     "propose all uncompressed TS, explicit VR\nbig endian first");
+#ifdef WITH_ZLIB
+      cmd.addOption("--propose-deflated",  "-xd",     "propose deflated explicit VR little endian TS\nand all uncompressed transfer syntaxes");
+#endif
       cmd.addOption("--propose-implicit",  "-xi",     "propose implicit VR little endian TS only");
+#ifdef WITH_ZLIB
+    cmd.addSubGroup("deflate compression level (only with --propose-deflated):");
+      cmd.addOption("--compression-level", "+cl",  1, "[l]evel: integer (default: 6)",
+                                                      "0=uncompressed, 1=fastest, 9=best compression");
+#endif
     cmd.addSubGroup("other network options:");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
@@ -253,13 +266,6 @@ int main(int argc, char *argv[])
       }
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--propose-uncompr"))  opt_networkTransferSyntax = EXS_Unknown;
-      if (cmd.findOption("--propose-little"))   opt_networkTransferSyntax = EXS_LittleEndianExplicit;
-      if (cmd.findOption("--propose-big"))      opt_networkTransferSyntax = EXS_BigEndianExplicit;
-      if (cmd.findOption("--propose-implicit")) opt_networkTransferSyntax = EXS_LittleEndianImplicit;
-      cmd.endOptionBlock();
-
-      cmd.beginOptionBlock();
       if (cmd.findOption("--worklist")) opt_abstractSyntax = UID_FINDModalityWorklistInformationModel;
       if (cmd.findOption("--patient"))  opt_abstractSyntax = UID_FINDPatientRootQueryRetrieveInformationModel;
       if (cmd.findOption("--study"))    opt_abstractSyntax = UID_FINDStudyRootQueryRetrieveInformationModel;
@@ -268,6 +274,26 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--propose-uncompr"))  opt_networkTransferSyntax = EXS_Unknown;
+      if (cmd.findOption("--propose-little"))   opt_networkTransferSyntax = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--propose-big"))      opt_networkTransferSyntax = EXS_BigEndianExplicit;
+      if (cmd.findOption("--propose-implicit")) opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+#ifdef WITH_ZLIB
+      if (cmd.findOption("--propose-deflated")) opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+#endif
+      cmd.endOptionBlock();
+
+#ifdef WITH_ZLIB
+      if (cmd.findOption("--compression-level"))
+      {
+        app.checkDependence("--compression-level", "--propose-deflated",
+          (opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit));
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
+        dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
+      }
+#endif
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-new-vr"))
@@ -583,6 +609,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
+** Revision 1.63  2011-03-24 14:54:19  joergr
+** Added support for deflated transfer syntax (zlib compression) on outgoing
+** associations.
+**
 ** Revision 1.62  2010-11-01 10:42:44  uli
 ** Fixed some compiler warnings reported by gcc with additional flags.
 **

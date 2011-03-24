@@ -225,6 +225,8 @@ findscu.o: findscu.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
   ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcostrmz.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
   ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmnet/dcmtrans.h ../include/dcmtk/dcmnet/dcmlayer.h \
