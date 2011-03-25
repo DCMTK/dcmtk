@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.03.25 (riesmeier)
+
+- Added prefix "DCMTK_" to various installation sub-directory CMake variables.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
 **** Changes from 2011.03.24 (riesmeier)
 
 - Added support for deflated transfer syntax (zlib compression) on incoming
