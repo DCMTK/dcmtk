@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-24 15:03:28 $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  Update Date:      $Date: 2011-04-01 08:20:36 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1186,28 +1186,30 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
 }
 
 static OFCondition echoSCP(
-  T_ASC_Association * assoc,
-  T_DIMSE_Message * msg,
-  T_ASC_PresentationContextID presID)
+    T_ASC_Association * assoc,
+    T_DIMSE_Message * msg,
+    T_ASC_PresentationContextID presID)
 {
-  OFString temp_str;
-  OFLOG_INFO(movescuLogger, "Received Echo Request");
-  OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, msg->msg.CEchoRQ, DIMSE_INCOMING));
+    OFString temp_str;
+    // assign the actual information of the C-Echo-RQ command to a local variable
+    T_DIMSE_C_EchoRQ *req = &msg->msg.CEchoRQ;
+    OFLOG_INFO(movescuLogger, "Received Echo Request: MsgID " << req->MessageID);
+    OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING));
 
-  /* the echo succeeded !! */
-  OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, STATUS_Success, NULL);
-  if (cond.bad())
-  {
-    OFLOG_ERROR(movescuLogger, "Echo SCP Failed: " << DimseCondition::dump(temp_str, cond));
-  }
-  return cond;
+    /* the echo succeeded !! */
+    OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, req, STATUS_Success, NULL);
+    if (cond.bad())
+    {
+        OFLOG_ERROR(movescuLogger, "Echo SCP Failed: " << DimseCondition::dump(temp_str, cond));
+    }
+    return cond;
 }
 
 struct StoreCallbackData
 {
-  char* imageFileName;
-  DcmFileFormat* dcmff;
-  T_ASC_Association* assoc;
+    char* imageFileName;
+    DcmFileFormat* dcmff;
+    T_ASC_Association* assoc;
 };
 
 static void
@@ -1596,6 +1598,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.93  2011-04-01 08:20:36  joergr
+** Output message ID of C-ECHO request to the info logger (see C-STORE request).
+**
 ** Revision 1.92  2011-03-24 15:03:28  joergr
 ** Added support for deflated transfer syntax (zlib compression) on outgoing
 ** associations. Also fixed some inconsistencies regarding the transfer syntax

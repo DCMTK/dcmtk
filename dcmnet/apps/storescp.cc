@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-17 11:06:41 $
- *  CVS/RCS Revision: $Revision: 1.140 $
+ *  Update Date:      $Date: 2011-04-01 08:20:36 $
+ *  CVS/RCS Revision: $Revision: 1.141 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1663,7 +1663,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 
   /* now do the real work, i.e. receive DIMSE commmands over the network connection */
   /* which was established and handle these commands correspondingly. In case of */
-  /* storscp only C-ECHO-RQ and C-STORE-RQ commands can be processed. */
+  /* storescp only C-ECHO-RQ and C-STORE-RQ commands can be processed. */
   cond = processCommands(assoc);
 
   if (cond == DUL_PEERREQUESTEDRELEASE)
@@ -1708,7 +1708,7 @@ processCommands(T_ASC_Association * assoc)
     /*
      * This function receives DIMSE commmands over the network connection
      * and handles these commands correspondingly. Note that in case of
-     * storscp only C-ECHO-RQ and C-STORE-RQ commands can be processed.
+     * storescp only C-ECHO-RQ and C-STORE-RQ commands can be processed.
      *
      * Parameters:
      *   assoc - [in] The association (network connection to another DICOM application).
@@ -1802,11 +1802,13 @@ processCommands(T_ASC_Association * assoc)
 static OFCondition echoSCP( T_ASC_Association * assoc, T_DIMSE_Message * msg, T_ASC_PresentationContextID presID)
 {
   OFString temp_str;
-  OFLOG_INFO(storescpLogger, "Received Echo Request");
-  OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(temp_str, msg->msg.CEchoRQ, DIMSE_INCOMING, NULL, presID));
+  // assign the actual information of the C-Echo-RQ command to a local variable
+  T_DIMSE_C_EchoRQ *req = &msg->msg.CEchoRQ;
+  OFLOG_INFO(storescpLogger, "Received Echo Request: MsgID " << req->MessageID);
+  OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
 
   /* the echo succeeded !! */
-  OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, STATUS_Success, NULL);
+  OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, req, STATUS_Success, NULL);
   if (cond.bad())
   {
     OFLOG_ERROR(storescpLogger, "Echo SCP Failed: " << DimseCondition::dump(temp_str, cond));
@@ -2773,6 +2775,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.141  2011-04-01 08:20:36  joergr
+** Output message ID of C-ECHO request to the info logger (see C-STORE request).
+**
 ** Revision 1.140  2011-03-17 11:06:41  joergr
 ** Made sure that the array "transferSyntaxes" is large enough (16 entries).
 **

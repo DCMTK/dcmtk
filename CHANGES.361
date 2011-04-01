@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.04.01 (riesmeier)
+
+- Output message ID of C-ECHO request to the info logger (see C-STORE request).
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+
 **** Changes from 2011.03.25 (riesmeier)
 
 - Added prefix "DCMTK_" to various installation sub-directory CMake variables.
