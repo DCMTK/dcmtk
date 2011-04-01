@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-03-17 10:39:29 $
- *  CVS/RCS Revision: $Revision: 1.90 $
+ *  Update Date:      $Date: 2011-04-01 08:34:15 $
+ *  CVS/RCS Revision: $Revision: 1.91 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1504,12 +1504,40 @@ OFCondition DcmElement::getPartialValue(void *targetBuffer,
     // only the first few bytes in desired byte order.
     if (partialvalue > 0)
     {
+      OFBool appendDuplicateByte = OFFalse;
+      size_t partialBytesToRead = valueWidth;
+
       // we want to reset the stream to this point later
       readStream->mark();
 
-      // we need to read a single data element into the swap buffer
-      if (valueWidth != OFstatic_cast(size_t, readStream->read(swapBuffer, valueWidth)))
+      if (readStream->tell() + valueWidth >= getLengthField()) {
+        // We are trying to read past the end of the value. We already made sure
+        // above that the requested range fits completely into the element's
+        // size, so this must mean that the length is not a multiple of the VR's
+        // value width.
+        // We allow this for OW and error out on all other VRs.
+        if (getTag().getVR().getValidEVR() == EVR_OW)
+        {
+          DCMDATA_WARN("DcmElement: Trying to read past end of value, duplicating last byte");
+          appendDuplicateByte = OFTrue;
+          // This is 2 for OW, but we know that only 1 byte of data is available
+          partialBytesToRead--;
+        }
+        else
+        {
+          // This would read the beginning of the next element from the stream,
+          // possibly hitting the end of stream.
+          DCMDATA_ERROR("DcmElement: Trying to read past end of value");
           return EC_InvalidStream;
+        }
+      }
+
+      // we need to read a single data element into the swap buffer
+      if (partialBytesToRead != OFstatic_cast(size_t, readStream->read(swapBuffer, partialBytesToRead)))
+          return EC_InvalidStream;
+
+      if (appendDuplicateByte)
+        swapBuffer[partialBytesToRead] = swapBuffer[partialBytesToRead - 1];
 
       // swap to desired byte order. fByteOrder contains the byte order in file.
       swapIfNecessary(byteOrder, fByteOrder, swapBuffer, valueWidth, valueWidth);
@@ -1746,6 +1774,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.91  2011-04-01 08:34:15  uli
+** Improved handling of odd-length OW values in DcmElement::getPartialValue.
+**
 ** Revision 1.90  2011-03-17 10:39:29  uli
 ** Fixed a case where calcElementLength() used a wrong header length.
 **
