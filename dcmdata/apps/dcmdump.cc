@@ -18,8 +18,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-21 15:02:05 $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  Update Date:      $Date: 2011-04-04 13:28:30 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -269,7 +269,7 @@ int main(int argc, char *argv[])
                                                          "print the value of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
         cmd.addOption("--search-all",          "+s",     "print all instances of searched tags (default)");
         cmd.addOption("--search-first",        "-s",     "only print first instance of searched tags");
-        cmd.addOption("--prepend",             "+p",     "prepend sequence hierarchy to printed tag,\ndenoted by: (gggg,eeee).(gggg,eeee).*\n(only with --search-all or --search-first)");
+        cmd.addOption("--prepend",             "+p",     "prepend sequence hierarchy to printed tag,\ndenoted by: (gggg,eeee).(gggg,eeee).*\n(only when used with --search)");
         cmd.addOption("--no-prepend",          "-p",     "do not prepend hierarchy to tag (default)");
 
       cmd.addSubGroup("writing:");
@@ -757,6 +757,9 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.89  2011-04-04 13:28:30  joergr
+ * Slightly modified text on --prepend option (depends on --search option).
+ *
  * Revision 1.88  2011-03-21 15:02:05  joergr
  * Added module name "DCMDATA_" as a prefix to the ANSI escape code macros.
  *

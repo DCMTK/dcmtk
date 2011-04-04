@@ -257,8 +257,9 @@ error handling:
 searching:
 
   +P   --search  [t]ag: "gggg,eeee" or dictionary name
-         print the value of tag t this option can be specified
-         multiple times (default: the complete file is printed)
+         print the value of tag t
+         this option can be specified multiple times
+         (default: the complete file is printed)
 
   +s   --search-all
          print all instances of searched tags (default)
@@ -269,7 +270,7 @@ searching:
   +p   --prepend
          prepend sequence hierarchy to printed tag,
          denoted by: (gggg,eeee).(gggg,eeee).*
-         (only with --search-all or --search-first)
+         (only when used with --search)
 
   -p   --no-prepend
          do not prepend hierarchy to tag (default)

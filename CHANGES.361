@@ -6,6 +6,10 @@ Changes between releases are documented here.
 - Output presentation context ID of incoming C-ECHO request to debug logger.
   Affects: dcmnet/apps/movescu.cc
 
+- Slightly modified text on --prepend option (depends on --search option).
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+
 **** Changes from 2011.04.01 (schlachter)
 
 - Improved handling of odd-length OW values in DcmElement::getPartialValue.
