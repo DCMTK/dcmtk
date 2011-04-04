@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-01 08:20:36 $
- *  CVS/RCS Revision: $Revision: 1.93 $
+ *  Update Date:      $Date: 2011-04-04 11:47:42 $
+ *  CVS/RCS Revision: $Revision: 1.94 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,7 +132,7 @@ static QuerySyntax querySyntax[3] = {
 
 
 static void
-addOverrideKey(OFConsoleApplication& app, const char* s)
+addOverrideKey(OFConsoleApplication& app, const char *s)
 {
     unsigned int g = 0xffff;
     unsigned int e = 0xffff;
@@ -211,7 +211,7 @@ static OFCondition cmove(T_ASC_Association *assoc, const char *fname);
 static OFCondition
 addPresentationContext(T_ASC_Parameters *params,
                         T_ASC_PresentationContextID pid,
-                        const char* abstractSyntax);
+                        const char *abstractSyntax);
 
 #define SHORTCOL 4
 #define LONGCOL 21
@@ -902,7 +902,7 @@ main(int argc, char *argv[])
 static OFCondition
 addPresentationContext(T_ASC_Parameters *params,
                         T_ASC_PresentationContextID pid,
-                        const char* abstractSyntax)
+                        const char *abstractSyntax)
 {
     /*
     ** We prefer to use Explicitly encoded transfer syntaxes.
@@ -918,7 +918,7 @@ addPresentationContext(T_ASC_Parameters *params,
     ** transmission.
     */
 
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
+    const char *transferSyntaxes[] = { NULL, NULL, NULL, NULL };
     int numTransferSyntaxes = 0;
 
     switch (opt_out_networkTransferSyntax) {
@@ -975,12 +975,12 @@ addPresentationContext(T_ASC_Parameters *params,
 }
 
 static OFCondition
-acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
+acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc)
 {
-    const char* knownAbstractSyntaxes[] = {
+    const char *knownAbstractSyntaxes[] = {
         UID_VerificationSOPClass
     };
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+    const char *transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
     int numTransferSyntaxes;
 
     OFCondition cond = ASC_receiveAssociation(aNet, assoc, opt_maxPDU);
@@ -1186,15 +1186,15 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
 }
 
 static OFCondition echoSCP(
-    T_ASC_Association * assoc,
-    T_DIMSE_Message * msg,
+    T_ASC_Association *assoc,
+    T_DIMSE_Message *msg,
     T_ASC_PresentationContextID presID)
 {
     OFString temp_str;
     // assign the actual information of the C-Echo-RQ command to a local variable
     T_DIMSE_C_EchoRQ *req = &msg->msg.CEchoRQ;
     OFLOG_INFO(movescuLogger, "Received Echo Request: MsgID " << req->MessageID);
-    OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING));
+    OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
 
     /* the echo succeeded !! */
     OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, req, STATUS_Success, NULL);
@@ -1207,9 +1207,9 @@ static OFCondition echoSCP(
 
 struct StoreCallbackData
 {
-    char* imageFileName;
-    DcmFileFormat* dcmff;
-    T_ASC_Association* assoc;
+    char *imageFileName;
+    DcmFileFormat *dcmff;
+    T_ASC_Association *assoc;
 };
 
 static void
@@ -1401,8 +1401,7 @@ subOpSCP(T_ASC_Association **subAssoc)
     if (!ASC_dataWaiting(*subAssoc, 0)) /* just in case */
         return DIMSE_NODATAAVAILABLE;
 
-    OFCondition cond = DIMSE_receiveCommand(*subAssoc, opt_blockMode, opt_dimse_timeout, &presID,
-            &msg, NULL);
+    OFCondition cond = DIMSE_receiveCommand(*subAssoc, opt_blockMode, opt_dimse_timeout, &presID, &msg, NULL);
 
     if (cond == EC_Normal) {
       switch (msg.CommandField)
@@ -1416,7 +1415,7 @@ subOpSCP(T_ASC_Association **subAssoc)
         default:
           cond = DIMSE_BADCOMMANDTYPE;
           OFLOG_ERROR(movescuLogger, "cannot handle command: 0x"
-               << STD_NAMESPACE hex << OFstatic_cast(unsigned, msg.CommandField));
+              << STD_NAMESPACE hex << OFstatic_cast(unsigned, msg.CommandField));
           break;
       }
     }
@@ -1478,7 +1477,7 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
     /* should we send a cancel back ?? */
     if (opt_cancelAfterNResponses == responseCount) {
         OFLOG_INFO(movescuLogger, "Sending Cancel Request: MsgID " << request->MessageID
-                 << ", PresID " << myCallbackData->presId);
+            << ", PresID " << myCallbackData->presId);
         cond = DIMSE_sendCancelRequest(myCallbackData->assoc,
             myCallbackData->presId, request->MessageID);
         if (cond != EC_Normal) {
@@ -1509,7 +1508,7 @@ substituteOverrideKeys(DcmDataset *dset)
 
 
 static  OFCondition
-moveSCU(T_ASC_Association * assoc, const char *fname)
+moveSCU(T_ASC_Association *assoc, const char *fname)
 {
     T_ASC_PresentationContextID presId;
     T_DIMSE_C_MoveRQ    req;
@@ -1584,7 +1583,7 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
 
 
 static OFCondition
-cmove(T_ASC_Association * assoc, const char *fname)
+cmove(T_ASC_Association *assoc, const char *fname)
 {
     OFCondition cond = EC_Normal;
     int n = OFstatic_cast(int, opt_repeatCount);
@@ -1598,6 +1597,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.94  2011-04-04 11:47:42  joergr
+** Output presentation context ID of incoming C-ECHO request to debug logger.
+**
 ** Revision 1.93  2011-04-01 08:20:36  joergr
 ** Output message ID of C-ECHO request to the info logger (see C-STORE request).
 **

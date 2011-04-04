@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.04.04 (riesmeier)
+
+- Output presentation context ID of incoming C-ECHO request to debug logger.
+  Affects: dcmnet/apps/movescu.cc
+
 **** Changes from 2011.04.01 (schlachter)
 
 - Improved handling of odd-length OW values in DcmElement::getPartialValue.
