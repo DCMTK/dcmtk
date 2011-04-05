@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.04.05 (riesmeier)
+
+- Output DIMSE status code in hexadecimal format to the logger. Removed unused
+  code (local half-implemented function). Added more comments.
+  Affects: dcmnet/libsrc/scu.cc
+
 **** Changes from 2011.04.04 (riesmeier)
 
 - Output presentation context ID of incoming C-ECHO request to debug logger.

@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-03-09 11:13:28 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-04-05 11:16:13 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -314,16 +314,6 @@ OFCondition DcmSCU::useSecureConnection(DcmTransportLayer *tlayer)
 }
 
 
-// Reads association configuration from config file
-OFCondition readAssocConfigFromFile(const OFString &filename,
-                                    const OFString & /* profile */)
-{
-  DcmAssociationConfiguration assocConfig;
-  OFCondition result = DcmAssociationConfigurationFile::initialize(assocConfig, filename.c_str());
-  return result;
-}
-
-
 // Returns usable presentation context ID for given abstract syntax and UID
 // transfer syntax UID. 0 if none matches.
 T_ASC_PresentationContextID DcmSCU::findPresentationContextID(const OFString &abstractSyntax,
@@ -554,9 +544,9 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     DCMNET_ERROR("  SOP Class UID: " << sopClass);
     DCMNET_ERROR("  SOP Instance UID: " << sopInstance);
     DCMNET_ERROR("  Transfer Syntax: " << DcmXfer(transferSyntax).getXferName());
-    if (pcid == 0) 
+    if (pcid == 0)
       DCMNET_ERROR("  Presentation Context ID: 0 (find via SOP Class and Transfer Syntax)");
-    else 
+    else
       DCMNET_ERROR("  Presentation Context ID: " << pcid);
     delete dcmff;
     dcmff = NULL;
@@ -699,7 +689,9 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     findrsp->m_affectedSOPClassUID = rsp.msg.CFindRSP.AffectedSOPClassUID;
     findrsp->m_messageIDRespondedTo = rsp.msg.CFindRSP.MessageIDBeingRespondedTo;
     findrsp->m_status = rsp.msg.CFindRSP.DimseStatus;
-    DCMNET_DEBUG("Response has status " << findrsp->m_status);
+    DCMNET_DEBUG("C-FIND response has status 0x"
+        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+        << findrsp->m_status);
 
     // Receive dataset if there is one (status PENDING)
     DcmDataset *rspDataset = NULL;
@@ -780,6 +772,7 @@ OFCondition DcmSCU::handleFINDResponse(Uint16 /* presContextID */,
 // Send C-FIND-CANCEL and, therefore, ends current C-FIND session
 OFCondition DcmSCU::sendCANCELRequest(Uint16 /* presContextID */)
 {
+  // TODO: need to be implemented
   return EC_Normal;
 }
 
@@ -883,6 +876,8 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
   }
   if (actionRsp.MessageIDBeingRespondedTo != actionReq.MessageID)
   {
+    // since we only support synchronous communication, the message ID in the response
+    // should be identical to the one in the request
     DCMNET_ERROR("Received response with wrong message ID ("
       << actionRsp.MessageIDBeingRespondedTo << " instead of " << actionReq.MessageID << ")");
     return DIMSE_BADMESSAGE;
@@ -973,7 +968,7 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
   if (presIDdset != presID)
   {
     DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID)
-      << ") and data set (" << OFstatic_cast(unsigned int, presIDdset) << ") differs");
+      << ") and data set (" << OFstatic_cast(unsigned int, presIDdset) << ") differ");
     delete dataset;
     return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error,
       "DIMSE: Presentation Contexts of Command and Data Set differ");
@@ -1230,6 +1225,7 @@ OFCondition DcmSCU::getDatasetInfo(DcmDataset *dataset,
 {
   if (dataset == NULL)
     return EC_IllegalParameter;
+  // ignore returned condition codes (e.g. EC_TagNotFound)
   dataset->findAndGetOFString(DCM_SOPClassUID, sopClassUID);
   dataset->findAndGetOFString(DCM_SOPInstanceUID, sopInstanceUID);
   transferSyntax = dataset->getOriginalXfer();
@@ -1316,6 +1312,10 @@ FINDResponse::~FINDResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.21  2011-04-05 11:16:13  joergr
+** Output DIMSE status code in hexadecimal format to the logger. Removed unused
+** code (local half-implemented function). Added more comments.
+**
 ** Revision 1.20  2011-03-09 11:13:28  onken
 ** Enhanced error message for missing data in store request.
 **
