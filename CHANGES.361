@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.04.06 (riesmeier)
+
+- Added support for CP 1076, which adds a new "PNAME has properties" row to the
+  relationship content constraints table.
+  Affects: dcmsr/libsrc/dsrbascc.cc
+           dcmsr/libsrc/dsrcomcc.cc
+           dcmsr/libsrc/dsrenhcc.cc
+           dcmsr/libsrc/dsrxrdcc.cc
+
 **** Changes from 2011.04.05 (riesmeier)
 
 - Output DIMSE status code in hexadecimal format to the logger. Removed unused

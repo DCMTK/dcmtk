@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRComprehensiveSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:40 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2011-04-06 12:52:10 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,22 +105,39 @@ OFBool DSRComprehensiveSRConstraintChecker::checkContentRelationship(const E_Val
     {
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code);
     }
-    /* row 5 and 6 of the table */
-    else if (((relationshipType == RT_hasProperties) || (relationshipType == RT_inferredFrom)) &&
+    /* row 5 of the table */
+    else if ((relationshipType == RT_hasProperties) &&
         ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
     {
-        result = (targetValueType == VT_Text)     || (targetValueType == VT_Code)     || (targetValueType == VT_Num)       ||
-                 (targetValueType == VT_DateTime) || (targetValueType == VT_Date)     || (targetValueType == VT_Time)      ||
-                 (targetValueType == VT_UIDRef)   || (targetValueType == VT_PName)    || (targetValueType == VT_Composite) ||
-                 (targetValueType == VT_Image)    || (targetValueType == VT_Waveform) || (targetValueType == VT_SCoord)    ||
+        result = (targetValueType == VT_Text)     || (targetValueType == VT_Code)      || (targetValueType == VT_Num)    ||
+                 (targetValueType == VT_DateTime) || (targetValueType == VT_Date)      || (targetValueType == VT_Time)   ||
+                 (targetValueType == VT_UIDRef)   || (targetValueType == VT_PName)     || (targetValueType == VT_Image)  ||
+                 (targetValueType == VT_Waveform) || (targetValueType == VT_Composite) || (targetValueType == VT_SCoord) ||
                  (targetValueType == VT_TCoord)   || (targetValueType == VT_Container);
     }
+    /* row 6 of the table - introduced with CP 1076 */
+    else if ((relationshipType == RT_hasProperties) && (sourceValueType == VT_PName))
+    {
+        result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_DateTime) ||
+                 (targetValueType == VT_Date) || (targetValueType == VT_Time) || (targetValueType == VT_UIDRef)   ||
+                 (targetValueType == VT_PName);
+    }
     /* row 7 of the table */
+    else if ((relationshipType == RT_inferredFrom) &&
+        ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
+    {
+        result = (targetValueType == VT_Text)     || (targetValueType == VT_Code)      || (targetValueType == VT_Num)    ||
+                 (targetValueType == VT_DateTime) || (targetValueType == VT_Date)      || (targetValueType == VT_Time)   ||
+                 (targetValueType == VT_UIDRef)   || (targetValueType == VT_PName)     || (targetValueType == VT_Image)  ||
+                 (targetValueType == VT_Waveform) || (targetValueType == VT_Composite) || (targetValueType == VT_SCoord) ||
+                 (targetValueType == VT_TCoord)   || (targetValueType == VT_Container);
+    }
+    /* row 8 of the table */
     else if ((relationshipType == RT_selectedFrom) && (sourceValueType == VT_SCoord))
     {
         result = (targetValueType == VT_Image);
     }
-    /* row 8 of the table */
+    /* row 9 of the table */
     else if ((relationshipType == RT_selectedFrom) && (sourceValueType == VT_TCoord))
     {
         result = (targetValueType == VT_SCoord) || (targetValueType == VT_Image) || (targetValueType == VT_Waveform);
@@ -132,6 +149,10 @@ OFBool DSRComprehensiveSRConstraintChecker::checkContentRelationship(const E_Val
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomcc.cc,v $
+ *  Revision 1.8  2011-04-06 12:52:10  joergr
+ *  Added support for CP 1076, which adds a new "PNAME has properties" row to the
+ *  relationship content constraints table.
+ *
  *  Revision 1.7  2010-10-14 13:14:40  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
