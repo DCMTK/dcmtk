@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-02-11 10:52:16
+**   Date: 2011-04-06 16:32:58
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2011-02-11 10:52:16"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2011-04-06 16:32:58"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3255
+** Number of entries: 3267
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1788,6 +1788,10 @@
 #define DCM_HumanPerformerOrganization           DcmTagKey(0x0040, 0x4036)
 #define DCM_HumanPerformerName                   DcmTagKey(0x0040, 0x4037)
 #define DCM_RawDataHandling                      DcmTagKey(0x0040, 0x4040)
+#define DCM_InputReadinessState                  DcmTagKey(0x0040, 0x4041)
+#define DCM_PerformedProcedureStepStartDateTime  DcmTagKey(0x0040, 0x4050)
+#define DCM_PerformedProcedureStepEndDateTime    DcmTagKey(0x0040, 0x4051)
+#define DCM_ProcedureStepCancellationDateTime    DcmTagKey(0x0040, 0x4052)
 #define DCM_EntranceDoseInmGy                    DcmTagKey(0x0040, 0x8302)
 #define DCM_ReferencedImageRealWorldValueMappingSequence DcmTagKey(0x0040, 0x9094)
 #define DCM_RealWorldValueMappingSequence        DcmTagKey(0x0040, 0x9096)
@@ -1864,6 +1868,13 @@
 #define DCM_DocumentClassCodeSequence            DcmTagKey(0x0040, 0xe008)
 #define DCM_RetrieveURI                          DcmTagKey(0x0040, 0xe010)
 #define DCM_RetrieveLocationUID                  DcmTagKey(0x0040, 0xe011)
+#define DCM_TypeOfInstances                      DcmTagKey(0x0040, 0xe020)
+#define DCM_DICOMRetrievalSequence               DcmTagKey(0x0040, 0xe021)
+#define DCM_DICOMMediaRetrievalSequence          DcmTagKey(0x0040, 0xe022)
+#define DCM_WADORetrievalSequence                DcmTagKey(0x0040, 0xe023)
+#define DCM_XDSRetrievalSequence                 DcmTagKey(0x0040, 0xe024)
+#define DCM_RepositoryUniqueID                   DcmTagKey(0x0040, 0xe030)
+#define DCM_HomeCommunityID                      DcmTagKey(0x0040, 0xe031)
 #define DCM_DocumentTitle                        DcmTagKey(0x0042, 0x0010)
 #define DCM_EncapsulatedDocument                 DcmTagKey(0x0042, 0x0011)
 #define DCM_MIMETypeOfEncapsulatedDocument       DcmTagKey(0x0042, 0x0012)
@@ -2451,8 +2462,9 @@
 #define DCM_ScheduledProcessingParametersSequence DcmTagKey(0x0074, 0x1210)
 #define DCM_PerformedProcessingParametersSequence DcmTagKey(0x0074, 0x1212)
 #define DCM_UnifiedProcedureStepPerformedProcedureSequence DcmTagKey(0x0074, 0x1216)
-#define DCM_RelatedProcedureStepSequence         DcmTagKey(0x0074, 0x1220)
-#define DCM_ProcedureStepRelationshipType        DcmTagKey(0x0074, 0x1222)
+#define DCM_RETIRED_RelatedProcedureStepSequence DcmTagKey(0x0074, 0x1220)
+#define DCM_RETIRED_ProcedureStepRelationshipType DcmTagKey(0x0074, 0x1222)
+#define DCM_ReplacedProcedureStepSequence        DcmTagKey(0x0074, 0x1224)
 #define DCM_DeletionLock                         DcmTagKey(0x0074, 0x1230)
 #define DCM_ReceivingAE                          DcmTagKey(0x0074, 0x1234)
 #define DCM_RequestingAE                         DcmTagKey(0x0074, 0x1236)

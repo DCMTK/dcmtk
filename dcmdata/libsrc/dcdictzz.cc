@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-03-01 10:59:22
+**   Date: 2011-04-06 16:33:50
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2011-03-01 10:59:22";
+const char* dcmBuiltinDictBuildDate = "2011-04-06 16:33:50";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -16445,6 +16445,22 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "RawDataHandling", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0040, 0x4041, 0x0040, 0x4041,
+      EVR_CS, "InputReadinessState", 1, 1, "Supplement_96",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0x4050, 0x0040, 0x4050,
+      EVR_DT, "PerformedProcedureStepStartDateTime", 1, 1, "Supplement_96",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0x4051, 0x0040, 0x4051,
+      EVR_DT, "PerformedProcedureStepEndDateTime", 1, 1, "Supplement_96",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0x4052, 0x0040, 0x4052,
+      EVR_DT, "ProcedureStepCancellationDateTime", 1, 1, "Supplement_96",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0040, 0x8302, 0x0040, 0x8302,
       EVR_DS, "EntranceDoseInmGy", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -16747,6 +16763,34 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0040, 0xe011, 0x0040, 0xe011,
       EVR_UI, "RetrieveLocationUID", 1, 1, "DICOM_2009",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xe020, 0x0040, 0xe020,
+      EVR_CS, "TypeOfInstances", 1, 1, "Supplement_96",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xe021, 0x0040, 0xe021,
+      EVR_SQ, "DICOMRetrievalSequence", 1, 1, "Supplement_96",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xe022, 0x0040, 0xe022,
+      EVR_SQ, "DICOMMediaRetrievalSequence", 1, 1, "Supplement_96",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xe023, 0x0040, 0xe023,
+      EVR_SQ, "WADORetrievalSequence", 1, 1, "Supplement_96",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xe024, 0x0040, 0xe024,
+      EVR_SQ, "XDSRetrievalSequence", 1, 1, "Supplement_96",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xe030, 0x0040, 0xe030,
+      EVR_UI, "RepositoryUniqueID", 1, 1, "Supplement_96",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xe031, 0x0040, 0xe031,
+      EVR_UI, "HomeCommunityID", 1, 1, "Supplement_96",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef WITH_PRIVATE_TAGS
@@ -20130,11 +20174,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0074, 0x1220, 0x0074, 0x1220,
-      EVR_SQ, "RelatedProcedureStepSequence", 1, 1, "DICOM_2009",
+      EVR_SQ, "RETIRED_RelatedProcedureStepSequence", 1, 1, "Supplement_96/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0074, 0x1222, 0x0074, 0x1222,
-      EVR_LO, "ProcedureStepRelationshipType", 1, 1, "DICOM_2009",
+      EVR_LO, "RETIRED_ProcedureStepRelationshipType", 1, 1, "Supplement_96/retired",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1224, 0x0074, 0x1224,
+      EVR_SQ, "ReplacedProcedureStepSequence", 1, 1, "Supplement_96",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0074, 0x1230, 0x0074, 0x1230,

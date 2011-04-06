@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-11 11:56:34 $
- *  CVS/RCS Revision: $Revision: 1.90 $
+ *  Update Date:      $Date: 2011-04-06 14:57:12 $
+ *  CVS/RCS Revision: $Revision: 1.91 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -473,6 +473,11 @@ static const UIDNameMap uidNameMap[] = {
     { UID_DRAFT_SRDetailStorage,                               "DRAFT_SRDetailStorage" },
     { UID_DRAFT_SRTextStorage,                                 "DRAFT_SRTextStorage" },
     { UID_DRAFT_WaveformStorage,                               "DRAFT_WaveformStorage" },
+    { UID_DRAFT_UnifiedWorklistAndProcedureStepServiceClass,   "DRAFT_UnifiedWorklistAndProcedureStepServiceClass" },
+    { UID_DRAFT_UnifiedProcedureStepPushSOPClass,              "DRAFT_UnifiedProcedureStepPushSOPClass" },
+    { UID_DRAFT_UnifiedProcedureStepWatchSOPClass,             "DRAFT_UnifiedProcedureStepWatchSOPClass" },
+    { UID_DRAFT_UnifiedProcedureStepPullSOPClass,              "DRAFT_UnifiedProcedureStepPullSOPClass" },
+    { UID_DRAFT_UnifiedProcedureStepEventSOPClass,             "DRAFT_UnifiedProcedureStepEventSOPClass" },
 
     { NULL, NULL }
 };
@@ -1622,6 +1627,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.91  2011-04-06 14:57:12  joergr
+** Added support for final text version of Supplement 96 (Unified Worklist and
+** Procedure Step) to data dictionary; added new SOP Class and Instance UIDs.
+**
 ** Revision 1.90  2011-02-11 11:56:34  joergr
 ** Added initial support for the MPEG4 transfer syntaxes from Supplement 149.
 **

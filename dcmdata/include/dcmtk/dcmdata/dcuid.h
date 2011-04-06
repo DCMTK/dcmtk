@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-11 11:56:31 $
- *  CVS/RCS Revision: $Revision: 1.91 $
+ *  Update Date:      $Date: 2011-04-06 14:57:10 $
+ *  CVS/RCS Revision: $Revision: 1.92 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -265,7 +265,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /// Deflated Explicit VR Little Endian
 #define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
 /** JPEG Baseline (Process 1): Default Transfer Syntax
- * for Lossy JPEG 8 Bit Image Compression
+ *  for Lossy JPEG 8 Bit Image Compression
  */
 #define UID_JPEGProcess1TransferSyntax          "1.2.840.10008.1.2.4.50"
 /** JPEG Extended (Process 2 & 4): Default Transfer Syntax
@@ -501,11 +501,11 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_ModalityPerformedProcedureStepNotificationSOPClass     "1.2.840.10008.3.1.2.3.5"
 
 // Unified Worklist and Procedure Step
-#define UID_UnifiedWorklistAndProcedureStepServiceClass            "1.2.840.10008.5.1.4.34.4"
-#define UID_UnifiedProcedureStepPushSOPClass                       "1.2.840.10008.5.1.4.34.4.1"
-#define UID_UnifiedProcedureStepWatchSOPClass                      "1.2.840.10008.5.1.4.34.4.2"
-#define UID_UnifiedProcedureStepPullSOPClass                       "1.2.840.10008.5.1.4.34.4.3"
-#define UID_UnifiedProcedureStepEventSOPClass                      "1.2.840.10008.5.1.4.34.4.4"
+#define UID_UnifiedWorklistAndProcedureStepServiceClass            "1.2.840.10008.5.1.4.34.6"
+#define UID_UnifiedProcedureStepPushSOPClass                       "1.2.840.10008.5.1.4.34.6.1"
+#define UID_UnifiedProcedureStepWatchSOPClass                      "1.2.840.10008.5.1.4.34.6.2"
+#define UID_UnifiedProcedureStepPullSOPClass                       "1.2.840.10008.5.1.4.34.6.3"
+#define UID_UnifiedProcedureStepEventSOPClass                      "1.2.840.10008.5.1.4.34.6.4"
 #define UID_UnifiedWorklistAndProcedureStepSOPInstance             "1.2.840.10008.5.1.4.34.5"
 
 // Storage Commitment
@@ -707,12 +707,23 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_DRAFT_RTConventionalMachineVerification                "1.2.840.10008.5.1.4.34.2"
 #define UID_DRAFT_RTIonMachineVerification                         "1.2.840.10008.5.1.4.34.3"
 
+// Supplement 96 Frozen Draft (October 2007), also part of DICOM 2008 and 2009
+#define UID_DRAFT_UnifiedWorklistAndProcedureStepServiceClass      "1.2.840.10008.5.1.4.34.4"
+#define UID_DRAFT_UnifiedProcedureStepPushSOPClass                 "1.2.840.10008.5.1.4.34.4.1"
+#define UID_DRAFT_UnifiedProcedureStepWatchSOPClass                "1.2.840.10008.5.1.4.34.4.2"
+#define UID_DRAFT_UnifiedProcedureStepPullSOPClass                 "1.2.840.10008.5.1.4.34.4.3"
+#define UID_DRAFT_UnifiedProcedureStepEventSOPClass                "1.2.840.10008.5.1.4.34.4.4"
+
 #endif /* DCUID_H */
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.92  2011-04-06 14:57:10  joergr
+** Added support for final text version of Supplement 96 (Unified Worklist and
+** Procedure Step) to data dictionary; added new SOP Class and Instance UIDs.
+**
 ** Revision 1.91  2011-02-11 11:56:31  joergr
 ** Added initial support for the MPEG4 transfer syntaxes from Supplement 149.
 **

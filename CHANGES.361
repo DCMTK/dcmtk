@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2011.04.06 (riesmeier)
 
+- Added support for final text version of Supplement 96 (Unified Worklist and
+  Procedure Step) to data dictionary; added new SOP Class and Instance UIDs.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dcuid.cc
+
 - Added support for CP 1076, which adds a new "PNAME has properties" row to the
   relationship content constraints table.
   Affects: dcmsr/libsrc/dsrbascc.cc
