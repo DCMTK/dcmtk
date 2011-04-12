@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface for loadable DICOM data dictionary
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:40 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-12 08:01:10 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -224,10 +224,8 @@ class GlobalDcmDataDictionary
 {
 public:
   /** constructor.
-   *  @param loadBuiltin if true, the dictionary constructor calls loadBuiltinDictionary().
-   *  @param loadExternal if true, the dictionary constructor calls loadExternalDictionaries().
    */
-  GlobalDcmDataDictionary(OFBool loadBuiltin, OFBool loadExternal);
+  GlobalDcmDataDictionary();
 
   /** destructor
    */
@@ -272,9 +270,14 @@ private:
    */
   GlobalDcmDataDictionary(const GlobalDcmDataDictionary &);
 
+  /** create the data dictionary instance for this class.
+   * The caller must not have dataDictLock locked.
+   */
+  void createDataDict();
+
   /** the data dictionary managed by this class
    */
-  DcmDataDictionary dataDict;
+  DcmDataDictionary *dataDict;
 
 #ifdef WITH_THREADS
   /** the read/write lock used to protect access from multiple threads
@@ -303,6 +306,9 @@ extern GlobalDcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
+** Revision 1.25  2011-04-12 08:01:10  uli
+** Delay loading of the data dictionary until its first use.
+**
 ** Revision 1.24  2010-10-14 13:15:40  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

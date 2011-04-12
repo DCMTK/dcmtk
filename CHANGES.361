@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.04.12 (schlachter)
+
+- Delay loading of the data dictionary until its first use.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdict.h
+           dcmdata/libsrc/dcdict.cc
+
 **** Changes from 2011.04.06 (riesmeier)
 
 - Added support for final text version of Supplement 96 (Unified Worklist and

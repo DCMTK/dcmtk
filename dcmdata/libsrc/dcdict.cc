@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 07:41:35 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2011-04-12 08:01:10 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,13 +55,7 @@
 ** THE Global DICOM Data Dictionary
 */
 
-#ifdef DONT_LOAD_EXTERNAL_DICTIONARIES
-// if defined at compilation time, only the builtin dictionary is loaded
-GlobalDcmDataDictionary dcmDataDict(OFTrue /*loadBuiltin*/, OFFalse /*loadExternal*/);
-#else
-// this is the default case, i.e. both the builtin and the external dictionaries are loaded
-GlobalDcmDataDictionary dcmDataDict(OFTrue /*loadBuiltin*/, OFTrue /*loadExternal*/);
-#endif
+GlobalDcmDataDictionary dcmDataDict;
 
 
 /*
@@ -800,8 +794,8 @@ DcmDataDictionary::findEntry(const char *name) const
 /* ================================================================== */
 
 
-GlobalDcmDataDictionary::GlobalDcmDataDictionary(OFBool loadBuiltin, OFBool loadExternal)
-  : dataDict(loadBuiltin, loadExternal)
+GlobalDcmDataDictionary::GlobalDcmDataDictionary()
+  : dataDict(NULL)
 #ifdef WITH_THREADS
   , dataDictLock()
 #endif
@@ -810,6 +804,28 @@ GlobalDcmDataDictionary::GlobalDcmDataDictionary(OFBool loadBuiltin, OFBool load
 
 GlobalDcmDataDictionary::~GlobalDcmDataDictionary()
 {
+  /* No threads may be active any more, so no locking needed */
+  delete dataDict;
+}
+
+void GlobalDcmDataDictionary::createDataDict()
+{
+  /* Make sure only one thread tries to initialize the dictionary */
+#ifdef WITH_THREADS
+  dataDictLock.wrlock();
+#endif
+#ifdef DONT_LOAD_EXTERNAL_DICTIONARIES
+  const OFBool loadExternal = OFFalse;
+#else
+  const OFBool loadExternal = OFTrue;
+#endif
+  /* Make sure no other thread managed to create the dictionary
+   * before we got our write lock. */
+  if (!dataDict)
+    dataDict = new DcmDataDictionary(OFTrue /*loadBuiltin*/, loadExternal);
+#ifdef WITH_THREADS
+  dataDictLock.unlock();
+#endif
 }
 
 const DcmDataDictionary& GlobalDcmDataDictionary::rdlock()
@@ -817,7 +833,18 @@ const DcmDataDictionary& GlobalDcmDataDictionary::rdlock()
 #ifdef WITH_THREADS
   dataDictLock.rdlock();
 #endif
-  return dataDict;
+  if (!dataDict)
+  {
+    /* dataDictLock must not be locked during createDataDict() */
+#ifdef WITH_THREADS
+    dataDictLock.unlock();
+#endif
+    createDataDict();
+#ifdef WITH_THREADS
+    dataDictLock.rdlock();
+#endif
+  }
+  return *dataDict;
 }
 
 DcmDataDictionary& GlobalDcmDataDictionary::wrlock()
@@ -825,7 +852,18 @@ DcmDataDictionary& GlobalDcmDataDictionary::wrlock()
 #ifdef WITH_THREADS
   dataDictLock.wrlock();
 #endif
-  return dataDict;
+  if (!dataDict)
+  {
+    /* dataDictLock must not be locked during createDataDict() */
+#ifdef WITH_THREADS
+    dataDictLock.unlock();
+#endif
+    createDataDict();
+#ifdef WITH_THREADS
+    dataDictLock.wrlock();
+#endif
+  }
+  return *dataDict;
 }
 
 void GlobalDcmDataDictionary::unlock()
@@ -852,6 +890,9 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
+** Revision 1.50  2011-04-12 08:01:10  uli
+** Delay loading of the data dictionary until its first use.
+**
 ** Revision 1.49  2010-10-20 07:41:35  uli
 ** Made sure isalpha() & friends are only called with valid arguments.
 **
