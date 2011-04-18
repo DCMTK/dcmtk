@@ -18,9 +18,9 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-24 14:49:43 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:01:05 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1109,7 +1109,7 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   }
 
   // Dump some information if required
-  if (DCM_dcmwlmGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL))
+  if (DCM_dcmwlmLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
   {
     DCMWLM_INFO("Worklist Find SCP Response " << responseCount << " (" << DU_cfindStatusString((Uint16)dbstatus) << ")");
     if( *responseIdentifiers != NULL && (*responseIdentifiers)->card() > 0 )
@@ -1152,6 +1152,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.36  2011-04-18 07:01:05  uli
+** Use global variables for the logger objects. This removes the thread-unsafe
+** static local variables which were used before.
+**
 ** Revision 1.35  2011-03-24 14:49:43  joergr
 ** Added support for deflated transfer syntax (zlib compression) on incoming
 ** associations. Also fixed some inconsistencies when preferring transfer

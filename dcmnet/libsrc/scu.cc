@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-05 11:16:13 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:01:03 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -814,7 +814,7 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
   // Send request
   DCMNET_INFO("Sending N-ACTION Request");
   // Output dataset only if trace level is enabled
-  if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, reqDataset, pcid));
   else
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, NULL, pcid));
@@ -959,7 +959,7 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
   }
 
   // Output dataset only if trace level is enabled
-  if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, dataset, presID));
   else
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, NULL, presID));
@@ -1312,6 +1312,10 @@ FINDResponse::~FINDResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.22  2011-04-18 07:01:03  uli
+** Use global variables for the logger objects. This removes the thread-unsafe
+** static local variables which were used before.
+**
 ** Revision 1.21  2011-04-05 11:16:13  joergr
 ** Output DIMSE status code in hexadecimal format to the logger. Removed unused
 ** code (local half-implemented function). Added more comments.

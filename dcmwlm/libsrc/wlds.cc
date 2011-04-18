@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:48 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:01:05 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,11 +49,7 @@
 #include "dcmtk/dcmdata/dcdicent.h"  // needed by MSVC5 with STL
 #include "dcmtk/dcmwlm/wlds.h"
 
-OFLogger DCM_dcmwlmGetLogger()
-{
-  static OFLogger DCM_dcmwlmLogger = OFLog::getLogger("dcmtk.dcmwlm");
-  return DCM_dcmwlmLogger;
-}
+OFLogger DCM_dcmwlmLogger = OFLog::getLogger("dcmtk.dcmwlm");
 
 // ----------------------------------------------------------------------------
 
@@ -1448,6 +1444,10 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
+** Revision 1.31  2011-04-18 07:01:05  uli
+** Use global variables for the logger objects. This removes the thread-unsafe
+** static local variables which were used before.
+**
 ** Revision 1.30  2010-10-14 13:14:48  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

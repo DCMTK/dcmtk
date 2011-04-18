@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-29 10:57:21 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:00:58 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,14 +31,7 @@
 
 #include "dcmtk/dcmdata/dctypes.h"
 
-OFLogger DCM_dcmdataGetLogger()
-{
-    // We don't just use a global variable, because constructors of globals are
-    // executed in random order. This guarantees that the OFLogger is constructed
-    // before first use.
-    static OFLogger DCM_dcmdataLogger = OFLog::getLogger("dcmtk.dcmdata");
-    return DCM_dcmdataLogger;
-}
+OFLogger DCM_dcmdataLogger = OFLog::getLogger("dcmtk.dcmdata");
 
 /* print flags */
 const size_t DCMTypes::PF_shortenLongTagValues = 1 << 0;
@@ -59,6 +52,10 @@ const size_t DCMTypes::XF_omitDataElementName  = 1 << 5;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.cc,v $
+ * Revision 1.14  2011-04-18 07:00:58  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.13  2010-10-29 10:57:21  joergr
  * Added support for colored output to the print() method.
  *

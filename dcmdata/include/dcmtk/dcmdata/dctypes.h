@@ -17,9 +17,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-21 15:02:07 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:00:58 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,14 +47,14 @@ END_EXTERN_C
 ** Logging
 */
 
-OFLogger DCM_dcmdataGetLogger();
+extern OFLogger DCM_dcmdataLogger;
 
-#define DCMDATA_TRACE(msg) OFLOG_TRACE(DCM_dcmdataGetLogger(), msg)
-#define DCMDATA_DEBUG(msg) OFLOG_DEBUG(DCM_dcmdataGetLogger(), msg)
-#define DCMDATA_INFO(msg)  OFLOG_INFO(DCM_dcmdataGetLogger(), msg)
-#define DCMDATA_WARN(msg)  OFLOG_WARN(DCM_dcmdataGetLogger(), msg)
-#define DCMDATA_ERROR(msg) OFLOG_ERROR(DCM_dcmdataGetLogger(), msg)
-#define DCMDATA_FATAL(msg) OFLOG_FATAL(DCM_dcmdataGetLogger(), msg)
+#define DCMDATA_TRACE(msg) OFLOG_TRACE(DCM_dcmdataLogger, msg)
+#define DCMDATA_DEBUG(msg) OFLOG_DEBUG(DCM_dcmdataLogger, msg)
+#define DCMDATA_INFO(msg)  OFLOG_INFO(DCM_dcmdataLogger, msg)
+#define DCMDATA_WARN(msg)  OFLOG_WARN(DCM_dcmdataLogger, msg)
+#define DCMDATA_ERROR(msg) OFLOG_ERROR(DCM_dcmdataLogger, msg)
+#define DCMDATA_FATAL(msg) OFLOG_FATAL(DCM_dcmdataLogger, msg)
 
 /*
 ** Macro Definitions
@@ -227,6 +227,10 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.37  2011-04-18 07:00:58  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.36  2011-03-21 15:02:07  joergr
  * Added module name "DCMDATA_" as a prefix to the ANSI escape code macros.
  *

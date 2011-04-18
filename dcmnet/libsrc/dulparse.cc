@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -58,8 +58,8 @@
 ** Intent:          This file contains functions for parsing Dicom
 **                  Upper Layer (DUL) Protocol Data Units (PDUs)
 **                  into logical in-memory structures.
-** Last Update:     $Author: joergr $, $Date: 2010-12-01 08:26:36 $
-** Revision:        $Revision: 1.33 $
+** Last Update:     $Author: uli $, $Date: 2011-04-18 07:00:59 $
+** Revision:        $Revision: 1.34 $
 ** Status:          $State: Exp $
 */
 
@@ -186,7 +186,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
     buf += 32;
     pduLength -= 32;
 
-    if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::DEBUG_LOG_LEVEL)) {
+    if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL)) {
         const char *s;
         DCMNET_DEBUG("Parsing an A-ASSOCIATE PDU");
         if (assoc->type == DUL_TYPEASSOCIATERQ)
@@ -752,7 +752,7 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
         extNeg->serviceClassAppInfo[i] = *buf++;
     }
 
-    if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::TRACE_LOG_LEVEL)) {
+    if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL)) {
         DCMNET_TRACE("ExtNeg Subitem parse: Type "
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, extNeg->itemType)
             << STD_NAMESPACE dec << ", Length " << STD_NAMESPACE setw(4) << (int)extNeg->itemLength
@@ -840,6 +840,10 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
+** Revision 1.34  2011-04-18 07:00:59  uli
+** Use global variables for the logger objects. This removes the thread-unsafe
+** static local variables which were used before.
+**
 ** Revision 1.33  2010-12-01 08:26:36  joergr
 ** Added OFFIS copyright header (beginning with the year 1994).
 **

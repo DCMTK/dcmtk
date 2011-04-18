@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2010, OFFIS e.V.
+ *  Copyright (C) 2009-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-10-20 08:09:34 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-04-18 07:01:00 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -766,7 +766,7 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
   }
 
   // Output dataset only if trace level is enabled
-  if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, dataset, presID));
   else
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
@@ -1490,6 +1490,10 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.16  2011-04-18 07:01:00  uli
+** Use global variables for the logger objects. This removes the thread-unsafe
+** static local variables which were used before.
+**
 ** Revision 1.15  2010-10-20 08:09:34  uli
 ** Also made sure toupper() and tolower() get a valid argument.
 **

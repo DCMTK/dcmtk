@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-22 16:55:15 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:01:05 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,14 +40,14 @@
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/oflog/oflog.h"
 
-OFLogger DCM_dcmsrGetLogger();
+extern OFLogger DCM_dcmsrLogger;
 
-#define DCMSR_TRACE(msg) OFLOG_TRACE(DCM_dcmsrGetLogger(), msg)
-#define DCMSR_DEBUG(msg) OFLOG_DEBUG(DCM_dcmsrGetLogger(), msg)
-#define DCMSR_INFO(msg)  OFLOG_INFO(DCM_dcmsrGetLogger(), msg)
-#define DCMSR_WARN(msg)  OFLOG_WARN(DCM_dcmsrGetLogger(), msg)
-#define DCMSR_ERROR(msg) OFLOG_ERROR(DCM_dcmsrGetLogger(), msg)
-#define DCMSR_FATAL(msg) OFLOG_FATAL(DCM_dcmsrGetLogger(), msg)
+#define DCMSR_TRACE(msg) OFLOG_TRACE(DCM_dcmsrLogger, msg)
+#define DCMSR_DEBUG(msg) OFLOG_DEBUG(DCM_dcmsrLogger, msg)
+#define DCMSR_INFO(msg)  OFLOG_INFO(DCM_dcmsrLogger, msg)
+#define DCMSR_WARN(msg)  OFLOG_WARN(DCM_dcmsrLogger, msg)
+#define DCMSR_ERROR(msg) OFLOG_ERROR(DCM_dcmsrLogger, msg)
+#define DCMSR_FATAL(msg) OFLOG_FATAL(DCM_dcmsrLogger, msg)
 
 
 /*---------------------*
@@ -1327,6 +1327,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.72  2011-04-18 07:01:05  uli
+ *  Use global variables for the logger objects. This removes the thread-unsafe
+ *  static local variables which were used before.
+ *
  *  Revision 1.71  2011-03-22 16:55:15  joergr
  *  Added support for colored output to the print() method - Unix only.
  *

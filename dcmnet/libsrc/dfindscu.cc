@@ -17,9 +17,9 @@
  *
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-24 14:54:22 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:00:59 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -514,7 +514,7 @@ OFCondition DcmFindSCU::findSCU(
 
         /* dump some more general information */
         if (cond.good()) {
-            if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+            if (DCM_dcmnetLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
                 DCMNET_INFO(DIMSE_dumpMessage(temp_str, rsp, DIMSE_INCOMING));
             } else {
                 if (rsp.DimseStatus != STATUS_Success) {
@@ -546,6 +546,10 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.15  2011-04-18 07:00:59  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.14  2011-03-24 14:54:22  joergr
  * Added support for deflated transfer syntax (zlib compression) on outgoing
  * associations.

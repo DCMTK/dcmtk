@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveOptions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:36 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:01:04 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -933,7 +933,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_shortHelp(int /*arg*/ , const char * 
 
 OFBool DcmQueryRetrieveTelnetInitiator::TI_help(int arg, const char * /*cmdbuf*/ )
 {
-    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+    if (DCM_dcmqrdbLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_help: arg=%d\n", arg);
     }
     printf("Command Summary:\n");
@@ -962,7 +962,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_title(int arg, const char * /*cmdbuf*
     int port;
     DIC_AE peerTitle;
 
-    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+    if (DCM_dcmqrdbLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_title: arg=%d\n", arg);
     }
 
@@ -1030,7 +1030,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_database(int arg, const char * /*cmdb
     TI_DBEntry *db = NULL;
     OFBool found = OFFalse;
 
-    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+    if (DCM_dcmqrdbLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_database: arg=%d\n", arg);
     }
 
@@ -1092,7 +1092,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_echo(int arg, const char * /*cmdbuf*/
 {
     OFBool ok = OFTrue;
 
-    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+    if (DCM_dcmqrdbLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_echo: arg=%d\n", arg);
     }
 
@@ -1114,7 +1114,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_echo(int arg, const char * /*cmdbuf*/
 
 OFBool DcmQueryRetrieveTelnetInitiator::TI_quit(int arg, const char * /*cmdbuf*/ )
 {
-    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+    if (DCM_dcmqrdbLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_quit: arg=%d\n", arg);
     }
     TI_detachAssociation(OFFalse);
@@ -1150,7 +1150,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_study(int arg, const char * /*cmdbuf*
     TI_StudyEntry *se;
     int i;
 
-    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+    if (DCM_dcmqrdbLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_study: arg=%d\n", arg);
     }
 
@@ -1237,7 +1237,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_series(int arg, const char * /*cmdbuf
     TI_SeriesEntry *series;
     int i;
 
-    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+    if (DCM_dcmqrdbLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_sseries: arg=%d\n", arg);
     }
 
@@ -1335,7 +1335,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_image(int arg, const char * /*cmdbuf*
     TI_ImageEntry *image;
     int i;
 
-    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+    if (DCM_dcmqrdbLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_image: arg=%d\n", arg);
     }
 
@@ -1406,7 +1406,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendStudy(int arg, const char * /*cmd
     char imgFile[MAXPATHLEN+1];
     DIC_US nRemaining = 0;
 
-    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+    if (DCM_dcmqrdbLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_sendStudy: arg=%d\n", arg);
     }
 
@@ -1499,7 +1499,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendSeries(int arg, const char * /*cm
     char imgFile[MAXPATHLEN+1];
     DIC_US nRemaining = 0;
 
-    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+    if (DCM_dcmqrdbLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_sendSeries: arg=%d\n", arg);
     }
 
@@ -1582,7 +1582,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendImage(int arg, const char * /*cmd
     char imgFile[MAXPATHLEN+1];
     DIC_US nRemaining = 0;
 
-    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+    if (DCM_dcmqrdbLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("TI_sendImage: arg=%d\n", arg);
     }
 
@@ -1972,7 +1972,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildImages(TI_DBEntry *db, TI_StudyE
     /* get all known images in current series */
     TI_buildImageQuery(&query, study, series);
 
-    if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+    if (DCM_dcmqrdbLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
         printf("QUERY OBJECT:\n");
         query->print(COUT);
     }
@@ -1995,7 +1995,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildImages(TI_DBEntry *db, TI_StudyE
             return OFFalse;
         }
         if (dbStatus.status() == STATUS_Pending) {
-            if (DCM_dcmqrdbGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+            if (DCM_dcmqrdbLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
                 printf("REPLY OBJECT:\n");
                 reply->print(COUT);
             }
@@ -2204,6 +2204,10 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
+ * Revision 1.17  2011-04-18 07:01:04  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.16  2010-10-14 13:14:36  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

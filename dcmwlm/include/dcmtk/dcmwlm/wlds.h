@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:38 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:01:05 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,14 +34,14 @@
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/oflog/oflog.h"
 
-OFLogger DCM_dcmwlmGetLogger();
+extern OFLogger DCM_dcmwlmLogger;
 
-#define DCMWLM_TRACE(msg) OFLOG_TRACE(DCM_dcmwlmGetLogger(), msg)
-#define DCMWLM_DEBUG(msg) OFLOG_DEBUG(DCM_dcmwlmGetLogger(), msg)
-#define DCMWLM_INFO(msg)  OFLOG_INFO(DCM_dcmwlmGetLogger(), msg)
-#define DCMWLM_WARN(msg)  OFLOG_WARN(DCM_dcmwlmGetLogger(), msg)
-#define DCMWLM_ERROR(msg) OFLOG_ERROR(DCM_dcmwlmGetLogger(), msg)
-#define DCMWLM_FATAL(msg) OFLOG_FATAL(DCM_dcmwlmGetLogger(), msg)
+#define DCMWLM_TRACE(msg) OFLOG_TRACE(DCM_dcmwlmLogger, msg)
+#define DCMWLM_DEBUG(msg) OFLOG_DEBUG(DCM_dcmwlmLogger, msg)
+#define DCMWLM_INFO(msg)  OFLOG_INFO(DCM_dcmwlmLogger, msg)
+#define DCMWLM_WARN(msg)  OFLOG_WARN(DCM_dcmwlmLogger, msg)
+#define DCMWLM_ERROR(msg) OFLOG_ERROR(DCM_dcmwlmLogger, msg)
+#define DCMWLM_FATAL(msg) OFLOG_FATAL(DCM_dcmwlmLogger, msg)
 
 class DcmAttributeTag;
 class DcmLongString;
@@ -527,6 +527,10 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
+** Revision 1.29  2011-04-18 07:01:05  uli
+** Use global variables for the logger objects. This removes the thread-unsafe
+** static local variables which were used before.
+**
 ** Revision 1.28  2010-10-14 13:16:38  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

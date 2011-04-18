@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-22 16:55:19 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:01:05 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -806,14 +806,14 @@ OFCondition DSRTypes::addElementToDataset(OFCondition &result,
                 triedToInsert = OFTrue;
                 /* insert non-empty element or empty "type 2" element */
                 result = dataset.insert(delem, OFTrue /*replaceOld*/);
-                if (DCM_dcmsrGetLogger().isEnabledFor(OFLogger::WARN_LOG_LEVEL))
+                if (DCM_dcmsrLogger.isEnabledFor(OFLogger::WARN_LOG_LEVEL))
                     checkElementValue(*delem, vm, type, result, moduleName);
             }
             else if (type == "1")
             {
                 /* empty element value not allowed for "type 1" */
                 result = SR_EC_InvalidValue;
-                if (DCM_dcmsrGetLogger().isEnabledFor(OFLogger::WARN_LOG_LEVEL))
+                if (DCM_dcmsrLogger.isEnabledFor(OFLogger::WARN_LOG_LEVEL))
                     checkElementValue(*delem, vm, type, result, moduleName);
             }
         }
@@ -1574,19 +1574,16 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
     return result;
 }
 
-OFLogger DCM_dcmsrGetLogger()
-{
-    // We don't just use a global variable, because constructors of globals are
-    // executed in random order. This guarantees that the OFLogger is constructed
-    // before first use.
-    static OFLogger DCM_dcmsrLogger = OFLog::getLogger("dcmtk.dcmsr");
-    return DCM_dcmsrLogger;
-}
+OFLogger DCM_dcmsrLogger = OFLog::getLogger("dcmtk.dcmsr");
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.76  2011-04-18 07:01:05  uli
+ *  Use global variables for the logger objects. This removes the thread-unsafe
+ *  static local variables which were used before.
+ *
  *  Revision 1.75  2011-03-22 16:55:19  joergr
  *  Added support for colored output to the print() method - Unix only.
  *

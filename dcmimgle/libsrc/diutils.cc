@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Utilities (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:18 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:00:58 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,11 +42,7 @@
  *  function definitions  *
  *------------------------*/
 
-OFLogger DCM_dcmimgleGetLogger()
-{
-    static OFLogger DCM_dcmimgleLogger = OFLog::getLogger("dcmtk.dcmimgle");
-    return DCM_dcmimgleLogger;
-}
+OFLogger DCM_dcmimgleLogger = OFLog::getLogger("dcmtk.dcmimgle");
 
 unsigned int DicomImageClass::rangeToBits(double minvalue,
                                           double maxvalue)
@@ -148,6 +144,10 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
  *
  * CVS/RCS Log:
  * $Log: diutils.cc,v $
+ * Revision 1.23  2011-04-18 07:00:58  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.22  2010-10-14 13:14:18  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Support code for dcmjpls
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:24 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:00:59 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,14 +30,7 @@
 #include "dcmtk/dcmjpls/djlsutil.h"
 #include "dcmtk/dcmdata/dcerror.h"
 
-OFLogger DCM_dcmjplsGetLogger()
-{
-    // We don't just use a global variable, because constructors of globals are
-    // executed in random order. This guarantees that the OFLogger is constructed
-    // before first use.
-    static OFLogger DCM_dcmjplsLogger = OFLog::getLogger("dcmtk.dcmjpls");
-    return DCM_dcmjplsLogger;
-}
+OFLogger DCM_dcmjplsLogger = OFLog::getLogger("dcmtk.dcmjpls");
 
 #define MAKE_DCMJPLS_ERROR(number, name, description)  \
 const OFConditionConst ECC_ ## name (OFM_dcmjpls, number, OF_error, description); \
@@ -62,6 +55,10 @@ MAKE_DCMJPLS_ERROR(15, JLSTooMuchCompressedData, "Too much compressed data, trai
 /*
  * CVS/RCS Log:
  * $Log: djutils.cc,v $
+ * Revision 1.7  2011-04-18 07:00:59  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.6  2010-10-14 13:14:24  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

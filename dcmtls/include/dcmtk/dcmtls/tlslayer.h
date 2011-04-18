@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DcmTLSTransportLayer
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:27 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:01:05 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,14 +40,14 @@ BEGIN_EXTERN_C
 #include <openssl/ssl.h>
 END_EXTERN_C
 
-OFLogger DCM_dcmtlsGetLogger();
+extern OFLogger DCM_dcmtlsLogger;
 
-#define DCMTLS_TRACE(msg) OFLOG_TRACE(DCM_dcmtlsGetLogger(), msg)
-#define DCMTLS_DEBUG(msg) OFLOG_DEBUG(DCM_dcmtlsGetLogger(), msg)
-#define DCMTLS_INFO(msg)  OFLOG_INFO(DCM_dcmtlsGetLogger(), msg)
-#define DCMTLS_WARN(msg)  OFLOG_WARN(DCM_dcmtlsGetLogger(), msg)
-#define DCMTLS_ERROR(msg) OFLOG_ERROR(DCM_dcmtlsGetLogger(), msg)
-#define DCMTLS_FATAL(msg) OFLOG_FATAL(DCM_dcmtlsGetLogger(), msg)
+#define DCMTLS_TRACE(msg) OFLOG_TRACE(DCM_dcmtlsLogger, msg)
+#define DCMTLS_DEBUG(msg) OFLOG_DEBUG(DCM_dcmtlsLogger, msg)
+#define DCMTLS_INFO(msg)  OFLOG_INFO(DCM_dcmtlsLogger, msg)
+#define DCMTLS_WARN(msg)  OFLOG_WARN(DCM_dcmtlsLogger, msg)
+#define DCMTLS_ERROR(msg) OFLOG_ERROR(DCM_dcmtlsLogger, msg)
+#define DCMTLS_FATAL(msg) OFLOG_FATAL(DCM_dcmtlsLogger, msg)
 
 /** this enum describes how to handle X.509 certificates on a TLS based
  *  secure transport connection. They can be ignored, validated if present
@@ -256,6 +256,10 @@ private:
 
 /*
  *  $Log: tlslayer.h,v $
+ *  Revision 1.10  2011-04-18 07:01:05  uli
+ *  Use global variables for the logger objects. This removes the thread-unsafe
+ *  static local variables which were used before.
+ *
  *  Revision 1.9  2010-10-14 13:17:27  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

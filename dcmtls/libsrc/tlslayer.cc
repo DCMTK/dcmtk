@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DcmTLSTransportLayer
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:46 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:01:05 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,14 +49,7 @@ END_EXTERN_C
 
 extern "C" int DcmTLSTransportLayer_certificateValidationCallback(int ok, X509_STORE_CTX *storeContext);
 
-OFLogger DCM_dcmtlsGetLogger()
-{
-    // We don't just use a global variable, because constructors of globals are
-    // executed in random order. This guarantees that the OFLogger is constructed
-    // before first use.
-    static OFLogger DCM_dcmtlsLogger = OFLog::getLogger("dcmtk.dcmtls");
-    return DCM_dcmtlsLogger;
-}
+OFLogger DCM_dcmtlsLogger = OFLog::getLogger("dcmtk.dcmtls");
 
 int DcmTLSTransportLayer_certificateValidationCallback(int ok, X509_STORE_CTX * /* storeContext */)
 {
@@ -485,6 +478,10 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
+ *  Revision 1.20  2011-04-18 07:01:05  uli
+ *  Use global variables for the logger objects. This removes the thread-unsafe
+ *  static local variables which were used before.
+ *
  *  Revision 1.19  2010-10-14 13:14:46  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

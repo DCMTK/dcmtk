@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: decompression routines of the IJG JPEG library configured for 12 bits/sample.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:21 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:00:59 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -471,11 +471,11 @@ void DJDecompressIJG12Bit::emitMessage(int msg_level) const
     break;
   }
 
-  if (cinfo && DCM_dcmjpegGetLogger().isEnabledFor(level))
+  if (cinfo && DCM_dcmjpegLogger.isEnabledFor(level))
   {
     char buffer[JMSG_LENGTH_MAX];
     (*cinfo->err->format_message)((jpeg_common_struct *)cinfo, buffer); /* Create the message */
-    DCM_dcmjpegGetLogger().forcedLog(level, buffer, __FILE__, __LINE__);
+    DCM_dcmjpegLogger.forcedLog(level, buffer, __FILE__, __LINE__);
   }
 }
 
@@ -483,6 +483,10 @@ void DJDecompressIJG12Bit::emitMessage(int msg_level) const
 /*
  * CVS/RCS Log
  * $Log: djdijg12.cc,v $
+ * Revision 1.22  2011-04-18 07:00:59  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.21  2010-10-14 13:14:21  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

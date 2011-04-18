@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -73,9 +73,9 @@
 **
 ** Module Prefix: DU_
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-12-01 08:26:10 $
-** CVS/RCS Revision:    $Revision: 1.12 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2011-04-18 07:00:59 $
+** CVS/RCS Revision:    $Revision: 1.13 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -92,14 +92,14 @@
 #include "dcmtk/oflog/oflog.h"
 
 
-OFLogger DCM_dcmnetGetLogger();
+extern OFLogger DCM_dcmnetLogger;
 
-#define DCMNET_TRACE(msg) OFLOG_TRACE(DCM_dcmnetGetLogger(), msg)
-#define DCMNET_DEBUG(msg) OFLOG_DEBUG(DCM_dcmnetGetLogger(), msg)
-#define DCMNET_INFO(msg)  OFLOG_INFO(DCM_dcmnetGetLogger(), msg)
-#define DCMNET_WARN(msg)  OFLOG_WARN(DCM_dcmnetGetLogger(), msg)
-#define DCMNET_ERROR(msg) OFLOG_ERROR(DCM_dcmnetGetLogger(), msg)
-#define DCMNET_FATAL(msg) OFLOG_FATAL(DCM_dcmnetGetLogger(), msg)
+#define DCMNET_TRACE(msg) OFLOG_TRACE(DCM_dcmnetLogger, msg)
+#define DCMNET_DEBUG(msg) OFLOG_DEBUG(DCM_dcmnetLogger, msg)
+#define DCMNET_INFO(msg)  OFLOG_INFO(DCM_dcmnetLogger, msg)
+#define DCMNET_WARN(msg)  OFLOG_WARN(DCM_dcmnetLogger, msg)
+#define DCMNET_ERROR(msg) OFLOG_ERROR(DCM_dcmnetLogger, msg)
+#define DCMNET_FATAL(msg) OFLOG_FATAL(DCM_dcmnetLogger, msg)
 
 
 char* DU_stripTrailingSpaces(char *s);
@@ -140,6 +140,10 @@ const char *DU_neventReportStatusString(Uint16 statusCode);
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
+** Revision 1.13  2011-04-18 07:00:59  uli
+** Use global variables for the logger objects. This removes the thread-unsafe
+** static local variables which were used before.
+**
 ** Revision 1.12  2010-12-01 08:26:10  joergr
 ** Added OFFIS copyright header (beginning with the year 1994).
 **

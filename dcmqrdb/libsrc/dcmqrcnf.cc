@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveConfig
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-12-15 13:59:58 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2011-04-18 07:01:04 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,7 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofcmdln.h"
 
-OFLogger DCM_dcmqrdbGetLogger()
-{
-    static OFLogger DCM_dcmqrdbLogger = OFLog::getLogger("dcmtk.dcmqrdb");
-    return DCM_dcmqrdbLogger;
-}
+OFLogger DCM_dcmqrdbLogger = OFLog::getLogger("dcmtk.dcmqrdb");
 
 int DcmQueryRetrieveConfig::aeTitlesForPeer(const char *hostName, const char *** aeTitleList) const
 {
@@ -1008,6 +1004,10 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
+ * Revision 1.15  2011-04-18 07:01:04  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.14  2010-12-15 13:59:58  uli
  * Fixed a problem with a missing prototype for vsnprintf on HP-UX.
  *

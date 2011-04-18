@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Base class for converter from image file to DICOM
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 10:42:44 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2011-04-18 07:00:58 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,14 +35,14 @@
 #include "dcmtk/oflog/oflog.h"
 
 
-OFLogger DCM_dcmdataLibi2dGetLogger();
+extern OFLogger DCM_dcmdataLibi2dLogger;
 
-#define DCMDATA_LIBI2D_TRACE(msg) OFLOG_TRACE(DCM_dcmdataLibi2dGetLogger(), msg)
-#define DCMDATA_LIBI2D_DEBUG(msg) OFLOG_DEBUG(DCM_dcmdataLibi2dGetLogger(), msg)
-#define DCMDATA_LIBI2D_INFO(msg)  OFLOG_INFO(DCM_dcmdataLibi2dGetLogger(), msg)
-#define DCMDATA_LIBI2D_WARN(msg)  OFLOG_WARN(DCM_dcmdataLibi2dGetLogger(), msg)
-#define DCMDATA_LIBI2D_ERROR(msg) OFLOG_ERROR(DCM_dcmdataLibi2dGetLogger(), msg)
-#define DCMDATA_LIBI2D_FATAL(msg) OFLOG_FATAL(DCM_dcmdataLibi2dGetLogger(), msg)
+#define DCMDATA_LIBI2D_TRACE(msg) OFLOG_TRACE(DCM_dcmdataLibi2dLogger, msg)
+#define DCMDATA_LIBI2D_DEBUG(msg) OFLOG_DEBUG(DCM_dcmdataLibi2dLogger, msg)
+#define DCMDATA_LIBI2D_INFO(msg)  OFLOG_INFO(DCM_dcmdataLibi2dLogger, msg)
+#define DCMDATA_LIBI2D_WARN(msg)  OFLOG_WARN(DCM_dcmdataLibi2dLogger, msg)
+#define DCMDATA_LIBI2D_ERROR(msg) OFLOG_ERROR(DCM_dcmdataLibi2dLogger, msg)
+#define DCMDATA_LIBI2D_FATAL(msg) OFLOG_FATAL(DCM_dcmdataLibi2dLogger, msg)
 
 
 class I2DOutputPlug
@@ -230,6 +230,10 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2doutpl.h,v $
+ * Revision 1.12  2011-04-18 07:00:58  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.11  2010-11-01 10:42:44  uli
  * Fixed some compiler warnings reported by gcc with additional flags.
  *

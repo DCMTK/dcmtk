@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -73,9 +73,9 @@
 **
 ** Module Prefix: DU_
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-12-01 08:26:36 $
-** CVS/RCS Revision:    $Revision: 1.30 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2011-04-18 07:00:59 $
+** CVS/RCS Revision:    $Revision: 1.31 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -119,11 +119,7 @@
 
 static char staticBuf[256];
 
-OFLogger DCM_dcmnetGetLogger()
-{
-    static OFLogger DCM_dcmnetLogger = OFLog::getLogger("dcmtk.dcmnet");
-    return DCM_dcmnetLogger;
-}
+OFLogger DCM_dcmnetLogger = OFLog::getLogger("dcmtk.dcmnet");
 
 #define TO_UCHAR(s) OFstatic_cast(unsigned char, (s))
 char*
@@ -812,6 +808,10 @@ DU_neventReportStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
+** Revision 1.31  2011-04-18 07:00:59  uli
+** Use global variables for the logger objects. This removes the thread-unsafe
+** static local variables which were used before.
+**
 ** Revision 1.30  2010-12-01 08:26:36  joergr
 ** Added OFFIS copyright header (beginning with the year 1994).
 **

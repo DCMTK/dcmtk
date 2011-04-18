@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: (STATUS: OK)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 08:55:56 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2011-04-18 07:00:59 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,14 +34,7 @@
 #define INCLUDE_CCTYPE
 #include "dcmtk/ofstd/ofstdinc.h"
 
-OFLogger DCM_dcmjpegGetLogger()
-{
-    // We don't just use a global variable, because constructors of globals are
-    // executed in random order. This guarantees that the OFLogger is constructed
-    // before first use.
-    static OFLogger DCM_dcmjpegLogger = OFLog::getLogger("dcmtk.dcmjpeg");
-    return DCM_dcmjpegLogger;
-}
+OFLogger DCM_dcmjpegLogger = OFLog::getLogger("dcmtk.dcmjpeg");
 
 const OFConditionConst EJC_Suspension(                           OFM_dcmjpeg,  1, OF_error, "IJG codec suspension return"  );
 const OFConditionConst EJC_IJG8_FrameBufferTooSmall(             OFM_dcmjpeg,  2, OF_error, "Buffer for decompressed image (8 bits/sample) too small"  );
@@ -93,6 +86,10 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
 /*
  * CVS/RCS Log
  * $Log: djutils.cc,v $
+ * Revision 1.9  2011-04-18 07:00:59  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.8  2010-11-01 08:55:56  uli
  * Moved variable declarations in front of their loop.
  *

@@ -18,8 +18,8 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-12 08:01:10 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2011-04-18 07:00:58 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -465,9 +465,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         return OFFalse;
     }
 
-#ifdef DEBUG
-    DCMDATA_INFO("DcmDataDictionary: Loading file: " << fileName);
-#endif
+    DCMDATA_DEBUG("DcmDataDictionary: Loading file: " << fileName);
 
     while (getLine(lineBuf, DCM_MAXDICTLINESIZE, f)) {
         lineNumber++;
@@ -890,6 +888,10 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
+** Revision 1.51  2011-04-18 07:00:58  uli
+** Use global variables for the logger objects. This removes the thread-unsafe
+** static local variables which were used before.
+**
 ** Revision 1.50  2011-04-12 08:01:10  uli
 ** Delay loading of the data dictionary until its first use.
 **

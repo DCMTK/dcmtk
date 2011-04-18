@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveConfig
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 12:57:40 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2011-04-18 07:01:04 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,14 +36,14 @@
 #include "dcmtk/ofstd/ofcmdln.h"
 #include "dcmtk/oflog/oflog.h"
 
-OFLogger DCM_dcmqrdbGetLogger();
+extern OFLogger DCM_dcmqrdbLogger;
 
-#define DCMQRDB_TRACE(msg) OFLOG_TRACE(DCM_dcmqrdbGetLogger(), msg)
-#define DCMQRDB_DEBUG(msg) OFLOG_DEBUG(DCM_dcmqrdbGetLogger(), msg)
-#define DCMQRDB_INFO(msg)  OFLOG_INFO(DCM_dcmqrdbGetLogger(), msg)
-#define DCMQRDB_WARN(msg)  OFLOG_WARN(DCM_dcmqrdbGetLogger(), msg)
-#define DCMQRDB_ERROR(msg) OFLOG_ERROR(DCM_dcmqrdbGetLogger(), msg)
-#define DCMQRDB_FATAL(msg) OFLOG_FATAL(DCM_dcmqrdbGetLogger(), msg)
+#define DCMQRDB_TRACE(msg) OFLOG_TRACE(DCM_dcmqrdbLogger, msg)
+#define DCMQRDB_DEBUG(msg) OFLOG_DEBUG(DCM_dcmqrdbLogger, msg)
+#define DCMQRDB_INFO(msg)  OFLOG_INFO(DCM_dcmqrdbLogger, msg)
+#define DCMQRDB_WARN(msg)  OFLOG_WARN(DCM_dcmqrdbLogger, msg)
+#define DCMQRDB_ERROR(msg) OFLOG_ERROR(DCM_dcmqrdbLogger, msg)
+#define DCMQRDB_FATAL(msg) OFLOG_FATAL(DCM_dcmqrdbLogger, msg)
 
 /** this class describes configuration settings for the quota of a storage area
  */
@@ -450,6 +450,10 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcnf.h,v $
+ * Revision 1.9  2011-04-18 07:01:04  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.8  2011-02-04 12:57:40  uli
  * Made sure all members are initialized in the constructor (-Weffc++).
  *

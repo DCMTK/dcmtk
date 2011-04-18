@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2010, OFFIS e.V.
+ *  Copyright (C) 2007-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 10:42:44 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-04-18 07:00:58 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,14 +37,7 @@
 #include "dcmtk/dcmdata/dcpixseq.h"  /* for DcmPixelSequence */
 #include "dcmtk/dcmdata/dcpath.h"    /* for override keys */
 
-OFLogger DCM_dcmdataLibi2dGetLogger()
-{
-    // We don't just use a global variable, because constructors of globals are
-    // executed in random order. This guarantees that the OFLogger is constructed
-    // before first use.
-    static OFLogger DCM_dcmdata_libi2dLogger = OFLog::getLogger("dcmtk.dcmdata.libi2d");
-    return DCM_dcmdata_libi2dLogger;
-}
+OFLogger DCM_dcmdataLibi2dLogger = OFLog::getLogger("dcmtk.dcmdata.libi2d");
 
 
 Image2Dcm::Image2Dcm() : m_overrideKeys(), m_templateFile(""),
@@ -750,6 +743,10 @@ Image2Dcm::~Image2Dcm()
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
+ * Revision 1.16  2011-04-18 07:00:58  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.15  2010-11-01 10:42:44  uli
  * Fixed some compiler warnings reported by gcc with additional flags.
  *

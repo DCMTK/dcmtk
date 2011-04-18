@@ -1,6 +1,51 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.04.18 (schlachter)
+
+- Use global variables for the logger objects. This removes the thread-unsafe
+  static local variables which were used before.
+  Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2doutpl.h
+           dcmdata/libi2d/i2d.cc
+           dcmdata/libi2d/i2djpgs.cc
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dctypes.cc
+           dcmimage/include/dcmtk/dcmimage/dilogger.h
+           dcmimage/libsrc/dilogger.cc
+           dcmimgle/include/dcmtk/dcmimgle/diutils.h
+           dcmimgle/libsrc/diutils.cc
+           dcmjpeg/include/dcmtk/dcmjpeg/djutils.h
+           dcmjpeg/libsrc/dipijpeg.cc
+           dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+           dcmjpeg/libsrc/djeijg12.cc
+           dcmjpeg/libsrc/djeijg16.cc
+           dcmjpeg/libsrc/djeijg8.cc
+           dcmjpeg/libsrc/djutils.cc
+           dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/libsrc/djutils.cc
+           dcmnet/include/dcmtk/dcmnet/diutil.h
+           dcmnet/libsrc/dfindscu.cc
+           dcmnet/libsrc/diutil.cc
+           dcmnet/libsrc/dulparse.cc
+           dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+           dcmpstat/include/dcmtk/dcmpstat/dvpsdef.h
+           dcmpstat/libsrc/dcmpstat.cc
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcnf.h
+           dcmqrdb/libsrc/dcmqrcnf.cc
+           dcmqrdb/libsrc/dcmqrtis.cc
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrtypes.cc
+           dcmtls/include/dcmtk/dcmtls/tlslayer.h
+           dcmtls/libsrc/tlslayer.cc
+           dcmwlm/include/dcmtk/dcmwlm/wlds.h
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wlfsim.cc
+           dcmwlm/libsrc/wlmactmg.cc
+
 **** Changes from 2011.04.12 (schlachter)
 
 - Delay loading of the data dictionary until its first use.

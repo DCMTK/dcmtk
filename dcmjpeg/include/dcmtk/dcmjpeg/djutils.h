@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: enumerations, error constants and helper functions for dcmjpeg
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:17 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:00:58 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,14 +37,14 @@
 
 // global definitions for logging mechanism provided by the oflog module
 
-OFLogger DCM_dcmjpegGetLogger();
+extern OFLogger DCM_dcmjpegLogger;
 
-#define DCMJPEG_TRACE(msg) OFLOG_TRACE(DCM_dcmjpegGetLogger(), msg)
-#define DCMJPEG_DEBUG(msg) OFLOG_DEBUG(DCM_dcmjpegGetLogger(), msg)
-#define DCMJPEG_INFO(msg)  OFLOG_INFO(DCM_dcmjpegGetLogger(), msg)
-#define DCMJPEG_WARN(msg)  OFLOG_WARN(DCM_dcmjpegGetLogger(), msg)
-#define DCMJPEG_ERROR(msg) OFLOG_ERROR(DCM_dcmjpegGetLogger(), msg)
-#define DCMJPEG_FATAL(msg) OFLOG_FATAL(DCM_dcmjpegGetLogger(), msg)
+#define DCMJPEG_TRACE(msg) OFLOG_TRACE(DCM_dcmjpegLogger, msg)
+#define DCMJPEG_DEBUG(msg) OFLOG_DEBUG(DCM_dcmjpegLogger, msg)
+#define DCMJPEG_INFO(msg)  OFLOG_INFO(DCM_dcmjpegLogger, msg)
+#define DCMJPEG_WARN(msg)  OFLOG_WARN(DCM_dcmjpegLogger, msg)
+#define DCMJPEG_ERROR(msg) OFLOG_ERROR(DCM_dcmjpegLogger, msg)
+#define DCMJPEG_FATAL(msg) OFLOG_FATAL(DCM_dcmjpegLogger, msg)
 
 
 class DcmItem;
@@ -221,6 +221,10 @@ public:
 /*
  * CVS/RCS Log
  * $Log: djutils.h,v $
+ * Revision 1.7  2011-04-18 07:00:58  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.6  2010-10-14 13:17:17  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -18,8 +18,8 @@
  *  Purpose: enumerations, error constants and helper functions for dcmjp2k
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-25 11:54:03 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2011-04-18 07:00:59 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,14 +39,14 @@
 
 // global definitions for logging mechanism provided by the oflog module
 
-OFLogger DCM_dcmjplsGetLogger();
+extern OFLogger DCM_dcmjplsLogger;
 
-#define DCMJPLS_TRACE(msg) OFLOG_TRACE(DCM_dcmjplsGetLogger(), msg)
-#define DCMJPLS_DEBUG(msg) OFLOG_DEBUG(DCM_dcmjplsGetLogger(), msg)
-#define DCMJPLS_INFO(msg)  OFLOG_INFO(DCM_dcmjplsGetLogger(), msg)
-#define DCMJPLS_WARN(msg)  OFLOG_WARN(DCM_dcmjplsGetLogger(), msg)
-#define DCMJPLS_ERROR(msg) OFLOG_ERROR(DCM_dcmjplsGetLogger(), msg)
-#define DCMJPLS_FATAL(msg) OFLOG_FATAL(DCM_dcmjplsGetLogger(), msg)
+#define DCMJPLS_TRACE(msg) OFLOG_TRACE(DCM_dcmjplsLogger, msg)
+#define DCMJPLS_DEBUG(msg) OFLOG_DEBUG(DCM_dcmjplsLogger, msg)
+#define DCMJPLS_INFO(msg)  OFLOG_INFO(DCM_dcmjplsLogger, msg)
+#define DCMJPLS_WARN(msg)  OFLOG_WARN(DCM_dcmjplsLogger, msg)
+#define DCMJPLS_ERROR(msg) OFLOG_ERROR(DCM_dcmjplsLogger, msg)
+#define DCMJPLS_FATAL(msg) OFLOG_FATAL(DCM_dcmjplsLogger, msg)
 
 
 /** describes the condition under which a compressed or decompressed image
@@ -159,6 +159,10 @@ extern const OFCondition EC_JLSTooMuchCompressedData;
 /*
  * CVS/RCS Log:
  * $Log: djlsutil.h,v $
+ * Revision 1.8  2011-04-18 07:00:59  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.7  2011-02-25 11:54:03  uli
  * Move the CharLS version string to a central place.
  *

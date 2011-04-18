@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DcmPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:31 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:01:04 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,23 +59,9 @@
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
 
-OFLogger DCM_dcmpstatGetLogger()
-{
-    static OFLogger DCM_dcmpstatLogger = OFLog::getLogger("dcmtk.dcmpstat");
-    return DCM_dcmpstatLogger;
-}
-
-OFLogger DCM_dcmpstatDumpGetLogger()
-{
-    static OFLogger DCM_dcmpstatLogger = OFLog::getLogger("dcmtk.dcmpstat.dump");
-    return DCM_dcmpstatLogger;
-}
-
-OFLogger DCM_dcmpstatLogfileGetLogger()
-{
-    static OFLogger DCM_dcmpstatLogger = OFLog::getLogger("dcmtk.dcmpstat.logfile");
-    return DCM_dcmpstatLogger;
-}
+OFLogger DCM_dcmpstatLogger = OFLog::getLogger("dcmtk.dcmpstat");
+OFLogger DCM_dcmpstatDumpLogger = OFLog::getLogger("dcmtk.dcmpstat.dump");
+OFLogger DCM_dcmpstatLogfileLogger = OFLog::getLogger("dcmtk.dcmpstat.logfile");
 
 /* --------------- class DcmPresentationState --------------- */
 
@@ -1958,6 +1944,10 @@ OFCondition DcmPresentationState::moveOverlay(size_t old_layer, size_t idx, size
 
 /*
  *  $Log: dcmpstat.cc,v $
+ *  Revision 1.16  2011-04-18 07:01:04  uli
+ *  Use global variables for the logger objects. This removes the thread-unsafe
+ *  static local variables which were used before.
+ *
  *  Revision 1.15  2010-10-14 13:14:31  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -17,9 +17,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-11 13:33:14 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:00:58 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -853,7 +853,7 @@ E_TransferSyntax I2DJpegSource::associatedTS(const E_JPGMARKER& jpegEncoding)
 
 void I2DJpegSource::debugDumpJPEGFileMap() const
 {
-  if (!DCM_dcmdataLibi2dGetLogger().isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  if (!DCM_dcmdataLibi2dLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
     return;
 
   DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Dumping JPEG marker file map: ");
@@ -900,6 +900,10 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.18  2011-04-18 07:00:58  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.17  2011-02-11 13:33:14  joergr
  * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
  *

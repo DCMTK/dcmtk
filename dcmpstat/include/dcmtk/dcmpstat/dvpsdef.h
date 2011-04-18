@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    definitions of constants and macros for pstat module
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:36 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:01:04 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,19 +34,19 @@
 
 #include "dcmtk/oflog/oflog.h"
 
-OFLogger DCM_dcmpstatGetLogger();
-OFLogger DCM_dcmpstatDumpGetLogger();
-OFLogger DCM_dcmpstatLogfileGetLogger();
+extern OFLogger DCM_dcmpstatLogger;
+extern OFLogger DCM_dcmpstatDumpLogger;
+extern OFLogger DCM_dcmpstatLogfileLogger;
 
-#define DCMPSTAT_TRACE(msg) OFLOG_TRACE(DCM_dcmpstatGetLogger(), msg)
-#define DCMPSTAT_DEBUG(msg) OFLOG_DEBUG(DCM_dcmpstatGetLogger(), msg)
-#define DCMPSTAT_INFO(msg)  OFLOG_INFO(DCM_dcmpstatGetLogger(), msg)
-#define DCMPSTAT_WARN(msg)  OFLOG_WARN(DCM_dcmpstatGetLogger(), msg)
-#define DCMPSTAT_ERROR(msg) OFLOG_ERROR(DCM_dcmpstatGetLogger(), msg)
-#define DCMPSTAT_FATAL(msg) OFLOG_FATAL(DCM_dcmpstatGetLogger(), msg)
+#define DCMPSTAT_TRACE(msg) OFLOG_TRACE(DCM_dcmpstatLogger, msg)
+#define DCMPSTAT_DEBUG(msg) OFLOG_DEBUG(DCM_dcmpstatLogger, msg)
+#define DCMPSTAT_INFO(msg)  OFLOG_INFO(DCM_dcmpstatLogger, msg)
+#define DCMPSTAT_WARN(msg)  OFLOG_WARN(DCM_dcmpstatLogger, msg)
+#define DCMPSTAT_ERROR(msg) OFLOG_ERROR(DCM_dcmpstatLogger, msg)
+#define DCMPSTAT_FATAL(msg) OFLOG_FATAL(DCM_dcmpstatLogger, msg)
 
-#define DCMPSTAT_DUMP(msg) OFLOG_DEBUG(DCM_dcmpstatDumpGetLogger(), msg)
-#define DCMPSTAT_LOGFILE(msg) OFLOG_DEBUG(DCM_dcmpstatLogfileGetLogger(), msg)
+#define DCMPSTAT_DUMP(msg) OFLOG_DEBUG(DCM_dcmpstatDumpLogger, msg)
+#define DCMPSTAT_LOGFILE(msg) OFLOG_DEBUG(DCM_dcmpstatLogfileLogger, msg)
 
 /* default for max PDU size */
 #define DEFAULT_MAXPDU 16384
@@ -193,6 +193,10 @@ if (result==EC_Normal)                                              \
 
 /*
  *  $Log: dvpsdef.h,v $
+ *  Revision 1.13  2011-04-18 07:01:04  uli
+ *  Use global variables for the logger objects. This removes the thread-unsafe
+ *  static local variables which were used before.
+ *
  *  Revision 1.12  2010-10-14 13:16:36  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

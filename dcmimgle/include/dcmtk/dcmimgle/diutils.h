@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:27 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-04-18 07:00:58 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,14 +37,14 @@
 
 #include "dcmtk/oflog/oflog.h"
 
-OFLogger DCM_dcmimgleGetLogger();
+extern OFLogger DCM_dcmimgleLogger;
 
-#define DCMIMGLE_TRACE(msg) OFLOG_TRACE(DCM_dcmimgleGetLogger(), msg)
-#define DCMIMGLE_DEBUG(msg) OFLOG_DEBUG(DCM_dcmimgleGetLogger(), msg)
-#define DCMIMGLE_INFO(msg)  OFLOG_INFO(DCM_dcmimgleGetLogger(), msg)
-#define DCMIMGLE_WARN(msg)  OFLOG_WARN(DCM_dcmimgleGetLogger(), msg)
-#define DCMIMGLE_ERROR(msg) OFLOG_ERROR(DCM_dcmimgleGetLogger(), msg)
-#define DCMIMGLE_FATAL(msg) OFLOG_FATAL(DCM_dcmimgleGetLogger(), msg)
+#define DCMIMGLE_TRACE(msg) OFLOG_TRACE(DCM_dcmimgleLogger, msg)
+#define DCMIMGLE_DEBUG(msg) OFLOG_DEBUG(DCM_dcmimgleLogger, msg)
+#define DCMIMGLE_INFO(msg)  OFLOG_INFO(DCM_dcmimgleLogger, msg)
+#define DCMIMGLE_WARN(msg)  OFLOG_WARN(DCM_dcmimgleLogger, msg)
+#define DCMIMGLE_ERROR(msg) OFLOG_ERROR(DCM_dcmimgleLogger, msg)
+#define DCMIMGLE_FATAL(msg) OFLOG_FATAL(DCM_dcmimgleLogger, msg)
 
 
 /*---------------------*
@@ -444,6 +444,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
+ * Revision 1.43  2011-04-18 07:00:58  uli
+ * Use global variables for the logger objects. This removes the thread-unsafe
+ * static local variables which were used before.
+ *
  * Revision 1.42  2010-10-14 13:16:27  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
