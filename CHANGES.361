@@ -13,6 +13,10 @@ Changes between releases are documented here.
 - Added CP 1036, 1037, 1044 and 1078 also to the CP section comment header.
   Affects: dcmdata/data/dicom.dic
 
+- Made sure that a negative number is not accepted when expecting an unsigned
+  integer (sscanf() resulted in the two's complement without this new check).
+  Affects: ofstd/libsrc/ofcmdln.cc
+
 **** Changes from 2011.04.18 (schlachter)
 
 - Use global variables for the logger objects. This removes the thread-unsafe

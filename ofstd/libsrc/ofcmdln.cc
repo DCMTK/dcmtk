@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:52 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2011-04-19 15:43:27 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -829,8 +829,15 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdUnsignedInt &value)
 {
     if (++ArgumentIterator != ArgumentList.end())
     {
-        if (sscanf((*ArgumentIterator).c_str(), "%lu", &value) == 1)
-            return VS_Normal;
+        OFString &strVal = *ArgumentIterator;
+        if (sscanf(strVal.c_str(), "%lu", &value) == 1)
+        {
+            // skip leading spaces
+            size_t strPos = strVal.find_first_not_of(' ');
+            // check for minus sign (negative number)
+            if ((strPos != OFString_npos) && (strVal.at(strPos) != '-'))
+                return VS_Normal;
+        }
         return VS_Invalid;
     }
     return VS_NoMore;
@@ -1553,6 +1560,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
+ * Revision 1.51  2011-04-19 15:43:27  joergr
+ * Made sure that a negative number is not accepted when expecting an unsigned
+ * integer (sscanf() resulted in the two's complement without this new check).
+ *
  * Revision 1.50  2010-10-14 13:14:52  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
