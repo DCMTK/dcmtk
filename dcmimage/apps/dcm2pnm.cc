@@ -17,9 +17,9 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-25 11:54:02 $
- *  CVS/RCS Revision: $Revision: 1.103 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-04-19 08:22:28 $
+ *  CVS/RCS Revision: $Revision: 1.104 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,9 +138,9 @@ int main(int argc, char *argv[])
 
     unsigned long       opt_compatibilityMode = CIF_MayDetachPixelData | CIF_TakeOverExternalDataset;
     OFBool              opt_ignoreVoiLutDepth = OFFalse;  /* default: do not ignore VOI LUT bit depth */
-                                                          /* default: pixel data may detached if no longer needed */
     OFCmdUnsignedInt    opt_frame = 1;                    /* default: first frame */
     OFCmdUnsignedInt    opt_frameCount = 1;               /* default: one frame */
+    OFBool              opt_useFrameNumber = OFFalse;     /* default: use frame counter */
     int                 opt_multiFrame = 0;               /* default: no multiframes */
     int                 opt_convertToGrayscale = 0;       /* default: color or grayscale */
     int                 opt_changePolarity = 0;           /* default: normal polarity */
@@ -391,6 +391,9 @@ int main(int argc, char *argv[])
      cmd.addSubGroup("general:");
       cmd.addOption("--image-info",         "-im",     "print image details (requires verbose mode)");
       cmd.addOption("--no-output",          "-o",      "do not create any output (useful with -im)");
+     cmd.addSubGroup("filename generation (only with --frame-range or --all-frames):");
+      cmd.addOption("--use-frame-counter",  "+Fc",     "use 0-based counter for filenames (default)");
+      cmd.addOption("--use-frame-number",   "+Fn",     "use absolute frame number for filenames");
      cmd.addSubGroup("image format:");
       cmd.addOption("--write-raw-pnm",      "+op",     "write 8-bit binary PGM/PPM (default for files)");
       cmd.addOption("--write-8-bit-pnm",    "+opb",    "write 8-bit ASCII PGM/PPM (default for stdout)");
@@ -832,6 +835,19 @@ int main(int argc, char *argv[])
             app.checkDependence("--image-info", "verbose mode", dcm2pnmLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL));
             opt_imageInfo = 1;
         }
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--use-frame-counter"))
+        {
+            app.checkDependence("--use-frame-counter", "--frame-range or --all-frames", opt_multiFrame);
+            opt_useFrameNumber = OFFalse;
+        }
+        if (cmd.findOption("--use-frame-number"))
+        {
+            app.checkDependence("--use-frame-number", "--frame-range or --all-frames", opt_multiFrame);
+            opt_useFrameNumber = OFTrue;
+        }
+        cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--no-output"))
@@ -1360,7 +1376,7 @@ int main(int argc, char *argv[])
 
         int result = 0;
         FILE *ofile = NULL;
-        char ofname[255];
+        OFString ofname;
         unsigned int fcount = OFstatic_cast(unsigned int, ((opt_frameCount > 0) && (opt_frameCount <= di->getFrameCount())) ? opt_frameCount : di->getFrameCount());
         const char *ofext = NULL;
         /* determine default file extension */
@@ -1398,11 +1414,23 @@ int main(int argc, char *argv[])
             {
                 /* output to file */
                 if (opt_multiFrame)
-                    sprintf(ofname, "%s.%d.%s", opt_ofname, frame, ofext);
-                else
-                    strcpy(ofname, opt_ofname);
+                {
+                    OFOStringStream stream;
+                    /* generate output filename */
+                    stream << opt_ofname << ".";
+                    if (opt_useFrameNumber)
+                        stream << "f" << (opt_frame + frame);
+                    else
+                        stream << frame;
+                    stream << "." << ofext << OFStringStream_ends;
+                    /* convert string stream into a character string */
+                    OFSTRINGSTREAM_GETSTR(stream, buffer_str)
+                    ofname.assign(buffer_str);
+                    OFSTRINGSTREAM_FREESTR(buffer_str)
+                } else
+                    ofname.assign(opt_ofname);
                 OFLOG_INFO(dcm2pnmLogger, "writing frame " << (opt_frame + frame) << " to " << ofname);
-                ofile = fopen(ofname, "wb");
+                ofile = fopen(ofname.c_str(), "wb");
                 if (ofile == NULL)
                 {
                     OFLOG_FATAL(dcm2pnmLogger, "cannot create file " << ofname);
@@ -1523,6 +1551,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.104  2011-04-19 08:22:28  joergr
+ * Added new options for generating output filenames for multi-frame images
+ * (either use a 0-based counter or the absolute frame number).
+ *
  * Revision 1.103  2011-02-25 11:54:02  uli
  * Move the CharLS version string to a central place.
  *

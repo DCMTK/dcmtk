@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.04.19 (riesmeier)
+
+- Added new options for generating output filenames for multi-frame images
+  (either use a 0-based counter or the absolute frame number).
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/docs/dcm2pnm.man
+           dcmjpeg/docs/dcmj2pnm.man
+           dcmjpls/docs/dcml2pnm.man
+
 **** Changes from 2011.04.18 (schlachter)
 
 - Use global variables for the logger objects. This removes the thread-unsafe

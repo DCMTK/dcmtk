@@ -348,6 +348,14 @@ general:
   -o    --no-output
           do not create any output (useful with -im)
 
+filename generation (only with --frame-range or --all-frames):
+
+  +Fc   --use-frame-counter
+          use 0-based counter for filenames (default)
+
+  +Fn   --use-frame-number
+          use absolute frame number for filenames
+
 image format:
 
   +op   --write-raw-pnm
@@ -486,6 +494,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1998-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
