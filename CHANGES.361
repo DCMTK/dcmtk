@@ -10,6 +10,9 @@ Changes between releases are documented here.
            dcmjpeg/docs/dcmj2pnm.man
            dcmjpls/docs/dcml2pnm.man
 
+- Added CP 1036, 1037, 1044 and 1078 also to the CP section comment header.
+  Affects: dcmdata/data/dicom.dic
+
 **** Changes from 2011.04.18 (schlachter)
 
 - Use global variables for the logger objects. This removes the thread-unsafe
