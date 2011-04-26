@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.04.26 (riesmeier)
+
+- Fixed minor issue with wrong log output. Also moved some less interesting log
+  messages from "debug" to "trace" level.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
 **** Changes from 2011.04.19 (riesmeier)
 
 - Added new options for generating output filenames for multi-frame images

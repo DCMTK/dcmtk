@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:07 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2011-04-26 14:03:29 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -325,7 +325,7 @@ OFCondition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
               l_error = offElem->getUint32(offset);
               if (offset == itOffsets[ i ].fileOffset )
               {
-                  DCMDATA_DEBUG("DcmDicomDir::resolveGivenOffset() Offset Element ("
+                  DCMDATA_TRACE("DcmDicomDir::resolveGivenOffset() Offset Element ("
                       << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                       << STD_NAMESPACE setw(4) << offElem->getGTag() << ","
                       << STD_NAMESPACE setw(4) << offElem->getETag() << ") with offset 0x"
@@ -422,10 +422,10 @@ OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
         if ( offElem != NULL )
             nextRec = OFstatic_cast(DcmDirectoryRecord *, offElem->getNextRecord());
 
-        DCMDATA_DEBUG("DcmDicomDir::moveRecordToTree() Record ("
+        DCMDATA_TRACE("DcmDicomDir::moveRecordToTree() Record ("
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
             << STD_NAMESPACE setw(4) << startRec->getGTag() << ","
-            << STD_NAMESPACE setw(4) << startRec->getGTag()
+            << STD_NAMESPACE setw(4) << startRec->getETag()
             << ") p=" << OFstatic_cast(void *, startRec)
             << " has lower=" << OFstatic_cast(void *, lowerRec)
             << " and next=" << OFstatic_cast(void *, nextRec) << " Record");
@@ -434,12 +434,13 @@ OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
 
         // use protected method for insertion without type check:
         if ( toRecord->masterInsertSub( startRec ) == EC_Normal )
-        {                                         // only works since friend class
-             DcmItem *dit = fromDirSQ.remove( startRec );
-             if ( dit == NULL )
-             {
-                 DCMDATA_ERROR("DcmDicomDir::moveRecordToTree() DirRecord is part of unknown Sequence");
-             }
+        {
+            // only works since friend class
+            DcmItem *dit = fromDirSQ.remove( startRec );
+            if ( dit == NULL )
+            {
+                DCMDATA_ERROR("DcmDicomDir::moveRecordToTree() DirRecord is part of unknown Sequence");
+            }
         }
         else
         {
@@ -1343,6 +1344,10 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.62  2011-04-26 14:03:29  joergr
+** Fixed minor issue with wrong log output. Also moved some less interesting log
+** messages from "debug" to "trace" level.
+**
 ** Revision 1.61  2010-10-14 13:14:07  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
