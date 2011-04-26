@@ -18,8 +18,8 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-09 14:16:03 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2011-04-26 16:33:35 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,6 +111,7 @@ void DiDocument::convertPixelData()
     DcmStack pstack;
     DcmXfer xfer(Xfer);
     DCMIMGLE_DEBUG("transfer syntax of DICOM dataset: " << xfer.getXferName() << " (" << xfer.getXferID() << ")");
+    // only search on main dataset level
     if (search(DCM_PixelData, pstack))
     {
         DcmObject *pobject = pstack.top();
@@ -120,6 +121,16 @@ void DiDocument::convertPixelData()
             if (pobject->ident() == EVR_PixelData)
             {
                 PixelData = OFstatic_cast(DcmPixelData *, pobject);
+                // check for a special (faulty) case where the original pixel data is uncompressed and
+                // the transfer syntax of the dataset refers to encapsulated format (i.e. compression)
+                E_TransferSyntax repType = EXS_Unknown;
+                const DcmRepresentationParameter *repParam = NULL;
+                PixelData->getOriginalRepresentationKey(repType, repParam);
+                if (xfer.isEncapsulated() && !DcmXfer(repType).isEncapsulated())
+                {
+                    DCMIMGLE_WARN("pixel data is stored in uncompressed format, although "
+                        << "the transfer syntax of the dataset refers to encapsulated format");
+                }
                 // convert pixel data to uncompressed format (if required)
                 if ((Flags & CIF_DecompressCompletePixelData) || !(Flags & CIF_UsePartialAccessToPixelData))
                 {
@@ -183,6 +194,7 @@ DcmElement *DiDocument::search(const DcmTagKey &tag,
     DcmStack stack;
     if (obj == NULL)
         obj = Object;
+    // only search on main dataset level
     if ((obj != NULL) && (obj->search(tag, stack, ESM_fromHere, OFFalse /* searchIntoSub */) == EC_Normal) &&
         (stack.top()->getLength(Xfer) > 0))
     {
@@ -419,6 +431,10 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
+ * Revision 1.28  2011-04-26 16:33:35  joergr
+ * Output a warning message in case the pixel data on the main dataset level is
+ * uncompressed but the transfer syntax is encapsulated (i.e. compressed).
+ *
  * Revision 1.27  2011-02-09 14:16:03  joergr
  * Added check on class of PixelData element before casting to DcmPixelData.
  *

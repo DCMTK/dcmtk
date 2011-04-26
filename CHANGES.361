@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.04.26 (riesmeier)
 
+- Output a warning message in case the pixel data on the main dataset level is
+  uncompressed but the transfer syntax is encapsulated (i.e. compressed).
+  Affects: dcmimgle/libsrc/didocu.cc
+
 - Fixed minor issue with wrong log output. Also moved some less interesting log
   messages from "debug" to "trace" level.
   Affects: dcmdata/libsrc/dcdicdir.cc
