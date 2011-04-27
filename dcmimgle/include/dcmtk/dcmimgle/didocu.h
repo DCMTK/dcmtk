@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomDocument (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:26 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2011-04-27 10:01:06 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,8 +83,9 @@ class DiDocument
 
     /** constructor, use a given DcmObject
      *
-     ** @param  object  pointer to DICOM data structures
-     *  @param  xfer    transfer syntax
+     ** @param  object  pointer to DICOM data structures (fileformat, dataset or item)
+     *  @param  xfer    transfer syntax of the 'object'.
+     *                  (could also be EXS_Unknown in case of fileformat or dataset)
      *  @param  flags   configuration flags (only stored for later use)
      *  @param  fstart  first frame to be processed (only stored for later use)
      *  @param  fcount  number of frames (only stored for later use)
@@ -424,6 +425,9 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
+ * Revision 1.23  2011-04-27 10:01:06  joergr
+ * Added more checks on the type of DICOM object passed to the constructor.
+ *
  * Revision 1.22  2010-10-14 13:16:26  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

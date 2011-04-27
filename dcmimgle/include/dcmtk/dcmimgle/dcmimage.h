@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:25 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2011-04-27 10:01:06 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,11 +86,12 @@ class DicomImage
 #ifndef STARVIEW
     /** constructor, use a given DcmObject
      *
-     ** @param  object  pointer to DICOM data structures
+     ** @param  object  pointer to DICOM data structures (fileformat, dataset or item).
      *                  (do not delete while referenced, i.e. while this image object or any
      *                   descendant exists; not deleted within dcmimage unless configuration flag
      *                   CIF_TakeOverExternalDataset is set - in this case do not delete it at all)
-     *  @param  xfer    transfer syntax
+     *  @param  xfer    transfer syntax of the 'object'.
+     *                  (could also be EXS_Unknown in case of fileformat or dataset)
      *  @param  flags   configuration flags (CIF_xxx, see diutils.h)
      *  @param  fstart  first frame to be processed (optional, 0 = 1st frame), all subsequent use
      *                  of parameters labeled 'frame' in this class refers to this start frame.
@@ -106,11 +107,12 @@ class DicomImage
      *  NB: This constructor ignores the Photometric Interpretation stored in the DICOM dataset
      *      and always creates a MONOCHROME2 image - useful in combination with Presentation States.
      *
-     ** @param  object     pointer to DICOM data structures
+     ** @param  object     pointer to DICOM data structures (fileformat, dataset or item).
      *                     (do not delete while referenced, i.e. while this image object or any
      *                      descendant exists; not deleted within dcmimage unless configuration flag
      *                      CIF_TakeOverExternalDataset is set - in this case do not delete it at all)
-     *  @param  xfer       transfer syntax
+     *  @param  xfer       transfer syntax of the 'object'.
+     *                     (could also be EXS_Unknown in case of fileformat or dataset)
      *  @param  slope      rescale slope (modality transformation)
      *  @param  intercept  rescale intercept (modality transformation)
      *  @param  flags      configuration flags (CIF_xxx, see diutils.h)
@@ -130,11 +132,12 @@ class DicomImage
      *  NB: This constructor ignores the Photometric Interpretation stored in the DICOM dataset
      *      and always creates a MONOCHROME2 image - useful in combination with Presentation States.
      *
-     ** @param  object       pointer to DICOM data structures
+     ** @param  object       pointer to DICOM data structures (fileformat, dataset or item).
      *                       (do not delete while referenced, i.e. while this image object or any
      *                        descendant exists; not deleted within dcmimage unless configuration flag
      *                        CIF_TakeOverExternalDataset is set - in this case do not delete it at all)
-     *  @param  xfer         transfer syntax
+     *  @param  xfer         transfer syntax of the 'object'.
+     *                       (could also be EXS_Unknown in case of fileformat or dataset)
      *  @param  data         dataset element containing modality LUT data
      *  @param  descriptor   dataset element containing modality LUT descriptor
      *  @param  explanation  dataset element containing modality LUT explanation
@@ -1888,6 +1891,9 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
+ * Revision 1.66  2011-04-27 10:01:06  joergr
+ * Added more checks on the type of DICOM object passed to the constructor.
+ *
  * Revision 1.65  2010-10-14 13:16:25  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
