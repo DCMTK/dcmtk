@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.04.27 (riesmeier)
+
+- Added more checks on the type of DICOM object passed to the constructor.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+           dcmimgle/include/dcmtk/dcmimgle/didocu.h
+           dcmimgle/libsrc/didocu.cc
+
+- Added more log messages in order to get details on invalid DICOM objects.
+  Affects: dcmimgle/libsrc/didocu.cc
+
 **** Changes from 2011.04.26 (riesmeier)
 
 - Output a warning message in case the pixel data on the main dataset level is

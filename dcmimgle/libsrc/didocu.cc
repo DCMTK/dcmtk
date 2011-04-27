@@ -18,8 +18,8 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-26 16:33:35 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2011-04-27 10:01:30 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,18 +88,30 @@ DiDocument::DiDocument(DcmObject *object,
 {
     if (object != NULL)
     {
-        if (object->ident() == EVR_fileFormat)
+        const DcmEVR classType = object->ident();
+        // check whether given DICOM object has a valid type
+        if (classType == EVR_fileFormat)
         {
             // store reference to DICOM file format to be deleted on object destruction
             if (Flags & CIF_TakeOverExternalDataset)
                 FileFormat = OFstatic_cast(DcmFileFormat *, object);
             Object = OFstatic_cast(DcmFileFormat *, object)->getDataset();
-        } else
+        }
+        else if ((classType == EVR_dataset) || (classType == EVR_item))
             Object = object;
+        else
+            DCMIMGLE_ERROR("invalid DICOM object passed to constructor (wrong class)");
         if (Object != NULL)
         {
+            // try to determine the transfer syntax from the given object
             if (Xfer == EXS_Unknown)
-                Xfer = OFstatic_cast(DcmDataset *, Object)->getOriginalXfer();
+            {
+                // check type before casting the object
+                if (Object->ident() == EVR_dataset)
+                    Xfer = OFstatic_cast(DcmDataset *, Object)->getOriginalXfer();
+                else // could only be an item
+                    DCMIMGLE_WARN("can't determine original transfer syntax from given DICOM object");
+            }
             convertPixelData();
         }
     }
@@ -123,13 +135,16 @@ void DiDocument::convertPixelData()
                 PixelData = OFstatic_cast(DcmPixelData *, pobject);
                 // check for a special (faulty) case where the original pixel data is uncompressed and
                 // the transfer syntax of the dataset refers to encapsulated format (i.e. compression)
-                E_TransferSyntax repType = EXS_Unknown;
-                const DcmRepresentationParameter *repParam = NULL;
-                PixelData->getOriginalRepresentationKey(repType, repParam);
-                if (xfer.isEncapsulated() && !DcmXfer(repType).isEncapsulated())
+                if (Object->ident() == EVR_dataset)
                 {
-                    DCMIMGLE_WARN("pixel data is stored in uncompressed format, although "
-                        << "the transfer syntax of the dataset refers to encapsulated format");
+                    E_TransferSyntax repType = EXS_Unknown;
+                    const DcmRepresentationParameter *repParam = NULL;
+                    PixelData->getOriginalRepresentationKey(repType, repParam);
+                    if (xfer.isEncapsulated() && !DcmXfer(repType).isEncapsulated())
+                    {
+                        DCMIMGLE_WARN("pixel data is stored in uncompressed format, although "
+                            << "the transfer syntax of the dataset refers to encapsulated format");
+                    }
                 }
                 // convert pixel data to uncompressed format (if required)
                 if ((Flags & CIF_DecompressCompletePixelData) || !(Flags & CIF_UsePartialAccessToPixelData))
@@ -142,7 +157,7 @@ void DiDocument::convertPixelData()
                     if (PixelData->chooseRepresentation(EXS_LittleEndianExplicit, NULL, pstack).good())
                     {
                         // set transfer syntax to unencapsulated/uncompressed
-                        if (DcmXfer(Xfer).isEncapsulated())
+                        if (xfer.isEncapsulated())
                         {
                             Xfer = EXS_LittleEndianExplicit;
                             DCMIMGLE_DEBUG("decompressed complete pixel data in memory: " << PixelData->getLength(Xfer) << " bytes");
@@ -151,7 +166,7 @@ void DiDocument::convertPixelData()
                         DCMIMGLE_ERROR("can't change to unencapsulated representation for pixel data");
                 }
                 // determine color model of the decompressed image
-                OFCondition status = PixelData->getDecompressedColorModel(OFstatic_cast(DcmDataset *, Object), PhotometricInterpretation);
+                OFCondition status = PixelData->getDecompressedColorModel(OFstatic_cast(DcmItem *, Object), PhotometricInterpretation);
                 if (status.bad())
                 {
                     DCMIMGLE_ERROR("can't determine 'PhotometricInterpretation' of decompressed image");
@@ -431,6 +446,10 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
+ * Revision 1.29  2011-04-27 10:01:30  joergr
+ * Added more checks on the type of DICOM object passed to the constructor.
+ * Added more log messages in order to get details on invalid DICOM objects.
+ *
  * Revision 1.28  2011-04-26 16:33:35  joergr
  * Output a warning message in case the pixel data on the main dataset level is
  * uncompressed but the transfer syntax is encapsulated (i.e. compressed).
