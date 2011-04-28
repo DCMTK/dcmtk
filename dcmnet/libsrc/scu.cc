@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:03 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-04-28 17:50:05 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -28,9 +28,13 @@
 
 #include "dcmtk/config/osconfig.h"  /* make sure OS specific configuration is included first */
 
-#include "dcmtk/dcmdata/dcuid.h"    /* for dcmFindUIDName() */
 #include "dcmtk/dcmnet/scu.h"
+#include "dcmtk/dcmdata/dcuid.h"    /* for dcmFindUIDName() */
 #include "dcmtk/dcmnet/diutil.h"    /* for dcmnet logger */
+
+
+const OFConditionConst SCU_ECC_AlreadyConnected (OFM_dcmnet,  1, OF_error, "SCU already connected");
+const OFCondition SCU_EC_AlreadyConnected       (SCU_ECC_AlreadyConnected);
 
 
 DcmSCU::DcmSCU() :
@@ -40,7 +44,6 @@ DcmSCU::DcmSCU() :
   m_assocConfigFilename(),
   m_assocConfigProfile(),
   m_presContexts(),
-  m_assocConfigFile(),
   m_openDIMSERequest(NULL),
   m_maxReceivePDULength(ASC_DEFAULTMAXPDU),
   m_blockMode(DIMSE_BLOCKING),
@@ -67,20 +70,42 @@ DcmSCU::DcmSCU() :
 }
 
 
+void DcmSCU::freeNetwork()
+{
+  if ((m_assoc != NULL) || (m_net != NULL) || (m_params != NULL))
+    DCMNET_DEBUG("Cleaning up internal association and network structures");
+  /* destroy association parameters, i.e. free memory of T_ASC_Parameters.
+     Usually this is done in ASC_destroyAssociation; however, if we already
+     have association parameters but not yet an association (e.g. after calling
+     initNetwork() and negotiateAssociation()), the latter approach may fail.
+   */
+  if (m_params)
+  {
+    ASC_destroyAssociationParameters(&m_params);
+    m_params = NULL;
+    // make sure destroyAssocation does not try to free params a second time
+    // (happens in case we have already have an association structure)
+    if (m_assoc)
+      m_assoc->params = NULL;
+  }
+  // destroy the association, i.e. free memory of T_ASC_Association* structure.
+  ASC_destroyAssociation(&m_assoc);
+  // drop the network, i.e. free memory of T_ASC_Network* structure.
+  ASC_dropNetwork(&m_net);
+  // Cleanup old DIMSE request if any
+  delete m_openDIMSERequest; m_openDIMSERequest = NULL;
+}
+
+
 DcmSCU::~DcmSCU()
 {
   // abort association (if any) and destroy dcmnet data structures
   if (isConnected())
   {
-    closeAssociation(DCMSCU_ABORT_ASSOCIATION);
+    closeAssociation(DCMSCU_ABORT_ASSOCIATION); // also frees network
   } else {
-    if ((m_assoc != NULL) || (m_net != NULL))
-      DCMNET_DEBUG("Cleaning up internal association and network structures");
-    ASC_destroyAssociation(&m_assoc);
-    ASC_dropNetwork(&m_net);
+    freeNetwork();
   }
-  // free memory allocated by this class
-  delete m_openDIMSERequest;
 
 #ifdef HAVE_WINSOCK_H
   WSACleanup(); // TODO: check with multiple SCU instances whether this is harmful
@@ -90,7 +115,13 @@ DcmSCU::~DcmSCU()
 
 OFCondition DcmSCU::initNetwork()
 {
-  // TODO: do we need to check whether the network is already initialized?
+  /* Return if SCU is already connected */
+  if (isConnected())
+    return SCU_EC_AlreadyConnected;
+
+  /* Be sure internal network structures are clean (delete old) */
+  freeNetwork();
+
   OFString tempStr;
   /* initialize network, i.e. create an instance of T_ASC_Network*. */
   OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, m_acseTimeout, &m_net);
@@ -215,8 +246,7 @@ OFCondition DcmSCU::initNetwork()
     cond = ASC_addPresentationContext(m_params, OFstatic_cast(Uint8, nextFreePresID),
       (*contIt).abstractSyntaxName.c_str(), transferSyntaxes, numTransferSyntaxes);
     // if adding was successfull, prepare pres. context ID for next addition
-    delete[] transferSyntaxes;
-    transferSyntaxes = NULL;
+    delete[] transferSyntaxes; transferSyntaxes = NULL;
     if (cond.bad())
       return cond;
     contIt++;
@@ -238,6 +268,10 @@ OFCondition DcmSCU::initNetwork()
 
 OFCondition DcmSCU::negotiateAssociation()
 {
+  /* Return error if SCU is already connected */
+  if (isConnected())
+    return SCU_EC_AlreadyConnected;
+  
   /* dump presentation contexts if required */
   OFString tempStr;
   if (m_verbosePCMode)
@@ -319,7 +353,7 @@ OFCondition DcmSCU::useSecureConnection(DcmTransportLayer *tlayer)
 T_ASC_PresentationContextID DcmSCU::findPresentationContextID(const OFString &abstractSyntax,
                                                               const OFString &transferSyntax)
 {
-  if (m_assoc == NULL)
+  if (!isConnected())
     return 0;
 
   DUL_PRESENTATIONCONTEXT *pc;
@@ -383,7 +417,7 @@ void DcmSCU::findPresentationContext(const T_ASC_PresentationContextID presID,
 
 Uint16 DcmSCU::nextMessageID()
 {
-  if (m_assoc == NULL)
+  if (!isConnected())
     return 0;
   else
     return m_assoc->nextMsgID++;
@@ -392,6 +426,12 @@ Uint16 DcmSCU::nextMessageID()
 
 void DcmSCU::closeAssociation(const DcmCloseAssociationType closeType)
 {
+  if (!isConnected())
+  {
+    DCMNET_WARN("Closing of association request but no association active (ignored)");
+    return;
+  }
+  
   OFCondition cond;
   OFString tempStr;
 
@@ -433,28 +473,15 @@ void DcmSCU::closeAssociation(const DcmCloseAssociationType closeType)
       break;
   }
 
-  /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
-  /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
-  cond = ASC_destroyAssociation(&m_assoc);
-  if (cond.bad())
-  {
-    DCMNET_ERROR("Unable to clean up internal association structures: " << DimseCondition::dump(tempStr, cond));
-  }
-
-  /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
-  /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
-  cond = ASC_dropNetwork(&m_net);
-  if (cond.bad())
-  {
-    DCMNET_ERROR("Unable to clean up internal network structures: " << DimseCondition::dump(tempStr, cond));
-  }
+  // destroy and free memory of internal association and network structures
+  freeNetwork();
 }
 
 
 // Sends C-ECHO request to another DICOM application
 OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
 {
-  if (m_assoc == NULL)
+  if (!isConnected())
     return DIMSE_ILLEGALASSOCIATION;
 
   OFCondition cond;
@@ -475,7 +502,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
 
-  /* Now, assemble dimse message */
+  /* Now, assemble DIMSE message */
   Uint16 status;
   cond = DIMSE_echoUser(m_assoc, nextMessageID(), m_blockMode, m_dimseTimeout, &status, NULL);
   if (cond.bad())
@@ -508,7 +535,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
                                      Uint16 &rspStatusCode)
 {
   // Do some basic validity checks
-  if (m_assoc == NULL)
+  if (!isConnected())
     return DIMSE_ILLEGALASSOCIATION;
 
   OFCondition cond;
@@ -600,6 +627,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
         << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
         << OFstatic_cast(unsigned int, rsp.CommandField));
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
+    delete statusDetail;
     return DIMSE_BADCOMMANDTYPE;
   }
   T_DIMSE_C_StoreRSP storeRsp = rsp.msg.CStoreRSP;
@@ -614,16 +642,203 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
 }
 
 
+// Sends a C-MOVE Request on given presentation context
+OFCondition DcmSCU::sendMOVERequest(T_ASC_PresentationContextID presID, 
+                                    const OFString &aetStoreSCP, 
+                                    DcmDataset *ds, 
+                                    MOVEResponses *responses )
+{
+  // Do some basic validity checks
+  if ( !isConnected() )
+    return DIMSE_ILLEGALASSOCIATION;
+  if (ds == NULL)
+    return DIMSE_NULLKEY;
+
+  /* Prepare DIMSE data structures for issuing request */
+  OFCondition cond;
+  OFString tempStr;
+  T_ASC_PresentationContextID pcid = presID;
+  T_DIMSE_Message msg;
+  DcmDataset* statusDetail = NULL;
+  T_DIMSE_C_MoveRQ* req = &(msg.msg.CMoveRQ);
+  // Set type of message
+  msg.CommandField = DIMSE_C_MOVE_RQ;
+  // Set message ID
+  req->MessageID = nextMessageID();
+  // Announce dataset
+  req->DataSetType = DIMSE_DATASET_PRESENT;
+  // Set target for embedded C-Store's
+  if (aetStoreSCP.length() < sizeof(req->MoveDestination)){strcpy( req->MoveDestination, aetStoreSCP.c_str());}
+  else {strcpy( req->MoveDestination, aetStoreSCP.substr(0,sizeof(req->MoveDestination)-1).c_str());};
+  // Set priority (mandatory)
+  req->Priority = DIMSE_PRIORITY_LOW;
+
+  // Determine SOP Class from presentation context
+  OFString abstractSyntax, transferSyntax;
+  findPresentationContext(pcid, abstractSyntax, transferSyntax);
+  if (abstractSyntax.empty() || transferSyntax.empty())
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+  OFStandard::strlcpy(req->AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(req->AffectedSOPClassUID));
+
+  DCMNET_INFO("Send C-MOVE Request");
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, NULL, pcid));
+  cond = sendDIMSEMessage(pcid, &msg, ds, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending C-MOVE request: " << DimseCondition::dump(tempStr, cond));
+    return cond;
+  }
+
+  /* Receive and handle response */
+  OFBool waitForNextResponse = OFTrue;
+  while (waitForNextResponse)
+  {
+    T_DIMSE_Message rsp;
+    statusDetail = NULL;
+
+    // Receive command set
+    cond = receiveDIMSECommand(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
+    if (cond.bad())
+    {
+      DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, cond));
+      delete statusDetail;
+      return cond;
+    }
+
+    if (rsp.CommandField == DIMSE_C_MOVE_RSP)
+    {
+      DCMNET_INFO("Received C-MOVE Response");
+      DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
+    } else {
+      DCMNET_ERROR("Expected C-MOVE response but received DIMSE command 0x"
+        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+        << OFstatic_cast(unsigned int, rsp.CommandField));
+      DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
+      delete statusDetail;
+      return DIMSE_BADCOMMANDTYPE;
+    }
+
+    // Prepare response package for response handler
+    MOVEResponse *moveRSP = new MOVEResponse();
+    moveRSP->m_affectedSOPClassUID = rsp.msg.CMoveRSP.AffectedSOPClassUID;
+    moveRSP->m_messageIDRespondedTo = rsp.msg.CMoveRSP.MessageIDBeingRespondedTo;
+    moveRSP->m_status = rsp.msg.CMoveRSP.DimseStatus;
+    moveRSP->m_numberOfRemainingSubops = rsp.msg.CMoveRSP.NumberOfRemainingSubOperations;
+    moveRSP->m_numberOfCompletedSubops = rsp.msg.CMoveRSP.NumberOfCompletedSubOperations;
+    moveRSP->m_numberOfFailedSubops = rsp.msg.CMoveRSP.NumberOfFailedSubOperations;
+    moveRSP->m_numberOfWarningSubops = rsp.msg.CMoveRSP.NumberOfWarningSubOperations;
+    moveRSP->m_statusDetail = statusDetail;
+    DCMNET_DEBUG("C-MOVE response has status 0x"
+        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+        << moveRSP->m_status);
+    if (statusDetail != NULL)
+    {
+      DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+    }
+
+    // Receive dataset if there is one (status PENDING)
+    DcmDataset *rspDataset = NULL;
+    // Check if dataset is announced correctly
+    if (rsp.msg.CMoveRSP.DataSetType != DIMSE_DATASET_NULL) // Some of the sub operations have failed, thus a dataset with a list of them is attached
+    {
+      // Receive dataset
+      cond = receiveDIMSEDataset(&pcid, &rspDataset, NULL /* callback */, NULL /* callbackContext */);
+      if (cond.bad())
+      {
+        DCMNET_ERROR("Unable to receive C-MOVE dataset on presentation context "
+            << OFstatic_cast(unsigned int, pcid) << ": " << DimseCondition::dump(tempStr, cond));
+        delete moveRSP; // includes statusDetail
+        return DIMSE_BADDATA;
+      }
+      DCMNET_DEBUG("Received dataset on presentation context " << OFstatic_cast(unsigned int, pcid));
+      moveRSP->m_dataset = rspDataset;
+    }
+
+    // Handle C-MOVE response (has to handle all possible status flags)
+    cond = handleMOVEResponse(pcid, moveRSP, waitForNextResponse);
+    if (cond.bad())
+    {
+      DCMNET_WARN("Unable to handle C-MOVE response correctly: " << cond.text() << " (ignored)");
+      delete moveRSP; // includes statusDetail
+      cond = EC_Normal;
+      // don't return here but trust the "waitForNextResponse" variable
+    }
+    // if response could be handled successfully, add it to response list
+    else
+    {
+      if (responses != NULL) // only add if desired by caller
+        responses->add(moveRSP);
+    }
+  }
+  /* All responses received or break signal occured */
+  return EC_Normal;
+}
+
+
+// Standard handler for C-MOVE message responses
+OFCondition DcmSCU::handleMOVEResponse( Uint16 presContextID, 
+                                        MOVEResponse *response, 
+                                        OFBool &waitForNextResponse )
+{
+  // Do some basic validity checks
+  if (!isConnected())
+    return DIMSE_ILLEGALASSOCIATION;
+
+  DCMNET_DEBUG("Handling C-MOVE Response");
+  switch (response->m_status) {
+  case STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass:
+    waitForNextResponse = OFTrue;
+    DCMNET_WARN("Identifier does not match SOP class in C-MOVE response");
+    break;
+  case STATUS_MOVE_Failed_MoveDestinationUnknown:
+    waitForNextResponse = OFTrue;
+    DCMNET_WARN("Move destination unknown");
+    break;
+  case STATUS_MOVE_Failed_UnableToProcess:
+    waitForNextResponse = OFTrue;
+    DCMNET_WARN("Unable to process C-Move response");
+    break;
+  case STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication:
+    waitForNextResponse = OFFalse;
+    DCMNET_WARN("Canceled suboperations of outstanding C-CMOVE responses");
+    break;
+  case STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures:
+    waitForNextResponse = OFFalse;
+    DCMNET_DEBUG("Suboperations of C-MOVE completed with one or more failures");
+    break;
+  case STATUS_Pending:
+    /* in this case the current C-MOVE-RSP indicates that */
+    /* there will be some more results */
+    waitForNextResponse = OFTrue;
+    DCMNET_DEBUG("One or more outstanding C-CMOVE responses");
+    break;
+  case STATUS_Success:
+    /* in this case the current C-MOVE-RSP indicates that */
+    /* there are no more records that match the search mask */
+    waitForNextResponse = OFFalse;
+    DCMNET_DEBUG("Received final C-MOVE response, no more C-MOVE responses expected");
+    break;
+  default:
+    /* in all other cases, don't expect further responses to come */
+    waitForNextResponse = OFFalse;
+    DCMNET_DEBUG("Status tells not to wait for further C-MOVE responses");
+    break;
+  } //switch
+
+  return EC_Normal;
+}
+
+
 // Sends a C-FIND Request on given presentation context
 OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
                                     DcmDataset *queryKeys,
                                     FINDResponses *responses)
 {
   // Do some basic validity checks
-  if (m_assoc == NULL)
+  if (!isConnected())
     return DIMSE_ILLEGALASSOCIATION;
   if (queryKeys == NULL)
-    return ASC_NULLKEY;
+    return DIMSE_NULLKEY;
 
   /* Prepare DIMSE data structures for issuing request */
   OFCondition cond;
@@ -669,6 +884,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     if (cond.bad())
     {
       DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, cond));
+      delete statusDetail;
       return cond;
     }
 
@@ -681,6 +897,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
           << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
           << OFstatic_cast(unsigned int, rsp.CommandField));
       DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
+      delete statusDetail;
       return DIMSE_BADCOMMANDTYPE;
     }
 
@@ -689,6 +906,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     findrsp->m_affectedSOPClassUID = rsp.msg.CFindRSP.AffectedSOPClassUID;
     findrsp->m_messageIDRespondedTo = rsp.msg.CFindRSP.MessageIDBeingRespondedTo;
     findrsp->m_status = rsp.msg.CFindRSP.DimseStatus;
+    findrsp->m_statusDetail = statusDetail;
     DCMNET_DEBUG("C-FIND response has status 0x"
         << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
         << findrsp->m_status);
@@ -724,7 +942,6 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     {
       DCMNET_WARN("Unable to handle C-FIND response correctly: " << cond.text() << " (ignored)");
       delete findrsp;
-      cond = EC_Normal;
       // don't return here but trust the "waitForNextResponse" variable
     }
     // if response could be handled successfully, add it to response list
@@ -732,6 +949,8 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     {
       if (responses != NULL) // only add if desired by caller
         responses->add(findrsp);
+      else
+        delete findrsp;
     }
   }
   /* All responses received or break signal occured */
@@ -744,6 +963,9 @@ OFCondition DcmSCU::handleFINDResponse(Uint16 /* presContextID */,
                                        FINDResponse *response,
                                        OFBool &waitForNextResponse)
 {
+  if (!isConnected())
+    return DIMSE_ILLEGALASSOCIATION;
+
   DCMNET_DEBUG("Handling C-FIND Response");
   switch (response->m_status) {
     case STATUS_Pending:
@@ -770,9 +992,23 @@ OFCondition DcmSCU::handleFINDResponse(Uint16 /* presContextID */,
 
 
 // Send C-FIND-CANCEL and, therefore, ends current C-FIND session
-OFCondition DcmSCU::sendCANCELRequest(Uint16 /* presContextID */)
+OFCondition DcmSCU::sendFINDCANCELRequest(Uint16 /* presContextID */)
 {
-  // TODO: need to be implemented
+  if (!isConnected())
+    return DIMSE_ILLEGALASSOCIATION;
+
+  // TODO: needs to be implemented
+  return EC_Normal;
+}
+
+
+// Send C-MOVE-CANCEL and, therefore, ends current C-MOVE session
+OFCondition DcmSCU::sendMOVECANCELRequest(Uint16 /* presContextID */)
+{
+  if (!isConnected())
+    return DIMSE_ILLEGALASSOCIATION;
+
+  // TODO: needs to be implemented
   return EC_Normal;
 }
 
@@ -785,7 +1021,7 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
                                       Uint16 &rspStatusCode)
 {
   // Do some basic validity checks
-  if (m_assoc == NULL)
+  if (!isConnected())
     return DIMSE_ILLEGALASSOCIATION;
   if (sopInstanceUID.empty() || (reqDataset == NULL))
     return DIMSE_NULLKEY;
@@ -893,7 +1129,7 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
                                              const int timeout)
 {
   // Do some basic validity checks
-  if (m_assoc == NULL)
+  if (!isConnected())
     return DIMSE_ILLEGALASSOCIATION;
 
   OFCondition cond;
@@ -1022,7 +1258,7 @@ OFCondition DcmSCU::sendDIMSEMessage(const T_ASC_PresentationContextID presID,
                                      void *callbackContext,
                                      DcmDataset **commandSet)
 {
-  if (m_assoc == NULL)
+  if (!isConnected())
     return DIMSE_ILLEGALASSOCIATION;
   if (msg == NULL)
     return DIMSE_NULLKEY;
@@ -1054,7 +1290,7 @@ OFCondition DcmSCU::receiveDIMSECommand(T_ASC_PresentationContextID *presID,
                                         DcmDataset **commandSet,
                                         const Uint32 timeout)
 {
-  if (m_assoc == NULL)
+  if (!isConnected())
     return DIMSE_ILLEGALASSOCIATION;
 
   OFCondition cond;
@@ -1078,7 +1314,7 @@ OFCondition DcmSCU::receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
                                         DIMSE_ProgressCallback callback,
                                         void *callbackContext)
 {
-  if (m_assoc == NULL)
+  if (!isConnected())
     return DIMSE_ILLEGALASSOCIATION;
 
   OFCondition cond;
@@ -1294,44 +1530,117 @@ FINDResponse::FINDResponse() :
   m_messageIDRespondedTo(0),
   m_affectedSOPClassUID(),
   m_dataset(NULL),
-  m_status(0)
+  m_status(0),
+  m_statusDetail(NULL)
 {
 }
 
 // Destructor, cleans up internal memory (datasets if present)
 FINDResponse::~FINDResponse()
 {
-  if (m_dataset != NULL)
+  delete m_dataset;
+  delete m_statusDetail;
+}
+
+
+/* ************************************************************************ */
+/*                        C-MOVE Response classes                           */
+/* ************************************************************************ */
+
+MOVEResponses::MOVEResponses()
+{
+  // Nothing to do :-)
+}
+
+MOVEResponses::~MOVEResponses()
+{
+  Uint32 numelems = m_responses.size();
+
+  MOVEResponse *rsp = NULL;
+  for (Uint32 i=0; i < numelems; i++)
   {
-    delete m_dataset;
-    m_dataset = NULL;
+    rsp = m_responses.front();
+    if (rsp != NULL)
+    {
+        delete rsp; rsp = NULL;
+    }
+    m_responses.pop_front();
   }
 }
 
 
+Uint32 MOVEResponses::numResults() const
+{
+  return m_responses.size();
+}
+
+
+void MOVEResponses::add(MOVEResponse *rsp)
+{
+  if (rsp != NULL)
+    m_responses.push_back(rsp);
+}
+
+
+OFListIterator(MOVEResponse *) MOVEResponses::begin()
+{
+  return m_responses.begin();
+}
+
+
+OFListIterator(MOVEResponse *) MOVEResponses::end()
+{
+  return m_responses.end();
+}
+
+
+/* ************************** DcmMoveSCU_C::MoveResponse_C class ****************************/
+
+// Standard constructor
+MOVEResponse::MOVEResponse() :
+  m_messageIDRespondedTo(0),
+  m_affectedSOPClassUID(),
+  m_numberOfRemainingSubops(0),
+  m_numberOfCompletedSubops(0),
+  m_numberOfFailedSubops(0),
+  m_numberOfWarningSubops(0),
+  m_dataset(NULL),
+  m_status(0),
+  m_statusDetail(NULL)
+{
+}
+
+
+// Destructor, cleans up internal memory (datasets if present)
+MOVEResponse::~MOVEResponse()
+{
+  delete m_dataset;
+  delete m_statusDetail;
+}
+
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
-** Revision 1.22  2011-04-18 07:01:03  uli
-** Use global variables for the logger objects. This removes the thread-unsafe
-** static local variables which were used before.
+** Revision 1.23  2011-04-28 17:50:05  onken
+** Re-sorted header list to make scu.h come first (after osconfig.h).
+** Protected public networking functions for creating an association
+** from being called twice.
 **
-** Revision 1.21  2011-04-05 11:16:13  joergr
-** Output DIMSE status code in hexadecimal format to the logger. Removed unused
-** code (local half-implemented function). Added more comments.
+** Enhanced protection of DIMSE messaging functions from being
+** called without being connected.
 **
-** Revision 1.20  2011-03-09 11:13:28  onken
-** Enhanced error message for missing data in store request.
+** Introduced status detail into C-FIND responses (and C-MOVE
+** responses). Was not accessible to the caller before.
 **
-** Revision 1.19  2011-02-23 08:11:51  joergr
-** Fixed issue with undefined priority field in C-STORE and C-FIND request.
+** Minor code cleanups.
 **
-** Revision 1.18  2011-02-16 08:55:17  joergr
-** Fixed issue in sendSTORERequest() when sending a dataset that was created
-** in memory (and which has, therefore, an original transfer of EXS_Unknown).
+** Added C-MOVE code for retrieving DICOM objects. So far only retrieving
+** on a separate connection is supported.
 **
-** Revision 1.17  2011-02-04 12:57:40  uli
-** Made sure all members are initialized in the constructor (-Weffc++).
+** Added function for cleaning up internal memory from destructor. This function
+** also fixes a memory leak in case users call initNetwork more than one time.
+**
+** Added error code returned by functions if SCU is already connected.
 **
 ** Revision 1.16  2010-12-21 09:37:36  onken
 ** Fixed wrong response assignment in DcmSCU's C-STORE code. Thanks to
