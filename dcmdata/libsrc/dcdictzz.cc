@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-04-06 16:33:50
+**   Date: 2011-04-28 17:00:44
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2011-04-06 16:33:50";
+const char* dcmBuiltinDictBuildDate = "2011-04-28 17:00:44";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -19706,11 +19706,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0072, 0x0052, 0x0072, 0x0052,
-      EVR_AT, "SelectorSequencePointer", 1, 1, "DICOM_2009",
+      EVR_AT, "SelectorSequencePointer", 1, -1, "Supplement_74",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0072, 0x0054, 0x0072, 0x0054,
-      EVR_LO, "SelectorSequencePointerPrivateCreator", 1, 1, "DICOM_2009",
+      EVR_LO, "SelectorSequencePointerPrivateCreator", 1, -1, "Supplement_74",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0072, 0x0056, 0x0072, 0x0056,
@@ -20033,6 +20033,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "DisplaySetVerticalJustification", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0074, 0x0120, 0x0074, 0x0120,
+      EVR_FD, "ContinuationStartMeterset", 1, 1, "Supplement_74",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x0121, 0x0074, 0x0121,
+      EVR_FD, "ContinuationEndMeterset", 1, 1, "Supplement_74",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0074, 0x1000, 0x0074, 0x1000,
       EVR_CS, "UnifiedProcedureStepState", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -20074,7 +20082,35 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0074, 0x1024, 0x0074, 0x1024,
-      EVR_IS, "BeamOrderIndex", 1, 1, "DICOM_2009",
+      EVR_IS, "RETIRED_BeamOrderIndex", 1, 1, "Supplement_74/retired",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1026, 0x0074, 0x1026,
+      EVR_FD, "TableTopVerticalAdjustedPosition", 1, 1, "Supplement_74",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1027, 0x0074, 0x1027,
+      EVR_FD, "TableTopLongitudinalAdjustedPosition", 1, 1, "Supplement_74",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1028, 0x0074, 0x1028,
+      EVR_FD, "TableTopLateralAdjustedPosition", 1, 1, "Supplement_74",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x102a, 0x0074, 0x102a,
+      EVR_FD, "PatientSupportAdjustedAngle", 1, 1, "Supplement_74",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x102b, 0x0074, 0x102b,
+      EVR_FD, "TableTopEccentricAdjustedAngle", 1, 1, "Supplement_74",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x102c, 0x0074, 0x102c,
+      EVR_FD, "TableTopPitchAdjustedAngle", 1, 1, "Supplement_74",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x102d, 0x0074, 0x102d,
+      EVR_FD, "TableTopRollAdjustedAngle", 1, 1, "Supplement_74",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0074, 0x1030, 0x0074, 0x1030,
@@ -20094,11 +20130,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0074, 0x1038, 0x0074, 0x1038,
-      EVR_DS, "DoubleExposureMeterset", 1, 1, "DICOM_2009",
+      EVR_DS, "RETIRED_DoubleExposureMeterset", 1, 1, "Supplement_74/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0074, 0x103a, 0x0074, 0x103a,
-      EVR_DS, "DoubleExposureFieldDelta", 4, 4, "DICOM_2009",
+      EVR_DS, "RETIRED_DoubleExposureFieldDelta", 4, 4, "Supplement_74/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0074, 0x1040, 0x0074, 0x1040,
@@ -20147,6 +20183,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0074, 0x1056, 0x0074, 0x1056,
       EVR_LO, "AttributeOccurrencePrivateCreator", 1, 1, "DICOM_2009",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1057, 0x0074, 0x1057,
+      EVR_IS, "SelectorSequencePointerItems", 1, -1, "Supplement_74",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0074, 0x1200, 0x0074, 0x1200,
@@ -20211,6 +20251,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0074, 0x1246, 0x0074, 0x1246,
       EVR_CS, "UnifiedProcedureStepListStatus", 1, 1, "DICOM_2009",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1324, 0x0074, 0x1324,
+      EVR_UL, "BeamOrderIndex", 1, 1, "Supplement_74",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x1338, 0x0074, 0x1338,
+      EVR_FD, "DoubleExposureMeterset", 1, 1, "Supplement_74",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0074, 0x133a, 0x0074, 0x133a,
+      EVR_FD, "DoubleExposureFieldDelta", 4, 4, "Supplement_74",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0076, 0x0001, 0x0076, 0x0001,

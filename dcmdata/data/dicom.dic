@@ -18,15 +18,15 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2011-04-19 10:29:49 $
-#  CVS/RCS Revision: $Revision: 1.13 $
+#  Update Date:      $Date: 2011-04-28 15:07:28 $
+#  CVS/RCS Revision: $Revision: 1.14 $
 #  Status:           $State: Exp $
 #
 # This file contains the complete data dictionary from the 2009 edition
 # of the DICOM standard.
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
-# - Supplement 96, 120, 131, 144, 145, 146.
+# - Supplement 74, 96, 120, 131, 144, 145, 146.
 # - CP 650, 988, 1010, 1024, 1036, 1037, 1044, 1057, 1078.
 #
 # Each line represents an entry in the data dictionary.  Each line
@@ -2637,6 +2637,29 @@
 (FFFE,E000)	na	Item	1	DICOM_2009
 (FFFE,E00D)	na	ItemDelimitationItem	1	DICOM_2009
 (FFFE,E0DD)	na	SequenceDelimitationItem	1	DICOM_2009
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 74 (Utilization of Worklist in Radiotherapy Treatment Delivery)
+#
+(0072,0052)	AT	SelectorSequencePointer	1-n	Supplement_74
+(0072,0054)	LO	SelectorSequencePointerPrivateCreator	1-n	Supplement_74
+(0074,0120)	FD	ContinuationStartMeterset	1	Supplement_74
+(0074,0121)	FD	ContinuationEndMeterset	1	Supplement_74
+(0074,1024)	IS	RETIRED_BeamOrderIndex	1	Supplement_74/retired
+(0074,1026)	FD	TableTopVerticalAdjustedPosition	1	Supplement_74
+(0074,1027)	FD	TableTopLongitudinalAdjustedPosition	1	Supplement_74
+(0074,1028)	FD	TableTopLateralAdjustedPosition	1	Supplement_74
+(0074,102A)	FD	PatientSupportAdjustedAngle	1	Supplement_74
+(0074,102B)	FD	TableTopEccentricAdjustedAngle	1	Supplement_74
+(0074,102C)	FD	TableTopPitchAdjustedAngle	1	Supplement_74
+(0074,102D)	FD	TableTopRollAdjustedAngle	1	Supplement_74
+(0074,1038)	DS	RETIRED_DoubleExposureMeterset	1	Supplement_74/retired
+(0074,103A)	DS	RETIRED_DoubleExposureFieldDelta	4	Supplement_74/retired
+(0074,1057)	IS	SelectorSequencePointerItems	1-n	Supplement_74
+(0074,1324)	UL	BeamOrderIndex	1	Supplement_74
+(0074,1338)	FD	DoubleExposureMeterset	1	Supplement_74
+(0074,133A)	FD	DoubleExposureFieldDelta	4	Supplement_74
 #
 #---------------------------------------------------------------------------
 #

@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-04-06 16:32:58
+**   Date: 2011-04-28 17:00:22
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2011-04-06 16:32:58"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2011-04-28 17:00:22"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3267
+** Number of entries: 3280
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2427,6 +2427,8 @@
 #define DCM_ShowAcquisitionTechniquesFlag        DcmTagKey(0x0072, 0x0716)
 #define DCM_DisplaySetHorizontalJustification    DcmTagKey(0x0072, 0x0717)
 #define DCM_DisplaySetVerticalJustification      DcmTagKey(0x0072, 0x0718)
+#define DCM_ContinuationStartMeterset            DcmTagKey(0x0074, 0x0120)
+#define DCM_ContinuationEndMeterset              DcmTagKey(0x0074, 0x0121)
 #define DCM_UnifiedProcedureStepState            DcmTagKey(0x0074, 0x1000)
 #define DCM_UnifiedProcedureStepProgressInformationSequence DcmTagKey(0x0074, 0x1002)
 #define DCM_UnifiedProcedureStepProgress         DcmTagKey(0x0074, 0x1004)
@@ -2437,13 +2439,20 @@
 #define DCM_UnifiedProcedureStepDiscontinuationReasonCodeSequence DcmTagKey(0x0074, 0x100e)
 #define DCM_BeamTaskSequence                     DcmTagKey(0x0074, 0x1020)
 #define DCM_BeamTaskType                         DcmTagKey(0x0074, 0x1022)
-#define DCM_BeamOrderIndex                       DcmTagKey(0x0074, 0x1024)
+#define DCM_RETIRED_BeamOrderIndex               DcmTagKey(0x0074, 0x1024)
+#define DCM_TableTopVerticalAdjustedPosition     DcmTagKey(0x0074, 0x1026)
+#define DCM_TableTopLongitudinalAdjustedPosition DcmTagKey(0x0074, 0x1027)
+#define DCM_TableTopLateralAdjustedPosition      DcmTagKey(0x0074, 0x1028)
+#define DCM_PatientSupportAdjustedAngle          DcmTagKey(0x0074, 0x102a)
+#define DCM_TableTopEccentricAdjustedAngle       DcmTagKey(0x0074, 0x102b)
+#define DCM_TableTopPitchAdjustedAngle           DcmTagKey(0x0074, 0x102c)
+#define DCM_TableTopRollAdjustedAngle            DcmTagKey(0x0074, 0x102d)
 #define DCM_DeliveryVerificationImageSequence    DcmTagKey(0x0074, 0x1030)
 #define DCM_VerificationImageTiming              DcmTagKey(0x0074, 0x1032)
 #define DCM_DoubleExposureFlag                   DcmTagKey(0x0074, 0x1034)
 #define DCM_DoubleExposureOrdering               DcmTagKey(0x0074, 0x1036)
-#define DCM_DoubleExposureMeterset               DcmTagKey(0x0074, 0x1038)
-#define DCM_DoubleExposureFieldDelta             DcmTagKey(0x0074, 0x103a)
+#define DCM_RETIRED_DoubleExposureMeterset       DcmTagKey(0x0074, 0x1038)
+#define DCM_RETIRED_DoubleExposureFieldDelta     DcmTagKey(0x0074, 0x103a)
 #define DCM_RelatedReferenceRTImageSequence      DcmTagKey(0x0074, 0x1040)
 #define DCM_GeneralMachineVerificationSequence   DcmTagKey(0x0074, 0x1042)
 #define DCM_ConventionalMachineVerificationSequence DcmTagKey(0x0074, 0x1044)
@@ -2456,6 +2465,7 @@
 #define DCM_AttributeOccurrencePointer           DcmTagKey(0x0074, 0x1052)
 #define DCM_AttributeItemSelector                DcmTagKey(0x0074, 0x1054)
 #define DCM_AttributeOccurrencePrivateCreator    DcmTagKey(0x0074, 0x1056)
+#define DCM_SelectorSequencePointerItems         DcmTagKey(0x0074, 0x1057)
 #define DCM_ScheduledProcedureStepPriority       DcmTagKey(0x0074, 0x1200)
 #define DCM_WorklistLabel                        DcmTagKey(0x0074, 0x1202)
 #define DCM_ProcedureStepLabel                   DcmTagKey(0x0074, 0x1204)
@@ -2472,6 +2482,9 @@
 #define DCM_SCPStatus                            DcmTagKey(0x0074, 0x1242)
 #define DCM_SubscriptionListStatus               DcmTagKey(0x0074, 0x1244)
 #define DCM_UnifiedProcedureStepListStatus       DcmTagKey(0x0074, 0x1246)
+#define DCM_BeamOrderIndex                       DcmTagKey(0x0074, 0x1324)
+#define DCM_DoubleExposureMeterset               DcmTagKey(0x0074, 0x1338)
+#define DCM_DoubleExposureFieldDelta             DcmTagKey(0x0074, 0x133a)
 #define DCM_ImplantAssemblyTemplateName          DcmTagKey(0x0076, 0x0001)
 #define DCM_ImplantAssemblyTemplateIssuer        DcmTagKey(0x0076, 0x0003)
 #define DCM_ImplantAssemblyTemplateVersion       DcmTagKey(0x0076, 0x0006)

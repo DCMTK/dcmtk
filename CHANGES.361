@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.04.28 (riesmeier)
+
+- Added support for final text version of Supplement 74 (Utilization of
+  Worklist in Radiotherapy Treatment Delivery) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2011.04.27 (riesmeier)
 
 - Added more checks on the type of DICOM object passed to the constructor.
