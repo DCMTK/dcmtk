@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-01 08:34:15 $
- *  CVS/RCS Revision: $Revision: 1.91 $
+ *  Update Date:      $Date: 2011-04-29 09:27:54 $
+ *  CVS/RCS Revision: $Revision: 1.92 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1510,7 +1510,7 @@ OFCondition DcmElement::getPartialValue(void *targetBuffer,
       // we want to reset the stream to this point later
       readStream->mark();
 
-      if (readStream->tell() + valueWidth >= getLengthField()) {
+      if (readStream->tell() + valueWidth > getLengthField()) {
         // We are trying to read past the end of the value. We already made sure
         // above that the requested range fits completely into the element's
         // size, so this must mean that the length is not a multiple of the VR's
@@ -1774,6 +1774,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.92  2011-04-29 09:27:54  uli
+** Fixed a off-by-one bug spotted by dcmdata/tests/tstpread.
+**
 ** Revision 1.91  2011-04-01 08:34:15  uli
 ** Improved handling of odd-length OW values in DcmElement::getPartialValue.
 **

@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.04.29 (schlachter)
+
+- Fixed a off-by-one bug spotted by dcmdata/tests/tstpread.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 **** Changes from 2011.04.28 (onken)
 
 - Added C-MOVE code for retrieving DICOM objects. So far only retrieving
