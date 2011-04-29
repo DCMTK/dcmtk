@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-06 14:57:12 $
- *  CVS/RCS Revision: $Revision: 1.91 $
+ *  Update Date:      $Date: 2011-04-29 14:59:05 $
+ *  CVS/RCS Revision: $Revision: 1.92 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -284,6 +284,11 @@ static const UIDNameMap uidNameMap[] = {
     { UID_ModalityPerformedProcedureStepNotificationSOPClass,  "ModalityPerformedProcedureStepNotificationSOPClass" },
     { UID_ModalityPerformedProcedureStepRetrieveSOPClass,      "ModalityPerformedProcedureStepRetrieveSOPClass" },
     { UID_ModalityPerformedProcedureStepSOPClass,              "ModalityPerformedProcedureStepSOPClass" },
+
+    // Radiotherapy Treatment Delivery
+    { UID_RTBeamsDeliveryInstructionStorage,                   "RTBeamsDeliveryInstructionStorage" },
+    { UID_RTConventionalMachineVerification,                   "RTConventionalMachineVerification" },
+    { UID_RTIonMachineVerification,                            "RTIonMachineVerification" },
 
     // Unified Worklist and Procedure Step
     { UID_UnifiedWorklistAndProcedureStepServiceClass,         "UnifiedWorklistAndProcedureStepServiceClass" },
@@ -561,6 +566,7 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_RawDataStorage,
     UID_RealWorldValueMappingStorage,
     UID_RespiratoryWaveformStorage,
+    UID_RTBeamsDeliveryInstructionStorage,
     UID_RTBeamsTreatmentRecordStorage,
     UID_RTBrachyTreatmentRecordStorage,
     UID_RTDoseStorage,
@@ -628,7 +634,7 @@ const int numberOfAllDcmStorageSOPClassUIDs = (sizeof(dcmAllStorageSOPClassUIDs)
  *  are proposed by default by those Storage SCU components in DCMTK
  *  that always propose one presentation context for each SOP class,
  *  e.g. movescu or dcmqrdb. This list is guaranteed to have at most
- *  120 entries (currently: 119) to leave enough room for FIND/MOVE
+ *  120 entries (currently: 120) to leave enough room for FIND/MOVE
  *  presentation contexts.
  */
 const char* dcmLongSCUStorageSOPClassUIDs[] =
@@ -697,6 +703,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_RawDataStorage,
     UID_RealWorldValueMappingStorage,
     UID_RespiratoryWaveformStorage,
+    UID_RTBeamsDeliveryInstructionStorage,
     UID_RTBeamsTreatmentRecordStorage,
     UID_RTBrachyTreatmentRecordStorage,
     UID_RTDoseStorage,
@@ -997,6 +1004,7 @@ static const DcmModalityTable modalities[] = {
     { UID_RawDataStorage,                                          "RAW", 512 * 512 * 256 },
     { UID_RealWorldValueMappingStorage,                            "RWM", 4096 },
     { UID_RespiratoryWaveformStorage,                              "WVr", 4096 },
+    { UID_RTBeamsDeliveryInstructionStorage,                       "RTd", 4096 },
     { UID_RTBeamsTreatmentRecordStorage,                           "RTb", 4096 },
     { UID_RTBrachyTreatmentRecordStorage,                          "RTr", 4096 },
     { UID_RTDoseStorage,                                           "RD",  4096 },
@@ -1627,6 +1635,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.92  2011-04-29 14:59:05  joergr
+** Added new SOP Class and Instance UIDs from final text version of Supplement
+** 74 (Utilization of Worklist in Radiotherapy Treatment Delivery).
+**
 ** Revision 1.91  2011-04-06 14:57:12  joergr
 ** Added support for final text version of Supplement 96 (Unified Worklist and
 ** Procedure Step) to data dictionary; added new SOP Class and Instance UIDs.

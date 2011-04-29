@@ -642,6 +642,7 @@ RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481
 RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481.8
 RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
 DRAFT_RTBeamsDeliveryInstructionStorage              1.2.840.10008.5.1.4.34.1
+RTBeamsDeliveryInstructionStorage                    1.2.840.10008.5.1.4.34.7
 GenericImplantTemplateStorage                        1.2.840.10008.5.1.4.43.1
 ImplantAssemblyTemplateStorage                       1.2.840.10008.5.1.4.44.1
 ImplantTemplateGroupStorage                          1.2.840.10008.5.1.4.45.1

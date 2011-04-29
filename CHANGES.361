@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.04.29 (riesmeier)
+
+- Added new SOP Class and Instance UIDs from final text version of Supplement
+  74 (Utilization of Worklist in Radiotherapy Treatment Delivery).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
 **** Changes from 2011.04.29 (schlachter)
 
 - Fixed a off-by-one bug spotted by dcmdata/tests/tstpread.
@@ -16,7 +28,7 @@ Changes between releases are documented here.
 - Added error code returned by functions if SCU is already connected.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
            dcmnet/libsrc/scu.cc
-           
+
 - Re-sorted header list to make scu.h come first (after osconfig.h).
 - Protected public networking functions for creating an association
   from being called twice.
@@ -26,7 +38,7 @@ Changes between releases are documented here.
   responses). Was not accessible to the caller before.
 - Minor code cleanups.
   Affects: dcmnet/libsrc/scu.cc
-  
+
 - Added some extra documentation.
   Affects dcmnet/include/dcmtk/dcmnet/scu.h
 

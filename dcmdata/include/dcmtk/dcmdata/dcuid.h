@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-06 14:57:10 $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  Update Date:      $Date: 2011-04-29 14:59:03 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -500,6 +500,11 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_ModalityPerformedProcedureStepRetrieveSOPClass         "1.2.840.10008.3.1.2.3.4"
 #define UID_ModalityPerformedProcedureStepNotificationSOPClass     "1.2.840.10008.3.1.2.3.5"
 
+// Radiotherapy Treatment Delivery
+#define UID_RTBeamsDeliveryInstructionStorage                      "1.2.840.10008.5.1.4.34.7"
+#define UID_RTConventionalMachineVerification                      "1.2.840.10008.5.1.4.34.8"
+#define UID_RTIonMachineVerification                               "1.2.840.10008.5.1.4.34.9"
+
 // Unified Worklist and Procedure Step
 #define UID_UnifiedWorklistAndProcedureStepServiceClass            "1.2.840.10008.5.1.4.34.6"
 #define UID_UnifiedProcedureStepPushSOPClass                       "1.2.840.10008.5.1.4.34.6.1"
@@ -720,6 +725,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.93  2011-04-29 14:59:03  joergr
+** Added new SOP Class and Instance UIDs from final text version of Supplement
+** 74 (Utilization of Worklist in Radiotherapy Treatment Delivery).
+**
 ** Revision 1.92  2011-04-06 14:57:10  joergr
 ** Added support for final text version of Supplement 96 (Unified Worklist and
 ** Procedure Step) to data dictionary; added new SOP Class and Instance UIDs.
