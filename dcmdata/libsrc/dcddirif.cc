@@ -18,8 +18,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-11 13:33:16 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2011-04-29 15:25:36 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -621,6 +621,9 @@ static OFString recordTypeToName(const E_DirRecType recordType)
         case ERT_ImplantAssy:
             recordName = "ImplantAssy";
             break;
+        case ERT_Plan:
+            recordName = "Plan";
+            break;
         default:
             recordName = "(unknown-directory-record-type)";
             break;
@@ -744,6 +747,8 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_ImplantGroup;
     else if (compare(sopClass, UID_ImplantAssemblyTemplateStorage))
         result = ERT_ImplantAssy;
+    else if (compare(sopClass, UID_RTBeamsDeliveryInstructionStorage))
+        result = ERT_Plan;
     return result;
 }
 
@@ -937,6 +942,7 @@ static OFCondition insertSortedUnder(DcmDirectoryRecord *parent,
                 result = insertWithISCriterion(parent, child, DCM_SeriesNumber);
                 break;
             case ERT_Stereometric:
+            case ERT_Plan:
                 /* no InstanceNumber or the like */
             default:
                 /* append */
@@ -2435,6 +2441,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                         result = EC_InvalidTag;
                     break;
                 case ERT_Stereometric:
+                case ERT_Plan:
                     /* nothing to check */
                     break;
                 case ERT_Registration:
@@ -2671,6 +2678,7 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
             case ERT_Implant:
             case ERT_ImplantGroup:
             case ERT_ImplantAssy:
+            case ERT_Plan:
                 /* The attribute ReferencedSOPInstanceUID is automatically
                  * put into a Directory Record when a filename is present.
                 */
@@ -3709,6 +3717,33 @@ DcmDirectoryRecord *DicomDirInterface::buildImplantAssyRecord(DcmDirectoryRecord
 }
 
 
+// create or update plan record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildPlanRecord(DcmDirectoryRecord *record,
+                                                       DcmItem *dataset,
+                                                       const OFString &referencedFileID,
+                                                       const OFString &sourceFilename)
+{
+    /* create new plan record */
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Plan, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* nothing to do */
+        } else {
+            printRecordErrorMessage(record->error(), ERT_Plan, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_Plan, "create");
+    return record;
+}
+
+
 // create or update image record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *record,
                                                         DcmItem *dataset,
@@ -4116,6 +4151,9 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                 case ERT_ImplantAssy:
                     record = buildImplantAssyRecord(record, dataset, referencedFileID, sourceFilename);
                     break;
+                case ERT_Plan:
+                    record = buildPlanRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
                 default:
                     /* it can only be an image */
                     record = buildImageRecord(record, dataset, referencedFileID, sourceFilename);
@@ -4295,6 +4333,7 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
                 case ERT_ValueMap:
                 case ERT_Stereometric:
                 case ERT_Measurement:
+                case ERT_Plan:
                     /* nothing to do */
                     break;
                 default:
@@ -5271,6 +5310,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.58  2011-04-29 15:25:36  joergr
+ *  Added support for new directory record type PLAN from Supplement 74.
+ *
  *  Revision 1.57  2011-02-11 13:33:16  joergr
  *  Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
  *

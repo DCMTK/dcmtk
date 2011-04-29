@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-15 13:58:43 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-04-29 15:25:34 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,7 +125,9 @@ typedef enum {
     /// implant group
     ERT_ImplantGroup = 42,
     /// implant assembly
-    ERT_ImplantAssy = 43
+    ERT_ImplantAssy = 43,
+    /// plan
+    ERT_Plan = 44
 } E_DirRecType;
 
 
@@ -452,6 +454,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
+** Revision 1.48  2011-04-29 15:25:34  joergr
+** Added support for new directory record type PLAN from Supplement 74.
+**
 ** Revision 1.47  2010-11-15 13:58:43  uli
 ** Fixed some errors in doxygen comments.
 **

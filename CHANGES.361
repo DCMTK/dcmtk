@@ -13,6 +13,12 @@ Changes between releases are documented here.
            dcmnet/etc/storescu.cfg
            dcmqrdb/docs/dcmqrscp.man
 
+- Added support for new directory record type PLAN from Supplement 74.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdirrec.cc
+
 **** Changes from 2011.04.29 (schlachter)
 
 - Fixed a off-by-one bug spotted by dcmdata/tests/tstpread.

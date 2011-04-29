@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-21 15:02:52 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Update Date:      $Date: 2011-04-29 15:25:36 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,8 @@ static const char *DRTypeNames[] =
     "MEASUREMENT",
     "IMPLANT",
     "IMPLANT GROUP",
-    "IMPLANT ASSY"
+    "IMPLANT ASSY",
+    "PLAN"
 };
 
 static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
@@ -430,6 +431,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Stereometric:
                 case ERT_Surface:
                 case ERT_Measurement:
+                case ERT_Plan:
                 case ERT_Private:
                     l_error = EC_Normal;
                     break;
@@ -522,6 +524,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_Implant:
         case ERT_ImplantGroup:
         case ERT_ImplantAssy:
+        case ERT_Plan:
         case ERT_Private:
             switch (lowerRecord)
             {
@@ -1540,6 +1543,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.80  2011-04-29 15:25:36  joergr
+ * Added support for new directory record type PLAN from Supplement 74.
+ *
  * Revision 1.79  2011-03-21 15:02:52  joergr
  * Added module name "DCMDATA_" as a prefix to the ANSI escape code macros.
  * Moved ANSI escape code for "reset" to the end of each output line (before
