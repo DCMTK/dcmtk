@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-29 14:59:05 $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  Update Date:      $Date: 2011-05-02 13:52:42 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1168,10 +1168,9 @@ dcmIsaStorageSOPClassUID(const char* uid)
 #include <sys/systeminfo.h>
 static long gethostid(void)
 {
-    char buf[128];
+    char buf[256];
     if (sysinfo(SI_HW_SERIAL, buf, 128) == -1) {
-      char buf[256];
-      DCMDATA_FATAL("sysinfo: " << OFStandard::strerror(errno, buf, sizeof(buf));
+      DCMDATA_FATAL("sysinfo: " << OFStandard::strerror(errno, buf, sizeof(buf)));
       exit(1);
     }
 #ifdef HAVE_STRTOUL
@@ -1635,6 +1634,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.93  2011-05-02 13:52:42  joergr
+** Fixed syntax error (missing closing bracket) if HAVE_GETHOSTID is undefined.
+**
 ** Revision 1.92  2011-04-29 14:59:05  joergr
 ** Added new SOP Class and Instance UIDs from final text version of Supplement
 ** 74 (Utilization of Worklist in Radiotherapy Treatment Delivery).

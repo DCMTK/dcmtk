@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.02 (riesmeier)
+
+- Fixed syntax error (missing closing bracket) if HAVE_GETHOSTID is undefined.
+  Thanks to Per Inge Mathisen <perim@sonowand.com> for the original report.
+  Affects: dcmdata/libsrc/dcuid.cc
+
 **** Changes from 2011.04.29 (riesmeier)
 
 - Added new SOP Class and Instance UIDs from final text version of Supplement
