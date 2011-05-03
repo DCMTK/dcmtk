@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -67,8 +67,8 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: joergr $, $Date: 2010-12-01 08:26:36 $
-** Revision:      $Revision: 1.94 $
+** Last Update:   $Author: uli $, $Date: 2011-05-03 09:16:56 $
+** Revision:      $Revision: 1.95 $
 ** Status:        $State: Exp $
 */
 
@@ -2679,11 +2679,11 @@ clearPresentationContext(LST_HEAD ** l)
         if (ctx->proposedTransferSyntax != NULL) {
             while ((transfer = (DUL_TRANSFERSYNTAX*)LST_Pop(&ctx->proposedTransferSyntax)) != NULL)
                 free(transfer);
-            (void) LST_Destroy(&ctx->proposedTransferSyntax);
+            LST_Destroy(&ctx->proposedTransferSyntax);
         }
         free(ctx);
     }
-    (void) LST_Destroy(l);
+    LST_Destroy(l);
 }
 
 OFCondition DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransportLayer *newLayer, int takeoverOwnership)
@@ -2733,6 +2733,10 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.95  2011-05-03 09:16:56  uli
+** Remove a pointless return value from some function. This helps in static code
+** analysis to ensure memory is never lost.
+**
 ** Revision 1.94  2010-12-01 08:26:36  joergr
 ** Added OFFIS copyright header (beginning with the year 1994).
 **

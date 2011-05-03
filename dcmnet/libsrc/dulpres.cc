@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -56,8 +56,8 @@
 ** Author, Date:    Stephen M. Moore, 15-Apr-93
 ** Intent:          This module contains routines for the user to
 **                  build and manipulate the public DUL structures.
-** Last Update:     $Author: joergr $, $Date: 2010-12-01 08:26:37 $
-** Revision:        $Revision: 1.14 $
+** Last Update:     $Author: uli $, $Date: 2011-05-03 09:16:56 $
+** Revision:        $Revision: 1.15 $
 ** Status:          $State: Exp $
 */
 
@@ -146,8 +146,7 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 	    transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(DUL_TRANSFERSYNTAX));
 	    if (transfer == NULL) return EC_MemoryExhausted;
 	    strcpy(transfer->transferSyntax, transferSyntax);
-	    OFCondition cond = LST_Enqueue(&lst, (LST_NODE*)transfer);
-	    if (cond.bad()) return cond;
+	    LST_Enqueue(&lst, (LST_NODE*)transfer);
 	}
     }
     va_end(args);
@@ -158,6 +157,10 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 /*
 ** CVS Log
 ** $Log: dulpres.cc,v $
+** Revision 1.15  2011-05-03 09:16:56  uli
+** Remove a pointless return value from some function. This helps in static code
+** analysis to ensure memory is never lost.
+**
 ** Revision 1.14  2010-12-01 08:26:37  joergr
 ** Added OFFIS copyright header (beginning with the year 1994).
 **

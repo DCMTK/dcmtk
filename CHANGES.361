@@ -7,7 +7,15 @@ Changes between releases are documented here.
   analysis to ensure memory is never lost.
   Thanks to Per Inge Mathisen <perim@sonowand.com> for the idea and the patch.
   Affects: dcmnet/include/dcmtk/dcmnet/diutil.h
+           dcmnet/include/dcmtk/dcmnet/lst.h
+           dcmnet/libsrc/assoc.cc
            dcmnet/libsrc/diutil.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulconst.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/libsrc/dulparse.cc
+           dcmnet/libsrc/dulpres.cc
+           dcmnet/libsrc/lst.cc
            dcmwlm/libsrc/wlfsim.cc
 
 - Fixed an uninitialized buffer use with truncated DICOM files. Thanks

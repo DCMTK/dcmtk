@@ -58,8 +58,8 @@
 ** Intent:          This file contains functions for parsing Dicom
 **                  Upper Layer (DUL) Protocol Data Units (PDUs)
 **                  into logical in-memory structures.
-** Last Update:     $Author: uli $, $Date: 2011-04-18 07:00:59 $
-** Revision:        $Revision: 1.34 $
+** Last Update:     $Author: uli $, $Date: 2011-05-03 09:16:56 $
+** Revision:        $Revision: 1.35 $
 ** Status:          $State: Exp $
 */
 
@@ -235,8 +235,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             if (cond.bad()) return cond;
             buf += itemLength;
             pduLength -= itemLength;
-            cond = LST_Enqueue(&assoc->presentationContextList, (LST_NODE*)context);
-            if (cond.bad()) return cond;
+            LST_Enqueue(&assoc->presentationContextList, (LST_NODE*)context);
             DCMNET_TRACE("Successfully parsed Presentation Context");
             break;
         case DUL_TYPEUSERINFO:
@@ -401,8 +400,7 @@ parsePresentationContext(unsigned char type,
                 if (subItem == NULL) return EC_MemoryExhausted;
                 cond = parseSubItem(subItem, buf, &length, presentationLength);
                 if (cond.bad()) return cond;
-                cond = LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem);
-                if (cond.bad()) return cond;
+                LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem);
                 buf += length;
                 presentationLength -= length;
                 DCMNET_TRACE("Successfully parsed Transfer Syntax");
@@ -505,8 +503,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
             if (role == NULL) return EC_MemoryExhausted;
             cond = parseSCUSCPRole(role, buf, &length, userLength);
             if (cond.bad()) return cond;
-            cond = LST_Enqueue(&userInfo->SCUSCPRoleList, (LST_NODE*)role);
-            if (cond.bad()) return cond;
+            LST_Enqueue(&userInfo->SCUSCPRoleList, (LST_NODE*)role);
             buf += length;
             userLength -= (unsigned short) length;
             break;
@@ -840,6 +837,10 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
+** Revision 1.35  2011-05-03 09:16:56  uli
+** Remove a pointless return value from some function. This helps in static code
+** analysis to ensure memory is never lost.
+**
 ** Revision 1.34  2011-04-18 07:00:59  uli
 ** Use global variables for the logger objects. This removes the thread-unsafe
 ** static local variables which were used before.

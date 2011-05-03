@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -83,9 +83,9 @@
 **
 ** Module Prefix: ASC_
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-12-01 08:26:35 $
-** CVS/RCS Revision:    $Revision: 1.59 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2011-05-03 09:16:56 $
+** CVS/RCS Revision:    $Revision: 1.60 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -692,8 +692,7 @@ ASC_addPresentationContext(
         transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(DUL_TRANSFERSYNTAX));
         if (transfer == NULL) return EC_MemoryExhausted;
         strcpy(transfer->transferSyntax, transferSyntaxList[i]);
-        cond = LST_Enqueue(&lst, (LST_NODE*)transfer);
-        if (cond.bad()) return cond;
+        LST_Enqueue(&lst, (LST_NODE*)transfer);
     }
     pc->proposedTransferSyntax = lst;
 
@@ -705,8 +704,7 @@ ASC_addPresentationContext(
         if (lst == NULL) return EC_MemoryExhausted;
     }
 
-    cond = LST_Enqueue(&lst, (LST_NODE*)pc);
-    if (cond.bad()) return cond;
+    LST_Enqueue(&lst, (LST_NODE*)pc);
 
     params->DULparams.requestedPresentationContext = lst;
     return EC_Normal;
@@ -913,8 +911,7 @@ ASC_acceptPresentationContext(
             if (lst == NULL) return EC_MemoryExhausted;
         }
 
-        cond = LST_Enqueue(&lst, (LST_NODE*)acceptedContext);
-        if (cond.bad()) return cond;
+        LST_Enqueue(&lst, (LST_NODE*)acceptedContext);
         params->DULparams.acceptedPresentationContext = lst;
     }
     return EC_Normal;
@@ -982,8 +979,7 @@ ASC_refusePresentationContext(
             lst = LST_Create();
             if (lst == NULL) return EC_MemoryExhausted;
         }
-        cond = LST_Enqueue(&lst, (LST_NODE*)acceptedContext);
-        if (cond.bad()) return cond;
+        LST_Enqueue(&lst, (LST_NODE*)acceptedContext);
         params->DULparams.acceptedPresentationContext = lst;
     }
     return EC_Normal;
@@ -2212,6 +2208,10 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
+** Revision 1.60  2011-05-03 09:16:56  uli
+** Remove a pointless return value from some function. This helps in static code
+** analysis to ensure memory is never lost.
+**
 ** Revision 1.59  2010-12-01 08:26:35  joergr
 ** Added OFFIS copyright header (beginning with the year 1994).
 **

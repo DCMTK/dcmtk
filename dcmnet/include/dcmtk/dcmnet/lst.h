@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: List class with procedural API compatible to MIR CTN
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:22 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-03 09:16:55 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,11 +108,11 @@ LST_HEAD *LST_Create();
 /** destroys list. The list must be empty.
  *  The list handle is set to NULL as a side-effect.
  */
-OFCondition LST_Destroy(LST_HEAD **lst);
+void LST_Destroy(LST_HEAD **lst);
 
 /** Adds a new node to the tail of the list and returns status.
  */
-OFCondition LST_Enqueue(LST_HEAD **lst, void *node);
+void LST_Enqueue(LST_HEAD **lst, void *node);
 
 /** Removes a node from the head of the list and returns
  *  a pointer to it.
@@ -153,6 +153,10 @@ void *LST_Position(LST_HEAD **lst, void *node);
 /*
  * CVS Log
  * $Log: lst.h,v $
+ * Revision 1.7  2011-05-03 09:16:55  uli
+ * Remove a pointless return value from some function. This helps in static code
+ * analysis to ensure memory is never lost.
+ *
  * Revision 1.6  2010-10-14 13:17:22  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

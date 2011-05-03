@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -62,8 +62,8 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-1993
 ** Intent:        This file contains functions for construction of
 **                DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:   $Author: joergr $, $Date: 2010-12-01 08:26:36 $
-** Revision:      $Revision: 1.28 $
+** Last Update:   $Author: uli $, $Date: 2011-05-03 09:16:56 $
+** Revision:      $Revision: 1.29 $
 ** Status:        $State: Exp $
 */
 
@@ -215,8 +215,7 @@ constructAssociatePDU(DUL_ASSOCIATESERVICEPARAMETERS * params,
               presentationCtx->abstractSyntax,
            &presentationCtx->proposedTransferSyntax, NULL,
             contextItem, &itemLength);
-            OFCondition cond2 = LST_Enqueue(&pdu->presentationContextList, (LST_NODE*)contextItem);
-            if (cond2.bad()) return cond2;
+            LST_Enqueue(&pdu->presentationContextList, (LST_NODE*)contextItem);
 
       pdu->length += itemLength;
       presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->requestedPresentationContext);
@@ -240,8 +239,7 @@ constructAssociatePDU(DUL_ASSOCIATESERVICEPARAMETERS * params,
             NULL, presentationCtx->acceptedTransferSyntax,
               contextItem, &itemLength);
 
-                OFCondition cond2 = LST_Enqueue(&pdu->presentationContextList, (LST_NODE*)contextItem);
-                if (cond2.bad()) return cond2;
+                LST_Enqueue(&pdu->presentationContextList, (LST_NODE*)contextItem);
 
     pdu->length += itemLength;
     presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->acceptedPresentationContext);
@@ -771,8 +769,7 @@ constructPresentationContext(unsigned char associateType,
           DUL_TYPETRANSFERSYNTAX, subItem, &length);
       if (cond.bad()) return cond;
 
-            OFCondition cond2 = LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem);
-            if (cond2.bad()) return cond2;
+            LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem);
 
       context->length += (unsigned short) length;
       *rtnLen += length;
@@ -788,8 +785,7 @@ constructPresentationContext(unsigned char associateType,
     return cond;
   }
 
-        OFCondition cond2 = LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem);
-        if (cond2.bad()) return cond2;
+        LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem);
 
   context->length += (unsigned short) length;
   *rtnLen += length;
@@ -1013,8 +1009,7 @@ constructSCUSCPRoles(unsigned char type,
         if (cond.bad())
           return cond;
         *rtnLength += length;
-        cond = LST_Enqueue(lst, (LST_NODE*)scuscpItem);
-        if (cond.bad()) return cond;
+        LST_Enqueue(lst, (LST_NODE*)scuscpItem);
       }
       presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->requestedPresentationContext);
     }
@@ -1057,8 +1052,7 @@ constructSCUSCPRoles(unsigned char type,
           return cond;
         }
         *rtnLength += length;
-        cond = LST_Enqueue(lst, (LST_NODE*)scuscpItem);
-        if (cond.bad()) return cond;
+        LST_Enqueue(lst, (LST_NODE*)scuscpItem);
       }
       presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->acceptedPresentationContext);
     }
@@ -1545,6 +1539,10 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
+** Revision 1.29  2011-05-03 09:16:56  uli
+** Remove a pointless return value from some function. This helps in static code
+** analysis to ensure memory is never lost.
+**
 ** Revision 1.28  2010-12-01 08:26:36  joergr
 ** Added OFFIS copyright header (beginning with the year 1994).
 **

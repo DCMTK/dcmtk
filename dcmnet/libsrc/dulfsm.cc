@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -59,8 +59,8 @@
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
 ** Intent:        Define tables and provide functions that implement
 **                the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:   $Author: joergr $, $Date: 2010-12-01 08:26:36 $
-** Revision:      $Revision: 1.74 $
+** Last Update:   $Author: uli $, $Date: 2011-05-03 09:16:56 $
+** Revision:      $Revision: 1.75 $
 ** Status:        $State: Exp $
 */
 
@@ -962,8 +962,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             if (subItem != NULL)
                 (void) strcpy(userPresentationCtx->acceptedTransferSyntax,
                               subItem->data);
-            cond = LST_Enqueue(&service->acceptedPresentationContext, (LST_NODE*)userPresentationCtx);
-            if (cond.bad()) return cond;
+            LST_Enqueue(&service->acceptedPresentationContext, (LST_NODE*)userPresentationCtx);
 
             prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Next(&assoc.presentationContextList);
 
@@ -3826,12 +3825,10 @@ translatePresentationContextList(LST_HEAD ** internalList,
             if (transfer == NULL) return EC_MemoryExhausted;
             strcpy(transfer->transferSyntax, subItem->data);
 
-            cond = LST_Enqueue(&userContext->proposedTransferSyntax, (LST_NODE*)transfer);
-            if (cond.bad()) return cond;
+            LST_Enqueue(&userContext->proposedTransferSyntax, (LST_NODE*)transfer);
             subItem = (DUL_SUBITEM*)LST_Next(&context->transferSyntaxList);
         }
-        cond = LST_Enqueue(userContextList, (LST_NODE*)userContext);
-        if (cond.bad()) return cond;
+        LST_Enqueue(userContextList, (LST_NODE*)userContext);
         context = (PRV_PRESENTATIONCONTEXTITEM*)LST_Next(internalList);
     }
     return EC_Normal;
@@ -3934,7 +3931,7 @@ destroyPresentationContextList(LST_HEAD ** l)
         free(prvCtx);
         prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Dequeue(l);
     }
-    (void) LST_Destroy(l);
+    LST_Destroy(l);
 }
 
 void
@@ -3948,7 +3945,7 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
         free(role);
         role = (PRV_SCUSCPROLE*)LST_Dequeue(&userInfo->SCUSCPRoleList);
     }
-    (void) LST_Destroy(&userInfo->SCUSCPRoleList);
+    LST_Destroy(&userInfo->SCUSCPRoleList);
 
     /* extended negotiation */
     delete userInfo->extNegList; userInfo->extNegList = NULL;
@@ -3961,6 +3958,10 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.75  2011-05-03 09:16:56  uli
+** Remove a pointless return value from some function. This helps in static code
+** analysis to ensure memory is never lost.
+**
 ** Revision 1.74  2010-12-01 08:26:36  joergr
 ** Added OFFIS copyright header (beginning with the year 1994).
 **
