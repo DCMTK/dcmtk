@@ -1,7 +1,14 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2011.04.29 (schlachter)
+**** Changes from 2011.05.03 (schlachter)
+
+- Remove a pointless return value from some function. This helps in static code
+  analysis to ensure memory is never lost.
+  Thanks to Per Inge Mathisen <perim@sonowand.com> for the idea and the patch.
+  Affects: dcmnet/include/dcmtk/dcmnet/diutil.h
+           dcmnet/libsrc/diutil.cc
+           dcmwlm/libsrc/wlfsim.cc
 
 - Fixed an uninitialized buffer use with truncated DICOM files. Thanks
   to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report and patch.

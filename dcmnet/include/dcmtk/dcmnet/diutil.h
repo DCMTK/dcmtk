@@ -74,8 +74,8 @@
 ** Module Prefix: DU_
 **
 ** Last Update:         $Author: uli $
-** Update Date:         $Date: 2011-04-18 07:00:59 $
-** CVS/RCS Revision:    $Revision: 1.13 $
+** Update Date:         $Date: 2011-05-03 07:46:38 $
+** CVS/RCS Revision:    $Revision: 1.14 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -102,9 +102,9 @@ extern OFLogger DCM_dcmnetLogger;
 #define DCMNET_FATAL(msg) OFLOG_FATAL(DCM_dcmnetLogger, msg)
 
 
-char* DU_stripTrailingSpaces(char *s);
-char* DU_stripLeadingSpaces(char *s);
-char* DU_stripLeadingAndTrailingSpaces(char *s);
+void DU_stripTrailingSpaces(char *s);
+void DU_stripLeadingSpaces(char *s);
+void DU_stripLeadingAndTrailingSpaces(char *s);
 
 OFBool DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s);
 OFBool DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s);
@@ -140,6 +140,10 @@ const char *DU_neventReportStatusString(Uint16 statusCode);
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
+** Revision 1.14  2011-05-03 07:46:38  uli
+** Remove a pointless return value from some function. This helps in static code
+** analysis to ensure memory is never lost.
+**
 ** Revision 1.13  2011-04-18 07:00:59  uli
 ** Use global variables for the logger objects. This removes the thread-unsafe
 ** static local variables which were used before.

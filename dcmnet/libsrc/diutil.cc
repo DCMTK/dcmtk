@@ -74,8 +74,8 @@
 ** Module Prefix: DU_
 **
 ** Last Update:         $Author: uli $
-** Update Date:         $Date: 2011-04-18 07:00:59 $
-** CVS/RCS Revision:    $Revision: 1.31 $
+** Update Date:         $Date: 2011-05-03 07:46:38 $
+** CVS/RCS Revision:    $Revision: 1.32 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -122,28 +122,28 @@ static char staticBuf[256];
 OFLogger DCM_dcmnetLogger = OFLog::getLogger("dcmtk.dcmnet");
 
 #define TO_UCHAR(s) OFstatic_cast(unsigned char, (s))
-char*
+void
 DU_stripTrailingSpaces(char *s)
 {
     int i, n;
 
-    if (s == NULL) return s;
-
-    n = strlen(s);
-    for (i = n - 1; i >= 0 && isspace(TO_UCHAR(s[i])); i--)
-	s[i] = '\0';
-    return s;
+    if (s)
+    {
+        n = strlen(s);
+        for (i = n - 1; i >= 0 && isspace(TO_UCHAR(s[i])); i--)
+            s[i] = '\0';
+    }
 }
 
-char*
+void
 DU_stripLeadingSpaces(char *s)
 {
     int i, j, n;
 
-    if (s == NULL) return s;
+    if (s == NULL) return;
     n = strlen(s);
-    if (n == 0) return s;
-    if (!isspace(s[0])) return s;	/* no leading space */
+    if (n == 0) return;
+    if (!isspace(s[0])) return;	/* no leading space */
 
     /* first non-space */
     for (i=0; i<n && isspace(TO_UCHAR(s[i])); i++)
@@ -158,15 +158,13 @@ DU_stripLeadingSpaces(char *s)
         /* all spaces */
 	s[0] = '\0';
     }
-    return s;
 }
 
-char*
+void
 DU_stripLeadingAndTrailingSpaces(char *s)
 {
     DU_stripLeadingSpaces(s);
     DU_stripTrailingSpaces(s);
-    return s;
 }
 #undef TO_UCHAR
 
@@ -808,6 +806,10 @@ DU_neventReportStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
+** Revision 1.32  2011-05-03 07:46:38  uli
+** Remove a pointless return value from some function. This helps in static code
+** analysis to ensure memory is never lost.
+**
 ** Revision 1.31  2011-04-18 07:00:59  uli
 ** Use global variables for the logger objects. This removes the thread-unsafe
 ** static local variables which were used before.

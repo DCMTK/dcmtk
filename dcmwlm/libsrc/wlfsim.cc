@@ -18,8 +18,8 @@
  *  Purpose: Class for managing file system interaction.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:05 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2011-05-03 07:46:38 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1082,7 +1082,7 @@ OFBool WlmFileSystemInteractionManager::ScheduledPerformingPhysicianNamesMatch( 
   strcpy( sv, searchMaskValue );
 
   // strip trailing spaces
-  sv = DU_stripTrailingSpaces( sv );
+  DU_stripTrailingSpaces( sv );
 
   // if we are dealing with universal matching, there is always a match
   if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
@@ -1117,7 +1117,7 @@ OFBool WlmFileSystemInteractionManager::PatientsNamesMatch( const char *datasetV
   strcpy( sv, searchMaskValue );
 
   // strip trailing spaces
-  sv = DU_stripTrailingSpaces( sv );
+  DU_stripTrailingSpaces( sv );
 
   // if we are dealing with universal matching, there is always a match
   if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
@@ -1177,7 +1177,7 @@ OFBool WlmFileSystemInteractionManager::AccessionNumbersMatch( const char *datas
   strcpy( sv, searchMaskValue );
 
   // strip trailing spaces
-  sv = DU_stripTrailingSpaces( sv );
+  DU_stripTrailingSpaces( sv );
 
   // if we are dealing with universal matching, there is always a match
   if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
@@ -1210,7 +1210,7 @@ OFBool WlmFileSystemInteractionManager::RequestedProcedureIdsMatch( const char *
   strcpy( sv, searchMaskValue );
 
   // strip trailing spaces
-  sv = DU_stripTrailingSpaces( sv );
+  DU_stripTrailingSpaces( sv );
 
   // if we are dealing with universal matching, there is always a match
   if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
@@ -1243,7 +1243,7 @@ OFBool WlmFileSystemInteractionManager::ReferringPhysicianNamesMatch( const char
   strcpy( sv, searchMaskValue );
 
   // strip trailing spaces
-  sv = DU_stripTrailingSpaces( sv );
+  DU_stripTrailingSpaces( sv );
 
   // if we are dealing with universal matching, there is always a match
   if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
@@ -1276,7 +1276,7 @@ OFBool WlmFileSystemInteractionManager::PatientsSexesMatch( const char *datasetV
   strcpy( sv, searchMaskValue );
 
   // strip trailing spaces
-  sv = DU_stripTrailingSpaces( sv );
+  DU_stripTrailingSpaces( sv );
 
   // if we are dealing with universal matching, there is always a match
   if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
@@ -1309,7 +1309,7 @@ OFBool WlmFileSystemInteractionManager::RequestingPhysiciansMatch( const char *d
   strcpy( sv, searchMaskValue );
 
   // strip trailing spaces
-  sv = DU_stripTrailingSpaces( sv );
+  DU_stripTrailingSpaces( sv );
 
   // if we are dealing with universal matching, there is always a match
   if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
@@ -1342,7 +1342,7 @@ OFBool WlmFileSystemInteractionManager::AdmissionIdsMatch( const char *datasetVa
   strcpy( sv, searchMaskValue );
 
   // strip trailing spaces
-  sv = DU_stripTrailingSpaces( sv );
+  DU_stripTrailingSpaces( sv );
 
   // if we are dealing with universal matching, there is always a match
   if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
@@ -1375,7 +1375,7 @@ OFBool WlmFileSystemInteractionManager::RequestedProcedurePrioritiesMatch( const
   strcpy( sv, searchMaskValue );
 
   // strip trailing spaces
-  sv = DU_stripTrailingSpaces( sv );
+  DU_stripTrailingSpaces( sv );
 
   // if we are dealing with universal matching, there is always a match
   if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
@@ -1456,10 +1456,10 @@ OFBool WlmFileSystemInteractionManager::DateTimeRangeMatch( const char *datasetD
     char *stv = new char[ strlen( searchMaskTimeValue ) + 1 ];  strcpy( stv, searchMaskTimeValue );
 
     // strip trailing spaces
-    ddv = DU_stripTrailingSpaces( ddv );
-    dtv = DU_stripTrailingSpaces( dtv );
-    sdv = DU_stripTrailingSpaces( sdv );
-    stv = DU_stripTrailingSpaces( stv );
+    DU_stripTrailingSpaces( ddv );
+    DU_stripTrailingSpaces( dtv );
+    DU_stripTrailingSpaces( sdv );
+    DU_stripTrailingSpaces( stv );
 
     // get actual date/time boundary values
     ExtractValuesFromRange( sdv, sdvv1, sdvv2 );
@@ -1557,8 +1557,8 @@ OFBool WlmFileSystemInteractionManager::DateRangeMatch( const char *datasetDateV
     char *sdv = new char[ strlen( searchMaskDateValue ) + 1 ];  strcpy( sdv, searchMaskDateValue );
 
     // strip trailing spaces
-    ddv = DU_stripTrailingSpaces( ddv );
-    sdv = DU_stripTrailingSpaces( sdv );
+    DU_stripTrailingSpaces( ddv );
+    DU_stripTrailingSpaces( sdv );
 
     // get actual date boundary values
     ExtractValuesFromRange( sdv, sdvv1, sdvv2 );
@@ -1636,8 +1636,8 @@ OFBool WlmFileSystemInteractionManager::TimeRangeMatch( const char *datasetTimeV
     char *stv = new char[ strlen( searchMaskTimeValue ) + 1 ];  strcpy( stv, searchMaskTimeValue );
 
     // strip trailing spaces
-    dtv = DU_stripTrailingSpaces( dtv );
-    stv = DU_stripTrailingSpaces( stv );
+    DU_stripTrailingSpaces( dtv );
+    DU_stripTrailingSpaces( stv );
 
     // get actual time boundary values
     ExtractValuesFromRange( stv, stvv1, stvv2 );
@@ -1741,8 +1741,8 @@ OFBool WlmFileSystemInteractionManager::DateTimeSingleValueMatch( const char *da
         char *sdv = new char[ strlen( searchMaskDateValue ) + 1 ];  strcpy( sdv, searchMaskDateValue );
 
         // strip trailing spaces
-        ddv = DU_stripTrailingSpaces( ddv );
-        sdv = DU_stripTrailingSpaces( sdv );
+        DU_stripTrailingSpaces( ddv );
+        DU_stripTrailingSpaces( sdv );
 
         // generate OFDate objects from strings
         cond = DcmDate::getOFDateFromString( OFString( ddv ), datasetDateVal );
@@ -1793,8 +1793,8 @@ OFBool WlmFileSystemInteractionManager::DateTimeSingleValueMatch( const char *da
         char *stv = new char[ strlen( searchMaskTimeValue ) + 1 ];  strcpy( stv, searchMaskTimeValue );
 
         // strip trailing spaces
-        dtv = DU_stripTrailingSpaces( dtv );
-        stv = DU_stripTrailingSpaces( stv );
+        DU_stripTrailingSpaces( dtv );
+        DU_stripTrailingSpaces( stv );
 
         // generate OFTime objects from strings
         cond = DcmTime::getOFTimeFromString( OFString( dtv ), datasetTimeVal );
@@ -1861,8 +1861,8 @@ OFBool WlmFileSystemInteractionManager::DateSingleValueMatch( const char *datase
       char *sdv = new char[ strlen( searchMaskDateValue ) + 1 ];  strcpy( sdv, searchMaskDateValue );
 
       // strip trailing spaces
-      ddv = DU_stripTrailingSpaces( ddv );
-      sdv = DU_stripTrailingSpaces( sdv );
+      DU_stripTrailingSpaces( ddv );
+      DU_stripTrailingSpaces( sdv );
 
       // generate OFDate objects from strings
       cond = DcmDate::getOFDateFromString( OFString( ddv ), datasetDateVal );
@@ -1931,8 +1931,8 @@ OFBool WlmFileSystemInteractionManager::TimeSingleValueMatch( const char *datase
       char *stv = new char[ strlen( searchMaskTimeValue ) + 1 ];  strcpy( stv, searchMaskTimeValue );
 
       // strip trailing spaces
-      dtv = DU_stripTrailingSpaces( dtv );
-      stv = DU_stripTrailingSpaces( stv );
+      DU_stripTrailingSpaces( dtv );
+      DU_stripTrailingSpaces( stv );
 
       // generate OFTime objects from strings
       cond = DcmTime::getOFTimeFromString( OFString( dtv ), datasetTimeVal );
@@ -1991,8 +1991,8 @@ OFBool WlmFileSystemInteractionManager::CaseSensitiveSingleValueMatch( const cha
   strcpy( sv, searchMaskValue );
 
   // strip trailing spaces
-  dv = DU_stripTrailingSpaces( dv );
-  sv = DU_stripTrailingSpaces( sv );
+  DU_stripTrailingSpaces( dv );
+  DU_stripTrailingSpaces( sv );
 
   // perform match
   if( strcmp( dv, sv ) != 0 )
@@ -2031,8 +2031,8 @@ OFBool WlmFileSystemInteractionManager::WildcardMatch( const char *datasetValue,
   char *svanchor = sv;
 
   // strip trailing spaces
-  dv = DU_stripTrailingSpaces( dv );
-  sv = DU_stripTrailingSpaces( sv );
+  DU_stripTrailingSpaces( dv );
+  DU_stripTrailingSpaces( sv );
 
   // go through both strings character by character as long as
   // a) we do not see an EOS in sv AND
@@ -2157,6 +2157,10 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
+** Revision 1.28  2011-05-03 07:46:38  uli
+** Remove a pointless return value from some function. This helps in static code
+** analysis to ensure memory is never lost.
+**
 ** Revision 1.27  2011-04-18 07:01:05  uli
 ** Use global variables for the logger objects. This removes the thread-unsafe
 ** static local variables which were used before.
