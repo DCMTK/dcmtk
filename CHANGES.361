@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.05.03 (schlachter)
 
+- Fixed the source code indentation.
+  Affects: dcmnet/libsrc/dulconst.cc
+
 - Remove a pointless return value from some function. This helps in static code
   analysis to ensure memory is never lost.
   Thanks to Per Inge Mathisen <perim@sonowand.com> for the idea and the patch.
