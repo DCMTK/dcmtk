@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-02 15:31:09 $
- *  CVS/RCS Revision: $Revision: 1.150 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-03 06:53:21 $
+ *  CVS/RCS Revision: $Revision: 1.151 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -202,6 +202,10 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
 {
     E_TransferSyntax transferSyntax;
     Uint8 tagAndVR[6];
+
+    /* we need 6 bytes, if there is less available we can't do much */
+    if (inStream.avail() < 6)
+        return EXS_LittleEndianExplicit;
 
     /* read 6 bytes from the input stream (try to read tag and VR (data type)) */
     inStream.mark();
@@ -3702,6 +3706,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.151  2011-05-03 06:53:21  uli
+** Fixed an uninitialized buffer use with truncated DICOM files.
+**
 ** Revision 1.150  2010-11-02 15:31:09  joergr
 ** Added special handling for data elements that are associated with different
 ** VRs (according to the data dictinary) when read with an implicit transfer

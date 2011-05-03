@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.04.29 (schlachter)
+
+- Fixed an uninitialized buffer use with truncated DICOM files. Thanks
+  to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report and patch.
+  Affects: dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2011.05.02 (riesmeier)
 
 - Fixed syntax error (missing closing bracket) if HAVE_GETHOSTID is undefined.
