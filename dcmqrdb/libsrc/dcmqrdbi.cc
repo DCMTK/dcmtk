@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle,
  *                   DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 10:29:55 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-04 07:38:24 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1214,7 +1214,12 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchStrings (DB_SmallDcmElmt *mod, DB_
     **/
 
     if ((strchr (modl, '*') == NULL) && (strchr (modl, '?') == NULL))
-        return (strcmp (modl, string) == 0) ;
+    {
+        int res = strcmp (modl, string);
+        free(string);
+        free(modl);
+        return res == 0;
+    }
 
     match = DB_StringUnify (modl, string) ;
 
@@ -3432,6 +3437,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.30  2011-05-04 07:38:24  uli
+ * Fixed some memory leaks in seldomly-used code paths.
+ *
  * Revision 1.29  2010-11-05 10:29:55  joergr
  * Added support for new Implantation Plan SR Document Storage SOP Class.
  *

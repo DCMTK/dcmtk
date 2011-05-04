@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-29 15:25:36 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-04 07:38:23 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -311,6 +311,7 @@ char *DcmDirectoryRecord::buildFileName(const char *origName,
         } else {
             /* we cannot find the file.  let the caller deal with this */
         }
+        delete[] newname;
     }
     return destName;
 }
@@ -1543,6 +1544,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.81  2011-05-04 07:38:23  uli
+ * Fixed some memory leaks in seldomly-used code paths.
+ *
  * Revision 1.80  2011-04-29 15:25:36  joergr
  * Added support for new directory record type PLAN from Supplement 74.
  *

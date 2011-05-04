@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.04 (schlachter)
+
+- Fixed some memory leaks in seldomly-used code paths. Thanks to Per Inge
+  Mathisen <perim@sonowand.com> for finding these and providing a patch.
+  Affects: dcmdata/libsrc/dcdirrec.cc
+           dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+           dcmnet/libsrc/dulconst.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+
 **** Changes from 2011.05.03 (schlachter)
 
 - Fixed the source code indentation.

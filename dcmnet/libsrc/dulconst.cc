@@ -62,8 +62,8 @@
 ** Author, Date:    Stephen M. Moore, 14-Apr-1993
 ** Intent:          This file contains functions for construction of
 **                  DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:     $Author: uli $, $Date: 2011-05-03 09:54:52 $
-** Revision:        $Revision: 1.30 $
+** Last Update:     $Author: uli $, $Date: 2011-05-04 07:38:24 $
+** Revision:        $Revision: 1.31 $
 ** Status:          $State: Exp $
 */
 
@@ -761,7 +761,11 @@ constructPresentationContext(unsigned char associateType,
 
             cond = constructSubItem(transfer->transferSyntax,
                     DUL_TYPETRANSFERSYNTAX, subItem, &length);
-            if (cond.bad()) return cond;
+            if (cond.bad())
+            {
+                free(subItem);
+                return cond;
+            }
 
             LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem);
 
@@ -1001,7 +1005,10 @@ constructSCUSCPRoles(unsigned char type,
               cond = constructSCUSCPSubItem(presentationCtx->abstractSyntax,
                       DUL_TYPESCUSCPROLE, scuRole, scpRole, scuscpItem, &length);
               if (cond.bad())
+              {
+                  free(scuscpItem);
                   return cond;
+              }
               *rtnLength += length;
               LST_Enqueue(lst, (LST_NODE*)scuscpItem);
           }
@@ -1524,6 +1531,9 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
+** Revision 1.31  2011-05-04 07:38:24  uli
+** Fixed some memory leaks in seldomly-used code paths.
+**
 ** Revision 1.30  2011-05-03 09:54:52  uli
 ** Fixed the source code indentation.
 **

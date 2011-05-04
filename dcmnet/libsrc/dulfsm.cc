@@ -59,8 +59,8 @@
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
 ** Intent:        Define tables and provide functions that implement
 **                the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:   $Author: uli $, $Date: 2011-05-03 09:16:56 $
-** Revision:      $Revision: 1.75 $
+** Last Update:   $Author: uli $, $Date: 2011-05-04 07:38:24 $
+** Revision:      $Revision: 1.76 $
 ** Status:        $State: Exp $
 */
 
@@ -949,6 +949,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             {
               char buf1[256];
               sprintf(buf1, "DUL Peer supplied illegal number of transfer syntaxes (%d)", 0);
+              free(userPresentationCtx);
               return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf1);
             }
 
@@ -956,6 +957,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             {
               char buf2[256];
               sprintf(buf2, "DUL Peer supplied illegal number of transfer syntaxes (%ld)", LST_Count(&prvCtx->transferSyntaxList));
+              free(userPresentationCtx);
               return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf2);
             }
             subItem = (DUL_SUBITEM*)LST_Head(&prvCtx->transferSyntaxList);
@@ -3817,6 +3819,7 @@ translatePresentationContextList(LST_HEAD ** internalList,
         {
             char buf1[256];
             sprintf(buf1, "DUL Peer supplied illegal number of transfer syntaxes (%d)", 0);
+            free(userContext);
             return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf1);
         }
         (void) LST_Position(&context->transferSyntaxList, (LST_NODE*)subItem);
@@ -3958,6 +3961,9 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.76  2011-05-04 07:38:24  uli
+** Fixed some memory leaks in seldomly-used code paths.
+**
 ** Revision 1.75  2011-05-03 09:16:56  uli
 ** Remove a pointless return value from some function. This helps in static code
 ** analysis to ensure memory is never lost.
