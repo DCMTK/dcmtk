@@ -52,8 +52,10 @@ struct LosslessTraitsImplT
 
 };
 
-// For some weird reason MSVC6 doesn't like these templates
-#if defined(_MSC_VER) && _MSC_VER <= 1200
+// For some weird reason MSVC6 doesn't like these templates.
+// xlC (compiler on AIX) tries to instantiate Triple<Triple<char> > which
+// causes compiler errors and is wrong (other compilers don't instantiate it).
+#if (defined(_MSC_VER) && _MSC_VER <= 1200) || defined(__xlC__)
 #  define DISABLE_SPECIALIZATIONS
 #else
 

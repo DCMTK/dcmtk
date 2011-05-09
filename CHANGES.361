@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.09 (schlachter)
+
+- Worked around compiler error during template instantiation on AIX with xlC.
+  Thanks to Michael Kraemer from GSI for reporting and testing this.
+  Affects: dcmjpls/libcharls/lltraits.h
+
 **** Changes from 2011.05.04 (schlachter)
 
 - Fixed some memory leaks in seldomly-used code paths. Thanks to Per Inge
