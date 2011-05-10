@@ -19,8 +19,8 @@
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-03-08 10:10:19 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2011-05-10 07:51:14 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -480,11 +480,16 @@ public:
       }
     }
 
-private:
-
-	/** private undefined copy assignment operator
-	 */
-	OFList<T>& operator=(const OFList<T>& arg);
+    /** copy assignment operator
+     * @param arg the list to copy from
+     * @return *this
+     */
+    OFList<T>& operator=(const OFList<T>& arg)
+    {
+        clear();
+        copy(arg);
+        return *this;
+    }
 };
 
 
@@ -561,6 +566,9 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
+** Revision 1.29  2011-05-10 07:51:14  uli
+** Add an assignment operator to OFList.
+**
 ** Revision 1.28  2011-03-08 10:10:19  uli
 ** Made OFList's destructor virtual again to fix memory leaks.
 **

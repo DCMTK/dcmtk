@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: test programm for classes OFList and OFListIterator
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:16 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-10 07:51:14 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,6 +77,14 @@ int main()
     COUT << "Ausgabe der List l1\n";
     print(l1);
 
+    COUT << "Kopiere Liste l in l2 mit operator=,\n";
+    OFList<int> l2;
+    // check if existing elements are properly removed
+    l2.push_back(5);
+    l2 = l;
+    COUT << "Ausgabe der List l2\n";
+    print(l2);
+
     COUT << "Loesche alle 100er (nacheinander) aus l" << OFendl;
 
     OFListIterator(int) del;
@@ -128,6 +136,9 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tstlist.cc,v $
+** Revision 1.13  2011-05-10 07:51:14  uli
+** Add an assignment operator to OFList.
+**
 ** Revision 1.12  2010-10-14 13:15:16  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

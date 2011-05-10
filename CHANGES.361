@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.10 (schlachter)
+
+- Add an assignment operator to OFList.
+  Affects: ofstd/include/dcmtk/ofstd/oflist.h
+           ofstd/tests/tstlist.cc
+           ofstd/tests/tstlist.exp
+
 **** Changes from 2011.05.09 (schlachter)
 
 - Worked around compiler error during template instantiation on AIX with xlC.
