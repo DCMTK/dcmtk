@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:41 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-11 10:03:35 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,6 +122,8 @@ extern const OFCondition EC_ValueMultiplicityViolated;
 extern const OFCondition EC_MaximumLengthViolated;
 /// Element length is larger than 16-bit length field permits
 extern const OFCondition EC_ElemLengthExceeds16BitField;
+/// Missing Delimitation Item while reading a sequence
+extern const OFCondition EC_DelimitationItemMissing;
 
 #ifndef OFCONDITION_STRICT_MODE
 
@@ -141,6 +143,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.37  2011-05-11 10:03:35  uli
+** Improved handling of files which ended before the end of a sequence.
+**
 ** Revision 1.36  2010-10-14 13:15:41  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

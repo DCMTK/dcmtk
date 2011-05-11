@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.11 (schlachter)
+
+- Improved handling of files which ended before the end of a sequence.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcsequen.cc
+
 **** Changes from 2011.05.11 (eichelberg)
 
 - Removed undisplayable character from comment line, which caused a 

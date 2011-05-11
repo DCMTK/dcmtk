@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 10:42:44 $
- *  CVS/RCS Revision: $Revision: 1.94 $
+ *  Update Date:      $Date: 2011-05-11 10:03:36 $
+ *  CVS/RCS Revision: $Revision: 1.95 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -564,6 +564,21 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
 
                 if (lastItemComplete)
                 {
+                    if (inStream.eos())
+                    {
+                        DCMDATA_WARN("Reached end of stream before the end of sequence "
+                                << getTagName() << " " << getTag());
+                        if (dcmIgnoreParsingErrors.get())
+                        {
+                            /* "Invent" a SequenceDelimitationItem.
+                             * This will be turned into EC_Normal below. */
+                            errorFlag = EC_SequEnd;
+                        }
+                        else
+                            errorFlag = EC_DelimitationItemMissing;
+                        break;
+                    }
+
                     errorFlag = readTagAndLength(inStream, readxfer, newTag, newValueLength);
 
                     if (errorFlag.bad())
@@ -1301,6 +1316,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.95  2011-05-11 10:03:36  uli
+** Improved handling of files which ended before the end of a sequence.
+**
 ** Revision 1.94  2010-11-01 10:42:44  uli
 ** Fixed some compiler warnings reported by gcc with additional flags.
 **

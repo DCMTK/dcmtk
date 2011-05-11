@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:07 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-11 10:03:36 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,6 +64,7 @@ const OFConditionConst ECC_ValueRepresentationViolated(OFM_dcmdata, 30, OF_error
 const OFConditionConst ECC_ValueMultiplicityViolated(  OFM_dcmdata, 31, OF_error, "Value Multiplicity violated"                );
 const OFConditionConst ECC_MaximumLengthViolated(      OFM_dcmdata, 32, OF_error, "Maximum VR length violated"                 );
 const OFConditionConst ECC_ElemLengthExceeds16BitField(OFM_dcmdata, 33, OF_error, "Length of element value exceeds maximum of 16-bit length field" );
+const OFConditionConst ECC_DelimitationItemMissing(    OFM_dcmdata, 34, OF_error, "Item- or SequenceDelimitationItem missing at end of sequence" );
 
 const OFCondition EC_InvalidTag(                 ECC_InvalidTag);
 const OFCondition EC_TagNotFound(                ECC_TagNotFound);
@@ -93,6 +94,7 @@ const OFCondition EC_ValueRepresentationViolated(ECC_ValueRepresentationViolated
 const OFCondition EC_ValueMultiplicityViolated(  ECC_ValueMultiplicityViolated);
 const OFCondition EC_MaximumLengthViolated(      ECC_MaximumLengthViolated);
 const OFCondition EC_ElemLengthExceeds16BitField(ECC_ElemLengthExceeds16BitField);
+const OFCondition EC_DelimitationItemMissing(    ECC_DelimitationItemMissing);
 
 
 const char *dcmErrorConditionToString(OFCondition cond)
@@ -104,6 +106,9 @@ const char *dcmErrorConditionToString(OFCondition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
+** Revision 1.27  2011-05-11 10:03:36  uli
+** Improved handling of files which ended before the end of a sequence.
+**
 ** Revision 1.26  2010-10-14 13:14:07  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
