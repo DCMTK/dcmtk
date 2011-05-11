@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.11 (eichelberg)
+
+- Removed undisplayable character from comment line, which caused a 
+  C8419 warning on Visual C++.
+  Thanks to Wang Qiang<wq_net@163.com> for the report.
+  Affects: CMake/osconfig.h.in
+
 **** Changes from 2011.05.10 (schlachter)
 
 - Add an assignment operator to OFList.
