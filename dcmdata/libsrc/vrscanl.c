@@ -355,8 +355,8 @@ static void yy_fatal_error (yyconst char msg[] ,yyscan_t yyscanner );
 	*yy_cp = '\0'; \
 	yyg->yy_c_buf_p = yy_cp;
 
-#define YY_NUM_RULES 19
-#define YY_END_OF_BUFFER 20
+#define YY_NUM_RULES 20
+#define YY_END_OF_BUFFER 21
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -366,8 +366,8 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[1758] =
     {   0,
-        0,    0,   20,   18,   19,   18,   18,   18,   18,   18,
-       18,   18,   18,   16,    1,   12,    2,    7,    8,   10,
+        0,    0,   21,   19,   18,   19,   19,   19,   19,   19,
+       19,   19,   19,   16,    1,   12,    2,    7,    8,   10,
        15,    0,   13,    5,   11,    0,   16,   16,    0,    1,
        12,   12,   12,    0,    0,    0,    2,    0,    0,    0,
         7,    7,    0,    0,    0,    8,    0,    0,    0,   10,
@@ -5489,7 +5489,7 @@ static yyconst flex_int16_t yy_chk[19183] =
 #line 1 "vrscanl.l"
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -5507,15 +5507,15 @@ static yyconst flex_int16_t yy_chk[19183] =
  *  Purpose:
  *    These are the regular expressions for the value representations
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:07:00 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-11 11:00:46 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log:
  *  $Log: vrscanl.c,v $
- *  Revision 1.6  2010-10-14 13:07:00  joergr
- *  Updated copyright header. Added reference to COPYRIGHT file.
+ *  Revision 1.7  2011-05-11 11:00:46  uli
+ *  Fixed a bug where the VR scanner wrote output to stdout.
  *
  *  Revision 1.6  2010-10-14 13:04:24  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
@@ -5987,17 +5987,22 @@ YY_RULE_SETUP
 #line 194 "vrscanl.l"
 {return 14; /* LT | ST | UT */}
 	YY_BREAK
+/* . doesn't match \n, this needs a special case! */
 case 18:
-YY_RULE_SETUP
-#line 195 "vrscanl.l"
-{return 16; /* UNKNOWN */;}
-	YY_BREAK
+/* rule 18 can match eol */
+#line 197 "vrscanl.l"
 case 19:
+/* rule 19 can match eol */
 YY_RULE_SETUP
 #line 197 "vrscanl.l"
+{return 16; /* UNKNOWN */;}
+	YY_BREAK
+case 20:
+YY_RULE_SETUP
+#line 199 "vrscanl.l"
 ECHO;
 	YY_BREAK
-#line 5998 "vrscanl.c"
+#line 6003 "vrscanl.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -7067,7 +7072,7 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 197 "vrscanl.l"
+#line 199 "vrscanl.l"
 
 
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,13 +18,16 @@
  *  Purpose:
  *    These are the regular expressions for the value representations
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:04:24 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-11 11:00:46 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log:
  *  $Log: vrscanl.l,v $
+ *  Revision 1.7  2011-05-11 11:00:46  uli
+ *  Fixed a bug where the VR scanner wrote output to stdout.
+ *
  *  Revision 1.6  2010-10-14 13:04:24  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
@@ -192,6 +195,8 @@ pn{pn-old}?(\\{pn-old}?)*  {return 15; /* OLD_PN */}
 lo{lo-sh}?(\\{lo-sh}?)*    {return 12; /* LO | SH */}
 ae{ae}?(\\{ae}?)*          {return 13; /* AE */}
 lt{lt-st-ut}               {return 14; /* LT | ST | UT */}
+                           /* . doesn't match \n, this needs a special case! */
+\n                         |
 .                          {return 16; /* UNKNOWN */;}
 
 %%

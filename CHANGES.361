@@ -8,6 +8,11 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcerror.cc
            dcmdata/libsrc/dcsequen.cc
 
+- Fixed a bug where the VR scanner wrote output to stdout.
+  Affects: dcmdata/libsrc/vrscanl.c
+           dcmdata/libsrc/vrscanl.h
+           dcmdata/libsrc/vrscanl.l
+
 **** Changes from 2011.05.11 (eichelberg)
 
 - Removed undisplayable character from comment line, which caused a 
