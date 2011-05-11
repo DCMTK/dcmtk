@@ -828,7 +828,7 @@ typedef unsigned long ulong;
 
 #ifdef _MSC_VER
 #if _MSC_VER <= 1200 /* Additional settings for VC6 and older */
-/* disable warning that return type for 'identifier::operator >' is not a UDT or reference to a UDT */
+/* disable warning that return type for 'identifier::operator ->' is not a UDT or reference to a UDT */
 #pragma warning( disable : 4284 )
 #define HAVE_OLD_INTERLOCKEDCOMPAREEXCHANGE
 #else
