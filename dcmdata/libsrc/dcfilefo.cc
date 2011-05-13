@@ -18,8 +18,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-21 15:02:52 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2011-05-13 12:24:31 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -225,7 +225,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
     OFCondition l_error = EC_Normal;
 
     /* if there is meta header information and also data set information, do something */
-    if (metainfo != NULL && dataset != NULL)
+    if ((metainfo != NULL) && (dataset != NULL))
     {
         /* intitialize variables */
         DcmStack stack;
@@ -245,7 +245,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 metainfo->insert(elem, OFTrue);
             }
             Uint32 temp = 0;
-            if (elem->getLength() == 0 && elem->ident() == EVR_UL)
+            if ((elem->getLength() == 0) && (elem->ident() == EVR_UL))
                 OFstatic_cast(DcmUnsignedLong *, elem)->putUint32Array(&temp, 1);
             // the calculation of actual group length value is contained in validateMetaInfo()
         }
@@ -257,7 +257,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 metainfo->insert(elem, OFTrue);
             }
             Uint8 version[2] = {0,1};
-            if (elem->getLength() == 0 && elem->ident() == EVR_OB)
+            if ((elem->getLength() == 0) && (elem->ident() == EVR_OB))
                 OFstatic_cast(DcmOtherByteOtherWord *, elem)->putUint8Array(version, 2);
 
             // check version of meta header
@@ -279,7 +279,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                         << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                         << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
                         << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0])
-                        << " supported: 0x"
+                        << ", supported: 0x"
                         << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[1])
                         << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[0]));
                 }
@@ -294,19 +294,38 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 elem = new DcmUniqueIdentifier(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            if (((writeMode == EWM_updateMeta) || (elem->getLength() == 0)) && (elem->ident() == EVR_UI))
+            if (elem->ident() == EVR_UI)
             {
-                if (dataset->search(DCM_SOPClassUID, stack).good())
+                if ((writeMode == EWM_updateMeta) || (elem->getLength() == 0))
                 {
-                    char *uid = NULL;
-                    l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
-                    OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
-                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() use SOPClassUID [" << uid << "]");
+                    if (dataset->search(DCM_SOPClassUID, stack).good())
+                    {
+                        char *uid = NULL;
+                        l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
+                        OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
+                        DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() use SOPClassUID [" << uid << "]");
+                    }
+                    else if (elem->getLength() == 0)
+                    {
+                        OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(UID_PrivateGenericFileSOPClass);
+                        DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() no SOPClassUID in Dataset, using PrivateGenericFileSOPClass");
+                    }
                 }
-                else if (elem->getLength() == 0)
+                else if (DCM_dcmdataLogger.isEnabledFor(OFLogger::WARN_LOG_LEVEL))
                 {
-                    OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(UID_PrivateGenericFileSOPClass);
-                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() no SOPClassUID in Dataset, using PrivateGenericFileSOPClass");
+                    // check whether UID in meta-header is identical to the one in the dataset
+                    if (dataset->search(DCM_SOPClassUID, stack).good())
+                    {
+                        OFString uidDataset, uidMetaHeader;
+                        OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getOFStringArray(uidDataset);
+                        OFstatic_cast(DcmUniqueIdentifier *, elem)->getOFStringArray(uidMetaHeader);
+                        if (uidDataset != uidMetaHeader)
+                        {
+                            DCMDATA_WARN("DcmFileFormat: Value of SOPClassUID in MetaHeader and Dataset is different");
+                            DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() value of MediaStorageSOPClassUID (MetaHeader) [" << uidMetaHeader << "]");
+                            DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() value of SOPClassUID (Dataset) [" << uidDataset << "]");
+                        }
+                    }
                 }
             }
         }
@@ -317,21 +336,40 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 elem = new DcmUniqueIdentifier(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            if (((writeMode == EWM_updateMeta) || (elem->getLength() == 0)) && (elem->ident() == EVR_UI))
+            if (elem->ident() == EVR_UI)
             {
-                if (dataset->search(DCM_SOPInstanceUID, stack).good())
+                if ((writeMode == EWM_updateMeta) || (elem->getLength() == 0))
                 {
-                    char* uid = NULL;
-                    l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
-                    OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
-                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() use SOPInstanceUID [" << uid << "] from Dataset");
+                    if (dataset->search(DCM_SOPInstanceUID, stack).good())
+                    {
+                        char* uid = NULL;
+                        l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
+                        OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
+                        DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() use SOPInstanceUID [" << uid << "] from Dataset");
+                    }
+                    else if (elem->getLength() == 0)
+                    {
+                        char uid[128];
+                        dcmGenerateUniqueIdentifier(uid);       // from dcuid.h
+                        OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
+                        DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() use new generated SOPInstanceUID [" << uid << "]");
+                    }
                 }
-                else if (elem->getLength() == 0)
+                else if (DCM_dcmdataLogger.isEnabledFor(OFLogger::WARN_LOG_LEVEL))
                 {
-                    char uid[128];
-                    dcmGenerateUniqueIdentifier(uid);       // from dcuid.h
-                    OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
-                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() use new generated SOPInstanceUID [" << uid << "]");
+                    // check whether UID in meta-header is identical to the one in the dataset
+                    if (dataset->search(DCM_SOPInstanceUID, stack).good())
+                    {
+                        OFString uidDataset, uidMetaHeader;
+                        OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getOFStringArray(uidDataset);
+                        OFstatic_cast(DcmUniqueIdentifier *, elem)->getOFStringArray(uidMetaHeader);
+                        if (uidDataset != uidMetaHeader)
+                        {
+                            DCMDATA_WARN("DcmFileFormat: Value of SOPInstanceUID in MetaHeader and Dataset is different");
+                            DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() value of MediaStorageSOPInstanceUID (MetaHeader) [" << uidMetaHeader << "]");
+                            DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() value of SOPInstanceUID (Dataset) [" << uidDataset << "]");
+                        }
+                    }
                 }
             }
         }
@@ -419,7 +457,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
         if (elem == NULL)
             l_error = EC_InvalidVR;
     } else {
-    /* (i.e. there is either no meta header information or no data set information */
+        /* (i.e. there is either no meta header information or no data set information */
         l_error = EC_IllegalCall;
     }
 
@@ -928,6 +966,10 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.66  2011-05-13 12:24:31  joergr
+** Output log messages if value of SOPClassUID or SOPInstanceUID in file meta
+** information header and dataset is different.
+**
 ** Revision 1.65  2011-03-21 15:02:52  joergr
 ** Added module name "DCMDATA_" as a prefix to the ANSI escape code macros.
 ** Moved ANSI escape code for "reset" to the end of each output line (before

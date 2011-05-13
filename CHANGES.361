@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.13 (riesmeier)
+
+- Output log messages if value of SOPClassUID or SOPInstanceUID in file meta
+  information header and dataset is different.
+  Affects: dcmdata/libsrc/dcfilefo.cc
+
 **** Changes from 2011.05.11 (schlachter)
 
 - Improved handling of files which ended before the end of a sequence.
@@ -15,7 +21,7 @@ Changes between releases are documented here.
 
 **** Changes from 2011.05.11 (eichelberg)
 
-- Removed undisplayable character from comment line, which caused a 
+- Removed undisplayable character from comment line, which caused a
   C8419 warning on Visual C++.
   Thanks to Wang Qiang<wq_net@163.com> for the report.
   Affects: CMake/osconfig.h.in
