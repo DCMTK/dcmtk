@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-05-17 14:34:32 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2011-05-17 14:43:55 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -847,6 +847,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.21  2011-05-17 14:43:55  onken
+** Removed some windows line endings.
+**
 ** Revision 1.20  2011-05-17 14:34:32  onken
 ** Completed doxygen documentation of DcmSCU class. Fixed some minor formatting
 ** issues. Fixed CVS log at end of the file. Implemented C-CANCEL message.
