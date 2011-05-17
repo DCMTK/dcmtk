@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-04-28 17:50:05 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2011-05-17 14:26:19 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ void DcmSCU::freeNetwork()
      Usually this is done in ASC_destroyAssociation; however, if we already
      have association parameters but not yet an association (e.g. after calling
      initNetwork() and negotiateAssociation()), the latter approach may fail.
-   */
+  */
   if (m_params)
   {
     ASC_destroyAssociationParameters(&m_params);
@@ -93,7 +93,8 @@ void DcmSCU::freeNetwork()
   // drop the network, i.e. free memory of T_ASC_Network* structure.
   ASC_dropNetwork(&m_net);
   // Cleanup old DIMSE request if any
-  delete m_openDIMSERequest; m_openDIMSERequest = NULL;
+  delete m_openDIMSERequest;
+  m_openDIMSERequest = NULL;
 }
 
 
@@ -227,7 +228,7 @@ OFCondition DcmSCU::initNetwork()
   OFListConstIterator(DcmSCUPresContext) endOfContList = m_presContexts.end();
   while ((contIt != endOfContList) && (nextFreePresID <= 255))
   {
-    const Uint16 numTransferSyntaxes = (*contIt).transferSyntaxes.size();
+    const Uint16 numTransferSyntaxes = OFstatic_cast(Uint16, (*contIt).transferSyntaxes.size());
     const char** transferSyntaxes = new const char*[numTransferSyntaxes];
 
     // Iterate over transfer syntaxes within one presentation context
@@ -246,7 +247,8 @@ OFCondition DcmSCU::initNetwork()
     cond = ASC_addPresentationContext(m_params, OFstatic_cast(Uint8, nextFreePresID),
       (*contIt).abstractSyntaxName.c_str(), transferSyntaxes, numTransferSyntaxes);
     // if adding was successfull, prepare pres. context ID for next addition
-    delete[] transferSyntaxes; transferSyntaxes = NULL;
+    delete[] transferSyntaxes;
+    transferSyntaxes = NULL;
     if (cond.bad())
       return cond;
     contIt++;
@@ -271,7 +273,7 @@ OFCondition DcmSCU::negotiateAssociation()
   /* Return error if SCU is already connected */
   if (isConnected())
     return SCU_EC_AlreadyConnected;
-  
+
   /* dump presentation contexts if required */
   OFString tempStr;
   if (m_verbosePCMode)
@@ -288,7 +290,6 @@ OFCondition DcmSCU::negotiateAssociation()
     if (cond == DUL_ASSOCIATIONREJECTED)
     {
       T_ASC_RejectParameters rej;
-
       ASC_getRejectParameters(m_params, &rej);
       DCMNET_DEBUG("Association Rejected:" << OFendl << ASC_printRejectParameters(tempStr, &rej));
       return cond;
@@ -376,7 +377,8 @@ T_ASC_PresentationContextID DcmSCU::findPresentationContextID(const OFString &ab
         found &= (strcmp(pc->acceptedTransferSyntax, transferSyntax.c_str()) == 0);
       if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
   }
-  if (found) return pc->presentationContextID;
+  if (found)
+    return pc->presentationContextID;
 
   return 0;   /* not found */
 }
@@ -431,7 +433,7 @@ void DcmSCU::closeAssociation(const DcmCloseAssociationType closeType)
     DCMNET_WARN("Closing of association request but no association active (ignored)");
     return;
   }
-  
+
   OFCondition cond;
   OFString tempStr;
 
@@ -503,24 +505,59 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
   }
 
   /* Now, assemble DIMSE message */
-  Uint16 status;
-  cond = DIMSE_echoUser(m_assoc, nextMessageID(), m_blockMode, m_dimseTimeout, &status, NULL);
+  T_DIMSE_Message msg;
+  T_DIMSE_C_EchoRQ* req = &(msg.msg.CEchoRQ);
+  // Set type of message
+  msg.CommandField = DIMSE_C_ECHO_RQ;
+  // Set message ID
+  req->MessageID = nextMessageID();
+  // Announce no dataset
+  req->DataSetType = DIMSE_DATASET_NULL;
+  // Set affected SOP Class UID (always Verification SOP Class)
+  OFStandard::strlcpy(req->AffectedSOPClassUID, UID_VerificationSOPClass, sizeof(UID_VerificationSOPClass));
+
+  /* Send request */
+  OFString tempStr;
+  DCMNET_INFO("Send C-ECHO Request");
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, NULL, pcid));
+  cond = sendDIMSEMessage(pcid, &msg, NULL, NULL /* no callback */, NULL /* callback context */, NULL /* commandset */);
   if (cond.bad())
   {
-    OFString tempStr;
-    DCMNET_ERROR("Failed sending C-ECHO request or receiving response: " << DimseCondition::dump(tempStr, cond));
+    DCMNET_ERROR("Failed sending C-ECHO request: " << DimseCondition::dump(tempStr, cond));
     return cond;
   }
-  else
+
+  /* Receive response */
+  T_DIMSE_Message rsp;
+  Uint16 status;
+  DcmDataset* statusDetail = NULL;
+  cond = receiveDIMSECommand(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
+  if (cond.bad())
   {
-    if (status == STATUS_Success)
-      DCMNET_DEBUG("Successfully sent C-ECHO request");
-    else
-    {
-      DCMNET_ERROR("C-ECHO failed with status code: 0x"
-        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << status);
-      return makeOFCondition(OFM_dcmnet, 22, OF_error, "SCP returned non-success status in C-ECHO response");
-    }
+    DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, cond));
+    return cond;
+  }
+  /* Check whether we reveiced C-ECHO response, otherwise print error */
+  if (rsp.CommandField == DIMSE_C_ECHO_RSP)
+  {
+    OFString tempStr;
+    DCMNET_INFO("Received C-ECHO Response");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
+  } else {
+    DCMNET_ERROR("Expected C-ECHO response but received DIMSE command 0x"
+        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+        << OFstatic_cast(unsigned int, rsp.CommandField));
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
+    delete statusDetail;
+    return DIMSE_BADCOMMANDTYPE;
+  }
+  /* Print status detail if it was received */
+  T_DIMSE_C_EchoRSP echoRsp = rsp.msg.CEchoRSP;
+  status = echoRsp.DimseStatus;
+  if (statusDetail != NULL)
+  {
+    DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+    delete statusDetail;
   }
   return EC_Normal;
 }
@@ -556,7 +593,8 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   if (!dicomFile.empty())
   {
     dcmff = new DcmFileFormat();
-    if (dcmff == NULL) return EC_MemoryExhausted;
+    if (dcmff == NULL)
+      return EC_MemoryExhausted;
     cond = dcmff->loadFile(dicomFile.c_str());
     if (cond.bad())
       return cond;
@@ -643,9 +681,9 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
 
 
 // Sends a C-MOVE Request on given presentation context
-OFCondition DcmSCU::sendMOVERequest(T_ASC_PresentationContextID presID, 
-                                    const OFString &aetStoreSCP, 
-                                    DcmDataset *ds, 
+OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
+                                    const OFString &aetStoreSCP,
+                                    DcmDataset *ds,
                                     MOVEResponses *responses )
 {
   // Do some basic validity checks
@@ -668,8 +706,14 @@ OFCondition DcmSCU::sendMOVERequest(T_ASC_PresentationContextID presID,
   // Announce dataset
   req->DataSetType = DIMSE_DATASET_PRESENT;
   // Set target for embedded C-Store's
-  if (aetStoreSCP.length() < sizeof(req->MoveDestination)){strcpy( req->MoveDestination, aetStoreSCP.c_str());}
-  else {strcpy( req->MoveDestination, aetStoreSCP.substr(0,sizeof(req->MoveDestination)-1).c_str());};
+  if (aetStoreSCP.length() < sizeof(req->MoveDestination))
+  {
+    strcpy( req->MoveDestination, aetStoreSCP.c_str());
+  }
+  else
+  {
+    strcpy( req->MoveDestination, aetStoreSCP.substr(0,sizeof(req->MoveDestination)-1).c_str());
+  }
   // Set priority (mandatory)
   req->Priority = DIMSE_PRIORITY_LOW;
 
@@ -776,8 +820,8 @@ OFCondition DcmSCU::sendMOVERequest(T_ASC_PresentationContextID presID,
 
 
 // Standard handler for C-MOVE message responses
-OFCondition DcmSCU::handleMOVEResponse( Uint16 presContextID, 
-                                        MOVEResponse *response, 
+OFCondition DcmSCU::handleMOVEResponse( const T_ASC_PresentationContextID presContextID,
+                                        MOVEResponse *response,
                                         OFBool &waitForNextResponse )
 {
   // Do some basic validity checks
@@ -959,7 +1003,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
 
 
 // Standard handler for C-FIND message responses
-OFCondition DcmSCU::handleFINDResponse(Uint16 /* presContextID */,
+OFCondition DcmSCU::handleFINDResponse(const T_ASC_PresentationContextID /* presContextID */,
                                        FINDResponse *response,
                                        OFBool &waitForNextResponse)
 {
@@ -991,25 +1035,50 @@ OFCondition DcmSCU::handleFINDResponse(Uint16 /* presContextID */,
 }
 
 
-// Send C-FIND-CANCEL and, therefore, ends current C-FIND session
-OFCondition DcmSCU::sendFINDCANCELRequest(Uint16 /* presContextID */)
+// Send C-CANCEL-REQ and, therefore, ends current C-FIND, -MOVE or -GET session
+OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presContextID)
 {
   if (!isConnected())
     return DIMSE_ILLEGALASSOCIATION;
 
-  // TODO: needs to be implemented
-  return EC_Normal;
-}
+  /* Prepare DIMSE data structures for issuing request */
+  OFCondition cond;
+  OFString tempStr;
+  T_ASC_PresentationContextID pcid = presContextID;
+  T_DIMSE_Message msg;
+  DcmDataset* statusDetail = NULL;
+  T_DIMSE_C_CancelRQ* req = &(msg.msg.CCancelRQ);
+  // Set type of message
+  msg.CommandField = DIMSE_C_CANCEL_RQ;
+  /* Set message ID responded to. A new message ID is _not_ needed so
+     we do not increment the message ID here but instead have to give the
+     message ID that was used last.
+     Note that that it is required to actually use the message ID of the last
+     C-FIND/GET/MOVE that was issued on this presentation context channel.
+     However, since we only support synchronous association mode so far,
+     it is enough to take the last message ID used at all.
+     For asynchronous operation, we would have to lookup the message ID
+     of the last C-FIND/GET/MOVE request issued and thus, store this
+     information after sending it.
+   */
+  req->MessageIDBeingRespondedTo = m_assoc->nextMsgID; // this is actually the last message ID
+  // Announce dataset
+  req->DataSetType = DIMSE_DATASET_NULL;
 
+  /* We do not care about the transfer syntax since no
+     dataset is transported at all, i.e. we trust that the user provided
+     the correct presentation context ID (could be private one).
+   */
+  DCMNET_INFO("Send C-CAMCEL Request");
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, NULL, pcid));
+  cond = sendDIMSEMessage(pcid, &msg, NULL /* dataset */, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending C-CANCEL request: " << DimseCondition::dump(tempStr, cond));
+  }
 
-// Send C-MOVE-CANCEL and, therefore, ends current C-MOVE session
-OFCondition DcmSCU::sendMOVECANCELRequest(Uint16 /* presContextID */)
-{
-  if (!isConnected())
-    return DIMSE_ILLEGALASSOCIATION;
-
-  // TODO: needs to be implemented
-  return EC_Normal;
+  DCMNET_TRACE("There is no C-CAMCEL response in DICOM, so none expected");
+  return cond;
 }
 
 
@@ -1483,16 +1552,11 @@ FINDResponses::FINDResponses()
 
 FINDResponses::~FINDResponses()
 {
-  Uint32 numelems = m_responses.size();
-
-  FINDResponse *rsp = NULL;
-  for (Uint32 i=0; i < numelems; i++)
+  while (!m_responses.empty())
   {
-    rsp = m_responses.front();
-    if (rsp != NULL)
-    {
-      delete rsp; rsp = NULL;
-    }
+    FINDResponse* rsp = m_responses.front();
+    delete rsp;
+    rsp = NULL;
     m_responses.pop_front();
   }
 }
@@ -1500,7 +1564,7 @@ FINDResponses::~FINDResponses()
 
 Uint32 FINDResponses::numResults() const
 {
-  return m_responses.size();
+  return OFstatic_cast(Uint32, m_responses.size());
 }
 
 
@@ -1539,7 +1603,9 @@ FINDResponse::FINDResponse() :
 FINDResponse::~FINDResponse()
 {
   delete m_dataset;
+  m_dataset = NULL;
   delete m_statusDetail;
+  m_dataset = NULL;
 }
 
 
@@ -1554,24 +1620,19 @@ MOVEResponses::MOVEResponses()
 
 MOVEResponses::~MOVEResponses()
 {
-  Uint32 numelems = m_responses.size();
-
-  MOVEResponse *rsp = NULL;
-  for (Uint32 i=0; i < numelems; i++)
+  while (!m_responses.empty())
   {
-    rsp = m_responses.front();
-    if (rsp != NULL)
-    {
-        delete rsp; rsp = NULL;
-    }
-    m_responses.pop_front();
+     MOVEResponse *rsp = m_responses.front();
+     delete rsp;
+     rsp = NULL;
+     m_responses.pop_front();
   }
 }
 
 
 Uint32 MOVEResponses::numResults() const
 {
-  return m_responses.size();
+  return OFstatic_cast(Uint32, m_responses.size());
 }
 
 
@@ -1615,32 +1676,53 @@ MOVEResponse::MOVEResponse() :
 MOVEResponse::~MOVEResponse()
 {
   delete m_dataset;
+  m_dataset = NULL;
   delete m_statusDetail;
+  m_statusDetail = NULL;
 }
 
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.24  2011-05-17 14:26:19  onken
+** Implemented C-CANCEL message. Fixed some minor formatting issues.
+** Changed C-ECHO implementation to rely on sendDIMSEMesage as the other
+** DIMSE functions do. Changed some public function arguments to const to be
+** more correct. Fixed CVS log at the end of the scu.cc file.
+**
 ** Revision 1.23  2011-04-28 17:50:05  onken
 ** Re-sorted header list to make scu.h come first (after osconfig.h).
 ** Protected public networking functions for creating an association
-** from being called twice.
-**
-** Enhanced protection of DIMSE messaging functions from being
-** called without being connected.
-**
-** Introduced status detail into C-FIND responses (and C-MOVE
-** responses). Was not accessible to the caller before.
-**
-** Minor code cleanups.
-**
-** Added C-MOVE code for retrieving DICOM objects. So far only retrieving
-** on a separate connection is supported.
-**
-** Added function for cleaning up internal memory from destructor. This function
-** also fixes a memory leak in case users call initNetwork more than one time.
-**
+** from being called twice. Enhanced protection of DIMSE messaging
+** functions from being called without being connected. Introduced
+** status detail into C-FIND responses (and C-MOVE responses). Was
+**  not accessible to the caller before. Minor code cleanups. Added
+** C-MOVE code for retrieving DICOM objects. So far only retrieving
+** on a separate connection is supported. Added function for cleaning
+** up internal memory from destructor. This function also fixes a
+** memory leak in case users call initNetwork more than one time.
 ** Added error code returned by functions if SCU is already connected.
+**
+** Revision 1.22  2011-04-18 07:01:03  uli
+** Use global variables for the logger objects. This removes the thread-unsafe
+** static local variables which were used before.
+**
+** Revision 1.21  2011-04-05 11:16:13  joergr
+** Output DIMSE status code in hexadecimal format to the logger. Removed unused
+** code (local half-implemented function). Added more comments.
+**
+** Revision 1.20  2011-03-09 11:13:28  onken
+** Enhanced error message for missing data in store request.
+**
+** Revision 1.19  2011-02-23 08:11:51  joergr
+** Fixed issue with undefined priority field in C-STORE and C-FIND request.
+**
+** Revision 1.18  2011-02-16 08:55:17  joergr
+** Fixed issue in sendSTORERequest() when sending a dataset that was created
+** in memory (and which has, therefore, an original transfer of EXS_Unknown).
+**
+** Revision 1.17  2011-02-04 12:57:40  uli
+** Made sure all members are initialized in the constructor (-Weffc++).
 **
 ** Revision 1.16  2010-12-21 09:37:36  onken
 ** Fixed wrong response assignment in DcmSCU's C-STORE code. Thanks to
