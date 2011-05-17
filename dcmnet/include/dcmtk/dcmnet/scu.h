@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-05-17 14:26:21 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2011-05-17 14:34:32 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -845,6 +845,34 @@ private:
 #endif // SCU_H
 
 /*
+** CVS Log
+** $Log: scu.h,v $
+** Revision 1.20  2011-05-17 14:34:32  onken
+** Completed doxygen documentation of DcmSCU class. Fixed some minor formatting
+** issues. Fixed CVS log at end of the file. Implemented C-CANCEL message.
+** Fixed some minor formatting issues. Changed C-ECHO implementation to rely
+** on sendDIMSEMesage as the other DIMSE functions do. Changed some public
+** function arguments to const to be more correct. Fixed CVS log at the end
+** of the file. Re-formatted CHANGES log entry from 2011-04-28.
+**
+** Revision 1.19 2011-05-17 14:26:19  onken
+** Implemented C-CANCEL message. Fixed some minor formatting issues.
+** Changed C-ECHO implementation to rely on sendDIMSEMesage as the other
+** DIMSE functions do. Changed some public function arguments to const to be
+** more correct. Fixed CVS log at the end of the scu.cc file.
+**
+** Revision 1.18 2011-04-28 17:50:05  onken
+** Protected public networking functions for creating an association
+** from being called twice. Enhanced protection of DIMSE messaging
+** functions from being called without being connected. Introduced
+** status detail into C-FIND responses (and C-MOVE responses). Was
+**  not accessible to the caller before. Minor code cleanups. Added
+** C-MOVE code for retrieving DICOM objects. So far only retrieving
+** on a separate connection is supported. Added function for cleaning
+** up internal memory from destructor. This function also fixes a
+** memory leak in case users call initNetwork more than one time.
+** Added error code returned by functions if SCU is already connected.
+**
 ** Revision 1.17  2011-02-16 08:55:13  joergr
 ** Fixed issue in sendSTORERequest() when sending a dataset that was created
 ** in memory (and which has, therefore, an original transfer of EXS_Unknown).

@@ -1,6 +1,21 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.17 (onken)
+
+- Completed doxygen documentation of DcmSCU class. Fixed some minor formatting
+  issues. Fixed CVS log at end of the file.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+ 
+- Implemented C-CANCEL message. Fixed some minor formatting issues.
+  Changed C-ECHO implementation to rely on sendDIMSEMesage as the other
+  DIMSE functions do. Changed some public function arguments to const to be
+  more correct. Fixed CVS log at the end of the file.
+  Affects: dcmnet/libsrc/scu.cc
+
+- Re-formatted CHANGES log entry from 2011-04-28.
+  Affects: CHANGES.361
+
 **** Changes from 2011.05.13 (riesmeier)
 
 - Output log messages if value of SOPClassUID or SOPInstanceUID in file meta
@@ -108,21 +123,19 @@ Changes between releases are documented here.
 
 - Added C-MOVE code for retrieving DICOM objects. So far only retrieving
   on a separate connection is supported. Thanks to Fred Stegemann
-  <fred.stegemann@fstsoft.de> for the initial patch.
-- Added function for cleaning up internal memory from destructor. This function
+  <fred.stegemann@fstsoft.de> for the initial patch. Added function for
+  cleaning up internal memory from destructor. This function
   also fixes a memory leak in case users call initNetwork more than one time.
-- Added error code returned by functions if SCU is already connected.
+  Added error code returned by functions if SCU is already connected.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
            dcmnet/libsrc/scu.cc
 
-- Re-sorted header list to make scu.h come first (after osconfig.h).
-- Protected public networking functions for creating an association
-  from being called twice.
-- Enhanced protection of DIMSE messaging functions from being
-  called without being connected.
-- Introduced status detail into C-FIND responses (and C-MOVE
-  responses). Was not accessible to the caller before.
-- Minor code cleanups.
+- Re-sorted header list to make scu.h come first (after osconfig.h). Protected
+  public networking functions for creating an association from being called
+  twice. Enhanced protection of DIMSE messaging functions from being
+  called without being connected. Introduced status detail into C-FIND
+  responses (and C-MOVE responses). Was not accessible to the caller before.
+  Minor code cleanups.
   Affects: dcmnet/libsrc/scu.cc
 
 - Added some extra documentation.
