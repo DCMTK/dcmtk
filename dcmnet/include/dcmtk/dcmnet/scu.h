@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-05-19 09:57:26 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2011-05-19 17:20:09 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -357,7 +357,7 @@ public:
                                        Uint16 &rspStatusCode);
 
   /** Sends a C-MOVE Request on given presentation context and receives list of responses.
-   *  The function receives the first response and then calls the function handleMOVEResponse
+   *  The function receives the first response and then calls the function handleMOVEResponse()
    *  which gets the relevant presentation context together with the response dataset and
    *  status information. Then it waits again for the next response, if there are more to
    *  come (i.e. response status is PENDING). In the end, after receiving all responses, the
@@ -391,7 +391,7 @@ public:
    *  responses it receives and prints a DEBUG message. Therefore, it is called by for
    *  each response received in sendMOVERequest(). The idea is of course to overwrite
    *  this function in a derived, actual SCU implementation if required. Thus, after
-   *  each response, the caller of sendFINDRequest() can decide on its own whether he
+   *  each response, the caller of sendMOVERequest() can decide on its own whether he
    *  wants to cancel the C-MOVE session, terminate the association, do something useful
    *  or whatever. Thus this function is a more object oriented kind of callback.
    *  @param presContextID [in]  The presentation context ID where the response
@@ -845,6 +845,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.23  2011-05-19 17:20:09  onken
+** Fixed some documentation.
+**
 ** Revision 1.22  2011-05-19 09:57:26  onken
 ** Fixed message ID field in C-CANCEL request (should be the one of last
 ** request). In case of error status codes in C-MOVE responses, the default
