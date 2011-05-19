@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-05-19 10:37:44 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2011-05-19 10:51:20 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -706,14 +706,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
   // Announce dataset
   req->DataSetType = DIMSE_DATASET_PRESENT;
   // Set target for embedded C-Store's
-  if (moveDestinationAETitle.length() < sizeof(req->MoveDestination))
-  {
-    strcpy( req->MoveDestination, moveDestinationAETitle.c_str());
-  }
-  else
-  {
-    strcpy( req->MoveDestination, moveDestinationAETitle.substr(0,sizeof(req->MoveDestination)-1).c_str());
-  }
+  OFStandard::strlcpy(req->MoveDestination, moveDestinationAETitle.c_str(), sizeof(req->MoveDestination));
   // Set priority (mandatory)
   req->Priority = DIMSE_PRIORITY_LOW;
 
@@ -736,15 +729,8 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
 
   /* Receive and handle C-MOVE response messages */
   OFBool waitForNextResponse = OFTrue;
-  Uint16 count = 0; //TODO
   while (waitForNextResponse)
   {
-    count++;// TODO
-    if (count == 3)
-    {
-      sendCANCELRequest(pcid);
-      COUT << " !!!!!!!!!!!!!!!!!!!!!!!!!!!!" << OFendl;
-    }
     T_DIMSE_Message rsp;
     statusDetail = NULL;
 
@@ -1695,6 +1681,10 @@ MOVEResponse::~MOVEResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.28  2011-05-19 10:51:20  onken
+** Simplified C string copy by using OFStandard::strlcpy and removed debugging
+** code introduced with last comit.
+**
 ** Revision 1.27  2011-05-19 10:37:44  onken
 ** Removed unused variable that caused compiler warning. Fixed typo.
 **

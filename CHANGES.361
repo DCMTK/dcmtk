@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.05.19 (onken)
 
+- Simplified C string copy by using OFStandard::strlcpy and removed debugging
+  code introduced with last commit.
+  Affects: dcmnet/libsrc/scu.cc
+
 - Removed unused variable that caused compiler warning. Fixed typo.
   Affects: dcmnet/libsrc/scu.cc
 
