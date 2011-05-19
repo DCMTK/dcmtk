@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.19(onken)
+
+- Fixed wrong usage of strlcpy in new C-CANCEL function.
+  Affects: dcmnet/libsrc/scu.cc
+
 **** Changes from 2011.05.17 (onken)
 
 - Completed doxygen documentation of DcmSCU class. Fixed some minor formatting

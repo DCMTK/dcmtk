@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-05-17 14:26:19 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2011-05-19 08:08:30 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -514,7 +514,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
   // Announce no dataset
   req->DataSetType = DIMSE_DATASET_NULL;
   // Set affected SOP Class UID (always Verification SOP Class)
-  OFStandard::strlcpy(req->AffectedSOPClassUID, UID_VerificationSOPClass, sizeof(UID_VerificationSOPClass));
+  OFStandard::strlcpy(req->AffectedSOPClassUID, UID_VerificationSOPClass, sizeof(req->AffectedSOPClassUID));
 
   /* Send request */
   OFString tempStr;
@@ -1684,6 +1684,9 @@ MOVEResponse::~MOVEResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.25  2011-05-19 08:08:30  onken
+** Fixed wrong usage of strlcpy in new C-CANCEL function.
+**
 ** Revision 1.24  2011-05-17 14:26:19  onken
 ** Implemented C-CANCEL message. Fixed some minor formatting issues.
 ** Changed C-ECHO implementation to rely on sendDIMSEMesage as the other
