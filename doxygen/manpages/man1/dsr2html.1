@@ -1,4 +1,4 @@
-.TH "dsr2html" 1 "6 Jan 2011" "Version 3.6.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsr2html" 1 "19 May 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dsr2html \- Render DICOM SR file and data set to HTML/XHTML
@@ -103,6 +103,10 @@ error handling:
 
   -Er  --unknown-relationship
          accept unknown/missing relationship type
+
+  -Ev  --invalid-item-value
+         accept invalid content item value
+         (e.g. violation of VR or VM definition)
 
   -Ec  --ignore-constraints
          ignore relationship content constraints
@@ -249,4 +253,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2000-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

@@ -1,4 +1,4 @@
-.TH "storescu" 1 "6 Jan 2011" "Version 3.6.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescu" 1 "19 May 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescu \- DICOM storage (C-STORE) SCU
@@ -157,6 +157,12 @@ proposed transmission transfer syntaxes (not with --config-file):
 
   -xh   --propose-mpeg2-high
           propose MPEG2 Main Profile @ High Level TS only
+
+  -xn   --propose-mpeg4
+          propose MPEG4 AVC/H.264 High Profile / Level 4.1 TS only
+
+  -xl   --propose-mpeg4-bd
+          propose MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS only
 
   -xr   --propose-rle
           propose RLE lossless TS
@@ -415,6 +421,8 @@ JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
 JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
 MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
 MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
+MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
+MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .fi
 .PP
@@ -451,4 +459,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1996-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

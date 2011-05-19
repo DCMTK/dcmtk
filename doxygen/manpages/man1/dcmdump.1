@@ -1,4 +1,4 @@
-.TH "dcmdump" 1 "6 Jan 2011" "Version 3.6.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdump" 1 "19 May 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdump \- Dump DICOM file and data set
@@ -234,6 +234,11 @@ printing:
 
          # not available on Windows systems
 
+  -C   --no-color
+         do not use any ANSI escape codes (default)
+
+         # not available on Windows systems
+
 error handling:
 
   -E   --stop-on-error
@@ -245,8 +250,9 @@ error handling:
 searching:
 
   +P   --search  [t]ag: "gggg,eeee" or dictionary name
-         print the value of tag t this option can be specified
-         multiple times (default: the complete file is printed)
+         print the value of tag t
+         this option can be specified multiple times
+         (default: the complete file is printed)
 
   +s   --search-all
          print all instances of searched tags (default)
@@ -257,7 +263,7 @@ searching:
   +p   --prepend
          prepend sequence hierarchy to printed tag,
          denoted by: (gggg,eeee).(gggg,eeee).*
-         (only with --search-all or --search-first)
+         (only when used with --search)
 
   -p   --no-prepend
          do not prepend hierarchy to tag (default)
@@ -291,4 +297,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdump2dcm\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

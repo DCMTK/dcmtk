@@ -1,4 +1,4 @@
-.TH "findscu" 1 "6 Jan 2011" "Version 3.6.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "19 May 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 findscu \- DICOM query (C-FIND) SCU
@@ -110,8 +110,17 @@ proposed transmission transfer syntaxes:
           propose all uncompressed TS, explicit VR
           big endian first
 
+  -xd   --propose-deflated
+          propose deflated explicit VR little endian TS
+          and all uncompressed transfer syntaxes
+
   -xi   --propose-implicit
           propose implicit VR little endian TS only
+
+deflate compression level (only with --propose-deflated):
+
+  +cl   --compression-level  [l]evel: integer (default: 6)
+          0=uncompressed, 1=fastest, 9=best compression
 
 other network options:
 
@@ -276,16 +285,21 @@ FINDModalityWorklistInformationModel               1.2.840.10008.5.1.4.31
 .fi
 .PP
 .PP
-The \fBfindscu\fP application will propose presentation contexts for one of the abovementioned supported SOP Classes depending on command line options (\fI-P\fP, \fI-S\fP, \fI-O\fP or \fI-W\fP). Each proposed presentation context will propose the transfer syntaxes:
+The \fBfindscu\fP application will propose presentation contexts for one of the abovementioned supported SOP Classes depending on command line options (\fI-P\fP, \fI-S\fP, \fI-O\fP or \fI-W\fP). Basically, the following transfer syntaxes are supported:
 .PP
 .PP
 .nf
 
 LittleEndianImplicitTransferSyntax                 1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                 1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax       1.2.840.10008.1.2.1.99 (*)
 BigEndianExplicitTransferSyntax                    1.2.840.10008.1.2.2
 .fi
 .PP
+.PP
+(*) if compiled with zlib support enabled (see \fI--version\fP output)
+.PP
+Which transfer syntaxes are actually proposed in what order, can be specified with the \fI--propose\fP options.
 .PP
 The \fBfindscu\fP application does not support extended negotiation.
 .SH "LOGGING"
@@ -310,4 +324,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

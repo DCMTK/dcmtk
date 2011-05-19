@@ -1,4 +1,4 @@
-.TH "dcml2pnm" 1 "6 Jan 2011" "Version 3.6.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcml2pnm" 1 "19 May 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcml2pnm \- Convert DICOM images to PGM/PPM, PNG, TIFF or BMP
@@ -350,6 +350,14 @@ general:
   -o    --no-output
           do not create any output (useful with -im)
 
+filename generation (only with --frame-range or --all-frames):
+
+  +Fc   --use-frame-counter
+          use 0-based counter for filenames (default)
+
+  +Fn   --use-frame-number
+          use absolute frame number for filenames
+
 image format:
 
   +op   --write-raw-pnm
@@ -449,4 +457,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcm2pnm\fP(1), \fBimg2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2001-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

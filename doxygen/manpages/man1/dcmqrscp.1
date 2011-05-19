@@ -1,4 +1,4 @@
-.TH "dcmqrscp" 1 "6 Jan 2011" "Version 3.6.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrscp" 1 "19 May 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmqrscp \- DICOM image archive (central test node)
@@ -83,6 +83,9 @@ port  tcp/ip port number to listen on (default: in config file)
 
         --fork
           fork child process for each association (default)
+
+  # Please note that the multi-process options are only available
+  # on systems that support the fork() call, i.e. not on Windows.
 .fi
 .PP
 .SS "database options"
@@ -211,6 +214,12 @@ preferred network transfer syntaxes (incoming associations):
   +xh   --prefer-mpeg2-high
           prefer MPEG2 Main Profile @ High Level TS
 
+  +xn   --prefer-mpeg4
+          prefer MPEG4 AVC/H.264 High Profile / Level 4.1 TS
+
+  +xl   --prefer-mpeg4-bd
+          prefer MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS
+
   +xr   --prefer-rle
           prefer RLE lossless TS
 
@@ -268,6 +277,12 @@ proposed transmission transfer syntaxes (outgoing associations):
 
   -xh   --propose-mpeg2-high
           propose MPEG2 Main Profile @ High Level TS only
+
+  -xn   --propose-mpeg4
+          propose MPEG4 AVC/H.264 High Profile / Level 4.1 TS only
+
+  -xl   --propose-mpeg4-bd
+          propose MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS only
 
   -xr   --propose-rle
           propose RLE lossless TS
@@ -545,6 +560,7 @@ RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481
 RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481.8
 RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
 DRAFT_RTBeamsDeliveryInstructionStorage              1.2.840.10008.5.1.4.34.1
+RTBeamsDeliveryInstructionStorage                    1.2.840.10008.5.1.4.34.7
 GenericImplantTemplateStorage                        1.2.840.10008.5.1.4.43.1
 ImplantAssemblyTemplateStorage                       1.2.840.10008.5.1.4.44.1
 ImplantTemplateGroupStorage                          1.2.840.10008.5.1.4.45.1
@@ -580,6 +596,8 @@ JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
 JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
 MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
 MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
+MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
+MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .fi
 .PP
@@ -719,6 +737,7 @@ RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481
 RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481.8
 RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
 DRAFT_RTBeamsDeliveryInstructionStorage              1.2.840.10008.5.1.4.34.1
+RTBeamsDeliveryInstructionStorage                    1.2.840.10008.5.1.4.34.7
 GenericImplantTemplateStorage                        1.2.840.10008.5.1.4.43.1
 ImplantAssemblyTemplateStorage                       1.2.840.10008.5.1.4.44.1
 ImplantTemplateGroupStorage                          1.2.840.10008.5.1.4.45.1
@@ -756,6 +775,8 @@ JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
 JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
 MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
 MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
+MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
+MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .fi
 .PP
@@ -862,4 +883,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmqrti\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1993-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1993-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

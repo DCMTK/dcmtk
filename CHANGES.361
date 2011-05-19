@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.19 (riesmeier)
+
+- Updated man pages for new development snapshot.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2011.05.19 (onken)
 
 - Simplified C string copy by using OFStandard::strlcpy and removed debugging
@@ -16,7 +21,7 @@ Changes between releases are documented here.
   to better fit the messages while receiveing C-MOVE responses. Minor
   code and comment cleanups.
   Affects: dcmnet/libsrc/scu.cc
-  
+
 - Renamed function parameter in sendMOVEREquest to better reflect the standard.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
 
@@ -28,7 +33,7 @@ Changes between releases are documented here.
 - Completed doxygen documentation of DcmSCU class. Fixed some minor formatting
   issues. Fixed CVS log at end of the file.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
- 
+
 - Implemented C-CANCEL message. Fixed some minor formatting issues.
   Changed C-ECHO implementation to rely on sendDIMSEMesage as the other
   DIMSE functions do. Changed some public function arguments to const to be

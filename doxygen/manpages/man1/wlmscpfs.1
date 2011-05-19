@@ -1,4 +1,4 @@
-.TH "wlmscpfs" 1 "6 Jan 2011" "Version 3.6.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "19 May 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
@@ -119,6 +119,9 @@ preferred network transfer syntaxes:
   +xb   --prefer-big
           prefer explicit VR big endian TS
 
+  +xd   --prefer-deflated
+          prefer deflated explicit VR little endian TS
+
   +xi   --implicit
           accept implicit VR little endian TS only
 
@@ -137,6 +140,11 @@ post-1993 value representations:
 
   -u    --disable-new-vr
           disable support for new VRs, convert to OB
+
+deflate compression level (only with --prefer-deflated):
+
+  +cl   --compression-level  [l]evel: integer (default: 6)
+          0=uncompressed, 1=fastest, 9=best compression
 
 other network options:
 
@@ -205,6 +213,15 @@ BigEndianExplicitTransferSyntax       1.2.840.10008.1.2.2
 .PP
 .PP
 The default behaviour of the \fBwlmscpfs\fP application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBwlmscpfs\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa). This behaviour can be changed with the \fI--prefer\fP options (see above).
+.PP
+If compiled with zlib support enabled (see \fI--version\fP output) and if option \fI--prefer-deflated\fP is used, also the following transfer syntax is accepted.
+.PP
+.PP
+.nf
+
+DeflatedExplicitVRLittleEndianTransferSyntax  1.2.840.10008.1.2.1.99 (*)
+.fi
+.PP
 .PP
 The \fBwlmscpfs\fP application does not support extended negotiation.
 .PP
@@ -345,4 +362,4 @@ The \fBwlmscpfs\fP utility will attempt to load DICOM data dictionaries specifie
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1996-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

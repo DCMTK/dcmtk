@@ -1,4 +1,4 @@
-.TH "movescu" 1 "6 Jan 2011" "Version 3.6.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "movescu" 1 "19 May 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 movescu \- DICOM retrieve (C-MOVE) SCU
@@ -126,6 +126,12 @@ preferred network transfer syntaxes (incoming associations):
   +xh   --prefer-mpeg2-high
           prefer MPEG2 Main Profile @ High Level TS
 
+  +xn   --prefer-mpeg4
+          prefer MPEG4 AVC/H.264 High Profile / Level 4.1 TS
+
+  +xl   --prefer-mpeg4-bd
+          prefer MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS
+
   +xr   --prefer-rle
           prefer RLE lossless TS
 
@@ -149,6 +155,10 @@ proposed transmission transfer syntaxes (outgoing associations):
 
   -xb   --propose-big
           propose all uncompressed TS, explicit VR big endian first
+
+  -xd   --propose-deflated
+          propose deflated explicit VR little endian TS
+          and all uncompressed transfer syntaxes
 
   -xi   --propose-implicit
           propose implicit VR little endian TS only
@@ -290,7 +300,8 @@ data set trailing padding
           align file on multiple of f bytes and items on
           multiple of i bytes
 
-deflate compression level (only with --write-xfer-deflated/same):
+deflate compression level
+(only with --propose-deflated or --write-xfer-deflated/same):
 
   +cl   --compression-level  [l]evel: integer (default: 6)
           0=uncompressed, 1=fastest, 9=best compression
@@ -344,18 +355,21 @@ MOVEPatientStudyOnlyQueryRetrieveInformationModel    1.2.840.10008.5.1.4.1.2.3.2
 .fi
 .PP
 .PP
-The \fBmovescu\fP application will propose presentation contexts for one of the abovementioned supported SOP Classes depending on command line options (\fI-P\fP, \fI-S\fP, or \fI-O\fP). Each proposed presentation context will propose the transfer syntaxes:
+The \fBmovescu\fP application will propose presentation contexts for one of the abovementioned supported SOP Classes depending on command line options (\fI-P\fP, \fI-S\fP, or \fI-O\fP). For outgoing associations, the following transfer syntaxes are supported:
 .PP
 .PP
 .nf
 
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99 (*)
 BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 .fi
 .PP
 .PP
-This behaviour can be changed with the \fI--propose\fP options.
+(*) if compiled with zlib support enabled (see \fI--version\fP output)
+.PP
+Which transfer syntaxes are actually proposed in what order, can be specified with the \fI--propose\fP options.
 .SS "SCP Conformance"
 The \fBmovescu\fP application supports the following SOP Classes as an SCP:
 .PP
@@ -480,13 +494,14 @@ RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481
 RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481.8
 RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
 DRAFT_RTBeamsDeliveryInstructionStorage              1.2.840.10008.5.1.4.34.1
+RTBeamsDeliveryInstructionStorage                    1.2.840.10008.5.1.4.34.7
 GenericImplantTemplateStorage                        1.2.840.10008.5.1.4.43.1
 ImplantAssemblyTemplateStorage                       1.2.840.10008.5.1.4.44.1
 ImplantTemplateGroupStorage                          1.2.840.10008.5.1.4.45.1
 .fi
 .PP
 .PP
-The \fBmovescu\fP application will accept presentation contexts for all of the abovementioned supported SOP Classes using any of the transfer syntaxes:
+The \fBmovescu\fP application will usually accept presentation contexts for all of the abovementioned supported SOP Classes using any of the following transfer syntaxes:
 .PP
 .PP
 .nf
@@ -504,7 +519,7 @@ When acting as an SCP, the \fBmovescu\fP application will prefer transfer syntax
 
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99 (*)
 BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50
 JPEGProcess2_4TransferSyntax                         1.2.840.10008.1.2.4.51
@@ -515,9 +530,13 @@ JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
 JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
 MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
 MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
+MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
+MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .fi
 .PP
+.PP
+(*) if compiled with zlib support enabled (see \fI--version\fP output)
 .PP
 The \fBmovescu\fP application does not support extended negotiation.
 .SS "Access Control"
@@ -556,4 +575,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBfindscu\fP(1), \fBdump2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
