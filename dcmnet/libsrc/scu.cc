@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-05-19 10:51:20 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2011-05-19 17:19:52 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -822,6 +822,8 @@ OFCondition DcmSCU::handleMOVEResponse( const T_ASC_PresentationContextID presCo
   // Do some basic validity checks
   if (!isConnected())
     return DIMSE_ILLEGALASSOCIATION;
+  if (response == NULL)
+    return DIMSE_NULLKEY;
 
   DCMNET_DEBUG("Handling C-MOVE Response");
   switch (response->m_status) {
@@ -849,7 +851,7 @@ OFCondition DcmSCU::handleMOVEResponse( const T_ASC_PresentationContextID presCo
     /* in this case the current C-MOVE-RSP indicates that */
     /* there will be some more results */
     waitForNextResponse = OFTrue;
-    DCMNET_DEBUG("One or more outstanding C-CMOVE responses");
+    DCMNET_DEBUG("One or more pending C-MOVE responses");
     break;
   case STATUS_Success:
     /* in this case, we received the last C-MOVE-RSP so there */
@@ -1007,6 +1009,8 @@ OFCondition DcmSCU::handleFINDResponse(const T_ASC_PresentationContextID /* pres
 {
   if (!isConnected())
     return DIMSE_ILLEGALASSOCIATION;
+  if (response == NULL)
+    return DIMSE_NULLKEY;
 
   DCMNET_DEBUG("Handling C-FIND Response");
   switch (response->m_status) {
@@ -1015,7 +1019,7 @@ OFCondition DcmSCU::handleFINDResponse(const T_ASC_PresentationContextID /* pres
       /* in this case the current C-FIND-RSP indicates that */
       /* there will be some more results */
       waitForNextResponse = OFTrue;
-      DCMNET_DEBUG("One or more outstanding C-FIND responses");
+      DCMNET_DEBUG("One or more pending C-FIND responses");
       break;
     case STATUS_Success:
       /* in this case the current C-FIND-RSP indicates that */
@@ -1549,12 +1553,11 @@ FINDResponses::FINDResponses()
 
 FINDResponses::~FINDResponses()
 {
-  while (!m_responses.empty())
+  OFListIterator(FINDResponse*) it = m_responses.begin();
+  while (it != m_responses.end())
   {
-    FINDResponse* rsp = m_responses.front();
-    delete rsp;
-    rsp = NULL;
-    m_responses.pop_front();
+    delete *it;
+    it++;
   }
 }
 
@@ -1617,12 +1620,11 @@ MOVEResponses::MOVEResponses()
 
 MOVEResponses::~MOVEResponses()
 {
-  while (!m_responses.empty())
+  OFListIterator(MOVEResponse*) it = m_responses.begin();
+  while (it != m_responses.end())
   {
-     MOVEResponse *rsp = m_responses.front();
-     delete rsp;
-     rsp = NULL;
-     m_responses.pop_front();
+    delete *it;
+    it++;
   }
 }
 
@@ -1673,14 +1675,16 @@ MOVEResponse::MOVEResponse() :
 MOVEResponse::~MOVEResponse()
 {
   delete m_dataset;
-  m_dataset = NULL;
   delete m_statusDetail;
-  m_statusDetail = NULL;
 }
 
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.29  2011-05-19 17:19:52  onken
+** Fixed some documentation. Added some extra checks for NULL when handling MOVE
+** and FIND responses. Simplified destructors for FIND and MOVEResponses.
+**
 ** Revision 1.28  2011-05-19 10:51:20  onken
 ** Simplified C string copy by using OFStandard::strlcpy and removed debugging
 ** code introduced with last comit.
