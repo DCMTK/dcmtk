@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-05-19 09:57:24 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2011-05-19 10:37:44 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -537,7 +537,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
     DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, cond));
     return cond;
   }
-  /* Check whether we reveiced C-ECHO response, otherwise print error */
+  /* Check whether we received C-ECHO response, otherwise print error */
   if (rsp.CommandField == DIMSE_C_ECHO_RSP)
   {
     OFString tempStr;
@@ -1058,7 +1058,6 @@ OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presCont
   OFString tempStr;
   T_ASC_PresentationContextID pcid = presContextID;
   T_DIMSE_Message msg;
-  DcmDataset* statusDetail = NULL;
   T_DIMSE_C_CancelRQ* req = &(msg.msg.CCancelRQ);
   // Set type of message
   msg.CommandField = DIMSE_C_CANCEL_RQ;
@@ -1696,6 +1695,9 @@ MOVEResponse::~MOVEResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.27  2011-05-19 10:37:44  onken
+** Removed unused variable that caused compiler warning. Fixed typo.
+**
 ** Revision 1.26  2011-05-19 09:57:24  onken
 ** Fixed message ID field in C-CANCEL request (should be the one of last
 ** request). In case of error status codes in C-MOVE responses, the default

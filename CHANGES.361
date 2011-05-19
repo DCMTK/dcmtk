@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.05.19 (onken)
 
+- Removed unused variable that caused compiler warning. Fixed typo.
+  Affects: dcmnet/libsrc/scu.cc
+
 - Fixed message ID field in C-CANCEL request (should be the one of last
   request). In case of error status codes in C-MOVE responses, the default
   behaviour is now to not wait for further responses. Fixed log output level
