@@ -1,7 +1,17 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2011.05.19(onken)
+**** Changes from 2011.05.19 (onken)
+
+- Fixed message ID field in C-CANCEL request (should be the one of last
+  request). In case of error status codes in C-MOVE responses, the default
+  behaviour is now to not wait for further responses. Fixed log output level
+  to better fit the messages while receiveing C-MOVE responses. Minor
+  code and comment cleanups.
+  Affects: dcmnet/libsrc/scu.cc
+  
+- Renamed function parameter in sendMOVEREquest to better reflect the standard.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
 
 - Fixed wrong usage of strlcpy in new C-CANCEL function.
   Affects: dcmnet/libsrc/scu.cc

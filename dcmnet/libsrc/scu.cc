@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-05-19 08:08:30 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2011-05-19 09:57:24 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -682,14 +682,14 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
 
 // Sends a C-MOVE Request on given presentation context
 OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
-                                    const OFString &aetStoreSCP,
-                                    DcmDataset *ds,
+                                    const OFString &moveDestinationAETitle,
+                                    DcmDataset *dataset,
                                     MOVEResponses *responses )
 {
   // Do some basic validity checks
   if ( !isConnected() )
     return DIMSE_ILLEGALASSOCIATION;
-  if (ds == NULL)
+  if (dataset == NULL)
     return DIMSE_NULLKEY;
 
   /* Prepare DIMSE data structures for issuing request */
@@ -706,37 +706,45 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
   // Announce dataset
   req->DataSetType = DIMSE_DATASET_PRESENT;
   // Set target for embedded C-Store's
-  if (aetStoreSCP.length() < sizeof(req->MoveDestination))
+  if (moveDestinationAETitle.length() < sizeof(req->MoveDestination))
   {
-    strcpy( req->MoveDestination, aetStoreSCP.c_str());
+    strcpy( req->MoveDestination, moveDestinationAETitle.c_str());
   }
   else
   {
-    strcpy( req->MoveDestination, aetStoreSCP.substr(0,sizeof(req->MoveDestination)-1).c_str());
+    strcpy( req->MoveDestination, moveDestinationAETitle.substr(0,sizeof(req->MoveDestination)-1).c_str());
   }
   // Set priority (mandatory)
   req->Priority = DIMSE_PRIORITY_LOW;
 
-  // Determine SOP Class from presentation context
+  /* Determine SOP Class from presentation context */
   OFString abstractSyntax, transferSyntax;
   findPresentationContext(pcid, abstractSyntax, transferSyntax);
   if (abstractSyntax.empty() || transferSyntax.empty())
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   OFStandard::strlcpy(req->AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(req->AffectedSOPClassUID));
 
+  /* Sending MOVE request */
   DCMNET_INFO("Send C-MOVE Request");
   DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, NULL, pcid));
-  cond = sendDIMSEMessage(pcid, &msg, ds, NULL /* callback */, NULL /* callbackContext */);
+  cond = sendDIMSEMessage(pcid, &msg, dataset, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending C-MOVE request: " << DimseCondition::dump(tempStr, cond));
     return cond;
   }
 
-  /* Receive and handle response */
+  /* Receive and handle C-MOVE response messages */
   OFBool waitForNextResponse = OFTrue;
+  Uint16 count = 0; //TODO
   while (waitForNextResponse)
   {
+    count++;// TODO
+    if (count == 3)
+    {
+      sendCANCELRequest(pcid);
+      COUT << " !!!!!!!!!!!!!!!!!!!!!!!!!!!!" << OFendl;
+    }
     T_DIMSE_Message rsp;
     statusDetail = NULL;
 
@@ -746,7 +754,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
     {
       DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, cond));
       delete statusDetail;
-      return cond;
+      break;
     }
 
     if (rsp.CommandField == DIMSE_C_MOVE_RSP)
@@ -759,7 +767,8 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
         << OFstatic_cast(unsigned int, rsp.CommandField));
       DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
       delete statusDetail;
-      return DIMSE_BADCOMMANDTYPE;
+      cond = DIMSE_BADCOMMANDTYPE;
+      break;
     }
 
     // Prepare response package for response handler
@@ -792,7 +801,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
         DCMNET_ERROR("Unable to receive C-MOVE dataset on presentation context "
             << OFstatic_cast(unsigned int, pcid) << ": " << DimseCondition::dump(tempStr, cond));
         delete moveRSP; // includes statusDetail
-        return DIMSE_BADDATA;
+        break;
       }
       DCMNET_DEBUG("Received dataset on presentation context " << OFstatic_cast(unsigned int, pcid));
       moveRSP->m_dataset = rspDataset;
@@ -831,24 +840,24 @@ OFCondition DcmSCU::handleMOVEResponse( const T_ASC_PresentationContextID presCo
   DCMNET_DEBUG("Handling C-MOVE Response");
   switch (response->m_status) {
   case STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass:
-    waitForNextResponse = OFTrue;
-    DCMNET_WARN("Identifier does not match SOP class in C-MOVE response");
+    waitForNextResponse = OFFalse;
+    DCMNET_ERROR("Identifier does not match SOP class in C-MOVE response");
     break;
   case STATUS_MOVE_Failed_MoveDestinationUnknown:
-    waitForNextResponse = OFTrue;
-    DCMNET_WARN("Move destination unknown");
+    waitForNextResponse = OFFalse;
+    DCMNET_ERROR("Move destination unknown");
     break;
   case STATUS_MOVE_Failed_UnableToProcess:
-    waitForNextResponse = OFTrue;
-    DCMNET_WARN("Unable to process C-Move response");
+    waitForNextResponse = OFFalse;
+    DCMNET_ERROR("Unable to process C-Move response");
     break;
   case STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication:
     waitForNextResponse = OFFalse;
-    DCMNET_WARN("Canceled suboperations of outstanding C-CMOVE responses");
+    DCMNET_DEBUG("Suboperations canceled by server due to CANCEL indication");
     break;
   case STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures:
     waitForNextResponse = OFFalse;
-    DCMNET_DEBUG("Suboperations of C-MOVE completed with one or more failures");
+    DCMNET_WARN("Suboperations of C-MOVE completed with one or more failures");
     break;
   case STATUS_Pending:
     /* in this case the current C-MOVE-RSP indicates that */
@@ -857,15 +866,18 @@ OFCondition DcmSCU::handleMOVEResponse( const T_ASC_PresentationContextID presCo
     DCMNET_DEBUG("One or more outstanding C-CMOVE responses");
     break;
   case STATUS_Success:
-    /* in this case the current C-MOVE-RSP indicates that */
-    /* there are no more records that match the search mask */
+    /* in this case, we received the last C-MOVE-RSP so there */
+    /* will be no other responses we have to wait for. */
     waitForNextResponse = OFFalse;
     DCMNET_DEBUG("Received final C-MOVE response, no more C-MOVE responses expected");
     break;
   default:
     /* in all other cases, don't expect further responses to come */
     waitForNextResponse = OFFalse;
-    DCMNET_DEBUG("Status tells not to wait for further C-MOVE responses");
+    DCMNET_WARN("Status is 0x"
+      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+      << response->m_status << " (unknown)");
+    DCMNET_WARN("Will not wait for further C-MOVE responses");
     break;
   } //switch
 
@@ -1061,7 +1073,7 @@ OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presCont
      of the last C-FIND/GET/MOVE request issued and thus, store this
      information after sending it.
    */
-  req->MessageIDBeingRespondedTo = m_assoc->nextMsgID; // this is actually the last message ID
+  req->MessageIDBeingRespondedTo = m_assoc->nextMsgID - 1;
   // Announce dataset
   req->DataSetType = DIMSE_DATASET_NULL;
 
@@ -1684,6 +1696,14 @@ MOVEResponse::~MOVEResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.26  2011-05-19 09:57:24  onken
+** Fixed message ID field in C-CANCEL request (should be the one of last
+** request). In case of error status codes in C-MOVE responses, the default
+** behaviour is now to not wait for further responses. Fixed log output level
+** to better fit the messages while receiveing C-MOVE responses. Minor
+** code and comment cleanups. Renamed function parameter in sendMOVEREquest
+** to better reflect the standard.
+**
 ** Revision 1.25  2011-05-19 08:08:30  onken
 ** Fixed wrong usage of strlcpy in new C-CANCEL function.
 **

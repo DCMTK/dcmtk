@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-05-17 14:43:55 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2011-05-19 09:57:26 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -367,10 +367,8 @@ public:
    *  for most people.
    *  @param presID      [in]  The presentation context ID that should be used.
    *                           Must be an odd number.
-   *  @param aetStoreSCP [in]  The move destination's AE title, ie the one that
+   *  @param moveDestinationAETitle [in]  The move destination's AE title, ie the one that
    *                           is used for connection to the storage server.
-   *                           For now, only CMove on a separate connection is
-   *                           supported.
    *  @param dataset     [in]  The dataset containing the information about the
    *                           object(s) to be retrieved
    *  @param responses   [out] The incoming C-MOVE responses for this request.
@@ -385,7 +383,7 @@ public:
    *                           (with whatever status) could be received.
    */
   virtual OFCondition sendMOVERequest(const T_ASC_PresentationContextID presID,
-                                      const OFString &aetStoreSCP,
+                                      const OFString &moveDestinationAETitle,
                                       DcmDataset *dataset,
                                       MOVEResponses *responses);
 
@@ -786,7 +784,7 @@ private:
   /// Defines presentation context, consisting of one abstract syntax name
   /// and a list of transfer syntaxes for this abstract syntax
   struct DcmSCUPresContext {
-    /** Default constructor 
+    /** Default constructor
      */
     DcmSCUPresContext()
     : abstractSyntaxName()
@@ -847,6 +845,14 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.22  2011-05-19 09:57:26  onken
+** Fixed message ID field in C-CANCEL request (should be the one of last
+** request). In case of error status codes in C-MOVE responses, the default
+** behaviour is now to not wait for further responses. Fixed log output level
+** to better fit the messages while receiveing C-MOVE responses. Minor
+** code and comment cleanups. Renamed function parameter in sendMOVEREquest
+** to better reflect the standard.
+**
 ** Revision 1.21  2011-05-17 14:43:55  onken
 ** Removed some windows line endings.
 **
