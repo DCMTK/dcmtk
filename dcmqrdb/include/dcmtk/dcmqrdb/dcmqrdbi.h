@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveIndexDatabaseHandle
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 11:24:40 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-05-23 13:02:26 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -274,6 +274,14 @@ public:
    *  @param storeArea name of storage area, must not be NULL
    */
   static void printIndexFile (char *storeArea);
+  
+  /** search for a SOP class and SOP instance UIDs in index file. 
+  *  @param storeArea name of storage area, must not be NULL
+  *  @param sopClassUID SOP Class UID to search for
+  *  @param sopInstanceUID SOP Instance UID to search for
+  *  @return OFTrue if SOP Class and SOP Instance UIDs are found. otherwise return OFFalse.
+  */
+  OFBool findSOPInstance(char *storeArea, const OFString &sopClassUID,const OFString &sopInstanceUID);
     
   /** deletes the given file only if the quota mechanism is enabled.
    *  The image is not de-registered from the database by this routine.
@@ -443,6 +451,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrdbi.h,v $
+ * Revision 1.10  2011-05-23 13:02:26  ogazzar
+ * Added a function to search for a SOP instance in INDEX.DAT file.
+ *
  * Revision 1.9  2011-02-04 11:24:40  uli
  * Added private undefined functions where gcc's -Weffc++ warns otherwise.
  *
