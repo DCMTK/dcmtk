@@ -18,9 +18,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle,
  *                   DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-04 07:38:24 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-05-23 13:09:26 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3212,6 +3212,40 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
 
 }
 
+/************************
+ *      Search in index file for SOP Class UID and SOP Instance UID. Used for the storage commitment server
+ */
+
+OFBool DcmQueryRetrieveIndexDatabaseHandle::findSOPInstance(char *storeArea, const OFString &sopClassUID,const OFString &sopInstanceUID)
+{
+    int j ;
+    IdxRecord           idxRec ;
+    StudyDescRecord     *pStudyDesc;
+
+    OFCondition result;
+    OFBool Found = OFFalse;
+
+    if (sopClassUID.empty() || sopInstanceUID.empty()) return Found;
+    
+    DcmQueryRetrieveIndexDatabaseHandle handle(storeArea, -1, -1, result);
+    if (result.bad()) return Found;
+  
+    handle.DB_lock(OFFalse);
+    
+    handle.DB_IdxInitLoop (&j) ;
+    while (1) {
+        if (handle.DB_IdxGetNext(&j, &idxRec) != EC_Normal)
+            break ;
+        if (sopClassUID.compare(idxRec.SOPClassUID)==0 && sopInstanceUID.compare(idxRec.SOPInstanceUID)==0)
+        {	
+            Found=OFTrue;
+            break;
+        }
+    }
+    handle.DB_unlock();
+    return Found;
+}
+
 
 /* ========================= UTILS ========================= */
 
@@ -3437,6 +3471,10 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.31  2011-05-23 13:09:26  ogazzar
+ * Added a function to search in the INDEX file for a SOP instance. Intended
+ * to be used for storage commitment server.
+ *
  * Revision 1.30  2011-05-04 07:38:24  uli
  * Fixed some memory leaks in seldomly-used code paths.
  *
