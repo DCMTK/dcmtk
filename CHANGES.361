@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.24 (elgazzar)
+
+- Added role selection negotiation.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+
 **** Changes from 2011.05.24 (schlachter)
 
 - Moved LIBDIRS in front of LDFLAGS to link against the freshly build libs.
@@ -30,7 +36,7 @@ Changes between releases are documented here.
 
 - Fixed some documentation.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
-  
+
 - Fixed some documentation. Added some extra checks for NULL when handling MOVE
   and FIND responses. Simplified destructores for FIND and MOVEResponses.
   Affects: dcmnet/libsrc/scu.cc
