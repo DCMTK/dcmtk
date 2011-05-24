@@ -5,7 +5,8 @@ Changes between releases are documented here.
 
 - Moved LIBDIRS in front of LDFLAGS to link against the freshly build libs.
   Thanks to Eric A. Borisch <Borisch.Eric@mayo.edu> for reporting this.
-  Affects: dcmdata/apps/Makefile.in
+  Affects: config/templates/Makefile.src
+           dcmdata/apps/Makefile.in
            dcmdata/libsrc/Makefile.in
            dcmdata/tests/Makefile.in
            dcmimage/apps/Makefile.in

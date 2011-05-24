@@ -23,7 +23,7 @@ progs = # all programs to make
 all: $(progs)
 
 prog: prog.o # additionally a not install library
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 
 install: install-bin
