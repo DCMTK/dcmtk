@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-05-19 17:20:09 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-05-24 08:28:08 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -281,10 +281,12 @@ public:
    *  @param abstractSyntax [in] Abstract syntax name in UID format
    *  @param xferSyntaxes   [in] List of transfer syntaxes to be added for the given
    *                             abstract syntax
+   *  @param role           [in] The role to be negotiated
    *  @return EC_Normal if adding was successful, otherwise error code
    */
   OFCondition addPresentationContext(const OFString &abstractSyntax,
-                                     const OFList<OFString> &xferSyntaxes);
+                                     const OFList<OFString> &xferSyntaxes,
+                                     const T_ASC_SC_ROLE role = ASC_SC_ROLE_DEFAULT);
 
   /** Initialize network, i.e.\ prepare for association negotiation.
    *  If the SCU is already connected, the call will not be successful and the
@@ -795,6 +797,8 @@ private:
     OFString abstractSyntaxName;
     /// List of Transfer Syntaxes for Presentation Context
     OFList<OFString> transferSyntaxes;
+    /// Role Selection
+    T_ASC_SC_ROLE roleSelect;
   };
 
   /// List of presentation contexts that should be negotiated
@@ -845,6 +849,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.24  2011-05-24 08:28:08  ogazzar
+** Added support for role selection negotiation.
+**
 ** Revision 1.23  2011-05-19 17:20:09  onken
 ** Fixed some documentation.
 **
