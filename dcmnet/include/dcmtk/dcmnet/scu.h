@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-05-24 08:28:08 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-05-24 13:17:58 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -791,6 +791,7 @@ private:
     DcmSCUPresContext()
     : abstractSyntaxName()
     , transferSyntaxes()
+    , roleSelect(ASC_SC_ROLE_DEFAULT)
     {
     }
     /// Abstract Syntax Name of Presentation Context
@@ -849,6 +850,10 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.25  2011-05-24 13:17:58  onken
+** Added missing default initializiation of role flag in presentation context
+** constructor.
+**
 ** Revision 1.24  2011-05-24 08:28:08  ogazzar
 ** Added support for role selection negotiation.
 **

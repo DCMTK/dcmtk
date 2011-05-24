@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.05.25 (onken)
 
+- Added missing default initializiation of role flag in presentation context
+  constructor.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+
 - Removed superfluous #define DUL_KEYS.
   Affects: dcmnet/include/dcmtk/dcmnet/dul.h
 
