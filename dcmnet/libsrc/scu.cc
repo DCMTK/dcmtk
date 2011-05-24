@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-05-19 17:19:52 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-05-24 08:38:39 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -245,7 +245,7 @@ OFCondition DcmSCU::initNetwork()
 
     // add the presentation context
     cond = ASC_addPresentationContext(m_params, OFstatic_cast(Uint8, nextFreePresID),
-      (*contIt).abstractSyntaxName.c_str(), transferSyntaxes, numTransferSyntaxes);
+      (*contIt).abstractSyntaxName.c_str(), transferSyntaxes, numTransferSyntaxes,(*contIt).roleSelect);
     // if adding was successfull, prepare pres. context ID for next addition
     delete[] transferSyntaxes;
     transferSyntaxes = NULL;
@@ -322,7 +322,8 @@ OFCondition DcmSCU::negotiateAssociation()
 
 
 OFCondition DcmSCU::addPresentationContext(const OFString &abstractSyntax,
-                                           const OFList<OFString> &xferSyntaxes)
+                                           const OFList<OFString> &xferSyntaxes,
+                                           const T_ASC_SC_ROLE role)
 
 {
 
@@ -335,6 +336,7 @@ OFCondition DcmSCU::addPresentationContext(const OFString &abstractSyntax,
     presContext.transferSyntaxes.push_back(*it);
     it++;
   }
+  presContext.roleSelect = role;
   m_presContexts.push_back(presContext);
   return EC_Normal;
 }
@@ -1681,6 +1683,9 @@ MOVEResponse::~MOVEResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.30  2011-05-24 08:38:39  ogazzar
+** Added role selection negotiation while adding a presenation context.
+**
 ** Revision 1.29  2011-05-19 17:19:52  onken
 ** Fixed some documentation. Added some extra checks for NULL when handling MOVE
 ** and FIND responses. Simplified destructors for FIND and MOVEResponses.
