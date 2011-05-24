@@ -1,6 +1,30 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.24 (schlachter)
+
+- Moved LIBDIRS in front of LDFLAGS to link against the freshly build libs.
+  Thanks to Eric A. Borisch <Borisch.Eric@mayo.edu> for reporting this.
+  Affects: dcmdata/apps/Makefile.in
+           dcmdata/libsrc/Makefile.in
+           dcmdata/tests/Makefile.in
+           dcmimage/apps/Makefile.in
+           dcmimgle/apps/Makefile.in
+           dcmjpeg/apps/Makefile.in
+           dcmjpls/apps/Makefile.in
+           dcmnet/apps/Makefile.in
+           dcmpstat/apps/Makefile.in
+           dcmpstat/jni/Makefile.in
+           dcmpstat/tests/Makefile.in
+           dcmqrdb/apps/Makefile.in
+           dcmsign/apps/Makefile.in
+           dcmsr/apps/Makefile.in
+           dcmsr/tests/Makefile.in
+           dcmwlm/apps/Makefile.in
+           dcmwlm/tests/Makefile.in
+           dcmwlm/wwwapps/Makefile.in
+           ofstd/tests/Makefile.in
+
 **** Changes from 2011.05.19 (onken)
 
 - Fixed some documentation.

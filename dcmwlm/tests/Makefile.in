@@ -30,7 +30,7 @@ progs = wltest
 all: $(progs)
 
 wltest: $(objs)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $(objs) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(objs) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
 install: all

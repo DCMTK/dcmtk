@@ -28,7 +28,7 @@ progs = mkreport
 all: $(progs)
 
 mkreport: mkreport.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ mkreport.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ mkreport.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
 install: all

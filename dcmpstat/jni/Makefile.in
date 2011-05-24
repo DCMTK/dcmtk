@@ -99,7 +99,7 @@ library = libjInterface.so
 all: $(library)
 
 $(library): $(objs)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) $(soflags) -o $@ $(objs) $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) $(soflags) -o $@ $(objs) $(LOCALLIBS) $(LIBS)
 
 
 install: all

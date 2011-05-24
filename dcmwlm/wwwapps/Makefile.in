@@ -40,16 +40,16 @@ all: $(progs)
 
 # Note: preplock does not need $(LOCALLIBS)
 preplock: preplock.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ preplock.o $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ preplock.o $(LIBS)
 
 readoviw: readoviw.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ readoviw.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ readoviw.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 readwlst: readwlst.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ readwlst.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ readwlst.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 writwlst: writwlst.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ writwlst.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ writwlst.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
 install: all

@@ -39,7 +39,7 @@ progs = msgserv
 all: $(progs)
 
 msgserv: msgserv.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ msgserv.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ msgserv.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
 install: all

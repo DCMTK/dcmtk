@@ -70,10 +70,10 @@ $(library): $(objs)
 	$(RANLIB) $@
 
 mkdeftag: mkdeftag.o $(dictobjs) $(support_progs_objs)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) $(support_progs_objs) $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(dictobjs) $(support_progs_objs) $(LOCALLIBS) $(LIBS)
 
 mkdictbi: mkdictbi.o $(dictobjs) $(support_progs_objs)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) $(support_progs_objs) $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(dictobjs) $(support_progs_objs) $(LOCALLIBS) $(LIBS)
 
 mkvrscan:
 	flex -8 --header-file=vrscanl.h --outfile=vrscanl.c vrscanl.l

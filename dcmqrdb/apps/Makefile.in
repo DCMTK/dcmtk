@@ -45,13 +45,13 @@ progs = dcmqrscp dcmqrti dcmqridx
 all: $(progs)
 
 dcmqrscp: dcmqrscp.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmqrscp.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmqrscp.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmqrti: dcmqrti.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmqrti.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmqrti.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmqridx: dcmqridx.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmqridx.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmqridx.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
 install: all
