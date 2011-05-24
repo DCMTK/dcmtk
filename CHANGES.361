@@ -32,6 +32,11 @@ Changes between releases are documented here.
            dcmwlm/wwwapps/Makefile.in
            ofstd/tests/Makefile.in
 
+**** Changes from 2011.05.23  (elgazzar)
+- Added a function to search for SOP instance in INDEX.dat file
+  Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h
+           dcmqrdb/libsrc/dcmqrdbi.cc
+
 **** Changes from 2011.05.19 (onken)
 
 - Fixed some documentation.
