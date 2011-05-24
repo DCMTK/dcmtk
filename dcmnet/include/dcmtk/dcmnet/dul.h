@@ -57,8 +57,8 @@
 ** Intent:        This file defines the public structures and constants
 **                and the function prototypes for the DUL (DICOM Upper
 **                Layer) facility.
-** Last Update:   $Author: joergr $, $Date: 2010-12-01 08:26:10 $
-** Revision:      $Revision: 1.31 $
+** Last Update:   $Author: onken $, $Date: 2011-05-24 13:07:55 $
+** Revision:      $Revision: 1.32 $
 ** Status:        $State: Exp $
 */
 
@@ -118,12 +118,9 @@ extern OFGlobal<const char *> dcmTCPWrapperDaemonName;   /* default NULL */
  */
 extern OFGlobal<unsigned long> dcmEnableBackwardCompatibility;
 
-#ifndef DUL_KEYS
-#define DUL_KEYS 1
 typedef void DUL_NETWORKKEY;
 typedef void DUL_ASSOCIATIONKEY;
 typedef unsigned char DUL_PRESENTATIONCONTEXTID;
-#endif
 
 /** pure virtual base class for DUL mode callbacks
  */
@@ -515,6 +512,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
+** Revision 1.32  2011-05-24 13:07:55  onken
+** Removed superfluous #define DUL_KEYS.
+**
 ** Revision 1.31  2010-12-01 08:26:10  joergr
 ** Added OFFIS copyright header (beginning with the year 1994).
 **

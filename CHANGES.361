@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.25 (onken)
+
+- Removed superfluous #define DUL_KEYS.
+  Affects: dcmnet/include/dcmtk/dcmnet/dul.h
+
 **** Changes from 2011.05.24 (elgazzar)
 
 - Added role selection negotiation.
