@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-05-25 09:31:53 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2011-05-25 09:56:52 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -387,8 +387,8 @@ T_ASC_PresentationContextID DcmSCU::findPresentationContextID(const OFString &ab
 
 // Returns the prsentation context ID that best matches the given abstract syntax UID and
 // the transfer syntax UID.
-T_ASC_PresentationContextID DcmSCU::findAnyPresentationContext(const OFString &abstractSyntax,
-                                                               const OFString &transferSyntax)
+T_ASC_PresentationContextID DcmSCU::findAnyPresentationContextID(const OFString &abstractSyntax,
+                                                                 const OFString &transferSyntax)
 {
   if (m_assoc == NULL)
     return 0;
@@ -1745,6 +1745,9 @@ MOVEResponse::~MOVEResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.32  2011-05-25 09:56:52  ogazzar
+** Renamed a function name.
+**
 ** Revision 1.31  2011-05-25 09:31:53  ogazzar
 ** Added a function to look for a presentation context ID that best matches the
 ** abstract syntax UID and the transfer syntax UID.

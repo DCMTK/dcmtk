@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-05-25 09:30:12 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2011-05-25 09:57:54 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -327,8 +327,8 @@ public:
    *  @return Adequate Presentation context ID that can be used. 0 if no appropriate
    *  presentation context could be found at all.
    */
-   T_ASC_PresentationContextID findAnyPresentationContext(const OFString &abstractSyntax,
-                                                          const OFString &transferSyntax);
+   T_ASC_PresentationContextID findAnyPresentationContextID(const OFString &abstractSyntax,
+                                                            const OFString &transferSyntax);
 
   /** This function sends a C-ECHO command via network to another DICOM application
    *  @param presID [in] Presentation context ID to use. A value of 0 lets SCP class tries
@@ -866,6 +866,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.27  2011-05-25 09:57:54  ogazzar
+** Renamed a function name.
+**
 ** Revision 1.26  2011-05-25 09:30:12  ogazzar
 ** Added a function to look for a presentation context ID that best matches
 ** the abstract syntax and the transfer syntax.
