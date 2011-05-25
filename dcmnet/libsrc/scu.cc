@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-05-24 08:38:39 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2011-05-25 09:31:53 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -351,7 +351,7 @@ OFCondition DcmSCU::useSecureConnection(DcmTransportLayer *tlayer)
 }
 
 
-// Returns usable presentation context ID for given abstract syntax and UID
+// Returns usable presentation context ID for given abstract syntax UID
 // transfer syntax UID. 0 if none matches.
 T_ASC_PresentationContextID DcmSCU::findPresentationContextID(const OFString &abstractSyntax,
                                                               const OFString &transferSyntax)
@@ -385,6 +385,68 @@ T_ASC_PresentationContextID DcmSCU::findPresentationContextID(const OFString &ab
   return 0;   /* not found */
 }
 
+// Returns the prsentation context ID that best matches the given abstract syntax UID and
+// the transfer syntax UID.
+T_ASC_PresentationContextID DcmSCU::findAnyPresentationContext(const OFString &abstractSyntax,
+                                                               const OFString &transferSyntax)
+{
+  if (m_assoc == NULL)
+    return 0;
+
+  DUL_PRESENTATIONCONTEXT *pc;
+  LST_HEAD **l;
+  OFBool found = OFFalse;
+
+  if (abstractSyntax.empty()) return 0;
+
+  /* first of all we look for a presentation context
+   * matching both abstract and transfer syntax
+   */
+  l = &m_assoc->params->DULparams.acceptedPresentationContext;
+  pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
+  (void)LST_Position(l, (LST_NODE*)pc);
+  while (pc && !found)
+  {
+      found = (strcmp(pc->abstractSyntax, abstractSyntax.c_str()) == 0);
+      found &= (pc->result == ASC_P_ACCEPTANCE);
+      if (!transferSyntax.empty())  // ignore transfer syntax if not specified
+        found &= (strcmp(pc->acceptedTransferSyntax, transferSyntax.c_str()) == 0);
+      if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
+  }
+  if (found) return pc->presentationContextID;
+
+  /* now we look for an explicit VR uncompressed PC. */
+  l = &m_assoc->params->DULparams.acceptedPresentationContext;
+  pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
+  (void)LST_Position(l, (LST_NODE*)pc);
+  while (pc && !found)
+  {
+     found =  (strcmp(pc->abstractSyntax, abstractSyntax.c_str()) == 0)
+          && (pc->result == ASC_P_ACCEPTANCE)
+          && ((strcmp(pc->acceptedTransferSyntax, UID_LittleEndianExplicitTransferSyntax) == 0)
+           || (strcmp(pc->acceptedTransferSyntax, UID_BigEndianExplicitTransferSyntax) == 0));
+     if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
+  }
+  if (found) return pc->presentationContextID;
+
+  /* now we look for an implicit VR uncompressed PC. */
+  l = &m_assoc->params->DULparams.acceptedPresentationContext;
+  pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
+  (void)LST_Position(l, (LST_NODE*)pc);
+  while (pc && !found)
+  {
+     found = (strcmp(pc->abstractSyntax, abstractSyntax.c_str()) == 0)
+                && (pc->result == ASC_P_ACCEPTANCE)
+                && (strcmp(pc->acceptedTransferSyntax, UID_LittleEndianImplicitTransferSyntax) == 0);
+     if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
+  }
+  if (found) return pc->presentationContextID;
+
+  /* finally we accept everything we get.
+      returns 0 if abstract syntax is not supported
+  */
+  return ASC_findAcceptedPresentationContextID(m_assoc, abstractSyntax.c_str());
+}
 
 void DcmSCU::findPresentationContext(const T_ASC_PresentationContextID presID,
                                      OFString &abstractSyntax,
@@ -1683,6 +1745,10 @@ MOVEResponse::~MOVEResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.31  2011-05-25 09:31:53  ogazzar
+** Added a function to look for a presentation context ID that best matches the
+** abstract syntax UID and the transfer syntax UID.
+**
 ** Revision 1.30  2011-05-24 08:38:39  ogazzar
 ** Added role selection negotiation while adding a presenation context.
 **
