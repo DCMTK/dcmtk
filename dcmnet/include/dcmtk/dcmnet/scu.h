@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-05-24 13:17:58 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-05-25 09:30:12 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -313,6 +313,22 @@ public:
   */
   T_ASC_PresentationContextID findPresentationContextID(const OFString &abstractSyntax,
                                                         const OFString &transferSyntax);
+
+  /** After a successful association negotiation, this function is called to return the
+   *  presentation context ID that best matches the desired abstract syntax and transfer
+   *  syntax. The function tries to do the following:
+   * - If possible finds a presentation context with matching TS
+   * - Else then tries to find an explicit VR uncompressed TS presentation ctx
+   * - Else then tries to find an implicit VR uncompressed TS presentation ctx
+   * - Else finally accepts each matching presentation ctx independent of TS.
+   *  @param abstractSyntax [in] The abstract syntax (UID) to look for
+   *  @param transferSyntax [in] The transfer syntax (UID) to look for.
+   *                             If empty, the transfer syntax is not checked.
+   *  @return Adequate Presentation context ID that can be used. 0 if no appropriate
+   *  presentation context could be found at all.
+   */
+   T_ASC_PresentationContextID findAnyPresentationContext(const OFString &abstractSyntax,
+                                                          const OFString &transferSyntax);
 
   /** This function sends a C-ECHO command via network to another DICOM application
    *  @param presID [in] Presentation context ID to use. A value of 0 lets SCP class tries
@@ -850,6 +866,10 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.26  2011-05-25 09:30:12  ogazzar
+** Added a function to look for a presentation context ID that best matches
+** the abstract syntax and the transfer syntax.
+**
 ** Revision 1.25  2011-05-24 13:17:58  onken
 ** Added missing default initializiation of role flag in presentation context
 ** constructor.
