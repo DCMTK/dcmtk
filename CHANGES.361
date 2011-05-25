@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.25 (elgazzar)
+
+- Added a function to look for a presntation context ID that best matches the
+  abstract syntax UID and the transfer syntax UID.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcment/libsrc/scu.cc
+
 **** Changes from 2011.05.25 (onken)
 
 - Added missing default initializiation of role flag in presentation context
