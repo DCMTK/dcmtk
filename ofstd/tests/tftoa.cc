@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: Test code of double/ascii conversion methods in class OFStandard
  *
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:16 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-25 10:05:57 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -28,10 +28,10 @@
  */
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/ofstd/oftypes.h"
-#include "dcmtk/ofstd/ofconsol.h"
 
+#define OFTEST_OFSTD_ONLY
+#include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 struct tuple
 {
@@ -143,12 +143,10 @@ static const tuple values[] =
   */
 };
 
-int main()
+OFTEST(ofstd_ftoa)
 {
-
   char buf[50];
   unsigned long numTuples = sizeof(values)/sizeof(tuple);
-  unsigned long numPassed = 0;
   OFString s;
 
   for (unsigned long i=0; i<numTuples; i++)
@@ -156,34 +154,17 @@ int main()
     OFStandard::ftoa(buf, 50, values[i].val, values[i].flags, values[i].width, values[i].prec);
     s = values[i].output;
 
-    if (s == buf)
-    {
-      CERR << "test #" << i+1 << " passed" << OFendl;
-      numPassed++;
-    }
-    else
-    {
-      CERR << "test #" << i+1 << " failed, expected \"" << values[i].output << "\", got \"" << buf << "\"" << OFendl;
-    }
+    OFCHECK_EQUAL(s, buf);
   }
-
-  if (numTuples == numPassed)
-  {
-    CERR << "All tests passed." << OFendl;
-    return 0;
-  }
-  else
-  {
-    CERR << "Failures: " << numPassed << " of " << numTuples << " tests passed." << OFendl;
-  }
-
-  return 1;
 }
 
 /*
  *
  * CVS/RCS Log:
- * $Log: tstftoa.cc,v $
+ * $Log: tftoa.cc,v $
+ * Revision 1.1  2011-05-25 10:05:57  uli
+ * Imported oftest and converted existing tests to oftest.
+ *
  * Revision 1.6  2010-10-14 13:15:16  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

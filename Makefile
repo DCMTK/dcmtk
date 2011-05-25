@@ -29,6 +29,8 @@ install-include:  config-install-include ofstd-install-include oflog-install-inc
 
 install-support:  config-install-support ofstd-install-support oflog-install-support dcmdata-install-support dcmtls-install-support dcmnet-install-support dcmqrdb-install-support dcmwlm-install-support dcmimgle-install-support dcmsr-install-support dcmsign-install-support dcmpstat-install-support dcmimage-install-support dcmjpeg-install-support dcmjpls-install-support
 
+check:  config-check ofstd-check oflog-check dcmdata-check dcmtls-check dcmnet-check dcmqrdb-check dcmwlm-check dcmimgle-check dcmsr-check dcmsign-check dcmpstat-check dcmimage-check dcmjpeg-check dcmjpls-check
+
 dcmtk-install-doc:
 	$(configdir)/mkinstalldirs $(DESTDIR)$(docdir)
 	for file in ANNOUNCE.$(PACKAGE_VERSION_NUMBER) CHANGES.$(PACKAGE_VERSION_NUMBER) COPYRIGHT FAQ HISTORY VERSION; do \
@@ -77,6 +79,9 @@ config-install-include:
 config-install-support:
 	(cd config && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
 
+config-check:
+	(cd config && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
 ofstd-all:
 	(cd ofstd && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
 
@@ -106,6 +111,9 @@ ofstd-install-include:
 
 ofstd-install-support:
 	(cd ofstd && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+ofstd-check:
+	(cd ofstd && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
 
 oflog-all:
 	(cd oflog && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
@@ -137,6 +145,9 @@ oflog-install-include:
 oflog-install-support:
 	(cd oflog && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
 
+oflog-check:
+	(cd oflog && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
 dcmdata-all:
 	(cd dcmdata && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
 
@@ -166,6 +177,9 @@ dcmdata-install-include:
 
 dcmdata-install-support:
 	(cd dcmdata && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmdata-check:
+	(cd dcmdata && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
 
 dcmtls-all:
 	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
@@ -197,6 +211,9 @@ dcmtls-install-include:
 dcmtls-install-support:
 	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
 
+dcmtls-check:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
 dcmnet-all:
 	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
 
@@ -226,6 +243,9 @@ dcmnet-install-include:
 
 dcmnet-install-support:
 	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmnet-check:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
 
 dcmqrdb-all:
 	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
@@ -257,6 +277,9 @@ dcmqrdb-install-include:
 dcmqrdb-install-support:
 	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
 
+dcmqrdb-check:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
 dcmwlm-all:
 	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
 
@@ -286,6 +309,9 @@ dcmwlm-install-include:
 
 dcmwlm-install-support:
 	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmwlm-check:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
 
 dcmimgle-all:
 	(cd dcmimgle && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
@@ -317,6 +343,9 @@ dcmimgle-install-include:
 dcmimgle-install-support:
 	(cd dcmimgle && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
 
+dcmimgle-check:
+	(cd dcmimgle && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
 dcmsr-all:
 	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
 
@@ -346,6 +375,9 @@ dcmsr-install-include:
 
 dcmsr-install-support:
 	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmsr-check:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
 
 dcmsign-all:
 	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
@@ -377,6 +409,9 @@ dcmsign-install-include:
 dcmsign-install-support:
 	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
 
+dcmsign-check:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
 dcmpstat-all:
 	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
 
@@ -406,6 +441,9 @@ dcmpstat-install-include:
 
 dcmpstat-install-support:
 	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmpstat-check:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
 
 dcmimage-all:
 	(cd dcmimage && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
@@ -437,6 +475,9 @@ dcmimage-install-include:
 dcmimage-install-support:
 	(cd dcmimage && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
 
+dcmimage-check:
+	(cd dcmimage && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
 dcmjpeg-all:
 	(cd dcmjpeg && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
 
@@ -467,6 +508,9 @@ dcmjpeg-install-include:
 dcmjpeg-install-support:
 	(cd dcmjpeg && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
 
+dcmjpeg-check:
+	(cd dcmjpeg && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
 dcmjpls-all:
 	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
 
@@ -496,6 +540,9 @@ dcmjpls-install-include:
 
 dcmjpls-install-support:
 	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmjpls-check:
+	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
 
 dependencies:
 	(cd ofstd && $(MAKE) dependencies)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: test programm for class OFStack
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:16 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-25 10:05:57 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -28,43 +28,47 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstack.h"
-#include "dcmtk/ofstd/ofconsol.h"
+
+#define OFTEST_OFSTD_ONLY
+#include "dcmtk/ofstd/oftest.h"
 
 
-int main()
+OFTEST(ofstd_OFStack)
 {
     OFStack<int> st;
+    int i;
     st.push(1);
     st.push(2);
     st.push(3);
 
     OFStack<int> nst(st);
-    COUT << "Output of number of Elements in st: " << st.size() << OFendl;
-    COUT << "Output and deletion of st: ";
-    while(!st.empty())
-    {
-	COUT << st.top() << " ";
-	st.pop();
-    }
-    COUT << OFendl;
 
-    COUT << "Output of number of Elements in copy from st: " << nst.size() << OFendl;
-    COUT << "Output and deletion of copy from st: ";
-    while(!nst.empty())
+    OFCHECK_EQUAL(st.size(), 3);
+    for (i = 3; i >= 1; i--)
     {
-	COUT << nst.top() << " ";
-	nst.pop();
+        OFCHECK(!st.empty());
+        OFCHECK_EQUAL(i, st.top());
+        st.pop();
     }
-    COUT << OFendl;
+
+    OFCHECK_EQUAL(nst.size(), 3);
+    for (i = 3; i >= 1; i--)
+    {
+        OFCHECK(!nst.empty());
+        OFCHECK_EQUAL(i, nst.top());
+        nst.pop();
+    }
 }
 
 
 /*
 **
 ** CVS/RCS Log:
-** $Log: tststack.cc,v $
+** $Log: tstack.cc,v $
+** Revision 1.1  2011-05-25 10:05:57  uli
+** Imported oftest and converted existing tests to oftest.
+**
 ** Revision 1.11  2010-10-14 13:15:16  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Test application for partial element access API
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-12-20 11:19:40 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-25 10:05:55 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +37,8 @@
 #include <GUSI.h>
 #endif
 
+#include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcostrmz.h"    /* for dcmZlibCompressionLevel */
 #include "dcmtk/dcmdata/dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
@@ -49,18 +48,13 @@
 #include <zlib.h>        /* for zlibVersion() */
 #endif
 
-#define OFFIS_CONSOLE_APPLICATION "tstpread"
-
-static OFLogger tstpreadLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
-
-static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
-  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+static OFLogger tstpreadLogger = OFLog::getLogger("dcmtk.test.tstpread");
 
 // ********************************************
 
 #define BUFSIZE 32768
 
-void createTestDataset(DcmDataset *dset, unsigned char *buffer)
+static void createTestDataset(DcmDataset *dset, unsigned char *buffer)
 {
   // byte array, VR=OB
   dset->putAndInsertUint8Array(DCM_EncapsulatedDocument, buffer, BUFSIZE);
@@ -79,7 +73,7 @@ void createTestDataset(DcmDataset *dset, unsigned char *buffer)
   dset->insert(elem);
 }
 
-OFCondition sequentialNonOverlappingRead(DcmElement *delem, DcmFileCache *dcache, unsigned char *buffer)
+static OFCondition sequentialNonOverlappingRead(DcmElement *delem, DcmFileCache *dcache, unsigned char *buffer)
 {
     unsigned char *target = new unsigned char[BUFSIZE];
     Uint32 offset = 0;
@@ -96,6 +90,7 @@ OFCondition sequentialNonOverlappingRead(DcmElement *delem, DcmFileCache *dcache
       cond = delem->getPartialValue(target, offset, bytes_to_read, dcache);
       if (cond.bad())
       {
+
         delete[] target;
         return cond;
       }
@@ -129,7 +124,7 @@ OFCondition sequentialNonOverlappingRead(DcmElement *delem, DcmFileCache *dcache
     return EC_Normal;
 }
 
-OFCondition sequentialOverlappingRead(DcmElement *delem, DcmFileCache *dcache, unsigned char *buffer)
+static OFCondition sequentialOverlappingRead(DcmElement *delem, DcmFileCache *dcache, unsigned char *buffer)
 {
     unsigned char *target = new unsigned char[BUFSIZE];
     Uint32 offset = 0;
@@ -179,7 +174,7 @@ OFCondition sequentialOverlappingRead(DcmElement *delem, DcmFileCache *dcache, u
     return EC_Normal;
 }
 
-OFCondition randomRead(DcmElement *delem, DcmFileCache *dcache, unsigned char *buffer)
+static OFCondition randomRead(DcmElement *delem, DcmFileCache *dcache, unsigned char *buffer)
 {
     unsigned char *target = new unsigned char[BUFSIZE];
     Uint32 offset = 0;
@@ -229,7 +224,7 @@ OFCondition randomRead(DcmElement *delem, DcmFileCache *dcache, unsigned char *b
     return EC_Normal;
 }
 
-OFCondition sequentialNonOverlappingRead(DcmDataset *dset, unsigned char *buffer)
+static OFCondition sequentialNonOverlappingRead(DcmDataset *dset, unsigned char *buffer)
 {
   DcmFileCache cache;
   DcmElement *delem = NULL;
@@ -261,7 +256,7 @@ OFCondition sequentialNonOverlappingRead(DcmDataset *dset, unsigned char *buffer
   return cond;
 }
 
-OFCondition sequentialOverlappingRead(DcmDataset *dset, unsigned char *buffer)
+static OFCondition sequentialOverlappingRead(DcmDataset *dset, unsigned char *buffer)
 {
   DcmFileCache cache;
   DcmElement *delem = NULL;
@@ -293,7 +288,7 @@ OFCondition sequentialOverlappingRead(DcmDataset *dset, unsigned char *buffer)
   return cond;
 }
 
-OFCondition randomRead(DcmDataset *dset, unsigned char *buffer)
+static OFCondition randomRead(DcmDataset *dset, unsigned char *buffer)
 {
   DcmFileCache cache;
   DcmElement *delem = NULL;
@@ -325,54 +320,19 @@ OFCondition randomRead(DcmDataset *dset, unsigned char *buffer)
   return cond;
 }
 
-int main(int argc, char *argv[])
+OFTEST(dcmdata_partialElementAccess)
 {
-
+  // TODO TODO TODO TODO???
 #ifdef HAVE_GUSI_H
   GUSISetup(GUSIwithSIOUXSockets);
   GUSISetup(GUSIwithInternetSockets);
 #endif
 
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Test partial element access API", rcsid);
-  OFCommandLine cmd;
-
-  cmd.addGroup("general options:");
-   cmd.addOption("--help",    "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--version",       "print version information and exit", OFCommandLine::AF_Exclusive);
-   OFLog::addOptions(cmd);
-
-    /* evaluate command line */
-    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
-    {
-      /* check exclusive options first */
-      if (cmd.hasExclusiveOption())
-      {
-        if (cmd.findOption("--version"))
-        {
-          app.printHeader(OFTrue /*print host identifier*/);
-          COUT << OFendl << "External libraries used:";
-#ifdef WITH_ZLIB
-          COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
-#else
-          COUT << " none" << OFendl;
-#endif
-          return 0;
-        }
-      }
-
-      /* command line parameters */
-      OFLog::configureFromCommandLine(cmd, app);
-    }
-
-    /* print resource identifier */
-    OFLOG_DEBUG(tstpreadLogger, rcsid << OFendl);
-
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-      OFLOG_WARN(tstpreadLogger, "no data dictionary loaded, check environment variable: "
-        << DCM_DICT_ENVIRONMENT_VARIABLE);
+      OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+      return;
     }
 
     OFLOG_INFO(tstpreadLogger, "Creating test dataset");
@@ -393,12 +353,12 @@ int main(int argc, char *argv[])
     OFLOG_INFO(tstpreadLogger, "Writing test files");
 
     cond = dfile.saveFile("test_be.dcm", EXS_BigEndianExplicit);
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
     cond = dfile.saveFile("test_le.dcm", EXS_LittleEndianExplicit);
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 #ifdef WITH_ZLIB
     cond = dfile.saveFile("test_df.dcm", EXS_DeflatedLittleEndianExplicit);
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 #endif
 
     OFLOG_INFO(tstpreadLogger, "Opening test files");
@@ -408,66 +368,68 @@ int main(int argc, char *argv[])
     DcmFileFormat dfile_df;
 
     cond = dfile_be.loadFile("test_be.dcm");
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 
     cond = dfile_le.loadFile("test_le.dcm");
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 
 #ifdef WITH_ZLIB
     cond = dfile_df.loadFile("test_df.dcm");
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 #endif
 
     // testing sequential, non overlapping reads of partial element values
     OFLOG_INFO(tstpreadLogger, "Testing sequential, non overlapping reads of partial element values");
 
     cond = sequentialNonOverlappingRead(dfile_be.getDataset(), buffer);
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 
     cond = sequentialNonOverlappingRead(dfile_le.getDataset(), buffer);
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 
 #ifdef WITH_ZLIB
     cond = sequentialNonOverlappingRead(dfile_df.getDataset(), buffer);
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 #endif
 
     // testing random reads of partial element values
     OFLOG_INFO(tstpreadLogger, "Testing random reads of partial element values");
 
     cond = randomRead(dfile_be.getDataset(), buffer);
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 
     cond = randomRead(dfile_le.getDataset(), buffer);
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 
 #ifdef WITH_ZLIB
     cond = randomRead(dfile_df.getDataset(), buffer);
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 #endif
 
     // testing overlapping reads of partial element values
     OFLOG_INFO(tstpreadLogger, "Testing overlapping reads of partial element values");
 
     cond = sequentialOverlappingRead(dfile_be.getDataset(), buffer);
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 
     cond = sequentialOverlappingRead(dfile_le.getDataset(), buffer);
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 
 #ifdef WITH_ZLIB
     cond = sequentialOverlappingRead(dfile_df.getDataset(), buffer);
-    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
+    if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 #endif
 
     delete[] buffer;
-    return 0;
 }
 
 
 /*
  * CVS/RCS Log:
- * $Log: tstpread.cc,v $
+ * $Log: tpread.cc,v $
+ * Revision 1.1  2011-05-25 10:05:55  uli
+ * Imported oftest and converted existing tests to oftest.
+ *
  * Revision 1.10  2010-12-20 11:19:40  joergr
  * Fixed wrong console application description (apparently copied from another
  * tool) and output the resource identifier in debug mode to the logger.

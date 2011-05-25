@@ -93,3 +93,6 @@ dependencies:
 	(cd libi2d && touch $(DEP) && $(MAKE) dependencies)	
 	(cd apps && touch $(DEP) && $(MAKE) dependencies)
 	(cd tests && touch $(DEP) && $(MAKE) dependencies)
+
+check:
+	(cd tests && $(MAKE) check)

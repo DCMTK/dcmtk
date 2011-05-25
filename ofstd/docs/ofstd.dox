@@ -15,4 +15,30 @@ The main classes are (in alphabetical order):
 \li \b OFStandard
 \li \b OFString
 
+\section Testing
+
+This module also contains a simple test framework.
+
+New tests can be written with the OF_TEST macro and checks can be implemented
+with the OF_CHECK, OF_CHECK_EQUAL and OF_FAIL macros. Each test then has to be
+registered with OF_TEST_REGISTER() in a source file calling
+OF_TEST_MAIN("name_of_module")
+
+Here is an example which uses all these macros:
+
+\code
+OF_TEST(ofstd_Example)
+{
+    // If possible, use this. In case of errors, the error message
+    // will contain both values.
+    OF_CHECK_EQUAL(1, 2);
+    // The error message here will just say that "1 == 2" failed. If you are
+    // comparing variables, the values will be unknown.
+    OF_CHECK(1 == 2);
+    // This just prints a message of your choice.
+    if (1 != 2)
+        OF_FAIL("1 does not equal 2");
+}
+\endcode
+
 */

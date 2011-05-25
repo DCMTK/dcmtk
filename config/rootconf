@@ -40,6 +40,7 @@ fi
 	makeinstalllib="$makeinstalllib ${module}-install-lib"
 	makeinstallinclude="$makeinstallinclude ${module}-install-include"
 	makeinstallsupport="$makeinstallsupport ${module}-install-support"
+	makecheck="$makecheck ${module}-check"
 done
 
 cat >> $output <<EOF
@@ -64,6 +65,8 @@ install-lib: $makeinstalllib
 install-include: $makeinstallinclude
 
 install-support: $makeinstallsupport
+
+check: $makecheck
 
 dcmtk-install-doc:
 	\$(configdir)/mkinstalldirs \$(DESTDIR)\$(docdir)
@@ -116,6 +119,9 @@ ${module}-install-include:
 
 ${module}-install-support:
 	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-support)
+
+${module}-check:
+	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" check)
 
 EOF
 done

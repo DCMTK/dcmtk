@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: test program for class OFStandard
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:16 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-25 10:05:57 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,139 +30,156 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/ofstd/ofconsol.h"
 
+#define OFTEST_OFSTD_ONLY
+#include "dcmtk/ofstd/oftest.h"
 
-#define pathname1 "/home/joergr/source/dcmtk/"
-#define pathname2 "/home/joergr/source/dcmtk/INSTALL"
-#define pathname3 "/home/joergr/source/dcmtk///"
-#define pathname4 "/home/joergr/source/dcmtk"
-#define pathname5 "/home/joergr/source/dcmt"
-#define pathname6 "///"
-#define pathname7 "."
-#define pathname8 "/home/joergr/tmp/test"
-#define pathname9 "//caesar/share"
+static void checkExists(const OFString& input, OFBool pathExists,
+        OFBool fileExists, OFBool dirExists)
+{
+    OFBool path = OFStandard::pathExists(input);
+    OFBool file = OFStandard::fileExists(input);
+    OFBool dir  = OFStandard::dirExists(input);
 
-static const size_t bin_len = 10;
-static const unsigned char bin_data[bin_len] = {10, 5, 88, 99, 255, 250, 150, 128, 0, 254};
+    if (pathExists != path)
+        OFCHECK_FAIL("pathExists(\"" << input << "\"): expected: " << pathExists << ", got: " << path);
+    if (fileExists != file)
+        OFCHECK_FAIL("fileExists(\"" << input << "\"): expected: " << fileExists << ", got: " << file);
+    if (dirExists != dir)
+        OFCHECK_FAIL("dirExists(\"" << input << "\"): expected: " << dirExists << ", got: " << dir);
+}
 
-static const OFString txt_data1 = ".AB_Cab$$c123-";
-static const OFString txt_data2 = "ABC\nabc\n123";
-
-
-int main()
+static void checkPathHandling(const OFString& input, const OFString& normalized,
+        const OFString& combined, const OFString& file = "file")
 {
     OFString tmpString;
-    unsigned char *buffer;
-    size_t i, length;
+    OFString slashFile;
+    slashFile = PATH_SEPARATOR;
+    slashFile += "file";
 
-    /* file system tests */
+    OFStandard::normalizeDirName(tmpString, input);
+    OFCHECK_EQUAL(tmpString, normalized);
 
-    COUT << "pathExists(\"" << pathname1 << "\") = " << OFStandard::pathExists(pathname1) << OFendl;
-    COUT << "fileExists(\"" << pathname1 << "\") = " << OFStandard::fileExists(pathname1) << OFendl;
-    COUT << "dirExists(\""  << pathname1 << "\") = " << OFStandard::dirExists( pathname1) << OFendl << OFendl;
+    OFStandard::combineDirAndFilename(tmpString, input, file);
+    OFCHECK_EQUAL(tmpString, combined);
 
-    COUT << "pathExists(\"" << pathname2 << "\") = " << OFStandard::pathExists(pathname2) << OFendl;
-    COUT << "fileExists(\"" << pathname2 << "\") = " << OFStandard::fileExists(pathname2) << OFendl;
-    COUT << "dirExists(\""  << pathname2 << "\") = " << OFStandard::dirExists( pathname2) << OFendl << OFendl;
+    OFStandard::combineDirAndFilename(tmpString, input, PATH_SEPARATOR + file);
+    OFCHECK_EQUAL(tmpString, slashFile);
+}
 
-    COUT << "pathExists(\"" << pathname3 << "\") = " << OFStandard::pathExists(pathname3) << OFendl;
-    COUT << "fileExists(\"" << pathname3 << "\") = " << OFStandard::fileExists(pathname3) << OFendl;
-    COUT << "dirExists(\""  << pathname3 << "\") = " << OFStandard::dirExists( pathname3) << OFendl << OFendl;
+OFTEST(ofstd_testPaths)
+{
+    OFString tmpString;
+    OFString sourceRoot;
+    OFString input;
+    OFString normalized;
+    OFString combined;
+    OFString pathSeparator;
 
-    COUT << "pathExists(\"" << pathname4 << "\") = " << OFStandard::pathExists(pathname4) << OFendl;
-    COUT << "fileExists(\"" << pathname4 << "\") = " << OFStandard::fileExists(pathname4) << OFendl;
-    COUT << "dirExists(\""  << pathname4 << "\") = " << OFStandard::dirExists( pathname4) << OFendl << OFendl;
+    pathSeparator += PATH_SEPARATOR;
+    sourceRoot = ".." + pathSeparator + "..";
 
-    COUT << "pathExists(\"" << pathname5 << "\") = " << OFStandard::pathExists(pathname5) << OFendl;
-    COUT << "fileExists(\"" << pathname5 << "\") = " << OFStandard::fileExists(pathname5) << OFendl;
-    COUT << "dirExists(\""  << pathname5 << "\") = " << OFStandard::dirExists( pathname5) << OFendl << OFendl;
+    normalized = sourceRoot;
+    input = normalized + pathSeparator;
+    combined = input + "file";
 
-    COUT << "normalizeDirName(\"" << pathname1 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname1) << OFendl;
-    COUT << "normalizeDirName(\"" << pathname2 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname2) << OFendl;
-    COUT << "normalizeDirName(\"" << pathname3 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname3) << OFendl;
-    COUT << "normalizeDirName(\"" << pathname4 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname4) << OFendl;
-    COUT << "normalizeDirName(\"" << pathname5 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname5) << OFendl;
-    COUT << "normalizeDirName(\"" << pathname6 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname6) << OFendl;
-    COUT << "normalizeDirName(\"" << pathname7 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname7) << OFendl;
-    COUT << "normalizeDirName(\"" << pathname9 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname9) << OFendl;
-    COUT << "normalizeDirName(\"\") = " << OFStandard::normalizeDirName(tmpString, "") << OFendl << OFendl;
+    checkExists(input, OFTrue, OFFalse, OFTrue);
+    checkPathHandling(input, normalized, combined);
 
-    COUT << "combineDirAndFilename(\"" << pathname1 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname1, "file") << OFendl;
-    COUT << "combineDirAndFilename(\"" << pathname2 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname2, "file") << OFendl;
-    COUT << "combineDirAndFilename(\"" << pathname3 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname3, "file") << OFendl;
-    COUT << "combineDirAndFilename(\"" << pathname4 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname4, "file") << OFendl;
-    COUT << "combineDirAndFilename(\"" << pathname5 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname5, "file") << OFendl;
-    COUT << "combineDirAndFilename(\"" << pathname5 << "\", \"/file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname5, "/file") << OFendl;
-    COUT << "combineDirAndFilename(\"" << pathname6 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname6, "file") << OFendl;
-    COUT << "combineDirAndFilename(\"" << pathname9 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname9, "file") << OFendl;
-    COUT << "combineDirAndFilename(\"\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, "", "file") << OFendl;
-    COUT << "combineDirAndFilename(\"\", \"file\", OFTrue) = " << OFStandard::combineDirAndFilename(tmpString, "", "file", OFTrue) << OFendl;
-    COUT << "combineDirAndFilename(\"\", \".\") = " << OFStandard::combineDirAndFilename(tmpString, "", ".") << OFendl;
-    COUT << "combineDirAndFilename(\"..\", \".\") = " << OFStandard::combineDirAndFilename(tmpString, "..", ".") << OFendl;
-    COUT << "combineDirAndFilename(\"\", \"\") = " << OFStandard::combineDirAndFilename(tmpString, "", "") << OFendl;
-    COUT << "combineDirAndFilename(\"\", \"\", OFTrue) = " << OFStandard::combineDirAndFilename(tmpString, "", "", OFTrue) << OFendl;
+    // Trailing slashes shouldn't matter
+    input += pathSeparator + pathSeparator + pathSeparator;
 
-    COUT << "isReadable() = " << OFStandard::isReadable(pathname8) << OFendl;
-    COUT << "isWriteable() = " << OFStandard::isWriteable(pathname8) << OFendl;
+    checkExists(input, OFTrue, OFFalse, OFTrue);
+    checkPathHandling(input, normalized, combined);
 
-    /* Base64 encoding/decoding */
+    // Now check a non-existent file
+    normalized = sourceRoot + pathSeparator + "does_not_exist";
+    input = normalized;
+    combined = input + pathSeparator + "file";
 
-    COUT << "original data: ";
-    for (i = 0; i < bin_len; i++)
-        COUT << OFstatic_cast(int, bin_data[i]) << " ";
-    COUT << OFendl;
-    COUT << "base64 encoded (buffer): " << OFStandard::encodeBase64(bin_data, bin_len, tmpString) << OFendl;
-    COUT << "base64 encoded (stream): "; OFStandard::encodeBase64(COUT, bin_data, bin_len); COUT << OFendl;
-    length = OFStandard::decodeBase64(tmpString, buffer);
-    COUT << "base64 decoded: ";
-    for (i = 0; i < length; i++)
-        COUT << OFstatic_cast(int, buffer[i]) << " ";
-    COUT << OFendl << OFendl;
-    delete[] buffer;
+    checkExists(input, OFFalse, OFFalse, OFFalse);
+    checkPathHandling(input, normalized, combined);
 
-    buffer = new unsigned char[511];
-    for (i = 0; i < 256; i++)
-        buffer[i] = OFstatic_cast(unsigned char, i);
-    for (i = 256; i < 511; i++)
-        buffer[i] = OFstatic_cast(unsigned char, 510 - i);
-    COUT << "original data: ";
-    for (i = 0; i < 511; i++)
-        COUT << OFstatic_cast(int, buffer[i]) << " ";
-    COUT << OFendl;
-    COUT << "base64 encoded (buffer): " << OFendl;
-    COUT << OFStandard::encodeBase64(buffer, 511, tmpString) << OFendl;
-    COUT << "base64 encoded (stream): " << OFendl;
-    OFStandard::encodeBase64(COUT, buffer, 511); COUT << OFendl;
-    COUT << "base64 with line breaks (buffer):" << OFendl;
-    COUT << OFStandard::encodeBase64(buffer, 511, tmpString, 72) << OFendl;
-    COUT << "base64 with line breaks (stream):" << OFendl;
-    OFStandard::encodeBase64(COUT, buffer, 511, 72); COUT << OFendl;
-    delete[] buffer;
-    length = OFStandard::decodeBase64(tmpString, buffer);
-    COUT << "base64 decoded: " << OFendl;
-    for (i = 0; i < length; i++)
-        COUT << OFstatic_cast(int, buffer[i]) << " ";
-    COUT << OFendl << OFendl;
-    delete[] buffer;
+    // Check the working dir handling
+    input = normalized = ".";
+    combined = "." + pathSeparator + "file";
 
-    COUT << "original data: " << txt_data1 << OFendl;
-    length = OFStandard::decodeBase64(txt_data1, buffer);
-    COUT << "base64 decoded: ";
-    for (i = 0; i < length; i++)
-        COUT << OFstatic_cast(int, buffer[i]) << " ";
-    COUT << OFendl << OFendl;
-    delete[] buffer;
+    checkExists(input, OFTrue, OFFalse, OFTrue);
+    checkPathHandling(input, normalized, combined);
 
-    COUT << "original data: " << txt_data2 << OFendl;
-    length = OFStandard::decodeBase64(txt_data2, buffer);
-    COUT << "base64 decoded: ";
-    for (i = 0; i < length; i++)
-        COUT << OFstatic_cast(int, buffer[i]) << " ";
-    COUT << OFendl << OFendl;
-    delete[] buffer;
+    // How is the empty string treated?
+    input = "";
 
-    return 0;
+    checkExists(input, OFFalse, OFFalse, OFFalse);
+    checkPathHandling(input, normalized, combined);
+
+    // Check what happens to "///"
+    normalized = pathSeparator;
+    input = pathSeparator + pathSeparator + pathSeparator;
+    combined = normalized + "file";
+
+    // No checkExists() since Windows doesn't have "/"
+    checkPathHandling(input, normalized, combined);
+
+    // TODO FIXME
+    // These tests have problems. They assume that they are run from the
+    // source dir, but with cmake they are usually run from elsewhere.
+#if 0
+    // Now let's check if the ofstd dir exists
+    normalized = sourceRoot + pathSeparator + "ofstd";
+    input = normalized;
+    combined = input + pathSeparator + "file";
+
+    checkExists(input, OFTrue, OFFalse, OFTrue);
+    checkPathHandling(input, normalized, combined);
+
+    // There should be a INSTALL file somewhere
+    normalized = sourceRoot + pathSeparator + "INSTALL";
+    input = normalized;
+    combined = input + pathSeparator + "file";
+
+    checkExists(input, OFTrue, OFTrue, OFFalse);
+    checkPathHandling(input, normalized, combined);
+#endif
+
+    // Now come some special tests for combineDirAndFilename
+    input = pathSeparator + pathSeparator + "caesar" + pathSeparator + "share";
+    OFStandard::combineDirAndFilename(tmpString, input, "file");
+    OFCHECK_EQUAL(tmpString, input + pathSeparator + "file");
+
+    OFStandard::combineDirAndFilename(tmpString, input, pathSeparator + "file");
+    OFCHECK_EQUAL(tmpString, pathSeparator + "file");
+
+    OFStandard::combineDirAndFilename(tmpString, "", "file");
+    OFCHECK_EQUAL(tmpString, "." + pathSeparator + "file");
+
+    OFStandard::combineDirAndFilename(tmpString, "", "file", OFTrue);
+    OFCHECK_EQUAL(tmpString, "file");
+
+    OFStandard::combineDirAndFilename(tmpString, "", ".");
+    OFCHECK_EQUAL(tmpString, ".");
+
+    OFStandard::combineDirAndFilename(tmpString, "..", ".");
+    OFCHECK_EQUAL(tmpString, "..");
+
+    OFStandard::combineDirAndFilename(tmpString, "", "");
+    OFCHECK_EQUAL(tmpString, ".");
+
+    OFStandard::combineDirAndFilename(tmpString, "", "", OFTrue);
+    OFCHECK_EQUAL(tmpString, "");
+}
+
+OFTEST(ofstd_ReadWriteable)
+{
+    // TODO FIXME
+    // Same as above, this assumes that it's called from the source dir which
+    // isn't necessarily true with cmake.
+#if 0
+    OFCHECK_EQUAL(OFStandard::isReadable("tofstd.cc"), OFTrue);
+    OFCHECK_EQUAL(OFStandard::isWriteable("tofstd.cc"), OFTrue);
+#endif
+    OFCHECK_EQUAL(OFStandard::isReadable("does_not_exist"), OFFalse);
+    OFCHECK_EQUAL(OFStandard::isWriteable("does_not_exist"), OFFalse);
 }
 
 
@@ -170,6 +187,9 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tofstd.cc,v $
+ * Revision 1.14  2011-05-25 10:05:57  uli
+ * Imported oftest and converted existing tests to oftest.
+ *
  * Revision 1.13  2010-10-14 13:15:16  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

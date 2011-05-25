@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010, OFFIS e.V.
+ *  Copyright (C) 2010-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: test program for class I2DBmpSource
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-12-16 12:52:34 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-25 10:05:55 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -29,16 +29,10 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmdata/libi2d/i2dbmps.h"
-#include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 
-#define OFFIS_CONSOLE_APPLICATION "i2dbmp"
-
-static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
-    OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
-
-static OFLogger i2dbmpLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+static OFLogger i2dbmpLogger = OFLog::getLogger("dcmtk.test.i2dbmp");
 
 enum offset {
     BMP_IMAGE_OFFSET = 10,
@@ -49,8 +43,6 @@ enum offset {
     BMP_COLORS       = 46
 };
 
-// 0 unless there were errors
-static int status = 0;
 // temporary file which will be used
 static const char *temporaryFile = "i2dbmp.tmp";
 
@@ -107,12 +99,7 @@ static Uint8 bmpHeader[] = {
 #define LOG_DEBUG(arg) OFLOG_DEBUG(i2dbmpLogger, arg)
 #define TEST(arg)      LOG_INFO(arg << "...")
 
-#define EXPECT_SUCCESS(b) do {     \
-    if (!(b)) {                    \
-        status |= 1;               \
-        LOG_WARN("!! Test failed in line " << __LINE__); \
-    }                              \
-} while (false)
+#define EXPECT_SUCCESS(b) OFCHECK(b)
 #define EXPECT_FAIL(b) EXPECT_SUCCESS(!(b))
 
 static void setDWord(int offset, int width, bool sign = false)
@@ -225,7 +212,7 @@ static bool compareImage(const void *pixelData, unsigned int pixelDataLength,
     return true;
 }
 
-static void testImages()
+OFTEST(dcmdata_i2d_bmp)
 {
     // This pixel data is used for all tests with at least 16bpp
     Uint8 pixelData1[] = { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88 };
@@ -336,63 +323,19 @@ static void testImages()
     TEST("Decoding an image with too small color table");
     setDWord(BMP_COLORS, 1);
     EXPECT_FAIL(canHandleImage(pixelData4, sizeof(pixelData4)));
-}
-
-#define SHORTCOL 3
-#define LONGCOL 21
-
-int main(int argc, char *argv[])
-{
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Test libi2d's BMP support", rcsid);
-    OFCommandLine cmd;
-    cmd.setOptionColumns(LONGCOL, SHORTCOL);
-    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-
-    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",    "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--version",           "print version information and exit", OFCommandLine::AF_Exclusive);
-      OFLog::addOptions(cmd);
-
-    /* evaluate command line */
-    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
-    {
-      /* check exclusive options first */
-      if (cmd.hasExclusiveOption())
-      {
-        if (cmd.findOption("--version"))
-        {
-          app.printHeader(OFTrue /*print host identifier*/);
-          return 0;
-        }
-      }
-    }
-
-    /* options */
-    OFLog::configureFromCommandLine(cmd, app);
-
-    /* print resource identifier */
-    OFLOG_DEBUG(i2dbmpLogger, rcsid << OFendl);
-
-    testImages();
 
     /* Remove our temporary file */
     unlink(temporaryFile);
-
-    if (status)
-    {
-        LOG_WARN("!!! Some tests failed!");
-    } else {
-        COUT << "*** All tests successful!" << OFendl;
-    }
-    return status;
 }
 
 
 /*
  *
  * CVS/RCS Log:
- * $Log: i2dbmp.cc,v $
+ * $Log: ti2dbmp.cc,v $
+ * Revision 1.1  2011-05-25 10:05:55  uli
+ * Imported oftest and converted existing tests to oftest.
+ *
  * Revision 1.4  2010-12-16 12:52:34  joergr
  * Added explicit type cast in order to keep VisualStudio 2005 quiet.
  *

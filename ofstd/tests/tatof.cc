@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: Test code of ascii/double conversion methods in class OFStandard
  *
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:16 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-25 10:05:57 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,7 +30,9 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/oftypes.h"
-#include "dcmtk/ofstd/ofconsol.h"
+
+#define OFTEST_OFSTD_ONLY
+#include "dcmtk/ofstd/oftest.h"
 
 #define INCLUDE_CMATH
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -55,6 +57,7 @@ const ValuePair vp[] =
   {"2.5", 2.5, OFTrue},
   {"  +2.5", 2.5, OFTrue},
   {"  -2.5", -2.5, OFTrue},
+  {"20", 20.0, OFTrue},
   {"1E3", 1000.0, OFTrue},
   {"1.e3", 1000.0, OFTrue},
   {"1.0E+003", 1000.0, OFTrue},
@@ -63,7 +66,7 @@ const ValuePair vp[] =
   {"9.87654321e-10", 9.87654321e-10, OFTrue},
 
   // big number
-  {"1.7976931348623157E+308", 1.7976931348623157E+308, OFTrue},
+  {"1.797693134862315E+308", 1.797693134862315e+308, OFTrue},
 
   // since our precision is limited, everything else smaller then this may be converted to zero.
   {"2.2250738585072014E-292", 2.2250738585072014E-292, OFTrue},
@@ -83,30 +86,26 @@ const ValuePair vp[] =
   {"", 0.0, OFFalse}
 };
 
-int main()
+OFTEST(ofstd_atof)
 {
   unsigned long numVp = sizeof(vp)/sizeof(ValuePair);
   double d1, d2, delta;
   OFBool r = OFFalse;
-  OFBool passed;
-  unsigned long numPassed = 0;
 
   for (unsigned long i=0; i<numVp; i++)
   {
-    passed = OFTrue;
     d1 = vp[i].d;
     d2 = OFStandard::atof(vp[i].s, &r);
     if (r && vp[i].r)
     {
       if (d1 != d2)
       {
-      	delta = fabs(d1-d2);
-      	// fail if precision is less then 9 decimal digits
+        delta = fabs(d1-d2);
+        // fail if precision is less then 9 decimal digits
         if (delta * 1.0E9 > fabs(d1))
         {
-          passed = OFFalse;
-          CERR << "test #" << i << " failed: conversion error, atof=" << d2 << ", ref="
-               << d1 << ", delta=" << delta << OFendl;
+          OFCHECK_FAIL("test #" << i << " failed: conversion error, atof=" << d2 << ", ref="
+               << d1 << ", delta=" << delta);
         }
       }
     }
@@ -114,38 +113,22 @@ int main()
     {
       if (r != vp[i].r)
       {
-        passed = OFFalse;
         if (r)
-          CERR << "test #" << i << " failed: conversion did not flag error as expected, atof=" << d2 << OFendl;
+          OFCHECK_FAIL("test #" << i << " failed: conversion did not flag error as expected, atof=" << d2);
         else
-          CERR << "test #" << i << " failed: conversion did not succeed as expected" << OFendl;
+          OFCHECK_FAIL("test #" << i << " failed: conversion did not succeed as expected");
       }
     }
-
-    if (passed)
-    {
-      CERR << "test #" << i << " passed" << OFendl;
-      numPassed++;
-    }
   }
-
-  if (numVp == numPassed)
-  {
-    CERR << "All tests passed." << OFendl;
-    return 0;
-  }
-  else
-  {
-    CERR << "Failures: " << numPassed << " of " << numVp << " tests passed." << OFendl;
-  }
-
-  return 1;
 }
 
 /*
  *
  * CVS/RCS Log:
- * $Log: tstatof.cc,v $
+ * $Log: tatof.cc,v $
+ * Revision 1.1  2011-05-25 10:05:57  uli
+ * Imported oftest and converted existing tests to oftest.
+ *
  * Revision 1.6  2010-10-14 13:15:16  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

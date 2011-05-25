@@ -23,3 +23,5 @@ distclean:
 	rm -f $(DISTTRASH)
 
 dependencies:
+
+check:

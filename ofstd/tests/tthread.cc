@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,8 +20,8 @@
  *
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-01-05 12:31:30 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-05-25 10:05:59 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,17 +30,16 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/ofstd/ofconsol.h"
+#define OFTEST_OFSTD_ONLY
+#include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/ofthread.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofstd.h"
 
-
-static void bailout(const char *message, int line)
-{
-  CERR << "[" << line << "]: " << message << OFendl;
-  exit(10);
-}
+#define BAILOUT(msg) do { \
+    OFCHECK_FAIL(msg); \
+    return; \
+} while (0)
 
 static OFMutex *mutex=NULL;
 static int mtx_var=0;
@@ -84,46 +83,45 @@ public:
   }
 };
 
-void mutex_test()
+static void mutex_test()
 {
   OFString errmsg;
   mutex = new OFMutex();
-  if ((!mutex)||(! mutex->initialized())) bailout("creation of mutex failed", __LINE__);
+  if ((!mutex)||(! mutex->initialized())) BAILOUT("creation of mutex failed");
   int condition = mutex->trylock();
   if (condition)
   {
     mutex->errorstr(errmsg, condition);
-    CERR << "mutex lock failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg = "mutex lock failed: " + errmsg;
+    BAILOUT(errmsg);
   }
 
   mtx_var = -1;
 
   MutexT1 t1;
-  if (0 != t1.start()) bailout("unable to create thread, mutex test failed", __LINE__);
+  if (0 != t1.start()) BAILOUT("unable to create thread, mutex test failed");
 
   MutexT2 t2;
-  if (0 != t2.start()) bailout("unable to create thread, mutex test failed", __LINE__);
+  if (0 != t2.start()) BAILOUT("unable to create thread, mutex test failed");
 
   OFStandard::sleep(1); // since I've got the mutex, nobody should write to mtx_var
-  if (mtx_var != -1) bailout("mutex test failed", __LINE__);
+  if (mtx_var != -1) BAILOUT("mutex test failed");
 
   int i=0;
   while ((i++<5) && (!mtx_cond1)) OFStandard::sleep(1);
-  if (!mtx_cond1) bailout("mutex trylock test failed", __LINE__);
+  if (!mtx_cond1) BAILOUT("mutex trylock test failed");
 
   if (0 != (condition = mutex->unlock()))
   {
     mutex->errorstr(errmsg, condition);
-    CERR << "mutex unlock failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg =  "mutex unlock failed: " + errmsg;
+    BAILOUT(errmsg);
   }
 
   while ((i++<5) && ((!mtx_cond2)||(!mtx_cond3))) OFStandard::sleep(1);
-  if ((!mtx_cond2) || (!mtx_cond3)) bailout("mutex lock/unlock test failed", __LINE__);
+  if ((!mtx_cond2) || (!mtx_cond3)) BAILOUT("mutex lock/unlock test failed");
 
   delete mutex;
-  CERR << "mutex test passed." << OFendl;
 }
 
 /* Currently OFSemaphore is not working and disabled on Mac OS X. Thus,
@@ -174,48 +172,47 @@ public:
   }
 };
 
-void semaphore_test()
+static void semaphore_test()
 {
   OFString errmsg;
   mutex = new OFMutex();
-  if ((!mutex)||(! mutex->initialized())) bailout("creation of mutex failed", __LINE__);
+  if ((!mutex)||(! mutex->initialized())) BAILOUT("creation of mutex failed");
   semaphore = new OFSemaphore(2);
-  if ((!semaphore)||(! semaphore->initialized())) bailout("creation of semaphore failed", __LINE__);
+  if ((!semaphore)||(! semaphore->initialized())) BAILOUT("creation of semaphore failed");
   int condition = mutex->trylock();
   if (condition)
   {
     mutex->errorstr(errmsg, condition);
-    CERR << "mutex lock failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg = "mutex lock failed: " + errmsg;
+    BAILOUT(errmsg);
   }
   condition = semaphore->trywait();
   if (condition)
   {
     semaphore->errorstr(errmsg, condition);
-    CERR << "semaphore acquisition failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg = "semaphore acquisition failed: " + errmsg;
+    BAILOUT(errmsg);
   }
 
   SemaT1 t1;
-  if (0 != t1.start()) bailout("unable to create thread, semaphore test failed", __LINE__);
+  if (0 != t1.start()) BAILOUT("unable to create thread, semaphore test failed");
 
   SemaT2 t2;
-  if (0 != t2.start()) bailout("unable to create thread, semaphore test failed", __LINE__);
+  if (0 != t2.start()) BAILOUT("unable to create thread, semaphore test failed");
 
   int i=0;
   while ((i++<5) && (!sem_cond1)) OFStandard::sleep(1);
-  if (!sem_cond1) bailout("semaphore lock/unlock test failed", __LINE__);
+  if (!sem_cond1) BAILOUT("semaphore lock/unlock test failed");
   OFStandard::sleep(1);
-  if (sem_cond3) bailout("semaphore lock/unlock test failed", __LINE__); // make sure T2 is really blocked
+  if (sem_cond3) BAILOUT("semaphore lock/unlock test failed"); // make sure T2 is really blocked
   mutex->unlock();
 
   i=0;
   while ((i++<5) && ((!sem_cond2)||(!sem_cond3)||(!sem_cond4))) OFStandard::sleep(1);
-  if ((!mtx_cond2) || (!mtx_cond3) || (!sem_cond4)) bailout("semaphore lock/unlock test failed", __LINE__);
+  if ((!mtx_cond2) || (!mtx_cond3) || (!sem_cond4)) BAILOUT("semaphore lock/unlock test failed");
 
   delete mutex;
   delete semaphore;
-  CERR << "semaphore test passed." << OFendl;
 }
 
 #endif //_DARWIN_C_SOURCE
@@ -273,64 +270,63 @@ public:
   }
 };
 
-void rwlock_test()
+static void rwlock_test()
 {
   OFString errmsg;
 
   mutex = new OFMutex();
-  if ((!mutex)||(! mutex->initialized())) bailout("creation of mutex failed", __LINE__);
+  if ((!mutex)||(! mutex->initialized())) BAILOUT("creation of mutex failed");
   mutex2 = new OFMutex();
-  if ((!mutex2)||(! mutex2->initialized())) bailout("creation of mutex failed", __LINE__);
+  if ((!mutex2)||(! mutex2->initialized())) BAILOUT("creation of mutex failed");
   rwlock = new OFReadWriteLock();
-  if ((!rwlock)||(! rwlock->initialized())) bailout("creation of read/write lock failed", __LINE__);
+  if ((!rwlock)||(! rwlock->initialized())) BAILOUT("creation of read/write lock failed");
 
   int condition = mutex->trylock();
   if (condition)
   {
     mutex->errorstr(errmsg, condition);
-    CERR << "mutex lock failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg = "mutex lock failed: " + errmsg;
+    BAILOUT(errmsg);
   }
 
   condition = rwlock->tryrdlock();
   if (condition)
   {
     rwlock->errorstr(errmsg, condition);
-    CERR << "read lock failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg = "read lock failed: " + errmsg;
+    BAILOUT(errmsg);
   }
 
   RWLockT1 t1;
-  if (0 != t1.start()) bailout("unable to create thread, semaphore test failed", __LINE__);
+  if (0 != t1.start()) BAILOUT("unable to create thread, semaphore test failed");
 
   RWLockT2 t2;
-  if (0 != t2.start()) bailout("unable to create thread, semaphore test failed", __LINE__);
+  if (0 != t2.start()) BAILOUT("unable to create thread, semaphore test failed");
 
 
   int i=0;
   while ((i++<5) && ((!rw_cond1)||(!rw_cond5))) OFStandard::sleep(1);
 
-  if ((!rw_cond1)||(!rw_cond5)) bailout("read/write lock/unlock test failed", __LINE__);
+  if ((!rw_cond1)||(!rw_cond5)) BAILOUT("read/write lock/unlock test failed");
   condition = rwlock->unlock();
   if (condition)
   {
     rwlock->errorstr(errmsg, condition);
-    CERR << "read lock failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg = "read lock failed: " + errmsg;
+    BAILOUT(errmsg);
   }
   OFStandard::sleep(1);
-  if (rw_cond6) bailout("read/write lock test failed", __LINE__);
+  if (rw_cond6) BAILOUT("read/write lock test failed");
 
   mutex->unlock();
 
   i=0;
   while ((i++<5) && ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7))) OFStandard::sleep(1);
-  if ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7)) bailout("read/write lock/unlock test failed", __LINE__);
+  if ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7)) BAILOUT("read/write lock/unlock test failed");
 
   delete mutex;
   delete mutex2;
   delete rwlock;
-  CERR << "read/write lock test passed." << OFendl;
 }
 
 class RWLockerT1: public OFThread
@@ -380,7 +376,7 @@ public:
   }
 };
 
-void rwlocker_test()
+static void rwlocker_test()
 {
   OFString errmsg;
 
@@ -396,18 +392,18 @@ void rwlocker_test()
   rw_cond7=0;
 
   mutex = new OFMutex();
-  if ((!mutex)||(! mutex->initialized())) bailout("creation of mutex failed", __LINE__);
+  if ((!mutex)||(! mutex->initialized())) BAILOUT("creation of mutex failed");
   mutex2 = new OFMutex();
-  if ((!mutex2)||(! mutex2->initialized())) bailout("creation of mutex failed", __LINE__);
+  if ((!mutex2)||(! mutex2->initialized())) BAILOUT("creation of mutex failed");
   rwlock = new OFReadWriteLock();
-  if ((!rwlock)||(! rwlock->initialized())) bailout("creation of read/write lock failed", __LINE__);
+  if ((!rwlock)||(! rwlock->initialized())) BAILOUT("creation of read/write lock failed");
 
   int condition = mutex->trylock();
   if (condition)
   {
     mutex->errorstr(errmsg, condition);
-    CERR << "mutex lock failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg = "mutex lock failed: " + errmsg;
+    BAILOUT(errmsg);
   }
 
   OFReadWriteLocker rwlockLocker(*rwlock);
@@ -415,41 +411,40 @@ void rwlocker_test()
   if (condition)
   {
     rwlock->errorstr(errmsg, condition);
-    CERR << "read lock failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg = "read lock failed: " + errmsg;
+    BAILOUT(errmsg);
   }
 
   RWLockerT1 t1;
-  if (0 != t1.start()) bailout("unable to create thread, semaphore test failed", __LINE__);
+  if (0 != t1.start()) BAILOUT("unable to create thread, semaphore test failed");
 
   RWLockerT2 t2;
-  if (0 != t2.start()) bailout("unable to create thread, semaphore test failed", __LINE__);
+  if (0 != t2.start()) BAILOUT("unable to create thread, semaphore test failed");
 
 
   int i=0;
   while ((i++<5) && ((!rw_cond1)||(!rw_cond5))) OFStandard::sleep(1);
 
-  if ((!rw_cond1)||(!rw_cond5)) bailout("read/write lock/unlock test failed", __LINE__);
+  if ((!rw_cond1)||(!rw_cond5)) BAILOUT("read/write lock/unlock test failed");
   condition = rwlockLocker.unlock();
   if (condition)
   {
     rwlock->errorstr(errmsg, condition);
-    CERR << "read lock failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg = "read lock failed: " + errmsg;
+    BAILOUT(errmsg);
   }
   OFStandard::sleep(1);
-  if (rw_cond6) bailout("read/write lock test failed", __LINE__);
+  if (rw_cond6) BAILOUT("read/write lock test failed");
 
   mutex->unlock();
 
   i=0;
   while ((i++<5) && ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7))) OFStandard::sleep(1);
-  if ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7)) bailout("read/write lock/unlock test failed", __LINE__);
+  if ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7)) BAILOUT("read/write lock/unlock test failed");
 
   delete mutex;
   delete mutex2;
   delete rwlock;
-  CERR << "read/write lock locker test passed." << OFendl;
 }
 
 
@@ -504,72 +499,72 @@ public:
 };
 
 
-void tsdata_test()
+static void tsdata_test()
 {
   OFString errmsg;
 
   mutex = new OFMutex();
-  if ((!mutex)||(! mutex->initialized())) bailout("creation of mutex failed", __LINE__);
+  if ((!mutex)||(! mutex->initialized())) BAILOUT("creation of mutex failed");
   mutex2 = new OFMutex();
-  if ((!mutex2)||(! mutex2->initialized())) bailout("creation of mutex failed", __LINE__);
+  if ((!mutex2)||(! mutex2->initialized())) BAILOUT("creation of mutex failed");
   tsdata = new OFThreadSpecificData();
-  if ((!tsdata)||(! tsdata->initialized())) bailout("creation of thread specific data failed", __LINE__);
+  if ((!tsdata)||(! tsdata->initialized())) BAILOUT("creation of thread specific data failed");
 
   int condition = mutex->trylock();
   if (condition)
   {
     mutex->errorstr(errmsg, condition);
-    CERR << "mutex lock failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg = "mutex lock failed: " + errmsg;
+    BAILOUT(errmsg);
   }
   condition = mutex2->trylock();
   if (condition)
   {
     mutex2->errorstr(errmsg, condition);
-    CERR << "mutex lock failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg = "mutex lock failed: " + errmsg;
+    BAILOUT(errmsg);
   }
 
   TSDataT1 t1;
-  if (0 != t1.start()) bailout("unable to create thread, thread specific data test failed", __LINE__);
+  if (0 != t1.start()) BAILOUT("unable to create thread, thread specific data test failed");
 
   TSDataT2 t2;
-  if (0 != t2.start()) bailout("unable to create thread, thread specific data test failed", __LINE__);
+  if (0 != t2.start()) BAILOUT("unable to create thread, thread specific data test failed");
 
 
   int i=0;
   while ((i++<5) && ((!tsd_cond1)||(!tsd_cond2))) OFStandard::sleep(1);
 
-  if ((!tsd_cond1)||(!tsd_cond2)) bailout("thread specific data write test failed", __LINE__);
+  if ((!tsd_cond1)||(!tsd_cond2)) BAILOUT("thread specific data write test failed");
 
   condition = mutex->unlock();
   if (condition)
   {
     mutex->errorstr(errmsg, condition);
-    CERR << "mutex unlock failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg = "mutex unlock failed: " + errmsg;
+    BAILOUT(errmsg);
   }
   condition = mutex2->unlock();
   if (condition)
   {
     mutex2->errorstr(errmsg, condition);
-    CERR << "mutex unlock failed: ";
-    bailout(errmsg.c_str(), __LINE__);
+    errmsg = "mutex unlock failed: " + errmsg;
+    BAILOUT(errmsg);
   }
 
   i=0;
   while ((i++<5) && ((!tsd_cond3)||(!tsd_cond4))) OFStandard::sleep(1);
-  if ((!tsd_cond3)||(!tsd_cond4)) bailout("thread specific data read test failed", __LINE__);
+  if ((!tsd_cond3)||(!tsd_cond4)) BAILOUT("thread specific data read test failed");
 
   delete mutex;
   delete mutex2;
   delete tsdata;
-  CERR << "thread specific data test passed." << OFendl;
 }
 
 
-int main()
+OFTEST(ofstd_thread)
 {
+  // This makes sure tests are executed in the expected order
   mutex_test();
 #ifndef _DARWIN_C_SOURCE  
   semaphore_test(); // may assume that mutexes work correctly
@@ -577,15 +572,16 @@ int main()
   rwlock_test();    // may assume that mutexes and semaphores work correctly
   rwlocker_test();  // may assume that mutexes, semaphores and read/write locks work correctly
   tsdata_test();
-  CERR << "all tests passed." << OFendl;
-  return 0;
 }
 
 
 /*
  *
  * CVS/RCS Log:
- * $Log: tstthred.cc,v $
+ * $Log: tthread.cc,v $
+ * Revision 1.1  2011-05-25 10:05:59  uli
+ * Imported oftest and converted existing tests to oftest.
+ *
  * Revision 1.15  2011-01-05 12:31:30  uli
  * Remove all windows line endings that were recently introduced.
  *

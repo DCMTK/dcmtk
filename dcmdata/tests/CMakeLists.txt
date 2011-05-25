@@ -2,18 +2,9 @@
 LINK_DIRECTORIES(${dcmdata_BINARY_DIR} ${ofstd_BINARY_DIR} ${oflog_BINARY_DIR} ${ZLIB_LIBDIR} ${LIBXML_LIBDIR})
 
 # declare executables
-FOREACH(PROGRAM i2dbmp tstpath tstchval tstpread tvrdatim)
-  ADD_EXECUTABLE(${PROGRAM} ${PROGRAM})
-ENDFOREACH(PROGRAM)
+ADD_EXECUTABLE(dcmdata_tests tests tpread ti2dbmp tchval tpath tvrdatim)
 
 # make sure executables are linked to the corresponding libraries
-FOREACH(PROGRAM tstpath tstchval tstpread tvrdatim)
-  TARGET_LINK_LIBRARIES(${PROGRAM} dcmdata oflog ofstd ${ZLIB_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})
-ENDFOREACH(PROGRAM)
+TARGET_LINK_LIBRARIES(dcmdata_tests i2d dcmdata oflog ofstd ${ZLIB_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})
 
-TARGET_LINK_LIBRARIES(i2dbmp i2d dcmdata oflog ofstd ${ZLIB_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})
-
-# declare installation files
-#FOREACH(PROGRAM i2dbmp tstpath tstchval tstpread tvrdatim)
-#  INSTALL_TARGETS(${DCMTK_INSTALL_BINDIR} ${PROGRAM})
-#ENDFOREACH(PROGRAM)
+#ADD_TEST(dcmdata_tests dcmdata_tests)

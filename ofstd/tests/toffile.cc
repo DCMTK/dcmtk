@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: test program for the non-trivial fseek and ftell implementations
  *           in class OFFile
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-12-20 12:05:20 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-25 10:05:57 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@
 
 #define FILENAME "testfile.$$$"
 
-OFBool fillFile(OFFile& file)
+static OFBool fillFile(OFFile& file)
 {
   Uint32 *buf = new Uint32[BLOCKSIZE];
   if (buf == NULL)
@@ -80,12 +80,12 @@ OFBool fillFile(OFFile& file)
   return OFTrue;
 }
 
-Uint32 myRand(Uint32 max)
+static Uint32 myRand(Uint32 max)
 {
    return OFstatic_cast(Uint32, (OFstatic_cast(double, max) * rand() / RAND_MAX)); // 0.. max * RAND_MAX
 }
 
-OFBool seekFile(OFFile &file)
+static OFBool seekFile(OFFile &file)
 {
   offile_off_t pos, lastpos;
   offile_off_t expected;
@@ -406,6 +406,9 @@ int main()
 /*
  * CVS/RCS Log:
  * $Log: toffile.cc,v $
+ * Revision 1.9  2011-05-25 10:05:57  uli
+ * Imported oftest and converted existing tests to oftest.
+ *
  * Revision 1.8  2010-12-20 12:05:20  joergr
  * Added explicit type casts in order to keep gcc 2.95.3 quiet.
  *

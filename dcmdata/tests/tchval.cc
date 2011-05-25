@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2010, OFFIS e.V.
+ *  Copyright (C) 2009-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: test program for checkStringValue() methods
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:05 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-05-25 10:05:55 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -29,18 +29,22 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/ofstd/ofbmanip.h"
 
 
-#define CHECK_GOOD(number, check) \
-  COUT << "Test " << number << ": " << (check.good() ? "OK" : "Error") << OFendl;
+#define CHECK_GOOD(number, check) do { \
+  if (!(check).good()) \
+    OFCHECK_FAIL(number ": " #check); \
+} while (0);
 
-#define CHECK_BAD(number, check) \
-  COUT << "Test " << number << ": " << (check.bad() ? "OK" : "Error") << OFendl;
+#define CHECK_BAD(number, check) do { \
+  if (!(check).bad()) \
+    OFCHECK_FAIL(number ": " #check); \
+} while (0);
 
-
-int main(int , char *[])
+OFTEST(dcmdata_checkStringValue)
 {
   /* test "Application Entity" */
   CHECK_BAD ( "AE-01", DcmApplicationEntity::checkStringValue(" ", "1") )
@@ -52,7 +56,6 @@ int main(int , char *[])
   CHECK_BAD ( "AE-07", DcmApplicationEntity::checkStringValue("Jörg", "1") )
   CHECK_BAD ( "AE-08", DcmApplicationEntity::checkStringValue("1234567890-ABCDE ") )
   CHECK_GOOD( "AE-09", DcmApplicationEntity::checkStringValue("\\ AE \\", "3-3n") )
-  COUT << OFendl;
 
   /* test "Age String" */
   CHECK_GOOD( "AS-01", DcmAgeString::checkStringValue("001Y", "1") )
@@ -65,7 +68,6 @@ int main(int , char *[])
   CHECK_BAD ( "AS-08", DcmAgeString::checkStringValue(" 010Y", "1") )
   CHECK_BAD ( "AS-09", DcmAgeString::checkStringValue("010Y ", "1") )
   CHECK_BAD ( "AS-10", DcmAgeString::checkStringValue("0109Y", "1") )
-  COUT << OFendl;
 
   /* test "Code String" */
   CHECK_GOOD( "CS-01", DcmCodeString::checkStringValue("TEST 1234567890\\TEST", "2-2n") )
@@ -82,7 +84,6 @@ int main(int , char *[])
   CHECK_BAD ( "CS-12", DcmCodeString::checkStringValue("1234567890-ABCDE") )
   CHECK_GOOD( "CS-13", DcmCodeString::checkStringValue("                ") )
   CHECK_BAD ( "CS-14", DcmCodeString::checkStringValue("                 ") )
-  COUT << OFendl;
 
   /* test "Date" */
   CHECK_GOOD( "DA-01", DcmDate::checkStringValue("20090731", "1") )
@@ -97,7 +98,6 @@ int main(int , char *[])
   CHECK_BAD ( "DA-10", DcmDate::checkStringValue("20000001", "1") )
   CHECK_BAD ( "DA-11", DcmDate::checkStringValue("00001232", "1") )
   CHECK_BAD ( "DA-12", DcmDate::checkStringValue("20000000", "1") )
-  COUT << OFendl;
 
   /* test "Date Time" */
   CHECK_GOOD( "DT-01", DcmDateTime::checkStringValue("200907311230", "1") )
@@ -113,7 +113,6 @@ int main(int , char *[])
   CHECK_BAD ( "DT-11", DcmDateTime::checkStringValue("200907311230+1900", "1") )
   CHECK_GOOD( "DT-12", DcmDateTime::checkStringValue("20090731123000.123456+0100", "1") )
   CHECK_BAD ( "DT-13", DcmDateTime::checkStringValue("20090731123000.123456+0100 ", "1") )
-  COUT << OFendl;
 
   /* test "Decimal String" */
   CHECK_GOOD( "DS-01", DcmDecimalString::checkStringValue(" 0", "1") )
@@ -129,7 +128,6 @@ int main(int , char *[])
   CHECK_BAD ( "DS-10", DcmDecimalString::checkStringValue("1.099E", "1") )
   CHECK_GOOD( "DS-11", DcmDecimalString::checkStringValue("-10e+99", "1") )
   CHECK_GOOD( "DS-12", DcmDecimalString::checkStringValue("-10e+99\\+1E-1", "2") )
-  COUT << OFendl;
 
   /* test "Integer String" */
   CHECK_GOOD( "IS-01", DcmIntegerString::checkStringValue("0", "1") )
@@ -147,7 +145,6 @@ int main(int , char *[])
   CHECK_BAD ( "IS-12", DcmIntegerString::checkStringValue("-2147483649", "1") )
   CHECK_GOOD( "IS-13", DcmIntegerString::checkStringValue(" -2147483648\\+2147483647 ", "2") )
   CHECK_BAD ( "IS-14", DcmIntegerString::checkStringValue(" -2147483648 \\+2147483647", "2") )
-  COUT << OFendl;
 
   /* test "Long String" */
   CHECK_GOOD( "LO-01", DcmLongString::checkStringValue(" ", "1") )
@@ -160,11 +157,9 @@ int main(int , char *[])
   CHECK_GOOD( "LO-08", DcmLongString::checkStringValue("\\ _2_ \\ _3_ \\ _4_ \\ _5_ \\", "6") )
   CHECK_GOOD( "LO-09", DcmLongString::checkStringValue("ESC\033aping", "1") )
   CHECK_BAD ( "LO-10", DcmLongString::checkStringValue("not allowed: \r\014", "1") )
-  COUT << OFendl;
 
   /* test "Long Text" */
   CHECK_GOOD( "LT-01", DcmLongText::checkStringValue(" Hallo \\ 12345 \\ äöüß ") )
-  COUT << OFendl;
 
   /* test "Person Name" */
   CHECK_GOOD( "PN-01", DcmPersonName::checkStringValue("A^Riesmeier^^=R^Jörg", "1") )
@@ -178,7 +173,6 @@ int main(int , char *[])
   CHECK_GOOD( "PN-09", DcmPersonName::checkStringValue("^ Jörg ^") )
   CHECK_GOOD( "PN-10", DcmPersonName::checkStringValue("^^^^MD ") )
   CHECK_BAD ( "PN-11", DcmPersonName::checkStringValue("^^^^^") )
-  COUT << OFendl;
 
   /* test "Short String" */
   CHECK_GOOD( "SH-01", DcmShortString::checkStringValue(" ", "1") )
@@ -193,12 +187,10 @@ int main(int , char *[])
   CHECK_GOOD( "SH-10", DcmShortString::checkStringValue("", "2") )
   CHECK_GOOD( "SH-11", DcmShortString::checkStringValue("ESC\033aping", "1") )
   CHECK_BAD ( "SH-12", DcmShortString::checkStringValue("not allowed: \n\010\r\014", "1") )
-  COUT << OFendl;
 
   /* test "Short Text" */
   CHECK_GOOD( "ST-01", DcmShortText::checkStringValue(" umlaut characters are allowed: ÄÖÜäöü\naccented characters also: áàéèíìâêô\rand control characters, of course, including \033=ESC ") )
   CHECK_BAD ( "ST-02", DcmShortText::checkStringValue(" other control characters are not allowed: \013 \010 \200 ") )
-  COUT << OFendl;
 
   /* test "Time" */
   CHECK_GOOD( "TM-01", DcmTime::checkStringValue("0000", "1") )
@@ -215,7 +207,6 @@ int main(int , char *[])
   CHECK_BAD ( "TM-12", DcmTime::checkStringValue("12:30:00.123456", "1", OFFalse) )
   CHECK_GOOD( "TM-13", DcmTime::checkStringValue("12:30:00.123456", "1", OFTrue) )
   CHECK_BAD ( "TM-14", DcmTime::checkStringValue("12:30", "1", OFTrue) )
-  COUT << OFendl;
 
   /* test "Unique Identifier" */
   CHECK_GOOD( "UI-01", DcmUniqueIdentifier::checkStringValue("0", "1") )
@@ -230,7 +221,6 @@ int main(int , char *[])
   CHECK_GOOD( "UI-10", DcmUniqueIdentifier::checkStringValue("1.2.3.4.5.6.7.8.9.0\\99", "2") )
   CHECK_GOOD( "UI-11", DcmUniqueIdentifier::checkStringValue("1.2.3.4.5.6.7.8.9.0.123.456.789.0.111222333444555666777888999000", "1") )
   CHECK_BAD ( "UI-12", DcmUniqueIdentifier::checkStringValue("1.2.3.4.5.6.7.8.9.0.123.456.789.10.111222333444555666777888999000", "1") )
-  COUT << OFendl;
 
   /* test "Unlimited Text" */
   OFString hugeString(1024 * 512, 'n');
@@ -240,16 +230,16 @@ int main(int , char *[])
 
   hugeString[hugeString.length() / 2] = '\t';
   CHECK_BAD ( "UT-03", DcmUnlimitedText::checkStringValue(hugeString) )
-  COUT << OFendl;
-
-  return 0;
 }
 
 
 /*
  *
  * CVS/RCS Log:
- * $Log: tstchval.cc,v $
+ * $Log: tchval.cc,v $
+ * Revision 1.1  2011-05-25 10:05:55  uli
+ * Imported oftest and converted existing tests to oftest.
+ *
  * Revision 1.7  2010-10-14 13:15:05  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

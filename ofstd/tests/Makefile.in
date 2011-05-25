@@ -17,70 +17,19 @@ LIBDIRS = -L$(top_srcdir)/libsrc
 LOCALLIBS = -lofstd
 LOCALTRASH = *.out
 
-objs = tststack.o tstlist.o tlist.o tstring.o tstthred.o tofstd.o tofdatim.o \
-       tstatof.o tstftoa.o toffile.o tmap.o tvec.o
-progs = tststack tstlist tlist tstring tstthred tofstd tofdatim tstatof tstftoa \
-        toffile tmap tvec
+test_objs = tests.o tatof.o tmap.o tvec.o tftoa.o tthread.o tbase64.o \
+            tstring.o tlist.o tstack.o tofdatim.o tofstd.o
+objs = toffile.o $(test_objs)
+progs = toffile tests
 
 
 all: $(progs)
 
-tststack: tststack.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
-
-tstlist: tstlist.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
-
-tlist: tlist.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
-
-tmap: tmap.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
-
-tvec: tvec.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
-
-tstring: tstring.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
-
-tstthred: tstthred.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS) $(MTLIBS)
-
-tofstd: tofstd.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
-
-tofdatim: tofdatim.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
-
-tstatof: tstatof.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
-
-tstftoa: tstftoa.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+tests: $(test_objs)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(LIBS)
 
 toffile: toffile.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
-
-
-tests: all test-list test-stack test-string
-
-test-list: tlist tstlist
-	@echo '--Testing OFList (part 1)'
-	./tlist > tlist.out
-	diff tlist.exp tlist.out
-	@echo '--Testing OFList (part 2)'
-	./tstlist > tstlist.out
-	diff tstlist.exp tstlist.out
-
-test-stack: tststack
-	@echo '--Testing OFStack'
-	./tststack > tststack.out
-	diff tststack.exp tststack.out
-
-test-string: tstring
-	@echo '--Testing OFString'
-	./tstring < tstring.inp > tstring.out
-	diff tstring.exp tstring.out
 
 
 install: all
@@ -95,5 +44,8 @@ distclean:
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+
+check: tests
+	./tests
 
 include $(DEP)

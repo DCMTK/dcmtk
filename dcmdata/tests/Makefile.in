@@ -20,26 +20,14 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(top_srcdir)/libi2d -L$(ofstddir)/libsrc -L$
 LOCALLIBS = -ldcmdata -loflog -lofstd $(ZLIBLIBS)
 I2DLIBS = -li2d
 
-objs = tvrdatim.o tstpread.o tstpath.o tstchval.o i2dbmp.o
-progs = tvrdatim tstpread tstpath tstchval i2dbmp
+objs = tests.o tpread.o ti2dbmp.o tchval.o tpath.o tvrdatim.o
+progs = tests
 
 
 all: $(progs)
 
-tvrdatim: tvrdatim.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
-
-tstpread: tstpread.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
-
-tstpath: tstpath.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
-
-tstchval: tstchval.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
-
-i2dbmp: i2dbmp.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(I2DLIBS) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+tests: $(objs)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(objs) $(I2DLIBS) $(LOCALLIBS) $(LIBS)
 
 
 install: all
@@ -53,5 +41,8 @@ distclean:
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+
+check: tests
+	./tests
 
 include $(DEP)
