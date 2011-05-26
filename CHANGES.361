@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.26 (onken) 
+
+- Fixed build of ofstd tests with CMake.
+  Affects: ofstd/tests/CMakeLists.txt
+
 **** Changes from 2011.05.25 (schlachter)
 
 - Imported oftest and converted existing tests to oftest.
