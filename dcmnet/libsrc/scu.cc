@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-05-25 09:56:52 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-05-27 10:12:18 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -201,8 +201,8 @@ OFCondition DcmSCU::initNetwork()
     }
   }
 
-  // Adapt presentation context ID to existing presentation contexts
-  // It's important that presentation context ids are numerated 1,3,5,7...!
+  // Adapt presentation context ID to existing presentation contexts.
+  // It's important that presentation context IDs are numerated 1,3,5,7...!
   Uint32 nextFreePresID = 257;
   Uint32 numContexts = ASC_countPresentationContexts(m_params);
   if (numContexts <= 127)
@@ -210,7 +210,7 @@ OFCondition DcmSCU::initNetwork()
     // Need Uint16 to avoid overflow in currPresID (unsigned char)
     nextFreePresID = 2 * numContexts + 1; /* add 1 to point to the next free ID*/
   }
-  // Print warning if number of overall presenation contexts exceeds 128
+  // Print warning if number of overall presentation contexts exceeds 128
   if ((numContexts + m_presContexts.size()) > 128)
   {
     DCMNET_WARN("Number of presentation contexts exceeds 128 (" << numContexts + m_presContexts.size()
@@ -235,7 +235,7 @@ OFCondition DcmSCU::initNetwork()
     OFListIterator(OFString) syntaxIt = (*contIt).transferSyntaxes.begin();
     OFListIterator(OFString) endOfSyntaxList = (*contIt).transferSyntaxes.end();
     Uint16 sNum = 0;
-    // copy all transfersyntaxes to array
+    // copy all transfer syntaxes to array
     while (syntaxIt != endOfSyntaxList)
     {
       transferSyntaxes[sNum] = (*syntaxIt).c_str();
@@ -246,13 +246,13 @@ OFCondition DcmSCU::initNetwork()
     // add the presentation context
     cond = ASC_addPresentationContext(m_params, OFstatic_cast(Uint8, nextFreePresID),
       (*contIt).abstractSyntaxName.c_str(), transferSyntaxes, numTransferSyntaxes,(*contIt).roleSelect);
-    // if adding was successfull, prepare pres. context ID for next addition
+    // if adding was successfull, prepare presentation context ID for next addition
     delete[] transferSyntaxes;
     transferSyntaxes = NULL;
     if (cond.bad())
       return cond;
     contIt++;
-    // goto next free nr, only odd presentation context numbers permitted
+    // goto next free number, only odd presentation context IDs permitted
     nextFreePresID += 2;
   }
 
@@ -351,7 +351,7 @@ OFCondition DcmSCU::useSecureConnection(DcmTransportLayer *tlayer)
 }
 
 
-// Returns usable presentation context ID for given abstract syntax UID
+// Returns usable presentation context ID for a given abstract syntax UID and
 // transfer syntax UID. 0 if none matches.
 T_ASC_PresentationContextID DcmSCU::findPresentationContextID(const OFString &abstractSyntax,
                                                               const OFString &transferSyntax)
@@ -385,8 +385,8 @@ T_ASC_PresentationContextID DcmSCU::findPresentationContextID(const OFString &ab
   return 0;   /* not found */
 }
 
-// Returns the prsentation context ID that best matches the given abstract syntax UID and
-// the transfer syntax UID.
+// Returns the presentation context ID that best matches the given abstract syntax UID and
+// transfer syntax UID.
 T_ASC_PresentationContextID DcmSCU::findAnyPresentationContextID(const OFString &abstractSyntax,
                                                                  const OFString &transferSyntax)
 {
@@ -422,8 +422,8 @@ T_ASC_PresentationContextID DcmSCU::findAnyPresentationContextID(const OFString 
   while (pc && !found)
   {
      found =  (strcmp(pc->abstractSyntax, abstractSyntax.c_str()) == 0)
-          && (pc->result == ASC_P_ACCEPTANCE)
-          && ((strcmp(pc->acceptedTransferSyntax, UID_LittleEndianExplicitTransferSyntax) == 0)
+           && (pc->result == ASC_P_ACCEPTANCE)
+           && ((strcmp(pc->acceptedTransferSyntax, UID_LittleEndianExplicitTransferSyntax) == 0)
            || (strcmp(pc->acceptedTransferSyntax, UID_BigEndianExplicitTransferSyntax) == 0));
      if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
   }
@@ -436,14 +436,14 @@ T_ASC_PresentationContextID DcmSCU::findAnyPresentationContextID(const OFString 
   while (pc && !found)
   {
      found = (strcmp(pc->abstractSyntax, abstractSyntax.c_str()) == 0)
-                && (pc->result == ASC_P_ACCEPTANCE)
-                && (strcmp(pc->acceptedTransferSyntax, UID_LittleEndianImplicitTransferSyntax) == 0);
+           && (pc->result == ASC_P_ACCEPTANCE)
+           && (strcmp(pc->acceptedTransferSyntax, UID_LittleEndianImplicitTransferSyntax) == 0);
      if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
   }
   if (found) return pc->presentationContextID;
 
   /* finally we accept everything we get.
-      returns 0 if abstract syntax is not supported
+     returns 0 if abstract syntax is not supported
   */
   return ASC_findAcceptedPresentationContextID(m_assoc, abstractSyntax.c_str());
 }
@@ -563,7 +563,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
   if (pcid == 0)
   {
     DCMNET_ERROR("No presentation context found for sending C-ECHO with SOP Class / Transfer Syntax: "
-      << dcmFindNameOfUID(UID_VerificationSOPClass, "") << "/"
+      << dcmFindNameOfUID(UID_VerificationSOPClass, "") << " / "
       << DcmXfer(UID_LittleEndianImplicitTransferSyntax).getXferName());
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
@@ -609,8 +609,8 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
   } else {
     DCMNET_ERROR("Expected C-ECHO response but received DIMSE command 0x"
-        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-        << OFstatic_cast(unsigned int, rsp.CommandField));
+      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+      << OFstatic_cast(unsigned int, rsp.CommandField));
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
     delete statusDetail;
     return DIMSE_BADCOMMANDTYPE;
@@ -694,7 +694,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     OFString sopname = dcmFindNameOfUID(sopClass.c_str(), sopClass.c_str());
     OFString tsname = DcmXfer(transferSyntax).getXferName();
     DCMNET_ERROR("No presentation context found for sending C-STORE with SOP Class / Transfer Syntax: "
-      << sopname << "/"
+      << sopname << " / "
       << (tsname.empty() ? DcmXfer(transferSyntax).getXferName() : tsname));
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
@@ -726,8 +726,8 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
   } else {
     DCMNET_ERROR("Expected C-STORE response but received DIMSE command 0x"
-        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-        << OFstatic_cast(unsigned int, rsp.CommandField));
+      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+      << OFstatic_cast(unsigned int, rsp.CommandField));
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
     delete statusDetail;
     return DIMSE_BADCOMMANDTYPE;
@@ -751,7 +751,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
                                     MOVEResponses *responses )
 {
   // Do some basic validity checks
-  if ( !isConnected() )
+  if (!isConnected())
     return DIMSE_ILLEGALASSOCIATION;
   if (dataset == NULL)
     return DIMSE_NULLKEY;
@@ -832,8 +832,8 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
     moveRSP->m_numberOfWarningSubops = rsp.msg.CMoveRSP.NumberOfWarningSubOperations;
     moveRSP->m_statusDetail = statusDetail;
     DCMNET_DEBUG("C-MOVE response has status 0x"
-        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-        << moveRSP->m_status);
+      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+      << moveRSP->m_status);
     if (statusDetail != NULL)
     {
       DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
@@ -849,7 +849,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
       if (cond.bad())
       {
         DCMNET_ERROR("Unable to receive C-MOVE dataset on presentation context "
-            << OFstatic_cast(unsigned int, pcid) << ": " << DimseCondition::dump(tempStr, cond));
+          << OFstatic_cast(unsigned int, pcid) << ": " << DimseCondition::dump(tempStr, cond));
         delete moveRSP; // includes statusDetail
         break;
       }
@@ -1002,8 +1002,8 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
       DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
     } else {
       DCMNET_ERROR("Expected C-FIND response but received DIMSE command 0x"
-          << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-          << OFstatic_cast(unsigned int, rsp.CommandField));
+        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+        << OFstatic_cast(unsigned int, rsp.CommandField));
       DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
       delete statusDetail;
       return DIMSE_BADCOMMANDTYPE;
@@ -1016,8 +1016,8 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     findrsp->m_status = rsp.msg.CFindRSP.DimseStatus;
     findrsp->m_statusDetail = statusDetail;
     DCMNET_DEBUG("C-FIND response has status 0x"
-        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-        << findrsp->m_status);
+      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+      << findrsp->m_status);
 
     // Receive dataset if there is one (status PENDING)
     DcmDataset *rspDataset = NULL;
@@ -1299,8 +1299,8 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
   } else {
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, NULL, presID));
     DCMNET_ERROR("Expected N-EVENT-REPORT request but received DIMSE command 0x"
-        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-        << OFstatic_cast(unsigned int, request.CommandField));
+      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+      << OFstatic_cast(unsigned int, request.CommandField));
     delete statusDetail;
     return DIMSE_BADCOMMANDTYPE;
   }
@@ -1745,6 +1745,9 @@ MOVEResponse::~MOVEResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.33  2011-05-27 10:12:18  joergr
+** Fixed typos and source code formatting.
+**
 ** Revision 1.32  2011-05-25 09:56:52  ogazzar
 ** Renamed a function name.
 **

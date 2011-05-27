@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:00 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-05-27 10:12:18 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,10 +53,10 @@ static DUL_PRESENTATIONCONTEXT* findPresentationContextID(LST_HEAD *head,
   {
     if (pc->presentationContextID == presentationContextID)
     {
-        found = OFTrue;
+      found = OFTrue;
     } else
     {
-        pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
+      pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
     }
   }
   return pc;
@@ -107,7 +107,7 @@ DcmSCP::DcmSCP() :
   m_processTable(),
   m_respondWithCalledAETitle(OFTrue)
 {
-  // make sure not to let dcmdata remove tailing blank padding or perform other
+  // make sure not to let dcmdata remove trailing blank padding or perform other
   // manipulations. We want to see the real data.
   dcmEnableAutomaticInputDataCorrection.set( OFFalse );
   if (!m_forkedChild)
@@ -219,7 +219,7 @@ OFCondition DcmSCP::listen()
     {
       // make sure buffer is zero terminated
       buf[bytesRead] = '\0';
-        dcmExternalSocketHandle.set(atoi(buf));
+      dcmExternalSocketHandle.set(atoi(buf));
     }
     else
     {
@@ -1490,6 +1490,9 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.17  2011-05-27 10:12:18  joergr
+** Fixed typos and source code formatting.
+**
 ** Revision 1.16  2011-04-18 07:01:00  uli
 ** Use global variables for the logger objects. This removes the thread-unsafe
 ** static local variables which were used before.
