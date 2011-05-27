@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-24 14:54:19 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Update Date:      $Date: 2011-05-27 10:19:21 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,8 +98,8 @@ int main(int argc, char *argv[])
 #endif
 
     /*
-    ** Don't let dcmdata remove tailing blank padding or perform other
-    ** maipulations.  We want to see the real data.
+    ** Don't let dcmdata remove trailing blank padding or perform other
+    ** manipulations.  We want to see the real data.
     */
     dcmEnableAutomaticInputDataCorrection.set(OFFalse);
 
@@ -355,7 +355,7 @@ int main(int argc, char *argv[])
 
       if (fileNameList.empty() && overrideKeys.empty())
       {
-          app.printError("either query file or override keys (or both) must be specified");
+        app.printError("either query file or override keys (or both) must be specified");
       }
 
 #ifdef WITH_OPENSSL
@@ -461,16 +461,16 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(findscuLogger, "no data dictionary loaded, check environment variable: "
-            << DCM_DICT_ENVIRONMENT_VARIABLE);
+      OFLOG_WARN(findscuLogger, "no data dictionary loaded, check environment variable: "
+        << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // declare findSCU handler and initialize network
     DcmFindSCU findscu;
     OFCondition cond = findscu.initializeNetwork(opt_acse_timeout);
     if (cond.bad()) {
-        OFLOG_ERROR(findscuLogger, DimseCondition::dump(temp_str, cond));
-        return 1;
+      OFLOG_ERROR(findscuLogger, DimseCondition::dump(temp_str, cond));
+      return 1;
     }
 
 #ifdef WITH_OPENSSL
@@ -609,6 +609,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
+** Revision 1.64  2011-05-27 10:19:21  joergr
+** Fixed typos and source code formatting.
+**
 ** Revision 1.63  2011-03-24 14:54:19  joergr
 ** Added support for deflated transfer syntax (zlib compression) on outgoing
 ** associations.

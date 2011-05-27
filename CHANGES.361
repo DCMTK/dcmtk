@@ -4,7 +4,8 @@ Changes between releases are documented here.
 **** Changes from 2011.05.27 (riesmeier)
 
 - Fixed typos and source code formatting.
-  Affects: dcmnet/libsrc/scp.cc
+  Affects: dcmnet/apps/findscu.cc
+           dcmnet/libsrc/scp.cc
            dcmnet/libsrc/scu.cc
 
 **** Changes from 2011.05.26 (onken)
@@ -80,12 +81,12 @@ Changes between releases are documented here.
 
 - Renamed a function name to find any presentation context ID.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
-           dcment/libsrc/scu.cc
+           dcmnet/libsrc/scu.cc
 
 - Added a function to look for a presntation context ID that best matches the
   abstract syntax UID and the transfer syntax UID.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
-           dcment/libsrc/scu.cc
+           dcmnet/libsrc/scu.cc
 
 **** Changes from 2011.05.25 (onken)
 
