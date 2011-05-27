@@ -1,74 +1,11 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2011.05.26 (onken) 
+**** Changes from 2011.05.25 (elgazzar)
 
-- Fixed build of ofstd tests with CMake.
-  Affects: ofstd/tests/CMakeLists.txt
-
-**** Changes from 2011.05.25 (schlachter)
-
-- Imported oftest and converted existing tests to oftest.
-  Added:   dcmdata/tests/tchval.cc
-           dcmdata/tests/tests.cc
-           dcmdata/tests/ti2dbmp.cc
-           dcmdata/tests/tpath.cc
-           dcmdata/tests/tpread.cc
-           ofstd/include/dcmtk/ofstd/oftest.h
-           ofstd/tests/CMakeLists.txt
-           ofstd/tests/tatof.cc
-           ofstd/tests/tbase64.cc
-           ofstd/tests/tests.cc
-           ofstd/tests/tftoa.cc
-           ofstd/tests/tstack.cc
-           ofstd/tests/tthread.cc
-  Removed: dcmdata/tests/i2dbmp.cc
-           dcmdata/tests/tstchval.cc
-           dcmdata/tests/tstpath.cc
-           dcmdata/tests/tstpread.cc
-           ofstd/tests/tlist.exp
-           ofstd/tests/tstatof.cc
-           ofstd/tests/tstftoa.cc
-           ofstd/tests/tstlist.cc
-           ofstd/tests/tstring.exp
-           ofstd/tests/tstring.inp
-           ofstd/tests/tststack.cc
-           ofstd/tests/tststack.exp
-           ofstd/tests/tstthred.cc
-  Affects: COPYRIGHT
-           Makefile
-           config/Makefile.in
-           config/rootconf
-           dcmdata/Makefile.in
-           dcmdata/tests/CMakeLists.txt
-           dcmdata/tests/Makefile.dep
-           dcmdata/tests/Makefile.in
-           dcmdata/tests/tvrdatim.cc
-           dcmimage/Makefile.in
-           dcmimgle/Makefile.in
-           dcmjpeg/Makefile.in
-           dcmjpls/Makefile.in
-           dcmnet/Makefile.in
-           dcmpstat/Makefile.in
-           dcmqrdb/Makefile.in
-           dcmsign/Makefile.in
-           dcmsr/Makefile.in
-           dcmtls/Makefile.in
-           dcmwlm/Makefile.in
-           oflog/Makefile.in
-           oflog/tests/Makefile.in
-           ofstd/CMakeLists.txt
-           ofstd/Makefile.in
-           ofstd/docs/ofstd.dox
-           ofstd/tests/Makefile.dep
-           ofstd/tests/Makefile.in
-           ofstd/tests/tlist.cc
-           ofstd/tests/tmap.cc
-           ofstd/tests/tofdatim.cc
-           ofstd/tests/toffile.cc
-           ofstd/tests/tofstd.cc
-           ofstd/tests/tstring.cc
-           ofstd/tests/tvec.cc
+- Renamed a function name to find any presentation context ID.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcment/libsrc/scu.cc
 
 **** Changes from 2011.05.25 (elgazzar)
 
@@ -118,6 +55,7 @@ Changes between releases are documented here.
            ofstd/tests/Makefile.in
 
 **** Changes from 2011.05.23  (elgazzar)
+
 - Added a function to search for SOP instance in INDEX.dat file
   Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h
            dcmqrdb/libsrc/dcmqrdbi.cc
