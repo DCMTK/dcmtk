@@ -17,9 +17,9 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:05 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-05-27 10:27:41 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1356,18 +1356,18 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
             elementKey == DCM_ScheduledProcedureStepStatus               ||
             elementKey == DCM_ScheduledProcedureStepEndDate              ||
             elementKey == DCM_ScheduledProcedureStepEndTime              ||
-            elementKey == DCM_ScheduledProtocolCodeSequence ) )             ||
+            elementKey == DCM_ScheduledProtocolCodeSequence ) )          ||
         ( supSequenceElementKey == DCM_ReferencedStudySequence        &&
           ( elementKey == DCM_ReferencedSOPClassUID                      ||
-            elementKey == DCM_ReferencedSOPInstanceUID ) )                  ||
+            elementKey == DCM_ReferencedSOPInstanceUID ) )               ||
         ( supSequenceElementKey == DCM_ReferencedPatientSequence      &&
           ( elementKey == DCM_ReferencedSOPClassUID                      ||
-            elementKey == DCM_ReferencedSOPInstanceUID ) )                  ||
+            elementKey == DCM_ReferencedSOPInstanceUID ) )               ||
         ( supSequenceElementKey == DCM_ScheduledProtocolCodeSequence  &&
           ( elementKey == DCM_CodeValue                                  ||
             elementKey == DCM_CodingSchemeVersion                        ||
             elementKey == DCM_CodingSchemeDesignator                     ||
-            elementKey == DCM_CodeMeaning ) )                               ||
+            elementKey == DCM_CodeMeaning ) )                            ||
         ( supSequenceElementKey == DCM_RequestedProcedureCodeSequence &&
           ( elementKey == DCM_CodeValue                                  ||
             elementKey == DCM_CodingSchemeVersion                        ||
@@ -1444,6 +1444,9 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
+** Revision 1.32  2011-05-27 10:27:41  joergr
+** Fixed typos and source code formatting.
+**
 ** Revision 1.31  2011-04-18 07:01:05  uli
 ** Use global variables for the logger objects. This removes the thread-unsafe
 ** static local variables which were used before.

@@ -7,6 +7,8 @@ Changes between releases are documented here.
   Affects: dcmnet/apps/findscu.cc
            dcmnet/libsrc/scp.cc
            dcmnet/libsrc/scu.cc
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wlmactmg.cc
 
 **** Changes from 2011.05.26 (onken)
 

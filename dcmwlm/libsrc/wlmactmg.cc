@@ -18,9 +18,9 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:05 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-05-27 10:27:41 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,7 +143,7 @@ WlmActivityManager::WlmActivityManager(
   strcpy( supportedAbstractSyntaxes[1], UID_FINDModalityWorklistInformationModel );
   numberOfSupportedAbstractSyntaxes = 2;
 
-  // make sure not to let dcmdata remove tailing blank padding or perform other
+  // make sure not to let dcmdata remove trailing blank padding or perform other
   // manipulations. We want to see the real data.
   dcmEnableAutomaticInputDataCorrection.set( OFFalse );
   if (!opt_forkedChild)
@@ -1152,6 +1152,9 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.37  2011-05-27 10:27:41  joergr
+** Fixed typos and source code formatting.
+**
 ** Revision 1.36  2011-04-18 07:01:05  uli
 ** Use global variables for the logger objects. This removes the thread-unsafe
 ** static local variables which were used before.
