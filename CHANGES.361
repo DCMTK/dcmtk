@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.30 (riesmeier)
+
+- Removed unused variables and fixed other compiler warnings. Thanks to Per
+  Inge Mathisen <perim@sonowand.com> for for the report and suggested fix.
+  Affects: dcmnet/apps/storescp.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2011.05.27 (riesmeier)
 
 - Fixed typos and source code formatting.

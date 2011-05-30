@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-01 08:20:36 $
- *  CVS/RCS Revision: $Revision: 1.141 $
+ *  Update Date:      $Date: 2011-05-30 15:52:01 $
+ *  CVS/RCS Revision: $Revision: 1.142 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,7 +130,10 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
          const char* transferSyntaxes[],
          int transferSyntaxCount,
          T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
+
+#ifdef HAVE_CONFIG_H
 static int makeTempFile();
+#endif
 
 /* sort study mode */
 enum E_SortStudyMode
@@ -2775,6 +2778,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.142  2011-05-30 15:52:01  joergr
+** Removed unused variables and fixed other compiler warnings.
+**
 ** Revision 1.141  2011-04-01 08:20:36  joergr
 ** Output message ID of C-ECHO request to the info logger (see C-STORE request).
 **

@@ -18,9 +18,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle,
  *                   DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-05-23 13:09:26 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-05-30 15:52:03 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3220,24 +3220,23 @@ OFBool DcmQueryRetrieveIndexDatabaseHandle::findSOPInstance(char *storeArea, con
 {
     int j ;
     IdxRecord           idxRec ;
-    StudyDescRecord     *pStudyDesc;
 
     OFCondition result;
     OFBool Found = OFFalse;
 
     if (sopClassUID.empty() || sopInstanceUID.empty()) return Found;
-    
+
     DcmQueryRetrieveIndexDatabaseHandle handle(storeArea, -1, -1, result);
     if (result.bad()) return Found;
-  
+
     handle.DB_lock(OFFalse);
-    
+
     handle.DB_IdxInitLoop (&j) ;
     while (1) {
         if (handle.DB_IdxGetNext(&j, &idxRec) != EC_Normal)
             break ;
         if (sopClassUID.compare(idxRec.SOPClassUID)==0 && sopInstanceUID.compare(idxRec.SOPInstanceUID)==0)
-        {	
+        {
             Found=OFTrue;
             break;
         }
@@ -3352,8 +3351,6 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
 
 DcmQueryRetrieveIndexDatabaseHandle::~DcmQueryRetrieveIndexDatabaseHandle()
 {
-    int closeresult;
-
     if (handle_)
     {
 #ifndef _WIN32
@@ -3364,7 +3361,7 @@ DcmQueryRetrieveIndexDatabaseHandle::~DcmQueryRetrieveIndexDatabaseHandle()
        */
       DB_unlock();
 #endif
-      closeresult = close( handle_ -> pidx);
+      close( handle_ -> pidx);
 
       /* Free lists */
       DB_FreeElementList (handle_ -> findRequestList);
@@ -3471,6 +3468,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.32  2011-05-30 15:52:03  joergr
+ * Removed unused variables and fixed other compiler warnings.
+ *
  * Revision 1.31  2011-05-23 13:09:26  ogazzar
  * Added a function to search in the INDEX file for a SOP instance. Intended
  * to be used for storage commitment server.

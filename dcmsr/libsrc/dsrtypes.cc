@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:05 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-05-30 15:52:05 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -929,17 +929,6 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
     DcmTag tag = delem.getTag();
     const OFString tagName = tag.getTagName();
     const OFString module = (moduleName == NULL) ? "SR document" : moduleName;
-    unsigned long vmNum;
-    OFString vmText;
-    /* special case: sequence of items */
-    if (delem.getVR() == EVR_SQ)
-    {
-        vmNum = OFstatic_cast(DcmSequenceOfItems &, delem).card();
-        vmText = " #items";
-    } else {
-        vmNum = delem.getVM();
-        vmText = " VM";
-    }
     /* NB: type 1C and 2C cannot be checked, assuming to be optional = type 3 */
     if (((type == "1") || (type == "2")) && searchCond.bad())
     {
@@ -963,6 +952,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
         }
         else if (checkResult == EC_ValueMultiplicityViolated)
         {
+            const OFString vmText = (delem.getVR() == EVR_SQ) ? " #items" : " VM";
             DCMSR_WARN(tagName << " " << tag << vmText << " != " << vm << " in " << module);
             result = OFFalse;
         }
@@ -1580,6 +1570,9 @@ OFLogger DCM_dcmsrLogger = OFLog::getLogger("dcmtk.dcmsr");
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.77  2011-05-30 15:52:05  joergr
+ *  Removed unused variables and fixed other compiler warnings.
+ *
  *  Revision 1.76  2011-04-18 07:01:05  uli
  *  Use global variables for the logger objects. This removes the thread-unsafe
  *  static local variables which were used before.
