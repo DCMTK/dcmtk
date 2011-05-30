@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-05-27 10:12:18 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-05-30 20:10:44 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -783,7 +783,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
 
   /* Sending MOVE request */
   DCMNET_INFO("Send C-MOVE Request");
-  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, NULL, pcid));
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, dataset, pcid));
   cond = sendDIMSEMessage(pcid, &msg, dataset, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
@@ -972,7 +972,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
   OFStandard::strlcpy(req->AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(req->AffectedSOPClassUID));
 
   DCMNET_INFO("Send C-FIND Request");
-  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, NULL, pcid));
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, queryKeys, pcid));
   cond = sendDIMSEMessage(pcid, &msg, queryKeys, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
@@ -1745,6 +1745,9 @@ MOVEResponse::~MOVEResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.34  2011-05-30 20:10:44  onken
+** Added dump of query/move keys in debug mode when sending C-FIND or C-MOVE.
+**
 ** Revision 1.33  2011-05-27 10:12:18  joergr
 ** Fixed typos and source code formatting.
 **

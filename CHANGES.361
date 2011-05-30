@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.30 (onken)
+
+- Added dump of query/move keys in debug mode when sending C-FIND or C-MOVE.
+  Affects: dcmnet/libsrc/scu.cc
+
 **** Changes from 2011.05.30 (riesmeier)
 
 - Fixed wrong indentation.
