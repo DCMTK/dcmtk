@@ -3,12 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2011.05.30 (riesmeier)
 
+- Fixed wrong indentation.
+  Affects: dcmnet/etc/storescp.cfg
+
 - Replaced Modality value "OT" by "DOC" which is more appropriate (see CP-749).
   Thanks to forum user "maleike" for the original report.
   Affects: dcmdata/apps/pdf2dcm.cc
 
 - Removed unused variables and fixed other compiler warnings. Thanks to Per
-  Inge Mathisen <perim@sonowand.com> for for the report and suggested fix.
+  Inge Mathisen <perim@sonowand.com> for the report and suggested fix.
   Affects: dcmnet/apps/storescp.cc
            dcmqrdb/libsrc/dcmqrdbi.cc
            dcmsr/libsrc/dsrtypes.cc
