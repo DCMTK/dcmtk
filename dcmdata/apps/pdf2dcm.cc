@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2010, OFFIS e.V.
+ *  Copyright (C) 2005-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Convert PDF file to DICOM format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:30 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2011-05-30 16:01:36 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,8 @@ OFCondition createHeader(
     // insert const value attributes
     if (result.good()) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 100");
     if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID,          UID_EncapsulatedPDFStorage);
-    if (result.good()) result = dataset->putAndInsertString(DCM_Modality,             "OT");
+    // we are now using "DOC" for the modality, which seems to be more appropriate than "OT" (see CP-749)
+    if (result.good()) result = dataset->putAndInsertString(DCM_Modality,             "DOC");
     if (result.good()) result = dataset->putAndInsertString(DCM_ConversionType,       "WSD");
     if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "application/pdf");
 
@@ -194,9 +195,9 @@ OFCondition insertPDFFile(
     {
       if (version[i] == 10 || version[i] == 13)
       {
-      	version[i] = 0; // insert end of string
-      	found = OFTrue;
-      	break;
+        version[i] = 0; // insert end of string
+        found = OFTrue;
+        break;
       }
     }
 
@@ -227,7 +228,7 @@ OFCondition insertPDFFile(
       if (result.good())
       {
         // blank pad byte
-      	bytes[numBytes - 1] = 0;
+        bytes[numBytes - 1] = 0;
 
         // read PDF content
         if (fileSize != fread(bytes, 1, fileSize, pdffile))
@@ -605,6 +606,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
+** Revision 1.19  2011-05-30 16:01:36  joergr
+** Replaced Modality value "OT" by "DOC" which is more appropriate (see CP-749).
+**
 ** Revision 1.18  2010-10-14 13:13:30  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
