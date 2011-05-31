@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.05.31 (schlachter)
+
+- Fix a memcpy that wrote past its target on 64 bit systems.
+  Thanks to Christian Wetzel <wetzel@phoenix-pacs.de> for the report.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
 **** Changes from 2011.05.30 (onken)
 
 - Added dump of query/move keys in debug mode when sending C-FIND or C-MOVE.

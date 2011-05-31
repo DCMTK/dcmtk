@@ -59,8 +59,8 @@
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
 ** Intent:        Define tables and provide functions that implement
 **                the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:   $Author: uli $, $Date: 2011-05-04 07:38:24 $
-** Revision:      $Revision: 1.76 $
+** Last Update:   $Author: uli $, $Date: 2011-05-31 09:17:27 $
+** Revision:      $Revision: 1.77 $
 ** Status:        $State: Exp $
 */
 
@@ -2216,10 +2216,10 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
      * and several Unix variants.
      * Workaround is to explicitly handle the IP address case.
      */
-    unsigned long addr = 0;
-    if ((int)(addr = inet_addr(node)) != -1) {
+    unsigned long addr = inet_addr(node);
+    if (addr != INADDR_NONE) {
         // it is an IP address
-        (void) memcpy(&server.sin_addr, &addr, (size_t) sizeof(addr));
+        server.sin_addr.s_addr = addr;
     } else {
         // must be a host name
         hp = gethostbyname(node);
@@ -3961,6 +3961,9 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.77  2011-05-31 09:17:27  uli
+** Fix a memcpy that wrote past its target on 64 bit systems.
+**
 ** Revision 1.76  2011-05-04 07:38:24  uli
 ** Fixed some memory leaks in seldomly-used code paths.
 **
