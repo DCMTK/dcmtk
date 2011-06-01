@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.06.01 (onken)
+
+- Removed unused status variable from C-ECHO code.
+  Thanks to Per Inge Mathisen <perim@sonowand.com>
+  Affects: dcmnet/libsrc/scu.cc
+
 **** Changes from 2011.05.31 (schlachter)
 
 - Fix a memcpy that wrote past its target on 64 bit systems.

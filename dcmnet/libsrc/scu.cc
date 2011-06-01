@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-05-30 20:10:44 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2011-06-01 15:04:29 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -593,7 +593,6 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
 
   /* Receive response */
   T_DIMSE_Message rsp;
-  Uint16 status;
   DcmDataset* statusDetail = NULL;
   cond = receiveDIMSECommand(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
   if (cond.bad())
@@ -616,8 +615,6 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
     return DIMSE_BADCOMMANDTYPE;
   }
   /* Print status detail if it was received */
-  T_DIMSE_C_EchoRSP echoRsp = rsp.msg.CEchoRSP;
-  status = echoRsp.DimseStatus;
   if (statusDetail != NULL)
   {
     DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
@@ -1745,6 +1742,9 @@ MOVEResponse::~MOVEResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.35  2011-06-01 15:04:29  onken
+** Removed unused status variable from C-ECHO code.
+**
 ** Revision 1.34  2011-05-30 20:10:44  onken
 ** Added dump of query/move keys in debug mode when sending C-FIND or C-MOVE.
 **
