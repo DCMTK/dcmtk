@@ -46,6 +46,8 @@ MARK_AS_ADVANCED(CMAKE_DEBUG_POSTFIX)
 MARK_AS_ADVANCED(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 MARK_AS_ADVANCED(SNDFILE_DIR DCMTK_WITH_SNDFILE) # not yet needed in public DCMTK
 
+ENABLE_TESTING()
+
 #-----------------------------------------------------------------------------
 # Include directories
 #-----------------------------------------------------------------------------
@@ -221,6 +223,12 @@ SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 #-----------------------------------------------------------------------------
 
 INCLUDE(CMake/3rdparty.cmake)
+
+#-----------------------------------------------------------------------------
+# DCMTK libraries
+#-----------------------------------------------------------------------------
+
+INCLUDE(CMake/dcmtkAddTests.cmake)
 
 #-----------------------------------------------------------------------------
 # Prepare osconfig.h

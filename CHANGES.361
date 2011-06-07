@@ -25,6 +25,12 @@ Changes between releases are documented here.
            dcmdata/tests/tpath.cc
            dcmdata/tests/tpread.cc
 
+- Make it possible to run tests with CMake in a sane way.
+  Added:   CMake/dcmtkAddTests.cmake
+  Affects: CMakeLists.txt
+           dcmdata/tests/CMakeLists.txt
+           ofstd/tests/CMakeLists.txt
+
 **** Changes from 2011.06.01 (onken)
 
 - Removed unused status variable from C-ECHO code.
