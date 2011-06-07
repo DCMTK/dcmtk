@@ -17,9 +17,9 @@
  *
  *  Purpose: Definition of the DcmVR class for Value Representation
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:42 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-06-07 07:22:13 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -260,6 +260,14 @@ public:
      *  If this object manages a non-standard, internal VR such as EVR_ox,
      *  this method returns the enumerated VR to which the internal VR will
      *  be mapped when writing the DICOM object.
+     *
+     *  Please note that some VR, e.g. EVR_pixelItem, won't be written as
+     *  EVR_UNKNOWN, although this method will return that value for them.
+     *  This means that e.g. usesExtendedLengthEncoding() for the returned VR
+     *  might not be correct.
+     *
+     *  Also note that DcmItem::checkAndUpdateVR() will in some cases influence
+     *  the VR which is written out.
      *  @return enumerated VR
      */
     DcmEVR getValidEVR() const;
@@ -339,6 +347,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcvr.h,v $
+ * Revision 1.29  2011-06-07 07:22:13  uli
+ * Enhance the documentation for DcmVR::getValidEVR().
+ *
  * Revision 1.28  2010-10-14 13:15:42  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

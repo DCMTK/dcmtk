@@ -13,6 +13,10 @@ Changes between releases are documented here.
   Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report.
   Affects: dcmdata/libsrc/dcelem.cc
 
+- Enhance the documentation for DcmVR::getValidEVR().
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the hint.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcvr.h
+
 **** Changes from 2011.06.01 (onken)
 
 - Removed unused status variable from C-ECHO code.
