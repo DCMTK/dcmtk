@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-29 09:27:54 $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  Update Date:      $Date: 2011-06-07 07:07:40 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -250,9 +250,13 @@ Uint32 DcmElement::calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype)
 {
     DcmXfer xferSyn(xfer);
-    /* getValidEVR() will e.g. convert EVR_UNKNOWN2B to "OB" or "UN" which
-     * means the length field might have 4 instead of 2 bytes length. */
-    const Uint32 headerLength = xferSyn.sizeofTagHeader(DcmVR(getVR()).getValidEVR());
+    DcmEVR vr = getVR();
+    /* These don't use extended length encoding, but when writing, they are
+     * converted to EVR_UN which does use extended length encoding.
+     * (EVR_na should never happen here, it's just handled for completeness) */
+    if (vr == EVR_UNKNOWN2B || vr == EVR_na)
+        vr = EVR_UN;
+    const Uint32 headerLength = xferSyn.sizeofTagHeader(vr);
     const Uint32 elemLength = getLength(xfer, enctype);
     if (OFStandard::check32BitAddOverflow(headerLength, elemLength))
       return DCM_UndefinedLength;
@@ -1774,6 +1778,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.93  2011-06-07 07:07:40  uli
+** Again fixed a case where calcElementLength() used a wrong header length.
+**
 ** Revision 1.92  2011-04-29 09:27:54  uli
 ** Fixed a off-by-one bug spotted by dcmdata/tests/tstpread.
 **

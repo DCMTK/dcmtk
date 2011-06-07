@@ -9,6 +9,10 @@ Changes between releases are documented here.
            dcmdata/tests/Makefile.in
            dcmdata/tests/tests.cc
 
+- Again fixed a case where calcElementLength() used a wrong header length.
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 **** Changes from 2011.06.01 (onken)
 
 - Removed unused status variable from C-ECHO code.
