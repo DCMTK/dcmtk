@@ -20,6 +20,11 @@ Changes between releases are documented here.
 - Don't leave behind temporary files after the test.
   Affects: dcmdata/tests/tpread.cc
 
+- Stop using the log levels INFO, WARN, ERROR and FATAL in tests.
+  Affects: dcmdata/tests/ti2dbmp.cc
+           dcmdata/tests/tpath.cc
+           dcmdata/tests/tpread.cc
+
 **** Changes from 2011.06.01 (onken)
 
 - Removed unused status variable from C-ECHO code.

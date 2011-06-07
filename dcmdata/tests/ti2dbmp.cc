@@ -18,8 +18,8 @@
  *  Purpose: test program for class I2DBmpSource
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:55 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-06-07 08:29:59 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,10 +94,8 @@ static Uint8 bmpHeader[] = {
     // Now you'd get the actual pixel data
 };
 
-#define LOG_WARN(arg)  OFLOG_WARN(i2dbmpLogger, arg)
-#define LOG_INFO(arg)  OFLOG_INFO(i2dbmpLogger, arg)
 #define LOG_DEBUG(arg) OFLOG_DEBUG(i2dbmpLogger, arg)
-#define TEST(arg)      LOG_INFO(arg << "...")
+#define TEST(arg)      LOG_DEBUG(arg << "...")
 
 #define EXPECT_SUCCESS(b) OFCHECK(b)
 #define EXPECT_FAIL(b) EXPECT_SUCCESS(!(b))
@@ -120,7 +118,7 @@ static bool writeImage(const void *pixelData, unsigned int pixelDataLength)
     OFFile file;
     if (!file.fopen(temporaryFile, "wb"))
     {
-        LOG_WARN("Failed to open temporary file " << temporaryFile);
+        OFCHECK_FAIL("Failed to open temporary file " << temporaryFile);
         return false;
     }
 
@@ -333,6 +331,9 @@ OFTEST(dcmdata_i2d_bmp)
  *
  * CVS/RCS Log:
  * $Log: ti2dbmp.cc,v $
+ * Revision 1.2  2011-06-07 08:29:59  uli
+ * Stop using the log levels INFO, WARN, ERROR and FATAL in tests.
+ *
  * Revision 1.1  2011-05-25 10:05:55  uli
  * Imported oftest and converted existing tests to oftest.
  *

@@ -18,8 +18,8 @@
  *  Purpose: Test application for partial element access API
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-07 08:16:40 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-06-07 08:29:59 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,7 +112,7 @@ static OFCondition sequentialNonOverlappingRead(DcmElement *delem, DcmFileCache 
         str << OFStringStream_ends;
 
         OFSTRINGSTREAM_GETSTR(str, c_str)
-        OFLOG_ERROR(tstpreadLogger, c_str);
+        OFCHECK_FAIL(c_str);
         OFSTRINGSTREAM_FREESTR(c_str)
         delete[] target;
         return EC_IllegalCall;
@@ -161,7 +161,7 @@ static OFCondition sequentialOverlappingRead(DcmElement *delem, DcmFileCache *dc
         }
         str << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(str, c_str)
-        OFLOG_ERROR(tstpreadLogger, c_str);
+        OFCHECK_FAIL(c_str);
         OFSTRINGSTREAM_FREESTR(c_str)
         delete[] target;
         return EC_IllegalCall;
@@ -212,7 +212,7 @@ static OFCondition randomRead(DcmElement *delem, DcmFileCache *dcache, unsigned 
         }
         str << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(str, c_str)
-        OFLOG_ERROR(tstpreadLogger, c_str);
+        OFCHECK_FAIL(c_str);
         OFSTRINGSTREAM_FREESTR(c_str)
         delete[] target;
         return EC_IllegalCall;
@@ -335,7 +335,7 @@ OFTEST(dcmdata_partialElementAccess)
       return;
     }
 
-    OFLOG_INFO(tstpreadLogger, "Creating test dataset");
+    OFLOG_DEBUG(tstpreadLogger, "Creating test dataset");
 
     DcmFileFormat dfile;
 
@@ -350,7 +350,7 @@ OFTEST(dcmdata_partialElementAccess)
     createTestDataset(dfile.getDataset(), buffer);
     OFCondition cond = EC_Normal;
 
-    OFLOG_INFO(tstpreadLogger, "Writing test files");
+    OFLOG_DEBUG(tstpreadLogger, "Writing test files");
 
     cond = dfile.saveFile("test_be.dcm", EXS_BigEndianExplicit);
     if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
@@ -361,7 +361,7 @@ OFTEST(dcmdata_partialElementAccess)
     if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 #endif
 
-    OFLOG_INFO(tstpreadLogger, "Opening test files");
+    OFLOG_DEBUG(tstpreadLogger, "Opening test files");
 
     DcmFileFormat dfile_be;
     DcmFileFormat dfile_le;
@@ -379,7 +379,7 @@ OFTEST(dcmdata_partialElementAccess)
 #endif
 
     // testing sequential, non overlapping reads of partial element values
-    OFLOG_INFO(tstpreadLogger, "Testing sequential, non overlapping reads of partial element values");
+    OFLOG_DEBUG(tstpreadLogger, "Testing sequential, non overlapping reads of partial element values");
 
     cond = sequentialNonOverlappingRead(dfile_be.getDataset(), buffer);
     if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
@@ -393,7 +393,7 @@ OFTEST(dcmdata_partialElementAccess)
 #endif
 
     // testing random reads of partial element values
-    OFLOG_INFO(tstpreadLogger, "Testing random reads of partial element values");
+    OFLOG_DEBUG(tstpreadLogger, "Testing random reads of partial element values");
 
     cond = randomRead(dfile_be.getDataset(), buffer);
     if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
@@ -407,7 +407,7 @@ OFTEST(dcmdata_partialElementAccess)
 #endif
 
     // testing overlapping reads of partial element values
-    OFLOG_INFO(tstpreadLogger, "Testing overlapping reads of partial element values");
+    OFLOG_DEBUG(tstpreadLogger, "Testing overlapping reads of partial element values");
 
     cond = sequentialOverlappingRead(dfile_be.getDataset(), buffer);
     if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
@@ -432,6 +432,9 @@ OFTEST(dcmdata_partialElementAccess)
 /*
  * CVS/RCS Log:
  * $Log: tpread.cc,v $
+ * Revision 1.3  2011-06-07 08:29:59  uli
+ * Stop using the log levels INFO, WARN, ERROR and FATAL in tests.
+ *
  * Revision 1.2  2011-06-07 08:16:40  uli
  * Don't leave behind temporary files after the test.
  *
