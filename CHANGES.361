@@ -31,6 +31,9 @@ Changes between releases are documented here.
            dcmdata/tests/CMakeLists.txt
            ofstd/tests/CMakeLists.txt
 
+- Add CMake/dcmtkAddTests.cmake to config/changext.
+  Affects: config/changext
+
 **** Changes from 2011.06.01 (onken)
 
 - Removed unused status variable from C-ECHO code.
