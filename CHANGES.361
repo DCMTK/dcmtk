@@ -17,6 +17,9 @@ Changes between releases are documented here.
   Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the hint.
   Affects: dcmdata/include/dcmtk/dcmdata/dcvr.h
 
+- Don't leave behind temporary files after the test.
+  Affects: dcmdata/tests/tpread.cc
+
 **** Changes from 2011.06.01 (onken)
 
 - Removed unused status variable from C-ECHO code.

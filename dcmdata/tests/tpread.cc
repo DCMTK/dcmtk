@@ -18,8 +18,8 @@
  *  Purpose: Test application for partial element access API
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:55 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-06-07 08:16:40 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -420,6 +420,11 @@ OFTEST(dcmdata_partialElementAccess)
     if (cond.bad()) { OFCHECK_FAIL(cond.text()); }
 #endif
 
+    unlink("test_be.dcm");
+    unlink("test_le.dcm");
+#ifdef WITH_ZLIB
+    unlink("test_df.dcm");
+#endif
     delete[] buffer;
 }
 
@@ -427,6 +432,9 @@ OFTEST(dcmdata_partialElementAccess)
 /*
  * CVS/RCS Log:
  * $Log: tpread.cc,v $
+ * Revision 1.2  2011-06-07 08:16:40  uli
+ * Don't leave behind temporary files after the test.
+ *
  * Revision 1.1  2011-05-25 10:05:55  uli
  * Imported oftest and converted existing tests to oftest.
  *
