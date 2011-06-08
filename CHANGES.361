@@ -1,7 +1,13 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2011.07.06 (schlachter)
+**** Changes from 2011.06.08 (schlachter)
+
+- Corrected some file purpose descriptions.
+  Affects: dcmdata/tests/telemlen.cc
+           ofstd/include/dcmtk/ofstd/oftest.h
+
+**** Changes from 2011.06.07 (schlachter)
 
 - Added test cases for DcmElement::calcElementLength().
   Added:   dcmdata/tests/telemlen.cc

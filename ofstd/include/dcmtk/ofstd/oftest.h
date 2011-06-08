@@ -20,11 +20,11 @@
  *
  *  Author:  Uli Schlachter
  *
- *  Purpose: Class for various helper functions
+ *  Purpose: Provide a test framework for the toolkit
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:57 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-06-08 07:11:11 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -225,7 +225,7 @@ public:
         rcsid += " v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 #endif
 
-        OFConsoleApplication app("test", "Run the test suite", rcsid.c_str());
+        OFConsoleApplication app("tests", "Run the test suite", rcsid.c_str());
         OFCommandLine cmd;
         cmd.setParamColumn(13);
 
@@ -472,6 +472,9 @@ public: \
  *
  * CVS/RCS Log:
  * $Log: oftest.h,v $
+ * Revision 1.2  2011-06-08 07:11:11  uli
+ * Corrected some file purpose descriptions.
+ *
  * Revision 1.1  2011-05-25 10:05:57  uli
  * Imported oftest and converted existing tests to oftest.
  *
