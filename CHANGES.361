@@ -7,6 +7,9 @@ Changes between releases are documented here.
   Affects: dcmdata/tests/telemlen.cc
            ofstd/include/dcmtk/ofstd/oftest.h
 
+- Added a paragraph about the test suite.
+  Affects: INSTALL
+
 **** Changes from 2011.06.07 (schlachter)
 
 - Added test cases for DcmElement::calcElementLength().
