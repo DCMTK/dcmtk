@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.06.08 (schlachter)
 
+- Fix needed libraries and link directories for the tests.
+  Thanks to forum user "Paul Groot" for the report.
+  Affects: dcmdata/tests/CMakeLists.txt
+           ofstd/tests/CMakeLists.txt
+
+**** Changes from 2011.06.08 (schlachter)
+
 - Corrected some file purpose descriptions.
   Affects: dcmdata/tests/telemlen.cc
            ofstd/include/dcmtk/ofstd/oftest.h
