@@ -20,8 +20,8 @@
  *
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:59 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-06-15 07:31:25 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -197,12 +197,13 @@ static void semaphore_test()
   SemaT1 t1;
   if (0 != t1.start()) BAILOUT("unable to create thread, semaphore test failed");
 
-  SemaT2 t2;
-  if (0 != t2.start()) BAILOUT("unable to create thread, semaphore test failed");
-
   int i=0;
   while ((i++<5) && (!sem_cond1)) OFStandard::sleep(1);
   if (!sem_cond1) BAILOUT("semaphore lock/unlock test failed");
+
+  SemaT2 t2;
+  if (0 != t2.start()) BAILOUT("unable to create thread, semaphore test failed");
+
   OFStandard::sleep(1);
   if (sem_cond3) BAILOUT("semaphore lock/unlock test failed"); // make sure T2 is really blocked
   mutex->unlock();
@@ -579,6 +580,9 @@ OFTEST(ofstd_thread)
  *
  * CVS/RCS Log:
  * $Log: tthread.cc,v $
+ * Revision 1.2  2011-06-15 07:31:25  uli
+ * Made sure thread 2 can't run before thread 1 in the semaphore test.
+ *
  * Revision 1.1  2011-05-25 10:05:59  uli
  * Imported oftest and converted existing tests to oftest.
  *

@@ -1,7 +1,12 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2011.06.08 (schlachter)
+**** Changes from 2011.06.15 (schlachter)
+
+- Made sure thread 2 can't run before thread 1 in the semaphore test.
+  Affects: ofstd/tests/tthread.cc
+
+**** Changes from 2011.06.14 (schlachter)
 
 - Fix needed libraries and link directories for the tests.
   Thanks to forum user "Paul Groot" for the report.
