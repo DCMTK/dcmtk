@@ -54,8 +54,8 @@
 
 //#include <algorithm>
 
-using namespace log4cplus;
-using namespace log4cplus::helpers;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
 
 
 namespace
@@ -130,7 +130,7 @@ get_host_by_name (char const * hostname, OFString* name,
 /////////////////////////////////////////////////////////////////////////////
 
 SOCKET_TYPE
-log4cplus::helpers::openSocket(unsigned short port, SocketState& state)
+helpers::openSocket(unsigned short port, SocketState& state)
 {
     SOCKET_TYPE sock = ::socket(AF_INET, SOCK_STREAM, 0);
     if(sock < 0) {
@@ -159,7 +159,7 @@ log4cplus::helpers::openSocket(unsigned short port, SocketState& state)
 
 
 SOCKET_TYPE
-log4cplus::helpers::connectSocket(const log4cplus::tstring& hostn,
+helpers::connectSocket(const tstring& hostn,
                                   unsigned short port, SocketState& state)
 {
     struct sockaddr_in server;
@@ -196,7 +196,7 @@ log4cplus::helpers::connectSocket(const log4cplus::tstring& hostn,
 
 
 SOCKET_TYPE
-log4cplus::helpers::acceptSocket(SOCKET_TYPE sock, SocketState& state)
+helpers::acceptSocket(SOCKET_TYPE sock, SocketState& state)
 {
     struct sockaddr_in net_client;
 #ifdef HAVE_DECLARATION_SOCKLEN_T
@@ -223,7 +223,7 @@ log4cplus::helpers::acceptSocket(SOCKET_TYPE sock, SocketState& state)
 
 
 int
-log4cplus::helpers::closeSocket(SOCKET_TYPE sock)
+helpers::closeSocket(SOCKET_TYPE sock)
 {
     return ::close(sock);
 }
@@ -231,7 +231,7 @@ log4cplus::helpers::closeSocket(SOCKET_TYPE sock)
 
 
 long
-log4cplus::helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
+helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
 {
     long read = 0;
 
@@ -251,7 +251,7 @@ log4cplus::helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
 
 
 long
-log4cplus::helpers::write(SOCKET_TYPE sock, const SocketBuffer& buffer)
+helpers::write(SOCKET_TYPE sock, const SocketBuffer& buffer)
 {
 #if defined(MSG_NOSIGNAL)
     int flags = MSG_NOSIGNAL;
@@ -263,7 +263,7 @@ log4cplus::helpers::write(SOCKET_TYPE sock, const SocketBuffer& buffer)
 
 
 tstring
-log4cplus::helpers::getHostname (bool fqdn)
+helpers::getHostname (bool fqdn)
 {
     char const * hostname = "unknown";
     int ret;

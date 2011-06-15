@@ -36,14 +36,15 @@ using STD_NAMESPACE size_t;
 #endif
 
 
+namespace dcmtk {
 namespace log4cplus {
     namespace helpers {
 
         class LOG4CPLUS_EXPORT Properties {
         public:
             Properties();
-            explicit Properties(log4cplus::tistream& input);
-            explicit Properties(const log4cplus::tstring& inputFile);
+            explicit Properties(tistream& input);
+            explicit Properties(const tstring& inputFile);
             virtual ~Properties();
 
           // constants
@@ -53,7 +54,7 @@ namespace log4cplus {
             /**
              * Tests to see if <code>key</code> can be found in this map.
              */
-            bool exists(const log4cplus::tstring& key) const {
+            bool exists(const tstring& key) const {
                 return data.find(key) != data.end();
             }
 
@@ -71,7 +72,7 @@ namespace log4cplus {
              * property list, and its defaults, recursively, are then checked.
              * The method returns <code>null</code> if the property is not found.
              */
-            log4cplus::tstring getProperty(const log4cplus::tstring& key) const;
+            tstring getProperty(const tstring& key) const;
 
             /**
              * Searches for the property with the specified key in this property
@@ -80,38 +81,38 @@ namespace log4cplus {
              * The method returns the default value argument if the property is
              * not found.
              */
-            log4cplus::tstring getProperty(const log4cplus::tstring& key,
-                                           const log4cplus::tstring& defaultVal) const;
+            tstring getProperty(const tstring& key,
+                                const tstring& defaultVal) const;
 
             /**
              * Returns all the keys in this property list.
              */
-            OFList<log4cplus::tstring> propertyNames() const;
+            OFList<tstring> propertyNames() const;
 
             /**
              * Inserts <code>value</code> into this map indexed by <code>key</code>.
              */
-            void setProperty(const log4cplus::tstring& key, const log4cplus::tstring& value);
+            void setProperty(const tstring& key, const tstring& value);
 
             /**
              * Removed the property index by <code>key</code> from this map.
              */
-            bool removeProperty(const log4cplus::tstring& key);
+            bool removeProperty(const tstring& key);
 
             /**
              * Returns a subset of the "properties" whose keys start with
              * "prefix".  The returned "properties" have "prefix" trimmed from
              * their keys.
              */
-            Properties getPropertySubset(const log4cplus::tstring& prefix) const;
+            Properties getPropertySubset(const tstring& prefix) const;
 
         protected:
           // Types
-//            LOG4CPLUS_EXPIMP_TEMPLATE template class LOG4CPLUS_EXPORT STD_NAMESPACE map<log4cplus::tstring, log4cplus::tstring>;
-            typedef OFMap<log4cplus::tstring, log4cplus::tstring> StringMap;
+//            LOG4CPLUS_EXPIMP_TEMPLATE template class LOG4CPLUS_EXPORT STD_NAMESPACE map<tstring, tstring>;
+            typedef OFMap<tstring, tstring> StringMap;
 
           // Methods
-            void init(log4cplus::tistream& input);
+            void init(tistream& input);
 
           // Data
             StringMap data;
@@ -119,6 +120,7 @@ namespace log4cplus {
     } // end namespace helpers
 
 }
+} // end namespace dcmtk
 
 
 #endif // LOG4CPLUS_HELPERS_PROPERTY_HEADER_

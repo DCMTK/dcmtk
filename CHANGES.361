@@ -6,6 +6,95 @@ Changes between releases are documented here.
 - Made sure thread 2 can't run before thread 1 in the semaphore test.
   Affects: ofstd/tests/tthread.cc
 
+- Moved log4cplus into namespace dcmtk::log4cplus.
+  Thanks to forum user "ymartelli" for the report.
+  Affects: dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/libsrc/dviface.cc
+           oflog/include/dcmtk/oflog/appender.h
+           oflog/include/dcmtk/oflog/configrt.h
+           oflog/include/dcmtk/oflog/consap.h
+           oflog/include/dcmtk/oflog/fileap.h
+           oflog/include/dcmtk/oflog/fstreams.h
+           oflog/include/dcmtk/oflog/hierarchy.h
+           oflog/include/dcmtk/oflog/hierlock.h
+           oflog/include/dcmtk/oflog/layout.h
+           oflog/include/dcmtk/oflog/logger.h
+           oflog/include/dcmtk/oflog/loglevel.h
+           oflog/include/dcmtk/oflog/logmacro.h
+           oflog/include/dcmtk/oflog/ndc.h
+           oflog/include/dcmtk/oflog/ntelogap.h
+           oflog/include/dcmtk/oflog/nullap.h
+           oflog/include/dcmtk/oflog/oflog.h
+           oflog/include/dcmtk/oflog/socketap.h
+           oflog/include/dcmtk/oflog/streams.h
+           oflog/include/dcmtk/oflog/syslogap.h
+           oflog/include/dcmtk/oflog/tstring.h
+           oflog/include/dcmtk/oflog/winconap.h
+           oflog/include/dcmtk/oflog/windebap.h
+           oflog/include/dcmtk/oflog/helpers/apndimpl.h
+           oflog/include/dcmtk/oflog/helpers/lloguser.h
+           oflog/include/dcmtk/oflog/helpers/loglog.h
+           oflog/include/dcmtk/oflog/helpers/pointer.h
+           oflog/include/dcmtk/oflog/helpers/property.h
+           oflog/include/dcmtk/oflog/helpers/sleep.h
+           oflog/include/dcmtk/oflog/helpers/sockbuff.h
+           oflog/include/dcmtk/oflog/helpers/socket.h
+           oflog/include/dcmtk/oflog/helpers/strhelp.h
+           oflog/include/dcmtk/oflog/helpers/syncppth.h
+           oflog/include/dcmtk/oflog/helpers/syncprims.h
+           oflog/include/dcmtk/oflog/helpers/syncpwin.h
+           oflog/include/dcmtk/oflog/helpers/threadcf.h
+           oflog/include/dcmtk/oflog/helpers/threads.h
+           oflog/include/dcmtk/oflog/helpers/timehelp.h
+           oflog/include/dcmtk/oflog/spi/apndatch.h
+           oflog/include/dcmtk/oflog/spi/factory.h
+           oflog/include/dcmtk/oflog/spi/filter.h
+           oflog/include/dcmtk/oflog/spi/logevent.h
+           oflog/include/dcmtk/oflog/spi/logfact.h
+           oflog/include/dcmtk/oflog/spi/logimpl.h
+           oflog/include/dcmtk/oflog/spi/objreg.h
+           oflog/include/dcmtk/oflog/spi/rootlog.h
+           oflog/libsrc/apndimpl.cc
+           oflog/libsrc/appender.cc
+           oflog/libsrc/config.cc
+           oflog/libsrc/consap.cc
+           oflog/libsrc/factory.cc
+           oflog/libsrc/fileap.cc
+           oflog/libsrc/filter.cc
+           oflog/libsrc/globinit.cc
+           oflog/libsrc/hierarchy.cc
+           oflog/libsrc/hierlock.cc
+           oflog/libsrc/layout.cc
+           oflog/libsrc/lloguser.cc
+           oflog/libsrc/logevent.cc
+           oflog/libsrc/logger.cc
+           oflog/libsrc/logimpl.cc
+           oflog/libsrc/loglevel.cc
+           oflog/libsrc/loglog.cc
+           oflog/libsrc/ndc.cc
+           oflog/libsrc/ntelogap.cc
+           oflog/libsrc/nullap.cc
+           oflog/libsrc/objreg.cc
+           oflog/libsrc/oflog.cc
+           oflog/libsrc/patlay.cc
+           oflog/libsrc/pointer.cc
+           oflog/libsrc/property.cc
+           oflog/libsrc/rootlog.cc
+           oflog/libsrc/sleep.cc
+           oflog/libsrc/sockbuff.cc
+           oflog/libsrc/socket.cc
+           oflog/libsrc/socketap.cc
+           oflog/libsrc/strhelp.cc
+           oflog/libsrc/syncprims.cc
+           oflog/libsrc/syslogap.cc
+           oflog/libsrc/threads.cc
+           oflog/libsrc/timehelp.cc
+           oflog/libsrc/unixsock.cc
+           oflog/libsrc/winconap.cc
+           oflog/libsrc/windebap.cc
+           oflog/libsrc/winsock.cc
+
 **** Changes from 2011.06.14 (schlachter)
 
 - Fix needed libraries and link directories for the tests.

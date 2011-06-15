@@ -28,7 +28,7 @@
 #include "dcmtk/oflog/helpers/pointer.h"
 
 
-namespace log4cplus { namespace thread {
+namespace dcmtk { namespace log4cplus { namespace thread {
 
 /**
  * This is used to lock a mutex.  The dtor unlocks the mutex.
@@ -74,7 +74,7 @@ struct ThreadStart;
  * class with basic functionality.
  */
 class LOG4CPLUS_EXPORT AbstractThread
-    : public virtual log4cplus::helpers::SharedObject
+    : public virtual dcmtk::log4cplus::helpers::SharedObject
 {
 public:
     AbstractThread();
@@ -115,7 +115,7 @@ typedef helpers::SharedObjectPtr<AbstractThread> AbstractThreadPtr;
 #endif // LOG4CPLUS_SINGLE_THREADED
 
 
-} } // namespace log4cplus { namespace thread {
+} } } // namespace dcmtk { namespace log4cplus { namespace thread {
 
 
 #endif // _LOG4CPLUS_THREADS_HEADER_

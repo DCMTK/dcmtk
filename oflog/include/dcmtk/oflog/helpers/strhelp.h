@@ -32,19 +32,20 @@
 //#include <iterator>
 
 
+namespace dcmtk {
 namespace log4cplus {
     namespace helpers {
 
         /**
          * Returns <code>s</code> in upper case.
          */
-        LOG4CPLUS_EXPORT log4cplus::tstring toUpper(const log4cplus::tstring& s);
+        LOG4CPLUS_EXPORT tstring toUpper(const tstring& s);
 
 
         /**
          * Returns <code>s</code> in lower case.
          */
-        LOG4CPLUS_EXPORT log4cplus::tstring toLower(const log4cplus::tstring& s);
+        LOG4CPLUS_EXPORT tstring toLower(const tstring& s);
 
 
         /**
@@ -56,7 +57,7 @@ namespace log4cplus {
          * <b>Example:</b>
          * <pre>
          *   string s = // Set string with '.' as delimiters
-         *   list<log4cplus::tstring> tokens;
+         *   list<tstring> tokens;
          *   tokenize(s, '.', back_insert_iterator<list<string> >(tokens));
          * </pre>
          */
@@ -179,5 +180,6 @@ namespace log4cplus {
     } // namespace helpers
 
 } // namespace log4cplus
+} // namespace dcmtk
 
 #endif // LOG4CPLUS_HELPERS_STRINGHELPER_HEADER_

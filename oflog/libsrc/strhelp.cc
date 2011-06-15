@@ -30,9 +30,12 @@
 //#include <cwctype>
 //#include <cctype>
 
-using namespace log4cplus;
+using namespace dcmtk::log4cplus;
 
 #if defined (LOG4CPLUS_SINGLE_THREADED)
+
+namespace dcmtk
+{
 
 namespace log4cplus
 {
@@ -63,6 +66,8 @@ void _clear_tostringstream (tostringstream & os)
 
 } // namespace log4cplus
 
+} // namespace dcmtk
+
 #endif
 
 
@@ -70,16 +75,16 @@ void _clear_tostringstream (tostringstream & os)
 // Global Methods
 //////////////////////////////////////////////////////////////////////////////
 
-log4cplus::tstring
-log4cplus::helpers::toUpper(const log4cplus::tstring& s)
+tstring
+helpers::toUpper(const tstring& s)
 {
     OFString tmp;
     return OFStandard::toUpper(tmp, s);
 }
 
 
-log4cplus::tstring
-log4cplus::helpers::toLower(const log4cplus::tstring& s)
+tstring
+helpers::toLower(const tstring& s)
 {
     OFString tmp;
     return OFStandard::toLower(tmp, s);

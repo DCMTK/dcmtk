@@ -26,8 +26,8 @@
 //#include <utility>
 //#include <vector>
 
-using namespace log4cplus;
-using namespace log4cplus::helpers;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
 
 
 
@@ -36,7 +36,7 @@ using namespace log4cplus::helpers;
 ///////////////////////////////////////////////////////////////////////////////
 
 NDC&
-log4cplus::getNDC()
+dcmtk::log4cplus::getNDC()
 {
     static NDC singleton;
     return singleton;
@@ -45,10 +45,10 @@ log4cplus::getNDC()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::DiagnosticContext ctors
+// dcmtk::log4cplus::DiagnosticContext ctors
 ///////////////////////////////////////////////////////////////////////////////
 
-DiagnosticContext::DiagnosticContext(const log4cplus::tstring& message_, DiagnosticContext* parent)
+DiagnosticContext::DiagnosticContext(const tstring& message_, DiagnosticContext* parent)
  : message(message_),
    fullMessage( (  (parent == NULL)
                  ? message
@@ -57,7 +57,7 @@ DiagnosticContext::DiagnosticContext(const log4cplus::tstring& message_, Diagnos
 }
 
 
-DiagnosticContext::DiagnosticContext(const log4cplus::tstring& message_)
+DiagnosticContext::DiagnosticContext(const tstring& message_)
  : message(message_),
    fullMessage(message)
 {
@@ -66,7 +66,7 @@ DiagnosticContext::DiagnosticContext(const log4cplus::tstring& message_)
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::NDC ctor and dtor
+// dcmtk::log4cplus::NDC ctor and dtor
 ///////////////////////////////////////////////////////////////////////////////
 
 NDC::NDC()
@@ -83,7 +83,7 @@ NDC::~NDC()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::NDC public methods
+// dcmtk::log4cplus::NDC public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
@@ -135,7 +135,7 @@ NDC::inherit(const DiagnosticContextStack& stack)
 }
 
 
-log4cplus::tstring
+tstring
 NDC::get()
 {
     try {
@@ -169,7 +169,7 @@ NDC::getDepth()
 }
 
 
-log4cplus::tstring
+tstring
 NDC::pop()
 {
     try {
@@ -194,7 +194,7 @@ NDC::pop()
 }
 
 
-log4cplus::tstring
+tstring
 NDC::peek()
 {
     try {
@@ -212,7 +212,7 @@ NDC::peek()
 
 
 void
-NDC::push(const log4cplus::tstring& message)
+NDC::push(const tstring& message)
 {
     try {
         DiagnosticContextStack* ptr = getPtr();
@@ -277,7 +277,7 @@ DiagnosticContextStack* NDC::getPtr()
 //
 //
 
-NDCContextCreator::NDCContextCreator(const log4cplus::tstring& msg)
+NDCContextCreator::NDCContextCreator(const tstring& msg)
 {
     getNDC().push(msg);
 }

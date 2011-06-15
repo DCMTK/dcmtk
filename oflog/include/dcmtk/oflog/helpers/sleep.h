@@ -26,11 +26,13 @@
 #include "dcmtk/oflog/config.h"
 
 
+namespace dcmtk {
 namespace log4cplus {
     namespace helpers {
         LOG4CPLUS_EXPORT void sleep(unsigned long secs);
     } // end namespace helpers
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _LOG4CPLUS_HELPERS_SLEEP_HEADER_
 

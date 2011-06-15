@@ -26,6 +26,7 @@
 #include "dcmtk/oflog/config.h"
 
 
+namespace dcmtk {
 namespace log4cplus {
     namespace helpers {
         // forward declarations
@@ -56,6 +57,7 @@ namespace log4cplus {
 
     } // end namespace helpers
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 
 #endif // _LOG4CPLUS_HELPERS_LOGLOG_USER

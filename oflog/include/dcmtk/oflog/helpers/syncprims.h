@@ -42,7 +42,7 @@
 #endif
 
 
-namespace log4cplus { namespace thread {
+namespace dcmtk { namespace log4cplus { namespace thread {
 
 
 namespace detail
@@ -152,7 +152,7 @@ private:
 };
 
 
-} } // namespace log4cplus { namespace thread {
+} } } // namespace dcmtk { namespace log4cplus { namespace thread {
 
 
 // Include the appropriate implementations of the classes declared
@@ -165,7 +165,7 @@ private:
 #endif
 
 
-namespace log4cplus { namespace thread {
+namespace dcmtk { namespace log4cplus { namespace thread {
 
 
 //
@@ -226,7 +226,7 @@ SyncGuard<SP>::detach ()
 }
 
 
-} } // namespace log4cplus { namespace thread {
+} } } // namespace dcmtk { namespace log4cplus { namespace thread {
 
 
 

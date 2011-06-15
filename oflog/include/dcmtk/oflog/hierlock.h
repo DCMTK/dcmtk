@@ -26,6 +26,7 @@
 #include "dcmtk/oflog/hierarchy.h"
 
 
+namespace dcmtk {
 namespace log4cplus {
 
     /**
@@ -45,23 +46,24 @@ namespace log4cplus {
         /**
          * Calls the <code>getInstance()</code> method on the locked Hierarchy.
          */
-        Logger getInstance(const log4cplus::tstring& name);
+        Logger getInstance(const tstring& name);
 
         /**
          * Calls the <code>getInstance()</code> method on the locked Hierarchy.
          */
-        Logger getInstance(const log4cplus::tstring& name, spi::LoggerFactory& factory);
+        Logger getInstance(const tstring& name, spi::LoggerFactory& factory);
 
-        void addAppender(Logger &logger, log4cplus::SharedAppenderPtr& appender);
+        void addAppender(Logger &logger, SharedAppenderPtr& appender);
 
     private:
       // Data
         Hierarchy& h;
-        log4cplus::thread::Guard hierarchyLocker;
+        thread::Guard hierarchyLocker;
         LoggerList loggerList;
     };
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _LOG4CPLUS_HIERARCHY_LOCKER_HEADER_
 

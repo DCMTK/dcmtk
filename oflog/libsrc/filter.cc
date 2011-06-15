@@ -22,9 +22,9 @@
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
 
-using namespace log4cplus;
-using namespace log4cplus::spi;
-using namespace log4cplus::helpers;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::spi;
+using namespace dcmtk::log4cplus::helpers;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ using namespace log4cplus::helpers;
 ///////////////////////////////////////////////////////////////////////////////
 
 FilterResult
-log4cplus::spi::checkFilter(const Filter* filter,
+spi::checkFilter(const Filter* filter,
                             const InternalLoggingEvent& event)
 {
     const Filter* currentFilter = filter;
@@ -85,7 +85,7 @@ DenyAllFilter::DenyAllFilter ()
 { }
 
 
-DenyAllFilter::DenyAllFilter (const log4cplus::helpers::Properties&, tstring&)
+DenyAllFilter::DenyAllFilter (const Properties&, tstring&)
 { }
 
 

@@ -31,6 +31,7 @@
 
 //#include <vector>
 
+namespace dcmtk {
 namespace log4cplus {
 
     /**
@@ -96,7 +97,7 @@ namespace log4cplus {
      *
      * <b>Note:</b> Must return an empty <code>tstring</code> for unrecognized values.
      */
-    typedef log4cplus::tstring (*LogLevelToStringMethod)(LogLevel);
+    typedef tstring (*LogLevelToStringMethod)(LogLevel);
 
     /**
      * This method type defined the signature of methods that convert strings
@@ -104,7 +105,7 @@ namespace log4cplus {
      *
      * <b>Note:</b> Must return <code>NOT_SET_LOG_LEVEL</code> for unrecognized values.
      */
-    typedef LogLevel (*StringToLogLevelMethod)(const log4cplus::tstring&);
+    typedef LogLevel (*StringToLogLevelMethod)(const tstring&);
 
 
 
@@ -133,7 +134,7 @@ namespace log4cplus {
          * Note: It traverses the list of <code>LogLevelToStringMethod</code>
          *       to do this, so all "derived" LogLevels are recognized as well.
          */
-        log4cplus::tstring toString(LogLevel ll) const;
+        tstring toString(LogLevel ll) const;
 
         /**
          * This method is called by all classes internally to log4cplus to
@@ -142,7 +143,7 @@ namespace log4cplus {
          * Note: It traverses the list of <code>StringToLogLevelMethod</code>
          *       to do this, so all "derived" LogLevels are recognized as well.
          */
-        LogLevel fromString(const log4cplus::tstring& s) const;
+        LogLevel fromString(const tstring& s) const;
 
         /**
          * When creating a "derived" LogLevel, a <code>LogLevelToStringMethod</code>
@@ -177,6 +178,7 @@ namespace log4cplus {
      */
     LOG4CPLUS_EXPORT LogLevelManager& getLogLevelManager();
 
+}
 }
 
 

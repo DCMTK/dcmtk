@@ -37,11 +37,14 @@
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
 
+namespace dcmtk
+{
+
 namespace log4cplus
 {
 
-using namespace log4cplus::helpers;
-using namespace log4cplus::spi;
+using namespace dcmtk::log4cplus::helpers;
+using namespace dcmtk::log4cplus::spi;
 
 
 void initializeLog4cplus();
@@ -240,7 +243,7 @@ void
 PropertyConfigurator::configure()
 {
     // Configure log4cplus internals.
-    log4cplus::tstring val = properties.getProperty (
+    tstring val = properties.getProperty (
         LOG4CPLUS_TEXT ("configDebug"), LOG4CPLUS_TEXT ("false"));
     getLogLog ().setInternalDebugging (
         helpers::toLower (val) == LOG4CPLUS_TEXT ("true"));
@@ -262,7 +265,7 @@ PropertyConfigurator::getProperties () const
 }
 
 
-log4cplus::tstring const &
+tstring const &
 PropertyConfigurator::getPropertyFilename () const
 {
     return propertyFilename;
@@ -696,3 +699,5 @@ ConfigureAndWatchThread::~ConfigureAndWatchThread()
 
 
 } // namespace log4cplus
+
+} // namespace dcmtk

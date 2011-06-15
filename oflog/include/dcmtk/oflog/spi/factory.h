@@ -36,6 +36,7 @@
 //#include <vector>
 
 
+namespace dcmtk {
 namespace log4cplus {
     namespace spi {
 
@@ -49,7 +50,7 @@ namespace log4cplus {
             /**
              * Returns the typename of the objects this factory creates.
              */
-            virtual log4cplus::tstring getTypeName() = 0;
+            virtual tstring getTypeName() = 0;
         };
 
 
@@ -68,7 +69,7 @@ namespace log4cplus {
             /**
              * Create an "Appender" object.
              */
-            virtual SharedAppenderPtr createObject(const log4cplus::helpers::Properties& props, log4cplus::tstring& error) = 0;
+            virtual SharedAppenderPtr createObject(const helpers::Properties& props, tstring& error) = 0;
         };
 
 
@@ -88,7 +89,7 @@ namespace log4cplus {
             /**
              * Create a "Layout" object.
              */
-            virtual OFauto_ptr<Layout> createObject(const log4cplus::helpers::Properties& props, log4cplus::tstring& error) = 0;
+            virtual OFauto_ptr<Layout> createObject(const helpers::Properties& props, tstring& error) = 0;
         };
 
 
@@ -108,7 +109,7 @@ namespace log4cplus {
             /**
              * Create a "Filter" object.
              */
-            virtual FilterPtr createObject(const log4cplus::helpers::Properties& props, log4cplus::tstring& error) = 0;
+            virtual FilterPtr createObject(const helpers::Properties& props, tstring& error) = 0;
         };
 
 
@@ -146,7 +147,7 @@ namespace log4cplus {
              * Used to retrieve an object from the registry.  (The registry
              * owns the returned pointer.)
              */
-            T* get(const log4cplus::tstring& name) const {
+            T* get(const tstring& name) const {
                 return OFstatic_cast(T*, getVal(name));
             }
 
@@ -179,6 +180,7 @@ namespace log4cplus {
 
     }
 }
+} // end namespace dcmtk
 
 
 #endif // LOG4CPLUS_SPI_FACTORY_HEADER_

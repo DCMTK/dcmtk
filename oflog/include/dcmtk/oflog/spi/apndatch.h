@@ -29,11 +29,12 @@
 #include "dcmtk/oflog/helpers/pointer.h"
 //#include <vector>
 
+namespace dcmtk {
 namespace log4cplus {
     // Forward Declarations
     typedef helpers::SharedObjectPtr<Appender> SharedAppenderPtr;
-    typedef OFList<log4cplus::SharedAppenderPtr> SharedAppenderPtrList;
-    typedef OFListIterator(log4cplus::SharedAppenderPtr) SharedAppenderPtrListIterator;
+    typedef OFList<SharedAppenderPtr> SharedAppenderPtrList;
+    typedef OFListIterator(SharedAppenderPtr) SharedAppenderPtrListIterator;
 
     namespace spi {
 
@@ -56,7 +57,7 @@ namespace log4cplus {
             /**
              * Get an appender by name.
              */
-            virtual SharedAppenderPtr getAppender(const log4cplus::tstring& name) = 0;
+            virtual SharedAppenderPtr getAppender(const tstring& name) = 0;
 
             /**
              * Remove all previously added appenders.
@@ -72,7 +73,7 @@ namespace log4cplus {
              * Remove the appender with the name passed as parameter from the
              * list of appenders.
              */
-            virtual void removeAppender(const log4cplus::tstring& name) = 0;
+            virtual void removeAppender(const tstring& name) = 0;
 
           // Dtor
             virtual ~AppenderAttachable() = 0;
@@ -80,6 +81,7 @@ namespace log4cplus {
 
     } // end namespace spi
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _LOG4CPLUS_SPI_APPENDER_ATTACHABLE_HEADER_
 

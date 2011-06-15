@@ -28,6 +28,7 @@
 #include "dcmtk/oflog/helpers/pointer.h"
 
 
+namespace dcmtk {
 namespace log4cplus {
     // Forward Declarations
     class Logger;
@@ -43,13 +44,14 @@ namespace log4cplus {
             /**
              * Creates a new <code>Logger</code> object.
              */
-            virtual Logger makeNewLoggerInstance(const log4cplus::tstring& name,
+            virtual Logger makeNewLoggerInstance(const tstring& name,
                                                  Hierarchy& h) = 0;
             virtual ~LoggerFactory() = 0;
         };
 
     } // end namespace spi
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _LOG4CPLUS_SPI_LOGGER_FACTORY_HEADER
 

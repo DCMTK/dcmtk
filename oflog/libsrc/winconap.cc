@@ -28,6 +28,9 @@
 
 
 #if defined(_WIN32) && defined (LOG4CPLUS_HAVE_WIN32_CONSOLE)
+namespace dcmtk
+{
+
 namespace log4cplus
 {
 
@@ -166,5 +169,7 @@ Win32ConsoleAppender::write_console (HANDLE console_out, tchar const * s,
 
 
 } // namespace log4cplus
+
+} // namespace dcmtk
 
 #endif

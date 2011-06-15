@@ -27,8 +27,8 @@
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
 
-using namespace log4cplus;
-using namespace log4cplus::helpers;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -53,16 +53,16 @@ bool startsWith(tstring const & teststr, tstring const & substr)
 
 
 //////////////////////////////////////////////////////////////////////////////
-// log4cplus::Hierarchy static declarations
+// dcmtk::log4cplus::Hierarchy static declarations
 //////////////////////////////////////////////////////////////////////////////
 
-const LogLevel log4cplus::Hierarchy::DISABLE_OFF = -1;
-const LogLevel log4cplus::Hierarchy::DISABLE_OVERRIDE = -2;
+const LogLevel Hierarchy::DISABLE_OFF = -1;
+const LogLevel Hierarchy::DISABLE_OVERRIDE = -2;
 
 
 
 //////////////////////////////////////////////////////////////////////////////
-// log4cplus::Hierarchy ctor and dtor
+// dcmtk::log4cplus::Hierarchy ctor and dtor
 //////////////////////////////////////////////////////////////////////////////
 
 Hierarchy::Hierarchy()
@@ -86,7 +86,7 @@ Hierarchy::~Hierarchy()
 
 
 //////////////////////////////////////////////////////////////////////////////
-// log4cplus::Hierarchy public methods
+// dcmtk::log4cplus::Hierarchy public methods
 //////////////////////////////////////////////////////////////////////////////
 
 void
@@ -100,7 +100,7 @@ Hierarchy::clear()
 
 
 bool
-Hierarchy::exists(const log4cplus::tstring& name)
+Hierarchy::exists(const tstring& name)
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( hashtable_mutex )
         LoggerMap::iterator it = loggerPtrs.find(name);
@@ -110,7 +110,7 @@ Hierarchy::exists(const log4cplus::tstring& name)
 
 
 void
-Hierarchy::disable(const log4cplus::tstring& loglevelStr)
+Hierarchy::disable(const tstring& loglevelStr)
 {
     if(disableValue != DISABLE_OVERRIDE) {
         disableValue = getLogLevelManager().fromString(loglevelStr);
@@ -156,14 +156,14 @@ Hierarchy::enableAll()
 
 
 Logger
-Hierarchy::getInstance(const log4cplus::tstring& name)
+Hierarchy::getInstance(const tstring& name)
 {
     return getInstance(name, *defaultFactory);
 }
 
 
 Logger
-Hierarchy::getInstance(const log4cplus::tstring& name, spi::LoggerFactory& factory)
+Hierarchy::getInstance(const tstring& name, spi::LoggerFactory& factory)
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( hashtable_mutex )
         return getInstanceImpl(name, factory);
@@ -246,11 +246,11 @@ Hierarchy::shutdown()
 
 
 //////////////////////////////////////////////////////////////////////////////
-// log4cplus::Hierarchy private methods
+// dcmtk::log4cplus::Hierarchy private methods
 //////////////////////////////////////////////////////////////////////////////
 
 Logger
-Hierarchy::getInstanceImpl(const log4cplus::tstring& name, spi::LoggerFactory& factory)
+Hierarchy::getInstanceImpl(const tstring& name, spi::LoggerFactory& factory)
 {
     LoggerMap::iterator it = loggerPtrs.find(name);
      if(it != loggerPtrs.end()) {
@@ -298,7 +298,7 @@ Hierarchy::initializeLoggerList(LoggerList& list) const
 void
 Hierarchy::updateParents(Logger logger)
 {
-    log4cplus::tstring name = logger.getName();
+    tstring name = logger.getName();
     size_t length = name.length();
     bool parentFound = false;
 
@@ -307,7 +307,7 @@ Hierarchy::updateParents(Logger logger)
         i != OFString_npos;
         i = name.find_last_of(LOG4CPLUS_TEXT('.'), i-1))
     {
-        log4cplus::tstring substr = name.substr(0, i);
+        tstring substr = name.substr(0, i);
 
         LoggerMap::iterator it = loggerPtrs.find(substr);
         if(it != loggerPtrs.end()) {

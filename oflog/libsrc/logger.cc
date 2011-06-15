@@ -24,16 +24,20 @@
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/spi/logimpl.h"
 
+using namespace dcmtk::log4cplus::spi;
+
+namespace dcmtk
+{
 
 namespace log4cplus
 {
 
 
 Logger
-DefaultLoggerFactory::makeNewLoggerInstance (const log4cplus::tstring & name,
+DefaultLoggerFactory::makeNewLoggerInstance (const tstring & name,
     Hierarchy& h)
 {
-    return Logger (new spi::LoggerImpl (name, h));
+    return Logger (new LoggerImpl (name, h));
 }
 
 
@@ -51,7 +55,7 @@ Logger::getDefaultHierarchy ()
 
 
 bool
-Logger::exists (const log4cplus::tstring & name)
+Logger::exists (const tstring & name)
 {
     return getDefaultHierarchy().exists(name);
 }
@@ -65,15 +69,15 @@ Logger::getCurrentLoggers ()
 
 
 Logger
-Logger::getInstance (const log4cplus::tstring& name)
+Logger::getInstance (const tstring& name)
 {
     return getDefaultHierarchy().getInstance(name);
 }
 
 
 Logger
-Logger::getInstance (const log4cplus::tstring& name,
-    spi::LoggerFactory& factory)
+Logger::getInstance (const tstring& name,
+    LoggerFactory& factory)
 {
     return getDefaultHierarchy().getInstance(name, factory);
 }
@@ -103,7 +107,7 @@ Logger::Logger ()
 { }
 
 
-Logger::Logger (spi::LoggerImpl * ptr)
+Logger::Logger (LoggerImpl * ptr)
     : value (ptr)
 {
     if (value)
@@ -112,7 +116,7 @@ Logger::Logger (spi::LoggerImpl * ptr)
 
 
 Logger::Logger (const Logger& rhs)
-    : spi::AppenderAttachable (rhs)
+    : AppenderAttachable (rhs)
     , value (rhs.value)
 {
     if (value)
@@ -142,7 +146,7 @@ Logger::~Logger ()
 void
 Logger::swap (Logger & other)
 {
-    spi::LoggerImpl* tmp = value;
+    LoggerImpl* tmp = value;
     value = other.value;
     other.value = tmp;
     //STD_NAMESPACE swap (value, other.value);
@@ -177,7 +181,7 @@ Logger::getAllAppenders ()
 
 
 SharedAppenderPtr
-Logger::getAppender (const log4cplus::tstring& name)
+Logger::getAppender (const tstring& name)
 {
     return value->getAppender (name);
 }
@@ -198,14 +202,14 @@ Logger::removeAppender (SharedAppenderPtr appender)
 
 
 void
-Logger::removeAppender (const log4cplus::tstring& name)
+Logger::removeAppender (const tstring& name)
 {
     value->removeAppender (name);
 }
 
 
 void
-Logger::assertion (bool assertionVal, const log4cplus::tstring& msg) const
+Logger::assertion (bool assertionVal, const tstring& msg) const
 {
     if (! assertionVal)
         log (FATAL_LOG_LEVEL, msg);
@@ -227,7 +231,7 @@ Logger::isEnabledFor (LogLevel ll) const
 
 
 void
-Logger::log (LogLevel ll, const log4cplus::tstring& message, const char* file,
+Logger::log (LogLevel ll, const tstring& message, const char* file,
     int line, const char* function) const
 {
     value->log (ll, message, file, line, function);
@@ -235,7 +239,7 @@ Logger::log (LogLevel ll, const log4cplus::tstring& message, const char* file,
 
 
 void
-Logger::forcedLog (LogLevel ll, const log4cplus::tstring& message,
+Logger::forcedLog (LogLevel ll, const tstring& message,
     const char* file, int line, const char* function) const
 {
     value->forcedLog (ll, message, file, line, function);
@@ -243,7 +247,7 @@ Logger::forcedLog (LogLevel ll, const log4cplus::tstring& message,
 
 
 void
-Logger::callAppenders (const spi::InternalLoggingEvent& event) const
+Logger::callAppenders (const InternalLoggingEvent& event) const
 {
     value->callAppenders (event);
 }
@@ -277,7 +281,7 @@ Logger::getHierarchy () const
 }
 
 
-log4cplus::tstring
+tstring
 Logger::getName () const
 {
     return value->getName ();
@@ -299,3 +303,5 @@ Logger::setAdditivity (bool additive)
 
 
 } // namespace log4cplus
+
+} // namespace dcmtk

@@ -21,28 +21,28 @@
 #include "dcmtk/oflog/nullap.h"
 
 using namespace std;
-using namespace log4cplus;
-using namespace log4cplus::helpers;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::NullAppender ctors and dtor
+// dcmtk::log4cplus::NullAppender ctors and dtor
 ///////////////////////////////////////////////////////////////////////////////
 
-log4cplus::NullAppender::NullAppender()
+NullAppender::NullAppender()
 {
 }
 
 
-log4cplus::NullAppender::NullAppender(const log4cplus::helpers::Properties& properties, tstring&)
+NullAppender::NullAppender(const helpers::Properties& properties, tstring&)
 : Appender(properties)
 {
 }
 
 
 
-log4cplus::NullAppender::~NullAppender()
+NullAppender::~NullAppender()
 {
     destructorImpl();
 }
@@ -50,24 +50,24 @@ log4cplus::NullAppender::~NullAppender()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::NullAppender public methods
+// dcmtk::log4cplus::NullAppender public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
-log4cplus::NullAppender::close()
+NullAppender::close()
 {
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::NullAppender protected methods
+// dcmtk::log4cplus::NullAppender protected methods
 ///////////////////////////////////////////////////////////////////////////////
 
 // This method does not need to be locked since it is called by
 // doAppend() which performs the locking
 void
-log4cplus::NullAppender::append(const spi::InternalLoggingEvent&)
+NullAppender::append(const spi::InternalLoggingEvent&)
 {
 }
 

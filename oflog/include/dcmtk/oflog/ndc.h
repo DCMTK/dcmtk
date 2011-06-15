@@ -39,6 +39,7 @@ using STD_NAMESPACE size_t;
 #endif
 
 
+namespace dcmtk {
 namespace log4cplus {
     // Forward declarations
     class NDC;
@@ -96,8 +97,8 @@ namespace log4cplus {
      * and the context set in the NDC.  Use of the {@link NDCContextCreator}
      * class can automate this process and make your code exception-safe.
      *
-     * If configured to do so, {@link log4cplus::PatternLayout} and {@link
-     * log4cplus::TTCCLayout} instances automatically retrieve the nested diagnostic
+     * If configured to do so, {@link dcmtk::log4cplus::PatternLayout} and {@link
+     * dcmtk::log4cplus::TTCCLayout} instances automatically retrieve the nested diagnostic
      * context for the current thread without any user intervention.
      * Hence, even if a server is serving multiple clients
      * simultaneously, the logs emanating from the same code (belonging to
@@ -114,7 +115,7 @@ namespace log4cplus {
      * #cloneStack cloneStack} method and pass the reference to any other
      * thread, in particular to a child.
      */
-    class LOG4CPLUS_EXPORT NDC : protected log4cplus::helpers::LogLogUser {
+    class LOG4CPLUS_EXPORT NDC : protected helpers::LogLogUser {
     public:
         /**
          * Clear any nested diagnostic information if any. This method is
@@ -160,7 +161,7 @@ namespace log4cplus {
         /**
          * Used when printing the diagnostic context.
          */
-        log4cplus::tstring get();
+        tstring get();
 
         /**
          * Get the current nesting depth of this diagnostic context.
@@ -180,7 +181,7 @@ namespace log4cplus {
          *
          * @see NDCContextCreator
          */
-        log4cplus::tstring pop();
+        tstring pop();
 
         /**
          * Looks at the last diagnostic context at the top of this NDC
@@ -191,7 +192,7 @@ namespace log4cplus {
          *
          * @return String The innermost diagnostic context.
          */
-        log4cplus::tstring peek();
+        tstring peek();
 
         /**
          * Push new diagnostic context information for the current thread.
@@ -207,7 +208,7 @@ namespace log4cplus {
          *
          * @see NDCContextCreator
          */
-        void push(const log4cplus::tstring& message);
+        void push(const tstring& message);
 
         /**
          * Remove the diagnostic context for this thread.
@@ -287,12 +288,12 @@ namespace log4cplus {
      */
     struct LOG4CPLUS_EXPORT DiagnosticContext {
       // Ctors
-        DiagnosticContext(const log4cplus::tstring& message, DiagnosticContext *parent);
-        DiagnosticContext(const log4cplus::tstring& message);
+        DiagnosticContext(const tstring& message, DiagnosticContext *parent);
+        DiagnosticContext(const tstring& message);
 
       // Data
-        log4cplus::tstring message; /*!< The message at this context level. */
-        log4cplus::tstring fullMessage; /*!< The entire message stack. */
+        tstring message; /*!< The message at this context level. */
+        tstring fullMessage; /*!< The entire message stack. */
     };
 
 
@@ -303,13 +304,14 @@ namespace log4cplus {
     class LOG4CPLUS_EXPORT NDCContextCreator {
     public:
         /** Pushes <code>msg</code> onto the NDC stack. */
-        NDCContextCreator(const log4cplus::tstring& msg);
+        NDCContextCreator(const tstring& msg);
 
         /** Pops the NDC stack. */
         ~NDCContextCreator();
     };
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 
 #endif // _LO4CPLUS_NDC_HEADER_

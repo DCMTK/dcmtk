@@ -25,18 +25,18 @@
 
 
 using namespace std;
-using namespace log4cplus;
-using namespace log4cplus::helpers;
-using namespace log4cplus::spi;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
+using namespace dcmtk::log4cplus::spi;
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::SimpleLayout public methods
+// dcmtk::log4cplus::SimpleLayout public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
-SimpleLayout::formatAndAppend(log4cplus::tostream& output,
-                              const log4cplus::spi::InternalLoggingEvent& event)
+SimpleLayout::formatAndAppend(tostream& output,
+                              const InternalLoggingEvent& event)
 {
     output << llmCache.toString(event.getLogLevel())
            << LOG4CPLUS_TEXT(" - ")
@@ -47,7 +47,7 @@ SimpleLayout::formatAndAppend(log4cplus::tostream& output,
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::TTCCLayout ctors and dtor
+// dcmtk::log4cplus::TTCCLayout ctors and dtor
 ///////////////////////////////////////////////////////////////////////////////
 
 TTCCLayout::TTCCLayout(bool use_gmtime_)
@@ -57,7 +57,7 @@ TTCCLayout::TTCCLayout(bool use_gmtime_)
 }
 
 
-TTCCLayout::TTCCLayout(const log4cplus::helpers::Properties& properties, tstring&)
+TTCCLayout::TTCCLayout(const Properties& properties, tstring&)
 : Layout(properties),
   dateFormat( LOG4CPLUS_TEXT("%m-%d-%y %H:%M:%S,%q") ),
   use_gmtime(false)
@@ -78,12 +78,12 @@ TTCCLayout::~TTCCLayout()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::TTCCLayout public methods
+// dcmtk::log4cplus::TTCCLayout public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
-TTCCLayout::formatAndAppend(log4cplus::tostream& output,
-                            const log4cplus::spi::InternalLoggingEvent& event)
+TTCCLayout::formatAndAppend(tostream& output,
+                            const InternalLoggingEvent& event)
 {
     output << event.getTimestamp().getFormattedTime(dateFormat, use_gmtime)
            << LOG4CPLUS_TEXT(" [")

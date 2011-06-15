@@ -35,6 +35,7 @@
 //#include <vector>
 
 
+namespace dcmtk {
 namespace log4cplus {
 
     // Forward Declarations
@@ -45,17 +46,17 @@ namespace log4cplus {
 
     /**
      * This class is used to layout strings sent to an {@link
-     * log4cplus::Appender}.
+     * dcmtk::log4cplus::Appender}.
      */
-    class LOG4CPLUS_EXPORT Layout : protected :: log4cplus::helpers::LogLogUser {
+    class LOG4CPLUS_EXPORT Layout : protected :: dcmtk::log4cplus::helpers::LogLogUser {
     public:
         Layout() : llmCache(getLogLevelManager()) {}
-        Layout(const log4cplus::helpers::Properties&)
+        Layout(const helpers::Properties&)
           : llmCache(getLogLevelManager())  {}
         virtual ~Layout() {}
 
-        virtual void formatAndAppend(log4cplus::tostream& output,
-                                     const log4cplus::spi::InternalLoggingEvent& event) = 0;
+        virtual void formatAndAppend(tostream& output,
+                                     const spi::InternalLoggingEvent& event) = 0;
     protected:
         LogLevelManager& llmCache;
 
@@ -80,10 +81,10 @@ namespace log4cplus {
     class LOG4CPLUS_EXPORT SimpleLayout : public Layout {
     public:
         SimpleLayout() {}
-        SimpleLayout(const log4cplus::helpers::Properties& properties, log4cplus::tstring&) : Layout(properties) {}
+        SimpleLayout(const helpers::Properties& properties, tstring&) : Layout(properties) {}
 
-        virtual void formatAndAppend(log4cplus::tostream& output,
-                                     const log4cplus::spi::InternalLoggingEvent& event);
+        virtual void formatAndAppend(tostream& output,
+                                     const spi::InternalLoggingEvent& event);
 
     private:
       // Disallow copying of instances of this class
@@ -133,14 +134,14 @@ namespace log4cplus {
     public:
       // Ctor and dtor
         TTCCLayout(bool use_gmtime = false);
-        TTCCLayout(const log4cplus::helpers::Properties& properties, log4cplus::tstring& error);
+        TTCCLayout(const helpers::Properties& properties, tstring& error);
         virtual ~TTCCLayout();
 
-        virtual void formatAndAppend(log4cplus::tostream& output,
-                                     const log4cplus::spi::InternalLoggingEvent& event);
+        virtual void formatAndAppend(tostream& output,
+                                     const spi::InternalLoggingEvent& event);
 
     protected:
-       log4cplus::tstring dateFormat;
+       tstring dateFormat;
        bool use_gmtime;
 
     private:
@@ -514,18 +515,18 @@ namespace log4cplus {
     class LOG4CPLUS_EXPORT PatternLayout : public Layout {
     public:
       // Ctors and dtor
-        PatternLayout(const log4cplus::tstring& pattern, bool formatEachLine = true);
-        PatternLayout(const log4cplus::helpers::Properties& properties, log4cplus::tstring& error);
+        PatternLayout(const tstring& pattern, bool formatEachLine = true);
+        PatternLayout(const helpers::Properties& properties, tstring& error);
         virtual ~PatternLayout();
 
-        virtual void formatAndAppend(log4cplus::tostream& output,
-                                     const log4cplus::spi::InternalLoggingEvent& event);
+        virtual void formatAndAppend(tostream& output,
+                                     const spi::InternalLoggingEvent& event);
 
     protected:
-        void init(const log4cplus::tstring& pattern, bool formatEachLine);
+        void init(const tstring& pattern, bool formatEachLine);
 
       // Data
-        log4cplus::tstring pattern;
+        tstring pattern;
         bool formatEachLine;
         OFauto_ptr<OFList<pattern::PatternConverter*> > parsedPattern;
 
@@ -538,6 +539,7 @@ namespace log4cplus {
 
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _LOG4CPLUS_LAYOUT_HEADER_
 

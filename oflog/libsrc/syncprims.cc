@@ -26,7 +26,7 @@
 #include "dcmtk/ofstd/ofconsol.h"
 
 
-namespace log4cplus { namespace thread { namespace detail {
+namespace dcmtk { namespace log4cplus { namespace thread { namespace detail {
 
 
 LOG4CPLUS_EXPORT
@@ -41,4 +41,4 @@ syncprims_throw_exception (char const * const msg, char const * const file,
 }
 
 
-} } } // namespace log4cplus { namespace thread { namespace detail {
+} } } } // namespace dcmtk { namespace log4cplus { namespace thread { namespace detail {

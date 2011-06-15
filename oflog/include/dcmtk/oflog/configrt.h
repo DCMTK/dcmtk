@@ -34,6 +34,8 @@
 //#include <map>
 
 
+namespace dcmtk
+{
 namespace log4cplus
 {
 
@@ -54,7 +56,7 @@ namespace log4cplus
      * the ${variableName} sequence.
      */
     class LOG4CPLUS_EXPORT PropertyConfigurator
-        : protected log4cplus::helpers::LogLogUser
+        : protected helpers::LogLogUser
     {
     public:
         enum PCFlags
@@ -65,11 +67,11 @@ namespace log4cplus
         };
 
         // ctor and dtor
-        PropertyConfigurator(const log4cplus::tstring& propertyFile,
+        PropertyConfigurator(const tstring& propertyFile,
             Hierarchy& h = Logger::getDefaultHierarchy(), unsigned flags = 0);
-        PropertyConfigurator(const log4cplus::helpers::Properties& props,
+        PropertyConfigurator(const helpers::Properties& props,
             Hierarchy& h = Logger::getDefaultHierarchy(), unsigned flags = 0);
-        PropertyConfigurator(log4cplus::tistream& propertyStream,
+        PropertyConfigurator(tistream& propertyStream,
             Hierarchy& h = Logger::getDefaultHierarchy(), unsigned flags = 0);
         virtual ~PropertyConfigurator();
 
@@ -82,7 +84,7 @@ namespace log4cplus
          * config.configure();
          * </code>
          */
-        static void doConfigure(const log4cplus::tstring& configFilename,
+        static void doConfigure(const tstring& configFilename,
             Hierarchy& h = Logger::getDefaultHierarchy(), unsigned flags = 0);
 
         /**
@@ -239,16 +241,16 @@ namespace log4cplus
          * prefix removed and references to other properties and/or
          * environment variables expanded.
          */
-        log4cplus::helpers::Properties const & getProperties () const;
+        helpers::Properties const & getProperties () const;
 
         /**
-         * \return The return value is a reference to log4cplus::tstring
+         * \return The return value is a reference to tstring
          * containing filename of properties source file. It will be
          * string "UNAVAILABLE" if the PropertyConfigurator instance has been
          * constructed using one of the other constructors that do not take
          * filename as parameter.
          */
-        log4cplus::tstring const & getPropertyFilename () const;
+        tstring const & getPropertyFilename () const;
 
     protected:
       // Methods
@@ -256,20 +258,20 @@ namespace log4cplus
         void reconfigure();
         void replaceEnvironVariables();
         void configureLoggers();
-        void configureLogger(log4cplus::Logger logger, const log4cplus::tstring& config);
+        void configureLogger(Logger logger, const tstring& config);
         void configureAppenders();
         void configureAdditivity();
 
-        virtual Logger getLogger(const log4cplus::tstring& name);
-        virtual void addAppender(Logger &logger, log4cplus::SharedAppenderPtr& appender);
+        virtual Logger getLogger(const tstring& name);
+        virtual void addAppender(Logger &logger, SharedAppenderPtr& appender);
 
       // Types
-        typedef OFMap<log4cplus::tstring, log4cplus::SharedAppenderPtr> AppenderMap;
+        typedef OFMap<tstring, SharedAppenderPtr> AppenderMap;
 
       // Data
         Hierarchy& h;
-        log4cplus::tstring propertyFilename;
-        log4cplus::helpers::Properties properties;
+        tstring propertyFilename;
+        helpers::Properties properties;
         AppenderMap appenders;
         unsigned flags;
 
@@ -320,7 +322,7 @@ namespace log4cplus
     class LOG4CPLUS_EXPORT ConfigureAndWatchThread {
     public:
       // ctor and dtor
-        ConfigureAndWatchThread(const log4cplus::tstring& propertyFile,
+        ConfigureAndWatchThread(const tstring& propertyFile,
                                 unsigned int millis = 60 * 1000);
         virtual ~ConfigureAndWatchThread();
 
@@ -335,6 +337,7 @@ namespace log4cplus
 #endif
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _CONFIGURATOR_HEADER_
 

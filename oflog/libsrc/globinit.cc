@@ -25,6 +25,9 @@
 
 
 // Forward Declarations
+namespace dcmtk
+{
+
 namespace log4cplus
 {
 
@@ -32,6 +35,7 @@ namespace log4cplus
 void initializeFactoryRegistry();
 
 
+void initializeLog4cplus();
 void initializeLog4cplus()
 {
     static bool initialized = false;
@@ -50,6 +54,8 @@ void initializeLog4cplus()
 
 } // namespace log4cplus
 
+} // namespace dcmtk
+
 
 #if defined (_WIN32) && defined (LOG4CPLUS_BUILD_DLL)
 
@@ -61,7 +67,7 @@ BOOL WINAPI DllMain(LOG4CPLUS_DLLMAIN_HINSTANCE hinstDLL,  // handle to DLL modu
     switch( fdwReason )
     {
         case DLL_PROCESS_ATTACH:
-            log4cplus::initializeLog4cplus();
+            dcmtk::log4cplus::initializeLog4cplus();
             break;
 
         case DLL_THREAD_ATTACH:
@@ -87,7 +93,7 @@ namespace {
     class _static_log4cplus_initializer {
     public:
         _static_log4cplus_initializer() {
-            log4cplus::initializeLog4cplus();
+            dcmtk::log4cplus::initializeLog4cplus();
         }
     } static initializer;
 }

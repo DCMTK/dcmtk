@@ -27,7 +27,7 @@
 //! include guards because it is only a fragment to be included by
 //! syncprims.h.
 
-namespace log4cplus { namespace thread {
+namespace dcmtk { namespace log4cplus { namespace thread {
 
 
 #define LOG4CPLUS_THROW_RTE(msg) \
@@ -236,4 +236,4 @@ ManualResetEvent::reset () const
 #undef LOG4CPLUS_THROW_RTE
 
 
-} } // namespace log4cplus { namespace thread {
+} } } // namespace dcmtk { namespace log4cplus { namespace thread {

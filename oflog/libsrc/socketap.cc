@@ -31,6 +31,9 @@
 #define LOG4CPLUS_MESSAGE_VERSION 2
 
 
+namespace dcmtk
+{
+
 namespace log4cplus
 {
 
@@ -323,3 +326,5 @@ readFromBuffer(SocketBuffer& buffer)
 } // namespace helpers
 
 } // namespace log4cplus
+
+} // namespace dcmtk

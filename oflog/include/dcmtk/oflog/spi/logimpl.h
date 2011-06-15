@@ -32,6 +32,7 @@
 //#include <vector>
 
 
+namespace dcmtk {
 namespace log4cplus {
     class DefaultLoggerFactory;
 
@@ -46,8 +47,8 @@ namespace log4cplus {
          * introduction on this class.
          */
         class LOG4CPLUS_EXPORT LoggerImpl
-            : public virtual log4cplus::helpers::SharedObject,
-              public log4cplus::helpers::AppenderAttachableImpl
+            : public virtual helpers::SharedObject,
+              public helpers::AppenderAttachableImpl
         {
         public:
             typedef helpers::SharedObjectPtr<LoggerImpl> SharedLoggerImplPtr;
@@ -84,7 +85,7 @@ namespace log4cplus {
             /**
              * This generic form is intended to be used by wrappers.
              */
-            virtual void log(LogLevel ll, const log4cplus::tstring& message,
+            virtual void log(LogLevel ll, const tstring& message,
                              const char* file=NULL, int line=-1,
                              const char* function=NULL);
 
@@ -119,7 +120,7 @@ namespace log4cplus {
             /**
              * Return the logger name.
              */
-            log4cplus::tstring getName() const { return name; }
+            tstring getName() const { return name; }
 
             /**
              * Get the additivity flag for this Logger instance.
@@ -145,7 +146,7 @@ namespace log4cplus {
              * @param name The name of the logger.
              * @param h Hierarchy
              */
-            LoggerImpl(const log4cplus::tstring& name, Hierarchy& h);
+            LoggerImpl(const tstring& name, Hierarchy& h);
 
 
           // Methods
@@ -154,7 +155,7 @@ namespace log4cplus {
              * without further checks.
              */
             virtual void forcedLog(LogLevel ll,
-                                   const log4cplus::tstring& message,
+                                   const tstring& message,
                                    const char* file=NULL,
                                    int line=-1,
                                    const char* function=NULL);
@@ -162,7 +163,7 @@ namespace log4cplus {
 
           // Data
             /** The name of this logger */
-            log4cplus::tstring name;
+            tstring name;
 
             /**
              * The assigned LogLevel of this logger.
@@ -196,15 +197,16 @@ namespace log4cplus {
             LoggerImpl& operator=(const LoggerImpl&);
 
           // Friends
-            friend class log4cplus::Logger;
-            friend class log4cplus::DefaultLoggerFactory;
-            friend class log4cplus::Hierarchy;
+            friend class dcmtk::log4cplus::Logger;
+            friend class dcmtk::log4cplus::DefaultLoggerFactory;
+            friend class dcmtk::log4cplus::Hierarchy;
         };
 
         typedef LoggerImpl::SharedLoggerImplPtr SharedLoggerImplPtr;
 
     } // end namespace spi
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _LOG4CPLUS_SPI_LOGGER_HEADER_
 

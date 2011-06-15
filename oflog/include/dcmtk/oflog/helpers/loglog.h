@@ -29,6 +29,7 @@
 #include "dcmtk/oflog/helpers/threads.h"
 
 
+namespace dcmtk {
 namespace log4cplus {
     namespace helpers {
 
@@ -46,14 +47,14 @@ namespace log4cplus {
          * the string "log4clus: ".
          */
         class LOG4CPLUS_EXPORT LogLog
-            : public virtual log4cplus::helpers::SharedObject
+            : public virtual helpers::SharedObject
         {
         public:
           // Static methods
             /**
              * Returns a reference to the <code>LogLog</code> singleton.
              */
-            static log4cplus::helpers::SharedObjectPtr<LogLog> getLogLog();
+            static helpers::SharedObjectPtr<LogLog> getLogLog();
 
 
             /**
@@ -73,21 +74,21 @@ namespace log4cplus {
              * This method is used to output log4cplus internal debug
              * statements. Output goes to <code>STD_NAMESPACE cout</code>.
              */
-            void debug(const log4cplus::tstring& msg);
+            void debug(const tstring& msg);
 
             /**
              * This method is used to output log4cplus internal error
              * statements. There is no way to disable error statements.
              * Output goes to <code>STD_NAMESPACE cerr</code>.
              */
-            void error(const log4cplus::tstring& msg);
+            void error(const tstring& msg);
 
             /**
              * This method is used to output log4cplus internal warning
              * statements. There is no way to disable warning statements.
              * Output goes to <code>STD_NAMESPACE cerr</code>.
              */
-            void warn(const log4cplus::tstring& msg);
+            void warn(const tstring& msg);
 
           // Dtor
             virtual ~LogLog();
@@ -107,6 +108,7 @@ namespace log4cplus {
 
     } // end namespace helpers
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 
 #endif // _LOG4CPLUS_HELPERS_LOGLOG

@@ -35,6 +35,8 @@
 #   define LOG4CPLUS_OPEN_MODE_TYPE LOG4CPLUS_FSTREAM_NAMESPACE::ios::openmode
 #endif
 
+namespace dcmtk
+{
 namespace log4cplus {
 
     /**
@@ -64,11 +66,11 @@ namespace log4cplus {
     class LOG4CPLUS_EXPORT FileAppender : public Appender {
     public:
       // Ctors
-        FileAppender(const log4cplus::tstring& filename,
+        FileAppender(const tstring& filename,
                      LOG4CPLUS_OPEN_MODE_TYPE mode = LOG4CPLUS_FSTREAM_NAMESPACE::ios::trunc,
                      bool immediateFlush = true);
-        FileAppender(const log4cplus::helpers::Properties& properties,
-                     log4cplus::tstring& error,
+        FileAppender(const helpers::Properties& properties,
+                     tstring& error,
                      LOG4CPLUS_OPEN_MODE_TYPE mode = LOG4CPLUS_FSTREAM_NAMESPACE::ios::trunc);
 
       // Dtor
@@ -107,13 +109,13 @@ namespace log4cplus {
          */
         int reopenDelay;
 
-        log4cplus::tofstream out;
-        log4cplus::tstring filename;
+        tofstream out;
+        tstring filename;
 
-        log4cplus::helpers::Time reopen_time;
+        helpers::Time reopen_time;
 
     private:
-        void init(const log4cplus::tstring& filename,
+        void init(const tstring& filename,
                   LOG4CPLUS_OPEN_MODE_TYPE mode);
 
       // Disallow copying of instances of this class
@@ -146,11 +148,11 @@ namespace log4cplus {
     class LOG4CPLUS_EXPORT RollingFileAppender : public FileAppender {
     public:
       // Ctors
-        RollingFileAppender(const log4cplus::tstring& filename,
+        RollingFileAppender(const tstring& filename,
                             long maxFileSize = 10*1024*1024, // 10 MB
                             int maxBackupIndex = 1,
                             bool immediateFlush = true);
-        RollingFileAppender(const log4cplus::helpers::Properties& properties, log4cplus::tstring& error);
+        RollingFileAppender(const helpers::Properties& properties, tstring& error);
 
       // Dtor
         virtual ~RollingFileAppender();
@@ -196,11 +198,11 @@ namespace log4cplus {
     class LOG4CPLUS_EXPORT DailyRollingFileAppender : public FileAppender {
     public:
       // Ctors
-        DailyRollingFileAppender(const log4cplus::tstring& filename,
+        DailyRollingFileAppender(const tstring& filename,
                                  DailyRollingFileSchedule schedule = DAILY,
                                  bool immediateFlush = true,
                                  int maxBackupIndex = 10);
-        DailyRollingFileAppender(const log4cplus::helpers::Properties& properties, log4cplus::tstring& error);
+        DailyRollingFileAppender(const helpers::Properties& properties, tstring& error);
 
       // Dtor
         virtual ~DailyRollingFileAppender();
@@ -211,13 +213,13 @@ namespace log4cplus {
     protected:
         virtual void append(const spi::InternalLoggingEvent& event);
         void rollover();
-        log4cplus::helpers::Time calculateNextRolloverTime(const log4cplus::helpers::Time& t) const;
-        log4cplus::tstring getFilename(const log4cplus::helpers::Time& t) const;
+        helpers::Time calculateNextRolloverTime(const helpers::Time& t) const;
+        tstring getFilename(const helpers::Time& t) const;
 
       // Data
         DailyRollingFileSchedule schedule;
-        log4cplus::tstring scheduledFilename;
-        log4cplus::helpers::Time nextRolloverTime;
+        tstring scheduledFilename;
+        helpers::Time nextRolloverTime;
         int maxBackupIndex;
 
     private:
@@ -225,6 +227,7 @@ namespace log4cplus {
     };
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _LOG4CPLUS_FILE_APPENDER_HEADER_
 

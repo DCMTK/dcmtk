@@ -28,6 +28,7 @@
 #include "dcmtk/oflog/helpers/property.h"
 
 
+namespace dcmtk {
 namespace log4cplus {
 
     /**
@@ -37,7 +38,7 @@ namespace log4cplus {
     public:
       // Ctors
         NullAppender();
-        NullAppender(const log4cplus::helpers::Properties& properties, log4cplus::tstring& error);
+        NullAppender(const helpers::Properties& properties, tstring& error);
 
       // Dtor
         virtual ~NullAppender();
@@ -46,7 +47,7 @@ namespace log4cplus {
         virtual void close();
 
     protected:
-        virtual void append(const log4cplus::spi::InternalLoggingEvent& event);
+        virtual void append(const spi::InternalLoggingEvent& event);
 
     private:
       // Disallow copying of instances of this class
@@ -55,6 +56,7 @@ namespace log4cplus {
     };
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _LOG4CPLUS_NULL_APPENDER_HEADER_
 

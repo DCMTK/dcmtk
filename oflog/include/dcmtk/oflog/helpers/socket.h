@@ -30,6 +30,7 @@
 #include <winsock.h>
 #endif
 
+namespace dcmtk {
 namespace log4cplus {
     namespace helpers {
 
@@ -112,7 +113,7 @@ namespace log4cplus {
 
 
         LOG4CPLUS_EXPORT SOCKET_TYPE openSocket(unsigned short port, SocketState& state);
-        LOG4CPLUS_EXPORT SOCKET_TYPE connectSocket(const log4cplus::tstring& hostn,
+        LOG4CPLUS_EXPORT SOCKET_TYPE connectSocket(const tstring& hostn,
                                                    unsigned short port, SocketState& state);
         LOG4CPLUS_EXPORT SOCKET_TYPE acceptSocket(SOCKET_TYPE sock, SocketState& state);
         LOG4CPLUS_EXPORT int closeSocket(SOCKET_TYPE sock);
@@ -124,5 +125,6 @@ namespace log4cplus {
 
     } // end namespace helpers
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // LOG4CPLUS_HELPERS_SOCKET_HEADER_

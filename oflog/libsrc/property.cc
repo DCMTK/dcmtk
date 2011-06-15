@@ -28,6 +28,9 @@
 #include "dcmtk/oflog/fstreams.h"
 
 
+namespace dcmtk
+{
+
 namespace log4cplus
 {
 
@@ -237,3 +240,5 @@ Properties::getPropertySubset(
 } // namespace helpers
 
 } // namespace log4cplus
+
+} // namespace dcmtk

@@ -26,16 +26,16 @@
 #include "dcmtk/oflog/spi/rootlog.h"
 //#include <stdexcept>
 
-using namespace log4cplus;
-using namespace log4cplus::helpers;
-using namespace log4cplus::spi;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
+using namespace dcmtk::log4cplus::spi;
 
 
 
 //////////////////////////////////////////////////////////////////////////////
 // Logger Constructors and Destructor
 //////////////////////////////////////////////////////////////////////////////
-LoggerImpl::LoggerImpl(const log4cplus::tstring& name_, Hierarchy& h)
+LoggerImpl::LoggerImpl(const tstring& name_, Hierarchy& h)
   : name(name_),
     ll(NOT_SET_LOG_LEVEL),
     parent(NULL),
@@ -99,7 +99,7 @@ LoggerImpl::isEnabledFor(LogLevel ll_) const
 
 void
 LoggerImpl::log(LogLevel ll_,
-                const log4cplus::tstring& message,
+                const tstring& message,
                 const char* file,
                 int line,
                 const char* function)
@@ -152,12 +152,12 @@ LoggerImpl::setAdditivity(bool additive_)
 
 void
 LoggerImpl::forcedLog(LogLevel ll_,
-                      const log4cplus::tstring& message,
+                      const tstring& message,
                       const char* file,
                       int line,
                       const char* function)
 {
-    callAppenders(spi::InternalLoggingEvent(this->getName(), ll_, message, file, line, function));
+    callAppenders(InternalLoggingEvent(this->getName(), ll_, message, file, line, function));
 }
 
 

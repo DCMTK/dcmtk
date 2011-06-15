@@ -20,9 +20,9 @@
 
 #include "dcmtk/oflog/spi/rootlog.h"
 
-using namespace log4cplus;
-using namespace log4cplus::helpers;
-using namespace log4cplus::spi;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
+using namespace dcmtk::log4cplus::spi;
 
 
 

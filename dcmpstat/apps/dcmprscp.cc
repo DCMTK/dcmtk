@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Presentation State Viewer - Print Server
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:45 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-06-15 08:44:54 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
       {
         // Messages to the "dump" logger are always written with the debug log
         // level, thus enabling that logger for this level shows the dumps
-        log4cplus::Logger log = log4cplus::Logger::getInstance("dcmtk.dcmpstat.dump");
+        dcmtk::log4cplus::Logger log = dcmtk::log4cplus::Logger::getInstance("dcmtk.dcmpstat.dump");
         log.setLogLevel(OFLogger::DEBUG_LOG_LEVEL);
       }
 
@@ -253,9 +253,9 @@ int main(int argc, char *argv[])
       OFString logfilename = logfileprefix;
       logfilename += ".log";
 
-      OFauto_ptr<log4cplus::Layout> layout(new log4cplus::PatternLayout(pattern));
-      log4cplus::SharedAppenderPtr logfile(new log4cplus::FileAppender(logfilename));
-      log4cplus::Logger log = log4cplus::Logger::getRoot();
+      OFauto_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
+      dcmtk::log4cplus::SharedAppenderPtr logfile(new dcmtk::log4cplus::FileAppender(logfilename));
+      dcmtk::log4cplus::Logger log = dcmtk::log4cplus::Logger::getRoot();
 
       logfile->setLayout(layout);
       log.removeAllAppenders();
@@ -555,6 +555,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
+ * Revision 1.33  2011-06-15 08:44:54  uli
+ * Moved log4cplus into namespace dcmtk::log4cplus.
+ *
  * Revision 1.32  2010-10-14 13:13:45  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

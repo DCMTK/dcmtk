@@ -33,6 +33,7 @@
 //#include <vector>
 
 
+namespace dcmtk {
 namespace log4cplus {
     // Forward Declarations
     class HierarchyLocker;
@@ -56,7 +57,7 @@ namespace log4cplus {
      * to the provision node. Other descendants of the same ancestor add
      * themselves to the previously created provision node.
      */
-    class LOG4CPLUS_EXPORT Hierarchy : protected log4cplus::helpers::LogLogUser {
+    class LOG4CPLUS_EXPORT Hierarchy : protected helpers::LogLogUser {
     public:
         // DISABLE_OFF should be set to a value lower than all possible
         // priorities.
@@ -89,13 +90,13 @@ namespace log4cplus {
          *
          * @param name The name of the logger to search for.
          */
-        virtual bool exists(const log4cplus::tstring& name);
+        virtual bool exists(const tstring& name);
 
         /**
          * Similar to {@link #disable(LogLevel)} except that the LogLevel
-         * argument is given as a log4cplus::tstring.
+         * argument is given as a tstring.
          */
-        virtual void disable(const log4cplus::tstring& loglevelStr);
+        virtual void disable(const tstring& loglevelStr);
 
         /**
          * Disable all logging requests of LogLevel <em>equal to or
@@ -158,7 +159,7 @@ namespace log4cplus {
          *
          * @param name The name of the logger to retrieve.
          */
-        virtual Logger getInstance(const log4cplus::tstring& name);
+        virtual Logger getInstance(const tstring& name);
 
         /**
          * Return a new logger instance named as the first parameter using
@@ -172,7 +173,7 @@ namespace log4cplus {
          * @param name The name of the logger to retrieve.
          * @param factory The factory that will make the new logger instance.
          */
-        virtual Logger getInstance(const log4cplus::tstring& name, spi::LoggerFactory& factory);
+        virtual Logger getInstance(const tstring& name, spi::LoggerFactory& factory);
 
         /**
          * Returns all the currently defined loggers in this hierarchy.
@@ -235,15 +236,15 @@ namespace log4cplus {
       // Types
         typedef OFList<Logger> ProvisionNode;
         typedef OFListIterator(Logger) ProvisionNodeIterator;
-        typedef OFMap<log4cplus::tstring, ProvisionNode> ProvisionNodeMap;
-        typedef OFMap<log4cplus::tstring, Logger> LoggerMap;
+        typedef OFMap<tstring, ProvisionNode> ProvisionNodeMap;
+        typedef OFMap<tstring, Logger> LoggerMap;
 
       // Methods
         /**
          * This is the implementation of the <code>getInstance()</code> method.
          * NOTE: This method does not lock the <code>hashtable_mutex</code>.
          */
-        virtual Logger getInstanceImpl(const log4cplus::tstring& name,
+        virtual Logger getInstanceImpl(const tstring& name,
                                        spi::LoggerFactory& factory);
 
         /**
@@ -307,11 +308,12 @@ namespace log4cplus {
        Hierarchy& operator=(const Hierarchy&);
 
     // Friends
-       friend class log4cplus::spi::LoggerImpl;
-       friend class log4cplus::HierarchyLocker;
+       friend class spi::LoggerImpl;
+       friend class HierarchyLocker;
     };
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _LOG4CPLUS_HIERARCHY_HEADER_
 

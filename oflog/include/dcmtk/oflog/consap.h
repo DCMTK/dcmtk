@@ -26,6 +26,7 @@
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/appender.h"
 
+namespace dcmtk {
 namespace log4cplus {
     /**
      * ConsoleAppender appends log events to <code>STD_NAMESPACE cout</code> or
@@ -48,7 +49,7 @@ namespace log4cplus {
     public:
       // Ctors
         ConsoleAppender(bool logToStdErr = false, bool immediateFlush = false);
-        ConsoleAppender(const log4cplus::helpers::Properties properties, log4cplus::tstring& error);
+        ConsoleAppender(const helpers::Properties properties, tstring& error);
 
       // Dtor
         ~ConsoleAppender();
@@ -69,6 +70,7 @@ namespace log4cplus {
     };
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _LOG4CPLUS_CONSOLE_APPENDER_HEADER_
 

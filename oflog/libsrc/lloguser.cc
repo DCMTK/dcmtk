@@ -23,15 +23,15 @@
 #include "dcmtk/oflog/helpers/loglog.h"
 
 using namespace std;
-using namespace log4cplus;
-using namespace log4cplus::helpers;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
 
 typedef SharedObjectPtr<LogLog> LogLogPtr;
 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::helpers::LogLogUser ctor and dtor
+// dcmtk::log4cplus::helpers::LogLogUser ctor and dtor
 ///////////////////////////////////////////////////////////////////////////////
 
 LogLogUser::LogLogUser()
@@ -54,7 +54,7 @@ LogLogUser::~LogLogUser()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::helpers::LogLogUser public methods
+// dcmtk::log4cplus::helpers::LogLogUser public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 LogLog&

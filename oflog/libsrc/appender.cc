@@ -26,14 +26,14 @@
 #include "dcmtk/oflog/spi/factory.h"
 #include "dcmtk/oflog/spi/logevent.h"
 
-using namespace log4cplus;
-using namespace log4cplus::helpers;
-using namespace log4cplus::spi;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
+using namespace dcmtk::log4cplus::spi;
 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::ErrorHandler dtor
+// dcmtk::log4cplus::ErrorHandler dtor
 ///////////////////////////////////////////////////////////////////////////////
 
 ErrorHandler::~ErrorHandler()
@@ -43,11 +43,11 @@ ErrorHandler::~ErrorHandler()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::OnlyOnceErrorHandler public methods
+// dcmtk::log4cplus::OnlyOnceErrorHandler public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
-OnlyOnceErrorHandler::error(const log4cplus::tstring& err)
+OnlyOnceErrorHandler::error(const tstring& err)
 {
     if(firstTime) {
         getLogLog().error(err);
@@ -66,7 +66,7 @@ OnlyOnceErrorHandler::reset()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::Appender ctors
+// dcmtk::log4cplus::Appender ctors
 ///////////////////////////////////////////////////////////////////////////////
 
 Appender::Appender()
@@ -80,7 +80,7 @@ Appender::Appender()
 
 
 
-Appender::Appender(const log4cplus::helpers::Properties properties)
+Appender::Appender(const helpers::Properties properties)
  : layout(new SimpleLayout()),
    name( LOG4CPLUS_TEXT("") ),
    threshold(NOT_SET_LOG_LEVEL),
@@ -88,7 +88,7 @@ Appender::Appender(const log4cplus::helpers::Properties properties)
    closed(false)
 {
     if(properties.exists( LOG4CPLUS_TEXT("layout") )) {
-        log4cplus::tstring factoryName = properties.getProperty( LOG4CPLUS_TEXT("layout") );
+        tstring factoryName = properties.getProperty( LOG4CPLUS_TEXT("layout") );
         LayoutFactory* factory = getLayoutFactoryRegistry().get(factoryName);
         if(factory == 0) {
             getLogLog().error(  LOG4CPLUS_TEXT("Cannot find LayoutFactory: \"")
@@ -120,8 +120,8 @@ Appender::Appender(const log4cplus::helpers::Properties properties)
     // Support for appender.Threshold in properties configuration file
     if(properties.exists(LOG4CPLUS_TEXT("Threshold"))) {
         tstring tmp = properties.getProperty(LOG4CPLUS_TEXT("Threshold"));
-        tmp = log4cplus::helpers::toUpper(tmp);
-        threshold = log4cplus::getLogLevelManager().fromString(tmp);
+        tmp = toUpper(tmp);
+        threshold = getLogLevelManager().fromString(tmp);
     }
 
     // Configure the filters
@@ -162,7 +162,7 @@ Appender::~Appender()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::Appender public methods
+// dcmtk::log4cplus::Appender public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
@@ -185,7 +185,7 @@ Appender::destructorImpl()
 
 
 void
-Appender::doAppend(const log4cplus::spi::InternalLoggingEvent& event)
+Appender::doAppend(const InternalLoggingEvent& event)
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
         if(closed) {
@@ -209,7 +209,7 @@ Appender::doAppend(const log4cplus::spi::InternalLoggingEvent& event)
 
 
 
-log4cplus::tstring
+tstring
 Appender::getName()
 {
     return name;
@@ -218,7 +218,7 @@ Appender::getName()
 
 
 void
-Appender::setName(const log4cplus::tstring& name_)
+Appender::setName(const tstring& name_)
 {
     this->name = name_;
 }

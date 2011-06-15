@@ -35,6 +35,8 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
+namespace dcmtk {
+
 namespace log4cplus {
 
 namespace helpers {
@@ -111,7 +113,7 @@ public:
      * <code>%Q</code> - 7 character field that provides fractional
      * milliseconds.
      */
-    log4cplus::tstring getFormattedTime(const log4cplus::tstring& fmt,
+    tstring getFormattedTime(const tstring& fmt,
                                         bool use_gmtime = false) const;
 
   // Operators
@@ -121,8 +123,8 @@ public:
     Time& operator*=(long rhs);
 
 private:
-    void build_q_value (log4cplus::tstring & q_str) const;
-    void build_uc_q_value (log4cplus::tstring & uc_q_str) const;
+    void build_q_value (tstring & q_str) const;
+    void build_uc_q_value (tstring & uc_q_str) const;
 
   // Data
     time_t tv_sec;  /* seconds */
@@ -130,37 +132,38 @@ private:
 };
 
 
-LOG4CPLUS_EXPORT const log4cplus::helpers::Time operator+
-                                   (const log4cplus::helpers::Time& lhs,
-                                    const log4cplus::helpers::Time& rhs);
-LOG4CPLUS_EXPORT const log4cplus::helpers::Time operator-
-                                   (const log4cplus::helpers::Time& lhs,
-                                    const log4cplus::helpers::Time& rhs);
-LOG4CPLUS_EXPORT const log4cplus::helpers::Time operator/
-                                   (const log4cplus::helpers::Time& lhs,
+LOG4CPLUS_EXPORT const Time operator+
+                                   (const Time& lhs,
+                                    const Time& rhs);
+LOG4CPLUS_EXPORT const Time operator-
+                                   (const Time& lhs,
+                                    const Time& rhs);
+LOG4CPLUS_EXPORT const Time operator/
+                                   (const Time& lhs,
                                     long rhs);
-LOG4CPLUS_EXPORT const log4cplus::helpers::Time operator*
-                                   (const log4cplus::helpers::Time& lhs,
+LOG4CPLUS_EXPORT const Time operator*
+                                   (const Time& lhs,
                                     long rhs);
 
-LOG4CPLUS_EXPORT bool operator<(const log4cplus::helpers::Time& lhs,
-                                const log4cplus::helpers::Time& rhs);
-LOG4CPLUS_EXPORT bool operator<=(const log4cplus::helpers::Time& lhs,
-                                 const log4cplus::helpers::Time& rhs);
+LOG4CPLUS_EXPORT bool operator<(const Time& lhs,
+                                const Time& rhs);
+LOG4CPLUS_EXPORT bool operator<=(const Time& lhs,
+                                 const Time& rhs);
 
-LOG4CPLUS_EXPORT bool operator>(const log4cplus::helpers::Time& lhs,
-                                const log4cplus::helpers::Time& rhs);
-LOG4CPLUS_EXPORT bool operator>=(const log4cplus::helpers::Time& lhs,
-                                 const log4cplus::helpers::Time& rhs);
+LOG4CPLUS_EXPORT bool operator>(const Time& lhs,
+                                const Time& rhs);
+LOG4CPLUS_EXPORT bool operator>=(const Time& lhs,
+                                 const Time& rhs);
 
-LOG4CPLUS_EXPORT bool operator==(const log4cplus::helpers::Time& lhs,
-                                 const log4cplus::helpers::Time& rhs);
-LOG4CPLUS_EXPORT bool operator!=(const log4cplus::helpers::Time& lhs,
-                                 const log4cplus::helpers::Time& rhs);
+LOG4CPLUS_EXPORT bool operator==(const Time& lhs,
+                                 const Time& rhs);
+LOG4CPLUS_EXPORT bool operator!=(const Time& lhs,
+                                 const Time& rhs);
 
 } // namespace helpers
 
 } // namespace log4cplus
+} // namespace dcmtk
 
 
 #endif // _LOG4CPLUS_HELPERS_TIME_HELPER_HEADER_

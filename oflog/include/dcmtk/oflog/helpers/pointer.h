@@ -38,6 +38,7 @@
 #define INCLUDE_CASSERT
 #include "dcmtk/ofstd/ofstdinc.h"
 
+namespace dcmtk {
 namespace log4cplus {
     namespace helpers {
 
@@ -160,6 +161,7 @@ namespace log4cplus {
 
     } // end namespace helpers
 } // end namespace log4cplus
+} // namespace dcmtk
 
 
 #endif // _LOG4CPLUS_HELPERS_POINTERS_HEADER_

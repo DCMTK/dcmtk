@@ -21,8 +21,8 @@
 #include "dcmtk/oflog/spi/logevent.h"
 
 
-using namespace log4cplus;
-using namespace log4cplus::spi;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::spi;
 
 
 #define LOG4CPLUS_DEFAULT_TYPE 1
@@ -54,7 +54,7 @@ InternalLoggingEvent::getDefaultType()
 // InternalLoggingEvent implementation
 ///////////////////////////////////////////////////////////////////////////////
 
-const log4cplus::tstring&
+const tstring&
 InternalLoggingEvent::getMessage() const
 {
     return message;
@@ -78,8 +78,8 @@ InternalLoggingEvent::clone() const
 
 
 
-log4cplus::spi::InternalLoggingEvent&
-InternalLoggingEvent::operator=(const log4cplus::spi::InternalLoggingEvent& rhs)
+InternalLoggingEvent&
+InternalLoggingEvent::operator=(const InternalLoggingEvent& rhs)
 {
     if(this == &rhs) return *this;
 

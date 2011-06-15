@@ -23,8 +23,8 @@
 #include "dcmtk/ofstd/ofconsol.h"
 
 using namespace std;
-using namespace log4cplus;
-using namespace log4cplus::helpers;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
 
 
 namespace
@@ -52,7 +52,7 @@ LogLog::getLogLog()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::helpers::LogLog ctor and dtor
+// dcmtk::log4cplus::helpers::LogLog ctor and dtor
 ///////////////////////////////////////////////////////////////////////////////
 
 LogLog::LogLog()
@@ -71,7 +71,7 @@ LogLog::~LogLog()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::helpers::LogLog public methods
+// dcmtk::log4cplus::helpers::LogLog public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
@@ -89,7 +89,7 @@ LogLog::setQuietMode(bool quietModeVal)
 
 
 void
-LogLog::debug(const log4cplus::tstring& msg)
+LogLog::debug(const tstring& msg)
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
         if(debugEnabled && !quietMode) {
@@ -101,7 +101,7 @@ LogLog::debug(const log4cplus::tstring& msg)
 
 
 void
-LogLog::warn(const log4cplus::tstring& msg)
+LogLog::warn(const tstring& msg)
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
         if(quietMode) return;
@@ -113,7 +113,7 @@ LogLog::warn(const log4cplus::tstring& msg)
 
 
 void
-LogLog::error(const log4cplus::tstring& msg)
+LogLog::error(const tstring& msg)
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
         if(quietMode) return;

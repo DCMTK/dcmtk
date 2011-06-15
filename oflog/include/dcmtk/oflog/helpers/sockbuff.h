@@ -28,13 +28,14 @@
 #include "dcmtk/oflog/helpers/lloguser.h"
 
 
+namespace dcmtk {
 namespace log4cplus {
     namespace helpers {
 
         /**
          *
          */
-        class LOG4CPLUS_EXPORT SocketBuffer : protected log4cplus::helpers::LogLogUser
+        class LOG4CPLUS_EXPORT SocketBuffer : protected LogLogUser
         {
         public:
             SocketBuffer(size_t max);
@@ -74,6 +75,7 @@ namespace log4cplus {
 
     } // end namespace helpers
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // LOG4CPLUS_HELPERS_SOCKET_HEADER_
 

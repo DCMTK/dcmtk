@@ -30,6 +30,7 @@
 #include "dcmtk/oflog/spi/logevent.h"
 
 
+namespace dcmtk {
 namespace log4cplus {
     namespace spi {
 
@@ -89,7 +90,7 @@ namespace log4cplus {
          * Linux ipchains.
          */
         class LOG4CPLUS_EXPORT Filter
-            : public virtual log4cplus::helpers::SharedObject
+            : public virtual helpers::SharedObject
         {
         public:
           // ctor and dtor
@@ -134,7 +135,7 @@ namespace log4cplus {
         class LOG4CPLUS_EXPORT DenyAllFilter : public Filter {
         public:
             DenyAllFilter ();
-            DenyAllFilter (const log4cplus::helpers::Properties&, log4cplus::tstring& error);
+            DenyAllFilter (const helpers::Properties&, tstring& error);
 
             /**
              * Always returns the {@link #DENY} regardless of the
@@ -158,7 +159,7 @@ namespace log4cplus {
         class LOG4CPLUS_EXPORT LogLevelMatchFilter : public Filter {
         public:
             LogLevelMatchFilter();
-            LogLevelMatchFilter(const log4cplus::helpers::Properties& p, log4cplus::tstring&);
+            LogLevelMatchFilter(const helpers::Properties& p, tstring&);
 
             /**
              * Return the decision of this filter.
@@ -213,7 +214,7 @@ namespace log4cplus {
         public:
           // ctors
             LogLevelRangeFilter();
-            LogLevelRangeFilter(const log4cplus::helpers::Properties& p, log4cplus::tstring& error);
+            LogLevelRangeFilter(const helpers::Properties& p, tstring& error);
 
             /**
              * Return the decision of this filter.
@@ -248,7 +249,7 @@ namespace log4cplus {
         public:
           // ctors
             StringMatchFilter();
-            StringMatchFilter(const log4cplus::helpers::Properties& p, log4cplus::tstring& error);
+            StringMatchFilter(const helpers::Properties& p, tstring& error);
 
             /**
              * Returns {@link #NEUTRAL} is there is no string match.
@@ -262,11 +263,12 @@ namespace log4cplus {
           // Data
             /** Do we return ACCEPT when a match occurs. Default is <code>true</code>. */
             bool acceptOnMatch;
-            log4cplus::tstring stringToMatch;
+            tstring stringToMatch;
         };
 
     } // end namespace spi
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif /* LOG4CPLUS_SPI_FILTER_HEADER_ */
 

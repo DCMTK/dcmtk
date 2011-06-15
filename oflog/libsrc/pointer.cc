@@ -24,11 +24,11 @@
 //#include <assert.h>
 
 
-namespace log4cplus { namespace helpers {
+namespace dcmtk { namespace log4cplus { namespace helpers {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::helpers::SharedObject dtor
+// dcmtk::log4cplus::helpers::SharedObject dtor
 ///////////////////////////////////////////////////////////////////////////////
 
 SharedObject::~SharedObject()
@@ -40,7 +40,7 @@ SharedObject::~SharedObject()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::helpers::SharedObject public methods
+// dcmtk::log4cplus::helpers::SharedObject public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
@@ -67,4 +67,4 @@ SharedObject::removeReference() const
 }
 
 
-} } // namespace log4cplus { namespace helpers
+} } } // namespace dcmtk { namespace log4cplus { namespace helpers

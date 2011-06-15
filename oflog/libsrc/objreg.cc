@@ -21,20 +21,21 @@
 #include "dcmtk/oflog/spi/objreg.h"
 
 using namespace std;
-using namespace log4cplus::spi;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::spi;
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::spi::ObjectRegistryBase ctor and dtor
+// dcmtk::log4cplus::spi::ObjectRegistryBase ctor and dtor
 ///////////////////////////////////////////////////////////////////////////////
 
-log4cplus::spi::ObjectRegistryBase::ObjectRegistryBase()
+ObjectRegistryBase::ObjectRegistryBase()
  : mutex(LOG4CPLUS_MUTEX_CREATE)
 {
 }
 
 
-log4cplus::spi::ObjectRegistryBase::~ObjectRegistryBase()
+ObjectRegistryBase::~ObjectRegistryBase()
 {
     LOG4CPLUS_MUTEX_FREE( mutex );
 }
@@ -42,11 +43,11 @@ log4cplus::spi::ObjectRegistryBase::~ObjectRegistryBase()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::spi::ObjectRegistryBase public methods
+// dcmtk::log4cplus::spi::ObjectRegistryBase public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 bool
-log4cplus::spi::ObjectRegistryBase::exists(const log4cplus::tstring& name) const
+ObjectRegistryBase::exists(const tstring& name) const
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
         return data.find(name) != data.end();
@@ -54,10 +55,10 @@ log4cplus::spi::ObjectRegistryBase::exists(const log4cplus::tstring& name) const
 }
 
 
-OFList<log4cplus::tstring>
-log4cplus::spi::ObjectRegistryBase::getAllNames() const
+OFList<tstring>
+ObjectRegistryBase::getAllNames() const
 {
-    OFList<log4cplus::tstring> tmp;
+    OFList<tstring> tmp;
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
         for(ObjectMap::const_iterator it=data.begin(); it!=data.end(); ++it)
             tmp.push_back( (*it).first );
@@ -68,11 +69,11 @@ log4cplus::spi::ObjectRegistryBase::getAllNames() const
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::spi::ObjectRegistryBase protected methods
+// dcmtk::log4cplus::spi::ObjectRegistryBase protected methods
 ///////////////////////////////////////////////////////////////////////////////
 
 bool
-log4cplus::spi::ObjectRegistryBase::putVal(const log4cplus::tstring& name, void* object)
+ObjectRegistryBase::putVal(const tstring& name, void* object)
 {
     ObjectMap::value_type value(name, object);
     OFPair<ObjectMap::iterator, bool> ret;
@@ -88,7 +89,7 @@ log4cplus::spi::ObjectRegistryBase::putVal(const log4cplus::tstring& name, void*
 
 
 void*
-log4cplus::spi::ObjectRegistryBase::getVal(const log4cplus::tstring& name) const
+ObjectRegistryBase::getVal(const tstring& name) const
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
         ObjectMap::const_iterator it (data.find (name));
@@ -103,7 +104,7 @@ log4cplus::spi::ObjectRegistryBase::getVal(const log4cplus::tstring& name) const
 
 
 void
-log4cplus::spi::ObjectRegistryBase::clear()
+ObjectRegistryBase::clear()
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
     for(ObjectMap::iterator it=data.begin(); it!=data.end(); ++it) {

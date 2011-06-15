@@ -31,6 +31,7 @@
 #  else
 
 
+namespace dcmtk {
 namespace log4cplus {
 
     /**
@@ -39,10 +40,10 @@ namespace log4cplus {
     class LOG4CPLUS_EXPORT NTEventLogAppender : public Appender {
     public:
       // ctors
-        NTEventLogAppender(const log4cplus::tstring& server,
-                           const log4cplus::tstring& log,
-                           const log4cplus::tstring& source);
-        NTEventLogAppender(const log4cplus::helpers::Properties properties, tstring& error);
+        NTEventLogAppender(const tstring& server,
+                           const tstring& log,
+                           const tstring& source);
+        NTEventLogAppender(const helpers::Properties properties, tstring& error);
 
       // dtor
         virtual ~NTEventLogAppender();
@@ -62,9 +63,9 @@ namespace log4cplus {
         void addRegistryInfo();
 
       // Data
-        log4cplus::tstring server;
-        log4cplus::tstring log;
-        log4cplus::tstring source;
+        tstring server;
+        tstring log;
+        tstring source;
         HANDLE hEventLog;
         SID* pCurrentUserSID;
 
@@ -75,6 +76,7 @@ namespace log4cplus {
     };
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // LOG4CPLUS_HAVE_NT_EVENT_LOG
 #endif // _WIN32

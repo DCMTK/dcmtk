@@ -26,9 +26,9 @@
 
 #if defined (LOG4CPLUS_HAVE_NT_EVENT_LOG)
 
-using namespace log4cplus;
-using namespace log4cplus::spi;
-using namespace log4cplus::helpers;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::spi;
+using namespace dcmtk::log4cplus::helpers;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ namespace {
 
 
     HKEY
-    regGetKey(const log4cplus::tstring& subkey, DWORD* disposition)
+    regGetKey(const tstring& subkey, DWORD* disposition)
     {
         HKEY hkey = 0;
         RegCreateKeyEx(HKEY_LOCAL_MACHINE,
@@ -113,7 +113,7 @@ namespace {
 
 
     void
-    regSetString(HKEY hkey, const log4cplus::tstring& name, const log4cplus::tstring& value)
+    regSetString(HKEY hkey, const tstring& name, const tstring& value)
     {
         RegSetValueEx(hkey,
                       name.c_str(),
@@ -126,7 +126,7 @@ namespace {
 
 
     void
-    regSetDword(HKEY hkey, const log4cplus::tstring& name, DWORD value)
+    regSetDword(HKEY hkey, const tstring& name, DWORD value)
     {
         RegSetValueEx(hkey,
                       name.c_str(),
@@ -141,12 +141,12 @@ namespace {
 
 
 //////////////////////////////////////////////////////////////////////////////
-// log4cplus::NTEventLogAppender ctor and dtor
+// dcmtk::log4cplus::NTEventLogAppender ctor and dtor
 //////////////////////////////////////////////////////////////////////////////
 
-NTEventLogAppender::NTEventLogAppender(const log4cplus::tstring& server,
-                                       const log4cplus::tstring& log,
-                                       const log4cplus::tstring& source)
+NTEventLogAppender::NTEventLogAppender(const tstring& server,
+                                       const tstring& log,
+                                       const tstring& source)
 : server(server),
   log(log),
   source(source),
@@ -212,7 +212,7 @@ NTEventLogAppender::~NTEventLogAppender()
 
 
 //////////////////////////////////////////////////////////////////////////////
-// log4cplus::NTEventLogAppender public methods
+// dcmtk::log4cplus::NTEventLogAppender public methods
 //////////////////////////////////////////////////////////////////////////////
 
 void
@@ -228,7 +228,7 @@ NTEventLogAppender::close()
 
 
 //////////////////////////////////////////////////////////////////////////////
-// log4cplus::NTEventLogAppender protected methods
+// dcmtk::log4cplus::NTEventLogAppender protected methods
 //////////////////////////////////////////////////////////////////////////////
 
 void

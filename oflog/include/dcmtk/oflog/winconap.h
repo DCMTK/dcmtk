@@ -32,6 +32,8 @@
 #include "dcmtk/oflog/helpers/property.h"
 
 
+namespace dcmtk
+{
 namespace log4cplus
 {
 
@@ -71,6 +73,7 @@ namespace log4cplus
     };
 
 } // namespace log4cplus
+} // namespace dcmtk
 
 #endif
 

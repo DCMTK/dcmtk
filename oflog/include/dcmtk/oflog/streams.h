@@ -29,10 +29,12 @@
 
 #define LOG4CPLUS_STREAM_NAMESPACE std
 
+namespace dcmtk {
 namespace log4cplus {
     typedef STD_NAMESPACE ostream tostream;
     typedef STD_NAMESPACE istream tistream;
     typedef OFOStringStream        tostringstream;
+}
 }
 
 #endif // LOG4CPLUS_STREAMS_HEADER_

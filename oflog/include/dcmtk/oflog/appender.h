@@ -36,29 +36,30 @@
 #include "dcmtk/ofstd/ofaptr.h"
 
 
+namespace dcmtk {
 namespace log4cplus {
 
     /**
      * This class is used to "handle" errors encountered in an {@link
-     * log4cplus::Appender}.
+     * dcmtk::log4cplus::Appender}.
      */
     class LOG4CPLUS_EXPORT ErrorHandler {
     public:
         virtual ~ErrorHandler();
-        virtual void error(const log4cplus::tstring& err) = 0;
+        virtual void error(const tstring& err) = 0;
         virtual void reset() = 0;
     };
 
 
 
     class LOG4CPLUS_EXPORT OnlyOnceErrorHandler : public ErrorHandler,
-                                                  protected log4cplus::helpers::LogLogUser
+                                                  protected helpers::LogLogUser
     {
     public:
       // Ctor
         OnlyOnceErrorHandler() : firstTime(true){}
 
-        virtual void error(const log4cplus::tstring& err);
+        virtual void error(const tstring& err);
         virtual void reset();
 
     private:
@@ -71,14 +72,14 @@ namespace log4cplus {
      * statements.
      */
     class LOG4CPLUS_EXPORT Appender
-        : public virtual log4cplus::helpers::SharedObject
-        , protected log4cplus::helpers::LogLogUser
+        : public virtual helpers::SharedObject
+        , protected helpers::LogLogUser
 
     {
     public:
       // Ctor
         Appender();
-        Appender(const log4cplus::helpers::Properties properties);
+        Appender(const helpers::Properties properties);
 
       // Dtor
         virtual ~Appender();
@@ -99,19 +100,19 @@ namespace log4cplus {
          * delegating actual logging to the subclasses specific {@link
          * #append} method.
          */
-        void doAppend(const log4cplus::spi::InternalLoggingEvent& event);
+        void doAppend(const spi::InternalLoggingEvent& event);
 
         /**
          * Get the name of this appender. The name uniquely identifies the
          * appender.
          */
-        virtual log4cplus::tstring getName();
+        virtual tstring getName();
 
         /**
          * Set the name of this appender. The name is used by other
          * components to identify this appender.
          */
-        virtual void setName(const log4cplus::tstring& name);
+        virtual void setName(const tstring& name);
 
         /**
          * Set the {@link ErrorHandler} for this Appender.
@@ -141,12 +142,12 @@ namespace log4cplus {
         /**
          * Set the filter chain on this Appender.
          */
-        void setFilter(log4cplus::spi::FilterPtr f) { filter = f; }
+        void setFilter(spi::FilterPtr f) { filter = f; }
 
         /**
          * Get the filter chain on this Appender.
          */
-        log4cplus::spi::FilterPtr getFilter() const { return filter; }
+        spi::FilterPtr getFilter() const { return filter; }
 
         /**
          * Returns this appenders threshold LogLevel. See the {@link
@@ -180,7 +181,7 @@ namespace log4cplus {
          * method to perform actual logging.
          * @see doAppend method.
          */
-        virtual void append(const log4cplus::spi::InternalLoggingEvent& event) = 0;
+        virtual void append(const spi::InternalLoggingEvent& event) = 0;
 
       // Data
         /** The layout variable does not need to be set if the appender
@@ -188,14 +189,14 @@ namespace log4cplus {
         OFauto_ptr<Layout> layout;
 
         /** Appenders are named. */
-        log4cplus::tstring name;
+        tstring name;
 
         /** There is no LogLevel threshold filtering by default.  */
         LogLevel threshold;
 
         /** The first filter in the filter chain. Set to <code>null</code>
          *  initially. */
-        log4cplus::spi::FilterPtr filter;
+        spi::FilterPtr filter;
 
         /** It is assumed and enforced that errorHandler is never null. */
         OFauto_ptr<ErrorHandler> errorHandler;
@@ -208,6 +209,7 @@ namespace log4cplus {
     typedef helpers::SharedObjectPtr<Appender> SharedAppenderPtr;
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _LOG4CPLUS_APPENDER_HEADER_
 

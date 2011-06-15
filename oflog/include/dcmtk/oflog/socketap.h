@@ -32,6 +32,7 @@
 #define LOG4CPLUS_MAX_MESSAGE_SIZE (8*1024)
 
 
+namespace dcmtk {
 namespace log4cplus {
 
     /**
@@ -88,9 +89,9 @@ namespace log4cplus {
     class LOG4CPLUS_EXPORT SocketAppender : public Appender {
     public:
       // Ctors
-        SocketAppender(const log4cplus::tstring& host, int port,
-                       const log4cplus::tstring& serverName = tstring());
-        SocketAppender(const log4cplus::helpers::Properties & properties, log4cplus::tstring& error);
+        SocketAppender(const tstring& host, int port,
+                       const tstring& serverName = tstring());
+        SocketAppender(const helpers::Properties & properties, tstring& error);
 
       // Dtor
         ~SocketAppender();
@@ -104,10 +105,10 @@ namespace log4cplus {
         virtual void append(const spi::InternalLoggingEvent& event);
 
       // Data
-        log4cplus::helpers::Socket socket;
-        log4cplus::tstring host;
+        helpers::Socket socket;
+        tstring host;
         int port;
-        log4cplus::tstring serverName;
+        tstring serverName;
 
 #if ! defined (LOG4CPLUS_SINGLE_THREADED)
         class LOG4CPLUS_EXPORT ConnectorThread;
@@ -144,14 +145,15 @@ namespace log4cplus {
 
     namespace helpers {
         LOG4CPLUS_EXPORT
-        SocketBuffer convertToBuffer(const log4cplus::spi::InternalLoggingEvent& event,
-                                     const log4cplus::tstring& serverName);
+        SocketBuffer convertToBuffer(const spi::InternalLoggingEvent& event,
+                                     const tstring& serverName);
 
         LOG4CPLUS_EXPORT
-        log4cplus::spi::InternalLoggingEvent readFromBuffer(SocketBuffer& buffer);
+        spi::InternalLoggingEvent readFromBuffer(SocketBuffer& buffer);
     } // end namespace helpers
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _LOG4CPLUS_SOCKET_APPENDER_HEADER_
 

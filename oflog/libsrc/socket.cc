@@ -22,8 +22,8 @@
 #include "dcmtk/oflog/helpers/loglog.h"
 
 
-using namespace log4cplus;
-using namespace log4cplus::helpers;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
 
 #if !defined(_WIN32)
 //#  include <unistd.h>
@@ -42,7 +42,7 @@ using namespace log4cplus::helpers;
 // AbstractSocket ctors and dtor
 //////////////////////////////////////////////////////////////////////////////
 
-log4cplus::helpers::AbstractSocket::AbstractSocket()
+AbstractSocket::AbstractSocket()
 : sock(INVALID_SOCKET),
   state(not_opened),
   err(0)
@@ -51,7 +51,7 @@ log4cplus::helpers::AbstractSocket::AbstractSocket()
 
 
 
-log4cplus::helpers::AbstractSocket::AbstractSocket(SOCKET_TYPE sock_, SocketState state_, int err_)
+AbstractSocket::AbstractSocket(SOCKET_TYPE sock_, SocketState state_, int err_)
 : sock(sock_),
   state(state_),
   err(err_)
@@ -60,13 +60,13 @@ log4cplus::helpers::AbstractSocket::AbstractSocket(SOCKET_TYPE sock_, SocketStat
 
 
 
-log4cplus::helpers::AbstractSocket::AbstractSocket(const log4cplus::helpers::AbstractSocket& rhs)
+AbstractSocket::AbstractSocket(const AbstractSocket& rhs)
 {
     copy(rhs);
 }
 
 
-log4cplus::helpers::AbstractSocket::~AbstractSocket()
+AbstractSocket::~AbstractSocket()
 {
     close();
 }
@@ -78,7 +78,7 @@ log4cplus::helpers::AbstractSocket::~AbstractSocket()
 //////////////////////////////////////////////////////////////////////////////
 
 void
-log4cplus::helpers::AbstractSocket::close()
+AbstractSocket::close()
 {
     if(sock != INVALID_SOCKET) {
         closeSocket(sock);
@@ -89,7 +89,7 @@ log4cplus::helpers::AbstractSocket::close()
 
 
 bool
-log4cplus::helpers::AbstractSocket::isOpen() const
+AbstractSocket::isOpen() const
 {
     return sock != INVALID_SOCKET;
 }
@@ -97,8 +97,8 @@ log4cplus::helpers::AbstractSocket::isOpen() const
 
 
 
-log4cplus::helpers::AbstractSocket&
-log4cplus::helpers::AbstractSocket::operator=(const log4cplus::helpers::AbstractSocket& rhs)
+AbstractSocket&
+AbstractSocket::operator=(const AbstractSocket& rhs)
 {
     if(&rhs != this) {
         close();
@@ -111,7 +111,7 @@ log4cplus::helpers::AbstractSocket::operator=(const log4cplus::helpers::Abstract
 
 
 void
-log4cplus::helpers::AbstractSocket::copy(const log4cplus::helpers::AbstractSocket& r)
+AbstractSocket::copy(const AbstractSocket& r)
 {
     AbstractSocket& rhs = OFconst_cast(AbstractSocket&, r);
     sock = rhs.sock;
@@ -128,14 +128,14 @@ log4cplus::helpers::AbstractSocket::copy(const log4cplus::helpers::AbstractSocke
 // Socket ctors and dtor
 //////////////////////////////////////////////////////////////////////////////
 
-log4cplus::helpers::Socket::Socket()
+Socket::Socket()
 : AbstractSocket()
 {
 }
 
 
 
-log4cplus::helpers::Socket::Socket(const tstring& address, int port)
+Socket::Socket(const tstring& address, int port)
 : AbstractSocket()
 {
     sock = connectSocket(address, port, state);
@@ -145,14 +145,14 @@ log4cplus::helpers::Socket::Socket(const tstring& address, int port)
 }
 
 
-log4cplus::helpers::Socket::Socket(SOCKET_TYPE sock_, SocketState state_, int err_)
+Socket::Socket(SOCKET_TYPE sock_, SocketState state_, int err_)
 : AbstractSocket(sock_, state_, err_)
 {
 }
 
 
 
-log4cplus::helpers::Socket::~Socket()
+Socket::~Socket()
 {
 }
 
@@ -165,9 +165,9 @@ log4cplus::helpers::Socket::~Socket()
 //////////////////////////////////////////////////////////////////////////////
 
 bool
-log4cplus::helpers::Socket::read(SocketBuffer& buffer)
+Socket::read(SocketBuffer& buffer)
 {
-    long retval = log4cplus::helpers::read(sock, buffer);
+    long retval = helpers::read(sock, buffer);
     if(retval <= 0) {
         close();
     }
@@ -181,9 +181,9 @@ log4cplus::helpers::Socket::read(SocketBuffer& buffer)
 
 
 bool
-log4cplus::helpers::Socket::write(const SocketBuffer& buffer)
+Socket::write(const SocketBuffer& buffer)
 {
-    long retval = log4cplus::helpers::write(sock, buffer);
+    long retval = helpers::write(sock, buffer);
     if(retval <= 0) {
         close();
     }
@@ -198,7 +198,7 @@ log4cplus::helpers::Socket::write(const SocketBuffer& buffer)
 // ServerSocket ctor and dtor
 //////////////////////////////////////////////////////////////////////////////
 
-log4cplus::helpers::ServerSocket::ServerSocket(int port)
+ServerSocket::ServerSocket(int port)
 {
     sock = openSocket(port, state);
     if(sock == INVALID_SOCKET) {
@@ -208,7 +208,7 @@ log4cplus::helpers::ServerSocket::ServerSocket(int port)
 
 
 
-log4cplus::helpers::ServerSocket::~ServerSocket()
+ServerSocket::~ServerSocket()
 {
 }
 
@@ -218,8 +218,8 @@ log4cplus::helpers::ServerSocket::~ServerSocket()
 // ServerSocket methods
 //////////////////////////////////////////////////////////////////////////////
 
-log4cplus::helpers::Socket
-log4cplus::helpers::ServerSocket::accept()
+Socket
+ServerSocket::accept()
 {
     SocketState state_;
     SOCKET_TYPE clientSock = acceptSocket(sock, state_);

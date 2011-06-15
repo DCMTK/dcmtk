@@ -48,7 +48,7 @@
 #endif
 
 
-namespace log4cplus { namespace helpers {
+namespace dcmtk { namespace log4cplus { namespace helpers {
 
 const int ONE_SEC_IN_USEC = 1000000;
 
@@ -151,27 +151,27 @@ Time::localtime(struct tm* t) const
 namespace
 {
 
-static log4cplus::tstring const padding_zeros[4] =
+static tstring const padding_zeros[4] =
 {
-    log4cplus::tstring (LOG4CPLUS_TEXT("000")),
-    log4cplus::tstring (LOG4CPLUS_TEXT("00")),
-    log4cplus::tstring (LOG4CPLUS_TEXT("0")),
-    log4cplus::tstring (LOG4CPLUS_TEXT(""))
+    tstring (LOG4CPLUS_TEXT("000")),
+    tstring (LOG4CPLUS_TEXT("00")),
+    tstring (LOG4CPLUS_TEXT("0")),
+    tstring (LOG4CPLUS_TEXT(""))
 };
 
-static log4cplus::tstring const uc_q_padding_zeros[4] =
+static tstring const uc_q_padding_zeros[4] =
 {
-    log4cplus::tstring (LOG4CPLUS_TEXT(".000")),
-    log4cplus::tstring (LOG4CPLUS_TEXT(".00")),
-    log4cplus::tstring (LOG4CPLUS_TEXT(".0")),
-    log4cplus::tstring (LOG4CPLUS_TEXT("."))
+    tstring (LOG4CPLUS_TEXT(".000")),
+    tstring (LOG4CPLUS_TEXT(".00")),
+    tstring (LOG4CPLUS_TEXT(".0")),
+    tstring (LOG4CPLUS_TEXT("."))
 };
 
 }
 
 
 void
-Time::build_q_value (log4cplus::tstring & q_str) const
+Time::build_q_value (tstring & q_str) const
 {
     q_str = convertIntegerToString(tv_usec / 1000);
     size_t const len = q_str.length();
@@ -181,12 +181,12 @@ Time::build_q_value (log4cplus::tstring & q_str) const
 
 
 void
-Time::build_uc_q_value (log4cplus::tstring & uc_q_str) const
+Time::build_uc_q_value (tstring & uc_q_str) const
 {
     build_q_value (uc_q_str);
 
 #if defined(LOG4CPLUS_HAVE_GETTIMEOFDAY)
-    log4cplus::tstring usecs (convertIntegerToString(tv_usec % 1000));
+    tstring usecs (convertIntegerToString(tv_usec % 1000));
     size_t usecs_len = usecs.length();
     usecs.insert (0, usecs_len <= 3
                   ? uc_q_padding_zeros[usecs_len] : uc_q_padding_zeros[3]);
@@ -198,11 +198,11 @@ Time::build_uc_q_value (log4cplus::tstring & uc_q_str) const
 }
 
 
-log4cplus::tstring
-Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) const
+tstring
+Time::getFormattedTime(const tstring& fmt_orig, bool use_gmtime) const
 {
     if (fmt_orig.empty () || fmt_orig[0] == 0)
-        return log4cplus::tstring ();
+        return tstring ();
 
     struct tm time;
 
@@ -217,20 +217,20 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
         PERCENT_SIGN
     };
 
-    log4cplus::tstring fmt (fmt_orig);
-    log4cplus::tstring ret;
+    tstring fmt (fmt_orig);
+    tstring ret;
     ret.reserve (OFstatic_cast(size_t, fmt.size () * 1.35));
     State state = TEXT;
 
-    log4cplus::tstring q_str;
+    tstring q_str;
     bool q_str_valid = false;
 
-    log4cplus::tstring uc_q_str;
+    tstring uc_q_str;
     bool uc_q_str_valid = false;
 
     // Walk the format string and process all occurences of %q and %Q.
 
-    for (log4cplus::tstring::const_iterator fmt_it = fmt.begin ();
+    for (tstring::const_iterator fmt_it = fmt.begin ();
          fmt_it != fmt.end (); ++fmt_it)
     {
         switch (state)
@@ -444,4 +444,4 @@ operator!=(const Time& lhs, const Time& rhs)
 }
 
 
-} } // namespace log4cplus { namespace helpers {
+} } } // namespace dcmtk { namespace log4cplus { namespace helpers {

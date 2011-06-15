@@ -29,30 +29,32 @@
 #   include <pthread.h>
 #   include <semaphore.h>
 #   define LOG4CPLUS_MUTEX_PTR_DECLARE pthread_mutex_t*
-#   define LOG4CPLUS_MUTEX_CREATE ::log4cplus::thread::createNewMutex()
+#   define LOG4CPLUS_MUTEX_CREATE ::dcmtk::log4cplus::thread::createNewMutex()
 #   define LOG4CPLUS_MUTEX_LOCK(mutex) pthread_mutex_lock(mutex)
 #   define LOG4CPLUS_MUTEX_UNLOCK(mutex) pthread_mutex_unlock(mutex)
-#   define LOG4CPLUS_MUTEX_FREE(mutex) ::log4cplus::thread::deleteMutex(mutex)
+#   define LOG4CPLUS_MUTEX_FREE(mutex) ::dcmtk::log4cplus::thread::deleteMutex(mutex)
 #   define LOG4CPLUS_THREAD_HANDLE_TYPE  pthread_t
 #   define LOG4CPLUS_THREAD_KEY_TYPE pthread_t
 #   define LOG4CPLUS_GET_CURRENT_THREAD_NAME \
-    ::log4cplus::thread::getCurrentThreadName()
+    ::dcmtk::log4cplus::thread::getCurrentThreadName()
 #   define LOG4CPLUS_GET_CURRENT_THREAD pthread_self()
 #   define LOG4CPLUS_THREAD_LOCAL_TYPE pthread_key_t*
 #   define LOG4CPLUS_THREAD_LOCAL_INIT(cleanup) \
-    ::log4cplus::thread::createPthreadKey(cleanup)
+    ::dcmtk::log4cplus::thread::createPthreadKey(cleanup)
 #   define LOG4CPLUS_GET_THREAD_LOCAL_VALUE(key) pthread_getspecific(*(key))
 #   define LOG4CPLUS_SET_THREAD_LOCAL_VALUE(key, value) \
     pthread_setspecific(*(key), value)
 #   define LOG4CPLUS_THREAD_LOCAL_CLEANUP(key) \
     do { pthread_key_t * pthkey (key); pthread_key_delete(*pthkey); \
     delete pthkey; } while(0)
+namespace dcmtk {
 namespace log4cplus {
     namespace thread {
         LOG4CPLUS_EXPORT LOG4CPLUS_MUTEX_PTR_DECLARE createNewMutex();
         LOG4CPLUS_EXPORT void deleteMutex(LOG4CPLUS_MUTEX_PTR_DECLARE);
         LOG4CPLUS_EXPORT LOG4CPLUS_THREAD_LOCAL_TYPE createPthreadKey(void (*) (void *));
     }
+}
 }
 
 #elif defined(LOG4CPLUS_USE_WIN32_THREADS)
@@ -61,16 +63,16 @@ namespace log4cplus {
 #   include <windows.h>
 
 #   define LOG4CPLUS_MUTEX_PTR_DECLARE CRITICAL_SECTION*
-#   define LOG4CPLUS_MUTEX_CREATE ::log4cplus::thread::createNewMutex()
+#   define LOG4CPLUS_MUTEX_CREATE ::dcmtk::log4cplus::thread::createNewMutex()
 #   define LOG4CPLUS_MUTEX_LOCK(mutex)  EnterCriticalSection(mutex)
 #   define LOG4CPLUS_MUTEX_UNLOCK(mutex)  LeaveCriticalSection(mutex)
-#   define LOG4CPLUS_MUTEX_FREE(mutex) ::log4cplus::thread::deleteMutex(mutex)
+#   define LOG4CPLUS_MUTEX_FREE(mutex) ::dcmtk::log4cplus::thread::deleteMutex(mutex)
 
 #   define LOG4CPLUS_THREAD_HANDLE_TYPE  HANDLE
 #   define LOG4CPLUS_THREAD_KEY_TYPE  DWORD
 #   define LOG4CPLUS_GET_CURRENT_THREAD  GetCurrentThreadId()
 #   define LOG4CPLUS_GET_CURRENT_THREAD_NAME \
-    ::log4cplus::thread::getCurrentThreadName()
+    ::dcmtk::log4cplus::thread::getCurrentThreadName()
 #   define LOG4CPLUS_THREAD_LOCAL_TYPE DWORD
 #   define LOG4CPLUS_THREAD_LOCAL_INIT(cleanup) TlsAlloc()
 #   define LOG4CPLUS_GET_THREAD_LOCAL_VALUE(key) TlsGetValue(key)
@@ -89,12 +91,13 @@ namespace log4cplus {
 #   endif
 
 
+namespace dcmtk {
 namespace log4cplus { namespace thread {
 
 LOG4CPLUS_EXPORT LOG4CPLUS_MUTEX_PTR_DECLARE createNewMutex();
 LOG4CPLUS_EXPORT void deleteMutex(LOG4CPLUS_MUTEX_PTR_DECLARE);
 
-} } // namespace log4cplus { namespace thread {
+} } } // namespace dcmtk { namespace log4cplus { namespace thread { /
 
 #elif defined(LOG4CPLUS_SINGLE_THREADED)
 #   define LOG4CPLUS_MUTEX_PTR_DECLARE int*
@@ -133,7 +136,7 @@ LOG4CPLUS_EXPORT void deleteMutex(LOG4CPLUS_MUTEX_PTR_DECLARE);
  */
 #ifndef LOG4CPLUS_SINGLE_THREADED
 #  define LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX(mutex) \
-             do { ::log4cplus::thread::Guard _sync_guard_object(mutex);
+             do { ::dcmtk::log4cplus::thread::Guard _sync_guard_object(mutex);
 #else
 #  define LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX(mutex) do { (void)(mutex);
 #endif

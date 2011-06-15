@@ -30,6 +30,7 @@
 #include "dcmtk/oflog/helpers/property.h"
 
 
+namespace dcmtk {
 namespace log4cplus {
 
     /**
@@ -41,7 +42,7 @@ namespace log4cplus {
     public:
       // Ctors
         Win32DebugAppender();
-        Win32DebugAppender(const log4cplus::helpers::Properties& properties, tstring& error);
+        Win32DebugAppender(const helpers::Properties& properties, tstring& error);
 
       // Dtor
         virtual ~Win32DebugAppender();
@@ -50,7 +51,7 @@ namespace log4cplus {
         virtual void close();
 
     protected:
-        virtual void append(const log4cplus::spi::InternalLoggingEvent& event);
+        virtual void append(const spi::InternalLoggingEvent& event);
 
     private:
       // Disallow copying of instances of this class
@@ -59,6 +60,7 @@ namespace log4cplus {
     };
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _WIN32
 #endif // _LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_

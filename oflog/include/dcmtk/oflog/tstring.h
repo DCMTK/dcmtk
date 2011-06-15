@@ -30,9 +30,11 @@
 #define LOG4CPLUS_TEXT(STRING) LOG4CPLUS_TEXT2(STRING)
 
 
+namespace dcmtk {
 namespace log4cplus {
     typedef char tchar;
     typedef OFString tstring;
+}
 }
 
 #define LOG4CPLUS_C_STR_TO_TSTRING(STRING) OFString(STRING)

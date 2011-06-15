@@ -34,9 +34,11 @@
 #endif
 
 
+namespace dcmtk {
 namespace log4cplus {
     typedef LOG4CPLUS_FSTREAM_NAMESPACE::ofstream tofstream;
     typedef LOG4CPLUS_FSTREAM_NAMESPACE::ifstream tifstream;
+}
 }
 
 #endif // LOG4CPLUS_FSTREAMS_HEADER_

@@ -35,6 +35,7 @@
 //#include <vector>
 
 
+namespace dcmtk {
 namespace log4cplus {
     namespace helpers {
 
@@ -42,8 +43,8 @@ namespace log4cplus {
          * This Interface is for attaching Appenders to objects.
          */
         class LOG4CPLUS_EXPORT AppenderAttachableImpl
-                                   : public log4cplus::spi::AppenderAttachable,
-                                     protected log4cplus::helpers::LogLogUser
+                                   : public spi::AppenderAttachable,
+                                     protected helpers::LogLogUser
         {
         public:
           // Data
@@ -73,7 +74,7 @@ namespace log4cplus {
              * Return the appender with that name if in the list. Return null
              * otherwise.
              */
-            virtual SharedAppenderPtr getAppender(const log4cplus::tstring& name);
+            virtual SharedAppenderPtr getAppender(const tstring& name);
 
             /**
              * Remove all previously added appenders.
@@ -89,7 +90,7 @@ namespace log4cplus {
              * Remove the appender with the name passed as parameter from the
              * list of appenders.
              */
-            virtual void removeAppender(const log4cplus::tstring& name);
+            virtual void removeAppender(const tstring& name);
 
             /**
              * Call the <code>doAppend</code> method on all attached appenders.
@@ -109,6 +110,7 @@ namespace log4cplus {
 
     } // end namespace helpers
 } // end namespace log4cplus
+} // namespace dcmtk
 
 #endif // _LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
 

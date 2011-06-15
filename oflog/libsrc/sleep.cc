@@ -22,15 +22,13 @@
 
 #include "dcmtk/ofstd/ofstd.h"
 
-using namespace log4cplus;
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
-log4cplus::helpers::sleep(unsigned long secs)
+dcmtk::log4cplus::helpers::sleep(unsigned long secs)
 {
     while (secs > 0) {
         secs = OFStandard::sleep(secs);

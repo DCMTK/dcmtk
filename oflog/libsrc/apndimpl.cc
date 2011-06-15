@@ -27,6 +27,10 @@
 //#include <algorithm>
 
 
+namespace dcmtk
+{
+
+
 namespace log4cplus
 {
 
@@ -47,7 +51,7 @@ namespace helpers
 
 
 //////////////////////////////////////////////////////////////////////////////
-// log4cplus::helpers::AppenderAttachableImpl ctor and dtor
+// dcmtk::log4cplus::helpers::AppenderAttachableImpl ctor and dtor
 //////////////////////////////////////////////////////////////////////////////
 
 AppenderAttachableImpl::AppenderAttachableImpl()
@@ -64,7 +68,7 @@ AppenderAttachableImpl::~AppenderAttachableImpl()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::helpers::AppenderAttachableImpl public methods
+// dcmtk::log4cplus::helpers::AppenderAttachableImpl public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
@@ -103,7 +107,7 @@ AppenderAttachableImpl::getAllAppenders()
 
 
 SharedAppenderPtr
-AppenderAttachableImpl::getAppender(const log4cplus::tstring& name)
+AppenderAttachableImpl::getAppender(const tstring& name)
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
         for(ListIteratorType it=appenderList.begin();
@@ -158,7 +162,7 @@ AppenderAttachableImpl::removeAppender(SharedAppenderPtr appender)
 
 
 void
-AppenderAttachableImpl::removeAppender(const log4cplus::tstring& name)
+AppenderAttachableImpl::removeAppender(const tstring& name)
 {
     removeAppender(getAppender(name));
 }
@@ -188,3 +192,6 @@ AppenderAttachableImpl::appendLoopOnAppenders(const spi::InternalLoggingEvent& e
 
 
 } // namespace log4cplus
+
+
+} // namespace dcmtk

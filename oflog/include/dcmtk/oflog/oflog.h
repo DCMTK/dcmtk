@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2010, OFFIS e.V.
+ *  Copyright (C) 2009-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:20:52 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-06-15 08:45:12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,28 +46,28 @@
 /** simple wrapper around the "low-level" Logger object to make it easier to
  *  switch to a different system
  */
-class OFLogger : private log4cplus::Logger
+class OFLogger : private dcmtk::log4cplus::Logger
 {
 public:
     /** copy constructor
      *  @param base object to be copied
      */
-    OFLogger(const log4cplus::Logger &base);
+    OFLogger(const dcmtk::log4cplus::Logger &base);
 
     /// these are the log levels that you can feed to isEnabledFor()
     enum LogLevel {
         /// trace: output more details on the internal application state, a kind of "verbose debug"
-        TRACE_LOG_LEVEL = log4cplus::TRACE_LOG_LEVEL,
+        TRACE_LOG_LEVEL = dcmtk::log4cplus::TRACE_LOG_LEVEL,
         /// debug: fine-grained informational events that are most useful to debug an application
-        DEBUG_LOG_LEVEL = log4cplus::DEBUG_LOG_LEVEL,
+        DEBUG_LOG_LEVEL = dcmtk::log4cplus::DEBUG_LOG_LEVEL,
         /// info: informational messages that highlight the progress of the application at coarse-grained level
-        INFO_LOG_LEVEL  = log4cplus::INFO_LOG_LEVEL,
+        INFO_LOG_LEVEL  = dcmtk::log4cplus::INFO_LOG_LEVEL,
         /// warn: potentially harmful situations
-        WARN_LOG_LEVEL  = log4cplus::WARN_LOG_LEVEL,
+        WARN_LOG_LEVEL  = dcmtk::log4cplus::WARN_LOG_LEVEL,
         /// error: events that might still allow the application to continue running
-        ERROR_LOG_LEVEL = log4cplus::ERROR_LOG_LEVEL,
+        ERROR_LOG_LEVEL = dcmtk::log4cplus::ERROR_LOG_LEVEL,
         /// fatal: very severe error events that will presumably lead the application to abort
-        FATAL_LOG_LEVEL = log4cplus::FATAL_LOG_LEVEL
+        FATAL_LOG_LEVEL = dcmtk::log4cplus::FATAL_LOG_LEVEL
     };
 
     /** check if the given log level was activated.
@@ -79,12 +79,12 @@ public:
      *  @param ll the log level to check for
      *  @return true if messages on this level won't be discarded
      */
-    bool isEnabledFor(log4cplus::LogLevel ll) const {
+    bool isEnabledFor(dcmtk::log4cplus::LogLevel ll) const {
         return Logger::isEnabledFor(ll);
     }
 
     /// this function is only used internally by OFLOG_FATAL and friends
-    void forcedLog(log4cplus::LogLevel ll, const log4cplus::tstring& message,
+    void forcedLog(dcmtk::log4cplus::LogLevel ll, const dcmtk::log4cplus::tstring& message,
                    const char* file=NULL, int line=-1, const char* function=NULL) const {
         Logger::forcedLog(ll, message, file, line, function);
     }
@@ -113,7 +113,7 @@ class OFLog
     /** set up the logging and enable it
      *  @param level the verbosity that you want
      */
-    static void configureLogger(log4cplus::LogLevel level);
+    static void configureLogger(dcmtk::log4cplus::LogLevel level);
 
  public:
 
@@ -148,7 +148,7 @@ class OFLog
  private:
 
     /// If we loaded a config file in configureFromCommandLine(), this is it
-    static OFauto_ptr<log4cplus::helpers::Properties> configProperties_;
+    static OFauto_ptr<dcmtk::log4cplus::helpers::Properties> configProperties_;
 };
 
 #endif
@@ -158,6 +158,9 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.13  2011-06-15 08:45:12  uli
+ * Moved log4cplus into namespace dcmtk::log4cplus.
+ *
  * Revision 1.12  2010-10-14 13:20:52  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

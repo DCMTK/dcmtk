@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:31 $
- *  CVS/RCS Revision: $Revision: 1.165 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-06-15 08:44:58 $
+ *  CVS/RCS Revision: $Revision: 1.166 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@
 #include "dcmtk/dcmsign/dcsignat.h"   /* for class DcmSignature */
 #include "dcmtk/dcmsr/dsrdoc.h"       /* for class DSRDocument */
 #include "dcmtk/dcmsr/dsrcodvl.h"     /* for class DSRCodedEntryValue */
-#include "dcmtk/oflog/fileap.h"       /* for log4cplus::FileAppender */
+#include "dcmtk/oflog/fileap.h"       /* for dcmtk::log4cplus::FileAppender */
 
 #include "dcmtk/dcmpstat/dvpsib.h"    /* for DVPSImageBoxContent, needed by MSVC5 with STL */
 #include "dcmtk/dcmpstat/dvpsab.h"    /* for DVPSAnnotationContent, needed by MSVC5 with STL */
@@ -231,11 +231,11 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
 
             // This will badly interact with oflog config files :(
             const char *pattern = "%D, Level %p, Module DCMPSTAT%n%m%n";
-            OFauto_ptr<log4cplus::Layout> layout(new log4cplus::PatternLayout(pattern));
-            log4cplus::SharedAppenderPtr logfile(new log4cplus::FileAppender(filepath, STD_NAMESPACE ios::app));
+            OFauto_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
+            dcmtk::log4cplus::SharedAppenderPtr logfile(new dcmtk::log4cplus::FileAppender(filepath, STD_NAMESPACE ios::app));
             // We can't use OFLog::getLogger() here because that doesn't let us
             // configure the object
-            log4cplus::Logger log = log4cplus::Logger::getInstance("dcmtk.dcmpstat.logfile");
+            dcmtk::log4cplus::Logger log = dcmtk::log4cplus::Logger::getInstance("dcmtk.dcmpstat.logfile");
 
             logfile->setLayout(layout);
             log.addAppender(logfile);
@@ -4233,6 +4233,9 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
+ *  Revision 1.166  2011-06-15 08:44:58  uli
+ *  Moved log4cplus into namespace dcmtk::log4cplus.
+ *
  *  Revision 1.165  2010-10-14 13:14:31  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

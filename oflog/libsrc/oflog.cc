@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2010, OFFIS e.V.
+ *  Copyright (C) 2009-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-12-06 09:47:30 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-06-15 08:45:22 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,10 +39,10 @@
 #include "dcmtk/oflog/helpers/socket.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
 
-OFauto_ptr<log4cplus::helpers::Properties> OFLog::configProperties_;
+OFauto_ptr<dcmtk::log4cplus::helpers::Properties> OFLog::configProperties_;
 
-OFLogger::OFLogger(const log4cplus::Logger &base)
-    : log4cplus::Logger(base)
+OFLogger::OFLogger(const dcmtk::log4cplus::Logger &base)
+    : dcmtk::log4cplus::Logger(base)
 {
 }
 
@@ -65,13 +65,13 @@ static void OFLog_init()
 
     // we default to a really simple pattern: loglevel_prefix: message\n
     const char *pattern = "%P: %m%n";
-    OFauto_ptr<log4cplus::Layout> layout(new log4cplus::PatternLayout(pattern));
-    log4cplus::SharedAppenderPtr console(new log4cplus::ConsoleAppender(OFTrue /* logToStrErr */, OFTrue /* immediateFlush */));
-    log4cplus::Logger rootLogger = log4cplus::Logger::getRoot();
+    OFauto_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
+    dcmtk::log4cplus::SharedAppenderPtr console(new dcmtk::log4cplus::ConsoleAppender(OFTrue /* logToStdErr */, OFTrue /* immediateFlush */));
+    dcmtk::log4cplus::Logger rootLogger = dcmtk::log4cplus::Logger::getRoot();
 
     console->setLayout(layout);
     rootLogger.addAppender(console);
-    rootLogger.setLogLevel(log4cplus::INFO_LOG_LEVEL);
+    rootLogger.setLogLevel(dcmtk::log4cplus::INFO_LOG_LEVEL);
 }
 
 // private class, this class's constructor makes sure that OFLog_init() is
@@ -85,11 +85,11 @@ class static_OFLog_initializer
      }
 } static initializer;
 
-void OFLog::configureLogger(log4cplus::LogLevel level)
+void OFLog::configureLogger(dcmtk::log4cplus::LogLevel level)
 {
     // This assumes that OFLog_init() was already called. We keep using its
     // setup and just change the log level.
-    log4cplus::Logger rootLogger = log4cplus::Logger::getRoot();
+    dcmtk::log4cplus::Logger rootLogger = dcmtk::log4cplus::Logger::getRoot();
     rootLogger.setLogLevel(level);
 }
 
@@ -97,7 +97,7 @@ OFLogger OFLog::getLogger(const char *loggerName)
 {
     OFLog_init();
     // logger objects have a reference counting copy-constructor, so returning by-value is cheap
-    return log4cplus::Logger::getInstance(loggerName);
+    return dcmtk::log4cplus::Logger::getInstance(loggerName);
 }
 
 /** Adds our known variables to the Properties instance
@@ -105,7 +105,7 @@ OFLogger OFLog::getLogger(const char *loggerName)
  *  @param cmd command line which we use for getting the program name,
  *             may be NULL
  */
-static void addVariables(log4cplus::helpers::Properties &props, OFCommandLine* cmd)
+static void addVariables(dcmtk::log4cplus::helpers::Properties &props, OFCommandLine* cmd)
 {
     OFString date;
     OFString time;
@@ -121,15 +121,15 @@ static void addVariables(log4cplus::helpers::Properties &props, OFCommandLine* c
     OFTime::getCurrentTime().getISOFormattedTime(time, OFTrue, OFFalse, OFFalse, OFFalse);
 
     // Set some other useful variables
-    props.setProperty("hostname", log4cplus::helpers::getHostname(OFFalse));
-    props.setProperty("pid", log4cplus::helpers::convertIntegerToString(OFStandard::getProcessID()));
+    props.setProperty("hostname", dcmtk::log4cplus::helpers::getHostname(OFFalse));
+    props.setProperty("pid", dcmtk::log4cplus::helpers::convertIntegerToString(OFStandard::getProcessID()));
     props.setProperty("date", date);
     props.setProperty("time", time);
 }
 
 void OFLog::reconfigure(OFCommandLine *cmd)
 {
-    log4cplus::helpers::Properties *props = configProperties_.get();
+    dcmtk::log4cplus::helpers::Properties *props = configProperties_.get();
 
     // If configProperties_ is a NULL pointer, --log-config was never used and
     // there is nothing we could parse again.
@@ -142,12 +142,12 @@ void OFLog::reconfigure(OFCommandLine *cmd)
 
     unsigned int flags = 0;
     // Recursively expand ${vars}
-    flags |= log4cplus::PropertyConfigurator::fRecursiveExpansion;
+    flags |= dcmtk::log4cplus::PropertyConfigurator::fRecursiveExpansion;
     // Try to look up ${vars} internally before asking the environment
-    flags |= log4cplus::PropertyConfigurator::fShadowEnvironment;
+    flags |= dcmtk::log4cplus::PropertyConfigurator::fShadowEnvironment;
 
     // Configure log4cplus based on our settings
-    log4cplus::PropertyConfigurator conf(*props, log4cplus::Logger::getDefaultHierarchy(), flags);
+    dcmtk::log4cplus::PropertyConfigurator conf(*props, dcmtk::log4cplus::Logger::getDefaultHierarchy(), flags);
     conf.configure();
 }
 
@@ -160,7 +160,7 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
 {
     OFString logLevel = "";
     OFString logConfig = "";
-    log4cplus::LogLevel level = log4cplus::NOT_SET_LOG_LEVEL;
+    dcmtk::log4cplus::LogLevel level = dcmtk::log4cplus::NOT_SET_LOG_LEVEL;
 
     cmd.beginOptionBlock();
     if (cmd.findOption("--debug"))
@@ -173,18 +173,18 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
 
     if (cmd.findOption("--log-level"))
     {
-        app.checkConflict("--log-level", "--verbose, --debug or --quiet", level != log4cplus::NOT_SET_LOG_LEVEL);
+        app.checkConflict("--log-level", "--verbose, --debug or --quiet", level != dcmtk::log4cplus::NOT_SET_LOG_LEVEL);
 
         app.checkValue(cmd.getValue(logLevel));
-        level = log4cplus::getLogLevelManager().fromString(logLevel);
-        if (level == log4cplus::NOT_SET_LOG_LEVEL)
+        level = dcmtk::log4cplus::getLogLevelManager().fromString(logLevel);
+        if (level == dcmtk::log4cplus::NOT_SET_LOG_LEVEL)
             app.printError("Invalid log level for --log-level option");
     }
 
     if (cmd.findOption("--log-config"))
     {
         app.checkConflict("--log-config", "--log-level", !logLevel.empty());
-        app.checkConflict("--log-config", "--verbose, --debug or --quiet", level != log4cplus::NOT_SET_LOG_LEVEL);
+        app.checkConflict("--log-config", "--verbose, --debug or --quiet", level != dcmtk::log4cplus::NOT_SET_LOG_LEVEL);
 
         app.checkValue(cmd.getValue(logConfig));
 
@@ -195,11 +195,11 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
             app.printError("Specified --log-config file cannot be read");
 
         // There seems to be no way to get an error value here :(
-        //log4cplus::PropertyConfigurator::doConfigure(logConfig);
+        //dcmtk::log4cplus::PropertyConfigurator::doConfigure(logConfig);
 
         // This does the same stuff that line above would have done, but it also
         // does some sanity checks on the config file.
-        configProperties_.reset(new log4cplus::helpers::Properties(logConfig));
+        configProperties_.reset(new dcmtk::log4cplus::helpers::Properties(logConfig));
         if (configProperties_->size() == 0)
             app.printError("Specified --log-config file does not contain any settings");
         if (configProperties_->getPropertySubset("log4cplus.").size() == 0)
@@ -212,22 +212,22 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
     else
     {
         // if --log-level was not used...
-        if (level == log4cplus::NOT_SET_LOG_LEVEL)
+        if (level == dcmtk::log4cplus::NOT_SET_LOG_LEVEL)
             level = OFLogger::WARN_LOG_LEVEL;
 
         configureLogger(level);
     }
 
-    log4cplus::Logger rootLogger = log4cplus::Logger::getRoot();
+    dcmtk::log4cplus::Logger rootLogger = dcmtk::log4cplus::Logger::getRoot();
     // if --quiet or something equivalent was used
     if (!rootLogger.isEnabledFor(OFLogger::ERROR_LOG_LEVEL))
     {
         app.setQuietMode();
-        log4cplus::helpers::LogLog::getLogLog()->setQuietMode(OFTrue);
+        dcmtk::log4cplus::helpers::LogLog::getLogLog()->setQuietMode(OFTrue);
     }
     else
     {
-        log4cplus::helpers::LogLog::getLogLog()->setQuietMode(OFFalse);
+        dcmtk::log4cplus::helpers::LogLog::getLogLog()->setQuietMode(OFFalse);
     }
 
     // print command line arguments
@@ -267,6 +267,9 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.16  2011-06-15 08:45:22  uli
+ * Moved log4cplus into namespace dcmtk::log4cplus.
+ *
  * Revision 1.15  2010-12-06 09:47:30  uli
  * Fixed crash in oflog on Mac OS X 10.4.1 with gcc 4.0.1 due to different order
  * of execution of global destructors.

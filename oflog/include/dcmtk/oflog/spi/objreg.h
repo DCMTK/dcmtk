@@ -33,6 +33,7 @@
 //#include <vector>
 
 
+namespace dcmtk {
 namespace log4cplus {
     namespace spi {
 
@@ -47,12 +48,12 @@ namespace log4cplus {
              * Tests to see whether or not an object is bound in the
              * registry as <code>name</code>.
              */
-            bool exists(const log4cplus::tstring& name) const;
+            bool exists(const tstring& name) const;
 
             /**
              * Returns the names of all registered objects.
              */
-            OFList<log4cplus::tstring> getAllNames() const;
+            OFList<tstring> getAllNames() const;
 
         protected:
           // Ctor and Dtor
@@ -64,13 +65,13 @@ namespace log4cplus {
              * Used to enter an object into the registry.  (The registry now
              * owns <code>object</code>.)
              */
-            bool putVal(const log4cplus::tstring& name, void* object);
+            bool putVal(const tstring& name, void* object);
 
             /**
              * Used to retrieve an object from the registry.  (The registry
              * owns the returned pointer.)
              */
-            void* getVal(const log4cplus::tstring& name) const;
+            void* getVal(const tstring& name) const;
 
             /**
              * Deletes <code>object</code>.
@@ -83,7 +84,7 @@ namespace log4cplus {
             virtual void clear();
 
           // Types
-            typedef OFMap<log4cplus::tstring, void*> ObjectMap;
+            typedef OFMap<tstring, void*> ObjectMap;
 
           // Data
             LOG4CPLUS_MUTEX_PTR_DECLARE mutex;
@@ -92,6 +93,7 @@ namespace log4cplus {
 
     }
 }
+} // end namespace dcmtk
 
 
 #endif // LOG4CPLUS_SPI_OBJECT_REGISTRY_HEADER_

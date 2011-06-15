@@ -34,6 +34,8 @@
 //#include <vector>
 
 
+namespace dcmtk
+{
 namespace log4cplus
 {
     // Forward declarations
@@ -60,7 +62,7 @@ namespace log4cplus
      * introduction on this class.
      */
     class LOG4CPLUS_EXPORT Logger
-        : public log4cplus::spi::AppenderAttachable
+        : public spi::AppenderAttachable
     {
     public:
       // Static Methods
@@ -70,7 +72,7 @@ namespace log4cplus
          *
          * @param name The name of the logger to search for.
          */
-        static bool exists(const log4cplus::tstring& name);
+        static bool exists(const tstring& name);
 
         /*
          * Returns all the currently defined loggers in the default
@@ -97,7 +99,7 @@ namespace log4cplus
          *
          * @param name The name of the logger to retrieve.
          */
-        static Logger getInstance(const log4cplus::tstring& name);
+        static Logger getInstance(const tstring& name);
 
         /**
          * Like getInstance() except that the type of logger
@@ -111,7 +113,7 @@ namespace log4cplus
          * @param factory A {@link spi::LoggerFactory} implementation that will
          * actually create a new Instance.
          */
-        static Logger getInstance(const log4cplus::tstring& name, spi::LoggerFactory& factory);
+        static Logger getInstance(const tstring& name, spi::LoggerFactory& factory);
 
         /**
          * Return the root of the default logger hierrachy.
@@ -150,7 +152,7 @@ namespace log4cplus
          * @param msg The message to print if <code>assertion</code> is
          * false.
          */
-        void assertion(bool assertionVal, const log4cplus::tstring& msg) const;
+        void assertion(bool assertionVal, const tstring& msg) const;
 
         /**
          * Close all attached appenders implementing the AppenderAttachable
@@ -169,7 +171,7 @@ namespace log4cplus
         /**
          * This generic form is intended to be used by wrappers.
          */
-        void log(LogLevel ll, const log4cplus::tstring& message,
+        void log(LogLevel ll, const tstring& message,
                  const char* file=NULL, int line=-1,
                  const char* function=NULL) const;
 
@@ -177,7 +179,7 @@ namespace log4cplus
          * This method creates a new logging event and logs the event
          * without further checks.
          */
-        void forcedLog(LogLevel ll, const log4cplus::tstring& message,
+        void forcedLog(LogLevel ll, const tstring& message,
                        const char* file=NULL, int line=-1,
                        const char* function=NULL) const;
 
@@ -225,7 +227,7 @@ namespace log4cplus
         /**
          * Return the logger name.
          */
-        log4cplus::tstring getName() const;
+        tstring getName() const;
 
         /**
          * Get the additivity flag for this Logger instance.
@@ -242,13 +244,13 @@ namespace log4cplus
 
         virtual SharedAppenderPtrList getAllAppenders();
 
-        virtual SharedAppenderPtr getAppender(const log4cplus::tstring& name);
+        virtual SharedAppenderPtr getAppender(const tstring& name);
 
         virtual void removeAllAppenders();
 
         virtual void removeAppender(SharedAppenderPtr appender);
 
-        virtual void removeAppender(const log4cplus::tstring& name);
+        virtual void removeAppender(const tstring& name);
 
         Logger ();
         Logger(const Logger& rhs);
@@ -282,10 +284,10 @@ namespace log4cplus
         Logger(spi::LoggerImpl * ptr);
 
       // Friends
-        friend class log4cplus::spi::LoggerImpl;
-        friend class log4cplus::Hierarchy;
-        friend class log4cplus::HierarchyLocker;
-        friend class log4cplus::DefaultLoggerFactory;
+        friend class spi::LoggerImpl;
+        friend class Hierarchy;
+        friend class HierarchyLocker;
+        friend class DefaultLoggerFactory;
     };
 
 
@@ -301,7 +303,7 @@ namespace log4cplus
      */
     class LOG4CPLUS_EXPORT DefaultLoggerFactory : public spi::LoggerFactory {
     public:
-        Logger makeNewLoggerInstance(const log4cplus::tstring& name, Hierarchy& h);
+        Logger makeNewLoggerInstance(const tstring& name, Hierarchy& h);
     };
 
 
@@ -319,7 +321,7 @@ namespace log4cplus
     class TraceLogger
     {
     public:
-        TraceLogger(const Logger& l, const log4cplus::tstring& _msg,
+        TraceLogger(const Logger& l, const tstring& _msg,
                     const char* _file=NULL, int _line=-1)
           : logger(l), msg(_msg), file(_file), line(_line)
         { if(logger.isEnabledFor(TRACE_LOG_LEVEL))
@@ -335,12 +337,13 @@ namespace log4cplus
         TraceLogger(const TraceLogger&);
         TraceLogger& operator=(const TraceLogger&);
         Logger logger;
-        log4cplus::tstring msg;
+        tstring msg;
         const char* file;
         int line;
     };
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 
 #include "dcmtk/oflog/logmacro.h"

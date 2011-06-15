@@ -39,14 +39,16 @@
 #endif
 
 
-using namespace log4cplus;
-using namespace log4cplus::helpers;
-using namespace log4cplus::spi;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
+using namespace dcmtk::log4cplus::spi;
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // LOCAL file class definitions
 ///////////////////////////////////////////////////////////////////////////////
+
+namespace dcmtk {
 
 namespace log4cplus {
 
@@ -97,13 +99,13 @@ public:
         : name (n)
     { }
 
-    virtual log4cplus::tstring getTypeName()
+    virtual tstring getTypeName()
     {
         return name;
     }
 
 private:
-    log4cplus::tstring name;
+    tstring name;
 };
 
 
@@ -118,7 +120,7 @@ public:
         : LocalFactoryBase<ProductFactoryBase> (n)
     { }
 
-    virtual ProductPtr createObject (Properties const & props, log4cplus::tstring& error)
+    virtual ProductPtr createObject (Properties const & props, tstring& error)
     {
         error.clear();
         return ProductPtr (new LocalProduct (props, error));
@@ -138,15 +140,16 @@ reg.put (                                                               \
 
 
 #define REG_APPENDER(reg, appendername)                             \
-REG_PRODUCT (reg, "log4cplus::", appendername, log4cplus::, AppenderFactory)
+REG_PRODUCT (reg, "log4cplus::", appendername, dcmtk::log4cplus::, AppenderFactory)
 
 #define REG_LAYOUT(reg, layoutname)                                 \
-REG_PRODUCT (reg, "log4cplus::", layoutname, log4cplus::, LayoutFactory)
+REG_PRODUCT (reg, "log4cplus::", layoutname, dcmtk::log4cplus::, LayoutFactory)
 
 #define REG_FILTER(reg, filtername)                                 \
 REG_PRODUCT (reg, "log4cplus::spi::", filtername, spi::, FilterFactory)
 
 
+void initializeFactoryRegistry();
 void initializeFactoryRegistry()
 {
     AppenderFactoryRegistry& reg = getAppenderFactoryRegistry();
@@ -219,3 +222,6 @@ getFilterFactoryRegistry()
 
 
 } // namespace log4cplus
+
+
+} // namespace dcmtk

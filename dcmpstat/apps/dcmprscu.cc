@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1999-2010, OFFIS e.V.
+ *  Copyright (C) 1999-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -16,9 +16,9 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:45 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-06-15 08:44:55 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -725,7 +725,7 @@ int main(int argc, char *argv[])
       {
         // Messages to the "dump" logger are always written with the debug log
         // level, thus enabling that logger for this level shows the dumps
-        log4cplus::Logger log = log4cplus::Logger::getInstance("dcmtk.dcmpstat.dump");
+        dcmtk::log4cplus::Logger log = dcmtk::log4cplus::Logger::getInstance("dcmtk.dcmpstat.dump");
         log.setLogLevel(OFLogger::DEBUG_LOG_LEVEL);
       }
 
@@ -1157,6 +1157,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
+ * Revision 1.31  2011-06-15 08:44:55  uli
+ * Moved log4cplus into namespace dcmtk::log4cplus.
+ *
  * Revision 1.30  2010-10-14 13:13:45  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

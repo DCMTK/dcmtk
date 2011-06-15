@@ -27,22 +27,23 @@
 #include <syslog.h>
 
 using namespace std;
-using namespace log4cplus::helpers;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::SysLogAppender ctors and dtor
+// dcmtk::log4cplus::SysLogAppender ctors and dtor
 ///////////////////////////////////////////////////////////////////////////////
 
-log4cplus::SysLogAppender::SysLogAppender(const tstring& id)
+SysLogAppender::SysLogAppender(const tstring& id)
 : ident(id)
 {
     ::openlog(LOG4CPLUS_TSTRING_TO_STRING (ident).c_str(), 0, 0);
 }
 
 
-log4cplus::SysLogAppender::SysLogAppender(const Properties properties, tstring&)
+SysLogAppender::SysLogAppender(const Properties properties, tstring&)
 : Appender(properties)
 {
     ident = properties.getProperty( LOG4CPLUS_TEXT("ident") );
@@ -50,7 +51,7 @@ log4cplus::SysLogAppender::SysLogAppender(const Properties properties, tstring&)
 }
 
 
-log4cplus::SysLogAppender::~SysLogAppender()
+SysLogAppender::~SysLogAppender()
 {
     destructorImpl();
 }
@@ -58,11 +59,11 @@ log4cplus::SysLogAppender::~SysLogAppender()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::SysLogAppender public methods
+// dcmtk::log4cplus::SysLogAppender public methods
 ///////////////////////////////////////////////////////////////////////////////
 
 void
-log4cplus::SysLogAppender::close()
+SysLogAppender::close()
 {
     getLogLog().debug(LOG4CPLUS_TEXT("Entering SysLogAppender::close()..."));
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
@@ -74,11 +75,11 @@ log4cplus::SysLogAppender::close()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// log4cplus::SysLogAppender protected methods
+// dcmtk::log4cplus::SysLogAppender protected methods
 ///////////////////////////////////////////////////////////////////////////////
 
 int
-log4cplus::SysLogAppender::getSysLogLevel(const LogLevel& ll) const
+SysLogAppender::getSysLogLevel(const LogLevel& ll) const
 {
     if(ll < DEBUG_LOG_LEVEL) {
         return -1;
@@ -106,11 +107,11 @@ log4cplus::SysLogAppender::getSysLogLevel(const LogLevel& ll) const
 // This method does not need to be locked since it is called by
 // doAppend() which performs the locking
 void
-log4cplus::SysLogAppender::append(const spi::InternalLoggingEvent& event)
+SysLogAppender::append(const spi::InternalLoggingEvent& event)
 {
     int level = getSysLogLevel(event.getLogLevel());
     if(level != -1) {
-        log4cplus::tostringstream buf;
+        tostringstream buf;
         layout->formatAndAppend(buf, event);
         ::syslog(level, "%s", LOG4CPLUS_TSTRING_TO_STRING(buf.str()).c_str());
     }

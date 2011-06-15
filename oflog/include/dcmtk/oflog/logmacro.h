@@ -58,6 +58,8 @@
 
 #if defined (LOG4CPLUS_SINGLE_THREADED)
 
+namespace dcmtk
+{
 namespace log4cplus
 {
 
@@ -66,14 +68,15 @@ extern LOG4CPLUS_EXPORT tostringstream _macros_oss;
 LOG4CPLUS_EXPORT void _clear_tostringstream (tostringstream &);
 
 } // namespace log4cplus
+} // namespace dcmtk
 
 #define LOG4CPLUS_MACRO_BODY(logger, logEvent, logLevel)                \
     do {                                                                \
-        if((logger).isEnabledFor(log4cplus::logLevel##_LOG_LEVEL)) {    \
-            log4cplus::_clear_tostringstream (log4cplus::_macros_oss);  \
-            log4cplus::_macros_oss << logEvent << OFStringStream_ends;  \
-            OFSTRINGSTREAM_GETOFSTRING(log4cplus::_macros_oss, _macros_string) \
-            (logger).forcedLog(log4cplus::logLevel##_LOG_LEVEL,         \
+        if((logger).isEnabledFor(dcmtk::log4cplus::logLevel##_LOG_LEVEL)) {    \
+            dcmtk::log4cplus::_clear_tostringstream (dcmtk::log4cplus::_macros_oss);  \
+            dcmtk::log4cplus::_macros_oss << logEvent << OFStringStream_ends;  \
+            OFSTRINGSTREAM_GETOFSTRING(dcmtk::log4cplus::_macros_oss, _macros_string) \
+            (logger).forcedLog(dcmtk::log4cplus::logLevel##_LOG_LEVEL,         \
                 _macros_string, __FILE__, __LINE__,                     \
                 LOG4CPLUS_MACRO_FUNCTION());                            \
         }                                                               \
@@ -84,11 +87,11 @@ LOG4CPLUS_EXPORT void _clear_tostringstream (tostringstream &);
 
 #define LOG4CPLUS_MACRO_BODY(logger, logEvent, logLevel)                \
     do {                                                                \
-        if((logger).isEnabledFor(log4cplus::logLevel##_LOG_LEVEL)) {    \
-            log4cplus::tostringstream _log4cplus_buf;                   \
+        if((logger).isEnabledFor(dcmtk::log4cplus::logLevel##_LOG_LEVEL)) {    \
+            dcmtk::log4cplus::tostringstream _log4cplus_buf;                   \
             _log4cplus_buf << logEvent << OFStringStream_ends;          \
             OFSTRINGSTREAM_GETOFSTRING(_log4cplus_buf, _macro_string)   \
-            (logger).forcedLog(log4cplus::logLevel##_LOG_LEVEL,         \
+            (logger).forcedLog(dcmtk::log4cplus::logLevel##_LOG_LEVEL,         \
                 _macro_string, __FILE__, __LINE__,                      \
                 LOG4CPLUS_MACRO_FUNCTION());                            \
         }                                                               \
@@ -99,8 +102,8 @@ LOG4CPLUS_EXPORT void _clear_tostringstream (tostringstream &);
 
 #define LOG4CPLUS_MACRO_STR_BODY(logger, logEvent, logLevel)            \
     do {                                                                \
-        if((logger).isEnabledFor(log4cplus::logLevel##_LOG_LEVEL)) {    \
-            (logger).forcedLog(log4cplus::logLevel##_LOG_LEVEL,         \
+        if((logger).isEnabledFor(dcmtk::log4cplus::logLevel##_LOG_LEVEL)) {    \
+            (logger).forcedLog(dcmtk::log4cplus::logLevel##_LOG_LEVEL,         \
                 logEvent, __FILE__, __LINE__,                           \
                 LOG4CPLUS_MACRO_FUNCTION());                            \
         }                                                               \
@@ -115,7 +118,7 @@ LOG4CPLUS_EXPORT void _clear_tostringstream (tostringstream &);
  */
 #if !defined(LOG4CPLUS_DISABLE_TRACE)
 #define LOG4CPLUS_TRACE_METHOD(logger, logEvent)                        \
-    log4cplus::TraceLogger _log4cplus_trace_logger(logger, logEvent,    \
+    dcmtk::log4cplus::TraceLogger _log4cplus_trace_logger(logger, logEvent,    \
                                                    __FILE__, __LINE__);
 #define LOG4CPLUS_TRACE(logger, logEvent)                               \
     LOG4CPLUS_MACRO_BODY (logger, logEvent, TRACE)

@@ -36,12 +36,13 @@
 
 #include "dcmtk/ofstd/ofstdinc.h"
 
+using namespace dcmtk::log4cplus::helpers;
+
+namespace dcmtk
+{
 
 namespace log4cplus
 {
-
-using helpers::Properties;
-using helpers::Time;
 
 
 const long MINIMUM_ROLLING_LOG_SIZE = 200*1024L;
@@ -74,7 +75,7 @@ file_remove (tstring const & src)
 
 static
 void
-loglog_renaming_result (helpers::LogLog & loglog, tstring const & src,
+loglog_renaming_result (LogLog & loglog, tstring const & src,
     tstring const & target, int ret)
 {
     if (ret == 0)
@@ -98,8 +99,8 @@ loglog_renaming_result (helpers::LogLog & loglog, tstring const & src,
 
 static
 void
-loglog_opening_result (helpers::LogLog & loglog,
-    log4cplus::tostream const & os, tstring const & filename)
+loglog_opening_result (LogLog & loglog,
+    tostream const & os, tstring const & filename)
 {
     if (! os)
     {
@@ -114,8 +115,8 @@ static
 void
 rolloverFiles(const tstring& filename, unsigned int maxBackupIndex)
 {
-    helpers::SharedObjectPtr<helpers::LogLog> loglog
-        = helpers::LogLog::getLogLog();
+    SharedObjectPtr<LogLog> loglog
+        = LogLog::getLogLog();
 
     // Delete the oldest file
     tostringstream buffer;
@@ -166,7 +167,7 @@ FileAppender::FileAppender(const tstring& filename_,
 
 
 FileAppender::FileAppender(const Properties& properties,
-                           log4cplus::tstring&,
+                           tstring&,
                            LOG4CPLUS_OPEN_MODE_TYPE mode)
     : Appender(properties)
     , immediateFlush(true)
@@ -181,11 +182,11 @@ FileAppender::FileAppender(const Properties& properties,
     }
     if(properties.exists( LOG4CPLUS_TEXT("ImmediateFlush") )) {
         tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("ImmediateFlush") );
-        immediateFlush = (helpers::toLower(tmp) == LOG4CPLUS_TEXT("true"));
+        immediateFlush = (toLower(tmp) == LOG4CPLUS_TEXT("true"));
     }
     if(properties.exists( LOG4CPLUS_TEXT("Append") )) {
         tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("Append") );
-        append_ = (helpers::toLower(tmp) == LOG4CPLUS_TEXT("true"));
+        append_ = (toLower(tmp) == LOG4CPLUS_TEXT("true"));
     }
     if(properties.exists( LOG4CPLUS_TEXT("ReopenDelay") )) {
         tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("ReopenDelay") );
@@ -274,13 +275,13 @@ FileAppender::reopen()
 {
     // When append never failed and the file re-open attempt must
     // be delayed, set the time when reopen should take place.
-    if (reopen_time == log4cplus::helpers::Time () && reopenDelay != 0)
-        reopen_time = log4cplus::helpers::Time::gettimeofday()
-			+ log4cplus::helpers::Time(reopenDelay);
+    if (reopen_time == Time () && reopenDelay != 0)
+        reopen_time = Time::gettimeofday()
+			+ Time(reopenDelay);
     else
 	{
         // Otherwise, check for end of the delay (or absence of delay) to re-open the file.
-        if (reopen_time <= log4cplus::helpers::Time::gettimeofday()
+        if (reopen_time <= Time::gettimeofday()
 			|| reopenDelay == 0)
 		{
             // Close the current file
@@ -292,7 +293,7 @@ FileAppender::reopen()
             open(STD_NAMESPACE ios::app);
 
             // Reset last fail time.
-            reopen_time = log4cplus::helpers::Time ();
+            reopen_time = Time ();
 
             // Succeed if no errors are found.
             if(out.good())
@@ -321,7 +322,7 @@ RollingFileAppender::RollingFileAppender(const Properties& properties, tstring& 
     int maxBackupIndex_ = 1;
     if(properties.exists( LOG4CPLUS_TEXT("MaxFileSize") )) {
         tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("MaxFileSize") );
-        tmp = helpers::toUpper(tmp);
+        tmp = toUpper(tmp);
         maxFileSize_ = atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
         if(tmp.find( LOG4CPLUS_TEXT("MB") ) == (tmp.length() - 2)) {
             maxFileSize_ *= (1024 * 1024); // convert to megabytes
@@ -387,7 +388,7 @@ RollingFileAppender::append(const spi::InternalLoggingEvent& event)
 void
 RollingFileAppender::rollover()
 {
-    helpers::LogLog & loglog = getLogLog();
+    LogLog & loglog = getLogLog();
 
     // Close the current file
     out.close();
@@ -451,7 +452,7 @@ DailyRollingFileAppender::DailyRollingFileAppender(
 {
     DailyRollingFileSchedule theSchedule = DAILY;
     tstring scheduleStr = properties.getProperty(LOG4CPLUS_TEXT("Schedule"));
-    scheduleStr = helpers::toUpper(scheduleStr);
+    scheduleStr = toUpper(scheduleStr);
 
     if(scheduleStr == LOG4CPLUS_TEXT("MONTHLY"))
         theSchedule = MONTHLY;
@@ -595,7 +596,7 @@ DailyRollingFileAppender::rollover()
     backup_target_oss << scheduledFilename << LOG4CPLUS_TEXT(".") << 1;
     OFSTRINGSTREAM_GETOFSTRING(backup_target_oss, backupTarget)
 
-    helpers::LogLog & loglog = getLogLog();
+    LogLog & loglog = getLogLog();
     int ret;
 
 #if defined (_WIN32)
@@ -629,7 +630,7 @@ DailyRollingFileAppender::rollover()
     loglog_opening_result (loglog, out, filename);
 
     // Calculate the next rollover time
-    log4cplus::helpers::Time now = Time::gettimeofday();
+    Time now = Time::gettimeofday();
     if (now >= nextRolloverTime)
     {
         scheduledFilename = getFilename(now);
@@ -732,3 +733,5 @@ DailyRollingFileAppender::getFilename(const Time& t) const
 }
 
 } // namespace log4cplus
+
+} // namespace dcmtk

@@ -28,6 +28,7 @@
 #if defined(LOG4CPLUS_HAVE_SYSLOG_H) && !defined(_WIN32)
 #include "dcmtk/oflog/appender.h"
 
+namespace dcmtk {
 namespace log4cplus {
 
     /**
@@ -44,7 +45,7 @@ namespace log4cplus {
     public:
       // Ctors
         SysLogAppender(const tstring& ident);
-        SysLogAppender(const log4cplus::helpers::Properties properties, log4cplus::tstring& error);
+        SysLogAppender(const helpers::Properties properties, tstring& error);
 
       // Dtor
         virtual ~SysLogAppender();
@@ -66,6 +67,7 @@ namespace log4cplus {
     };
 
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // defined(HAVE_SYSLOG_H)
 

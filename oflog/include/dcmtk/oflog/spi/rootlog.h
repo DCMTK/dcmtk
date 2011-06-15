@@ -27,6 +27,7 @@
 #include "dcmtk/oflog/helpers/loglog.h"
 #include "dcmtk/oflog/spi/logimpl.h"
 
+namespace dcmtk {
 namespace log4cplus {
     namespace spi {
 
@@ -65,6 +66,7 @@ namespace log4cplus {
 
     } // end namespace spi
 } // end namespace log4cplus
+} // end namespace dcmtk
 
 #endif // _LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
 

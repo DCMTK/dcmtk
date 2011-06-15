@@ -73,14 +73,15 @@ get_process_id ()
 
 
 using namespace std;
-using namespace log4cplus;
-using namespace log4cplus::helpers;
-using namespace log4cplus::spi;
+using namespace dcmtk::log4cplus;
+using namespace dcmtk::log4cplus::helpers;
+using namespace dcmtk::log4cplus::spi;
 
 
 #define ESCAPE_CHAR LOG4CPLUS_TEXT('%')
 
 
+namespace dcmtk {
 namespace log4cplus {
     namespace pattern {
 
@@ -95,7 +96,7 @@ namespace log4cplus {
             FormattingInfo() { reset(); }
 
             void reset();
-            void dump(log4cplus::helpers::LogLog&);
+            void dump(LogLog&);
         };
 
 
@@ -106,15 +107,15 @@ namespace log4cplus {
          * class simply uses an array of PatternConverter objects to format
          * and append a logging event.
          */
-        class PatternConverter : protected log4cplus::helpers::LogLogUser {
+        class PatternConverter : protected LogLogUser {
         public:
             PatternConverter(const FormattingInfo& info);
             virtual ~PatternConverter() {}
-            void formatAndAppend(log4cplus::tostream& output,
+            void formatAndAppend(tostream& output,
                                  const InternalLoggingEvent& event);
 
         protected:
-            virtual log4cplus::tstring convert(const InternalLoggingEvent& event) = 0;
+            virtual tstring convert(const InternalLoggingEvent& event) = 0;
 
         private:
             int minLen;
@@ -129,13 +130,13 @@ namespace log4cplus {
          */
         class LiteralPatternConverter : public PatternConverter {
         public:
-            LiteralPatternConverter(const log4cplus::tstring& str);
-            virtual log4cplus::tstring convert(const InternalLoggingEvent&) {
+            LiteralPatternConverter(const tstring& str);
+            virtual tstring convert(const InternalLoggingEvent&) {
                 return str;
             }
 
         private:
-            log4cplus::tstring str;
+            tstring str;
         };
 
 
@@ -158,7 +159,7 @@ namespace log4cplus {
                         FULL_LOCATION_CONVERTER,
                         FUNCTION_CONVERTER };
             BasicPatternConverter(const FormattingInfo& info, Type type);
-            virtual log4cplus::tstring convert(const InternalLoggingEvent& event);
+            virtual tstring convert(const InternalLoggingEvent& event);
 
         private:
           // Disable copy
@@ -178,7 +179,7 @@ namespace log4cplus {
         class LoggerPatternConverter : public PatternConverter {
         public:
             LoggerPatternConverter(const FormattingInfo& info, int precision);
-            virtual log4cplus::tstring convert(const InternalLoggingEvent& event);
+            virtual tstring convert(const InternalLoggingEvent& event);
 
         private:
             int precision;
@@ -194,13 +195,13 @@ namespace log4cplus {
         class DatePatternConverter : public PatternConverter {
         public:
             DatePatternConverter(const FormattingInfo& info,
-                                 const log4cplus::tstring& pattern,
+                                 const tstring& pattern,
                                  bool use_gmtime);
-            virtual log4cplus::tstring convert(const InternalLoggingEvent& event);
+            virtual tstring convert(const InternalLoggingEvent& event);
 
         private:
             bool use_gmtime;
-            log4cplus::tstring format;
+            tstring format;
         };
 
 
@@ -211,10 +212,10 @@ namespace log4cplus {
         class HostnamePatternConverter : public PatternConverter {
         public:
             HostnamePatternConverter(const FormattingInfo& info, bool fqdn);
-            virtual log4cplus::tstring convert(const InternalLoggingEvent& event);
+            virtual tstring convert(const InternalLoggingEvent& event);
 
         private:
-            log4cplus::tstring hostname_;
+            tstring hostname_;
         };
 
 
@@ -225,9 +226,9 @@ namespace log4cplus {
          * <p>
          * @see PatternLayout for the formatting of the "pattern" string.
          */
-        class PatternParser : protected log4cplus::helpers::LogLogUser {
+        class PatternParser : protected LogLogUser {
         public:
-            PatternParser(const log4cplus::tstring& pattern);
+            PatternParser(const tstring& pattern);
             OFauto_ptr<OFList<PatternConverter*> > parse();
 
         private:
@@ -239,23 +240,26 @@ namespace log4cplus {
                                MAX_STATE };
 
           // Methods
-            log4cplus::tstring extractOption();
+            tstring extractOption();
             int extractPrecisionOption();
-            void finalizeConverter(log4cplus::tchar c);
+            void finalizeConverter(tchar c);
 
           // Data
-            log4cplus::tstring pattern;
+            tstring pattern;
             FormattingInfo formattingInfo;
             OFauto_ptr<OFList<PatternConverter*> > list;
             ParserState state;
             tstring::size_type pos;
-            log4cplus::tstring currentLiteral;
+            tstring currentLiteral;
         };
     }
 }
-using namespace log4cplus::pattern;
-typedef OFList<log4cplus::pattern::PatternConverter*> PatternConverterList;
-typedef OFListIterator(log4cplus::pattern::PatternConverter*) PatternConverterListIterator;
+
+} // namespace dcmtk
+
+using namespace dcmtk::log4cplus::pattern;
+typedef OFList<PatternConverter*> PatternConverterList;
+typedef OFListIterator(PatternConverter*) PatternConverterListIterator;
 
 
 
@@ -264,7 +268,7 @@ typedef OFListIterator(log4cplus::pattern::PatternConverter*) PatternConverterLi
 ////////////////////////////////////////////////
 
 void
-log4cplus::pattern::FormattingInfo::reset() {
+FormattingInfo::reset() {
     minLen = -1;
     maxLen = 0x7FFFFFFF;
     leftAlign = false;
@@ -272,8 +276,8 @@ log4cplus::pattern::FormattingInfo::reset() {
 
 
 void
-log4cplus::pattern::FormattingInfo::dump(log4cplus::helpers::LogLog& loglog) {
-    log4cplus::tostringstream buf;
+FormattingInfo::dump(LogLog& loglog) {
+    tostringstream buf;
     buf << LOG4CPLUS_TEXT("min=") << minLen
         << LOG4CPLUS_TEXT(", max=") << maxLen
         << LOG4CPLUS_TEXT(", leftAlign=")
@@ -289,7 +293,7 @@ log4cplus::pattern::FormattingInfo::dump(log4cplus::helpers::LogLog& loglog) {
 // PatternConverter methods:
 ////////////////////////////////////////////////
 
-log4cplus::pattern::PatternConverter::PatternConverter(const FormattingInfo& i)
+PatternConverter::PatternConverter(const FormattingInfo& i)
 {
     minLen = i.minLen;
     maxLen = i.maxLen;
@@ -299,10 +303,10 @@ log4cplus::pattern::PatternConverter::PatternConverter(const FormattingInfo& i)
 
 
 void
-log4cplus::pattern::PatternConverter::formatAndAppend
-                     (log4cplus::tostream& output, const InternalLoggingEvent& event)
+PatternConverter::formatAndAppend
+                     (tostream& output, const InternalLoggingEvent& event)
 {
-    log4cplus::tstring s = convert(event);
+    tstring s = convert(event);
     size_t len = s.length();
 
     if(len > maxLen) {
@@ -311,10 +315,10 @@ log4cplus::pattern::PatternConverter::formatAndAppend
     else if(OFstatic_cast(int, len) < minLen) {
         if(leftAlign) {
             output << s;
-            output << log4cplus::tstring(minLen - len, LOG4CPLUS_TEXT(' '));
+            output << tstring(minLen - len, LOG4CPLUS_TEXT(' '));
         }
         else {
-            output << log4cplus::tstring(minLen - len, LOG4CPLUS_TEXT(' '));
+            output << tstring(minLen - len, LOG4CPLUS_TEXT(' '));
             output << s;
         }
     }
@@ -329,8 +333,8 @@ log4cplus::pattern::PatternConverter::formatAndAppend
 // LiteralPatternConverter methods:
 ////////////////////////////////////////////////
 
-log4cplus::pattern::LiteralPatternConverter::LiteralPatternConverter
-                                                      (const log4cplus::tstring& str_)
+LiteralPatternConverter::LiteralPatternConverter
+                                                      (const tstring& str_)
 : PatternConverter(FormattingInfo()),
   str(str_)
 {
@@ -342,7 +346,7 @@ log4cplus::pattern::LiteralPatternConverter::LiteralPatternConverter
 // BasicPatternConverter methods:
 ////////////////////////////////////////////////
 
-log4cplus::pattern::BasicPatternConverter::BasicPatternConverter
+BasicPatternConverter::BasicPatternConverter
                                         (const FormattingInfo& info, Type type_)
 : PatternConverter(info),
   llmCache(getLogLevelManager()),
@@ -352,8 +356,8 @@ log4cplus::pattern::BasicPatternConverter::BasicPatternConverter
 
 
 
-log4cplus::tstring
-log4cplus::pattern::BasicPatternConverter::convert
+tstring
+BasicPatternConverter::convert
                                             (const InternalLoggingEvent& event)
 {
     switch(type) {
@@ -374,7 +378,7 @@ log4cplus::pattern::BasicPatternConverter::convert
                 return convertIntegerToString(line);
             }
             else {
-                return log4cplus::tstring();
+                return tstring();
             }
         }
 
@@ -401,7 +405,7 @@ log4cplus::pattern::BasicPatternConverter::convert
 // LoggerPatternConverter methods:
 ////////////////////////////////////////////////
 
-log4cplus::pattern::LoggerPatternConverter::LoggerPatternConverter
+LoggerPatternConverter::LoggerPatternConverter
                                     (const FormattingInfo& info, int precision_)
 : PatternConverter(info),
   precision(precision_)
@@ -410,11 +414,11 @@ log4cplus::pattern::LoggerPatternConverter::LoggerPatternConverter
 
 
 
-log4cplus::tstring
-log4cplus::pattern::LoggerPatternConverter::convert
+tstring
+LoggerPatternConverter::convert
                                             (const InternalLoggingEvent& event)
 {
-    const log4cplus::tstring& name = event.getLoggerName();
+    const tstring& name = event.getLoggerName();
     if (precision <= 0) {
         return name;
     }
@@ -442,9 +446,9 @@ log4cplus::pattern::LoggerPatternConverter::convert
 ////////////////////////////////////////////////
 
 
-log4cplus::pattern::DatePatternConverter::DatePatternConverter
+DatePatternConverter::DatePatternConverter
                                                (const FormattingInfo& info,
-                                                const log4cplus::tstring& pattern,
+                                                const tstring& pattern,
                                                 bool use_gmtime_)
 : PatternConverter(info),
   use_gmtime(use_gmtime_),
@@ -454,8 +458,8 @@ log4cplus::pattern::DatePatternConverter::DatePatternConverter
 
 
 
-log4cplus::tstring
-log4cplus::pattern::DatePatternConverter::convert
+tstring
+DatePatternConverter::convert
                                             (const InternalLoggingEvent& event)
 {
     return event.getTimestamp().getFormattedTime(format, use_gmtime);
@@ -468,15 +472,15 @@ log4cplus::pattern::DatePatternConverter::convert
 // HostnamePatternConverter methods:
 ////////////////////////////////////////////////
 
-log4cplus::pattern::HostnamePatternConverter::HostnamePatternConverter (
+HostnamePatternConverter::HostnamePatternConverter (
     const FormattingInfo& info, bool fqdn)
     : PatternConverter(info)
-    , hostname_ (helpers::getHostname (fqdn))
+    , hostname_ (getHostname (fqdn))
 { }
 
 
-log4cplus::tstring
-log4cplus::pattern::HostnamePatternConverter::convert (
+tstring
+HostnamePatternConverter::convert (
     const InternalLoggingEvent &)
 {
     return hostname_;
@@ -488,7 +492,7 @@ log4cplus::pattern::HostnamePatternConverter::convert (
 // PatternParser methods:
 ////////////////////////////////////////////////
 
-log4cplus::pattern::PatternParser::PatternParser(const log4cplus::tstring& pattern_)
+PatternParser::PatternParser(const tstring& pattern_)
 : pattern(pattern_),
   list(new OFList<PatternConverter*>),
   state(LITERAL_STATE),
@@ -498,15 +502,15 @@ log4cplus::pattern::PatternParser::PatternParser(const log4cplus::tstring& patte
 
 
 
-log4cplus::tstring
-log4cplus::pattern::PatternParser::extractOption()
+tstring
+PatternParser::extractOption()
 {
     if (   (pos < pattern.length())
         && (pattern[pos] == LOG4CPLUS_TEXT('{')))
     {
         tstring::size_type end = pattern.find_first_of(LOG4CPLUS_TEXT('}'), pos);
         if (end > pos) {
-            log4cplus::tstring r = pattern.substr(pos + 1, end - pos - 1);
+            tstring r = pattern.substr(pos + 1, end - pos - 1);
             pos = end + 1;
             return r;
         }
@@ -517,9 +521,9 @@ log4cplus::pattern::PatternParser::extractOption()
 
 
 int
-log4cplus::pattern::PatternParser::extractPrecisionOption()
+PatternParser::extractPrecisionOption()
 {
-    log4cplus::tstring opt = extractOption();
+    tstring opt = extractOption();
     int r = 0;
     if(opt.length() > 0) {
         r = atoi(LOG4CPLUS_TSTRING_TO_STRING(opt).c_str());
@@ -530,7 +534,7 @@ log4cplus::pattern::PatternParser::extractPrecisionOption()
 
 
 OFauto_ptr<PatternConverterList>
-log4cplus::pattern::PatternParser::parse()
+PatternParser::parse()
 {
     tchar c;
     pos = 0;
@@ -608,7 +612,7 @@ log4cplus::pattern::PatternParser::parse()
                 state = MAX_STATE;
             }
             else {
-                log4cplus::tostringstream buf;
+                tostringstream buf;
                 buf << LOG4CPLUS_TEXT("Error occured in position ")
                     << pos
                     << LOG4CPLUS_TEXT(".\n Was expecting digit, instead got char \"")
@@ -643,7 +647,7 @@ log4cplus::pattern::PatternParser::parse()
 
 
 void
-log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
+PatternParser::finalizeConverter(tchar c)
 {
     PatternConverter* pc = 0;
     switch (c) {
@@ -657,7 +661,7 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
         case LOG4CPLUS_TEXT('d'):
         case LOG4CPLUS_TEXT('D'):
             {
-                log4cplus::tstring dOpt = extractOption();
+                tstring dOpt = extractOption();
                 if(dOpt.length() == 0) {
                     dOpt = LOG4CPLUS_TEXT("%Y-%m-%d %H:%M:%S");
                 }
@@ -771,7 +775,7 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
             break;
 
         default:
-            log4cplus::tostringstream buf;
+            tostringstream buf;
             buf << LOG4CPLUS_TEXT("Unexpected char [")
                 << c
                 << LOG4CPLUS_TEXT("] at position ")
@@ -796,17 +800,17 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
 // PatternLayout methods:
 ////////////////////////////////////////////////
 
-PatternLayout::PatternLayout(const log4cplus::tstring& pattern_, bool formatEachLine_)
+PatternLayout::PatternLayout(const tstring& pattern_, bool formatEachLine_)
 {
     init(pattern_, formatEachLine_);
 }
 
 
-PatternLayout::PatternLayout(const log4cplus::helpers::Properties& properties, log4cplus::tstring& error)
+PatternLayout::PatternLayout(const Properties& properties, tstring& error)
 {
     bool hasPattern = properties.exists( LOG4CPLUS_TEXT("Pattern") );
     bool hasConversionPattern = properties.exists( LOG4CPLUS_TEXT("ConversionPattern") );
-    log4cplus::tstring eachLine = properties.getProperty( LOG4CPLUS_TEXT("FormatEachLine"), "yes");
+    tstring eachLine = properties.getProperty( LOG4CPLUS_TEXT("FormatEachLine"), "yes");
     bool formatEachLine_ = true;
 
     if (eachLine == LOG4CPLUS_TEXT("yes"))
@@ -836,7 +840,7 @@ PatternLayout::PatternLayout(const log4cplus::helpers::Properties& properties, l
 
 
 void
-PatternLayout::init(const log4cplus::tstring& pattern_, bool formatEachLine_)
+PatternLayout::init(const tstring& pattern_, bool formatEachLine_)
 {
     this->pattern = pattern_;
     this->formatEachLine = formatEachLine_;
@@ -879,7 +883,7 @@ PatternLayout::~PatternLayout()
 
 
 void
-PatternLayout::formatAndAppend(log4cplus::tostream& output,
+PatternLayout::formatAndAppend(tostream& output,
                                const InternalLoggingEvent& event)
 {
     if (formatEachLine && event.getMessage().find('\n') != OFString_npos)
@@ -892,7 +896,7 @@ PatternLayout::formatAndAppend(log4cplus::tostream& output,
             pos = event.getMessage().find('\n', last_pos);
 
             // Create a substring from just this single line
-            log4cplus::tstring tmp_message(event.getMessage().substr(last_pos, (pos == OFString_npos) ? pos : pos - last_pos));
+            tstring tmp_message(event.getMessage().substr(last_pos, (pos == OFString_npos) ? pos : pos - last_pos));
 
             // Then create a temporary InternalLoggingEvent for this one line
             InternalLoggingEvent tmp_event(event.getLoggerName(), event.getLogLevel(),

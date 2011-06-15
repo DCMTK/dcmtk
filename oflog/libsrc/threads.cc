@@ -48,7 +48,7 @@
 #include "dcmtk/oflog/helpers/syncprims.h"
 
 
-namespace log4cplus { namespace thread {
+namespace dcmtk { namespace log4cplus { namespace thread {
 
 
 struct ThreadStart
@@ -61,7 +61,7 @@ static unsigned threadStartFuncWorker(void *);
 };
 
 
-} } // namespace log4cplus { namespace thread {
+} } } // namespace dcmtk { namespace log4cplus { namespace thread {
 
 
 namespace
@@ -73,13 +73,13 @@ extern "C" void * threadStartFunc(void * param)
 static unsigned WINAPI threadStartFunc(void * param)
 #  endif
 {
-    return log4cplus::thread::ThreadStart::threadStartFuncWorker (param);
+    return dcmtk::log4cplus::thread::ThreadStart::threadStartFuncWorker (param);
 }
 
 } // namespace
 
 
-namespace log4cplus { namespace thread {
+namespace dcmtk { namespace log4cplus { namespace thread {
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -293,6 +293,6 @@ AbstractThread::join () const
 }
 
 
-} } // namespace log4cplus { namespace thread {
+} } } // namespace dcmtk { namespace log4cplus { namespace thread {
 
 #endif // LOG4CPLUS_SINGLE_THREADED
