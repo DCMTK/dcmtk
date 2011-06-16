@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-03 06:53:21 $
- *  CVS/RCS Revision: $Revision: 1.151 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-06-16 07:22:15 $
+ *  CVS/RCS Revision: $Revision: 1.152 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -344,13 +344,13 @@ void DcmItem::checkAndUpdateVR(DcmItem &item,
             }
         }
     }
-    else if (((tag == DCM_OverlayData) || (tag == DCM_PixelData)) && (tag.getEVR() == EVR_ox))
+    else if (((tag.getBaseTag() == DCM_OverlayData) || (tag == DCM_PixelData)) && (tag.getEVR() == EVR_ox))
     {
         /* case 3 (OverlayData and PixelData): see section 8.1.2 and 8.2 in PS 3.5 */
         DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OW'");
         tag.setVR(EVR_OW);
     }
-    else if ((tag == DCM_RETIRED_CurveData) && (tag.getEVR() == EVR_ox))
+    else if ((tag.getBaseTag() == DCM_RETIRED_CurveData) && (tag.getEVR() == EVR_ox))
     {
         /* case 4 (CurveData): see section A.1 in PS 3.5-2004 */
         DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OB'");
@@ -3706,6 +3706,10 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.152  2011-06-16 07:22:15  joergr
+** Fixed insufficient comparison of repeating group tags OverlayData and
+** CurveData.
+**
 ** Revision 1.151  2011-05-03 06:53:21  uli
 ** Fixed an uninitialized buffer use with truncated DICOM files.
 **

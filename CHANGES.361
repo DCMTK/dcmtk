@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.06.15 (riesmeier)
 
+- Fixed insufficient comparison of repeating group tags OverlayData and
+  CurveData. Thanks to forum user "budric" for pointing this out.
+  Affects: dcmdata/libsrc/dcitem.cc
+
 - Added method that returns the base tag, i.e. in case of a repeating group tag
   always the base group number 0x5000 (curve) or 0x6000 (overlay) is used.
   Affects: dcmdata/include/dcmtk/dcmdata/dctagkey.h
