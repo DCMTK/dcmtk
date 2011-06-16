@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.06.15 (riesmeier)
 
+- Made sure that only standard tags (even) are detected as repeating groups.
+  Affects: dcmdata/libsrc/dctagkey.cc
+
 - Fixed insufficient comparison of repeating group tags OverlayData and
   CurveData. Thanks to forum user "budric" for pointing this out.
   Affects: dcmdata/libsrc/dcitem.cc

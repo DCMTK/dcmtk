@@ -18,8 +18,8 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-16 07:19:13 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2011-06-16 07:41:02 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,9 @@
 
 DcmTagKey DcmTagKey::getBaseTag() const
 {
-    const Uint16 baseGroup = group & 0xFF00;
+    // make sure that the group number is even (i.e. a standard tag).  We also
+    // accept more than 16 repeating groups because of known real-world examples.
+    const Uint16 baseGroup = group & 0xFF01;
     // check for curve or overlay repeating group
     if ((baseGroup == 0x5000) || (baseGroup == 0x6000))
         return DcmTagKey(baseGroup, element);
@@ -102,6 +104,9 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k)
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.cc,v $
+** Revision 1.18  2011-06-16 07:41:02  joergr
+** Made sure that only standard tags (even) are detected as repeating groups.
+**
 ** Revision 1.17  2011-06-16 07:19:13  joergr
 ** Added method that returns the base tag, i.e. in case of a repeating group tag
 ** always the base group number 0x5000 (curve) or 0x6000 (overlay) is used.
