@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.06.15 (riesmeier)
+
+- Added method that returns the base tag, i.e. in case of a repeating group tag
+  always the base group number 0x5000 (curve) or 0x6000 (overlay) is used.
+  Affects: dcmdata/include/dcmtk/dcmdata/dctagkey.h
+           dcmdata/libsrc/dctagkey.cc
+
 **** Changes from 2011.06.15 (schlachter)
 
 - Made sure thread 2 can't run before thread 1 in the semaphore test.

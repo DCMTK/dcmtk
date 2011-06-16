@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:09 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2011-06-16 07:19:13 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,17 @@
 /*
  * DcmTagKey member functions
  */
+
+DcmTagKey DcmTagKey::getBaseTag() const
+{
+    const Uint16 baseGroup = group & 0xFF00;
+    // check for curve or overlay repeating group
+    if ((baseGroup == 0x5000) || (baseGroup == 0x6000))
+        return DcmTagKey(baseGroup, element);
+    else
+        return *this;
+}
+
 
 OFString DcmTagKey::toString() const
 {
@@ -91,6 +102,10 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k)
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.cc,v $
+** Revision 1.17  2011-06-16 07:19:13  joergr
+** Added method that returns the base tag, i.e. in case of a repeating group tag
+** always the base group number 0x5000 (curve) or 0x6000 (overlay) is used.
+**
 ** Revision 1.16  2010-10-14 13:14:09  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

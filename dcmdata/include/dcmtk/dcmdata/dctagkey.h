@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-21 07:52:40 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2011-06-16 07:19:11 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,9 +93,16 @@ public:
     Uint16 getGroup() const;
 
     /** returns element number
-     *  @return Returns the element number of the tag key
+     *  @return returns the element number of the tag key
      */
     Uint16 getElement() const;
+
+    /** returns base tag, i.e. in case of a repeating group tag always the base
+     *  group number 0x5000 (curve) or 0x6000 (overlay) is used. For non-repeating
+     *  group tags "this" tag key is returned.
+     *  @return returns the base tag of the tag key
+     */
+    DcmTagKey getBaseTag() const;
 
     /** checks whether the tag key is a valid group length element.
      *  Also calls hasValidGroup().
@@ -103,7 +110,7 @@ public:
      */
     OFBool isGroupLength() const;
 
-    /** returns true if the tag key is private, ie. whether it has an odd group
+    /** returns true if the tag key is private, i.e. whether it has an odd group
      *  number. Also hasValidGroup() is called.
      *  @return returns OFTrue if group is private and valid.
      */
@@ -423,6 +430,10 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
+** Revision 1.24  2011-06-16 07:19:11  joergr
+** Added method that returns the base tag, i.e. in case of a repeating group tag
+** always the base group number 0x5000 (curve) or 0x6000 (overlay) is used.
+**
 ** Revision 1.23  2010-10-21 07:52:40  joergr
 ** Added virtual destructor in order to avoid warnings reported by gcc with
 ** additional flags.
