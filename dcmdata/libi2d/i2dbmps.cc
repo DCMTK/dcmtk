@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2010, OFFIS e.V.
+ *  Copyright (C) 2009-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-12-06 10:24:18 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-06-16 13:03:58 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -594,8 +594,7 @@ int I2DBmpSource::readLong(Sint32& result)
     return EOF;
 
   /* tmp is a two's complement (signed integer) and we have to convert it into that */
-
-  if (tmp & (1 << 31))
+  if (tmp & (1UL << 31))
   {
     /* If the highest bit is set, it is a negative number, convert it */
     result = -(OFstatic_cast(Sint32, ~(tmp - 1)));
@@ -624,9 +623,13 @@ I2DBmpSource::~I2DBmpSource()
   closeFile();
 }
 
+
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.cc,v $
+ * Revision 1.15  2011-06-16 13:03:58  joergr
+ * Added suffix "UL" to integer constant in order to avoid a compiler warning.
+ *
  * Revision 1.14  2010-12-06 10:24:18  uli
  * Fixed a correct warning from Intel Compiler 11.1 for shifting a Uint8 by 8.
  *

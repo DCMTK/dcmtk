@@ -18,6 +18,9 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dctagkey.h
            dcmdata/libsrc/dctagkey.cc
 
+- Added suffix "UL" to integer constant in order to avoid a compiler warning.
+  Affects: dcmdata/libi2d/i2dbmps.cc
+
 - Updated copyright date.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrimpcc.h
            dcmsr/libsrc/dsrimpcc.cc
