@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010, OFFIS e.V.
+ *  Copyright (C) 2010-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRImplantationPlanSRDocumentConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-05 11:06:57 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-06-16 12:53:14 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,9 +112,11 @@ OFBool DSRImplantationPlanSRDocumentConstraintChecker::checkContentRelationship(
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimpcc.cc,v $
+ *  Revision 1.2  2011-06-16 12:53:14  joergr
+ *  Updated copyright date.
+ *
  *  Revision 1.1  2010-11-05 11:06:57  joergr
  *  Added support for new Implantation Plan SR Document Storage SOP Class.
- *
  *
  *
  */

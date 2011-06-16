@@ -18,6 +18,10 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dctagkey.h
            dcmdata/libsrc/dctagkey.cc
 
+- Updated copyright date.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrimpcc.h
+           dcmsr/libsrc/dsrimpcc.cc
+
 **** Changes from 2011.06.15 (schlachter)
 
 - Made sure thread 2 can't run before thread 1 in the semaphore test.
