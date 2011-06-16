@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.06.15 (riesmeier)
 
+- Used new DcmTagKey::getBaseTag() where appropriate to simplify the code.
+  Affects: dcmdata/libsrc/dcitem.cc
+
 - Made sure that only standard tags (even) are detected as repeating groups.
   Affects: dcmdata/libsrc/dctagkey.cc
 

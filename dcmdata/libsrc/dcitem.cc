@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-16 07:22:15 $
- *  CVS/RCS Revision: $Revision: 1.152 $
+ *  Update Date:      $Date: 2011-06-16 07:43:07 $
+ *  CVS/RCS Revision: $Revision: 1.153 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2074,7 +2074,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
         case EVR_ox :
             if (tag == DCM_PixelData)
                 newElement = new DcmPixelData(tag, length);
-            else if (((tag.getGTag() & 0xffe1) == 0x6000) && (tag.getETag() == 0x3000)) // DCM_OverlayData
+            else if (tag.getBaseTag() == DCM_OverlayData)
                 newElement = new DcmOverlayData(tag, length);
             else
                 /* we don't know this element's real transfer syntax, so we just
@@ -2092,7 +2092,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
         case EVR_OW :
             if (tag == DCM_PixelData)
                 newElement = new DcmPixelData(tag, length);
-            else if (((tag.getGTag() & 0xffe1) == 0x6000) && (tag.getETag() == 0x3000)) // DCM_OverlayData
+            else if (tag.getBaseTag() == DCM_OverlayData)
                 newElement = new DcmOverlayData(tag, length);
             else
                 if (length == DCM_UndefinedLength)
@@ -3706,6 +3706,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.153  2011-06-16 07:43:07  joergr
+** Used new DcmTagKey::getBaseTag() where appropriate to simplify the code.
+**
 ** Revision 1.152  2011-06-16 07:22:15  joergr
 ** Fixed insufficient comparison of repeating group tags OverlayData and
 ** CurveData.
