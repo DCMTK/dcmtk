@@ -18,15 +18,15 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2011-04-28 15:07:28 $
-#  CVS/RCS Revision: $Revision: 1.14 $
+#  Update Date:      $Date: 2011-06-17 15:54:53 $
+#  CVS/RCS Revision: $Revision: 1.15 $
 #  Status:           $State: Exp $
 #
 # This file contains the complete data dictionary from the 2009 edition
 # of the DICOM standard.
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items have been incorporated:
-# - Supplement 74, 96, 120, 131, 144, 145, 146.
+# - Supplement 74, 96, 120, 131, 144, 145, 146, 151.
 # - CP 650, 988, 1010, 1024, 1036, 1037, 1044, 1057, 1078.
 #
 # Each line represents an entry in the data dictionary.  Each line
@@ -3053,6 +3053,38 @@
 (0024,0338)	CS	IndexNormalsFlag	1	Supplement_146
 (0024,0341)	FL	IndexProbability	1	Supplement_146
 (0024,0344)	SQ	IndexProbabilitySequence	1	Supplement_146
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 151 (Intravascular OCT Image Storage SOP Class)
+#
+(0052,0001)	FL	ContrastBolusIngredientPercentByVolume	1	Supplement_151
+(0052,0002)	FD	OCTFocalDistance	1	Supplement_151
+(0052,0003)	FD	BeamSpotSize	1	Supplement_151
+(0052,0004)	FD	EffectiveRefractiveIndex	1	Supplement_151
+(0052,0006)	CS	OCTAcquisitionDomain	1	Supplement_151
+(0052,0007)	FD	OCTOpticalCenterWavelength	1	Supplement_151
+(0052,0008)	FD	AxialResolution	1	Supplement_151
+(0052,0009)	FD	RangingDepth	1	Supplement_151
+(0052,0011)	FD	ALineRate	1	Supplement_151
+(0052,0012)	US	ALinesPerFrame	1	Supplement_151
+(0052,0013)	FD	CatheterRotationalRate	1	Supplement_151
+(0052,0014)	FD	ALinePixelSpacing	1	Supplement_151
+(0052,0016)	SQ	ModeOfPercutaneousAccessSequence	1	Supplement_151
+(0052,0025)	SQ	IntravascularOCTFrameTypeSequence	1	Supplement_151
+(0052,0026)	CS	OCTZOffsetApplied	1	Supplement_151
+(0052,0027)	SQ	IntravascularFrameContentSequence	1	Supplement_151
+(0052,0028)	FD	IntravascularLongitudinalDistance	1	Supplement_151
+(0052,0029)	SQ	IntravascularOCTFrameContentSequence	1	Supplement_151
+(0052,0030)	SS	OCTZOffsetCorrection	1	Supplement_151
+(0052,0031)	CS	CatheterDirectionOfRotation	1	Supplement_151
+(0052,0033)	FD	SeamLineLocation	1	Supplement_151
+(0052,0034)	FD	FirstALineLocation	1	Supplement_151
+(0052,0036)	US	SeamLineIndex	1	Supplement_151
+(0052,0038)	US	NumberOfPaddedAlines	1	Supplement_151
+(0052,0039)	CS	InterpolationType	1	Supplement_151
+(0052,003A)	CS	RefractiveIndexApplied	1	Supplement_151
+(0028,0304)	UI	ReferencedColorPaletteInstanceUID	1	Supplement_151
 #
 #---------------------------------------------------------------------------
 #

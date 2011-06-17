@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-04-28 17:00:22
+**   Date: 2011-06-17 17:51:18
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2011-04-28 17:00:22"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2011-06-17 17:51:18"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3280
+** Number of entries: 3307
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1403,6 +1403,7 @@
 #define DCM_RETIRED_ImageLocation                DcmTagKey(0x0028, 0x0200)
 #define DCM_QualityControlImage                  DcmTagKey(0x0028, 0x0300)
 #define DCM_BurnedInAnnotation                   DcmTagKey(0x0028, 0x0301)
+#define DCM_ReferencedColorPaletteInstanceUID    DcmTagKey(0x0028, 0x0304)
 #define DCM_RETIRED_TransformLabel               DcmTagKey(0x0028, 0x0400)
 #define DCM_RETIRED_TransformVersionNumber       DcmTagKey(0x0028, 0x0401)
 #define DCM_RETIRED_NumberOfTransformSteps       DcmTagKey(0x0028, 0x0402)
@@ -1990,6 +1991,32 @@
 #define DCM_ContainerComponentDiameter           DcmTagKey(0x0050, 0x001d)
 #define DCM_ContainerComponentDescription        DcmTagKey(0x0050, 0x001e)
 #define DCM_DeviceDescription                    DcmTagKey(0x0050, 0x0020)
+#define DCM_ContrastBolusIngredientPercentByVolume DcmTagKey(0x0052, 0x0001)
+#define DCM_OCTFocalDistance                     DcmTagKey(0x0052, 0x0002)
+#define DCM_BeamSpotSize                         DcmTagKey(0x0052, 0x0003)
+#define DCM_EffectiveRefractiveIndex             DcmTagKey(0x0052, 0x0004)
+#define DCM_OCTAcquisitionDomain                 DcmTagKey(0x0052, 0x0006)
+#define DCM_OCTOpticalCenterWavelength           DcmTagKey(0x0052, 0x0007)
+#define DCM_AxialResolution                      DcmTagKey(0x0052, 0x0008)
+#define DCM_RangingDepth                         DcmTagKey(0x0052, 0x0009)
+#define DCM_ALineRate                            DcmTagKey(0x0052, 0x0011)
+#define DCM_ALinesPerFrame                       DcmTagKey(0x0052, 0x0012)
+#define DCM_CatheterRotationalRate               DcmTagKey(0x0052, 0x0013)
+#define DCM_ALinePixelSpacing                    DcmTagKey(0x0052, 0x0014)
+#define DCM_ModeOfPercutaneousAccessSequence     DcmTagKey(0x0052, 0x0016)
+#define DCM_IntravascularOCTFrameTypeSequence    DcmTagKey(0x0052, 0x0025)
+#define DCM_OCTZOffsetApplied                    DcmTagKey(0x0052, 0x0026)
+#define DCM_IntravascularFrameContentSequence    DcmTagKey(0x0052, 0x0027)
+#define DCM_IntravascularLongitudinalDistance    DcmTagKey(0x0052, 0x0028)
+#define DCM_IntravascularOCTFrameContentSequence DcmTagKey(0x0052, 0x0029)
+#define DCM_OCTZOffsetCorrection                 DcmTagKey(0x0052, 0x0030)
+#define DCM_CatheterDirectionOfRotation          DcmTagKey(0x0052, 0x0031)
+#define DCM_SeamLineLocation                     DcmTagKey(0x0052, 0x0033)
+#define DCM_FirstALineLocation                   DcmTagKey(0x0052, 0x0034)
+#define DCM_SeamLineIndex                        DcmTagKey(0x0052, 0x0036)
+#define DCM_NumberOfPaddedAlines                 DcmTagKey(0x0052, 0x0038)
+#define DCM_InterpolationType                    DcmTagKey(0x0052, 0x0039)
+#define DCM_RefractiveIndexApplied               DcmTagKey(0x0052, 0x003a)
 #define DCM_EnergyWindowVector                   DcmTagKey(0x0054, 0x0010)
 #define DCM_NumberOfEnergyWindows                DcmTagKey(0x0054, 0x0011)
 #define DCM_EnergyWindowInformationSequence      DcmTagKey(0x0054, 0x0012)

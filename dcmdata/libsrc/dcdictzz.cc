@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-04-28 17:00:44
+**   Date: 2011-06-17 17:51:05
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2011-04-28 17:00:44";
+const char* dcmBuiltinDictBuildDate = "2011-06-17 17:51:05";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -13311,6 +13311,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "BurnedInAnnotation", 1, 1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0028, 0x0304, 0x0028, 0x0304,
+      EVR_UI, "ReferencedColorPaletteInstanceUID", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0028, 0x0400, 0x0028, 0x0400,
       EVR_LO, "RETIRED_TransformLabel", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -18279,6 +18283,110 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
 #endif
+  , { 0x0052, 0x0001, 0x0052, 0x0001,
+      EVR_FL, "ContrastBolusIngredientPercentByVolume", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0002, 0x0052, 0x0002,
+      EVR_FD, "OCTFocalDistance", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0003, 0x0052, 0x0003,
+      EVR_FD, "BeamSpotSize", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0004, 0x0052, 0x0004,
+      EVR_FD, "EffectiveRefractiveIndex", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0006, 0x0052, 0x0006,
+      EVR_CS, "OCTAcquisitionDomain", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0007, 0x0052, 0x0007,
+      EVR_FD, "OCTOpticalCenterWavelength", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0008, 0x0052, 0x0008,
+      EVR_FD, "AxialResolution", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0009, 0x0052, 0x0009,
+      EVR_FD, "RangingDepth", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0011, 0x0052, 0x0011,
+      EVR_FD, "ALineRate", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0012, 0x0052, 0x0012,
+      EVR_US, "ALinesPerFrame", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0013, 0x0052, 0x0013,
+      EVR_FD, "CatheterRotationalRate", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0014, 0x0052, 0x0014,
+      EVR_FD, "ALinePixelSpacing", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0016, 0x0052, 0x0016,
+      EVR_SQ, "ModeOfPercutaneousAccessSequence", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0025, 0x0052, 0x0025,
+      EVR_SQ, "IntravascularOCTFrameTypeSequence", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0026, 0x0052, 0x0026,
+      EVR_CS, "OCTZOffsetApplied", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0027, 0x0052, 0x0027,
+      EVR_SQ, "IntravascularFrameContentSequence", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0028, 0x0052, 0x0028,
+      EVR_FD, "IntravascularLongitudinalDistance", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0029, 0x0052, 0x0029,
+      EVR_SQ, "IntravascularOCTFrameContentSequence", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0030, 0x0052, 0x0030,
+      EVR_SS, "OCTZOffsetCorrection", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0031, 0x0052, 0x0031,
+      EVR_CS, "CatheterDirectionOfRotation", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0033, 0x0052, 0x0033,
+      EVR_FD, "SeamLineLocation", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0034, 0x0052, 0x0034,
+      EVR_FD, "FirstALineLocation", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0036, 0x0052, 0x0036,
+      EVR_US, "SeamLineIndex", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0038, 0x0052, 0x0038,
+      EVR_US, "NumberOfPaddedAlines", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x0039, 0x0052, 0x0039,
+      EVR_CS, "InterpolationType", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0052, 0x003a, 0x0052, 0x003a,
+      EVR_CS, "RefractiveIndexApplied", 1, 1, "Supplement_151",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0054, 0x0010, 0x0054, 0x0010,
       EVR_US, "EnergyWindowVector", 1, -1, "DICOM_2009",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,

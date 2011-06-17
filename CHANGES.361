@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.06.17 (riesmeier)
+
+- Added support for final text version of Supplement 151 (Intravascular OCT
+  Image Storage SOP Class) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2011.06.15 (riesmeier)
 
 - Used new DcmTagKey::getBaseTag() where appropriate to simplify the code.
