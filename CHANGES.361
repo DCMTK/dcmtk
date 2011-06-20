@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.06.20 (riesmeier)
+
+- Added two new SOP Class UIDs from Supplement 151 (Intravascular OCT Image
+  Storage SOP Class).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
 **** Changes from 2011.06.17 (riesmeier)
 
 - Added support for final text version of Supplement 151 (Intravascular OCT

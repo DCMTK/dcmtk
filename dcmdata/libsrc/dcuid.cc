@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-05-02 13:52:42 $
- *  CVS/RCS Revision: $Revision: 1.93 $
+ *  Update Date:      $Date: 2011-06-20 09:09:02 $
+ *  CVS/RCS Revision: $Revision: 1.94 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,6 +182,8 @@ static const UIDNameMap uidNameMap[] = {
     { UID_ImplantationPlanSRDocumentStorage,                   "ImplantationPlanSRDocumentStorage" },
     { UID_ImplantTemplateGroupStorage,                         "ImplantTemplateGroupStorage" },
     { UID_IntraocularLensCalculationsStorage,                  "IntraocularLensCalculationsStorage" },
+    { UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation, "IntravascularOpticalCoherenceTomographyImageStorageForPresentation" },
+    { UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing, "IntravascularOpticalCoherenceTomographyImageStorageForProcessing" },
     { UID_KeratometryMeasurementsStorage,                      "KeratometryMeasurementsStorage" },
     { UID_KeyObjectSelectionDocumentStorage,                   "KeyObjectSelectionDocumentStorage" },
     { UID_LensometryMeasurementsStorage,                       "LensometryMeasurementsStorage" },
@@ -543,6 +545,8 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_ImplantationPlanSRDocumentStorage,
     UID_ImplantTemplateGroupStorage,
     UID_IntraocularLensCalculationsStorage,
+    UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation,
+    UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing,
     UID_KeratometryMeasurementsStorage,
     UID_KeyObjectSelectionDocumentStorage,
     UID_LensometryMeasurementsStorage,
@@ -680,6 +684,8 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_ImplantationPlanSRDocumentStorage,
     UID_ImplantTemplateGroupStorage,
     UID_IntraocularLensCalculationsStorage,
+    UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation,
+    UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing,
     UID_KeratometryMeasurementsStorage,
     UID_KeyObjectSelectionDocumentStorage,
     UID_LensometryMeasurementsStorage,
@@ -756,11 +762,11 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_RETIRED_XRayAngiographicBiPlaneImageStorage,
     // draft
     UID_DRAFT_RTBeamsDeliveryInstructionStorage,
-    UID_DRAFT_SRAudioStorage,
+//  UID_DRAFT_SRAudioStorage,
     UID_DRAFT_SRComprehensiveStorage,
     UID_DRAFT_SRDetailStorage,
     UID_DRAFT_SRTextStorage,
-    UID_DRAFT_WaveformStorage,
+//  UID_DRAFT_WaveformStorage,
     NULL
 };
 
@@ -868,7 +874,6 @@ const int numberOfDcmShortSCUStorageSOPClassUIDs = (sizeof(dcmShortSCUStorageSOP
 */
 const char* dcmImageSOPClassUIDs[] = {
 
-    // retired
     UID_BreastTomosynthesisImageStorage,
     UID_ComputedRadiographyImageStorage,
     UID_CTImageStorage,
@@ -885,6 +890,8 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_EnhancedUSVolumeStorage,
     UID_EnhancedXAImageStorage,
     UID_EnhancedXRFImageStorage,
+    UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation,
+    UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing,
     UID_MRImageStorage,
     UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage,
     UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage,
@@ -981,6 +988,8 @@ static const DcmModalityTable modalities[] = {
     { UID_ImplantationPlanSRDocumentStorage,                       "SRi", 4096 },
     { UID_ImplantTemplateGroupStorage,                             "ITg", 4096 },
     { UID_IntraocularLensCalculationsStorage,                      "OPc", 4096 },
+    { UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation, "OCt", 512 * 512 },
+    { UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing, "OCp", 512 * 512 },
     { UID_KeratometryMeasurementsStorage,                          "OPk", 4096 },
     { UID_KeyObjectSelectionDocumentStorage,                       "KO",  4096 },
     { UID_LensometryMeasurementsStorage,                           "OPl", 4096 },
@@ -1634,6 +1643,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.94  2011-06-20 09:09:02  joergr
+** Added two new SOP Class UIDs from Supplement 151 (Intravascular OCT Image
+** Storage SOP Class).
+**
 ** Revision 1.93  2011-05-02 13:52:42  joergr
 ** Fixed syntax error (missing closing bracket) if HAVE_GETHOSTID is undefined.
 **

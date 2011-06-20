@@ -159,7 +159,7 @@ proposed transmission transfer syntaxes (not with --config-file):
 
   -xn   --propose-mpeg4
           propose MPEG4 AVC/H.264 High Profile / Level 4.1 TS only
-          
+
   -xl   --propose-mpeg4-bd
           propose MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS only
 
