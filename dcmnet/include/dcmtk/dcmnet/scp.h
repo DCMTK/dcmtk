@@ -18,9 +18,9 @@
  *  Purpose: General SCP class that can be used to implement derived SCP
  *           applications.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 12:57:40 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-06-20 16:44:53 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -428,9 +428,9 @@ protected:
    */
   virtual void notifyAssociationTermination();
 
-  /** Overwrite this function to be notified when an association is terminated.
-   *  The standard handler only outputs some information to the logger.
-   *  @param TODO
+  /** Overwrite this function to be notified when a DIMSE error occurs.
+   *  The standard handler only outputs error information to the logger.
+   *  @param cond [out] The DIMSE error occured.
    */
   virtual void notifyDIMSEError(const OFCondition &cond);
 
@@ -445,7 +445,7 @@ protected:
    *  @param presID       [in] The presentation context ID to respond to
    *  @param reqMessage   [in] The C-STORE request that is responded to
    *  @param rspMessage   [in] The C-STORE response to be sent
-   *  @param statusDetail [in  The status detail to be sent
+   *  @param statusDetail [in] The status detail to be sent
    *  @return EC_Normal, if responding was successful, an error code otherwise
    */
   virtual OFCondition sendSTOREResponse(T_ASC_PresentationContextID presID,
@@ -735,6 +735,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.11  2011-06-20 16:44:53  onken
+ *  Fixed documentation of notifyDIMSEError() and sendSTOREResponse().
+ *
  *  Revision 1.10  2011-02-04 12:57:40  uli
  *  Made sure all members are initialized in the constructor (-Weffc++).
  *
