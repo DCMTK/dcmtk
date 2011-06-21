@@ -509,10 +509,15 @@ PatternParser::extractOption()
         && (pattern[pos] == DCMTK_LOG4CPLUS_TEXT('{')))
     {
         tstring::size_type end = pattern.find_first_of(DCMTK_LOG4CPLUS_TEXT('}'), pos);
-        if (end > pos) {
+        if (end != OFString_npos) {
             tstring r = pattern.substr(pos + 1, end - pos - 1);
             pos = end + 1;
             return r;
+        }
+        else {
+            getLogLog().error(DCMTK_LOG4CPLUS_TEXT("No matching '}' found in conversion pattern string \"")
+                    + pattern + DCMTK_LOG4CPLUS_TEXT("\""));
+            pos = pattern.length();
         }
     }
 

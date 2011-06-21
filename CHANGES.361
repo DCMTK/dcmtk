@@ -88,6 +88,10 @@ Changes between releases are documented here.
            oflog/libsrc/winconap.cc
            oflog/libsrc/winsock.cc
 
+- Backport r1439 from log4cplus to fix endless loop in PatternParser.
+  Thanks to forum user "kosborn" for (accidentally) finding the problem.
+  Affects: oflog/libsrc/patlay.cc
+
 **** Changes from 2011.06.21 (onken)
 
 - Fixed small documentation issue.
