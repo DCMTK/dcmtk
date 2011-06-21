@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,8 +21,10 @@
  *  - General Purpose CD-R Interchange (STD-GEN-CD)
  *  - General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
  *  If build with 'BUILD_DCMGPDIR_AS_DCMMKDIR' it also supports:
- *  - General Purpose DVD with Compression Interchange (STD-GEN-DVD-JPEG/J2K)
- *  - General Purpose USB and Flash Memory with Compression Interchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)
+ *  - General Purpose DVD Interchange with JPEG (STD-GEN-DVD-JPEG)
+ *  - General Purpose DVD Interchange with JPEG 2000 (STD-GEN-DVD-J2K)
+ *  - General Purpose USB and Flash Memory Interchange with JPEG (STD-GEN-USB/MMC/CF/SD-JPEG)
+ *  - General Purpose USB and Flash Memory Interchange with JPEG 2000 (STD-GEN-USB/MMC/CF/SD-J2K)
  *  - General Purpose MIME Interchange (STD-GEN-MIME)
  *  - DVD Interchange with MPEG2 MP@ML (STD-DVD-MPEG2-MPML)
  *  - Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
@@ -42,8 +44,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:30 $
- *  CVS/RCS Revision: $Revision: 1.95 $
+ *  Update Date:      $Date: 2011-06-21 10:23:30 $
+ *  CVS/RCS Revision: $Revision: 1.96 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -187,9 +189,11 @@ int main(int argc, char *argv[])
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
       cmd.addSubGroup("profiles:");
         cmd.addOption("--general-purpose",       "-Pgp",   "General Purpose Interchange on CD-R or\nDVD-RAM Media (STD-GEN-CD/DVD-RAM, default)");
-        cmd.addOption("--general-purpose-dvd",   "-Pdv",   "General Purpose DVD with Compression\nInterchange (STD-GEN-DVD-JPEG/J2K)");
-        cmd.addOption("--general-purpose-mime",  "-Pmi",   "General Purpose MIME Interchange\n(STD-GEN-MIME)");
-        cmd.addOption("--usb-and-flash",         "-Pfl",   "General Purpose USB/Flash Memory with Compr.\nInterchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)");
+        cmd.addOption("--general-dvd-jpeg",      "-Pdv",   "General Purpose DVD Interchange with JPEG\n(STD-GEN-DVD-JPEG)");
+        cmd.addOption("--general-dvd-j2k",       "-Pd2",   "General Purpose DVD Interchange with JPEG\n2000 (STD-GEN-DVD-J2K)");
+        cmd.addOption("--usb-and-flash-jpeg",    "-Pfl",   "General Purpose USB/Flash Memory Interchange\nwith JPEG (STD-GEN-USB/MMC/CF/SD-JPEG)");
+        cmd.addOption("--usb-and-flash-j2k",     "-Pf2",   "General Purpose USB/Flash Memory Interchange\nwith JPEG 2000 (STD-GEN-USB/MMC/CF/SD-J2K)");
+        cmd.addOption("--general-mime",          "-Pmi",   "General Purpose MIME Interchange\n(STD-GEN-MIME)");
         cmd.addOption("--mpeg2-mpml-dvd",        "-Pmp",   "DVD Interchange with MPEG2 Main Profile @\nMain Level (STD-DVD-MPEG2-MPML)");
         cmd.addOption("--basic-cardiac",         "-Pbc",   "Basic Cardiac X-Ray Angiographic Studies on\nCD-R Media (STD-XABC-CD)");
         cmd.addOption("--xray-angiographic",     "-Pxa",   "1024 X-Ray Angiographic Studies on CD-R Media\n(STD-XA1K-CD)");
@@ -350,12 +354,16 @@ int main(int argc, char *argv[])
         cmd.beginOptionBlock();
         if (cmd.findOption("--general-purpose"))
             opt_profile = DicomDirInterface::AP_GeneralPurpose;
-        if (cmd.findOption("--general-purpose-dvd"))
-            opt_profile = DicomDirInterface::AP_GeneralPurposeDVD;
-        if (cmd.findOption("--general-purpose-mime"))
+        if (cmd.findOption("--general-dvd-jpeg"))
+            opt_profile = DicomDirInterface::AP_GeneralPurposeDVDJPEG;
+        if (cmd.findOption("--general-dvd-j2k"))
+            opt_profile = DicomDirInterface::AP_GeneralPurposeDVDJPEG2000;
+        if (cmd.findOption("--usb-and-flash-jpeg"))
+            opt_profile = DicomDirInterface::AP_USBandFlashJPEG;
+        if (cmd.findOption("--usb-and-flash-j2k"))
+            opt_profile = DicomDirInterface::AP_USBandFlashJPEG2000;
+        if (cmd.findOption("--general-mime"))
             opt_profile = DicomDirInterface::AP_GeneralPurposeMIME;
-        if (cmd.findOption("--usb-and-flash"))
-            opt_profile = DicomDirInterface::AP_USBandFlash;
         if (cmd.findOption("--mpeg2-mpml-dvd"))
             opt_profile = DicomDirInterface::AP_MPEG2MPatMLDVD;
         if (cmd.findOption("--basic-cardiac"))
@@ -592,6 +600,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
+ * Revision 1.96  2011-06-21 10:23:30  joergr
+ * Separated JPEG and JPEG 2000 variants of General Purpose DVD and USB/Flash
+ * Memory application profiles.
+ *
  * Revision 1.95  2010-10-14 13:13:30  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.06.21 (riesmeier)
+
+- Separated JPEG and JPEG 2000 variants of General Purpose DVD and USB/Flash
+  Memory application profiles.
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmjpeg/docs/dcmmkdir.man
+
 **** Changes from 2011.06.21 (schlachter)
 
 - Renamed all log4cplus macros to avoid conflicts with external log4cplus.

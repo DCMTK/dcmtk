@@ -22,10 +22,13 @@ Currently the following profiles are supported (others might be added later):
 
 \li General Purpose CD-R Interchange (STD-GEN-CD)
 \li General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
-\li General Purpose DVD with Compression Interchange (STD-GEN-DVD-JPEG/J2K)
+\li General Purpose DVD Interchange with JPEG (STD-GEN-DVD-JPEG)
+\li General Purpose DVD Interchange with JPEG 2000 (STD-GEN-DVD-J2K)
+\li General Purpose USB and Flash Memory Interchange with JPEG
+    (STD-GEN-USB/MMC/CF/SD-JPEG)
+\li General Purpose USB and Flash Memory Interchange with JPEG 2000
+    (STD-GEN-USB/MMC/CF/SD-J2K)
 \li General Purpose MIME Interchange (STD-GEN-MIME)
-\li General Purpose USB and Flash Memory with Compression Interchange
-    (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)
 \li DVD Interchange with MPEG2 MP\@ML (STD-DVD-MPEG2-MPML)
 \li Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
 \li 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
@@ -194,27 +197,35 @@ icon images:
 profiles:
 
   -Pgp  --general-purpose
-          General Purpose Interchange on CD-R or
-          DVD-RAM Media (STD-GEN-CD/DVD-RAM, default)
+          General Purpose Interchange on CD-R or DVD-RAM Media
+          (STD-GEN-CD/DVD-RAM, default)
 
-  -Pdv  --general-purpose-dvd
-          General Purpose DVD with Compression Interchange
-          (STD-GEN-DVD-JPEG/J2K)
+  -Pdv  --general-dvd-jpeg
+          General Purpose DVD Interchange with JPEG
+          (STD-GEN-DVD-JPEG)
 
-  -Pmi  --general-purpose-mime
+  -Pd2  --general-dvd-j2k
+          General Purpose DVD Interchange with JPEG 2000
+          (STD-GEN-DVD-J2K)
+
+  -Pfl  --usb-and-flash-jpeg
+          General Purpose USB/Flash Memory Interchange with JPEG
+          (STD-GEN-USB/MMC/CF/SD-JPEG)
+
+  -Pf2  --usb-and-flash-j2k
+          General Purpose USB/Flash Memory Interchange with JPEG 2000
+          (STD-GEN-USB/MMC/CF/SD-J2K)
+
+  -Pmi  --general-mime
           General Purpose MIME Interchange (STD-GEN-MIME)
 
-  -Pfl  --usb-and-flash
-          General Purpose USB/Flash Memory with Compression
-          Interchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)
-
   -Pmp  --mpeg2-mpml-dvd
-          DVD Interchange with MPEG2 Main Profile @ Main
-          Level (STD-DVD-MPEG2-MPML)
+          DVD Interchange with MPEG2 Main Profile @ Main Level
+          (STD-DVD-MPEG2-MPML)
 
   -Pbc  --basic-cardiac
-          Basic Cardiac X-Ray Angiographic Studies on
-          CD-R Media (STD-XABC-CD)
+          Basic Cardiac X-Ray Angiographic Studies on CD-R Media
+          (STD-XABC-CD)
 
   -Pxa  --xray-angiographic
           1024 X-Ray Angiographic Studies on CD-R Media
@@ -235,24 +246,24 @@ profiles:
           (STD-US-ID-SF-xxxx)
 
         --ultrasound-sc-sf
-          Ultrasound Single Frame with Spatial
-          Calibration (STD-US-SC-SF-xxxx)
+          Ultrasound Single Frame with Spatial Calibration
+          (STD-US-SC-SF-xxxx)
 
         --ultrasound-cc-sf
-          Ultrasound Single Frame with Combined
-          Calibration (STD-US-CC-SF-xxxx)
+          Ultrasound Single Frame with Combined Calibration
+          (STD-US-CC-SF-xxxx)
 
   -Pum  --ultrasound-id-mf
-          Ultrasound Single & Multi-Frame for Image
-          Display (STD-US-ID-MF-xxxx)
+          Ultrasound Single & Multi-Frame for Image Display
+          (STD-US-ID-MF-xxxx)
 
         --ultrasound-sc-mf
-          Ultrasound Single & Multi-Frame with Spatial
-          Calibration (STD-UD-SC-MF-xxxx)
+          Ultrasound Single & Multi-Frame with Spatial Calibration
+          (STD-UD-SC-MF-xxxx)
 
         --ultrasound-cc-mf
-          Ultrasound Single & Multi-Frame with Combined
-          Calibration (STD-UD-CC-MF-xxxx)
+          Ultrasound Single & Multi-Frame with Combined Calibration
+          (STD-UD-CC-MF-xxxx)
 
   -Pec  --12-lead-ecg
           12-lead ECG Interchange on Diskette
@@ -394,6 +405,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2001-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

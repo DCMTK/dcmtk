@@ -18,8 +18,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-29 15:25:34 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2011-06-21 10:23:33 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,12 +121,16 @@ class DicomDirInterface
         AP_GeneralPurpose,
         /// default application profile: GeneralPurpose
         AP_Default = AP_GeneralPurpose,
-        /// General Purpose DVD with Compression Interchange (STD-GEN-DVD)
-        AP_GeneralPurposeDVD,
+        /// General Purpose DVD Interchange with JPEG (STD-GEN-DVD-JPEG)
+        AP_GeneralPurposeDVDJPEG,
+        /// General Purpose DVD Interchange with JPEG 2000 (STD-GEN-DVD-J2K)
+        AP_GeneralPurposeDVDJPEG2000,
+        /// General Purpose USB and Flash Memory Interchange with JPEG (STD-GEN-USB/MMC/CF/SD-JPEG)
+        AP_USBandFlashJPEG,
+        /// General Purpose USB and Flash Memory Interchange with JPEG 2000 (STD-GEN-USB/MMC/CF/SD-J2K)
+        AP_USBandFlashJPEG2000,
         /// General Purpose MIME Interchange Profile (STD-GEN-MIME)
         AP_GeneralPurposeMIME,
-        /// General Purpose USB and Flash Memory with Compression Interchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)
-        AP_USBandFlash,
         /// DVD Interchange with MPEG2 MP\@ML (STD-DVD-MPEG2-MPML)
         AP_MPEG2MPatMLDVD,
         /// Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
@@ -1512,6 +1516,10 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.25  2011-06-21 10:23:33  joergr
+ * Separated JPEG and JPEG 2000 variants of General Purpose DVD and USB/Flash
+ * Memory application profiles.
+ *
  * Revision 1.24  2011-04-29 15:25:34  joergr
  * Added support for new directory record type PLAN from Supplement 74.
  *

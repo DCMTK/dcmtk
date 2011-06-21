@@ -18,8 +18,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-29 15:25:36 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2011-06-21 10:23:35 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1454,9 +1454,11 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     found = compare(mediaSOPClassUID, UID_HemodynamicWaveformStorage);
                     break;
                 case AP_GeneralPurpose:
-                case AP_GeneralPurposeDVD:
+                case AP_GeneralPurposeDVDJPEG:
+                case AP_GeneralPurposeDVDJPEG2000:
+                case AP_USBandFlashJPEG:
+                case AP_USBandFlashJPEG2000:
                 case AP_GeneralPurposeMIME:
-                case AP_USBandFlash:
                 default:
                 {
                     /* is it an image ? */
@@ -1639,27 +1641,47 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                         case AP_GeneralPurposeMIME:
                             /* accept all transfer syntaxes */
                             break;
-                        case AP_GeneralPurposeDVD:
-                        case AP_USBandFlash:
+                        case AP_GeneralPurposeDVDJPEG:
+                        case AP_USBandFlashJPEG:
                             /* need to check multiple transfer syntaxes */
                             found = compare(transferSyntax, UID_LittleEndianExplicitTransferSyntax) ||
                                     compare(transferSyntax, UID_JPEGProcess14SV1TransferSyntax) ||
                                     compare(transferSyntax, UID_JPEGProcess1TransferSyntax) ||
-                                    compare(transferSyntax, UID_JPEGProcess2_4TransferSyntax) ||
-                                    compare(transferSyntax, UID_JPEG2000LosslessOnlyTransferSyntax) ||
-                                    compare(transferSyntax, UID_JPEG2000TransferSyntax);
+                                    compare(transferSyntax, UID_JPEGProcess2_4TransferSyntax);
                             if (!found)
                             {
                                 OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
                                 OFString xferName2 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax, "");
                                 OFString xferName3 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax, "");
                                 OFString xferName4 = dcmFindNameOfUID(UID_JPEGProcess2_4TransferSyntax, "");
-                                OFString xferName5 = dcmFindNameOfUID(UID_JPEG2000LosslessOnlyTransferSyntax, "");
-                                OFString xferName6 = dcmFindNameOfUID(UID_JPEG2000TransferSyntax, "");
                                 /* create error message */
                                 OFOStringStream oss;
-                                oss << xferName1 << ", " << xferName2 << ", " << xferName3
-                                    << ", " << xferName4 << ", " << xferName5 << " or " << xferName6
+                                oss << xferName1 << ", " << xferName2 << ", " << xferName3 << " or " << xferName4
+                                    << " expected: " << filename << OFStringStream_ends;
+                                OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                                if (TransferSyntaxCheck)
+                                {
+                                    DCMDATA_ERROR(tmpString);
+                                    result = EC_ApplicationProfileViolated;
+                                } else
+                                    DCMDATA_WARN(tmpString);
+                                OFSTRINGSTREAM_FREESTR(tmpString)
+                            }
+                            break;
+                        case AP_GeneralPurposeDVDJPEG2000:
+                        case AP_USBandFlashJPEG2000:
+                            /* need to check multiple transfer syntaxes */
+                            found = compare(transferSyntax, UID_LittleEndianExplicitTransferSyntax) ||
+                                    compare(transferSyntax, UID_JPEG2000LosslessOnlyTransferSyntax) ||
+                                    compare(transferSyntax, UID_JPEG2000TransferSyntax);
+                            if (!found)
+                            {
+                                OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
+                                OFString xferName2 = dcmFindNameOfUID(UID_JPEG2000LosslessOnlyTransferSyntax, "");
+                                OFString xferName3 = dcmFindNameOfUID(UID_JPEG2000TransferSyntax, "");
+                                /* create error message */
+                                OFOStringStream oss;
+                                oss << xferName1 << ", " << xferName2 << " or " << xferName3
                                     << " expected: " << filename << OFStringStream_ends;
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
@@ -2469,8 +2491,10 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                                 result = EC_InvalidTag;
                         }
                         /* check profile specific requirements */
-                        if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
-                            (ApplicationProfile == AP_USBandFlash) ||
+                        if ((ApplicationProfile == AP_GeneralPurposeDVDJPEG) ||
+                            (ApplicationProfile == AP_GeneralPurposeDVDJPEG2000) ||
+                            (ApplicationProfile == AP_USBandFlashJPEG) ||
+                            (ApplicationProfile == AP_USBandFlashJPEG2000) ||
                             (ApplicationProfile == AP_MPEG2MPatMLDVD))
                         {
                             /* check presence of type 1 elements */
@@ -2730,8 +2754,10 @@ DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmDirectoryRecord *re
             /* use type 1C instead of 1 in order to avoid unwanted overwriting */
             copyElementType1C(dataset, DCM_PatientID, record, sourceFilename);
             copyElementType2(dataset, DCM_PatientName, record, sourceFilename);
-            if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
-                (ApplicationProfile == AP_USBandFlash) ||
+            if ((ApplicationProfile == AP_GeneralPurposeDVDJPEG) ||
+                (ApplicationProfile == AP_GeneralPurposeDVDJPEG2000) ||
+                (ApplicationProfile == AP_USBandFlashJPEG) ||
+                (ApplicationProfile == AP_USBandFlashJPEG2000) ||
                 (ApplicationProfile == AP_MPEG2MPatMLDVD))
             {
                 /* additional type 1C keys specified by specific profiles */
@@ -2810,8 +2836,10 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *rec
             copyElementType1(dataset, DCM_SeriesInstanceUID, record, sourceFilename);
             /* use type 1C instead of 1 in order to avoid unwanted overwriting */
             copyElementType1C(dataset, DCM_SeriesNumber, record, sourceFilename);
-            if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
-                (ApplicationProfile == AP_USBandFlash) ||
+            if ((ApplicationProfile == AP_GeneralPurposeDVDJPEG) ||
+                (ApplicationProfile == AP_GeneralPurposeDVDJPEG2000) ||
+                (ApplicationProfile == AP_USBandFlashJPEG) ||
+                (ApplicationProfile == AP_USBandFlashJPEG2000) ||
                 (ApplicationProfile == AP_MPEG2MPatMLDVD))
             {
                 /* additional type 1C keys specified by specific profiles */
@@ -3372,8 +3400,10 @@ DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmDirectoryRecor
             copyElementType1(dataset, DCM_DataPointColumns, record, sourceFilename);
             /* IconImageSequence (type 3) is not created for the spectroscopy data */
             /* application profile specific attributes */
-            if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
-                (ApplicationProfile == AP_USBandFlash))
+            if ((ApplicationProfile == AP_GeneralPurposeDVDJPEG) ||
+                (ApplicationProfile == AP_GeneralPurposeDVDJPEG2000) ||
+                (ApplicationProfile == AP_USBandFlashJPEG) ||
+                (ApplicationProfile == AP_USBandFlashJPEG2000))
             {
                 copyElementType1(dataset, DCM_Rows, record, sourceFilename);
                 copyElementType1(dataset, DCM_Columns, record, sourceFilename);
@@ -3771,8 +3801,10 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *reco
                     copyElementType1C(dataset, DCM_ImageType, record, sourceFilename);
                     copyElementType1C(dataset, DCM_ReferencedImageSequence, record, sourceFilename);
                     break;
-                case AP_GeneralPurposeDVD:
-                case AP_USBandFlash:
+                case AP_GeneralPurposeDVDJPEG:
+                case AP_GeneralPurposeDVDJPEG2000:
+                case AP_USBandFlashJPEG:
+                case AP_USBandFlashJPEG2000:
                     copyElementType1(dataset, DCM_Rows, record, sourceFilename);
                     copyElementType1(dataset, DCM_Columns, record, sourceFilename);
                     copyElementType1C(dataset, DCM_ImageType, record, sourceFilename);
@@ -4753,14 +4785,20 @@ const char *DicomDirInterface::getProfileName(const E_ApplicationProfile profile
         case AP_GeneralPurpose:
             result = "STD-GEN-CD/DVD-RAM";
             break;
-        case AP_GeneralPurposeDVD:
-            result = "STD-GEN-DVD-JPEG/J2K";
+        case AP_GeneralPurposeDVDJPEG:
+            result = "STD-GEN-DVD-JPEG";
+            break;
+        case AP_GeneralPurposeDVDJPEG2000:
+            result = "STD-GEN-DVD-J2K";
+            break;
+        case AP_USBandFlashJPEG:
+            result = "STD-GEN-USB/MMC/CF/SD-JPEG";
+            break;
+        case AP_USBandFlashJPEG2000:
+            result = "STD-GEN-USB/MMC/CF/SD-J2K";
             break;
         case AP_GeneralPurposeMIME:
             result = "STD-GEN-MIME";
-            break;
-        case AP_USBandFlash:
-            result = "STD-GEN-USB/MMC/CF/SD-JPEG/J2K";
             break;
         case AP_MPEG2MPatMLDVD:
             result = "STD-DVD-MPEG2-MPML";
@@ -5310,6 +5348,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.59  2011-06-21 10:23:35  joergr
+ *  Separated JPEG and JPEG 2000 variants of General Purpose DVD and USB/Flash
+ *  Memory application profiles.
+ *
  *  Revision 1.58  2011-04-29 15:25:36  joergr
  *  Added support for new directory record type PLAN from Supplement 74.
  *
