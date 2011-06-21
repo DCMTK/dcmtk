@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.06.21 (onken)
+
+- Fixed small documentation issue.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+
 **** Changes from 2011.06.20 (onken)
 
 - Fixed documentation of notifyDIMSEError() and sendSTOREResponse().

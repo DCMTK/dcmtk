@@ -19,8 +19,8 @@
  *           applications.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-06-20 16:44:53 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2011-06-21 07:31:35 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -430,7 +430,7 @@ protected:
 
   /** Overwrite this function to be notified when a DIMSE error occurs.
    *  The standard handler only outputs error information to the logger.
-   *  @param cond [out] The DIMSE error occured.
+   *  @param cond [in] The DIMSE error occured.
    */
   virtual void notifyDIMSEError(const OFCondition &cond);
 
@@ -735,6 +735,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.12  2011-06-21 07:31:35  onken
+ *  Fixed small documentation issue.
+ *
  *  Revision 1.11  2011-06-20 16:44:53  onken
  *  Fixed documentation of notifyDIMSEError() and sendSTOREResponse().
  *
