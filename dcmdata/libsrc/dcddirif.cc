@@ -18,8 +18,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-21 10:57:08 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2011-06-21 15:48:27 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1464,11 +1464,26 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                 case AP_GeneralPurpose:
                 case AP_GeneralPurposeDVDJPEG:
                 case AP_GeneralPurposeDVDJPEG2000:
+                case AP_GeneralPurposeBDJPEG:
+                case AP_GeneralPurposeBDJPEG2000:
+                case AP_GeneralPurposeBDMPEG2MPatML:
+                case AP_GeneralPurposeBDMPEG2MPatHL:
+                case AP_GeneralPurposeBDMPEG4HPatLV41:
+                case AP_GeneralPurposeBDMPEG4HPatLV41BD:
                 case AP_USBandFlashJPEG:
                 case AP_USBandFlashJPEG2000:
                 case AP_GeneralPurposeMIME:
                 default:
                 {
+                    /* specify expected transfer syntax for the BD profiles (multi-frame IODs only) */
+                    if (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatML)
+                        expectedTransferSyntax = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+                    else if (ApplicationProfile == AP_GeneralPurposeBDMPEG2MPatHL)
+                        expectedTransferSyntax = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
+                    else if (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41)
+                        expectedTransferSyntax = UID_MPEG4HighProfileLevel4_1TransferSyntax;
+                    else if (ApplicationProfile == AP_GeneralPurposeBDMPEG4HPatLV41BD)
+                        expectedTransferSyntax = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
                     /* is it an image ? */
                     for (int i = 0; i < numberOfDcmImageSOPClassUIDs && !found; i++)
                         found = compare(mediaSOPClassUID, dcmImageSOPClassUIDs[i]);
@@ -1650,6 +1665,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                             /* accept all transfer syntaxes */
                             break;
                         case AP_GeneralPurposeDVDJPEG:
+                        case AP_GeneralPurposeBDJPEG:
                         case AP_USBandFlashJPEG:
                             /* need to check multiple transfer syntaxes */
                             found = compare(transferSyntax, UID_LittleEndianExplicitTransferSyntax) ||
@@ -1677,6 +1693,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                             }
                             break;
                         case AP_GeneralPurposeDVDJPEG2000:
+                        case AP_GeneralPurposeBDJPEG2000:
                         case AP_USBandFlashJPEG2000:
                             /* need to check multiple transfer syntaxes */
                             found = compare(transferSyntax, UID_LittleEndianExplicitTransferSyntax) ||
@@ -1691,6 +1708,54 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 OFOStringStream oss;
                                 oss << xferName1 << ", " << xferName2 << " or " << xferName3
                                     << " expected: " << filename << OFStringStream_ends;
+                                OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                                if (TransferSyntaxCheck)
+                                {
+                                    DCMDATA_ERROR(tmpString);
+                                    result = EC_ApplicationProfileViolated;
+                                } else
+                                    DCMDATA_WARN(tmpString);
+                                OFSTRINGSTREAM_FREESTR(tmpString)
+                            }
+                            break;
+                        case AP_GeneralPurposeBDMPEG2MPatML:
+                        case AP_GeneralPurposeBDMPEG2MPatHL:
+                        case AP_GeneralPurposeBDMPEG4HPatLV41:
+                        case AP_GeneralPurposeBDMPEG4HPatLV41BD:
+                            /* compare with expected transfer syntax */
+                            found = compare(transferSyntax, expectedTransferSyntax);
+                            if (found)
+                            {
+                                /* check for multi-frame composite IOD */
+                                if (!isMultiframeStorageSOPClass(mediaSOPClassUID))
+                                {
+                                    OFString xferName = dcmFindNameOfUID(expectedTransferSyntax.c_str(), "");
+                                    /* create error message */
+                                    OFOStringStream oss;
+                                    oss << xferName << " only for multi-frame composite IODs: " << filename << OFStringStream_ends;
+                                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                                    if (TransferSyntaxCheck)
+                                    {
+                                        DCMDATA_ERROR(tmpString);
+                                        result = EC_ApplicationProfileViolated;
+                                    } else
+                                        DCMDATA_WARN(tmpString);
+                                    OFSTRINGSTREAM_FREESTR(tmpString)
+                                }
+                            } else {
+                                found = compare(transferSyntax, UID_LittleEndianExplicitTransferSyntax);
+                                /* create error message */
+                                OFOStringStream oss;
+                                /* check for multi-frame composite IOD */
+                                if (isMultiframeStorageSOPClass(mediaSOPClassUID))
+                                {
+                                    OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
+                                    OFString xferName2 = dcmFindNameOfUID(expectedTransferSyntax.c_str(), "");
+                                    oss << xferName1 << " or " << xferName2 << " expected: " << filename << OFStringStream_ends;
+                                } else {
+                                    OFString xferName = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
+                                    oss << xferName << " expected: " << filename << OFStringStream_ends;
+                                }
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
                                 {
@@ -1792,9 +1857,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                             found = compare(transferSyntax, expectedTransferSyntax);
                             if (!found)
                             {
-                                OFString xferName = dcmFindNameOfUID(expectedTransferSyntax.c_str(), "");
-                                if (xferName.empty())
-                                    xferName = expectedTransferSyntax;
+                                OFString xferName = dcmFindNameOfUID(expectedTransferSyntax.c_str(), expectedTransferSyntax.c_str() /*defaultValue*/);
                                 /* create error message */
                                 OFOStringStream oss;
                                 oss << xferName << " expected: " << filename << OFStringStream_ends;
@@ -3806,6 +3869,12 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *reco
             switch (ApplicationProfile)
             {
                 case AP_GeneralPurpose:
+                case AP_GeneralPurposeBDJPEG:
+                case AP_GeneralPurposeBDJPEG2000:
+                case AP_GeneralPurposeBDMPEG2MPatML:
+                case AP_GeneralPurposeBDMPEG2MPatHL:
+                case AP_GeneralPurposeBDMPEG4HPatLV41:
+                case AP_GeneralPurposeBDMPEG4HPatLV41BD:
                     copyElementType1C(dataset, DCM_ImageType, record, sourceFilename);
                     copyElementType1C(dataset, DCM_ReferencedImageSequence, record, sourceFilename);
                     break;
@@ -4799,6 +4868,24 @@ const char *DicomDirInterface::getProfileName(const E_ApplicationProfile profile
         case AP_GeneralPurposeDVDJPEG2000:
             result = "STD-GEN-DVD-J2K";
             break;
+        case AP_GeneralPurposeBDJPEG:
+            result = "STD-GEN-BD-JPEG";
+            break;
+        case AP_GeneralPurposeBDJPEG2000:
+            result = "STD-GEN-BD-J2K";
+            break;
+        case AP_GeneralPurposeBDMPEG2MPatML:
+            result = "STD-GEN-BD-MPEG2-MPML";
+            break;
+        case AP_GeneralPurposeBDMPEG2MPatHL:
+            result = "STD-GEN-BD-MPEG2-MPHL";
+            break;
+        case AP_GeneralPurposeBDMPEG4HPatLV41:
+            result = "STD-GEN-BD-MPEG4-HPLV41";
+            break;
+        case AP_GeneralPurposeBDMPEG4HPatLV41BD:
+            result = "STD-GEN-BD-MPEG4-HPLV41BD";
+            break;
         case AP_USBandFlashJPEG:
             result = "STD-GEN-USB/MMC/CF/SD-JPEG";
             break;
@@ -5356,6 +5443,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.61  2011-06-21 15:48:27  joergr
+ *  Added support for Blu-ray Disc Media Application Profiles (Supplement 153).
+ *
  *  Revision 1.60  2011-06-21 10:57:08  joergr
  *  Added two new multi-frame composite IODs from Supplement 151 to application
  *  profile DVD Interchange with MPEG2 Main Profile @ Main Level.

@@ -18,8 +18,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-21 10:23:33 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2011-06-21 15:48:26 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,7 +125,19 @@ class DicomDirInterface
         AP_GeneralPurposeDVDJPEG,
         /// General Purpose DVD Interchange with JPEG 2000 (STD-GEN-DVD-J2K)
         AP_GeneralPurposeDVDJPEG2000,
-        /// General Purpose USB and Flash Memory Interchange with JPEG (STD-GEN-USB/MMC/CF/SD-JPEG)
+        /// General Purpose BD Interchange with JPEG (STD-GEN-BD-JPEG)
+        AP_GeneralPurposeBDJPEG,
+        /// General Purpose BD Interchange with JPEG 2000 (STD-GEN-BD-J2K)
+        AP_GeneralPurposeBDJPEG2000,
+        /// General Purpose BD Interchange with MPEG2 MP@ML (STD-GEN-BD-MPEG2-MPML)
+        AP_GeneralPurposeBDMPEG2MPatML,
+        /// General Purpose BD Interchange with MPEG2 MP@HL (STD-GEN-BD-MPEG2-MPHL)
+        AP_GeneralPurposeBDMPEG2MPatHL,
+        /// General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41)
+        AP_GeneralPurposeBDMPEG4HPatLV41,
+        /// General Purpose BD Interchange with MPEG-4 AVC/H.264 BD-Compatible HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)        
+        AP_GeneralPurposeBDMPEG4HPatLV41BD,
+        /// General Purpose USB and Flash Memory Interchange with JPEG (STD-GEN-USB/MMC/CF/SD-JPEG)        
         AP_USBandFlashJPEG,
         /// General Purpose USB and Flash Memory Interchange with JPEG 2000 (STD-GEN-USB/MMC/CF/SD-J2K)
         AP_USBandFlashJPEG2000,
@@ -1516,6 +1528,9 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.26  2011-06-21 15:48:26  joergr
+ * Added support for Blu-ray Disc Media Application Profiles (Supplement 153).
+ *
  * Revision 1.25  2011-06-21 10:23:33  joergr
  * Separated JPEG and JPEG 2000 variants of General Purpose DVD and USB/Flash
  * Memory application profiles.

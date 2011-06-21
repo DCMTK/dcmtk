@@ -23,6 +23,12 @@
  *  If build with 'BUILD_DCMGPDIR_AS_DCMMKDIR' it also supports:
  *  - General Purpose DVD Interchange with JPEG (STD-GEN-DVD-JPEG)
  *  - General Purpose DVD Interchange with JPEG 2000 (STD-GEN-DVD-J2K)
+ *  - General Purpose BD Interchange with JPEG (STD-GEN-BD-JPEG)
+ *  - General Purpose BD Interchange with JPEG 2000 (STD-GEN-BD-J2K)
+ *  - General Purpose BD Interchange with MPEG2 MP@ML (STD-GEN-BD-MPEG2-MPML)
+ *  - General Purpose BD Interchange with MPEG2 MP@HL (STD-GEN-BD-MPEG2-MPHL)
+ *  - General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41)
+ *  - General Purpose BD Interchange with MPEG-4 AVC/H.264 BD-Compatible HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)
  *  - General Purpose USB and Flash Memory Interchange with JPEG (STD-GEN-USB/MMC/CF/SD-JPEG)
  *  - General Purpose USB and Flash Memory Interchange with JPEG 2000 (STD-GEN-USB/MMC/CF/SD-J2K)
  *  - General Purpose MIME Interchange (STD-GEN-MIME)
@@ -44,8 +50,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-21 10:23:30 $
- *  CVS/RCS Revision: $Revision: 1.96 $
+ *  Update Date:      $Date: 2011-06-21 15:48:24 $
+ *  CVS/RCS Revision: $Revision: 1.97 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -191,6 +197,12 @@ int main(int argc, char *argv[])
         cmd.addOption("--general-purpose",       "-Pgp",   "General Purpose Interchange on CD-R or\nDVD-RAM Media (STD-GEN-CD/DVD-RAM, default)");
         cmd.addOption("--general-dvd-jpeg",      "-Pdv",   "General Purpose DVD Interchange with JPEG\n(STD-GEN-DVD-JPEG)");
         cmd.addOption("--general-dvd-j2k",       "-Pd2",   "General Purpose DVD Interchange with JPEG\n2000 (STD-GEN-DVD-J2K)");
+        cmd.addOption("--general-bd-jpeg",       "-Pbd",   "General Purpose BD Interchange with JPEG\n(STD-GEN-BD-JPEG)");
+        cmd.addOption("--general-bd-j2k",        "-Pb2",   "General Purpose BD Interchange with JPEG\n2000 (STD-GEN-BD-J2K)");
+        cmd.addOption("--general-bd-mpeg2-mpml", "-Pbm",   "General Purpose BD Interchange with MPEG2\nMP@ML (STD-GEN-BD-MPEG2-MPML)");
+        cmd.addOption("--general-bd-mpeg2-mphl", "-Pbh",   "General Purpose BD Interchange with MPEG2\nMP@HL (STD-GEN-BD-MPEG2-MPHL)");
+        cmd.addOption("--general-bd-mpeg4-hp",   "-Pba",   "General Purpose BD Interchange with MPEG-4\nAVC/H.264 HiP@Level4.1\n(STD-GEN-BD-MPEG4-HPLV41)");
+        cmd.addOption("--general-bd-mpeg4-hpbd", "-Pbb",   "General Purpose BD Interchange with MPEG-4\nAVC/H.264 BD-Compatible HiP@Level4.1\n(STD-GEN-BD-MPEG4-HPLV41BD)");
         cmd.addOption("--usb-and-flash-jpeg",    "-Pfl",   "General Purpose USB/Flash Memory Interchange\nwith JPEG (STD-GEN-USB/MMC/CF/SD-JPEG)");
         cmd.addOption("--usb-and-flash-j2k",     "-Pf2",   "General Purpose USB/Flash Memory Interchange\nwith JPEG 2000 (STD-GEN-USB/MMC/CF/SD-J2K)");
         cmd.addOption("--general-mime",          "-Pmi",   "General Purpose MIME Interchange\n(STD-GEN-MIME)");
@@ -358,6 +370,18 @@ int main(int argc, char *argv[])
             opt_profile = DicomDirInterface::AP_GeneralPurposeDVDJPEG;
         if (cmd.findOption("--general-dvd-j2k"))
             opt_profile = DicomDirInterface::AP_GeneralPurposeDVDJPEG2000;
+        if (cmd.findOption("--general-bd-jpeg"))
+            opt_profile = DicomDirInterface::AP_GeneralPurposeBDJPEG;
+        if (cmd.findOption("--general-bd-j2k"))
+            opt_profile = DicomDirInterface::AP_GeneralPurposeBDJPEG2000;
+        if (cmd.findOption("--general-bd-mpeg2-mpml"))
+            opt_profile = DicomDirInterface::AP_GeneralPurposeBDMPEG2MPatML;
+        if (cmd.findOption("--general-bd-mpeg2-mphl"))
+            opt_profile = DicomDirInterface::AP_GeneralPurposeBDMPEG2MPatHL;
+        if (cmd.findOption("--general-bd-mpeg4-hp"))
+            opt_profile = DicomDirInterface::AP_GeneralPurposeBDMPEG4HPatLV41;
+        if (cmd.findOption("--general-bd-mpeg4-hpbd"))
+            opt_profile = DicomDirInterface::AP_GeneralPurposeBDMPEG4HPatLV41BD;
         if (cmd.findOption("--usb-and-flash-jpeg"))
             opt_profile = DicomDirInterface::AP_USBandFlashJPEG;
         if (cmd.findOption("--usb-and-flash-j2k"))
@@ -600,6 +624,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
+ * Revision 1.97  2011-06-21 15:48:24  joergr
+ * Added support for Blu-ray Disc Media Application Profiles (Supplement 153).
+ *
  * Revision 1.96  2011-06-21 10:23:30  joergr
  * Separated JPEG and JPEG 2000 variants of General Purpose DVD and USB/Flash
  * Memory application profiles.

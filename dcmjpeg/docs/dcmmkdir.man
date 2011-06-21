@@ -24,6 +24,14 @@ Currently the following profiles are supported (others might be added later):
 \li General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
 \li General Purpose DVD Interchange with JPEG (STD-GEN-DVD-JPEG)
 \li General Purpose DVD Interchange with JPEG 2000 (STD-GEN-DVD-J2K)
+\li General Purpose BD Interchange with JPEG (STD-GEN-BD-JPEG)
+\li General Purpose BD Interchange with JPEG 2000 (STD-GEN-BD-J2K)
+\li General Purpose BD Interchange with MPEG2 MP\@ML (STD-GEN-BD-MPEG2-MPML)
+\li General Purpose BD Interchange with MPEG2 MP\@HL (STD-GEN-BD-MPEG2-MPHL)
+\li General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP\@Level4.1
+    (STD-GEN-BD-MPEG4-HPLV41)
+\li General Purpose BD Interchange with MPEG-4 AVC/H.264 BD-Compatible
+    HiP\@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)
 \li General Purpose USB and Flash Memory Interchange with JPEG
     (STD-GEN-USB/MMC/CF/SD-JPEG)
 \li General Purpose USB and Flash Memory Interchange with JPEG 2000
@@ -207,6 +215,30 @@ profiles:
   -Pd2  --general-dvd-j2k
           General Purpose DVD Interchange with JPEG 2000
           (STD-GEN-DVD-J2K)
+
+  -Pbd  --general-bd-jpeg
+          General Purpose BD Interchange with JPEG
+          (STD-GEN-BD-JPEG)
+
+  -Pb2  --general-bd-j2k
+          General Purpose BD Interchange with JPEG 2000
+          (STD-GEN-BD-J2K)
+
+  -Pbm  --general-bd-mpeg2-mpml
+          General Purpose BD Interchange with MPEG2 MP@ML
+          (STD-GEN-BD-MPEG2-MPML)
+
+  -Pbh  --general-bd-mpeg2-mphl
+          General Purpose BD Interchange with MPEG2 MP@HL
+          (STD-GEN-BD-MPEG2-MPHL)
+
+  -Pba  --general-bd-mpeg4-hp
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41)
+
+  -Pbb  --general-bd-mpeg4-hpbd
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          BD-Compatible HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)
 
   -Pfl  --usb-and-flash-jpeg
           General Purpose USB/Flash Memory Interchange with JPEG

@@ -13,6 +13,12 @@ Changes between releases are documented here.
 - Added two new multi-frame composite IODs from Supplement 151 to application
   profile DVD Interchange with MPEG2 Main Profile @ Main Level.
   Affects: dcmdata/libsrc/dcddirif.cc
+  
+- Added support for Blu-ray Disc Media Application Profiles (Supplement 153).
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmjpeg/docs/dcmmkdir.man
 
 **** Changes from 2011.06.21 (schlachter)
 
