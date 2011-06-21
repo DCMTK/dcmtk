@@ -160,7 +160,7 @@ Logger::getParent () const
         return Logger (value->parent.get ());
     else
     {
-        value->getLogLog().error(LOG4CPLUS_TEXT("********* This logger has no parent: " + getName()));
+        value->getLogLog().error(DCMTK_LOG4CPLUS_TEXT("********* This logger has no parent: " + getName()));
         return *this;
     }
 }

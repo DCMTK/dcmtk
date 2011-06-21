@@ -21,12 +21,12 @@
 //   (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
 //   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef LOG4CPLUS_WIN32CONSOLEAPPENDER_H
-#define LOG4CPLUS_WIN32CONSOLEAPPENDER_H
+#ifndef DCMTK_LOG4CPLUS_WIN32CONSOLEAPPENDER_H
+#define DCMTK_LOG4CPLUS_WIN32CONSOLEAPPENDER_H
 
 
 #include "dcmtk/oflog/config.h"
-#if defined(_WIN32) && defined (LOG4CPLUS_HAVE_WIN32_CONSOLE)
+#if defined(_WIN32) && defined (DCMTK_LOG4CPLUS_HAVE_WIN32_CONSOLE)
 
 #include "dcmtk/oflog/appender.h"
 #include "dcmtk/oflog/helpers/property.h"
@@ -49,7 +49,7 @@ namespace log4cplus
     *
     * </dl>
     */
-    class LOG4CPLUS_EXPORT Win32ConsoleAppender
+    class DCMTK_LOG4CPLUS_EXPORT Win32ConsoleAppender
         : public Appender
     {
     public:
@@ -77,4 +77,4 @@ namespace log4cplus
 
 #endif
 
-#endif // LOG4CPLUS_WIN32CONSOLEAPPENDER_H
+#endif // DCMTK_LOG4CPLUS_WIN32CONSOLEAPPENDER_H

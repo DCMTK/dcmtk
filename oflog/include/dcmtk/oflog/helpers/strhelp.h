@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef LOG4CPLUS_HELPERS_STRINGHELPER_HEADER_
-#define LOG4CPLUS_HELPERS_STRINGHELPER_HEADER_
+#ifndef DCMTK_LOG4CPLUS_HELPERS_STRINGHELPER_HEADER_
+#define DCMTK_LOG4CPLUS_HELPERS_STRINGHELPER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
@@ -39,13 +39,13 @@ namespace log4cplus {
         /**
          * Returns <code>s</code> in upper case.
          */
-        LOG4CPLUS_EXPORT tstring toUpper(const tstring& s);
+        DCMTK_LOG4CPLUS_EXPORT tstring toUpper(const tstring& s);
 
 
         /**
          * Returns <code>s</code> in lower case.
          */
-        LOG4CPLUS_EXPORT tstring toLower(const tstring& s);
+        DCMTK_LOG4CPLUS_EXPORT tstring toLower(const tstring& s);
 
 
         /**
@@ -121,7 +121,7 @@ namespace log4cplus {
                     intType const mod = 0-(a + value);
                     value = 0-r;
 
-                    *(it - 1) = OFstatic_cast(tchar, LOG4CPLUS_TEXT('0') + mod);
+                    *(it - 1) = OFstatic_cast(tchar, DCMTK_LOG4CPLUS_TEXT('0') + mod);
                     --it;
                 }
                 else
@@ -136,7 +136,7 @@ namespace log4cplus {
         convertIntegerToString (tstring & str, intType value)
         {
             if (value == 0)
-                str = LOG4CPLUS_TEXT("0");
+                str = DCMTK_LOG4CPLUS_TEXT("0");
             // We can't use (value < 0) because that could cause a compiler
             // warning for unsigned types.
             bool const negative = !(value > 0 || value == 0);
@@ -154,13 +154,13 @@ namespace log4cplus {
             {
                 intType mod = value % 10;
                 value = value / 10;
-                *(it - 1) = OFstatic_cast(tchar, LOG4CPLUS_TEXT('0') + mod);
+                *(it - 1) = OFstatic_cast(tchar, DCMTK_LOG4CPLUS_TEXT('0') + mod);
             }
 
             if (negative)
             {
                 --it;
-                *it = LOG4CPLUS_TEXT('-');
+                *it = DCMTK_LOG4CPLUS_TEXT('-');
             }
 
             str.assign (OFstatic_cast(tchar const *, it), buf_end - it);
@@ -182,4 +182,4 @@ namespace log4cplus {
 } // namespace log4cplus
 } // namespace dcmtk
 
-#endif // LOG4CPLUS_HELPERS_STRINGHELPER_HEADER_
+#endif // DCMTK_LOG4CPLUS_HELPERS_STRINGHELPER_HEADER_

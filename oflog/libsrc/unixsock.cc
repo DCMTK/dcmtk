@@ -30,19 +30,19 @@
 #include <arpa/inet.h>
 #endif
 
-#ifdef LOG4CPLUS_HAVE_NETINET_IN_H
+#ifdef DCMTK_LOG4CPLUS_HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #endif
 
-#ifdef LOG4CPLUS_HAVE_SYS_TYPES_H
+#ifdef DCMTK_LOG4CPLUS_HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
 
-#ifdef LOG4CPLUS_HAVE_SYS_SOCKET_H
+#ifdef DCMTK_LOG4CPLUS_HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
 
-#ifdef LOG4CPLUS_HAVE_NETDB_H
+#ifdef DCMTK_LOG4CPLUS_HAVE_NETDB_H
 #include <netdb.h>
 #endif
 
@@ -62,8 +62,8 @@ namespace
 {
 
 
-#if !defined (LOG4CPLUS_HAVE_GETADDRINFO)
-static LOG4CPLUS_MUTEX_PTR_DECLARE ghbn_mutex = LOG4CPLUS_MUTEX_CREATE;
+#if !defined (DCMTK_LOG4CPLUS_HAVE_GETADDRINFO)
+static DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE ghbn_mutex = DCMTK_LOG4CPLUS_MUTEX_CREATE;
 #endif
 
 
@@ -72,7 +72,7 @@ int
 get_host_by_name (char const * hostname, OFString* name,
     struct sockaddr_in * addr)
 {
-#if defined (LOG4CPLUS_HAVE_GETADDRINFO)
+#if defined (DCMTK_LOG4CPLUS_HAVE_GETADDRINFO)
     struct addrinfo hints;
     STD_NAMESPACE memset (&hints, 0, sizeof (hints));
     hints.ai_family = AF_INET;
@@ -167,7 +167,7 @@ helpers::connectSocket(const tstring& hostn,
     int retval;
 
     STD_NAMESPACE memset (&server, 0, sizeof (server));
-    retval = get_host_by_name (LOG4CPLUS_TSTRING_TO_STRING(hostn).c_str(),
+    retval = get_host_by_name (DCMTK_LOG4CPLUS_TSTRING_TO_STRING(hostn).c_str(),
         0, &server);
     if (retval != 0)
         return INVALID_SOCKET;
@@ -278,7 +278,7 @@ helpers::getHostname (bool fqdn)
             hostname = &hn[0];
             break;
         }
-#if defined (LOG4CPLUS_HAVE_ENAMETOOLONG)
+#if defined (DCMTK_LOG4CPLUS_HAVE_ENAMETOOLONG)
         else if (ret != 0 && errno == ENAMETOOLONG)
         {
             // Our buffer was too short. Retry with buffer twice the size.
@@ -292,7 +292,7 @@ helpers::getHostname (bool fqdn)
 
     if (ret != 0 || (ret == 0 && ! fqdn))
     {
-        tstring res = LOG4CPLUS_STRING_TO_TSTRING (hostname);
+        tstring res = DCMTK_LOG4CPLUS_STRING_TO_TSTRING (hostname);
         free(hn);
         return res;
     }
@@ -302,7 +302,7 @@ helpers::getHostname (bool fqdn)
     if (ret == 0)
         hostname = full_hostname.c_str ();
 
-    tstring res = LOG4CPLUS_STRING_TO_TSTRING (hostname);
+    tstring res = DCMTK_LOG4CPLUS_STRING_TO_TSTRING (hostname);
     free(hn);
     return res;
 }

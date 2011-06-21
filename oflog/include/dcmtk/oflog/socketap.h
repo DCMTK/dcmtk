@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_SOCKET_APPENDER_HEADER_
-#define _LOG4CPLUS_SOCKET_APPENDER_HEADER_
+#ifndef DCMTK__LOG4CPLUS_SOCKET_APPENDER_HEADER_
+#define DCMTK__LOG4CPLUS_SOCKET_APPENDER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/appender.h"
@@ -29,7 +29,7 @@
 #include "dcmtk/oflog/helpers/syncprims.h"
 
 
-#define LOG4CPLUS_MAX_MESSAGE_SIZE (8*1024)
+#define DCMTK_LOG4CPLUS_MAX_MESSAGE_SIZE (8*1024)
 
 
 namespace dcmtk {
@@ -86,7 +86,7 @@ namespace log4cplus {
      *
      * </dl>
      */
-    class LOG4CPLUS_EXPORT SocketAppender : public Appender {
+    class DCMTK_LOG4CPLUS_EXPORT SocketAppender : public Appender {
     public:
       // Ctors
         SocketAppender(const tstring& host, int port,
@@ -110,11 +110,11 @@ namespace log4cplus {
         int port;
         tstring serverName;
 
-#if ! defined (LOG4CPLUS_SINGLE_THREADED)
-        class LOG4CPLUS_EXPORT ConnectorThread;
+#if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
+        class DCMTK_LOG4CPLUS_EXPORT ConnectorThread;
         friend class ConnectorThread;
 
-        class LOG4CPLUS_EXPORT ConnectorThread
+        class DCMTK_LOG4CPLUS_EXPORT ConnectorThread
             : public thread::AbstractThread
             , public helpers::LogLogUser
         {
@@ -144,16 +144,16 @@ namespace log4cplus {
     };
 
     namespace helpers {
-        LOG4CPLUS_EXPORT
+        DCMTK_LOG4CPLUS_EXPORT
         SocketBuffer convertToBuffer(const spi::InternalLoggingEvent& event,
                                      const tstring& serverName);
 
-        LOG4CPLUS_EXPORT
+        DCMTK_LOG4CPLUS_EXPORT
         spi::InternalLoggingEvent readFromBuffer(SocketBuffer& buffer);
     } // end namespace helpers
 
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _LOG4CPLUS_SOCKET_APPENDER_HEADER_
+#endif // DCMTK__LOG4CPLUS_SOCKET_APPENDER_HEADER_
 

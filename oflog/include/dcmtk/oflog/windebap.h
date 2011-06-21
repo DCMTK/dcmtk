@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_
-#define _LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_
+#ifndef DCMTK__LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_
+#define DCMTK__LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #if defined(_WIN32)
@@ -36,7 +36,7 @@ namespace log4cplus {
     /**
      * Prints log events using OutputDebugString().
      */
-    class LOG4CPLUS_EXPORT Win32DebugAppender
+    class DCMTK_LOG4CPLUS_EXPORT Win32DebugAppender
         : public Appender
     {
     public:
@@ -63,5 +63,5 @@ namespace log4cplus {
 } // end namespace dcmtk
 
 #endif // _WIN32
-#endif // _LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_
+#endif // DCMTK__LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_
 

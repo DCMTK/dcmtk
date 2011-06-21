@@ -34,7 +34,7 @@
 #include <winsock.h>
 #endif
 
-#if defined (__CYGWIN__) || defined (LOG4CPLUS_HAVE_NETINET_IN_H)
+#if defined (__CYGWIN__) || defined (DCMTK_LOG4CPLUS_HAVE_NETINET_IN_H)
 #include <netinet/in.h>
 #endif
 
@@ -110,11 +110,11 @@ unsigned char
 SocketBuffer::readByte()
 {
     if(pos >= maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::readByte()- end of buffer reached"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::readByte()- end of buffer reached"));
         return 0;
     }
     else if((pos + sizeof(unsigned char)) > maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::readByte()- Attempt to read beyond end of buffer"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::readByte()- Attempt to read beyond end of buffer"));
         return 0;
     }
 
@@ -130,11 +130,11 @@ unsigned short
 SocketBuffer::readShort()
 {
     if(pos >= maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::readShort()- end of buffer reached"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::readShort()- end of buffer reached"));
         return 0;
     }
     else if((pos + sizeof(unsigned short)) > maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::readShort()- Attempt to read beyond end of buffer"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::readShort()- Attempt to read beyond end of buffer"));
         return 0;
     }
 
@@ -152,11 +152,11 @@ unsigned int
 SocketBuffer::readInt()
 {
     if(pos >= maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::readInt()- end of buffer reached"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::readInt()- end of buffer reached"));
         return 0;
     }
     else if((pos + sizeof(unsigned int)) > maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::readInt()- Attempt to read beyond end of buffer"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::readInt()- Attempt to read beyond end of buffer"));
         return 0;
     }
 
@@ -179,12 +179,12 @@ SocketBuffer::readString(unsigned char sizeOfChar)
         return tstring();
     }
     if(pos > maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::readString()- end of buffer reached"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::readString()- end of buffer reached"));
         return tstring();
     }
 
     if((pos + bufferLen) > maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::readString()- Attempt to read beyond end of buffer"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::readString()- Attempt to read beyond end of buffer"));
         bufferLen = (maxsize - 1) - pos;
         strlen = bufferLen / sizeOfChar;
     }
@@ -203,7 +203,7 @@ SocketBuffer::readString(unsigned char sizeOfChar)
         return ret;
     }
     else {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::readString()- Invalid sizeOfChar!!!!"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::readString()- Invalid sizeOfChar!!!!"));
     }
 
 
@@ -216,7 +216,7 @@ void
 SocketBuffer::appendByte(unsigned char val)
 {
     if((pos + sizeof(unsigned char)) > maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::appendByte()- Attempt to write beyond end of buffer"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::appendByte()- Attempt to write beyond end of buffer"));
         return;
     }
 
@@ -231,7 +231,7 @@ void
 SocketBuffer::appendShort(unsigned short val)
 {
     if((pos + sizeof(unsigned short)) > maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::appendShort()- Attempt to write beyond end of buffer"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::appendShort()- Attempt to write beyond end of buffer"));
         return;
     }
 
@@ -247,7 +247,7 @@ void
 SocketBuffer::appendInt(unsigned int val)
 {
     if((pos + sizeof(unsigned int)) > maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::appendInt()- Attempt to write beyond end of buffer"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::appendInt()- Attempt to write beyond end of buffer"));
         return;
     }
 
@@ -264,17 +264,17 @@ SocketBuffer::appendSize_t(size_t val)
 {
     if ((pos + sizeof(unsigned)) > maxsize)
     {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::appendInt(size_t)- ")
-            LOG4CPLUS_TEXT("Attempt to write beyond end of buffer"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::appendInt(size_t)- ")
+            DCMTK_LOG4CPLUS_TEXT("Attempt to write beyond end of buffer"));
         return;
     }
     //if (val > (STD_NAMESPACE numeric_limits<unsigned>::max) ())
     // htonl expects a 32 bit value
     if (val > UINT_MAX)
     {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::appendInt(size_t)-")
-            LOG4CPLUS_TEXT(" Attempt to write value greater than")
-            LOG4CPLUS_TEXT(" STD_NAMESPACE numeric_limits<unsigned>::max"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::appendInt(size_t)-")
+            DCMTK_LOG4CPLUS_TEXT(" Attempt to write value greater than")
+            DCMTK_LOG4CPLUS_TEXT(" STD_NAMESPACE numeric_limits<unsigned>::max"));
         return;
     }
 
@@ -291,7 +291,7 @@ SocketBuffer::appendString(const tstring& str)
     size_t strlen = str.length();
 
     if((pos + sizeof(unsigned int) + strlen) > maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::appendString()- Attempt to write beyond end of buffer"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::appendString()- Attempt to write beyond end of buffer"));
         return;
     }
 
@@ -307,7 +307,7 @@ void
 SocketBuffer::appendBuffer(const SocketBuffer& buf)
 {
     if((pos + buf.getSize()) > maxsize) {
-        getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::appendBuffer()- Attempt to write beyond end of buffer"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::appendBuffer()- Attempt to write beyond end of buffer"));
         return;
     }
 

@@ -31,7 +31,7 @@ using namespace dcmtk::log4cplus::spi;
 //////////////////////////////////////////////////////////////////////////////
 
 RootLogger::RootLogger(Hierarchy& h, LogLevel ll_)
-: LoggerImpl(LOG4CPLUS_TEXT("root"), h)
+: LoggerImpl(DCMTK_LOG4CPLUS_TEXT("root"), h)
 {
     setLogLevel(ll_);
 }
@@ -53,7 +53,7 @@ void
 RootLogger::setLogLevel(LogLevel ll_)
 {
     if(ll_ == NOT_SET_LOG_LEVEL) {
-        getLogLog().error(LOG4CPLUS_TEXT("You have tried to set NOT_SET_LOG_LEVEL to root."));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("You have tried to set NOT_SET_LOG_LEVEL to root."));
     }
     else {
         LoggerImpl::setLogLevel(ll_);

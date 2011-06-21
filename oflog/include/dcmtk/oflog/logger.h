@@ -21,8 +21,8 @@
 /** @file
  * This header defines the Logger class and the logging macros. */
 
-#ifndef _LOG4CPLUS_LOGGERHEADER_
-#define _LOG4CPLUS_LOGGERHEADER_
+#ifndef DCMTK__LOG4CPLUS_LOGGERHEADER_
+#define DCMTK__LOG4CPLUS_LOGGERHEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/loglevel.h"
@@ -61,7 +61,7 @@ namespace log4cplus
      * See the <a href="../../../../manual.html">user manual</a> for an
      * introduction on this class.
      */
-    class LOG4CPLUS_EXPORT Logger
+    class DCMTK_LOG4CPLUS_EXPORT Logger
         : public spi::AppenderAttachable
     {
     public:
@@ -301,7 +301,7 @@ namespace log4cplus
      * This class is used to create the default implementation of
      * the Logger class
      */
-    class LOG4CPLUS_EXPORT DefaultLoggerFactory : public spi::LoggerFactory {
+    class DCMTK_LOG4CPLUS_EXPORT DefaultLoggerFactory : public spi::LoggerFactory {
     public:
         Logger makeNewLoggerInstance(const tstring& name, Hierarchy& h);
     };
@@ -316,7 +316,7 @@ namespace log4cplus
      * <code>"ENTER: " + msg</code> log message if TRACE_LOG_LEVEL is enabled
      * for <code>logger</code>.
      *
-     * @see LOG4CPLUS_TRACE
+     * @see DCMTK_LOG4CPLUS_TRACE
      */
     class TraceLogger
     {
@@ -325,12 +325,12 @@ namespace log4cplus
                     const char* _file=NULL, int _line=-1)
           : logger(l), msg(_msg), file(_file), line(_line)
         { if(logger.isEnabledFor(TRACE_LOG_LEVEL))
-              logger.forcedLog(TRACE_LOG_LEVEL, LOG4CPLUS_TEXT("ENTER: ") + msg, file, line);
+              logger.forcedLog(TRACE_LOG_LEVEL, DCMTK_LOG4CPLUS_TEXT("ENTER: ") + msg, file, line);
         }
 
         ~TraceLogger()
         { if(logger.isEnabledFor(TRACE_LOG_LEVEL))
-              logger.forcedLog(TRACE_LOG_LEVEL, LOG4CPLUS_TEXT("EXIT:  ") + msg, file, line);
+              logger.forcedLog(TRACE_LOG_LEVEL, DCMTK_LOG4CPLUS_TEXT("EXIT:  ") + msg, file, line);
         }
 
     private:
@@ -349,5 +349,5 @@ namespace log4cplus
 #include "dcmtk/oflog/logmacro.h"
 
 
-#endif // _LOG4CPLUS_LOGGERHEADER_
+#endif // DCMTK__LOG4CPLUS_LOGGERHEADER_
 

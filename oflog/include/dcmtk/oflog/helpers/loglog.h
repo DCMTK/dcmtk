@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_HELPERS_LOGLOG
-#define _LOG4CPLUS_HELPERS_LOGLOG
+#ifndef DCMTK__LOG4CPLUS_HELPERS_LOGLOG
+#define DCMTK__LOG4CPLUS_HELPERS_LOGLOG
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
@@ -46,7 +46,7 @@ namespace log4cplus {
          * <code>cerr</code>. All internal messages are prepended with
          * the string "log4clus: ".
          */
-        class LOG4CPLUS_EXPORT LogLog
+        class DCMTK_LOG4CPLUS_EXPORT LogLog
             : public virtual helpers::SharedObject
         {
         public:
@@ -94,7 +94,7 @@ namespace log4cplus {
             virtual ~LogLog();
 
           // Data
-            LOG4CPLUS_MUTEX_PTR_DECLARE mutex;
+            DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE mutex;
 
         private:
           // Data
@@ -111,5 +111,5 @@ namespace log4cplus {
 } // end namespace dcmtk
 
 
-#endif // _LOG4CPLUS_HELPERS_LOGLOG
+#endif // DCMTK__LOG4CPLUS_HELPERS_LOGLOG
 

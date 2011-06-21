@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_HIERARCHY_HEADER_
-#define _LOG4CPLUS_HIERARCHY_HEADER_
+#ifndef DCMTK__LOG4CPLUS_HIERARCHY_HEADER_
+#define DCMTK__LOG4CPLUS_HIERARCHY_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/logger.h"
@@ -57,7 +57,7 @@ namespace log4cplus {
      * to the provision node. Other descendants of the same ancestor add
      * themselves to the previously created provision node.
      */
-    class LOG4CPLUS_EXPORT Hierarchy : protected helpers::LogLogUser {
+    class DCMTK_LOG4CPLUS_EXPORT Hierarchy : protected helpers::LogLogUser {
     public:
         // DISABLE_OFF should be set to a value lower than all possible
         // priorities.
@@ -292,7 +292,7 @@ namespace log4cplus {
         void updateChildren(ProvisionNode& pn, Logger logger);
 
     // Data
-       LOG4CPLUS_MUTEX_PTR_DECLARE hashtable_mutex;
+       DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE hashtable_mutex;
        OFauto_ptr<spi::LoggerFactory> defaultFactory;
        ProvisionNodeMap provisionNodes;
        LoggerMap loggerPtrs;
@@ -315,5 +315,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _LOG4CPLUS_HIERARCHY_HEADER_
+#endif // DCMTK__LOG4CPLUS_HIERARCHY_HEADER_
 

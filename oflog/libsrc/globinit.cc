@@ -57,9 +57,9 @@ void initializeLog4cplus()
 } // namespace dcmtk
 
 
-#if defined (_WIN32) && defined (LOG4CPLUS_BUILD_DLL)
+#if defined (_WIN32) && defined (DCMTK_LOG4CPLUS_BUILD_DLL)
 
-BOOL WINAPI DllMain(LOG4CPLUS_DLLMAIN_HINSTANCE hinstDLL,  // handle to DLL module
+BOOL WINAPI DllMain(DCMTK_LOG4CPLUS_DLLMAIN_HINSTANCE hinstDLL,  // handle to DLL module
                     DWORD fdwReason,     // reason for calling function
                     LPVOID lpReserved )  // reserved
 {

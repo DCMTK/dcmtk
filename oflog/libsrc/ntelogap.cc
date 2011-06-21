@@ -1,4 +1,4 @@
-// Module:  LOG4CPLUS
+// Module:  DCMTK_LOG4CPLUS
 // File:    nteventlogappender.cxx
 // Created: 4/2003
 // Author:  Michael CATANZARITI
@@ -24,7 +24,7 @@
 #include "dcmtk/oflog/spi/logevent.h"
 
 
-#if defined (LOG4CPLUS_HAVE_NT_EVENT_LOG)
+#if defined (DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG)
 
 using namespace dcmtk::log4cplus;
 using namespace dcmtk::log4cplus::spi;
@@ -163,9 +163,9 @@ NTEventLogAppender::NTEventLogAppender(const Properties properties, tstring& err
   hEventLog(NULL),
   pCurrentUserSID(NULL)
 {
-    server = properties.getProperty( LOG4CPLUS_TEXT("server") );
-    log = properties.getProperty( LOG4CPLUS_TEXT("log") );
-    source = properties.getProperty( LOG4CPLUS_TEXT("source") );
+    server = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("server") );
+    log = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("log") );
+    source = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("source") );
 
     init();
 }
@@ -176,14 +176,14 @@ void
 NTEventLogAppender::init()
 {
     if(source.empty()) {
-        getLogLog().warn(  LOG4CPLUS_TEXT("Source option not set for appender [")
+        getLogLog().warn(  DCMTK_LOG4CPLUS_TEXT("Source option not set for appender [")
                          + name
-                         + LOG4CPLUS_TEXT("]."));
+                         + DCMTK_LOG4CPLUS_TEXT("]."));
         return;
     }
 
     if(log.length() == 0) {
-        log = LOG4CPLUS_TEXT("Application");
+        log = DCMTK_LOG4CPLUS_TEXT("Application");
     }
 
     // current user security identifier
@@ -194,7 +194,7 @@ NTEventLogAppender::init()
     hEventLog = ::RegisterEventSource(server.empty () ? 0 : server.c_str(),
         source.c_str());
     if (! hEventLog || hEventLog == HANDLE(ERROR_INVALID_HANDLE))
-        getLogLog().warn (LOG4CPLUS_TEXT("Event source registration failed."));
+        getLogLog().warn (DCMTK_LOG4CPLUS_TEXT("Event source registration failed."));
 }
 
 
@@ -237,7 +237,7 @@ NTEventLogAppender::append(const InternalLoggingEvent& event)
     BOOL bSuccess;
 
     if(hEventLog == NULL) {
-        getLogLog().warn(LOG4CPLUS_TEXT("NT EventLog not opened."));
+        getLogLog().warn(DCMTK_LOG4CPLUS_TEXT("NT EventLog not opened."));
         return;
     }
 
@@ -258,7 +258,7 @@ NTEventLogAppender::append(const InternalLoggingEvent& event)
     OFSTRINGSTREAM_FREESTR(s);
 
     if(!bSuccess) {
-        getLogLog().error(LOG4CPLUS_TEXT("Cannot report event in NT EventLog."));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("Cannot report event in NT EventLog."));
     }
 }
 
@@ -326,21 +326,21 @@ NTEventLogAppender::addRegistryInfo()
 {
     DWORD disposition;
     HKEY hkey = 0;
-    tstring subkey =   LOG4CPLUS_TEXT("SYSTEM\\CurrentControlSet\\Services\\EventLog\\")
+    tstring subkey =   DCMTK_LOG4CPLUS_TEXT("SYSTEM\\CurrentControlSet\\Services\\EventLog\\")
                      + log
-                     + LOG4CPLUS_TEXT("\\")
+                     + DCMTK_LOG4CPLUS_TEXT("\\")
                      + source;
 
     hkey = regGetKey(subkey, &disposition);
     if(disposition == REG_CREATED_NEW_KEY) {
         regSetString(hkey,
-                     LOG4CPLUS_TEXT("EventMessageFile"),
-                     LOG4CPLUS_TEXT("NTEventLogAppender.dll"));
+                     DCMTK_LOG4CPLUS_TEXT("EventMessageFile"),
+                     DCMTK_LOG4CPLUS_TEXT("NTEventLogAppender.dll"));
         regSetString(hkey,
-                     LOG4CPLUS_TEXT("CategoryMessageFile"),
-                     LOG4CPLUS_TEXT("NTEventLogAppender.dll"));
-        regSetDword(hkey, LOG4CPLUS_TEXT("TypesSupported"), (DWORD)7);
-        regSetDword(hkey, LOG4CPLUS_TEXT("CategoryCount"), (DWORD)5);
+                     DCMTK_LOG4CPLUS_TEXT("CategoryMessageFile"),
+                     DCMTK_LOG4CPLUS_TEXT("NTEventLogAppender.dll"));
+        regSetDword(hkey, DCMTK_LOG4CPLUS_TEXT("TypesSupported"), (DWORD)7);
+        regSetDword(hkey, DCMTK_LOG4CPLUS_TEXT("CategoryCount"), (DWORD)5);
     }
 
     RegCloseKey(hkey);

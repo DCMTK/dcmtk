@@ -21,8 +21,8 @@
 /** @file
  * This header defines Filter and all of it's subclasses. */
 
-#ifndef LOG4CPLUS_SPI_FILTER_HEADER_
-#define LOG4CPLUS_SPI_FILTER_HEADER_
+#ifndef DCMTK_LOG4CPLUS_SPI_FILTER_HEADER_
+#define DCMTK_LOG4CPLUS_SPI_FILTER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/helpers/pointer.h"
@@ -56,7 +56,7 @@ namespace log4cplus {
          *
          * Note: <code>filter</code> can be NULL.
          */
-        LOG4CPLUS_EXPORT FilterResult checkFilter(const Filter* filter,
+        DCMTK_LOG4CPLUS_EXPORT FilterResult checkFilter(const Filter* filter,
                                                   const InternalLoggingEvent& event);
 
         typedef helpers::SharedObjectPtr<Filter> FilterPtr;
@@ -89,7 +89,7 @@ namespace log4cplus {
          * The philosophy of log4cplus filters is largely inspired from the
          * Linux ipchains.
          */
-        class LOG4CPLUS_EXPORT Filter
+        class DCMTK_LOG4CPLUS_EXPORT Filter
             : public virtual helpers::SharedObject
         {
         public:
@@ -132,7 +132,7 @@ namespace log4cplus {
          * filtering behaviour to a "deny all unless instructed otherwise"
          * behaviour.
          */
-        class LOG4CPLUS_EXPORT DenyAllFilter : public Filter {
+        class DCMTK_LOG4CPLUS_EXPORT DenyAllFilter : public Filter {
         public:
             DenyAllFilter ();
             DenyAllFilter (const helpers::Properties&, tstring& error);
@@ -156,7 +156,7 @@ namespace log4cplus {
          * to <code>true</code>, if it is <code>false</code> then {@link #DENY}
          * is returned. If there is no match, {@link #NEUTRAL} is returned.
          */
-        class LOG4CPLUS_EXPORT LogLevelMatchFilter : public Filter {
+        class DCMTK_LOG4CPLUS_EXPORT LogLevelMatchFilter : public Filter {
         public:
             LogLevelMatchFilter();
             LogLevelMatchFilter(const helpers::Properties& p, tstring&);
@@ -210,7 +210,7 @@ namespace log4cplus {
          * available to <code>all</code> appenders for a more convenient way to
          * filter out events by LogLevel.
          */
-        class LOG4CPLUS_EXPORT LogLevelRangeFilter : public Filter {
+        class DCMTK_LOG4CPLUS_EXPORT LogLevelRangeFilter : public Filter {
         public:
           // ctors
             LogLevelRangeFilter();
@@ -245,7 +245,7 @@ namespace log4cplus {
          * {@link #DENY} is returned. If there is no match, {@link #NEUTRAL}
          * is returned.
          */
-        class LOG4CPLUS_EXPORT StringMatchFilter : public Filter {
+        class DCMTK_LOG4CPLUS_EXPORT StringMatchFilter : public Filter {
         public:
           // ctors
             StringMatchFilter();
@@ -270,6 +270,6 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif /* LOG4CPLUS_SPI_FILTER_HEADER_ */
+#endif /* DCMTK_LOG4CPLUS_SPI_FILTER_HEADER_ */
 
 

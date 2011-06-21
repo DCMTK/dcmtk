@@ -25,8 +25,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_HELPERS_POINTERS_HEADER_
-#define _LOG4CPLUS_HELPERS_POINTERS_HEADER_
+#ifndef DCMTK__LOG4CPLUS_HELPERS_POINTERS_HEADER_
+#define DCMTK__LOG4CPLUS_HELPERS_POINTERS_HEADER_
 
 #include "dcmtk/oflog/config.h"
 //#include <memory>
@@ -46,7 +46,7 @@ namespace log4cplus {
          *                       Class SharedObject (from pp. 204-205)                *
          ******************************************************************************/
 
-        class LOG4CPLUS_EXPORT SharedObject
+        class DCMTK_LOG4CPLUS_EXPORT SharedObject
         {
         public:
             void addReference() const;
@@ -55,12 +55,12 @@ namespace log4cplus {
         protected:
           // Ctor
             SharedObject()
-                : access_mutex(LOG4CPLUS_MUTEX_CREATE)
+                : access_mutex(DCMTK_LOG4CPLUS_MUTEX_CREATE)
                 , count(0)
             { }
 
             SharedObject(const SharedObject&)
-                : access_mutex(LOG4CPLUS_MUTEX_CREATE)
+                : access_mutex(DCMTK_LOG4CPLUS_MUTEX_CREATE)
                 , count(0)
             { }
 
@@ -71,7 +71,7 @@ namespace log4cplus {
             SharedObject& operator=(const SharedObject&) { return *this; }
 
         public:
-            LOG4CPLUS_MUTEX_PTR_DECLARE access_mutex;
+            DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE access_mutex;
 
         private:
             mutable int count;
@@ -164,4 +164,4 @@ namespace log4cplus {
 } // namespace dcmtk
 
 
-#endif // _LOG4CPLUS_HELPERS_POINTERS_HEADER_
+#endif // DCMTK__LOG4CPLUS_HELPERS_POINTERS_HEADER_

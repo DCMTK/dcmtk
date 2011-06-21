@@ -48,13 +48,13 @@ ConsoleAppender::ConsoleAppender(const helpers::Properties properties, tstring&)
   logToStdErr(false),
   immediateFlush(false)
 {
-    tstring val = toLower(properties.getProperty(LOG4CPLUS_TEXT("logToStdErr")));
-    if(val == LOG4CPLUS_TEXT("true")) {
+    tstring val = toLower(properties.getProperty(DCMTK_LOG4CPLUS_TEXT("logToStdErr")));
+    if(val == DCMTK_LOG4CPLUS_TEXT("true")) {
         logToStdErr = true;
     }
-    if(properties.exists( LOG4CPLUS_TEXT("ImmediateFlush") )) {
-        tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("ImmediateFlush") );
-        immediateFlush = (toLower(tmp) == LOG4CPLUS_TEXT("true"));
+    if(properties.exists( DCMTK_LOG4CPLUS_TEXT("ImmediateFlush") )) {
+        tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("ImmediateFlush") );
+        immediateFlush = (toLower(tmp) == DCMTK_LOG4CPLUS_TEXT("true"));
     }
 }
 
@@ -74,7 +74,7 @@ ConsoleAppender::~ConsoleAppender()
 void
 ConsoleAppender::close()
 {
-    getLogLog().debug(LOG4CPLUS_TEXT("Entering ConsoleAppender::close().."));
+    getLogLog().debug(DCMTK_LOG4CPLUS_TEXT("Entering ConsoleAppender::close().."));
     closed = true;
 }
 
@@ -91,7 +91,7 @@ ConsoleAppender::close()
 void
 ConsoleAppender::append(const spi::InternalLoggingEvent& event)
 {
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( getLogLog().mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( getLogLog().mutex )
         tostream& output = (logToStdErr ? ofConsole.lockCerr() : ofConsole.lockCout());
         layout->formatAndAppend(output, event);
         if(immediateFlush) {
@@ -102,7 +102,7 @@ ConsoleAppender::append(const spi::InternalLoggingEvent& event)
         } else {
             ofConsole.unlockCout();
         }
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 

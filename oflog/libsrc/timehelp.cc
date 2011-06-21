@@ -31,20 +31,20 @@
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
 
-#if defined(LOG4CPLUS_HAVE_FTIME)
+#if defined(DCMTK_LOG4CPLUS_HAVE_FTIME)
 #include <sys/timeb.h>
 #endif
 
-#if defined(LOG4CPLUS_HAVE_GETTIMEOFDAY)
+#if defined(DCMTK_LOG4CPLUS_HAVE_GETTIMEOFDAY)
 #include <sys/time.h>
 #endif
 
-#if defined(LOG4CPLUS_HAVE_GMTIME_R) && !defined(LOG4CPLUS_SINGLE_THREADED)
-#define LOG4CPLUS_NEED_GMTIME_R
+#if defined(DCMTK_LOG4CPLUS_HAVE_GMTIME_R) && !defined(DCMTK_LOG4CPLUS_SINGLE_THREADED)
+#define DCMTK_LOG4CPLUS_NEED_GMTIME_R
 #endif
 
-#if defined(LOG4CPLUS_HAVE_LOCALTIME_R) && !defined(LOG4CPLUS_SINGLE_THREADED)
-#define LOG4CPLUS_NEED_LOCALTIME_R
+#if defined(DCMTK_LOG4CPLUS_HAVE_LOCALTIME_R) && !defined(DCMTK_LOG4CPLUS_SINGLE_THREADED)
+#define DCMTK_LOG4CPLUS_NEED_LOCALTIME_R
 #endif
 
 
@@ -82,12 +82,12 @@ Time::Time(time_t time)
 Time
 Time::gettimeofday()
 {
-#if defined(LOG4CPLUS_HAVE_GETTIMEOFDAY)
+#if defined(DCMTK_LOG4CPLUS_HAVE_GETTIMEOFDAY)
     timeval tp;
     ::gettimeofday(&tp, 0);
 
     return Time(tp.tv_sec, tp.tv_usec);
-#elif defined(LOG4CPLUS_HAVE_FTIME)
+#elif defined(DCMTK_LOG4CPLUS_HAVE_FTIME)
     struct timeb tp;
     ::ftime(&tp);
 
@@ -126,7 +126,7 @@ void
 Time::gmtime(struct tm* t) const
 {
     time_t clock = tv_sec;
-#ifdef LOG4CPLUS_NEED_GMTIME_R
+#ifdef DCMTK_LOG4CPLUS_NEED_GMTIME_R
     ::gmtime_r(&clock, t);
 #else
     struct tm* tmp = ::gmtime(&clock);
@@ -139,7 +139,7 @@ void
 Time::localtime(struct tm* t) const
 {
     time_t clock = tv_sec;
-#ifdef LOG4CPLUS_NEED_LOCALTIME_R
+#ifdef DCMTK_LOG4CPLUS_NEED_LOCALTIME_R
     ::localtime_r(&clock, t);
 #else
     struct tm* tmp = ::localtime(&clock);
@@ -153,18 +153,18 @@ namespace
 
 static tstring const padding_zeros[4] =
 {
-    tstring (LOG4CPLUS_TEXT("000")),
-    tstring (LOG4CPLUS_TEXT("00")),
-    tstring (LOG4CPLUS_TEXT("0")),
-    tstring (LOG4CPLUS_TEXT(""))
+    tstring (DCMTK_LOG4CPLUS_TEXT("000")),
+    tstring (DCMTK_LOG4CPLUS_TEXT("00")),
+    tstring (DCMTK_LOG4CPLUS_TEXT("0")),
+    tstring (DCMTK_LOG4CPLUS_TEXT(""))
 };
 
 static tstring const uc_q_padding_zeros[4] =
 {
-    tstring (LOG4CPLUS_TEXT(".000")),
-    tstring (LOG4CPLUS_TEXT(".00")),
-    tstring (LOG4CPLUS_TEXT(".0")),
-    tstring (LOG4CPLUS_TEXT("."))
+    tstring (DCMTK_LOG4CPLUS_TEXT(".000")),
+    tstring (DCMTK_LOG4CPLUS_TEXT(".00")),
+    tstring (DCMTK_LOG4CPLUS_TEXT(".0")),
+    tstring (DCMTK_LOG4CPLUS_TEXT("."))
 };
 
 }
@@ -185,7 +185,7 @@ Time::build_uc_q_value (tstring & uc_q_str) const
 {
     build_q_value (uc_q_str);
 
-#if defined(LOG4CPLUS_HAVE_GETTIMEOFDAY)
+#if defined(DCMTK_LOG4CPLUS_HAVE_GETTIMEOFDAY)
     tstring usecs (convertIntegerToString(tv_usec % 1000));
     size_t usecs_len = usecs.length();
     usecs.insert (0, usecs_len <= 3
@@ -237,7 +237,7 @@ Time::getFormattedTime(const tstring& fmt_orig, bool use_gmtime) const
         {
         case TEXT:
         {
-            if (*fmt_it == LOG4CPLUS_TEXT ('%'))
+            if (*fmt_it == DCMTK_LOG4CPLUS_TEXT ('%'))
                 state = PERCENT_SIGN;
             else
                 ret.append (1, *fmt_it);
@@ -248,7 +248,7 @@ Time::getFormattedTime(const tstring& fmt_orig, bool use_gmtime) const
         {
             switch (*fmt_it)
             {
-            case LOG4CPLUS_TEXT ('q'):
+            case DCMTK_LOG4CPLUS_TEXT ('q'):
             {
                 if (! q_str_valid)
                 {
@@ -260,7 +260,7 @@ Time::getFormattedTime(const tstring& fmt_orig, bool use_gmtime) const
             }
             break;
 
-            case LOG4CPLUS_TEXT ('Q'):
+            case DCMTK_LOG4CPLUS_TEXT ('Q'):
             {
                 if (! uc_q_str_valid)
                 {
@@ -274,7 +274,7 @@ Time::getFormattedTime(const tstring& fmt_orig, bool use_gmtime) const
 
             default:
             {
-                ret.append (1, LOG4CPLUS_TEXT ('%'));
+                ret.append (1, DCMTK_LOG4CPLUS_TEXT ('%'));
                 ret.append (1, *fmt_it);
                 state = TEXT;
             }

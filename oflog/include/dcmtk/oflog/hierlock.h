@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_HIERARCHY_LOCKER_HEADER_
-#define _LOG4CPLUS_HIERARCHY_LOCKER_HEADER_
+#ifndef DCMTK__LOG4CPLUS_HIERARCHY_LOCKER_HEADER_
+#define DCMTK__LOG4CPLUS_HIERARCHY_LOCKER_HEADER_
 
 #include "dcmtk/oflog/hierarchy.h"
 
@@ -32,7 +32,7 @@ namespace log4cplus {
     /**
      * This is used to lock a Hierarchy.  The dtor unlocks the Hierarchy.
      */
-    class LOG4CPLUS_EXPORT HierarchyLocker {
+    class DCMTK_LOG4CPLUS_EXPORT HierarchyLocker {
     public:
       // ctor & dtor
         HierarchyLocker(Hierarchy& h);
@@ -65,5 +65,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _LOG4CPLUS_HIERARCHY_LOCKER_HEADER_
+#endif // DCMTK__LOG4CPLUS_HIERARCHY_LOCKER_HEADER_
 

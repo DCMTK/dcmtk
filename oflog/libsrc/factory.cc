@@ -29,10 +29,10 @@
 #include "dcmtk/oflog/helpers/threads.h"
 
 #if defined (_WIN32)
-#  if defined (LOG4CPLUS_HAVE_NT_EVENT_LOG)
+#  if defined (DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG)
 #    include "dcmtk/oflog/ntelogap.h"
 #  endif
-#  if defined (LOG4CPLUS_HAVE_WIN32_CONSOLE)
+#  if defined (DCMTK_LOG4CPLUS_HAVE_WIN32_CONSOLE)
 #    include "dcmtk/oflog/winconap.h"
 #  endif
 #  include "dcmtk/oflog/windebap.h"
@@ -135,8 +135,8 @@ public:
 reg.put (                                                               \
     OFauto_ptr<productfact> (                                        \
         new FactoryTempl<productns productname, productfact> (          \
-            LOG4CPLUS_TEXT(productprefix)                               \
-            LOG4CPLUS_TEXT(#productname))))
+            DCMTK_LOG4CPLUS_TEXT(productprefix)                               \
+            DCMTK_LOG4CPLUS_TEXT(#productname))))
 
 
 #define REG_APPENDER(reg, appendername)                             \
@@ -160,14 +160,14 @@ void initializeFactoryRegistry()
     REG_APPENDER (reg, DailyRollingFileAppender);
     REG_APPENDER (reg, SocketAppender);
 #if defined(_WIN32) && !defined(__MINGW32__)
-#if defined(LOG4CPLUS_HAVE_NT_EVENT_LOG)
+#if defined(DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG)
     REG_APPENDER (reg, NTEventLogAppender);
 #  endif
-#  if defined(LOG4CPLUS_HAVE_WIN32_CONSOLE)
+#  if defined(DCMTK_LOG4CPLUS_HAVE_WIN32_CONSOLE)
     REG_APPENDER (reg, Win32ConsoleAppender);
 #  endif
     REG_APPENDER (reg, Win32DebugAppender);
-#elif defined(LOG4CPLUS_HAVE_SYSLOG_H)
+#elif defined(DCMTK_LOG4CPLUS_HAVE_SYSLOG_H)
     REG_APPENDER (reg, SysLogAppender);
 #endif // defined(_WIN32) && !defined(__MINGW32__)
 

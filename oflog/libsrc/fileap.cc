@@ -59,8 +59,8 @@ static
 int
 file_rename (tstring const & src, tstring const & target)
 {
-    return rename (LOG4CPLUS_TSTRING_TO_STRING (src).c_str (),
-        LOG4CPLUS_TSTRING_TO_STRING (target).c_str ()) == 0 ? 0 : -1;
+    return rename (DCMTK_LOG4CPLUS_TSTRING_TO_STRING (src).c_str (),
+        DCMTK_LOG4CPLUS_TSTRING_TO_STRING (target).c_str ()) == 0 ? 0 : -1;
 }
 
 
@@ -68,7 +68,7 @@ static
 int
 file_remove (tstring const & src)
 {
-    return remove (LOG4CPLUS_TSTRING_TO_STRING (src).c_str ()) == 0
+    return remove (DCMTK_LOG4CPLUS_TSTRING_TO_STRING (src).c_str ()) == 0
         ? 0 : -1;
 }
 
@@ -81,17 +81,17 @@ loglog_renaming_result (LogLog & loglog, tstring const & src,
     if (ret == 0)
     {
         loglog.debug (
-            LOG4CPLUS_TEXT("Renamed file ")
+            DCMTK_LOG4CPLUS_TEXT("Renamed file ")
             + src
-            + LOG4CPLUS_TEXT(" to ")
+            + DCMTK_LOG4CPLUS_TEXT(" to ")
             + target);
     }
     else if (ret == -1 && errno != ENOENT)
     {
         loglog.error (
-            LOG4CPLUS_TEXT("Failed to rename file from ")
+            DCMTK_LOG4CPLUS_TEXT("Failed to rename file from ")
             + target
-            + LOG4CPLUS_TEXT(" to ")
+            + DCMTK_LOG4CPLUS_TEXT(" to ")
             + target);
     }
 }
@@ -105,7 +105,7 @@ loglog_opening_result (LogLog & loglog,
     if (! os)
     {
         loglog.error (
-            LOG4CPLUS_TEXT("Failed to open file ")
+            DCMTK_LOG4CPLUS_TEXT("Failed to open file ")
             + filename);
     }
 }
@@ -120,7 +120,7 @@ rolloverFiles(const tstring& filename, unsigned int maxBackupIndex)
 
     // Delete the oldest file
     tostringstream buffer;
-    buffer << filename << LOG4CPLUS_TEXT(".") << maxBackupIndex;
+    buffer << filename << DCMTK_LOG4CPLUS_TEXT(".") << maxBackupIndex;
     OFSTRINGSTREAM_GETOFSTRING(buffer, buffer_str)
     int ret = file_remove (buffer_str);
 
@@ -130,11 +130,11 @@ rolloverFiles(const tstring& filename, unsigned int maxBackupIndex)
     // Map {(maxBackupIndex - 1), ..., 2, 1} to {maxBackupIndex, ..., 3, 2}
     for (int i = maxBackupIndex - 1; i >= 1; --i)
     {
-        source_oss.str(LOG4CPLUS_TEXT(""));
-        target_oss.str(LOG4CPLUS_TEXT(""));
+        source_oss.str(DCMTK_LOG4CPLUS_TEXT(""));
+        target_oss.str(DCMTK_LOG4CPLUS_TEXT(""));
 
-        source_oss << filename << LOG4CPLUS_TEXT(".") << i;
-        target_oss << filename << LOG4CPLUS_TEXT(".") << (i+1);
+        source_oss << filename << DCMTK_LOG4CPLUS_TEXT(".") << i;
+        target_oss << filename << DCMTK_LOG4CPLUS_TEXT(".") << (i+1);
 
         OFSTRINGSTREAM_GETOFSTRING(source_oss, source)
         OFSTRINGSTREAM_GETOFSTRING(target_oss, target)
@@ -158,7 +158,7 @@ rolloverFiles(const tstring& filename, unsigned int maxBackupIndex)
 ///////////////////////////////////////////////////////////////////////////////
 
 FileAppender::FileAppender(const tstring& filename_,
-    LOG4CPLUS_OPEN_MODE_TYPE mode, bool immediateFlush_)
+    DCMTK_LOG4CPLUS_OPEN_MODE_TYPE mode, bool immediateFlush_)
     : immediateFlush(immediateFlush_)
     , reopenDelay(1)
 {
@@ -168,29 +168,29 @@ FileAppender::FileAppender(const tstring& filename_,
 
 FileAppender::FileAppender(const Properties& properties,
                            tstring&,
-                           LOG4CPLUS_OPEN_MODE_TYPE mode)
+                           DCMTK_LOG4CPLUS_OPEN_MODE_TYPE mode)
     : Appender(properties)
     , immediateFlush(true)
     , reopenDelay(1)
 {
     bool append_ = (mode == STD_NAMESPACE ios::app);
-    tstring filename_ = properties.getProperty( LOG4CPLUS_TEXT("File") );
+    tstring filename_ = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("File") );
     if (filename_.empty())
     {
-        getErrorHandler()->error( LOG4CPLUS_TEXT("Invalid filename") );
+        getErrorHandler()->error( DCMTK_LOG4CPLUS_TEXT("Invalid filename") );
         return;
     }
-    if(properties.exists( LOG4CPLUS_TEXT("ImmediateFlush") )) {
-        tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("ImmediateFlush") );
-        immediateFlush = (toLower(tmp) == LOG4CPLUS_TEXT("true"));
+    if(properties.exists( DCMTK_LOG4CPLUS_TEXT("ImmediateFlush") )) {
+        tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("ImmediateFlush") );
+        immediateFlush = (toLower(tmp) == DCMTK_LOG4CPLUS_TEXT("true"));
     }
-    if(properties.exists( LOG4CPLUS_TEXT("Append") )) {
-        tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("Append") );
-        append_ = (toLower(tmp) == LOG4CPLUS_TEXT("true"));
+    if(properties.exists( DCMTK_LOG4CPLUS_TEXT("Append") )) {
+        tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("Append") );
+        append_ = (toLower(tmp) == DCMTK_LOG4CPLUS_TEXT("true"));
     }
-    if(properties.exists( LOG4CPLUS_TEXT("ReopenDelay") )) {
-        tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("ReopenDelay") );
-        reopenDelay = atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
+    if(properties.exists( DCMTK_LOG4CPLUS_TEXT("ReopenDelay") )) {
+        tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("ReopenDelay") );
+        reopenDelay = atoi(DCMTK_LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
     }
 
     init(filename_, (append_ ? STD_NAMESPACE ios::app : STD_NAMESPACE ios::trunc));
@@ -200,17 +200,17 @@ FileAppender::FileAppender(const Properties& properties,
 
 void
 FileAppender::init(const tstring& filename_,
-                   LOG4CPLUS_OPEN_MODE_TYPE mode)
+                   DCMTK_LOG4CPLUS_OPEN_MODE_TYPE mode)
 {
     this->filename = filename_;
     open(mode);
 
     if(!out.good()) {
-        getErrorHandler()->error(  LOG4CPLUS_TEXT("Unable to open file: ")
+        getErrorHandler()->error(  DCMTK_LOG4CPLUS_TEXT("Unable to open file: ")
                                  + filename);
         return;
     }
-    getLogLog().debug(LOG4CPLUS_TEXT("Just opened file: ") + filename);
+    getLogLog().debug(DCMTK_LOG4CPLUS_TEXT("Just opened file: ") + filename);
 }
 
 
@@ -229,10 +229,10 @@ FileAppender::~FileAppender()
 void
 FileAppender::close()
 {
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
         out.close();
         closed = true;
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 
@@ -248,7 +248,7 @@ FileAppender::append(const spi::InternalLoggingEvent& event)
 {
     if(!out.good()) {
         if(!reopen()) {
-            getErrorHandler()->error(  LOG4CPLUS_TEXT("file is not open: ")
+            getErrorHandler()->error(  DCMTK_LOG4CPLUS_TEXT("file is not open: ")
                                      + filename);
             return;
         }
@@ -267,7 +267,7 @@ FileAppender::append(const spi::InternalLoggingEvent& event)
 void
 FileAppender::open(STD_NAMESPACE ios::openmode mode)
 {
-    out.open(LOG4CPLUS_TSTRING_TO_STRING(filename).c_str(), mode);
+    out.open(DCMTK_LOG4CPLUS_TSTRING_TO_STRING(filename).c_str(), mode);
 }
 
 bool
@@ -320,21 +320,21 @@ RollingFileAppender::RollingFileAppender(const Properties& properties, tstring& 
 {
     int maxFileSize_ = 10*1024*1024;
     int maxBackupIndex_ = 1;
-    if(properties.exists( LOG4CPLUS_TEXT("MaxFileSize") )) {
-        tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("MaxFileSize") );
+    if(properties.exists( DCMTK_LOG4CPLUS_TEXT("MaxFileSize") )) {
+        tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("MaxFileSize") );
         tmp = toUpper(tmp);
-        maxFileSize_ = atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
-        if(tmp.find( LOG4CPLUS_TEXT("MB") ) == (tmp.length() - 2)) {
+        maxFileSize_ = atoi(DCMTK_LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
+        if(tmp.find( DCMTK_LOG4CPLUS_TEXT("MB") ) == (tmp.length() - 2)) {
             maxFileSize_ *= (1024 * 1024); // convert to megabytes
         }
-        if(tmp.find( LOG4CPLUS_TEXT("KB") ) == (tmp.length() - 2)) {
+        if(tmp.find( DCMTK_LOG4CPLUS_TEXT("KB") ) == (tmp.length() - 2)) {
             maxFileSize_ *= 1024; // convert to kilobytes
         }
     }
 
-    if(properties.exists( LOG4CPLUS_TEXT("MaxBackupIndex") )) {
-        tstring tmp = properties.getProperty(LOG4CPLUS_TEXT("MaxBackupIndex"));
-        maxBackupIndex_ = atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
+    if(properties.exists( DCMTK_LOG4CPLUS_TEXT("MaxBackupIndex") )) {
+        tstring tmp = properties.getProperty(DCMTK_LOG4CPLUS_TEXT("MaxBackupIndex"));
+        maxBackupIndex_ = atoi(DCMTK_LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
     }
 
     init(maxFileSize_, maxBackupIndex_);
@@ -347,8 +347,8 @@ RollingFileAppender::init(long maxFileSize_, int maxBackupIndex_)
     if (maxFileSize_ < MINIMUM_ROLLING_LOG_SIZE)
     {
         tostringstream oss;
-        oss << LOG4CPLUS_TEXT ("RollingFileAppender: MaxFileSize property")
-            LOG4CPLUS_TEXT (" value is too small. Resetting to ")
+        oss << DCMTK_LOG4CPLUS_TEXT ("RollingFileAppender: MaxFileSize property")
+            DCMTK_LOG4CPLUS_TEXT (" value is too small. Resetting to ")
             << MINIMUM_ROLLING_LOG_SIZE << ".";
         OFSTRINGSTREAM_GETSTR(oss, str)
         getLogLog().warn(str);
@@ -401,7 +401,7 @@ RollingFileAppender::rollover()
         rolloverFiles(filename, maxBackupIndex);
 
         // Rename fileName to fileName.1
-        tstring target = filename + LOG4CPLUS_TEXT(".1");
+        tstring target = filename + DCMTK_LOG4CPLUS_TEXT(".1");
 
         int ret;
 
@@ -412,16 +412,16 @@ RollingFileAppender::rollover()
 #endif
 
         loglog.debug (
-            LOG4CPLUS_TEXT("Renaming file ")
+            DCMTK_LOG4CPLUS_TEXT("Renaming file ")
             + filename
-            + LOG4CPLUS_TEXT(" to ")
+            + DCMTK_LOG4CPLUS_TEXT(" to ")
             + target);
         ret = file_rename (filename, target);
         loglog_renaming_result (loglog, filename, target, ret);
     }
     else
     {
-        loglog.debug (filename + LOG4CPLUS_TEXT(" has no backups specified"));
+        loglog.debug (filename + DCMTK_LOG4CPLUS_TEXT(" has no backups specified"));
     }
 
     // Open it up again in truncation mode
@@ -451,30 +451,30 @@ DailyRollingFileAppender::DailyRollingFileAppender(
     , maxBackupIndex(10)
 {
     DailyRollingFileSchedule theSchedule = DAILY;
-    tstring scheduleStr = properties.getProperty(LOG4CPLUS_TEXT("Schedule"));
+    tstring scheduleStr = properties.getProperty(DCMTK_LOG4CPLUS_TEXT("Schedule"));
     scheduleStr = toUpper(scheduleStr);
 
-    if(scheduleStr == LOG4CPLUS_TEXT("MONTHLY"))
+    if(scheduleStr == DCMTK_LOG4CPLUS_TEXT("MONTHLY"))
         theSchedule = MONTHLY;
-    else if(scheduleStr == LOG4CPLUS_TEXT("WEEKLY"))
+    else if(scheduleStr == DCMTK_LOG4CPLUS_TEXT("WEEKLY"))
         theSchedule = WEEKLY;
-    else if(scheduleStr == LOG4CPLUS_TEXT("DAILY"))
+    else if(scheduleStr == DCMTK_LOG4CPLUS_TEXT("DAILY"))
         theSchedule = DAILY;
-    else if(scheduleStr == LOG4CPLUS_TEXT("TWICE_DAILY"))
+    else if(scheduleStr == DCMTK_LOG4CPLUS_TEXT("TWICE_DAILY"))
         theSchedule = TWICE_DAILY;
-    else if(scheduleStr == LOG4CPLUS_TEXT("HOURLY"))
+    else if(scheduleStr == DCMTK_LOG4CPLUS_TEXT("HOURLY"))
         theSchedule = HOURLY;
-    else if(scheduleStr == LOG4CPLUS_TEXT("MINUTELY"))
+    else if(scheduleStr == DCMTK_LOG4CPLUS_TEXT("MINUTELY"))
         theSchedule = MINUTELY;
     else {
-        getLogLog().warn(  LOG4CPLUS_TEXT("DailyRollingFileAppender::ctor()- \"Schedule\" not valid: ")
-                         + properties.getProperty(LOG4CPLUS_TEXT("Schedule")));
+        getLogLog().warn(  DCMTK_LOG4CPLUS_TEXT("DailyRollingFileAppender::ctor()- \"Schedule\" not valid: ")
+                         + properties.getProperty(DCMTK_LOG4CPLUS_TEXT("Schedule")));
         theSchedule = DAILY;
     }
 
-    if(properties.exists( LOG4CPLUS_TEXT("MaxBackupIndex") )) {
-        tstring tmp = properties.getProperty(LOG4CPLUS_TEXT("MaxBackupIndex"));
-        maxBackupIndex = atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
+    if(properties.exists( DCMTK_LOG4CPLUS_TEXT("MaxBackupIndex") )) {
+        tstring tmp = properties.getProperty(DCMTK_LOG4CPLUS_TEXT("MaxBackupIndex"));
+        maxBackupIndex = atoi(DCMTK_LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
     }
 
     init(theSchedule);
@@ -593,7 +593,7 @@ DailyRollingFileAppender::rollover()
     // Do not overwriet the newest file either, e.g. if "log.2009-11-07"
     // already exists rename it to "log.2009-11-07.1"
     tostringstream backup_target_oss;
-    backup_target_oss << scheduledFilename << LOG4CPLUS_TEXT(".") << 1;
+    backup_target_oss << scheduledFilename << DCMTK_LOG4CPLUS_TEXT(".") << 1;
     OFSTRINGSTREAM_GETOFSTRING(backup_target_oss, backupTarget)
 
     LogLog & loglog = getLogLog();
@@ -618,9 +618,9 @@ DailyRollingFileAppender::rollover()
     // Rename filename to scheduledFilename,
     // e.g. rename "log" to "log.2009-11-07".
     loglog.debug(
-        LOG4CPLUS_TEXT("Renaming file ")
+        DCMTK_LOG4CPLUS_TEXT("Renaming file ")
         + filename
-        + LOG4CPLUS_TEXT(" to ")
+        + DCMTK_LOG4CPLUS_TEXT(" to ")
         + scheduledFilename);
     ret = file_rename (filename, scheduledFilename);
     loglog_renaming_result (loglog, filename, scheduledFilename, ret);
@@ -655,8 +655,8 @@ DailyRollingFileAppender::calculateNextRolloverTime(const Time& t) const
         Time ret;
         if(ret.setTime(&nextMonthTime) == -1) {
             getLogLog().error(
-                LOG4CPLUS_TEXT("DailyRollingFileAppender::calculateNextRolloverTime()-")
-                LOG4CPLUS_TEXT(" setTime() returned error"));
+                DCMTK_LOG4CPLUS_TEXT("DailyRollingFileAppender::calculateNextRolloverTime()-")
+                DCMTK_LOG4CPLUS_TEXT(" setTime() returned error"));
             // Set next rollover to 31 days in future.
             ret = (t + Time(2678400));
         }
@@ -669,8 +669,8 @@ DailyRollingFileAppender::calculateNextRolloverTime(const Time& t) const
 
     default:
         getLogLog ().error (
-            LOG4CPLUS_TEXT ("DailyRollingFileAppender::calculateNextRolloverTime()-")
-            LOG4CPLUS_TEXT (" invalid schedule value"));
+            DCMTK_LOG4CPLUS_TEXT ("DailyRollingFileAppender::calculateNextRolloverTime()-")
+            DCMTK_LOG4CPLUS_TEXT (" invalid schedule value"));
         // Fall through.
 
     case DAILY:
@@ -696,38 +696,38 @@ DailyRollingFileAppender::getFilename(const Time& t) const
     switch (schedule)
     {
     case MONTHLY:
-        pattern = LOG4CPLUS_TEXT("%Y-%m");
+        pattern = DCMTK_LOG4CPLUS_TEXT("%Y-%m");
         break;
 
     case WEEKLY:
-        pattern = LOG4CPLUS_TEXT("%Y-%W");
+        pattern = DCMTK_LOG4CPLUS_TEXT("%Y-%W");
         break;
 
     default:
         getLogLog ().error (
-            LOG4CPLUS_TEXT ("DailyRollingFileAppender::getFilename()-")
-            LOG4CPLUS_TEXT (" invalid schedule value"));
+            DCMTK_LOG4CPLUS_TEXT ("DailyRollingFileAppender::getFilename()-")
+            DCMTK_LOG4CPLUS_TEXT (" invalid schedule value"));
         // Fall through.
 
     case DAILY:
-        pattern = LOG4CPLUS_TEXT("%Y-%m-%d");
+        pattern = DCMTK_LOG4CPLUS_TEXT("%Y-%m-%d");
         break;
 
     case TWICE_DAILY:
-        pattern = LOG4CPLUS_TEXT("%Y-%m-%d-%p");
+        pattern = DCMTK_LOG4CPLUS_TEXT("%Y-%m-%d-%p");
         break;
 
     case HOURLY:
-        pattern = LOG4CPLUS_TEXT("%Y-%m-%d-%H");
+        pattern = DCMTK_LOG4CPLUS_TEXT("%Y-%m-%d-%H");
         break;
 
     case MINUTELY:
-        pattern = LOG4CPLUS_TEXT("%Y-%m-%d-%H-%M");
+        pattern = DCMTK_LOG4CPLUS_TEXT("%Y-%m-%d-%H-%M");
         break;
     };
 
     tstring result (filename);
-    result += LOG4CPLUS_TEXT(".");
+    result += DCMTK_LOG4CPLUS_TEXT(".");
     result += t.getFormattedTime(pattern, false);
     return result;
 }

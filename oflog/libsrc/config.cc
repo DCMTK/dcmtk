@@ -1,4 +1,4 @@
-// Module:  LOG4CPLUS
+// Module:  DCMTK_LOG4CPLUS
 // File:    configurator.cxx
 // Created: 3/2003
 // Author:  Tad E. Smith
@@ -52,8 +52,8 @@ void initializeLog4cplus();
 
 namespace
 {
-    static tchar const DELIM_START[] = LOG4CPLUS_TEXT("${");
-    static tchar const DELIM_STOP[] = LOG4CPLUS_TEXT("}");
+    static tchar const DELIM_START[] = DCMTK_LOG4CPLUS_TEXT("${");
+    static tchar const DELIM_STOP[] = DCMTK_LOG4CPLUS_TEXT("}");
     static size_t const DELIM_START_LEN = 2;
     static size_t const DELIM_STOP_LEN = 1;
 
@@ -139,9 +139,9 @@ namespace
             if (! shadow_env || (! empty_vars && replacement.empty ()))
             {
                 char const * env_var
-                    = getenv(LOG4CPLUS_TSTRING_TO_STRING(key).c_str());
+                    = getenv(DCMTK_LOG4CPLUS_TSTRING_TO_STRING(key).c_str());
                 if (env_var)
-                    replacement = LOG4CPLUS_STRING_TO_TSTRING (env_var);
+                    replacement = DCMTK_LOG4CPLUS_STRING_TO_TSTRING (env_var);
             }
 #endif
 
@@ -188,7 +188,7 @@ PropertyConfigurator::PropertyConfigurator(const tstring& propertyFile,
 PropertyConfigurator::PropertyConfigurator(const helpers::Properties& props,
     Hierarchy& h_, unsigned flags_)
     : h(h_)
-    , propertyFilename( LOG4CPLUS_TEXT("UNAVAILABLE") )
+    , propertyFilename( DCMTK_LOG4CPLUS_TEXT("UNAVAILABLE") )
     , properties( props )
     , flags (flags_)
 {
@@ -199,7 +199,7 @@ PropertyConfigurator::PropertyConfigurator(const helpers::Properties& props,
 PropertyConfigurator::PropertyConfigurator(tistream& propertyStream,
     Hierarchy& h_, unsigned flags_)
     : h(h_)
-    , propertyFilename( LOG4CPLUS_TEXT("UNAVAILABLE") )
+    , propertyFilename( DCMTK_LOG4CPLUS_TEXT("UNAVAILABLE") )
     , properties(propertyStream)
     , flags (flags_)
 {
@@ -211,7 +211,7 @@ void
 PropertyConfigurator::init()
 {
     replaceEnvironVariables();
-    properties = properties.getPropertySubset( LOG4CPLUS_TEXT("log4cplus.") );
+    properties = properties.getPropertySubset( DCMTK_LOG4CPLUS_TEXT("log4cplus.") );
 }
 
 
@@ -244,9 +244,9 @@ PropertyConfigurator::configure()
 {
     // Configure log4cplus internals.
     tstring val = properties.getProperty (
-        LOG4CPLUS_TEXT ("configDebug"), LOG4CPLUS_TEXT ("false"));
+        DCMTK_LOG4CPLUS_TEXT ("configDebug"), DCMTK_LOG4CPLUS_TEXT ("false"));
     getLogLog ().setInternalDebugging (
-        helpers::toLower (val) == LOG4CPLUS_TEXT ("true"));
+        helpers::toLower (val) == DCMTK_LOG4CPLUS_TEXT ("true"));
 
     initializeLog4cplus();
     configureAppenders();
@@ -327,15 +327,15 @@ PropertyConfigurator::replaceEnvironVariables()
 void
 PropertyConfigurator::configureLoggers()
 {
-    if(properties.exists( LOG4CPLUS_TEXT("rootLogger") ))
+    if(properties.exists( DCMTK_LOG4CPLUS_TEXT("rootLogger") ))
     {
         Logger root = h.getRoot();
         configureLogger(root,
-                        properties.getProperty(LOG4CPLUS_TEXT("rootLogger")));
+                        properties.getProperty(DCMTK_LOG4CPLUS_TEXT("rootLogger")));
     }
 
     Properties loggerProperties
-        = properties.getPropertySubset(LOG4CPLUS_TEXT("logger."));
+        = properties.getPropertySubset(DCMTK_LOG4CPLUS_TEXT("logger."));
     OFList<tstring> loggers = loggerProperties.propertyNames();
     for(OFListIterator(tstring) it=loggers.begin(); it!=loggers.end();
         ++it)
@@ -354,7 +354,7 @@ PropertyConfigurator::configureLogger(Logger logger, const tstring& config)
     tstring configString;
 //    remove_copy_if(config.begin(), config.end(),
 //        string_append_iterator<tstring>(configString),
-//        STD_NAMESPACE bind1st(STD_NAMESPACEequal_to<tchar>(), LOG4CPLUS_TEXT(' ')));
+//        STD_NAMESPACE bind1st(STD_NAMESPACEequal_to<tchar>(), DCMTK_LOG4CPLUS_TEXT(' ')));
     for (size_t i = 0; i < config.length(); i++)
     {
         if (config[i] != ' ')
@@ -367,18 +367,18 @@ PropertyConfigurator::configureLogger(Logger logger, const tstring& config)
 
     if(tokens.size() == 0) {
         getLogLog().error(
-            LOG4CPLUS_TEXT("PropertyConfigurator::configureLogger()")
-            LOG4CPLUS_TEXT("- Invalid config string(Logger = ")
+            DCMTK_LOG4CPLUS_TEXT("PropertyConfigurator::configureLogger()")
+            DCMTK_LOG4CPLUS_TEXT("- Invalid config string(Logger = ")
             + logger.getName()
-            + LOG4CPLUS_TEXT("): \"")
+            + DCMTK_LOG4CPLUS_TEXT("): \"")
             + config
-            + LOG4CPLUS_TEXT("\""));
+            + DCMTK_LOG4CPLUS_TEXT("\""));
         return;
     }
 
     // Set the loglevel
     tstring loglevel = *tokens.begin();
-    if (loglevel != LOG4CPLUS_TEXT("INHERITED"))
+    if (loglevel != DCMTK_LOG4CPLUS_TEXT("INHERITED"))
         logger.setLogLevel( getLogLevelManager().fromString(loglevel) );
     else
         logger.setLogLevel (NOT_SET_LOG_LEVEL);
@@ -398,8 +398,8 @@ PropertyConfigurator::configureLogger(Logger logger, const tstring& config)
         if (appenderIt == appenders.end())
         {
             getLogLog().error(
-                LOG4CPLUS_TEXT("PropertyConfigurator::configureLogger()")
-                LOG4CPLUS_TEXT("- Invalid appender: ")
+                DCMTK_LOG4CPLUS_TEXT("PropertyConfigurator::configureLogger()")
+                DCMTK_LOG4CPLUS_TEXT("- Invalid appender: ")
                 + *it);
             continue;
         }
@@ -413,13 +413,13 @@ void
 PropertyConfigurator::configureAppenders()
 {
     Properties appenderProperties =
-        properties.getPropertySubset(LOG4CPLUS_TEXT("appender."));
+        properties.getPropertySubset(DCMTK_LOG4CPLUS_TEXT("appender."));
     OFList<tstring> appendersProps = appenderProperties.propertyNames();
     tstring factoryName;
     for(OFListIterator(tstring) it=appendersProps.begin();
         it != appendersProps.end(); ++it)
     {
-        if( it->find( LOG4CPLUS_TEXT('.') ) == OFString_npos )
+        if( it->find( DCMTK_LOG4CPLUS_TEXT('.') ) == OFString_npos )
         {
             factoryName = appenderProperties.getProperty(*it);
             AppenderFactory* factory
@@ -427,15 +427,15 @@ PropertyConfigurator::configureAppenders()
             if (factory == 0)
             {
                 tstring err =
-                    LOG4CPLUS_TEXT("PropertyConfigurator::configureAppenders()")
-                    LOG4CPLUS_TEXT("- Cannot find AppenderFactory: ");
+                    DCMTK_LOG4CPLUS_TEXT("PropertyConfigurator::configureAppenders()")
+                    DCMTK_LOG4CPLUS_TEXT("- Cannot find AppenderFactory: ");
                 getLogLog().error(err + factoryName);
                 continue;
             }
 
             Properties my_properties
                 = appenderProperties.getPropertySubset((*it)
-                    + LOG4CPLUS_TEXT("."));
+                    + DCMTK_LOG4CPLUS_TEXT("."));
             try
             {
                 tstring error;
@@ -443,9 +443,9 @@ PropertyConfigurator::configureAppenders()
                 if (appender.get() == 0)
                 {
                     tstring err =
-                        LOG4CPLUS_TEXT("PropertyConfigurator::")
-                        LOG4CPLUS_TEXT("configureAppenders()")
-                        LOG4CPLUS_TEXT("- Failed to create appender: ");
+                        DCMTK_LOG4CPLUS_TEXT("PropertyConfigurator::")
+                        DCMTK_LOG4CPLUS_TEXT("configureAppenders()")
+                        DCMTK_LOG4CPLUS_TEXT("- Failed to create appender: ");
                     getLogLog().error(err + *it + " " + error);
                 }
                 else
@@ -457,9 +457,9 @@ PropertyConfigurator::configureAppenders()
             catch(...)
             {
                 tstring err =
-                    LOG4CPLUS_TEXT("PropertyConfigurator::")
-                    LOG4CPLUS_TEXT("configureAppenders()")
-                    LOG4CPLUS_TEXT("- Exception caught while creating Appender");
+                    DCMTK_LOG4CPLUS_TEXT("PropertyConfigurator::")
+                    DCMTK_LOG4CPLUS_TEXT("configureAppenders()")
+                    DCMTK_LOG4CPLUS_TEXT("- Exception caught while creating Appender");
                 getLogLog().error(err);
             }
         }
@@ -471,7 +471,7 @@ void
 PropertyConfigurator::configureAdditivity()
 {
     Properties additivityProperties =
-        properties.getPropertySubset(LOG4CPLUS_TEXT("additivity."));
+        properties.getPropertySubset(DCMTK_LOG4CPLUS_TEXT("additivity."));
     OFList<tstring> additivitysProps = additivityProperties.propertyNames();
 
     tstring actualValue;
@@ -484,14 +484,14 @@ PropertyConfigurator::configureAdditivity()
         actualValue = additivityProperties.getProperty(*it);
         value = toLower(actualValue);
 
-        if(value == LOG4CPLUS_TEXT("true"))
+        if(value == DCMTK_LOG4CPLUS_TEXT("true"))
             logger.setAdditivity(true);
-        else if(value == LOG4CPLUS_TEXT("false"))
+        else if(value == DCMTK_LOG4CPLUS_TEXT("false"))
             logger.setAdditivity(false);
         else
-            getLogLog().warn(  LOG4CPLUS_TEXT("Invalid Additivity value: \"")
+            getLogLog().warn(  DCMTK_LOG4CPLUS_TEXT("Invalid Additivity value: \"")
                              + actualValue
-                             + LOG4CPLUS_TEXT("\""));
+                             + DCMTK_LOG4CPLUS_TEXT("\""));
     }
 }
 
@@ -517,12 +517,12 @@ PropertyConfigurator::addAppender(Logger &logger, SharedAppenderPtr& appender)
 //////////////////////////////////////////////////////////////////////////////
 
 BasicConfigurator::BasicConfigurator(Hierarchy& h_)
-    : PropertyConfigurator( LOG4CPLUS_TEXT(""), h_ )
+    : PropertyConfigurator( DCMTK_LOG4CPLUS_TEXT(""), h_ )
 {
-    properties.setProperty(LOG4CPLUS_TEXT("rootLogger"),
-                           LOG4CPLUS_TEXT("DEBUG, STDOUT"));
-    properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT"),
-                           LOG4CPLUS_TEXT("log4cplus::ConsoleAppender"));
+    properties.setProperty(DCMTK_LOG4CPLUS_TEXT("rootLogger"),
+                           DCMTK_LOG4CPLUS_TEXT("DEBUG, STDOUT"));
+    properties.setProperty(DCMTK_LOG4CPLUS_TEXT("appender.STDOUT"),
+                           DCMTK_LOG4CPLUS_TEXT("log4cplus::ConsoleAppender"));
 }
 
 
@@ -545,7 +545,7 @@ BasicConfigurator::doConfigure(Hierarchy& h)
 }
 
 
-#if !defined(LOG4CPLUS_SINGLE_THREADED)
+#if !defined(DCMTK_LOG4CPLUS_SINGLE_THREADED)
 
 //////////////////////////////////////////////////////////////////////////////
 // ConfigurationWatchDogThread implementation
@@ -642,16 +642,16 @@ bool
 ConfigurationWatchDogThread::checkForFileModification(Time & mtime)
 {
     struct stat fileStatus;
-    if(::stat(LOG4CPLUS_TSTRING_TO_STRING(propertyFilename).c_str(),
+    if(::stat(DCMTK_LOG4CPLUS_TSTRING_TO_STRING(propertyFilename).c_str(),
             &fileStatus) == -1)
         return false;  // stat() returned error, so the file must not exist
     mtime = Time (fileStatus.st_mtime);
     bool modified = mtime != lastModTime;
 
-#if defined(LOG4CPLUS_HAVE_LSTAT)
+#if defined(DCMTK_LOG4CPLUS_HAVE_LSTAT)
     if(!modified && S_ISLNK(fileStatus.st_mode))
     {
-        ::lstat(LOG4CPLUS_TSTRING_TO_STRING(propertyFilename).c_str(),
+        ::lstat(DCMTK_LOG4CPLUS_TSTRING_TO_STRING(propertyFilename).c_str(),
             &fileStatus);
         mtime = Time (fileStatus.st_mtime);
         modified = mtime != lastModTime;

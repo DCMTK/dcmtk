@@ -112,10 +112,10 @@ LogLevelMatchFilter::LogLevelMatchFilter(const Properties& properties, tstring&)
 {
     init();
 
-    tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("AcceptOnMatch") );
-    acceptOnMatch = (toLower(tmp) == LOG4CPLUS_TEXT("true"));
+    tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("AcceptOnMatch") );
+    acceptOnMatch = (toLower(tmp) == DCMTK_LOG4CPLUS_TEXT("true"));
 
-    tmp = properties.getProperty( LOG4CPLUS_TEXT("LogLevelToMatch") );
+    tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("LogLevelToMatch") );
     logLevelToMatch = getLogLevelManager().fromString(tmp);
 }
 
@@ -162,13 +162,13 @@ LogLevelRangeFilter::LogLevelRangeFilter(const Properties& properties, tstring&)
 {
     init();
 
-    tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("AcceptOnMatch") );
-    acceptOnMatch = (toLower(tmp) == LOG4CPLUS_TEXT("true"));
+    tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("AcceptOnMatch") );
+    acceptOnMatch = (toLower(tmp) == DCMTK_LOG4CPLUS_TEXT("true"));
 
-    tmp = properties.getProperty( LOG4CPLUS_TEXT("LogLevelMin") );
+    tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("LogLevelMin") );
     logLevelMin = getLogLevelManager().fromString(tmp);
 
-    tmp = properties.getProperty( LOG4CPLUS_TEXT("LogLevelMax") );
+    tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("LogLevelMax") );
     logLevelMax = getLogLevelManager().fromString(tmp);
 }
 
@@ -223,10 +223,10 @@ StringMatchFilter::StringMatchFilter(const Properties& properties, tstring&)
 {
     init();
 
-    tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("AcceptOnMatch") );
-    acceptOnMatch = (toLower(tmp) == LOG4CPLUS_TEXT("true"));
+    tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("AcceptOnMatch") );
+    acceptOnMatch = (toLower(tmp) == DCMTK_LOG4CPLUS_TEXT("true"));
 
-    stringToMatch = properties.getProperty( LOG4CPLUS_TEXT("StringToMatch") );
+    stringToMatch = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("StringToMatch") );
 }
 
 

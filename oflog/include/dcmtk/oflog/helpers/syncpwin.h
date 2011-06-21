@@ -32,7 +32,7 @@
 namespace dcmtk { namespace log4cplus { namespace thread {
 
 
-#define LOG4CPLUS_THROW_RTE(msg) \
+#define DCMTK_LOG4CPLUS_THROW_RTE(msg) \
     do { detail::syncprims_throw_exception (msg, __FILE__, __LINE__); } while (0)
 
 //
@@ -78,7 +78,7 @@ Semaphore::Semaphore (unsigned max, unsigned initial)
 {
     sem = CreateSemaphore (0, initial, max, 0);
     if (! sem)
-        LOG4CPLUS_THROW_RTE ("Semaphore::Semaphore");
+        DCMTK_LOG4CPLUS_THROW_RTE ("Semaphore::Semaphore");
 }
 
 
@@ -88,7 +88,7 @@ Semaphore::~Semaphore ()
     try
     {
         if (! CloseHandle (sem))
-            LOG4CPLUS_THROW_RTE ("Semaphore::~Semaphore");
+            DCMTK_LOG4CPLUS_THROW_RTE ("Semaphore::~Semaphore");
     }
     catch (...)
     { }
@@ -101,7 +101,7 @@ Semaphore::unlock () const
 {
     DWORD ret = ReleaseSemaphore (sem, 1, 0);
     if (! ret)
-         LOG4CPLUS_THROW_RTE ("Semaphore::unlock");
+         DCMTK_LOG4CPLUS_THROW_RTE ("Semaphore::unlock");
 }
 
 
@@ -111,7 +111,7 @@ Semaphore::lock () const
 {
     DWORD ret = WaitForSingleObject (sem, INFINITE);
     if (ret != WAIT_OBJECT_0)
-        LOG4CPLUS_THROW_RTE ("Semaphore::lock");
+        DCMTK_LOG4CPLUS_THROW_RTE ("Semaphore::lock");
 }
 
 
@@ -124,7 +124,7 @@ ManualResetEvent::ManualResetEvent (bool sig)
 {
     ev = CreateEvent (0, true, sig, 0);
     if (! ev)
-        LOG4CPLUS_THROW_RTE ("ManualResetEvent::ManualResetEvent");
+        DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEvent::ManualResetEvent");
 }
 
 
@@ -134,7 +134,7 @@ ManualResetEvent::~ManualResetEvent ()
     try
     {
         if (! CloseHandle (ev))
-            LOG4CPLUS_THROW_RTE ("ManualResetEvent::~ManualResetEvent");
+            DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEvent::~ManualResetEvent");
     }
     catch (...)
     { }
@@ -146,7 +146,7 @@ void
 ManualResetEvent::signal () const
 {
     if (! SetEvent (ev))
-        LOG4CPLUS_THROW_RTE ("ManualResetEVent::signal");
+        DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEVent::signal");
 }
 
 
@@ -156,7 +156,7 @@ ManualResetEvent::wait () const
 {
     DWORD ret = WaitForSingleObject (ev, INFINITE);
     if (ret != WAIT_OBJECT_0)
-        LOG4CPLUS_THROW_RTE ("ManualResetEvent::wait");
+        DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEvent::wait");
 }
 
 
@@ -174,7 +174,7 @@ ManualResetEvent::timed_wait (unsigned long msec) const
         return false;
 
     default:
-        LOG4CPLUS_THROW_RTE ("ManualResetEvent::timed_wait");
+        DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEvent::timed_wait");
         // Silence warnings about not returning any value from function
         // returning bool.
         return false;
@@ -187,11 +187,11 @@ void
 ManualResetEvent::reset () const
 {
     if (! ResetEvent (ev))
-        LOG4CPLUS_THROW_RTE ("ManualResetEvent::reset");
+        DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEvent::reset");
 }
 
 
-#undef LOG4CPLUS_THROW_RTE
+#undef DCMTK_LOG4CPLUS_THROW_RTE
 
 
 } } } // namespace dcmtk { namespace log4cplus { namespace thread {

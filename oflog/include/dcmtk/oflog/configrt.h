@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _CONFIGURATOR_HEADER_
-#define _CONFIGURATOR_HEADER_
+#ifndef DCMTK__CONFIGURATOR_HEADER_
+#define DCMTK__CONFIGURATOR_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/appender.h"
@@ -55,7 +55,7 @@ namespace log4cplus
      * searched in the environment properties.  The corresponding value replaces
      * the ${variableName} sequence.
      */
-    class LOG4CPLUS_EXPORT PropertyConfigurator
+    class DCMTK_LOG4CPLUS_EXPORT PropertyConfigurator
         : protected helpers::LogLogUser
     {
     public:
@@ -290,7 +290,7 @@ namespace log4cplus
      * <code>rootLogger</code>, with output going to standard output,
      * using DEBUG LogLevel value.
      */
-    class LOG4CPLUS_EXPORT BasicConfigurator : public PropertyConfigurator {
+    class DCMTK_LOG4CPLUS_EXPORT BasicConfigurator : public PropertyConfigurator {
     public:
       // ctor and dtor
         BasicConfigurator(Hierarchy& h = Logger::getDefaultHierarchy());
@@ -314,12 +314,12 @@ namespace log4cplus
     };
 
 
-#if !defined(LOG4CPLUS_SINGLE_THREADED)
+#if !defined(DCMTK_LOG4CPLUS_SINGLE_THREADED)
     // Forward Declarations
     class ConfigurationWatchDogThread;
 
 
-    class LOG4CPLUS_EXPORT ConfigureAndWatchThread {
+    class DCMTK_LOG4CPLUS_EXPORT ConfigureAndWatchThread {
     public:
       // ctor and dtor
         ConfigureAndWatchThread(const tstring& propertyFile,
@@ -339,5 +339,5 @@ namespace log4cplus
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _CONFIGURATOR_HEADER_
+#endif // DCMTK__CONFIGURATOR_HEADER_
 

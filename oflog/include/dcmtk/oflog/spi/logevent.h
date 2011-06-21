@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_SPI_INTERNAL_LOGGING_EVENT_HEADER_
-#define _LOG4CPLUS_SPI_INTERNAL_LOGGING_EVENT_HEADER_
+#ifndef DCMTK__LOG4CPLUS_SPI_INTERNAL_LOGGING_EVENT_HEADER_
+#define DCMTK__LOG4CPLUS_SPI_INTERNAL_LOGGING_EVENT_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/loglevel.h"
@@ -43,7 +43,7 @@ namespace log4cplus {
          *
          * This class is of concern to those wishing to extend log4cplus.
          */
-        class LOG4CPLUS_EXPORT InternalLoggingEvent {
+        class DCMTK_LOG4CPLUS_EXPORT InternalLoggingEvent {
         public:
           // Ctors
              /**
@@ -71,11 +71,11 @@ namespace log4cplus {
                 thread(),
                 timestamp(helpers::Time::gettimeofday()),
                 file( (  filename
-                       ? LOG4CPLUS_C_STR_TO_TSTRING(filename)
+                       ? DCMTK_LOG4CPLUS_C_STR_TO_TSTRING(filename)
                        : tstring()) ),
                 line(line_),
                 function( ( function_
-                          ? LOG4CPLUS_C_STR_TO_TSTRING(function_)
+                          ? DCMTK_LOG4CPLUS_C_STR_TO_TSTRING(function_)
                           : tstring()) ),
                 threadCached(false),
                 ndcCached(false)
@@ -161,7 +161,7 @@ namespace log4cplus {
             /** The name of thread in which this logging event was generated. */
             const tstring& getThread() const {
                 if(!threadCached) {
-                    thread = LOG4CPLUS_GET_CURRENT_THREAD_NAME;
+                    thread = DCMTK_LOG4CPLUS_GET_CURRENT_THREAD_NAME;
                     threadCached = true;
                 }
                 return thread;
@@ -210,4 +210,4 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _LOG4CPLUS_SPI_INTERNAL_LOGGING_EVENT_HEADER_
+#endif // DCMTK__LOG4CPLUS_SPI_INTERNAL_LOGGING_EVENT_HEADER_

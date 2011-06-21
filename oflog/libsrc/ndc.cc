@@ -52,7 +52,7 @@ DiagnosticContext::DiagnosticContext(const tstring& message_, DiagnosticContext*
  : message(message_),
    fullMessage( (  (parent == NULL)
                  ? message
-                 : parent->fullMessage + LOG4CPLUS_TEXT(" ") + message) )
+                 : parent->fullMessage + DCMTK_LOG4CPLUS_TEXT(" ") + message) )
 {
 }
 
@@ -70,14 +70,14 @@ DiagnosticContext::DiagnosticContext(const tstring& message_)
 ///////////////////////////////////////////////////////////////////////////////
 
 NDC::NDC()
- : threadLocal(LOG4CPLUS_THREAD_LOCAL_INIT (0))
+ : threadLocal(DCMTK_LOG4CPLUS_THREAD_LOCAL_INIT (0))
 {
 }
 
 
 NDC::~NDC()
 {
-    LOG4CPLUS_THREAD_LOCAL_CLEANUP( threadLocal );
+    DCMTK_LOG4CPLUS_THREAD_LOCAL_CLEANUP( threadLocal );
 }
 
 
@@ -93,11 +93,11 @@ NDC::clear()
         DiagnosticContextStack* ptr = getPtr();
         if(ptr != NULL) {
             delete ptr;
-            LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, NULL );
+            DCMTK_LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, NULL );
         }
     }
     catch(...) {
-        getLogLog().error(LOG4CPLUS_TEXT("NDC::clear()- exception occured"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("NDC::clear()- exception occured"));
     }
 }
 
@@ -112,7 +112,7 @@ NDC::cloneStack()
         }
     }
     catch(...) {
-        getLogLog().error(LOG4CPLUS_TEXT("NDC::cloneStack()- exception occured"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("NDC::cloneStack()- exception occured"));
     }
 
     return DiagnosticContextStack();
@@ -127,10 +127,10 @@ NDC::inherit(const DiagnosticContextStack& stack)
         delete ptr;
 
         ptr = new DiagnosticContextStack(stack);
-        LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, ptr );
+        DCMTK_LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, ptr );
     }
     catch(...) {
-        getLogLog().error(LOG4CPLUS_TEXT("NDC::inherit()- exception occured"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("NDC::inherit()- exception occured"));
     }
 }
 
@@ -145,10 +145,10 @@ NDC::get()
         }
     }
     catch(...) {
-        getLogLog().error(LOG4CPLUS_TEXT("NDC::get()- exception occured"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("NDC::get()- exception occured"));
     }
 
-    return LOG4CPLUS_TEXT("");
+    return DCMTK_LOG4CPLUS_TEXT("");
 }
 
 
@@ -162,7 +162,7 @@ NDC::getDepth()
         }
     }
     catch(...) {
-        getLogLog().error(LOG4CPLUS_TEXT("NDC::getDepth()- exception occured"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("NDC::getDepth()- exception occured"));
     }
 
     return 0;
@@ -181,16 +181,16 @@ NDC::pop()
                 // If the NDC stack is empty we will delete it so that we can avoid
                 // most memory leaks if Threads don't call remove when exiting
                 delete ptr;
-                LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, NULL );
+                DCMTK_LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, NULL );
             }
             return dc.message;
         }
     }
     catch(...) {
-        getLogLog().error(LOG4CPLUS_TEXT("NDC::pop()- exception occured"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("NDC::pop()- exception occured"));
     }
 
-    return LOG4CPLUS_TEXT("");
+    return DCMTK_LOG4CPLUS_TEXT("");
 }
 
 
@@ -204,10 +204,10 @@ NDC::peek()
         }
     }
     catch(...) {
-        getLogLog().error(LOG4CPLUS_TEXT("NDC::peek()- exception occured"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("NDC::peek()- exception occured"));
     }
 
-    return LOG4CPLUS_TEXT("");
+    return DCMTK_LOG4CPLUS_TEXT("");
 }
 
 
@@ -218,7 +218,7 @@ NDC::push(const tstring& message)
         DiagnosticContextStack* ptr = getPtr();
         if(ptr == NULL) {
             ptr = new DiagnosticContextStack();
-            LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, ptr );
+            DCMTK_LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, ptr );
         }
 
         if(ptr->empty()) {
@@ -230,7 +230,7 @@ NDC::push(const tstring& message)
         }
     }
     catch(...) {
-        getLogLog().error(LOG4CPLUS_TEXT("NDC::push()- exception occured"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("NDC::push()- exception occured"));
     }
 }
 
@@ -241,10 +241,10 @@ NDC::remove()
     try {
         DiagnosticContextStack* ptr = getPtr();
         delete ptr;
-        LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, NULL );
+        DCMTK_LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, NULL );
     }
     catch(...) {
-        getLogLog().error(LOG4CPLUS_TEXT("NDC::remove()- exception occured"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("NDC::remove()- exception occured"));
     }
 }
 
@@ -261,7 +261,7 @@ NDC::setMaxDepth(size_t maxDepth)
         }
     }
     catch(...) {
-        getLogLog().error(LOG4CPLUS_TEXT("NDC::setMaxDepth()- exception occured"));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("NDC::setMaxDepth()- exception occured"));
     }
 }
 
@@ -269,7 +269,7 @@ NDC::setMaxDepth(size_t maxDepth)
 DiagnosticContextStack* NDC::getPtr()
 {
     return OFstatic_cast(DiagnosticContextStack*,
-        LOG4CPLUS_GET_THREAD_LOCAL_VALUE( threadLocal ));
+        DCMTK_LOG4CPLUS_GET_THREAD_LOCAL_VALUE( threadLocal ));
 }
 
 

@@ -32,7 +32,7 @@
 
 using namespace dcmtk::log4cplus;
 
-#if defined (LOG4CPLUS_SINGLE_THREADED)
+#if defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
 
 namespace dcmtk
 {
@@ -57,11 +57,11 @@ void _clear_tostringstream (tostringstream & os)
     os.fill (_macros_oss_defaults.fill ());
     os.precision (_macros_oss_defaults.precision ());
     os.width (_macros_oss_defaults.width ());
-#if defined (LOG4CPLUS_WORKING_LOCALE)
+#if defined (DCMTK_LOG4CPLUS_WORKING_LOCALE)
     STD_NAMESPACE locale glocale = STD_NAMESPACE locale ();
     if (os.getloc () != glocale)
         os.imbue (glocale);
-#endif // defined (LOG4CPLUS_WORKING_LOCALE)
+#endif // defined (DCMTK_LOG4CPLUS_WORKING_LOCALE)
 }
 
 } // namespace log4cplus

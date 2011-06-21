@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_CONSOLE_APPENDER_HEADER_
-#define _LOG4CPLUS_CONSOLE_APPENDER_HEADER_
+#ifndef DCMTK__LOG4CPLUS_CONSOLE_APPENDER_HEADER_
+#define DCMTK__LOG4CPLUS_CONSOLE_APPENDER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/appender.h"
@@ -45,7 +45,7 @@ namespace log4cplus {
      *
      * </dl>
      */
-    class LOG4CPLUS_EXPORT ConsoleAppender : public Appender {
+    class DCMTK_LOG4CPLUS_EXPORT ConsoleAppender : public Appender {
     public:
       // Ctors
         ConsoleAppender(bool logToStdErr = false, bool immediateFlush = false);
@@ -72,5 +72,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _LOG4CPLUS_CONSOLE_APPENDER_HEADER_
+#endif // DCMTK__LOG4CPLUS_CONSOLE_APPENDER_HEADER_
 

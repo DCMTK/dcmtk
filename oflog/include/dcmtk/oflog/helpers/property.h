@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef LOG4CPLUS_HELPERS_PROPERTY_HEADER_
-#define LOG4CPLUS_HELPERS_PROPERTY_HEADER_
+#ifndef DCMTK_LOG4CPLUS_HELPERS_PROPERTY_HEADER_
+#define DCMTK_LOG4CPLUS_HELPERS_PROPERTY_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/streams.h"
@@ -40,7 +40,7 @@ namespace dcmtk {
 namespace log4cplus {
     namespace helpers {
 
-        class LOG4CPLUS_EXPORT Properties {
+        class DCMTK_LOG4CPLUS_EXPORT Properties {
         public:
             Properties();
             explicit Properties(tistream& input);
@@ -108,7 +108,7 @@ namespace log4cplus {
 
         protected:
           // Types
-//            LOG4CPLUS_EXPIMP_TEMPLATE template class LOG4CPLUS_EXPORT STD_NAMESPACE map<tstring, tstring>;
+//            LOG4CPLUS_EXPIMP_TEMPLATE template class DCMTK_LOG4CPLUS_EXPORT STD_NAMESPACE map<tstring, tstring>;
             typedef OFMap<tstring, tstring> StringMap;
 
           // Methods
@@ -123,5 +123,5 @@ namespace log4cplus {
 } // end namespace dcmtk
 
 
-#endif // LOG4CPLUS_HELPERS_PROPERTY_HEADER_
+#endif // DCMTK_LOG4CPLUS_HELPERS_PROPERTY_HEADER_
 

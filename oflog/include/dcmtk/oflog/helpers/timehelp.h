@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_HELPERS_TIME_HELPER_HEADER_
-#define _LOG4CPLUS_HELPERS_TIME_HELPER_HEADER_
+#ifndef DCMTK__LOG4CPLUS_HELPERS_TIME_HELPER_HEADER_
+#define DCMTK__LOG4CPLUS_HELPERS_TIME_HELPER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
@@ -44,7 +44,7 @@ namespace helpers {
 /**
  * This class represents a Epoch time with microsecond accuracy.
  */
-class LOG4CPLUS_EXPORT Time {
+class DCMTK_LOG4CPLUS_EXPORT Time {
 public:
     Time();
     Time(time_t tv_sec, long tv_usec);
@@ -132,32 +132,32 @@ private:
 };
 
 
-LOG4CPLUS_EXPORT const Time operator+
+DCMTK_LOG4CPLUS_EXPORT const Time operator+
                                    (const Time& lhs,
                                     const Time& rhs);
-LOG4CPLUS_EXPORT const Time operator-
+DCMTK_LOG4CPLUS_EXPORT const Time operator-
                                    (const Time& lhs,
                                     const Time& rhs);
-LOG4CPLUS_EXPORT const Time operator/
+DCMTK_LOG4CPLUS_EXPORT const Time operator/
                                    (const Time& lhs,
                                     long rhs);
-LOG4CPLUS_EXPORT const Time operator*
+DCMTK_LOG4CPLUS_EXPORT const Time operator*
                                    (const Time& lhs,
                                     long rhs);
 
-LOG4CPLUS_EXPORT bool operator<(const Time& lhs,
+DCMTK_LOG4CPLUS_EXPORT bool operator<(const Time& lhs,
                                 const Time& rhs);
-LOG4CPLUS_EXPORT bool operator<=(const Time& lhs,
+DCMTK_LOG4CPLUS_EXPORT bool operator<=(const Time& lhs,
                                  const Time& rhs);
 
-LOG4CPLUS_EXPORT bool operator>(const Time& lhs,
+DCMTK_LOG4CPLUS_EXPORT bool operator>(const Time& lhs,
                                 const Time& rhs);
-LOG4CPLUS_EXPORT bool operator>=(const Time& lhs,
+DCMTK_LOG4CPLUS_EXPORT bool operator>=(const Time& lhs,
                                  const Time& rhs);
 
-LOG4CPLUS_EXPORT bool operator==(const Time& lhs,
+DCMTK_LOG4CPLUS_EXPORT bool operator==(const Time& lhs,
                                  const Time& rhs);
-LOG4CPLUS_EXPORT bool operator!=(const Time& lhs,
+DCMTK_LOG4CPLUS_EXPORT bool operator!=(const Time& lhs,
                                  const Time& rhs);
 
 } // namespace helpers
@@ -166,5 +166,5 @@ LOG4CPLUS_EXPORT bool operator!=(const Time& lhs,
 } // namespace dcmtk
 
 
-#endif // _LOG4CPLUS_HELPERS_TIME_HELPER_HEADER_
+#endif // DCMTK__LOG4CPLUS_HELPERS_TIME_HELPER_HEADER_
 

@@ -55,14 +55,14 @@ namespace helpers
 //////////////////////////////////////////////////////////////////////////////
 
 AppenderAttachableImpl::AppenderAttachableImpl()
- : appender_list_mutex(LOG4CPLUS_MUTEX_CREATE)
+ : appender_list_mutex(DCMTK_LOG4CPLUS_MUTEX_CREATE)
 {
 }
 
 
 AppenderAttachableImpl::~AppenderAttachableImpl()
 {
-   LOG4CPLUS_MUTEX_FREE( appender_list_mutex );
+   DCMTK_LOG4CPLUS_MUTEX_FREE( appender_list_mutex );
 }
 
 
@@ -74,9 +74,9 @@ AppenderAttachableImpl::~AppenderAttachableImpl()
 void
 AppenderAttachableImpl::addAppender(SharedAppenderPtr newAppender)
 {
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
         if(newAppender == NULL) {
-            getLogLog().warn( LOG4CPLUS_TEXT("Tried to add NULL appender") );
+            getLogLog().warn( DCMTK_LOG4CPLUS_TEXT("Tried to add NULL appender") );
             return;
         }
 
@@ -91,7 +91,7 @@ AppenderAttachableImpl::addAppender(SharedAppenderPtr newAppender)
         if(it == appenderList.end()) {
             appenderList.push_back(newAppender);
         }
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 
@@ -99,9 +99,9 @@ AppenderAttachableImpl::addAppender(SharedAppenderPtr newAppender)
 AppenderAttachableImpl::ListType
 AppenderAttachableImpl::getAllAppenders()
 {
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
         return appenderList;
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 
@@ -109,7 +109,7 @@ AppenderAttachableImpl::getAllAppenders()
 SharedAppenderPtr
 AppenderAttachableImpl::getAppender(const tstring& name)
 {
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
         for(ListIteratorType it=appenderList.begin();
             it!=appenderList.end();
             ++it)
@@ -120,7 +120,7 @@ AppenderAttachableImpl::getAppender(const tstring& name)
         }
 
         return SharedAppenderPtr(NULL);
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 
@@ -128,9 +128,9 @@ AppenderAttachableImpl::getAppender(const tstring& name)
 void
 AppenderAttachableImpl::removeAllAppenders()
 {
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
         appenderList.erase(appenderList.begin(), appenderList.end());
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 
@@ -139,11 +139,11 @@ void
 AppenderAttachableImpl::removeAppender(SharedAppenderPtr appender)
 {
     if(appender == NULL) {
-        getLogLog().warn( LOG4CPLUS_TEXT("Tried to remove NULL appender") );
+        getLogLog().warn( DCMTK_LOG4CPLUS_TEXT("Tried to remove NULL appender") );
         return;
     }
 
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
         ListIteratorType it = appenderList.begin();
 
         while (it != appenderList.end())
@@ -156,7 +156,7 @@ AppenderAttachableImpl::removeAppender(SharedAppenderPtr appender)
         if(it != appenderList.end()) {
             appenderList.erase(it);
         }
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 
@@ -174,7 +174,7 @@ AppenderAttachableImpl::appendLoopOnAppenders(const spi::InternalLoggingEvent& e
 {
     int count = 0;
 
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
         for(ListConstIteratorType it=appenderList.begin();
             it!=appenderList.end();
             ++it)
@@ -182,7 +182,7 @@ AppenderAttachableImpl::appendLoopOnAppenders(const spi::InternalLoggingEvent& e
             ++count;
             (*it)->doAppend(event);
         }
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 
     return count;
 }

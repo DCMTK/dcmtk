@@ -39,9 +39,9 @@ SimpleLayout::formatAndAppend(tostream& output,
                               const InternalLoggingEvent& event)
 {
     output << llmCache.toString(event.getLogLevel())
-           << LOG4CPLUS_TEXT(" - ")
+           << DCMTK_LOG4CPLUS_TEXT(" - ")
            << event.getMessage()
-           << LOG4CPLUS_TEXT("\n");
+           << DCMTK_LOG4CPLUS_TEXT("\n");
 }
 
 
@@ -51,7 +51,7 @@ SimpleLayout::formatAndAppend(tostream& output,
 ///////////////////////////////////////////////////////////////////////////////
 
 TTCCLayout::TTCCLayout(bool use_gmtime_)
-: dateFormat( LOG4CPLUS_TEXT("%m-%d-%y %H:%M:%S,%q") ),
+: dateFormat( DCMTK_LOG4CPLUS_TEXT("%m-%d-%y %H:%M:%S,%q") ),
   use_gmtime(use_gmtime_)
 {
 }
@@ -59,15 +59,15 @@ TTCCLayout::TTCCLayout(bool use_gmtime_)
 
 TTCCLayout::TTCCLayout(const Properties& properties, tstring&)
 : Layout(properties),
-  dateFormat( LOG4CPLUS_TEXT("%m-%d-%y %H:%M:%S,%q") ),
+  dateFormat( DCMTK_LOG4CPLUS_TEXT("%m-%d-%y %H:%M:%S,%q") ),
   use_gmtime(false)
 {
-    if(properties.exists( LOG4CPLUS_TEXT("DateFormat") )) {
-        dateFormat  = properties.getProperty( LOG4CPLUS_TEXT("DateFormat") );
+    if(properties.exists( DCMTK_LOG4CPLUS_TEXT("DateFormat") )) {
+        dateFormat  = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("DateFormat") );
     }
 
-    tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("Use_gmtime") );
-    use_gmtime = (toLower(tmp) == LOG4CPLUS_TEXT("true"));
+    tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("Use_gmtime") );
+    use_gmtime = (toLower(tmp) == DCMTK_LOG4CPLUS_TEXT("true"));
 }
 
 
@@ -86,17 +86,17 @@ TTCCLayout::formatAndAppend(tostream& output,
                             const InternalLoggingEvent& event)
 {
     output << event.getTimestamp().getFormattedTime(dateFormat, use_gmtime)
-           << LOG4CPLUS_TEXT(" [")
+           << DCMTK_LOG4CPLUS_TEXT(" [")
            << event.getThread()
-           << LOG4CPLUS_TEXT("] ")
+           << DCMTK_LOG4CPLUS_TEXT("] ")
            << llmCache.toString(event.getLogLevel())
-           << LOG4CPLUS_TEXT(" ")
+           << DCMTK_LOG4CPLUS_TEXT(" ")
            << event.getLoggerName()
-           << LOG4CPLUS_TEXT(" <")
+           << DCMTK_LOG4CPLUS_TEXT(" <")
            << event.getNDC()
-           << LOG4CPLUS_TEXT("> - ")
+           << DCMTK_LOG4CPLUS_TEXT("> - ")
            << event.getMessage()
-           << LOG4CPLUS_TEXT("\n");
+           << DCMTK_LOG4CPLUS_TEXT("\n");
 }
 
 

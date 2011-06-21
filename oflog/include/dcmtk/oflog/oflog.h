@@ -18,8 +18,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-15 08:45:12 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2011-06-21 08:02:38 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,12 +36,12 @@
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofconapp.h"
 
-#define OFLOG_TRACE(logger, msg) LOG4CPLUS_TRACE(logger, msg)
-#define OFLOG_DEBUG(logger, msg) LOG4CPLUS_DEBUG(logger, msg)
-#define OFLOG_INFO(logger, msg)  LOG4CPLUS_INFO(logger, msg)
-#define OFLOG_WARN(logger, msg)  LOG4CPLUS_WARN(logger, msg)
-#define OFLOG_ERROR(logger, msg) LOG4CPLUS_ERROR(logger, msg)
-#define OFLOG_FATAL(logger, msg) LOG4CPLUS_FATAL(logger, msg)
+#define OFLOG_TRACE(logger, msg) DCMTK_LOG4CPLUS_TRACE(logger, msg)
+#define OFLOG_DEBUG(logger, msg) DCMTK_LOG4CPLUS_DEBUG(logger, msg)
+#define OFLOG_INFO(logger, msg)  DCMTK_LOG4CPLUS_INFO(logger, msg)
+#define OFLOG_WARN(logger, msg)  DCMTK_LOG4CPLUS_WARN(logger, msg)
+#define OFLOG_ERROR(logger, msg) DCMTK_LOG4CPLUS_ERROR(logger, msg)
+#define OFLOG_FATAL(logger, msg) DCMTK_LOG4CPLUS_FATAL(logger, msg)
 
 /** simple wrapper around the "low-level" Logger object to make it easier to
  *  switch to a different system
@@ -158,6 +158,9 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.14  2011-06-21 08:02:38  uli
+ * Renamed all log4cplus macros to avoid conflicts with external log4cplus.
+ *
  * Revision 1.13  2011-06-15 08:45:12  uli
  * Moved log4cplus into namespace dcmtk::log4cplus.
  *

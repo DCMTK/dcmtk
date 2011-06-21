@@ -30,7 +30,7 @@
 namespace dcmtk { namespace log4cplus { namespace thread {
 
 
-#define LOG4CPLUS_THROW_RTE(msg) \
+#define DCMTK_LOG4CPLUS_THROW_RTE(msg) \
     do { detail::syncprims_throw_exception (msg, __FILE__, __LINE__); } while (0)
 
 //
@@ -42,7 +42,7 @@ Mutex::Mutex ()
 {
     int ret = pthread_mutex_init (&mtx, 0);
     if (ret != 0)
-        LOG4CPLUS_THROW_RTE ("Mutex::Mutex");
+        DCMTK_LOG4CPLUS_THROW_RTE ("Mutex::Mutex");
 }
 
 
@@ -51,7 +51,7 @@ Mutex::~Mutex ()
 {
     int ret = pthread_mutex_destroy (&mtx);
     if (ret != 0)
-        LOG4CPLUS_THROW_RTE ("Mutex::~Mutex");
+        DCMTK_LOG4CPLUS_THROW_RTE ("Mutex::~Mutex");
 }
 
 
@@ -61,7 +61,7 @@ Mutex::lock () const
 {
     int ret = pthread_mutex_lock (&mtx);
     if (ret != 0)
-        LOG4CPLUS_THROW_RTE ("Mutex::lock");
+        DCMTK_LOG4CPLUS_THROW_RTE ("Mutex::lock");
 }
 
 
@@ -71,7 +71,7 @@ Mutex::unlock () const
 {
     int ret = pthread_mutex_unlock (&mtx);
     if (ret != 0)
-        LOG4CPLUS_THROW_RTE ("Mutex::unlock");
+        DCMTK_LOG4CPLUS_THROW_RTE ("Mutex::unlock");
 }
 
 
@@ -84,7 +84,7 @@ Semaphore::Semaphore (unsigned max, unsigned initial)
 {
     int ret = sem_init (&sem, max, initial);
     if (ret != 0)
-        LOG4CPLUS_THROW_RTE ("Semaphore::Semaphore");
+        DCMTK_LOG4CPLUS_THROW_RTE ("Semaphore::Semaphore");
 }
 
 
@@ -94,7 +94,7 @@ try
 {
     int ret = sem_destroy (&sem);
     if (ret != 0)
-        LOG4CPLUS_THROW_RTE ("Semaphore::~Semaphore");
+        DCMTK_LOG4CPLUS_THROW_RTE ("Semaphore::~Semaphore");
 }
 catch (...)
 { }
@@ -106,7 +106,7 @@ Semaphore::unlock () const
 {
     int ret = sem_post (&sem);
     if (ret != 0)
-        LOG4CPLUS_THROW_RTE ("Semaphore::unlock");
+        DCMTK_LOG4CPLUS_THROW_RTE ("Semaphore::unlock");
 }
 
 
@@ -116,7 +116,7 @@ Semaphore::lock () const
 {
     int ret = sem_wait (&sem);
     if (ret != 0)
-        LOG4CPLUS_THROW_RTE ("Semaphore::lock");
+        DCMTK_LOG4CPLUS_THROW_RTE ("Semaphore::lock");
 }
 
 
@@ -131,7 +131,7 @@ ManualResetEvent::ManualResetEvent (bool sig)
 {
     int ret = pthread_cond_init (&cv, 0);
     if (ret != 0)
-        LOG4CPLUS_THROW_RTE ("ManualResetEvent::ManualResetEvent");
+        DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEvent::ManualResetEvent");
 }
 
 
@@ -141,7 +141,7 @@ try
 {
     int ret = pthread_cond_destroy (&cv);
     if (ret != 0)
-        LOG4CPLUS_THROW_RTE ("ManualResetEvent::~ManualResetEvent");
+        DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEvent::~ManualResetEvent");
 }
 catch (...)
 { }
@@ -157,7 +157,7 @@ ManualResetEvent::signal () const
     sigcount += 1;
     int ret = pthread_cond_broadcast (&cv);
     if (ret != 0)
-        LOG4CPLUS_THROW_RTE ("ManualResetEVent::signal");
+        DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEVent::signal");
 
 }
 
@@ -178,7 +178,7 @@ ManualResetEvent::wait () const
             {
                 mguard.unlock ();
                 mguard.detach ();
-                LOG4CPLUS_THROW_RTE ("ManualResetEvent::wait");
+                DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEvent::wait");
             }
         }
         while (prev_count == sigcount);
@@ -213,7 +213,7 @@ ManualResetEvent::timed_wait (unsigned long msec) const
             default:
                 mguard.unlock ();
                 mguard.detach ();
-                LOG4CPLUS_THROW_RTE ("ManualResetEvent::timed_wait");
+                DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEvent::timed_wait");
             }
         }
         while (prev_count == sigcount);
@@ -233,7 +233,7 @@ ManualResetEvent::reset () const
 }
 
 
-#undef LOG4CPLUS_THROW_RTE
+#undef DCMTK_LOG4CPLUS_THROW_RTE
 
 
 } } } // namespace dcmtk { namespace log4cplus { namespace thread {

@@ -34,7 +34,7 @@ namespace dcmtk { namespace log4cplus { namespace helpers {
 SharedObject::~SharedObject()
 {
     assert(count == 0);
-    LOG4CPLUS_MUTEX_FREE( access_mutex );
+    DCMTK_LOG4CPLUS_MUTEX_FREE( access_mutex );
 }
 
 
@@ -46,10 +46,10 @@ SharedObject::~SharedObject()
 void
 SharedObject::addReference() const
 {
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
         assert (count >= 0);
         ++count;
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 
@@ -57,11 +57,11 @@ void
 SharedObject::removeReference() const
 {
     bool destroy = false;
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex );
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex );
         assert (count > 0);
         if (--count == 0)
             destroy = true;
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
     if (destroy)
         delete this;
 }

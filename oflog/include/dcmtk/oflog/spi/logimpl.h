@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_SPI_LOGGER_HEADER_
-#define _LOG4CPLUS_SPI_LOGGER_HEADER_
+#ifndef DCMTK__LOG4CPLUS_SPI_LOGGER_HEADER_
+#define DCMTK__LOG4CPLUS_SPI_LOGGER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
@@ -46,7 +46,7 @@ namespace log4cplus {
          * See the <a href="../../../../manual.html">user manual</a> for an
          * introduction on this class.
          */
-        class LOG4CPLUS_EXPORT LoggerImpl
+        class DCMTK_LOG4CPLUS_EXPORT LoggerImpl
             : public virtual helpers::SharedObject,
               public helpers::AppenderAttachableImpl
         {
@@ -208,6 +208,6 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _LOG4CPLUS_SPI_LOGGER_HEADER_
+#endif // DCMTK__LOG4CPLUS_SPI_LOGGER_HEADER_
 
 

@@ -19,14 +19,14 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_NT_EVENT_LOG_APPENDER_HEADER_
-#define _LOG4CPLUS_NT_EVENT_LOG_APPENDER_HEADER_
+#ifndef DCMTK__LOG4CPLUS_NT_EVENT_LOG_APPENDER_HEADER_
+#define DCMTK__LOG4CPLUS_NT_EVENT_LOG_APPENDER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/appender.h"
 
 #if defined(_WIN32)
-#  if ! defined (LOG4CPLUS_HAVE_NT_EVENT_LOG)
+#  if ! defined (DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG)
 #    error "Your platform does not support NT event log."
 #  else
 
@@ -37,7 +37,7 @@ namespace log4cplus {
     /**
      * Appends log events to NT EventLog.
      */
-    class LOG4CPLUS_EXPORT NTEventLogAppender : public Appender {
+    class DCMTK_LOG4CPLUS_EXPORT NTEventLogAppender : public Appender {
     public:
       // ctors
         NTEventLogAppender(const tstring& server,
@@ -78,6 +78,6 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // LOG4CPLUS_HAVE_NT_EVENT_LOG
+#endif // DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG
 #endif // _WIN32
-#endif //_LOG4CPLUS_NT_EVENT_LOG_APPENDER_HEADER_
+#endif //DCMTK__LOG4CPLUS_NT_EVENT_LOG_APPENDER_HEADER_

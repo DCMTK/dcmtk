@@ -27,7 +27,7 @@
 #include "dcmtk/oflog/helpers/strhelp.h"
 
 
-#if defined(_WIN32) && defined (LOG4CPLUS_HAVE_WIN32_CONSOLE)
+#if defined(_WIN32) && defined (DCMTK_LOG4CPLUS_HAVE_WIN32_CONSOLE)
 namespace dcmtk
 {
 
@@ -45,9 +45,9 @@ Win32ConsoleAppender::Win32ConsoleAppender (
     : Appender (properties)
     , alloc_console (true)
 {
-    tstring tmp = properties.getProperty (LOG4CPLUS_TEXT ("AllocConsole"),
-        LOG4CPLUS_TEXT ("true"));
-    alloc_console = helpers::toLower (tmp) == LOG4CPLUS_TEXT ("true");
+    tstring tmp = properties.getProperty (DCMTK_LOG4CPLUS_TEXT ("AllocConsole"),
+        DCMTK_LOG4CPLUS_TEXT ("true"));
+    alloc_console = helpers::toLower (tmp) == DCMTK_LOG4CPLUS_TEXT ("true");
 }
 
 
@@ -76,8 +76,8 @@ Win32ConsoleAppender::append (spi::InternalLoggingEvent const & event)
     if (console_out == INVALID_HANDLE_VALUE)
     {
         getLogLog ().error (
-            LOG4CPLUS_TEXT ("Win32ConsoleAppender::append")
-            LOG4CPLUS_TEXT ("- Unable to get STD_OUTPUT_HANDLE."));
+            DCMTK_LOG4CPLUS_TEXT ("Win32ConsoleAppender::append")
+            DCMTK_LOG4CPLUS_TEXT ("- Unable to get STD_OUTPUT_HANDLE."));
         return;
     }
 
@@ -85,8 +85,8 @@ Win32ConsoleAppender::append (spi::InternalLoggingEvent const & event)
     if (handle_type == FILE_TYPE_UNKNOWN && GetLastError () != NO_ERROR)
     {
         getLogLog ().error (
-            LOG4CPLUS_TEXT ("Win32ConsoleAppender::append")
-            LOG4CPLUS_TEXT ("- Error retrieving handle type."));
+            DCMTK_LOG4CPLUS_TEXT ("Win32ConsoleAppender::append")
+            DCMTK_LOG4CPLUS_TEXT ("- Error retrieving handle type."));
         return;
     }
 
@@ -124,8 +124,8 @@ Win32ConsoleAppender::write_handle (HANDLE out, tchar const * s, size_t str_len)
         if (! ret)
         {
             getLogLog ().error (
-                LOG4CPLUS_TEXT ("Win32ConsoleAppender::write_handle")
-                LOG4CPLUS_TEXT ("- WriteFile has failed."));
+                DCMTK_LOG4CPLUS_TEXT ("Win32ConsoleAppender::write_handle")
+                DCMTK_LOG4CPLUS_TEXT ("- WriteFile has failed."));
             return;
         }
 
@@ -156,8 +156,8 @@ Win32ConsoleAppender::write_console (HANDLE console_out, tchar const * s,
         if (! ret)
         {
             getLogLog ().error (
-                LOG4CPLUS_TEXT ("Win32ConsoleAppender::write_console")
-                LOG4CPLUS_TEXT ("- WriteConsole has failed."));
+                DCMTK_LOG4CPLUS_TEXT ("Win32ConsoleAppender::write_console")
+                DCMTK_LOG4CPLUS_TEXT ("- WriteConsole has failed."));
             return;
         }
 

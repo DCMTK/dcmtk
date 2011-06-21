@@ -191,9 +191,9 @@ connectSocket(const tstring& hostn,
     }
 
     unsigned long ip = INADDR_NONE;
-    struct hostent *hp = ::gethostbyname( LOG4CPLUS_TSTRING_TO_STRING(hostn).c_str() );
+    struct hostent *hp = ::gethostbyname( DCMTK_LOG4CPLUS_TSTRING_TO_STRING(hostn).c_str() );
     if(hp == 0 || hp->h_addrtype != AF_INET) {
-        ip = inet_addr( LOG4CPLUS_TSTRING_TO_STRING(hostn).c_str() );
+        ip = inet_addr( DCMTK_LOG4CPLUS_TSTRING_TO_STRING(hostn).c_str() );
         if(ip == INADDR_NONE) {
             state = bad_address;
             return INVALID_SOCKET;
@@ -303,7 +303,7 @@ getHostname (bool fqdn)
 
     if (ret != 0 || (ret == 0 && ! fqdn))
     {
-        tstring res = LOG4CPLUS_STRING_TO_TSTRING (hostname);
+        tstring res = DCMTK_LOG4CPLUS_STRING_TO_TSTRING (hostname);
         free(hn);
         return res;
     }
@@ -312,7 +312,7 @@ getHostname (bool fqdn)
     if (hp)
         hostname = hp->h_name;
 
-    tstring res = LOG4CPLUS_STRING_TO_TSTRING (hostname);
+    tstring res = DCMTK_LOG4CPLUS_STRING_TO_TSTRING (hostname);
     free(hn);
     return res;
 }

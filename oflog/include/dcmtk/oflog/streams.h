@@ -20,14 +20,14 @@
 
 /** @file */
 
-#ifndef LOG4CPLUS_STREAMS_HEADER_
-#define LOG4CPLUS_STREAMS_HEADER_
+#ifndef DCMTK_LOG4CPLUS_STREAMS_HEADER_
+#define DCMTK_LOG4CPLUS_STREAMS_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
 #include "dcmtk/ofstd/ofstream.h"
 
-#define LOG4CPLUS_STREAM_NAMESPACE std
+#define DCMTK_LOG4CPLUS_STREAM_NAMESPACE std
 
 namespace dcmtk {
 namespace log4cplus {
@@ -37,5 +37,5 @@ namespace log4cplus {
 }
 }
 
-#endif // LOG4CPLUS_STREAMS_HEADER_
+#endif // DCMTK_LOG4CPLUS_STREAMS_HEADER_
 

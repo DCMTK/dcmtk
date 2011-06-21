@@ -67,10 +67,10 @@ LoggerImpl::callAppenders(const InternalLoggingEvent& event)
 
     // No appenders in hierarchy, warn user only once.
     if(!hierarchy.emittedNoAppenderWarning && writes == 0) {
-        getLogLog().error(  LOG4CPLUS_TEXT("No appenders could be found for logger (")
+        getLogLog().error(  DCMTK_LOG4CPLUS_TEXT("No appenders could be found for logger (")
                           + getName()
-                          + LOG4CPLUS_TEXT(")."));
-        getLogLog().error(LOG4CPLUS_TEXT("Please initialize the log4cplus system properly."));
+                          + DCMTK_LOG4CPLUS_TEXT(")."));
+        getLogLog().error(DCMTK_LOG4CPLUS_TEXT("Please initialize the log4cplus system properly."));
         hierarchy.emittedNoAppenderWarning = true;
     }
 }
@@ -120,7 +120,7 @@ LoggerImpl::getChainedLogLevel() const
         }
     }
 
-    getLogLog().error( LOG4CPLUS_TEXT("LoggerImpl::getChainedLogLevel()- No valid LogLevel found") );
+    getLogLog().error( DCMTK_LOG4CPLUS_TEXT("LoggerImpl::getChainedLogLevel()- No valid LogLevel found") );
     //throw STD_NAMESPACE runtime_error("No valid LogLevel found");
 
     // This can only happen if the root logger is set to NOT_SET_LOG_LEVEL which

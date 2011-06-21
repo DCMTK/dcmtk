@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_SPI_APPENDER_ATTACHABLE_HEADER_
-#define _LOG4CPLUS_SPI_APPENDER_ATTACHABLE_HEADER_
+#ifndef DCMTK__LOG4CPLUS_SPI_APPENDER_ATTACHABLE_HEADER_
+#define DCMTK__LOG4CPLUS_SPI_APPENDER_ATTACHABLE_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/appender.h"
@@ -41,7 +41,7 @@ namespace log4cplus {
         /**
          * This Interface is for attaching Appenders to objects.
          */
-        class LOG4CPLUS_EXPORT AppenderAttachable {
+        class DCMTK_LOG4CPLUS_EXPORT AppenderAttachable {
         public:
           // Methods
             /**
@@ -83,5 +83,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _LOG4CPLUS_SPI_APPENDER_ATTACHABLE_HEADER_
+#endif // DCMTK__LOG4CPLUS_SPI_APPENDER_ATTACHABLE_HEADER_
 

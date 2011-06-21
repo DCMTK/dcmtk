@@ -66,7 +66,7 @@ const LogLevel Hierarchy::DISABLE_OVERRIDE = -2;
 //////////////////////////////////////////////////////////////////////////////
 
 Hierarchy::Hierarchy()
-  : hashtable_mutex(LOG4CPLUS_MUTEX_CREATE),
+  : hashtable_mutex(DCMTK_LOG4CPLUS_MUTEX_CREATE),
     defaultFactory(new DefaultLoggerFactory()),
     root(NULL),
     disableValue(DISABLE_OFF),  // Don't disable any LogLevel level by default.
@@ -80,7 +80,7 @@ Hierarchy::Hierarchy()
 Hierarchy::~Hierarchy()
 {
     shutdown();
-    LOG4CPLUS_MUTEX_FREE( hashtable_mutex );
+    DCMTK_LOG4CPLUS_MUTEX_FREE( hashtable_mutex );
 }
 
 
@@ -92,20 +92,20 @@ Hierarchy::~Hierarchy()
 void
 Hierarchy::clear()
 {
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( hashtable_mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( hashtable_mutex )
         provisionNodes.erase(provisionNodes.begin(), provisionNodes.end());
         loggerPtrs.erase(loggerPtrs.begin(), loggerPtrs.end());
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 
 bool
 Hierarchy::exists(const tstring& name)
 {
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( hashtable_mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( hashtable_mutex )
         LoggerMap::iterator it = loggerPtrs.find(name);
         return it != loggerPtrs.end();
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 
@@ -165,9 +165,9 @@ Hierarchy::getInstance(const tstring& name)
 Logger
 Hierarchy::getInstance(const tstring& name, spi::LoggerFactory& factory)
 {
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( hashtable_mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( hashtable_mutex )
         return getInstanceImpl(name, factory);
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 
@@ -176,9 +176,9 @@ Hierarchy::getCurrentLoggers()
 {
     LoggerList ret;
 
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( hashtable_mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( hashtable_mutex )
         initializeLoggerList(ret);
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 
     return ret;
 }
@@ -261,7 +261,7 @@ Hierarchy::getInstanceImpl(const tstring& name, spi::LoggerFactory& factory)
          Logger logger = factory.makeNewLoggerInstance(name, *this);
          bool inserted = loggerPtrs.insert(OFMake_pair(name, logger)).second;
          if(!inserted) {
-             getLogLog().error(LOG4CPLUS_TEXT("Hierarchy::getInstanceImpl()- Insert failed"));
+             getLogLog().error(DCMTK_LOG4CPLUS_TEXT("Hierarchy::getInstanceImpl()- Insert failed"));
              //throw STD_NAMESPACE runtime_error("Hierarchy::getInstanceImpl()- Insert failed");
              abort();
          }
@@ -271,7 +271,7 @@ Hierarchy::getInstanceImpl(const tstring& name, spi::LoggerFactory& factory)
              updateChildren(it2->second, logger);
              bool deleted = (provisionNodes.erase(name) > 0);
              if(!deleted) {
-                 getLogLog().error(LOG4CPLUS_TEXT("Hierarchy::getInstanceImpl()- Delete failed"));
+                 getLogLog().error(DCMTK_LOG4CPLUS_TEXT("Hierarchy::getInstanceImpl()- Delete failed"));
                  //throw STD_NAMESPACE runtime_error("Hierarchy::getInstanceImpl()- Delete failed");
                  abort();
              }
@@ -303,9 +303,9 @@ Hierarchy::updateParents(Logger logger)
     bool parentFound = false;
 
     // if name = "w.x.y.z", loop thourgh "w.x.y", "w.x" and "w", but not "w.x.y.z"
-    for(size_t i=name.find_last_of(LOG4CPLUS_TEXT('.'), length-1);
+    for(size_t i=name.find_last_of(DCMTK_LOG4CPLUS_TEXT('.'), length-1);
         i != OFString_npos;
-        i = name.find_last_of(LOG4CPLUS_TEXT('.'), i-1))
+        i = name.find_last_of(DCMTK_LOG4CPLUS_TEXT('.'), i-1))
     {
         tstring substr = name.substr(0, i);
 
@@ -327,7 +327,7 @@ Hierarchy::updateParents(Logger logger)
                     provisionNodes.insert(OFMake_pair(substr, node));
                 //bool inserted = provisionNodes.insert(STD_NAMESPACE make_pair(substr, node)).second;
                 if(!tmp.second) {
-                    getLogLog().error(LOG4CPLUS_TEXT("Hierarchy::updateParents()- Insert failed"));
+                    getLogLog().error(DCMTK_LOG4CPLUS_TEXT("Hierarchy::updateParents()- Insert failed"));
                     //throw STD_NAMESPACE runtime_error("Hierarchy::updateParents()- Insert failed");
                     abort();
                 }

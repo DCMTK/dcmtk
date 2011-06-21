@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
-#define _LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
+#ifndef DCMTK__LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
+#define DCMTK__LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/layout.h"
@@ -42,13 +42,13 @@ namespace log4cplus {
         /**
          * This Interface is for attaching Appenders to objects.
          */
-        class LOG4CPLUS_EXPORT AppenderAttachableImpl
+        class DCMTK_LOG4CPLUS_EXPORT AppenderAttachableImpl
                                    : public spi::AppenderAttachable,
                                      protected helpers::LogLogUser
         {
         public:
           // Data
-            LOG4CPLUS_MUTEX_PTR_DECLARE appender_list_mutex;
+            DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE appender_list_mutex;
 
           // Ctors
             AppenderAttachableImpl();
@@ -112,5 +112,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // namespace dcmtk
 
-#endif // _LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
+#endif // DCMTK__LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
 

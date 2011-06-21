@@ -30,14 +30,14 @@ using namespace dcmtk::log4cplus::spi;
 ///////////////////////////////////////////////////////////////////////////////
 
 ObjectRegistryBase::ObjectRegistryBase()
- : mutex(LOG4CPLUS_MUTEX_CREATE)
+ : mutex(DCMTK_LOG4CPLUS_MUTEX_CREATE)
 {
 }
 
 
 ObjectRegistryBase::~ObjectRegistryBase()
 {
-    LOG4CPLUS_MUTEX_FREE( mutex );
+    DCMTK_LOG4CPLUS_MUTEX_FREE( mutex );
 }
 
 
@@ -49,9 +49,9 @@ ObjectRegistryBase::~ObjectRegistryBase()
 bool
 ObjectRegistryBase::exists(const tstring& name) const
 {
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
         return data.find(name) != data.end();
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 
@@ -59,10 +59,10 @@ OFList<tstring>
 ObjectRegistryBase::getAllNames() const
 {
     OFList<tstring> tmp;
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
         for(ObjectMap::const_iterator it=data.begin(); it!=data.end(); ++it)
             tmp.push_back( (*it).first );
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
     return tmp;
 }
 
@@ -78,9 +78,9 @@ ObjectRegistryBase::putVal(const tstring& name, void* object)
     ObjectMap::value_type value(name, object);
     OFPair<ObjectMap::iterator, bool> ret;
 
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
         ret = data.insert(value);
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 
     if (! ret.second)
         deleteObject( value.second );
@@ -91,13 +91,13 @@ ObjectRegistryBase::putVal(const tstring& name, void* object)
 void*
 ObjectRegistryBase::getVal(const tstring& name) const
 {
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
         ObjectMap::const_iterator it (data.find (name));
         if (it != data.end ())
             return it->second;
         else
             return 0;
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 
@@ -106,9 +106,9 @@ ObjectRegistryBase::getVal(const tstring& name) const
 void
 ObjectRegistryBase::clear()
 {
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( mutex )
     for(ObjectMap::iterator it=data.begin(); it!=data.end(); ++it) {
         deleteObject( (*it).second );
     }
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }

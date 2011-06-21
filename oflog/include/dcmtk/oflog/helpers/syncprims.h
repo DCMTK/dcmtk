@@ -21,12 +21,12 @@
 //   (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
 //   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef LOG4CPLUS_THREAD_SYNCPRIMS_H
-#define LOG4CPLUS_THREAD_SYNCPRIMS_H
+#ifndef DCMTK_LOG4CPLUS_THREAD_SYNCPRIMS_H
+#define DCMTK_LOG4CPLUS_THREAD_SYNCPRIMS_H
 
 //#include <stdexcept>
 #include "dcmtk/oflog/config.h"
-#if defined (LOG4CPLUS_USE_PTHREADS)
+#if defined (DCMTK_LOG4CPLUS_USE_PTHREADS)
 #  define INCLUDE_CERRNO
 #  include "dcmtk/ofstd/ofstdinc.h"
 
@@ -34,7 +34,7 @@
 #  include <semaphore.h>
 #  include "dcmtk/oflog/helpers/timehelp.h"
 
-#elif defined (LOG4CPLUS_USE_WIN32_THREADS)
+#elif defined (DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
 #  undef WIN32_LEAN_AND_MEAN
 #  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
@@ -48,7 +48,7 @@ namespace dcmtk { namespace log4cplus { namespace thread {
 namespace detail
 {
 
-LOG4CPLUS_EXPORT void syncprims_throw_exception (char const * const msg,
+DCMTK_LOG4CPLUS_EXPORT void syncprims_throw_exception (char const * const msg,
     char const * const file, int line);
 
 } // namespace detail
@@ -87,10 +87,10 @@ public:
     void unlock () const;
 
 private:
-#if defined (LOG4CPLUS_USE_PTHREADS)
+#if defined (DCMTK_LOG4CPLUS_USE_PTHREADS)
     mutable pthread_mutex_t mtx;
     friend class ManualResetEvent;
-#elif defined (LOG4CPLUS_USE_WIN32_THREADS)
+#elif defined (DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
     mutable CRITICAL_SECTION cs;
 #endif
 
@@ -112,9 +112,9 @@ public:
     void unlock () const;
 
 private:
-#if defined (LOG4CPLUS_USE_PTHREADS)
+#if defined (DCMTK_LOG4CPLUS_USE_PTHREADS)
     mutable sem_t sem;
-#elif defined (LOG4CPLUS_USE_WIN32_THREADS)
+#elif defined (DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
     HANDLE sem;
 #endif
 
@@ -138,12 +138,12 @@ public:
     void reset () const;
 
 private:
-#if defined (LOG4CPLUS_USE_PTHREADS)
+#if defined (DCMTK_LOG4CPLUS_USE_PTHREADS)
     mutable pthread_cond_t cv;
     mutable Mutex mtx;
     mutable volatile unsigned sigcount;
     mutable volatile bool signaled;
-#elif defined (LOG4CPLUS_USE_WIN32_THREADS)
+#elif defined (DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
     HANDLE ev;
 #endif
 
@@ -158,9 +158,9 @@ private:
 // Include the appropriate implementations of the classes declared
 // above.
 
-#if defined (LOG4CPLUS_USE_PTHREADS)
+#if defined (DCMTK_LOG4CPLUS_USE_PTHREADS)
 #  include "dcmtk/oflog/helpers/syncppth.h"
-#elif defined (LOG4CPLUS_USE_WIN32_THREADS)
+#elif defined (DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
 #  include "dcmtk/oflog/helpers/syncpwin.h"
 #endif
 
@@ -230,4 +230,4 @@ SyncGuard<SP>::detach ()
 
 
 
-#endif // LOG4CPLUS_THREAD_SYNCPRIMS_H
+#endif // DCMTK_LOG4CPLUS_THREAD_SYNCPRIMS_H

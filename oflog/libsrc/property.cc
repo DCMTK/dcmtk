@@ -35,7 +35,7 @@ namespace log4cplus
 {
 
 
-const tchar helpers::Properties::PROPERTIES_COMMENT_CHAR = LOG4CPLUS_TEXT('#');
+const tchar helpers::Properties::PROPERTIES_COMMENT_CHAR = DCMTK_LOG4CPLUS_TEXT('#');
 
 
 namespace
@@ -116,7 +116,7 @@ Properties::Properties(const tstring& inputFile)
     if (inputFile.length() == 0)
         return;
 
-    tifstream file (LOG4CPLUS_TSTRING_TO_STRING(inputFile).c_str());
+    tifstream file (DCMTK_LOG4CPLUS_TSTRING_TO_STRING(inputFile).c_str());
     init(file);
 }
 
@@ -141,7 +141,7 @@ Properties::init(tistream& input)
 
         // Check if we have a trailing \r because we are
         // reading a properties file produced on Windows.
-        if (buffer[buffLen-1] == LOG4CPLUS_TEXT('\r'))
+        if (buffer[buffLen-1] == DCMTK_LOG4CPLUS_TEXT('\r'))
             // Remove trailing 'Windows' \r.
             buffer.resize (buffLen - 1);
 
@@ -174,7 +174,7 @@ Properties::getProperty(const tstring& key) const
 {
     StringMap::const_iterator it (data.find(key));
     if (it == data.end())
-        return LOG4CPLUS_TEXT("");
+        return DCMTK_LOG4CPLUS_TEXT("");
     else
         return it->second;
 }

@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_NULL_APPENDER_HEADER_
-#define _LOG4CPLUS_NULL_APPENDER_HEADER_
+#ifndef DCMTK__LOG4CPLUS_NULL_APPENDER_HEADER_
+#define DCMTK__LOG4CPLUS_NULL_APPENDER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/appender.h"
@@ -34,7 +34,7 @@ namespace log4cplus {
     /**
      * Appends log events to a file.
      */
-    class LOG4CPLUS_EXPORT NullAppender : public Appender {
+    class DCMTK_LOG4CPLUS_EXPORT NullAppender : public Appender {
     public:
       // Ctors
         NullAppender();
@@ -58,5 +58,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _LOG4CPLUS_NULL_APPENDER_HEADER_
+#endif // DCMTK__LOG4CPLUS_NULL_APPENDER_HEADER_
 

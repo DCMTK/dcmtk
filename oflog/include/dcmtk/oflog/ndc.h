@@ -22,8 +22,8 @@
  * This header defined the NDC class.
  */
 
-#ifndef _LO4CPLUS_NDC_HEADER_
-#define _LO4CPLUS_NDC_HEADER_
+#ifndef DCMTK__LO4CPLUS_NDC_HEADER_
+#define DCMTK__LO4CPLUS_NDC_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
@@ -47,7 +47,7 @@ namespace log4cplus {
     typedef OFStack<DiagnosticContext> DiagnosticContextStack;
 
 #if defined (_MSC_VER)
-    LOG4CPLUS_EXPORT NDC& getNDC();
+    DCMTK_LOG4CPLUS_EXPORT NDC& getNDC();
 #endif
 
 
@@ -115,7 +115,7 @@ namespace log4cplus {
      * #cloneStack cloneStack} method and pass the reference to any other
      * thread, in particular to a child.
      */
-    class LOG4CPLUS_EXPORT NDC : protected helpers::LogLogUser {
+    class DCMTK_LOG4CPLUS_EXPORT NDC : protected helpers::LogLogUser {
     public:
         /**
          * Clear any nested diagnostic information if any. This method is
@@ -261,7 +261,7 @@ namespace log4cplus {
         DiagnosticContextStack* getPtr();
 
       // Data
-        LOG4CPLUS_THREAD_LOCAL_TYPE threadLocal;
+        DCMTK_LOG4CPLUS_THREAD_LOCAL_TYPE threadLocal;
 
       // Disallow construction (and copying) except by getNDC()
         NDC();
@@ -270,7 +270,7 @@ namespace log4cplus {
 
       // Friends
 #if defined (_MSC_VER)
-        friend LOG4CPLUS_EXPORT NDC& getNDC();
+        friend DCMTK_LOG4CPLUS_EXPORT NDC& getNDC();
 #else
         friend NDC& getNDC();
 #endif
@@ -280,13 +280,13 @@ namespace log4cplus {
     /**
      * Return a reference to the singleton object.
      */
-    LOG4CPLUS_EXPORT NDC& getNDC();
+    DCMTK_LOG4CPLUS_EXPORT NDC& getNDC();
 
 
     /**
      * This is the internal object that is stored on the NDC stack.
      */
-    struct LOG4CPLUS_EXPORT DiagnosticContext {
+    struct DCMTK_LOG4CPLUS_EXPORT DiagnosticContext {
       // Ctors
         DiagnosticContext(const tstring& message, DiagnosticContext *parent);
         DiagnosticContext(const tstring& message);
@@ -301,7 +301,7 @@ namespace log4cplus {
      * This class ensures that a {@link NDC#push} call is always matched with
      * a {@link NDC#pop} call even in the face of exceptions.
      */
-    class LOG4CPLUS_EXPORT NDCContextCreator {
+    class DCMTK_LOG4CPLUS_EXPORT NDCContextCreator {
     public:
         /** Pushes <code>msg</code> onto the NDC stack. */
         NDCContextCreator(const tstring& msg);
@@ -314,4 +314,4 @@ namespace log4cplus {
 } // end namespace dcmtk
 
 
-#endif // _LO4CPLUS_NDC_HEADER_
+#endif // DCMTK__LO4CPLUS_NDC_HEADER_

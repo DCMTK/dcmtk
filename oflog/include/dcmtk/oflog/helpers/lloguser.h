@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_HELPERS_LOGLOG_USER
-#define _LOG4CPLUS_HELPERS_LOGLOG_USER
+#ifndef DCMTK__LOG4CPLUS_HELPERS_LOGLOG_USER
+#define DCMTK__LOG4CPLUS_HELPERS_LOGLOG_USER
 
 #include "dcmtk/oflog/config.h"
 
@@ -37,7 +37,7 @@ namespace log4cplus {
          * that uses the LogLog class should extend this class and retrieve
          * their reference to LogLog using the method provided.
          */
-        class LOG4CPLUS_EXPORT LogLogUser {
+        class DCMTK_LOG4CPLUS_EXPORT LogLogUser {
         public:
           // ctor and dtor
             LogLogUser();
@@ -60,5 +60,5 @@ namespace log4cplus {
 } // end namespace dcmtk
 
 
-#endif // _LOG4CPLUS_HELPERS_LOGLOG_USER
+#endif // DCMTK__LOG4CPLUS_HELPERS_LOGLOG_USER
 

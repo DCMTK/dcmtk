@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_SPI_LOGGER_FACTORY_HEADER
-#define _LOG4CPLUS_SPI_LOGGER_FACTORY_HEADER
+#ifndef DCMTK__LOG4CPLUS_SPI_LOGGER_FACTORY_HEADER
+#define DCMTK__LOG4CPLUS_SPI_LOGGER_FACTORY_HEADER
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
@@ -39,7 +39,7 @@ namespace log4cplus {
          * Implement this interface to create new instances of Logger or
          * a sub-class of Logger.
          */
-        class LOG4CPLUS_EXPORT LoggerFactory {
+        class DCMTK_LOG4CPLUS_EXPORT LoggerFactory {
         public:
             /**
              * Creates a new <code>Logger</code> object.
@@ -53,5 +53,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _LOG4CPLUS_SPI_LOGGER_FACTORY_HEADER
+#endif // DCMTK__LOG4CPLUS_SPI_LOGGER_FACTORY_HEADER
 

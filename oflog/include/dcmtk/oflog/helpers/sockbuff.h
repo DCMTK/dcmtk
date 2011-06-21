@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef LOG4CPLUS_HELPERS_SOCKET_BUFFER_HEADER_
-#define LOG4CPLUS_HELPERS_SOCKET_BUFFER_HEADER_
+#ifndef DCMTK_LOG4CPLUS_HELPERS_SOCKET_BUFFER_HEADER_
+#define DCMTK_LOG4CPLUS_HELPERS_SOCKET_BUFFER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
@@ -35,7 +35,7 @@ namespace log4cplus {
         /**
          *
          */
-        class LOG4CPLUS_EXPORT SocketBuffer : protected LogLogUser
+        class DCMTK_LOG4CPLUS_EXPORT SocketBuffer : protected LogLogUser
         {
         public:
             SocketBuffer(size_t max);
@@ -77,5 +77,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // LOG4CPLUS_HELPERS_SOCKET_HEADER_
+#endif // DCMTK_LOG4CPLUS_HELPERS_SOCKET_HEADER_
 

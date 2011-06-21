@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_LAYOUT_HEADER_
-#define _LOG4CPLUS_LAYOUT_HEADER_
+#ifndef DCMTK__LOG4CPLUS_LAYOUT_HEADER_
+#define DCMTK__LOG4CPLUS_LAYOUT_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/loglevel.h"
@@ -48,7 +48,7 @@ namespace log4cplus {
      * This class is used to layout strings sent to an {@link
      * dcmtk::log4cplus::Appender}.
      */
-    class LOG4CPLUS_EXPORT Layout : protected :: dcmtk::log4cplus::helpers::LogLogUser {
+    class DCMTK_LOG4CPLUS_EXPORT Layout : protected :: dcmtk::log4cplus::helpers::LogLogUser {
     public:
         Layout() : llmCache(getLogLevelManager()) {}
         Layout(const helpers::Properties&)
@@ -78,7 +78,7 @@ namespace log4cplus {
      *
      * {@link PatternLayout} offers a much more powerful alternative.
      */
-    class LOG4CPLUS_EXPORT SimpleLayout : public Layout {
+    class DCMTK_LOG4CPLUS_EXPORT SimpleLayout : public Layout {
     public:
         SimpleLayout() {}
         SimpleLayout(const helpers::Properties& properties, tstring&) : Layout(properties) {}
@@ -130,7 +130,7 @@ namespace log4cplus {
      *
      *  PatternLayout offers a much more flexible alternative.
      */
-    class LOG4CPLUS_EXPORT TTCCLayout : public Layout {
+    class DCMTK_LOG4CPLUS_EXPORT TTCCLayout : public Layout {
     public:
       // Ctor and dtor
         TTCCLayout(bool use_gmtime = false);
@@ -180,8 +180,8 @@ namespace log4cplus {
      * statements
      * <pre>
      * Logger root = Logger.getRoot();
-     * LOG4CPLUS_DEBUG(root, "Message 1");
-     * LOG4CPLUS_WARN(root, "Message 2");
+     * DCMTK_LOG4CPLUS_DEBUG(root, "Message 1");
+     * DCMTK_LOG4CPLUS_WARN(root, "Message 2");
      * </pre>
      * would yield the output
      * <pre>
@@ -512,7 +512,7 @@ namespace log4cplus {
      * Philip E. Margolis' highly recommended book "C -- a Software
      * Engineering Approach", ISBN 0-387-97389-3.
      */
-    class LOG4CPLUS_EXPORT PatternLayout : public Layout {
+    class DCMTK_LOG4CPLUS_EXPORT PatternLayout : public Layout {
     public:
       // Ctors and dtor
         PatternLayout(const tstring& pattern, bool formatEachLine = true);
@@ -541,5 +541,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _LOG4CPLUS_LAYOUT_HEADER_
+#endif // DCMTK__LOG4CPLUS_LAYOUT_HEADER_
 

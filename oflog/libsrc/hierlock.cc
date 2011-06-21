@@ -43,11 +43,11 @@ HierarchyLocker::HierarchyLocker(Hierarchy& _h)
     // Lock all of the Hierarchy's Loggers' mutexs
     try {
             for(LoggerListIterator it=loggerList.begin(); it!=loggerList.end(); ++it) {
-                LOG4CPLUS_MUTEX_LOCK( (*it).value->appender_list_mutex ) ;
+                DCMTK_LOG4CPLUS_MUTEX_LOCK( (*it).value->appender_list_mutex ) ;
             }
         }
         catch(...) {
-            h.getLogLog().error(LOG4CPLUS_TEXT("HierarchyLocker::ctor()- An error occurred while locking"));
+            h.getLogLog().error(DCMTK_LOG4CPLUS_TEXT("HierarchyLocker::ctor()- An error occurred while locking"));
             // TODO --> We need to unlock any Logger mutex that we were able to lock
             throw;
         }
@@ -58,11 +58,11 @@ HierarchyLocker::HierarchyLocker(Hierarchy& _h)
     {
         try {
             for(LoggerListIterator it=loggerList.begin(); it!=loggerList.end(); ++it) {
-            LOG4CPLUS_MUTEX_UNLOCK( (*it).value->appender_list_mutex ) ;
+            DCMTK_LOG4CPLUS_MUTEX_UNLOCK( (*it).value->appender_list_mutex ) ;
         }
     }
     catch(...) {
-        h.getLogLog().error(LOG4CPLUS_TEXT("HierarchyLocker::dtor()- An error occurred while unlocking"));
+        h.getLogLog().error(DCMTK_LOG4CPLUS_TEXT("HierarchyLocker::dtor()- An error occurred while unlocking"));
         throw;
     }
 }
@@ -81,10 +81,10 @@ HierarchyLocker::resetConfiguration()
 
     // repeat
     for(LoggerListIterator it=loggerList.begin(); it!=loggerList.end(); ++it) {
-        LOG4CPLUS_MUTEX_UNLOCK( (*it).value->appender_list_mutex ) ;
+        DCMTK_LOG4CPLUS_MUTEX_UNLOCK( (*it).value->appender_list_mutex ) ;
         (*it).closeNestedAppenders();
         (*it).removeAllAppenders();
-        LOG4CPLUS_MUTEX_LOCK( (*it).value->appender_list_mutex ) ;
+        DCMTK_LOG4CPLUS_MUTEX_LOCK( (*it).value->appender_list_mutex ) ;
         (*it).setLogLevel(NOT_SET_LOG_LEVEL);
         (*it).setAdditivity(true);
     }
@@ -110,9 +110,9 @@ HierarchyLocker::addAppender(Logger& logger, SharedAppenderPtr& appender)
 {
     for(LoggerListIterator it=loggerList.begin(); it!=loggerList.end(); ++it) {
         if((*it).value == logger.value) {
-            LOG4CPLUS_MUTEX_UNLOCK( logger.value->appender_list_mutex );
+            DCMTK_LOG4CPLUS_MUTEX_UNLOCK( logger.value->appender_list_mutex );
             logger.addAppender(appender);
-            LOG4CPLUS_MUTEX_LOCK( logger.value->appender_list_mutex );
+            DCMTK_LOG4CPLUS_MUTEX_LOCK( logger.value->appender_list_mutex );
             return;
         }
     }

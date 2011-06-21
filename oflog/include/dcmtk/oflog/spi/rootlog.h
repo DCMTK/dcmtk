@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
-#define _LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
+#ifndef DCMTK__LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
+#define DCMTK__LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/helpers/loglog.h"
@@ -40,7 +40,7 @@ namespace log4cplus {
          * getChainedLogLevel method always returns the value of the
          * ll field without walking the hierarchy.
          */
-        class LOG4CPLUS_EXPORT RootLogger : public LoggerImpl {
+        class DCMTK_LOG4CPLUS_EXPORT RootLogger : public LoggerImpl {
         public:
           // Ctors
             /**
@@ -68,5 +68,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
+#endif // DCMTK__LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
 

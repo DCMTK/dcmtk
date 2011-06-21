@@ -25,7 +25,7 @@ using namespace dcmtk::log4cplus;
 using namespace dcmtk::log4cplus::spi;
 
 
-#define LOG4CPLUS_DEFAULT_TYPE 1
+#define DCMTK_LOG4CPLUS_DEFAULT_TYPE 1
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ InternalLoggingEvent::~InternalLoggingEvent()
 unsigned int
 InternalLoggingEvent::getDefaultType()
 {
-    return LOG4CPLUS_DEFAULT_TYPE;
+    return DCMTK_LOG4CPLUS_DEFAULT_TYPE;
 }
 
 
@@ -64,7 +64,7 @@ InternalLoggingEvent::getMessage() const
 unsigned int
 InternalLoggingEvent::getType() const
 {
-    return LOG4CPLUS_DEFAULT_TYPE;
+    return DCMTK_LOG4CPLUS_DEFAULT_TYPE;
 }
 
 

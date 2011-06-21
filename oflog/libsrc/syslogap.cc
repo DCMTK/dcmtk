@@ -18,7 +18,7 @@
 // limitations under the License.
 
 #include "dcmtk/oflog/syslogap.h"
-#if defined(LOG4CPLUS_HAVE_SYSLOG_H) && !defined(_WIN32)
+#if defined(DCMTK_LOG4CPLUS_HAVE_SYSLOG_H) && !defined(_WIN32)
 
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/helpers/loglog.h"
@@ -39,15 +39,15 @@ using namespace dcmtk::log4cplus::helpers;
 SysLogAppender::SysLogAppender(const tstring& id)
 : ident(id)
 {
-    ::openlog(LOG4CPLUS_TSTRING_TO_STRING (ident).c_str(), 0, 0);
+    ::openlog(DCMTK_LOG4CPLUS_TSTRING_TO_STRING (ident).c_str(), 0, 0);
 }
 
 
 SysLogAppender::SysLogAppender(const Properties properties, tstring&)
 : Appender(properties)
 {
-    ident = properties.getProperty( LOG4CPLUS_TEXT("ident") );
-    ::openlog(LOG4CPLUS_TSTRING_TO_STRING (ident).c_str(), 0, 0);
+    ident = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("ident") );
+    ::openlog(DCMTK_LOG4CPLUS_TSTRING_TO_STRING (ident).c_str(), 0, 0);
 }
 
 
@@ -65,11 +65,11 @@ SysLogAppender::~SysLogAppender()
 void
 SysLogAppender::close()
 {
-    getLogLog().debug(LOG4CPLUS_TEXT("Entering SysLogAppender::close()..."));
-    LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
+    getLogLog().debug(DCMTK_LOG4CPLUS_TEXT("Entering SysLogAppender::close()..."));
+    DCMTK_LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( access_mutex )
         ::closelog();
         closed = true;
-    LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
+    DCMTK_LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
 
 
@@ -113,9 +113,9 @@ SysLogAppender::append(const spi::InternalLoggingEvent& event)
     if(level != -1) {
         tostringstream buf;
         layout->formatAndAppend(buf, event);
-        ::syslog(level, "%s", LOG4CPLUS_TSTRING_TO_STRING(buf.str()).c_str());
+        ::syslog(level, "%s", DCMTK_LOG4CPLUS_TSTRING_TO_STRING(buf.str()).c_str());
     }
 }
 
-#endif // defined(LOG4CPLUS_HAVE_SYSLOG_H)
+#endif // defined(DCMTK_LOG4CPLUS_HAVE_SYSLOG_H)
 

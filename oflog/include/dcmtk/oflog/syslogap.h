@@ -20,12 +20,12 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_SYSLOG_APPENDER_HEADER_
-#define _LOG4CPLUS_SYSLOG_APPENDER_HEADER_
+#ifndef DCMTK__LOG4CPLUS_SYSLOG_APPENDER_HEADER_
+#define DCMTK__LOG4CPLUS_SYSLOG_APPENDER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 
-#if defined(LOG4CPLUS_HAVE_SYSLOG_H) && !defined(_WIN32)
+#if defined(DCMTK_LOG4CPLUS_HAVE_SYSLOG_H) && !defined(_WIN32)
 #include "dcmtk/oflog/appender.h"
 
 namespace dcmtk {
@@ -41,7 +41,7 @@ namespace log4cplus {
      * will be prepended to every message.</dd>
      * </dl>
      */
-    class LOG4CPLUS_EXPORT SysLogAppender : public Appender {
+    class DCMTK_LOG4CPLUS_EXPORT SysLogAppender : public Appender {
     public:
       // Ctors
         SysLogAppender(const tstring& ident);
@@ -71,5 +71,5 @@ namespace log4cplus {
 
 #endif // defined(HAVE_SYSLOG_H)
 
-#endif // _LOG4CPLUS_SYSLOG_APPENDER_HEADER_
+#endif // DCMTK__LOG4CPLUS_SYSLOG_APPENDER_HEADER_
 

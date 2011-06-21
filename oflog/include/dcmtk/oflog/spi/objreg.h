@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef LOG4CPLUS_SPI_OBJECT_REGISTRY_HEADER_
-#define LOG4CPLUS_SPI_OBJECT_REGISTRY_HEADER_
+#ifndef DCMTK_LOG4CPLUS_SPI_OBJECT_REGISTRY_HEADER_
+#define DCMTK_LOG4CPLUS_SPI_OBJECT_REGISTRY_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
@@ -41,7 +41,7 @@ namespace log4cplus {
          * This is the base class used to implement the functionality required
          * by the ObjectRegistry template class.
          */
-        class LOG4CPLUS_EXPORT ObjectRegistryBase {
+        class DCMTK_LOG4CPLUS_EXPORT ObjectRegistryBase {
         public:
           // public methods
             /**
@@ -87,7 +87,7 @@ namespace log4cplus {
             typedef OFMap<tstring, void*> ObjectMap;
 
           // Data
-            LOG4CPLUS_MUTEX_PTR_DECLARE mutex;
+            DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE mutex;
             ObjectMap data;
         };
 
@@ -96,5 +96,5 @@ namespace log4cplus {
 } // end namespace dcmtk
 
 
-#endif // LOG4CPLUS_SPI_OBJECT_REGISTRY_HEADER_
+#endif // DCMTK_LOG4CPLUS_SPI_OBJECT_REGISTRY_HEADER_
 

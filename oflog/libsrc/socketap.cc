@@ -28,7 +28,7 @@
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
 
-#define LOG4CPLUS_MESSAGE_VERSION 2
+#define DCMTK_LOG4CPLUS_MESSAGE_VERSION 2
 
 
 namespace dcmtk
@@ -37,7 +37,7 @@ namespace dcmtk
 namespace log4cplus
 {
 
-#if ! defined (LOG4CPLUS_SINGLE_THREADED)
+#if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
 SocketAppender::ConnectorThread::ConnectorThread (
     SocketAppender & socket_appender)
     : sa (socket_appender)
@@ -57,8 +57,8 @@ SocketAppender::ConnectorThread::run ()
         trigger_ev.timed_wait (30 * 1000);
 
         getLogLog().debug (
-            LOG4CPLUS_TEXT("SocketAppender::ConnectorThread::run()")
-            LOG4CPLUS_TEXT("- running..."));
+            DCMTK_LOG4CPLUS_TEXT("SocketAppender::ConnectorThread::run()")
+            DCMTK_LOG4CPLUS_TEXT("- running..."));
 
         // Check exit condition as the very first thing.
 
@@ -83,8 +83,8 @@ SocketAppender::ConnectorThread::run ()
         if (! socket.isOpen ())
         {
             getLogLog().error(
-                LOG4CPLUS_TEXT("SocketAppender::ConnectorThread::run()")
-                LOG4CPLUS_TEXT("- Cannot connect to server"));
+                DCMTK_LOG4CPLUS_TEXT("SocketAppender::ConnectorThread::run()")
+                DCMTK_LOG4CPLUS_TEXT("- Cannot connect to server"));
 
             // Sleep for a short while after unsuccessful connection attempt
             // so that we do not try to reconnect after each logging attempt
@@ -146,12 +146,12 @@ SocketAppender::SocketAppender(const helpers::Properties & properties, tstring&)
  : Appender(properties),
    port(9998)
 {
-    host = properties.getProperty( LOG4CPLUS_TEXT("host") );
-    if(properties.exists( LOG4CPLUS_TEXT("port") )) {
-        tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("port") );
-        port = atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
+    host = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("host") );
+    if(properties.exists( DCMTK_LOG4CPLUS_TEXT("port") )) {
+        tstring tmp = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("port") );
+        port = atoi(DCMTK_LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
     }
-    serverName = properties.getProperty( LOG4CPLUS_TEXT("ServerName") );
+    serverName = properties.getProperty( DCMTK_LOG4CPLUS_TEXT("ServerName") );
 
     openSocket();
     initConnector ();
@@ -161,7 +161,7 @@ SocketAppender::SocketAppender(const helpers::Properties & properties, tstring&)
 
 SocketAppender::~SocketAppender()
 {
-#if ! defined (LOG4CPLUS_SINGLE_THREADED)
+#if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
     connector->terminate ();
 #endif
 
@@ -177,9 +177,9 @@ SocketAppender::~SocketAppender()
 void
 SocketAppender::close()
 {
-    getLogLog().debug(LOG4CPLUS_TEXT("Entering SocketAppender::close()..."));
+    getLogLog().debug(DCMTK_LOG4CPLUS_TEXT("Entering SocketAppender::close()..."));
 
-#if ! defined (LOG4CPLUS_SINGLE_THREADED)
+#if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
     connector->terminate ();
 #endif
 
@@ -205,7 +205,7 @@ SocketAppender::openSocket()
 void
 SocketAppender::initConnector ()
 {
-#if ! defined (LOG4CPLUS_SINGLE_THREADED)
+#if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
     connected = true;
     connector = new ConnectorThread (*this);
     connector->start ();
@@ -216,7 +216,7 @@ SocketAppender::initConnector ()
 void
 SocketAppender::append(const spi::InternalLoggingEvent& event)
 {
-#if ! defined (LOG4CPLUS_SINGLE_THREADED)
+#if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
     if (! connected)
     {
         connector->trigger ();
@@ -227,7 +227,7 @@ SocketAppender::append(const spi::InternalLoggingEvent& event)
     if(!socket.isOpen()) {
         openSocket();
         if(!socket.isOpen()) {
-            getLogLog().error(LOG4CPLUS_TEXT("SocketAppender::append()- Cannot connect to server"));
+            getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketAppender::append()- Cannot connect to server"));
             return;
         }
     }
@@ -235,7 +235,7 @@ SocketAppender::append(const spi::InternalLoggingEvent& event)
 #endif
 
     helpers::SocketBuffer buffer = helpers::convertToBuffer(event, serverName);
-    helpers::SocketBuffer msgBuffer(LOG4CPLUS_MAX_MESSAGE_SIZE);
+    helpers::SocketBuffer msgBuffer(DCMTK_LOG4CPLUS_MAX_MESSAGE_SIZE);
 
     msgBuffer.appendSize_t(buffer.getSize());
     msgBuffer.appendBuffer(buffer);
@@ -243,7 +243,7 @@ SocketAppender::append(const spi::InternalLoggingEvent& event)
     bool ret = socket.write(msgBuffer);
     if (! ret)
     {
-#if ! defined (LOG4CPLUS_SINGLE_THREADED)
+#if ! defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
         connected = false;
         connector->trigger ();
 #endif
@@ -262,9 +262,9 @@ SocketBuffer
 convertToBuffer(const spi::InternalLoggingEvent& event,
     const tstring& serverName)
 {
-    SocketBuffer buffer(LOG4CPLUS_MAX_MESSAGE_SIZE - sizeof(unsigned int));
+    SocketBuffer buffer(DCMTK_LOG4CPLUS_MAX_MESSAGE_SIZE - sizeof(unsigned int));
 
-    buffer.appendByte(LOG4CPLUS_MESSAGE_VERSION);
+    buffer.appendByte(DCMTK_LOG4CPLUS_MESSAGE_VERSION);
     buffer.appendByte(1);
 
     buffer.appendString(serverName);
@@ -286,9 +286,9 @@ spi::InternalLoggingEvent
 readFromBuffer(SocketBuffer& buffer)
 {
     unsigned char msgVersion = buffer.readByte();
-    if(msgVersion != LOG4CPLUS_MESSAGE_VERSION) {
+    if(msgVersion != DCMTK_LOG4CPLUS_MESSAGE_VERSION) {
         SharedObjectPtr<LogLog> loglog = LogLog::getLogLog();
-        loglog->warn(LOG4CPLUS_TEXT("readFromBuffer() received socket message with an invalid version"));
+        loglog->warn(DCMTK_LOG4CPLUS_TEXT("readFromBuffer() received socket message with an invalid version"));
     }
 
     unsigned char sizeOfChar = buffer.readByte();
@@ -302,7 +302,7 @@ readFromBuffer(SocketBuffer& buffer)
             ndc = serverName;
         }
         else {
-            ndc = serverName + LOG4CPLUS_TEXT(" - ") + ndc;
+            ndc = serverName + DCMTK_LOG4CPLUS_TEXT(" - ") + ndc;
         }
     }
     tstring message = buffer.readString(sizeOfChar);

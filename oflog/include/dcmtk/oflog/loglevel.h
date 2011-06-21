@@ -22,8 +22,8 @@
  * This header defines the LogLevel type.
  */
 
-#ifndef LOG4CPLUS_LOGLEVEL_HEADER_
-#define LOG4CPLUS_LOGLEVEL_HEADER_
+#ifndef DCMTK_LOG4CPLUS_LOGLEVEL_HEADER_
+#define DCMTK_LOG4CPLUS_LOGLEVEL_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/streams.h"
@@ -122,7 +122,7 @@ namespace log4cplus {
      *       with the LogLevelManager singleton.</li>
      * </ol>
      */
-    class LOG4CPLUS_EXPORT LogLevelManager {
+    class DCMTK_LOG4CPLUS_EXPORT LogLevelManager {
     public:
         LogLevelManager();
         ~LogLevelManager();
@@ -176,11 +176,11 @@ namespace log4cplus {
     /**
      * Returns the singleton LogLevelManager.
      */
-    LOG4CPLUS_EXPORT LogLevelManager& getLogLevelManager();
+    DCMTK_LOG4CPLUS_EXPORT LogLevelManager& getLogLevelManager();
 
 }
 }
 
 
-#endif // LOG4CPLUS_LOGLEVEL_HEADER_
+#endif // DCMTK_LOG4CPLUS_LOGLEVEL_HEADER_
 

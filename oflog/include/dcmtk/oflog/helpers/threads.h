@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_THREADS_HEADER_
-#define _LOG4CPLUS_THREADS_HEADER_
+#ifndef DCMTK__LOG4CPLUS_THREADS_HEADER_
+#define DCMTK__LOG4CPLUS_THREADS_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
@@ -37,20 +37,20 @@ class Guard
 {
 public:
     /** "locks" <code>mutex</code>. */
-    Guard(LOG4CPLUS_MUTEX_PTR_DECLARE mutex)
+    Guard(DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE mutex)
         : _mutex (mutex)
     {
-        LOG4CPLUS_MUTEX_LOCK( _mutex );
+        DCMTK_LOG4CPLUS_MUTEX_LOCK( _mutex );
     }
 
     /** "unlocks" <code>mutex</code>. */
     ~Guard()
     {
-        LOG4CPLUS_MUTEX_UNLOCK( _mutex );
+        DCMTK_LOG4CPLUS_MUTEX_UNLOCK( _mutex );
     }
 
 private:
-    LOG4CPLUS_MUTEX_PTR_DECLARE _mutex;
+    DCMTK_LOG4CPLUS_MUTEX_PTR_DECLARE _mutex;
 
     // disable copy
     Guard(const Guard&);
@@ -58,10 +58,10 @@ private:
 };
 
 
-#ifndef LOG4CPLUS_SINGLE_THREADED
+#ifndef DCMTK_LOG4CPLUS_SINGLE_THREADED
 
-LOG4CPLUS_EXPORT void blockAllSignals();
-LOG4CPLUS_EXPORT tstring getCurrentThreadName();
+DCMTK_LOG4CPLUS_EXPORT void blockAllSignals();
+DCMTK_LOG4CPLUS_EXPORT tstring getCurrentThreadName();
 
 
 struct ThreadStart;
@@ -73,14 +73,14 @@ struct ThreadStart;
  * libraries.  The goal of this class is to provide a simple Threading
  * class with basic functionality.
  */
-class LOG4CPLUS_EXPORT AbstractThread
+class DCMTK_LOG4CPLUS_EXPORT AbstractThread
     : public virtual dcmtk::log4cplus::helpers::SharedObject
 {
 public:
     AbstractThread();
     bool isRunning() const { return running; }
-    LOG4CPLUS_THREAD_KEY_TYPE getThreadId() const;
-    LOG4CPLUS_THREAD_HANDLE_TYPE getThreadHandle () const;
+    DCMTK_LOG4CPLUS_THREAD_KEY_TYPE getThreadId() const;
+    DCMTK_LOG4CPLUS_THREAD_HANDLE_TYPE getThreadHandle () const;
     virtual void start();
     void join () const;
 
@@ -95,10 +95,10 @@ private:
     // Friends.
     friend struct ThreadStart;
 
-#  ifdef LOG4CPLUS_USE_PTHREADS
+#  ifdef DCMTK_LOG4CPLUS_USE_PTHREADS
     pthread_t handle;
 
-#  elif defined(LOG4CPLUS_USE_WIN32_THREADS)
+#  elif defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
     HANDLE handle;
     unsigned thread_id;
 
@@ -112,11 +112,11 @@ private:
 typedef helpers::SharedObjectPtr<AbstractThread> AbstractThreadPtr;
 
 
-#endif // LOG4CPLUS_SINGLE_THREADED
+#endif // DCMTK_LOG4CPLUS_SINGLE_THREADED
 
 
 } } } // namespace dcmtk { namespace log4cplus { namespace thread {
 
 
-#endif // _LOG4CPLUS_THREADS_HEADER_
+#endif // DCMTK__LOG4CPLUS_THREADS_HEADER_
 

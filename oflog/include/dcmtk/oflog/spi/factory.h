@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef LOG4CPLUS_SPI_FACTORY_HEADER_
-#define LOG4CPLUS_SPI_FACTORY_HEADER_
+#ifndef DCMTK_LOG4CPLUS_SPI_FACTORY_HEADER_
+#define DCMTK_LOG4CPLUS_SPI_FACTORY_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/appender.h"
@@ -43,7 +43,7 @@ namespace log4cplus {
         /**
          * This is the base class for all factories.
          */
-        class LOG4CPLUS_EXPORT BaseFactory {
+        class DCMTK_LOG4CPLUS_EXPORT BaseFactory {
         public:
             virtual ~BaseFactory() = 0;
 
@@ -58,7 +58,7 @@ namespace log4cplus {
          * This abstract class defines the "Factory" interface to create "Appender"
          * objects.
          */
-        class LOG4CPLUS_EXPORT AppenderFactory : public BaseFactory {
+        class DCMTK_LOG4CPLUS_EXPORT AppenderFactory : public BaseFactory {
         public:
             typedef Appender ProductType;
             typedef SharedAppenderPtr ProductPtr;
@@ -78,7 +78,7 @@ namespace log4cplus {
          * This abstract class defines the "Factory" interface to create "Layout"
          * objects.
          */
-        class LOG4CPLUS_EXPORT LayoutFactory : public BaseFactory {
+        class DCMTK_LOG4CPLUS_EXPORT LayoutFactory : public BaseFactory {
         public:
             typedef Layout ProductType;
             typedef OFauto_ptr<Layout> ProductPtr;
@@ -98,7 +98,7 @@ namespace log4cplus {
          * This abstract class defines the "Factory" interface to create "Appender"
          * objects.
          */
-        class LOG4CPLUS_EXPORT FilterFactory : public BaseFactory {
+        class DCMTK_LOG4CPLUS_EXPORT FilterFactory : public BaseFactory {
         public:
             typedef Filter ProductType;
             typedef FilterPtr ProductPtr;
@@ -124,7 +124,7 @@ namespace log4cplus {
          * <b>Note:</b>  This class is Thread-safe.
          */
         template<class T>
-        class LOG4CPLUS_EXPORT FactoryRegistry : private ObjectRegistryBase {
+        class DCMTK_LOG4CPLUS_EXPORT FactoryRegistry : private ObjectRegistryBase {
         public:
             typedef T product_type;
 
@@ -166,22 +166,22 @@ namespace log4cplus {
         /**
          * Returns the "singleton" <code>AppenderFactoryRegistry</code>.
          */
-        LOG4CPLUS_EXPORT AppenderFactoryRegistry& getAppenderFactoryRegistry();
+        DCMTK_LOG4CPLUS_EXPORT AppenderFactoryRegistry& getAppenderFactoryRegistry();
 
         /**
          * Returns the "singleton" <code>LayoutFactoryRegistry</code>.
          */
-        LOG4CPLUS_EXPORT LayoutFactoryRegistry& getLayoutFactoryRegistry();
+        DCMTK_LOG4CPLUS_EXPORT LayoutFactoryRegistry& getLayoutFactoryRegistry();
 
         /**
          * Returns the "singleton" <code>FilterFactoryRegistry</code>.
          */
-        LOG4CPLUS_EXPORT FilterFactoryRegistry& getFilterFactoryRegistry();
+        DCMTK_LOG4CPLUS_EXPORT FilterFactoryRegistry& getFilterFactoryRegistry();
 
     }
 }
 } // end namespace dcmtk
 
 
-#endif // LOG4CPLUS_SPI_FACTORY_HEADER_
+#endif // DCMTK_LOG4CPLUS_SPI_FACTORY_HEADER_
 

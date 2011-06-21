@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_APPENDER_HEADER_
-#define _LOG4CPLUS_APPENDER_HEADER_
+#ifndef DCMTK_LOG4CPLUS_APPENDER_HEADER_
+#define DCMTK_LOG4CPLUS_APPENDER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/layout.h"
@@ -43,7 +43,7 @@ namespace log4cplus {
      * This class is used to "handle" errors encountered in an {@link
      * dcmtk::log4cplus::Appender}.
      */
-    class LOG4CPLUS_EXPORT ErrorHandler {
+    class DCMTK_LOG4CPLUS_EXPORT ErrorHandler {
     public:
         virtual ~ErrorHandler();
         virtual void error(const tstring& err) = 0;
@@ -52,7 +52,7 @@ namespace log4cplus {
 
 
 
-    class LOG4CPLUS_EXPORT OnlyOnceErrorHandler : public ErrorHandler,
+    class DCMTK_LOG4CPLUS_EXPORT OnlyOnceErrorHandler : public ErrorHandler,
                                                   protected helpers::LogLogUser
     {
     public:
@@ -71,7 +71,7 @@ namespace log4cplus {
      * Extend this class for implementing your own strategies for printing log
      * statements.
      */
-    class LOG4CPLUS_EXPORT Appender
+    class DCMTK_LOG4CPLUS_EXPORT Appender
         : public virtual helpers::SharedObject
         , protected helpers::LogLogUser
 
@@ -211,5 +211,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _LOG4CPLUS_APPENDER_HEADER_
+#endif // DCMTK_LOG4CPLUS_APPENDER_HEADER_
 

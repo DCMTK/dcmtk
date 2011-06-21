@@ -20,8 +20,8 @@
 
 /** @file */
 
-#ifndef _LOG4CPLUS_FILE_APPENDER_HEADER_
-#define _LOG4CPLUS_FILE_APPENDER_HEADER_
+#ifndef DCMTK__LOG4CPLUS_FILE_APPENDER_HEADER_
+#define DCMTK__LOG4CPLUS_FILE_APPENDER_HEADER_
 
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/appender.h"
@@ -30,9 +30,9 @@
 #include "dcmtk/oflog/helpers/timehelp.h"
 
 #if defined(__DECCXX)
-#   define LOG4CPLUS_OPEN_MODE_TYPE LOG4CPLUS_FSTREAM_NAMESPACE::ios::open_mode
+#   define DCMTK_LOG4CPLUS_OPEN_MODE_TYPE DCMTK_LOG4CPLUS_FSTREAM_NAMESPACE::ios::open_mode
 #else
-#   define LOG4CPLUS_OPEN_MODE_TYPE LOG4CPLUS_FSTREAM_NAMESPACE::ios::openmode
+#   define DCMTK_LOG4CPLUS_OPEN_MODE_TYPE DCMTK_LOG4CPLUS_FSTREAM_NAMESPACE::ios::openmode
 #endif
 
 namespace dcmtk
@@ -63,15 +63,15 @@ namespace log4cplus {
      * </dd>
      * </dl>
      */
-    class LOG4CPLUS_EXPORT FileAppender : public Appender {
+    class DCMTK_LOG4CPLUS_EXPORT FileAppender : public Appender {
     public:
       // Ctors
         FileAppender(const tstring& filename,
-                     LOG4CPLUS_OPEN_MODE_TYPE mode = LOG4CPLUS_FSTREAM_NAMESPACE::ios::trunc,
+                     DCMTK_LOG4CPLUS_OPEN_MODE_TYPE mode = DCMTK_LOG4CPLUS_FSTREAM_NAMESPACE::ios::trunc,
                      bool immediateFlush = true);
         FileAppender(const helpers::Properties& properties,
                      tstring& error,
-                     LOG4CPLUS_OPEN_MODE_TYPE mode = LOG4CPLUS_FSTREAM_NAMESPACE::ios::trunc);
+                     DCMTK_LOG4CPLUS_OPEN_MODE_TYPE mode = DCMTK_LOG4CPLUS_FSTREAM_NAMESPACE::ios::trunc);
 
       // Dtor
         virtual ~FileAppender();
@@ -82,7 +82,7 @@ namespace log4cplus {
     protected:
         virtual void append(const spi::InternalLoggingEvent& event);
 
-        void open(LOG4CPLUS_OPEN_MODE_TYPE mode);
+        void open(DCMTK_LOG4CPLUS_OPEN_MODE_TYPE mode);
         bool reopen();
 
       // Data
@@ -116,7 +116,7 @@ namespace log4cplus {
 
     private:
         void init(const tstring& filename,
-                  LOG4CPLUS_OPEN_MODE_TYPE mode);
+                  DCMTK_LOG4CPLUS_OPEN_MODE_TYPE mode);
 
       // Disallow copying of instances of this class
         FileAppender(const FileAppender&);
@@ -145,7 +145,7 @@ namespace log4cplus {
      * will be kept.</dd>
      * </dl>
      */
-    class LOG4CPLUS_EXPORT RollingFileAppender : public FileAppender {
+    class DCMTK_LOG4CPLUS_EXPORT RollingFileAppender : public FileAppender {
     public:
       // Ctors
         RollingFileAppender(const tstring& filename,
@@ -195,7 +195,7 @@ namespace log4cplus {
      *
      * </dl>
      */
-    class LOG4CPLUS_EXPORT DailyRollingFileAppender : public FileAppender {
+    class DCMTK_LOG4CPLUS_EXPORT DailyRollingFileAppender : public FileAppender {
     public:
       // Ctors
         DailyRollingFileAppender(const tstring& filename,
@@ -229,5 +229,5 @@ namespace log4cplus {
 } // end namespace log4cplus
 } // end namespace dcmtk
 
-#endif // _LOG4CPLUS_FILE_APPENDER_HEADER_
+#endif // DCMTK__LOG4CPLUS_FILE_APPENDER_HEADER_
 
