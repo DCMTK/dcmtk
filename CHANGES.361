@@ -95,6 +95,9 @@ Changes between releases are documented here.
 - Fix linking errors when compiling on windows.
   Affects: oflog/libsrc/winsock.cc
 
+- Use OFBool for a variable which is already used as a boolean.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
 **** Changes from 2011.06.21 (onken)
 
 - Fixed small documentation issue.

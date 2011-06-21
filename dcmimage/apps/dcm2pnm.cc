@@ -17,9 +17,9 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-19 08:22:28 $
- *  CVS/RCS Revision: $Revision: 1.104 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-06-21 09:49:14 $
+ *  CVS/RCS Revision: $Revision: 1.105 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt    opt_frame = 1;                    /* default: first frame */
     OFCmdUnsignedInt    opt_frameCount = 1;               /* default: one frame */
     OFBool              opt_useFrameNumber = OFFalse;     /* default: use frame counter */
-    int                 opt_multiFrame = 0;               /* default: no multiframes */
+    OFBool              opt_multiFrame = OFFalse;         /* default: no multiframes */
     int                 opt_convertToGrayscale = 0;       /* default: color or grayscale */
     int                 opt_changePolarity = 0;           /* default: normal polarity */
     int                 opt_useAspectRatio = 1;           /* default: use aspect ratio for scaling */
@@ -518,12 +518,12 @@ int main(int argc, char *argv[])
         {
             app.checkValue(cmd.getValueAndCheckMin(opt_frame, 1));
             app.checkValue(cmd.getValueAndCheckMin(opt_frameCount, 1));
-            opt_multiFrame = 1;
+            opt_multiFrame = OFTrue;
         }
         if (cmd.findOption("--all-frames"))
         {
             opt_frameCount = 0;
-            opt_multiFrame = 1;
+            opt_multiFrame = OFTrue;
         }
         cmd.endOptionBlock();
 
@@ -1551,6 +1551,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.105  2011-06-21 09:49:14  uli
+ * Use OFBool for a variable which is already used as a boolean.
+ *
  * Revision 1.104  2011-04-19 08:22:28  joergr
  * Added new options for generating output filenames for multi-frame images
  * (either use a 0-based counter or the absolute frame number).
