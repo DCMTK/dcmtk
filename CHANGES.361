@@ -92,6 +92,9 @@ Changes between releases are documented here.
   Thanks to forum user "kosborn" for (accidentally) finding the problem.
   Affects: oflog/libsrc/patlay.cc
 
+- Fix linking errors when compiling on windows.
+  Affects: oflog/libsrc/winsock.cc
+
 **** Changes from 2011.06.21 (onken)
 
 - Fixed small documentation issue.

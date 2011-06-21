@@ -152,7 +152,7 @@ WinSockInitializer WinSockInitializer::winSockInitializer;
 /////////////////////////////////////////////////////////////////////////////
 
 SOCKET_TYPE
-openSocket(unsigned short port, SocketState& state)
+helpers::openSocket(unsigned short port, SocketState& state)
 {
     init_winsock ();
 
@@ -180,7 +180,7 @@ openSocket(unsigned short port, SocketState& state)
 
 
 SOCKET_TYPE
-connectSocket(const tstring& hostn,
+helpers::connectSocket(const tstring& hostn,
                                   unsigned short port, SocketState& state)
 {
     init_winsock ();
@@ -231,7 +231,7 @@ connectSocket(const tstring& hostn,
 
 
 SOCKET_TYPE
-acceptSocket(SOCKET_TYPE sock, SocketState& /*state*/)
+helpers::acceptSocket(SOCKET_TYPE sock, SocketState& /*state*/)
 {
     init_winsock ();
 
@@ -241,7 +241,7 @@ acceptSocket(SOCKET_TYPE sock, SocketState& /*state*/)
 
 
 int
-closeSocket(SOCKET_TYPE sock)
+helpers::closeSocket(SOCKET_TYPE sock)
 {
     return ::closesocket(sock);
 }
@@ -249,7 +249,7 @@ closeSocket(SOCKET_TYPE sock)
 
 
 long
-read(SOCKET_TYPE sock, SocketBuffer& buffer)
+helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
 {
     long read = 0;
 
@@ -269,14 +269,14 @@ read(SOCKET_TYPE sock, SocketBuffer& buffer)
 
 
 long
-write(SOCKET_TYPE sock, const SocketBuffer& buffer)
+helpers::write(SOCKET_TYPE sock, const SocketBuffer& buffer)
 {
     return ::send(sock, buffer.getBuffer(), OFstatic_cast(int, buffer.getSize()), 0);
 }
 
 
 tstring
-getHostname (bool fqdn)
+helpers::getHostname (bool fqdn)
 {
     char const * hostname = "unknown";
     int ret;
