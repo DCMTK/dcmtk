@@ -10,6 +10,10 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcddirif.cc
            dcmjpeg/docs/dcmmkdir.man
 
+- Added two new multi-frame composite IODs from Supplement 151 to application
+  profile DVD Interchange with MPEG2 Main Profile @ Main Level.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 **** Changes from 2011.06.21 (schlachter)
 
 - Renamed all log4cplus macros to avoid conflicts with external log4cplus.

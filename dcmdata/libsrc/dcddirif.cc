@@ -18,8 +18,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-21 10:23:35 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2011-06-21 10:57:08 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1002,6 +1002,39 @@ static OFString &alternativeStudyTime(DcmItem *dataset,
 }
 
 
+// check whether given SOP Class UID belongs to a multi-frame composite IOD
+OFBool isMultiframeStorageSOPClass(const OFString &sopClassUID)
+{
+    return compare(sopClassUID, UID_BreastTomosynthesisImageStorage) ||
+           compare(sopClassUID, UID_EnhancedCTImageStorage) ||
+           compare(sopClassUID, UID_EnhancedMRColorImageStorage) ||
+           compare(sopClassUID, UID_EnhancedMRImageStorage) ||
+           compare(sopClassUID, UID_EnhancedPETImageStorage) ||
+           compare(sopClassUID, UID_EnhancedUSVolumeStorage) ||
+           compare(sopClassUID, UID_EnhancedXAImageStorage) ||
+           compare(sopClassUID, UID_EnhancedXRFImageStorage) ||
+           compare(sopClassUID, UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation) ||
+           compare(sopClassUID, UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing) ||
+           compare(sopClassUID, UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage) ||
+           compare(sopClassUID, UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage) ||
+           compare(sopClassUID, UID_MultiframeSingleBitSecondaryCaptureImageStorage) ||
+           compare(sopClassUID, UID_MultiframeTrueColorSecondaryCaptureImageStorage) ||
+           compare(sopClassUID, UID_NuclearMedicineImageStorage) ||
+           compare(sopClassUID, UID_OphthalmicPhotography16BitImageStorage) ||
+           compare(sopClassUID, UID_OphthalmicPhotography8BitImageStorage) ||
+           compare(sopClassUID, UID_OphthalmicTomographyImageStorage) ||
+           compare(sopClassUID, UID_RTDoseStorage) ||
+           compare(sopClassUID, UID_RTImageStorage) ||
+           compare(sopClassUID, UID_UltrasoundMultiframeImageStorage) ||
+           compare(sopClassUID, UID_VideoEndoscopicImageStorage) ||
+           compare(sopClassUID, UID_VideoMicroscopicImageStorage) ||
+           compare(sopClassUID, UID_VideoPhotographicImageStorage) ||
+           compare(sopClassUID, UID_XRay3DAngiographicImageStorage) ||
+           compare(sopClassUID, UID_XRay3DCraniofacialImageStorage) ||
+           compare(sopClassUID, UID_XRayAngiographicImageStorage) ||
+           compare(sopClassUID, UID_XRayRadiofluoroscopicImageStorage);
+}
+
 
 /*------------------*
  *  implementation  *
@@ -1358,32 +1391,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                 case AP_MPEG2MPatMLDVD:
                     expectedTransferSyntax = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
                     /* multi-frame composite IODs only! */
-                    found = compare(mediaSOPClassUID, UID_BreastTomosynthesisImageStorage) ||
-                            compare(mediaSOPClassUID, UID_EnhancedCTImageStorage) ||
-                            compare(mediaSOPClassUID, UID_EnhancedMRColorImageStorage) ||
-                            compare(mediaSOPClassUID, UID_EnhancedMRImageStorage) ||
-                            compare(mediaSOPClassUID, UID_EnhancedPETImageStorage) ||
-                            compare(mediaSOPClassUID, UID_EnhancedUSVolumeStorage) ||
-                            compare(mediaSOPClassUID, UID_EnhancedXAImageStorage) ||
-                            compare(mediaSOPClassUID, UID_EnhancedXRFImageStorage) ||
-                            compare(mediaSOPClassUID, UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage) ||
-                            compare(mediaSOPClassUID, UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage) ||
-                            compare(mediaSOPClassUID, UID_MultiframeSingleBitSecondaryCaptureImageStorage) ||
-                            compare(mediaSOPClassUID, UID_MultiframeTrueColorSecondaryCaptureImageStorage) ||
-                            compare(mediaSOPClassUID, UID_NuclearMedicineImageStorage) ||
-                            compare(mediaSOPClassUID, UID_OphthalmicPhotography16BitImageStorage) ||
-                            compare(mediaSOPClassUID, UID_OphthalmicPhotography8BitImageStorage) ||
-                            compare(mediaSOPClassUID, UID_OphthalmicTomographyImageStorage) ||
-                            compare(mediaSOPClassUID, UID_RTDoseStorage) ||
-                            compare(mediaSOPClassUID, UID_RTImageStorage) ||
-                            compare(mediaSOPClassUID, UID_UltrasoundMultiframeImageStorage) ||
-                            compare(mediaSOPClassUID, UID_VideoEndoscopicImageStorage) ||
-                            compare(mediaSOPClassUID, UID_VideoMicroscopicImageStorage) ||
-                            compare(mediaSOPClassUID, UID_VideoPhotographicImageStorage) ||
-                            compare(mediaSOPClassUID, UID_XRay3DAngiographicImageStorage) ||
-                            compare(mediaSOPClassUID, UID_XRay3DCraniofacialImageStorage) ||
-                            compare(mediaSOPClassUID, UID_XRayAngiographicImageStorage) ||
-                            compare(mediaSOPClassUID, UID_XRayRadiofluoroscopicImageStorage);
+                    found = isMultiframeStorageSOPClass(mediaSOPClassUID);
                     break;
                 case AP_BasicCardiac:
                     if (compare(mediaSOPClassUID, UID_XRayAngiographicImageStorage))
@@ -5348,6 +5356,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.60  2011-06-21 10:57:08  joergr
+ *  Added two new multi-frame composite IODs from Supplement 151 to application
+ *  profile DVD Interchange with MPEG2 Main Profile @ Main Level.
+ *
  *  Revision 1.59  2011-06-21 10:23:35  joergr
  *  Separated JPEG and JPEG 2000 variants of General Purpose DVD and USB/Flash
  *  Memory application profiles.
