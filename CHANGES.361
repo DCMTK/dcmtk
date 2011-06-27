@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.06.27 (riesmeier)
+
+- Closed two memory leaks. Thanks to forum user "angad" for the report.
+  Affects: dcmwlm/libsrc/wlfsim.cc
+
 **** Changes from 2011.06.21 (riesmeier)
 
 - Separated JPEG and JPEG 2000 variants of General Purpose DVD and USB/Flash
@@ -13,7 +18,7 @@ Changes between releases are documented here.
 - Added two new multi-frame composite IODs from Supplement 151 to application
   profile DVD Interchange with MPEG2 Main Profile @ Main Level.
   Affects: dcmdata/libsrc/dcddirif.cc
-  
+
 - Added support for Blu-ray Disc Media Application Profiles (Supplement 153).
   Affects: dcmdata/apps/dcmgpdir.cc
            dcmdata/include/dcmtk/dcmdata/dcddirif.h

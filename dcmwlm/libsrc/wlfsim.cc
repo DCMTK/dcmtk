@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for managing file system interaction.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-03 07:46:38 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-06-27 10:54:11 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -895,6 +895,10 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmDataset *da
       }
     }
   }
+
+  // free locally allocated memory
+  delete[] mkaValuesDataset;
+  delete[] mkaValuesSearchMask;
 
   // return result
   return( matchFound );
@@ -2157,6 +2161,9 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
+** Revision 1.29  2011-06-27 10:54:11  joergr
+** Closed two memory leaks.
+**
 ** Revision 1.28  2011-05-03 07:46:38  uli
 ** Remove a pointless return value from some function. This helps in static code
 ** analysis to ensure memory is never lost.
