@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Closed two memory leaks. Thanks to forum user "angad" for the report.
   Affects: dcmwlm/libsrc/wlfsim.cc
 
+- Fixed mismatched delete vs. delete[] statements reported by valgrind.
+  Affects: dcmwlm/libsrc/wlmactmg.cc
+
 **** Changes from 2011.06.21 (riesmeier)
 
 - Separated JPEG and JPEG 2000 variants of General Purpose DVD and USB/Flash

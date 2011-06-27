@@ -19,8 +19,8 @@
  *           class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-05-27 10:27:41 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2011-06-27 12:26:59 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -174,9 +174,9 @@ WlmActivityManager::~WlmActivityManager()
 // Return Value : none.
 {
   // free memory
-  delete supportedAbstractSyntaxes[0];
-  delete supportedAbstractSyntaxes[1];
-  delete supportedAbstractSyntaxes;
+  delete[] supportedAbstractSyntaxes[0];
+  delete[] supportedAbstractSyntaxes[1];
+  delete[] supportedAbstractSyntaxes;
 
 #ifdef HAVE_WINSOCK_H
   WSACleanup();
@@ -1152,6 +1152,9 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.38  2011-06-27 12:26:59  joergr
+** Fixed mismatched delete vs. delete[] statements reported by valgrind.
+**
 ** Revision 1.37  2011-05-27 10:27:41  joergr
 ** Fixed typos and source code formatting.
 **
