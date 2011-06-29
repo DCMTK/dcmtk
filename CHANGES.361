@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.06.29 (riesmeier)
+
+- Minor changes to new section "RUNNING THE TESTSUITE".
+  Affects: INSTALL
+
 **** Changes from 2011.06.29 (onken)
 
 - Enhanced documentation of DcmItem::clear().
@@ -444,7 +449,7 @@ Changes between releases are documented here.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
            dcmnet/libsrc/scu.cc
 
-- Added a function to look for a presntation context ID that best matches the
+- Added a function to look for a presentation context ID that best matches the
   abstract syntax UID and the transfer syntax UID.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
            dcmnet/libsrc/scu.cc

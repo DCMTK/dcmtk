@@ -551,7 +551,7 @@ the following steps:
    The debug versions of all libraries must be compiled for the multithread
    debug version of the runtime (/MTd), the release version must be compiled
    for the non-debug multithread runtime (/MT).  Precompiled versions of all
-   libraries can be downloaded from http://dicom.offis.de/dcmtk).
+   libraries can be downloaded from http://dicom.offis.de/dcmtk#lib-win).
 7. Go "Configure" a second time.  (CMake will adjust the configuration
    according to the displayed specifications).
 8. Go "OK" or "Generate".  (CMake will generate new project files in the
@@ -638,23 +638,23 @@ dcmtk/envvars.txt").
 RUNNING THE TESTSUITE
 =====================
 
-DCMTK comes with a test suite that verifies that the toolkit works as
-expected.  The tests are contained in a module's "tests/" sub-directory.
+DCMTK comes with a test suite that verifies that the toolkit works as expected.
+The tests are contained in a module's "tests" subdirectory.
 
 When using configure for building DCMTK, all tests can be run via "make check".
-If a test fails, make will stop and the failure reason of the test which
-failed should be visible.
+If a test fails, make will stop and the failure reason of the test which failed
+should be visible.
 
 You can also run the test suite with CMake.  However, the steps needed for
 running the test suite depend on the generator used.  The Visual Studio
-generators will create a "RUN_TESTS" project.  Building this project will call
-CTest and run all tests.  When using the Makefile generator, "make test" runs
-the testsuite.  Other generators should use a similar approach.
+generators will create a "RUN_TESTS" subproject.  Building this project will
+call CTest and run all tests.  When using the Makefile generator, "make test"
+runs the testsuite.  Other generators should use a similar approach.
 
-For closer inspection, individual tests can be run directly.  The Makefiles will
-build the test runner for each module in "<module>/tests/tests".  CMake will add
-the module name as a prefix to this file's name.  For more information, call
-this program with the "--help" argument.
+For closer inspection, individual tests can be run directly.  The Makefiles
+will build the test runner for each module in "<module>/tests/tests".  CMake
+will add the module name as a prefix to this file's name, e.g. "ofstd_tests".
+For more information, call this program with the --help option.
 
 
 ---------
@@ -664,4 +664,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2011-06-08 (Schlachter)
+Last revised: 2011-06-29 (Riesmeier)
