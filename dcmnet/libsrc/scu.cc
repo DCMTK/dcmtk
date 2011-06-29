@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-06-01 15:04:29 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-06-29 16:33:45 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,7 @@ DcmSCU::DcmSCU() :
   m_assocConfigFilename(),
   m_assocConfigProfile(),
   m_presContexts(),
+  m_assocConfigFile(),
   m_openDIMSERequest(NULL),
   m_maxReceivePDULength(ASC_DEFAULTMAXPDU),
   m_blockMode(DIMSE_BLOCKING),
@@ -1674,7 +1675,8 @@ FINDResponse::~FINDResponse()
 /*                        C-MOVE Response classes                           */
 /* ************************************************************************ */
 
-MOVEResponses::MOVEResponses()
+MOVEResponses::MOVEResponses() :
+  m_responses()
 {
   // Nothing to do :-)
 }
@@ -1742,6 +1744,9 @@ MOVEResponse::~MOVEResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.36  2011-06-29 16:33:45  joergr
+** Fixed various issues that are reported when compiled with "gcc -Weffc++".
+**
 ** Revision 1.35  2011-06-01 15:04:29  onken
 ** Removed unused status variable from C-ECHO code.
 **

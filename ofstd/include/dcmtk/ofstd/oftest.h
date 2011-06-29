@@ -22,9 +22,9 @@
  *
  *  Purpose: Provide a test framework for the toolkit
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-08 07:11:11 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-06-29 16:33:41 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,8 @@ public:
      *  @param testName the name of this test case
      */
     OFTestTest(const OFString& testName)
-        : testName_(testName)
+      : testName_(testName),
+        results_()
     {
     }
 
@@ -109,8 +110,7 @@ public:
      *  @param line line number for this failure
      *  @param message error description.
      */
-    void recordFailure(const OFString& file, unsigned long int line,
-            const OFString& message)
+    void recordFailure(const OFString& file, unsigned long int line, const OFString& message)
     {
         OFOStringStream oss;
         oss << "FAILED test '" << testName_ << "' at " << file << ":" << line
@@ -281,12 +281,20 @@ public:
 
 private:
     /// Private constructor, this is a singleton!
-    OFTestManager() : tests_(), curTest_(NULL)
-    {
+    OFTestManager()
+      : tests_(),
+        curTest_(NULL)
 #ifdef OFTEST_OFSTD_ONLY
-        verbose_ = OFFalse;
+      , verbose_(OFFalse)
 #endif
+    {
     }
+
+    /// Private undefined copy constructor
+    OFTestManager(const OFTestManager& obj);
+
+    /// Private undefined assignment operator
+    OFTestManager& operator=(const OFTestManager& obj);
 
     /** Build a list of tests which should be executed from the command line.
      *  @param cmd command line arguments which should be parsed
@@ -472,12 +480,14 @@ public: \
  *
  * CVS/RCS Log:
  * $Log: oftest.h,v $
+ * Revision 1.3  2011-06-29 16:33:41  joergr
+ * Fixed various issues that are reported when compiled with "gcc -Weffc++".
+ *
  * Revision 1.2  2011-06-08 07:11:11  uli
  * Corrected some file purpose descriptions.
  *
  * Revision 1.1  2011-05-25 10:05:57  uli
  * Imported oftest and converted existing tests to oftest.
- *
  *
  *
  */

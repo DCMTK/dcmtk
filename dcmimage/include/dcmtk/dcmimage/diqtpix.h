@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmQuantPixel
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:30 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2011-06-29 16:33:43 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,6 +63,12 @@ public:
   {
   }
 
+  /** destructor
+   */
+  virtual ~DcmQuantPixel()
+  {
+  }
+
   // we don't declare a destructor here, but the standard destructor will do.
 
   /// comparison operator for equality
@@ -98,7 +104,7 @@ public:
    */
   inline DcmQuantComponent getRed() const
   {
-  	return red;
+    return red;
   }
 
   /** returns the green component
@@ -106,7 +112,7 @@ public:
    */
   inline DcmQuantComponent getGreen() const
   {
-  	return green;
+    return green;
   }
 
   /** returns the blue component
@@ -114,7 +120,7 @@ public:
    */
   inline DcmQuantComponent getBlue() const
   {
-  	return blue;
+    return blue;
   }
 
   /** assigns new R, G and B values to this pixel
@@ -169,6 +175,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: diqtpix.h,v $
+ * Revision 1.5  2011-06-29 16:33:43  joergr
+ * Fixed various issues that are reported when compiled with "gcc -Weffc++".
+ *
  * Revision 1.4  2010-10-14 13:16:30  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
