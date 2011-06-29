@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-02 15:31:06 $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-06-29 15:30:18 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -345,7 +345,7 @@ class DcmItem
      */
     virtual OFBool isEmpty(const OFBool normalize = OFTrue);
 
-    /** clear (remove) attribute value
+    /** clear (remove) all attributes from item and delete them from memory.
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition clear();
@@ -1172,6 +1172,9 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.84  2011-06-29 15:30:18  onken
+** Enhanced documentation of DcmItem::clear().
+**
 ** Revision 1.83  2010-11-02 15:31:06  joergr
 ** Added special handling for data elements that are associated with different
 ** VRs (according to the data dictinary) when read with an implicit transfer

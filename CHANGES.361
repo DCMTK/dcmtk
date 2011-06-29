@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.06.29 (onken)
+
+- Enhanced documentation of DcmItem::clear().
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+
 **** Changes from 2011.06.27 (riesmeier)
 
 - Closed two memory leaks. Thanks to forum user "angad" for the report.
