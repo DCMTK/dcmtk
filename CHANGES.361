@@ -1,10 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.06.30 (riesmeier)
+
+- Fixed minor issue that is reported when compiled with "gcc -Weffc++".
+  Affects: dcmjpls/libsrc/djcparam.cc
+
 **** Changes from 2011.06.29 (riesmeier)
 
 - Minor changes to new section "RUNNING THE TESTSUITE".
   Affects: INSTALL
+
+- Fixed various issues that are reported when compiled with "gcc -Weffc++".
+  Affects: dcmimage/include/dcmtk/dcmimage/diqtpix.h
+           dcmnet/libsrc/scu.cc
+           ofstd/include/dcmtk/ofstd/oftest.h
 
 **** Changes from 2011.06.29 (onken)
 

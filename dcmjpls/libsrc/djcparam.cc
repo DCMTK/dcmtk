@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: codec parameter class for JPEG-LS codecs
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-03 12:32:06 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-06-30 08:25:04 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,6 +100,7 @@ DJLSCodecParameter::DJLSCodecParameter(const DJLSCodecParameter& arg)
 , preferCookedEncoding_(arg.preferCookedEncoding_)
 , uidCreation_(arg.uidCreation_)
 , convertToSC_(arg.convertToSC_)
+, jplsInterleaveMode_(arg.jplsInterleaveMode_)
 , planarConfiguration_(arg.planarConfiguration_)
 , ignoreOffsetTable_(arg.ignoreOffsetTable_)
 {
@@ -123,6 +124,9 @@ const char *DJLSCodecParameter::className() const
 /*
  * CVS/RCS Log:
  * $Log: djcparam.cc,v $
+ * Revision 1.6  2011-06-30 08:25:04  joergr
+ * Fixed minor issue that is reported when compiled with "gcc -Weffc++".
+ *
  * Revision 1.5  2010-11-03 12:32:06  uli
  * Fixed some more warnings by gcc with by additional flags.
  *
