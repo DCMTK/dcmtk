@@ -1,5 +1,4 @@
 diargimg.o: diargimg.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -123,7 +122,6 @@ diargimg.o: diargimg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h
 dicmyimg.o: dicmyimg.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -233,7 +231,6 @@ dicmyimg.o: dicmyimg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmimage/dilogger.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diinpx.h
 dicoimg.o: dicoimg.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -371,7 +368,6 @@ dicoimg.o: dicoimg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmimage/dilogger.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h
 dicoopx.o: dicoopx.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmimage/dicoopx.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
@@ -437,7 +433,6 @@ dicoopx.o: dicoopx.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h
 dicopx.o: dicopx.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -547,7 +542,6 @@ dicopx.o: dicopx.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dihsvimg.o: dihsvimg.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -657,7 +651,6 @@ dihsvimg.o: dihsvimg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmimage/dilogger.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diinpx.h
 dilogger.o: dilogger.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmimage/dilogger.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -715,7 +708,6 @@ dilogger.o: dilogger.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h
 dipalimg.o: dipalimg.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -840,7 +832,6 @@ dipalimg.o: dipalimg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diinpx.h
 dipipng.o: dipipng.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -941,7 +932,6 @@ dipipng.o: dipipng.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diplugin.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
 dipitiff.o: dipitiff.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -1041,7 +1031,6 @@ dipitiff.o: dipitiff.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diplugin.h
 diqtctab.o: diqtctab.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmimage/diqtctab.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -1144,7 +1133,6 @@ diqtctab.o: diqtctab.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 diqtfs.o: diqtfs.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmimage/diqtfs.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmimage/diqtpix.h \
@@ -1163,7 +1151,6 @@ diqtfs.o: diqtfs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/offname.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 diqthash.o: diqthash.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmimage/diqthash.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmimage/diqtpix.h \
@@ -1280,7 +1267,6 @@ diqthash.o: diqthash.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h
 diqthitl.o: diqthitl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmimage/diqthitl.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -1296,14 +1282,12 @@ diqthitl.o: diqthitl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 diqtpbox.o: diqtpbox.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmimage/diqtpbox.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 diquant.o: diquant.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmimage/diquant.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -1440,7 +1424,6 @@ diquant.o: diquant.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
 diregist.o: diregist.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmimage/diregist.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diregbas.h \
@@ -1570,7 +1553,6 @@ diregist.o: diregist.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h
 dirgbimg.o: dirgbimg.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -1680,7 +1662,6 @@ dirgbimg.o: dirgbimg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmimage/dilogger.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diinpx.h
 diybrimg.o: diybrimg.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -1798,7 +1779,6 @@ diybrimg.o: diybrimg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h
 diyf2img.o: diyf2img.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -1916,7 +1896,6 @@ diyf2img.o: diyf2img.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h
 diyp2img.o: diyp2img.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \

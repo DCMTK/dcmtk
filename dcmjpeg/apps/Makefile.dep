@@ -1,5 +1,4 @@
 dcmcjpeg.o: dcmcjpeg.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -162,7 +161,6 @@ dcmcjpeg.o: dcmcjpeg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diregbas.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h
 dcmdjpeg.o: dcmdjpeg.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -318,7 +316,6 @@ dcmdjpeg.o: dcmdjpeg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dcmj2pnm.o: dcmj2pnm.cc ../../dcmimage/apps/dcm2pnm.cc \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -511,7 +508,6 @@ dcmj2pnm.o: dcmj2pnm.cc ../../dcmimage/apps/dcm2pnm.cc \
   ../../oflog/include/dcmtk/oflog/oflog.h
 dcmmkdir.o: dcmmkdir.cc ../../dcmdata/apps/dcmgpdir.cc \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \

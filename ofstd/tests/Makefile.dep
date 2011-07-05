@@ -1,5 +1,4 @@
 tatof.o: tatof.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/ofstd.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/oftypes.h \
@@ -10,7 +9,6 @@ tatof.o: tatof.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofcmdln.h ../include/dcmtk/ofstd/ofconsol.h \
   ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/ofstdinc.h
 tbase64.o: tbase64.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/oftest.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofconapp.h ../include/dcmtk/ofstd/oftypes.h \
@@ -20,7 +18,6 @@ tbase64.o: tbase64.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
   ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/ofcond.h
 tests.o: tests.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/oftest.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofconapp.h ../include/dcmtk/ofstd/oftypes.h \
@@ -29,7 +26,6 @@ tests.o: tests.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h
 tftoa.o: tftoa.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/oftest.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofconapp.h ../include/dcmtk/ofstd/oftypes.h \
@@ -39,7 +35,6 @@ tftoa.o: tftoa.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
   ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/ofcond.h
 tlist.o: tlist.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/oflist.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofcast.h \
@@ -49,7 +44,6 @@ tlist.o: tlist.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h
 tmap.o: tmap.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/oftest.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofconapp.h ../include/dcmtk/ofstd/oftypes.h \
@@ -59,7 +53,6 @@ tmap.o: tmap.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
   ../include/dcmtk/ofstd/ofmap.h
 tofdatim.o: tofdatim.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/ofdate.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/oftypes.h \
@@ -71,7 +64,6 @@ tofdatim.o: tofdatim.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/ofconsol.h \
   ../include/dcmtk/ofstd/ofthread.h
 toffile.o: toffile.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/offile.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofstring.h \
@@ -82,7 +74,6 @@ toffile.o: toffile.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/ofstd.h \
   ../include/dcmtk/ofstd/ofstdinc.h
 tofstd.o: tofstd.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/ofstd.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/oftypes.h \
@@ -92,7 +83,6 @@ tofstd.o: tofstd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofconapp.h ../include/dcmtk/ofstd/ofcmdln.h \
   ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h
 tstack.o: tstack.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/ofstack.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofcast.h \
@@ -102,7 +92,6 @@ tstack.o: tstack.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofconsol.h \
   ../include/dcmtk/ofstd/ofthread.h
 tstring.o: tstring.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/ofstring.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofcast.h \
@@ -112,7 +101,6 @@ tstring.o: tstring.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/ofconsol.h \
   ../include/dcmtk/ofstd/ofthread.h
 tthread.o: tthread.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/oftest.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofconapp.h ../include/dcmtk/ofstd/oftypes.h \
@@ -123,7 +111,6 @@ tthread.o: tthread.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/ofcond.h
 tvec.o: tvec.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/ofstd/oftest.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofconapp.h ../include/dcmtk/ofstd/oftypes.h \

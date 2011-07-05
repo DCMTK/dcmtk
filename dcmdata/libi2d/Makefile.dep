@@ -1,5 +1,4 @@
 i2dbmps.o: i2dbmps.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmdata/libi2d/i2dbmps.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/libi2d/i2dimgs.h \
@@ -86,7 +85,6 @@ i2dbmps.o: i2dbmps.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcelem.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 i2d.o: i2d.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmdata/libi2d/i2d.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/libi2d/i2doutpl.h \
@@ -183,7 +181,6 @@ i2d.o: i2d.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcuid.h \
   ../include/dcmtk/dcmdata/dcpixseq.h ../include/dcmtk/dcmdata/dcpath.h
 i2djpgs.o: i2djpgs.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmdata/libi2d/i2djpgs.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
@@ -271,7 +268,6 @@ i2djpgs.o: i2djpgs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
   ../include/dcmtk/dcmdata/dcerror.h
 i2dplnsc.o: i2dplnsc.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmdata/libi2d/i2dplnsc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/libi2d/i2doutpl.h \
@@ -356,7 +352,6 @@ i2dplnsc.o: i2dplnsc.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcuid.h \
   ../include/dcmtk/dcmdata/libi2d/i2doutpl.h
 i2dplsc.o: i2dplsc.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmdata/libi2d/i2dplsc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/libi2d/i2doutpl.h \
@@ -441,7 +436,6 @@ i2dplsc.o: i2dplsc.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/libi2d/i2doutpl.h \
   ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcuid.h
 i2dplvlp.o: i2dplvlp.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmdata/libi2d/i2dplvlp.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/libi2d/i2doutpl.h \

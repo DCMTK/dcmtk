@@ -1,7 +1,6 @@
 header.o: header.cc config.h util.h pubtypes.h header.h \
   ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h streams.h \
   ../../ofstd/include/dcmtk/ofstd/ofvector.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -12,7 +11,6 @@ header.o: header.cc config.h util.h pubtypes.h header.h \
 intrface.o: intrface.cc config.h util.h pubtypes.h intrface.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
@@ -27,7 +25,6 @@ intrface.o: intrface.cc config.h util.h pubtypes.h intrface.h \
 jpegls.o: jpegls.cc config.h util.h pubtypes.h streams.h \
   ../../ofstd/include/dcmtk/ofstd/ofvector.h \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \

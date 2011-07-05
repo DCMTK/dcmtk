@@ -1,5 +1,4 @@
 dcmcjpls.o: dcmcjpls.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -160,7 +159,6 @@ dcmcjpls.o: dcmcjpls.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpls/djrparam.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h
 dcmdjpls.o: dcmdjpls.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -317,7 +315,6 @@ dcmdjpls.o: dcmdjpls.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpls/djlsutil.h
 dcml2pnm.o: dcml2pnm.cc ../../dcmimage/apps/dcm2pnm.cc \
   ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \

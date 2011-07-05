@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(dcmtk, 3.6.1, [dicom-bugs@offis.de], [dcmtk-3.6.1])
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR(Makefile.in)
-AC_CONFIG_HEADER(include/dcmtk/config/cfunix.h)
+AC_CONFIG_HEADER(include/dcmtk/config/osconfig.h)
 
 dnl -------------------------------------------------------
 dnl Additional Package Information
@@ -80,6 +80,17 @@ AH_VERBATIM([HAVE_EMPTY_ARGC_ARGV], [/* Define if your system cannot pass comman
 
 AH_TOP([#ifndef CFUNIX_H
 #define CFUNIX_H
+
+/*
+** Define enclosures for include files with C linkage (mostly system headers)
+*/
+#ifdef __cplusplus
+#define BEGIN_EXTERN_C extern "C" {
+#define END_EXTERN_C }
+#else
+#define BEGIN_EXTERN_C
+#define END_EXTERN_C
+#endif
 
 /* MinGW needs some special handling because it is a mixture of WIN32 and Posix.
  * The following settings are not tested by configure but need to be set for MinGW.

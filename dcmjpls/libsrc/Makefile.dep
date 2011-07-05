@@ -1,5 +1,4 @@
 djcodecd.o: djcodecd.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmjpls/djcodecd.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
@@ -103,7 +102,6 @@ djcodecd.o: djcodecd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmjpls/libcharls/pubtypes.h ../../dcmjpls/libcharls/config.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h
 djcodece.o: djcodece.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmjpls/djcodece.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
@@ -249,7 +247,6 @@ djcodece.o: djcodece.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h
 djcparam.o: djcparam.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmjpls/djcparam.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
@@ -321,7 +318,6 @@ djcparam.o: djcparam.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h
 djdecode.o: djdecode.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmjpls/djdecode.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -396,7 +392,6 @@ djdecode.o: djdecode.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpls/djcodecd.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h
 djencode.o: djencode.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmjpls/djencode.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -473,7 +468,6 @@ djencode.o: djencode.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h
 djrparam.o: djrparam.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmjpls/djrparam.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
@@ -553,7 +547,6 @@ djrparam.o: djrparam.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h
 djutils.o: djutils.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmjpls/djlsutil.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \

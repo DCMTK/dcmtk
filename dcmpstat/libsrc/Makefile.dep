@@ -1,5 +1,4 @@
 dcmpstat.o: dcmpstat.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dcmpstat.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -175,7 +174,6 @@ dcmpstat.o: dcmpstat.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpstx.h ../include/dcmtk/dcmpstat/dvpsgr.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dviface.o: dviface.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dviface.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
@@ -494,7 +492,6 @@ dviface.o: dviface.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 dvpsab.o: dvpsab.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -586,7 +583,6 @@ dvpsab.o: dvpsab.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpsdef.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 dvpsabl.o: dvpsabl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -679,7 +675,6 @@ dvpsabl.o: dvpsabl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpshlp.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h
 dvpsal.o: dvpsal.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -766,7 +761,6 @@ dvpsal.o: dvpsal.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpsdef.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 dvpsall.o: dvpsall.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -916,7 +910,6 @@ dvpsall.o: dvpsall.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
   ../include/dcmtk/dcmpstat/dvpsgl.h
 dvpscf.o: dvpscf.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpscf.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -987,7 +980,6 @@ dvpscf.o: dvpscf.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dvpscu.o: dvpscu.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpscu.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpstyp.h \
@@ -1133,7 +1125,6 @@ dvpscu.o: dvpscu.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
   ../../ofstd/include/dcmtk/ofstd/ofdefine.h
 dvpscul.o: dvpscul.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpscul.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -1219,7 +1210,6 @@ dvpscul.o: dvpscul.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h
 dvpsda.o: dvpsda.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -1373,7 +1363,6 @@ dvpsda.o: dvpsda.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dvpsdal.o: dvpsdal.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsdal.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -1519,7 +1508,6 @@ dvpsdal.o: dvpsdal.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvris.h
 dvpsfs.o: dvpsfs.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsfs.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -1728,7 +1716,6 @@ dvpsfs.o: dvpsfs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dvpsga.o: dvpsga.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsga.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
@@ -1880,7 +1867,6 @@ dvpsga.o: dvpsga.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
   ../include/dcmtk/dcmpstat/dvpsgr.h
 dvpsgal.o: dvpsgal.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsgal.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -2031,7 +2017,6 @@ dvpsgal.o: dvpsgal.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvris.h
 dvpsgl.o: dvpsgl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsgl.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -2173,7 +2158,6 @@ dvpsgl.o: dvpsgl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dvpsgll.o: dvpsgll.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -2327,7 +2311,6 @@ dvpsgll.o: dvpsgll.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvris.h
 dvpsgr.o: dvpsgr.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsgr.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -2471,7 +2454,6 @@ dvpsgr.o: dvpsgr.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpsdef.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 dvpsgrl.o: dvpsgrl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsgrl.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -2614,7 +2596,6 @@ dvpsgrl.o: dvpsgrl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpstyp.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dvpshlp.o: dvpshlp.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpshlp.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
@@ -2762,7 +2743,6 @@ dvpshlp.o: dvpshlp.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dvpsib.o: dvpsib.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -2941,7 +2921,6 @@ dvpsib.o: dvpsib.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h
 dvpsibl.o: dvpsibl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsibl.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -3112,7 +3091,6 @@ dvpsibl.o: dvpsibl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpshlp.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h
 dvpsmsg.o: dvpsmsg.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
@@ -3193,7 +3171,6 @@ dvpsmsg.o: dvpsmsg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h
 dvpsov.o: dvpsov.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsov.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -3335,7 +3312,6 @@ dvpsov.o: dvpsov.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpsdef.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 dvpsovl.o: dvpsovl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsovl.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -3476,7 +3452,6 @@ dvpsovl.o: dvpsovl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
 dvpspl2.o: dvpspl2.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -3619,7 +3594,6 @@ dvpspl2.o: dvpspl2.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h
 dvpspl.o: dvpspl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -3737,7 +3711,6 @@ dvpspl.o: dvpspl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h
 dvpspll.o: dvpspll.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpspll.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -3926,7 +3899,6 @@ dvpspll.o: dvpspll.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
 dvpspr.o: dvpspr.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -4034,7 +4006,6 @@ dvpspr.o: dvpspr.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h
 dvpsprt.o: dvpsprt.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpsprt.h \
@@ -4257,7 +4228,6 @@ dvpsprt.o: dvpsprt.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpsri.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvris.h
 dvpsri.o: dvpsri.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -4346,7 +4316,6 @@ dvpsri.o: dvpsri.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dvpsril.o: dvpsril.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -4443,7 +4412,6 @@ dvpsril.o: dvpsril.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpsdef.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 dvpsrs.o: dvpsrs.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -4538,7 +4506,6 @@ dvpsrs.o: dvpsrs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpsri.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvris.h
 dvpsrsl.o: dvpsrsl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -4634,7 +4601,6 @@ dvpsrsl.o: dvpsrsl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpsdef.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 dvpssp.o: dvpssp.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpssp.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
@@ -4867,7 +4833,6 @@ dvpssp.o: dvpssp.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dvpsspl.o: dvpsspl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsspl.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -5083,7 +5048,6 @@ dvpsspl.o: dvpsspl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpsgr.h ../include/dcmtk/dcmpstat/dvpsri.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvris.h
 dvpssv.o: dvpssv.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -5185,7 +5149,6 @@ dvpssv.o: dvpssv.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h
 dvpssvl.o: dvpssvl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -5283,7 +5246,6 @@ dvpssvl.o: dvpssvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvris.h
 dvpstat.o: dvpstat.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpstat.h \
@@ -5486,7 +5448,6 @@ dvpstat.o: dvpstat.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpstx.h ../include/dcmtk/dcmpstat/dvpsgr.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dvpstx.o: dvpstx.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpstx.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -5631,7 +5592,6 @@ dvpstx.o: dvpstx.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dvpstxl.o: dvpstxl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpstxl.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -5774,7 +5734,6 @@ dvpstxl.o: dvpstxl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpstyp.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dvpsvl.o: dvpsvl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsvl.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpstyp.h \
@@ -5927,7 +5886,6 @@ dvpsvl.o: dvpsvl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvris.h
 dvpsvll.o: dvpsvll.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsvll.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -6070,7 +6028,6 @@ dvpsvll.o: dvpsvll.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
 dvpsvw.o: dvpsvw.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvpsvw.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -6213,7 +6170,6 @@ dvpsvw.o: dvpsvw.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dvpsvwl.o: dvpsvwl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -6306,7 +6262,6 @@ dvpsvwl.o: dvpsvwl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmpstat/dvpsdef.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 dvsighdl.o: dvsighdl.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmpstat/dvsighdl.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \

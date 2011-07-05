@@ -1770,7 +1770,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-ac_config_headers="$ac_config_headers include/dcmtk/config/cfunix.h"
+ac_config_headers="$ac_config_headers include/dcmtk/config/osconfig.h"
 
 
 
@@ -31860,7 +31860,7 @@ cat >>$CONFIG_STATUS <<\_ACEOF
 for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
-    "include/dcmtk/config/cfunix.h") CONFIG_HEADERS="$CONFIG_HEADERS include/dcmtk/config/cfunix.h" ;;
+    "include/dcmtk/config/osconfig.h") CONFIG_HEADERS="$CONFIG_HEADERS include/dcmtk/config/osconfig.h" ;;
     "Makefile.def") CONFIG_FILES="$CONFIG_FILES Makefile.def" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
 

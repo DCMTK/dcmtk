@@ -1,5 +1,4 @@
 wlds.o: wlds.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -118,7 +117,6 @@ wlds.o: wlds.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 wldsfs.o: wldsfs.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -231,7 +229,6 @@ wldsfs.o: wldsfs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmwlm/wldsfs.h ../include/dcmtk/dcmwlm/wlds.h \
   ../include/dcmtk/dcmwlm/wlfsim.h
 wlfsim.o: wlfsim.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/diutil.h \
@@ -418,7 +415,6 @@ wlfsim.o: wlfsim.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h
 wlmactmg.o: wlmactmg.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \

@@ -1,6 +1,51 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.07.05 (schlachter)
+
+- Merge osconfig.h and cfunix.h.in into osconfig.h.in.
+  Added:   config/include/dcmtk/config/osconfig.h.in
+  Removed: config/include/dcmtk/config/cfunix.h.in
+           config/include/dcmtk/config/osconfig.h
+  Affects: config/configure
+           config/configure.in
+           dcmdata/apps/Makefile.dep
+           dcmdata/libi2d/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/tests/Makefile.dep
+           dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/apps/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+           dcmjpeg/apps/Makefile.dep
+           dcmjpeg/libijg12/Makefile.dep
+           dcmjpeg/libijg16/Makefile.dep
+           dcmjpeg/libijg8/Makefile.dep
+           dcmjpeg/libsrc/Makefile.dep
+           dcmjpls/apps/Makefile.dep
+           dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libsrc/Makefile.dep
+           dcmnet/apps/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/tests/Makefile.dep
+           dcmqrdb/apps/Makefile.dep
+           dcmqrdb/libsrc/Makefile.dep
+           dcmsign/apps/Makefile.dep
+           dcmsign/libsrc/Makefile.dep
+           dcmsr/apps/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/tests/Makefile.dep
+           dcmtls/libsrc/Makefile.dep
+           dcmwlm/apps/Makefile.dep
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/tests/Makefile.dep
+           dcmwlm/wwwapps/Makefile.dep
+           oflog/libsrc/Makefile.dep
+           ofstd/libsrc/Makefile.dep
+           ofstd/tests/Makefile.dep
+
 **** Changes from 2011.06.30 (riesmeier)
 
 - Fixed minor issue that is reported when compiled with "gcc -Weffc++".

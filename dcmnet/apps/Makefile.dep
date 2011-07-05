@@ -1,5 +1,4 @@
 echoscu.o: echoscu.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmnet/dimse.h \
@@ -120,7 +119,6 @@ echoscu.o: echoscu.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmnet/dcmlayer.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 findscu.o: findscu.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmnet/dfindscu.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -236,7 +234,6 @@ findscu.o: findscu.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmnet/dcmlayer.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 movescu.o: movescu.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
@@ -355,7 +352,6 @@ movescu.o: movescu.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcostrmz.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h
 storescp.o: storescp.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
@@ -489,7 +485,6 @@ storescp.o: storescp.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmnet/dcmlayer.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 storescu.o: storescu.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
@@ -623,7 +618,6 @@ storescu.o: storescu.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmnet/dcmlayer.h \
   ../../oflog/include/dcmtk/oflog/oflog.h
 termscu.o: termscu.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \

@@ -1,7 +1,18 @@
-/* include/dcmtk/config/cfunix.h.in.  Generated from configure.in by autoheader.  */
+/* include/dcmtk/config/osconfig.h.in.  Generated from configure.in by autoheader.  */
 
 #ifndef CFUNIX_H
 #define CFUNIX_H
+
+/*
+** Define enclosures for include files with C linkage (mostly system headers)
+*/
+#ifdef __cplusplus
+#define BEGIN_EXTERN_C extern "C" {
+#define END_EXTERN_C }
+#else
+#define BEGIN_EXTERN_C
+#define END_EXTERN_C
+#endif
 
 /* MinGW needs some special handling because it is a mixture of WIN32 and Posix.
  * The following settings are not tested by configure but need to be set for MinGW.
