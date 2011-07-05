@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.07.05 (riesmeier)
+
+- Updated documentation in order to reflect the removal / renaming of
+  "cfunix.h.in". Slightly revised the wording and formatting of the text.
+  Affects: config/docs/config.txt
+           config/docs/modules.txt
+
 **** Changes from 2011.07.05 (schlachter)
 
 - Merge osconfig.h and cfunix.h.in into osconfig.h.in.

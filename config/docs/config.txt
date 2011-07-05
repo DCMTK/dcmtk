@@ -1,107 +1,111 @@
-The config Directory
+The config directory
 ====================
 
-The config directory includes configuration files for the OFFIS "dcmtk"
-(DICOM Toolkit). The configuration mechanism uses GNU autoconf / configure
-facilities.
+The "config" directory contains configuration files for the OFFIS DCMTK
+(DICOM ToolKit) to be used with GNU autoconf / configure.   See INSTALL file
+in the root directory for details.
+
 
 templates directory:
 ====================
 
-The templates directory contains templates for Makefiles and configure
-scripts used in the modules. For more information see dirstruc.txt
+The "templates" directory contains templates for Makefiles and configure
+scripts used for the DCMTK modules.  For more information see "dirstruc.txt".
+
 
 include directory:
 ==================
 
-The config/include directory contains OS specific configuration files for the
-dcmtk parts. The file "cfunix.h.in" is created from "configure.in" by using
-"autoheader" of the GNU autoconf system.
+The "config/include" directory contains OS-specific configuration files.  The
+file "osconfig.h.in" is created by "configure.in" using "autoheader" from the
+GNU autoconf system.
 
-Your sources (.h, .c, .cc) must contain as first #include statement (before
-everything else is defined):
+All your source files (*.h, *.c, *.cc) must contain the following #include-
+statement at the beginning (before everything else is defined):
+
     #include "dcmtk/config/osconfig.h"
 
-osconfig.h contains several #includes that depend on the compiler. On systems
-using the GNU configure facilities, cfunix.h is included.
-Do not include cfunix.h directly.
+The file "osconfig.h" is created during the configuration step using GNU
+autoconf.
 
-Additionally this directory may contain different files for OS and/or compiler
-specific configurations.
 
 Programs in config/:
 ====================
 
 The configuration directory contains the following programs:
 
-autoall         creates configure, confmod, cfunix.h.in
-mkinstalldirs   creates recursive directories, used for installations
-                in Makefiles
-install-sh      BSD compatible install script, used in Makefiles
-rootconf        create Makefile and configure script for the root
-                directory in dcmtk. If the modules file in the config
-                directory is available the modules are extracted from this
-                file. It contain whitespace separated list of modules names.
+autoall         creates "configure" and "confmod"
+mkinstalldirs   creates recursive directories, used for "make install"
+install-sh      BSD-compatible install script, used in Makefiles
+rootconf        creates "Makefile" and "configure" script for the root
+                directory.  If the "modules" file in the "config" directory
+                is available, the modules are extracted from this file.  It
+                contains a whitespace separated list of module names.
 configure       main configure script created by "autoall" or "autoconf".
-                configure must be started from the config directory.
-confmod         configure script for the modules created by "autoall"
-                or "autoconf confmod.in >confmod". "confmod" cannot be
-                started from the config directory. See modules.txt for
-                more information.
+                "configure" must be started from the "config" directory.
+confmod         configure script for the modules created by "autoall" or
+                "autoconf confmod.in > confmod".  "confmod" cannot be started
+                from the "config" directory.  See "modules.txt" for more
+                information.
 
-In every module's main directory the configure.mod script from the templates
-directory must be present.
+In every module's main directory the "configure.mod" script from the
+"templates" directory must be present.
 
-To create the configure script in the configuration directory you must call
-"autoconf" or "autoall". This will produce some warnings of the form
+To create the "configure" script in the "config" directory you must call
+"autoconf" or "autoall".  This will produce some warnings of the form
 
-configure.in:86: warning: AC_TRY_RUN called without default to allow cross compiling
+    configure.in:86:
+        warning: AC_TRY_RUN called without default to allow cross compiling
 
 you can ignore.
 
-Configuration files in config/
-==============================
-configure.in    to specify configurations for cfunix.h Makefile.def
-acconfig.h      to define emtries in config.h.in
-aclocal.m4      to define new tests for configure
-general.m4      common configurations for configure und confmod
-confmod.in      to specify tests for confmod (the modules)
 
-For confmod.in see modules.txt.
-Do not edit these besides you really know what you do. Consult the
+Configuration files in config/:
+===============================
+
+configure.in    to specify configurations for "osconfig.h" and "Makefile.def"
+acconfig.h      to define entries in "osconfig.h.in"
+aclocal.m4      to define new tests for "configure"
+general.m4      common configurations for "configure" und "confmod"
+confmod.in      to specify tests for "confmod" (the modules)
+
+For "confmod.in" see "modules.txt".
+
+Do not edit these files unless you really know what you do.  Consult the
 autoconf manual (in emacs and on paper).
+
 
 configure.in aclocal.m4 acconfig.h
 ===================================
 
-configure.in contains configuration tests mainly for the main
-configuration header file cfunix.h and the default Makefile
-configuration Makefile.def. Makefile.def defines the Compiler, Linker,
-default Flags, and the library manager. configure.in does not specify
-special configurations for the Makefiles of the different
-modules. These configurations can be seen in confmod.in (see modules.txt).
+"configure.in" contains configuration tests mainly for the main configuration
+header file "osconfig.h" and the default Makefile configuration "Makefile.def".
+"Makefile.def" defines the compiler, linker, default flags, and the library
+manager.  "configure.in" does not specify special configurations for the
+Makefiles of the various modules.  These configurations can be found in
+"confmod.in" (see "modules.txt").
 
-You can change configurations for different operating systems or
-compilers in these files. Please consider the autoconf
-manual. This part describes changes to the normal autoconf tests:
+You can change configurations for different operating systems or compilers in
+these files.  Please consider the autoconf manual.  This part describes changes
+to the normal autoconf tests:
 
-Additional tests are defined in aclocal.m4:
+Additional tests are defined in "aclocal.m4":
 
 AC_CHECK_GXXLIB:
 
-works like AC_CHECK_LIB, but for libg++. This additional macro is
-necessary because the /bin/sh will not allow you to define a variable
-"ac_cv_lib_g++" and AC_CHECK_LIB will fail for libg++. All symbols
-#defined by this macro replace G++ by GXX.
+Works like AC_CHECK_LIB, but for libg++.  This additional macro is necessary
+because "/bin/sh" will not allow you to define a variable "ac_cv_lib_g++"
+and AC_CHECK_LIB will fail for libg++.  All symbols #defined by this macro
+replace G++ by GXX.
 
 AC_CHECK_PROTOTYPE:
 
-checks if there is a prototype declaration for the given function. If
-header file(s) are given as argument 2, they are #included in the
-search. Otherwise only predefined functions will be found.
+Checks if there is a prototype declaration for the given function.  If header
+file(s) are given as argument 2, they are #included in the search.  Otherwise
+only predefined functions will be found.
 Note:
   Since GNU autoheader does not support this macro, you must create entries
-  in your acconfig.h for each function which is tested.
+  in your "acconfig.h" for each function that is tested.
 Examples:
   in configure.in:
      AC_CHECK_PROTOTYPE(setsockopt, sys/types.h sys/socket.h)
@@ -112,12 +116,11 @@ Examples:
 
 AC_CHECK_DECLARATION:
 
-checks if a certain type is declared in the #include files given as
-argument 2.
+Checks if a certain type is declared in the #include files given as argument 2.
 Note:
   Since GNU autoheader does not support this macro, you must create entries
-  in your acconfig.h for each function which is tested.
-Examples:
+  in your "acconfig.h" for each function that is tested.
+Example:
   in configure.in:
      AC_CHECK_DECLARATION(struct sembuf, sys/types.h sys/ipc.h sys/sem.h)
   in acconfig.h:
@@ -127,14 +130,10 @@ Examples:
 general.m4
 ==========
 
-contains configuration tests commonly used in the configure and the
-modconf script. configure.in and confmod.in use a special include
-command to get these configuration. You can change or add configuration
-tests for the config-directory and the modules makefiles into general.m4
+Contains configuration tests commonly used in the "configure" and the "modconf"
+script.  "configure.in" and "confmod.in" use a special include command to get
+these configuration.  You can change or add configuration tests for the
+"config" directory and the modules' Makefiles in/to "general.m4".
 
-systems directory
-=================
-Systems that are not able to use the "configure" mechanism can be supported
-in this directory. See the README files in subdirectories for more information
 
 Have Fun!
