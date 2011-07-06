@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.07.06 (riesmeier)
+
+- Added missing test file "tparser" introduced with the last commit.
+  Affects: dcmdata/tests/CMakeLists.txt
+
 **** Changes from 2011.07.06 (schlachter)
 
 - Rename include guards to match yesterday's rename.
