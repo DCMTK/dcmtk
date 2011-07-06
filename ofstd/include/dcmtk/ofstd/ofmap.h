@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2010, OFFIS e.V.
+ *  Copyright (C) 2009-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *           Standard
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-08 09:49:03 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2011-07-06 07:21:19 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,14 +71,14 @@ public:
      */
     OFPair(const K& f, const V& s) : first(f), second(s) { }
 
-    /** copy assignment operator
+    /** copy constructor
+     *  @param p Other OFPair to copy from.
      */
-    OFPair& operator=(const OFPair& other)
-    {
-        first = other.first;
-        second = other.second;
-        return *this;
-    }
+    template<class OK, class OV>
+    OFPair(const OFPair<OK, OV>& p) : first(p.first), second(p.second) { }
+
+    /** This class uses the default assignment operator
+     */
 };
 
 /** helper function to create a pair. This is similar to std::make_pair()
@@ -99,7 +99,7 @@ template<typename K, typename V> class OFMap
 public:
 
     /** the type of values saved in this map */
-    typedef OFPair<K, V> value_type;
+    typedef OFPair<const K, V> value_type;
 
 protected:
 
@@ -267,6 +267,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofmap.h,v $
+** Revision 1.7  2011-07-06 07:21:19  uli
+** Improved OFMap's and OFPair's standard conformance.
+**
 ** Revision 1.6  2010-11-08 09:49:03  uli
 ** Fixed even more gcc warnings caused by additional compiler flags.
 **
