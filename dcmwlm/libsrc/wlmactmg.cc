@@ -18,9 +18,9 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-27 12:26:59 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-07-06 11:08:48 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -243,7 +243,7 @@ OFCondition WlmActivityManager::StartProvidingService()
 #endif
 
   // Initialize network, i.e. create an instance of T_ASC_Network*.
-  cond = ASC_initializeNetwork( NET_ACCEPTOR, (int)opt_port, opt_acse_timeout, &net );
+  cond = ASC_initializeNetwork( NET_ACCEPTOR, OFstatic_cast(int, opt_port), opt_acse_timeout, &net );
   if( cond.bad() ) return( WLM_EC_InitializationOfNetworkConnectionFailed );
 
 #if defined(HAVE_SETUID) && defined(HAVE_GETUID)
@@ -270,7 +270,7 @@ OFCondition WlmActivityManager::StartProvidingService()
 #ifdef HAVE_FORK
     if( !opt_singleProcess )
       CleanChildren();
-#elif _WIN32
+#elif defined(_WIN32)
     // if running in multi-process mode, always terminate child after one association
     // for unix, this is done in WaitForAssociation() with exit()
     if (DUL_processIsForkedChild()) break;
@@ -1152,6 +1152,9 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.39  2011-07-06 11:08:48  uli
+** Fixed various compiler warnings.
+**
 ** Revision 1.38  2011-06-27 12:26:59  joergr
 ** Fixed mismatched delete vs. delete[] statements reported by valgrind.
 **

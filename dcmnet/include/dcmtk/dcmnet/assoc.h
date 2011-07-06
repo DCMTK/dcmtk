@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -83,9 +83,9 @@
 **
 ** Module Prefix: ASC_
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-12-01 08:26:10 $
-** CVS/RCS Revision:    $Revision: 1.33 $
+** Last Update:         $Author: uli $
+** Update Date:         $Date: 2011-07-06 11:08:47 $
+** CVS/RCS Revision:    $Revision: 1.34 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -512,7 +512,7 @@ OFCondition ASC_setIdentAC(
  */
 void
 ASC_getCopyOfIdentResponse(T_ASC_Parameters * params,
-                           void*& buffer,
+                           char*& buffer,
                            unsigned short& bufferLen);
 
 /* TLS/SSL */
@@ -647,6 +647,9 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
+** Revision 1.34  2011-07-06 11:08:47  uli
+** Fixed various compiler warnings.
+**
 ** Revision 1.33  2010-12-01 08:26:10  joergr
 ** Added OFFIS copyright header (beginning with the year 1994).
 **

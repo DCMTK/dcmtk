@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,9 +19,9 @@
  *   Program to read a DICOM worklist file and pass (nearly) all tags
  *   to a WWW CGI perl script (as hexadecimal encoded ASCII via stdout).
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:20:03 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-07-06 11:08:49 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,12 +39,12 @@
 static char rcsid[] = "$dcmtk: readwlst v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-void printHexString(char *c)
+static void printHexString(char *c)
 {
   if (c) while (*c) printf("%02X",(unsigned char)(*c++));
 }
 
-void printStringElement(DcmObject& obj, DcmTagKey searchtag)
+static void printStringElement(DcmObject& obj, DcmTagKey searchtag)
 {
   DcmStack stack;
   char *c = NULL;
@@ -164,6 +164,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: readwlst.cc,v $
+ *   Revision 1.6  2011-07-06 11:08:49  uli
+ *   Fixed various compiler warnings.
+ *
  *   Revision 1.5  2010-10-14 13:20:03  joergr
  *   Updated copyright header. Added reference to COPYRIGHT file.
  *

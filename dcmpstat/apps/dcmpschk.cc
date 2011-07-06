@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,9 +19,9 @@
  *    VR and IOD checker for Presentation States
  *
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:45 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-07-06 11:08:48 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ enum ErrorMode
 #define MSGw_wrongDType    "Warning: Attribute value uses retired form."
 #define MSGw_dubiousDate   "Warning: Dubious date (year before 1850 or after 2050)."
 
-void printVRError(
+static void printVRError(
   ErrorMode mode,
   const char *elementDescription,
   const DcmDictEntry* dictRef,
@@ -121,7 +121,7 @@ void printVRError(
   OFSTRINGSTREAM_FREESTR(tmp)
 }
 
-void printResult(
+static void printResult(
   DcmStack& stack,
   OFBool showFullData)
 {
@@ -154,7 +154,7 @@ void printResult(
     OFLOG_WARN(dcmpschkLogger, tmp << DcmObject::PrintHelper(*dobj, showFullData ? 0 : DCMTypes::PF_shortenLongTagValues));
 }
 
-OFBool isaStringVR(DcmVR& vr)
+static OFBool isaStringVR(DcmVR& vr)
 {
     OFBool isaString = OFFalse;
     switch(vr.getEVR())
@@ -183,7 +183,7 @@ OFBool isaStringVR(DcmVR& vr)
     return isaString;
 }
 
-const char* streamvm(const DcmDictEntry *e)
+static const char* streamvm(const DcmDictEntry *e)
 {
     static char buf[256];
     if (e->isFixedSingleVM()) {
@@ -198,7 +198,7 @@ const char* streamvm(const DcmDictEntry *e)
     return buf;
 }
 
-const char* streamLengthOfValue(DcmVR& vr)
+static const char* streamLengthOfValue(DcmVR& vr)
 {
     static char buf[256];
     Uint32 min = vr.getMinValueLength();
@@ -219,7 +219,7 @@ const char* streamLengthOfValue(DcmVR& vr)
     return buf;
 }
 
-int splitFields(
+static int splitFields(
   char* line,
   char* fields[],
   Uint32 maxFields,
@@ -247,7 +247,7 @@ int splitFields(
     return foundFields;
 }
 
-OFBool isaKnownPointer(DcmTag& t)
+static OFBool isaKnownPointer(DcmTag& t)
 {
     /*
     ** The DICOMDIR code automatically converts any pointers
@@ -266,7 +266,7 @@ OFBool isaKnownPointer(DcmTag& t)
     return result;
 }
 
-int checkelem(
+static int checkelem(
   DcmElement *elem,
   DcmXfer& oxfer,
   DcmStack& stack,
@@ -578,7 +578,7 @@ int checkelem(
     return 0;
 }
 
-int checkitem(
+static int checkitem(
   DcmItem *item,
   DcmXfer& oxfer,
   DcmStack& stack,
@@ -615,7 +615,7 @@ int checkitem(
     return 0;
 }
 
-int dcmchk(
+static int dcmchk(
   const char* ifname,
   E_FileReadMode readMode,
   E_TransferSyntax xfer,
@@ -701,7 +701,7 @@ chkType1AttributeExistance(
     return found;
 }
 
-int dcmchkMetaHeader(
+static int dcmchkMetaHeader(
   DcmMetaInfo* meta,
   DcmDataset* dset)
 {
@@ -859,7 +859,7 @@ int dcmchkMetaHeader(
     return nErrs;
 }
 
-int checkfile(const char *filename)
+static int checkfile(const char *filename)
 {
     DcmFileFormat *dfile = new DcmFileFormat();
     if (dfile == NULL)
@@ -1013,6 +1013,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
+ * Revision 1.32  2011-07-06 11:08:48  uli
+ * Fixed various compiler warnings.
+ *
  * Revision 1.31  2010-10-14 13:13:45  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

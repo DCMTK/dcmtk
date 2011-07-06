@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-29 16:33:45 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-07-06 11:08:48 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -604,7 +604,6 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
   /* Check whether we received C-ECHO response, otherwise print error */
   if (rsp.CommandField == DIMSE_C_ECHO_RSP)
   {
-    OFString tempStr;
     DCMNET_INFO("Received C-ECHO Response");
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
   } else {
@@ -1744,6 +1743,9 @@ MOVEResponse::~MOVEResponse()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.37  2011-07-06 11:08:48  uli
+** Fixed various compiler warnings.
+**
 ** Revision 1.36  2011-06-29 16:33:45  joergr
 ** Fixed various issues that are reported when compiled with "gcc -Weffc++".
 **

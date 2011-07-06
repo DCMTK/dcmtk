@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:04 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2011-07-06 11:08:48 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ OFBool TI_addImageEntry(TI_SeriesEntry *series, DcmDataset *reply);
 extern "C" int TI_seriesCompare(const void *a, const void *b);
 extern "C" int TI_imageCompare(const void *a, const void *b);
 
-void
+static void
 TI_getInfoFromDataset(DcmDataset *dset, DIC_PN patientName, DIC_CS studyId,
     DIC_IS seriesNumber, DIC_CS modality, DIC_IS imageNumber)
 {
@@ -69,7 +69,7 @@ TI_getInfoFromDataset(DcmDataset *dset, DIC_PN patientName, DIC_CS studyId,
     DU_stripLeadingAndTrailingSpaces(imageNumber);
 }
 
-void
+static void
 TI_getInfoFromImage(char *imgFile, DIC_PN patientName, DIC_CS studyId,
     DIC_IS seriesNumber, DIC_CS modality, DIC_IS imageNumber)
 {
@@ -86,7 +86,7 @@ TI_getInfoFromImage(char *imgFile, DIC_PN patientName, DIC_CS studyId,
         modality, imageNumber);
 }
 
-void
+static void
 TI_destroyImageEntries(TI_SeriesEntry *series)
 {
     int i;
@@ -100,7 +100,7 @@ TI_destroyImageEntries(TI_SeriesEntry *series)
     series->imageCount = 0;
 }
 
-void
+static void
 TI_destroySeriesEntries(TI_StudyEntry *study)
 {
     int i;
@@ -115,7 +115,7 @@ TI_destroySeriesEntries(TI_StudyEntry *study)
     study->seriesCount = 0;
 }
 
-void
+static void
 TI_destroyStudyEntries(TI_DBEntry *db)
 {
     int i;
@@ -272,7 +272,7 @@ static void TI_buildStudyQuery(DcmDataset **query)
     DU_putStringDOElement(*query, DCM_PatientID, NULL);
 }
 
-OFBool TI_genericEntryCallback(TI_GenericCallbackStruct *cbs, DcmDataset *reply)
+static OFBool TI_genericEntryCallback(TI_GenericCallbackStruct *cbs, DcmDataset *reply)
 {
     if (cbs->db) return TI_addStudyEntry(cbs->db, reply);
     if (cbs->study) return TI_addSeriesEntry(cbs->study, reply);
@@ -2204,6 +2204,9 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
+ * Revision 1.18  2011-07-06 11:08:48  uli
+ * Fixed various compiler warnings.
+ *
  * Revision 1.17  2011-04-18 07:01:04  uli
  * Use global variables for the logger objects. This removes the thread-unsafe
  * static local variables which were used before.

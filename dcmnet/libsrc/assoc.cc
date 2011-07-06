@@ -84,8 +84,8 @@
 ** Module Prefix: ASC_
 **
 ** Last Update:         $Author: uli $
-** Update Date:         $Date: 2011-05-03 09:16:56 $
-** CVS/RCS Revision:    $Revision: 1.60 $
+** Update Date:         $Date: 2011-07-06 11:08:47 $
+** CVS/RCS Revision:    $Revision: 1.61 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1614,9 +1614,6 @@ ASC_dumpConnectionParameters(OFString &str, T_ASC_Association *association)
  * examining a network for pending association requests.
  */
 
-extern int
-DUL_networkSocket(DUL_NETWORKKEY * callerNet);
-
 typedef DcmTransportConnection *P_DcmTransportConnection;
 
 OFBool
@@ -2208,6 +2205,9 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
+** Revision 1.61  2011-07-06 11:08:47  uli
+** Fixed various compiler warnings.
+**
 ** Revision 1.60  2011-05-03 09:16:56  uli
 ** Remove a pointless return value from some function. This helps in static code
 ** analysis to ensure memory is never lost.

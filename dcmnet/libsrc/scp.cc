@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-05-27 10:12:18 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-07-06 11:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -266,7 +266,7 @@ OFCondition DcmSCP::listen()
 #ifdef HAVE_FORK
     if( !m_singleProcess )
       cleanChildren();
-#elif _WIN32
+#elif defined(_WIN32)
     // if running in multi-process mode, always terminate child after one association
     // for unix, this is done in WaitForAssociation() with exit()
     if (DUL_processIsForkedChild())
@@ -1490,6 +1490,9 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.18  2011-07-06 11:08:47  uli
+** Fixed various compiler warnings.
+**
 ** Revision 1.17  2011-05-27 10:12:18  joergr
 ** Fixed typos and source code formatting.
 **

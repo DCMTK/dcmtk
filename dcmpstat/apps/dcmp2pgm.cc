@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,9 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:44 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-07-06 11:08:48 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 
-void dumpPresentationState(DVPresentationState &ps)
+static void dumpPresentationState(DVPresentationState &ps)
 {
   size_t i, j, max;
   const char *c;
@@ -590,6 +590,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
+ * Revision 1.44  2011-07-06 11:08:48  uli
+ * Fixed various compiler warnings.
+ *
  * Revision 1.43  2010-10-14 13:13:44  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

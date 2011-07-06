@@ -16,6 +16,25 @@ Changes between releases are documented here.
   Affects: config/docs/config.txt
            config/docs/modules.txt
 
+- Fixed various compiler warnings.
+  Affects: dcmdata/apps/pdf2dcm.cc
+           dcmdata/libi2d/Makefile.in
+           dcmdata/libsrc/dcddirif.cc
+           dcmnet/include/dcmtk/dcmnet/assoc.h
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+           dcmpstat/apps/dcmmklut.cc
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmpschk.cc
+           dcmpstat/apps/dcmpsprt.cc
+           dcmqrdb/libsrc/dcmqrtis.cc
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wlmactmg.cc
+           dcmwlm/tests/wltest.cc
+           dcmwlm/wwwapps/readoviw.cc
+           dcmwlm/wwwapps/readwlst.cc
+
 **** Changes from 2011.07.05 (riesmeier)
 
 - Updated documentation in order to reflect the removal / renaming of

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Worklist Database Test Program
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-17 13:01:22 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2011-07-06 11:08:48 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ usage()
     exit(1);
 }
 
-void errmsg(const char* msg, ...)
+static void errmsg(const char* msg, ...)
 {
     va_list args;
 
@@ -367,6 +367,9 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
 /*
 ** CVS Log
 ** $Log: wltest.cc,v $
+** Revision 1.13  2011-07-06 11:08:48  uli
+** Fixed various compiler warnings.
+**
 ** Revision 1.12  2010-11-17 13:01:22  uli
 ** Removed some uses of "%s" with sscanf().
 **

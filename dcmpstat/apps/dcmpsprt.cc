@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2010, OFFIS e.V.
+ *  Copyright (C) 1999-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,9 @@
  *    stored print and hardcopy grayscale images.
  *    Non-grayscale transformations in the presentation state are ignored.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-11-04 13:56:50 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-07-06 11:08:48 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,13 +62,13 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 
-int addOverlay(const char *filename,
-               unsigned long xpos,
-               unsigned long ypos,
-               Uint16 *pixel,
-               unsigned long width,
-               unsigned long height,
-               unsigned int gray)
+static int addOverlay(const char *filename,
+                      unsigned long xpos,
+                      unsigned long ypos,
+                      Uint16 *pixel,
+                      unsigned long width,
+                      unsigned long height,
+                      unsigned int gray)
 {
     if ((filename != NULL) && (pixel != NULL))
     {
@@ -693,6 +693,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
+ * Revision 1.47  2011-07-06 11:08:48  uli
+ * Fixed various compiler warnings.
+ *
  * Revision 1.46  2010-11-04 13:56:50  joergr
  * Changed mode of parameter dcmfile-in from multi-optional to multi-mandatory.
  * Use type cast macros (e.g. OFstatic_cast) where appropriate.

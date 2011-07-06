@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,9 +20,9 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-12-15 17:03:38 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-07-06 11:08:48 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,12 +76,12 @@ enum LUT_Type
 };
 
 
-OFCondition readMapFile(const char *filename,
-                        double *&inputXData,
-                        double *&inputYData,
-                        unsigned long &inputEntries,
-                        double &inputXMax,
-                        double &inputYMax)
+static OFCondition readMapFile(const char *filename,
+                               double *&inputXData,
+                               double *&inputYData,
+                               unsigned long &inputEntries,
+                               double &inputXMax,
+                               double &inputYMax)
 {
     OFCondition result = EC_IllegalCall;
     if ((filename != NULL) && (strlen(filename) > 0))
@@ -125,12 +125,12 @@ OFCondition readMapFile(const char *filename,
 }
 
 
-OFCondition readTextFile(const char *filename,
-                         double *&inputXData,
-                         double *&inputYData,
-                         unsigned long &inputEntries,
-                         double &inputXMax,
-                         double &inputYMax)
+static OFCondition readTextFile(const char *filename,
+                                double *&inputXData,
+                                double *&inputYData,
+                                unsigned long &inputEntries,
+                                double &inputXMax,
+                                double &inputYMax)
 {
     if ((filename != NULL) && (strlen(filename) > 0))
     {
@@ -267,11 +267,11 @@ OFCondition readTextFile(const char *filename,
 }
 
 
-OFCondition writeTextOutput(const char *filename,
-                            const unsigned long numberOfEntries,
-                            const signed long firstMapped,
-                            const Uint16 *outputData,
-                            const OFString &header)
+static OFCondition writeTextOutput(const char *filename,
+                                   const unsigned long numberOfEntries,
+                                   const signed long firstMapped,
+                                   const Uint16 *outputData,
+                                   const OFString &header)
 {
     OFCondition result = EC_IllegalCall;
     if ((filename != NULL) && (strlen(filename) > 0))
@@ -293,18 +293,18 @@ OFCondition writeTextOutput(const char *filename,
 }
 
 
-OFCondition convertInputLUT(const unsigned int numberOfBits,
-                            const unsigned long numberOfEntries,
-                            const signed long firstMapped,
-                            double *inputXData,
-                            double *inputYData,
-                            const unsigned long inputEntries,
-                            const double inputXMax,
-                            const double inputYMax,
-                            const unsigned int order,
-                            Uint16 *outputData,
-                            OFString &header,
-                            char *explanation)
+static OFCondition convertInputLUT(const unsigned int numberOfBits,
+                                   const unsigned long numberOfEntries,
+                                   const signed long firstMapped,
+                                   double *inputXData,
+                                   double *inputYData,
+                                   const unsigned long inputEntries,
+                                   const double inputXMax,
+                                   const double inputYMax,
+                                   const unsigned int order,
+                                   Uint16 *outputData,
+                                   OFString &header,
+                                   char *explanation)
 {
     OFCondition result = EC_IllegalCall;
     if ((inputXData != NULL) && (inputYData != NULL) && (inputEntries > 0) && (inputYMax > 0) && (outputData != NULL))
@@ -377,14 +377,14 @@ OFCondition convertInputLUT(const unsigned int numberOfBits,
 }
 
 
-void gammaLUT(const unsigned int numberOfBits,
-              const unsigned long numberOfEntries,
-              const signed long firstMapped,
-              const OFBool byteAlign,
-              const double gammaValue,
-              Uint16 *outputData,
-              OFString &header,
-              char *explanation)
+static void gammaLUT(const unsigned int numberOfBits,
+                     const unsigned long numberOfEntries,
+                     const signed long firstMapped,
+                     const OFBool byteAlign,
+                     const double gammaValue,
+                     Uint16 *outputData,
+                     OFString &header,
+                     char *explanation)
 {
     if (outputData != NULL)
     {
@@ -432,16 +432,16 @@ void gammaLUT(const unsigned int numberOfBits,
 }
 
 
-void applyInverseGSDF(const unsigned int numberOfBits,
-                      const unsigned long numberOfEntries,
-                      const OFBool byteAlign,
-                      const unsigned int minDensity,
-                      const unsigned int maxDensity,
-                      const unsigned int illumination,
-                      const unsigned int reflection,
-                      Uint16 *outputData,
-                      OFString &header,
-                      char *explanation)
+static void applyInverseGSDF(const unsigned int numberOfBits,
+                             const unsigned long numberOfEntries,
+                             const OFBool byteAlign,
+                             const unsigned int minDensity,
+                             const unsigned int maxDensity,
+                             const unsigned int illumination,
+                             const unsigned int reflection,
+                             Uint16 *outputData,
+                             OFString &header,
+                             char *explanation)
 {
     if (outputData != NULL)
     {
@@ -486,12 +486,12 @@ void applyInverseGSDF(const unsigned int numberOfBits,
 #define RAND_MAX 32767
 #endif
 
-void mixingUpLUT(const unsigned long numberOfEntries,
-                 const OFBool byteAlign,
-                 const unsigned long randomCount,
-                 const unsigned int randomSeed,
-                 Uint16 *outputData,
-                 char *explanation)
+static void mixingUpLUT(const unsigned long numberOfEntries,
+                        const OFBool byteAlign,
+                        const unsigned long randomCount,
+                        const unsigned int randomSeed,
+                        Uint16 *outputData,
+                        char *explanation)
 {
     if (outputData != NULL)
     {
@@ -534,14 +534,14 @@ void mixingUpLUT(const unsigned long numberOfEntries,
 }
 
 
-OFCondition createLUT(const unsigned int numberOfBits,
-                      const unsigned long numberOfEntries,
-                      const signed long firstMapped,
-                      const OFBool byteAlign,
-                      DcmEVR lutVR,
-                      DcmItem &item,
-                      Uint16 *data,
-                      const char *explanation = NULL)
+static OFCondition createLUT(const unsigned int numberOfBits,
+                             const unsigned long numberOfEntries,
+                             const signed long firstMapped,
+                             const OFBool byteAlign,
+                             DcmEVR lutVR,
+                             DcmItem &item,
+                             Uint16 *data,
+                             const char *explanation = NULL)
 {
     OFCondition result = EC_Normal;
     Uint16 numEntries16 = 0;
@@ -1063,6 +1063,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
+ * Revision 1.48  2011-07-06 11:08:48  uli
+ * Fixed various compiler warnings.
+ *
  * Revision 1.47  2010-12-15 17:03:38  joergr
  * Added missing prefix "ios::" to I/O manipulator "fixed" (reported on HP-UX).
  *

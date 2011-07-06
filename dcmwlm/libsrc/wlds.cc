@@ -17,9 +17,9 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-05-27 10:27:41 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-07-06 11:08:48 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -317,7 +317,7 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
   DcmTag tag( element->getTag() );
 
   // remember that the current element is a sequence of items
-  DcmSequenceOfItems *sequenceElement = (DcmSequenceOfItems*)element;
+  DcmSequenceOfItems *sequenceElement = OFstatic_cast(DcmSequenceOfItems *, element);
 
   // determine if the current sequence element is a supported matching or return key attribute
   if( IsSupportedMatchingKeyAttribute( element, supSequenceElement ) || IsSupportedReturnKeyAttribute( element, supSequenceElement ) )
@@ -447,7 +447,7 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
   DcmElement *newElement = NULL;
 
   // remember that the current element is a sequence of items
-  DcmSequenceOfItems *sequenceElement = (DcmSequenceOfItems*)element;
+  DcmSequenceOfItems *sequenceElement = OFstatic_cast(DcmSequenceOfItems *, element);
 
   // determine if the length of the sequence equals 0
   if( element->getLength() == 0 )
@@ -500,7 +500,7 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
       else
       {
         DcmItem *item2 = new DcmItem();
-        if( ((DcmSequenceOfItems*)newElement)->insert( item2 ) != EC_Normal )
+        if( OFstatic_cast(DcmSequenceOfItems*, newElement)->insert( item2 ) != EC_Normal )
         {
           delete item2;
           item2 = NULL;
@@ -1444,6 +1444,9 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
+** Revision 1.33  2011-07-06 11:08:48  uli
+** Fixed various compiler warnings.
+**
 ** Revision 1.32  2011-05-27 10:27:41  joergr
 ** Fixed typos and source code formatting.
 **

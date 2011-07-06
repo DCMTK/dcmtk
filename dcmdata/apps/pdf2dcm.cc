@@ -17,9 +17,9 @@
  *
  *  Purpose: Convert PDF file to DICOM format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-05-30 16:01:36 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-07-06 11:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,7 @@ static OFLogger pdf2dcmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APP
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-OFCondition createHeader(
+static OFCondition createHeader(
   DcmItem *dataset,
   const char *opt_patientName,
   const char *opt_patientID,
@@ -143,7 +143,7 @@ OFCondition createHeader(
     return result;
 }
 
-OFCondition insertPDFFile(
+static OFCondition insertPDFFile(
   DcmItem *dataset,
   const char *filename)
 {
@@ -249,7 +249,7 @@ OFCondition insertPDFFile(
 }
 
 
-void createIdentifiers(
+static void createIdentifiers(
   OFBool opt_readSeriesInfo,
   const char *opt_seriesFile,
   OFString& studyUID,
@@ -606,6 +606,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
+** Revision 1.20  2011-07-06 11:08:47  uli
+** Fixed various compiler warnings.
+**
 ** Revision 1.19  2011-05-30 16:01:36  joergr
 ** Replaced Modality value "OT" by "DOC" which is more appropriate (see CP-749).
 **

@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-21 15:48:27 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-07-06 11:08:47 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1003,7 +1003,7 @@ static OFString &alternativeStudyTime(DcmItem *dataset,
 
 
 // check whether given SOP Class UID belongs to a multi-frame composite IOD
-OFBool isMultiframeStorageSOPClass(const OFString &sopClassUID)
+static OFBool isMultiframeStorageSOPClass(const OFString &sopClassUID)
 {
     return compare(sopClassUID, UID_BreastTomosynthesisImageStorage) ||
            compare(sopClassUID, UID_EnhancedCTImageStorage) ||
@@ -5443,6 +5443,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.62  2011-07-06 11:08:47  uli
+ *  Fixed various compiler warnings.
+ *
  *  Revision 1.61  2011-06-21 15:48:27  joergr
  *  Added support for Blu-ray Disc Media Application Profiles (Supplement 153).
  *
