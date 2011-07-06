@@ -18,8 +18,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-21 08:02:38 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2011-07-06 14:28:46 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,7 +131,9 @@ class OFLog
      *  @param cmd the command line whose options are handled
      *  @param app the console application which is used for console output and error checking
      */
-    static void configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &app);
+    static void configureFromCommandLine(OFCommandLine &cmd,
+                                         OFConsoleApplication &app,
+                                         OFLogger::LogLevel defaultLevel = OFLogger::WARN_LOG_LEVEL);
 
     /** add the command line options which configureFromCommandLine() checks for
      *  @param cmd the command line to which these options should be added
@@ -158,6 +160,9 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.15  2011-07-06 14:28:46  uli
+ * Changed the default log level for tests to ERROR.
+ *
  * Revision 1.14  2011-06-21 08:02:38  uli
  * Renamed all log4cplus macros to avoid conflicts with external log4cplus.
  *

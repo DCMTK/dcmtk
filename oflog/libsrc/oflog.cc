@@ -18,8 +18,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-15 08:45:22 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2011-07-06 14:28:46 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,7 +156,9 @@ void OFLog::configure(OFLogger::LogLevel level)
     configureLogger(level);
 }
 
-void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &app)
+void OFLog::configureFromCommandLine(OFCommandLine &cmd,
+                                     OFConsoleApplication &app,
+                                     OFLogger::LogLevel defaultLevel)
 {
     OFString logLevel = "";
     OFString logConfig = "";
@@ -213,7 +215,7 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
     {
         // if --log-level was not used...
         if (level == dcmtk::log4cplus::NOT_SET_LOG_LEVEL)
-            level = OFLogger::WARN_LOG_LEVEL;
+            level = defaultLevel;
 
         configureLogger(level);
     }
@@ -267,6 +269,9 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.17  2011-07-06 14:28:46  uli
+ * Changed the default log level for tests to ERROR.
+ *
  * Revision 1.16  2011-06-15 08:45:22  uli
  * Moved log4cplus into namespace dcmtk::log4cplus.
  *

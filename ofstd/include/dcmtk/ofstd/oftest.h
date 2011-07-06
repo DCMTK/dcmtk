@@ -22,9 +22,9 @@
  *
  *  Purpose: Provide a test framework for the toolkit
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-29 16:33:41 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-07-06 14:28:46 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -249,7 +249,9 @@ public:
 #ifdef OFTEST_OFSTD_ONLY
         if (cmd.findOption("--verbose")) verbose_ = OFTrue;
 #else
-        OFLog::configureFromCommandLine(cmd, app);
+        /* We disable warnings by default since some tests cause warnings
+	 * by testing corner cases. */
+        OFLog::configureFromCommandLine(cmd, app, OFLogger::ERROR_LOG_LEVEL);
 #endif
         if (cmd.findOption("--list")) listOnly = OFTrue;
 
@@ -480,6 +482,9 @@ public: \
  *
  * CVS/RCS Log:
  * $Log: oftest.h,v $
+ * Revision 1.4  2011-07-06 14:28:46  uli
+ * Changed the default log level for tests to ERROR.
+ *
  * Revision 1.3  2011-06-29 16:33:41  joergr
  * Fixed various issues that are reported when compiled with "gcc -Weffc++".
  *

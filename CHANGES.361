@@ -52,6 +52,11 @@ Changes between releases are documented here.
            config/templates/Makefile.mod
            config/templates/Makefile.src
 
+- Changed the default log level for tests to "ERROR".
+  Affects: oflog/include/dcmtk/oflog/oflog.h
+           oflog/libsrc/oflog.cc
+           ofstd/include/dcmtk/ofstd/oftest.h
+
 **** Changes from 2011.07.05 (riesmeier)
 
 - Updated documentation in order to reflect the removal / renaming of
