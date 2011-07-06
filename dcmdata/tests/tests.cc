@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-07 07:06:57 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-07-06 12:25:03 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,12 +73,18 @@ OFTEST_REGISTER(dcmdata_elementLength_EVR_up);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_xs);
 OFTEST_REGISTER(dcmdata_elementLength_pixelItem);
 OFTEST_REGISTER(dcmdata_elementLength_pixelSequence);
+OFTEST_REGISTER(dcmdata_parser_MissingSequenceDelimitationItem);
+OFTEST_REGISTER(dcmdata_parser_oddLengthPartialValue_lastItem);
+OFTEST_REGISTER(dcmdata_parser_oddLengthPartialValue_notLastItem);
 OFTEST_MAIN("dcmdata")
 
 /*
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.3  2011-07-06 12:25:03  uli
+** Added tests for some bugs which we recently fixed.
+**
 ** Revision 1.2  2011-06-07 07:06:57  uli
 ** Added test cases for DcmElement::calcElementLength().
 **

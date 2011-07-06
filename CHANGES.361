@@ -35,6 +35,11 @@ Changes between releases are documented here.
            dcmwlm/wwwapps/readoviw.cc
            dcmwlm/wwwapps/readwlst.cc
 
+- Added tests for some bugs which we recently fixed.
+  Added:   dcmdata/tests/tparser.cc
+  Affects: dcmdata/tests/Makefile.in
+           dcmdata/tests/tests.cc
+
 **** Changes from 2011.07.05 (riesmeier)
 
 - Updated documentation in order to reflect the removal / renaming of

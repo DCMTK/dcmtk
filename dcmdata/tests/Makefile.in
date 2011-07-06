@@ -20,7 +20,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(top_srcdir)/libi2d -L$(ofstddir)/libsrc -L$
 LOCALLIBS = -ldcmdata -loflog -lofstd $(ZLIBLIBS)
 I2DLIBS = -li2d
 
-objs = tests.o tpread.o ti2dbmp.o tchval.o tpath.o tvrdatim.o telemlen.o
+objs = tests.o tpread.o ti2dbmp.o tchval.o tpath.o tvrdatim.o telemlen.o tparser.o
 progs = tests
 
 
