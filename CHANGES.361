@@ -10,6 +10,12 @@ Changes between releases are documented here.
 - Improved OFMap's and OFPair's standard conformance.
   Affects: ofstd/include/dcmtk/ofstd/ofmap.h
 
+- Removed some outdated notes, references and files.
+  Removed: config/Makefile.x.in
+           config/mvldflags
+  Affects: config/docs/config.txt
+           config/docs/modules.txt
+
 **** Changes from 2011.07.05 (riesmeier)
 
 - Updated documentation in order to reflect the removal / renaming of

@@ -52,19 +52,13 @@ In every module's main directory the "configure.mod" script from the
 "templates" directory must be present.
 
 To create the "configure" script in the "config" directory you must call
-"autoconf" or "autoall".  This will produce some warnings of the form
-
-    configure.in:86:
-        warning: AC_TRY_RUN called without default to allow cross compiling
-
-you can ignore.
+"autoconf" or "autoall".
 
 
 Configuration files in config/:
 ===============================
 
 configure.in    to specify configurations for "osconfig.h" and "Makefile.def"
-acconfig.h      to define entries in "osconfig.h.in"
 aclocal.m4      to define new tests for "configure"
 general.m4      common configurations for "configure" und "confmod"
 confmod.in      to specify tests for "confmod" (the modules)
@@ -75,8 +69,8 @@ Do not edit these files unless you really know what you do.  Consult the
 autoconf manual (in emacs and on paper).
 
 
-configure.in aclocal.m4 acconfig.h
-===================================
+configure.in aclocal.m4
+=======================
 
 "configure.in" contains configuration tests mainly for the main configuration
 header file "osconfig.h" and the default Makefile configuration "Makefile.def".
@@ -103,28 +97,17 @@ AC_CHECK_PROTOTYPE:
 Checks if there is a prototype declaration for the given function.  If header
 file(s) are given as argument 2, they are #included in the search.  Otherwise
 only predefined functions will be found.
-Note:
-  Since GNU autoheader does not support this macro, you must create entries
-  in your "acconfig.h" for each function that is tested.
 Examples:
   in configure.in:
      AC_CHECK_PROTOTYPE(setsockopt, sys/types.h sys/socket.h)
      AC_CHECK_PROTOTYPE(gethostid)
-  in acconfig.h:
-     #undef HAVE_PROTOTYPE_SETSOCKOPT
-     #undef HAVE_PROTOTYPE_GETHOSTID
 
 AC_CHECK_DECLARATION:
 
 Checks if a certain type is declared in the #include files given as argument 2.
-Note:
-  Since GNU autoheader does not support this macro, you must create entries
-  in your "acconfig.h" for each function that is tested.
 Example:
   in configure.in:
      AC_CHECK_DECLARATION(struct sembuf, sys/types.h sys/ipc.h sys/sem.h)
-  in acconfig.h:
-     #undef HAVE_DECLARATION_STRUCT_SEMBUF
 
 
 general.m4
