@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:57 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-07-06 13:04:18 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,19 +47,22 @@ OFTEST_REGISTER(ofstd_OFString_reserve);
 OFTEST_REGISTER(ofstd_OFString_substr);
 OFTEST_REGISTER(ofstd_OFVector);
 OFTEST_REGISTER(ofstd_atof);
-OFTEST_REGISTER(ofstd_base64_test1);
-OFTEST_REGISTER(ofstd_base64_test2);
-OFTEST_REGISTER(ofstd_base64_test3);
+OFTEST_REGISTER(ofstd_base64_1);
+OFTEST_REGISTER(ofstd_base64_2);
+OFTEST_REGISTER(ofstd_base64_3);
 OFTEST_REGISTER(ofstd_ftoa);
 OFTEST_REGISTER(ofstd_thread);
 OFTEST_REGISTER(ofstd_testPaths);
-OFTEST_REGISTER(ofstd_ReadWriteable);
+OFTEST_REGISTER(ofstd_OFStandard_isReadWriteable);
 OFTEST_MAIN("ofstd")
 
 /*
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.2  2011-07-06 13:04:18  uli
+** Fixed some inconsistencies in test names.
+**
 ** Revision 1.1  2011-05-25 10:05:57  uli
 ** Imported oftest and converted existing tests to oftest.
 **

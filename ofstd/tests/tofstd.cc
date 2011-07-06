@@ -18,8 +18,8 @@
  *  Purpose: test program for class OFStandard
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:57 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2011-07-06 13:04:18 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,7 @@ OFTEST(ofstd_testPaths)
     OFCHECK_EQUAL(tmpString, "");
 }
 
-OFTEST(ofstd_ReadWriteable)
+OFTEST(ofstd_OFStandard_isReadWriteable)
 {
     // TODO FIXME
     // Same as above, this assumes that it's called from the source dir which
@@ -187,6 +187,9 @@ OFTEST(ofstd_ReadWriteable)
  *
  * CVS/RCS Log:
  * $Log: tofstd.cc,v $
+ * Revision 1.15  2011-07-06 13:04:18  uli
+ * Fixed some inconsistencies in test names.
+ *
  * Revision 1.14  2011-05-25 10:05:57  uli
  * Imported oftest and converted existing tests to oftest.
  *

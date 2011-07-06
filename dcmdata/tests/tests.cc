@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 12:25:03 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-07-06 13:04:18 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,7 @@
 OFTEST_REGISTER(dcmdata_partialElementAccess);
 OFTEST_REGISTER(dcmdata_i2d_bmp);
 OFTEST_REGISTER(dcmdata_checkStringValue);
-OFTEST_REGISTER(dcmdata_pathAcces);
+OFTEST_REGISTER(dcmdata_pathAccess);
 OFTEST_REGISTER(dcmdata_dateTime);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AE);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AS);
@@ -82,6 +82,9 @@ OFTEST_MAIN("dcmdata")
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.4  2011-07-06 13:04:18  uli
+** Fixed some inconsistencies in test names.
+**
 ** Revision 1.3  2011-07-06 12:25:03  uli
 ** Added tests for some bugs which we recently fixed.
 **

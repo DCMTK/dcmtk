@@ -19,8 +19,8 @@
  *           and DcmSequenceOfItem
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-07 08:29:59 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-07-06 13:04:18 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,7 +146,7 @@ static OFCondition testPathInsertionsWithWildcard(const OFString& path,
   return EC_Normal;
 }
 
-OFTEST(dcmdata_pathAcces)
+OFTEST(dcmdata_pathAccess)
 {
   // TODO TODO TODO TODO TODO TODO TODO TODO
 #ifdef HAVE_GUSI_H
@@ -355,6 +355,9 @@ OFTEST(dcmdata_pathAcces)
 /*
  * CVS/RCS Log:
  * $Log: tpath.cc,v $
+ * Revision 1.3  2011-07-06 13:04:18  uli
+ * Fixed some inconsistencies in test names.
+ *
  * Revision 1.2  2011-06-07 08:29:59  uli
  * Stop using the log levels INFO, WARN, ERROR and FATAL in tests.
  *

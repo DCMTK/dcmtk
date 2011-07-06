@@ -18,8 +18,8 @@
  *  Purpose: test program for base64-code in OFStandard
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:57 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-07-06 13:04:18 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ static void testBase64(const unsigned char* bin_data, size_t bin_len,
     delete[] buffer;
 }
 
-OFTEST(ofstd_base64_test1)
+OFTEST(ofstd_base64_1)
 {
     const size_t bin_len = 10;
     const unsigned char bin_data[bin_len] = {10, 5, 88, 99, 255, 250, 150, 128, 0, 254};
@@ -79,7 +79,7 @@ OFTEST(ofstd_base64_test1)
     testBase64(bin_data, bin_len, bin_data_b64, bin_data_b64);
 }
 
-OFTEST(ofstd_base64_test2)
+OFTEST(ofstd_base64_2)
 {
     const size_t bin_len = 511;
     size_t i;
@@ -115,7 +115,7 @@ OFTEST(ofstd_base64_test2)
     testBase64(buffer, bin_len, b64, b64_line_breaks);
 }
 
-OFTEST(ofstd_base64_test3)
+OFTEST(ofstd_base64_3)
 {
     const OFString txt_data1 = ".AB_Cab$$c123-";
     const OFString txt_data2 = "ABC\nabc\n123";
@@ -136,6 +136,9 @@ OFTEST(ofstd_base64_test3)
  *
  * CVS/RCS Log:
  * $Log: tbase64.cc,v $
+ * Revision 1.2  2011-07-06 13:04:18  uli
+ * Fixed some inconsistencies in test names.
+ *
  * Revision 1.1  2011-05-25 10:05:57  uli
  * Imported oftest and converted existing tests to oftest.
  *

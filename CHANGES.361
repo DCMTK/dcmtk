@@ -40,6 +40,13 @@ Changes between releases are documented here.
   Affects: dcmdata/tests/Makefile.in
            dcmdata/tests/tests.cc
 
+- Fixed some inconsistencies in test names.
+  Affects: dcmdata/tests/tests.cc
+           dcmdata/tests/tpath.cc
+           ofstd/tests/tbase64.cc
+           ofstd/tests/tests.cc
+           ofstd/tests/tofstd.cc
+
 **** Changes from 2011.07.05 (riesmeier)
 
 - Updated documentation in order to reflect the removal / renaming of
