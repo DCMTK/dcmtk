@@ -78,8 +78,8 @@ AH_VERBATIM([ENVIRONMENT_PATH_SEPARATOR], [/* Define the environment variable pa
 AH_VERBATIM([HAVE_EMPTY_ARGC_ARGV], [/* Define if your system cannot pass command line arguments into main() (e.g. Macintosh). */
 /* #undef HAVE_EMPTY_ARGC_ARGV */])
 
-AH_TOP([#ifndef CFUNIX_H
-#define CFUNIX_H
+AH_TOP([#ifndef OSCONFIG_H
+#define OSCONFIG_H
 
 /*
 ** Define enclosures for include files with C linkage (mostly system headers)
@@ -102,7 +102,7 @@ AH_TOP([#ifndef CFUNIX_H
 #define ENVIRONMENT_PATH_SEPARATOR ';'
 #endif])
 
-AH_BOTTOM([#endif /* CFUNIX_H */])
+AH_BOTTOM([#endif /* OSCONFIG_H */])
 
 
 dnl Include general file

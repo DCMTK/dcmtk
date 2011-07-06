@@ -1,7 +1,7 @@
 /* include/dcmtk/config/osconfig.h.in.  Generated from configure.in by autoheader.  */
 
-#ifndef CFUNIX_H
-#define CFUNIX_H
+#ifndef OSCONFIG_H
+#define OSCONFIG_H
 
 /*
 ** Define enclosures for include files with C linkage (mostly system headers)
@@ -912,4 +912,4 @@ typedef unsigned short ushort;
 /* Define to int if undefined. */
 #undef socklen_t
 
-#endif /* CFUNIX_H */
+#endif /* OSCONFIG_H */
