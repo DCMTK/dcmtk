@@ -1,5 +1,5 @@
 #
-#	Makefile for libraries
+#	Makefile for module/libsrc
 #
 
 @SET_MAKE@
@@ -13,6 +13,8 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 LOCALINCLUDES =
+LIBDIRS =
+LOCALLIBS =
 LOCALDEFS =
 
 objs = # all objects in library
@@ -32,13 +34,16 @@ $(library): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
 
+# Clean-up
 
 clean:
 	rm -f $(objs) $(library) $(TRASH)
 
-distclean:
-	rm -f $(objs) $(library) $(DISTTRASH)
+distclean: clean
+	rm -f $(DISTTRASH)
 
+
+# Dependencies
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)

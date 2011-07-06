@@ -47,6 +47,11 @@ Changes between releases are documented here.
            ofstd/tests/tests.cc
            ofstd/tests/tofstd.cc
 
+- Updated the template files.
+  Affects: config/templates/Makefile.lib
+           config/templates/Makefile.mod
+           config/templates/Makefile.src
+
 **** Changes from 2011.07.05 (riesmeier)
 
 - Updated documentation in order to reflect the removal / renaming of

@@ -1,5 +1,5 @@
 #
-#	Makefile for modules
+#	Makefile for module
 #
 
 @SET_MAKE@
@@ -88,3 +88,6 @@ dependencies:
 	(cd libsrc && touch $(DEP) && $(MAKE) dependencies)
 	(cd apps && touch $(DEP) && $(MAKE) dependencies)
 	(cd tests && touch $(DEP) && $(MAKE) dependencies)
+
+check:
+	(cd tests && $(MAKE) check)
