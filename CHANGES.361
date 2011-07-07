@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Updated man pages for new development snapshot.
   Affects: doxygen/manpages/man1/*
 
+- Added missing extern "C" declaration for mktemp(), e.g. required for MSVC++.
+  Affects: dcmdata/tests/tparser.cc
+
 **** Changes from 2011.07.06 (riesmeier)
 
 - Added missing test file "tparser" introduced with the last commit.

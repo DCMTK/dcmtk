@@ -17,9 +17,9 @@
  *
  *  Purpose: test program for reading DICOM datasets
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 12:25:03 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-07-07 12:51:18 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,12 @@
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/dcistrmb.h"
 #include "dcmtk/dcmdata/dcostrmb.h"
+
+#if defined(HAVE_MKTEMP) && !defined(HAVE_PROTOTYPE_MKTEMP)
+extern "C" {
+char * mktemp(char *);
+}
+#endif
 
 /* Macros for handling the endian */
 #define LITTLE_ENDIAN_UINT16(w) ((w) & 0xff), ((w) >> 8)
@@ -183,9 +189,11 @@ OFTEST(dcmdata_parser_oddLengthPartialValue_notLastItem)
  *
  * CVS/RCS Log:
  * $Log: tparser.cc,v $
+ * Revision 1.2  2011-07-07 12:51:18  joergr
+ * Added missing extern "C" declaration for mktemp(), e.g. required for MSVC++.
+ *
  * Revision 1.1  2011-07-06 12:25:03  uli
  * Added tests for some bugs which we recently fixed.
- *
  *
  *
  */
