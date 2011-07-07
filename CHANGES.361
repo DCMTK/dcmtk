@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.07.07 (riesmeier)
+
+- Updated man pages for new development snapshot.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2011.07.06 (riesmeier)
 
 - Added missing test file "tparser" introduced with the last commit.

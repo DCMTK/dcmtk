@@ -1,4 +1,4 @@
-.TH "dcmmkdir" 1 "19 May 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmmkdir" 1 "7 Jul 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmmkdir \- Create a DICOMDIR file
@@ -22,11 +22,27 @@ General Purpose CD-R Interchange (STD-GEN-CD)
 .IP "\(bu" 2
 General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM) 
 .IP "\(bu" 2
-General Purpose DVD with Compression Interchange (STD-GEN-DVD-JPEG/J2K) 
+General Purpose DVD Interchange with JPEG (STD-GEN-DVD-JPEG) 
+.IP "\(bu" 2
+General Purpose DVD Interchange with JPEG 2000 (STD-GEN-DVD-J2K) 
+.IP "\(bu" 2
+General Purpose BD Interchange with JPEG (STD-GEN-BD-JPEG) 
+.IP "\(bu" 2
+General Purpose BD Interchange with JPEG 2000 (STD-GEN-BD-J2K) 
+.IP "\(bu" 2
+General Purpose BD Interchange with MPEG2 MP@ML (STD-GEN-BD-MPEG2-MPML) 
+.IP "\(bu" 2
+General Purpose BD Interchange with MPEG2 MP@HL (STD-GEN-BD-MPEG2-MPHL) 
+.IP "\(bu" 2
+General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41) 
+.IP "\(bu" 2
+General Purpose BD Interchange with MPEG-4 AVC/H.264 BD-Compatible HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD) 
+.IP "\(bu" 2
+General Purpose USB and Flash Memory Interchange with JPEG (STD-GEN-USB/MMC/CF/SD-JPEG) 
+.IP "\(bu" 2
+General Purpose USB and Flash Memory Interchange with JPEG 2000 (STD-GEN-USB/MMC/CF/SD-J2K) 
 .IP "\(bu" 2
 General Purpose MIME Interchange (STD-GEN-MIME) 
-.IP "\(bu" 2
-General Purpose USB and Flash Memory with Compression Interchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K) 
 .IP "\(bu" 2
 DVD Interchange with MPEG2 MP@ML (STD-DVD-MPEG2-MPML) 
 .IP "\(bu" 2
@@ -215,27 +231,59 @@ icon images:
 profiles:
 
   -Pgp  --general-purpose
-          General Purpose Interchange on CD-R or
-          DVD-RAM Media (STD-GEN-CD/DVD-RAM, default)
+          General Purpose Interchange on CD-R or DVD-RAM Media
+          (STD-GEN-CD/DVD-RAM, default)
 
-  -Pdv  --general-purpose-dvd
-          General Purpose DVD with Compression Interchange
-          (STD-GEN-DVD-JPEG/J2K)
+  -Pdv  --general-dvd-jpeg
+          General Purpose DVD Interchange with JPEG
+          (STD-GEN-DVD-JPEG)
 
-  -Pmi  --general-purpose-mime
+  -Pd2  --general-dvd-j2k
+          General Purpose DVD Interchange with JPEG 2000
+          (STD-GEN-DVD-J2K)
+
+  -Pbd  --general-bd-jpeg
+          General Purpose BD Interchange with JPEG
+          (STD-GEN-BD-JPEG)
+
+  -Pb2  --general-bd-j2k
+          General Purpose BD Interchange with JPEG 2000
+          (STD-GEN-BD-J2K)
+
+  -Pbm  --general-bd-mpeg2-mpml
+          General Purpose BD Interchange with MPEG2 MP@ML
+          (STD-GEN-BD-MPEG2-MPML)
+
+  -Pbh  --general-bd-mpeg2-mphl
+          General Purpose BD Interchange with MPEG2 MP@HL
+          (STD-GEN-BD-MPEG2-MPHL)
+
+  -Pba  --general-bd-mpeg4-hp
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41)
+
+  -Pbb  --general-bd-mpeg4-hpbd
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          BD-Compatible HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)
+
+  -Pfl  --usb-and-flash-jpeg
+          General Purpose USB/Flash Memory Interchange with JPEG
+          (STD-GEN-USB/MMC/CF/SD-JPEG)
+
+  -Pf2  --usb-and-flash-j2k
+          General Purpose USB/Flash Memory Interchange with JPEG 2000
+          (STD-GEN-USB/MMC/CF/SD-J2K)
+
+  -Pmi  --general-mime
           General Purpose MIME Interchange (STD-GEN-MIME)
 
-  -Pfl  --usb-and-flash
-          General Purpose USB/Flash Memory with Compression
-          Interchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)
-
   -Pmp  --mpeg2-mpml-dvd
-          DVD Interchange with MPEG2 Main Profile @ Main
-          Level (STD-DVD-MPEG2-MPML)
+          DVD Interchange with MPEG2 Main Profile @ Main Level
+          (STD-DVD-MPEG2-MPML)
 
   -Pbc  --basic-cardiac
-          Basic Cardiac X-Ray Angiographic Studies on
-          CD-R Media (STD-XABC-CD)
+          Basic Cardiac X-Ray Angiographic Studies on CD-R Media
+          (STD-XABC-CD)
 
   -Pxa  --xray-angiographic
           1024 X-Ray Angiographic Studies on CD-R Media
@@ -256,24 +304,24 @@ profiles:
           (STD-US-ID-SF-xxxx)
 
         --ultrasound-sc-sf
-          Ultrasound Single Frame with Spatial
-          Calibration (STD-US-SC-SF-xxxx)
+          Ultrasound Single Frame with Spatial Calibration
+          (STD-US-SC-SF-xxxx)
 
         --ultrasound-cc-sf
-          Ultrasound Single Frame with Combined
-          Calibration (STD-US-CC-SF-xxxx)
+          Ultrasound Single Frame with Combined Calibration
+          (STD-US-CC-SF-xxxx)
 
   -Pum  --ultrasound-id-mf
-          Ultrasound Single & Multi-Frame for Image
-          Display (STD-US-ID-MF-xxxx)
+          Ultrasound Single & Multi-Frame for Image Display
+          (STD-US-ID-MF-xxxx)
 
         --ultrasound-sc-mf
-          Ultrasound Single & Multi-Frame with Spatial
-          Calibration (STD-UD-SC-MF-xxxx)
+          Ultrasound Single & Multi-Frame with Spatial Calibration
+          (STD-UD-SC-MF-xxxx)
 
         --ultrasound-cc-mf
-          Ultrasound Single & Multi-Frame with Combined
-          Calibration (STD-UD-CC-MF-xxxx)
+          Ultrasound Single & Multi-Frame with Combined Calibration
+          (STD-UD-CC-MF-xxxx)
 
   -Pec  --12-lead-ecg
           12-lead ECG Interchange on Diskette
@@ -356,4 +404,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmgpdir\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2001-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
