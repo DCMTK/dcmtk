@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Interface of the class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:40 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2011-07-12 15:38:16 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,9 +100,11 @@ class DcmDataset
     virtual OFCondition clear();
 
     /** remove all elements with an invalid group number, i.e. 0x0000 to 0x0003,
-     *  0x0005, 0x0007 and 0xFFFF
+     *  0x0005, 0x0007 and 0xFFFF in case of a data set.  For command sets, only
+     *  group 0x0000 is allowed, i.e. the elements from all other groups are removed.
+     *  @param cmdSet specifies whether this object represents a command or data set
      */
-    virtual void removeInvalidGroups();
+    virtual void removeInvalidGroups(const OFBool cmdSet = OFFalse);
 
     /** return the transfer syntax in which this dataset was originally read.
      *  @return transfer syntax in which this dataset was originally read, EXS_Unknown if the dataset was created in memory
@@ -316,6 +318,10 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.37  2011-07-12 15:38:16  joergr
+** Added new optional flag that allows for removing invalid elements from a
+** command set.
+**
 ** Revision 1.36  2010-10-14 13:15:40  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
