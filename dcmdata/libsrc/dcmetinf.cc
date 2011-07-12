@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-21 15:02:52 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2011-07-12 15:38:44 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,8 +129,10 @@ void DcmMetaInfo::removeInvalidGroups()
     {
         object = stack.top();
         /* delete invalid elements */
-        if (object->getTag().getGroup() != 0x0002)
+        if (object->getGTag() != 0x0002)
         {
+            DCMDATA_DEBUG("DcmMetaInfo::removeInvalidGroups() removing element "
+                << object->getTag() << " from meta header");
             stack.pop();
             /* remove element from meta information header and free memory */
             delete OFstatic_cast(DcmItem *, stack.top())->remove(object);
@@ -621,6 +623,9 @@ OFCondition DcmMetaInfo::loadFile(const char *fileName,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.59  2011-07-12 15:38:44  joergr
+** Output information on removed invalid data elements to debug logger.
+**
 ** Revision 1.58  2011-03-21 15:02:52  joergr
 ** Added module name "DCMDATA_" as a prefix to the ANSI escape code macros.
 ** Moved ANSI escape code for "reset" to the end of each output line (before
