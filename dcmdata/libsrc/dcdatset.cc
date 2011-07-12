@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-21 15:02:52 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2011-07-12 15:41:43 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,20 +118,42 @@ E_TransferSyntax DcmDataset::getOriginalXfer() const
 }
 
 
-void DcmDataset::removeInvalidGroups()
+void DcmDataset::removeInvalidGroups(const OFBool cmdSet)
 {
     DcmStack stack;
     DcmObject *object = NULL;
-    /* iterate over all elements */
-    while (nextObject(stack, OFTrue).good())
+    /* check for data or command set */
+    if (cmdSet)
     {
-        object = stack.top();
-        /* delete invalid elements */
-        if ((object->getTag().getGroup() == 0x0002) || !object->getTag().hasValidGroup())
+        /* iterate over all elements */
+        while (nextObject(stack, OFTrue).good())
         {
-            stack.pop();
-            /* remove element from dataset and free memory */
-            delete OFstatic_cast(DcmItem *, stack.top())->remove(object);
+            object = stack.top();
+            /* in command sets, only group 0x0000 is allowed */
+            if (object->getGTag() != 0x0000)
+            {
+                DCMDATA_DEBUG("DcmDataset::removeInvalidGroups() removing element "
+                    << object->getTag() << " from command set");
+                stack.pop();
+                /* remove element from command set and free memory */
+                delete OFstatic_cast(DcmItem *, stack.top())->remove(object);
+            }
+        }
+    } else {
+        /* iterate over all elements */
+        while (nextObject(stack, OFTrue).good())
+        {
+            object = stack.top();
+            /* in data sets, group 0x0000 to 0x0003, 0x0005, 0x0007 and 0xFFFF are not allowed */
+            if ((object->getGTag() == 0x0000) || (object->getGTag() == 0x0002) ||
+                !object->getTag().hasValidGroup())
+            {
+                DCMDATA_DEBUG("DcmDataset::removeInvalidGroups() removing element "
+                    << object->getTag() << " from data set");
+                stack.pop();
+                /* remove element from data set and free memory */
+                delete OFstatic_cast(DcmItem *, stack.top())->remove(object);
+            }
         }
     }
 }
@@ -643,6 +665,11 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
+** Revision 1.54  2011-07-12 15:41:43  joergr
+** Made sure that elements from group 0x0000 are also removed from a data set.
+** Added new optional flag that allows for removing invalid elements from a
+** command set. Output information on removed invalid elements to debug logger.
+**
 ** Revision 1.53  2011-03-21 15:02:52  joergr
 ** Added module name "DCMDATA_" as a prefix to the ANSI escape code macros.
 ** Moved ANSI escape code for "reset" to the end of each output line (before

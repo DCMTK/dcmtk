@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.07.12 (riesmeier)
+
+- Made sure that elements from group 0x0000 are also removed from a data set.
+  Affects: dcmdata/libsrc/dcdatset.cc
+
+- Added new optional flag that allows for removing invalid elements from a
+  command set.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/libsrc/dcdatset.cc
+
+- Output information on removed invalid data elements to debug logger.
+  Affects: dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcmetinf.cc
+
 **** Changes from 2011.07.07 (riesmeier)
 
 - Updated man pages for new development snapshot.
