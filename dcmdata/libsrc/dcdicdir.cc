@@ -18,8 +18,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-26 14:03:29 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2011-07-14 09:04:50 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -348,14 +348,16 @@ OFCondition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
 OFCondition DcmDicomDir::resolveAllOffsets( DcmDataset &dset )   // inout
 {
     OFCondition l_error = EC_Normal;
+    DcmObject *obj = NULL;
+    DcmDirectoryRecord *rec = NULL;
     DcmSequenceOfItems &localDirRecSeq = getDirRecSeq( dset );
     unsigned long maxitems = localDirRecSeq.card();
     ItemOffset *itOffsets = new ItemOffset[ maxitems + 1 ];
 
     for (unsigned long i = 0; i < maxitems; i++ )
     {
-        DcmDirectoryRecord *rec;
-        rec = OFstatic_cast(DcmDirectoryRecord *, localDirRecSeq.getItem( i ));
+        obj = localDirRecSeq.nextInContainer(obj);
+        rec = OFstatic_cast(DcmDirectoryRecord *, obj);
         long filePos = rec->getFileOffset();
         itOffsets[ i ].item = rec;
         itOffsets[ i ].fileOffset = OFstatic_cast(Uint32, filePos);
@@ -570,8 +572,6 @@ Uint32 DcmDicomDir::lengthOfRecord( DcmItem *item,
 
 
 OFCondition DcmDicomDir::convertGivenPointer( DcmObject *startPoint,
-                                              ItemOffset *itOffsets,
-                                              const unsigned long numOffsets,
                                               const DcmTagKey &offsetTag )
 {
     OFCondition l_error = EC_Normal;
@@ -583,15 +583,11 @@ OFCondition DcmDicomDir::convertGivenPointer( DcmObject *startPoint,
             if ( stack.top()->ident() != EVR_up )
                 continue;
             DcmUnsignedLongOffset *offElem = OFstatic_cast(DcmUnsignedLongOffset *, stack.top());
-
-            for (unsigned long i = 0; i < numOffsets; i++ )
-            {
-                if ( offElem->getNextRecord() == itOffsets[i].item )
-                {
-                    offElem->putUint32( itOffsets[i].fileOffset );
-                    break;
-                }
-            }
+            DcmObject *obj = offElem->getNextRecord();
+            if (obj != NULL)
+                offElem->putUint32(OFstatic_cast(DcmDirectoryRecord *, obj)->getFileOffset());
+            else
+                offElem->putUint32(0);
         }
     }
 
@@ -608,33 +604,31 @@ OFCondition DcmDicomDir::convertAllPointer( DcmDataset &dset,          // inout
                                             E_EncodingType enctype )   // in
 {
     OFCondition l_error = EC_Normal;
+    DcmObject *obj = NULL;
+    DcmDirectoryRecord *rec = NULL;
     DcmSequenceOfItems &localDirRecSeq = getDirRecSeq( dset );
-
     Uint32 offs_Item1 =  beginOfDataSet + lengthUntilSQ( dset, oxfer, enctype );
     unsigned long num = localDirRecSeq.card();
-    ItemOffset *itOffsets = new ItemOffset[ num ];
 
     Uint32 item_pos = offs_Item1;
     for (unsigned long i = 0; i < num; i++ )
     {
-        DcmDirectoryRecord *rec;
-        rec = OFstatic_cast(DcmDirectoryRecord *, localDirRecSeq.getItem( i ));
+        obj = localDirRecSeq.nextInContainer(obj);
+        rec = OFstatic_cast(DcmDirectoryRecord *, obj);
         rec->setFileOffset( item_pos );
-        itOffsets[ i ].item = rec;
-        itOffsets[ i ].fileOffset = item_pos;
         item_pos = lengthOfRecord( rec, oxfer, enctype ) + item_pos;
     }
 
-    OFCondition e1 = convertGivenPointer( &dset, itOffsets, num, DCM_OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity );
-    OFCondition e2 = convertGivenPointer( &dset, itOffsets, num, DCM_OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity );
+    /* calling convertGivenPointer() requires that the above for-loop has been run through */
+    OFCondition e1 = convertGivenPointer( &dset, DCM_OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity );
+    OFCondition e2 = convertGivenPointer( &dset, DCM_OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity );
 
-    OFCondition e3 = convertGivenPointer( &localDirRecSeq, itOffsets, num, DCM_OffsetOfTheNextDirectoryRecord );
-    OFCondition e4 = convertGivenPointer( &localDirRecSeq, itOffsets, num, DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
-    OFCondition e5 = convertGivenPointer( &localDirRecSeq, itOffsets, num, DCM_RETIRED_MRDRDirectoryRecordOffset );
+    OFCondition e3 = convertGivenPointer( &localDirRecSeq, DCM_OffsetOfTheNextDirectoryRecord );
+    OFCondition e4 = convertGivenPointer( &localDirRecSeq, DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
+    OFCondition e5 = convertGivenPointer( &localDirRecSeq, DCM_RETIRED_MRDRDirectoryRecordOffset );
 
     if ( e1 == EC_InvalidVR || e2 == EC_InvalidVR || e3 == EC_InvalidVR || e4 == EC_InvalidVR || e5 == EC_InvalidVR )
         l_error = EC_InvalidVR;
-    delete[] itOffsets;
 
     return l_error;
 }
@@ -1344,6 +1338,10 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.63  2011-07-14 09:04:50  joergr
+** Slightly enhanced performance of DICOMDIR code, e.g. by a more appropriate
+** use of the underlying DcmList class.
+**
 ** Revision 1.62  2011-04-26 14:03:29  joergr
 ** Fixed minor issue with wrong log output. Also moved some less interesting log
 ** messages from "debug" to "trace" level.

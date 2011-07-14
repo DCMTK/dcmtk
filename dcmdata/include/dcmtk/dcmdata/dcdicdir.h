@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmDicomDir
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-15 13:58:43 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-07-14 09:04:48 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,8 +165,6 @@ public:
                                      E_TransferSyntax oxfer,         // in
                                      E_EncodingType enctype );       // in
     OFCondition convertGivenPointer( DcmObject *startPoint,          // inout
-                                     ItemOffset *itOffsets,          // in
-                                     const unsigned long numOffsets, // in
                                      const DcmTagKey &offsetTag );   // in
     OFCondition convertAllPointer(   DcmDataset &dset,               // inout
                                      Uint32 beginOfFileSet,          // in
@@ -232,6 +230,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
+** Revision 1.29  2011-07-14 09:04:48  joergr
+** Slightly enhanced performance of DICOMDIR code, e.g. by a more appropriate
+** use of the underlying DcmList class.
+**
 ** Revision 1.28  2010-11-15 13:58:43  uli
 ** Fixed some errors in doxygen comments.
 **

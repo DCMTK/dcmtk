@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.07.14 (riesmeier)
 
+- Slightly enhanced performance of DICOMDIR code, e.g. by a more appropriate
+  use of the underlying DcmList class.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdicdir.h
+           dcmdata/libsrc/dcdicdir.cc
+
 - Fixed wrong method name in log message.
   Affects: dcmdata/libsrc/dcdirrec.cc
 
