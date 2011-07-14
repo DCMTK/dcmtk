@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.07.14 (riesmeier)
+
+- Fixed wrong method name in log message.
+  Affects: dcmdata/libsrc/dcdirrec.cc
+
 **** Changes from 2011.07.12 (riesmeier)
 
 - Made sure that elements from group 0x0000 are also removed from a data set.

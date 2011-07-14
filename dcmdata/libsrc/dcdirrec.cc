@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-04 07:38:23 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-07-14 09:00:19 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -915,7 +915,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
             l_error = refFile->loadFile(fileName);
             if (l_error.bad())
             {
-              DCMDATA_ERROR("DcmDirectoryRecord::readSOPandFileElements(): DicomFile \""
+              DCMDATA_ERROR("DcmDirectoryRecord::fillElementsAndReadSOP(): DicomFile \""
                   << fileName << "\" not found");
               directFromFile = OFFalse;
               indirectViaMRDR = OFFalse;
@@ -1544,6 +1544,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.82  2011-07-14 09:00:19  joergr
+ * Fixed wrong method name in log message.
+ *
  * Revision 1.81  2011-05-04 07:38:23  uli
  * Fixed some memory leaks in seldomly-used code paths.
  *
