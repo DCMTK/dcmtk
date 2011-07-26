@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.07.26 (onken)
+
+- Fixed compilation with configure/make on Mac OS X Lion (10.7).
+  Thanks to Eric A. Borisch <eborisch@macports.org> for the suggested patch.
+  Affects: config/configure
+           config/configure.in
+
 **** Changes from 2011.07.14 (riesmeier)
 
 - Slightly enhanced performance of DICOMDIR code, e.g. by a more appropriate
