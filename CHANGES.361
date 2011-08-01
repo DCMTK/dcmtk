@@ -3,7 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.01 (onken)
 
-- Added cleanup of temporary files in case tests fail.
+- Fixed CVS log at end of file.
+  Affects: dcmdata/tests/tparser.cc
+
+- Added deletion of temporary files in case tests fail.
   Affects: dcmdata/tests/tparser.cc
 
 - Changed random file name generation to avoid warning about mktemp on

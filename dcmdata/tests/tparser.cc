@@ -18,8 +18,8 @@
  *  Purpose: test program for reading DICOM datasets
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-08-01 19:36:40 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2011-08-01 19:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,9 +190,16 @@ OFTEST(dcmdata_parser_oddLengthPartialValue_notLastItem)
  *
  * CVS/RCS Log:
  * $Log: tparser.cc,v $
+ * Revision 1.5  2011-08-01 19:39:54  onken
+ * Fixed CVS log at end of file.
+ *
  * Revision 1.4  2011-08-01 19:36:40  onken
  * Added deletion of temporary files in case tests fail.
  *
+ * Revision 1.3  2011-08-01 19:32:58  onken
+ * Changed random file name generation to avoid warning about mktemp on
+ * linux systems.
+ * 
  * Revision 1.2  2011-07-07 12:51:18  joergr
  * Added missing extern "C" declaration for mktemp(), e.g. required for MSVC++.
  *
