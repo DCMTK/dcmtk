@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.01 (onken)
+
+- Changed random file name generation to avoid warning about mktemp on
+  linux systems.
+  Affects: dcmdata/tests/tparser.cc
+
 **** Changes from 2011.07.26 (onken)
 
 - Fixed regular expression in Mac OS X Lion adaption.

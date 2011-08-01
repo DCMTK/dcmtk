@@ -17,9 +17,9 @@
  *
  *  Purpose: test program for reading DICOM datasets
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-07-07 12:51:18 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-08-01 19:32:58 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,16 +30,12 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/dcistrmb.h"
 #include "dcmtk/dcmdata/dcostrmb.h"
 
-#if defined(HAVE_MKTEMP) && !defined(HAVE_PROTOTYPE_MKTEMP)
-extern "C" {
-char * mktemp(char *);
-}
-#endif
 
 /* Macros for handling the endian */
 #define LITTLE_ENDIAN_UINT16(w) ((w) & 0xff), ((w) >> 8)
@@ -116,18 +112,21 @@ static void testOddLengthPartialValue(const Uint8* data, size_t length)
     OFCondition cond;
     DcmElement *elem;
     Uint8 buf[bytesToRead];
-    char temp[] = "XXXXXXX";
-    char *fileName = mktemp(temp);
-    unsigned int i;
-
+    int randomInt = rand();
+    char temp[60]; // should be enough also for ints with 128 bit...
+    if (sprintf(temp, "dcmdata_tests%u.tmp", randomInt) == 0)
+    {
+      OFCHECK_FAIL("Unable to create temporary filename");
+      return;
+    }
     // Deferred value loading only works with files
     OFFile f;
-    f.fopen(fileName, "wb");
+    f.fopen(temp, "wb");
     f.fwrite(data, 1, length);
     f.fclose();
 
     // Everything larger than 1 byte won't be loaded now but only later
-    cond = dfile.loadFile(fileName, TRANSFER_SYNTAX, EGL_noChange, 1, ERM_dataset);
+    cond = dfile.loadFile(temp, TRANSFER_SYNTAX, EGL_noChange, 1, ERM_dataset);
     if (cond.bad())
     {
         OFCHECK_FAIL(cond.text());
@@ -151,12 +150,11 @@ static void testOddLengthPartialValue(const Uint8* data, size_t length)
         return;
     }
 
-    for (i = 0; i < bytesToRead; i++)
+    for (unsigned int i = 0; i < bytesToRead; i++)
     {
         OFCHECK_EQUAL(buf[i], VALUE);
     }
-
-    unlink(fileName);
+    unlink(temp);
 }
 
 OFTEST(dcmdata_parser_oddLengthPartialValue_lastItem)
@@ -189,6 +187,10 @@ OFTEST(dcmdata_parser_oddLengthPartialValue_notLastItem)
  *
  * CVS/RCS Log:
  * $Log: tparser.cc,v $
+ * Revision 1.3  2011-08-01 19:32:58  onken
+ * Changed random file name generation to avoid warning about mktemp on
+ * linux systems.
+ *
  * Revision 1.2  2011-07-07 12:51:18  joergr
  * Added missing extern "C" declaration for mktemp(), e.g. required for MSVC++.
  *
