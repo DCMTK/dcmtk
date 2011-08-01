@@ -202,6 +202,15 @@ ELSE(WIN32)   # ... for non-Windows systems
     ENDIF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
   ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
+  OPTION(DCMTK_FORCE_FPIC_ON_UNIX "Add -fPIC compiler flag on unix 64 bit machines to allow linking from dynamic libraries even if DCMTK is built statically" OFF)
+  MARK_AS_ADVANCED(DCMTK_FORCE_FPIC_ON_UNIX)
+
+  # Setting for IA64 / x86_64 which needs -fPIC compiler flag required for shared library build on these platforms 
+  IF(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" AND UNIX AND DCMTK_FORCE_FPIC_ON_UNIX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+  ENDIF(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" AND UNIX AND DCMTK_FORCE_FPIC_ON_UNIX)
+
 ENDIF(WIN32)
 
 # define libraries that must be linked to most Windows applications

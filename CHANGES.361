@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.01 (onken)
 
+- Added CMake option for enforcing -fPIC flag when compiling on 64 bit
+  unix platforms, needed for linking from dynamic libraries to statically
+  linked DCMTK libraries.
+  Affects: CMakeLists.txt
+
 - Fixed CVS log at end of file.
   Affects: dcmdata/tests/tparser.cc
 
