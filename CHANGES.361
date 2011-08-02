@@ -12,6 +12,10 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcddirif.cc
            dcmdata/libsrc/dcdirrec.cc
 
+- Speed up the code for reading DICOMDIRs, too.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdicdir.h
+           dcmdata/libsrc/dcdicdir.cc
+
 **** Changes from 2011.08.02 (riesmeier)
 
 - Added more general support for softcopy presentation states (not only GSPS).

@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmDicomDir
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-07-14 09:04:48 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-08-02 13:27:47 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,8 +148,7 @@ public:
     DcmDirectoryRecord*    searchMatchFile(   DcmSequenceOfItems& recSeq,   // in
                                               const char *filename );       // in
     OFCondition resolveGivenOffsets( DcmObject *startPoint,          // inout
-                                     ItemOffset *itOffsets,          // in
-                                     const unsigned long numOffsets, // in
+                                     const OFMap<Uint32, DcmDirectoryRecord *> &itOffsets, // in
                                      const DcmTagKey &offsetTag );   // in
     OFCondition resolveAllOffsets(   DcmDataset &dset );             // inout
     OFCondition linkMRDRtoRecord(    DcmDirectoryRecord *dRec );     // inout
@@ -230,6 +229,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
+** Revision 1.30  2011-08-02 13:27:47  uli
+** Speed up the code for reading DICOMDIRs, too.
+**
 ** Revision 1.29  2011-07-14 09:04:48  joergr
 ** Slightly enhanced performance of DICOMDIR code, e.g. by a more appropriate
 ** use of the underlying DcmList class.

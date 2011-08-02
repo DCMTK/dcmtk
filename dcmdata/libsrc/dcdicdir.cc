@@ -18,8 +18,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-02 09:35:18 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Update Date:      $Date: 2011-08-02 13:27:47 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -306,8 +306,7 @@ DcmUnsignedLongOffset* DcmDicomDir::lookForOffsetElem( DcmObject *obj,
 
 
 OFCondition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
-                                              ItemOffset *itOffsets,
-                                              const unsigned long numOffsets,
+                                              const OFMap<Uint32, DcmDirectoryRecord *> &itOffsets,
                                               const DcmTagKey &offsetTag )
 {
   OFCondition l_error = EC_Normal;
@@ -315,24 +314,27 @@ OFCondition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
   {
       DcmStack stack;
       Uint32 offset;
-      while ( startPoint->search( offsetTag, stack, ESM_afterStackTop, OFTrue ) == EC_Normal )
+      for (;;)
       {
-          if ( stack.top()->ident() != EVR_up )
-              continue;
-          DcmUnsignedLongOffset *offElem = OFstatic_cast(DcmUnsignedLongOffset *, stack.top());
-          for (unsigned long i = 0; i < numOffsets; i++ )
-          {
-              l_error = offElem->getUint32(offset);
-              if (offset == itOffsets[ i ].fileOffset )
-              {
-                  DCMDATA_TRACE("DcmDicomDir::resolveGivenOffset() Offset Element ("
-                      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                      << STD_NAMESPACE setw(4) << offElem->getGTag() << ","
-                      << STD_NAMESPACE setw(4) << offElem->getETag() << ") with offset 0x"
-                      << STD_NAMESPACE setw(8) << offset << " found");
+          l_error = startPoint->nextObject(stack, OFTrue);
+          if (l_error.bad())
+              break;
 
-                  offElem->setNextRecord( itOffsets[ i ].item );
-                  break;
+          DcmObject *cur = stack.top();
+          if (cur->ident() != EVR_up || cur->getTag() != offsetTag)
+              continue;
+
+          DcmUnsignedLongOffset *offElem = OFstatic_cast(DcmUnsignedLongOffset *, cur);
+          l_error = offElem->getUint32(offset);
+
+          if (l_error.good())
+          {
+              OFMap<Uint32, DcmDirectoryRecord *>::const_iterator it = itOffsets.find(offset);
+              if (it != itOffsets.end())
+              {
+                  offElem->setNextRecord(it->second);
+              } else {
+                  l_error = EC_InvalidOffset;
               }
           }
       }
@@ -352,31 +354,28 @@ OFCondition DcmDicomDir::resolveAllOffsets( DcmDataset &dset )   // inout
     DcmDirectoryRecord *rec = NULL;
     DcmSequenceOfItems &localDirRecSeq = getDirRecSeq( dset );
     unsigned long maxitems = localDirRecSeq.card();
-    ItemOffset *itOffsets = new ItemOffset[ maxitems + 1 ];
+    OFMap<Uint32, DcmDirectoryRecord *> itOffsets;
 
     for (unsigned long i = 0; i < maxitems; i++ )
     {
         obj = localDirRecSeq.nextInContainer(obj);
         rec = OFstatic_cast(DcmDirectoryRecord *, obj);
         long filePos = rec->getFileOffset();
-        itOffsets[ i ].item = rec;
-        itOffsets[ i ].fileOffset = OFstatic_cast(Uint32, filePos);
+        itOffsets[ OFstatic_cast(Uint32, filePos) ] = rec;
         DCMDATA_DEBUG("DcmDicomDir::resolveAllOffsets() Item Offset [" << i << "] = 0x"
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(8) << filePos);
     }
-    resolveGivenOffsets( &dset, itOffsets, maxitems,
+    resolveGivenOffsets( &dset, itOffsets,
         DCM_OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity );
-    resolveGivenOffsets( &dset, itOffsets, maxitems,
+    resolveGivenOffsets( &dset, itOffsets,
         DCM_OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity );
 
-    resolveGivenOffsets( &localDirRecSeq, itOffsets, maxitems,
+    resolveGivenOffsets( &localDirRecSeq, itOffsets,
         DCM_OffsetOfTheNextDirectoryRecord );
-    resolveGivenOffsets( &localDirRecSeq, itOffsets, maxitems,
+    resolveGivenOffsets( &localDirRecSeq, itOffsets,
         DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
-    resolveGivenOffsets( &localDirRecSeq, itOffsets, maxitems,
+    resolveGivenOffsets( &localDirRecSeq, itOffsets,
         DCM_RETIRED_MRDRDirectoryRecordOffset );
-
-    delete[] itOffsets;
 
     return l_error;
 }
@@ -1343,6 +1342,9 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.65  2011-08-02 13:27:47  uli
+** Speed up the code for reading DICOMDIRs, too.
+**
 ** Revision 1.64  2011-08-02 09:35:18  uli
 ** Speed up the code for writing DICOMDIRs.
 **
