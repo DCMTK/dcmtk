@@ -6,6 +6,12 @@ Changes between releases are documented here.
 - Speed up the code for writing DICOMDIRs.
   Affects: dcmdata/libsrc/dcdicdir.cc
 
+- Don't load files twice when constructing a DICOMDIR.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdirrec.cc
+
 **** Changes from 2011.08.02 (riesmeier)
 
 - Added more general support for softcopy presentation states (not only GSPS).

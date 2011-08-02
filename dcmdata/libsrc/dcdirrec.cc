@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-07-14 09:00:19 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-08-02 13:01:26 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,7 +148,8 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmTag &tag,
 
 DcmDirectoryRecord::DcmDirectoryRecord(const E_DirRecType recordType,
                                        const char *referencedFileID,
-                                       const char *sourceFilename)
+                                       const char *sourceFilename,
+                                       DcmFileFormat *fileFormat)
   : DcmItem(ItemTag),
     recordsOriginFile(NULL),
     lowerLevelList(new DcmSequenceOfItems(DCM_DirectoryRecordSequence)),
@@ -160,7 +161,7 @@ DcmDirectoryRecord::DcmDirectoryRecord(const E_DirRecType recordType,
     setRecordsOriginFile(sourceFilename);
 
     if (DirRecordType != ERT_root)
-        errorFlag = fillElementsAndReadSOP(referencedFileID, sourceFilename);
+        errorFlag = fillElementsAndReadSOP(referencedFileID, sourceFilename, fileFormat);
 }
 
 
@@ -169,7 +170,8 @@ DcmDirectoryRecord::DcmDirectoryRecord(const E_DirRecType recordType,
 
 DcmDirectoryRecord::DcmDirectoryRecord(const char *recordTypeName,
                                        const char *referencedFileID,
-                                       const char *sourceFilename)
+                                       const char *sourceFilename,
+                                       DcmFileFormat *fileFormat)
   : DcmItem(ItemTag),
     recordsOriginFile(NULL),
     lowerLevelList(new DcmSequenceOfItems(DCM_DirectoryRecordSequence)),
@@ -182,7 +184,7 @@ DcmDirectoryRecord::DcmDirectoryRecord(const char *recordTypeName,
     setRecordsOriginFile(sourceFilename);
 
     if (DirRecordType != ERT_root)
-        errorFlag = fillElementsAndReadSOP(referencedFileID, sourceFilename);
+        errorFlag = fillElementsAndReadSOP(referencedFileID, sourceFilename, fileFormat);
 }
 
 
@@ -882,11 +884,17 @@ Uint32 DcmDirectoryRecord::decreaseRefNum()
 //
 
 OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFileID,
-                                                       const char *sourceFileName)
+                                                       const char *sourceFileName,
+                                                       DcmFileFormat *fileFormat)
 {
     OFCondition l_error = EC_Normal;
     char *fileName = NULL;
     DcmFileFormat *refFile = NULL;
+    /* This variable is only set if we created our own DcmFileFormat instance */
+    DcmFileFormat *ownFile = NULL;
+
+    if (fileFormat != NULL && sourceFileName == NULL)
+        return EC_IllegalCall;
 
     OFBool directFromFile = OFFalse;
     OFBool indirectViaMRDR = OFFalse;
@@ -911,14 +919,22 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
 
         if (DirRecordType != ERT_Mrdr)
         {
-            refFile = new DcmFileFormat();
-            l_error = refFile->loadFile(fileName);
-            if (l_error.bad())
+            if (fileFormat)
             {
-              DCMDATA_ERROR("DcmDirectoryRecord::fillElementsAndReadSOP(): DicomFile \""
-                  << fileName << "\" not found");
-              directFromFile = OFFalse;
-              indirectViaMRDR = OFFalse;
+                DCMDATA_TRACE("DcmDirectoryRecord::fillElementsAndReadSOP(): Using existing file format for \"" << fileName << "\".");
+                refFile = fileFormat;
+            } else {
+                DCMDATA_TRACE("DcmDirectoryRecord::fillElementsAndReadSOP(): Load file \"" << fileName << "\" because our caller didn't do so.");
+                ownFile = new DcmFileFormat();
+                l_error = ownFile->loadFile(fileName);
+                refFile = ownFile;
+                if (l_error.bad())
+                {
+                  DCMDATA_ERROR("DcmDirectoryRecord::fillElementsAndReadSOP(): DicomFile \""
+                      << fileName << "\" not found");
+                  directFromFile = OFFalse;
+                  indirectViaMRDR = OFFalse;
+                }
             }
         }
     } else {
@@ -1031,7 +1047,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
         delete remove(refFileXferTag);
     }
 
-    delete refFile;
+    delete ownFile;
     delete[] fileName;
 
     return l_error;
@@ -1544,6 +1560,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.83  2011-08-02 13:01:26  uli
+ * Don't load files twice when constructing a DICOMDIR.
+ *
  * Revision 1.82  2011-07-14 09:00:19  joergr
  * Fixed wrong method name in log message.
  *

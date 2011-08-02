@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-29 15:25:34 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-08-02 13:01:26 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,19 +155,23 @@ public:
      *  @param recordType record type
      *  @param referencedFileID referenced file ID in DICOM format
      *  @param sourceFileName path to referenced file in operating system specific format
+     *  @param fileFormat fileFormat for sourceFileName, can be NULL
      */
     DcmDirectoryRecord(const E_DirRecType recordType,
                        const char *referencedFileID,   // DICOM format with '\\'
-                       const char *sourceFileName);    // OS Format
+                       const char *sourceFileName,     // OS Format
+                       DcmFileFormat* fileFormat = NULL);
 
     /** constructor
      *  @param recordTypeName record type as string
      *  @param referencedFileID referenced file ID in DICOM format
      *  @param sourceFileName path to referenced file in operating system specific format
+     *  @param fileFormat fileFormat for sourceFileName, can be NULL
      */
     DcmDirectoryRecord(const char *recordTypeName,
                        const char *referencedFileID,   // DICOM Format with '\\'
-                       const char *sourceFileName);    // OS Format
+                       const char *sourceFileName,     // OS Format
+                       DcmFileFormat* fileFormat = NULL);
 
     /** copy constructor
      *  @param oldDirRec element to be copied
@@ -419,8 +423,15 @@ protected:
     Uint32              decreaseRefNum();
 
     // misc:
+    /** Load all necessary info for this directory record.
+     *  @param referencedFileID file ID that is being referenced, may be NULL
+     *  @param sourceFileName filename for the DICOM file, may be NULL
+     *  @param fileFormat If not NULL, then this should be the result of loading
+     *         sourceFileName. May only be non-NULL if sourceFileName isn't NULL.
+     */
     OFCondition         fillElementsAndReadSOP(const char *referencedFileID,
-                                               const char *sourceFileName);
+                                               const char *sourceFileName,
+                                               DcmFileFormat *fileFormat = NULL);
     OFCondition         masterInsertSub(DcmDirectoryRecord *dirRec,
                                         const unsigned long where = DCM_EndOfListIndex);
     OFCondition         purgeReferencedFile();
@@ -454,6 +465,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
+** Revision 1.49  2011-08-02 13:01:26  uli
+** Don't load files twice when constructing a DICOMDIR.
+**
 ** Revision 1.48  2011-04-29 15:25:34  joergr
 ** Added support for new directory record type PLAN from Supplement 74.
 **

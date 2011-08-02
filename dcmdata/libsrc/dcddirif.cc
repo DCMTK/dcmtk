@@ -18,8 +18,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 11:08:47 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2011-08-02 13:01:26 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2811,17 +2811,18 @@ DcmDirectoryRecord *DicomDirInterface::findExistingRecord(DcmDirectoryRecord *pa
 
 // create or update patient record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmDirectoryRecord *record,
-                                                          DcmItem *dataset,
+                                                          DcmFileFormat *fileformat,
                                                           const OFString &sourceFilename)
 {
     /* create new patient record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Patient, NULL, sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Patient, NULL, sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* use type 1C instead of 1 in order to avoid unwanted overwriting */
             copyElementType1C(dataset, DCM_PatientID, record, sourceFilename);
             copyElementType2(dataset, DCM_PatientName, record, sourceFilename);
@@ -2857,17 +2858,18 @@ DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmDirectoryRecord *re
 
 // create or update study record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildStudyRecord(DcmDirectoryRecord *record,
-                                                        DcmItem *dataset,
+                                                        DcmFileFormat *fileformat,
                                                         const OFString &sourceFilename)
 {
     /* create new study record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Study, NULL, sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Study, NULL, sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             OFString tmpString;
             /* copy attribute values from dataset to study record */
             copyStringWithDefault(dataset, DCM_StudyDate, record, sourceFilename, alternativeStudyDate(dataset, tmpString).c_str(), OFTrue /*printWarning*/);
@@ -2891,17 +2893,18 @@ DcmDirectoryRecord *DicomDirInterface::buildStudyRecord(DcmDirectoryRecord *reco
 
 // create or update series record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *record,
-                                                         DcmItem *dataset,
+                                                         DcmFileFormat *fileformat,
                                                          const OFString &sourceFilename)
 {
     /* create new series record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Series, NULL, sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Series, NULL, sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to series record */
             copyElementType1(dataset, DCM_Modality, record, sourceFilename);
             copyElementType1(dataset, DCM_SeriesInstanceUID, record, sourceFilename);
@@ -2941,18 +2944,19 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *rec
 
 // create or update overlay record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildOverlayRecord(DcmDirectoryRecord *record,
-                                                          DcmItem *dataset,
+                                                          DcmFileFormat *fileformat,
                                                           const OFString &referencedFileID,
                                                           const OFString &sourceFilename)
 {
     /* create new overlay record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Overlay, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Overlay, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to overlay record */
             copyElementType1(dataset, DCM_RETIRED_OverlayNumber, record, sourceFilename);
         } else {
@@ -2969,18 +2973,19 @@ DcmDirectoryRecord *DicomDirInterface::buildOverlayRecord(DcmDirectoryRecord *re
 
 // create or update modality lut record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildModalityLutRecord(DcmDirectoryRecord *record,
-                                                              DcmItem *dataset,
+                                                              DcmFileFormat *fileformat,
                                                               const OFString &referencedFileID,
                                                               const OFString &sourceFilename)
 {
     /* create new modality lut record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_ModalityLut, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_ModalityLut, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to modality lut record */
             copyElementType1(dataset, DCM_RETIRED_LUTNumber, record, sourceFilename);
         } else {
@@ -2997,18 +3002,19 @@ DcmDirectoryRecord *DicomDirInterface::buildModalityLutRecord(DcmDirectoryRecord
 
 // create or update voi lut record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildVoiLutRecord(DcmDirectoryRecord *record,
-                                                         DcmItem *dataset,
+                                                         DcmFileFormat *fileformat,
                                                          const OFString &referencedFileID,
                                                          const OFString &sourceFilename)
 {
     /* create new voi lut record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_VoiLut, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_VoiLut, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to voi lut record */
             copyElementType1(dataset, DCM_RETIRED_LUTNumber, record, sourceFilename);
         } else {
@@ -3025,18 +3031,19 @@ DcmDirectoryRecord *DicomDirInterface::buildVoiLutRecord(DcmDirectoryRecord *rec
 
 // create or update curve record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildCurveRecord(DcmDirectoryRecord *record,
-                                                        DcmItem *dataset,
+                                                        DcmFileFormat *fileformat,
                                                         const OFString &referencedFileID,
                                                         const OFString &sourceFilename)
 {
     /* create new curve record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Curve, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Curve, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to curve record */
             copyElementType1(dataset, DCM_RETIRED_CurveNumber, record, sourceFilename);
         } else {
@@ -3053,18 +3060,19 @@ DcmDirectoryRecord *DicomDirInterface::buildCurveRecord(DcmDirectoryRecord *reco
 
 // create or update structure reporting record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildStructReportRecord(DcmDirectoryRecord *record,
-                                                               DcmItem *dataset,
+                                                               DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
     /* create new struct report record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_SRDocument, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_SRDocument, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             OFString tmpString;
             /* copy attribute values from dataset to struct report record */
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
@@ -3099,18 +3107,19 @@ DcmDirectoryRecord *DicomDirInterface::buildStructReportRecord(DcmDirectoryRecor
 
 // create or update presentation state record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmDirectoryRecord *record,
-                                                               DcmItem *dataset,
+                                                               DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
     /* create new presentation record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Presentation, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Presentation, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to presentation record */
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentLabel, record, sourceFilename);
@@ -3134,18 +3143,19 @@ DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmDirectoryRecor
 
 // create or update waveform record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildWaveformRecord(DcmDirectoryRecord *record,
-                                                           DcmItem *dataset,
+                                                           DcmFileFormat *fileformat,
                                                            const OFString &referencedFileID,
                                                            const OFString &sourceFilename)
 {
     /* create new waveform record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Waveform, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Waveform, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to waveform record */
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
@@ -3164,18 +3174,19 @@ DcmDirectoryRecord *DicomDirInterface::buildWaveformRecord(DcmDirectoryRecord *r
 
 // create or update rt dose record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildRTDoseRecord(DcmDirectoryRecord *record,
-                                                         DcmItem *dataset,
+                                                         DcmFileFormat *fileformat,
                                                          const OFString &referencedFileID,
                                                          const OFString &sourceFilename)
 {
     /* create new rt dose record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_RTDose, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_RTDose, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to rt dose record */
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
             copyElementType1(dataset, DCM_DoseSummationType, record, sourceFilename);
@@ -3196,18 +3207,19 @@ DcmDirectoryRecord *DicomDirInterface::buildRTDoseRecord(DcmDirectoryRecord *rec
 
 // create or update rt structure set record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildRTStructureSetRecord(DcmDirectoryRecord *record,
-                                                                 DcmItem *dataset,
+                                                                 DcmFileFormat *fileformat,
                                                                  const OFString &referencedFileID,
                                                                  const OFString &sourceFilename)
 {
     /* create new rt structure set record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_RTStructureSet, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_RTStructureSet, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to rt structure set record */
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
             copyElementType1(dataset, DCM_StructureSetLabel, record, sourceFilename);
@@ -3227,18 +3239,19 @@ DcmDirectoryRecord *DicomDirInterface::buildRTStructureSetRecord(DcmDirectoryRec
 
 // create or update rt plan record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildRTPlanRecord(DcmDirectoryRecord *record,
-                                                         DcmItem *dataset,
+                                                         DcmFileFormat *fileformat,
                                                          const OFString &referencedFileID,
                                                          const OFString &sourceFilename)
 {
     /* create new rt plan record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_RTPlan, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_RTPlan, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to rt plan record */
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
             copyElementType1(dataset, DCM_RTPlanLabel, record, sourceFilename);
@@ -3258,18 +3271,19 @@ DcmDirectoryRecord *DicomDirInterface::buildRTPlanRecord(DcmDirectoryRecord *rec
 
 // create or update rt treatment record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildRTTreatmentRecord(DcmDirectoryRecord *record,
-                                                              DcmItem *dataset,
+                                                              DcmFileFormat *fileformat,
                                                               const OFString &referencedFileID,
                                                               const OFString &sourceFilename)
 {
     /* create new rt treatment record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_RTTreatRecord, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_RTTreatRecord, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to rt treatment record */
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
             copyElementType2(dataset, DCM_TreatmentDate, record, sourceFilename);
@@ -3288,18 +3302,19 @@ DcmDirectoryRecord *DicomDirInterface::buildRTTreatmentRecord(DcmDirectoryRecord
 
 // create or update stored print record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildStoredPrintRecord(DcmDirectoryRecord *record,
-                                                              DcmItem *dataset,
+                                                              DcmFileFormat *fileformat,
                                                               const OFString &referencedFileID,
                                                               const OFString &sourceFilename)
 {
     /* create new stored print record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_StoredPrint, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_StoredPrint, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to stored print record */
             copyElementType2(dataset, DCM_InstanceNumber, record, sourceFilename);
             /* IconImageSequence (type 3) is not created for the referenced images */
@@ -3317,18 +3332,19 @@ DcmDirectoryRecord *DicomDirInterface::buildStoredPrintRecord(DcmDirectoryRecord
 
 // create or update key object doc record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildKeyObjectDocRecord(DcmDirectoryRecord *record,
-                                                               DcmItem *dataset,
+                                                               DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
     /* create new key object doc record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_KeyObjectDoc, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_KeyObjectDoc, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to key object doc record */
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
@@ -3349,18 +3365,19 @@ DcmDirectoryRecord *DicomDirInterface::buildKeyObjectDocRecord(DcmDirectoryRecor
 
 // create or update registration record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildRegistrationRecord(DcmDirectoryRecord *record,
-                                                               DcmItem *dataset,
+                                                               DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
     /* create new registration record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Registration, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Registration, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to registration record */
             copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
@@ -3382,18 +3399,19 @@ DcmDirectoryRecord *DicomDirInterface::buildRegistrationRecord(DcmDirectoryRecor
 
 // create or update fiducial record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildFiducialRecord(DcmDirectoryRecord *record,
-                                                           DcmItem *dataset,
+                                                           DcmFileFormat *fileformat,
                                                            const OFString &referencedFileID,
                                                            const OFString &sourceFilename)
 {
     /* create new fiducial record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Fiducial, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Fiducial, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to fiducial record */
             copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
@@ -3415,18 +3433,19 @@ DcmDirectoryRecord *DicomDirInterface::buildFiducialRecord(DcmDirectoryRecord *r
 
 // create or update raw data record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildRawDataRecord(DcmDirectoryRecord *record,
-                                                          DcmItem *dataset,
+                                                          DcmFileFormat *fileformat,
                                                           const OFString &referencedFileID,
                                                           const OFString &sourceFilename)
 {
     /* create new raw data record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_RawData, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_RawData, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to raw data record */
             copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
@@ -3446,18 +3465,19 @@ DcmDirectoryRecord *DicomDirInterface::buildRawDataRecord(DcmDirectoryRecord *re
 
 // create or update spectroscopy record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmDirectoryRecord *record,
-                                                               DcmItem *dataset,
+                                                               DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
     /* create new spectroscopy record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Spectroscopy, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Spectroscopy, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to spectroscopy record */
             copyElementType1(dataset, DCM_ImageType, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
@@ -3503,18 +3523,19 @@ DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmDirectoryRecor
 
 // create or update encap doc record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildEncapDocRecord(DcmDirectoryRecord *record,
-                                                           DcmItem *dataset,
+                                                           DcmFileFormat *fileformat,
                                                            const OFString &referencedFileID,
                                                            const OFString &sourceFilename)
 {
     /* create new encap doc record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_EncapDoc, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_EncapDoc, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to encap doc record */
             copyElementType2(dataset, DCM_ContentDate, record, sourceFilename);
             copyElementType2(dataset, DCM_ContentTime, record, sourceFilename);
@@ -3539,18 +3560,19 @@ DcmDirectoryRecord *DicomDirInterface::buildEncapDocRecord(DcmDirectoryRecord *r
 
 // create or update value map record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmDirectoryRecord *record,
-                                                           DcmItem *dataset,
+                                                           DcmFileFormat *fileformat,
                                                            const OFString &referencedFileID,
                                                            const OFString &sourceFilename)
 {
     /* create new value map record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_ValueMap, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_ValueMap, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to value map record */
             copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
@@ -3572,18 +3594,19 @@ DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmDirectoryRecord *r
 
 // create or update hanging protocol record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildHangingProtocolRecord(DcmDirectoryRecord *record,
-                                                                  DcmItem *dataset,
+                                                                  DcmFileFormat *fileformat,
                                                                   const OFString &referencedFileID,
                                                                   const OFString &sourceFilename)
 {
     /* create new hanging protocol record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_HangingProtocol, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_HangingProtocol, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             copyElementType1(dataset, DCM_HangingProtocolName, record, sourceFilename);
             copyElementType1(dataset, DCM_HangingProtocolDescription, record, sourceFilename);
             copyElementType1(dataset, DCM_HangingProtocolLevel, record, sourceFilename);
@@ -3607,13 +3630,13 @@ DcmDirectoryRecord *DicomDirInterface::buildHangingProtocolRecord(DcmDirectoryRe
 
 // create or update stereometric record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildStereometricRecord(DcmDirectoryRecord *record,
-                                                               DcmItem * /* dataset */ ,
+                                                               DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
     /* create new value map record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Stereometric, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Stereometric, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3634,18 +3657,19 @@ DcmDirectoryRecord *DicomDirInterface::buildStereometricRecord(DcmDirectoryRecor
 
 // create or update palette record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildPaletteRecord(DcmDirectoryRecord *record,
-                                                          DcmItem *dataset,
+                                                          DcmFileFormat *fileformat,
                                                           const OFString &referencedFileID,
                                                           const OFString &sourceFilename)
 {
     /* create new palette record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Palette, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Palette, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to palette record */
             copyElementType1(dataset, DCM_ContentLabel, record, sourceFilename);
             copyElementType2(dataset, DCM_ContentDescription, record, sourceFilename);
@@ -3663,18 +3687,19 @@ DcmDirectoryRecord *DicomDirInterface::buildPaletteRecord(DcmDirectoryRecord *re
 
 // create or update surface record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildSurfaceRecord(DcmDirectoryRecord *record,
-                                                          DcmItem *dataset,
+                                                          DcmFileFormat *fileformat,
                                                           const OFString &referencedFileID,
                                                           const OFString &sourceFilename)
 {
     /* create new surface record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Surface, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Surface, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to surface record */
             copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
@@ -3696,18 +3721,19 @@ DcmDirectoryRecord *DicomDirInterface::buildSurfaceRecord(DcmDirectoryRecord *re
 
 // create or update measurement record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildMeasurementRecord(DcmDirectoryRecord *record,
-                                                              DcmItem *dataset,
+                                                              DcmFileFormat *fileformat,
                                                               const OFString &referencedFileID,
                                                               const OFString &sourceFilename)
 {
     /* create new measurement record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Measurement, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Measurement, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to measurement record */
             copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
@@ -3729,18 +3755,19 @@ DcmDirectoryRecord *DicomDirInterface::buildMeasurementRecord(DcmDirectoryRecord
 
 // create or update implant record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildImplantRecord(DcmDirectoryRecord *record,
-                                                          DcmItem *dataset,
+                                                          DcmFileFormat *fileformat,
                                                           const OFString &referencedFileID,
                                                           const OFString &sourceFilename)
 {
     /* create new implant record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Implant, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Implant, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to implant record */
             copyElementType1(dataset, DCM_Manufacturer, record, sourceFilename);
             copyElementType1(dataset, DCM_ImplantName, record, sourceFilename);
@@ -3760,18 +3787,19 @@ DcmDirectoryRecord *DicomDirInterface::buildImplantRecord(DcmDirectoryRecord *re
 
 // create or update implant group record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildImplantGroupRecord(DcmDirectoryRecord *record,
-                                                               DcmItem *dataset,
+                                                               DcmFileFormat *fileformat,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
     /* create new implant group record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_ImplantGroup, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_ImplantGroup, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to implant group record */
             copyElementType1(dataset, DCM_ImplantAssemblyTemplateName, record, sourceFilename);
             copyElementType1(dataset, DCM_ImplantAssemblyTemplateIssuer, record, sourceFilename);
@@ -3790,18 +3818,19 @@ DcmDirectoryRecord *DicomDirInterface::buildImplantGroupRecord(DcmDirectoryRecor
 
 // create or update implant assy record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildImplantAssyRecord(DcmDirectoryRecord *record,
-                                                              DcmItem *dataset,
+                                                              DcmFileFormat *fileformat,
                                                               const OFString &referencedFileID,
                                                               const OFString &sourceFilename)
 {
     /* create new implant assy record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_ImplantAssy, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_ImplantAssy, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             /* copy attribute values from dataset to implant assy record */
             copyElementType1(dataset, DCM_ImplantTemplateGroupName, record, sourceFilename);
             copyElementType3(dataset, DCM_ImplantTemplateGroupDescription, record, sourceFilename);
@@ -3820,13 +3849,13 @@ DcmDirectoryRecord *DicomDirInterface::buildImplantAssyRecord(DcmDirectoryRecord
 
 // create or update plan record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildPlanRecord(DcmDirectoryRecord *record,
-                                                       DcmItem *dataset,
+                                                       DcmFileFormat *fileformat,
                                                        const OFString &referencedFileID,
                                                        const OFString &sourceFilename)
 {
     /* create new plan record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Plan, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Plan, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3847,18 +3876,19 @@ DcmDirectoryRecord *DicomDirInterface::buildPlanRecord(DcmDirectoryRecord *recor
 
 // create or update image record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *record,
-                                                        DcmItem *dataset,
+                                                        DcmFileFormat *fileformat,
                                                         const OFString &referencedFileID,
                                                         const OFString &sourceFilename)
 {
     /* create new image record */
     if (record == NULL)
-        record = new DcmDirectoryRecord(ERT_Image, referencedFileID.c_str(), sourceFilename.c_str());
+        record = new DcmDirectoryRecord(ERT_Image, referencedFileID.c_str(), sourceFilename.c_str(), fileformat);
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
+            DcmDataset *dataset = fileformat->getDataset();
             OFBool iconImage = IconImageMode;
             unsigned int iconSize = (IconSize == 0) ? 64 : IconSize;
             /* Icon Image Sequence required for particular profiles */
@@ -4146,11 +4176,12 @@ OFCondition DicomDirInterface::addIconImage(DcmDirectoryRecord *record,
 // add child record to a given parent record
 DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                                                  const E_DirRecType recordType,
-                                                 DcmItem *dataset,
+                                                 DcmFileFormat *fileformat,
                                                  const OFString &referencedFileID,
                                                  const OFString &sourceFilename)
 {
     DcmDirectoryRecord *record = NULL;
+    DcmDataset *dataset = fileformat->getDataset();
     if (parent != NULL)
     {
         /* check whether record already exists */
@@ -4171,101 +4202,101 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
             switch (recordType)
             {
                 case ERT_Patient:
-                    record = buildPatientRecord(record, dataset, sourceFilename);
+                    record = buildPatientRecord(record, fileformat, sourceFilename);
                     break;
                 case ERT_Study:
-                    record = buildStudyRecord(record, dataset, sourceFilename);
+                    record = buildStudyRecord(record, fileformat, sourceFilename);
                     break;
                 case ERT_Series:
-                    record = buildSeriesRecord(record, dataset, sourceFilename);
+                    record = buildSeriesRecord(record, fileformat, sourceFilename);
                     break;
                 case ERT_Overlay:
-                    record = buildOverlayRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildOverlayRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_ModalityLut:
-                    record = buildModalityLutRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildModalityLutRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_VoiLut:
-                    record = buildVoiLutRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildVoiLutRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_Curve:
-                    record = buildCurveRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildCurveRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_SRDocument:
-                    record = buildStructReportRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildStructReportRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_Presentation:
-                    record = buildPresentationRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildPresentationRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_Waveform:
-                    record = buildWaveformRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildWaveformRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_RTDose:
-                    record = buildRTDoseRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildRTDoseRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_RTStructureSet:
-                    record = buildRTStructureSetRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildRTStructureSetRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_RTPlan:
-                    record = buildRTPlanRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildRTPlanRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_RTTreatRecord:
-                    record = buildRTTreatmentRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildRTTreatmentRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_StoredPrint:
-                    record = buildStoredPrintRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildStoredPrintRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_KeyObjectDoc:
-                    record = buildKeyObjectDocRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildKeyObjectDocRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_Registration:
-                    record = buildRegistrationRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildRegistrationRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_Fiducial:
-                    record = buildFiducialRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildFiducialRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_RawData:
-                    record = buildRawDataRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildRawDataRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_Spectroscopy:
-                    record = buildSpectroscopyRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildSpectroscopyRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_EncapDoc:
-                    record = buildEncapDocRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildEncapDocRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_ValueMap:
-                    record = buildValueMapRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildValueMapRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_HangingProtocol:
-                    record = buildHangingProtocolRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildHangingProtocolRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_Stereometric:
-                    record = buildStereometricRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildStereometricRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_Palette:
-                    record = buildPaletteRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildPaletteRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_Surface:
-                    record = buildSurfaceRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildSurfaceRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_Measurement:
-                    record = buildMeasurementRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildMeasurementRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_Implant:
-                    record = buildImplantRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildImplantRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_ImplantGroup:
-                    record = buildImplantGroupRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildImplantGroupRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_ImplantAssy:
-                    record = buildImplantAssyRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildImplantAssyRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 case ERT_Plan:
-                    record = buildPlanRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildPlanRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 default:
                     /* it can only be an image */
-                    record = buildImageRecord(record, dataset, referencedFileID, sourceFilename);
+                    record = buildImageRecord(record, fileformat, referencedFileID, sourceFilename);
             }
             if (record != NULL)
             {
@@ -4474,7 +4505,6 @@ OFCondition DicomDirInterface::addDicomFile(const char *filename,
             /* start creating the DICOMDIR directory structure */
             DcmDirectoryRecord *rootRecord = &(DicomDir->getRootRecord());
             DcmMetaInfo *metainfo = fileformat.getMetaInfo();
-            DcmDataset *dataset = fileformat.getDataset();
             /* massage filename into DICOM format (DOS conventions for path separators, uppercase) */
             OFString fileID;
             hostToDicomFilename(filename, fileID);
@@ -4485,35 +4515,35 @@ OFCondition DicomDirInterface::addDicomFile(const char *filename,
             if (compare(sopClass, UID_HangingProtocolStorage))
             {
                 /* add a hanging protocol record below the root */
-                if (addRecord(rootRecord, ERT_HangingProtocol, dataset, fileID, pathname) == NULL)
+                if (addRecord(rootRecord, ERT_HangingProtocol, &fileformat, fileID, pathname) == NULL)
                     result = EC_CorruptedData;
             }
             else if (compare(sopClass, UID_ColorPaletteStorage))
             {
                 /* add a palette record below the root */
-                if (addRecord(rootRecord, ERT_Palette, dataset, fileID, pathname) == NULL)
+                if (addRecord(rootRecord, ERT_Palette, &fileformat, fileID, pathname) == NULL)
                     result = EC_CorruptedData;
             }
             else if (compare(sopClass, UID_GenericImplantTemplateStorage))
             {
                 /* add an implant record below the root */
-                if (addRecord(rootRecord, ERT_Implant, dataset, fileID, pathname) == NULL)
+                if (addRecord(rootRecord, ERT_Implant, &fileformat, fileID, pathname) == NULL)
                     result = EC_CorruptedData;
             }
             else if (compare(sopClass, UID_ImplantAssemblyTemplateStorage))
             {
                 /* add an implant group record below the root */
-                if (addRecord(rootRecord, ERT_ImplantGroup, dataset, fileID, pathname) == NULL)
+                if (addRecord(rootRecord, ERT_ImplantGroup, &fileformat, fileID, pathname) == NULL)
                     result = EC_CorruptedData;
             }
             else if (compare(sopClass, UID_ImplantTemplateGroupStorage))
             {
                 /* add an implant assy record below the root */
-                if (addRecord(rootRecord, ERT_ImplantAssy, dataset, fileID, pathname) == NULL)
+                if (addRecord(rootRecord, ERT_ImplantAssy, &fileformat, fileID, pathname) == NULL)
                     result = EC_CorruptedData;
             } else {
                 /* add a patient record below the root */
-                DcmDirectoryRecord *patientRecord = addRecord(rootRecord, ERT_Patient, dataset, fileID, pathname);
+                DcmDirectoryRecord *patientRecord = addRecord(rootRecord, ERT_Patient, &fileformat, fileID, pathname);
                 if (patientRecord != NULL)
                 {
                     /* if patient management file then attach it to patient record and stop */
@@ -4523,15 +4553,15 @@ OFCondition DicomDirInterface::addDicomFile(const char *filename,
                         DCMDATA_ERROR(result.text() << ": cannot assign patient record to file: " << pathname);
                     } else {
                         /* add a study record below the current patient record */
-                        DcmDirectoryRecord *studyRecord = addRecord(patientRecord, ERT_Study, dataset, fileID, pathname);;
+                        DcmDirectoryRecord *studyRecord = addRecord(patientRecord, ERT_Study, &fileformat, fileID, pathname);;
                         if (studyRecord != NULL)
                         {
                             /* add a series record below the current study record */
-                            DcmDirectoryRecord *seriesRecord = addRecord(studyRecord, ERT_Series, dataset, fileID, pathname);;
+                            DcmDirectoryRecord *seriesRecord = addRecord(studyRecord, ERT_Series, &fileformat, fileID, pathname);;
                             if (seriesRecord != NULL)
                             {
                                 /* add one of the instance record below the current series record */
-                                if (addRecord(seriesRecord, sopClassToRecordType(sopClass), dataset, fileID, pathname) == NULL)
+                                if (addRecord(seriesRecord, sopClassToRecordType(sopClass), &fileformat, fileID, pathname) == NULL)
                                     result = EC_CorruptedData;
                             } else
                                 result = EC_CorruptedData;
@@ -5443,6 +5473,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.63  2011-08-02 13:01:26  uli
+ *  Don't load files twice when constructing a DICOMDIR.
+ *
  *  Revision 1.62  2011-07-06 11:08:47  uli
  *  Fixed various compiler warnings.
  *

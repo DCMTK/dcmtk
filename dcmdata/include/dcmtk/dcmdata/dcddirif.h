@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-21 15:48:26 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-08-02 13:01:26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -671,7 +671,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildPatientRecord(DcmDirectoryRecord *record,
-                                           DcmItem *dataset,
+                                           DcmFileFormat *fileformat,
                                            const OFString &sourceFilename);
 
     /** create or update study record and copy required values from dataset
@@ -681,7 +681,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildStudyRecord(DcmDirectoryRecord *record,
-                                         DcmItem *dataset,
+                                         DcmFileFormat *fileformat,
                                          const OFString &sourceFilename);
 
     /** create or update new series record and copy required values from dataset
@@ -691,7 +691,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildSeriesRecord(DcmDirectoryRecord *record,
-                                          DcmItem *dataset,
+                                          DcmFileFormat *fileformat,
                                           const OFString &sourceFilename);
 
     /** create or update overlay record and copy required values from dataset
@@ -702,7 +702,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildOverlayRecord(DcmDirectoryRecord *record,
-                                           DcmItem *dataset,
+                                           DcmFileFormat *fileformat,
                                            const OFString &referencedFileID,
                                            const OFString &sourceFilename);
 
@@ -714,7 +714,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildModalityLutRecord(DcmDirectoryRecord *record,
-                                               DcmItem *dataset,
+                                               DcmFileFormat *fileformat,
                                                const OFString &referencedFileID,
                                                const OFString &sourceFilename);
 
@@ -726,7 +726,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildVoiLutRecord(DcmDirectoryRecord *record,
-                                          DcmItem *dataset,
+                                          DcmFileFormat *fileformat,
                                           const OFString &referencedFileID,
                                           const OFString &sourceFilename);
 
@@ -738,7 +738,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildCurveRecord(DcmDirectoryRecord *record,
-                                         DcmItem *dataset,
+                                         DcmFileFormat *fileformat,
                                          const OFString &referencedFileID,
                                          const OFString &sourceFilename);
 
@@ -750,7 +750,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildStructReportRecord(DcmDirectoryRecord *record,
-                                                DcmItem *dataset,
+                                                DcmFileFormat *fileformat,
                                                 const OFString &referencedFileID,
                                                 const OFString &sourceFilename);
 
@@ -762,7 +762,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildPresentationRecord(DcmDirectoryRecord *record,
-                                                DcmItem *dataset,
+                                                DcmFileFormat *fileformat,
                                                 const OFString &referencedFileID,
                                                 const OFString &sourceFilename);
 
@@ -774,7 +774,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildWaveformRecord(DcmDirectoryRecord *record,
-                                            DcmItem *dataset,
+                                            DcmFileFormat *fileformat,
                                             const OFString &referencedFileID,
                                             const OFString &sourceFilename);
 
@@ -786,7 +786,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildRTDoseRecord(DcmDirectoryRecord *record,
-                                          DcmItem *dataset,
+                                          DcmFileFormat *fileformat,
                                           const OFString &referencedFileID,
                                           const OFString &sourceFilename);
 
@@ -798,7 +798,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildRTStructureSetRecord(DcmDirectoryRecord *record,
-                                                  DcmItem *dataset,
+                                                  DcmFileFormat *fileformat,
                                                   const OFString &referencedFileID,
                                                   const OFString &sourceFilename);
 
@@ -810,7 +810,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildRTPlanRecord(DcmDirectoryRecord *record,
-                                          DcmItem *dataset,
+                                          DcmFileFormat *fileformat,
                                           const OFString &referencedFileID,
                                           const OFString &sourceFilename);
 
@@ -822,7 +822,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildRTTreatmentRecord(DcmDirectoryRecord *record,
-                                               DcmItem *dataset,
+                                               DcmFileFormat *fileformat,
                                                const OFString &referencedFileID,
                                                const OFString &sourceFilename);
 
@@ -834,7 +834,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildStoredPrintRecord(DcmDirectoryRecord *record,
-                                               DcmItem *dataset,
+                                               DcmFileFormat *fileformat,
                                                const OFString &referencedFileID,
                                                const OFString &sourceFilename);
 
@@ -846,7 +846,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildKeyObjectDocRecord(DcmDirectoryRecord *record,
-                                                DcmItem *dataset,
+                                                DcmFileFormat *fileformat,
                                                 const OFString &referencedFileID,
                                                 const OFString &sourceFilename);
 
@@ -858,7 +858,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildRegistrationRecord(DcmDirectoryRecord *record,
-                                                DcmItem *dataset,
+                                                DcmFileFormat *fileformat,
                                                 const OFString &referencedFileID,
                                                 const OFString &sourceFilename);
 
@@ -870,7 +870,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildFiducialRecord(DcmDirectoryRecord *record,
-                                            DcmItem *dataset,
+                                            DcmFileFormat *fileformat,
                                             const OFString &referencedFileID,
                                             const OFString &sourceFilename);
 
@@ -882,7 +882,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildRawDataRecord(DcmDirectoryRecord *record,
-                                           DcmItem *dataset,
+                                           DcmFileFormat *fileformat,
                                            const OFString &referencedFileID,
                                            const OFString &sourceFilename);
 
@@ -894,7 +894,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildSpectroscopyRecord(DcmDirectoryRecord *record,
-                                                DcmItem *dataset,
+                                                DcmFileFormat *fileformat,
                                                 const OFString &referencedFileID,
                                                 const OFString &sourceFilename);
 
@@ -906,7 +906,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildEncapDocRecord(DcmDirectoryRecord *record,
-                                            DcmItem *dataset,
+                                            DcmFileFormat *fileformat,
                                             const OFString &referencedFileID,
                                             const OFString &sourceFilename);
 
@@ -918,7 +918,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildValueMapRecord(DcmDirectoryRecord *record,
-                                            DcmItem *dataset,
+                                            DcmFileFormat *fileformat,
                                             const OFString &referencedFileID,
                                             const OFString &sourceFilename);
 
@@ -930,7 +930,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildHangingProtocolRecord(DcmDirectoryRecord *record,
-                                                   DcmItem *dataset,
+                                                   DcmFileFormat *fileformat,
                                                    const OFString &referencedFileID,
                                                    const OFString &sourceFilename);
 
@@ -942,7 +942,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildStereometricRecord(DcmDirectoryRecord *record,
-                                                DcmItem *dataset,
+                                                DcmFileFormat *fileformat,
                                                 const OFString &referencedFileID,
                                                 const OFString &sourceFilename);
 
@@ -954,7 +954,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildPaletteRecord(DcmDirectoryRecord *record,
-                                           DcmItem *dataset,
+                                           DcmFileFormat *fileformat,
                                            const OFString &referencedFileID,
                                            const OFString &sourceFilename);
 
@@ -966,7 +966,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildSurfaceRecord(DcmDirectoryRecord *record,
-                                           DcmItem *dataset,
+                                           DcmFileFormat *fileformat,
                                            const OFString &referencedFileID,
                                            const OFString &sourceFilename);
 
@@ -978,7 +978,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildMeasurementRecord(DcmDirectoryRecord *record,
-                                               DcmItem *dataset,
+                                               DcmFileFormat *fileformat,
                                                const OFString &referencedFileID,
                                                const OFString &sourceFilename);
 
@@ -990,7 +990,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildImplantRecord(DcmDirectoryRecord *record,
-                                           DcmItem *dataset,
+                                           DcmFileFormat *fileformat,
                                            const OFString &referencedFileID,
                                            const OFString &sourceFilename);
 
@@ -1002,7 +1002,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildImplantGroupRecord(DcmDirectoryRecord *record,
-                                                DcmItem *dataset,
+                                                DcmFileFormat *fileformat,
                                                 const OFString &referencedFileID,
                                                 const OFString &sourceFilename);
 
@@ -1014,7 +1014,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildImplantAssyRecord(DcmDirectoryRecord *record,
-                                               DcmItem *dataset,
+                                               DcmFileFormat *fileformat,
                                                const OFString &referencedFileID,
                                                const OFString &sourceFilename);
 
@@ -1026,7 +1026,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildPlanRecord(DcmDirectoryRecord *record,
-                                        DcmItem *dataset,
+                                        DcmFileFormat *fileformat,
                                         const OFString &referencedFileID,
                                         const OFString &sourceFilename);
 
@@ -1038,7 +1038,7 @@ class DicomDirInterface
      *  @return pointer to new or updated record, NULL if an error occurred
      */
     DcmDirectoryRecord *buildImageRecord(DcmDirectoryRecord *record,
-                                         DcmItem *dataset,
+                                         DcmFileFormat *fileformat,
                                          const OFString &referencedFileID,
                                          const OFString &sourceFilename);
 
@@ -1099,7 +1099,7 @@ class DicomDirInterface
      */
     DcmDirectoryRecord *addRecord(DcmDirectoryRecord *parent,
                                   const E_DirRecType recordType,
-                                  DcmItem *dataset,
+                                  DcmFileFormat *fileformat,
                                   const OFString &referencedFileID,
                                   const OFString &sourceFilename);
 
@@ -1528,6 +1528,9 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.27  2011-08-02 13:01:26  uli
+ * Don't load files twice when constructing a DICOMDIR.
+ *
  * Revision 1.26  2011-06-21 15:48:26  joergr
  * Added support for Blu-ray Disc Media Application Profiles (Supplement 153).
  *
