@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-07-14 09:04:50 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-08-02 09:35:18 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -578,11 +578,16 @@ OFCondition DcmDicomDir::convertGivenPointer( DcmObject *startPoint,
     if ( startPoint != NULL )
     {
         DcmStack stack;
-        while ( startPoint->search( offsetTag, stack, ESM_afterStackTop, OFTrue ) == EC_Normal )
-        {
-            if ( stack.top()->ident() != EVR_up )
+        for (;;) {
+            l_error = startPoint->nextObject(stack, OFTrue);
+            if (l_error.bad())
+                break;
+
+            DcmObject *cur = stack.top();
+            if (cur->ident() != EVR_up || cur->getTag() != offsetTag)
                 continue;
-            DcmUnsignedLongOffset *offElem = OFstatic_cast(DcmUnsignedLongOffset *, stack.top());
+
+            DcmUnsignedLongOffset *offElem = OFstatic_cast(DcmUnsignedLongOffset *, cur);
             DcmObject *obj = offElem->getNextRecord();
             if (obj != NULL)
                 offElem->putUint32(OFstatic_cast(DcmDirectoryRecord *, obj)->getFileOffset());
@@ -1338,6 +1343,9 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.64  2011-08-02 09:35:18  uli
+** Speed up the code for writing DICOMDIRs.
+**
 ** Revision 1.63  2011-07-14 09:04:50  joergr
 ** Slightly enhanced performance of DICOMDIR code, e.g. by a more appropriate
 ** use of the underlying DcmList class.

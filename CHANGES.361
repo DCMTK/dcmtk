@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.02 (schlachter)
+
+- Speed up the code for writing DICOMDIRs.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
 **** Changes from 2011.08.02 (riesmeier)
 
 - Added more general support for softcopy presentation states (not only GSPS).
