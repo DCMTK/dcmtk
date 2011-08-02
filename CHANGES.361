@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.02 (riesmeier)
 
+- Added more general support for softcopy presentation states (not only GSPS).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrimgvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrtypes.cc
+
 - Fixed typos and/or minor formatting issues.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrcodtn.h
            dcmsr/include/dcmtk/dcmsr/dsrcodvl.h

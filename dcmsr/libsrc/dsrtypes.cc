@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-05-30 15:52:05 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2011-08-02 08:32:36 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -179,6 +179,14 @@ struct S_ValueTypeNameMap
 };
 
 
+struct S_PresentationStateTypeNameMap
+{
+    DSRTypes::E_PresentationStateType Type;
+    const char *SOPClassUID;
+    const char *ShortName;
+};
+
+
 struct S_GraphicTypeNameMap
 {
     DSRTypes::E_GraphicType Type;
@@ -331,6 +339,17 @@ static const S_ValueTypeNameMap ValueTypeNameMap[] =
 };
 
 
+static const S_PresentationStateTypeNameMap PresentationStateTypeNameMap[] =
+{
+    {DSRTypes::PT_invalid,        "",                                                 "invalid/unknown presentation state type"},
+    {DSRTypes::PT_Grayscale,      UID_GrayscaleSoftcopyPresentationStateStorage,      "GSPS"},
+    {DSRTypes::PT_Color,          UID_ColorSoftcopyPresentationStateStorage,          "CSPS"},
+    {DSRTypes::PT_PseudoColor,    UID_PseudoColorSoftcopyPresentationStateStorage,    "PCSPS"},
+    {DSRTypes::PT_Blending,       UID_BlendingSoftcopyPresentationStateStorage,       "BSPS"},
+    {DSRTypes::PT_XAXRFGrayscale, UID_XAXRFGrayscaleSoftcopyPresentationStateStorage, "XGSPS"}
+};
+
+
 static const S_GraphicTypeNameMap GraphicTypeNameMap[] =
 {
     {DSRTypes::GT_invalid,    "",           "invalid/unknown graphic type"},
@@ -356,7 +375,7 @@ static const S_GraphicType3DNameMap GraphicType3DNameMap[] =
 
 static const S_TemporalRangeTypeNameMap TemporalRangeTypeNameMap[] =
 {
-    {DSRTypes::TRT_invalid,      "",             ""},
+    {DSRTypes::TRT_invalid,      "",             "invalid/unknown temporal range type"},
     {DSRTypes::TRT_Point,        "POINT",        "Point"},
     {DSRTypes::TRT_Multipoint,   "MULTIPOINT",   "Multiple Points"},
     {DSRTypes::TRT_Segment,      "SEGMENT",      "Segment"},
@@ -457,12 +476,18 @@ const char *DSRTypes::documentTypeToReadableName(const E_DocumentType documentTy
 const char *DSRTypes::documentTypeToDocumentTitle(const E_DocumentType documentType,
                                                   OFString &documentTitle)
 {
-    documentTitle = documentTypeToReadableName(documentType);
-    // avoid doubling of term "Document" and/or "Report"
-    if (!documentTitle.empty() && (documentTitle.find("Document") == OFString_npos) &&
-                                  (documentTitle.find("Report") == OFString_npos))
+    if (documentType != DT_invalid)
     {
-        documentTitle += " Document";
+        documentTitle = documentTypeToReadableName(documentType);
+        // avoid doubling of term "Document" and/or "Report"
+        if (!documentTitle.empty() && (documentTitle.find("Document") == OFString_npos) &&
+                                      (documentTitle.find("Report") == OFString_npos))
+        {
+            documentTitle += " Document";
+        }
+    } else {
+        // return empty string in case of invalid document
+        documentTitle.clear();
     }
     return documentTitle.c_str();
 }
@@ -519,6 +544,15 @@ const char *DSRTypes::valueTypeToReadableName(const E_ValueType valueType)
     while ((iterator->Type != VT_last) && (iterator->Type != valueType))
         iterator++;
     return iterator->ReadableName;
+}
+
+
+const char *DSRTypes::presentationStateTypeToShortName(const E_PresentationStateType pstateType)
+{
+    const S_PresentationStateTypeNameMap *iterator = PresentationStateTypeNameMap;
+    while ((iterator->Type != PT_last) && (iterator->Type != pstateType))
+        iterator++;
+    return iterator->ShortName;
 }
 
 
@@ -670,6 +704,18 @@ DSRTypes::E_ValueType DSRTypes::definedTermToValueType(const OFString &definedTe
     while ((iterator->Type != VT_last) && (definedTerm != iterator->DefinedTerm))
         iterator++;
     if (definedTerm == iterator->DefinedTerm)
+        type = iterator->Type;
+    return type;
+}
+
+
+DSRTypes::E_PresentationStateType DSRTypes::sopClassUIDToPresentationStateType(const OFString &sopClassUID)
+{
+    E_PresentationStateType type = PT_invalid;
+    const S_PresentationStateTypeNameMap *iterator = PresentationStateTypeNameMap;
+    while ((iterator->Type != PT_last) && (sopClassUID != iterator->SOPClassUID))
+        iterator++;
+    if (sopClassUID == iterator->SOPClassUID)
         type = iterator->Type;
     return type;
 }
@@ -1570,6 +1616,9 @@ OFLogger DCM_dcmsrLogger = OFLog::getLogger("dcmtk.dcmsr");
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.78  2011-08-02 08:32:36  joergr
+ *  Added more general support for softcopy presentation states (not only GSPS).
+ *
  *  Revision 1.77  2011-05-30 15:52:05  joergr
  *  Removed unused variables and fixed other compiler warnings.
  *

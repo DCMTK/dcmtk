@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:41 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2011-08-02 08:32:36 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,7 +143,11 @@ OFCondition DSRImageReferenceValue::print(STD_NAMESPACE ostream &stream,
     stream << ")";
     if (PresentationState.isValid())
     {
-        stream << ",(GSPS,";
+        const DSRTypes::E_PresentationStateType pstateType = DSRTypes::sopClassUIDToPresentationStateType(PresentationState.getSOPClassUID());
+        if (pstateType != DSRTypes::PT_invalid)
+            stream << ",(" << DSRTypes::presentationStateTypeToShortName(pstateType) << ",";
+        else
+            stream << ",(" << PresentationState.getSOPClassUID() << ",";
         if (flags & DSRTypes::PF_printSOPInstanceUID)
             stream << "\"" << PresentationState.getSOPInstanceUID() << "\"";
         stream << ")";
@@ -265,7 +269,7 @@ OFCondition DSRImageReferenceValue::renderHTML(STD_NAMESPACE ostream &docStream,
     docStream << " image";
     /* text: pstate */
     if (PresentationState.isValid())
-        docStream << " with GSPS";
+        docStream << " with presentation state";
     docStream << "</a>";
     if (!isShort(flags))
     {
@@ -347,13 +351,16 @@ OFBool DSRImageReferenceValue::checkSOPClassUID(const OFString &sopClassUID) con
 OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenceValue &referenceValue) const
 {
     return referenceValue.isEmpty() || (referenceValue.isValid() &&
-          (referenceValue.getSOPClassUID() == UID_GrayscaleSoftcopyPresentationStateStorage));
+          (DSRTypes::sopClassUIDToPresentationStateType(referenceValue.getSOPClassUID()) != DSRTypes::PT_invalid));
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
+ *  Revision 1.23  2011-08-02 08:32:36  joergr
+ *  Added more general support for softcopy presentation states (not only GSPS).
+ *
  *  Revision 1.22  2010-10-14 13:14:41  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

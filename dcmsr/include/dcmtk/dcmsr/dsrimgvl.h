@@ -19,8 +19,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 06:26:31 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2011-08-02 08:32:34 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -253,8 +253,9 @@ class DSRImageReferenceValue
     virtual OFBool checkSOPClassUID(const OFString &sopClassUID) const;
 
     /** check the presentation state object for validity.
-     *  The presentation state object is "valid" if both UIDs are empty or both are not empty
-     *  and SOP class UID equals to "GrayscaleSoftcopyPresentationStateStorage".
+     *  The presentation state object is "valid" if both UIDs are empty or both are not
+     *  empty and SOP class UID refers to a softcopy presentation state (see
+     *  DSRTypes::E_PresentationStateType for a list of supported SOP classes).
      ** @param  referenceValue  value to be checked
      ** @return OFTrue if presentation state object is valid, OFFalse otherwise
      */
@@ -278,6 +279,9 @@ class DSRImageReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.h,v $
+ *  Revision 1.19  2011-08-02 08:32:34  joergr
+ *  Added more general support for softcopy presentation states (not only GSPS).
+ *
  *  Revision 1.18  2011-08-02 06:26:31  joergr
  *  Fixed typos and/or minor formatting issues.
  *

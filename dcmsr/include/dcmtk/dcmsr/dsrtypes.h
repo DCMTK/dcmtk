@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:05 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-02 08:32:34 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -484,6 +484,28 @@ class DSRTypes
         VT_last = VT_byReference
     };
 
+    /** Softcopy presentation state types.  Used for content item IMAGE.
+     */
+    enum E_PresentationStateType
+    {
+        /// internal type used to indicate an error
+        PT_invalid,
+        /// internal type used to indicate an unknown presentation state type (SOP class)
+        PT_unknown = PT_invalid,
+        /// Grayscale Softcopy Presentation State (GSPS)
+        PT_Grayscale,
+        /// Color Softcopy Presentation State (CSPS)
+        PT_Color,
+        /// Pseudo-Color Softcopy Presentation State (PCSPS)
+        PT_PseudoColor,
+        /// Blending Softcopy Presentation State (BSPS)
+        PT_Blending,
+        /// XA/XRF Grayscale Softcopy Presentation State (XGSPS)
+        PT_XAXRFGrayscale,
+        /// internal type used to mark the last entry
+        PT_last = PT_XAXRFGrayscale
+    };
+
     /** SR graphic types.  Used for content item SCOORD.
      */
     enum E_GraphicType
@@ -672,20 +694,20 @@ class DSRTypes
 
     /** convert SR document type to SOP class UID
      ** @param  documentType  SR document type to be converted
-     ** @return SOP class UID if successful, empty string otherwise (never NULL)
+     ** @return SOP class UID if type is valid, empty string otherwise (never NULL)
      */
     static const char *documentTypeToSOPClassUID(const E_DocumentType documentType);
 
     /** convert SR document type to modality
      ** @param  documentType  SR document type to be converted
-     ** @return modality if successful, empty string otherwise (never NULL)
+     ** @return modality if type is valid, empty string otherwise (never NULL)
      */
     static const char *documentTypeToModality(const E_DocumentType documentType);
 
     /** convert SR document type to readable name.
      *  Such a readable name is better suited for printing/rendering.
      ** @param  documentType  SR document type to be converted
-     ** @return readable name if successful, empty string otherwise (never NULL)
+     ** @return readable name if type is valid, "invalid ..." string otherwise (never NULL)
      */
     static const char *documentTypeToReadableName(const E_DocumentType documentType);
 
@@ -693,7 +715,7 @@ class DSRTypes
      *  This document title is used for printing/rendering.
      ** @param  documentType   SR document type to be converted
      *  @param  documentTitle  reference to variable where the resulting string is stored
-     ** @return document title if successful, empty string otherwise (never NULL)
+     ** @return document title if type is valid, empty string otherwise (never NULL)
      */
     static const char *documentTypeToDocumentTitle(const E_DocumentType documentType,
                                                    OFString &documentTitle);
@@ -706,84 +728,91 @@ class DSRTypes
 
     /** convert relationship type to DICOM defined term
      ** @param  relationshipType  relationship type to be converted
-     ** @return defined term if successful, empty string otherwise (never NULL)
+     ** @return defined term if type is valid, empty string otherwise (never NULL)
      */
     static const char *relationshipTypeToDefinedTerm(const E_RelationshipType relationshipType);
 
     /** convert relationship type to readable name.
      *  Such a readable name is better suited for printing/rendering.
      ** @param  relationshipType  relationship type to be converted
-     ** @return readable name if successful, empty string otherwise (never NULL)
+     ** @return readable name if type is valid, "invalid ..." string otherwise (never NULL)
      */
     static const char *relationshipTypeToReadableName(const E_RelationshipType relationshipType);
 
     /** convert value type to DICOM defined term
      ** @param  valueType  value type to be converted
-     ** @return defined term if successful, empty string otherwise (never NULL)
+     ** @return defined term if type is valid, empty string otherwise (never NULL)
      */
     static const char *valueTypeToDefinedTerm(const E_ValueType valueType);
 
     /** convert value type to XML tag name
      ** @param  valueType  value type to be converted
-     ** @return XML tag name if successful, empty string otherwise (never NULL)
+     ** @return XML tag name if type is valid, "item" otherwise (never NULL)
      */
     static const char *valueTypeToXMLTagName(const E_ValueType valueType);
 
     /** convert value type to readable name.
      *  Such a readable name is better suited for printing/rendering.
      ** @param  valueType  value type to be converted
-     ** @return readable name if successful, empty string otherwise (never NULL)
+     ** @return readable name if type is valid, "invalid ..." string otherwise (never NULL)
      */
     static const char *valueTypeToReadableName(const E_ValueType valueType);
 
+    /** convert presentation state type to short name.
+     *  Such a short name (e.g. "GSPS") is better suited for printing/rendering than a UID.
+     ** @param  pstateType  presentation state type to be converted
+     ** @return short name if type is valid, "invalid ..." string otherwise (never NULL)
+     */
+    static const char *presentationStateTypeToShortName(const E_PresentationStateType pstateType);
+
     /** convert graphic type to DICOM enumerated value
      ** @param  graphicType  graphic type to be converted
-     ** @return enumerated value if successful, empty string otherwise (never NULL)
+     ** @return enumerated value if type is valid, empty string otherwise (never NULL)
      */
     static const char *graphicTypeToEnumeratedValue(const E_GraphicType graphicType);
 
     /** convert graphic type to readable name.
      *  Such a readable name is better suited for printing/rendering.
      ** @param  graphicType  graphic type to be converted
-     ** @return readable name if successful, empty string otherwise (never NULL)
+     ** @return readable name if type is valid, "invalid ..." string otherwise (never NULL)
      */
     static const char *graphicTypeToReadableName(const E_GraphicType graphicType);
 
     /** convert graphic type (3D) to DICOM enumerated value
      ** @param  graphicType  graphic type (3D) to be converted
-     ** @return enumerated value if successful, empty string otherwise (never NULL)
+     ** @return enumerated value if type is valid, empty string otherwise (never NULL)
      */
     static const char *graphicType3DToEnumeratedValue(const E_GraphicType3D graphicType);
 
     /** convert graphic type (3D) to readable name.
      *  Such a readable name is better suited for printing/rendering.
      ** @param  graphicType  graphic type (3D) to be converted
-     ** @return readable name if successful, empty string otherwise (never NULL)
+     ** @return readable name if type is valid, "invalid ..." string otherwise (never NULL)
      */
     static const char *graphicType3DToReadableName(const E_GraphicType3D graphicType);
 
     /** convert temporal range type to DICOM enumerated value
      ** @param  temporalRangeType  temporal range type to be converted
-     ** @return enumerated value if successful, empty string otherwise (never NULL)
+     ** @return enumerated value if type is valid, "invalid ..." string otherwise (never NULL)
      */
     static const char *temporalRangeTypeToEnumeratedValue(const E_TemporalRangeType temporalRangeType);
 
     /** convert temporal range type to readable name.
      *  Such a readable name is better suited for printing/rendering.
      ** @param  temporalRangeType  temporal range type to be converted
-     ** @return readable name if successful, empty string otherwise (never NULL)
+     ** @return readable name if type is valid, "invalid ..." string otherwise (never NULL)
      */
     static const char *temporalRangeTypeToReadableName(const E_TemporalRangeType temporalRangeType);
 
     /** convert continuity of content flag to DICOM enumerated value
      ** @param  continuityOfContent  continuity of content flag to be converted
-     ** @return enumerated value if successful, empty string otherwise (never NULL)
+     ** @return enumerated value if flag is valid, empty string otherwise (never NULL)
      */
     static const char *continuityOfContentToEnumeratedValue(const E_ContinuityOfContent continuityOfContent);
 
     /** convert preliminary flag to DICOM enumerated value
      ** @param  preliminaryFlag  preliminary flag to be converted
-     ** @return enumerated value if successful, empty string otherwise (never NULL)
+     ** @return enumerated value if flag is valid, empty string otherwise (never NULL)
      */
     static const char *preliminaryFlagToEnumeratedValue(const E_PreliminaryFlag preliminaryFlag);
 
@@ -795,27 +824,27 @@ class DSRTypes
 
     /** convert verification flag to DICOM enumerated value
      ** @param  verificationFlag  verification flag to be converted
-     ** @return enumerated value if successful, empty string otherwise (never NULL)
+     ** @return enumerated value if flag is valid, empty string otherwise (never NULL)
      */
     static const char *verificationFlagToEnumeratedValue(const E_VerificationFlag verificationFlag);
 
     /** convert character set to DICOM defined term
      ** @param  characterSet  character set to be converted
-     ** @return defined term if successful, empty string otherwise (never NULL)
+     ** @return defined term if character set is valid, empty string otherwise (never NULL)
      */
     static const char *characterSetToDefinedTerm(const E_CharacterSet characterSet);
 
     /** convert character set to HTML name.
      *  This HTML (IANA) name is used to specify the character set in an HTML document.
      ** @param  characterSet  character set to be converted
-     ** @return HTML name if successful, empty string or "?" otherwise (never NULL)
+     ** @return HTML name if character set is valid, empty string or "?" otherwise (never NULL)
      */
     static const char *characterSetToHTMLName(const E_CharacterSet characterSet);
 
     /** convert character set to XML name.
      *  This XML name is used to specify the character set in an XML document.
      ** @param  characterSet  character set to be converted
-     ** @return XML name if successful, empty string or "?" otherwise (never NULL)
+     ** @return XML name if character set is valid, empty string or "?" otherwise (never NULL)
      */
     static const char *characterSetToXMLName(const E_CharacterSet characterSet);
 
@@ -836,6 +865,12 @@ class DSRTypes
      ** @return value type if successful, VT_invalid otherwise
      */
     static E_ValueType definedTermToValueType(const OFString &definedTerm);
+
+    /** convert SOP class UID to presentation state type
+     ** @param  sopClassUID  SOP class UID to be converted
+     ** @return presentation state type if successful, PT_invalid otherwise
+     */
+    static E_PresentationStateType sopClassUIDToPresentationStateType(const OFString &sopClassUID);
 
     /** convert XML tag name to value type
      ** @param  xmlTagName  XML tag name to be converted
@@ -869,7 +904,7 @@ class DSRTypes
 
     /** convert DICOM enumerated value to preliminary flag
      ** @param  enumeratedValue  enumerated value to be converted
-     ** @return preliminary flag type if successful, CF_invalid otherwise
+     ** @return preliminary flag type if successful, PF_invalid otherwise
      */
     static E_PreliminaryFlag enumeratedValueToPreliminaryFlag(const OFString &enumeratedValue);
 
@@ -1327,6 +1362,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.73  2011-08-02 08:32:34  joergr
+ *  Added more general support for softcopy presentation states (not only GSPS).
+ *
  *  Revision 1.72  2011-04-18 07:01:05  uli
  *  Use global variables for the logger objects. This removes the thread-unsafe
  *  static local variables which were used before.
