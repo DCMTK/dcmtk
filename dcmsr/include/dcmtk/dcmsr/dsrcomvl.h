@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:32 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2011-08-02 06:26:31 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,8 +117,8 @@ class DSRCompositeReferenceValue
                                 DSRXMLCursor cursor);
 
     /** write reference value in XML format
-     ** @param  stream     output stream to which the XML document is written
-     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     ** @param  stream  output stream to which the XML document is written
+     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
@@ -128,9 +128,9 @@ class DSRCompositeReferenceValue
      *  The number of items within the sequence is checked.  If error/warning output are
      *  enabled a warning message is printed if the sequence is absent or contains more than
      *  one item.
-     ** @param  dataset    DICOM dataset from which the sequence should be read
-     *  @param  type       value type of the sequence (valid value: "1", "2", something else)
-     *                     This parameter is used for checking purpose, any difference is reported.
+     ** @param  dataset  DICOM dataset from which the sequence should be read
+     *  @param  type     value type of the sequence (valid value: "1", "2", something else)
+     *                   This parameter is used for checking purpose, any difference is reported.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readSequence(DcmItem &dataset,
@@ -138,7 +138,7 @@ class DSRCompositeReferenceValue
 
     /** write referenced SOP sequence to dataset.
      *  If the value is empty an empty sequence (without any items) is written.
-     ** @param  dataset    DICOM dataset to which the sequence should be written
+     ** @param  dataset  DICOM dataset to which the sequence should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeSequence(DcmItem &dataset) const;
@@ -273,6 +273,9 @@ class DSRCompositeReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.h,v $
+ *  Revision 1.12  2011-08-02 06:26:31  joergr
+ *  Fixed typos and/or minor formatting issues.
+ *
  *  Revision 1.11  2010-10-14 13:16:32  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

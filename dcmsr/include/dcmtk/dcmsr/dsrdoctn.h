@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:32 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2011-08-02 06:26:31 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,8 +146,8 @@ class DSRDocumentTreeNode
                                 const size_t flags);
 
     /** write content item in XML format
-     ** @param  stream     output stream to which the XML document is written
-     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     ** @param  stream  output stream to which the XML document is written
+     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
@@ -364,7 +364,7 @@ class DSRDocumentTreeNode
     /** read content item (value) from dataset.
      *  This method does nothing for this base class, but derived classes overwrite it to read
      *  the contents according to their value type.
-     ** @param  dataset    DICOM dataset from which the content item should be read
+     ** @param  dataset  DICOM dataset from which the content item should be read
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readContentItem(DcmItem &dataset);
@@ -372,7 +372,7 @@ class DSRDocumentTreeNode
     /** write content item (value) to dataset.
      *  This method does nothing for this base class, but derived classes overwrite it to write
      *  the contents according to their value type.
-     ** @param  dataset    DICOM dataset to which the content item should be written
+     ** @param  dataset  DICOM dataset to which the content item should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeContentItem(DcmItem &dataset) const;
@@ -472,7 +472,7 @@ class DSRDocumentTreeNode
                                          const size_t flags);
 
     /** write document content macro
-     ** @param  dataset    DICOM dataset to which the data should be written
+     ** @param  dataset  DICOM dataset to which the data should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition writeDocumentContentMacro(DcmItem &dataset) const;
@@ -490,9 +490,9 @@ class DSRDocumentTreeNode
                                     const size_t flags);
 
     /** write content sequence
-     ** @param  dataset       DICOM dataset to which the data should be written
-     *  @param  markedItems   optional stack where pointers to all 'marked' content items
-     *                        (DICOM datasets/items) are added to during the write process.
+     ** @param  dataset      DICOM dataset to which the data should be written
+     *  @param  markedItems  optional stack where pointers to all 'marked' content items
+     *                       (DICOM datasets/items) are added to during the write process.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition writeContentSequence(DcmItem &dataset,
@@ -500,8 +500,8 @@ class DSRDocumentTreeNode
 
     /** render concept name in HTML/XHTML format.
      *  If the optional observation datetime field is valid (not empty) it is also rendered.
-     ** @param  docStream    output stream to which the main HTML/XHTML document is written
-     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @param  docStream  output stream to which the main HTML/XHTML document is written
+     *  @param  flags      flag used to customize the output (see DSRTypes::HF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition renderHTMLConceptName(STD_NAMESPACE ostream &docStream,
@@ -579,6 +579,9 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
+ *  Revision 1.28  2011-08-02 06:26:31  joergr
+ *  Fixed typos and/or minor formatting issues.
+ *
  *  Revision 1.27  2010-10-14 13:16:32  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

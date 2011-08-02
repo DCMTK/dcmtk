@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:32 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2011-08-02 06:26:31 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,10 +147,10 @@ class DSRCodedEntryValue
      *  The number of items within the code sequence is checked.  If error/warning output are
      *  enabled a warning message is printed if the sequence is empty or contains more than
      *  one item.
-     ** @param  dataset    DICOM dataset from which the code sequence should be read
-     *  @param  tagKey     DICOM tag specifying the attribute (= sequence) which should be read
-     *  @param  type       value type of the sequence (valid value: "1", "2", something else).
-     *                     This parameter is used for checking purpose, any difference is reported.
+     ** @param  dataset  DICOM dataset from which the code sequence should be read
+     *  @param  tagKey   DICOM tag specifying the attribute (= sequence) which should be read
+     *  @param  type     value type of the sequence (valid value: "1", "2", something else).
+     *                   This parameter is used for checking purpose, any difference is reported.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readSequence(DcmItem &dataset,
@@ -158,8 +158,8 @@ class DSRCodedEntryValue
                              const OFString &type);
 
     /** write code sequence to dataset
-     ** @param  dataset    DICOM dataset to which the code sequence should be written
-     *  @param  tagKey     DICOM tag specifying the attribute (= sequence) which should be written
+     ** @param  dataset  DICOM dataset to which the code sequence should be written
+     *  @param  tagKey   DICOM tag specifying the attribute (= sequence) which should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition writeSequence(DcmItem &dataset,
@@ -174,8 +174,8 @@ class DSRCodedEntryValue
                         DSRXMLCursor cursor);
 
     /** write code in XML format
-     ** @param  stream     output stream to which the XML document is written
-     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     ** @param  stream  output stream to which the XML document is written
+     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition writeXML(STD_NAMESPACE ostream &stream,
@@ -361,6 +361,9 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
+ *  Revision 1.22  2011-08-02 06:26:31  joergr
+ *  Fixed typos and/or minor formatting issues.
+ *
  *  Revision 1.21  2010-10-14 13:16:32  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

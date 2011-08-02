@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:32 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-08-02 06:26:31 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,8 +128,8 @@ class DSRNumericMeasurementValue
                                 DSRXMLCursor cursor);
 
     /** write numeric measurement value in XML format
-     ** @param  stream     output stream to which the XML document is written
-     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     ** @param  stream  output stream to which the XML document is written
+     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
@@ -139,7 +139,7 @@ class DSRNumericMeasurementValue
      *  The number of items within the sequences is checked.  If error/warning output are
      *  enabled a warning message is printed if a sequence is absent or contains more than
      *  one item.
-     ** @param  dataset    DICOM dataset from which the sequences should be read
+     ** @param  dataset  DICOM dataset from which the sequences should be read
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readSequence(DcmItem &dataset);
@@ -147,7 +147,7 @@ class DSRNumericMeasurementValue
     /** write measured value sequence and numeric value qualifier code sequence to dataset.
      *  The measured value sequence is always written (might be empty, though).  The numeric
      *  value qualifier code sequence is optional and, therefore, only written if non-empty.
-     ** @param  dataset    DICOM dataset to which the sequences should be written
+     ** @param  dataset  DICOM dataset to which the sequences should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeSequence(DcmItem &dataset) const;
@@ -331,6 +331,9 @@ class DSRNumericMeasurementValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.h,v $
+ *  Revision 1.16  2011-08-02 06:26:31  joergr
+ *  Fixed typos and/or minor formatting issues.
+ *
  *  Revision 1.15  2010-10-14 13:16:32  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

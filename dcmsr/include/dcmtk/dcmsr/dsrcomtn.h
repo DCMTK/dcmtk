@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRCompositeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:32 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-08-02 06:26:31 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,8 +81,8 @@ class DSRCompositeTreeNode
                               const size_t flags) const;
 
     /** write content item in XML format
-     ** @param  stream     output stream to which the XML document is written
-     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     ** @param  stream  output stream to which the XML document is written
+     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
@@ -92,13 +92,13 @@ class DSRCompositeTreeNode
   protected:
 
     /** read content item (value) from dataset
-     ** @param  dataset    DICOM dataset from which the content item should be read
+     ** @param  dataset  DICOM dataset from which the content item should be read
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readContentItem(DcmItem &dataset);
 
     /** write content item (value) to dataset
-     ** @param  dataset    DICOM dataset to which the content item should be written
+     ** @param  dataset  DICOM dataset to which the content item should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeContentItem(DcmItem &dataset) const;
@@ -143,6 +143,9 @@ class DSRCompositeTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomtn.h,v $
+ *  Revision 1.16  2011-08-02 06:26:31  joergr
+ *  Fixed typos and/or minor formatting issues.
+ *
  *  Revision 1.15  2010-10-14 13:16:32  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRReferencedTimeOffsetList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:33 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2011-08-02 06:26:32 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,13 +80,13 @@ class DSRReferencedTimeOffsetList
                       const char separator = ',') const;
 
     /** read list of referenced time offsets
-     ** @param  dataset    DICOM dataset from which the list should be read
+     ** @param  dataset  DICOM dataset from which the list should be read
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition read(DcmItem &dataset);
 
     /** write list of referenced time offsets
-     ** @param  dataset    DICOM dataset to which the list should be written
+     ** @param  dataset  DICOM dataset to which the list should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition write(DcmItem &dataset) const;
@@ -107,6 +107,9 @@ class DSRReferencedTimeOffsetList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcoto.h,v $
+ *  Revision 1.13  2011-08-02 06:26:32  joergr
+ *  Fixed typos and/or minor formatting issues.
+ *
  *  Revision 1.12  2010-10-14 13:16:33  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

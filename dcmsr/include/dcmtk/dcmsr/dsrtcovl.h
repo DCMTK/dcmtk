@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRTemporalCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:33 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2011-08-02 06:26:32 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,8 +117,8 @@ class DSRTemporalCoordinatesValue
                                 DSRXMLCursor cursor);
 
     /** write temporal coordinates value in XML format
-     ** @param  stream     output stream to which the XML document is written
-     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     ** @param  stream  output stream to which the XML document is written
+     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
@@ -214,14 +214,14 @@ class DSRTemporalCoordinatesValue
     /** read temporal coordinates value from dataset.
      *  Please note that all three lists are (tried to) read from the dataset.  If more than
      *  one list is present a warning messsage is reported.
-     ** @param  dataset    DICOM dataset from which the value should be read
+     ** @param  dataset  DICOM dataset from which the value should be read
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition read(DcmItem &dataset);
 
     /** write temporal coordinates reference value to dataset.
      *  Please note that only one of the three lists is actually written to the dataset.
-     ** @param  dataset    DICOM dataset to which the value should be written
+     ** @param  dataset  DICOM dataset to which the value should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition write(DcmItem &dataset) const;
@@ -261,6 +261,9 @@ class DSRTemporalCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.h,v $
+ *  Revision 1.13  2011-08-02 06:26:32  joergr
+ *  Fixed typos and/or minor formatting issues.
+ *
  *  Revision 1.12  2010-10-14 13:16:33  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRGraphicDataItem, DSRGraphicDataList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:33 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-08-02 06:26:31 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,13 +144,13 @@ class DSRGraphicDataList
                       const char itemSeparator = ',') const;
 
     /** read list of graphic data
-     ** @param  dataset    DICOM dataset from which the list should be read
+     ** @param  dataset  DICOM dataset from which the list should be read
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition read(DcmItem &dataset);
 
     /** write list of graphic data
-     ** @param  dataset    DICOM dataset to which the list should be written
+     ** @param  dataset  DICOM dataset to which the list should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition write(DcmItem &dataset) const;
@@ -194,6 +194,9 @@ class DSRGraphicDataList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.h,v $
+ *  Revision 1.16  2011-08-02 06:26:31  joergr
+ *  Fixed typos and/or minor formatting issues.
+ *
  *  Revision 1.15  2010-10-14 13:16:33  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRListOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:33 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2011-08-02 06:26:32 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -223,7 +223,7 @@ template<class T> class DSRListOfItems
 
     /** goto specified item position
      ** @param  idx       index of the item to go to (starting from 1)
-     *  @param  iterator  list iterator storing the positition of the item
+     *  @param  iterator  list iterator storing the position of the item
      ** @return OFTrue if specified item was found, OFFalse otherwise
      */
     OFBool gotoItemPos(size_t idx,
@@ -243,7 +243,7 @@ template<class T> class DSRListOfItems
 
     /** goto specified item
      ** @param  item      value of the item to go to (starting from 1)
-     *  @param  iterator  list iterator storing the positition of the item
+     *  @param  iterator  list iterator storing the position of the item
      ** @return OFTrue if specified item was found, OFFalse otherwise
      */
     OFBool gotoItem(const T &item,
@@ -269,6 +269,9 @@ template<class T> class DSRListOfItems
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtlist.h,v $
+ *  Revision 1.15  2011-08-02 06:26:32  joergr
+ *  Fixed typos and/or minor formatting issues.
+ *
  *  Revision 1.14  2010-10-14 13:16:33  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
