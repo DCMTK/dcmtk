@@ -57,8 +57,8 @@
 ** Intent:        This file defines the public structures and constants
 **                and the function prototypes for the DUL (DICOM Upper
 **                Layer) facility.
-** Last Update:   $Author: onken $, $Date: 2011-05-24 13:07:55 $
-** Revision:      $Revision: 1.32 $
+** Last Update:   $Author: joergr $, $Date: 2011-08-03 11:00:00 $
+** Revision:      $Revision: 1.33 $
 ** Status:        $State: Exp $
 */
 
@@ -376,8 +376,8 @@ DUL_InitializeNetwork(
 
 OFCondition
 DUL_ReceiveAssociationRQ(
-  DUL_NETWORKKEY ** net,
-  DUL_BLOCKOPTIONS blk,
+  DUL_NETWORKKEY ** network,
+  DUL_BLOCKOPTIONS block,
   int timeout,
   DUL_ASSOCIATESERVICEPARAMETERS * parameters,
   DUL_ASSOCIATIONKEY ** association,
@@ -392,6 +392,8 @@ DUL_RejectAssociationRQ(
 OFCondition
 DUL_RequestAssociation(
   DUL_NETWORKKEY ** network,
+  DUL_BLOCKOPTIONS block,
+  int timeout,
   DUL_ASSOCIATESERVICEPARAMETERS * params,
   DUL_ASSOCIATIONKEY ** association,
   int activatePDUStorage);
@@ -512,6 +514,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
+** Revision 1.33  2011-08-03 11:00:00  joergr
+** Added blocking mode and timeout parameter to request association functions.
+**
 ** Revision 1.32  2011-05-24 13:07:55  onken
 ** Removed superfluous #define DUL_KEYS.
 **

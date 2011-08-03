@@ -83,9 +83,9 @@
 **
 ** Module Prefix: ASC_
 **
-** Last Update:         $Author: uli $
-** Update Date:         $Date: 2011-07-06 11:08:47 $
-** CVS/RCS Revision:    $Revision: 1.34 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2011-08-03 11:00:00 $
+** CVS/RCS Revision:    $Revision: 1.35 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -562,12 +562,12 @@ ASC_selectReadableAssociation(
 OFCondition
 ASC_requestAssociation(
     T_ASC_Network * network,
-    T_ASC_Parameters * params,  /* params will be saved
-         * in the association
-         * structure */
+    T_ASC_Parameters * params,  /* params will be saved in the association structure */
     T_ASC_Association ** association,
     void **associatePDU=NULL,
-    unsigned long *associatePDUlength=NULL);
+    unsigned long *associatePDUlength=NULL,
+    DUL_BLOCKOPTIONS block=DUL_BLOCK,
+    int timeout=0);
 
 OFCondition
 ASC_receiveAssociation(
@@ -647,6 +647,9 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
+** Revision 1.35  2011-08-03 11:00:00  joergr
+** Added blocking mode and timeout parameter to request association functions.
+**
 ** Revision 1.34  2011-07-06 11:08:47  uli
 ** Fixed various compiler warnings.
 **

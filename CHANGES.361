@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.03 (riesmeier)
 
+- Added blocking mode and timeout parameter to request association functions.
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the original patch.
+  Affects: dcmnet/include/dcmtk/dcmnet/assoc.h
+           dcmnet/include/dcmtk/dcmnet/dul.h
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dul.cc
+
 - Include "io.h" required for mktemp() on Windows with VisualStudio.
   Affects: dcmdata/libsrc/dcdicdir.cc
 

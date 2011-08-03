@@ -67,8 +67,8 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: uli $, $Date: 2011-05-03 09:16:56 $
-** Revision:      $Revision: 1.95 $
+** Last Update:   $Author: joergr $, $Date: 2011-08-03 11:00:02 $
+** Revision:      $Revision: 1.96 $
 ** Status:        $State: Exp $
 */
 
@@ -170,7 +170,7 @@ static OFCondition
 createNetworkKey(const char *mode, int timeout, unsigned long opt,
                  PRIVATE_NETWORKKEY ** k);
 static OFCondition
-createAssociationKey(PRIVATE_NETWORKKEY ** net, const char *node,
+createAssociationKey(PRIVATE_NETWORKKEY ** network, const char *node,
                      unsigned long maxPDU,
                      PRIVATE_ASSOCIATIONKEY ** assoc);
 static OFCondition initializeNetworkTCP(PRIVATE_NETWORKKEY ** k, void *p);
@@ -302,6 +302,7 @@ unsigned long DUL_getPeerCertificateLength(DUL_ASSOCIATIONKEY *dulassoc)
   return 0;
 }
 
+
 /* DUL_InitializeNetwork
 **
 ** Purpose:
@@ -313,16 +314,16 @@ unsigned long DUL_getPeerCertificateLength(DUL_ASSOCIATIONKEY *dulassoc)
 **  for further network access.
 **
 ** Parameter Dictionary:
-**      mode                    NULL terminated string identifying the appli-
-**                              cation as a requestor or acceptor.
-**      networkParameter        A parameter which is specific to the network
-**                              type, which may be needed to initialize the n/w
-**      timeout                 Length of time in seconds for TIMER timeout.
-**                              If 0, the function will use a default value.
-**      opt                     Bitmask which describes options to be used
-**                              when initializing the network.
-**      networkKey              The handle created by this function and returned
-**                              to the caller to access this network environment
+**      mode              NULL terminated string identifying the application
+**                        as a requestor or acceptor.
+**      networkParameter  A parameter which is specific to the network type,
+**                        which may be needed to initialize the network.
+**      timeout           Length of time in seconds for TIMER timeout.
+**                        If 0, the function will use a default value.
+**      opt               Bitmask which describes options to be used when
+**                        initializing the network.
+**      networkKey        The handle created by this function and returned
+**                        to the caller to access this network environment
 **
 ** Return Values:
 **
@@ -330,7 +331,6 @@ unsigned long DUL_getPeerCertificateLength(DUL_ASSOCIATIONKEY *dulassoc)
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_InitializeNetwork(const char *mode,
                       void *networkParameter, int timeout, unsigned long opt,
@@ -375,6 +375,7 @@ DUL_InitializeNetwork(const char *mode,
     return cond;
 }
 
+
 /* DUL_DropNetwork
 **
 ** Purpose:
@@ -384,7 +385,7 @@ DUL_InitializeNetwork(const char *mode,
 **      key is zeroed to prevent misuse.
 **
 ** Parameter Dictionary:
-**      callerNetworkKey        Caller's handle to the network environment
+**      callerNetworkKey  Caller's handle to the network environment
 **
 ** Return Values:
 **
@@ -392,7 +393,6 @@ DUL_InitializeNetwork(const char *mode,
 ** Algorithm:
 **      Close the socket and free the memeory occupied by the network key
 */
-
 OFCondition
 DUL_DropNetwork(DUL_NETWORKKEY ** callerNetworkKey)
 {
@@ -421,6 +421,7 @@ DUL_DropNetwork(DUL_NETWORKKEY ** callerNetworkKey)
     return EC_Normal;
 }
 
+
 /* DUL_RequestAssociation
 **
 ** Purpose:
@@ -435,11 +436,15 @@ DUL_DropNetwork(DUL_NETWORKKEY ** callerNetworkKey)
 **      should abort the Association.
 **
 ** Parameter Dictionary:
-**      network         Caller's handle whcih describes the network environment
-**      params          Pointer to list of parameters which describe the type
-**                      of Association requested by the caller.
-**      association     Handle created by this function which describes the
-**                      Association; returned to the caller.
+**      callerNetworkKey    Caller's handle to the network environment.
+**      block               Flag indicating blocking/non-blocking mode.
+**      timeout             When blocking mode is non-blocking, the timeout in
+**                          seconds.
+**      params              Pointer to list of parameters which describe the type
+**                          of Association requested by the caller.
+**      callerAssociation   Handle created by this function which describes the
+**                          Association; returned to the caller.
+**      activatePDUStorage
 **
 ** Return Values:
 **
@@ -447,10 +452,11 @@ DUL_DropNetwork(DUL_NETWORKKEY ** callerNetworkKey)
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_RequestAssociation(
   DUL_NETWORKKEY ** callerNetworkKey,
+  DUL_BLOCKOPTIONS block,
+  int timeout,
   DUL_ASSOCIATESERVICEPARAMETERS * params,
   DUL_ASSOCIATIONKEY ** callerAssociation,
   int activatePDUStorage)
@@ -506,7 +512,7 @@ DUL_RequestAssociation(
         return cond;
     }
     /* Find the next event */
-    cond = PRV_NextPDUType(association, DUL_BLOCK, PRV_DEFAULTTIMEOUT, &pduType);
+    cond = PRV_NextPDUType(association, block, timeout, &pduType);
     if (cond == DUL_NETWORKCLOSED)
         event = TRANS_CONN_CLOSED;
     else if (cond == DUL_READTIMEOUT)
@@ -552,6 +558,7 @@ DUL_RequestAssociation(
     return cond;
 }
 
+
 /* DUL_ReceiveAssociationRQ
 **
 ** Purpose:
@@ -562,13 +569,15 @@ DUL_RequestAssociation(
 **      DUL_AcknowledgeAssociateRQ if the Association is to be accepted.
 **
 ** Parameter Dictionary:
-**      network         Caller's handle to the network environment.
-**      block           Flag indicating blocking/non blocking mode
-**      timeout         When blocking mode is non blocking, the timeout in seconds
-**      params          Pointer to a structure holding parameters which
-**                      describe this Association.
-**      association     Caller handle for thsi association that is created
-**                      by this function.
+**      callerNetworkKey    Caller's handle to the network environment.
+**      block               Flag indicating blocking/non-blocking mode.
+**      timeout             When blocking mode is non-blocking, the timeout in
+**                          seconds.
+**      params              Pointer to a structure holding parameters which
+**                          describe this Association.
+**      callerAssociation   Caller handle for this association that is created
+**                          by this function.
+**      activatePDUStorage
 **
 ** Return Values:
 **
@@ -576,7 +585,6 @@ DUL_RequestAssociation(
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_ReceiveAssociationRQ(
   DUL_NETWORKKEY ** callerNetworkKey,
@@ -680,7 +688,6 @@ DUL_ReceiveAssociationRQ(
 }
 
 
-
 /* DUL_AcknowledgeAssociationRQ
 **
 ** Purpose:
@@ -691,17 +698,17 @@ DUL_ReceiveAssociationRQ(
 **      Requestor.  At this point, an Association is established.
 **
 ** Parameter Dictionary:
-**      association     Caller's handle to the Association that is to be
-**                      acknowledged and hence established.
-**      params          Parameters that describe the type of service handled
-**                      by this Association.
+**      callerAssociation   Caller's handle to the Association that is to be
+**                          acknowledged and hence established.
+**      params              Parameters that describe the type of service handled
+**                          by this Association.
+**      activatePDUStorage
 **
 ** Return Values:
 **
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_AcknowledgeAssociationRQ(
   DUL_ASSOCIATIONKEY ** callerAssociation,
@@ -736,10 +743,11 @@ DUL_AcknowledgeAssociationRQ(
 **      to the key destroyed to prevent misuse.
 **
 ** Parameter Dictionary:
-**      association     Caller's handle to the association that is to be
-**                      rejected.
-**      params          Pointer to a structure that gives the reasons for
-**                      rejecting this Association.
+**      callerAssociation   Caller's handle to the association that is to be
+**                          rejected.
+**      params              Pointer to a structure that gives the reasons for
+**                          rejecting this Association.
+**      activatePDUStorage
 **
 ** Return Values:
 **
@@ -747,7 +755,6 @@ DUL_AcknowledgeAssociationRQ(
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_RejectAssociationRQ(
   DUL_ASSOCIATIONKEY ** callerAssociation,
@@ -818,8 +825,8 @@ DUL_RejectAssociationRQ(
 **      two open channels to the peer).
 **
 ** Parameter Dictionary:
-**      callerAssociation       Caller's handle to the Association that is
-**                              to be dropped.
+**      callerAssociation  Caller's handle to the Association that is to
+**                         be dropped.
 **
 ** Return Values:
 **
@@ -827,7 +834,6 @@ DUL_RejectAssociationRQ(
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_DropAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 {
@@ -855,8 +861,7 @@ DUL_DropAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 **      Request the orderly release of an Association.
 **
 ** Parameter Dictionary:
-**      callerAssociation       Caller's handle to the Association to be
-**                              released.
+**      callerAssociation  Caller's handle to the Association to be released.
 **
 ** Return Values:
 **
@@ -864,7 +869,6 @@ DUL_DropAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_ReleaseAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 {
@@ -922,14 +926,15 @@ DUL_ReleaseAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
     return PRV_StateMachine(NULL, association, event,(*association)->protocolState, NULL);
 }
 
+
 /* DUL_AcknowledgeRelease
 **
 ** Purpose:
 **      Send Acknowledgement to the Release request
 **
 ** Parameter Dictionary:
-**      callerAssociation       Caller's handle to the Association whose
-**                              release is acknowledged.
+**      callerAssociation  Caller's handle to the Association whose
+**                         release is acknowledged.
 **
 ** Return Values:
 **
@@ -937,7 +942,6 @@ DUL_ReleaseAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_AcknowledgeRelease(DUL_ASSOCIATIONKEY ** callerAssociation)
 {
@@ -958,7 +962,6 @@ DUL_AcknowledgeRelease(DUL_ASSOCIATIONKEY ** callerAssociation)
 }
 
 
-
 /* DUL_AbortAssociation
 **
 ** Purpose:
@@ -966,8 +969,7 @@ DUL_AcknowledgeRelease(DUL_ASSOCIATIONKEY ** callerAssociation)
 **      network to close.
 **
 ** Parameter Dictionary:
-**      callerAssociation       The handle for the association to be
-**                              aborted.
+**      callerAssociation  The handle for the association to be aborted.
 **
 ** Return Values:
 **
@@ -975,7 +977,6 @@ DUL_AcknowledgeRelease(DUL_ASSOCIATIONKEY ** callerAssociation)
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 {
@@ -1042,17 +1043,16 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 }
 
 
-
 /* DUL_WritePDVs
 **
 ** Purpose:
 **      Write a list of PDVs on an active Association.
 **
 ** Parameter Dictionary:
-**      callerAssociation       Caller's handle to the Association
-**      pdvList                 Pointer to a structure which describes
-**                              the list of PDVs to be written on the active
-**                              Association.
+**      callerAssociation  Caller's handle to the Association
+**      pdvList            Pointer to a structure which describes the
+**                         list of PDVs to be written on the active
+**                         Association.
 **
 ** Return Values:
 **
@@ -1060,7 +1060,6 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_WritePDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
               DUL_PDVLIST * pdvList)
@@ -1090,12 +1089,12 @@ DUL_WritePDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
 **      Read the next available PDU.
 **
 ** Parameter Dictionary:
-**      callerAssociation       Caller's handle for the Association.
-**      pdvList                 Pointer to a structure which describes
-**                              the list of PDVs to be read from the active
-**                              Association.
-**      block                   Option used for blocking/non-blocking read.
-**      timeout                 Timeout interval.
+**      callerAssociation  Caller's handle for the Association.
+**      pdvList            Pointer to a structure which describes the
+**                         list of PDVs to be read from the active
+**                         Association.
+**      block              Option used for blocking/non-blocking read.
+**      timeout            Timeout interval.
 **
 ** Return Values:
 **
@@ -1103,7 +1102,6 @@ DUL_WritePDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_ReadPDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
              DUL_PDVLIST * pdvList, DUL_BLOCKOPTIONS block, int timeout)
@@ -1182,12 +1180,12 @@ DUL_ReadPDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
 **      a single parameter requested by the caller.
 **
 ** Parameter Dictionary:
-**      callerAssociation       Caller's handle to the Association.
-**      param                   The only supported value is DUL_K_MAX_PDV_XMIT.
-**      type                    The TYPE of the parameter requested.
-**      address                 Requested parameter to be obtained from the
-**                              Association key.
-**      length                  The size of the parameter requested.
+**      callerAssociation  Caller's handle to the Association.
+**      param              The only supported value is DUL_K_MAX_PDV_XMIT.
+**      type               The TYPE of the parameter requested.
+**      address            Requested parameter to be obtained from the
+**                         Association key.
+**      length             The size of the parameter requested.
 **
 ** Return Values:
 **
@@ -1195,7 +1193,6 @@ DUL_ReadPDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_AssociationParameter(DUL_ASSOCIATIONKEY ** callerAssociation,
                          DUL_ASSOCIATION_PARAMETER param, DUL_DATA_TYPE type,
@@ -1236,8 +1233,8 @@ DUL_AssociationParameter(DUL_ASSOCIATIONKEY ** callerAssociation,
 **      Return the next PDV to the caller.
 **
 ** Parameter Dictionary:
-**      callerAssociation       Caller's handle to the Association
-**      pdv                     The next PDU to be returned
+**      callerAssociation  Caller's handle to the Association
+**      pdv                The next PDU to be returned
 **
 ** Return Values:
 **
@@ -1245,7 +1242,6 @@ DUL_AssociationParameter(DUL_ASSOCIATIONKEY ** callerAssociation,
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_NextPDV(DUL_ASSOCIATIONKEY ** callerAssociation, DUL_PDV * pdv)
 {
@@ -1369,7 +1365,6 @@ DUL_NextPDV(DUL_ASSOCIATIONKEY ** callerAssociation, DUL_PDV * pdv)
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 OFCondition
 DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
 {
@@ -1394,6 +1389,7 @@ DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
     return EC_Normal;
 }
 
+
 /* DUL_DefaultServiceParameters
 **
 ** Purpose:
@@ -1412,7 +1408,6 @@ DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
 **
 ** Algorithm:
 */
-
 void
 DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
 {
@@ -1446,7 +1441,8 @@ DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
     *params = p;
 }
 
-/*      ==============================================================
+
+/*  ========================================================================
  *  Private functions not meant for users of the package are included below.
  */
 
@@ -1457,13 +1453,13 @@ DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
 **      Receive a transport connection and fill in various fields of the
 **      service parameters and Association handle.
 ** Parameter Dictionary:
-**      network         Pointer to a structure maintaining information about
-**                      the network environment.
-**      block           Option indicating blocking/non-blocking mode
-**      timeout         When blocking mode is non blocking, the timeout in seconds
-**      params          Pointer to structure describing the services for the
-**                      Association.
-**      association     Handle to the association
+**      network      Pointer to a structure maintaining information about
+**                   the network environment.
+**      block        Option indicating blocking/non-blocking mode
+**      timeout      When blocking mode is non-blocking, the timeout in seconds
+**      params       Pointer to structure describing the services for the
+**                   Association.
+**      association  Handle to the association
 **
 ** Return Values:
 **
@@ -1491,13 +1487,13 @@ receiveTransportConnection(PRIVATE_NETWORKKEY ** network,
 **      service parameters and the Association handle.
 **
 ** Parameter Dictionary:
-**      network         Pointer to a structure maintaining information about
-**                      the network environment.
-**      block           Option indicating blocking/non-blocking mode
-**      timeout         When blocking mode is non blocking, the timeout in seconds
-**      params          Pointer to structure describing the services for the
-**                      Association.
-**      association     Handle to the association
+**      network      Pointer to a structure maintaining information about
+**                   the network environment.
+**      block        Option indicating blocking/non-blocking mode
+**      timeout      When blocking mode is non-blocking, the timeout in seconds
+**      params       Pointer to structure describing the services for the
+**                   Association.
+**      association  Handle to the association
 **
 ** Return Values:
 **
@@ -1735,7 +1731,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         else
         {
             // call OpenProcess to retrieve the REAL process handle.  using
-            // GetCurrentProcess() only returns a psuedo handle which may not
+            // GetCurrentProcess() only returns a pseudo handle which may not
             // allow DuplicateHandle to create the child process socket with
             // sufficient permissions on certain versions of Windows.
             HANDLE hParentProcessHandle = OpenProcess(PROCESS_DUP_HANDLE, FALSE, GetCurrentProcessId());
@@ -1973,11 +1969,12 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 **      Create a network key for the network environment.
 **
 ** Parameter Dictionary:
-**      mode            Role played by the application entity
-**      timeout         The timeout value to be used for timers
-**      key             Pointer to the structure maintaining the
-**                      entire information of the network environment.
-**                      This is returned back to the caller.
+**      mode     Role played by the application entity
+**      timeout  The timeout value to be used for timers
+**      opt
+**      key      Pointer to the structure maintaining the entire
+**               information of the network environment.
+**               This is returned back to the caller.
 **
 ** Return Values:
 **
@@ -2033,8 +2030,8 @@ createNetworkKey(const char *mode,
 **      Create a socket and listen for connections on the port number
 **
 ** Parameter Dictionary:
-**      key             Handle to the network environment
-**      parameter       port number on which to listen for connection
+**      key        Handle to the network environment
+**      parameter  Port number on which to listen for connection
 **
 ** Return Values:
 **
@@ -2079,7 +2076,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 
     struct sockaddr_in server;
 
-/* Create socket for internet type communication */
+    /* Create socket for internet type communication */
         (*key)->networkSpecific.TCP.port = *(int *) parameter;
         (*key)->networkSpecific.TCP.listenSocket = socket(AF_INET, SOCK_STREAM, 0);
         if ((*key)->networkSpecific.TCP.listenSocket < 0)
@@ -2102,7 +2099,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
 #endif
-/* Name socket using wildcards */
+    /* Name socket using wildcards */
         server.sin_family = AF_INET;
         server.sin_addr.s_addr = INADDR_ANY;
         server.sin_port = (unsigned short) htons((*key)->networkSpecific.TCP.port);
@@ -2151,19 +2148,18 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 }
 
 
-
 /* createAssociationKey
 **
 ** Purpose:
 **      Create handle to the Association.
 **
 ** Parameter Dictionary:
-**      networkKey              Handle to the network environment
-**      remoteNode              The remote node to whcih the association
-**                              is to be set up.
-**      maxPDU                  Size of the maximum PDU.
-**      associationKey          The handle to the Association that is to be
-**                              returned.
+**      networkKey      Handle to the network environment
+**      remoteNode      The remote node to which the association is
+**                      to be set up.
+**      maxPDU          Size of the maximum PDU.
+**      associationKey  The handle to the Association that is to be
+**                      returned.
 **
 ** Return Values:
 **
@@ -2226,16 +2222,16 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
 }
 
 
-
 /* destroyAssociationKey
 **
 ** Purpose:
 **      Destroy the handle to the Association.
 **
 ** Parameter Dictionary:
-**      key             Handle to the association.
+**      key  Handle to the association.
 **
 ** Return Values:
+**
 **
 ** Notes:
 **
@@ -2257,12 +2253,12 @@ destroyAssociationKey(PRIVATE_ASSOCIATIONKEY ** key)
 **      Get a single parameter.
 **
 ** Parameter Dictionary:
-**      paramAddress            Source parameter
-**      paramType               Type of the source parameter
-**      paramLength             Size of the source parameter
-**      outputType              Type of the destination parameter
-**      outputAddress           Destination parameter returned to caller
-**      outputLength            Size of the destination parameter
+**      paramAddress   Source parameter
+**      paramType      Type of the source parameter
+**      paramLength    Size of the source parameter
+**      outputType     Type of the destination parameter
+**      outputAddress  Destination parameter returned to caller
+**      outputLength   Size of the destination parameter
 **
 ** Return Values:
 **
@@ -2299,10 +2295,11 @@ get_association_parameter(void *paramAddress,
 **      Initialize the length of the buffer.
 **
 ** Parameter Dictionary:
-**      sock            Socket descriptor.
+**      sock  Socket descriptor.
 **
 ** Return Values:
 **      None
+**
 **
 ** Notes:
 **
@@ -2341,16 +2338,18 @@ setTCPBufferLength(int sock)
 #endif // HAVE_GUSI_H
 }
 
+
 /* DUL_DumpParams
 **
 ** Purpose:
 **      Returns information of various fields of the service parameters.
 **
 ** Parameter Dictionary:
-**      params          Pointer to structure holding the service parameters.
+**      ret_str
+**      params   Pointer to structure holding the service parameters.
 **
 ** Return Values:
-**      None
+**
 **
 ** Notes:
 **
@@ -2412,16 +2411,17 @@ static SC_MAP scMap[] = {
     {DUL_SC_ROLE_SCUSCP, "SCUSCP"},
 };
 
+
 /* dump_presentation_ctx
 **
 ** Purpose:
 **      Display the contents of the presentation context list
 **
 ** Parameter Dictionary:
-**      l       Head of the list of various presentation conmtexts.
+**      l  Head of the list of various presentation conmtexts.
 **
 ** Return Values:
-**      None
+**
 **
 ** Notes:
 **
@@ -2484,13 +2484,19 @@ dump_presentation_ctx(LST_HEAD ** l)
     return ret;
 }
 
+
 /* dumpExtNegList
 **
 ** Purpose:
 **      Display the extended negotiation structure
 **
+** Parameter Dictionary:
+**      ret
+**      lst
+**
 ** Return Values:
 **      None
+**
 **
 ** Notes:
 **
@@ -2524,17 +2530,18 @@ OFString& dumpExtNegList(OFString& ret, SOPClassExtendedNegotiationSubItemList& 
     return ret;
 }
 
+
 /* dump_uid
 **
 ** Purpose:
 **      Display the UID structure
 **
 ** Parameter Dictionary:
-**      UID             The UID associated with the structure
-**      indent          Useful for printing purposes.
+**      UID     The UID associated with the structure
+**      indent  Useful for printing purposes.
 **
 ** Return Values:
-**      None
+**
 **
 ** Notes:
 **
@@ -2557,16 +2564,15 @@ dump_uid(const char *UID, const char *indent)
         return OFString(buf) + uidName;
     }
 }
+
+
 /* checkNetwork
 **
 ** Purpose:
 **      Verify the validity of the network handle.
 **
 ** Parameter Dictionary:
-**      networkKey              Handle to the network to be validated.
-**      caller                  Used only for better error messages, contains
-**                              the string indicating the name of the
-**                              routine that called this one.
+**      networkKey  Handle to the network to be validated.
 **
 ** Return Values:
 **
@@ -2591,8 +2597,7 @@ checkNetwork(PRIVATE_NETWORKKEY ** networkKey)
 **      Verify the validity of the Association handle
 **
 ** Parameter Dictionary:
-**      association     Handle to the association to be validated.
-**      caller          Name of routine that called this one.
+**      association  Handle to the association to be validated.
 **
 ** Return Values:
 **
@@ -2600,7 +2605,6 @@ checkNetwork(PRIVATE_NETWORKKEY ** networkKey)
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-
 static OFCondition
 checkAssociation(PRIVATE_ASSOCIATIONKEY ** association)
 {
@@ -2618,10 +2622,11 @@ checkAssociation(PRIVATE_ASSOCIATIONKEY ** association)
 **      Reset all the fields of the service parameters.
 **
 ** Parameter Dictionary:
-**      params          Pointer to the service parameters to be reset.
+**      params  Pointer to the service parameters to be reset.
 **
 ** Return Values:
 **      None
+**
 **
 ** Notes:
 **
@@ -2648,16 +2653,18 @@ clearRequestorsParams(DUL_ASSOCIATESERVICEPARAMETERS * params)
     params->acceptedExtNegList = NULL;
 }
 
+
 /* clearPresentationContext
 **
 ** Purpose:
 **      Free the memory oocupied by the given presentation context.
 **
 ** Parameter Dictionary:
-**      l       Head of list of the presentation contexts to be freed.
+**      l  Head of list of the presentation contexts to be freed.
 **
 ** Return Values:
 **      None
+**
 **
 ** Notes:
 **
@@ -2733,6 +2740,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.96  2011-08-03 11:00:02  joergr
+** Added blocking mode and timeout parameter to request association functions.
+**
 ** Revision 1.95  2011-05-03 09:16:56  uli
 ** Remove a pointless return value from some function. This helps in static code
 ** analysis to ensure memory is never lost.

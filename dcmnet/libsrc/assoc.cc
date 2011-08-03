@@ -83,9 +83,9 @@
 **
 ** Module Prefix: ASC_
 **
-** Last Update:         $Author: uli $
-** Update Date:         $Date: 2011-07-06 11:08:47 $
-** CVS/RCS Revision:    $Revision: 1.61 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2011-08-03 11:00:02 $
+** CVS/RCS Revision:    $Revision: 1.62 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -527,7 +527,7 @@ ASC_printRejectParameters(OFString& str, T_ASC_RejectParameters *rej)
     }
     switch (rej->source) {
     case ASC_SOURCE_SERVICEUSER:
-        source =  "Service User"; break;
+        source = "Service User"; break;
     case ASC_SOURCE_SERVICEPROVIDER_ACSE_RELATED:
         source = "Service Provider (ACSE Related)"; break;
     case ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED:
@@ -1857,7 +1857,9 @@ ASC_requestAssociation(T_ASC_Network * network,
                        T_ASC_Parameters * params,
                        T_ASC_Association ** assoc,
                        void **associatePDU,
-                       unsigned long *associatePDUlength)
+                       unsigned long *associatePDUlength,
+                       DUL_BLOCKOPTIONS block,
+                       int timeout)
 {
     OFCondition cond = EC_Normal;
     long sendLen;
@@ -1887,7 +1889,7 @@ ASC_requestAssociation(T_ASC_Network * network,
     strcpy(params->DULparams.callingImplementationVersionName,
         params->ourImplementationVersionName);
 
-    cond = DUL_RequestAssociation(&network->network,
+    cond = DUL_RequestAssociation(&network->network, block, timeout,
                                   &(*assoc)->params->DULparams,
                                   &(*assoc)->DULassociation,
                                   retrieveRawPDU);
@@ -2205,6 +2207,9 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
+** Revision 1.62  2011-08-03 11:00:02  joergr
+** Added blocking mode and timeout parameter to request association functions.
+**
 ** Revision 1.61  2011-07-06 11:08:47  uli
 ** Fixed various compiler warnings.
 **
