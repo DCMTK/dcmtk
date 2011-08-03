@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-04 11:47:42 $
- *  CVS/RCS Revision: $Revision: 1.94 $
+ *  Update Date:      $Date: 2011-08-03 13:31:42 $
+ *  CVS/RCS Revision: $Revision: 1.95 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -733,6 +733,7 @@ main(int argc, char *argv[])
         }
     }
 
+#ifndef DISABLE_PORT_PERMISSION_CHECK
 #ifdef HAVE_GETEUID
     /* if retrieve port is privileged we must be as well */
     if ((opt_retrievePort > 0) && (opt_retrievePort < 1024)) {
@@ -742,6 +743,7 @@ main(int argc, char *argv[])
           return 1;
         }
     }
+#endif
 #endif
 
     /* network for move request and responses */
@@ -1597,6 +1599,9 @@ cmove(T_ASC_Association *assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.95  2011-08-03 13:31:42  joergr
+** Added macro that allows for disabling the port permission check in SCPs.
+**
 ** Revision 1.94  2011-04-04 11:47:42  joergr
 ** Output presentation context ID of incoming C-ECHO request to debug logger.
 **

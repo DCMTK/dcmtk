@@ -3,6 +3,19 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.03 (riesmeier)
 
+- Added macro that allows for disabling the port permission check in SCPs.
+  Thanks to forum user "Per" for pointing to this issue.
+  Affects: config/docs/macros.txt
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/scp.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/tests/msgserv.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmwlm/libsrc/wlmactmg.cc
+
 - Added blocking mode and timeout parameter to request association functions.
   Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the original patch.
   Affects: dcmnet/include/dcmtk/dcmnet/assoc.h

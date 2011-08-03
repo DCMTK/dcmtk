@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-05-30 15:52:01 $
- *  CVS/RCS Revision: $Revision: 1.142 $
+ *  Update Date:      $Date: 2011-08-03 13:31:42 $
+ *  CVS/RCS Revision: $Revision: 1.143 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -995,6 +995,7 @@ int main(int argc, char *argv[])
 
 #endif
 
+#ifndef DISABLE_PORT_PERMISSION_CHECK
 #ifdef HAVE_GETEUID
   /* if port is privileged we must be as well */
   if (opt_port < 1024)
@@ -1005,6 +1006,7 @@ int main(int argc, char *argv[])
       return 1;
     }
   }
+#endif
 #endif
 
   /* make sure data dictionary is loaded */
@@ -2778,6 +2780,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.143  2011-08-03 13:31:42  joergr
+** Added macro that allows for disabling the port permission check in SCPs.
+**
 ** Revision 1.142  2011-05-30 15:52:01  joergr
 ** Removed unused variables and fixed other compiler warnings.
 **

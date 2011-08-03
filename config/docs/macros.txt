@@ -78,6 +78,17 @@ DISABLE_OFSTD_FTOA
     such as German since DICOM decimal strings always use the Posix
     locale.
 
+DISABLE_PORT_PERMISSION_CHECK
+  Affected: most/all network server tools
+  Type of modification: Disables feature
+  Explanation: By default, most network server tools (e.g. storescp) check
+    for sufficient privileges to listen on the specified port (if geteuid()
+    is available on the particular system).  For examples, on Unix systems
+    listening on port < 1024 usually requires root privileges.  However,
+    the port permission check might prevent the tool from being run on such
+    ports on systems with fine-grained permission control (e.g. Linux).
+    Therefore, this check can be disabled using this flag.
+
 DISABLE_RECV_TIMEOUT
   Affected: dcmnet
   Type of modification: Disables feature

@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 11:08:47 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-03 13:31:46 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -194,13 +194,15 @@ OFCondition DcmSCP::listen()
   if( !dcmDataDict.isDictionaryLoaded() )
     DCMNET_WARN("no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
 
+#ifndef DISABLE_PORT_PERMISSION_CHECK
 #ifdef HAVE_GETEUID
   // If port is privileged we must be as well.
   if( m_port < 1024 && geteuid() != 0 )
   {
-    DCMNET_ERROR("No privileges to open this network port (choose port below 1024?)");
-    return EC_IllegalCall; // TODO: need to find better error code
+    DCMNET_ERROR("No privileges to open this network port (" << m_port << ")");
+    return NET_EC_InsufficientPortPrivileges;
   }
+#endif
 #endif
 
 #ifdef _WIN32
@@ -1490,6 +1492,9 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.19  2011-08-03 13:31:46  joergr
+** Added macro that allows for disabling the port permission check in SCPs.
+**
 ** Revision 1.18  2011-07-06 11:08:47  uli
 ** Fixed various compiler warnings.
 **

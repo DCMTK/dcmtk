@@ -18,9 +18,9 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 11:08:48 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-03 13:31:53 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,10 +203,12 @@ OFCondition WlmActivityManager::StartProvidingService()
     DCMWLM_WARN("no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
+#ifndef DISABLE_PORT_PERMISSION_CHECK
 #ifdef HAVE_GETEUID
   // If port is privileged we must be as well.
   if( opt_port < 1024 && geteuid() != 0 )
     return( WLM_EC_InsufficientPortPrivileges );
+#endif
 #endif
 
 #ifdef _WIN32
@@ -1152,6 +1154,9 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.40  2011-08-03 13:31:53  joergr
+** Added macro that allows for disabling the port permission check in SCPs.
+**
 ** Revision 1.39  2011-07-06 11:08:48  uli
 ** Fixed various compiler warnings.
 **

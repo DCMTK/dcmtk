@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2010, OFFIS e.V.
+ *  Copyright (C) 1999-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:45 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2011-08-03 13:31:48 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1099,6 +1099,7 @@ int main(int argc, char *argv[])
         return 10;
     }
 
+#ifndef DISABLE_PORT_PERMISSION_CHECK
 #ifdef HAVE_GETEUID
     /* if port is privileged we must be as well */
     if ((networkPort < 1024)&&(geteuid() != 0))
@@ -1106,6 +1107,7 @@ int main(int argc, char *argv[])
         OFLOG_FATAL(dcmpsrcvLogger, "cannot listen on port " << networkPort << ", insufficient privileges");
         return 10;
     }
+#endif
 #endif
 
     if (networkMaxPDU==0) networkMaxPDU = DEFAULT_MAXPDU;
@@ -1480,6 +1482,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
+ * Revision 1.60  2011-08-03 13:31:48  joergr
+ * Added macro that allows for disabling the port permission check in SCPs.
+ *
  * Revision 1.59  2010-10-14 13:13:45  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

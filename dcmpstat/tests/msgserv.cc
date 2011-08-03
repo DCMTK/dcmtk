@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Sample message server for class DVPSIPCClient
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-03 12:32:07 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-03 13:31:49 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,6 +149,7 @@ int main(int argc, char *argv[])
       return 10;
     }
 
+#ifndef DISABLE_PORT_PERMISSION_CHECK
 #ifdef HAVE_GETEUID
     /* if port is privileged we must be as well */
     if ((networkPort < 1024)&&(geteuid() != 0))
@@ -156,6 +157,7 @@ int main(int argc, char *argv[])
       OFLOG_FATAL(msgservLogger, "cannot listen on port " << networkPort << ", insufficient privileges");
       return 10;
     }
+#endif
 #endif
 
     /* open listen socket */
@@ -363,6 +365,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
+ * Revision 1.20  2011-08-03 13:31:49  joergr
+ * Added macro that allows for disabling the port permission check in SCPs.
+ *
  * Revision 1.19  2010-11-03 12:32:07  uli
  * Fixed some more warnings by gcc with by additional flags.
  *

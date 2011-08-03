@@ -18,8 +18,8 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-17 09:46:21 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2011-08-03 13:31:51 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -668,6 +668,7 @@ main(int argc, char *argv[])
         << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
+#ifndef DISABLE_PORT_PERMISSION_CHECK
 #ifdef HAVE_GETEUID
     /* if port is privileged we must be as well */
     if (opt_port < 1024) {
@@ -676,6 +677,7 @@ main(int argc, char *argv[])
         return 10;
       }
     }
+#endif
 #endif
 
     cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, options.acse_timeout_, &options.net_);
@@ -762,6 +764,9 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
+ * Revision 1.27  2011-08-03 13:31:51  joergr
+ * Added macro that allows for disabling the port permission check in SCPs.
+ *
  * Revision 1.26  2011-03-17 09:46:21  joergr
  * Added support for MPEG4 transfer syntaxes to network tools.
  *

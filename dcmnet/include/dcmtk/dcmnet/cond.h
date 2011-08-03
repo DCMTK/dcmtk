@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:21 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2011-08-03 13:31:44 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,6 +186,10 @@ extern const OFCondition DUL_UNEXPECTEDPDU;             /* Received unexpected P
 extern const OFCondition DUL_UNSUPPORTEDPEERPROTOCOL;   /* DUL Unsupported peer protocol */
 extern const OFCondition DUL_WRONGDATATYPE;             /* DUL Wrong Data Type Specified for Request */
 
+// other condition constants used in the network module
+extern const OFCondition NET_EC_InsufficientPortPrivileges;  /* Insufficient Port Privileges (code: 1023) */
+// codes 1024 to 1073 are used for the association negotiation profile classes
+
 
 // This macro creates a condition with given code, severity and text.
 // Making this a macro instead of a function saves the creation of a temporary.
@@ -281,6 +285,9 @@ typedef OFCondition CONDITION;
 /*
  * CVS Log
  * $Log: cond.h,v $
+ * Revision 1.17  2011-08-03 13:31:44  joergr
+ * Added macro that allows for disabling the port permission check in SCPs.
+ *
  * Revision 1.16  2010-10-14 13:17:21  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
