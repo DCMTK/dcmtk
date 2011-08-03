@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.03 (riesmeier)
 
+- Added "io.h" to the list of headers used for testing function prototypes.
+  Required in order to avoid a compiler warning on Windows with VisualStudio.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
 - Updated information on latest version of CMake that has been tested (2.8.5).
   Affects: CMakeLists.txt
 
