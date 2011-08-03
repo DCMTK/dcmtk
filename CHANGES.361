@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.03 (riesmeier)
 
+- Include "io.h" required for mktemp() on Windows with VisualStudio.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
 - Added "io.h" to the list of headers used for testing function prototypes.
   Required in order to avoid a compiler warning on Windows with VisualStudio.
   Affects: CMake/GenerateDCMTKConfigure.cmake

@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-02 13:27:47 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-03 08:53:45 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,12 @@
 #define INCLUDE_LIBC
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
+
+#ifdef HAVE_IO_H
+BEGIN_EXTERN_C
+#include <io.h>          /* for mktemp() on Win32 */
+END_EXTERN_C
+#endif
 
 #if defined(HAVE_MKTEMP) && !defined(HAVE_PROTOTYPE_MKTEMP)
 extern "C" {
@@ -1342,6 +1348,9 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.66  2011-08-03 08:53:45  joergr
+** Include "io.h" required for mktemp() on Windows with VisualStudio.
+**
 ** Revision 1.65  2011-08-02 13:27:47  uli
 ** Speed up the code for reading DICOMDIRs, too.
 **
