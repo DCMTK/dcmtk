@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.03 (riesmeier)
+
+- Updated information on latest version of CMake that has been tested (2.8.5).
+  Affects: CMakeLists.txt
+
 **** Changes from 2011.08.02 (schlachter)
 
 - Speed up the code for writing DICOMDIRs.
