@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.03 (riesmeier)
+
+- Renamed test logger in order to reflect the current name of the program.
+  Affects: dcmdata/tests/tpath.cc
+
 **** Changes from 2011.08.05 (onken)
 
 - Added function to find out whether current process was "forked" under
@@ -15,7 +20,6 @@ Changes between releases are documented here.
 - Moved message about disabled dcmdata autocorrection to listen() function in
   order to (have the possibility to) suppress it in the child processes.
 - Added some debug output and documentation.
-
   Affects: dcmnet/include/dcmtk/dcmnet/scp.h
            dcmnet/libsrc/scp.cc
 

@@ -18,9 +18,9 @@
  *  Purpose: Test program for testing path features of DcmItem
  *           and DcmSequenceOfItem
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 13:04:18 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-05 10:20:37 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,8 @@
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/dcpath.h"
 
-static OFLogger tstpathLogger = OFLog::getLogger("dcmtk.test.tstpath");
+
+static OFLogger tpathLogger = OFLog::getLogger("dcmtk.test.tpath");
 
 #define CHECK_GOOD(check) OFCHECK((check).good())
 
@@ -46,13 +47,14 @@ static OFLogger tstpathLogger = OFLog::getLogger("dcmtk.test.tstpath");
     return cond; \
 } while (0)
 
+
 static OFCondition testPathInsertionsWithoutWildcard(const OFString& path,
                                                      DcmDataset *dset,
                                                      const Uint16& expectedNumObjects,
                                                      const OFBool& expectFailed = OFFalse,
                                                      const OFBool& createIfNecessary = OFTrue)
 {
-  OFLOG_DEBUG(tstpathLogger, "Path: " << path);
+  OFLOG_DEBUG(tpathLogger, "Path: " << path);
   DcmPathProcessor proc;
   OFCondition result = proc.findOrCreatePath(dset, path, createIfNecessary);
   if (result.bad())
@@ -92,10 +94,9 @@ static OFCondition testPathInsertionsWithoutWildcard(const OFString& path,
     }
   }
 
-  OFLOG_DEBUG(tstpathLogger, " ...OK");
+  OFLOG_DEBUG(tpathLogger, " ...OK");
   return EC_Normal;
 }
-
 
 static OFCondition testPathInsertionsWithWildcard(const OFString& path,
                                                   DcmDataset *dset,
@@ -103,7 +104,7 @@ static OFCondition testPathInsertionsWithWildcard(const OFString& path,
                                                   const OFBool& expectFailed = OFFalse,
                                                   const OFBool& createIfNecessary = OFTrue)
 {
-  OFLOG_DEBUG(tstpathLogger, "Path: " << path);
+  OFLOG_DEBUG(tpathLogger, "Path: " << path);
   DcmPathProcessor proc;
   OFCondition result = proc.findOrCreatePath(dset, path, createIfNecessary);
   if (result.bad())
@@ -142,7 +143,7 @@ static OFCondition testPathInsertionsWithWildcard(const OFString& path,
     }
     oneResult++;
   }
-  OFLOG_DEBUG(tstpathLogger, " ...OK");
+  OFLOG_DEBUG(tpathLogger, " ...OK");
   return EC_Normal;
 }
 
@@ -182,7 +183,7 @@ OFTEST(dcmdata_pathAccess)
     "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n"
     "(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
 
-  const OFString precalculatedDump2 = 
+  const OFString precalculatedDump2 =
     "# Dicom-Data-Set\n# Used TransferSyntax: Unknown Transfer Syntax\n(0010,0020) LO (no value available)                     #   0, 0 PatientID\n"
     "(0040,a730) SQ (Sequence with explicit length #=6)      #   0, 1 ContentSequence\n  (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n"
     "    (0040,a730) SQ (Sequence with explicit length #=4)      #   0, 1 ContentSequence\n      (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n"
@@ -238,8 +239,8 @@ OFTEST(dcmdata_pathAccess)
   /* Test insertions using no wildcards                                    */
   /* ********************************************************************* */
 
-  OFLOG_DEBUG(tstpathLogger, "These insertions should work:\n"
-                         << "=============================");
+  OFLOG_DEBUG(tpathLogger, "These insertions should work:\n"
+                        << "=============================");
   path = "PatientID";
   CHECK_GOOD(testPathInsertionsWithoutWildcard(path, dset, 1));
   path = "ContentSequence";
@@ -253,8 +254,8 @@ OFTEST(dcmdata_pathAccess)
   path = "ContentSequence[5].ContentSequence[3].ConceptNameCodeSequence[0].(0008,0104)";
   CHECK_GOOD(testPathInsertionsWithoutWildcard(path, dset, 7));
 
-  OFLOG_DEBUG(tstpathLogger, "\nThese insertions should NOT work (wrong syntax):\n"
-                           << "================================================");
+  OFLOG_DEBUG(tpathLogger, "\nThese insertions should NOT work (wrong syntax):\n"
+                          << "================================================");
 
   path = "ContentSequences";
   CHECK_GOOD(testPathInsertionsWithoutWildcard(path, dset, 1, OFTrue));
@@ -267,8 +268,8 @@ OFTEST(dcmdata_pathAccess)
   path = "(0040,A730)[a].ContentSequence[3].ConceptNameCodeSequence[0].CodeValue";
   CHECK_GOOD(testPathInsertionsWithoutWildcard(path, dset, 7, OFTrue));
 
-  OFLOG_DEBUG(tstpathLogger, "\nThese find routines should work:\n"
-                           << "================================");
+  OFLOG_DEBUG(tpathLogger, "\nThese find routines should work:\n"
+                          << "================================");
 
   path = "PatientID";
   CHECK_GOOD(testPathInsertionsWithoutWildcard(path, dset, 1, OFFalse, OFFalse /* do not create */));
@@ -283,8 +284,8 @@ OFTEST(dcmdata_pathAccess)
   path = "ContentSequence[5].ContentSequence[3].ConceptNameCodeSequence[0].(0008,0104)";
   CHECK_GOOD(testPathInsertionsWithoutWildcard(path, dset, 7, OFFalse, OFFalse /* do not create */));
 
-  OFLOG_DEBUG(tstpathLogger, "\nThese find routines should NOT work:\n"
-                            << "====================================");
+  OFLOG_DEBUG(tpathLogger, "\nThese find routines should NOT work:\n"
+                          << "====================================");
 
   path = "PatientName"; // was never inserted
   CHECK_GOOD(testPathInsertionsWithoutWildcard(path, dset, 1, OFTrue, OFFalse /* do not create */));
@@ -293,17 +294,17 @@ OFTEST(dcmdata_pathAccess)
   path = "ConceptNameCodeSequence"; // should not exist on main level
   CHECK_GOOD(testPathInsertionsWithoutWildcard(path, dset, 1, OFTrue, OFFalse /* do not create */));
 
-  OFLOG_DEBUG(tstpathLogger, "\nChecking dataset length:\n"
-                           << "========================");
+  OFLOG_DEBUG(tpathLogger, "\nChecking dataset length:\n"
+                          << "========================");
   Uint32 length = dset->calcElementLength(EXS_LittleEndianExplicit,EET_ExplicitLength);
-  OFLOG_DEBUG(tstpathLogger, "Checking whether length of encoded dataset matches pre-calculated length");
+  OFLOG_DEBUG(tpathLogger, "Checking whether length of encoded dataset matches pre-calculated length");
   if (length == precalculatedLength)
   {
-    OFLOG_DEBUG(tstpathLogger, " ...OK");
+    OFLOG_DEBUG(tpathLogger, " ...OK");
   }
   else
   {
-    OFLOG_ERROR(tstpathLogger, " ...FAILED: Length is " << length << ". Should be " << precalculatedLength << "\n"
+    OFLOG_ERROR(tpathLogger, " ...FAILED: Length is " << length << ". Should be " << precalculatedLength << "\n"
             << "Please check dump and adapt test in case of false alarm:\n");
     CERR << "Dump of assembled test object:" << OFendl;
     dset->print(CERR);
@@ -317,31 +318,31 @@ OFTEST(dcmdata_pathAccess)
   /* Test insertions using wildcards                                       */
   /* ********************************************************************* */
 
-  OFLOG_DEBUG(tstpathLogger, "\nThese wildcard insertions should work:\n"
-                           << "======================================");
+  OFLOG_DEBUG(tpathLogger, "\nThese wildcard insertions should work:\n"
+                          << "======================================");
   path = "ContentSequence[*].ContentSequence[3].PatientName";
   CHECK_GOOD(testPathInsertionsWithWildcard(path, dset, 6, OFFalse /* should work*/, OFTrue /*do create*/));
   path = "ContentSequence[*].ContentSequence[0].PatientID";
   CHECK_GOOD(testPathInsertionsWithWildcard(path, dset, 6, OFFalse /* should work*/, OFTrue /*do create*/));
 
-  OFLOG_DEBUG(tstpathLogger, "\nTesting wildcard insertions should NOT work:\n"
-                           << "============================================");
+  OFLOG_DEBUG(tpathLogger, "\nTesting wildcard insertions should NOT work:\n"
+                          << "============================================");
   path = "SourceImageSequence[*]";
   CHECK_GOOD(testPathInsertionsWithWildcard(path, dset, 0, OFTrue /* should fail*/, OFTrue /*do create*/));
   path = "ContentSequence[*].SourceImageSequence[*]";
   CHECK_GOOD(testPathInsertionsWithWildcard(path, dset, 0, OFTrue /* should fail*/, OFTrue /*do create*/));
 
-  OFLOG_DEBUG(tstpathLogger, "\nChecking dataset length:\n"
-                           << "========================");
+  OFLOG_DEBUG(tpathLogger, "\nChecking dataset length:\n"
+                          << "========================");
   length = dset->calcElementLength(EXS_LittleEndianExplicit,EET_ExplicitLength);
-  OFLOG_DEBUG(tstpathLogger, "Checking whether length of encoded dataset matches pre-calculated length");
+  OFLOG_DEBUG(tpathLogger, "Checking whether length of encoded dataset matches pre-calculated length");
   if (length == precalculatedLength2)
   {
-    OFLOG_DEBUG(tstpathLogger, " ...OK");
+    OFLOG_DEBUG(tpathLogger, " ...OK");
   }
   else
   {
-    OFLOG_ERROR(tstpathLogger, " ...FAILED: Length is " << length << ". Should be " << precalculatedLength2 << "\n"
+    OFLOG_ERROR(tpathLogger, " ...FAILED: Length is " << length << ". Should be " << precalculatedLength2 << "\n"
             << "Please check dump and adapt test in case of false alarm:");
     CERR << "Dump of assembled test object:" << OFendl;
     dset->print(CERR);
@@ -355,6 +356,9 @@ OFTEST(dcmdata_pathAccess)
 /*
  * CVS/RCS Log:
  * $Log: tpath.cc,v $
+ * Revision 1.4  2011-08-05 10:20:37  joergr
+ * Renamed test logger in order to reflect the current name of the program.
+ *
  * Revision 1.3  2011-07-06 13:04:18  uli
  * Fixed some inconsistencies in test names.
  *
