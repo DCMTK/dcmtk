@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-03 13:31:46 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-08-05 08:25:28 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,18 +100,15 @@ DcmSCP::DcmSCP() :
   m_cmd_argv(NULL),
 #endif
   m_maxAssociations(1),
-  m_blockMode(DIMSE_BLOCKING),
+  m_connectionBlockingMode(DUL_BLOCK),
+  m_dimseBlockingMode(DIMSE_BLOCKING),
   m_dimseTimeout(0),
   m_acseTimeout(30),
   m_verbosePCMode(OFFalse),
+  m_connectionTimeout(1000),
   m_processTable(),
   m_respondWithCalledAETitle(OFTrue)
 {
-  // make sure not to let dcmdata remove trailing blank padding or perform other
-  // manipulations. We want to see the real data.
-  dcmEnableAutomaticInputDataCorrection.set( OFFalse );
-  if (!m_forkedChild)
-    DCMNET_WARN("(notice: dcmdata auto correction disabled.)");
 
 #ifdef HAVE_GUSI_H
   // needed for Macintosh.
@@ -183,12 +180,23 @@ OFCondition DcmSCP::markAsForkedChild()
   m_forkedChild = OFTrue;
   return EC_Normal;
 }
+
+
+OFBool DcmSCP::isForkedChild()
+{
+  return m_forkedChild;
+}
 #endif
 
 // ----------------------------------------------------------------------------
 
 OFCondition DcmSCP::listen()
 {
+
+  // make sure not to let dcmdata remove trailing blank padding or perform other
+  // manipulations. We want to see the real data.
+  dcmEnableAutomaticInputDataCorrection.set( OFFalse );
+
   OFCondition cond = EC_Normal;
   // Make sure data dictionary is loaded.
   if( !dcmDataDict.isDictionaryLoaded() )
@@ -380,30 +388,36 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network *network)
     return DIMSE_ILLEGALASSOCIATION;
 
   char buf[BUFSIZ];
-  Uint16 timeout;
+  Uint32 timeout;
 
   // Depending on if the execution is limited to one single process
   // or not we need to set the timeout value correspondingly.
-  // for WIN32, child processes cannot be counted (always 0) -> timeout=1000
-  if( m_singleProcess )
-    timeout = 1000;
+  // For WIN32, child processes cannot be counted (always 0), so
+  // timeout is used as specified by the class parameter.
+  if( !m_singleProcess && m_processTable.size() > 0)
+  {
+    timeout = 1;
+  }
   else
   {
-    if( m_processTable.size() > 0 )
-      timeout = 1;
-    else
-      timeout = 1000;
+    timeout = m_connectionTimeout;
   }
 
   // Listen to a socket for timeout seconds and wait for an association request
-  OFCondition cond = ASC_receiveAssociation( network, &m_assoc, m_maxReceivePDULength, NULL, NULL, OFFalse, DUL_NOBLOCK, OFstatic_cast(int, timeout) );
+  OFCondition cond = ASC_receiveAssociation( network, &m_assoc, m_maxReceivePDULength, NULL, NULL, OFFalse, m_connectionBlockingMode, OFstatic_cast(int, timeout) );
 
   // just return, if timeout occured (DUL_NOASSOCIATIONREQUEST)
   // or (WIN32) if dcmnet has started a child for us, to handle this
   // association (signaled by "DULC_FORKEDCHILD") -> return to "event loop"
   if ( ( cond.code() == DULC_FORKEDCHILD ) || ( cond == DUL_NOASSOCIATIONREQUEST ) )
+  {
+    if (cond.code() == DULC_FORKEDCHILD )
+    {
+      // Output short message that new process was started, including process ID
+      DCMNET_DEBUG(cond.text());
+    }
     return EC_Normal;
-
+  }
   // if error occurs and we're not in single process mode, close association and return
   if( cond.bad() && !m_singleProcess )
   {
@@ -865,7 +879,7 @@ OFCondition DcmSCP::receiveDIMSECommand(T_ASC_PresentationContextID *presID,
                                 msg, statusDetail, commandSet);
   } else {
     /* call the corresponding DIMSE function to receive the command (use default timeout) */
-    cond = DIMSE_receiveCommand(m_assoc, m_blockMode, m_dimseTimeout, presID,
+    cond = DIMSE_receiveCommand(m_assoc, m_dimseBlockingMode, m_dimseTimeout, presID,
                                 msg, statusDetail, commandSet);
   }
   return cond;
@@ -884,7 +898,7 @@ OFCondition DcmSCP::receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
 
   OFCondition cond;
   /* call the corresponding DIMSE function to receive the dataset */
-  cond = DIMSE_receiveDataSetInMemory(m_assoc, m_blockMode, m_dimseTimeout, presID,
+  cond = DIMSE_receiveDataSetInMemory(m_assoc, m_dimseBlockingMode, m_dimseTimeout, presID,
                                       dataObject, callback, callbackContext);
   return cond;
 }
@@ -1122,9 +1136,16 @@ void DcmSCP::setMaxAssociations(const Uint16 maxAssocs)
 
 // ----------------------------------------------------------------------------
 
+void DcmSCP::setConnectionBlockingMode(const DUL_BLOCKOPTIONS blockingMode)
+{
+  m_connectionBlockingMode = blockingMode;
+}
+
+// ----------------------------------------------------------------------------
+
 void DcmSCP::setDIMSEBlockingMode(const T_DIMSE_BlockingMode blockingMode)
 {
-  m_blockMode = blockingMode;
+  m_dimseBlockingMode = blockingMode;
 }
 
 // ----------------------------------------------------------------------------
@@ -1139,6 +1160,13 @@ void DcmSCP::setDIMSETimeout(const Uint32 dimseTimeout)
 void DcmSCP::setACSETimeout(const Uint32 acseTimeout)
 {
   m_acseTimeout = acseTimeout;
+}
+
+// ----------------------------------------------------------------------------
+
+void DcmSCP::setConnnectionTimeout(const Uint32 timeout)
+{
+  m_connectionTimeout = timeout;
 }
 
 // ----------------------------------------------------------------------------
@@ -1208,9 +1236,16 @@ Uint16 DcmSCP::numAssociations() const
 
 // ----------------------------------------------------------------------------
 
+DUL_BLOCKOPTIONS DcmSCP::getConnectionBlockingMode() const
+{
+  return m_connectionBlockingMode;
+}
+
+// ----------------------------------------------------------------------------
+
 T_DIMSE_BlockingMode DcmSCP::getDIMSEBlockingMode() const
 {
-  return m_blockMode;
+  return m_dimseBlockingMode;
 }
 
 // ----------------------------------------------------------------------------
@@ -1218,6 +1253,13 @@ T_DIMSE_BlockingMode DcmSCP::getDIMSEBlockingMode() const
 Uint32 DcmSCP::getDIMSETimeout() const
 {
   return m_dimseTimeout;
+}
+
+// ----------------------------------------------------------------------------
+
+Uint32 DcmSCP::getConnnectionTimeout() const
+{
+  return m_connectionTimeout;
 }
 
 // ----------------------------------------------------------------------------
@@ -1492,6 +1534,19 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.20  2011-08-05 08:25:28  onken
+** Added function to find out whether current process was "forked" under
+** windows as a child. Added functions to switch between blocking and
+** non-blocking TCP/IP connection mode. Also permits giving a timeout
+** for non-blocking mode (default is 1000 seconds as it was hardcoded before).
+** DcmSCP now listens in TCP/IP blocking mode per default! This is since
+** it is expected that most users like to have the server running endlessly.
+** Renamed member and functions for DIMSE blocking mode in order to be clearly
+** distinguishable from TCP/IP blocking mode. Moved message about disabled
+** dcmdata autocorrection to listen() function in order to (have the possibility
+** to) suppress it in the child processes. Added some debug output and
+** documentation.
+**
 ** Revision 1.19  2011-08-03 13:31:46  joergr
 ** Added macro that allows for disabling the port permission check in SCPs.
 **

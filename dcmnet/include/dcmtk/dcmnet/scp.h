@@ -19,8 +19,8 @@
  *           applications.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-06-21 07:31:35 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2011-08-05 08:25:29 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,6 +155,13 @@ public:
    *  @return EC_Normal if marking was successful, an error code otherwise
    */
   OFCondition markAsForkedChild();
+
+  /** Return whether this process is a forked child, i.e. whether this
+   *  is a process started during windows multi process mode via dcmnet's
+   *  built-in CreateProcess() "forking" mode for windows.
+   *  @return OFTrue if process is forked child, OFFalse otherwise.
+   */
+  OFBool isForkedChild();
 #endif
 
   /** Starts providing the implemented services to SCUs.
@@ -253,6 +260,17 @@ public:
    */
   void setMaxAssociations(const Uint16 maxAssocs);
 
+  /** Set whether waiting for a TCP/IP connection should be blocking or non-blocking.
+   *  In non-blocking mode, the networking routines will wait for specified connection
+   *  timeout, see setConnectionTimeout() function. In blocking mode, no timeout is set
+   *  but the operating system's network routines will be used to read from the socket
+   *  for incoming data. In the worst case, this may be a long time until that call
+   *  returns. The default of DcmSCP is blocking mode.
+   *  @param blockingMode [in] Either DUL_BLOCK for blocking mode or DUL_NOBLOCK
+   *                           for non-blocking mode
+   */
+  void setConnectionBlockingMode(const DUL_BLOCKOPTIONS blockingMode);
+
   /** Set whether DIMSE messaging should be blocking or non-blocking. In non-blocking mode,
    *  the networking routines will wait for DIMSE messages for the specified DIMSE timeout
    *  time, see setDIMSETimeout() function. In blocking mode, no timeout is set but the
@@ -274,6 +292,13 @@ public:
    *  @param acseTimeout [in] ACSE timeout in seconds.
    */
   void setACSETimeout(const Uint32 acseTimeout);
+
+  /** Set the timeout that should be waited for connection request.
+   *  Only relevant in non-blocking mode (default).
+   *
+   *  @param timeout [in] TCP/IP connection timeout in seconds.
+   */
+  void setConnnectionTimeout(const Uint32 timeout);
 
   /** Set whether to show presentation contexts in verbose or debug mode
    *  @param mode [in] Show presentation contexts in verbose mode if OFTrue. By default, the
@@ -325,6 +350,11 @@ public:
   Uint16 getMaxAssociations() const;
 
   /** Returns whether receiving of DIMSE messages is done in blocking or unblocking mode
+   *  @return DUL_BLOCK if in blocking mode, otherwise DUL_NOBLOCK
+   */
+  DUL_BLOCKOPTIONS getConnectionBlockingMode() const;
+
+  /** Returns whether receiving of DIMSE messages is done in blocking or unblocking mode
    *  @return DIMSE_BLOCKING if in blocking mode, otherwise DIMSE_NONBLOCKING
    */
   T_DIMSE_BlockingMode getDIMSEBlockingMode() const;
@@ -338,6 +368,11 @@ public:
    *  @return ACSE timeout in seconds
    */
   Uint32 getACSETimeout() const;
+
+  /** Returns connection timeout
+   *  @return TCP/IP connection timeout in seconds
+   */
+  Uint32 getConnnectionTimeout() const;
 
   /** Returns the verbose presentation context mode configured specifying whether details on
    *  the presentation contexts (negotiated during association setup) should be shown in
@@ -395,15 +430,22 @@ protected:
    *  DIMSE_sendXXXResponse(). The standard handler only knows how to handle an Echo request
    *  by calling handleEchoRequest(). This function is most likely to be implemented by a
    *  derived class implementing a specific SCP behaviour.
-   *  @param TODO
-   *  @return TODO
+   *  @param incomingMsg The DIMSE message received
+   *  @param presContextInfo The presentation context the message was received on.
+   *  @return EC_Normal if the message could be handled, error if not. Especially
+   *          DIMSE_BADCOMMANDTYPE shoule be returned if there is no handler for
+   *          this particular type of DIMSE message. E.g. the default handler in
+   *          DcmSCP only handles C-ECHO requests and therefore returns
+   *          DIMSE_BADCOMMANDTYPE otherwise.
    */
   virtual OFCondition handleIncomingCommand(T_DIMSE_Message *incomingMsg,
                                             const DcmPresentationContextInfo &presContextInfo);
 
   /** Overwrite this function to be notified about an incoming association request.
    *  The standard handler only outputs some information to the logger.
-   *  @param TODO
+   *  @param params The association parameters that were received.
+   *  @param desiredAction The desired action how to handle this association
+   *         request.
    */
   virtual void notifyAssociationRequest(const T_ASC_Parameters &params,
                                         DcmSCPActionType &desiredAction);
@@ -696,12 +738,20 @@ private:
   /// associations in multi-process mode, thus only permitting "unlimited" associations.
   Uint16 m_maxAssociations;
 
+  /// Blocking mode for TCP/IP connection requests. If non-blocking mode is enabled, the SCP is
+  /// wating for new DIMSE data a specific (m_connectionTimeout) amount of time and then returns
+  /// if not data arrives. In blocking mode the SCP is calling the underlying operating
+  /// system function for receiving data from the socket directly, which may return after a
+  /// very long time (or never...), depending on the system's network configuration.
+  /// Default is blocking mode.
+  DUL_BLOCKOPTIONS m_connectionBlockingMode;
+
   /// Blocking mode for DIMSE operations. If DIMSE non-blocking mode is enabled, the SCP is
   /// wating for new DIMSE data a specific (m_dimseTimeout) amount of time and then returns
   /// if not data arrives. In blocking mode the SCP is calling the underlying operating
   /// system function for receiving data from the socket directly, which may return after a
   /// very long time, depending on the system's network configuration.
-  T_DIMSE_BlockingMode m_blockMode;
+  T_DIMSE_BlockingMode m_dimseBlockingMode;
 
   /// Timeout for DIMSE operations in seconds. Maximum time in DIMSE non-blocking mode to
   /// wait for incoming DIMSE data.
@@ -714,6 +764,11 @@ private:
   /// Verbose PC mode. Flags specifying whether details on the presentation contexts
   /// (negotiated during association setup) should be shown in verbose or debug mode.
   OFBool m_verbosePCMode;
+
+  /// Timeout in seconds that should be waited for an incoming TCP/IP connection until
+  /// the call returns. It is only relevant if the the SCP is set to non-blocking
+  /// connection mode. Otherwise, the timeout is ignored. Default is 1000 seconds.
+  Uint32 m_connectionTimeout;
 
   /// Table of processes for non-single process mode. This member is only applicable when
   /// the SCP is running under Unix and multi-process mode.
@@ -731,10 +786,22 @@ private:
 
 #endif // SCP_H
 
-
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.13  2011-08-05 08:25:29  onken
+ *  Added function to find out whether current process was "forked" under
+ *  windows as a child. Added functions to switch between blocking and
+ *  non-blocking TCP/IP connection mode. Also permits giving a timeout
+ *  for non-blocking mode (default is 1000 seconds as it was hardcoded before).
+ *  DcmSCP now listens in TCP/IP blocking mode per default! This is since
+ *  it is expected that most users like to have the server running endlessly.
+ *  Renamed member and functions for DIMSE blocking mode in order to be clearly
+ *  distinguishable from TCP/IP blocking mode. Moved message about disabled
+ *  dcmdata autocorrection to listen() function in order to (have the possibility
+ *  to) suppress it in the child processes. Added some debug output and
+ *  documentation.
+ *
  *  Revision 1.12  2011-06-21 07:31:35  onken
  *  Fixed small documentation issue.
  *

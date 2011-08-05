@@ -1,6 +1,24 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.05 (onken)
+
+- Added function to find out whether current process was "forked" under
+  windows as a child.
+- Added functions to switch between blocking and non-blocking TCP/IP connection
+  mode. Also permits giving a timeout for non-blocking mode (default is 1000
+  seconds as it was hardcoded before).
+- DcmSCP now listens in TCP/IP blocking mode per default! This is since
+  it is expected that most users like to have the server running endlessly.
+- Renamed member and functions for DIMSE blocking mode in order to be clearly
+  distinguishable from TCP/IP blocking mode.
+- Moved message about disabled dcmdata autocorrection to listen() function in
+  order to (have the possibility to) suppress it in the child processes.
+- Added some debug output and documentation.
+
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
 **** Changes from 2011.08.03 (riesmeier)
 
 - Added macro that allows for disabling the port permission check in SCPs.
