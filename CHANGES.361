@@ -1,9 +1,12 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2011.08.03 (riesmeier)
+**** Changes from 2011.08.05 (riesmeier)
 
 - Renamed test logger in order to reflect the current name of the program.
+  Affects: dcmdata/tests/tpath.cc
+
+- Fixed output of test program in debug mode.
   Affects: dcmdata/tests/tpath.cc
 
 **** Changes from 2011.08.05 (onken)

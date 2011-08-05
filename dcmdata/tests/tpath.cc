@@ -19,8 +19,8 @@
  *           and DcmSequenceOfItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-05 10:20:37 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2011-08-05 14:08:59 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,13 +54,15 @@ static OFCondition testPathInsertionsWithoutWildcard(const OFString& path,
                                                      const OFBool& expectFailed = OFFalse,
                                                      const OFBool& createIfNecessary = OFTrue)
 {
-  OFLOG_DEBUG(tpathLogger, "Path: " << path);
   DcmPathProcessor proc;
   OFCondition result = proc.findOrCreatePath(dset, path, createIfNecessary);
   if (result.bad())
   {
     if (!expectFailed)
-        RETURN_ERROR(" ...FAILED! Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text());
+    {
+      OFLOG_DEBUG(tpathLogger, "Path: " << path << " ... FAILED!");
+      RETURN_ERROR("Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text());
+    }
     return EC_Normal;
   }
 
@@ -70,7 +72,8 @@ static OFCondition testPathInsertionsWithoutWildcard(const OFString& path,
   if (numResults != 1)
   {
     // non-wildcard insertion should ALWAYS only return one result
-    RETURN_ERROR("...FAILED! Returned path list does contain more than one result but no wildcard was specified");
+    OFLOG_DEBUG(tpathLogger, "Path: " << path << " ... FAILED!");
+    RETURN_ERROR("Returned path list does contain more than one result but no wildcard was specified");
   }
   DcmPath* oneResult = * (results.begin());
 
@@ -78,7 +81,8 @@ static OFCondition testPathInsertionsWithoutWildcard(const OFString& path,
   {
     if (!expectFailed)
     {
-        RETURN_ERROR("...FAILED! Returned object list does not contain " << expectedNumObjects << " but only " << oneResult->size() << "elements");
+      OFLOG_DEBUG(tpathLogger, "Path: " << path << " ... FAILED!");
+      RETURN_ERROR("Returned object list does not contain " << expectedNumObjects << " but only " << oneResult->size() << "elements");
     }
   }
   else
@@ -88,13 +92,14 @@ static OFCondition testPathInsertionsWithoutWildcard(const OFString& path,
     {
       if (*it == NULL)
       {
-        RETURN_ERROR(" ...FAILED! Path insertion failed: One of the created objects is NULL");
+        OFLOG_DEBUG(tpathLogger, "Path: " << path << " ... FAILED!");
+        RETURN_ERROR("Path insertion failed: One of the created objects is NULL");
       }
       it++;
     }
   }
 
-  OFLOG_DEBUG(tpathLogger, " ...OK");
+  OFLOG_DEBUG(tpathLogger, "Path: " << path << " ... OK");
   return EC_Normal;
 }
 
@@ -104,13 +109,15 @@ static OFCondition testPathInsertionsWithWildcard(const OFString& path,
                                                   const OFBool& expectFailed = OFFalse,
                                                   const OFBool& createIfNecessary = OFTrue)
 {
-  OFLOG_DEBUG(tpathLogger, "Path: " << path);
   DcmPathProcessor proc;
   OFCondition result = proc.findOrCreatePath(dset, path, createIfNecessary);
   if (result.bad())
   {
     if (!expectFailed)
-        RETURN_ERROR(" ...FAILED! Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text());
+    {
+      OFLOG_DEBUG(tpathLogger, "Path: " << path << " ... FAILED!");
+      RETURN_ERROR("Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text());
+    }
     return EC_Normal;
   }
 
@@ -119,7 +126,8 @@ static OFCondition testPathInsertionsWithWildcard(const OFString& path,
   Uint32 numResults = proc.getResults(results);
   if ( (numResults != expectedNumResults) && !expectFailed )
   {
-    RETURN_ERROR(" ...FAILED!: Expected " << expectedNumResults << " but " << numResults << " results were returned");
+    OFLOG_DEBUG(tpathLogger, "Path: " << path << " ... FAILED!");
+    RETURN_ERROR("Expected " << expectedNumResults << " but " << numResults << " results were returned");
   }
   // check results
   OFListIterator(DcmPath*) oneResult = results.begin();
@@ -132,18 +140,20 @@ static OFCondition testPathInsertionsWithWildcard(const OFString& path,
       {
         if (*it == NULL)
         {
-          RETURN_ERROR(" ...FAILED! Path insertion failed: One of the result paths contains NULL");
+          OFLOG_DEBUG(tpathLogger, "Path: " << path << " ... FAILED!");
+          RETURN_ERROR("Path insertion failed: One of the result paths contains NULL");
         }
         it++;
       }
     }
     else
     {
-      RETURN_ERROR(" ...FAILED! Path insertion failed: One of the returned path is NULL");
+      OFLOG_DEBUG(tpathLogger, "Path: " << path << " ... FAILED!");
+      RETURN_ERROR("Path insertion failed: One of the returned paths is NULL");
     }
     oneResult++;
   }
-  OFLOG_DEBUG(tpathLogger, " ...OK");
+  OFLOG_DEBUG(tpathLogger, "Path: " << path << " ... OK");
   return EC_Normal;
 }
 
@@ -297,20 +307,19 @@ OFTEST(dcmdata_pathAccess)
   OFLOG_DEBUG(tpathLogger, "\nChecking dataset length:\n"
                           << "========================");
   Uint32 length = dset->calcElementLength(EXS_LittleEndianExplicit,EET_ExplicitLength);
-  OFLOG_DEBUG(tpathLogger, "Checking whether length of encoded dataset matches pre-calculated length");
   if (length == precalculatedLength)
   {
-    OFLOG_DEBUG(tpathLogger, " ...OK");
+    OFLOG_DEBUG(tpathLogger, "Checking whether length of encoded dataset matches pre-calculated length ... OK");
   }
   else
   {
-    OFLOG_ERROR(tpathLogger, " ...FAILED: Length is " << length << ". Should be " << precalculatedLength << "\n"
-            << "Please check dump and adapt test in case of false alarm:\n");
-    CERR << "Dump of assembled test object:" << OFendl;
-    dset->print(CERR);
-    CERR << OFendl;
-    CERR << "Dump of pre-defined template:" << OFendl;
-    CERR << precalculatedDump << OFendl;
+    OFLOG_DEBUG(tpathLogger, "Checking whether length of encoded dataset matches pre-calculated length ... FAILED!");
+    OFLOG_DEBUG(tpathLogger, "Length is " << length << ", but should be " << precalculatedLength);
+    OFLOG_DEBUG(tpathLogger, "Please check dump and adapt test in case of false alarm:" << OFendl);
+    OFLOG_DEBUG(tpathLogger, "Dump of assembled test object:");
+    OFLOG_DEBUG(tpathLogger, DcmObject::PrintHelper(*dset));
+    OFLOG_DEBUG(tpathLogger, "Dump of pre-defined template:" << OFendl);
+    OFLOG_DEBUG(tpathLogger, precalculatedDump);
     OFCHECK_FAIL("Wrong length");
   }
 
@@ -335,20 +344,19 @@ OFTEST(dcmdata_pathAccess)
   OFLOG_DEBUG(tpathLogger, "\nChecking dataset length:\n"
                           << "========================");
   length = dset->calcElementLength(EXS_LittleEndianExplicit,EET_ExplicitLength);
-  OFLOG_DEBUG(tpathLogger, "Checking whether length of encoded dataset matches pre-calculated length");
   if (length == precalculatedLength2)
   {
-    OFLOG_DEBUG(tpathLogger, " ...OK");
+    OFLOG_DEBUG(tpathLogger, "Checking whether length of encoded dataset matches pre-calculated length ... OK");
   }
   else
   {
-    OFLOG_ERROR(tpathLogger, " ...FAILED: Length is " << length << ". Should be " << precalculatedLength2 << "\n"
-            << "Please check dump and adapt test in case of false alarm:");
-    CERR << "Dump of assembled test object:" << OFendl;
-    dset->print(CERR);
-    CERR << OFendl;
-    CERR << "Dump of pre-defined template:" << OFendl;
-    CERR << precalculatedDump2 << OFendl;
+    OFLOG_DEBUG(tpathLogger, "Checking whether length of encoded dataset matches pre-calculated length ... FAILED!");
+    OFLOG_DEBUG(tpathLogger, "Length is " << length << ", but should be " << precalculatedLength2);
+    OFLOG_DEBUG(tpathLogger, "Please check dump and adapt test in case of false alarm:" << OFendl);
+    OFLOG_DEBUG(tpathLogger, "Dump of assembled test object:");
+    OFLOG_DEBUG(tpathLogger, DcmObject::PrintHelper(*dset));
+    OFLOG_DEBUG(tpathLogger, "Dump of pre-defined template:" << OFendl);
+    OFLOG_DEBUG(tpathLogger, precalculatedDump2);
     OFCHECK_FAIL("Wrong length");
   }
 }
@@ -356,6 +364,9 @@ OFTEST(dcmdata_pathAccess)
 /*
  * CVS/RCS Log:
  * $Log: tpath.cc,v $
+ * Revision 1.5  2011-08-05 14:08:59  joergr
+ * Fixed output of test program in debug mode.
+ *
  * Revision 1.4  2011-08-05 10:20:37  joergr
  * Renamed test logger in order to reflect the current name of the program.
  *
