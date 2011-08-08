@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.08 (onken)
+
+- Added dumb assignment operator in order to keep VS compilers quiet. Thanks to
+  Yves Neumann<neumann@image-systems.biz> for the hint and suggested patch.
+  Affects: dcmnet/include/dcmtk/dcmnet/dcuserid.h
+
 **** Changes from 2011.08.05 (riesmeier)
 
 - Renamed test logger in order to reflect the current name of the program.

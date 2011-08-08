@@ -18,9 +18,9 @@
  * Purpose:
  *   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
  *
- * Last Update:         $Author: joergr $
- * Update Date:         $Date: 2010-10-14 13:17:22 $
- * CVS/RCS Revision:    $Revision: 1.7 $
+ * Last Update:         $Author: onken $
+ * Update Date:         $Date: 2011-08-08 09:55:42 $
+ * CVS/RCS Revision:    $Revision: 1.8 $
  * Status:              $State: Exp $
  *
  * CVS/RCS Log at end of file
@@ -57,6 +57,11 @@ public:
   /** Constructor
    */
   UserIdentityNegotiationSubItem();
+  
+  /** Assignment operator (does nothing, used to keep some compilers quiet).
+   *  @param The item to be copied.
+   */ 
+  UserIdentityNegotiationSubItem& operator= (const UserIdentityNegotiationSubItem&) { /*nothing to do*/ }
 
   /** Denotes whether instance is part of a request (DUL_TYPEASSOCIATERQ)
    *  or acknowledge PDU (DUL_TYPEASSOCIATEAC)
@@ -376,6 +381,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.h,v $
+** Revision 1.8  2011-08-08 09:55:42  onken
+** Added dumb assignment operator in order to keep VS compilers quiet.
+**
 ** Revision 1.7  2010-10-14 13:17:22  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
