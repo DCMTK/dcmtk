@@ -17,9 +17,9 @@
  *
  *  Purpose: main test program
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 13:04:18 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-08 11:04:06 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,12 +76,17 @@ OFTEST_REGISTER(dcmdata_elementLength_pixelSequence);
 OFTEST_REGISTER(dcmdata_parser_MissingSequenceDelimitationItem);
 OFTEST_REGISTER(dcmdata_parser_oddLengthPartialValue_lastItem);
 OFTEST_REGISTER(dcmdata_parser_oddLengthPartialValue_notLastItem);
+OFTEST_REGISTER(dcmdata_parser_wrongExplicitVRinDataset_default);
+OFTEST_REGISTER(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict);
 OFTEST_MAIN("dcmdata")
 
 /*
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.5  2011-08-08 11:04:06  joergr
+** Added test cases for new parser flag "dcmPreferVRFromDataDictionary".
+**
 ** Revision 1.4  2011-07-06 13:04:18  uli
 ** Fixed some inconsistencies in test names.
 **

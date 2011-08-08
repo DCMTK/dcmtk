@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.08 (riesmeier)
 
+- Added test cases for new parser flag "dcmPreferVRFromDataDictionary".
+  Affects: dcmdata/tests/tests.cc
+           dcmdata/tests/tparser.cc
+
 - Added new parser flag that allows for ignoring the element's VR read from the
   dataset and for preferring the VR defined in the data dictionary.
   Affects: dcmdata/apps/dcmconv.cc
