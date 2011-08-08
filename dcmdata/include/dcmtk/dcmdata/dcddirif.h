@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-02 13:01:26 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-08 10:23:55 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,15 +129,15 @@ class DicomDirInterface
         AP_GeneralPurposeBDJPEG,
         /// General Purpose BD Interchange with JPEG 2000 (STD-GEN-BD-J2K)
         AP_GeneralPurposeBDJPEG2000,
-        /// General Purpose BD Interchange with MPEG2 MP@ML (STD-GEN-BD-MPEG2-MPML)
+        /// General Purpose BD Interchange with MPEG2 MP\@ML (STD-GEN-BD-MPEG2-MPML)
         AP_GeneralPurposeBDMPEG2MPatML,
-        /// General Purpose BD Interchange with MPEG2 MP@HL (STD-GEN-BD-MPEG2-MPHL)
+        /// General Purpose BD Interchange with MPEG2 MP\@HL (STD-GEN-BD-MPEG2-MPHL)
         AP_GeneralPurposeBDMPEG2MPatHL,
-        /// General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41)
+        /// General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP\@Level4.1 (STD-GEN-BD-MPEG4-HPLV41)
         AP_GeneralPurposeBDMPEG4HPatLV41,
-        /// General Purpose BD Interchange with MPEG-4 AVC/H.264 BD-Compatible HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)        
+        /// General Purpose BD Interchange with MPEG-4 AVC/H.264 BD-Compatible HiP\@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)
         AP_GeneralPurposeBDMPEG4HPatLV41BD,
-        /// General Purpose USB and Flash Memory Interchange with JPEG (STD-GEN-USB/MMC/CF/SD-JPEG)        
+        /// General Purpose USB and Flash Memory Interchange with JPEG (STD-GEN-USB/MMC/CF/SD-JPEG)
         AP_USBandFlashJPEG,
         /// General Purpose USB and Flash Memory Interchange with JPEG 2000 (STD-GEN-USB/MMC/CF/SD-J2K)
         AP_USBandFlashJPEG2000,
@@ -666,7 +666,7 @@ class DicomDirInterface
 
     /** create or update patient record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
      */
@@ -676,7 +676,7 @@ class DicomDirInterface
 
     /** create or update study record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
      */
@@ -686,7 +686,7 @@ class DicomDirInterface
 
     /** create or update new series record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
      */
@@ -696,7 +696,7 @@ class DicomDirInterface
 
     /** create or update overlay record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -708,7 +708,7 @@ class DicomDirInterface
 
     /** create or update modality LUT record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -720,7 +720,7 @@ class DicomDirInterface
 
     /** create or update VOI LUT record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -732,7 +732,7 @@ class DicomDirInterface
 
     /** create or update curve record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -744,7 +744,7 @@ class DicomDirInterface
 
     /** create or update structure reporting record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -756,7 +756,7 @@ class DicomDirInterface
 
     /** create or update presentation state record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -768,7 +768,7 @@ class DicomDirInterface
 
     /** create or update waveform record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -780,7 +780,7 @@ class DicomDirInterface
 
     /** create or update RT dose record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -792,7 +792,7 @@ class DicomDirInterface
 
     /** create or update RT structure set record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -804,7 +804,7 @@ class DicomDirInterface
 
     /** create or update RT plan record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -816,7 +816,7 @@ class DicomDirInterface
 
     /** create or update RT treatment record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -828,7 +828,7 @@ class DicomDirInterface
 
     /** create or update stored print record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -840,7 +840,7 @@ class DicomDirInterface
 
     /** create or update key object doc record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -852,7 +852,7 @@ class DicomDirInterface
 
     /** create or update registration record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -864,7 +864,7 @@ class DicomDirInterface
 
     /** create or update fiducial record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -876,7 +876,7 @@ class DicomDirInterface
 
     /** create or update raw data record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -888,7 +888,7 @@ class DicomDirInterface
 
     /** create or update spectroscopy record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -900,7 +900,7 @@ class DicomDirInterface
 
     /** create or update encap doc record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -912,7 +912,7 @@ class DicomDirInterface
 
     /** create or update value map record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -924,7 +924,7 @@ class DicomDirInterface
 
     /** create or update hanging protocol record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -936,7 +936,7 @@ class DicomDirInterface
 
     /** create or update stereometric record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -948,7 +948,7 @@ class DicomDirInterface
 
     /** create or update palette record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -960,7 +960,7 @@ class DicomDirInterface
 
     /** create or update surface record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -972,7 +972,7 @@ class DicomDirInterface
 
     /** create or update measurement record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -984,7 +984,7 @@ class DicomDirInterface
 
     /** create or update implant record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -996,7 +996,7 @@ class DicomDirInterface
 
     /** create or update implant group record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -1008,7 +1008,7 @@ class DicomDirInterface
 
     /** create or update implant assy record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -1020,7 +1020,7 @@ class DicomDirInterface
 
     /** create or update plan record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -1032,7 +1032,7 @@ class DicomDirInterface
 
     /** create or update image record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
-     *  @param dataset DICOM dataset of the current file
+     *  @param fileformat DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new or updated record, NULL if an error occurred
@@ -1092,7 +1092,7 @@ class DicomDirInterface
      *  A new record is only added if it does not already exist.
      *  @param parent parent record (add new record as a child of this one)
      *  @param recordType type of directory record to be created
-     *  @param dataset DICOM dataset containing data of the new record
+     *  @param fileformat DICOM dataset containing data of the new record
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
      *  @return pointer to new/existing record, NULL if an error occurred
@@ -1528,6 +1528,9 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.28  2011-08-08 10:23:55  joergr
+ * Fixed various minor issues related to the Doxygen documentation.
+ *
  * Revision 1.27  2011-08-02 13:01:26  uli
  * Don't load files twice when constructing a DICOMDIR.
  *
