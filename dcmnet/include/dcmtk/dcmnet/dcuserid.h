@@ -19,8 +19,8 @@
  *   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
  *
  * Last Update:         $Author: onken $
- * Update Date:         $Date: 2011-08-08 12:10:09 $
- * CVS/RCS Revision:    $Revision: 1.9 $
+ * Update Date:         $Date: 2011-08-08 12:27:46 $
+ * CVS/RCS Revision:    $Revision: 1.10 $
  * Status:              $State: Exp $
  *
  * CVS/RCS Log at end of file
@@ -116,7 +116,6 @@ public:
 
   /** Dump content of this user identity sub item to output stream
     * @param outstream - [out] The stream to dump to
-    * @return none
     */
   virtual void dump(STD_NAMESPACE ostream& outstream) const =0;
 
@@ -190,6 +189,7 @@ public:
    *  @param resultBuf - [out] Content of primary field. NULL if not set. Memory
    *                     of buffer must be freed by the caller.
    *  @param resultLen - [out] Length of returned buffer
+   *  @return Content of the primary field
    */
   Uint16 getPrimField(char*& resultBuf,
                       Uint16& resultLen) const;
@@ -199,6 +199,7 @@ public:
    *  @param resultBuf - [out] Content of secondary field. NULL if not set. Memory
    *                     of buffer must be freed by the caller.
    *  @param resultLen - [out] Length of returned buffer
+   *  @return Content of the secondary field.
    */
   Uint16 getSecField(char*& resultBuf,
                      Uint16& resultLen) const;
@@ -246,19 +247,16 @@ public:
 
   /** Dump content of this user identity sub item to output stream
     * @param outstream - [out] The stream to dump to
-    * @return none
     */
   void dump(STD_NAMESPACE ostream& outstream) const;
 
   /** Assignment operator, does a deep copy of a class instance
    * @param rhs - [in] Right hand side of assignment
-   * @return none
    */
   UserIdentityNegotiationSubItemRQ& operator= (const UserIdentityNegotiationSubItemRQ& rhs);
 
   /** Copy constructor, does a deep copy of a class instance
    * @param rhs - [in] The class instance to copy from
-   * @return none
    */
   UserIdentityNegotiationSubItemRQ(const UserIdentityNegotiationSubItemRQ& rhs);
 
@@ -312,6 +310,7 @@ public:
    *  @param targetBuffer - [out] Content of server response field. NULL if not set.
    *                        Memory of buffer must be freed by the caller.
    *  @param resultLen - [out] Length of returned buffer
+   *  @return The server response field
    */
   Uint16 getServerResponse(char*& targetBuffer,
                            Uint16& resultLen) const;
@@ -344,19 +343,16 @@ public:
 
   /** Dump content of this user identity sub item to output stream
     * @param outstream - [out] The stream to dump to
-    * @return none
     */
   void dump(STD_NAMESPACE ostream& outstream) const;
 
   /** Assignment operator, does a deep copy of a class instance
    * @param rhs - [in] Right hand side of assignment
-   * @return none
    */
   UserIdentityNegotiationSubItemAC& operator= (const UserIdentityNegotiationSubItemAC& rhs);
 
   /** Copy constructor, does a deep copy of a class instance
    * @param rhs - [in] The class instance to copy from
-   * @return none
    */
   UserIdentityNegotiationSubItemAC(const UserIdentityNegotiationSubItemAC& rhs);
 
@@ -378,6 +374,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.h,v $
+** Revision 1.10  2011-08-08 12:27:46  onken
+** Added further doxygen documentation.
+**
 ** Revision 1.9  2011-08-08 12:10:09  onken
 ** Made assignment operator private and added public copy constructor.
 ** Fixed doxygen documentation.

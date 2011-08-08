@@ -22,6 +22,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.08 (onken)
 
+- Added further doxygen documentation.
+  Affects: dcmnet/include/dcmtk/dcmnet/dcuserid.h
+
 - Made assignment operator private and added public copy
   constructor. Fixed doxygen documentation.
   Affects: dcmnet/include/dcmtk/dcmnet/dcuserid.h
