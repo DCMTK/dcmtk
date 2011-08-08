@@ -13,5 +13,6 @@ MACRO(DCMTK_ADD_TESTS MODULE)
         STRING(REPLACE ")" "" TEST ${TEST})
         # This assumes that test names are globally unique
         ADD_TEST("${TEST}" "${MODULE}_tests" "${TEST}")
+        SET_PROPERTY(TEST "${TEST}" PROPERTY LABELS "${MODULE}")
     ENDFOREACH(TEST_LINE)
 ENDMACRO(DCMTK_ADD_TESTS)

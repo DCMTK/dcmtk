@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.08 (riesmeier)
 
+- Added label to CMake tests (CTest), which is identical to the module name.
+  Affects: CMake/dcmtkAddTests.cmake
+
 - Added test cases for new parser flag "dcmPreferVRFromDataDictionary".
   Affects: dcmdata/tests/tests.cc
            dcmdata/tests/tparser.cc
