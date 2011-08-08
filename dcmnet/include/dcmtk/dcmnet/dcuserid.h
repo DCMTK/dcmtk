@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2010, OFFIS e.V.
+ *  Copyright (C) 2008-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
  *
  * Last Update:         $Author: onken $
- * Update Date:         $Date: 2011-08-08 09:55:42 $
- * CVS/RCS Revision:    $Revision: 1.8 $
+ * Update Date:         $Date: 2011-08-08 12:10:09 $
+ * CVS/RCS Revision:    $Revision: 1.9 $
  * Status:              $State: Exp $
  *
  * CVS/RCS Log at end of file
@@ -57,11 +57,15 @@ public:
   /** Constructor
    */
   UserIdentityNegotiationSubItem();
-  
-  /** Assignment operator (does nothing, used to keep some compilers quiet).
-   *  @param The item to be copied.
-   */ 
-  UserIdentityNegotiationSubItem& operator= (const UserIdentityNegotiationSubItem&) { /*nothing to do*/ }
+
+  /** Copy constructor. Needed to keep some compilers quiet.
+   *  @param src item that should be copied from.
+   */
+  UserIdentityNegotiationSubItem(const UserIdentityNegotiationSubItem& src) : 
+    m_itemType(src.m_itemType), 
+    m_reserved(src.m_reserved)
+  {
+  }
 
   /** Denotes whether instance is part of a request (DUL_TYPEASSOCIATERQ)
    *  or acknowledge PDU (DUL_TYPEASSOCIATEAC)
@@ -107,7 +111,6 @@ public:
                              unsigned long& lengthWritten) const =0;
 
   /** Clears member variables and frees memory
-   *  @return none
    */
   virtual void clear() =0;
 
@@ -123,6 +126,10 @@ public:
 
 private:
 
+  /** Undefined private assignment operator. Needed to keep some compilers quiet.
+   */
+  UserIdentityNegotiationSubItem& operator= (const UserIdentityNegotiationSubItem&);
+  
   /// Item type of this user item. For User Identity Negotiation
   /// this is always 0x58
   const unsigned char m_itemType;
@@ -149,14 +156,12 @@ public:
   unsigned char pduType() const;
 
   /** Clears member variables and frees memory
-   *  @return none
    */
   virtual void clear();
 
   /** Sets identity type to be used.
    *  At this time, user, user/password, kerberos and SAML are known.
    *  @param mode - [in] the identification mode
-   *  @return none
    */
   void setIdentityType(const T_ASC_UserIdentityNegotiationMode& mode);
 
@@ -169,7 +174,6 @@ public:
   /** Sets content of primary field.
    *  @param buffer - [in] Content of primary field.
    *  @param length - [in] Length of buffer
-   *  @return none
    */
   void setPrimField(const char *buffer,
                     const Uint16& length);
@@ -177,34 +181,30 @@ public:
   /** Sets content of secondary field.
    *  @param buffer - [in] Content of secondary field.
    *  @param length - [in ] Length of buffer
-   *  @return none
    */
   void setSecField(const char *buffer,
                    const Uint16& length);
 
   /** Returns content of primary field. Memory is allocated by this function
    *  and must be freed by the caller.
-   *  @param buffer - [out] Content of primary field. NULL if not set. Memory
-   *                        of buffer must be freed by the caller.
-   *  @param length - [out] Length of returned buffer
-   *  @return none
+   *  @param resultBuf - [out] Content of primary field. NULL if not set. Memory
+   *                     of buffer must be freed by the caller.
+   *  @param resultLen - [out] Length of returned buffer
    */
   Uint16 getPrimField(char*& resultBuf,
                       Uint16& resultLen) const;
 
   /** Returns content of secondary field. Memory is allocated by this function
    *  and must be freed by the caller.
-   *  @param buffer - [out] Content of secondary field. NULL if not set. Memory
-   *                        of buffer must be freed by the caller.
-   *  @param length - [out] Length of returned buffer
-   *  @return none
+   *  @param resultBuf - [out] Content of secondary field. NULL if not set. Memory
+   *                     of buffer must be freed by the caller.
+   *  @param resultLen - [out] Length of returned buffer
    */
   Uint16 getSecField(char*& resultBuf,
                      Uint16& resultLen) const;
 
   /** Enables/disables requesting a positive response from the server.
    *  @param reqPosRsp - [in] If true, a positive response is requested
-   *  @return none
    */
   void setReqPosResponse(const OFBool& reqPosRsp);
 
@@ -297,24 +297,21 @@ public:
   unsigned char pduType() const;
 
   /** Clears member variables and frees memory
-   *  @return none
    */
   virtual void clear();
 
   /** Sets server response value
-   *  @param buffer - [in] Content of server response value (copied by function)
-   *  @param length - [in ] Length of buffer
-   *  @return none
+   *  @param rsp - [in] Content of server response value (copied by function)
+   *  @param rspLen - [in ] Length of buffer
    */
   void setServerResponse(const char* rsp,
                          const Uint16& rspLen);
 
   /** Returns content of server response field Memory is allocated by this
    *  function and must be freed by the caller.
-   *  @param buffer - [out] Content of server response field. NULL if not set.
+   *  @param targetBuffer - [out] Content of server response field. NULL if not set.
    *                        Memory of buffer must be freed by the caller.
-   *  @param length - [out] Length of returned buffer
-   *  @return none
+   *  @param resultLen - [out] Length of returned buffer
    */
   Uint16 getServerResponse(char*& targetBuffer,
                            Uint16& resultLen) const;
@@ -381,6 +378,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.h,v $
+** Revision 1.9  2011-08-08 12:10:09  onken
+** Made assignment operator private and added public copy constructor.
+** Fixed doxygen documentation.
+**
 ** Revision 1.8  2011-08-08 09:55:42  onken
 ** Added dumb assignment operator in order to keep VS compilers quiet.
 **
@@ -407,3 +408,4 @@ private:
 ** Reworked and extended User Identity Negotiation code.
 **
 */
+
