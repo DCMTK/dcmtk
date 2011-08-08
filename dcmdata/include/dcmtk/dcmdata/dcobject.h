@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,8 +20,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-29 10:57:17 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Update Date:      $Date: 2011-08-08 11:01:44 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,6 +117,15 @@ extern OFGlobal<OFBool> dcmAutoDetectDatasetXfer; /* default OFFalse */
  *  element with Implicit VR Little Endian transfer syntax.
  */
 extern OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding; /* default OFFalse */
+
+/** This flag defines how the element's VR is treated by the parser when
+ *  reading from a dataset with explicit VR encoding. By default, the
+ *  VR from the dataset is used. If this flag is enabled and the VR of the
+ *  tag is defined in the data dictionary, the parser will use the VR from
+ *  the data dictionary (and ignore the one from the dataset). This flag is,
+ *  therefore, useful for reading incorrectly encoded DICOM datasets.
+ */
+extern OFGlobal<OFBool> dcmPreferVRFromDataDictionary; /* default OFFalse */
 
 /** This flag indicates, whether private attributes with implicit transfer
  *  syntax having a maximum length should be handled as sequences (ignoring
@@ -696,6 +705,10 @@ static inline STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream &stream, D
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.71  2011-08-08 11:01:44  joergr
+ * Added new parser flag that allows for ignoring the element's VR read from the
+ * dataset and for preferring the VR defined in the data dictionary.
+ *
  * Revision 1.70  2010-10-29 10:57:17  joergr
  * Added support for colored output to the print() method.
  *

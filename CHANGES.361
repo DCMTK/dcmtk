@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.08 (riesmeier)
 
+- Added new parser flag that allows for ignoring the element's VR read from the
+  dataset and for preferring the VR defined in the data dictionary.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmdump.man
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+
 - Fixed various minor issues related to the Doxygen documentation.
   Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
 

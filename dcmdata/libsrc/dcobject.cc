@@ -20,8 +20,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-21 15:02:53 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Update Date:      $Date: 2011-08-08 11:01:46 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,17 +48,18 @@
 
 // global flags
 
-OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection(OFTrue);
-OFGlobal<OFBool> dcmAcceptOddAttributeLength(OFTrue);
-OFGlobal<OFBool> dcmEnableCP246Support(OFTrue);
-OFGlobal<OFBool> dcmEnableOldSignatureFormat(OFFalse);
-OFGlobal<OFBool> dcmAutoDetectDatasetXfer(OFFalse);
-OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding(OFFalse);
-OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ(OFFalse);
-OFGlobal<OFBool> dcmIgnoreParsingErrors(OFFalse);
+OFGlobal<OFBool>    dcmEnableAutomaticInputDataCorrection(OFTrue);
+OFGlobal<OFBool>    dcmAcceptOddAttributeLength(OFTrue);
+OFGlobal<OFBool>    dcmEnableCP246Support(OFTrue);
+OFGlobal<OFBool>    dcmEnableOldSignatureFormat(OFFalse);
+OFGlobal<OFBool>    dcmAutoDetectDatasetXfer(OFFalse);
+OFGlobal<OFBool>    dcmAcceptUnexpectedImplicitEncoding(OFFalse);
+OFGlobal<OFBool>    dcmPreferVRFromDataDictionary(OFFalse);
+OFGlobal<OFBool>    dcmReadImplPrivAttribMaxLengthAsSQ(OFFalse);
+OFGlobal<OFBool>    dcmIgnoreParsingErrors(OFFalse);
 OFGlobal<DcmTagKey> dcmStopParsingAfterElement(DCM_UndefinedTagKey); // (0xffff,0xffff)
-OFGlobal<OFBool> dcmWriteOversizedSeqsAndItemsUndefined(OFTrue);
-OFGlobal<OFBool> dcmIgnoreFileMetaInformationGroupLength(OFFalse);
+OFGlobal<OFBool>    dcmWriteOversizedSeqsAndItemsUndefined(OFTrue);
+OFGlobal<OFBool>    dcmIgnoreFileMetaInformationGroupLength(OFFalse);
 
 // ****** public methods **********************************
 
@@ -523,6 +524,10 @@ OFBool DcmObject::isEmpty(const OFBool /*normalize*/)
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.70  2011-08-08 11:01:46  joergr
+ * Added new parser flag that allows for ignoring the element's VR read from the
+ * dataset and for preferring the VR defined in the data dictionary.
+ *
  * Revision 1.69  2011-03-21 15:02:53  joergr
  * Added module name "DCMDATA_" as a prefix to the ANSI escape code macros.
  * Moved ANSI escape code for "reset" to the end of each output line (before

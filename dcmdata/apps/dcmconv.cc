@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:30 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Update Date:      $Date: 2011-08-08 11:01:41 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,6 +141,9 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("parsing of odd-length attributes:");
       cmd.addOption("--accept-odd-length",   "+ao",    "accept odd length attributes (default)");
       cmd.addOption("--assume-even-length",  "+ae",    "assume real length is one byte larger");
+    cmd.addSubGroup("handling of explicit VR:");
+      cmd.addOption("--use-explicit-vr",     "+ev",    "use explicit VR from dataset (default)");
+      cmd.addOption("--ignore-explicit-vr",  "-ev",    "ignore explicit VR (prefer data dictionary)");
     cmd.addSubGroup("handling of non-standard VR:");
       cmd.addOption("--treat-as-unknown",    "+vr",    "treat non-standard VR as unknown (default)");
       cmd.addOption("--assume-implicit",     "-vr",    "try to read with implicit VR little endian TS");
@@ -281,6 +284,17 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--assume-even-length"))
       {
         dcmAcceptOddAttributeLength.set(OFFalse);
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--use-explicit-vr"))
+      {
+        dcmPreferVRFromDataDictionary.set(OFFalse);
+      }
+      if (cmd.findOption("--ignore-explicit-vr"))
+      {
+        dcmPreferVRFromDataDictionary.set(OFTrue);
       }
       cmd.endOptionBlock();
 
@@ -524,6 +538,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.73  2011-08-08 11:01:41  joergr
+** Added new parser flag that allows for ignoring the element's VR read from the
+** dataset and for preferring the VR defined in the data dictionary.
+**
 ** Revision 1.72  2010-10-14 13:13:30  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

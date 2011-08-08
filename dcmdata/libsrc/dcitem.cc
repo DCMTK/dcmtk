@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-16 07:43:07 $
- *  CVS/RCS Revision: $Revision: 1.153 $
+ *  Update Date:      $Date: 2011-08-08 11:01:46 $
+ *  CVS/RCS Revision: $Revision: 1.154 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -315,11 +315,13 @@ void DcmItem::checkAndUpdateVR(DcmItem &item,
         {
             if (bitsAlloc == 8)
             {
-                DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OB' because WaveformBitsAllocated "
+                DCMDATA_DEBUG("DcmItem::checkAndUpdateVR() setting undefined VR of "
+                    << tag.getTagName() << " " << tag << " to 'OB' because WaveformBitsAllocated "
                     << DCM_WaveformBitsAllocated << " has a value of 8");
                 tag.setVR(EVR_OB);
             } else {
-                DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OW' because WaveformBitsAllocated "
+                DCMDATA_DEBUG("DcmItem::checkAndUpdateVR() setting undefined VR of "
+                    << tag.getTagName() << " " << tag << " to 'OW' because WaveformBitsAllocated "
                     << DCM_WaveformBitsAllocated << " has a value that is different from 8");
                 tag.setVR(EVR_OW);
             }
@@ -334,11 +336,13 @@ void DcmItem::checkAndUpdateVR(DcmItem &item,
         {
             if (pixelRep == 0x0001)
             {
-                DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'SS' because PixelRepresentation "
+                DCMDATA_DEBUG("DcmItem::checkAndUpdateVR() setting undefined VR of " << tag.getTagName()
+                    << " " << tag << " to 'SS' because PixelRepresentation "
                     << DCM_PixelRepresentation << " has a value of 1");
                 tag.setVR(EVR_SS);
             } else {
-                DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'US' because PixelRepresentation "
+                DCMDATA_DEBUG("DcmItem::checkAndUpdateVR() setting undefined VR of " << tag.getTagName()
+                    << " " << tag << " to 'US' because PixelRepresentation "
                     << DCM_PixelRepresentation << " has a value that is different from 1");
                 tag.setVR(EVR_US);
             }
@@ -347,13 +351,15 @@ void DcmItem::checkAndUpdateVR(DcmItem &item,
     else if (((tag.getBaseTag() == DCM_OverlayData) || (tag == DCM_PixelData)) && (tag.getEVR() == EVR_ox))
     {
         /* case 3 (OverlayData and PixelData): see section 8.1.2 and 8.2 in PS 3.5 */
-        DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OW'");
+        DCMDATA_DEBUG("DcmItem::checkAndUpdateVR() setting undefined VR of "
+            << tag.getTagName() << " " << tag << " to 'OW'");
         tag.setVR(EVR_OW);
     }
     else if ((tag.getBaseTag() == DCM_RETIRED_CurveData) && (tag.getEVR() == EVR_ox))
     {
         /* case 4 (CurveData): see section A.1 in PS 3.5-2004 */
-        DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OB'");
+        DCMDATA_DEBUG("DcmItem::checkAndUpdateVR() setting undefined VR of "
+            << tag.getTagName() << " " << tag << " to 'OB'");
         tag.setVR(EVR_OB);
     }
 }
@@ -844,7 +850,6 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
 {
     OFCondition l_error = EC_Normal;
     Uint32 valueLength = 0;
-    DcmEVR nxtobj = EVR_UNKNOWN;
     Uint16 groupTag = 0xffff;
     Uint16 elementTag = 0xffff;
 
@@ -881,13 +886,14 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     // tag has been read
     bytesRead = 4;
     DcmTag newTag(groupTag, elementTag);
+    DcmEVR newEVR = newTag.getEVR();
     // check whether tag is private
     OFBool isPrivate = groupTag & 1;
 
     /* if the transfer syntax which was passed is an explicit VR syntax and if the current */
     /* item is not a delimitation item (note that delimitation items do not have a VR), go */
     /* ahead and read 2 bytes from inStream. These 2 bytes contain this item's VR value. */
-    if (xferSyn.isExplicitVR() && newTag.getEVR() != EVR_na)
+    if (xferSyn.isExplicitVR() && (newEVR != EVR_na))
     {
         char vrstr[3];
         vrstr[2] = '\0';
@@ -926,8 +932,23 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
             OFSTRINGSTREAM_FREESTR(tmpString)
         }
 
-        /* set the VR which was read in the above created tag object. */
-        newTag.setVR(vr);
+        /* the VR in the dataset might be wrong, so the user can decide to ignore it */
+        if (dcmPreferVRFromDataDictionary.get() && (newEVR != EVR_UNKNOWN) && (newEVR != EVR_UNKNOWN2B))
+        {
+            if (newEVR != vr.getEVR())
+            {
+                /* ignore explicit VR in dataset if tag is defined in data dictionary */
+                DCMDATA_DEBUG("DcmItem::readTagAndLength() ignoring explicit VR in dataset ("
+                    << vr.getVRName() << ") for element " << newTag
+                    << ", using the one from data dictionary (" << newTag.getVRName() << ")");
+            }
+        } else {
+            /* set the VR which was read in the above created tag object */
+            newTag.setVR(vr);
+        }
+
+        /* determine VR read from dataset, because this VR specifies the number of bytes for the length-field */
+        newEVR = vr.getEVR();
 
         /* increase counter by 2 */
         bytesRead += 2;
@@ -946,17 +967,16 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
             {
                 // try to update VR from dictionary now that private creator is known
                 newTag.lookupVRinDictionary();
+                // also update the VR
+                newEVR = newTag.getEVR();
             }
         }
     }
 
-    /* determine this item's VR */
-    nxtobj = newTag.getEVR();
-
     /* the next thing we want to do is read the value in the length field from inStream. */
     /* determine if there is a corresponding amount of bytes (for the length field) still */
     /* available in inStream. If not, return an error. */
-    if (inStream.avail() < xferSyn.sizeofTagHeader(nxtobj) - bytesRead)
+    if (inStream.avail() < xferSyn.sizeofTagHeader(newEVR) - bytesRead)
     {
         inStream.putback();    // the UnsetPutbackMark is in readSubElement
         bytesRead = 0;
@@ -966,13 +986,13 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
 
     /* read the value in the length field. In some cases, it is 4 bytes wide, in other */
     /* cases only 2 bytes (see DICOM standard part 5, section 7.1.1) */
-    if (xferSyn.isImplicitVR() || nxtobj == EVR_na)   //note that delimitation items don't have a VR
+    if (xferSyn.isImplicitVR() || newEVR == EVR_na) // note that delimitation items don't have a VR
     {
-        inStream.read(&valueLength, 4);            //length field is 4 bytes wide
+        inStream.read(&valueLength, 4);            // length field is 4 bytes wide
         swapIfNecessary(gLocalByteOrder, byteOrder, &valueLength, 4, 4);
         bytesRead += 4;
-    } else {                                       //the transfer syntax is explicit VR
-        DcmVR vr(newTag.getEVR());
+    } else {                                       // the transfer syntax is explicit VR
+        DcmVR vr(newEVR);
         if (vr.usesExtendedLengthEncoding())
         {
             Uint16 reserved;
@@ -3706,6 +3726,10 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.154  2011-08-08 11:01:46  joergr
+** Added new parser flag that allows for ignoring the element's VR read from the
+** dataset and for preferring the VR defined in the data dictionary.
+**
 ** Revision 1.153  2011-06-16 07:43:07  joergr
 ** Used new DcmTagKey::getBaseTag() where appropriate to simplify the code.
 **
