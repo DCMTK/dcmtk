@@ -587,8 +587,8 @@ Known limitations of DCMTK on the Windows platform.
    implementation uses the traditional cfront header files <iostream.h> etc.
    The new implementation uses <iostream> etc. as defined in ANSI/ISO C++.
    DCMTK can be configured to use either of the two interfaces.  This behaviour
-   can be changed in "include/dcmtk/config/osconfig.h" in the build directory
-   where the symbol USE_STD_CXX_INCLUDES is declared.
+   can be changed in "config/include/dcmtk/config/osconfig.h" in the build
+   directory where the symbol USE_STD_CXX_INCLUDES is declared.
 
    NOTE: Previous releases of DCMTK (3.5.1 and older) used the old interface
          when compiled with Visual C++ 6.0.  When updating software that uses
@@ -664,4 +664,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2011-06-29 (Riesmeier)
+Last revised: 2011-08-09 (Riesmeier)
