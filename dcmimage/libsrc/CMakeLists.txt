@@ -2,4 +2,4 @@
 ADD_LIBRARY(dcmimage diargimg dicmyimg dicoimg dicoopx dicopx dihsvimg dilogger dipalimg dipipng dipitiff diqtctab diqtfs diqthash diqthitl diqtpbox diquant diregist dirgbimg diybrimg diyf2img diyp2img)
 
 # declare installation files
-INSTALL_TARGETS(${DCMTK_INSTALL_LIBDIR} dcmimage)
+INSTALL(TARGETS dcmimage DESTINATION ${DCMTK_INSTALL_LIBDIR} COMPONENT lib)

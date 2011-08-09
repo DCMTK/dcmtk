@@ -5,7 +5,7 @@ LINK_DIRECTORIES(${dcmsign_BINARY_DIR} ${dcmdata_BINARY_DIR} ${oflog_BINARY_DIR}
 ADD_EXECUTABLE(dcmsign dcmsign)
 
 # declare installation files
-INSTALL_TARGETS(${DCMTK_INSTALL_BINDIR} dcmsign)
+INSTALL(TARGETS dcmsign DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
 
 # make sure executables are linked to the corresponding libraries
 TARGET_LINK_LIBRARIES(dcmsign dcmdsig dcmdata oflog ofstd oflog ${ZLIB_LIBS} ${OPENSSL_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})

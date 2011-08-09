@@ -5,4 +5,4 @@ PROJECT(ofstd)
 INCLUDE_DIRECTORIES(${ofstd_SOURCE_DIR}/include)
 
 # recurse into subdirectories
-SUBDIRS(libsrc include/dcmtk/ofstd tests)
+SUBDIRS(libsrc include tests)

@@ -10,9 +10,7 @@ FOREACH(PROGRAM dcmcjpeg dcmdjpeg dcmj2pnm dcmmkdir)
 ENDFOREACH(PROGRAM)
 
 # declare installation files
-FOREACH(PROGRAM dcmcjpeg dcmdjpeg dcmj2pnm dcmmkdir)
-  INSTALL_TARGETS(${DCMTK_INSTALL_BINDIR} ${PROGRAM})
-ENDFOREACH(PROGRAM)
+INSTALL(TARGETS dcmcjpeg dcmdjpeg dcmj2pnm dcmmkdir DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmcjpeg dcmdjpeg dcmj2pnm dcmmkdir)

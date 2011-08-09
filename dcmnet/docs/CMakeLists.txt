@@ -1,2 +1,2 @@
 # declare installation files
-INSTALL_FILES(${DCMTK_INSTALL_DOCDIR} FILES asconfig.txt testing.txt)
+INSTALL(FILES asconfig.txt testing.txt DESTINATION ${DCMTK_INSTALL_DOCDIR} COMPONENT doc)

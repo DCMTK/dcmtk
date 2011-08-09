@@ -1,2 +1,2 @@
 # declare installation files
-INSTALL_FILES(${DCMTK_INSTALL_DOCDIR} FILES ciphers.txt randseed.txt)
+INSTALL(FILES ciphers.txt randseed.txt DESTINATION ${DCMTK_INSTALL_DOCDIR} COMPONENT doc)

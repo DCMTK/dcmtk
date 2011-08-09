@@ -5,4 +5,4 @@ PROJECT(dcmdata)
 INCLUDE_DIRECTORIES(${dcmdata_SOURCE_DIR}/include ${ofstd_SOURCE_DIR}/include ${oflog_SOURCE_DIR}/include ${ZLIB_INCDIR})
 
 # recurse into subdirectories
-SUBDIRS(libsrc libi2d apps include/dcmtk/dcmdata docs data tests)
+SUBDIRS(libsrc libi2d apps include docs data tests)

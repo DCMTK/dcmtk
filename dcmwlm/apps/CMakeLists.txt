@@ -8,7 +8,7 @@ LINK_DIRECTORIES(${dcmwlm_BINARY_DIR} ${ofstd_BINARY_DIR} ${oflog_BINARY_DIR} ${
 ADD_EXECUTABLE(wlmscpfs wlmscpfs wlcefs)
 
 # declare installation files
-INSTALL_TARGETS(${DCMTK_INSTALL_BINDIR} wlmscpfs)
+INSTALL(TARGETS wlmscpfs DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
 
 # make sure executables are linked to the corresponding libraries
 TARGET_LINK_LIBRARIES(wlmscpfs dcmwlm dcmnet dcmtls dcmdata oflog ofstd ${OPENSSL_LIBS} ${ZLIB_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})

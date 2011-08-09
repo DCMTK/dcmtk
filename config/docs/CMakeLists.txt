@@ -1,2 +1,2 @@
 # declare installation files
-INSTALL_FILES(${DCMTK_INSTALL_DOCDIR} FILES config.txt dirstruc.txt envvars.txt macros.txt modules.txt)
+INSTALL(FILES config.txt dirstruc.txt envvars.txt macros.txt modules.txt DESTINATION ${DCMTK_INSTALL_DOCDIR} COMPONENT doc)

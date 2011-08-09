@@ -1,2 +1,2 @@
 # declare installation files
-INSTALL_FILES(${DCMTK_INSTALL_ETCDIR} .cfg)
+INSTALL(FILES dcmqrscp.cfg DESTINATION ${DCMTK_INSTALL_ETCDIR} COMPONENT etc)

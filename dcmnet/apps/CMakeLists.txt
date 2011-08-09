@@ -8,12 +8,10 @@ FOREACH(PROGRAM echoscu findscu movescu storescp storescu termscu)
 ENDFOREACH(PROGRAM)
 
 # declare installation files
-FOREACH(PROGRAM echoscu findscu movescu storescp storescu termscu)
-  INSTALL_TARGETS(${DCMTK_INSTALL_BINDIR} ${PROGRAM})
-ENDFOREACH(PROGRAM)
+INSTALL(TARGETS echoscu findscu movescu storescp storescu termscu DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
 IF(WITH_OPENSSL)
   IF(WIN32)
-    INSTALL_FILES(${DCMTK_INSTALL_BINDIR} FILES ${OPENSSL_BINDIR}/dcmtkeay.dll ${OPENSSL_BINDIR}/dcmtkssl.dll)
+    INSTALL(FILES ${OPENSSL_BINDIR}/dcmtkeay.dll ${OPENSSL_BINDIR}/dcmtkssl.dll DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
   ENDIF(WIN32)
 ENDIF(WITH_OPENSSL)
 

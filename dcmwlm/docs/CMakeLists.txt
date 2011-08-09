@@ -1,2 +1,2 @@
 # declare installation files
-INSTALL_FILES(${DCMTK_INSTALL_DOCDIR} FILES wwwapp.txt)
+INSTALL(FILES wwwapp.txt DESTINATION ${DCMTK_INSTALL_DOCDIR} COMPONENT doc)

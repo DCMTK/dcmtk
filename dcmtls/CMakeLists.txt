@@ -5,4 +5,4 @@ PROJECT(dcmtls)
 INCLUDE_DIRECTORIES(${dcmtls_SOURCE_DIR}/include ${ofstd_SOURCE_DIR}/include ${oflog_SOURCE_DIR}/include ${dcmdata_SOURCE_DIR}/include ${dcmnet_SOURCE_DIR}/include ${ZLIB_INCDIR} ${OPENSSL_INCDIR})
 
 # recurse into subdirectories
-SUBDIRS(libsrc include/dcmtk/dcmtls docs)
+SUBDIRS(libsrc include docs)

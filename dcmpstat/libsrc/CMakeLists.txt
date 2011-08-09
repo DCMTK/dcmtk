@@ -2,4 +2,4 @@
 ADD_LIBRARY(dcmpstat dcmpstat dviface dvpsab dvpsabl dvpsal dvpsall dvpscf dvpscu dvpscul dvpsda dvpsdal dvpsfs dvpsga dvpsgal dvpsgl dvpsgll dvpsgr dvpsgrl dvpshlp dvpsib dvpsibl dvpsmsg dvpsov dvpsovl dvpspl dvpspl2 dvpspll dvpspr dvpsprt dvpsri dvpsril dvpsrs dvpsrsl dvpssp dvpsspl dvpssv dvpssvl dvpstat dvpstx dvpstxl dvpsvl dvpsvll dvpsvw dvpsvwl dvsighdl)
 
 # declare installation files
-INSTALL_TARGETS(${DCMTK_INSTALL_LIBDIR} dcmpstat)
+INSTALL(TARGETS dcmpstat DESTINATION ${DCMTK_INSTALL_LIBDIR} COMPONENT lib)

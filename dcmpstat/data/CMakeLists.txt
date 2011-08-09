@@ -1,2 +1,2 @@
 # declare installation files
-INSTALL_FILES(${DCMTK_INSTALL_DATDIR} FILES philips.lut)
+INSTALL(FILES philips.lut DESTINATION ${DCMTK_INSTALL_DATDIR} COMPONENT data)

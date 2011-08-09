@@ -7,9 +7,7 @@ FOREACH(PROGRAM dcm2pnm dcmquant dcmscale)
 ENDFOREACH(PROGRAM)
 
 # declare installation files
-FOREACH(PROGRAM dcm2pnm dcmquant dcmscale)
-  INSTALL_TARGETS(${DCMTK_INSTALL_BINDIR} ${PROGRAM})
-ENDFOREACH(PROGRAM)
+INSTALL(TARGETS dcm2pnm dcmquant dcmscale DESTINATION ${DCMTK_INSTALL_BINDIR} COMPONENT bin)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcm2pnm dcmquant dcmscale)

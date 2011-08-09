@@ -1,2 +1,2 @@
 # declare installation files
-INSTALL_FILES(${DCMTK_INSTALL_DOCDIR} FILES dcmqrcnf.txt dcmqrset.txt)
+INSTALL(FILES dcmqrcnf.txt dcmqrset.txt DESTINATION ${DCMTK_INSTALL_DOCDIR} COMPONENT doc)
