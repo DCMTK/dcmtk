@@ -464,8 +464,7 @@ In order to be able to use CMake for configuration purposes in DCMTK, perform
 the following steps to install CMake on your machine:
 
 1. Go to http://www.cmake.org/ to download the latest release version of CMake
-   for Windows.  With regard to a certain CMake version, note that CMake 2.4.8
-   or later can be used in conjunction with DCMTK.
+   for Windows.
 2. Execute the file which was downloaded to install CMake on your machine.
    Follow all install instructions appropriately.
 
