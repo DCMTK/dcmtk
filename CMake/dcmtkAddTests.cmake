@@ -6,11 +6,11 @@
 #
 
 MACRO(DCMTK_ADD_TESTS MODULE)
-    file(STRINGS tests.cc AVAIL_TESTS REGEX OFTEST_REGISTER)
+    FILE(STRINGS tests.cc AVAIL_TESTS REGEX "OFTEST_REGISTER\\([^)]*\\)")
     FOREACH(TEST_LINE ${AVAIL_TESTS})
         # TODO: How can we parse tests.cc in a saner way?
-        STRING(REPLACE "OFTEST_REGISTER(" "" TEST ${TEST_LINE})
-        STRING(REPLACE ")" "" TEST ${TEST})
+        STRING(REGEX MATCH "OFTEST_REGISTER\\([^)]*" TEST "${TEST_LINE}")
+        STRING(REPLACE "OFTEST_REGISTER(" "" TEST ${TEST})
         # This assumes that test names are globally unique
         ADD_TEST("${TEST}" "${MODULE}_tests" "${TEST}")
         SET_PROPERTY(TEST "${TEST}" PROPERTY LABELS "${MODULE}")
