@@ -10,7 +10,7 @@ corrections are made to the data dictionary.
 By default (on a Posix system) the global data dictionary will attempt to
 load the file /usr/local/share/dcmtk/dicom.dic (or an alternative default
 data dictionary file specified as DCM_DICT_DEFAULT_PATH in file
-config/include/dcmtk/config/cfunix.h, which is created by autoconf during
+config/include/dcmtk/config/osconfig.h, which is created by autoconf during
 the execution of the configure script).
 
 The default behaviour can be overridden by defining an environment
@@ -38,7 +38,7 @@ attributes will be encoded using VR=OB).
 
 An example DICOM data dictionary can be found in dcmdata/data/dicom.dic
 It should be copied to the default data dictionary location (as defined in
-config/include/dcmtk/config/cfunix.h).  The format of the data dictionary
+config/include/dcmtk/config/osconfig.h).  The format of the data dictionary
 file is described in the example.
 
 The example data dictionary is relatively complete and includes all
@@ -102,4 +102,4 @@ useful technique if you want to override built-in data dictionary values.
 
 OFFIS e.V., Oldenburg, Germany
 
-Last revised: 2010-10-14 (Riesmeier).
+Last revised: 2011-08-10 (Riesmeier).
