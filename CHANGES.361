@@ -3,7 +3,8 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.10 (riesmeier)
 
-- Removed any references to the old "cfunix.h" file.
+- Removed any references to the old "cfunix.h" file. Thanks to Markus Mertens
+  <markus.mertens@uni-muenster.de> for the original report.
   Affects: config/Makefile.in
            dcmdata/docs/datadict.txt
 
