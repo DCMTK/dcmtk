@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 11:14:38 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-11 09:37:11 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -29,6 +29,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dchashdi.h"
 #include "dcmtk/dcmdata/dcdicent.h"
+#include "dcmtk/dcmdata/dctypes.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CASSERT
@@ -584,6 +585,10 @@ DcmHashDict::loadSummary(STD_NAMESPACE ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
+** Revision 1.28  2011-08-11 09:37:11  joergr
+** Added missing header file to compile when PRINT_REPLACED_DICTIONARY_ENTRIES
+** is defined.
+**
 ** Revision 1.27  2011-02-04 11:14:38  uli
 ** Stop inheriting from OFList and OFListIterator.
 **

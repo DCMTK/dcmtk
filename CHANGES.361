@@ -9,6 +9,10 @@ Changes between releases are documented here.
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h
            dcmdata/libsrc/dcdictzz.cc
 
+- Added missing header file to compile when PRINT_REPLACED_DICTIONARY_ENTRIES
+  is defined.
+  Affects: dcmdata/libsrc/dchashdi.cc
+
 **** Changes from 2011.08.10 (riesmeier)
 
 - Removed any references to the old "cfunix.h" file. Thanks to Markus Mertens
