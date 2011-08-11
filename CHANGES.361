@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.11 (riesmeier)
 
+- Added new Storage SOP Classes from DICOM 2011, which are originally defined
+  in DICOS and DICONDE standard, respectively.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+
 - Updated data dictionary for DICOM 2011 standard. This includes definitions
   from DICOS (Digital Imaging and Communications in Security) standard.
   Affects: dcmdata/data/dicom.dic

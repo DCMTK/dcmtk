@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-20 09:09:00 $
- *  CVS/RCS Revision: $Revision: 1.94 $
+ *  Update Date:      $Date: 2011-08-11 10:51:09 $
+ *  CVS/RCS Revision: $Revision: 1.95 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -467,8 +467,18 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_ImplantAssemblyTemplateStorage                         "1.2.840.10008.5.1.4.44.1"
 #define UID_ImplantTemplateGroupStorage                            "1.2.840.10008.5.1.4.45.1"
 
-// DICOMDIR; was UID_BasicDirectoryStorageSOPClass in DCMTK versions prior to 3.5.3
+// DICOMDIR (was UID_BasicDirectoryStorageSOPClass in DCMTK versions prior to 3.5.3)
 #define UID_MediaStorageDirectoryStorage                           "1.2.840.10008.1.3.10"
+
+// DICOS Storage
+#define UID_DICOS_CTImageStorage                                   "1.2.840.10008.5.1.4.1.1.501.1"
+#define UID_DICOS_DigitalXRayImageStorageForPresentation           "1.2.840.10008.5.1.4.1.1.501.2.1"
+#define UID_DICOS_DigitalXRayImageStorageForProcessing             "1.2.840.10008.5.1.4.1.1.501.2.2"
+#define UID_DICOS_ThreatDetectionReportStorage                     "1.2.840.10008.5.1.4.1.1.501.3"
+
+// DICONDE Storage
+#define UID_DICONDE_EddyCurrentImageStorage                        "1.2.840.10008.5.1.4.1.1.601.1"
+#define UID_DICONDE_EddyCurrentMultiframeImageStorage              "1.2.840.10008.5.1.4.1.1.601.2"
 
 /* Hanging Protocols Storage is a special case because hanging protocols use a different
    information model, i.e. there is no patient, study or series in a hanging protocol IOD. */
@@ -655,7 +665,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_LDAP_dicomUniqueAETitle                                "1.2.840.10008.15.0.4.7"
 #define UID_LDAP_dicomTransferCapability                           "1.2.840.10008.15.0.4.8"
 
-// UTC Synchronization Frame of Reference (CP 432)
+// UTC Synchronization Frame of Reference
 #define UID_UniversalCoordinatedTimeSynchronizationFrameOfReference "1.2.840.10008.15.1.1"
 
 // Well-known Frame of References
@@ -727,6 +737,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.95  2011-08-11 10:51:09  joergr
+** Added new Storage SOP Classes from DICOM 2011, which are originally defined
+** in DICOS and DICONDE standard, respectively.
+**
 ** Revision 1.94  2011-06-20 09:09:00  joergr
 ** Added two new SOP Class UIDs from Supplement 151 (Intravascular OCT Image
 ** Storage SOP Class).

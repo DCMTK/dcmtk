@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-20 09:09:02 $
- *  CVS/RCS Revision: $Revision: 1.94 $
+ *  Update Date:      $Date: 2011-08-11 10:51:12 $
+ *  CVS/RCS Revision: $Revision: 1.95 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -258,6 +258,14 @@ static const UIDNameMap uidNameMap[] = {
     { UID_RETIRED_VLImageStorage,                              "RETIRED_VLImageStorage" },
     { UID_RETIRED_VLMultiFrameImageStorage,                    "RETIRED_VLMultiFrameImageStorage" },
     { UID_RETIRED_XRayAngiographicBiPlaneImageStorage,         "RETIRED_XRayAngiographicBiPlaneImageStorage" },
+    // Storage (DICOS)
+    { UID_DICOS_CTImageStorage,                                "DICOS_CTImageStorage" },
+    { UID_DICOS_DigitalXRayImageStorageForPresentation,        "DICOS_DigitalXRayImageStorageForPresentation" },
+    { UID_DICOS_DigitalXRayImageStorageForProcessing,          "DICOS_DigitalXRayImageStorageForProcessing" },
+    { UID_DICOS_ThreatDetectionReportStorage,                  "DICOS_ThreatDetectionReportStorage" },
+    // Storage (DICONDE)
+    { UID_DICONDE_EddyCurrentImageStorage,                     "DICONDE_EddyCurrentImageStorage" },
+    { UID_DICONDE_EddyCurrentMultiframeImageStorage,           "DICONDE_EddyCurrentMultiframeImageStorage" },
 
     // Query/Retrieve
     { UID_FINDPatientRootQueryRetrieveInformationModel,              "FINDPatientRootQueryRetrieveInformationModel" },
@@ -462,7 +470,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_SPM2WHITEFrameOfReference,                           "SPM2WHITEFrameOfReference" },
     { UID_TalairachBrainAtlasFrameOfReference,                 "TalairachBrainAtlasFrameOfReference" },
 
-    // UTC Synchronization Frame of Reference (CP 432)
+    // UTC Synchronization Frame of Reference
     { UID_UniversalCoordinatedTimeSynchronizationFrameOfReference, "UniversalCoordinatedTimeSynchronizationFrameOfReference" },
 
     // Well-known SOP Instances for Color Palettes
@@ -628,6 +636,14 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_DRAFT_SRTextStorage,
     UID_DRAFT_WaveformStorage,
     UID_DRAFT_RTBeamsDeliveryInstructionStorage,
+    // DICOS
+    UID_DICOS_CTImageStorage,
+    UID_DICOS_DigitalXRayImageStorageForPresentation,
+    UID_DICOS_DigitalXRayImageStorageForProcessing,
+    UID_DICOS_ThreatDetectionReportStorage,
+    // DICONDE
+    UID_DICONDE_EddyCurrentImageStorage,
+    UID_DICONDE_EddyCurrentMultiframeImageStorage,
     NULL
 };
 
@@ -767,6 +783,14 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_DRAFT_SRDetailStorage,
     UID_DRAFT_SRTextStorage,
 //  UID_DRAFT_WaveformStorage,
+    // DICOS
+//  UID_DICOS_CTImageStorage,
+//  UID_DICOS_DigitalXRayImageStorageForPresentation,
+//  UID_DICOS_DigitalXRayImageStorageForProcessing,
+//  UID_DICOS_ThreatDetectionReportStorage,
+    // DICONDE
+//  UID_DICONDE_EddyCurrentImageStorage,
+//  UID_DICONDE_EddyCurrentMultiframeImageStorage,
     NULL
 };
 
@@ -902,14 +926,6 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_OphthalmicPhotography8BitImageStorage,
     UID_OphthalmicTomographyImageStorage,
     UID_PositronEmissionTomographyImageStorage,
-    UID_RETIRED_HardcopyColorImageStorage,
-    UID_RETIRED_HardcopyGrayscaleImageStorage,
-    UID_RETIRED_NuclearMedicineImageStorage,
-    UID_RETIRED_UltrasoundImageStorage,
-    UID_RETIRED_UltrasoundMultiframeImageStorage,
-    UID_RETIRED_VLImageStorage,
-    UID_RETIRED_VLMultiFrameImageStorage,
-    UID_RETIRED_XRayAngiographicBiPlaneImageStorage,
     UID_RTImageStorage,
     UID_SecondaryCaptureImageStorage,
     UID_UltrasoundImageStorage,
@@ -926,6 +942,22 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_XRay3DCraniofacialImageStorage,
     UID_XRayAngiographicImageStorage,
     UID_XRayRadiofluoroscopicImageStorage,
+    // retired
+    UID_RETIRED_HardcopyColorImageStorage,
+    UID_RETIRED_HardcopyGrayscaleImageStorage,
+    UID_RETIRED_NuclearMedicineImageStorage,
+    UID_RETIRED_UltrasoundImageStorage,
+    UID_RETIRED_UltrasoundMultiframeImageStorage,
+    UID_RETIRED_VLImageStorage,
+    UID_RETIRED_VLMultiFrameImageStorage,
+    UID_RETIRED_XRayAngiographicBiPlaneImageStorage,
+    // DICOS
+    UID_DICOS_CTImageStorage,
+    UID_DICOS_DigitalXRayImageStorageForPresentation,
+    UID_DICOS_DigitalXRayImageStorageForProcessing,
+    // DICONDE
+    UID_DICONDE_EddyCurrentImageStorage,
+    UID_DICONDE_EddyCurrentMultiframeImageStorage,
     NULL
 };
 
@@ -1070,7 +1102,15 @@ static const DcmModalityTable modalities[] = {
     { UID_DRAFT_SRComprehensiveStorage,                            "SRx", 4096 },
     { UID_DRAFT_SRDetailStorage,                                   "SRy", 4096 },
     { UID_DRAFT_SRTextStorage,                                     "SRz", 4096 },
-    { UID_DRAFT_WaveformStorage,                                   "WVd", 4096 }
+    { UID_DRAFT_WaveformStorage,                                   "WVd", 4096 },
+    // DICOS
+    { UID_DICOS_CTImageStorage,                                    "CTs", 512 * 512 * 2 },
+    { UID_DICOS_DigitalXRayImageStorageForPresentation,            "DXs", 2048 * 2048 * 2 },
+    { UID_DICOS_DigitalXRayImageStorageForProcessing,              "DPs", 2048 * 2048 * 2 },
+    { UID_DICOS_ThreatDetectionReportStorage,                      "TDR", 4096 },
+    // DICONDE
+    { UID_DICONDE_EddyCurrentImageStorage,                         "EC",  512 * 512 },
+    { UID_DICONDE_EddyCurrentMultiframeImageStorage,               "ECm", 512 * 512 }
 };
 
 static const int numberOfDcmModalityTableEntries = (sizeof(modalities) / sizeof(DcmModalityTable));
@@ -1643,6 +1683,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.95  2011-08-11 10:51:12  joergr
+** Added new Storage SOP Classes from DICOM 2011, which are originally defined
+** in DICOS and DICONDE standard, respectively.
+**
 ** Revision 1.94  2011-06-20 09:09:02  joergr
 ** Added two new SOP Class UIDs from Supplement 151 (Intravascular OCT Image
 ** Storage SOP Class).
