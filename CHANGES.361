@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.11 (riesmeier)
+
+- Updated data dictionary for DICOM 2011 standard. This includes definitions
+  from DICOS (Digital Imaging and Communications in Security) standard.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2011.08.10 (riesmeier)
 
 - Removed any references to the old "cfunix.h" file. Thanks to Markus Mertens
