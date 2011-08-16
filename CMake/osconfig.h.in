@@ -112,11 +112,8 @@
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.*/
 #cmakedefine HAVE_DIRENT_H @HAVE_DIRENT_H@
 
-/* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
-#cmakedefine HAVE_VPRINTF @HAVE_VPRINTF@
-#ifndef HAVE_VPRINTF
-  #cmakedefine HAVE_DOPRNT @HAVE_DOPRNT@
-#endif
+/* Define to 1 if you have the `_doprnt' function. */
+#cmakedefine HAVE_DOPRNT @HAVE_DOPRNT@
 
 /* define if the compiler supports dynamic_cast<> */
 #define HAVE_DYNAMIC_CAST 1
@@ -152,20 +149,32 @@
 /* Define to 1 if you have the `fork' function. */
 #cmakedefine HAVE_FORK @HAVE_FORK@
 
+/* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
+#cmakedefine HAVE_FSEEKO @HAVE_FSEEKO@
+
 /* Define to 1 if you have the <fstream> header file. */
 #cmakedefine HAVE_FSTREAM @HAVE_FSTREAM@
 
 /* Define to 1 if you have the <fstream.h> header file. */
 #cmakedefine HAVE_FSTREAM_H @HAVE_FSTREAM_H@
 
+/* Define to 1 if you have the `ftime' function. */
+#cmakedefine HAVE_FTIME @HAVE_FTIME@
+
 /* Define if your C++ compiler can work with function templates */
 #define HAVE_FUNCTION_TEMPLATE 1
+
+/* Define to 1 if you have the `getaddrinfo' function. */
+#cmakedefine HAVE_GETADDRINFO @HAVE_GETADDRINFO@
 
 /* Define to 1 if you have the `getenv' function. */
 #cmakedefine HAVE_GETENV @HAVE_GETENV@
 
 /* Define to 1 if you have the `geteuid' function. */
 #cmakedefine HAVE_GETEUID @HAVE_GETEUID@
+
+/* Define to 1 if you have the `getgrnam' function. */
+#cmakedefine HAVE_GETGRNAM @HAVE_GETGRNAM@
 
 /* Define to 1 if you have the `gethostbyname' function. */
 #cmakedefine HAVE_GETHOSTBYNAME @HAVE_GETHOSTBYNAME@
@@ -182,6 +191,9 @@
 /* Define to 1 if you have the `getpid' function. */
 #cmakedefine HAVE_GETPID @HAVE_GETPID@
 
+/* Define to 1 if you have the `getpwnam' function. */
+#cmakedefine HAVE_GETPWNAM @HAVE_GETPWNAM@
+
 /* Define to 1 if you have the `getsockname' function. */
 #cmakedefine HAVE_GETSOCKNAME @HAVE_GETSOCKNAME@
 
@@ -190,6 +202,9 @@
 
 /* Define to 1 if you have the `getuid' function. */
 #cmakedefine HAVE_GETUID @HAVE_GETUID@
+
+/* Define to 1 if you have the `gmtime_r' function. */
+#cmakedefine HAVE_GMTIME_R @HAVE_GMTIME_R@
 
 /* Define to 1 if you have the <grp.h> header file. */
 #cmakedefine HAVE_GRP_H @HAVE_GRP_H@
@@ -274,8 +289,14 @@
 /* Define to 1 if you have the <locale.h> header file. */
 #cmakedefine HAVE_LOCALE_H @HAVE_LOCALE_H@
 
+/* Define to 1 if you have the `localtime_r' function. */
+#cmakedefine HAVE_LOCALTIME_R @HAVE_LOCALTIME_R@
+
 /* Define to 1 if you have the `lockf' function. */
 #cmakedefine HAVE_LOCKF @HAVE_LOCKF@
+
+/* Define to 1 if you have the `lstat' function. */
+#cmakedefine HAVE_LSTAT @HAVE_LSTAT@
 
 /* Define to 1 if you support file names longer than 14 characters. */
 #define HAVE_LONG_FILE_NAMES 1
@@ -645,6 +666,15 @@
 
 /* Define to 1 if you have the <utime.h> header file. */
 #cmakedefine HAVE_UTIME_H @HAVE_UTIME_H@
+
+/* Define to 1 if you have the `vprintf' function. */
+#cmakedefine HAVE_VPRINTF @HAVE_VPRINTF@
+
+/* Define to 1 if you have the `vsnprintf' function. */
+#cmakedefine HAVE_VSNPRINTF @HAVE_VSNPRINTF@
+
+/* Define to 1 if you have the `wait3' function. */
+#cmakedefine HAVE_WAIT3 @HAVE_WAIT3@
 
 /* Define to 1 if you have the `waitpid' function. */
 #cmakedefine HAVE_WAITPID @HAVE_WAITPID@

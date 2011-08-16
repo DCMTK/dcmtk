@@ -11,6 +11,10 @@ Changes between releases are documented here.
   Affects: CMake/GenerateDCMTKConfigure.cmake
            CMake/osconfig.h.in
 
+- Added missing CMake tests for system functions.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+
 **** Changes from 2011.08.11 (riesmeier)
 
 - Added new Storage SOP Classes from DICOM 2011, which are originally defined
