@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-03 13:31:42 $
- *  CVS/RCS Revision: $Revision: 1.143 $
+ *  Update Date:      $Date: 2011-08-16 10:24:06 $
+ *  CVS/RCS Revision: $Revision: 1.144 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,6 +95,11 @@ int mkstemp(char *);
 }
 #endif
 
+// we assume that the inetd super server is available on all non-Windows systems
+#ifndef _WIN32
+#define INETD_AVAILABLE
+#endif
+
 
 #ifdef PRIVATE_STORESCP_DECLARATIONS
 PRIVATE_STORESCP_DECLARATIONS
@@ -131,7 +136,7 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
          int transferSyntaxCount,
          T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
 
-#ifdef HAVE_CONFIG_H
+#ifdef INETD_AVAILABLE
 static int makeTempFile();
 #endif
 
@@ -318,7 +323,7 @@ int main(int argc, char *argv[])
 #endif
 
     cmd.addSubGroup("other network options:");
-#ifdef HAVE_CONFIG_H
+#ifdef INETD_AVAILABLE
       // this option is only offered on Posix platforms
       cmd.addOption("--inetd",                  "-id",     "run from inetd super server (not with --fork)");
 #endif
@@ -484,7 +489,7 @@ int main(int argc, char *argv[])
       }
     }
 
-#ifdef HAVE_CONFIG_H
+#ifdef INETD_AVAILABLE
     if (cmd.findOption("--inetd"))
     {
       opt_inetd_mode = OFTrue;
@@ -2760,7 +2765,7 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 }
 
 
-#ifdef HAVE_CONFIG_H
+#ifdef INETD_AVAILABLE
 
 static int makeTempFile()
 {
@@ -2780,6 +2785,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.144  2011-08-16 10:24:06  joergr
+** Replaced define HAVE_CONFIG_H by a more appropriate INETD_AVAILABLE.
+**
 ** Revision 1.143  2011-08-03 13:31:42  joergr
 ** Added macro that allows for disabling the port permission check in SCPs.
 **

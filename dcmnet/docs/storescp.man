@@ -144,7 +144,8 @@ other network options:
 
   -id   --inetd
           run from inetd super server (not with --fork)
-          (this option is available only on Posix platforms)
+
+          # not available on all systems (e.g. not on Windows)
 
   -ta   --acse-timeout  [s]econds: integer (default: 30)
           timeout for ACSE messages

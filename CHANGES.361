@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.16 (riesmeier)
+
+- Replaced define HAVE_CONFIG_H by a more appropriate INETD_AVAILABLE.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+  
 **** Changes from 2011.08.11 (riesmeier)
 
 - Added new Storage SOP Classes from DICOM 2011, which are originally defined
