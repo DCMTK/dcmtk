@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Class for time functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:53 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2011-08-16 13:22:12 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -302,7 +302,7 @@ OFBool OFTime::setCurrentTime()
 OFBool OFTime::setCurrentTime(const time_t &tt)
 {
     OFBool status = OFFalse;
-#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+#if HAVE_LOCALTIME_R
     // use localtime_r instead of localtime
     struct tm ltBuf;
     struct tm *lt = &ltBuf;
@@ -316,7 +316,7 @@ OFBool OFTime::setCurrentTime(const time_t &tt)
         Hour = lt->tm_hour;
         Minute = lt->tm_min;
         Second = lt->tm_sec;
-#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+#ifdef HAVE_GMTIME_R
         // use gmtime_r instead of gmtime
         struct tm gtBuf;
         struct tm *gt = &gtBuf;
@@ -604,6 +604,9 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &t
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
+ * Revision 1.18  2011-08-16 13:22:12  joergr
+ * Replaced system-dependent checks by the defines for localtime_r and gmtime_r.
+ *
  * Revision 1.17  2010-10-14 13:14:53  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
