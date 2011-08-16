@@ -6,7 +6,11 @@ Changes between releases are documented here.
 - Replaced define HAVE_CONFIG_H by a more appropriate INETD_AVAILABLE.
   Affects: dcmnet/apps/storescp.cc
            dcmnet/docs/storescp.man
-  
+
+- Added missing CMake tests for system header files.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+
 **** Changes from 2011.08.11 (riesmeier)
 
 - Added new Storage SOP Classes from DICOM 2011, which are originally defined

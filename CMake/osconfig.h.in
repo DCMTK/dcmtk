@@ -191,6 +191,9 @@
 /* Define to 1 if you have the `getuid' function. */
 #cmakedefine HAVE_GETUID @HAVE_GETUID@
 
+/* Define to 1 if you have the <grp.h> header file. */
+#cmakedefine HAVE_GRP_H @HAVE_GRP_H@
+
 /* Define to 1 if you have the <ieeefp.h> header file. */
 #cmakedefine HAVE_IEEEFP_H @HAVE_IEEEFP_H@
 
@@ -441,6 +444,9 @@
 /* Define if your system supports POSIX read/write locks */
 #cmakedefine HAVE_PTHREAD_RWLOCK @HAVE_PTHREAD_RWLOCK@
 
+/* Define to 1 if you have the <pwd.h> header file. */
+#cmakedefine HAVE_PWD_H @HAVE_PWD_H@
+
 /* define if the compiler supports reinterpret_cast<> */
 #define HAVE_REINTERPRET_CAST 1
 
@@ -492,6 +498,9 @@
 
 /* Define to 1 if you have the <stdarg.h> header file. */
 #cmakedefine HAVE_STDARG_H @HAVE_STDARG_H@
+
+/* Define to 1 if you have the <stdbool.h> header file. */
+#cmakedefine HAVE_STDBOOL_H @HAVE_STDBOOL_H@
 
 /* Define to 1 if you have the <cstdarg> header file. */
 #cmakedefine HAVE_CSTDARG @HAVE_CSTDARG@
@@ -561,6 +570,9 @@
 
 /* Define to 1 if you have the `sysinfo' function. */
 #cmakedefine HAVE_SYSINFO @HAVE_SYSINFO@
+
+/* Define to 1 if you have the <syslog.h> header file. */
+#cmakedefine HAVE_SYSLOG_H @HAVE_SYSLOG_H@
 
 /* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.*/
 #cmakedefine HAVE_SYS_DIR_H @HAVE_SYS_DIR_H@
