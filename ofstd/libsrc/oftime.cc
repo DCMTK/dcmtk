@@ -18,8 +18,8 @@
  *  Purpose: Class for time functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-16 13:22:12 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2011-08-16 13:51:36 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -302,7 +302,7 @@ OFBool OFTime::setCurrentTime()
 OFBool OFTime::setCurrentTime(const time_t &tt)
 {
     OFBool status = OFFalse;
-#if HAVE_LOCALTIME_R
+#ifdef HAVE_LOCALTIME_R
     // use localtime_r instead of localtime
     struct tm ltBuf;
     struct tm *lt = &ltBuf;
@@ -604,6 +604,9 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &t
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
+ * Revision 1.19  2011-08-16 13:51:36  joergr
+ * Fixed wrong use of #if statement.
+ *
  * Revision 1.18  2011-08-16 13:22:12  joergr
  * Replaced system-dependent checks by the defines for localtime_r and gmtime_r.
  *

@@ -19,6 +19,9 @@ Changes between releases are documented here.
   Affects: ofstd/libsrc/ofdate.cc
            ofstd/libsrc/oftime.cc
 
+- Fixed wrong use of #if statement.
+  Affects: ofstd/libsrc/oftime.cc
+
 **** Changes from 2011.08.11 (riesmeier)
 
 - Added new Storage SOP Classes from DICOM 2011, which are originally defined
