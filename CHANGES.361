@@ -9,6 +9,9 @@ Changes between releases are documented here.
            dcmdata/tests/Makefile.in
            dcmdata/tests/tests.cc
 
+- Fixed a crash when iterating over an empty dictionary.
+  Affects: dcmdata/libsrc/dchashdi.cc
+
 **** Changes from 2011.08.16 (riesmeier)
 
 - Replaced define HAVE_CONFIG_H by a more appropriate INETD_AVAILABLE.

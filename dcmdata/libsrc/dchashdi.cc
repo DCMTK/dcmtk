@@ -17,9 +17,9 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-11 09:37:11 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-08-17 14:38:24 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -181,7 +181,7 @@ DcmHashDictIterator::init(const DcmHashDict* d, OFBool atEnd)
     hindex = 0;
     iterating = OFFalse;
     if (dict != NULL) {
-        if (atEnd) {
+        if (atEnd || dict->size() == 0) {
             hindex = dict->highestBucket;
             if (dict->size() > 0) {
                 iter = dict->hashTab[hindex]->end();
@@ -189,10 +189,8 @@ DcmHashDictIterator::init(const DcmHashDict* d, OFBool atEnd)
             }
         } else {
             hindex = dict->lowestBucket;
-            if (dict->size() > 0) {
-                iter = dict->hashTab[hindex]->begin();
-                iterating = OFTrue;
-            }
+            iter = dict->hashTab[hindex]->begin();
+            iterating = OFTrue;
         }
     }
 }
@@ -585,6 +583,9 @@ DcmHashDict::loadSummary(STD_NAMESPACE ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
+** Revision 1.29  2011-08-17 14:38:24  uli
+** Fixed a crash when iterating over an empty dictionary.
+**
 ** Revision 1.28  2011-08-11 09:37:11  joergr
 ** Added missing header file to compile when PRINT_REPLACED_DICTIONARY_ENTRIES
 ** is defined.
