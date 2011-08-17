@@ -12,6 +12,10 @@ Changes between releases are documented here.
 - Fixed a crash when iterating over an empty dictionary.
   Affects: dcmdata/libsrc/dchashdi.cc
 
+- Improved hashing function for tags (less code, handles private creator).
+  Affects: dcmdata/include/dcmtk/dcmdata/dchashdi.h
+           dcmdata/libsrc/dchashdi.cc
+
 **** Changes from 2011.08.16 (riesmeier)
 
 - Replaced define HAVE_CONFIG_H by a more appropriate INETD_AVAILABLE.

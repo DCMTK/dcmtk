@@ -18,8 +18,8 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-17 14:38:24 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2011-08-17 14:45:22 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -235,12 +235,15 @@ DcmHashDictIterator::stepUp()
 ** DcmHashDict
 */
 
+// This number shouldn't have any small factors, so that
+// DcmHashDict::hash() produces fewer collisions.
+const int DcmHashDict::hashTabLength = 2011;
+
 void
-DcmHashDict::_init(int hashTabLen)
+DcmHashDict::_init()
 {
-    hashTab = new DcmDictEntryList*[hashTabLen];
+    hashTab = new DcmDictEntryList*[hashTabLength];
     assert(hashTab != NULL);
-    hashTabLength = hashTabLen;
     for (int i=0; i<hashTabLength; i++) {
         hashTab[i] = NULL;
     }
@@ -269,188 +272,25 @@ DcmHashDict::clear()
 }
 
 int
-DcmHashDict::hash(const DcmTagKey* k) const
+DcmHashDict::hash(const DcmTagKey* k, const char *privCreator) const
 {
-    /*
-    ** Use a hash function based upon the relative number of
-    ** data dictionary entries in each group by splitting
-    ** the hash table into proportional sections .
-    */
-    int h = 0;
+    int i = 1;
+    Uint32 h = k->hash();
 
-    int lower = 0; /* default */
-    int upper = hashTabLength-1; /* default */
-
-    switch (k->getGroup()) {
-        /* the code in this switch statement was generated automatically */
-    case 0x0: /* %usage: 3.47 */
-        lower = int(0 * hashTabLength);
-        upper = int(0.0346608 * hashTabLength);
-        break;
-    case 0x2: /* %usage: 0.74 */
-        lower = int(0.0346608 * hashTabLength);
-        upper = int(0.0420354 * hashTabLength);
-        break;
-    case 0x4: /* %usage: 1.40 */
-        lower = int(0.0420354 * hashTabLength);
-        upper = int(0.0560472 * hashTabLength);
-        break;
-    case 0x8: /* %usage: 7.30 */
-        lower = int(0.0560472 * hashTabLength);
-        upper = int(0.129056 * hashTabLength);
-        break;
-    case 0x10: /* %usage: 2.43 */
-        lower = int(0.129056 * hashTabLength);
-        upper = int(0.153392 * hashTabLength);
-        break;
-    case 0x18: /* %usage: 18.36 */
-        lower = int(0.153392 * hashTabLength);
-        upper = int(0.337021 * hashTabLength);
-        break;
-    case 0x20: /* %usage: 3.98 */
-        lower = int(0.337021 * hashTabLength);
-        upper = int(0.376844 * hashTabLength);
-        break;
-    case 0x28: /* %usage: 8.63 */
-        lower = int(0.376844 * hashTabLength);
-        upper = int(0.463127 * hashTabLength);
-        break;
-    case 0x32: /* %usage: 1.92 */
-        lower = int(0.463127 * hashTabLength);
-        upper = int(0.482301 * hashTabLength);
-        break;
-    case 0x38: /* %usage: 1.62 */
-        lower = int(0.482301 * hashTabLength);
-        upper = int(0.498525 * hashTabLength);
-        break;
-    case 0x40: /* %usage: 6.93 */
-        lower = int(0.498525 * hashTabLength);
-        upper = int(0.567847 * hashTabLength);
-        break;
-    case 0x41: /* %usage: 2.29 */
-        lower = int(0.567847 * hashTabLength);
-        upper = int(0.590708 * hashTabLength);
-        break;
-    case 0x50: /* %usage: 0.59 */
-        lower = int(0.590708 * hashTabLength);
-        upper = int(0.596608 * hashTabLength);
-        break;
-    case 0x54: /* %usage: 5.75 */
-        lower = int(0.596608 * hashTabLength);
-        upper = int(0.65413 * hashTabLength);
-        break;
-    case 0x88: /* %usage: 0.59 */
-        lower = int(0.65413 * hashTabLength);
-        upper = int(0.660029 * hashTabLength);
-        break;
-    case 0x1000: /* %usage: 0.52 */
-        lower = int(0.660029 * hashTabLength);
-        upper = int(0.665192 * hashTabLength);
-        break;
-    case 0x1010: /* %usage: 0.15 */
-        lower = int(0.665192 * hashTabLength);
-        upper = int(0.666667 * hashTabLength);
-        break;
-    case 0x2000: /* %usage: 0.59 */
-        lower = int(0.666667 * hashTabLength);
-        upper = int(0.672566 * hashTabLength);
-        break;
-    case 0x2010: /* %usage: 1.18 */
-        lower = int(0.672566 * hashTabLength);
-        upper = int(0.684366 * hashTabLength);
-        break;
-    case 0x2020: /* %usage: 0.59 */
-        lower = int(0.684366 * hashTabLength);
-        upper = int(0.690265 * hashTabLength);
-        break;
-    case 0x2030: /* %usage: 0.22 */
-        lower = int(0.690265 * hashTabLength);
-        upper = int(0.692478 * hashTabLength);
-        break;
-    case 0x2040: /* %usage: 0.66 */
-        lower = int(0.692478 * hashTabLength);
-        upper = int(0.699115 * hashTabLength);
-        break;
-    case 0x2050: /* %usage: 0.22 */
-        lower = int(0.699115 * hashTabLength);
-        upper = int(0.701327 * hashTabLength);
-        break;
-    case 0x2100: /* %usage: 0.81 */
-        lower = int(0.701327 * hashTabLength);
-        upper = int(0.70944 * hashTabLength);
-        break;
-    case 0x2110: /* %usage: 0.37 */
-        lower = int(0.70944 * hashTabLength);
-        upper = int(0.713127 * hashTabLength);
-        break;
-    case 0x2120: /* %usage: 0.29 */
-        lower = int(0.713127 * hashTabLength);
-        upper = int(0.716077 * hashTabLength);
-        break;
-    case 0x2130: /* %usage: 0.66 */
-        lower = int(0.716077 * hashTabLength);
-        upper = int(0.722714 * hashTabLength);
-        break;
-    case 0x3002: /* %usage: 1.25 */
-        lower = int(0.722714 * hashTabLength);
-        upper = int(0.735251 * hashTabLength);
-        break;
-    case 0x3004: /* %usage: 1.62 */
-        lower = int(0.735251 * hashTabLength);
-        upper = int(0.751475 * hashTabLength);
-        break;
-    case 0x3006: /* %usage: 3.24 */
-        lower = int(0.751475 * hashTabLength);
-        upper = int(0.783923 * hashTabLength);
-        break;
-    case 0x300a: /* %usage: 16.52 */
-        lower = int(0.783923 * hashTabLength);
-        upper = int(0.949115 * hashTabLength);
-        break;
-    case 0x300c: /* %usage: 1.84 */
-        lower = int(0.949115 * hashTabLength);
-        upper = int(0.967552 * hashTabLength);
-        break;
-    case 0x300e: /* %usage: 0.29 */
-        lower = int(0.967552 * hashTabLength);
-        upper = int(0.970501 * hashTabLength);
-        break;
-    case 0x4000: /* %usage: 0.22 */
-        lower = int(0.970501 * hashTabLength);
-        upper = int(0.972714 * hashTabLength);
-        break;
-    case 0x4008: /* %usage: 2.06 */
-        lower = int(0.972714 * hashTabLength);
-        upper = int(0.993363 * hashTabLength);
-        break;
-    case 0x7fe0: /* %usage: 0.37 */
-        lower = int(0.993363 * hashTabLength);
-        upper = int(0.99705 * hashTabLength);
-        break;
-    case 0xfffc: /* %usage: 0.07 */
-        lower = int(0.99705 * hashTabLength);
-        upper = int(0.997788 * hashTabLength);
-        break;
-    case 0xfffe: /* %usage: 0.22 */
-        lower = int(0.997788 * hashTabLength);
-        upper = int(1 * hashTabLength);
-        break;
-    default:
-        lower = 0; /* default */
-        upper = hashTabLength-1; /* default */
-        break;
+    // If there is a private creator, hash that in, too
+    for (; privCreator != NULL && *privCreator != '\0'; privCreator++) {
+        Uint32 n = *privCreator << (8 * i);
+        h ^= n;
+        if (++i > 3)
+            i = 0;
     }
 
-    int span = upper - lower;
-    int offset = 0;
-    if (span > 0) {
-        offset = OFstatic_cast(int, (k->hash() & 0x7FFFFFFF) % span);
-    }
-    h =  lower + offset;
+    // This 'hash function' only works well if hashTabLength is prime
+    int res = h % hashTabLength;
 
-    assert((h >= 0) && (h < hashTabLength));
+    assert((res >= 0) && (res < hashTabLength));
 
-    return h;
+    return res;
 }
 
 DcmDictEntry*
@@ -462,7 +302,7 @@ DcmHashDict::insertInList(DcmDictEntryList& l, DcmDictEntry* e)
 void
 DcmHashDict::put(DcmDictEntry* e)
 {
-    int idx = hash(e);
+    int idx = hash(e, e->getPrivateCreator());
 
     DcmDictEntryList* bucket = hashTab[idx];
     // if there is no bucket then create one
@@ -498,7 +338,7 @@ DcmHashDict::get(const DcmTagKey& k, const char *privCreator) const
     const DcmDictEntry* entry = NULL;
 
     // first we look for an entry that exactly matches the given tag key
-    Uint32 idx = hash(&k);
+    Uint32 idx = hash(&k, privCreator);
     DcmDictEntryList* bucket = hashTab[idx];
     if (bucket) entry = findInList(*bucket, k, privCreator);
 
@@ -506,7 +346,7 @@ DcmHashDict::get(const DcmTagKey& k, const char *privCreator) const
     {
       // As a second guess, we look for a private tag with flexible element number.
       DcmTagKey tk(k.getGroup(), OFstatic_cast(unsigned short, k.getElement() & 0xff));
-      idx = hash(&tk);
+      idx = hash(&tk, privCreator);
       bucket = hashTab[idx];
       if (bucket) entry = findInList(*bucket, tk, privCreator);
     }
@@ -525,7 +365,7 @@ DcmHashDict::removeInList(DcmDictEntryList& l, const DcmTagKey& k, const char *p
 void
 DcmHashDict::del(const DcmTagKey& k, const char *privCreator)
 {
-    Uint32 idx = hash(&k);
+    Uint32 idx = hash(&k, privCreator);
 
     DcmDictEntryList* bucket = hashTab[idx];
     if (bucket != NULL) {
@@ -583,6 +423,9 @@ DcmHashDict::loadSummary(STD_NAMESPACE ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
+** Revision 1.30  2011-08-17 14:45:22  uli
+** Improved hashing function for tags (less code, handles private creator).
+**
 ** Revision 1.29  2011-08-17 14:38:24  uli
 ** Fixed a crash when iterating over an empty dictionary.
 **

@@ -18,8 +18,8 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 11:14:38 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2011-08-17 14:45:22 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,9 +36,6 @@
 class DcmDictEntry;
 class DcmTagKey;
 class DcmHashDict;
-
-/** the default size for a data dictionary hash table */
-const int DCMHASHDICT_DEFAULT_HASHSIZE = 2047;
 
 typedef OFListIterator(DcmDictEntry *) DcmDictEntryListIterator;
 typedef OFListConstIterator(DcmDictEntry *) DcmDictEntryListConstIterator;
@@ -200,9 +197,9 @@ public:
     /** constructor
      *  @param hashTabLen number of buckets in hash table
      */
-    DcmHashDict(int hashTabLen = DCMHASHDICT_DEFAULT_HASHSIZE)
-     : hashTab(NULL), hashTabLength(0), lowestBucket(0), highestBucket(0), entryCount(0)
-        { _init(hashTabLen); }
+    DcmHashDict()
+     : hashTab(NULL), lowestBucket(0), highestBucket(0), entryCount(0)
+        { _init(); }
 
     /// destructor
     ~DcmHashDict();
@@ -253,13 +250,13 @@ private:
     DcmHashDict &operator=(const DcmHashDict &);
 
     /// performs initialization for given hash table size, called from constructor
-    void _init(int hashSize);
+    void _init();
 
     /** compute hash value for given tag key
      *  @param k pointer to tag key
      *  @return hash value
      */    
-    int hash(const DcmTagKey* k) const;
+    int hash(const DcmTagKey* k, const char *privCreator) const;
     
     /** inserts new entry into given list
      *  @param lst list to add to
@@ -290,7 +287,7 @@ private:
     DcmDictEntryList** hashTab;
 
     /// number of buckets in hash table
-    int hashTabLength;
+    static const int hashTabLength;
 
     /// index of lowest bucket for which the DcmDictEntryList has been initialized
     int lowestBucket;
@@ -309,6 +306,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
+** Revision 1.24  2011-08-17 14:45:22  uli
+** Improved hashing function for tags (less code, handles private creator).
+**
 ** Revision 1.23  2011-02-04 11:14:38  uli
 ** Stop inheriting from OFList and OFListIterator.
 **
