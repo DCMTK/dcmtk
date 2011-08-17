@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.17 (schlachter)
+
+- Added a small test for the data dictionary.
+  Added:   dcmdata/tests/tdict.cc
+  Affects: dcmdata/tests/CMakeLists.txt
+           dcmdata/tests/Makefile.in
+           dcmdata/tests/tests.cc
+
 **** Changes from 2011.08.16 (riesmeier)
 
 - Replaced define HAVE_CONFIG_H by a more appropriate INETD_AVAILABLE.
