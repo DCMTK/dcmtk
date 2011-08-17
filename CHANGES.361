@@ -16,6 +16,9 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dchashdi.h
            dcmdata/libsrc/dchashdi.cc
 
+- Removed some accidentally committed test code.
+  Affects: dcmdata/tests/tdict.cc
+
 **** Changes from 2011.08.16 (riesmeier)
 
 - Replaced define HAVE_CONFIG_H by a more appropriate INETD_AVAILABLE.

@@ -18,8 +18,8 @@
  *  Purpose: test program for the data dictionary
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-17 14:35:59 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-08-17 14:49:12 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,22 +112,15 @@ OFTEST(dcmdata_usingDataDictionary)
     checkDictionary(2, NULL, NULL, NULL, entry1, entry2);
 
 #undef checkDictionary
-
-    srand(5);
-    DcmDataDictionary& dict = dcmDataDict.wrlock();
-    for (int i = 0; i < 10000000; i++) {
-        Uint16 group = (0xffff * (rand() / (RAND_MAX + 1.0)));
-        Uint16 elem = (0xffff * (rand() / (RAND_MAX + 1.0)));
-        DcmTagKey t(group, elem);
-        dict.findEntry(t, NULL);
-    }
-    dcmDataDict.unlock();
 }
 
 /*
  *
  * CVS/RCS Log:
  * $Log: tdict.cc,v $
+ * Revision 1.2  2011-08-17 14:49:12  uli
+ * Removed some accidentally committed test code.
+ *
  * Revision 1.1  2011-08-17 14:35:59  uli
  * Added a small test for the data dictionary.
  *
