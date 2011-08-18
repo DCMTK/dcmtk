@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.18 (riesmeier)
 
+- Fixed API documentation (required after last commit).
+  Affects: dcmdata/include/dcmtk/dcmdata/dchashdi.h
+
 - Fixed some settings regarding CygWin.
   Affects: CMake/osconfig.h.in
 

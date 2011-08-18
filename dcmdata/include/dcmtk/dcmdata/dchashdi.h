@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-17 14:45:22 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-18 14:24:08 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,13 +91,17 @@ public:
     void push_back(DcmDictEntry *entry);
 
     /** inserts an entry into the list and returns any replaced entry
-     *  @param e new list entry
+     *  @param entry new list entry
      *  @return replaced list entry or NULL
      */
-    DcmDictEntry* insertAndReplace(DcmDictEntry* e);
+    DcmDictEntry* insertAndReplace(DcmDictEntry* entry);
 
-    /* find an entry in the set */
-    DcmDictEntry *find(const DcmTagKey& k, const char *privCreator);
+    /** find an entry in the set
+     *  @param key tag key of the entry to be searched for
+     *  @param privCreator private creator name, may be NULL
+     *  @return pointer to entry (if found), otherwise NULL
+     */
+    DcmDictEntry *find(const DcmTagKey& key, const char *privCreator);
 
 private:
 
@@ -107,6 +111,7 @@ private:
     /// private undefined copy assignment operator
     DcmDictEntryList& operator=(const DcmDictEntryList&);
 
+    /// list of entries
     OFList<DcmDictEntry *> list_;
 };
 
@@ -123,26 +128,26 @@ public:
         { init(NULL); }
 
     /** constructor, creates iterator to existing hash dictionary
-     *  @param d pointer to dictionary 
+     *  @param d pointer to dictionary
      *  @param atEnd if true, iterator points after last element
-     *   of hash dictionary, otherwise iterator points to first element.
+     *   of hash dictionary, otherwise iterator points to first element
      */
     DcmHashDictIterator(const DcmHashDict* d, OFBool atEnd = OFFalse)
       : dict(NULL), hindex(0), iterating(OFFalse), iter()
         { init(d, atEnd); }
 
     /// copy constructor
-    DcmHashDictIterator(const DcmHashDictIterator& i) 
+    DcmHashDictIterator(const DcmHashDictIterator& i)
       : dict(i.dict), hindex(i.hindex), iterating(i.iterating), iter(i.iter)
         { }
 
     /// copy assignment operator
-    DcmHashDictIterator& operator=(const DcmHashDictIterator& i) 
-        { dict = i.dict; hindex = i.hindex; 
+    DcmHashDictIterator& operator=(const DcmHashDictIterator& i)
+        { dict = i.dict; hindex = i.hindex;
           iterating = i.iterating; iter = i.iter; return *this; }
 
     /// comparison equality
-    OFBool operator==(const DcmHashDictIterator& x) const 
+    OFBool operator==(const DcmHashDictIterator& x) const
         { return (hindex == x.hindex) && (iter == x.iter); }
 
     /// comparison non-equality
@@ -166,11 +171,11 @@ private:
     /** initializes the iterator
      *  @param d pointer to hash dictionary, may be NULL
      *  @param atEnd if true, iterator points after last element
-     *   of hash dictionary, otherwise iterator points to first element.
+     *   of hash dictionary, otherwise iterator points to first element
      */
     void init(const DcmHashDict *d, OFBool atEnd = OFFalse);
 
-    /** implements increment operator on hash dictionary 
+    /** implements increment operator on hash dictionary
      */
     void stepUp();
 
@@ -184,7 +189,7 @@ private:
     OFBool iterating;
 
     /// iterator for traversing a bucket in the hash table
-    DcmDictEntryListIterator iter;    
+    DcmDictEntryListIterator iter;
 };
 
 
@@ -194,9 +199,7 @@ class DcmHashDict
 {
 
 public:
-    /** constructor
-     *  @param hashTabLen number of buckets in hash table
-     */
+    /// default constructor
     DcmHashDict()
      : hashTab(NULL), lowestBucket(0), highestBucket(0), entryCount(0)
         { _init(); }
@@ -204,28 +207,31 @@ public:
     /// destructor
     ~DcmHashDict();
 
-    /// counts total number of entries
+    /** counts total number of entries
+     *  @return number of entries
+     */
     int size() const { return entryCount; }
 
     /// clears the hash table of all entries
     void clear();
 
     /** inserts an entry into hash table (deletes old entry if present)
-     *  @param e pointer to new entry
+     *  @param entry pointer to new entry
      */
-    void put(DcmDictEntry* e);
+    void put(DcmDictEntry* entry);
 
-    /** hash table lookup for the given tag key and private creator name.
-     *  @param key tag key
+    /** hash table lookup for the given tag key and private creator name
+     *  @param key tag key of the entry to be searched for
      *  @param privCreator private creator name, may be NULL
+     *  @return pointer to entry (if found), otherwise NULL
      */
     const DcmDictEntry* get(const DcmTagKey& key, const char *privCreator) const;
 
     /** deletes the entry for the given tag and private creator
-     *  @param k tag key
+     *  @param key tag key of the entry to be deleted
      *  @param privCreator private creator name, may be NULL
      */
-    void del(const DcmTagKey& k, const char *privCreator);
+    void del(const DcmTagKey& key, const char *privCreator);
 
     // iterator over the contents of the hash table
     friend class DcmHashDictIterator;
@@ -253,35 +259,36 @@ private:
     void _init();
 
     /** compute hash value for given tag key
-     *  @param k pointer to tag key
+     *  @param key pointer to tag key
+     *  @param privCreator private creator name, may be NULL
      *  @return hash value
-     */    
-    int hash(const DcmTagKey* k, const char *privCreator) const;
-    
+     */
+    int hash(const DcmTagKey* key, const char *privCreator) const;
+
     /** inserts new entry into given list
      *  @param lst list to add to
-     *  @param e new element to add, will be deleted upon destruction of the hash table
+     *  @param entry new element to add, will be deleted upon destruction of the hash table
      *  @return pointer to replaced element, if any
      */
-    DcmDictEntry* insertInList(DcmDictEntryList& lst, DcmDictEntry* e);
+    DcmDictEntry* insertInList(DcmDictEntryList& lst, DcmDictEntry* entry);
 
     /** removes the entry for the given tag and private creator
      *  @param lst list to remove from
-     *  @param k tag key
+     *  @param key tag key of the entry to be removed
      *  @param privCreator private creator name, may be NULL
      *  @return pointer to removed element, if any
      */
-    DcmDictEntry* removeInList(DcmDictEntryList& lst, const DcmTagKey& k, const char *privCreator);
+    DcmDictEntry* removeInList(DcmDictEntryList& lst, const DcmTagKey& key, const char *privCreator);
 
-    /** searcjes entry for the given tag and private creator
+    /** searches entry for the given tag and private creator
      *  @param lst list to search in
-     *  @param k tag key
+     *  @param key tag key of the entry to be searched for
      *  @param privCreator private creator name, may be NULL
      *  @return pointer to found element, NULL if not found
      */
-    DcmDictEntry* findInList(DcmDictEntryList& lst, const DcmTagKey& k, const char *privCreator) const;
+    DcmDictEntry* findInList(DcmDictEntryList& lst, const DcmTagKey& key, const char *privCreator) const;
 
-    /** array of (hash table size) pointers to DcmDictEntryList elements 
+    /** array of (hash table size) pointers to DcmDictEntryList elements
      *  implementing the different buckets of the hash table
      */
     DcmDictEntryList** hashTab;
@@ -306,6 +313,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
+** Revision 1.25  2011-08-18 14:24:08  joergr
+** Fixed API documentation (required after last commit).
+**
 ** Revision 1.24  2011-08-17 14:45:22  uli
 ** Improved hashing function for tags (less code, handles private creator).
 **
