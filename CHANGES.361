@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.18 (riesmeier)
 
+- Replaced the private creator part of the hash function by an equivalent
+  but probably more efficient implementation.
+  Affects: dcmdata/libsrc/dchashdi.cc
+
 - Fixed API documentation (required after last commit).
   Affects: dcmdata/include/dcmtk/dcmdata/dchashdi.h
 

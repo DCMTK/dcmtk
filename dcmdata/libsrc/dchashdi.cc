@@ -17,9 +17,9 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-17 14:45:22 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-18 14:40:42 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,54 +54,54 @@ DcmDictEntryList::clear()
 }
 
 DcmDictEntry*
-DcmDictEntryList::insertAndReplace(DcmDictEntry* e)
+DcmDictEntryList::insertAndReplace(DcmDictEntry* entry)
 {
     if (empty()) {
-        list_.push_front(e);
+        list_.push_front(entry);
     } else {
         DcmDictEntryListIterator iter(begin());
         DcmDictEntryListIterator last(end());
-        Uint32 eHash = e->hash();
+        Uint32 eHash = entry->hash();
         Uint32 iterHash = 0;
         // insert smallest first
         for (iter = begin(); iter != last; ++iter) {
             iterHash = (*iter)->hash();
             if (eHash == iterHash)
             {
-                if (e->privateCreatorMatch(**iter))
+                if (entry->privateCreatorMatch(**iter))
                 {
                     // entry is already there so replace it
                     DcmDictEntry* oldEntry = *iter;
-                    *iter = e;
+                    *iter = entry;
                     return oldEntry;
                 }
                 else
                 {
                     // insert before listEntry
-                    insert(iter, e);
+                    insert(iter, entry);
                     return NULL;
                 }
             }
             else if (eHash < iterHash)
             {
                 // insert before listEntry
-                insert(iter, e);
+                insert(iter, entry);
                 return NULL;
             }
         }
         // add to end
-        push_back(e);
+        push_back(entry);
     }
     return NULL;
 }
 
 
-DcmDictEntry *DcmDictEntryList::find(const DcmTagKey& k, const char *privCreator)
+DcmDictEntry *DcmDictEntryList::find(const DcmTagKey& key, const char *privCreator)
 {
     if (!empty()) {
         DcmDictEntryListIterator iter;
         DcmDictEntryListIterator last = end();
-        Uint32 kHash = k.hash();
+        Uint32 kHash = key.hash();
         Uint32 iterHash = 0;
         for (iter = begin(); iter != last; ++iter) {
             iterHash = (*iter)->hash();
@@ -272,17 +272,14 @@ DcmHashDict::clear()
 }
 
 int
-DcmHashDict::hash(const DcmTagKey* k, const char *privCreator) const
+DcmHashDict::hash(const DcmTagKey* key, const char *privCreator) const
 {
-    int i = 1;
-    Uint32 h = k->hash();
+    int i = 0;
+    Uint32 h = key->hash();
 
     // If there is a private creator, hash that in, too
     for (; privCreator != NULL && *privCreator != '\0'; privCreator++) {
-        Uint32 n = *privCreator << (8 * i);
-        h ^= n;
-        if (++i > 3)
-            i = 0;
+        h ^= *privCreator << ((++i & 3) << 3);
     }
 
     // This 'hash function' only works well if hashTabLength is prime
@@ -294,15 +291,15 @@ DcmHashDict::hash(const DcmTagKey* k, const char *privCreator) const
 }
 
 DcmDictEntry*
-DcmHashDict::insertInList(DcmDictEntryList& l, DcmDictEntry* e)
+DcmHashDict::insertInList(DcmDictEntryList& l, DcmDictEntry* entry)
 {
-    return l.insertAndReplace(e);
+    return l.insertAndReplace(entry);
 }
 
 void
-DcmHashDict::put(DcmDictEntry* e)
+DcmHashDict::put(DcmDictEntry* entry)
 {
-    int idx = hash(e, e->getPrivateCreator());
+    int idx = hash(entry, entry->getPrivateCreator());
 
     DcmDictEntryList* bucket = hashTab[idx];
     // if there is no bucket then create one
@@ -312,7 +309,7 @@ DcmHashDict::put(DcmDictEntry* e)
         hashTab[idx] = bucket;
     }
 
-    DcmDictEntry* old = insertInList(*bucket, e);
+    DcmDictEntry* old = insertInList(*bucket, entry);
     if (old != NULL) {
         /* an old entry has been replaced */
 #ifdef PRINT_REPLACED_DICTIONARY_ENTRIES
@@ -327,25 +324,25 @@ DcmHashDict::put(DcmDictEntry* e)
     highestBucket = (highestBucket>idx)?(highestBucket):(idx);
 }
 
-DcmDictEntry *DcmHashDict::findInList(DcmDictEntryList& l, const DcmTagKey& k, const char *privCreator) const
+DcmDictEntry *DcmHashDict::findInList(DcmDictEntryList& l, const DcmTagKey& key, const char *privCreator) const
 {
-    return l.find(k, privCreator);
+    return l.find(key, privCreator);
 }
 
 const DcmDictEntry*
-DcmHashDict::get(const DcmTagKey& k, const char *privCreator) const
+DcmHashDict::get(const DcmTagKey& key, const char *privCreator) const
 {
     const DcmDictEntry* entry = NULL;
 
     // first we look for an entry that exactly matches the given tag key
-    Uint32 idx = hash(&k, privCreator);
+    Uint32 idx = hash(&key, privCreator);
     DcmDictEntryList* bucket = hashTab[idx];
-    if (bucket) entry = findInList(*bucket, k, privCreator);
+    if (bucket) entry = findInList(*bucket, key, privCreator);
 
     if ((entry == NULL) && privCreator)
     {
       // As a second guess, we look for a private tag with flexible element number.
-      DcmTagKey tk(k.getGroup(), OFstatic_cast(unsigned short, k.getElement() & 0xff));
+      DcmTagKey tk(key.getGroup(), OFstatic_cast(unsigned short, key.getElement() & 0xff));
       idx = hash(&tk, privCreator);
       bucket = hashTab[idx];
       if (bucket) entry = findInList(*bucket, tk, privCreator);
@@ -355,21 +352,21 @@ DcmHashDict::get(const DcmTagKey& k, const char *privCreator) const
 }
 
 DcmDictEntry*
-DcmHashDict::removeInList(DcmDictEntryList& l, const DcmTagKey& k, const char *privCreator)
+DcmHashDict::removeInList(DcmDictEntryList& l, const DcmTagKey& key, const char *privCreator)
 {
-    DcmDictEntry* entry = findInList(l, k, privCreator);
+    DcmDictEntry* entry = findInList(l, key, privCreator);
     l.remove(entry); // does not delete entry
     return entry;
 }
 
 void
-DcmHashDict::del(const DcmTagKey& k, const char *privCreator)
+DcmHashDict::del(const DcmTagKey& key, const char *privCreator)
 {
-    Uint32 idx = hash(&k, privCreator);
+    Uint32 idx = hash(&key, privCreator);
 
     DcmDictEntryList* bucket = hashTab[idx];
     if (bucket != NULL) {
-        DcmDictEntry* entry = removeInList(*bucket, k, privCreator);
+        DcmDictEntry* entry = removeInList(*bucket, key, privCreator);
         delete entry;
     }
 }
@@ -423,6 +420,10 @@ DcmHashDict::loadSummary(STD_NAMESPACE ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
+** Revision 1.31  2011-08-18 14:40:42  joergr
+** Replaced the private creator part of the hash function by an equivalent
+** but probably more efficient implementation.
+**
 ** Revision 1.30  2011-08-17 14:45:22  uli
 ** Improved hashing function for tags (less code, handles private creator).
 **
