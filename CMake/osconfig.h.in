@@ -12,16 +12,11 @@
 #define END_EXTERN_C
 #endif
 
-
-/* Define if you have the <windows.h> header file. */
-#if !defined(__CYGWIN__)
+#ifdef _WIN32
+  /* Define if you have the <windows.h> header file. */
   #cmakedefine HAVE_WINDOWS_H @HAVE_WINDOWS_H@
   /* Define if you have the <winsock.h> header file. */
   #cmakedefine HAVE_WINSOCK_H @HAVE_WINSOCK_H@
-#endif
-
-#ifdef __CYGWIN__
-#define NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND 1
 #endif
 
 /* Define the canonical host system type as a string constant */
@@ -853,9 +848,9 @@ typedef unsigned long ulong;
 #define __MT__              // required for _beginthreadex() API in <process.h>
 #define _MT                 // required for _errno on BCB6
 #endif
-#define HAVE_PROTOTYPE_MKTEMP
-#undef HAVE_SYS_UTIME_H 1
-#define NO_IOS_BASE_ASSIGN
+#define HAVE_PROTOTYPE_MKTEMP 1
+#undef HAVE_SYS_UTIME_H
+#define NO_IOS_BASE_ASSIGN 1
 #define _MSC_VER 1200       // Treat Borland C++ 5.5 as MSVC6.
 #endif /* __BORLANDC__ */
 
@@ -872,7 +867,7 @@ typedef unsigned long ulong;
 #if _MSC_VER <= 1200 /* Additional settings for VC6 and older */
 /* disable warning that return type for 'identifier::operator ->' is not a UDT or reference to a UDT */
 #pragma warning( disable : 4284 )
-#define HAVE_OLD_INTERLOCKEDCOMPAREEXCHANGE
+#define HAVE_OLD_INTERLOCKEDCOMPAREEXCHANGE 1
 #else
 #define HAVE_VSNPRINTF 1
 #endif /* _MSC_VER <= 1200 */
@@ -926,7 +921,6 @@ typedef unsigned long ulong;
 
 /* Define if your system has a prototype for std::vfprintf in stdarg.h */
 #cmakedefine HAVE_PROTOTYPE_STD__VFPRINTF @HAVE_PROTOTYPE_STD__VFPRINTF@
-
 
 #endif /* USE_STD_CXX_INCLUDES */
 
