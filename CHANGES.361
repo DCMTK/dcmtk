@@ -7,6 +7,9 @@ Changes between releases are documented here.
   Added:   dcmwlm/wwwapps/CMakeLists.txt
   Affects: dcmwlm/CMakeLists.txt
 
+- Replaced function max() by macro MAX() in order to compile with VisualStudio.
+  Affects: dcmwlm/wwwapps/writwlst.cc
+
 **** Changes from 2011.08.17 (schlachter)
 
 - Added a small test for the data dictionary.
