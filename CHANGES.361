@@ -8,6 +8,7 @@ Changes between releases are documented here.
 
 - Made sure that #define statements always have a value and #undef has none.
   Affects: CMake/osconfig.h.in
+           config/include/dcmtk/config/osconfig.h.in
 
 - Added "wwwapps" sub-directory to CMake project files.
   Added:   dcmwlm/wwwapps/CMakeLists.txt
