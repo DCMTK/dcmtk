@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.18 (schlachter)
+
+- Added "wwwapps" sub-directory to CMake project files.
+  Added:   dcmwlm/wwwapps/CMakeLists.txt
+  Affects: dcmwlm/CMakeLists.txt
+
 **** Changes from 2011.08.17 (schlachter)
 
 - Added a small test for the data dictionary.
