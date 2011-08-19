@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.19 (riesmeier)
+
+- Passed log4cplus's internal log level OFF_LOG_LEVEL to OFLogger and added
+  new method for setting the log level directly.
+  Affects: oflog/include/dcmtk/oflog/oflog.h
+
 **** Changes from 2011.08.18 (riesmeier)
 
 - Replaced the private creator part of the hash function by an equivalent

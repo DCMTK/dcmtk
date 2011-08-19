@@ -17,9 +17,9 @@
  *
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 14:28:46 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-19 07:37:03 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,9 @@ public:
         /// error: events that might still allow the application to continue running
         ERROR_LOG_LEVEL = dcmtk::log4cplus::ERROR_LOG_LEVEL,
         /// fatal: very severe error events that will presumably lead the application to abort
-        FATAL_LOG_LEVEL = dcmtk::log4cplus::FATAL_LOG_LEVEL
+        FATAL_LOG_LEVEL = dcmtk::log4cplus::FATAL_LOG_LEVEL,
+        /// internal: turn off logging competely
+        OFF_LOG_LEVEL = dcmtk::log4cplus::OFF_LOG_LEVEL
     };
 
     /** check if the given log level was activated.
@@ -97,6 +99,13 @@ public:
      */
     LogLevel getChainedLogLevel() const {
         return OFstatic_cast(LogLevel, Logger::getChainedLogLevel());
+    }
+
+    /** Set the logger's log level.
+     *  @param ll log level to which this logger is set.
+     */
+    void setLogLevel(dcmtk::log4cplus::LogLevel ll) {
+        Logger::setLogLevel(ll);
     }
 };
 
@@ -160,6 +169,10 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.16  2011-08-19 07:37:03  joergr
+ * Passed log4cplus's internal log level OFF_LOG_LEVEL to OFLogger and added
+ * new method for setting the log level directly.
+ *
  * Revision 1.15  2011-07-06 14:28:46  uli
  * Changed the default log level for tests to ERROR.
  *
