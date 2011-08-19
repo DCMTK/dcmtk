@@ -66,7 +66,10 @@ install-include: $makeinstallinclude
 
 install-support: $makeinstallsupport
 
-check: $makecheck
+check: libsrc-all
+	@\$(MAKE) -s check-nosilent
+
+check-nosilent: $makecheck
 
 dcmtk-install-doc:
 	\$(configdir)/mkinstalldirs \$(DESTDIR)\$(docdir)

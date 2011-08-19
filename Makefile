@@ -29,7 +29,10 @@ install-include:  config-install-include ofstd-install-include oflog-install-inc
 
 install-support:  config-install-support ofstd-install-support oflog-install-support dcmdata-install-support dcmtls-install-support dcmnet-install-support dcmqrdb-install-support dcmwlm-install-support dcmimgle-install-support dcmsr-install-support dcmsign-install-support dcmpstat-install-support dcmimage-install-support dcmjpeg-install-support dcmjpls-install-support
 
-check:  config-check ofstd-check oflog-check dcmdata-check dcmtls-check dcmnet-check dcmqrdb-check dcmwlm-check dcmimgle-check dcmsr-check dcmsign-check dcmpstat-check dcmimage-check dcmjpeg-check dcmjpls-check
+check: libsrc-all
+	@$(MAKE) -s check-nosilent
+
+check-nosilent:  config-check ofstd-check oflog-check dcmdata-check dcmtls-check dcmnet-check dcmqrdb-check dcmwlm-check dcmimgle-check dcmsr-check dcmsign-check dcmpstat-check dcmimage-check dcmjpeg-check dcmjpls-check
 
 dcmtk-install-doc:
 	$(configdir)/mkinstalldirs $(DESTDIR)$(docdir)
