@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.19 (riesmeier)
 
+- Moved "TLS options" section closer to the related "network options" section.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+
 - Added support for specifying the directory where the response messages are
   stored. Also output the name of the created file to the logger.
   Affects: dcmnet/apps/findscu.cc

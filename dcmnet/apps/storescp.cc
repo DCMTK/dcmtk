@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-16 10:24:06 $
- *  CVS/RCS Revision: $Revision: 1.144 $
+ *  Update Date:      $Date: 2011-08-19 10:31:49 $
+ *  CVS/RCS Revision: $Revision: 1.145 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -360,6 +360,42 @@ int main(int argc, char *argv[])
       cmd.addOption("--promiscuous",            "-pm",     "promiscuous mode, accept unknown SOP classes\n(not with --config-file)");
       cmd.addOption("--uid-padding",            "-up",     "silently correct space-padded UIDs");
 
+#ifdef WITH_OPENSSL
+  cmd.addGroup("transport layer security (TLS) options:");
+    cmd.addSubGroup("transport protocol stack:");
+      cmd.addOption("--disable-tls",            "-tls",    "use normal TCP/IP connection (default)");
+      cmd.addOption("--enable-tls",             "+tls", 2, "[p]rivate key file, [c]ertificate file: string",
+                                                           "use authenticated secure TLS connection");
+    cmd.addSubGroup("private key password (only with --enable-tls):");
+      cmd.addOption("--std-passwd",             "+ps",     "prompt user to type password on stdin (default)");
+      cmd.addOption("--use-passwd",             "+pw",  1, "[p]assword: string",
+                                                           "use specified password");
+      cmd.addOption("--null-passwd",            "-pw",     "use empty string as password");
+    cmd.addSubGroup("key and certificate file format:");
+      cmd.addOption("--pem-keys",               "-pem",    "read keys and certificates as PEM file (def.)");
+      cmd.addOption("--der-keys",               "-der",    "read keys and certificates as DER file");
+    cmd.addSubGroup("certification authority:");
+      cmd.addOption("--add-cert-file",          "+cf",  1, "[c]ertificate filename: string",
+                                                           "add certificate file to list of certificates", OFCommandLine::AF_NoWarning);
+      cmd.addOption("--add-cert-dir",           "+cd",  1, "[c]ertificate directory: string",
+                                                           "add certificates in d to list of certificates", OFCommandLine::AF_NoWarning);
+    cmd.addSubGroup("ciphersuite:");
+      cmd.addOption("--cipher",                 "+cs",  1, "[c]iphersuite name: string",
+                                                           "add ciphersuite to list of negotiated suites");
+      cmd.addOption("--dhparam",                "+dp",  1, "[f]ilename: string",
+                                                           "read DH parameters for DH/DSS ciphersuites");
+    cmd.addSubGroup("pseudo random generator:");
+      cmd.addOption("--seed",                   "+rs",  1, "[f]ilename: string",
+                                                           "seed random generator with contents of f");
+      cmd.addOption("--write-seed",             "+ws",     "write back modified seed (only with --seed)");
+      cmd.addOption("--write-seed-file",        "+wf",  1, "[f]ilename: string (only with --seed)",
+                                                           "write modified seed to file f");
+    cmd.addSubGroup("peer authentication");
+      cmd.addOption("--require-peer-cert",      "-rc",     "verify peer certificate, fail if absent (def.)");
+      cmd.addOption("--verify-peer-cert",       "-vc",     "verify peer certificate if present");
+      cmd.addOption("--ignore-peer-cert",       "-ic",     "don't verify peer certificate");
+#endif
+
   cmd.addGroup("output options:");
     cmd.addSubGroup("general:");
       cmd.addOption("--output-directory",       "-od",  1, "[d]irectory: string (default: \".\")", "write received objects to existing directory d");
@@ -419,42 +455,6 @@ int main(int argc, char *argv[])
     cmd.addOption("--eostudy-timeout",          "-tos", 1, "[t]imeout: integer",
                                                            "specifies a timeout of t seconds for\nend-of-study determination");
     cmd.addOption("--exec-sync",                "-xs",     "execute command synchronously in foreground");
-
-#ifdef WITH_OPENSSL
-  cmd.addGroup("transport layer security (TLS) options:");
-    cmd.addSubGroup("transport protocol stack:");
-      cmd.addOption("--disable-tls",            "-tls",    "use normal TCP/IP connection (default)");
-      cmd.addOption("--enable-tls",             "+tls", 2, "[p]rivate key file, [c]ertificate file: string",
-                                                           "use authenticated secure TLS connection");
-    cmd.addSubGroup("private key password (only with --enable-tls):");
-      cmd.addOption("--std-passwd",             "+ps",     "prompt user to type password on stdin (default)");
-      cmd.addOption("--use-passwd",             "+pw",  1, "[p]assword: string",
-                                                           "use specified password");
-      cmd.addOption("--null-passwd",            "-pw",     "use empty string as password");
-    cmd.addSubGroup("key and certificate file format:");
-      cmd.addOption("--pem-keys",               "-pem",    "read keys and certificates as PEM file (def.)");
-      cmd.addOption("--der-keys",               "-der",    "read keys and certificates as DER file");
-    cmd.addSubGroup("certification authority:");
-      cmd.addOption("--add-cert-file",          "+cf",  1, "[c]ertificate filename: string",
-                                                           "add certificate file to list of certificates", OFCommandLine::AF_NoWarning);
-      cmd.addOption("--add-cert-dir",           "+cd",  1, "[c]ertificate directory: string",
-                                                           "add certificates in d to list of certificates", OFCommandLine::AF_NoWarning);
-    cmd.addSubGroup("ciphersuite:");
-      cmd.addOption("--cipher",                 "+cs",  1, "[c]iphersuite name: string",
-                                                           "add ciphersuite to list of negotiated suites");
-      cmd.addOption("--dhparam",                "+dp",  1, "[f]ilename: string",
-                                                           "read DH parameters for DH/DSS ciphersuites");
-    cmd.addSubGroup("pseudo random generator:");
-      cmd.addOption("--seed",                   "+rs",  1, "[f]ilename: string",
-                                                           "seed random generator with contents of f");
-      cmd.addOption("--write-seed",             "+ws",     "write back modified seed (only with --seed)");
-      cmd.addOption("--write-seed-file",        "+wf",  1, "[f]ilename: string (only with --seed)",
-                                                           "write modified seed to file f");
-    cmd.addSubGroup("peer authentication");
-      cmd.addOption("--require-peer-cert",      "-rc",     "verify peer certificate, fail if absent (def.)");
-      cmd.addOption("--verify-peer-cert",       "-vc",     "verify peer certificate if present");
-      cmd.addOption("--ignore-peer-cert",       "-ic",     "don't verify peer certificate");
-#endif
 
   /* evaluate command line */
   prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -2785,6 +2785,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.145  2011-08-19 10:31:49  joergr
+** Moved "TLS options" section closer to the related "network options" section.
+**
 ** Revision 1.144  2011-08-16 10:24:06  joergr
 ** Replaced define HAVE_CONFIG_H by a more appropriate INETD_AVAILABLE.
 **

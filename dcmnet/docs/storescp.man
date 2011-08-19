@@ -192,8 +192,76 @@ other network options:
           silently correct space-padded UIDs
 \endverbatim
 
-\section output_options output options
+\subsection tls_options transport layer security (TLS) options
+\verbatim
+transport protocol stack:
 
+  -tls  --disable-tls
+          use normal TCP/IP connection (default)
+
+  +tls  --enable-tls  [p]rivate key file, [c]ertificate file: string
+          use authenticated secure TLS connection
+
+private key password (only with --enable-tls):
+
+  +ps   --std-passwd
+          prompt user to type password on stdin (default)
+
+  +pw   --use-passwd  [p]assword: string
+          use specified password
+
+  -pw   --null-passwd
+          use empty string as password
+
+key and certificate file format:
+
+  -pem  --pem-keys
+          read keys and certificates as PEM file (default)
+
+  -der  --der-keys
+          read keys and certificates as DER file
+
+certification authority:
+
+  +cf   --add-cert-file  [c]ertificate filename: string
+          add certificate file to list of certificates
+
+  +cd   --add-cert-dir  [c]ertificate directory: string
+          add certificates in d to list of certificates
+
+ciphersuite:
+
+  +cs   --cipher  [c]iphersuite name: string
+          add ciphersuite to list of negotiated suites
+
+  +dp   --dhparam  [f]ilename: string
+          read DH parameters for DH/DSS ciphersuites
+
+pseudo random generator:
+
+  +rs   --seed  [f]ilename: string
+          seed random generator with contents of f
+
+  +ws   --write-seed
+          write back modified seed (only with --seed)
+
+  +wf   --write-seed-file  [f]ilename: string (only with --seed)
+          write modified seed to file f
+
+peer authentication:
+
+  -rc   --require-peer-cert
+          verify peer certificate, fail if absent (default)
+
+  -vc   --verify-peer-cert
+          verify peer certificate if present
+
+  -ic   --ignore-peer-cert
+          don't verify peer certificate
+\endverbatim
+
+
+\subsection output_options output options
 \verbatim
 general:
 
@@ -323,74 +391,6 @@ filename generation:
 
   -xs   --exec-sync
           execute command synchronously in foreground
-\endverbatim
-
-\subsection tls_options transport layer security (TLS) options
-\verbatim
-transport protocol stack:
-
-  -tls  --disable-tls
-          use normal TCP/IP connection (default)
-
-  +tls  --enable-tls  [p]rivate key file, [c]ertificate file: string
-          use authenticated secure TLS connection
-
-private key password (only with --enable-tls):
-
-  +ps   --std-passwd
-          prompt user to type password on stdin (default)
-
-  +pw   --use-passwd  [p]assword: string
-          use specified password
-
-  -pw   --null-passwd
-          use empty string as password
-
-key and certificate file format:
-
-  -pem  --pem-keys
-          read keys and certificates as PEM file (default)
-
-  -der  --der-keys
-          read keys and certificates as DER file
-
-certification authority:
-
-  +cf   --add-cert-file  [c]ertificate filename: string
-          add certificate file to list of certificates
-
-  +cd   --add-cert-dir  [c]ertificate directory: string
-          add certificates in d to list of certificates
-
-ciphersuite:
-
-  +cs   --cipher  [c]iphersuite name: string
-          add ciphersuite to list of negotiated suites
-
-  +dp   --dhparam  [f]ilename: string
-          read DH parameters for DH/DSS ciphersuites
-
-pseudo random generator:
-
-  +rs   --seed  [f]ilename: string
-          seed random generator with contents of f
-
-  +ws   --write-seed
-          write back modified seed (only with --seed)
-
-  +wf   --write-seed-file  [f]ilename: string (only with --seed)
-          write modified seed to file f
-
-peer authentication:
-
-  -rc   --require-peer-cert
-          verify peer certificate, fail if absent (default)
-
-  -vc   --verify-peer-cert
-          verify peer certificate if present
-
-  -ic   --ignore-peer-cert
-          don't verify peer certificate
 \endverbatim
 
 \section notes NOTES
