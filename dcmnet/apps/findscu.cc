@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-05-27 10:19:21 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Update Date:      $Date: 2011-08-19 07:45:10 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -28,6 +28,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/dfindscu.h"
+#include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcdict.h"
@@ -65,6 +66,7 @@ int main(int argc, char *argv[])
     T_DIMSE_BlockingMode  opt_blockMode = DIMSE_BLOCKING;
     OFCmdSignedInt        opt_cancelAfterNResponses = -1;
     int                   opt_dimse_timeout = 0;
+    int                   opt_outputResponsesToLogger = 0;
     OFBool                opt_extractResponsesToFile = OFFalse;
     OFCmdUnsignedInt      opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
     E_TransferSyntax      opt_networkTransferSyntax = EXS_Unknown;
@@ -185,7 +187,6 @@ int main(int argc, char *argv[])
       cmd.addOption("--abort",                        "abort association instead of releasing it");
       cmd.addOption("--cancel",                    1, "[n]umber: integer",
                                                       "cancel after n responses (default: never)");
-      cmd.addOption("--extract",           "-X",      "extract responses to file (rsp0001.dcm, ...)");
 
 #ifdef WITH_OPENSSL
   cmd.addGroup("transport layer security (TLS) options:");
@@ -223,6 +224,12 @@ int main(int argc, char *argv[])
       cmd.addOption("--verify-peer-cert",  "-vc",     "verify peer certificate if present");
       cmd.addOption("--ignore-peer-cert",  "-ic",     "don't verify peer certificate");
 #endif
+
+  cmd.addGroup("output options:");
+    cmd.addSubGroup("C-FIND responses:");
+      cmd.addOption("--show-responses",    "+sr",     "always output responses to the logger");
+      cmd.addOption("--hide-responses",    "-sr",     "do not output responses to the logger");
+      cmd.addOption("--extract",           "-X",      "extract responses to file (rsp0001.dcm, ...)");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -334,8 +341,13 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
       if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
       if (cmd.findOption("--cancel"))  app.checkValue(cmd.getValueAndCheckMin(opt_cancelAfterNResponses, 0));
-      if (cmd.findOption("--extract")) opt_extractResponsesToFile = OFTrue;
 
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--show-responses")) opt_outputResponsesToLogger = 1;
+      if (cmd.findOption("--hide-responses")) opt_outputResponsesToLogger = 2;
+      cmd.endOptionBlock();
+
+      if (cmd.findOption("--extract")) opt_extractResponsesToFile = OFTrue;
       /* finally parse filenames */
       int paramCount = cmd.getParamCount();
       const char *currentFilename = NULL;
@@ -453,6 +465,23 @@ int main(int argc, char *argv[])
 
 #endif
 
+    }
+
+    if (opt_outputResponsesToLogger == 0)
+    {
+      // default configuration for the C-FIND response logger
+      if (!cmd.findOption("--quiet") && !cmd.findOption("--verbose") && !cmd.findOption("--debug") && !cmd.findOption("--log-level") && !cmd.findOption("--log-config"))
+        OFLog::getLogger(DCMNET_LOGGER_NAME ".responses").setLogLevel(OFLogger::INFO_LOG_LEVEL);
+    }
+    else if (opt_outputResponsesToLogger == 1)
+    {
+      // always show C-FIND responses
+      OFLog::getLogger(DCMNET_LOGGER_NAME ".responses").setLogLevel(OFLogger::INFO_LOG_LEVEL);
+    }
+    else if (opt_outputResponsesToLogger == 2)
+    {
+      // never show C-FIND responses
+      OFLog::getLogger(DCMNET_LOGGER_NAME ".responses").setLogLevel(OFLogger::OFF_LOG_LEVEL);
     }
 
     /* print resource identifier */
@@ -609,6 +638,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
+** Revision 1.65  2011-08-19 07:45:10  joergr
+** Added new command line options in order to enable the output of C-FIND
+** response messages to the new dcmnet response logger (on INFO level).
+**
 ** Revision 1.64  2011-05-27 10:19:21  joergr
 ** Fixed typos and source code formatting.
 **

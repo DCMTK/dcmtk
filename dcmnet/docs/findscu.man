@@ -145,9 +145,6 @@ other network options:
 
         --cancel  [n]umber: integer
           cancel after n responses (default: never)
-
-  -X    --extract
-          extract responses to file (rsp0001.dcm, ...)
 \endverbatim
 
 \subsection tls_options transport layer security (TLS) options
@@ -221,6 +218,20 @@ peer authentication:
           don't verify peer certificate
 \endverbatim
 
+\subsection output_options output options
+\verbatim
+C-FIND responses:
+
+  +sr   --show-responses
+          always output responses to the logger
+
+  -sr   --hide-responses
+          do not output responses to the logger
+
+  -X    --extract
+          extract responses to file (rsp0001.dcm, ...)
+\endverbatim
+
 \section notes NOTES
 
 Each file supplied on the command line will be sent to the SCP as part of a
@@ -278,8 +289,10 @@ of \b dcmodify.
 If no file is specified on the command line, the query must be specified
 completely with one or more \e -k options.
 
-Each set of response identifiers received will be printed to stdout unless
-option \e --extract is used.
+Each set of response identifiers received will be output to the logger unless
+option \e --hide-responses, \e --quiet or an appropriate logger configuration
+is used.  Option \e --show-responses can be used to force the output to the
+logger.
 
 \subsection dicom_conformance DICOM Conformance
 

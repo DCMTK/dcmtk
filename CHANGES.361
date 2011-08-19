@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.19 (riesmeier)
 
+- Added new command line options in order to enable the output of C-FIND
+  response messages to the new dcmnet response logger (on INFO level).
+  Affects: dcmnet/apps/findscu.cc
+           dcmnet/docs/findscu.man
+
 - Output C-FIND response messages to a separate logger (on INFO level).
   Affects: dcmnet/include/dcmtk/dcmnet/diutil.h
            dcmnet/libsrc/dfindscu.cc
