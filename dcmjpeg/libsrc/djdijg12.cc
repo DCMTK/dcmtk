@@ -18,8 +18,8 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 12 bits/sample.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-04 07:38:24 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2011-08-19 13:30:51 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -249,7 +249,7 @@ OFCondition DJDecompressIJG12Bit::init()
         char buffer[JMSG_LENGTH_MAX];
         (*cinfo->err->format_message)((jpeg_common_struct *)cinfo, buffer); /* Create the message */
         cleanup();
-        delete src;
+        delete OFconst_cast(DJDIJG12SourceManagerStruct *, src);
         return makeOFCondition(OFM_dcmjpeg, EJCode_IJG12_Decompression, OF_error, buffer);
       }
     }
@@ -484,6 +484,9 @@ void DJDecompressIJG12Bit::emitMessage(int msg_level) const
 /*
  * CVS/RCS Log
  * $Log: djdijg12.cc,v $
+ * Revision 1.24  2011-08-19 13:30:51  uli
+ * Fixed compilation with MSC6.
+ *
  * Revision 1.23  2011-05-04 07:38:24  uli
  * Fixed some memory leaks in seldomly-used code paths.
  *

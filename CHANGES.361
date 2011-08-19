@@ -10,6 +10,11 @@ Changes between releases are documented here.
 - Speed up the thread test by polling more often for events.
   Affects: ofstd/tests/tthread.cc
 
+- Fixed compilation with MSC6.
+  Affects: dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+
 **** Changes from 2011.08.19 (riesmeier)
 
 - Moved "TLS options" section closer to the related "network options" section.
