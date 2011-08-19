@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 11:24:40 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-19 09:35:45 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,25 +43,25 @@ struct T_ASC_Parameters;
 struct T_DIMSE_C_FindRQ;
 struct T_DIMSE_C_FindRSP;
 
-/** Abstract base class for Find SCU callbacks. During a C-FIND operation, the 
- *  callback() method of a callback handler object derived from this class is 
- *  called once for each incoming C-FIND-RSP message. The callback method has 
- *  access to the original C-FIND-RQ message (but not the request dataset), the 
- *  current C-FIND-RSP message including its dataset, the number of the current 
- *  request, the association over which the request is received and the 
+/** Abstract base class for Find SCU callbacks. During a C-FIND operation, the
+ *  callback() method of a callback handler object derived from this class is
+ *  called once for each incoming C-FIND-RSP message. The callback method has
+ *  access to the original C-FIND-RQ message (but not the request dataset), the
+ *  current C-FIND-RSP message including its dataset, the number of the current
+ *  request, the association over which the request is received and the
  *  presentation context ID. The callback is needed to process the incoming
  *  message (e.g., display on screen, add to some list, store to file). The
  *  callback may also issue a C-FIND-CANCEL message if needed. Implementations
  *  may provide their own callbacks, which must be derived from this base
  *  class.
  */
-class DcmFindSCUCallback 
-{ 
-public: 
+class DcmFindSCUCallback
+{
+public:
 
   /// default constructor
   DcmFindSCUCallback();
-  
+
   /// destructor
   virtual ~DcmFindSCUCallback() {}
 
@@ -77,14 +77,14 @@ public:
         T_DIMSE_C_FindRSP *rsp,
         DcmDataset *responseIdentifiers) = 0;
 
-  /** assigns a value to member variable assoc_. Used by FindSCU code 
+  /** assigns a value to member variable assoc_. Used by FindSCU code
    *  (class DcmFindSCU) to store a pointer to the current association
    *  before the callback object is used.
    *  @param assoc pointer to current association
    */
   void setAssociation(T_ASC_Association *assoc);
 
-  /** assigns a value to member variable presId_. Used by FindSCU code 
+  /** assigns a value to member variable presId_. Used by FindSCU code
    *  (class DcmFindSCU) to store the current presentation context ID
    *  before the callback object is used.
    *  @param presId current presentation context ID
@@ -92,7 +92,7 @@ public:
   void setPresentationContextID(T_ASC_PresentationContextID presId);
 
 protected: /* the two member variables are protected and can be accessed from derived classes */
-	
+
    /// pointer to current association. Will contain valid value when callback() is called.
    T_ASC_Association *assoc_;
 
@@ -110,7 +110,7 @@ private:
 };
 
 
-/** Default implementation of FindSCU callback class. This implementation is 
+/** Default implementation of FindSCU callback class. This implementation is
  *  used when no explicit callback is passed by the user, e.g. in the findscu tool.
  */
 class DcmFindSCUDefaultCallback: public DcmFindSCUCallback
@@ -120,11 +120,14 @@ public:
    *  @param extractResponsesToFile if true, C-FIND-RSP datasets will be stored as DICOM files
    *  @param cancelAfterNResponses if non-negative, a C-FIND-CANCEL will be issued after the
    *    given number of incoming C-FIND-RSP messages
+   *  @param outputDirectory directory used to store the output files (e.g. response messages).
+   *    If NULL, the current directory is used.
    */
   DcmFindSCUDefaultCallback(
     OFBool extractResponsesToFile,
-    int cancelAfterNResponses);
-  
+    int cancelAfterNResponses,
+    const char *outputDirectory = NULL);
+
   /// destructor
   virtual ~DcmFindSCUDefaultCallback() {}
 
@@ -147,6 +150,9 @@ private:
 
    /// if non-negative, a C-FIND-CANCEL will be issued after the given number of incoming C-FIND-RSP messages
    int cancelAfterNResponses_;
+
+   /// directory used to store the output files (e.g. response messages)
+   OFString outputDirectory_;
 };
 
 
@@ -174,7 +180,7 @@ public:
   /** enable user-defined transport layer. This method is needed when
    *  the network association should use a non-default transport layer
    *  (e.g. a TLS connection). In this case a fully initialized transport
-   *  layer object must be passed with this call after a call to 
+   *  layer object must be passed with this call after a call to
    *  initializeNetwork, but prior to any call to performQuery.
    *  The transport layer object will not be deleted by this class and
    *  must remain alive until this object is deleted or a new transport
@@ -189,15 +195,15 @@ public:
    */
   OFCondition dropNetwork();
 
-  /** main worker method that negotiates an association, executes one or more 
-   *  C-FIND-RQ transactions, processes the responses and closes the association 
+  /** main worker method that negotiates an association, executes one or more
+   *  C-FIND-RQ transactions, processes the responses and closes the association
    *  once everything is finished (or an error has occured).
    *  @param peer hostname or IP address of peer SCP host
    *  @param port TCP port number of peer SCP host
    *  @param ourTitle calling AE title
    *  @param peerTitle called AE title
    *  @param abstractSyntax SOP Class UID or Meta SOP Class UID of service
-   *  @param preferredTransferSyntax. May be Unknown, Implicit Little Endian, or any of the
+   *  @param preferredTransferSyntax May be Unknown, Implicit Little Endian, or any of the
    *    two uncompressed explicit VR transfer syntaxes. By default (unknown), local endian
    *    explicit VR is proposed first, followed by opposite endian explicit VR, followed by
    *    implicit VR. This behaviour can be modified by explicitly specifying the preferred
@@ -221,13 +227,15 @@ public:
    *  @param overrideKeys list of keys/paths that override those in the query files, if any.
    *    Either the list of query files or override keys or both should be non-empty, because the query
    *    dataset will be empty otherwise. For path syntax see DcmPath.
-   *  @param callback user-provided non-default callback handler object. 
+   *  @param callback user-provided non-default callback handler object.
    *    For default callback, pass NULL.
    *  @param fileNameList list of query files. Each file is expected to be a DICOM file
    *    containing a dataset that is used as a query, possibly modified by override keys, if any.
    *    This parameter, if non-NULL, points to a list of filenames (paths).
+   *  @param outputDirectory directory used to store the output files (e.g. response messages).
+   *    If NULL, the current directory is used.
    *  @return EC_Normal if successful, an error code otherwise
-   */  
+   */
   OFCondition performQuery(
     const char *peer,
     unsigned int port,
@@ -245,7 +253,8 @@ public:
     int cancelAfterNResponses,
     OFList<OFString> *overrideKeys,
     DcmFindSCUCallback *callback = NULL,
-    OFList<OFString> *fileNameList = NULL);    
+    OFList<OFString> *fileNameList = NULL,
+    const char *outputDirectory = NULL);
 
   /** static helper function that writes the content of the given dataset
    *  into a DICOM file (using the DICOM file format with metaheader).
@@ -254,24 +263,24 @@ public:
    *  @param ofname filename to write
    *  @param dataset dataset to store in file
    *  @return EC_Normal if successful, an error code otherwise
-   */   
+   */
   static OFBool writeToFile(const char* ofname, DcmDataset *dataset);
 
 private:
 
   /** add presentation context for given abstract syntax and given preferred transfer syntax
-   *  to the ACSE parameter struct. 
+   *  to the ACSE parameter struct.
    *  @param params ACSE parameter struct to be modified
    *  @param abstractSyntax SOP Class UID or Meta SOP Class UID of service
-   *  @param preferredTransferSyntax. May be Unknown, Implicit Little Endian, or any of the
+   *  @param preferredTransferSyntax May be Unknown, Implicit Little Endian, or any of the
    *    two uncompressed explicit VR transfer syntaxes. By default (unknown), local endian
    *    explicit VR is proposed first, followed by opposite endian explicit VR, followed by
    *    implicit VR. This behaviour can be modified by explicitly specifying the preferred
    *    explicit VR transfer syntax. With Little Endian Implicit, only Implicit VR is proposed.
    *  @return EC_Normal if successful, an error code otherwise
-   */   
+   */
   OFCondition addPresentationContext(
-    T_ASC_Parameters *params, 
+    T_ASC_Parameters *params,
     const char *abstractSyntax,
     E_TransferSyntax preferredTransferSyntax);
 
@@ -290,21 +299,24 @@ private:
    *  @param overrideKeys dataset with keys that override those in the query file, if any.
    *    Either query file or override keys or both should be non-empty, because the query
    *    dataset will be empty otherwise.
-   *  @param callback user-provided non-default callback handler object. 
+   *  @param callback user-provided non-default callback handler object.
    *    For default callback, pass NULL.
+   *  @param outputDirectory directory used to store the output files (e.g. response messages).
+   *    If NULL, the current directory is used.
    *  @return EC_Normal if successful, an error code otherwise
-   */   
+   */
   OFCondition findSCU(
-    T_ASC_Association * assoc, 
-    const char *fname, 
-    int repeatCount,  
+    T_ASC_Association * assoc,
+    const char *fname,
+    int repeatCount,
     const char *abstractSyntax,
-    T_DIMSE_BlockingMode blockMode, 
-    int dimse_timeout, 
+    T_DIMSE_BlockingMode blockMode,
+    int dimse_timeout,
     OFBool extractResponsesToFile,
     int cancelAfterNResponses,
     OFList<OFString> *overrideKeys,
-    DcmFindSCUCallback *callback = NULL) const;
+    DcmFindSCUCallback *callback = NULL,
+    const char *outputDirectory = NULL) const;
 
   /// Private undefined copy constructor
   DcmFindSCU(const DcmFindSCU& other);
@@ -313,7 +325,7 @@ private:
   DcmFindSCU& operator=(const DcmFindSCU& other);
 
 private:
-	
+
   /// pointer to network structure
   T_ASC_Network *net_;
 
@@ -324,6 +336,10 @@ private:
 /*
  * CVS Log
  * $Log: dfindscu.h,v $
+ * Revision 1.7  2011-08-19 09:35:45  joergr
+ * Added support for specifying the directory where the response messages are
+ * stored. Also output the name of the created file to the logger.
+ *
  * Revision 1.6  2011-02-04 11:24:40  uli
  * Added private undefined functions where gcc's -Weffc++ warns otherwise.
  *

@@ -18,8 +18,8 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-19 07:40:32 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2011-08-19 09:35:47 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,10 +80,12 @@ void DcmFindSCUCallback::setPresentationContextID(T_ASC_PresentationContextID pr
 
 DcmFindSCUDefaultCallback::DcmFindSCUDefaultCallback(
     OFBool extractResponsesToFile,
-    int cancelAfterNResponses)
+    int cancelAfterNResponses,
+    const char *outputDirectory)
 : DcmFindSCUCallback()
 , extractResponsesToFile_(extractResponsesToFile)
 , cancelAfterNResponses_(cancelAfterNResponses)
+, outputDirectory_(OFSTRING_GUARD(outputDirectory))
 {
 }
 
@@ -106,9 +108,12 @@ void DcmFindSCUDefaultCallback::callback(
 
     /* in case extractResponsesToFile is set the responses shall be extracted to a certain file */
     if (extractResponsesToFile_) {
+        OFString outputFilename;
         char rspIdsFileName[1024];
         sprintf(rspIdsFileName, "rsp%04d.dcm", responseCount);
-        DcmFindSCU::writeToFile(rspIdsFileName, responseIdentifiers);
+        OFStandard::combineDirAndFilename(outputFilename, outputDirectory_, rspIdsFileName, OFTrue /*allowEmptyDirName*/);
+        DCMNET_INFO("Writing response message to file: " << outputFilename);
+        DcmFindSCU::writeToFile(outputFilename.c_str(), responseIdentifiers);
     }
 
     /* should we send a cancel back ?? */
@@ -169,7 +174,8 @@ OFCondition DcmFindSCU::performQuery(
     int cancelAfterNResponses,
     OFList<OFString> *overrideKeys,
     DcmFindSCUCallback *callback,
-    OFList<OFString> *fileNameList)
+    OFList<OFString> *fileNameList,
+    const char *outputDirectory)
 {
     T_ASC_Association *assoc = NULL;
     T_ASC_Parameters *params = NULL;
@@ -244,13 +250,13 @@ OFCondition DcmFindSCU::performQuery(
     if ((fileNameList == NULL) || fileNameList->empty())
     {
         /* no files provided on command line */
-        cond = findSCU(assoc, NULL, repeatCount, abstractSyntax, blockMode, dimse_timeout, extractResponsesToFile, cancelAfterNResponses, overrideKeys, callback);
+        cond = findSCU(assoc, NULL, repeatCount, abstractSyntax, blockMode, dimse_timeout, extractResponsesToFile, cancelAfterNResponses, overrideKeys, callback, outputDirectory);
     } else {
       OFListIterator(OFString) iter = fileNameList->begin();
       OFListIterator(OFString) enditer = fileNameList->end();
       while ((iter != enditer) && cond.good())
       {
-          cond = findSCU(assoc, (*iter).c_str(), repeatCount, abstractSyntax, blockMode, dimse_timeout, extractResponsesToFile, cancelAfterNResponses, overrideKeys, callback);
+          cond = findSCU(assoc, (*iter).c_str(), repeatCount, abstractSyntax, blockMode, dimse_timeout, extractResponsesToFile, cancelAfterNResponses, overrideKeys, callback, outputDirectory);
           ++iter;
       }
     }
@@ -414,7 +420,8 @@ OFCondition DcmFindSCU::findSCU(
     OFBool extractResponsesToFile,
     int cancelAfterNResponses,
     OFList<OFString> *overrideKeys,
-    DcmFindSCUCallback *callback) const
+    DcmFindSCUCallback *callback,
+    const char *outputDirectory) const
     /*
      * This function will read all the information from the given file
      * (this information specifies a search mask), figure out a corresponding
@@ -491,7 +498,7 @@ OFCondition DcmFindSCU::findSCU(
     req.Priority = DIMSE_PRIORITY_LOW;
 
     /* prepare the callback data */
-    DcmFindSCUDefaultCallback defaultCallback(extractResponsesToFile, cancelAfterNResponses);
+    DcmFindSCUDefaultCallback defaultCallback(extractResponsesToFile, cancelAfterNResponses, outputDirectory);
     if (callback == NULL) callback = &defaultCallback;
     callback->setAssociation(assoc);
     callback->setPresentationContextID(presId);
@@ -548,6 +555,10 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.17  2011-08-19 09:35:47  joergr
+ * Added support for specifying the directory where the response messages are
+ * stored. Also output the name of the created file to the logger.
+ *
  * Revision 1.16  2011-08-19 07:40:32  joergr
  * Output C-FIND response messages to a separate logger (on INFO level).
  *

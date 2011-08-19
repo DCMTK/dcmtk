@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.19 (riesmeier)
 
+- Added support for specifying the directory where the response messages are
+  stored. Also output the name of the created file to the logger.
+  Affects: dcmnet/apps/findscu.cc
+           dcmnet/docs/findscu.man
+           dcmnet/include/dcmtk/dcmnet/dfindscu.h
+           dcmnet/libsrc/dfindscu.cc
+
 - Added new command line options in order to enable the output of C-FIND
   response messages to the new dcmnet response logger (on INFO level).
   Affects: dcmnet/apps/findscu.cc

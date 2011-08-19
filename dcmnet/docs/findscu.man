@@ -220,6 +220,11 @@ peer authentication:
 
 \subsection output_options output options
 \verbatim
+general:
+
+  -od   --output-directory  [d]irectory: string (default: ".")
+          write output files to existing directory d
+
 C-FIND responses:
 
   +sr   --show-responses
@@ -290,9 +295,9 @@ If no file is specified on the command line, the query must be specified
 completely with one or more \e -k options.
 
 Each set of response identifiers received will be output to the logger unless
-option \e --hide-responses, \e --quiet or an appropriate logger configuration
-is used.  Option \e --show-responses can be used to force the output to the
-logger.
+option \e --hide-responses, \e --extract, \e --quiet or an appropriate logger
+configuration is used.  Option \e --show-responses can be used to force the
+output to the logger.
 
 \subsection dicom_conformance DICOM Conformance
 

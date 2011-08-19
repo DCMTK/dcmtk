@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-19 07:45:10 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2011-08-19 09:35:42 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
     int                   opt_dimse_timeout = 0;
     int                   opt_outputResponsesToLogger = 0;
     OFBool                opt_extractResponsesToFile = OFFalse;
+    OFString              opt_outputDirectory = ".";
     OFCmdUnsignedInt      opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
     E_TransferSyntax      opt_networkTransferSyntax = EXS_Unknown;
     const char *          opt_ourTitle = APPLICATIONTITLE;
@@ -226,6 +227,8 @@ int main(int argc, char *argv[])
 #endif
 
   cmd.addGroup("output options:");
+    cmd.addSubGroup("general:");
+      cmd.addOption("--output-directory",  "-od",  1, "[d]irectory: string (default: \".\")", "write output files to existing directory d");
     cmd.addSubGroup("C-FIND responses:");
       cmd.addOption("--show-responses",    "+sr",     "always output responses to the logger");
       cmd.addOption("--hide-responses",    "-sr",     "do not output responses to the logger");
@@ -341,6 +344,8 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
       if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
       if (cmd.findOption("--cancel"))  app.checkValue(cmd.getValueAndCheckMin(opt_cancelAfterNResponses, 0));
+
+      if (cmd.findOption("--output-directory")) app.checkValue(cmd.getValue(opt_outputDirectory));
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--show-responses")) opt_outputResponsesToLogger = 1;
@@ -470,8 +475,17 @@ int main(int argc, char *argv[])
     if (opt_outputResponsesToLogger == 0)
     {
       // default configuration for the C-FIND response logger
-      if (!cmd.findOption("--quiet") && !cmd.findOption("--verbose") && !cmd.findOption("--debug") && !cmd.findOption("--log-level") && !cmd.findOption("--log-config"))
-        OFLog::getLogger(DCMNET_LOGGER_NAME ".responses").setLogLevel(OFLogger::INFO_LOG_LEVEL);
+      if (!cmd.findOption("--log-config"))
+      {
+        if (cmd.findOption("--extract"))
+        {
+          OFLog::getLogger(DCMNET_LOGGER_NAME ".responses").setLogLevel(OFLogger::OFF_LOG_LEVEL);
+        }
+        else if (!cmd.findOption("--quiet") && !cmd.findOption("--verbose") && !cmd.findOption("--debug") && !cmd.findOption("--log-level"))
+        {
+          OFLog::getLogger(DCMNET_LOGGER_NAME ".responses").setLogLevel(OFLogger::INFO_LOG_LEVEL);
+        }
+      }
     }
     else if (opt_outputResponsesToLogger == 1)
     {
@@ -492,6 +506,21 @@ int main(int argc, char *argv[])
     {
       OFLOG_WARN(findscuLogger, "no data dictionary loaded, check environment variable: "
         << DCM_DICT_ENVIRONMENT_VARIABLE);
+    }
+
+    /* make sure that output directory can be used (if needed) */
+    if (opt_extractResponsesToFile)
+    {
+      if (!OFStandard::dirExists(opt_outputDirectory))
+      {
+        OFLOG_FATAL(findscuLogger, "specified output directory does not exist");
+        return 1;
+      }
+      else if (!OFStandard::isWriteable(opt_outputDirectory))
+      {
+        OFLOG_FATAL(findscuLogger, "specified output directory is not writeable");
+        return 1;
+      }
     }
 
     // declare findSCU handler and initialize network
@@ -603,7 +632,8 @@ int main(int argc, char *argv[])
       opt_cancelAfterNResponses,
       &overrideKeys,
       NULL, /* we want to use the default callback */
-      &fileNameList);
+      &fileNameList,
+      opt_outputDirectory.c_str());
 
     if (cond.bad()) OFLOG_ERROR(findscuLogger, DimseCondition::dump(temp_str, cond));
 
@@ -638,6 +668,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
+** Revision 1.66  2011-08-19 09:35:42  joergr
+** Added support for specifying the directory where the response messages are
+** stored. Also output the name of the created file to the logger.
+**
 ** Revision 1.65  2011-08-19 07:45:10  joergr
 ** Added new command line options in order to enable the output of C-FIND
 ** response messages to the new dcmnet response logger (on INFO level).
