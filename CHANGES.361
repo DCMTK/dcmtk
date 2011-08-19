@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.19 (schlachter)
+
+- Added a function for sleeping with a millisecond timeout.
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2011.08.19 (riesmeier)
 
 - Moved "TLS options" section closer to the related "network options" section.

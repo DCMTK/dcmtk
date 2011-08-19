@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-08-19 12:04:07 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -551,6 +551,12 @@ class OFStandard
 #endif
     }
 
+    /** makes the current process sleep until the given number of milliseconds
+     *  have elapsed or a signal which is not ignored arrives
+     *  @param millisecs number of milliseconds to sleep
+     */
+    static void milliSleep(unsigned int millisecs);
+
     /** Determines the identification of the running process.
      *  @return the process ID of the currently running process.
      */
@@ -605,6 +611,9 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.43  2011-08-19 12:04:07  uli
+ * Added a function for sleeping with a millisecond timeout.
+ *
  * Revision 1.42  2010-10-14 13:15:50  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

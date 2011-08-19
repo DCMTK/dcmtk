@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -88,8 +88,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 08:55:56 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Update Date:      $Date: 2011-08-19 12:04:07 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1849,11 +1849,27 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
   return sleep(seconds);
 #elif defined(HAVE_USLEEP)
   // usleep() expects microseconds
-  (void) usleep(((unsigned long)seconds)*1000000UL);
+  (void) usleep(OFstatic_cast(unsigned long, seconds)*1000000UL);
   return 0;
 #else
   // don't know how to sleep
   return 0;
+#endif
+}
+
+void OFStandard::milliSleep(unsigned int millisecs)
+{
+#ifdef HAVE_WINDOWS_H
+  // on Win32 we use the Sleep() system call which expects milliseconds
+    Sleep(millisecs);
+#elif defined(HAVE_USLEEP)
+    // usleep() expects microseconds
+    (void) usleep(OFstatic_cast(unsigned long, millisecs)*1000UL);
+#else
+    struct timeval t;
+    t.tv_sec = millisecs / 1000;
+    t.tv_usec = (millisecs % 1000) * 1000;
+    select(0, NULL, NULL, NULL, &t);
 #endif
 }
 
@@ -1871,6 +1887,9 @@ long OFStandard::getProcessID()
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.67  2011-08-19 12:04:07  uli
+ *  Added a function for sleeping with a millisecond timeout.
+ *
  *  Revision 1.66  2010-11-01 08:55:56  uli
  *  Moved variable declarations in front of their loop.
  *
