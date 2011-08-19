@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.19 (riesmeier)
 
+- Output C-FIND response messages to a separate logger (on INFO level).
+  Affects: dcmnet/include/dcmtk/dcmnet/diutil.h
+           dcmnet/libsrc/dfindscu.cc
+           dcmnet/libsrc/diutil.cc
+           oflog/etc/logger.cfg
+
 - Passed log4cplus's internal log level OFF_LOG_LEVEL to OFLogger and added
   new method for setting the log level directly.
   Affects: oflog/include/dcmtk/oflog/oflog.h

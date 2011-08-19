@@ -73,9 +73,9 @@
 **
 ** Module Prefix: DU_
 **
-** Last Update:         $Author: uli $
-** Update Date:         $Date: 2011-05-03 07:46:38 $
-** CVS/RCS Revision:    $Revision: 1.14 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2011-08-19 07:40:30 $
+** CVS/RCS Revision:    $Revision: 1.15 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -93,6 +93,8 @@
 
 
 extern OFLogger DCM_dcmnetLogger;
+
+#define DCMNET_LOGGER_NAME "dcmtk.dcmnet"
 
 #define DCMNET_TRACE(msg) OFLOG_TRACE(DCM_dcmnetLogger, msg)
 #define DCMNET_DEBUG(msg) OFLOG_DEBUG(DCM_dcmnetLogger, msg)
@@ -140,6 +142,9 @@ const char *DU_neventReportStatusString(Uint16 statusCode);
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
+** Revision 1.15  2011-08-19 07:40:30  joergr
+** Output C-FIND response messages to a separate logger (on INFO level).
+**
 ** Revision 1.14  2011-05-03 07:46:38  uli
 ** Remove a pointless return value from some function. This helps in static code
 ** analysis to ensure memory is never lost.

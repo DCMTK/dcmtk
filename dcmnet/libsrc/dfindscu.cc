@@ -17,9 +17,9 @@
  *
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:00:59 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-19 07:40:32 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,14 +93,16 @@ void DcmFindSCUDefaultCallback::callback(
     T_DIMSE_C_FindRSP *rsp,
     DcmDataset *responseIdentifiers)
  {
+    OFLogger rspLogger = OFLog::getLogger(DCMNET_LOGGER_NAME ".responses");
+
     /* dump delimiter */
-    DCMNET_WARN("---------------------------");
+    OFLOG_INFO(rspLogger, "---------------------------");
 
     /* dump response number */
-    DCMNET_WARN("Find Response: " << responseCount << " (" << DU_cfindStatusString(rsp->DimseStatus) << ")");
+    OFLOG_INFO(rspLogger, "Find Response: " << responseCount << " (" << DU_cfindStatusString(rsp->DimseStatus) << ")");
 
     /* dump data set which was received */
-    DCMNET_WARN(DcmObject::PrintHelper(*responseIdentifiers));
+    OFLOG_INFO(rspLogger, DcmObject::PrintHelper(*responseIdentifiers));
 
     /* in case extractResponsesToFile is set the responses shall be extracted to a certain file */
     if (extractResponsesToFile_) {
@@ -546,6 +548,9 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.16  2011-08-19 07:40:32  joergr
+ * Output C-FIND response messages to a separate logger (on INFO level).
+ *
  * Revision 1.15  2011-04-18 07:00:59  uli
  * Use global variables for the logger objects. This removes the thread-unsafe
  * static local variables which were used before.

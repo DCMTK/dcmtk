@@ -73,9 +73,9 @@
 **
 ** Module Prefix: DU_
 **
-** Last Update:         $Author: uli $
-** Update Date:         $Date: 2011-05-03 07:46:38 $
-** CVS/RCS Revision:    $Revision: 1.32 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2011-08-19 07:40:32 $
+** CVS/RCS Revision:    $Revision: 1.33 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -119,7 +119,7 @@
 
 static char staticBuf[256];
 
-OFLogger DCM_dcmnetLogger = OFLog::getLogger("dcmtk.dcmnet");
+OFLogger DCM_dcmnetLogger = OFLog::getLogger(DCMNET_LOGGER_NAME);
 
 #define TO_UCHAR(s) OFstatic_cast(unsigned char, (s))
 void
@@ -806,6 +806,9 @@ DU_neventReportStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
+** Revision 1.33  2011-08-19 07:40:32  joergr
+** Output C-FIND response messages to a separate logger (on INFO level).
+**
 ** Revision 1.32  2011-05-03 07:46:38  uli
 ** Remove a pointless return value from some function. This helps in static code
 ** analysis to ensure memory is never lost.
