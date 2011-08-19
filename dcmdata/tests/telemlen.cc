@@ -18,8 +18,8 @@
  *  Purpose: test program for DcmElement::calcElementLength
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-08 07:11:11 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-08-19 13:46:00 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,15 +54,17 @@ static void testElementLengthForElem(DcmElement& elem, const char *type,
         OFCHECK_FAIL("Failed to write element " << type << " to stream: " << cond.text());
     if (length != len)
     {
-        OFCHECK_FAIL("Expected length (" << len << "), but got (" << length
-                << ") when writing " << type);
+        OFCHECK_FAIL("Expected length (" << OFstatic_cast(size_t, len)
+                       << "), but got (" << OFstatic_cast(size_t, length)
+                       << ") while writing " << type);
     }
 
     length = elem.calcElementLength(EXS_LittleEndianExplicit, EET_ExplicitLength);
     if (length != len)
     {
-        OFCHECK_FAIL("Expected length (" << len << "), but got (" << length
-                << ") while handling " << type);
+        OFCHECK_FAIL("Expected length (" << OFstatic_cast(size_t, len)
+                       << "), but got (" << OFstatic_cast(size_t, length)
+                       << ") while handling " << type);
     }
 }
 
@@ -159,6 +161,9 @@ TEST_VR(EVR_OverlayData)
  *
  * CVS/RCS Log:
  * $Log: telemlen.cc,v $
+ * Revision 1.3  2011-08-19 13:46:00  uli
+ * Fixed compilation with MSC6
+ *
  * Revision 1.2  2011-06-08 07:11:11  uli
  * Corrected some file purpose descriptions.
  *

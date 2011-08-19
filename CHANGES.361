@@ -11,7 +11,8 @@ Changes between releases are documented here.
   Affects: ofstd/tests/tthread.cc
 
 - Fixed compilation with MSC6.
-  Affects: dcmjpeg/libsrc/djdijg12.cc
+  Affects: dcmdata/tests/telemlen.cc
+           dcmjpeg/libsrc/djdijg12.cc
            dcmjpeg/libsrc/djdijg16.cc
            dcmjpeg/libsrc/djdijg8.cc
 
