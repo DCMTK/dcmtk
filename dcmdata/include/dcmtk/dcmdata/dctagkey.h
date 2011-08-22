@@ -18,16 +18,16 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-16 07:19:11 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2011-08-22 10:17:29 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef DCMTAGKEY_H
-#define DCMTAGKEY_H 1
+#ifndef DCTAGKEY_H
+#define DCTAGKEY_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -116,34 +116,32 @@ public:
      */
     OFBool isPrivate() const;
 
-    /** returns true, if tag is a private reservation tag
-     *  of the form (gggg,00xx) with gggg being odd and
-     *  xx in the range of 10 and FF.
+    /** returns true, if tag is a private reservation tag of the form (gggg,00xx)
+     *  with "gggg" being odd and "xx" in the range of 10 and FF.
      *  @return returns OFTrue if tag key is a private reservation key
      */
     OFBool isPrivateReservation() const;
 
-    /** returns true, if group is valid (permitted in DICOM files).
+    /** returns true, if group is valid (permitted in DICOM command or data sets).
      *  Referring to the standard, groups 1, 3, 5, 7 and 0xFFFF are illegal.
      *  @return returns OFTrue if tag key has a valid group number.
      */
     OFBool hasValidGroup() const;
 
-    /** generate a simple hash code for this attribute tag,
-     *  used for fast look-up in the DICOM dictionary
+    /** generate a simple hash code for this attribute tag.
+     *  Used for fast look-up in the DICOM dictionary.
      *  @return hash code for this tag
      */
     Uint32 hash() const; // generate simple hash code
 
-    /** assignment operator for initializing this tag
-     *  key from an existing one.
+    /** assignment operator for initializing this tag key from an existing one
      *  @param key [in] The key to copy from
      *  @return "this" initialization
      */
     DcmTagKey& operator = (const DcmTagKey& key);
 
-    /** Comparison operator. Returns true if both group and
-     *  element number are the same.
+    /** Comparison operator. Returns true if both group and element number
+     *  are the same.
      *  @param key key to compare with
      *  @return true if tag keys are the same
      */
@@ -430,6 +428,9 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
+** Revision 1.25  2011-08-22 10:17:29  joergr
+** Fixed misleading documentation for hasValidGroup() method.
+**
 ** Revision 1.24  2011-06-16 07:19:11  joergr
 ** Added method that returns the base tag, i.e. in case of a repeating group tag
 ** always the base group number 0x5000 (curve) or 0x6000 (overlay) is used.

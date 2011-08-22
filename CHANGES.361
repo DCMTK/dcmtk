@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.22 (riesmeier)
+
+- Fixed misleading documentation for hasValidGroup() method.
+  Affects: dcmdata/include/dcmtk/dcmdata/dctagkey.h
+
 **** Changes from 2011.08.22 (schlachter)
 
 - Enhanced the "make check" target.
