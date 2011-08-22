@@ -36,6 +36,9 @@ Changes between releases are documented here.
            ofstd/Makefile.in
            ofstd/tests/Makefile.in
 
+- Fixed atof test with MSC6.
+  Affects: ofstd/tests/tatof.cc
+
 **** Changes from 2011.08.19 (schlachter)
 
 - Added a function for sleeping with a millisecond timeout.

@@ -19,8 +19,8 @@
  *
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:57 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-08-22 10:08:36 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ const ValuePair vp[] =
   {"1.175494351E-38F", 1.175494351E-38F, OFTrue},
 
   // overflow is reported as infinity
-  {"1.7976931348623157E+1000", 1.0E300 * 1.0E300 * 1.0E300 * 1.0E100 /* infinity */, OFTrue},
+  {"1.7976931348623157E+1000", HUGE_VAL, OFTrue},
 
   // underflow is reported as zero
   {"2.2250738585072014E-1000", 0.0, OFTrue},
@@ -126,6 +126,9 @@ OFTEST(ofstd_atof)
  *
  * CVS/RCS Log:
  * $Log: tatof.cc,v $
+ * Revision 1.2  2011-08-22 10:08:36  uli
+ * Fixed atof test with MSC6.
+ *
  * Revision 1.1  2011-05-25 10:05:57  uli
  * Imported oftest and converted existing tests to oftest.
  *
