@@ -30,6 +30,10 @@ install-support:
 
 libsrc-all:
 
+tests-all:
+
+check:
+
 
 include-install:
 	./mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/config
@@ -51,7 +55,5 @@ clean:
 distclean:
 	(cd include/dcmtk/config && rm -f $(DISTTRASH) osconfig.h)
 	rm -rf $(DISTTRASH) Makefile.def lzwtest.tif
-
-check:
 
 dependencies:

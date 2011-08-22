@@ -14,6 +14,8 @@ include $(configdir)/@common_makefile@
 
 all:
 
+check:
+
 install:
 
 clean:
@@ -23,5 +25,3 @@ distclean:
 	rm -f $(DISTTRASH)
 
 dependencies:
-
-check:

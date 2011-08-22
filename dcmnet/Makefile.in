@@ -41,8 +41,12 @@ libsrc-all: include-all
 apps-all: libsrc-all
 	(cd apps && $(MAKE) ARCH="$(ARCH)" all)
 
-tests-all:
+tests-all: libsrc-all
 	(cd tests && $(MAKE) ARCH="$(ARCH)" all)
+
+
+check: tests-all
+	(cd tests && $(MAKE) check)
 
 
 include-install:
@@ -88,5 +92,3 @@ dependencies:
 	(cd libsrc && touch $(DEP) && $(MAKE) dependencies)
 	(cd apps && touch $(DEP) && $(MAKE) dependencies)
 #	(cd tests && touch $(DEP) && $(MAKE) dependencies)
-
-check:

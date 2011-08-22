@@ -11,6 +11,8 @@ all:  config-all ofstd-all oflog-all dcmdata-all dcmtls-all dcmnet-all dcmqrdb-a
 
 libsrc-all:  ofstd-libsrc-all oflog-libsrc-all dcmdata-libsrc-all dcmtls-libsrc-all dcmnet-libsrc-all dcmqrdb-libsrc-all dcmwlm-libsrc-all dcmimgle-libsrc-all dcmsr-libsrc-all dcmsign-libsrc-all dcmpstat-libsrc-all dcmimage-libsrc-all dcmjpeg-libsrc-all dcmjpls-libsrc-all
 
+tests-all:  config-tests-all ofstd-tests-all oflog-tests-all dcmdata-tests-all dcmtls-tests-all dcmnet-tests-all dcmqrdb-tests-all dcmwlm-tests-all dcmimgle-tests-all dcmsr-tests-all dcmsign-tests-all dcmpstat-tests-all dcmimage-tests-all dcmjpeg-tests-all dcmjpls-tests-all
+
 install:  config-install ofstd-install oflog-install dcmdata-install dcmtls-install dcmnet-install dcmqrdb-install dcmwlm-install dcmimgle-install dcmsr-install dcmsign-install dcmpstat-install dcmimage-install dcmjpeg-install dcmjpls-install dcmtk-install-doc install-man
 
 install-all: install install-lib install-html
@@ -29,8 +31,8 @@ install-include:  config-install-include ofstd-install-include oflog-install-inc
 
 install-support:  config-install-support ofstd-install-support oflog-install-support dcmdata-install-support dcmtls-install-support dcmnet-install-support dcmqrdb-install-support dcmwlm-install-support dcmimgle-install-support dcmsr-install-support dcmsign-install-support dcmpstat-install-support dcmimage-install-support dcmjpeg-install-support dcmjpls-install-support
 
-check: libsrc-all
-	@$(MAKE) -s check-nosilent
+check: tests-all
+	$(MAKE) -s check-nosilent
 
 check-nosilent:  config-check ofstd-check oflog-check dcmdata-check dcmtls-check dcmnet-check dcmqrdb-check dcmwlm-check dcmimgle-check dcmsr-check dcmsign-check dcmpstat-check dcmimage-check dcmjpeg-check dcmjpls-check
 
@@ -57,6 +59,9 @@ config-all:
 
 config-libsrc-all:
 	(cd config && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+config-tests-all:
+	(cd config && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
 
 config-install:
 	(cd config && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
@@ -91,6 +96,9 @@ ofstd-all:
 ofstd-libsrc-all:
 	(cd ofstd && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
 
+ofstd-tests-all:
+	(cd ofstd && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
 ofstd-install:
 	(cd ofstd && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
 
@@ -123,6 +131,9 @@ oflog-all:
 
 oflog-libsrc-all:
 	(cd oflog && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+oflog-tests-all:
+	(cd oflog && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
 
 oflog-install:
 	(cd oflog && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
@@ -157,6 +168,9 @@ dcmdata-all:
 dcmdata-libsrc-all:
 	(cd dcmdata && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
 
+dcmdata-tests-all:
+	(cd dcmdata && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
 dcmdata-install:
 	(cd dcmdata && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
 
@@ -189,6 +203,9 @@ dcmtls-all:
 
 dcmtls-libsrc-all:
 	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmtls-tests-all:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
 
 dcmtls-install:
 	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
@@ -223,6 +240,9 @@ dcmnet-all:
 dcmnet-libsrc-all:
 	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
 
+dcmnet-tests-all:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
 dcmnet-install:
 	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
 
@@ -255,6 +275,9 @@ dcmqrdb-all:
 
 dcmqrdb-libsrc-all:
 	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmqrdb-tests-all:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
 
 dcmqrdb-install:
 	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
@@ -289,6 +312,9 @@ dcmwlm-all:
 dcmwlm-libsrc-all:
 	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
 
+dcmwlm-tests-all:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
 dcmwlm-install:
 	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
 
@@ -321,6 +347,9 @@ dcmimgle-all:
 
 dcmimgle-libsrc-all:
 	(cd dcmimgle && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmimgle-tests-all:
+	(cd dcmimgle && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
 
 dcmimgle-install:
 	(cd dcmimgle && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
@@ -355,6 +384,9 @@ dcmsr-all:
 dcmsr-libsrc-all:
 	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
 
+dcmsr-tests-all:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
 dcmsr-install:
 	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
 
@@ -387,6 +419,9 @@ dcmsign-all:
 
 dcmsign-libsrc-all:
 	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmsign-tests-all:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
 
 dcmsign-install:
 	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
@@ -421,6 +456,9 @@ dcmpstat-all:
 dcmpstat-libsrc-all:
 	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
 
+dcmpstat-tests-all:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
 dcmpstat-install:
 	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
 
@@ -453,6 +491,9 @@ dcmimage-all:
 
 dcmimage-libsrc-all:
 	(cd dcmimage && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmimage-tests-all:
+	(cd dcmimage && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
 
 dcmimage-install:
 	(cd dcmimage && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
@@ -487,6 +528,9 @@ dcmjpeg-all:
 dcmjpeg-libsrc-all:
 	(cd dcmjpeg && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
 
+dcmjpeg-tests-all:
+	(cd dcmjpeg && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
 dcmjpeg-install:
 	(cd dcmjpeg && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
 
@@ -519,6 +563,9 @@ dcmjpls-all:
 
 dcmjpls-libsrc-all:
 	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmjpls-tests-all:
+	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
 
 dcmjpls-install:
 	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)

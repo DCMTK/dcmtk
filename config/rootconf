@@ -32,6 +32,7 @@ for module in config $modules; do
 if test $module != config ; then
 	makelibsrcall="$makelibsrcall ${module}-libsrc-all"
 fi
+	maketestsall="$maketestsall ${module}-tests-all"
 	makeinstall="$makeinstall ${module}-install"
 	makeinstallbin="$makeinstallbin ${module}-install-bin"
 	makeinstalldoc="$makeinstalldoc ${module}-install-doc"
@@ -47,6 +48,8 @@ cat >> $output <<EOF
 all: $makeall
 
 libsrc-all: $makelibsrcall
+
+tests-all: $maketestsall
 
 install: $makeinstall dcmtk-install-doc install-man
 
@@ -66,8 +69,8 @@ install-include: $makeinstallinclude
 
 install-support: $makeinstallsupport
 
-check: libsrc-all
-	@\$(MAKE) -s check-nosilent
+check: tests-all
+	\$(MAKE) -s check-nosilent
 
 check-nosilent: $makecheck
 
@@ -98,6 +101,9 @@ ${module}-all:
 
 ${module}-libsrc-all:
 	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" libsrc-all)
+
+${module}-tests-all:
+	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" tests-all)
 
 ${module}-install:
 	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install)

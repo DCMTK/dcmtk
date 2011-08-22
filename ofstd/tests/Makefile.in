@@ -32,6 +32,9 @@ toffile: toffile.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
+check: tests
+	./tests
+
 install: all
 
 
@@ -44,8 +47,5 @@ distclean:
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
-
-check: tests
-	./tests
 
 include $(DEP)

@@ -30,6 +30,9 @@ tests: $(objs)
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(objs) $(I2DLIBS) $(LOCALLIBS) $(LIBS)
 
 
+check: tests
+	./tests
+
 install: all
 
 clean:
@@ -41,8 +44,5 @@ distclean:
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
-
-check: tests
-	./tests
 
 include $(DEP)

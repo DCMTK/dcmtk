@@ -33,6 +33,8 @@ wltest: $(objs)
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(objs) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
+check:
+
 install: all
 
 

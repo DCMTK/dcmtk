@@ -1,6 +1,41 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.22 (schlachter)
+
+- Enhanced the "make check" target.
+  Affects: Makefile
+           config/Makefile.in
+           config/rootconf
+           dcmdata/Makefile.in
+           dcmdata/tests/Makefile.in
+           dcmimage/Makefile.in
+           dcmimage/tests/Makefile.in
+           dcmimgle/Makefile.in
+           dcmimgle/tests/Makefile.in
+           dcmjpeg/Makefile.in
+           dcmjpeg/tests/Makefile.in
+           dcmjpls/Makefile.in
+           dcmjpls/tests/Makefile.in
+           dcmnet/Makefile.in
+           dcmnet/tests/Makefile.in
+           dcmpstat/Makefile.in
+           dcmpstat/tests/Makefile.in
+           dcmqrdb/Makefile.in
+           dcmqrdb/tests/Makefile.in
+           dcmsign/Makefile.in
+           dcmsign/tests/Makefile.in
+           dcmsr/Makefile.in
+           dcmsr/tests/Makefile.in
+           dcmtls/Makefile.in
+           dcmtls/tests/Makefile.in
+           dcmwlm/Makefile.in
+           dcmwlm/tests/Makefile.in
+           oflog/Makefile.in
+           oflog/tests/Makefile.in
+           ofstd/Makefile.in
+           ofstd/tests/Makefile.in
+
 **** Changes from 2011.08.19 (schlachter)
 
 - Added a function for sleeping with a millisecond timeout.

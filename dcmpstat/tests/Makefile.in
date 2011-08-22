@@ -42,6 +42,8 @@ msgserv: msgserv.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ msgserv.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
+check:
+
 install: all
 
 

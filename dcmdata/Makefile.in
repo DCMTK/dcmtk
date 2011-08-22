@@ -46,6 +46,10 @@ tests-all: libsrc-all
 	(cd tests && $(MAKE) ARCH="$(ARCH)" all)
 
 
+check: tests-all
+	(cd tests && $(MAKE) check)
+
+
 include-install:
 	(cd include && $(MAKE) ARCH="$(ARCH)" install)
 
@@ -93,6 +97,3 @@ dependencies:
 	(cd libi2d && touch $(DEP) && $(MAKE) dependencies)	
 	(cd apps && touch $(DEP) && $(MAKE) dependencies)
 	(cd tests && touch $(DEP) && $(MAKE) dependencies)
-
-check:
-	(cd tests && $(MAKE) check)
