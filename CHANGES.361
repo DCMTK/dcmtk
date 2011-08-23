@@ -8,6 +8,10 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dctag.h
            dcmdata/libsrc/dctag.cc
 
+- Fixed another inconsistent test name.
+  Affects: dcmdata/tests/tests.cc
+           dcmdata/tests/tparser.cc
+
 - Minor stylistic corrections.
   Affects: INSTALL
 

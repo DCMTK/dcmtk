@@ -17,9 +17,9 @@
  *
  *  Purpose: main test program
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-17 14:35:59 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-23 14:24:30 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ OFTEST_REGISTER(dcmdata_elementLength_EVR_up);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_xs);
 OFTEST_REGISTER(dcmdata_elementLength_pixelItem);
 OFTEST_REGISTER(dcmdata_elementLength_pixelSequence);
-OFTEST_REGISTER(dcmdata_parser_MissingSequenceDelimitationItem);
+OFTEST_REGISTER(dcmdata_parser_missingSequenceDelimitationItem);
 OFTEST_REGISTER(dcmdata_parser_oddLengthPartialValue_lastItem);
 OFTEST_REGISTER(dcmdata_parser_oddLengthPartialValue_notLastItem);
 OFTEST_REGISTER(dcmdata_parser_wrongExplicitVRinDataset_default);
@@ -82,10 +82,14 @@ OFTEST_REGISTER(dcmdata_readingDataDictionary);
 OFTEST_REGISTER(dcmdata_usingDataDictionary);
 OFTEST_MAIN("dcmdata")
 
+
 /*
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.7  2011-08-23 14:24:30  joergr
+** Fixed another inconsistent test name.
+**
 ** Revision 1.6  2011-08-17 14:35:59  uli
 ** Added a small test for the data dictionary.
 **
@@ -103,7 +107,6 @@ OFTEST_MAIN("dcmdata")
 **
 ** Revision 1.1  2011-05-25 10:05:55  uli
 ** Imported oftest and converted existing tests to oftest.
-**
 **
 **
 */

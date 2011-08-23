@@ -18,8 +18,8 @@
  *  Purpose: test program for reading DICOM datasets
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-08 11:04:06 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2011-08-23 14:24:31 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ static OFCondition readDataset(DcmDataset& dset, const Uint8* buffer, size_t len
     return cond;
 }
 
-OFTEST(dcmdata_parser_MissingSequenceDelimitationItem)
+OFTEST(dcmdata_parser_missingSequenceDelimitationItem)
 {
     const Uint8 data[] = {
         TAG_AND_LENGTH(DCM_PixelData, 'O', 'B', UNDEFINED_LENGTH),
@@ -262,6 +262,9 @@ OFTEST(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict)
  *
  * CVS/RCS Log:
  * $Log: tparser.cc,v $
+ * Revision 1.7  2011-08-23 14:24:31  joergr
+ * Fixed another inconsistent test name.
+ *
  * Revision 1.6  2011-08-08 11:04:06  joergr
  * Added test cases for new parser flag "dcmPreferVRFromDataDictionary".
  *
