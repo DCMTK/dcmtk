@@ -319,7 +319,7 @@ install this software.  All the neccessary configure scripts are included in
 this distribution.  The configure scripts examine your system capabilities and
 automatically generate include files and Makefiles.
 
-Perform the following steps from the top level (dcmtk-3.6.0) directory to
+Perform the following steps from the top-level (dcmtk-3.6.0) directory to
 compile and install the software:
 
 Step 1:
@@ -341,6 +341,7 @@ path are enabled automatically.  Use the --without-openssl switch to disable
 OpenSSL support.  The --with-opensslinc option allows to specify the directory
 in which OpenSSL is installed.  This is usually the directory that has been
 used as --prefix when compiling and installing OpenSSL.
+
 For example, if you wish to enable the security enhancements, and OpenSSL is
 installed in "/usr/local/apps/openssl-1.0.0", then you should start configure
 as:
@@ -389,6 +390,7 @@ configuration and documentation files).  If you also wish to install the
 libraries and include files then use "make install-lib".  For the HTML
 documentation (see below) use "make install-html" (requires Doxygen to be
 installed); "make install-all" installs all of the above.
+
 In case the files should be installed in a temporary directory, e.g. in order
 to create a distribution package, use "make install DESTDIR=<path>" to prepend
 <path> to the installation directories specified for configure.
@@ -407,7 +409,7 @@ following commands:
     ./rootconf
     cd ..
 
-This generates a new Makefile and configure script in the top level toolkit
+This generates a new Makefile and configure script in the top-level toolkit
 directory.
 
 Solving configuration and compilation problems:
@@ -484,7 +486,7 @@ the following steps:
 5. Go "Configure".  (CMake will look for a corresponding compiler, read in all
    of DCMTK's "CMakeLists.txt" files and perform some tests.  The variables in
    the tabular area will be displayed in red.  These variables can now be set
-   in order to turn the support for any of the external libraries on or off).
+   in order to turn the support for any of the external libraries on or off.)
 6. Make the corresponding configurations in CMake's user interface.  For
    example, in order to turn on libxml2 support, set the value of variable
    "DCMTK_WITH_XML" to "ON" and set the value of variable "WITH_LIBXMLINC"
@@ -515,7 +517,7 @@ the following steps:
    (Please note that the include files of all external libraries are always
    expected in a directory named "include" below the directory which is
    specified in "WITH_LIBXMLINC", "WITH_LIBPNGINC", "WITH_LIBTIFFINC",
-   "WITH_OPENSSLINC", or "WITH_ZLIBINC").
+   "WITH_OPENSSLINC", or "WITH_ZLIBINC".)
 
    (Please note also that the library files of all external libraries are
    always expected in directory named "lib" below the directory which is
@@ -550,13 +552,13 @@ the following steps:
    The debug versions of all libraries must be compiled for the multithread
    debug version of the runtime (/MTd), the release version must be compiled
    for the non-debug multithread runtime (/MT).  Precompiled versions of all
-   libraries can be downloaded from http://dicom.offis.de/dcmtk#lib-win).
+   libraries can be downloaded from http://dicom.offis.de/dcmtk#lib-win.)
 7. Go "Configure" a second time.  (CMake will adjust the configuration
-   according to the displayed specifications).
+   according to the displayed specifications.)
 8. Go "OK" or "Generate".  (CMake will generate new project files in the
    corresponding directories.  These files will be adjusted according to the
    displayed specifications, i.e. support for the external libraries will be
-   turned on or off).
+   turned on or off.)
 
 Having performed these steps, the Microsoft Visual Studio IDE can be started,
 DCMTK's workspace file can be opened, and one or more of DCMTK's subprojects
@@ -574,12 +576,12 @@ Known limitations of DCMTK on the Windows platform.
 1. The dcmqrscp tool cannot spark multiple processes.  Every association must
    be handled completely before a new association is possible.
 2. On Windows 95, dcmqrscp always uses exclusive file locking (the LockFileEx
-   API call is available on Windows NT only).  This is no problem if only one
+   API call is available on Windows NT only).  This is no problem if only a
    single process exists.
 3. Most applications will only work if the computer has configured TCP/IP, a
    network name and a TCP/IP address.  If SLIP or PPP is used the applications
-   can only work if a connection to a provider exists (since the internet
-   addresses and names are given dynamically).
+   can only work if a connection to a provider exists (since the IP addresses
+   and hostnames are given dynamically).
 4. Visual C++ contains two different implementations of I/O streams which
    should never be mixed within one application because this may cause
    application errors that are hard to find.  The old, now deprecated
@@ -621,11 +623,11 @@ In order to generate plain text files from the man pages call "make text" in
 the "doxygen" directory.  The output files are stored in "doxygen/man2text".
 
 
-COMPILE TIME FLAGS AND ENVIRONMENT VARIABLES
+COMPILE-TIME FLAGS AND ENVIRONMENT VARIABLES
 ============================================
 
 The behaviour of several DCMTK tools and libraries can be modified by a number
-of compile time flags (macros).  Those macros which are not automatically
+of compile-time flags (macros).  Those macros which are not automatically
 handled by the configure mechanism are documented in "config/docs/macros.txt"
 (or "/usr/local/share/doc/dcmtk/macros.txt").
 
@@ -634,8 +636,8 @@ These are documented in "config/docs/envvars.txt" (or "/usr/local/share/doc/
 dcmtk/envvars.txt").
 
 
-RUNNING THE TESTSUITE
-=====================
+RUNNING THE TEST SUITE
+======================
 
 DCMTK comes with a test suite that verifies that the toolkit works as expected.
 The tests are contained in a module's "tests" subdirectory.
@@ -648,10 +650,10 @@ You can also run the test suite with CMake.  However, the steps needed for
 running the test suite depend on the generator used.  The Visual Studio
 generators will create a "RUN_TESTS" subproject.  Building this project will
 call CTest and run all tests.  When using the Makefile generator, "make test"
-runs the testsuite.  Other generators should use a similar approach.
+runs the test suite.  Other generators should use a similar approach.
 
 For closer inspection, individual tests can be run directly.  The Makefiles
-will build the test runner for each module in "<module>/tests/tests".  CMake
+will build the test runner for each module as "<module>/tests/tests".  CMake
 will add the module name as a prefix to this file's name, e.g. "ofstd_tests".
 For more information, call this program with the --help option.
 
@@ -663,4 +665,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2011-08-09 (Riesmeier)
+Last revised: 2011-08-23 (Riesmeier)
