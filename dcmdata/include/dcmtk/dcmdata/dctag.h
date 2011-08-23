@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Definition of the class DcmTag
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:42 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2011-08-23 07:34:35 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,20 +55,22 @@ public:
 
     /** constructor.
      *  Initializes group/element from given tag key and performs
-     *  a dictionary lookup for the VR.  The lookup only considers
-     *  standard tags, tags with private creator are ignored.
+     *  a dictionary lookup for the VR.  The lookup also considers
+     *  private tags if the private creator is defined (not NULL).
      *  @param akey tag key
+     *  @param privCreator private creator code (optional)
      */
-    DcmTag(const DcmTagKey& akey);
+    DcmTag(const DcmTagKey& akey, const char *privCreator = NULL);
 
     /** constructor.
      *  Initializes group/element from given parameters and performs
-     *  a dictionary lookup for the VR.  The lookup only considers
-     *  standard tags, tags with private creator are ignored.
+     *  a dictionary lookup for the VR.  The lookup also considers
+     *  private tags if the private creator is defined (not NULL).
      *  @param g tag group
      *  @param e tag element
+     *  @param privCreator private creator code (optional)
      */
-    DcmTag(Uint16 g, Uint16 e);
+    DcmTag(Uint16 g, Uint16 e, const char *privCreator = NULL);
 
     /** constructor.
      *  Initializes group/element and VR from given parameters.
@@ -222,6 +224,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
+** Revision 1.25  2011-08-23 07:34:35  joergr
+** Added optional parameter for the private creator to the DcmTag constructor
+** in order to better support private tag definitions.
+**
 ** Revision 1.24  2010-10-14 13:15:42  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

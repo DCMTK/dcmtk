@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.23 (riesmeier)
+
+- Added optional parameter for the private creator to the DcmTag constructor
+  in order to better support private tag definitions.
+  Affects: dcmdata/include/dcmtk/dcmdata/dctag.h
+           dcmdata/libsrc/dctag.cc
+
 **** Changes from 2011.08.22 (riesmeier)
 
 - Fixed misleading documentation for hasValidGroup() method.
