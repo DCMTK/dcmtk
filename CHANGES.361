@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.24 (riesmeier)
+
+- Uncommented name of unused method parameter that caused a compiler warning.
+  Affects: dcmnet/libsrc/scu.cc
+
 **** Changes from 2011.08.23 (riesmeier)
 
 - Added optional parameter for the private creator to the DcmTag constructor

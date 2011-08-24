@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 11:08:48 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-24 11:50:48 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -876,9 +876,9 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
 
 
 // Standard handler for C-MOVE message responses
-OFCondition DcmSCU::handleMOVEResponse( const T_ASC_PresentationContextID presContextID,
-                                        MOVEResponse *response,
-                                        OFBool &waitForNextResponse )
+OFCondition DcmSCU::handleMOVEResponse(const T_ASC_PresentationContextID /* presContextID */,
+                                       MOVEResponse *response,
+                                       OFBool &waitForNextResponse)
 {
   // Do some basic validity checks
   if (!isConnected())
@@ -1740,9 +1740,13 @@ MOVEResponse::~MOVEResponse()
   delete m_statusDetail;
 }
 
+
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.38  2011-08-24 11:50:48  joergr
+** Uncommented name of unused method parameter that caused a compiler warning.
+**
 ** Revision 1.37  2011-07-06 11:08:48  uli
 ** Fixed various compiler warnings.
 **
