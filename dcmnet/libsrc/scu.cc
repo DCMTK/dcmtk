@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-24 11:50:48 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-08-25 09:31:35 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,7 +31,11 @@
 #include "dcmtk/dcmnet/scu.h"
 #include "dcmtk/dcmdata/dcuid.h"    /* for dcmFindUIDName() */
 #include "dcmtk/dcmnet/diutil.h"    /* for dcmnet logger */
+#include "dcmtk/dcmdata/dcostrmf.h" /* for class DcmOutputFileStream */
 
+#ifdef WITH_ZLIB
+#include <zlib.h>     /* for zlibVersion() */
+#endif
 
 const OFConditionConst SCU_ECC_AlreadyConnected (OFM_dcmnet,  1, OF_error, "SCU already connected");
 const OFCondition SCU_EC_AlreadyConnected       (SCU_ECC_AlreadyConnected);
@@ -54,7 +58,9 @@ DcmSCU::DcmSCU() :
   m_peerPort(104),
   m_dimseTimeout(0),
   m_acseTimeout(30),
-  m_verbosePCMode(OFFalse)
+  m_verbosePCMode(OFFalse),
+  m_storageDir(),
+  m_storageMode(DCMSCU_STORAGE_DISK)
 {
 
 #ifdef HAVE_GUSI_H
@@ -69,7 +75,6 @@ DcmSCU::DcmSCU() :
   WSAStartup(winSockVersionNeeded, &winSockData); // TODO: check with multiple SCU instances whether this is harmful
 #endif
 }
-
 
 void DcmSCU::freeNetwork()
 {
@@ -545,6 +550,11 @@ void DcmSCU::closeAssociation(const DcmCloseAssociationType closeType)
 }
 
 
+/* ************************************************************************* */
+/*                            C-ECHO functionality                           */
+/* ************************************************************************* */
+
+
 // Sends C-ECHO request to another DICOM application
 OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
 {
@@ -623,6 +633,9 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
   return EC_Normal;
 }
 
+/* ************************************************************************* */
+/*                            C-STORE functionality                          */
+/* ************************************************************************* */
 
 // Sends C-STORE request to another DICOM application
 OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
@@ -663,8 +676,8 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   }
 
   /* Fill message according to dataset to be sent */
-  cond = getDatasetInfo(dataset, sopClass, sopInstance, transferSyntax);
-  if (cond.bad() || sopClass.empty() || sopInstance.empty() || ((pcid == 0) && (transferSyntax == EXS_Unknown)))
+  getDatasetInfo(dataset, sopClass, sopInstance, transferSyntax);
+  if (sopClass.empty() || sopInstance.empty() || ((pcid == 0) && (transferSyntax == EXS_Unknown)))
   {
     DCMNET_ERROR("Cannot send DICOM file, missing information:");
     DCMNET_ERROR("  SOP Class UID: " << sopClass);
@@ -741,11 +754,16 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
 }
 
 
+/* ************************************************************************* */
+/*                            C-MOVE functionality                           */
+/* ************************************************************************* */
+
+
 // Sends a C-MOVE Request on given presentation context
 OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
                                     const OFString &moveDestinationAETitle,
                                     DcmDataset *dataset,
-                                    MOVEResponses *responses )
+                                    OFVector<RetrieveResponse*> *responses )
 {
   // Do some basic validity checks
   if (!isConnected())
@@ -819,7 +837,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
     }
 
     // Prepare response package for response handler
-    MOVEResponse *moveRSP = new MOVEResponse();
+    RetrieveResponse *moveRSP = new RetrieveResponse();
     moveRSP->m_affectedSOPClassUID = rsp.msg.CMoveRSP.AffectedSOPClassUID;
     moveRSP->m_messageIDRespondedTo = rsp.msg.CMoveRSP.MessageIDBeingRespondedTo;
     moveRSP->m_status = rsp.msg.CMoveRSP.DimseStatus;
@@ -828,9 +846,9 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
     moveRSP->m_numberOfFailedSubops = rsp.msg.CMoveRSP.NumberOfFailedSubOperations;
     moveRSP->m_numberOfWarningSubops = rsp.msg.CMoveRSP.NumberOfWarningSubOperations;
     moveRSP->m_statusDetail = statusDetail;
-    DCMNET_DEBUG("C-MOVE response has status 0x"
-      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-      << moveRSP->m_status);
+    //DCMNET_DEBUG("C-MOVE response has status 0x"
+    //  << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+    //  << moveRSP->m_status);
     if (statusDetail != NULL)
     {
       DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
@@ -850,7 +868,6 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
         delete moveRSP; // includes statusDetail
         break;
       }
-      DCMNET_DEBUG("Received dataset on presentation context " << OFstatic_cast(unsigned int, pcid));
       moveRSP->m_dataset = rspDataset;
     }
 
@@ -867,18 +884,18 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
     else
     {
       if (responses != NULL) // only add if desired by caller
-        responses->add(moveRSP);
+        responses->push_back(moveRSP);
     }
   }
   /* All responses received or break signal occured */
-  return EC_Normal;
+  return cond;
 }
 
 
 // Standard handler for C-MOVE message responses
-OFCondition DcmSCU::handleMOVEResponse(const T_ASC_PresentationContextID /* presContextID */,
-                                       MOVEResponse *response,
-                                       OFBool &waitForNextResponse)
+OFCondition DcmSCU::handleMOVEResponse( const T_ASC_PresentationContextID presContextID,
+                                        RetrieveResponse *response,
+                                        OFBool &waitForNextResponse )
 {
   // Do some basic validity checks
   if (!isConnected())
@@ -934,10 +951,413 @@ OFCondition DcmSCU::handleMOVEResponse(const T_ASC_PresentationContextID /* pres
 }
 
 
+/* ************************************************************************* */
+/*               C-GET and acommpanying C-STORE functionality                */
+/* ************************************************************************* */
+
+// Sends a C-GET Request on given presentation context
+OFCondition DcmSCU::sendCGETRequest(const T_ASC_PresentationContextID presID,
+                                    DcmDataset *dataset,
+                                    OFVector<RetrieveResponse*> *responses)
+{
+  // Do some basic validity checks
+  if (!isConnected())
+    return DIMSE_ILLEGALASSOCIATION;
+  if (dataset == NULL)
+    return DIMSE_NULLKEY;
+
+  /* Prepare DIMSE data structures for issuing request */
+  OFCondition cond;
+  OFString tempStr;
+  T_ASC_PresentationContextID pcid = presID;
+  T_DIMSE_Message msg;
+  T_DIMSE_C_GetRQ* req = &(msg.msg.CGetRQ);
+  // Set type of message
+  msg.CommandField = DIMSE_C_GET_RQ;
+  // Set message ID
+  req->MessageID = nextMessageID();
+  // Announce dataset
+  req->DataSetType = DIMSE_DATASET_PRESENT;
+  // Specify priority
+  req->Priority = DIMSE_PRIORITY_LOW;
+
+  // Determine SOP Class from presentation context
+  OFString abstractSyntax, transferSyntax;
+  findPresentationContext(pcid, abstractSyntax, transferSyntax);
+  if (abstractSyntax.empty() || transferSyntax.empty())
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+  OFStandard::strlcpy(req->AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(req->AffectedSOPClassUID));
+
+  DCMNET_INFO("Send C-GET Request");
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, dataset, pcid));
+  cond = sendDIMSEMessage(pcid, &msg, dataset, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending C-GET request: " << DimseCondition::dump(tempStr, cond));
+    return cond;
+  }
+
+  cond = handleCGETSession(pcid, dataset, responses);
+  return cond;
+}
+
+
+// Does the logic for switching between C-GET Response and C-STORE Requests
+OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID cgetPresID,
+                                      DcmDataset *dataset,
+                                      OFVector<RetrieveResponse*> *responses)
+{
+  OFCondition result;
+  OFBool continueSession = OFTrue;
+  OFString tempStr;
+
+  // As long we want to continue (usually, as long as we receive more objects,
+  // i.e. the final C-GET reponse has not arrived yet)
+  while (continueSession)
+  {
+    T_DIMSE_Message rsp;
+    DcmDataset *statusDetail = NULL;
+    T_ASC_PresentationContextID pcid = 0;
+
+    // Receive command set
+    result = receiveDIMSECommand(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
+    if (result.bad())
+    {
+      DCMNET_ERROR("Failed receiving DIMSE command: " << DimseCondition::dump(tempStr, result));
+      delete statusDetail;
+      break;
+    }
+    // Handle C-GET Request
+    if (rsp.CommandField == DIMSE_C_GET_RSP)
+    {
+      DCMNET_INFO("Received C-GET Response");
+      DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
+      // Prepare response package for response handler
+      RetrieveResponse *getRSP = new RetrieveResponse();
+      getRSP->m_affectedSOPClassUID = rsp.msg.CGetRSP.AffectedSOPClassUID;
+      getRSP->m_messageIDRespondedTo = rsp.msg.CGetRSP.MessageIDBeingRespondedTo;
+      getRSP->m_status = rsp.msg.CGetRSP.DimseStatus;
+      getRSP->m_numberOfRemainingSubops = rsp.msg.CGetRSP.NumberOfRemainingSubOperations;
+      getRSP->m_numberOfCompletedSubops = rsp.msg.CGetRSP.NumberOfCompletedSubOperations;
+      getRSP->m_numberOfFailedSubops = rsp.msg.CGetRSP.NumberOfFailedSubOperations;
+      getRSP->m_numberOfWarningSubops = rsp.msg.CGetRSP.NumberOfWarningSubOperations;
+      getRSP->m_statusDetail = statusDetail;
+      //DCMNET_DEBUG("C-GET response has status 0x"
+      //  << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+      //  << getRSP->m_status);
+      if (statusDetail != NULL)
+      {
+        DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+      }
+      result = handleCGETResponse(pcid, getRSP, continueSession);
+      if (responses != NULL)
+      {
+        responses->push_back(getRSP);
+        result = EC_Normal; // we trust the continueSession variable
+      }
+      else
+      {
+        delete getRSP;
+      }
+    }
+
+    // Handle C-STORE Request
+    else if (rsp.CommandField == DIMSE_C_STORE_RQ)
+    {
+      DCMNET_INFO("Received C-STORE Request");
+      DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
+      // Receive dataset if there is one (status PENDING)
+      DcmDataset *rspDataset = NULL;
+      // Check if dataset is announced correctly
+      if (rsp.msg.CStoreRQ.DataSetType == DIMSE_DATASET_NULL)
+      {
+        DCMNET_WARN("Incoming C-STORE with no dataset, trying to receive one anyway");
+      }
+      Uint16 desiredCStoreReturnStatus = 0;
+      // handle normal storage mode, i.e. receive in memory and store to disk
+      if (m_storageMode == DCMSCU_STORAGE_DISK)
+      {
+        // Receive dataset
+        result = receiveDIMSEDataset(&pcid, &rspDataset, NULL /* callback */, NULL /* callbackContext */);
+        if (result.bad())
+        {
+          result = DIMSE_NULLKEY;
+          desiredCStoreReturnStatus = STATUS_STORE_Error_CannotUnderstand;
+          delete rspDataset;
+        }
+        else
+        {
+          result = handleSTORERequest(pcid, rspDataset, continueSession, desiredCStoreReturnStatus);
+        }
+      }
+      // handle bit preserving storage mode, i.e. receive directly to disk
+      else if (m_storageMode == DCMSCU_STORAGE_BIT_PRESERVING)
+      {
+        OFString storageFilename;
+        OFStandard::combineDirAndFilename(storageFilename, m_storageDir, rsp.msg.CStoreRQ.AffectedSOPInstanceUID, OFTrue);
+        result = handleSTORERequestFile(&pcid, storageFilename, &(rsp.msg.CStoreRQ), NULL, NULL);
+        if (result.good())
+        {
+          notifyInstanceStored(storageFilename, rsp.msg.CStoreRQ.AffectedSOPClassUID, rsp.msg.CStoreRQ.AffectedSOPInstanceUID );
+        }
+      }
+      // handle ignore storage mode, i.e. ignore received dataset and do not store at all
+      else
+      {
+        result = ignoreSTORERequest(&pcid, rsp.msg.CStoreRQ);
+      }
+
+      // Evaluate result from C-STORE request handling and send response
+      if (result.bad())
+      {
+        desiredCStoreReturnStatus = STATUS_STORE_Error_CannotUnderstand;
+        continueSession = OFFalse;
+      }
+      result = sendCStoreResponse(pcid, desiredCStoreReturnStatus, rsp.msg.CStoreRQ);
+      if (result.bad())
+      {
+        continueSession = OFFalse;
+      }
+      delete rspDataset; // should be NULL if not existing
+    }
+
+    // Handle other DIMSE command (error since other command than GET/STORE not expected)
+    else
+    {
+      DCMNET_ERROR("Expected C-GET Response or C-STORE Request but received DIMSE command 0x"
+        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+        << OFstatic_cast(unsigned int, rsp.CommandField));
+      DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
+      result = DIMSE_BADCOMMANDTYPE;
+      continueSession = OFFalse;
+    }
+
+    delete statusDetail;
+    statusDetail = NULL;
+  }
+  /* All responses received or break signal occured */
+
+  return result;
+
+}
+
+
+// Handles single C-GET Response
+OFCondition DcmSCU::handleCGETResponse(const T_ASC_PresentationContextID presID,
+                                       RetrieveResponse* response,
+                                       OFBool& continueCGETSession)
+{
+  // Do some basic validity checks
+  if (!isConnected())
+    return DIMSE_ILLEGALASSOCIATION;
+  if (response == NULL)
+    return DIMSE_NULLKEY;
+
+  DCMNET_DEBUG("Handling C-GET Response");
+  switch (response->m_status) {
+  case STATUS_GET_Failed_IdentifierDoesNotMatchSOPClass:
+    continueCGETSession = OFFalse;
+    DCMNET_ERROR("Identifier does not match SOP class in C-GET response");
+    break;
+  case STATUS_GET_Failed_UnableToProcess:
+    continueCGETSession = OFFalse;
+    DCMNET_ERROR("Unable to process C-GET response");
+    break;
+  case STATUS_GET_Failed_SOPClassNotSupported:
+    continueCGETSession = OFFalse;
+    DCMNET_ERROR("SOP class not supported");
+    break;
+  case STATUS_GET_Cancel_SubOperationsTerminatedDueToCancelIndication:
+    continueCGETSession = OFFalse;
+    DCMNET_DEBUG("Suboperations canceled by server due to CANCEL indication");
+    break;
+  case STATUS_GET_Warning_SubOperationsCompleteOneOrMoreFailures:
+    continueCGETSession = OFFalse;
+    DCMNET_WARN("Suboperations of C-GET completed with one or more failures");
+    break;
+  case STATUS_Pending:
+    /* in this case the current C-MOVE-RSP indicates that */
+    /* there will be some more results */
+    continueCGETSession = OFTrue;
+    DCMNET_DEBUG("One or more pending C-GET responses");
+    break;
+  case STATUS_Success:
+    /* in this case, we received the last C-MOVE-RSP so there */
+    /* will be no other responses we have to wait for. */
+    continueCGETSession = OFFalse;
+    DCMNET_DEBUG("Received final C-GET response, no more C-GET responses expected");
+    break;
+  default:
+    /* in all other cases, don't expect further responses to come */
+    continueCGETSession = OFFalse;
+    DCMNET_WARN("Status is 0x"
+      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+      << response->m_status << " (unknown)");
+    DCMNET_WARN("Will not wait for further C-GET responses");
+    break;
+  } //switch
+
+  return EC_Normal;
+}
+
+
+// Handles single C-STORE Request received during C-GET session
+OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID presID,
+                                       DcmDataset *incomingObject,
+                                       OFBool& continueCGETSession,
+                                       Uint16& cStoreReturnStatus)
+{
+  if (incomingObject == NULL)
+    return DIMSE_NULLKEY;
+
+  OFString sopClass, instanceUID;
+  OFCondition result = incomingObject->findAndGetOFString(DCM_SOPClassUID, sopClass);
+  if (result.good()) result = incomingObject->findAndGetOFString(DCM_SOPInstanceUID, instanceUID);
+  if (result.bad())
+  {
+    DCMNET_ERROR("Cannot store received object; either SOP Instance or SOP Class UID not present");
+    cStoreReturnStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
+    return EC_TagNotFound;
+  }
+
+  OFString filename = createStorageFilename(incomingObject);
+  result = incomingObject->saveFile(filename.c_str());
+  if (result.good())
+  {
+    OFString sopclass, sopuid;
+    E_TransferSyntax ts;
+    getDatasetInfo(incomingObject, sopclass, sopuid, ts);
+    notifyInstanceStored(filename, sopclass, sopuid );
+    cStoreReturnStatus = STATUS_Success;
+  }
+  else
+  {
+    cStoreReturnStatus = STATUS_STORE_Refused_OutOfResources;
+  }
+
+  return result;
+}
+
+OFCondition DcmSCU::handleSTORERequestFile(T_ASC_PresentationContextID *presID,
+                                           const OFString& filename,
+                                           T_DIMSE_C_StoreRQ* request,
+                                           DIMSE_ProgressCallback callback,
+                                           void *callbackContext)
+{
+  if (filename.empty())
+    return EC_IllegalParameter;
+
+  /* in the following, we want to receive data over the network and write it to a file */
+  /* exactly the way it was received over the network. Hence, a filestream will be created and the data */
+  /* set will be received and written to the file through the call to DIMSE_receiveDataSetInFile(...).*/
+  /* create filestream */
+  DcmOutputFileStream *filestream = NULL;
+  OFCondition cond = DIMSE_createFilestream(filename.c_str(), request, m_assoc, *presID, OFTrue, &filestream);
+  if (cond.good())
+  {
+    cond = DIMSE_receiveDataSetInFile(m_assoc, m_blockMode, m_dimseTimeout, presID, filestream, callback, &callbackContext);
+    delete filestream;
+    if (cond != EC_Normal)
+    {
+      unlink(filename.c_str());
+    }
+    DCMNET_DEBUG("Received dataset on presentation context " << OFstatic_cast(unsigned int, *presID));
+  }
+  else
+  {
+    OFString tempStr;
+    DCMNET_ERROR("Unable to receive and store dataset on presentation context "
+      << OFstatic_cast(unsigned int, *presID) << ": " << DimseCondition::dump(tempStr, cond));
+  }
+  return cond;
+}
+
+
+OFCondition DcmSCU::sendCStoreResponse(T_ASC_PresentationContextID pcid,
+                                       Uint16 status,
+                                       const T_DIMSE_C_StoreRQ& request)
+{
+  // Send back response
+  T_DIMSE_Message response;
+  T_DIMSE_C_StoreRSP &storeRsp = response.msg.CStoreRSP;
+  response.CommandField = DIMSE_C_STORE_RSP;
+  storeRsp.MessageIDBeingRespondedTo = request.MessageID;
+  storeRsp.DimseStatus = status;
+  storeRsp.DataSetType = DIMSE_DATASET_NULL;
+  storeRsp.opts = 0;
+  /* Follwoing information is optional and normally not sent by the underlying
+   * dcmnet routines. However, maybe this could be changed later, so insrt it
+   */
+  OFStandard::strlcpy(storeRsp.AffectedSOPClassUID, request.AffectedSOPClassUID, sizeof(storeRsp.AffectedSOPClassUID));
+  OFStandard::strlcpy(storeRsp.AffectedSOPInstanceUID, request.AffectedSOPInstanceUID, sizeof(storeRsp.AffectedSOPInstanceUID));
+
+  OFString tempStr;
+  DCMNET_INFO("Sending C-STORE Response");
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, pcid));
+  OFCondition cond = sendDIMSEMessage(pcid, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending C-STORE response: " << DimseCondition::dump(tempStr, cond));
+  }
+  return cond;
+}
+
+
+OFString DcmSCU::createStorageFilename(DcmDataset *dataset)
+{
+  OFString sopClassUID, sopInstanceUID;
+  E_TransferSyntax dummy;
+  getDatasetInfo(dataset, sopClassUID, sopInstanceUID, dummy);
+  // Create unique filename
+  if (sopClassUID.empty() || sopInstanceUID.empty())
+    return "";
+  OFString name = dcmSOPClassUIDToModality(sopClassUID.c_str(), "UNKNOWN");
+  name += ".";
+  name += sopInstanceUID;
+  OFString returnStr;
+  OFStandard::combineDirAndFilename(returnStr, m_storageDir, name, OFTrue);
+  return returnStr;
+}
+
+
+OFCondition DcmSCU::ignoreSTORERequest(T_ASC_PresentationContextID* pcid,
+                                       const T_DIMSE_C_StoreRQ& request)
+{
+
+  /* We cannot create the filestream, so ignore the incoming dataset and return an out-of-resources error to the SCU */
+  DIC_UL bytesRead = 0;
+  DIC_UL pdvCount=0;
+  DCMNET_DEBUG("Ignoring incoming C-STORE dataset on presentation context "
+    << OFstatic_cast(unsigned int, *pcid)
+    << " with Affected SOP Instance UID: " << request.AffectedSOPInstanceUID );
+  OFCondition result = DIMSE_ignoreDataSet(m_assoc, m_blockMode, m_dimseTimeout, &bytesRead, &pdvCount);
+  if (result.good())
+  {
+    DCMNET_TRACE("Successfully skipped " << bytesRead << " bytes in " << pdvCount << " PDVs");
+  }
+  return result;
+}
+
+
+void DcmSCU::notifyInstanceStored(const OFString& filename,
+                                  const OFString& sopClassUID,
+                                  const OFString& sopInstanceUID) const
+{
+  DCMNET_DEBUG("Stored instance to disk:");
+  DCMNET_DEBUG("  Filename: " << filename);
+  DCMNET_DEBUG("  SOP Class UID: " << sopClassUID);
+  DCMNET_DEBUG("  SOP Instance UID: " << sopInstanceUID);
+}
+
+
+/* ************************************************************************* */
+/*                            C-FIND functionality                           */
+/* ************************************************************************* */
+
 // Sends a C-FIND Request on given presentation context
 OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
                                     DcmDataset *queryKeys,
-                                    FINDResponses *responses)
+                                    OFVector<QRResponse*> *responses)
 {
   // Do some basic validity checks
   if (!isConnected())
@@ -1007,14 +1427,14 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     }
 
     // Prepare response package for response handler
-    FINDResponse *findrsp = new FINDResponse();
+    QRResponse *findrsp = new QRResponse();
     findrsp->m_affectedSOPClassUID = rsp.msg.CFindRSP.AffectedSOPClassUID;
     findrsp->m_messageIDRespondedTo = rsp.msg.CFindRSP.MessageIDBeingRespondedTo;
     findrsp->m_status = rsp.msg.CFindRSP.DimseStatus;
     findrsp->m_statusDetail = statusDetail;
-    DCMNET_DEBUG("C-FIND response has status 0x"
-      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-      << findrsp->m_status);
+    //DCMNET_DEBUG("C-FIND response has status 0x"
+    //  << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+    //  << findrsp->m_status);
 
     // Receive dataset if there is one (status PENDING)
     DcmDataset *rspDataset = NULL;
@@ -1032,12 +1452,9 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
       cond = receiveDIMSEDataset(&pcid, &rspDataset, NULL /* callback */, NULL /* callbackContext */);
       if (cond.bad())
       {
-        DCMNET_ERROR("Unable to receive C-FIND dataset on presentation context "
-          << OFstatic_cast(unsigned int, pcid) << ": " << DimseCondition::dump(tempStr, cond));
         delete findrsp;
         return DIMSE_BADDATA;
       }
-      DCMNET_DEBUG("Received dataset on presentation context " << OFstatic_cast(unsigned int, pcid));
       findrsp->m_dataset = rspDataset;
     }
 
@@ -1053,7 +1470,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     else
     {
       if (responses != NULL) // only add if desired by caller
-        responses->add(findrsp);
+        responses->push_back(findrsp);
       else
         delete findrsp;
     }
@@ -1065,7 +1482,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
 
 // Standard handler for C-FIND message responses
 OFCondition DcmSCU::handleFINDResponse(const T_ASC_PresentationContextID /* presContextID */,
-                                       FINDResponse *response,
+                                       QRResponse *response,
                                        OFBool &waitForNextResponse)
 {
   if (!isConnected())
@@ -1097,6 +1514,10 @@ OFCondition DcmSCU::handleFINDResponse(const T_ASC_PresentationContextID /* pres
   return EC_Normal;
 }
 
+
+/* ************************************************************************* */
+/*                            C-CANCEL functionality                         */
+/* ************************************************************************* */
 
 // Send C-CANCEL-REQ and, therefore, ends current C-FIND, -MOVE or -GET session
 OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presContextID)
@@ -1143,6 +1564,10 @@ OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presCont
   return cond;
 }
 
+
+/* ************************************************************************* */
+/*                            N-ACTION functionality                         */
+/* ************************************************************************* */
 
 // Sends N-ACTION request to another DICOM application
 OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
@@ -1230,14 +1655,13 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
     // this should never happen
     DcmDataset *tempDataset = NULL;
     T_ASC_PresentationContextID tempID;
+    DCMNET_WARN("Trying to retrieve unexpected dataset in N-ACTION response");
     cond = receiveDIMSEDataset(&tempID, &tempDataset, NULL /* callback */, NULL /* callbackContext */);
     if (cond.good())
     {
       DCMNET_WARN("Received unexpected dataset after N-ACTION response, ignoring");
       delete tempDataset;
     } else {
-      DCMNET_ERROR("Failed receiving unexpected dataset after N-ACTION response: "
-        << DimseCondition::dump(tempStr, cond));
       return DIMSE_BADDATA;
     }
   }
@@ -1253,6 +1677,10 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
   return cond;
 }
 
+
+/* ************************************************************************* */
+/*                         N-EVENT REPORT functionality                      */
+/* ************************************************************************* */
 
 // Receives N-EVENT-REPORT request
 OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
@@ -1320,8 +1748,6 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
   if (cond.bad())
   {
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, NULL, presID));
-    DCMNET_ERROR("Unable to receive N-EVENT-REPORT dataset on presentation context "
-      << OFstatic_cast(unsigned int, presID));
     return DIMSE_BADDATA;
   }
 
@@ -1380,6 +1806,10 @@ Uint16 DcmSCU::checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ & /*eventReportRe
   return STATUS_Success;
 }
 
+
+/* ************************************************************************* */
+/*                            Various helpers                                */
+/* ************************************************************************* */
 
 // Sends a DIMSE command and possibly also instance data to the configured peer DICOM application
 OFCondition DcmSCU::sendDIMSEMessage(const T_ASC_PresentationContextID presID,
@@ -1452,6 +1882,16 @@ OFCondition DcmSCU::receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
   /* call the corresponding DIMSE function to receive the dataset */
   cond = DIMSE_receiveDataSetInMemory(m_assoc, m_blockMode, m_dimseTimeout, presID,
                                       dataObject, callback, callbackContext);
+  if (cond.good())
+  {
+    DCMNET_DEBUG("Received dataset on presentation context " << OFstatic_cast(unsigned int, *presID));
+  }
+  else
+  {
+    OFString tempStr;
+    DCMNET_ERROR("Unable to receive dataset on presentation context "
+      << OFstatic_cast(unsigned int, *presID) << ": " << DimseCondition::dump(tempStr, cond));
+  }
   return cond;
 }
 
@@ -1515,6 +1955,17 @@ void DcmSCU::setAssocConfigFileAndProfile(const OFString &filename,
 void DcmSCU::setVerbosePCMode(const OFBool mode)
 {
   m_verbosePCMode = mode;
+}
+
+void DcmSCU::setStorageDir(const OFString& storeDir)
+{
+  m_storageDir = storeDir;
+}
+
+
+void DcmSCU::setStorageMode(const DcmStorageMode storageMode)
+{
+  m_storageMode = storageMode;
 }
 
 
@@ -1585,165 +2036,56 @@ OFBool DcmSCU::getVerbosePCMode() const
 }
 
 
-OFCondition DcmSCU::getDatasetInfo(DcmDataset *dataset,
-                                   OFString &sopClassUID,
-                                   OFString &sopInstanceUID,
-                                   E_TransferSyntax &transferSyntax)
+OFString DcmSCU::getStorageDir() const
 {
-  if (dataset == NULL)
-    return EC_IllegalParameter;
+  return m_storageDir;
+}
+
+
+DcmStorageMode DcmSCU::getStorageMode() const
+{
+  return m_storageMode;
+}
+
+
+void DcmSCU::getDatasetInfo(DcmDataset *dataset,
+                            OFString &sopClassUID,
+                            OFString &sopInstanceUID,
+                            E_TransferSyntax &transferSyntax)
+{
+  sopClassUID.clear();
+  sopInstanceUID.clear();
+  transferSyntax = EXS_Unknown;
+  if (dataset == NULL) return;
+
   // ignore returned condition codes (e.g. EC_TagNotFound)
   dataset->findAndGetOFString(DCM_SOPClassUID, sopClassUID);
   dataset->findAndGetOFString(DCM_SOPInstanceUID, sopInstanceUID);
   transferSyntax = dataset->getOriginalXfer();
-  return EC_Normal;
 }
 
 
+/* ************************************************************************* */
+/*                     class RetrieveResponse                                */
+/* ************************************************************************* */
 
-/* ************************************************************************ */
-/*                        C-FIND Response classes                           */
-/* ************************************************************************ */
-
-FINDResponses::FINDResponses()
-: m_responses()
+void RetrieveResponse::print()
 {
-  // Nothing to do :-)
+
+  OFLogger rspLogger = OFLog::getLogger(DCMNET_LOGGER_NAME ".responses");
+  OFLOG_INFO(rspLogger, "Number of Remaining Suboperations: " << m_numberOfRemainingSubops);
+  OFLOG_INFO(rspLogger, "Number of Completed Suboperations: " << m_numberOfCompletedSubops);
+  OFLOG_INFO(rspLogger, "Number of Failed Suboperations   : " << m_numberOfFailedSubops);
+  OFLOG_INFO(rspLogger, "Number of Warning Suboperations  : " << m_numberOfWarningSubops);
 }
-
-
-FINDResponses::~FINDResponses()
-{
-  OFListIterator(FINDResponse*) it = m_responses.begin();
-  while (it != m_responses.end())
-  {
-    delete *it;
-    it++;
-  }
-}
-
-
-Uint32 FINDResponses::numResults() const
-{
-  return OFstatic_cast(Uint32, m_responses.size());
-}
-
-
-void FINDResponses::add(FINDResponse *rsp)
-{
-  if (rsp != NULL)
-    m_responses.push_back(rsp);
-}
-
-
-OFListIterator(FINDResponse *) FINDResponses::begin()
-{
-  return m_responses.begin();
-}
-
-
-OFListIterator(FINDResponse *) FINDResponses::end()
-{
-  return m_responses.end();
-}
-
-
-/* ************************** FINDResponse class ****************************/
-
-// Standard constructor
-FINDResponse::FINDResponse() :
-  m_messageIDRespondedTo(0),
-  m_affectedSOPClassUID(),
-  m_dataset(NULL),
-  m_status(0),
-  m_statusDetail(NULL)
-{
-}
-
-// Destructor, cleans up internal memory (datasets if present)
-FINDResponse::~FINDResponse()
-{
-  delete m_dataset;
-  m_dataset = NULL;
-  delete m_statusDetail;
-  m_dataset = NULL;
-}
-
-
-/* ************************************************************************ */
-/*                        C-MOVE Response classes                           */
-/* ************************************************************************ */
-
-MOVEResponses::MOVEResponses() :
-  m_responses()
-{
-  // Nothing to do :-)
-}
-
-MOVEResponses::~MOVEResponses()
-{
-  OFListIterator(MOVEResponse*) it = m_responses.begin();
-  while (it != m_responses.end())
-  {
-    delete *it;
-    it++;
-  }
-}
-
-
-Uint32 MOVEResponses::numResults() const
-{
-  return OFstatic_cast(Uint32, m_responses.size());
-}
-
-
-void MOVEResponses::add(MOVEResponse *rsp)
-{
-  if (rsp != NULL)
-    m_responses.push_back(rsp);
-}
-
-
-OFListIterator(MOVEResponse *) MOVEResponses::begin()
-{
-  return m_responses.begin();
-}
-
-
-OFListIterator(MOVEResponse *) MOVEResponses::end()
-{
-  return m_responses.end();
-}
-
-
-/* ************************** DcmMoveSCU_C::MoveResponse_C class ****************************/
-
-// Standard constructor
-MOVEResponse::MOVEResponse() :
-  m_messageIDRespondedTo(0),
-  m_affectedSOPClassUID(),
-  m_numberOfRemainingSubops(0),
-  m_numberOfCompletedSubops(0),
-  m_numberOfFailedSubops(0),
-  m_numberOfWarningSubops(0),
-  m_dataset(NULL),
-  m_status(0),
-  m_statusDetail(NULL)
-{
-}
-
-
-// Destructor, cleans up internal memory (datasets if present)
-MOVEResponse::~MOVEResponse()
-{
-  delete m_dataset;
-  delete m_statusDetail;
-}
-
 
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.39  2011-08-25 09:31:35  onken
+** Added C-GET functionality to DcmSCU class and accompanying getscu
+** commandline application.
+**
 ** Revision 1.38  2011-08-24 11:50:48  joergr
 ** Uncommented name of unused method parameter that caused a compiler warning.
 **

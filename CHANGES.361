@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.25 (onken)
 
+- Added C-GET functionality to DcmSCU class and accompanying getscu
+  commandline application.
+  Added:   dcmnet/apps/getscu.cc
+  Affects: dcmnet/apps/CMakeLists.txt
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+
 - Fixed typo and adapted copyright.
   Affects: dcmdata/docs/dcmodify.man
 
