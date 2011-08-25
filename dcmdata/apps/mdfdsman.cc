@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 10:42:43 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-08-25 08:39:31 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,8 @@ MdfDatasetManager::MdfDatasetManager()
 
 OFCondition MdfDatasetManager::loadFile(const char *file_name,
                                         const E_FileReadMode readMode,
-                                        const E_TransferSyntax xfer)
+                                        const E_TransferSyntax xfer,
+                                        const OFBool createIfNecessary)
 {
     OFCondition cond;
     // delete old dfile and free memory and reset current_file
@@ -61,9 +62,22 @@ OFCondition MdfDatasetManager::loadFile(const char *file_name,
     dfile = new DcmFileFormat();
     dset = dfile->getDataset();
 
-    // load file into dfile
+    // load file into dfile if it exists
     OFLOG_INFO(mdfdsmanLogger, "Loading file into dataset manager: " << file_name);
-    cond = dfile->loadFile(file_name, xfer, EGL_noChange, DCM_MaxReadLength, readMode);
+    if (OFStandard::fileExists(file_name))
+    {
+      cond = dfile->loadFile(file_name, xfer, EGL_noChange, DCM_MaxReadLength, readMode);
+    }
+    // if it does not already exist, check whether it should be created
+    else if (createIfNecessary)
+    {
+      OFLOG_DEBUG(mdfdsmanLogger, "File " << file_name << "does not exist, creating it as desired");
+      cond = dfile->saveFile(file_name, EXS_LittleEndianExplicit /* might change later */);
+    }
+    // no file, we have an error
+    else
+      cond = makeOFCondition(OFM_dcmdata, 22, OF_error,"No such file or directory");
+
     // if there are errors:
     if (cond.bad())
     {
@@ -628,8 +642,17 @@ OFCondition MdfDatasetManager::saveFile(const char *file_name,
         /* check whether pixel data is compressed */
         if (opt_dataset && DcmXfer(opt_xfer).isEncapsulated())
         {
-            OFLOG_WARN(mdfdsmanLogger, "encapsulated pixel data require file format, ignoring --write-dataset");
+            OFLOG_WARN(mdfdsmanLogger, "encapsulated pixel data requires file format, ignoring --write-dataset");
             opt_dataset = OFFalse;
+        }
+        /* be sure that we have a known transfer syntax. The original xfer can
+         * be unknown if the dataset was created in memory, or if the originally
+         * loaded file does not contain attributes which could make sense if
+         * it is a template file that should be processed with dcmodify.
+         */
+        if ((dfile->getDataset()->getOriginalXfer() == EXS_Unknown) && (opt_xfer  == EXS_Unknown))
+        {
+          opt_xfer = EXS_LittleEndianExplicit;
         }
         /* write DICOM file */
         result = dfile->saveFile(file_name, opt_xfer, opt_enctype, opt_glenc,
@@ -731,6 +754,9 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
+** Revision 1.30  2011-08-25 08:39:31  onken
+** Added dcmodify option tgat permits creation of files from scratch.
+**
 ** Revision 1.29  2010-11-01 10:42:43  uli
 ** Fixed some compiler warnings reported by gcc with additional flags.
 **

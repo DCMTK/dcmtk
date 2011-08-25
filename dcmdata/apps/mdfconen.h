@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 12:07:46 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-08-25 08:39:31 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -208,6 +208,12 @@ private:
     /// executed
     OFBool ignore_un_modifies;
 
+    /// If enabled, a new dataset is created in memory if a file is not existing.
+    OFBool create_if_necessary;
+
+    /// Used to remember, whether a file was newly created.
+    OFBool was_created;
+
     /// list of jobs to be executed
     OFList<MdfJob> *jobs;
 
@@ -229,6 +235,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
+** Revision 1.21  2011-08-25 08:39:31  onken
+** Added dcmodify option tgat permits creation of files from scratch.
+**
 ** Revision 1.20  2011-02-04 12:07:46  uli
 ** Made sure we only save assignable classes in STL containers.
 **

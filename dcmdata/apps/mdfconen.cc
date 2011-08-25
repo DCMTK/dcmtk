@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 12:07:46 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-08-25 08:39:30 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
     padenc_option(EPD_withoutPadding), filepad_option(0),
     itempad_option(0), ignore_missing_tags_option(OFFalse),
     no_reservation_checks(OFFalse), ignore_un_modifies(OFFalse),
-    jobs(NULL), files(NULL)
+    create_if_necessary(OFFalse), was_created(OFFalse), jobs(NULL), files(NULL)
 {
     char rcsid[200];
     // print application header
@@ -101,6 +101,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
             cmd->addOption("--read-file",           "+f",      "read file format or data set (default)");
             cmd->addOption("--read-file-only",      "+fo",     "read file format only");
             cmd->addOption("--read-dataset",        "-f",      "read data set without file meta information");
+            cmd->addOption("--create-file",         "+fc",     "create file format if file does not exist");
         cmd->addSubGroup("input transfer syntax:");
             cmd->addOption("--read-xfer-auto",      "-t=",     "use TS recognition (default)");
             cmd->addOption("--read-xfer-detect",    "-td",     "ignore TS specified in the file meta header");
@@ -248,6 +249,9 @@ void MdfConsoleEngine::parseNonJobOptions()
         read_mode_option = ERM_dataset;
     cmd->endOptionBlock();
 
+    if (cmd->findOption("--create-file"))
+        create_if_necessary = OFTrue;
+
     cmd->beginOptionBlock();
     if (cmd->findOption("--read-xfer-auto"))
         input_xfer_option = EXS_Unknown;
@@ -310,7 +314,10 @@ void MdfConsoleEngine::parseNonJobOptions()
     if (cmd->findOption("--write-file"))
         output_dataset_option = OFFalse;
     if (cmd->findOption("--write-dataset"))
+    {
         output_dataset_option = OFTrue;
+        app->checkConflict("--write-dataset", "--create-file", create_if_necessary);
+    }
     cmd->endOptionBlock();
 
     cmd->beginOptionBlock();
@@ -526,6 +533,7 @@ int MdfConsoleEngine::startProvidingService()
     {
         filename = (*file_it).c_str();
         result = loadFile(filename);
+
         // if file could be loaded:
         if (result.good())
         {
@@ -540,6 +548,10 @@ int MdfConsoleEngine::startProvidingService()
             // if there were no errors or user wants to override them, save:
             if (errors == 0 || ignore_errors_option)
             {
+                if (was_created && (output_xfer_option == EXS_Unknown))
+                {
+                  output_xfer_option = EXS_LittleEndianExplicit;
+                }
                 result = ds_man->saveFile(filename, output_xfer_option,
                                           enctype_option, glenc_option,
                                           padenc_option, filepad_option,
@@ -548,7 +560,7 @@ int MdfConsoleEngine::startProvidingService()
                 {
                     OFLOG_ERROR(dcmodifyLogger, "couldn't save file: " << result.text());
                     errors++;
-                    if (!no_backup_option)
+                    if (!no_backup_option && !was_created)
                     {
                         result = restoreFile(filename);
                         if (result.bad())
@@ -560,7 +572,7 @@ int MdfConsoleEngine::startProvidingService()
                 }
             }
             // errors occured and user doesn't want to ignore them:
-            else if (!no_backup_option)
+            else if (!no_backup_option && !was_created)
             {
                 result = restoreFile(filename);
                 if (result.bad())
@@ -594,8 +606,9 @@ OFCondition MdfConsoleEngine::loadFile(const char *filename)
     ds_man->setModifyUNValues(!ignore_un_modifies);
     OFLOG_INFO(dcmodifyLogger, "Processing file: " << filename);
     // load file into dataset manager
-    result = ds_man->loadFile(filename, read_mode_option, input_xfer_option);
-    if (result.good() && !no_backup_option)
+    was_created = !OFStandard::fileExists(filename);
+    result = ds_man->loadFile(filename, read_mode_option, input_xfer_option, create_if_necessary);
+    if (result.good() && !no_backup_option && !was_created)
         result = backupFile(filename);
     return result;
 }
@@ -674,6 +687,9 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.40  2011-08-25 08:39:30  onken
+** Added dcmodify option tgat permits creation of files from scratch.
+**
 ** Revision 1.39  2011-02-04 12:07:46  uli
 ** Made sure we only save assignable classes in STL containers.
 **

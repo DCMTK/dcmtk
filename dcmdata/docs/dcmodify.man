@@ -122,6 +122,9 @@ input file format:
   -f    --read-dataset
           read data set without file meta information
 
+  +fc   --create-file
+          create file format if file does not exist
+
 input transfer syntax:
 
   -t=   --read-xfer-auto
@@ -359,6 +362,19 @@ When choosing the \e -gin option, the related metaheader tag ('Media Storage
 SOP Instance UID') is updated automatically.  This behaviour cannot be
 disabled.
 
+\section creating_new_files CREATING NEW FILES
+
+Option \e --create-file lets \b dcmdodify create a file if it does not already
+exist on disk. This can be used in order to create files from scratch by
+performing consecutive insertions with options like \e --insert. This might
+especially become handy when creating query files for tools like findscu or
+movescu. In case no specific output transfer syntax is defined, \b dcmodify
+chooses Little Endian Explicit Uncompressed for output. Files that are newly
+created are always written as DICOM file format, i.e. option \e --write-dataset
+is not permitted together with \e --create. This way, at least the metaheader
+is written and no file with zero byte length is created in a case where no
+insertions are performed in the \b dcmodify call.
+
 \section element_values_from_file ELEMENT VALUES FROM FILE
 
 In order to read the element value from a file instead of specifying it on the
@@ -488,6 +504,7 @@ single elements (i.e. a single dictionary name or tag key).
        This will modify the SOPInstanceUID to the given [UID],
        but -nmu avoids, that dcmodify adjusts the
        MediaStorageSOPInstanceUID in the metaheader, too.
+
 \endverbatim
 
 \section error_handling ERROR HANDLING

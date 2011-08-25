@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:17:52 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-08-25 08:39:31 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,11 +62,13 @@ public:
      *  @param file_name file to be loaded
         @param readMode read file with or without metaheader. Default=autodetect
         @param xfer try to read with this transfer syntax. Default=autodetect
+        @param createIfNecessary If true, the file is created if it does not exist
      *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition loadFile(const char *file_name,
                          const E_FileReadMode readMode = ERM_autoDetect,
-                         const E_TransferSyntax xfer = EXS_Unknown);
+                         const E_TransferSyntax xfer = EXS_Unknown,
+                         const OFBool createIfNecessary = OFFalse);
 
     /** Modifies/Inserts a path (with a specific value if desired).
      *  @param tag_path path to item/element
@@ -266,6 +268,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
+** Revision 1.23  2011-08-25 08:39:31  onken
+** Added dcmodify option tgat permits creation of files from scratch.
+**
 ** Revision 1.22  2010-10-14 13:17:52  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
