@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-08-25 09:31:35 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-25 13:49:31 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -893,7 +893,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
 
 
 // Standard handler for C-MOVE message responses
-OFCondition DcmSCU::handleMOVEResponse( const T_ASC_PresentationContextID presContextID,
+OFCondition DcmSCU::handleMOVEResponse( const T_ASC_PresentationContextID /* presContextID */,
                                         RetrieveResponse *response,
                                         OFBool &waitForNextResponse )
 {
@@ -1003,8 +1003,8 @@ OFCondition DcmSCU::sendCGETRequest(const T_ASC_PresentationContextID presID,
 
 
 // Does the logic for switching between C-GET Response and C-STORE Requests
-OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID cgetPresID,
-                                      DcmDataset *dataset,
+OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* cgetPresID */,
+                                      DcmDataset * /* dataset */,
                                       OFVector<RetrieveResponse*> *responses)
 {
   OFCondition result;
@@ -1098,13 +1098,13 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID cgetPres
         result = handleSTORERequestFile(&pcid, storageFilename, &(rsp.msg.CStoreRQ), NULL, NULL);
         if (result.good())
         {
-          notifyInstanceStored(storageFilename, rsp.msg.CStoreRQ.AffectedSOPClassUID, rsp.msg.CStoreRQ.AffectedSOPInstanceUID );
+          notifyInstanceStored(storageFilename, rsp.msg.CStoreRQ.AffectedSOPClassUID, rsp.msg.CStoreRQ.AffectedSOPInstanceUID);
         }
       }
       // handle ignore storage mode, i.e. ignore received dataset and do not store at all
       else
       {
-        result = ignoreSTORERequest(&pcid, rsp.msg.CStoreRQ);
+        result = ignoreSTORERequest(pcid, rsp.msg.CStoreRQ);
       }
 
       // Evaluate result from C-STORE request handling and send response
@@ -1113,7 +1113,7 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID cgetPres
         desiredCStoreReturnStatus = STATUS_STORE_Error_CannotUnderstand;
         continueSession = OFFalse;
       }
-      result = sendCStoreResponse(pcid, desiredCStoreReturnStatus, rsp.msg.CStoreRQ);
+      result = sendSTOREResponse(pcid, desiredCStoreReturnStatus, rsp.msg.CStoreRQ);
       if (result.bad())
       {
         continueSession = OFFalse;
@@ -1143,7 +1143,7 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID cgetPres
 
 
 // Handles single C-GET Response
-OFCondition DcmSCU::handleCGETResponse(const T_ASC_PresentationContextID presID,
+OFCondition DcmSCU::handleCGETResponse(const T_ASC_PresentationContextID /* presID */,
                                        RetrieveResponse* response,
                                        OFBool& continueCGETSession)
 {
@@ -1202,9 +1202,9 @@ OFCondition DcmSCU::handleCGETResponse(const T_ASC_PresentationContextID presID,
 
 
 // Handles single C-STORE Request received during C-GET session
-OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID presID,
+OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID /* presID */,
                                        DcmDataset *incomingObject,
-                                       OFBool& continueCGETSession,
+                                       OFBool& /* continueCGETSession */,
                                        Uint16& cStoreReturnStatus)
 {
   if (incomingObject == NULL)
@@ -1227,7 +1227,7 @@ OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID presID,
     OFString sopclass, sopuid;
     E_TransferSyntax ts;
     getDatasetInfo(incomingObject, sopclass, sopuid, ts);
-    notifyInstanceStored(filename, sopclass, sopuid );
+    notifyInstanceStored(filename, sopclass, sopuid);
     cStoreReturnStatus = STATUS_Success;
   }
   else
@@ -1273,9 +1273,9 @@ OFCondition DcmSCU::handleSTORERequestFile(T_ASC_PresentationContextID *presID,
 }
 
 
-OFCondition DcmSCU::sendCStoreResponse(T_ASC_PresentationContextID pcid,
-                                       Uint16 status,
-                                       const T_DIMSE_C_StoreRQ& request)
+OFCondition DcmSCU::sendSTOREResponse(T_ASC_PresentationContextID presID,
+                                      Uint16 status,
+                                      const T_DIMSE_C_StoreRQ& request)
 {
   // Send back response
   T_DIMSE_Message response;
@@ -1285,16 +1285,16 @@ OFCondition DcmSCU::sendCStoreResponse(T_ASC_PresentationContextID pcid,
   storeRsp.DimseStatus = status;
   storeRsp.DataSetType = DIMSE_DATASET_NULL;
   storeRsp.opts = 0;
-  /* Follwoing information is optional and normally not sent by the underlying
-   * dcmnet routines. However, maybe this could be changed later, so insrt it
+  /* Following information is optional and normally not sent by the underlying
+   * dcmnet routines. However, maybe this could be changed later, so insert it.
    */
   OFStandard::strlcpy(storeRsp.AffectedSOPClassUID, request.AffectedSOPClassUID, sizeof(storeRsp.AffectedSOPClassUID));
   OFStandard::strlcpy(storeRsp.AffectedSOPInstanceUID, request.AffectedSOPInstanceUID, sizeof(storeRsp.AffectedSOPInstanceUID));
 
   OFString tempStr;
   DCMNET_INFO("Sending C-STORE Response");
-  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, pcid));
-  OFCondition cond = sendDIMSEMessage(pcid, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
+  OFCondition cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending C-STORE response: " << DimseCondition::dump(tempStr, cond));
@@ -1320,7 +1320,7 @@ OFString DcmSCU::createStorageFilename(DcmDataset *dataset)
 }
 
 
-OFCondition DcmSCU::ignoreSTORERequest(T_ASC_PresentationContextID* pcid,
+OFCondition DcmSCU::ignoreSTORERequest(T_ASC_PresentationContextID presID,
                                        const T_DIMSE_C_StoreRQ& request)
 {
 
@@ -1328,7 +1328,7 @@ OFCondition DcmSCU::ignoreSTORERequest(T_ASC_PresentationContextID* pcid,
   DIC_UL bytesRead = 0;
   DIC_UL pdvCount=0;
   DCMNET_DEBUG("Ignoring incoming C-STORE dataset on presentation context "
-    << OFstatic_cast(unsigned int, *pcid)
+    << OFstatic_cast(unsigned int, presID)
     << " with Affected SOP Instance UID: " << request.AffectedSOPInstanceUID );
   OFCondition result = DIMSE_ignoreDataSet(m_assoc, m_blockMode, m_dimseTimeout, &bytesRead, &pdvCount);
   if (result.good())
@@ -2071,17 +2071,19 @@ void DcmSCU::getDatasetInfo(DcmDataset *dataset,
 
 void RetrieveResponse::print()
 {
-
-  OFLogger rspLogger = OFLog::getLogger(DCMNET_LOGGER_NAME ".responses");
-  OFLOG_INFO(rspLogger, "Number of Remaining Suboperations: " << m_numberOfRemainingSubops);
-  OFLOG_INFO(rspLogger, "Number of Completed Suboperations: " << m_numberOfCompletedSubops);
-  OFLOG_INFO(rspLogger, "Number of Failed Suboperations   : " << m_numberOfFailedSubops);
-  OFLOG_INFO(rspLogger, "Number of Warning Suboperations  : " << m_numberOfWarningSubops);
+  DCMNET_INFO("  Number of Remaining Suboperations : " << m_numberOfRemainingSubops);
+  DCMNET_INFO("  Number of Completed Suboperations : " << m_numberOfCompletedSubops);
+  DCMNET_INFO("  Number of Failed Suboperations    : " << m_numberOfFailedSubops);
+  DCMNET_INFO("  Number of Warning Suboperations   : " << m_numberOfWarningSubops);
 }
 
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.40  2011-08-25 13:49:31  joergr
+** Fixed minor issues in the documentation, parameter and method names. Output
+** retrieve responses to main dcmnet logger instead of response logger.
+**
 ** Revision 1.39  2011-08-25 09:31:35  onken
 ** Added C-GET functionality to DcmSCU class and accompanying getscu
 ** commandline application.

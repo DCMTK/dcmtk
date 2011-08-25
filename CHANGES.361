@@ -5,7 +5,11 @@ Changes between releases are documented here.
 
 - Added "verbose-pc" mode that shows the presentation contexts in verbose mode.
   Affects: dcmnet/apps/getscu.cc
-  
+
+- Fixed minor issues in the documentation, parameter and method names. Output
+  retrieve responses to main dcmnet logger instead of response logger.
+  Affects: dcmnet/libsrc/scu.cc
+
 - Fixed minor issues in the API documentation, parameter and method names.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
 
