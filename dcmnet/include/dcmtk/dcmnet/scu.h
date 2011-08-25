@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-25 13:46:28 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2011-08-25 15:05:06 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,8 @@
 #include "dcmtk/dcmnet/dimse.h"     /* DIMSE network layer */
 #include "dcmtk/dcmnet/dcasccff.h"  /* For reading a association config file */
 #include "dcmtk/dcmnet/dcasccfg.h"  /* For holding association cfg file infos */
-#include "dcmtk/ofstd/ofvector.h"
+#include "dcmtk/ofstd/oflist.h"
+
 
 /// const error objects used for SCU
 extern const OFCondition SCU_EC_AlreadyConnected;
@@ -88,7 +89,7 @@ class QRResponse
 
   /** Destructor, cleans up internal memory (dataset if present).
    */
-  virtual ~QRResponse() { delete m_dataset; }
+  virtual ~QRResponse() { delete m_dataset; delete m_statusDetail; }
 
   /// The message ID responded to (mandatory response field,
   /// equals message ID from request)
@@ -141,7 +142,7 @@ public:
         m_numberOfFailedSubops(0),
         m_numberOfWarningSubops(0) {}
 
-  /** Destructor, cleans up internal memory (datasets if present)
+  /** Destructor, cleans up internal memory
    */
   virtual ~RetrieveResponse() {}
 
@@ -328,7 +329,7 @@ public:
   virtual OFCondition sendMOVERequest(const T_ASC_PresentationContextID presID,
                                       const OFString &moveDestinationAETitle,
                                       DcmDataset *dataset,
-                                      OFVector<RetrieveResponse*> *responses);
+                                      OFList<RetrieveResponse*> *responses);
 
   /** This is the standard handler for C-MOVE message responses: It just adds up all
    *  responses it receives and prints a DEBUG message. Therefore, it is called by for
@@ -379,7 +380,7 @@ public:
    */
   virtual OFCondition sendCGETRequest(const T_ASC_PresentationContextID presID,
                                       DcmDataset *dataset,
-                                      OFVector<RetrieveResponse*> *responses);
+                                      OFList<RetrieveResponse*> *responses);
 
   /** Does the logic for switching between C-GET Response and C-STORE Requests.
    *  Sends a C-GET Request on given presentation context and receives list
@@ -408,7 +409,7 @@ public:
    */
   virtual OFCondition handleCGETSession(const T_ASC_PresentationContextID cgetPresID,
                                         DcmDataset *dataset,
-                                        OFVector<RetrieveResponse*> *responses);
+                                        OFList<RetrieveResponse*> *responses);
 
   /** Function handling a single C-GET Response. This standard handler
    *  reads the status of the response and decides whether to receive
@@ -503,7 +504,7 @@ public:
    */
   virtual OFCondition sendFINDRequest(const T_ASC_PresentationContextID presID,
                                       DcmDataset *queryKeys,
-                                      OFVector<QRResponse*> *responses);
+                                      OFList<QRResponse*> *responses);
 
   /** This is the standard handler for C-FIND message responses: It just adds up all
    *  responses it receives and prints a DEBUG message. Therefore, it is called by for
@@ -985,6 +986,10 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.30  2011-08-25 15:05:06  joergr
+** Changed data structure for Q/R responses from OFVector to OFList. Also fixed
+** some possible memory leaks and made the FIND/MOVE/GET code more consistent.
+**
 ** Revision 1.29  2011-08-25 13:46:28  joergr
 ** Fixed minor issues in the API documentation, parameter and method names.
 **

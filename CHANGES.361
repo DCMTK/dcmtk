@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.25 (riesmeier)
 
+- Changed data structure for Q/R responses from OFVector to OFList. Also fixed
+  some possible memory leaks and made the FIND/MOVE/GET code more consistent.
+  Affects: dcmnet/apps/getscu.cc
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+
 - Added "verbose-pc" mode that shows the presentation contexts in verbose mode.
   Affects: dcmnet/apps/getscu.cc
 

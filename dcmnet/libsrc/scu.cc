@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-25 13:49:31 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2011-08-25 15:05:09 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -29,8 +29,8 @@
 #include "dcmtk/config/osconfig.h"  /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmnet/scu.h"
-#include "dcmtk/dcmdata/dcuid.h"    /* for dcmFindUIDName() */
 #include "dcmtk/dcmnet/diutil.h"    /* for dcmnet logger */
+#include "dcmtk/dcmdata/dcuid.h"    /* for dcmFindUIDName() */
 #include "dcmtk/dcmdata/dcostrmf.h" /* for class DcmOutputFileStream */
 
 #ifdef WITH_ZLIB
@@ -763,7 +763,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
 OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
                                     const OFString &moveDestinationAETitle,
                                     DcmDataset *dataset,
-                                    OFVector<RetrieveResponse*> *responses )
+                                    OFList<RetrieveResponse*> *responses)
 {
   // Do some basic validity checks
   if (!isConnected())
@@ -877,7 +877,6 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
     {
       DCMNET_WARN("Unable to handle C-MOVE response correctly: " << cond.text() << " (ignored)");
       delete moveRSP; // includes statusDetail
-      cond = EC_Normal;
       // don't return here but trust the "waitForNextResponse" variable
     }
     // if response could be handled successfully, add it to response list
@@ -885,6 +884,8 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
     {
       if (responses != NULL) // only add if desired by caller
         responses->push_back(moveRSP);
+      else
+        delete moveRSP;
     }
   }
   /* All responses received or break signal occured */
@@ -958,7 +959,7 @@ OFCondition DcmSCU::handleMOVEResponse( const T_ASC_PresentationContextID /* pre
 // Sends a C-GET Request on given presentation context
 OFCondition DcmSCU::sendCGETRequest(const T_ASC_PresentationContextID presID,
                                     DcmDataset *dataset,
-                                    OFVector<RetrieveResponse*> *responses)
+                                    OFList<RetrieveResponse*> *responses)
 {
   // Do some basic validity checks
   if (!isConnected())
@@ -1005,7 +1006,7 @@ OFCondition DcmSCU::sendCGETRequest(const T_ASC_PresentationContextID presID,
 // Does the logic for switching between C-GET Response and C-STORE Requests
 OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* cgetPresID */,
                                       DcmDataset * /* dataset */,
-                                      OFVector<RetrieveResponse*> *responses)
+                                      OFList<RetrieveResponse*> *responses)
 {
   OFCondition result;
   OFBool continueSession = OFTrue;
@@ -1050,14 +1051,21 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* cgetP
         DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
       }
       result = handleCGETResponse(pcid, getRSP, continueSession);
-      if (responses != NULL)
+      if (result.bad())
       {
-        responses->push_back(getRSP);
-        result = EC_Normal; // we trust the continueSession variable
-      }
-      else
-      {
+        DCMNET_WARN("Unable to handle C-GET response correctly: " << result.text() << " (ignored)");
         delete getRSP;
+        // don't return here but trust the "waitForNextResponse" variable
+      }
+      // if response could be handled successfully, add it to response list
+      else {
+        if (responses != NULL) // only add if desired by caller
+        {
+          responses->push_back(getRSP);
+          statusDetail = NULL; // forget reference to status detail
+        } else {
+          delete getRSP;
+        }
       }
     }
 
@@ -1357,7 +1365,7 @@ void DcmSCU::notifyInstanceStored(const OFString& filename,
 // Sends a C-FIND Request on given presentation context
 OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
                                     DcmDataset *queryKeys,
-                                    OFVector<QRResponse*> *responses)
+                                    OFList<QRResponse*> *responses)
 {
   // Do some basic validity checks
   if (!isConnected())
@@ -1427,24 +1435,24 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     }
 
     // Prepare response package for response handler
-    QRResponse *findrsp = new QRResponse();
-    findrsp->m_affectedSOPClassUID = rsp.msg.CFindRSP.AffectedSOPClassUID;
-    findrsp->m_messageIDRespondedTo = rsp.msg.CFindRSP.MessageIDBeingRespondedTo;
-    findrsp->m_status = rsp.msg.CFindRSP.DimseStatus;
-    findrsp->m_statusDetail = statusDetail;
+    QRResponse *findRSP = new QRResponse();
+    findRSP->m_affectedSOPClassUID = rsp.msg.CFindRSP.AffectedSOPClassUID;
+    findRSP->m_messageIDRespondedTo = rsp.msg.CFindRSP.MessageIDBeingRespondedTo;
+    findRSP->m_status = rsp.msg.CFindRSP.DimseStatus;
+    findRSP->m_statusDetail = statusDetail;
     //DCMNET_DEBUG("C-FIND response has status 0x"
     //  << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-    //  << findrsp->m_status);
+    //  << findRSP->m_status);
 
     // Receive dataset if there is one (status PENDING)
     DcmDataset *rspDataset = NULL;
-    if (DICOM_PENDING_STATUS(findrsp->m_status))
+    if (DICOM_PENDING_STATUS(findRSP->m_status))
     {
       // Check if dataset is announced correctly
       if (rsp.msg.CFindRSP.DataSetType == DIMSE_DATASET_NULL)
       {
         DCMNET_ERROR("Received C-FIND response with PENDING status but no dataset announced, aborting");
-        delete findrsp;
+        delete findRSP;
         return DIMSE_BADMESSAGE;
       }
 
@@ -1452,27 +1460,27 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
       cond = receiveDIMSEDataset(&pcid, &rspDataset, NULL /* callback */, NULL /* callbackContext */);
       if (cond.bad())
       {
-        delete findrsp;
+        delete findRSP;
         return DIMSE_BADDATA;
       }
-      findrsp->m_dataset = rspDataset;
+      findRSP->m_dataset = rspDataset;
     }
 
     // Handle C-FIND response (has to handle all possible status flags)
-    cond = handleFINDResponse(pcid, findrsp, waitForNextResponse);
+    cond = handleFINDResponse(pcid, findRSP, waitForNextResponse);
     if (cond.bad())
     {
       DCMNET_WARN("Unable to handle C-FIND response correctly: " << cond.text() << " (ignored)");
-      delete findrsp;
+      delete findRSP;
       // don't return here but trust the "waitForNextResponse" variable
     }
     // if response could be handled successfully, add it to response list
     else
     {
       if (responses != NULL) // only add if desired by caller
-        responses->push_back(findrsp);
+        responses->push_back(findRSP);
       else
-        delete findrsp;
+        delete findRSP;
     }
   }
   /* All responses received or break signal occured */
@@ -2080,6 +2088,10 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.41  2011-08-25 15:05:09  joergr
+** Changed data structure for Q/R responses from OFVector to OFList. Also fixed
+** some possible memory leaks and made the FIND/MOVE/GET code more consistent.
+**
 ** Revision 1.40  2011-08-25 13:49:31  joergr
 ** Fixed minor issues in the documentation, parameter and method names. Output
 ** retrieve responses to main dcmnet logger instead of response logger.

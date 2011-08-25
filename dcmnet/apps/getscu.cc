@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-GET operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-25 12:51:22 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-08-25 15:05:04 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,7 @@
 #endif
 
 #include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/ofstd/ofvector.h"
+#include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/dcmnet/scu.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
@@ -556,7 +556,7 @@ main(int argc, char *argv[])
     exit(1);
   }
 
-  /* Do the real work, i.e. send c-get requests and receive objects */
+  /* Do the real work, i.e. send C-GET requests and receive objects */
   for (Uint16 repeat=0; repeat < opt_repeatCount; repeat++)
   {
     Uint16 numRuns = 1;
@@ -576,7 +576,7 @@ main(int argc, char *argv[])
       }
       dset = dcmff.getDataset();
     }
-    OFVector<RetrieveResponse*> responses;
+    OFList<RetrieveResponse*> responses;
     /* For all files (or at least one run from override keys) */
     for (Uint16 i=0; i < numRuns; i++)
     {
@@ -599,11 +599,20 @@ main(int argc, char *argv[])
         dset = dcmff.getDataset();
       }
     }
-    OFLOG_INFO(getscuLogger, "Final status reports from last C-GET message:");
-    responses.at(responses.size() -1)->print();
-    for (size_t i = 0; i < responses.size(); i++)
-      delete responses[i];
-    responses.clear();
+    if (!responses.empty())
+    {
+      /* Output final status report */
+      OFLOG_INFO(getscuLogger, "Final status report from last C-GET message:");
+      (*(--responses.end()))->print();
+      /* Delete responses */
+      OFListIterator(RetrieveResponse*) iter = responses.begin();
+      OFListConstIterator(RetrieveResponse*) last = responses.end();
+      while (iter != last)
+      {
+        delete (*iter);
+        iter = responses.erase(iter);
+      }
+    }
   }
 
 
@@ -740,6 +749,10 @@ static void prepareTS(E_TransferSyntax ts,
 /*
 ** CVS Log
 ** $Log: getscu.cc,v $
+** Revision 1.3  2011-08-25 15:05:04  joergr
+** Changed data structure for Q/R responses from OFVector to OFList. Also fixed
+** some possible memory leaks and made the FIND/MOVE/GET code more consistent.
+**
 ** Revision 1.2  2011-08-25 12:51:22  joergr
 ** Added "verbose-pc" mode that shows the presentation contexts in verbose mode.
 **
