@@ -3,12 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.25 (onken)
 
+- Fixed typo and adapted copyright.
+  Affects: dcmdata/docs/dcmodify.man
+
 - Added dcmodify option that permits creation of files from scratch.
-  Affects:  dcmdata/apps/mdfconen.cc
-            dcmdata/apps/mdfconen.h
-            dcmdata/apps/mdfdsman.cc
-            dcmdata/apps/mdfdsman.h
-            dcmdata/docs/dcmodify.man
+  Affects: dcmdata/apps/mdfconen.cc
+           dcmdata/apps/mdfconen.h
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/mdfdsman.h
+           dcmdata/docs/dcmodify.man
 
 **** Changes from 2011.08.24 (riesmeier)
 

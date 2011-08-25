@@ -364,7 +364,7 @@ disabled.
 
 \section creating_new_files CREATING NEW FILES
 
-Option \e --create-file lets \b dcmdodify create a file if it does not already
+Option \e --create-file lets \b dcmodify create a file if it does not already
 exist on disk. This can be used in order to create files from scratch by
 performing consecutive insertions with options like \e --insert. This might
 especially become handy when creating query files for tools like findscu or
@@ -581,6 +581,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2003-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
