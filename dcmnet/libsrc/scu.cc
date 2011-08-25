@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-25 15:05:09 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2011-08-25 15:46:20 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,7 +166,7 @@ OFCondition DcmSCU::initNetwork()
   }
   if (strlen(localHost) + 1 > 63)
   {
-    DCMNET_ERROR("Maximum length of local host name '" << localHost << " is longer than maximum of 62 characters");
+    DCMNET_ERROR("Maximum length of local host name '" << localHost << "' is longer than maximum of 62 characters");
     return EC_IllegalCall; // TODO: need to find better error code
   }
   sprintf(peerHost, "%s:%d", m_peer.c_str(), OFstatic_cast(int, m_peerPort));
@@ -200,7 +200,7 @@ OFCondition DcmSCU::initNetwork()
       result = assocConfig.setAssociationParameters(profileName.c_str(), *m_params);
       if (result.bad())
       {
-        DCMNET_WARN("Unable to apply association configuration file" << m_assocConfigFilename
+        DCMNET_WARN("Unable to apply association configuration file " << m_assocConfigFilename
           <<" (ignored): " << result.text());
         return result;
       }
@@ -379,11 +379,11 @@ T_ASC_PresentationContextID DcmSCU::findPresentationContextID(const OFString &ab
   (void)LST_Position(l, (LST_NODE*)pc);
   while (pc && !found)
   {
-      found = (strcmp(pc->abstractSyntax, abstractSyntax.c_str()) == 0);
-      found &= (pc->result == ASC_P_ACCEPTANCE);
-      if (!transferSyntax.empty())  // ignore transfer syntax if not specified
-        found &= (strcmp(pc->acceptedTransferSyntax, transferSyntax.c_str()) == 0);
-      if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
+    found = (strcmp(pc->abstractSyntax, abstractSyntax.c_str()) == 0);
+    found &= (pc->result == ASC_P_ACCEPTANCE);
+    if (!transferSyntax.empty())  // ignore transfer syntax if not specified
+      found &= (strcmp(pc->acceptedTransferSyntax, transferSyntax.c_str()) == 0);
+    if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
   }
   if (found)
     return pc->presentationContextID;
@@ -413,11 +413,11 @@ T_ASC_PresentationContextID DcmSCU::findAnyPresentationContextID(const OFString 
   (void)LST_Position(l, (LST_NODE*)pc);
   while (pc && !found)
   {
-      found = (strcmp(pc->abstractSyntax, abstractSyntax.c_str()) == 0);
-      found &= (pc->result == ASC_P_ACCEPTANCE);
-      if (!transferSyntax.empty())  // ignore transfer syntax if not specified
-        found &= (strcmp(pc->acceptedTransferSyntax, transferSyntax.c_str()) == 0);
-      if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
+    found = (strcmp(pc->abstractSyntax, abstractSyntax.c_str()) == 0);
+    found &= (pc->result == ASC_P_ACCEPTANCE);
+    if (!transferSyntax.empty())  // ignore transfer syntax if not specified
+      found &= (strcmp(pc->acceptedTransferSyntax, transferSyntax.c_str()) == 0);
+    if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
   }
   if (found) return pc->presentationContextID;
 
@@ -427,11 +427,11 @@ T_ASC_PresentationContextID DcmSCU::findAnyPresentationContextID(const OFString 
   (void)LST_Position(l, (LST_NODE*)pc);
   while (pc && !found)
   {
-     found =  (strcmp(pc->abstractSyntax, abstractSyntax.c_str()) == 0)
-           && (pc->result == ASC_P_ACCEPTANCE)
-           && ((strcmp(pc->acceptedTransferSyntax, UID_LittleEndianExplicitTransferSyntax) == 0)
-           || (strcmp(pc->acceptedTransferSyntax, UID_BigEndianExplicitTransferSyntax) == 0));
-     if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
+    found =  (strcmp(pc->abstractSyntax, abstractSyntax.c_str()) == 0)
+          && (pc->result == ASC_P_ACCEPTANCE)
+          && ((strcmp(pc->acceptedTransferSyntax, UID_LittleEndianExplicitTransferSyntax) == 0)
+          || (strcmp(pc->acceptedTransferSyntax, UID_BigEndianExplicitTransferSyntax) == 0));
+    if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
   }
   if (found) return pc->presentationContextID;
 
@@ -441,10 +441,10 @@ T_ASC_PresentationContextID DcmSCU::findAnyPresentationContextID(const OFString 
   (void)LST_Position(l, (LST_NODE*)pc);
   while (pc && !found)
   {
-     found = (strcmp(pc->abstractSyntax, abstractSyntax.c_str()) == 0)
-           && (pc->result == ASC_P_ACCEPTANCE)
-           && (strcmp(pc->acceptedTransferSyntax, UID_LittleEndianImplicitTransferSyntax) == 0);
-     if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
+    found = (strcmp(pc->abstractSyntax, abstractSyntax.c_str()) == 0)
+          && (pc->result == ASC_P_ACCEPTANCE)
+          && (strcmp(pc->acceptedTransferSyntax, UID_LittleEndianImplicitTransferSyntax) == 0);
+    if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
   }
   if (found) return pc->presentationContextID;
 
@@ -474,14 +474,14 @@ void DcmSCU::findPresentationContext(const T_ASC_PresentationContextID presID,
   (void)LST_Position(l, (LST_NODE*)pc);
   while (pc)
   {
-     if ((presID == pc->presentationContextID) && (pc->result == ASC_P_ACCEPTANCE))
-     {
-       // found a match
-       transferSyntax = pc->acceptedTransferSyntax;
-       abstractSyntax = pc->abstractSyntax;
-       return;
-     }
-     pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
+    if ((presID == pc->presentationContextID) && (pc->result == ASC_P_ACCEPTANCE))
+    {
+      // found a match
+      transferSyntax = pc->acceptedTransferSyntax;
+      abstractSyntax = pc->abstractSyntax;
+      return;
+    }
+    pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
   }
   return;   /* not found */
 }
@@ -885,7 +885,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
       if (responses != NULL) // only add if desired by caller
         responses->push_back(moveRSP);
       else
-        delete moveRSP;
+        delete moveRSP; // includes statusDetail
     }
   }
   /* All responses received or break signal occured */
@@ -894,7 +894,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
 
 
 // Standard handler for C-MOVE message responses
-OFCondition DcmSCU::handleMOVEResponse( const T_ASC_PresentationContextID /* presContextID */,
+OFCondition DcmSCU::handleMOVEResponse( const T_ASC_PresentationContextID /* presID */,
                                         RetrieveResponse *response,
                                         OFBool &waitForNextResponse )
 {
@@ -1004,7 +1004,7 @@ OFCondition DcmSCU::sendCGETRequest(const T_ASC_PresentationContextID presID,
 
 
 // Does the logic for switching between C-GET Response and C-STORE Requests
-OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* cgetPresID */,
+OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* presID */,
                                       DcmDataset * /* dataset */,
                                       OFList<RetrieveResponse*> *responses)
 {
@@ -1049,23 +1049,21 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* cgetP
       if (statusDetail != NULL)
       {
         DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+        statusDetail = NULL; // forget reference to status detail, will be deleted with getRSP
       }
       result = handleCGETResponse(pcid, getRSP, continueSession);
       if (result.bad())
       {
         DCMNET_WARN("Unable to handle C-GET response correctly: " << result.text() << " (ignored)");
-        delete getRSP;
-        // don't return here but trust the "waitForNextResponse" variable
+        delete getRSP; // includes statusDetail
+        // don't return here but trust the "continueSession" variable
       }
       // if response could be handled successfully, add it to response list
       else {
         if (responses != NULL) // only add if desired by caller
-        {
           responses->push_back(getRSP);
-          statusDetail = NULL; // forget reference to status detail
-        } else {
-          delete getRSP;
-        }
+        else
+          delete getRSP; // includes statusDetail
       }
     }
 
@@ -1091,10 +1089,7 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* cgetP
         {
           result = DIMSE_NULLKEY;
           desiredCStoreReturnStatus = STATUS_STORE_Error_CannotUnderstand;
-          delete rspDataset;
-        }
-        else
-        {
+        } else {
           result = handleSTORERequest(pcid, rspDataset, continueSession, desiredCStoreReturnStatus);
         }
       }
@@ -1140,7 +1135,7 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* cgetP
       continueSession = OFFalse;
     }
 
-    delete statusDetail;
+    delete statusDetail; // should be NULL if not existing or added to response list
     statusDetail = NULL;
   }
   /* All responses received or break signal occured */
@@ -1223,7 +1218,7 @@ OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID /* pres
   if (result.good()) result = incomingObject->findAndGetOFString(DCM_SOPInstanceUID, instanceUID);
   if (result.bad())
   {
-    DCMNET_ERROR("Cannot store received object; either SOP Instance or SOP Class UID not present");
+    DCMNET_ERROR("Cannot store received object: either SOP Instance or SOP Class UID not present");
     cStoreReturnStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
     return EC_TagNotFound;
   }
@@ -1452,7 +1447,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
       if (rsp.msg.CFindRSP.DataSetType == DIMSE_DATASET_NULL)
       {
         DCMNET_ERROR("Received C-FIND response with PENDING status but no dataset announced, aborting");
-        delete findRSP;
+        delete findRSP; // includes statusDetail
         return DIMSE_BADMESSAGE;
       }
 
@@ -1460,7 +1455,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
       cond = receiveDIMSEDataset(&pcid, &rspDataset, NULL /* callback */, NULL /* callbackContext */);
       if (cond.bad())
       {
-        delete findRSP;
+        delete findRSP; // includes statusDetail
         return DIMSE_BADDATA;
       }
       findRSP->m_dataset = rspDataset;
@@ -1471,7 +1466,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     if (cond.bad())
     {
       DCMNET_WARN("Unable to handle C-FIND response correctly: " << cond.text() << " (ignored)");
-      delete findRSP;
+      delete findRSP; // includes statusDetail and rspDataset
       // don't return here but trust the "waitForNextResponse" variable
     }
     // if response could be handled successfully, add it to response list
@@ -1480,7 +1475,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
       if (responses != NULL) // only add if desired by caller
         responses->push_back(findRSP);
       else
-        delete findRSP;
+        delete findRSP; // includes statusDetail and rspDataset
     }
   }
   /* All responses received or break signal occured */
@@ -1489,7 +1484,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
 
 
 // Standard handler for C-FIND message responses
-OFCondition DcmSCU::handleFINDResponse(const T_ASC_PresentationContextID /* presContextID */,
+OFCondition DcmSCU::handleFINDResponse(const T_ASC_PresentationContextID /* presID */,
                                        QRResponse *response,
                                        OFBool &waitForNextResponse)
 {
@@ -1528,7 +1523,7 @@ OFCondition DcmSCU::handleFINDResponse(const T_ASC_PresentationContextID /* pres
 /* ************************************************************************* */
 
 // Send C-CANCEL-REQ and, therefore, ends current C-FIND, -MOVE or -GET session
-OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presContextID)
+OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID)
 {
   if (!isConnected())
     return DIMSE_ILLEGALASSOCIATION;
@@ -1536,7 +1531,7 @@ OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presCont
   /* Prepare DIMSE data structures for issuing request */
   OFCondition cond;
   OFString tempStr;
-  T_ASC_PresentationContextID pcid = presContextID;
+  T_ASC_PresentationContextID pcid = presID;
   T_DIMSE_Message msg;
   T_DIMSE_C_CancelRQ* req = &(msg.msg.CCancelRQ);
   // Set type of message
@@ -2088,6 +2083,10 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.42  2011-08-25 15:46:20  joergr
+** Further cleanup of minor inconsistencies regarding documentation, parameter
+** names, log output and handling of status details information.
+**
 ** Revision 1.41  2011-08-25 15:05:09  joergr
 ** Changed data structure for Q/R responses from OFVector to OFList. Also fixed
 ** some possible memory leaks and made the FIND/MOVE/GET code more consistent.

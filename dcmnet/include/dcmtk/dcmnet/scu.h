@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-25 15:05:06 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2011-08-25 15:46:18 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -338,9 +338,8 @@ public:
    *  each response, the caller of sendMOVERequest() can decide on its own whether he
    *  wants to cancel the C-MOVE session, terminate the association, do something useful
    *  or whatever. Thus this function is a more object oriented kind of callback.
-   *  @param presContextID [in]  The presentation context ID where the response
-   *                             was received on.
-   *  @param response      [in]  The C-MOVE response received.
+   *  @param presID   [in] The presentation context ID where the response was received on.
+   *  @param response [in] The C-MOVE response received.
    *  @param waitForNextResponse [out] Denotes whether SCU should try to
    *                                   receive another response. If set to
    *                                   OFTrue, then sendMOVERequest() will
@@ -353,7 +352,7 @@ public:
    *  @return EC_Normal, if response could be handled. Error code otherwise.
    *          The current implementation always returns EC_Normal.
    */
-  virtual OFCondition handleMOVEResponse(const T_ASC_PresentationContextID presContextID,
+  virtual OFCondition handleMOVEResponse(const T_ASC_PresentationContextID presID,
                                          RetrieveResponse *response,
                                          OFBool &waitForNextResponse);
 
@@ -394,20 +393,20 @@ public:
    *  incoming message. All other messages lead to an error within this handler.
    *  This function can be overwritten by actual SCU implementations but just
    *  should work fine for most people.
-   *  @param cgetPresID [in]  The presentation context ID that should be used.
-   *                          Must be an odd number.
-   *  @param dataset    [in]  The dataset containing the information about the
-   *                          object(s) to be retrieved
-   *  @param responses  [out] The incoming C-GET responses for this request.
-   *                          If the caller specifies NULL, no responses will be
-   *                          returned; otherwise there should be at least one
-   *                          final C-GET response (mandatory). C-GET responses
-   *                          after each DICOM object received are optional and
-   *                          may have been ommitted by the server.
+   *  @param presID    [in]  The presentation context ID that should be used.
+   *                         Must be an odd number.
+   *  @param dataset   [in]  The dataset containing the information about the
+   *                         object(s) to be retrieved
+   *  @param responses [out] The incoming C-GET responses for this request.
+   *                         If the caller specifies NULL, no responses will be
+   *                         returned; otherwise there should be at least one
+   *                         final C-GET response (mandatory). C-GET responses
+   *                         after each DICOM object received are optional and
+   *                         may have been ommitted by the server.
    *  @return EC_Normal if everything went fine, i.e.\ if request could be send
    *          and expected responses (with whatever status) could be received.
    */
-  virtual OFCondition handleCGETSession(const T_ASC_PresentationContextID cgetPresID,
+  virtual OFCondition handleCGETSession(const T_ASC_PresentationContextID presID,
                                         DcmDataset *dataset,
                                         OFList<RetrieveResponse*> *responses);
 
@@ -513,9 +512,8 @@ public:
    *  each response, the caller of sendFINDRequest() can decide on its own whether he
    *  wants to cancel the C-FIND session, terminate the association, do something useful
    *  or whatever. That way this is a more object oriented kind of callback.
-   *  @param presContextID [in]  The presentation context ID where the response
-   *                             was received on.
-   *  @param response      [in]  The C-FIND response received.
+   *  @param presID   [in] The presentation context ID where the response was received on.
+   *  @param response [in] The C-FIND response received.
    *  @param waitForNextResponse [out] Denotes whether SCU should try to
    *                                   receive another response. If set to
    *                                   OFTrue, then sendFINDRequest() will
@@ -528,7 +526,7 @@ public:
    *  @return EC_Normal, if response could be handled. Error code otherwise.
    *          The current implementation always returns EC_Normal.
    */
-  virtual OFCondition handleFINDResponse(const T_ASC_PresentationContextID  presContextID,
+  virtual OFCondition handleFINDResponse(const T_ASC_PresentationContextID  presID,
                                          QRResponse *response,
                                          OFBool &waitForNextResponse);
 
@@ -537,11 +535,10 @@ public:
    *  if an association is open, the given presentation context represents a
    *  valid C-FIND/GET/MOVE-enabled SOP class and usually only, if the last command
    *  send on that presentation context was a C-FIND message.
-   *  @param presContextID [in]  The presentation context ID where the C-CANCEL
-   *                             should be sent on.
+   *  @param presID [in] The presentation context ID where the C-CANCEL should be sent on.
    *  @return The current implementation always returns EC_Normal.
    */
-  virtual OFCondition sendCANCELRequest(const T_ASC_PresentationContextID presContextID);
+  virtual OFCondition sendCANCELRequest(const T_ASC_PresentationContextID presID);
 
   /** This function sends a N-ACTION request on the currently opened association and receives
    *  the corresponding response then
@@ -986,6 +983,10 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.31  2011-08-25 15:46:18  joergr
+** Further cleanup of minor inconsistencies regarding documentation, parameter
+** names, log output and handling of status details information.
+**
 ** Revision 1.30  2011-08-25 15:05:06  joergr
 ** Changed data structure for Q/R responses from OFVector to OFList. Also fixed
 ** some possible memory leaks and made the FIND/MOVE/GET code more consistent.

@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.25 (riesmeier)
 
+- Further cleanup of minor inconsistencies regarding documentation, parameter
+  names, log output and handling of status details information.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+
 - Changed data structure for Q/R responses from OFVector to OFList. Also fixed
   some possible memory leaks and made the FIND/MOVE/GET code more consistent.
   Affects: dcmnet/apps/getscu.cc
