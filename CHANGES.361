@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.08.25 (onken)
 
+- Added getscu to configure/make build system.
+  Affects: dcmnet/apps/Makefile.dep
+           dcmnet/apps/Makefile.in
+
 - Added C-GET functionality to DcmSCU class and accompanying getscu
   commandline application.
   Added:   dcmnet/apps/getscu.cc
