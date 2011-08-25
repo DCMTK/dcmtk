@@ -5,6 +5,9 @@ Changes between releases are documented here.
 
 - Added "verbose-pc" mode that shows the presentation contexts in verbose mode.
   Affects: dcmnet/apps/getscu.cc
+  
+- Fixed minor issues in the API documentation, parameter and method names.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
 
 **** Changes from 2011.08.25 (onken)
 
