@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.25 (riesmeier)
+
+- Added "verbose-pc" mode that shows the presentation contexts in verbose mode.
+  Affects: dcmnet/apps/getscu.cc
+
 **** Changes from 2011.08.25 (onken)
 
 - Added getscu to configure/make build system.

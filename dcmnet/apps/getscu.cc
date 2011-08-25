@@ -17,9 +17,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-GET operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-08-25 09:31:32 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-25 12:51:22 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 #include "dcmtk/dcmnet/scu.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
-#include "dcmtk/dcmdata/dcpath.h"    /* for DcmPathProcessor */
+#include "dcmtk/dcmdata/dcpath.h"     /* for DcmPathProcessor */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -180,6 +180,7 @@ OFCmdUnsignedInt        opt_maxPDU = ASC_DEFAULTMAXPDU;
 E_TransferSyntax        opt_store_networkTransferSyntax = EXS_Unknown;
 E_TransferSyntax        opt_get_networkTransferSyntax = EXS_Unknown;
 DcmStorageMode          opt_storageMode = DCMSCU_STORAGE_DISK;
+OFBool                  opt_showPresentationContexts = OFFalse;
 OFBool                  opt_abortAssociation = OFFalse;
 OFCmdUnsignedInt        opt_repeatCount = 1;
 QueryModel              opt_queryModel = QMPatientRoot;
@@ -226,6 +227,7 @@ main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                   "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                           "print version information and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--verbose-pc",             "+v",      "show presentation contexts in verbose mode");
    OFLog::addOptions(cmd);
 
   cmd.addGroup("network options:");
@@ -340,6 +342,11 @@ main(int argc, char *argv[])
   app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
 
   OFLog::configureFromCommandLine(cmd, app);
+  if (cmd.findOption("--verbose-pc"))
+  {
+    app.checkDependence("--verbose-pc", "verbose mode", getscuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL));
+    opt_showPresentationContexts = OFTrue;
+  }
 
   if (cmd.findOption("--key", 0, OFCommandLine::FOM_FirstFromLeft))
   {
@@ -363,7 +370,7 @@ main(int argc, char *argv[])
   cmd.beginOptionBlock();
   if (cmd.findOption("--prefer-uncompr"))
   {
-      opt_store_networkTransferSyntax = EXS_Unknown;
+    opt_store_networkTransferSyntax = EXS_Unknown;
   }
   if (cmd.findOption("--prefer-little")) opt_store_networkTransferSyntax = EXS_LittleEndianExplicit;
   if (cmd.findOption("--prefer-big")) opt_store_networkTransferSyntax = EXS_BigEndianExplicit;
@@ -478,8 +485,8 @@ main(int argc, char *argv[])
   /* make sure data dictionary is loaded */
   if (!dcmDataDict.isDictionaryLoaded())
   {
-      OFLOG_WARN(getscuLogger, "no data dictionary loaded, check environment variable: "
-          << DCM_DICT_ENVIRONMENT_VARIABLE);
+    OFLOG_WARN(getscuLogger, "no data dictionary loaded, check environment variable: "
+      << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
   /* make sure output directory exists and is writeable */
@@ -507,6 +514,7 @@ main(int argc, char *argv[])
   scu.setPeerHostName(opt_peer);
   scu.setPeerPort(OFstatic_cast(Uint16, opt_port));
   scu.setPeerAETitle(opt_peerTitle);
+  scu.setVerbosePCMode(opt_showPresentationContexts);
 
   // Add presentation contexts for get and find (we do not actually need find...)
   // (only uncompressed)
@@ -651,12 +659,12 @@ static void applyOverrideKeys(DcmDataset *dataset)
   OFCondition cond;
   while (path != endOfList)
   {
-      cond = proc.applyPathWithValue(dataset, *path);
-      if (cond.bad())
-      {
-        OFLOG_ERROR(getscuLogger, "Bad override key/path: " << *path << ": " << cond.text());
-      }
-      path++;
+    cond = proc.applyPathWithValue(dataset, *path);
+    if (cond.bad())
+    {
+      OFLOG_ERROR(getscuLogger, "Bad override key/path: " << *path << ": " << cond.text());
+    }
+    path++;
   }
 }
 
@@ -731,8 +739,10 @@ static void prepareTS(E_TransferSyntax ts,
 
 /*
 ** CVS Log
-**
 ** $Log: getscu.cc,v $
+** Revision 1.2  2011-08-25 12:51:22  joergr
+** Added "verbose-pc" mode that shows the presentation contexts in verbose mode.
+**
 ** Revision 1.1  2011-08-25 09:31:32  onken
 ** Added C-GET functionality to DcmSCU class and accompanying getscu
 ** commandline application.
