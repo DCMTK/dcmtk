@@ -1,9 +1,9 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2011.08.24 (onken)
+**** Changes from 2011.08.25 (onken)
 
-- Added dcmodify option tgat permits creation of files from scratch.
+- Added dcmodify option that permits creation of files from scratch.
   Affects:  dcmdata/apps/mdfconen.cc
             dcmdata/apps/mdfconen.h
             dcmdata/apps/mdfdsman.cc
