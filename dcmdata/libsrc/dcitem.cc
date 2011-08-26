@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-08 11:01:46 $
- *  CVS/RCS Revision: $Revision: 1.154 $
+ *  Update Date:      $Date: 2011-08-26 09:28:27 $
+ *  CVS/RCS Revision: $Revision: 1.155 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3394,7 +3394,7 @@ OFCondition DcmItem::putAndInsertUint32(const DcmTag& tag,
             /* could not be inserted, therefore, delete it immediately */
             if (status.bad())
                 delete elem;
-        } else if (status.good())
+        } else
             status = EC_MemoryExhausted;
     }
     return status;
@@ -3421,7 +3421,7 @@ OFCondition DcmItem::putAndInsertSint32(const DcmTag& tag,
             /* could not be inserted, therefore, delete it immediately */
             if (status.bad())
                 delete elem;
-        } else if (status.good())
+        } else
             status = EC_MemoryExhausted;
     }
     return status;
@@ -3464,6 +3464,42 @@ OFCondition DcmItem::putAndInsertFloat32(const DcmTag& tag,
 }
 
 
+OFCondition DcmItem::putAndInsertFloat32Array(const DcmTag& tag,
+                                              const Float32 *value,
+                                              const unsigned long count,
+                                              const OFBool replaceOld)
+{
+    OFCondition status = EC_Normal;
+    DcmElement *elem = NULL;
+    /* create new element */
+    switch(tag.getEVR())
+    {
+        case EVR_FL:
+            elem = new DcmFloatingPointSingle(tag);
+            break;
+        case EVR_OF:
+            elem = new DcmOtherFloat(tag);
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
+    }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putFloat32Array(value, count);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
+    return status;
+}
+
+
 OFCondition DcmItem::putAndInsertFloat64(const DcmTag& tag,
                                          const Float64 value,
                                          const unsigned long pos,
@@ -3484,7 +3520,34 @@ OFCondition DcmItem::putAndInsertFloat64(const DcmTag& tag,
             /* could not be inserted, therefore, delete it immediately */
             if (status.bad())
                 delete elem;
-        } else if (status.good())
+        } else
+            status = EC_MemoryExhausted;
+    }
+    return status;
+}
+
+
+OFCondition DcmItem::putAndInsertFloat64Array(const DcmTag& tag,
+                                              const Float64 *value,
+                                              const unsigned long count,
+                                              const OFBool replaceOld)
+{
+    OFCondition status = EC_IllegalCall;
+    /* create new element */
+    if (tag.getEVR() == EVR_FD)
+    {
+        DcmElement *elem = new DcmFloatingPointDouble(tag);
+        if (elem != NULL)
+        {
+            /* put value */
+            status = elem->putFloat64Array(value, count);
+            /* insert into dataset/item */
+            if (status.good())
+                status = insert(elem, replaceOld);
+            /* could not be inserted, therefore, delete it immediately */
+            if (status.bad())
+                delete elem;
+        } else
             status = EC_MemoryExhausted;
     }
     return status;
@@ -3726,6 +3789,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.155  2011-08-26 09:28:27  joergr
+** Added new helper methods putAndInsertFloat32/64Array().
+**
 ** Revision 1.154  2011-08-08 11:01:46  joergr
 ** Added new parser flag that allows for ignoring the element's VR read from the
 ** dataset and for preferring the VR defined in the data dictionary.

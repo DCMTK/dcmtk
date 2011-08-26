@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-06-29 15:30:18 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-08-26 09:28:29 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -960,6 +960,19 @@ class DcmItem
                                     const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: FL, OF
+     *  @param tag DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param count number of values (not bytes!) to be copied from 'value'
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertFloat32Array(const DcmTag &tag,
+                                         const Float32 *value,
+                                         const unsigned long count,
+                                         const OFBool replaceOld = OFTrue);
+
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: FD
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
@@ -972,6 +985,19 @@ class DcmItem
                                     const Float64 value,
                                     const unsigned long pos = 0,
                                     const OFBool replaceOld = OFTrue);
+
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: FD
+     *  @param tag DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param count number of values (not bytes!) to be copied from 'value'
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertFloat64Array(const DcmTag &tag,
+                                         const Float64 *value,
+                                         const unsigned long count,
+                                         const OFBool replaceOld = OFTrue);
 
 
     /* --- insertXXX functions: insert new element --- */
@@ -1172,6 +1198,9 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.85  2011-08-26 09:28:29  joergr
+** Added new helper methods putAndInsertFloat32/64Array().
+**
 ** Revision 1.84  2011-06-29 15:30:18  onken
 ** Enhanced documentation of DcmItem::clear().
 **
