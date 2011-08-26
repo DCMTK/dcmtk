@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmFloatingPointSingle
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:51 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2011-08-26 09:29:32 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,9 +119,9 @@ class DcmFloatingPointSingle
      */
     virtual void print(STD_NAMESPACE ostream&out,
                        const size_t flags = 0,
-		               const int level = 0,
-		               const char *pixelFileName = NULL,
-		               size_t *pixelCounter = NULL);
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
 
     /** get particular float value
      *  @param floatVal reference to result variable (cleared in case of error)
@@ -155,7 +155,7 @@ class DcmFloatingPointSingle
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition putFloat32(const Float32 floatVal,
-				                   const unsigned long pos = 0);
+                                   const unsigned long pos = 0);
 
     /** set element value to given float array data
      *  @param floatVals floating point data to be set
@@ -163,7 +163,7 @@ class DcmFloatingPointSingle
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition putFloat32Array(const Float32 *floatVals,
-                    					const unsigned long numFloats);
+                                        const unsigned long numFloats);
 
     /** set element value from the given character string.
      *  The input string is expected to be a backslash separated sequence of
@@ -187,6 +187,9 @@ class DcmFloatingPointSingle
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.h,v $
+** Revision 1.29  2011-08-26 09:29:32  joergr
+** Replaced remaining tabs by spaces.
+**
 ** Revision 1.28  2011-02-02 15:13:51  joergr
 ** Moved documentation of valid values for the VMs that can be checked to a
 ** central place, i.e. DcmElement::checkVM().
