@@ -7,6 +7,9 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
            dcmdata/libsrc/dcitem.cc
 
+- Fixed issue with possibly wrong status return value in putAndInsertFloat32().
+  Affects: dcmdata/libsrc/dcitem.cc
+
 - Replaced remaining tabs by spaces.
   Affects: dcmdata/include/dcmtk/dcmdata/dcvrfd.h
            dcmdata/include/dcmtk/dcmdata/dcvrfl.h

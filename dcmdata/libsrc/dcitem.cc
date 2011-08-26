@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-26 09:28:27 $
- *  CVS/RCS Revision: $Revision: 1.155 $
+ *  Update Date:      $Date: 2011-08-26 10:45:29 $
+ *  CVS/RCS Revision: $Revision: 1.156 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3215,8 +3215,8 @@ OFCondition DcmItem::putAndInsertUint16(const DcmTag& tag,
                                         const OFBool replaceOld)
 {
     OFCondition status = EC_Normal;
-    DcmElement *elem = NULL;
     /* create new element */
+    DcmElement *elem = NULL;
     switch(tag.getEVR())
     {
         case EVR_US:
@@ -3304,8 +3304,8 @@ OFCondition DcmItem::putAndInsertSint16(const DcmTag& tag,
                                         const OFBool replaceOld)
 {
     OFCondition status = EC_Normal;
-    DcmElement *elem = NULL;
     /* create new element */
+    DcmElement *elem = NULL;
     switch(tag.getEVR())
     {
         case EVR_SS:
@@ -3342,8 +3342,8 @@ OFCondition DcmItem::putAndInsertSint16Array(const DcmTag& tag,
                                              const OFBool replaceOld)
 {
     OFCondition status = EC_Normal;
-    DcmElement *elem = NULL;
     /* create new element */
+    DcmElement *elem = NULL;
     switch(tag.getEVR())
     {
         case EVR_SS:
@@ -3433,7 +3433,7 @@ OFCondition DcmItem::putAndInsertFloat32(const DcmTag& tag,
                                          const unsigned long pos,
                                          const OFBool replaceOld)
 {
-    OFCondition status = EC_IllegalCall;
+    OFCondition status = EC_Normal;
     /* create new element */
     DcmElement *elem = NULL;
     switch(tag.getEVR())
@@ -3470,8 +3470,8 @@ OFCondition DcmItem::putAndInsertFloat32Array(const DcmTag& tag,
                                               const OFBool replaceOld)
 {
     OFCondition status = EC_Normal;
-    DcmElement *elem = NULL;
     /* create new element */
+    DcmElement *elem = NULL;
     switch(tag.getEVR())
     {
         case EVR_FL:
@@ -3789,6 +3789,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.156  2011-08-26 10:45:29  joergr
+** Fixed issue with possibly wrong status return value in putAndInsertFloat32().
+**
 ** Revision 1.155  2011-08-26 09:28:27  joergr
 ** Added new helper methods putAndInsertFloat32/64Array().
 **
