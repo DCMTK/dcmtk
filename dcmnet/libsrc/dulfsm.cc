@@ -59,8 +59,8 @@
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
 ** Intent:        Define tables and provide functions that implement
 **                the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:   $Author: uli $, $Date: 2011-05-31 09:17:27 $
-** Revision:      $Revision: 1.77 $
+** Last Update:   $Author: uli $, $Date: 2011-08-30 13:35:22 $
+** Revision:      $Revision: 1.78 $
 ** Status:        $State: Exp $
 */
 
@@ -119,6 +119,11 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/dcmtrans.h"
 #include "dcmtk/dcmnet/dcmlayer.h"
 #include "dcmtk/dcmnet/diutil.h"
+
+/* At least Solaris doesn't define this */
+#ifndef INADDR_NONE
+#define INADDR_NONE 0xffffffff
+#endif
 
 static OFCondition
 AE_1_TransportConnect(PRIVATE_NETWORKKEY ** network,
@@ -3961,6 +3966,9 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.78  2011-08-30 13:35:22  uli
+** Fix compilation on Solaris and possibly other systems.
+**
 ** Revision 1.77  2011-05-31 09:17:27  uli
 ** Fix a memcpy that wrote past its target on 64 bit systems.
 **

@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.08.30 (schlachter)
+
+- Fix compilation on Solaris and possibly other systems.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
 **** Changes from 2011.08.26 (riesmeier)
 
 - Added new helper methods putAndInsertFloat32/64Array().
