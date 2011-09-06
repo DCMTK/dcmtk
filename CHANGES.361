@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.09.06 (riesmeier)
+
+- Also remove elements of group 0x0006 from sequence items (see CP-1129).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/libsrc/dcdatset.cc
+
 **** Changes from 2011.08.30 (schlachter)
 
 - Fix compilation on Solaris and possibly other systems.

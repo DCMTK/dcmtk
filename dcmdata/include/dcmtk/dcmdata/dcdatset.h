@@ -18,8 +18,8 @@
  *  Purpose: Interface of the class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-07-12 15:38:16 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2011-09-06 11:42:58 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,8 +100,9 @@ class DcmDataset
     virtual OFCondition clear();
 
     /** remove all elements with an invalid group number, i.e. 0x0000 to 0x0003,
-     *  0x0005, 0x0007 and 0xFFFF in case of a data set.  For command sets, only
-     *  group 0x0000 is allowed, i.e. the elements from all other groups are removed.
+     *  0x0005, 0x0007 and 0xFFFF in case of a data set.  For sequence items, also
+     *  group 0x0006 is disallowed.  For command sets, only group 0x0000 is allowed,
+     *  i.e. the elements from all other groups are removed.
      *  @param cmdSet specifies whether this object represents a command or data set
      */
     virtual void removeInvalidGroups(const OFBool cmdSet = OFFalse);
@@ -318,6 +319,9 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.38  2011-09-06 11:42:58  joergr
+** Also remove elements of group 0x0006 from sequence items (see CP-1129).
+**
 ** Revision 1.37  2011-07-12 15:38:16  joergr
 ** Added new optional flag that allows for removing invalid elements from a
 ** command set.

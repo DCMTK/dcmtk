@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-07-12 15:41:43 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Update Date:      $Date: 2011-09-06 11:42:48 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,6 +150,15 @@ void DcmDataset::removeInvalidGroups(const OFBool cmdSet)
             {
                 DCMDATA_DEBUG("DcmDataset::removeInvalidGroups() removing element "
                     << object->getTag() << " from data set");
+                stack.pop();
+                /* remove element from data set and free memory */
+                delete OFstatic_cast(DcmItem *, stack.top())->remove(object);
+            }
+            /* in sequence items, also group 0x0006 is not allowed */
+            else if ((stack.card() > 2) && (object->getGTag() == 0x0006))
+            {
+                DCMDATA_DEBUG("DcmDataset::removeInvalidGroups() removing element "
+                    << object->getTag() << " from sequence item");
                 stack.pop();
                 /* remove element from data set and free memory */
                 delete OFstatic_cast(DcmItem *, stack.top())->remove(object);
@@ -665,6 +674,9 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
+** Revision 1.55  2011-09-06 11:42:48  joergr
+** Also remove elements of group 0x0006 from sequence items (see CP-1129).
+**
 ** Revision 1.54  2011-07-12 15:41:43  joergr
 ** Made sure that elements from group 0x0000 are also removed from a data set.
 ** Added new optional flag that allows for removing invalid elements from a
