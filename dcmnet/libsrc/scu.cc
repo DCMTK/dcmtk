@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-09-06 14:15:10 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2011-09-06 16:12:53 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2192,11 +2192,14 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.45  2011-09-06 16:12:53  ogazzar
+** Fixed typos in a log commit message.
+**
 ** Revision 1.44  2011-09-06 14:15:10  ogazzar
 ** Fixed wrong logger name which caused compiler error.
 **
 ** Revision 1.43  2011-09-06 12:58:35  ogazzar
-** Added a function to send N-EVENT-REPORT request and to recieve a response.
+** Added a function to send N-EVENT-REPORT request and to receive a response.
 **
 ** Revision 1.42  2011-08-25 15:46:20  joergr
 ** Further cleanup of minor inconsistencies regarding documentation, parameter

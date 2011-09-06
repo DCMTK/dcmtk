@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-09-06 12:57:36 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2011-09-06 16:11:06 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1002,8 +1002,11 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.33  2011-09-06 16:11:06  ogazzar
+** Fixed typos in a log commit message.
+**
 ** Revision 1.32  2011-09-06 12:57:36  ogazzar
-** Added a function to send N-EVENT-REPORT request and receive a reponse
+** Added a function to send N-EVENT-REPORT request and receive a reponse.
 **
 ** Revision 1.31  2011-08-25 15:46:18  joergr
 ** Further cleanup of minor inconsistencies regarding documentation, parameter
