@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-25 15:46:20 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-09-06 12:58:35 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1685,6 +1685,115 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
 /*                         N-EVENT REPORT functionality                      */
 /* ************************************************************************* */
 
+// Sends N-EVENT-REPORT request and receives N-EVENT-REPORT response
+OFCondition DcmSCU::sendEVENTREPORTRequest(const T_ASC_PresentationContextID presID,
+                                           const OFString &sopInstanceUID,
+                                           const Uint16 eventTypeID,
+                                           DcmDataset *reqDataset,
+                                           Uint16 &rspStatusCode)
+{
+  // Do some basic validity checks
+  if (m_assoc == NULL)
+    return DIMSE_ILLEGALASSOCIATION;
+  if (sopInstanceUID.empty() || (reqDataset == NULL))
+    return DIMSE_NULLKEY;
+
+  // Prepare DIMSE data structures for issuing request
+  OFCondition cond;
+  OFString tempStr;
+  T_ASC_PresentationContextID pcid = presID;
+  T_DIMSE_Message request;
+  T_DIMSE_N_EventReportRQ &eventRepReq = request.msg.NEventReportRQ;
+  DcmDataset *statusDetail = NULL;
+
+  request.CommandField = DIMSE_N_EVENT_REPORT_RQ;
+  
+  // Generate a new message ID
+  eventRepReq.MessageID = nextMessageID();
+  eventRepReq.DataSetType = DIMSE_DATASET_PRESENT;
+  eventRepReq.EventTypeID = eventTypeID;
+
+  // Determine SOP Class from presentation context
+  OFString abstractSyntax, transferSyntax;
+  findPresentationContext(pcid, abstractSyntax, transferSyntax);
+  if (abstractSyntax.empty() || transferSyntax.empty())
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+  OFStandard::strlcpy(eventRepReq.AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(eventRepReq.AffectedSOPClassUID));
+  OFStandard::strlcpy(eventRepReq.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(eventRepReq.AffectedSOPInstanceUID));
+
+  // Send request
+  DCMNET_INFO("Sending N-EVENT-REPORT Request");
+  // Output dataset only if trace level is enabled
+  if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, reqDataset, pcid));
+  else
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, NULL, pcid));
+  cond = sendDIMSEMessage(pcid, &request, reqDataset, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending N-EVENT-REPORT request: " << DimseCondition::dump(tempStr, cond));
+    return cond;
+  }
+  // Receive response
+  T_DIMSE_Message response;
+  cond = receiveDIMSECommand(&pcid, &response, &statusDetail, NULL /* commandSet */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, cond));
+    return cond;
+  }
+
+  // Check command set
+  if (response.CommandField == DIMSE_N_EVENT_REPORT_RSP)
+  {
+    DCMNET_INFO("Received N-EVENT-REPORT Response");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
+  } else {
+    DCMNET_ERROR("Expected N-EVENT-REPORT response but received DIMSE command 0x"
+        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+        << OFstatic_cast(unsigned int, response.CommandField));
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
+    delete statusDetail;
+    return DIMSE_BADCOMMANDTYPE;
+  }
+  if (statusDetail != NULL)
+  {
+    DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+    delete statusDetail;
+  }
+
+  // Set return value
+  T_DIMSE_N_EventReportRSP &eventRepRsp = response.msg.NEventReportRSP;
+  rspStatusCode = eventRepRsp.DimseStatus;
+
+  // Check whether there is a dataset to be received
+  if (eventRepRsp.DataSetType == DIMSE_DATASET_PRESENT)
+  {
+    // this should never happen
+    DcmDataset *tempDataset = NULL;
+    T_ASC_PresentationContextID tempID;
+    cond = receiveDIMSEDataset(&tempID, &tempDataset, NULL /* callback */, NULL /* callbackContext */);
+    if (cond.good())
+    {
+      DCMNET_WARN("Received unexpected dataset after N-EVENT-REPORT response, ignoring");
+      delete tempDataset;
+    } else {
+      DCMNET_ERROR("Failed receiving unexpected dataset after N-EVENT-REPORT response: "
+        << DimseCondition::dump(tempStr, cond));
+      return DIMSE_BADDATA;
+    }
+  }
+
+  // Check whether the message ID being responded to is equal to the message ID of the request
+  if (eventRepRsp.MessageIDBeingRespondedTo != eventRepReq.MessageID)
+  {
+    DCMNET_ERROR("Received response with wrong message ID ("
+      << eventRepRsp.MessageIDBeingRespondedTo << " instead of " << eventRepReq.MessageID << ")");
+    return DIMSE_BADMESSAGE;
+  }
+  return cond;
+}
+
 // Receives N-EVENT-REPORT request
 OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset *&reqDataset,
                                              Uint16 &eventTypeID,
@@ -2083,6 +2192,9 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.43  2011-09-06 12:58:35  ogazzar
+** Added a function to send N-EVENT-REPORT request and to recieve a response.
+**
 ** Revision 1.42  2011-08-25 15:46:20  joergr
 ** Further cleanup of minor inconsistencies regarding documentation, parameter
 ** names, log output and handling of status details information.
