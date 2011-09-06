@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-25 15:46:18 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-09-06 12:57:36 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -559,6 +559,25 @@ public:
                                         DcmDataset *reqDataset,
                                         Uint16 &rspStatusCode);
 
+  /** This function sends N-EVENT-REPORT request and receives
+   *  the corresponding response
+   *  @param presID         [in]  The ID of the presentation context to be used for sending
+   *                              the request message. Should not be 0.
+   *  @param sopInstanceUID [in]  The requested SOP Instance UID
+   *  @param eventTypeID    [in]  The event type ID to be used
+   *  @param reqDataset     [in]  The request dataset to be sent
+   *  @param rspStatusCode  [out] The response status code received. 0 means success,
+   *                              others can be found in the DICOM standard.
+   *  @return EC_Normal if request could be issued and response was received successfully,
+   *          an error code otherwise. That means that if the receiver sends a response
+   *          denoting failure of the storage request, EC_Normal will be returned.
+   */
+  virtual OFCondition sendEVENTREPORTRequest(const T_ASC_PresentationContextID presID,
+                                             const OFString &sopInstanceUID,
+                                             const Uint16 eventTypeID,
+                                             DcmDataset *reqDataset,
+                                             Uint16 &rspStatusCode);
+
   /** Receives N-EVENT-REPORT request on the currently opened association and sends a
    *  corresponding response. Calls checkEVENTREPORTRequest() in order to determine the
    *  DIMSE status code to be used for the N-EVENT-REPORT response.
@@ -983,6 +1002,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.32  2011-09-06 12:57:36  ogazzar
+** Added a function to send N-EVENT-REPORT request and receive a reponse
+**
 ** Revision 1.31  2011-08-25 15:46:18  joergr
 ** Further cleanup of minor inconsistencies regarding documentation, parameter
 ** names, log output and handling of status details information.
