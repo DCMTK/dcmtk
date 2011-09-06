@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-09-06 12:58:35 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2011-09-06 14:15:10 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1724,7 +1724,7 @@ OFCondition DcmSCU::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
   // Send request
   DCMNET_INFO("Sending N-EVENT-REPORT Request");
   // Output dataset only if trace level is enabled
-  if (DCM_dcmnetGetLogger().isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, reqDataset, pcid));
   else
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, NULL, pcid));
@@ -2192,6 +2192,9 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.44  2011-09-06 14:15:10  ogazzar
+** Fixed wrong logger name which caused compiler error.
+**
 ** Revision 1.43  2011-09-06 12:58:35  ogazzar
 ** Added a function to send N-EVENT-REPORT request and to recieve a response.
 **

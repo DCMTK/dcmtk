@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.06 (elgazzar)
 
+- Fixed wrong logger name which caused compiler error.
+  Affects: dcmnet/libsrc/scu.cc
+
 - Added a function to send N-EVENT-REPORT request and receive a response.
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h
            dcmnet/libsrc/scu.cc
@@ -13,14 +16,10 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dcdatset.h
            dcmdata/libsrc/dcdatset.cc
 
-<<<<<<< CHANGES.361
->>>>>>> 1.258
-=======
 - Fixed typo in CMake warning message (copy-and-paste bug). Thanks to Per Inge
   Mathisen <per.mathisen@gmail.com> for the report and suggested fix.
   Affects: CMake/3rdparty.cmake
 
->>>>>>> 1.259
 **** Changes from 2011.08.30 (schlachter)
 
 - Fix compilation on Solaris and possibly other systems.
