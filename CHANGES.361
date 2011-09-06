@@ -7,6 +7,10 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dcdatset.h
            dcmdata/libsrc/dcdatset.cc
 
+- Fixed typo in CMake warning message (copy-and-paste bug). Thanks to Per Inge
+  Mathisen <per.mathisen@gmail.com> for the report and suggested fix.
+  Affects: CMake/3rdparty.cmake
+
 **** Changes from 2011.08.30 (schlachter)
 
 - Fix compilation on Solaris and possibly other systems.

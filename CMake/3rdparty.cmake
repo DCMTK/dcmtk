@@ -189,7 +189,7 @@ ELSE(WIN32)
     INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
     SET(ZLIB_LIBS ${ZLIB_LIBRARIES})
     IF (NOT ZLIB_LIBS)
-      MESSAGE(STATUS "Warning: SNDFILE support will be disabled because libsndfile was not found.")
+      MESSAGE(STATUS "Warning: ZLIB support will be disabled because zlib was not found.")
       SET(WITH_ZLIB "")
       SET(DCMTK_WITH_ZLIB OFF CACHE BOOL "" FORCE)
     ELSE(NOT ZLIB_LIBS)
@@ -197,6 +197,8 @@ ELSE(WIN32)
       SET(WITH_ZLIB 1)
     ENDIF(NOT ZLIB_LIBS)
   ENDIF(DCMTK_WITH_ZLIB)
+
+  # Find libsndfile (TODO)
 
 ENDIF(WIN32)
 
