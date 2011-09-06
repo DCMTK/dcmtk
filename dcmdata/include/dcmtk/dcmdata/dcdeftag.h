@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-08-11 11:32:44
+**   Date: 2011-09-06 15:03:57
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2011-08-11 11:32:44"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2011-09-06 15:03:57"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3581
+** Number of entries: 3584
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2004,6 +2004,9 @@
 #define DCM_ReferencedTimeOffsets                DcmTagKey(0x0040, 0xa138)
 #define DCM_ReferencedDateTime                   DcmTagKey(0x0040, 0xa13a)
 #define DCM_TextValue                            DcmTagKey(0x0040, 0xa160)
+#define DCM_FloatingPointValue                   DcmTagKey(0x0040, 0xa161)
+#define DCM_RationalNumeratorValue               DcmTagKey(0x0040, 0xa162)
+#define DCM_RationalDenominatorValue             DcmTagKey(0x0040, 0xa163)
 #define DCM_RETIRED_ObservationCategoryCodeSequenceTrial DcmTagKey(0x0040, 0xa167)
 #define DCM_ConceptCodeSequence                  DcmTagKey(0x0040, 0xa168)
 #define DCM_RETIRED_BibliographicCitationTrial   DcmTagKey(0x0040, 0xa16a)

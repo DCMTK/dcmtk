@@ -12,6 +12,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.06 (riesmeier)
 
+- Added support for final text version of CP-1064 (Float VR in numeric SR
+  content items) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Also remove elements of group 0x0006 from sequence items (see CP-1129).
   Affects: dcmdata/include/dcmtk/dcmdata/dcdatset.h
            dcmdata/libsrc/dcdatset.cc

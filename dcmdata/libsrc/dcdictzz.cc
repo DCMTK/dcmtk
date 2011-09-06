@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-08-11 11:32:43
+**   Date: 2011-09-06 15:04:02
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2011-08-11 11:32:43";
+const char* dcmBuiltinDictBuildDate = "2011-09-06 15:04:02";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -1059,25 +1059,17 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
 #ifdef WITH_PRIVATE_TAGS
   , { 0x0009, 0x0000, 0x0009, 0x0000,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "ACUSON" }
-  , { 0x0009, 0x0000, 0x0009, 0x0000,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "AEGIS_DICOM_2.00" }
   , { 0x0009, 0x0000, 0x0009, 0x0000,
-      EVR_UL, "FileLocation", 1, 1, "PrivateTag",
+      EVR_LT, "DataObjectRecognitionCode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
+      "SPI-P Release 1" }
   , { 0x0009, 0x0000, 0x0009, 0x0000,
-      EVR_SQ, "AnonymizerUIDMap", 1, 1, "PrivateTag",
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "DCMTK_ANONYMIZER" }
-  , { 0x0009, 0x0000, 0x0009, 0x0000,
-      EVR_OB, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "MERGE TECHNOLOGIES, INC." }
+      "ACUSON" }
   , { 0x0009, 0x0000, 0x0009, 0x0000,
       EVR_LT, "OriginalFileName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1087,33 +1079,29 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
   , { 0x0009, 0x0000, 0x0009, 0x0000,
-      EVR_LT, "DataObjectRecognitionCode", 1, 1, "PrivateTag",
+      EVR_SQ, "AnonymizerUIDMap", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
+      "DCMTK_ANONYMIZER" }
+  , { 0x0009, 0x0000, 0x0009, 0x0000,
+      EVR_OB, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "MERGE TECHNOLOGIES, INC." }
+  , { 0x0009, 0x0000, 0x0009, 0x0000,
+      EVR_UL, "FileLocation", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CARDIO-D.R. 1.0" }
   , { 0x0009, 0x0000, 0x0009, 0x0000,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
   , { 0x0009, 0x0001, 0x0009, 0x0001,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "TOSHIBA_MEC_1.0" }
+  , { 0x0009, 0x0001, 0x0009, 0x0001,
       EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "ACUSON" }
-  , { 0x0009, 0x0001, 0x0009, 0x0001,
-      EVR_UL, "FileSize", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
-  , { 0x0009, 0x0001, 0x0009, 0x0001,
-      EVR_UN, "CRHeaderInformation", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FFP DATA" }
-  , { 0x0009, 0x0001, 0x0009, 0x0001,
-      EVR_LO, "FullFidelity", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_IDEN_01" }
-  , { 0x0009, 0x0001, 0x0009, 0x0001,
-      EVR_UN, "SIENETGeneralPurposeIMGEF", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "ISI" }
   , { 0x0009, 0x0001, 0x0009, 0x0001,
       EVR_UN, "RISPatientInfoIMGEF", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1123,7 +1111,23 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIENET" }
   , { 0x0009, 0x0001, 0x0009, 0x0001,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      EVR_UN, "CRHeaderInformation", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FFP DATA" }
+  , { 0x0009, 0x0001, 0x0009, 0x0001,
+      EVR_UL, "FileSize", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CARDIO-D.R. 1.0" }
+  , { 0x0009, 0x0001, 0x0009, 0x0001,
+      EVR_LO, "FullFidelity", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_IDEN_01" }
+  , { 0x0009, 0x0001, 0x0009, 0x0001,
+      EVR_UN, "SIENETGeneralPurposeIMGEF", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "ISI" }
+  , { 0x0009, 0x0002, 0x0009, 0x0002,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_1.0" }
   , { 0x0009, 0x0002, 0x0009, 0x0002,
@@ -1134,7 +1138,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SH, "SuiteId", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IDEN_01" }
-  , { 0x0009, 0x0002, 0x0009, 0x0002,
+  , { 0x0009, 0x0003, 0x0009, 0x0003,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_1.0" }
@@ -1142,10 +1146,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "ACUSON" }
-  , { 0x0009, 0x0003, 0x0009, 0x0003,
+  , { 0x0009, 0x0004, 0x0009, 0x0004,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_1.0" }
+  , { 0x0009, 0x0004, 0x0009, 0x0004,
+      EVR_LO, "ImageDataConsistence", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
   , { 0x0009, 0x0004, 0x0009, 0x0004,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1158,14 +1166,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SH, "ProductId", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IDEN_01" }
-  , { 0x0009, 0x0004, 0x0009, 0x0004,
-      EVR_LO, "ImageDataConsistence", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
-  , { 0x0009, 0x0004, 0x0009, 0x0004,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "TOSHIBA_MEC_1.0" }
   , { 0x0009, 0x0005, 0x0009, 0x0005,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1187,14 +1187,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "ACUSON" }
   , { 0x0009, 0x0008, 0x0009, 0x0008,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "ACUSON" }
-  , { 0x0009, 0x0008, 0x0009, 0x0008,
-      EVR_UL, "ImageDisplayInformationVersionNo", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
-  , { 0x0009, 0x0008, 0x0009, 0x0008,
       EVR_CS, "ExposureChannel", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "INTEGRIS 1.0" }
@@ -1202,6 +1194,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x0009, 0x0008, 0x0009, 0x0008,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "ACUSON" }
+  , { 0x0009, 0x0008, 0x0009, 0x0008,
+      EVR_UL, "ImageDisplayInformationVersionNo", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
   , { 0x0009, 0x0009, 0x0009, 0x0009,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1239,33 +1239,29 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "ACUSON" }
   , { 0x0009, 0x0010, 0x0009, 0x0010,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "ACUSON" }
+      "SIEMENS CT VA0  IDE" }
   , { 0x0009, 0x0010, 0x0009, 0x0010,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "AGFA" }
   , { 0x0009, 0x0010, 0x0009, 0x0010,
-      EVR_UI, "AnonymizerUIDKey", 1, 1, "PrivateTag",
+      EVR_LO, "Comments", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "DCMTK_ANONYMIZER" }
+      "SPI" }
+  , { 0x0009, 0x0010, 0x0009, 0x0010,
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "ACUSON" }
   , { 0x0009, 0x0010, 0x0009, 0x0010,
       EVR_CS, "ExposureUnitTypeCode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
   , { 0x0009, 0x0010, 0x0009, 0x0010,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_GENIE_1" }
-  , { 0x0009, 0x0010, 0x0009, 0x0010,
       EVR_LT, "OriginalFileLocation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PAPYRUS" }
-  , { 0x0009, 0x0010, 0x0009, 0x0010,
-      EVR_LO, "SPIRelease", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR" }
   , { 0x0009, 0x0010, 0x0009, 0x0010,
       EVR_LT, "StorageMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1275,61 +1271,61 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  LAB" }
   , { 0x0009, 0x0010, 0x0009, 0x0010,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      EVR_UI, "AnonymizerUIDKey", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  IDE" }
+      "DCMTK_ANONYMIZER" }
   , { 0x0009, 0x0010, 0x0009, 0x0010,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DICOM" }
   , { 0x0009, 0x0010, 0x0009, 0x0010,
-      EVR_LO, "RecognitionCode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED" }
-  , { 0x0009, 0x0010, 0x0009, 0x0010,
       EVR_LT, "Comments", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI RELEASE 1" }
+  , { 0x0009, 0x0010, 0x0009, 0x0010,
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_GENIE_1" }
   , { 0x0009, 0x0010, 0x0009, 0x0010,
       EVR_LT, "Comments", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI Release 1" }
   , { 0x0009, 0x0010, 0x0009, 0x0010,
-      EVR_LO, "Comments", 1, 1, "PrivateTag",
+      EVR_LO, "RecognitionCode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI" }
+      "SIEMENS MED" }
   , { 0x0009, 0x0010, 0x0009, 0x0010,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
-  , { 0x0009, 0x0011, 0x0009, 0x0011,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0009, 0x0010, 0x0009, 0x0010,
+      EVR_LO, "SPIRelease", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "ACUSON" }
+      "PHILIPS MR" }
   , { 0x0009, 0x0011, 0x0009, 0x0011,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "AGFA" }
   , { 0x0009, 0x0011, 0x0009, 0x0011,
-      EVR_SL, "StudyFlags", 1, 1, "PrivateTag",
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_GENIE_1" }
+      "ACUSON" }
   , { 0x0009, 0x0011, 0x0009, 0x0011,
       EVR_LT, "GantryIdentificationLabel", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  LAB" }
-  , { 0x0009, 0x0012, 0x0009, 0x0012,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "ACUSON" }
-  , { 0x0009, 0x0012, 0x0009, 0x0012,
-      EVR_SL, "StudyType", 1, 1, "PrivateTag",
+  , { 0x0009, 0x0011, 0x0009, 0x0011,
+      EVR_SL, "StudyFlags", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0009, 0x0012, 0x0009, 0x0012,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR" }
+      "SPI-P Release 1" }
+  , { 0x0009, 0x0012, 0x0009, 0x0012,
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "ACUSON" }
   , { 0x0009, 0x0012, 0x0009, 0x0012,
       EVR_UL, "EvaluationMaskImage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1343,45 +1339,57 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DICOM" }
   , { 0x0009, 0x0012, 0x0009, 0x0012,
+      EVR_SL, "StudyType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_GENIE_1" }
+  , { 0x0009, 0x0012, 0x0009, 0x0012,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
+      "PHILIPS MR" }
+  , { 0x0009, 0x0013, 0x0009, 0x0013,
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "AGFA" }
   , { 0x0009, 0x0013, 0x0009, 0x0013,
       EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "ACUSON" }
   , { 0x0009, 0x0013, 0x0009, 0x0013,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "AGFA" }
-  , { 0x0009, 0x0013, 0x0009, 0x0013,
       EVR_LT, "DetectorIdentificationLabel", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  LAB" }
+  , { 0x0009, 0x0014, 0x0009, 0x0014,
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "AGFA" }
   , { 0x0009, 0x0014, 0x0009, 0x0014,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "ACUSON" }
   , { 0x0009, 0x0014, 0x0009, 0x0014,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
+      EVR_LT, "ReceiverPLA", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "AGFA" }
+      "SIENET" }
   , { 0x0009, 0x0014, 0x0009, 0x0014,
       EVR_LT, "DASIdentificationLabel", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  LAB" }
-  , { 0x0009, 0x0014, 0x0009, 0x0014,
-      EVR_LT, "ReceiverPLA", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIENET" }
-  , { 0x0009, 0x0015, 0x0009, 0x0015,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "ACUSON" }
   , { 0x0009, 0x0015, 0x0009, 0x0015,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "AGFA" }
+  , { 0x0009, 0x0015, 0x0009, 0x0015,
+      EVR_LO, "UniqueIdentifier", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
+  , { 0x0009, 0x0015, 0x0009, 0x0015,
+      EVR_LO, "SPIImageUID", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI" }
+  , { 0x0009, 0x0015, 0x0009, 0x0015,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "ACUSON" }
   , { 0x0009, 0x0015, 0x0009, 0x0015,
       EVR_LT, "SMIIdentificationLabel", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1394,38 +1402,30 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LO, "SPIImageUID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI Release 1" }
-  , { 0x0009, 0x0015, 0x0009, 0x0015,
-      EVR_LO, "SPIImageUID", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI" }
-  , { 0x0009, 0x0015, 0x0009, 0x0015,
-      EVR_LO, "UniqueIdentifier", 1, 1, "PrivateTag",
+  , { 0x0009, 0x0016, 0x0009, 0x0016,
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
-  , { 0x0009, 0x0016, 0x0009, 0x0016,
-      EVR_LT, "CPUIdentificationLabel", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  LAB" }
   , { 0x0009, 0x0016, 0x0009, 0x0016,
       EVR_US, "TransferPriority", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIENET" }
   , { 0x0009, 0x0016, 0x0009, 0x0016,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
+      EVR_LT, "CPUIdentificationLabel", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
+      "SIEMENS CM VA0  LAB" }
   , { 0x0009, 0x0017, 0x0009, 0x0017,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IDEN_01" }
   , { 0x0009, 0x0018, 0x0009, 0x0018,
-      EVR_LT, "DataSetIdentifier", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PAPYRUS" }
-  , { 0x0009, 0x0018, 0x0009, 0x0018,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x0009, 0x0018, 0x0009, 0x0018,
+      EVR_LT, "DataSetIdentifier", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PAPYRUS" }
   , { 0x0009, 0x001a, 0x0009, 0x001a,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1435,37 +1435,37 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0009, 0x0020, 0x0009, 0x0020,
-      EVR_UI, "AnonymizerUIDValue", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "DCMTK_ANONYMIZER" }
-  , { 0x0009, 0x0020, 0x0009, 0x0020,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_GENIE_1" }
-  , { 0x0009, 0x0020, 0x0009, 0x0020,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_IDEN_01" }
-  , { 0x0009, 0x0020, 0x0009, 0x0020,
       EVR_LT, "HeaderVersion", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  LAB" }
+  , { 0x0009, 0x0020, 0x0009, 0x0020,
+      EVR_UI, "AnonymizerUIDValue", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "DCMTK_ANONYMIZER" }
   , { 0x0009, 0x0020, 0x0009, 0x0020,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  ORI" }
   , { 0x0009, 0x0020, 0x0009, 0x0020,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_IDEN_01" }
+  , { 0x0009, 0x0020, 0x0009, 0x0020,
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_GENIE_1" }
+  , { 0x0009, 0x0020, 0x0009, 0x0020,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
   , { 0x0009, 0x0021, 0x0009, 0x0021,
-      EVR_SL, "SeriesFlags", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_GENIE_1" }
-  , { 0x0009, 0x0021, 0x0009, 0x0021,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x0009, 0x0021, 0x0009, 0x0021,
+      EVR_SL, "SeriesFlags", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_GENIE_1" }
   , { 0x0009, 0x0022, 0x0009, 0x0022,
       EVR_SH, "UserOrientation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1491,33 +1491,33 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0009, 0x0026, 0x0009, 0x0026,
-      EVR_SL, "NumberEnergySets", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_GENIE_1" }
-  , { 0x0009, 0x0026, 0x0009, 0x0026,
       EVR_DA, "LastMoveDate", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
-  , { 0x0009, 0x0027, 0x0009, 0x0027,
-      EVR_SL, "NumberDetectors", 1, 1, "PrivateTag",
+  , { 0x0009, 0x0026, 0x0009, 0x0026,
+      EVR_SL, "NumberEnergySets", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
+  , { 0x0009, 0x0027, 0x0009, 0x0027,
+      EVR_TM, "LastMoveTime", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CM VA0  CMS" }
   , { 0x0009, 0x0027, 0x0009, 0x0027,
       EVR_SL, "ImageActualDate", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IDEN_01" }
   , { 0x0009, 0x0027, 0x0009, 0x0027,
-      EVR_TM, "LastMoveTime", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  CMS" }
-  , { 0x0009, 0x0029, 0x0009, 0x0029,
-      EVR_SL, "Unknown", 1, 1, "PrivateTag",
+      EVR_SL, "NumberDetectors", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0009, 0x0029, 0x0009, 0x0029,
       EVR_LT, "ActualUser", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIENET" }
+  , { 0x0009, 0x0029, 0x0009, 0x0029,
+      EVR_SL, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_GENIE_1" }
   , { 0x0009, 0x002a, 0x0009, 0x002a,
       EVR_SL, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1539,25 +1539,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IDEN_01" }
   , { 0x0009, 0x0030, 0x0009, 0x0030,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  IDE" }
+  , { 0x0009, 0x0030, 0x0009, 0x0030,
       EVR_SQ, "AnonymizerPatientIDMap", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DCMTK_ANONYMIZER" }
   , { 0x0009, 0x0030, 0x0009, 0x0030,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_GENIE_1" }
+      "SIEMENS CT VA0  ORI" }
   , { 0x0009, 0x0030, 0x0009, 0x0030,
       EVR_SH, "ServiceId", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IDEN_01" }
   , { 0x0009, 0x0030, 0x0009, 0x0030,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  IDE" }
-  , { 0x0009, 0x0030, 0x0009, 0x0030,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  ORI" }
+      "GEMS_GENIE_1" }
   , { 0x0009, 0x0030, 0x0009, 0x0030,
       EVR_UL, "ByteOffsetOfOriginalHeader", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1567,29 +1567,29 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
   , { 0x0009, 0x0031, 0x0009, 0x0031,
-      EVR_SH, "MobileLocationNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_IDEN_01" }
-  , { 0x0009, 0x0031, 0x0009, 0x0031,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  IDE" }
-  , { 0x0009, 0x0031, 0x0009, 0x0031,
-      EVR_UL, "LengthOfOriginalHeader", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED" }
   , { 0x0009, 0x0031, 0x0009, 0x0031,
       EVR_LT, "PACSUniqueIdentifier", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
-  , { 0x0009, 0x0032, 0x0009, 0x0032,
-      EVR_TM, "ExposureStartTime", 1, 1, "PrivateTag",
+  , { 0x0009, 0x0031, 0x0009, 0x0031,
+      EVR_SH, "MobileLocationNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "INTEGRIS 1.0" }
+      "GEMS_IDEN_01" }
+  , { 0x0009, 0x0031, 0x0009, 0x0031,
+      EVR_UL, "LengthOfOriginalHeader", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED" }
   , { 0x0009, 0x0032, 0x0009, 0x0032,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  IDE" }
+  , { 0x0009, 0x0032, 0x0009, 0x0032,
+      EVR_TM, "ExposureStartTime", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTEGRIS 1.0" }
   , { 0x0009, 0x0034, 0x0009, 0x0034,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1607,21 +1607,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0009, 0x0038, 0x0009, 0x0038,
-      EVR_SL, "RRWindowWidth", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_GENIE_1" }
-  , { 0x0009, 0x0038, 0x0009, 0x0038,
       EVR_LT, "SystemUniqueIdentifier", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
-  , { 0x0009, 0x0039, 0x0009, 0x0039,
-      EVR_SL, "RRWindowOffset", 1, 1, "PrivateTag",
+  , { 0x0009, 0x0038, 0x0009, 0x0038,
+      EVR_SL, "RRWindowWidth", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0009, 0x0039, 0x0009, 0x0039,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x0009, 0x0039, 0x0009, 0x0039,
+      EVR_SL, "RRWindowOffset", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_GENIE_1" }
   , { 0x0009, 0x003a, 0x0009, 0x003a,
       EVR_SL, "PercentCycleImaged", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1635,25 +1635,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0009, 0x0040, 0x0009, 0x0040,
-      EVR_SQ, "AlternateImageSequence", 1, 1, "PrivateTag",
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
+      "SIEMENS CT VA0  IDE" }
+  , { 0x0009, 0x0040, 0x0009, 0x0040,
+      EVR_US, "DataObjectType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI" }
   , { 0x0009, 0x0040, 0x0009, 0x0040,
       EVR_LO, "AnonymizerPatientIDKey", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DCMTK_ANONYMIZER" }
   , { 0x0009, 0x0040, 0x0009, 0x0040,
+      EVR_SQ, "AlternateImageSequence", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CARDIO-D.R. 1.0" }
+  , { 0x0009, 0x0040, 0x0009, 0x0040,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
-  , { 0x0009, 0x0040, 0x0009, 0x0040,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  IDE" }
-  , { 0x0009, 0x0040, 0x0009, 0x0040,
-      EVR_UL, "ByteOffsetOfPixelmatrix", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED" }
   , { 0x0009, 0x0040, 0x0009, 0x0040,
       EVR_US, "DataObjectType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1663,22 +1663,22 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI Release 1" }
   , { 0x0009, 0x0040, 0x0009, 0x0040,
-      EVR_US, "DataObjectType", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI" }
-  , { 0x0009, 0x0040, 0x0009, 0x0040,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
+  , { 0x0009, 0x0040, 0x0009, 0x0040,
+      EVR_UL, "ByteOffsetOfPixelmatrix", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED" }
+  , { 0x0009, 0x0041, 0x0009, 0x0041,
+      EVR_LT, "DataObjectSubtype", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI" }
   , { 0x0009, 0x0041, 0x0009, 0x0041,
       EVR_SL, "PatientFlags", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0009, 0x0041, 0x0009, 0x0041,
-      EVR_UL, "LengthOfPixelmatrixInBytes", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED" }
-  , { 0x0009, 0x0041, 0x0009, 0x0041,
       EVR_LO, "DataObjectSubtype", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI RELEASE 1" }
@@ -1687,9 +1687,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI Release 1" }
   , { 0x0009, 0x0041, 0x0009, 0x0041,
-      EVR_LT, "DataObjectSubtype", 1, 1, "PrivateTag",
+      EVR_UL, "LengthOfPixelmatrixInBytes", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI" }
+      "SIEMENS MED" }
+  , { 0x0009, 0x0042, 0x0009, 0x0042,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  IDE" }
   , { 0x0009, 0x0042, 0x0009, 0x0042,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1698,10 +1702,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DA, "PatientCreationDate", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
-  , { 0x0009, 0x0042, 0x0009, 0x0042,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  IDE" }
   , { 0x0009, 0x0043, 0x0009, 0x0043,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1711,33 +1711,33 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0009, 0x0050, 0x0009, 0x0050,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  IDE" }
+  , { 0x0009, 0x0050, 0x0009, 0x0050,
       EVR_LO, "AnonymizerPatientIDValue", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DCMTK_ANONYMIZER" }
   , { 0x0009, 0x0050, 0x0009, 0x0050,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  IDE" }
-  , { 0x0009, 0x0050, 0x0009, 0x0050,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED" }
-  , { 0x0009, 0x0050, 0x0009, 0x0050,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
+  , { 0x0009, 0x0050, 0x0009, 0x0050,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED" }
   , { 0x0009, 0x0051, 0x0009, 0x0051,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  IDE" }
-  , { 0x0009, 0x0051, 0x0009, 0x0051,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED" }
   , { 0x0009, 0x0051, 0x0009, 0x0051,
       EVR_LT, "StudyUniqueIdentifier", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x0009, 0x0051, 0x0009, 0x0051,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED" }
   , { 0x0009, 0x0060, 0x0009, 0x0060,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1827,13 +1827,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
   , { 0x0009, 0x00f5, 0x0009, 0x00f5,
-      EVR_LT, "PDMEFIDPlaceholder", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED" }
-  , { 0x0009, 0x00f5, 0x0009, 0x00f5,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x0009, 0x00f5, 0x0009, 0x00f5,
+      EVR_LT, "PDMEFIDPlaceholder", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED" }
   , { 0x0009, 0x00f6, 0x0009, 0x00f6,
       EVR_LT, "PDMDataObjectTypeExtension", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -2081,13 +2081,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0011, 0x000a, 0x0011, 0x000a,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  CMS" }
-  , { 0x0011, 0x000a, 0x0011, 0x000a,
       EVR_LT, "CaseID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS ISI" }
+  , { 0x0011, 0x000a, 0x0011, 0x000a,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CM VA0  CMS" }
   , { 0x0011, 0x000b, 0x0011, 0x000b,
       EVR_SL, "EffectiveSeriesDuration", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -2101,49 +2101,45 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0011, 0x0010, 0x0011, 0x0010,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_GENIE_1" }
-  , { 0x0011, 0x0010, 0x0011, 0x0010,
-      EVR_SS, "PatientStatus", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_PATI_01" }
-  , { 0x0011, 0x0010, 0x0011, 0x0010,
-      EVR_DA, "RegistrationDate", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  CMS" }
-  , { 0x0011, 0x0010, 0x0011, 0x0010,
-      EVR_LT, "PatientUID", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RIS" }
-  , { 0x0011, 0x0010, 0x0011, 0x0010,
       EVR_LO, "Organ", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI RELEASE 1" }
+  , { 0x0011, 0x0010, 0x0011, 0x0010,
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_GENIE_1" }
   , { 0x0011, 0x0010, 0x0011, 0x0010,
       EVR_LO, "Organ", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI Release 1" }
   , { 0x0011, 0x0010, 0x0011, 0x0010,
+      EVR_LT, "PatientEntryID", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
+  , { 0x0011, 0x0010, 0x0011, 0x0010,
       EVR_LT, "Organ", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI" }
   , { 0x0011, 0x0010, 0x0011, 0x0010,
-      EVR_LO, "Organ", 1, 1, "PrivateTag",
+      EVR_LT, "PatientUID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI RELEASE 1" }
+      "SIEMENS RIS" }
   , { 0x0011, 0x0010, 0x0011, 0x0010,
-      EVR_LT, "PatientEntryID", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
-  , { 0x0011, 0x0011, 0x0011, 0x0011,
-      EVR_TM, "RegistrationTime", 1, 1, "PrivateTag",
+      EVR_DA, "RegistrationDate", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
+  , { 0x0011, 0x0010, 0x0011, 0x0010,
+      EVR_SS, "PatientStatus", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PATI_01" }
   , { 0x0011, 0x0011, 0x0011, 0x0011,
       EVR_LT, "PatientID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RIS" }
+  , { 0x0011, 0x0011, 0x0011, 0x0011,
+      EVR_TM, "RegistrationTime", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CM VA0  CMS" }
   , { 0x0011, 0x0012, 0x0011, 0x0012,
       EVR_LO, "DatasetName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -2153,13 +2149,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0011, 0x0015, 0x0011, 0x0015,
-      EVR_SL, "DetectorNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_GENIE_1" }
-  , { 0x0011, 0x0015, 0x0011, 0x0015,
       EVR_LO, "AllergyIndication", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI RELEASE 1" }
+  , { 0x0011, 0x0015, 0x0011, 0x0015,
+      EVR_SL, "DetectorNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_GENIE_1" }
   , { 0x0011, 0x0015, 0x0011, 0x0015,
       EVR_LO, "AllergyIndication", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -2168,10 +2164,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LT, "AllergyIndication", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI" }
-  , { 0x0011, 0x0015, 0x0011, 0x0015,
-      EVR_LO, "AllergyIndication", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI RELEASE 1" }
   , { 0x0011, 0x0016, 0x0011, 0x0016,
       EVR_SL, "EnergyNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -2213,17 +2205,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0011, 0x0020, 0x0011, 0x0020,
-      EVR_SL, "FluoroTimer", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0011, 0x0020, 0x0011, 0x0020,
-      EVR_DA, "PatientRegistrationDate", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RIS" }
-  , { 0x0011, 0x0020, 0x0011, 0x0020,
       EVR_LO, "Pregnancy", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI RELEASE 1" }
+  , { 0x0011, 0x0020, 0x0011, 0x0020,
+      EVR_SL, "FluoroTimer", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
   , { 0x0011, 0x0020, 0x0011, 0x0020,
       EVR_LO, "Pregnancy", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -2233,61 +2221,61 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI" }
   , { 0x0011, 0x0020, 0x0011, 0x0020,
-      EVR_LO, "Pregnancy", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI RELEASE 1" }
-  , { 0x0011, 0x0021, 0x0011, 0x0021,
-      EVR_TM, "PatientRegistrationTime", 1, 1, "PrivateTag",
+      EVR_DA, "PatientRegistrationDate", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RIS" }
   , { 0x0011, 0x0021, 0x0011, 0x0021,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
-  , { 0x0011, 0x0022, 0x0011, 0x0022,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0011, 0x0021, 0x0011, 0x0021,
+      EVR_TM, "PatientRegistrationTime", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  CMS" }
+      "SIEMENS RIS" }
+  , { 0x0011, 0x0022, 0x0011, 0x0022,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
   , { 0x0011, 0x0022, 0x0011, 0x0022,
       EVR_LT, "RequestID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS ISI" }
   , { 0x0011, 0x0022, 0x0011, 0x0022,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
+      "SIEMENS CM VA0  CMS" }
   , { 0x0011, 0x0023, 0x0011, 0x0023,
       EVR_SL, "UseFOVMask", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0011, 0x0023, 0x0011, 0x0023,
-      EVR_DS, "UsedPatientWeight", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  CMS" }
-  , { 0x0011, 0x0023, 0x0011, 0x0023,
       EVR_LT, "ExaminationUID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS ISI" }
+  , { 0x0011, 0x0023, 0x0011, 0x0023,
+      EVR_DS, "UsedPatientWeight", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CM VA0  CMS" }
   , { 0x0011, 0x0024, 0x0011, 0x0024,
       EVR_SL, "FOVMaskYCutoffAngle", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_GENIE_1" }
-  , { 0x0011, 0x0025, 0x0011, 0x0025,
-      EVR_SL, "FOVMaskCutoffAngle", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0011, 0x0025, 0x0011, 0x0025,
       EVR_SL, "PtopDoseAreaProduct", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
-  , { 0x0011, 0x0026, 0x0011, 0x0026,
-      EVR_SL, "TableOrientation", 1, 1, "PrivateTag",
+  , { 0x0011, 0x0025, 0x0011, 0x0025,
+      EVR_SL, "FOVMaskCutoffAngle", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0011, 0x0026, 0x0011, 0x0026,
       EVR_SL, "PtopTotalSkinDose", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
+  , { 0x0011, 0x0026, 0x0011, 0x0026,
+      EVR_SL, "TableOrientation", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_GENIE_1" }
   , { 0x0011, 0x0027, 0x0011, 0x0027,
       EVR_SL, "ROITopLeft", 2, 2, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -2297,65 +2285,65 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0011, 0x0028, 0x0011, 0x0028,
-      EVR_SL, "FluoroTimerA", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0011, 0x0028, 0x0011, 0x0028,
       EVR_SL, "FluoroTimerB", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0011, 0x0029, 0x0011, 0x0029,
-      EVR_SL, "FluoroSkinDoseA", 1, 1, "PrivateTag",
+  , { 0x0011, 0x0028, 0x0011, 0x0028,
+      EVR_SL, "FluoroTimerA", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0011, 0x0029, 0x0011, 0x0029,
       EVR_SL, "FluoroSkinDoseB", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0011, 0x002a, 0x0011, 0x002a,
-      EVR_SL, "TotalSkinDoseA", 1, 1, "PrivateTag",
+  , { 0x0011, 0x0029, 0x0011, 0x0029,
+      EVR_SL, "FluoroSkinDoseA", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0011, 0x002a, 0x0011, 0x002a,
       EVR_SL, "TotalSkinDoseB", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0011, 0x002b, 0x0011, 0x002b,
-      EVR_SL, "FluoroDoseAreaProductA", 1, 1, "PrivateTag",
+  , { 0x0011, 0x002a, 0x0011, 0x002a,
+      EVR_SL, "TotalSkinDoseA", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0011, 0x002b, 0x0011, 0x002b,
       EVR_SL, "FluoroDoseAreaProductB", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0011, 0x002c, 0x0011, 0x002c,
-      EVR_SL, "TotalDoseAreaProductA", 1, 1, "PrivateTag",
+  , { 0x0011, 0x002b, 0x0011, 0x002b,
+      EVR_SL, "FluoroDoseAreaProductA", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0011, 0x002c, 0x0011, 0x002c,
       EVR_SL, "TotalDoseAreaProductB", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0011, 0x0030, 0x0011, 0x0030,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0011, 0x002c, 0x0011, 0x002c,
+      EVR_SL, "TotalDoseAreaProductA", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_GENIE_1" }
+      "SIEMENS RA PLANE A" }
   , { 0x0011, 0x0030, 0x0011, 0x0030,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0011, 0x0030, 0x0011, 0x0030,
-      EVR_LT, "PatientnameRIS", 1, 1, "PrivateTag",
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RIS" }
-  , { 0x0011, 0x0031, 0x0011, 0x0031,
-      EVR_LT, "PatientprenameRIS", 1, 1, "PrivateTag",
+      "GEMS_GENIE_1" }
+  , { 0x0011, 0x0030, 0x0011, 0x0030,
+      EVR_LT, "PatientnameRIS", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RIS" }
   , { 0x0011, 0x0031, 0x0011, 0x0031,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x0011, 0x0031, 0x0011, 0x0031,
+      EVR_LT, "PatientprenameRIS", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RIS" }
   , { 0x0011, 0x0032, 0x0011, 0x0032,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -2369,13 +2357,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0011, 0x0035, 0x0011, 0x0035,
-      EVR_LO, "TuningCalibName", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_GENIE_1" }
-  , { 0x0011, 0x0035, 0x0011, 0x0035,
       EVR_LO, "PatientInitialPuckCounter", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
+  , { 0x0011, 0x0035, 0x0011, 0x0035,
+      EVR_LO, "TuningCalibName", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_GENIE_1" }
   , { 0x0011, 0x0036, 0x0011, 0x0036,
       EVR_LO, "UniformityCorrectName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -2409,10 +2397,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_GENIE_1" }
   , { 0x0011, 0x0040, 0x0011, 0x0040,
-      EVR_IS, "OrganCode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  CMS" }
-  , { 0x0011, 0x0040, 0x0011, 0x0040,
       EVR_SS, "SPIDataObjectType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
@@ -2420,6 +2404,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LT, "PatientHospitalStatus", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RIS" }
+  , { 0x0011, 0x0040, 0x0011, 0x0040,
+      EVR_IS, "OrganCode", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CM VA0  CMS" }
   , { 0x0011, 0x0041, 0x0011, 0x0041,
       EVR_LT, "MedicalAlerts", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6043,13 +6031,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
 #ifdef WITH_PRIVATE_TAGS
   , { 0x0019, 0x0000, 0x0019, 0x0000,
+      EVR_CS, "ImageBlankingShape", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CARDIO-D.R. 1.0" }
+  , { 0x0019, 0x0000, 0x0019, 0x0000,
+      EVR_UN, "PhysiologicalDataType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;1" }
+  , { 0x0019, 0x0000, 0x0019, 0x0000,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "AEGIS_DICOM_2.00" }
   , { 0x0019, 0x0000, 0x0019, 0x0000,
-      EVR_CS, "ImageBlankingShape", 1, 1, "PrivateTag",
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
+      "SPI-P Release 1" }
+  , { 0x0019, 0x0000, 0x0019, 0x0000,
+      EVR_IS, "AECField", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
   , { 0x0019, 0x0000, 0x0019, 0x0000,
       EVR_LO, "APRName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6058,47 +6058,31 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "ReviewMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  VIEW 1.0" }
-  , { 0x0019, 0x0000, 0x0019, 0x0000,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
-  , { 0x0019, 0x0000, 0x0019, 0x0000,
-      EVR_UN, "PhysiologicalDataType", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
-  , { 0x0019, 0x0000, 0x0019, 0x0000,
-      EVR_IS, "AECField", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
   , { 0x0019, 0x0001, 0x0019, 0x0001,
       EVR_DS, "AngleValueLArm", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0001, 0x0019, 0x0001,
+      EVR_UN, "PhysiologicalDataChannelAndKind", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;1" }
+  , { 0x0019, 0x0001, 0x0019, 0x0001,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0001, 0x0019, 0x0001,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0001, 0x0019, 0x0001,
-      EVR_US, "AnatomicalBackgroundPercent", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  VIEW 1.0" }
-  , { 0x0019, 0x0001, 0x0019, 0x0001,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
-  , { 0x0019, 0x0001, 0x0019, 0x0001,
-      EVR_UN, "PhysiologicalDataChannelAndKind", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
   , { 0x0019, 0x0001, 0x0019, 0x0001,
       EVR_IS, "AECFilmScreen", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
   , { 0x0019, 0x0001, 0x0019, 0x0001,
+      EVR_US, "AnatomicalBackgroundPercent", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0001, 0x0019, 0x0001,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_1.0" }
@@ -6106,38 +6090,38 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
-  , { 0x0019, 0x0002, 0x0019, 0x0002,
-      EVR_IS, "ImageBlankingLeftVerticalEdge", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0001, 0x0019, 0x0001,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0002, 0x0019, 0x0002,
       EVR_DS, "AngleValuePArm", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0002, 0x0019, 0x0002,
-      EVR_SL, "NumberOfCellsInDetector", 1, 1, "PrivateTag",
+      EVR_IS, "ImageBlankingLeftVerticalEdge", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0002, 0x0019, 0x0002,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0002, 0x0019, 0x0002,
-      EVR_US, "NumberOfPhases", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  VIEW 1.0" }
-  , { 0x0019, 0x0002, 0x0019, 0x0002,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
+      "CARDIO-D.R. 1.0" }
   , { 0x0019, 0x0002, 0x0019, 0x0002,
       EVR_US, "SampleBitsAllocated", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
   , { 0x0019, 0x0002, 0x0019, 0x0002,
+      EVR_SL, "NumberOfCellsInDetector", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x0002, 0x0019, 0x0002,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
+  , { 0x0019, 0x0002, 0x0019, 0x0002,
       EVR_IS, "AECDensity", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0019, 0x0002, 0x0019, 0x0002,
+      EVR_US, "NumberOfPhases", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0002, 0x0019, 0x0002,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6146,74 +6130,66 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
+  , { 0x0019, 0x0002, 0x0019, 0x0002,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0003, 0x0019, 0x0003,
       EVR_DS, "AngleValueCArm", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0003, 0x0019, 0x0003,
+      EVR_US, "SampleBitsStored", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;1" }
+  , { 0x0019, 0x0003, 0x0019, 0x0003,
       EVR_DS, "CellNumberAtTheta", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x0003, 0x0019, 0x0003,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0003, 0x0019, 0x0003,
       EVR_US, "ApplyAnatomicalBackground", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0003, 0x0019, 0x0003,
-      EVR_US, "SampleBitsStored", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
-  , { 0x0019, 0x0003, 0x0019, 0x0003,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
-  , { 0x0019, 0x0004, 0x0019, 0x0004,
-      EVR_IS, "ImageBlankingRightVerticalEdge", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0003, 0x0019, 0x0003,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0004, 0x0019, 0x0004,
       EVR_CS, "AngleLabelLArm", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0004, 0x0019, 0x0004,
-      EVR_DS, "CellSpacing", 1, 1, "PrivateTag",
+      EVR_IS, "ImageBlankingRightVerticalEdge", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0004, 0x0019, 0x0004,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0004, 0x0019, 0x0004,
-      EVR_SS, "PixelShiftArray", 4, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  VIEW 1.0" }
+      "CARDIO-D.R. 1.0" }
   , { 0x0019, 0x0004, 0x0019, 0x0004,
       EVR_US, "SampleHighBit", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
   , { 0x0019, 0x0004, 0x0019, 0x0004,
+      EVR_DS, "CellSpacing", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x0004, 0x0019, 0x0004,
+      EVR_SS, "PixelShiftArray", 4, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0004, 0x0019, 0x0004,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
-  , { 0x0019, 0x0005, 0x0019, 0x0005,
-      EVR_CS, "AngleLabelPArm", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "DLX_SERIE_01" }
-  , { 0x0019, 0x0005, 0x0019, 0x0005,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0005, 0x0019, 0x0005,
+  , { 0x0019, 0x0004, 0x0019, 0x0004,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0005, 0x0019, 0x0005,
-      EVR_US, "Brightness", 1, 1, "PrivateTag",
+      EVR_CS, "AngleLabelPArm", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  VIEW 1.0" }
+      "DLX_SERIE_01" }
   , { 0x0019, 0x0005, 0x0019, 0x0005,
       EVR_US, "SampleRepresentation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6221,71 +6197,75 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0019, 0x0005, 0x0019, 0x0005,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "TOSHIBA_MEC_CT_1.0" }
-  , { 0x0019, 0x0006, 0x0019, 0x0006,
-      EVR_IS, "ImageBlankingUpperHorizontalEdge", 1, 1, "PrivateTag",
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x0005, 0x0019, 0x0005,
+      EVR_US, "Brightness", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0005, 0x0019, 0x0005,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "TOSHIBA_MEC_CT_1.0" }
+  , { 0x0019, 0x0005, 0x0019, 0x0005,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0006, 0x0019, 0x0006,
       EVR_CS, "AngleLabelCArm", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0006, 0x0019, 0x0006,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      EVR_IS, "ImageBlankingUpperHorizontalEdge", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0006, 0x0019, 0x0006,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0006, 0x0019, 0x0006,
-      EVR_US, "Contrast", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  VIEW 1.0" }
+      "CARDIO-D.R. 1.0" }
   , { 0x0019, 0x0006, 0x0019, 0x0006,
       EVR_UN, "SmallestSampleValue", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
   , { 0x0019, 0x0006, 0x0019, 0x0006,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x0006, 0x0019, 0x0006,
+      EVR_US, "Contrast", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0006, 0x0019, 0x0006,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
+  , { 0x0019, 0x0006, 0x0019, 0x0006,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0007, 0x0019, 0x0007,
       EVR_ST, "ProcedureName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0007, 0x0019, 0x0007,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      EVR_UN, "LargestSampleValue", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
+      "SPI-P Release 1;1" }
   , { 0x0019, 0x0007, 0x0019, 0x0007,
       EVR_US, "Enabled", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0007, 0x0019, 0x0007,
-      EVR_UN, "LargestSampleValue", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
-  , { 0x0019, 0x0007, 0x0019, 0x0007,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
-  , { 0x0019, 0x0008, 0x0019, 0x0008,
-      EVR_IS, "ImageBlankingLowerHorizontalEdge", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0007, 0x0019, 0x0007,
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0008, 0x0019, 0x0008,
       EVR_ST, "ExamName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0008, 0x0019, 0x0008,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      EVR_IS, "ImageBlankingLowerHorizontalEdge", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0008, 0x0019, 0x0008,
-      EVR_US, "NativeEdgeEnhancementPercentGain", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  VIEW 1.0" }
+      "CARDIO-D.R. 1.0" }
   , { 0x0019, 0x0008, 0x0019, 0x0008,
       EVR_UN, "NumberOfSamples", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6295,25 +6275,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
   , { 0x0019, 0x0008, 0x0019, 0x0008,
+      EVR_US, "NativeEdgeEnhancementPercentGain", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0008, 0x0019, 0x0008,
       EVR_LT, "OrientationHeadFeet", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
+  , { 0x0019, 0x0008, 0x0019, 0x0008,
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0009, 0x0019, 0x0009,
       EVR_SH, "PatientSize", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0009, 0x0019, 0x0009,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0009, 0x0019, 0x0009,
       EVR_DS, "MainMagneticField", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
-  , { 0x0019, 0x0009, 0x0019, 0x0009,
-      EVR_SS, "NativeEdgeEnhancementLUTIndex", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0009, 0x0019, 0x0009,
       EVR_UN, "SampleData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6323,17 +6303,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
   , { 0x0019, 0x0009, 0x0019, 0x0009,
+      EVR_SS, "NativeEdgeEnhancementLUTIndex", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0009, 0x0019, 0x0009,
       EVR_LT, "ViewDirection", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
+  , { 0x0019, 0x0009, 0x0019, 0x0009,
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x000a, 0x0019, 0x000a,
       EVR_IS, "RecordView", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
-  , { 0x0019, 0x000a, 0x0019, 0x000a,
-      EVR_SS, "NativeEdgeEnhancementKernelSize", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x000a, 0x0019, 0x000a,
       EVR_UN, "SampleRate", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6342,6 +6326,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
+  , { 0x0019, 0x000a, 0x0019, 0x000a,
+      EVR_SS, "NativeEdgeEnhancementKernelSize", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x000a, 0x0019, 0x000a,
       EVR_LT, "OrientationSupineProne", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6371,13 +6359,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
   , { 0x0019, 0x000e, 0x0019, 0x000e,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x000e, 0x0019, 0x000e,
       EVR_IS, "FlowCompensation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
+  , { 0x0019, 0x000e, 0x0019, 0x000e,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x000e, 0x0019, 0x000e,
       EVR_US, "FadePercent", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6395,53 +6383,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0010, 0x0019, 0x0010,
-      EVR_ST, "CRImageParamsCommon", 1, 1, "PrivateTag",
+      EVR_LT, "MeasurementMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "1.2.840.113681" }
+      "SIEMENS DLR.01" }
   , { 0x0019, 0x0010, 0x0019, 0x0010,
-      EVR_IS, "CenterOfCircularImageBlanking", 1, 1, "PrivateTag",
+      EVR_LT, "VideoBeamBoost", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
+      "SPI-P-XSB-DCI Release 1" }
+  , { 0x0019, 0x0010, 0x0019, 0x0010,
+      EVR_UN, "ECGTimeMapDataBitsAllocated", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private-DCI Release 1" }
   , { 0x0019, 0x0010, 0x0019, 0x0010,
       EVR_DS, "InjectorDelay", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0010, 0x0019, 0x0010,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      EVR_IS, "CenterOfCircularImageBlanking", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0010, 0x0019, 0x0010,
-      EVR_LT, "ParameterFileName", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  ACQU" }
-  , { 0x0019, 0x0010, 0x0019, 0x0010,
-      EVR_DS, "NetFrequency", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  CMS" }
-  , { 0x0019, 0x0010, 0x0019, 0x0010,
-      EVR_DS, "DistanceSourceToSourceSideCollimator", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x0010, 0x0019, 0x0010,
-      EVR_DS, "SourceSideCollimatorAperture", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  GEN" }
-  , { 0x0019, 0x0010, 0x0019, 0x0010,
-      EVR_LT, "MeasurementMode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
-  , { 0x0019, 0x0010, 0x0019, 0x0010,
-      EVR_DS, "TotalMeasurementTimeNominal", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0010, 0x0019, 0x0010,
-      EVR_US, "ApplyFade", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  VIEW 1.0" }
-  , { 0x0019, 0x0010, 0x0019, 0x0010,
-      EVR_US, "MainsFrequency", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
+      "CARDIO-D.R. 1.0" }
   , { 0x0019, 0x0010, 0x0019, 0x0010,
       EVR_UN, "PhysiologicalDataType2", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6451,25 +6411,65 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
   , { 0x0019, 0x0010, 0x0019, 0x0010,
-      EVR_UN, "ECGTimeMapDataBitsAllocated", 1, 1, "PrivateTag",
+      EVR_US, "MainsFrequency", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-Private-DCI Release 1" }
-  , { 0x0019, 0x0010, 0x0019, 0x0010,
-      EVR_LT, "VideoBeamBoost", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-XSB-DCI Release 1" }
+      "SPI-P Release 1" }
   , { 0x0019, 0x0010, 0x0019, 0x0010,
       EVR_IS, "PatientThickness", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0019, 0x0011, 0x0019, 0x0011,
-      EVR_ST, "CRImageIPParamsSingle", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0010, 0x0019, 0x0010,
+      EVR_US, "ApplyFade", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0010, 0x0019, 0x0010,
+      EVR_DS, "SourceSideCollimatorAperture", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  GEN" }
+  , { 0x0019, 0x0010, 0x0019, 0x0010,
+      EVR_DS, "DistanceSourceToSourceSideCollimator", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x0010, 0x0019, 0x0010,
+      EVR_ST, "CRImageParamsCommon", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "1.2.840.113681" }
+  , { 0x0019, 0x0010, 0x0019, 0x0010,
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0010, 0x0019, 0x0010,
+      EVR_DS, "NetFrequency", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CM VA0  CMS" }
+  , { 0x0019, 0x0010, 0x0019, 0x0010,
+      EVR_LT, "ParameterFileName", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CM VA0  ACQU" }
+  , { 0x0019, 0x0010, 0x0019, 0x0010,
+      EVR_DS, "TotalMeasurementTimeNominal", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x0011, 0x0019, 0x0011,
+      EVR_LT, "ImageType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
+  , { 0x0019, 0x0011, 0x0019, 0x0011,
+      EVR_US, "ChannelGeneratingVideoSync", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-XSB-DCI Release 1" }
+  , { 0x0019, 0x0011, 0x0019, 0x0011,
+      EVR_UN, "ECGTimeMapDataBitsStored", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private-DCI Release 1" }
   , { 0x0019, 0x0011, 0x0019, 0x0011,
       EVR_CS, "AutoInject", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
+  , { 0x0019, 0x0011, 0x0019, 0x0011,
+      EVR_UN, "PhysiologicalDataChannelAndKind2", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;1" }
   , { 0x0019, 0x0011, 0x0019, 0x0011,
       EVR_SS, "SeriesContrast", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6479,93 +6479,97 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS-MR-1" }
   , { 0x0019, 0x0011, 0x0019, 0x0011,
-      EVR_LO, "SequenceFileName", 1, 1, "PrivateTag",
+      EVR_DS, "DetectorSideCollimatorAperture", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  ACQU" }
+      "SIEMENS CT VA0  GEN" }
   , { 0x0019, 0x0011, 0x0019, 0x0011,
       EVR_DS, "DistanceSourceToDetectorSideCollimator", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x0011, 0x0019, 0x0011,
-      EVR_DS, "DetectorSideCollimatorAperture", 1, 1, "PrivateTag",
+      EVR_ST, "CRImageIPParamsSingle", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  GEN" }
+      "1.2.840.113681" }
   , { 0x0019, 0x0011, 0x0019, 0x0011,
-      EVR_LT, "ImageType", 1, 1, "PrivateTag",
+      EVR_LO, "SequenceFileName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
+      "SIEMENS CM VA0  ACQU" }
   , { 0x0019, 0x0011, 0x0019, 0x0011,
       EVR_DS, "TotalMeasurementTimeCurrent", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0011, 0x0019, 0x0011,
-      EVR_UN, "PhysiologicalDataChannelAndKind2", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
-  , { 0x0019, 0x0011, 0x0019, 0x0011,
-      EVR_UN, "ECGTimeMapDataBitsStored", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-Private-DCI Release 1" }
-  , { 0x0019, 0x0011, 0x0019, 0x0011,
-      EVR_US, "ChannelGeneratingVideoSync", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0012, 0x0019, 0x0012,
+      EVR_US, "VideoGain", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-XSB-DCI Release 1" }
-  , { 0x0019, 0x0012, 0x0019, 0x0012,
-      EVR_ST, "CRImageIPParamsLeft", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "1.2.840.113681" }
-  , { 0x0019, 0x0012, 0x0019, 0x0012,
-      EVR_IS, "RadiusOfCircularImageBlanking", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
-  , { 0x0019, 0x0012, 0x0019, 0x0012,
-      EVR_SS, "LastPseq", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0012, 0x0019, 0x0012,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0012, 0x0019, 0x0012,
-      EVR_IS, "PhaseNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS-MR-1" }
-  , { 0x0019, 0x0012, 0x0019, 0x0012,
-      EVR_LT, "SequenceFileOwner", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  ACQU" }
-  , { 0x0019, 0x0012, 0x0019, 0x0012,
-      EVR_DS, "MagneticFieldStrength", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x0012, 0x0019, 0x0012,
-      EVR_DS, "StartDelayTime", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0012, 0x0019, 0x0012,
-      EVR_US, "Zoom", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  VIEW 1.0" }
-  , { 0x0019, 0x0012, 0x0019, 0x0012,
-      EVR_US, "SampleBitsAllocated2", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
   , { 0x0019, 0x0012, 0x0019, 0x0012,
       EVR_UN, "ECGTimeMapDataHighBit", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private-DCI Release 1" }
   , { 0x0019, 0x0012, 0x0019, 0x0012,
-      EVR_US, "VideoGain", 1, 1, "PrivateTag",
+      EVR_IS, "RadiusOfCircularImageBlanking", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CARDIO-D.R. 1.0" }
+  , { 0x0019, 0x0012, 0x0019, 0x0012,
+      EVR_US, "SampleBitsAllocated2", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;1" }
+  , { 0x0019, 0x0012, 0x0019, 0x0012,
+      EVR_SS, "LastPseq", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x0012, 0x0019, 0x0012,
+      EVR_IS, "PhaseNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS-MR-1" }
+  , { 0x0019, 0x0012, 0x0019, 0x0012,
+      EVR_US, "Zoom", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0012, 0x0019, 0x0012,
+      EVR_DS, "MagneticFieldStrength", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  COAD" }
+  , { 0x0019, 0x0012, 0x0019, 0x0012,
+      EVR_ST, "CRImageIPParamsLeft", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "1.2.840.113681" }
+  , { 0x0019, 0x0012, 0x0019, 0x0012,
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0012, 0x0019, 0x0012,
+      EVR_LT, "SequenceFileOwner", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CM VA0  ACQU" }
+  , { 0x0019, 0x0012, 0x0019, 0x0012,
+      EVR_DS, "StartDelayTime", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x0013, 0x0019, 0x0013,
+      EVR_US, "VideoOffset", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-XSB-DCI Release 1" }
   , { 0x0019, 0x0013, 0x0019, 0x0013,
-      EVR_ST, "CRImageIPParamsRight", 1, 1, "PrivateTag",
+      EVR_UN, "ECGTimeMapDataRepresentation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "1.2.840.113681" }
+      "SPI-P-Private-DCI Release 1" }
+  , { 0x0019, 0x0013, 0x0019, 0x0013,
+      EVR_US, "SampleBitsStored2", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;1" }
   , { 0x0019, 0x0013, 0x0019, 0x0013,
       EVR_SS, "StartNumberForBaseline", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
+  , { 0x0019, 0x0013, 0x0019, 0x0013,
+      EVR_SS, "PanX", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0013, 0x0019, 0x0013,
+      EVR_ST, "CRImageIPParamsRight", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "1.2.840.113681" }
   , { 0x0019, 0x0013, 0x0019, 0x0013,
       EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6578,30 +6582,30 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "DwellTime", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0013, 0x0019, 0x0013,
-      EVR_SS, "PanX", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  VIEW 1.0" }
-  , { 0x0019, 0x0013, 0x0019, 0x0013,
-      EVR_US, "SampleBitsStored2", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
-  , { 0x0019, 0x0013, 0x0019, 0x0013,
-      EVR_UN, "ECGTimeMapDataRepresentation", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0014, 0x0019, 0x0014,
+      EVR_UN, "ECGTimeMapDataSmallestDataValue", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private-DCI Release 1" }
-  , { 0x0019, 0x0013, 0x0019, 0x0013,
-      EVR_US, "VideoOffset", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-XSB-DCI Release 1" }
   , { 0x0019, 0x0014, 0x0019, 0x0014,
       EVR_IS, "AcquisitionMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0014, 0x0019, 0x0014,
+      EVR_US, "SampleHighBit2", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;1" }
+  , { 0x0019, 0x0014, 0x0019, 0x0014,
       EVR_SS, "EndNumberForBaseline", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
+  , { 0x0019, 0x0014, 0x0019, 0x0014,
+      EVR_SS, "PanY", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0014, 0x0019, 0x0014,
+      EVR_DS, "ADCVoltage", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x0014, 0x0019, 0x0014,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6611,23 +6615,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  ACQU" }
   , { 0x0019, 0x0014, 0x0019, 0x0014,
-      EVR_DS, "ADCVoltage", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x0014, 0x0019, 0x0014,
       EVR_IS, "NumberOfPhases", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0014, 0x0019, 0x0014,
-      EVR_SS, "PanY", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0015, 0x0019, 0x0015,
+      EVR_LT, "SoftwareVersion", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  VIEW 1.0" }
-  , { 0x0019, 0x0014, 0x0019, 0x0014,
-      EVR_US, "SampleHighBit2", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
-  , { 0x0019, 0x0014, 0x0019, 0x0014,
-      EVR_UN, "ECGTimeMapDataSmallestDataValue", 1, 1, "PrivateTag",
+      "SIEMENS DLR.01" }
+  , { 0x0019, 0x0015, 0x0019, 0x0015,
+      EVR_UN, "ECGTimeMapDataLargestDataValue", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private-DCI Release 1" }
   , { 0x0019, 0x0015, 0x0019, 0x0015,
@@ -6635,39 +6631,35 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0015, 0x0019, 0x0015,
-      EVR_LO, "KanjiBodyPartForExposure", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
-  , { 0x0019, 0x0015, 0x0019, 0x0015,
-      EVR_SS, "StartNumberForEnhancedScans", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0015, 0x0019, 0x0015,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0015, 0x0019, 0x0015,
-      EVR_LT, "SoftwareVersion", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
-  , { 0x0019, 0x0015, 0x0019, 0x0015,
-      EVR_LO, "AcquiredPlane", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x0015, 0x0019, 0x0015,
       EVR_LT, "OfflineUID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0015, 0x0019, 0x0015,
-      EVR_SS, "NativeEdgeEnhancementAdvPercGain", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0015, 0x0019, 0x0015,
       EVR_US, "SampleRepresentation2", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
   , { 0x0019, 0x0015, 0x0019, 0x0015,
-      EVR_UN, "ECGTimeMapDataLargestDataValue", 1, 1, "PrivateTag",
+      EVR_SS, "StartNumberForEnhancedScans", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x0015, 0x0019, 0x0015,
+      EVR_SS, "NativeEdgeEnhancementAdvPercGain", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0015, 0x0019, 0x0015,
+      EVR_LO, "AcquiredPlane", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0015, 0x0019, 0x0015,
+      EVR_LO, "KanjiBodyPartForExposure", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
+  , { 0x0019, 0x0015, 0x0019, 0x0015,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0016, 0x0019, 0x0016,
+      EVR_UN, "ECGTimeMapDataNumberOfDataValues", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private-DCI Release 1" }
   , { 0x0019, 0x0016, 0x0019, 0x0016,
@@ -6675,31 +6667,31 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0016, 0x0019, 0x0016,
+      EVR_UN, "SmallestSampleValue2", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;1" }
+  , { 0x0019, 0x0016, 0x0019, 0x0016,
       EVR_SS, "EndNumberForEnhancedScans", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x0016, 0x0019, 0x0016,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0016, 0x0019, 0x0016,
-      EVR_DS, "ADCOffset", 2, 2, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x0016, 0x0019, 0x0016,
-      EVR_UL, "SequenceControlMask", 2, 2, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0016, 0x0019, 0x0016,
       EVR_SS, "SubtrEdgeEnhancementAdvPercGain", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0016, 0x0019, 0x0016,
-      EVR_UN, "SmallestSampleValue2", 1, 1, "PrivateTag",
+      EVR_DS, "ADCOffset", 2, 2, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
+      "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x0016, 0x0019, 0x0016,
-      EVR_UN, "ECGTimeMapDataNumberOfDataValues", 1, 1, "PrivateTag",
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0016, 0x0019, 0x0016,
+      EVR_UL, "SequenceControlMask", 2, 2, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x0017, 0x0019, 0x0017,
+      EVR_UN, "ECGTimeMapData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private-DCI Release 1" }
   , { 0x0019, 0x0017, 0x0019, 0x0017,
@@ -6707,61 +6699,65 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0017, 0x0019, 0x0017,
+      EVR_UN, "LargestSampleValue2", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;1" }
+  , { 0x0019, 0x0017, 0x0019, 0x0017,
       EVR_SS, "SeriesPlane", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x0017, 0x0019, 0x0017,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0017, 0x0019, 0x0017,
       EVR_US, "InvertFlag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0017, 0x0019, 0x0017,
-      EVR_UN, "LargestSampleValue2", 1, 1, "PrivateTag",
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
-  , { 0x0019, 0x0017, 0x0019, 0x0017,
-      EVR_UN, "ECGTimeMapData", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-Private-DCI Release 1" }
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0018, 0x0019, 0x0018,
       EVR_IS, "ZoomFactor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x0018, 0x0019, 0x0018,
-      EVR_LO, "FirstScanRAS", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0018, 0x0019, 0x0018,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0018, 0x0019, 0x0018,
-      EVR_UL, "MeasurementStatusMask", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0018, 0x0019, 0x0018,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0018, 0x0019, 0x0018,
-      EVR_SS, "Internal", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0018, 0x0019, 0x0018,
       EVR_UN, "NumberOfSamples2", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
   , { 0x0019, 0x0018, 0x0019, 0x0018,
+      EVR_LO, "FirstScanRAS", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x0018, 0x0019, 0x0018,
       EVR_IS, "BeamDistance", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0019, 0x0018, 0x0019, 0x0018,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0018, 0x0019, 0x0018,
+      EVR_SS, "Internal", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0018, 0x0019, 0x0018,
+      EVR_UL, "MeasurementStatusMask", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0019, 0x0019, 0x0019,
       EVR_IS, "XZoomCenter", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
+  , { 0x0019, 0x0019, 0x0019, 0x0019,
+      EVR_SS, "Internal", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0019, 0x0019, 0x0019,
+      EVR_UN, "SampleData2", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;1" }
   , { 0x0019, 0x0019, 0x0019, 0x0019,
       EVR_DS, "FirstScanLocation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6769,59 +6765,51 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0019, 0x0019, 0x0019, 0x0019,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0019, 0x0019, 0x0019,
-      EVR_SS, "Internal", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x0019, 0x0019, 0x0019,
-      EVR_UN, "SampleData2", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
   , { 0x0019, 0x001a, 0x0019, 0x001a,
       EVR_IS, "YZoomCenter", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x001a, 0x0019, 0x001a,
-      EVR_LO, "LastScanRAS", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x001a, 0x0019, 0x001a,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x001a, 0x0019, 0x001a,
-      EVR_SS, "Internal", 1, 1, "PrivateTag",
+      EVR_UN, "SampleRate2", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
+      "SPI-P Release 1;1" }
+  , { 0x0019, 0x001a, 0x0019, 0x001a,
+      EVR_LO, "LastScanRAS", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x001a, 0x0019, 0x001a,
       EVR_OB, "Quant1KOverlay", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x001a, 0x0019, 0x001a,
-      EVR_UN, "SampleRate2", 1, 1, "PrivateTag",
+      EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
+      "SIEMENS RA PLANE B" }
   , { 0x0019, 0x001b, 0x0019, 0x001b,
       EVR_DS, "Focus", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x001b, 0x0019, 0x001b,
-      EVR_DS, "LastScanLocation", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x001b, 0x0019, 0x001b,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x001b, 0x0019, 0x001b,
-      EVR_SS, "Internal", 1, 1, "PrivateTag",
+      EVR_DS, "LastScanLocation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x001b, 0x0019, 0x001b,
       EVR_US, "OriginalResolution", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x001b, 0x0019, 0x001b,
+      EVR_SS, "Internal", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE B" }
   , { 0x0019, 0x001c, 0x0019, 0x001c,
       EVR_CS, "Dose", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6831,13 +6819,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x001c, 0x0019, 0x001c,
-      EVR_SS, "Internal", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x001c, 0x0019, 0x001c,
       EVR_DS, "AutoWindowCenter", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x001c, 0x0019, 0x001c,
+      EVR_SS, "Internal", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE B" }
   , { 0x0019, 0x001d, 0x0019, 0x001d,
       EVR_IS, "SideMark", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6847,25 +6835,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x001d, 0x0019, 0x001d,
-      EVR_SS, "Internal", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x001d, 0x0019, 0x001d,
       EVR_DS, "AutoWindowWidth", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x001d, 0x0019, 0x001d,
+      EVR_SS, "Internal", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE B" }
   , { 0x0019, 0x001e, 0x0019, 0x001e,
       EVR_IS, "PercentageLandscape", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x001e, 0x0019, 0x001e,
-      EVR_DS, "DisplayFieldOfView", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x001e, 0x0019, 0x001e,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x001e, 0x0019, 0x001e,
+      EVR_DS, "DisplayFieldOfView", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x001e, 0x0019, 0x001e,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6875,21 +6863,57 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x001f, 0x0019, 0x001f,
-      EVR_SS, "DefaultTableIsoCenterHeight", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x001f, 0x0019, 0x001f,
       EVR_SS, "Internal", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x001f, 0x0019, 0x001f,
+      EVR_SS, "DefaultTableIsoCenterHeight", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
   , { 0x0019, 0x001f, 0x0019, 0x001f,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0020, 0x0019, 0x0020,
+      EVR_LT, "MPMCode", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
+  , { 0x0019, 0x0020, 0x0019, 0x0020,
+      EVR_DS, "RTDDataCompressionFactor", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-XSB-DCI Release 1" }
+  , { 0x0019, 0x0020, 0x0019, 0x0020,
+      EVR_SS, "SystemCalibFactorPlaneA", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0020, 0x0019, 0x0020,
       EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
+  , { 0x0019, 0x0020, 0x0019, 0x0020,
+      EVR_TM, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-GV-CT Release 1" }
+  , { 0x0019, 0x0020, 0x0019, 0x0020,
+      EVR_IS, "WorkstationNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
+  , { 0x0019, 0x0020, 0x0019, 0x0020,
+      EVR_DS, "TransmitterAmplitude", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  COAD" }
+  , { 0x0019, 0x0020, 0x0019, 0x0020,
+      EVR_DS, "ExposureTime", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  GEN" }
+  , { 0x0019, 0x0020, 0x0019, 0x0020,
+      EVR_IS, "NumberOfPossibleChannels", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x0020, 0x0019, 0x0020,
+      EVR_SL, "SceneFlag", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
   , { 0x0019, 0x0020, 0x0019, 0x0020,
       EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6899,61 +6923,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
   , { 0x0019, 0x0020, 0x0019, 0x0020,
-      EVR_IS, "NumberOfPossibleChannels", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x0020, 0x0019, 0x0020,
-      EVR_DS, "ExposureTime", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  GEN" }
-  , { 0x0019, 0x0020, 0x0019, 0x0020,
-      EVR_LT, "MPMCode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
-  , { 0x0019, 0x0020, 0x0019, 0x0020,
-      EVR_DS, "TransmitterAmplitude", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x0020, 0x0019, 0x0020,
-      EVR_IS, "NumberOfFourierLinesNominal", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0020, 0x0019, 0x0020,
-      EVR_SL, "SceneFlag", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x0020, 0x0019, 0x0020,
-      EVR_SS, "SystemCalibFactorPlaneA", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0020, 0x0019, 0x0020,
       EVR_SL, "SystemCalibFactorPlaneB", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0020, 0x0019, 0x0020,
-      EVR_TM, "Unknown", 1, 1, "PrivateTag",
+      EVR_IS, "NumberOfFourierLinesNominal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
-  , { 0x0019, 0x0020, 0x0019, 0x0020,
-      EVR_DS, "RTDDataCompressionFactor", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-XSB-DCI Release 1" }
-  , { 0x0019, 0x0020, 0x0019, 0x0020,
-      EVR_IS, "WorkstationNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
-  , { 0x0019, 0x0021, 0x0019, 0x0021,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0021, 0x0019, 0x0021,
-      EVR_IS, "MeanChannelNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x0021, 0x0019, 0x0021,
-      EVR_DS, "ExposureCurrent", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  GEN" }
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0021, 0x0019, 0x0021,
       EVR_LT, "Latitude", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6963,9 +6939,29 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x0021, 0x0019, 0x0021,
+      EVR_DS, "ExposureCurrent", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  GEN" }
+  , { 0x0019, 0x0021, 0x0019, 0x0021,
+      EVR_IS, "MeanChannelNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x0021, 0x0019, 0x0021,
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0021, 0x0019, 0x0021,
       EVR_IS, "NumberOfFourierLinesCurrent", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x0022, 0x0019, 0x0022,
+      EVR_LT, "Sensitivity", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
+  , { 0x0019, 0x0022, 0x0019, 0x0022,
+      EVR_SS, "XRayParameterSetNo", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0022, 0x0019, 0x0022,
       EVR_UN, "RouteAET", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -6975,33 +6971,29 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0022, 0x0019, 0x0022,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      EVR_DS, "TransmitterAttenuator", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
+      "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x0022, 0x0019, 0x0022,
       EVR_DS, "DetectorSpacing", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x0022, 0x0019, 0x0022,
-      EVR_LT, "Sensitivity", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
-  , { 0x0019, 0x0022, 0x0019, 0x0022,
-      EVR_DS, "TransmitterAttenuator", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x0022, 0x0019, 0x0022,
       EVR_SL, "RefPhotofileFlag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0022, 0x0019, 0x0022,
-      EVR_SS, "XRayParameterSetNo", 1, 1, "PrivateTag",
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0022, 0x0019, 0x0022,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0023, 0x0019, 0x0023,
+      EVR_LT, "EDR", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
   , { 0x0019, 0x0023, 0x0019, 0x0023,
       EVR_DS, "PCRPrintScale", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7011,17 +7003,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0023, 0x0019, 0x0023,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0023, 0x0019, 0x0023,
       EVR_DS, "DetectorCenter", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x0023, 0x0019, 0x0023,
-      EVR_LT, "EDR", 1, 1, "PrivateTag",
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0024, 0x0019, 0x0024,
+      EVR_LT, "LFix", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
+  , { 0x0019, 0x0024, 0x0019, 0x0024,
+      EVR_SS, "XRaySystem", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0024, 0x0019, 0x0024,
       EVR_UN, "PCRPrintJobEnd", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7031,33 +7027,29 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0024, 0x0019, 0x0024,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      EVR_DS, "TransmitterCalibration", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
+      "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x0024, 0x0019, 0x0024,
       EVR_DS, "ReadingIntegrationTime", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x0024, 0x0019, 0x0024,
-      EVR_LT, "LFix", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
-  , { 0x0019, 0x0024, 0x0019, 0x0024,
-      EVR_DS, "TransmitterCalibration", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x0024, 0x0019, 0x0024,
       EVR_LO, "SceneName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0024, 0x0019, 0x0024,
-      EVR_SS, "XRaySystem", 1, 1, "PrivateTag",
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0024, 0x0019, 0x0024,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0025, 0x0019, 0x0025,
+      EVR_LT, "SFix", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
   , { 0x0019, 0x0025, 0x0019, 0x0025,
       EVR_IS, "PCRNoFilmCopies", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7067,21 +7059,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0025, 0x0019, 0x0025,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      EVR_LT, "OriginalPixelDataQuality", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
+      "SPI-P Release 1" }
   , { 0x0019, 0x0025, 0x0019, 0x0025,
       EVR_DS, "KVPGeneratorPowerCurrent", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
   , { 0x0019, 0x0025, 0x0019, 0x0025,
-      EVR_LT, "SFix", 1, 1, "PrivateTag",
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0026, 0x0019, 0x0026,
+      EVR_LT, "PresetMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
-  , { 0x0019, 0x0025, 0x0019, 0x0025,
-      EVR_LT, "OriginalPixelDataQuality", 1, -1, "PrivateTag",
+  , { 0x0019, 0x0026, 0x0019, 0x0026,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0026, 0x0019, 0x0026,
       EVR_IS, "PCRFilmLayoutPosition", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7091,37 +7087,33 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0026, 0x0019, 0x0026,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      EVR_DS, "TransmitterReference", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
+      "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x0026, 0x0019, 0x0026,
       EVR_DS, "GeneratorVoltage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
   , { 0x0019, 0x0026, 0x0019, 0x0026,
-      EVR_LT, "PresetMode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
-  , { 0x0019, 0x0026, 0x0019, 0x0026,
-      EVR_DS, "TransmitterReference", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x0026, 0x0019, 0x0026,
-      EVR_IS, "NumberOfFourierLinesAfterZero", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0026, 0x0019, 0x0026,
       EVR_SS, "AcquisitionIndex", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0026, 0x0019, 0x0026,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0026, 0x0019, 0x0026,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0026, 0x0019, 0x0026,
+      EVR_IS, "NumberOfFourierLinesAfterZero", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x0027, 0x0019, 0x0027,
+      EVR_LT, "Region", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
   , { 0x0019, 0x0027, 0x0019, 0x0027,
       EVR_UN, "PCRPrintReportName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7134,42 +7126,42 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0027, 0x0019, 0x0027,
-      EVR_LT, "Region", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
-  , { 0x0019, 0x0028, 0x0019, 0x0028,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0028, 0x0019, 0x0028,
       EVR_LT, "Subregion", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
   , { 0x0019, 0x0028, 0x0019, 0x0028,
-      EVR_IS, "FirstMeasuredFourierLine", 1, 1, "PrivateTag",
+      EVR_SS, "AcquiredDisplayMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0028, 0x0019, 0x0028,
+      EVR_IS, "TubeNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
   , { 0x0019, 0x0028, 0x0019, 0x0028,
       EVR_SS, "MixedPulseMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0028, 0x0019, 0x0028,
-      EVR_SS, "AcquiredDisplayMode", 1, 1, "PrivateTag",
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0028, 0x0019, 0x0028,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0028, 0x0019, 0x0028,
-      EVR_IS, "TubeNumber", 1, 1, "PrivateTag",
+      EVR_IS, "FirstMeasuredFourierLine", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0029, 0x0019, 0x0029,
       EVR_IS, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x002a, 0x0019, 0x002a,
+      EVR_SS, "AcquisitionDelay", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x002a, 0x0019, 0x002a,
       EVR_DS, "XrayOnPosition", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7179,10 +7171,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x002a, 0x0019, 0x002a,
-      EVR_SS, "AcquisitionDelay", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x002a, 0x0019, 0x002a,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
@@ -7190,6 +7178,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "XrayOffPosition", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
+  , { 0x0019, 0x002c, 0x0019, 0x002c,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x002c, 0x0019, 0x002c,
       EVR_SL, "NumberOfTriggers", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7201,15 +7193,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0019, 0x002c, 0x0019, 0x002c,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x002c, 0x0019, 0x002c,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
   , { 0x0019, 0x002d, 0x0019, 0x002d,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
+  , { 0x0019, 0x002e, 0x0019, 0x002e,
+      EVR_SS, "MaxFramesLimit", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x002e, 0x0019, 0x002e,
       EVR_DS, "AngleOfFirstView", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7219,10 +7211,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x002e, 0x0019, 0x002e,
-      EVR_SS, "MaxFramesLimit", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x002e, 0x0019, 0x002e,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
@@ -7230,6 +7218,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "TriggerFrequency", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
+  , { 0x0019, 0x0030, 0x0019, 0x0030,
+      EVR_LT, "Orientation", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
+  , { 0x0019, 0x0030, 0x0019, 0x0030,
+      EVR_US, "MaximumFrameSizeNIU", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0030, 0x0019, 0x0030,
       EVR_UL, "MaximumImageFrameSize", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7239,57 +7235,41 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GE ??? From Adantage Review CS" }
   , { 0x0019, 0x0030, 0x0019, 0x0030,
-      EVR_LT, "CalculationMode", 1, 1, "PrivateTag",
+      EVR_IS, "BuckyGrid", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  CMS" }
-  , { 0x0019, 0x0030, 0x0019, 0x0030,
-      EVR_LT, "Orientation", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
-  , { 0x0019, 0x0030, 0x0019, 0x0030,
-      EVR_IS, "AcquisitionColumns", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0030, 0x0019, 0x0030,
-      EVR_SS, "NoOfFramesForPositions", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x0030, 0x0019, 0x0030,
-      EVR_US, "MaximumFrameSizeNIU", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0030, 0x0019, 0x0030,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
+      "SVISION" }
   , { 0x0019, 0x0030, 0x0019, 0x0030,
       EVR_US, "ECGTriggering", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
   , { 0x0019, 0x0030, 0x0019, 0x0030,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-PCR Release 2" }
-  , { 0x0019, 0x0030, 0x0019, 0x0030,
       EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1" }
   , { 0x0019, 0x0030, 0x0019, 0x0030,
-      EVR_IS, "BuckyGrid", 1, 1, "PrivateTag",
+      EVR_SS, "NoOfFramesForPositions", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
-  , { 0x0019, 0x0031, 0x0019, 0x0031,
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0030, 0x0019, 0x0030,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
+      "SPI-P-PCR Release 2" }
+  , { 0x0019, 0x0030, 0x0019, 0x0030,
+      EVR_LT, "CalculationMode", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CM VA0  CMS" }
+  , { 0x0019, 0x0030, 0x0019, 0x0030,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0030, 0x0019, 0x0030,
+      EVR_IS, "AcquisitionColumns", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0031, 0x0019, 0x0031,
       EVR_LT, "MarkOnFilm", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
-  , { 0x0019, 0x0031, 0x0019, 0x0031,
-      EVR_IS, "ReconstructionColumns", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0031, 0x0019, 0x0031,
       EVR_UN, "ECG1Offset", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7298,6 +7278,30 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1" }
+  , { 0x0019, 0x0031, 0x0019, 0x0031,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0031, 0x0019, 0x0031,
+      EVR_IS, "ReconstructionColumns", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x0032, 0x0019, 0x0032,
+      EVR_LT, "RotationOnDRC", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
+  , { 0x0019, 0x0032, 0x0019, 0x0032,
+      EVR_SS, "SubtractedFilterType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0032, 0x0019, 0x0032,
+      EVR_UN, "ECG2Offset1", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
+  , { 0x0019, 0x0032, 0x0019, 0x0032,
+      EVR_SS, "SteppingDirection", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
   , { 0x0019, 0x0032, 0x0019, 0x0032,
       EVR_LO, "KanjiMenuName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7307,49 +7311,29 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0032, 0x0019, 0x0032,
-      EVR_LT, "RotationOnDRC", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
-  , { 0x0019, 0x0032, 0x0019, 0x0032,
-      EVR_SS, "SteppingDirection", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x0032, 0x0019, 0x0032,
-      EVR_SS, "SubtractedFilterType", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0032, 0x0019, 0x0032,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x0032, 0x0019, 0x0032,
-      EVR_UN, "ECG2Offset1", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
   , { 0x0019, 0x0033, 0x0019, 0x0033,
       EVR_UN, "ECG2Offset2", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
   , { 0x0019, 0x0034, 0x0019, 0x0034,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x0034, 0x0019, 0x0034,
       EVR_SS, "FilterFactorNative", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0034, 0x0019, 0x0034,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x0034, 0x0019, 0x0034,
       EVR_IS, "Focus", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0019, 0x0036, 0x0019, 0x0036,
+  , { 0x0019, 0x0034, 0x0019, 0x0034,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
+  , { 0x0019, 0x0034, 0x0019, 0x0034,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0036, 0x0019, 0x0036,
       EVR_SS, "AnatomicBackgroundFactor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7357,31 +7341,39 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0019, 0x0036, 0x0019, 0x0036,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x0038, 0x0019, 0x0038,
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0036, 0x0019, 0x0036,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
+      "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0038, 0x0019, 0x0038,
       EVR_SS, "WindowUpperLimitNative", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0038, 0x0019, 0x0038,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x0038, 0x0019, 0x0038,
       EVR_IS, "Child", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0019, 0x0039, 0x0019, 0x0039,
-      EVR_SS, "ScanFOVType", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0038, 0x0019, 0x0038,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0038, 0x0019, 0x0038,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0039, 0x0019, 0x0039,
       EVR_SS, "AxialType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GE_GENESIS_REV3.0" }
+  , { 0x0019, 0x0039, 0x0019, 0x0039,
+      EVR_SS, "ScanFOVType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x003a, 0x0019, 0x003a,
+      EVR_SS, "WindowLowerLimitNative", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x003a, 0x0019, 0x003a,
       EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7391,10 +7383,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x003a, 0x0019, 0x003a,
-      EVR_SS, "WindowLowerLimitNative", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x003a, 0x0019, 0x003a,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
@@ -7403,6 +7391,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x003c, 0x0019, 0x003c,
+      EVR_SS, "WindowBrightnessPhase1", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x003c, 0x0019, 0x003c,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -7410,15 +7402,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
-  , { 0x0019, 0x003c, 0x0019, 0x003c,
-      EVR_SS, "WindowBrightnessPhase1", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x003c, 0x0019, 0x003c,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
   , { 0x0019, 0x003e, 0x0019, 0x003e,
+      EVR_SS, "WindowBrightnessPhase2", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x003e, 0x0019, 0x003e,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -7426,10 +7418,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
-  , { 0x0019, 0x003e, 0x0019, 0x003e,
-      EVR_SS, "WindowBrightnessPhase2", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x003e, 0x0019, 0x003e,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7439,29 +7427,41 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0040, 0x0019, 0x0040,
-      EVR_CS, "ImageProcessingType", 1, 1, "PrivateTag",
+      EVR_LT, "ReaderType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
+      "SIEMENS DLR.01" }
   , { 0x0019, 0x0040, 0x0019, 0x0040,
-      EVR_LO, "CRLatitude", 1, 1, "PrivateTag",
+      EVR_SS, "WindowContrastPhase1", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GE ??? From Adantage Review CS" }
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0040, 0x0019, 0x0040,
       EVR_SS, "StatReconFlag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0040, 0x0019, 0x0040,
+      EVR_LO, "CRLatitude", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GE ??? From Adantage Review CS" }
+  , { 0x0019, 0x0040, 0x0019, 0x0040,
       EVR_DS, "FrameRate", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "INTEGRIS 1.0" }
+  , { 0x0019, 0x0040, 0x0019, 0x0040,
+      EVR_IS, "CollimatorDistanceX", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
   , { 0x0019, 0x0040, 0x0019, 0x0040,
       EVR_UL, "MasterControlMask", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
   , { 0x0019, 0x0040, 0x0019, 0x0040,
-      EVR_LT, "ReaderType", 1, 1, "PrivateTag",
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0040, 0x0019, 0x0040,
+      EVR_CS, "ImageProcessingType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
   , { 0x0019, 0x0040, 0x0019, 0x0040,
       EVR_IS, "ArrayCoilElementNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7469,67 +7469,55 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0019, 0x0040, 0x0019, 0x0040,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x0040, 0x0019, 0x0040,
-      EVR_SS, "WindowContrastPhase1", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0040, 0x0019, 0x0040,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x0040, 0x0019, 0x0040,
-      EVR_IS, "CollimatorDistanceX", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
-  , { 0x0019, 0x0041, 0x0019, 0x0041,
-      EVR_SS, "ComputeType", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0041, 0x0019, 0x0041,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0041, 0x0019, 0x0041,
       EVR_LT, "SubModality", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
   , { 0x0019, 0x0041, 0x0019, 0x0041,
-      EVR_UL, "ArrayCoilElementSelectMask", 1, 1, "PrivateTag",
+      EVR_SS, "ComputeType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x0041, 0x0019, 0x0041,
       EVR_IS, "CollimatorDistanceY", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0019, 0x0042, 0x0019, 0x0042,
-      EVR_SS, "SegmentNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0042, 0x0019, 0x0042,
-      EVR_IS, "Unknown", 2, 2, "PrivateTag",
+  , { 0x0019, 0x0041, 0x0019, 0x0041,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0042, 0x0019, 0x0042,
-      EVR_US, "ProcessingMask", 5, 5, "PrivateTag",
+  , { 0x0019, 0x0041, 0x0019, 0x0041,
+      EVR_UL, "ArrayCoilElementSelectMask", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  GEN" }
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0042, 0x0019, 0x0042,
       EVR_LT, "ReaderSerialNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
   , { 0x0019, 0x0042, 0x0019, 0x0042,
-      EVR_UL, "ArrayCoilElementDataMask", 1, 1, "PrivateTag",
+      EVR_SS, "WindowContrastPhase2", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0042, 0x0019, 0x0042,
+      EVR_SS, "SegmentNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x0042, 0x0019, 0x0042,
+      EVR_US, "ProcessingMask", 5, 5, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  GEN" }
   , { 0x0019, 0x0042, 0x0019, 0x0042,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0042, 0x0019, 0x0042,
-      EVR_SS, "WindowContrastPhase2", 1, 1, "PrivateTag",
+      EVR_IS, "Unknown", 2, 2, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0042, 0x0019, 0x0042,
+      EVR_UL, "ArrayCoilElementDataMask", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0042, 0x0019, 0x0042,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7547,6 +7535,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0044, 0x0019, 0x0044,
+      EVR_SS, "FilterFactorSub", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0044, 0x0019, 0x0044,
       EVR_DS, "InterscanDelay", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -7555,33 +7547,37 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
   , { 0x0019, 0x0044, 0x0019, 0x0044,
-      EVR_DS, "ArrayCoilElementNoiseLevel", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0044, 0x0019, 0x0044,
       EVR_SS, "ImageTransferDelay", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0044, 0x0019, 0x0044,
-      EVR_SS, "FilterFactorSub", 1, 1, "PrivateTag",
+      EVR_DS, "ArrayCoilElementNoiseLevel", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0044, 0x0019, 0x0044,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0045, 0x0019, 0x0045,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0045, 0x0019, 0x0045,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
   , { 0x0019, 0x0045, 0x0019, 0x0045,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0045, 0x0019, 0x0045,
       EVR_IS, "ArrayCoilADCPairNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x0046, 0x0019, 0x0046,
+      EVR_SS, "PeakOpacified", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0046, 0x0019, 0x0046,
+      EVR_SL, "InversFlag", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
   , { 0x0019, 0x0046, 0x0019, 0x0046,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7590,14 +7586,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UL, "ArrayCoilCombinationMask", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0046, 0x0019, 0x0046,
-      EVR_SL, "InversFlag", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x0046, 0x0019, 0x0046,
-      EVR_SS, "PeakOpacified", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0046, 0x0019, 0x0046,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7611,21 +7599,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0048, 0x0019, 0x0048,
+      EVR_SL, "MaskFrame", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0048, 0x0019, 0x0048,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x0048, 0x0019, 0x0048,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0048, 0x0019, 0x0048,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0048, 0x0019, 0x0048,
-      EVR_SL, "MaskFrame", 1, 1, "PrivateTag",
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0048, 0x0019, 0x0048,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7638,6 +7626,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x004a, 0x0019, 0x004a,
+      EVR_SL, "BIHFrame", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x004a, 0x0019, 0x004a,
       EVR_SS, "TotalNumberOfRefChannels", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7647,10 +7639,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x004a, 0x0019, 0x004a,
-      EVR_SL, "BIHFrame", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x004a, 0x0019, 0x004a,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
@@ -7659,13 +7647,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x004c, 0x0019, 0x004c,
-      EVR_SS, "BlankingCircleDiameter", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x004c, 0x0019, 0x004c,
       EVR_SS, "CentBeamAngulationCaudCran", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x004c, 0x0019, 0x004c,
+      EVR_SS, "BlankingCircleDiameter", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
   , { 0x0019, 0x004c, 0x0019, 0x004c,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7679,85 +7667,85 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0050, 0x0019, 0x0050,
-      EVR_CS, "EDRMode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
-  , { 0x0019, 0x0050, 0x0019, 0x0050,
-      EVR_LO, "CRGroupNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GE ??? From Adantage Review CS" }
-  , { 0x0019, 0x0050, 0x0019, 0x0050,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0050, 0x0019, 0x0050,
-      EVR_IS, "NoiseLevel", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  CMS" }
-  , { 0x0019, 0x0050, 0x0019, 0x0050,
-      EVR_DS, "DetectorAlignment", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x0050, 0x0019, 0x0050,
       EVR_LT, "CassetteScale", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
-  , { 0x0019, 0x0050, 0x0019, 0x0050,
-      EVR_DS, "ReceiverTotalGain", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x0050, 0x0019, 0x0050,
-      EVR_IS, "NumberOfAverages", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0050, 0x0019, 0x0050,
-      EVR_SL, "StandDataValid", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
   , { 0x0019, 0x0050, 0x0019, 0x0050,
       EVR_SS, "LongitudinalPosition", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0050, 0x0019, 0x0050,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
+      "SPI-P-GV-CT Release 1" }
   , { 0x0019, 0x0050, 0x0019, 0x0050,
       EVR_US, "VideoScanMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
   , { 0x0019, 0x0050, 0x0019, 0x0050,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
+      EVR_LO, "CRGroupNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
+      "GE ??? From Adantage Review CS" }
   , { 0x0019, 0x0050, 0x0019, 0x0050,
       EVR_IS, "CentralBeamHeight", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0019, 0x0050, 0x0019, 0x0050,
+      EVR_DS, "ReceiverTotalGain", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  COAD" }
+  , { 0x0019, 0x0050, 0x0019, 0x0050,
+      EVR_SL, "StandDataValid", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0050, 0x0019, 0x0050,
+      EVR_DS, "DetectorAlignment", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x0050, 0x0019, 0x0050,
+      EVR_CS, "EDRMode", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
+  , { 0x0019, 0x0050, 0x0019, 0x0050,
+      EVR_IS, "NoiseLevel", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CM VA0  CMS" }
+  , { 0x0019, 0x0050, 0x0019, 0x0050,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0050, 0x0019, 0x0050,
+      EVR_IS, "NumberOfAverages", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x0050, 0x0019, 0x0050,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0051, 0x0019, 0x0051,
       EVR_LT, "CassetteMatrix", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
   , { 0x0019, 0x0051, 0x0019, 0x0051,
-      EVR_DS, "ReceiverAmplifierGain", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x0051, 0x0019, 0x0051,
       EVR_US, "VideoLineRate", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
-  , { 0x0019, 0x0052, 0x0019, 0x0052,
-      EVR_SS, "ReconPostProcessingFlag", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0051, 0x0019, 0x0051,
+      EVR_DS, "ReceiverAmplifierGain", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0052, 0x0019, 0x0052,
-      EVR_DS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
+      "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x0052, 0x0019, 0x0052,
       EVR_LT, "CassetteSubmatrix", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
+  , { 0x0019, 0x0052, 0x0019, 0x0052,
+      EVR_SS, "SideOffset", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0052, 0x0019, 0x0052,
+      EVR_SS, "ReconPostProcessingFlag", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x0052, 0x0019, 0x0052,
       EVR_DS, "ReceiverPreamplifierGain", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7767,9 +7755,9 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0052, 0x0019, 0x0052,
-      EVR_SS, "SideOffset", 1, 1, "PrivateTag",
+      EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
+      "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x0052, 0x0019, 0x0052,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7779,13 +7767,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
   , { 0x0019, 0x0054, 0x0019, 0x0054,
+      EVR_SS, "IsoCenterHeight", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0054, 0x0019, 0x0054,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x0054, 0x0019, 0x0054,
-      EVR_DS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x0054, 0x0019, 0x0054,
       EVR_DS, "ReceiverCableAttenuation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7795,9 +7783,9 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0054, 0x0019, 0x0054,
-      EVR_SS, "IsoCenterHeight", 1, 1, "PrivateTag",
+      EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
+      "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x0054, 0x0019, 0x0054,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7807,6 +7795,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x0056, 0x0019, 0x0056,
+      EVR_SS, "ImageTwist", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0056, 0x0019, 0x0056,
       EVR_DS, "ReceiverFilterFrequency", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
@@ -7814,10 +7806,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "TableLongitudalPosition", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
-  , { 0x0019, 0x0056, 0x0019, 0x0056,
-      EVR_SS, "ImageTwist", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0056, 0x0019, 0x0056,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7827,6 +7815,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0058, 0x0019, 0x0058,
+      EVR_SS, "SourceImageDistance", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0058, 0x0019, 0x0058,
       EVR_SS, "CTBoneNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -7835,13 +7827,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0058, 0x0019, 0x0058,
-      EVR_SS, "SourceImageDistance", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0058, 0x0019, 0x0058,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x005a, 0x0019, 0x005a,
+      EVR_SS, "MechanicalMagnificationFactor", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x005a, 0x0019, 0x005a,
       EVR_FL, "AcquisitionDuration", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7851,21 +7843,17 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x005a, 0x0019, 0x005a,
-      EVR_SS, "MechanicalMagnificationFactor", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x005a, 0x0019, 0x005a,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
   , { 0x0019, 0x005c, 0x0019, 0x005c,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x005c, 0x0019, 0x005c,
       EVR_SL, "CalibrationFlag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x005c, 0x0019, 0x005c,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
   , { 0x0019, 0x005c, 0x0019, 0x005c,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7875,6 +7863,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x005e, 0x0019, 0x005e,
+      EVR_SL, "CalibrationAngleCranCaud", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x005e, 0x0019, 0x005e,
       EVR_SL, "NumberOfChannels1To512", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -7882,10 +7874,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SL, "CollimationDataValid", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
-  , { 0x0019, 0x005e, 0x0019, 0x005e,
-      EVR_SL, "CalibrationAngleCranCaud", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x005e, 0x0019, 0x005e,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7895,61 +7883,65 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0060, 0x0019, 0x0060,
-      EVR_SH, "RadiographersCode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
-  , { 0x0019, 0x0060, 0x0019, 0x0060,
-      EVR_SL, "StartingView", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0060, 0x0019, 0x0060,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0060, 0x0019, 0x0060,
-      EVR_IS, "NumberOfDataBytes", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  CMS" }
-  , { 0x0019, 0x0060, 0x0019, 0x0060,
-      EVR_DS, "FocusAlignment", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x0060, 0x0019, 0x0060,
       EVR_LT, "ContrastType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
-  , { 0x0019, 0x0060, 0x0019, 0x0060,
-      EVR_DS, "ReconstructionScaleFactor", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x0060, 0x0019, 0x0060,
-      EVR_DS, "FlipAngle", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0060, 0x0019, 0x0060,
-      EVR_SL, "PeriSequenceNo", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
   , { 0x0019, 0x0060, 0x0019, 0x0060,
       EVR_SL, "CalibrationAngleRAOLAO", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0060, 0x0019, 0x0060,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      EVR_SL, "StartingView", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x0060, 0x0019, 0x0060,
-      EVR_US, "XrayTechnique", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x0060, 0x0019, 0x0060,
       EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
   , { 0x0019, 0x0060, 0x0019, 0x0060,
+      EVR_US, "XrayTechnique", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
+  , { 0x0019, 0x0060, 0x0019, 0x0060,
       EVR_IS, "BuckyAngle", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0019, 0x0060, 0x0019, 0x0060,
+      EVR_DS, "ReconstructionScaleFactor", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  COAD" }
+  , { 0x0019, 0x0060, 0x0019, 0x0060,
+      EVR_SL, "PeriSequenceNo", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0060, 0x0019, 0x0060,
+      EVR_DS, "FocusAlignment", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x0060, 0x0019, 0x0060,
+      EVR_SH, "RadiographersCode", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
+  , { 0x0019, 0x0060, 0x0019, 0x0060,
+      EVR_IS, "NumberOfDataBytes", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CM VA0  CMS" }
+  , { 0x0019, 0x0060, 0x0019, 0x0060,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0060, 0x0019, 0x0060,
+      EVR_DS, "FlipAngle", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x0060, 0x0019, 0x0060,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0061, 0x0019, 0x0061,
+      EVR_LT, "RotationAmount", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
   , { 0x0019, 0x0061, 0x0019, 0x0061,
       EVR_SL, "NumberOfViews", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7957,11 +7949,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0019, 0x0061, 0x0019, 0x0061,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0061, 0x0019, 0x0061,
-      EVR_LT, "RotationAmount", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
+      "SPI-P-GV-CT Release 1" }
   , { 0x0019, 0x0061, 0x0019, 0x0061,
       EVR_DS, "ImageIdentifierFromat", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7969,19 +7957,27 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0019, 0x0061, 0x0019, 0x0061,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0062, 0x0019, 0x0062,
+      EVR_LT, "RotationCenter", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
+  , { 0x0019, 0x0062, 0x0019, 0x0062,
+      EVR_SL, "CalibrationTableToFloorDist", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0062, 0x0019, 0x0062,
       EVR_SL, "IncrementBetweenViews", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0062, 0x0019, 0x0062,
+      EVR_US, "IrisDiaphragm", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
+  , { 0x0019, 0x0062, 0x0019, 0x0062,
       EVR_IS, "NumberOfVirtuellChannels", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
-  , { 0x0019, 0x0062, 0x0019, 0x0062,
-      EVR_LT, "RotationCenter", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
   , { 0x0019, 0x0062, 0x0019, 0x0062,
       EVR_DS, "ReferenceScaleFactor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7991,71 +7987,59 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0062, 0x0019, 0x0062,
-      EVR_SL, "CalibrationTableToFloorDist", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0062, 0x0019, 0x0062,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x0062, 0x0019, 0x0062,
-      EVR_US, "IrisDiaphragm", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
   , { 0x0019, 0x0063, 0x0019, 0x0063,
       EVR_LT, "DensityShift", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
   , { 0x0019, 0x0063, 0x0019, 0x0063,
-      EVR_CS, "Filter", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
-  , { 0x0019, 0x0063, 0x0019, 0x0063,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
+  , { 0x0019, 0x0063, 0x0019, 0x0063,
+      EVR_CS, "Filter", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
   , { 0x0019, 0x0064, 0x0019, 0x0064,
       EVR_US, "FrequencyRank", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
   , { 0x0019, 0x0064, 0x0019, 0x0064,
-      EVR_SL, "PeriOverlapTop", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x0064, 0x0019, 0x0064,
       EVR_SL, "CalibrationIsocenterToFloorDist", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0064, 0x0019, 0x0064,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
+      "SPI-P-GV-CT Release 1" }
   , { 0x0019, 0x0064, 0x0019, 0x0064,
       EVR_CS, "CineParallel", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
   , { 0x0019, 0x0064, 0x0019, 0x0064,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      EVR_SL, "PeriOverlapTop", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
-  , { 0x0019, 0x0065, 0x0019, 0x0065,
-      EVR_UL, "FocalSpotDeflectionAmplitude", 1, 1, "PrivateTag",
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0064, 0x0019, 0x0064,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
+      "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0065, 0x0019, 0x0065,
       EVR_LT, "FrequencyEnhancement", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
   , { 0x0019, 0x0065, 0x0019, 0x0065,
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-GV-CT Release 1" }
+  , { 0x0019, 0x0065, 0x0019, 0x0065,
       EVR_CS, "CineMaster", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
   , { 0x0019, 0x0065, 0x0019, 0x0065,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
-  , { 0x0019, 0x0066, 0x0019, 0x0066,
-      EVR_UL, "FocalSpotDeflectionPhase", 1, 1, "PrivateTag",
+      EVR_UL, "FocalSpotDeflectionAmplitude", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x0066, 0x0019, 0x0066,
@@ -8063,45 +8047,49 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
   , { 0x0019, 0x0066, 0x0019, 0x0066,
+      EVR_SL, "CalibrationIsocenterToSourceDist", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0066, 0x0019, 0x0066,
       EVR_SL, "PeriOverlapBottom", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0066, 0x0019, 0x0066,
-      EVR_SL, "CalibrationIsocenterToSourceDist", 1, 1, "PrivateTag",
+      EVR_UL, "FocalSpotDeflectionPhase", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
+      "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x0066, 0x0019, 0x0066,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0067, 0x0019, 0x0067,
-      EVR_UL, "FocalSpotDeflectionOffset", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x0067, 0x0019, 0x0067,
       EVR_LT, "KernelLength", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
+  , { 0x0019, 0x0067, 0x0019, 0x0067,
+      EVR_UL, "FocalSpotDeflectionOffset", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x0068, 0x0019, 0x0068,
       EVR_UL, "KernelMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
   , { 0x0019, 0x0068, 0x0019, 0x0068,
-      EVR_SL, "RawImageNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x0068, 0x0019, 0x0068,
       EVR_SL, "CalibrationSourceToII", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0068, 0x0019, 0x0068,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x0068, 0x0019, 0x0068,
       EVR_IS, "CArmAngle", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0019, 0x0068, 0x0019, 0x0068,
+      EVR_SL, "RawImageNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0068, 0x0019, 0x0068,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0069, 0x0019, 0x0069,
       EVR_UL, "ConvolutionMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8111,6 +8099,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
   , { 0x0019, 0x006a, 0x0019, 0x006a,
+      EVR_SL, "CalibrationIIZoom", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x006a, 0x0019, 0x006a,
       EVR_SS, "DependantOnNumberOfViewsProcessed", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -8118,10 +8110,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SL, "XRayDataValid", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
-  , { 0x0019, 0x006a, 0x0019, 0x006a,
-      EVR_SL, "CalibrationIIZoom", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x006a, 0x0019, 0x006a,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8147,41 +8135,61 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
   , { 0x0019, 0x0070, 0x0019, 0x0070,
+      EVR_LT, "PLASource", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
+  , { 0x0019, 0x0070, 0x0019, 0x0070,
+      EVR_SL, "CalibrationObjectToImageDistance", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0070, 0x0019, 0x0070,
       EVR_UN, "RADProtocolPrinter", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DIDI TO PCR 1.1" }
-  , { 0x0019, 0x0070, 0x0019, 0x0070,
-      EVR_IS, "SplitExposureFormat", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
-  , { 0x0019, 0x0070, 0x0019, 0x0070,
-      EVR_LO, "CRImageSerialNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GE ??? From Adantage Review CS" }
   , { 0x0019, 0x0070, 0x0019, 0x0070,
       EVR_SS, "ValueOfBackProjectionButton", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0070, 0x0019, 0x0070,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
+      "SPI-P-GV-CT Release 1" }
   , { 0x0019, 0x0070, 0x0019, 0x0070,
-      EVR_DS, "WaterScalingFactor", 1, 1, "PrivateTag",
+      EVR_LO, "CRImageSerialNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
+      "GE ??? From Adantage Review CS" }
+  , { 0x0019, 0x0070, 0x0019, 0x0070,
+      EVR_US, "ExposureChannel", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
+  , { 0x0019, 0x0070, 0x0019, 0x0070,
+      EVR_IS, "FilterNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
   , { 0x0019, 0x0070, 0x0019, 0x0070,
       EVR_IS, "NumberOfReadings", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
   , { 0x0019, 0x0070, 0x0019, 0x0070,
-      EVR_LT, "PLASource", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
-  , { 0x0019, 0x0070, 0x0019, 0x0070,
       EVR_DS, "PhaseGradientAmplitude", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
+  , { 0x0019, 0x0070, 0x0019, 0x0070,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0070, 0x0019, 0x0070,
+      EVR_DS, "WaterScalingFactor", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x0070, 0x0019, 0x0070,
+      EVR_IS, "SplitExposureFormat", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
+  , { 0x0019, 0x0070, 0x0019, 0x0070,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0070, 0x0019, 0x0070,
       EVR_IS, "NumberOfPrescans", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8189,71 +8197,55 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0019, 0x0070, 0x0019, 0x0070,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x0070, 0x0019, 0x0070,
-      EVR_SL, "CalibrationObjectToImageDistance", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0070, 0x0019, 0x0070,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x0070, 0x0019, 0x0070,
-      EVR_US, "ExposureChannel", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
-  , { 0x0019, 0x0070, 0x0019, 0x0070,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
-  , { 0x0019, 0x0070, 0x0019, 0x0070,
-      EVR_IS, "FilterNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
-  , { 0x0019, 0x0071, 0x0019, 0x0071,
-      EVR_UN, "RADProtocolMedium", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "DIDI TO PCR 1.1" }
-  , { 0x0019, 0x0071, 0x0019, 0x0071,
-      EVR_IS, "NoOfSplitExposureFrames", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
-  , { 0x0019, 0x0071, 0x0019, 0x0071,
-      EVR_SS, "SetIfFatqEstimatesWereUsed", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0071, 0x0019, 0x0071,
-      EVR_IS, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0071, 0x0019, 0x0071,
-      EVR_DS, "InterpolationFactor", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x0071, 0x0019, 0x0071,
-      EVR_LT, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  GEN" }
   , { 0x0019, 0x0071, 0x0019, 0x0071,
       EVR_LT, "PLADestination", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
   , { 0x0019, 0x0071, 0x0019, 0x0071,
-      EVR_DS, "ReadoutGradientAmplitude", 1, 1, "PrivateTag",
+      EVR_UN, "RADProtocolMedium", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
+      "DIDI TO PCR 1.1" }
+  , { 0x0019, 0x0071, 0x0019, 0x0071,
+      EVR_SS, "SetIfFatqEstimatesWereUsed", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x0071, 0x0019, 0x0071,
       EVR_UN, "ExposureChannelFirstImage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x0019, 0x0071, 0x0019, 0x0071,
+      EVR_LT, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  GEN" }
+  , { 0x0019, 0x0071, 0x0019, 0x0071,
+      EVR_DS, "ReadoutGradientAmplitude", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  COAD" }
+  , { 0x0019, 0x0071, 0x0019, 0x0071,
+      EVR_DS, "InterpolationFactor", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x0071, 0x0019, 0x0071,
+      EVR_IS, "NoOfSplitExposureFrames", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
+  , { 0x0019, 0x0071, 0x0019, 0x0071,
+      EVR_IS, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0072, 0x0019, 0x0072,
+      EVR_SL, "CalibrationSystemFactor", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0072, 0x0019, 0x0072,
       EVR_DS, "ZChannelAvgOverViews", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0072, 0x0019, 0x0072,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      EVR_US, "ProcessingChannel", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
+      "SPI-P Release 1" }
   , { 0x0019, 0x0072, 0x0019, 0x0072,
       EVR_DS, "SelectionGradientAmplitude", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8263,17 +8255,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0072, 0x0019, 0x0072,
-      EVR_SL, "CalibrationSystemFactor", 1, -1, "PrivateTag",
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0072, 0x0019, 0x0072,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x0072, 0x0019, 0x0072,
-      EVR_US, "ProcessingChannel", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
   , { 0x0019, 0x0073, 0x0019, 0x0073,
       EVR_DS, "AvgOfLeftRefChannelsOverViews", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8283,13 +8271,17 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0074, 0x0019, 0x0074,
+      EVR_SL, "CalibrationSystemCorrection", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0074, 0x0019, 0x0074,
       EVR_DS, "MaxLeftChannelOverViews", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0074, 0x0019, 0x0074,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      EVR_LO, "FilterMaterial1", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
+      "SVISION" }
   , { 0x0019, 0x0074, 0x0019, 0x0074,
       EVR_IS, "NumberOfProjections", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8299,53 +8291,49 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0074, 0x0019, 0x0074,
-      EVR_SL, "CalibrationSystemCorrection", 1, -1, "PrivateTag",
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0074, 0x0019, 0x0074,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x0074, 0x0019, 0x0074,
-      EVR_LO, "FilterMaterial1", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
-  , { 0x0019, 0x0075, 0x0019, 0x0075,
-      EVR_DS, "AvgOfRightRefChannelsOverViews", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0075, 0x0019, 0x0075,
-      EVR_IS, "NumberOfBytes", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  GEN" }
   , { 0x0019, 0x0075, 0x0019, 0x0075,
       EVR_LT, "UIDOriginalImage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
   , { 0x0019, 0x0075, 0x0019, 0x0075,
+      EVR_DS, "AvgOfRightRefChannelsOverViews", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x0075, 0x0019, 0x0075,
       EVR_LO, "FilterMaterial2", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0019, 0x0076, 0x0019, 0x0076,
-      EVR_DS, "MaxRightChannelOverViews", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0075, 0x0019, 0x0075,
+      EVR_IS, "NumberOfBytes", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0076, 0x0019, 0x0076,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
+      "SIEMENS CT VA0  GEN" }
   , { 0x0019, 0x0076, 0x0019, 0x0076,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
   , { 0x0019, 0x0076, 0x0019, 0x0076,
+      EVR_SL, "CalibrationSystemIIFormats", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0076, 0x0019, 0x0076,
+      EVR_DS, "MaxRightChannelOverViews", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x0076, 0x0019, 0x0076,
       EVR_SL, "FillingAverageFactor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0076, 0x0019, 0x0076,
-      EVR_SL, "CalibrationSystemIIFormats", 1, -1, "PrivateTag",
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
+      "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0076, 0x0019, 0x0076,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8355,53 +8343,53 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0078, 0x0019, 0x0078,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0078, 0x0019, 0x0078,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x0078, 0x0019, 0x0078,
       EVR_SL, "CalibrationGantryDataValid", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0078, 0x0019, 0x0078,
+      EVR_DS, "FilterThickness1", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
+  , { 0x0019, 0x0078, 0x0019, 0x0078,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0078, 0x0019, 0x0078,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0078, 0x0019, 0x0078,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x0078, 0x0019, 0x0078,
-      EVR_DS, "FilterThickness1", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0079, 0x0019, 0x0079,
+      EVR_DS, "FilterThickness2", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
   , { 0x0019, 0x0079, 0x0019, 0x0079,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0079, 0x0019, 0x0079,
-      EVR_DS, "FilterThickness2", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
-  , { 0x0019, 0x007a, 0x0019, 0x007a,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
   , { 0x0019, 0x007a, 0x0019, 0x007a,
       EVR_SS, "CollimatorSquareBreadth", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x007a, 0x0019, 0x007a,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x007a, 0x0019, 0x007a,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
   , { 0x0019, 0x007c, 0x0019, 0x007c,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x007c, 0x0019, 0x007c,
       EVR_SS, "CollimatorSquareHeight", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x007c, 0x0019, 0x007c,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
   , { 0x0019, 0x007c, 0x0019, 0x007c,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8411,6 +8399,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x007e, 0x0019, 0x007e,
+      EVR_SS, "CollimatorSquareDiameter", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x007e, 0x0019, 0x007e,
       EVR_SS, "NumberOfEchos", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -8418,10 +8410,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
-  , { 0x0019, 0x007e, 0x0019, 0x007e,
-      EVR_SS, "CollimatorSquareDiameter", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x007e, 0x0019, 0x007e,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8431,109 +8419,85 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0080, 0x0019, 0x0080,
-      EVR_IS, "ReadingPositionSpecification", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
-  , { 0x0019, 0x0080, 0x0019, 0x0080,
-      EVR_LO, "CRBarCodeNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GE ??? From Adantage Review CS" }
-  , { 0x0019, 0x0080, 0x0019, 0x0080,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR SPECTRO;1" }
-  , { 0x0019, 0x0080, 0x0019, 0x0080,
-      EVR_LT, "PatientRegion", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x0080, 0x0019, 0x0080,
-      EVR_LT, "ReconstructionAlgorithmSet", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  GEN" }
-  , { 0x0019, 0x0080, 0x0019, 0x0080,
-      EVR_LT, "ReaderHeader", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
-  , { 0x0019, 0x0080, 0x0019, 0x0080,
-      EVR_DS, "GradientDelayTime", 3, 3, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x0080, 0x0019, 0x0080,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x0080, 0x0019, 0x0080,
       EVR_SS, "CollimaterFingerTurnAngle", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0080, 0x0019, 0x0080,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
+      "SPI-P-GV-CT Release 1" }
   , { 0x0019, 0x0080, 0x0019, 0x0080,
       EVR_DS, "AcquisitionDelay", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
   , { 0x0019, 0x0080, 0x0019, 0x0080,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
-  , { 0x0019, 0x0080, 0x0019, 0x0080,
       EVR_IS, "BuckyFormat", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0019, 0x0081, 0x0019, 0x0081,
-      EVR_IS, "ReadingSensitivityCenter", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0080, 0x0019, 0x0080,
+      EVR_LO, "CRBarCodeNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GE ??? From Adantage Review CS" }
+  , { 0x0019, 0x0080, 0x0019, 0x0080,
+      EVR_DS, "GradientDelayTime", 3, 3, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  COAD" }
+  , { 0x0019, 0x0080, 0x0019, 0x0080,
+      EVR_LT, "ReconstructionAlgorithmSet", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  GEN" }
+  , { 0x0019, 0x0080, 0x0019, 0x0080,
+      EVR_LT, "PatientRegion", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x0080, 0x0019, 0x0080,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0080, 0x0019, 0x0080,
+      EVR_IS, "ReadingPositionSpecification", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
+  , { 0x0019, 0x0080, 0x0019, 0x0080,
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0080, 0x0019, 0x0080,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0080, 0x0019, 0x0080,
+      EVR_LT, "ReaderHeader", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
   , { 0x0019, 0x0081, 0x0019, 0x0081,
       EVR_SS, "Contiguous", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0081, 0x0019, 0x0081,
-      EVR_LT, "ReconstructionAlgorithmIndex", 1, 1, "PrivateTag",
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  GEN" }
-  , { 0x0019, 0x0081, 0x0019, 0x0081,
-      EVR_LT, "FilterTypeForRawData", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
+      "SPI-P-GV-CT Release 1" }
   , { 0x0019, 0x0081, 0x0019, 0x0081,
       EVR_UN, "RelativeImageTime", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
   , { 0x0019, 0x0081, 0x0019, 0x0081,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
-  , { 0x0019, 0x0081, 0x0019, 0x0081,
       EVR_IS, "ObjectPosition", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0019, 0x0082, 0x0019, 0x0082,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0082, 0x0019, 0x0082,
-      EVR_LT, "PatientPhaseOfLife", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x0082, 0x0019, 0x0082,
-      EVR_LT, "RegenerationSoftwareVersion", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0081, 0x0019, 0x0081,
+      EVR_LT, "ReconstructionAlgorithmIndex", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
-  , { 0x0019, 0x0082, 0x0019, 0x0082,
-      EVR_DS, "TotalGradientDelayTime", 1, 1, "PrivateTag",
+  , { 0x0019, 0x0081, 0x0019, 0x0081,
+      EVR_IS, "ReadingSensitivityCenter", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x0082, 0x0019, 0x0082,
-      EVR_DS, "FilterParameterForRawData", 1, -1, "PrivateTag",
+      "FDMS 1.0" }
+  , { 0x0019, 0x0081, 0x0019, 0x0081,
+      EVR_LT, "FilterTypeForRawData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0082, 0x0019, 0x0082,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
   , { 0x0019, 0x0082, 0x0019, 0x0082,
       EVR_SS, "CollimaterFingerPosition", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8541,7 +8505,31 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0019, 0x0082, 0x0019, 0x0082,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x0082, 0x0019, 0x0082,
+      EVR_DS, "TotalGradientDelayTime", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  COAD" }
+  , { 0x0019, 0x0082, 0x0019, 0x0082,
+      EVR_LT, "RegenerationSoftwareVersion", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  GEN" }
+  , { 0x0019, 0x0082, 0x0019, 0x0082,
+      EVR_LT, "PatientPhaseOfLife", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x0082, 0x0019, 0x0082,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0082, 0x0019, 0x0082,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0082, 0x0019, 0x0082,
+      EVR_DS, "FilterParameterForRawData", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0083, 0x0019, 0x0083,
       EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8551,25 +8539,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0084, 0x0019, 0x0084,
+      EVR_SS, "CollimaterDiaphragmTurnAngle", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0084, 0x0019, 0x0084,
       EVR_DS, "PeakSAR", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x0084, 0x0019, 0x0084,
-      EVR_DS, "FilterParameterForImageData", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0084, 0x0019, 0x0084,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0084, 0x0019, 0x0084,
-      EVR_SS, "CollimaterDiaphragmTurnAngle", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0084, 0x0019, 0x0084,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0084, 0x0019, 0x0084,
+      EVR_DS, "FilterParameterForImageData", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0085, 0x0019, 0x0085,
       EVR_SS, "MonitorSAR", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8579,25 +8567,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0086, 0x0019, 0x0086,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x0086, 0x0019, 0x0086,
-      EVR_DS, "FilterParameterForPhaseCorrection", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0086, 0x0019, 0x0086,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x0086, 0x0019, 0x0086,
       EVR_SS, "CollimaterDiaphragmPosition1", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0086, 0x0019, 0x0086,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x0086, 0x0019, 0x0086,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
+  , { 0x0019, 0x0086, 0x0019, 0x0086,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0086, 0x0019, 0x0086,
+      EVR_DS, "FilterParameterForPhaseCorrection", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0087, 0x0019, 0x0087,
       EVR_DS, "CardiacRepetitionTime", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8607,6 +8595,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0088, 0x0019, 0x0088,
+      EVR_SS, "CollimaterDiaphragmPosition2", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0088, 0x0019, 0x0088,
       EVR_SS, "ImagesPerCardiacCycle", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -8615,21 +8607,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
   , { 0x0019, 0x0088, 0x0019, 0x0088,
-      EVR_DS, "NormalizationFilterParameterForImageData", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0088, 0x0019, 0x0088,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0088, 0x0019, 0x0088,
-      EVR_SS, "CollimaterDiaphragmPosition2", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0088, 0x0019, 0x0088,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0088, 0x0019, 0x0088,
+      EVR_DS, "NormalizationFilterParameterForImageData", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x008a, 0x0019, 0x008a,
+      EVR_SS, "CollimaterDiaphragmMode", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x008a, 0x0019, 0x008a,
       EVR_SS, "ActualReceiveGainAnalog", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8639,10 +8631,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x008a, 0x0019, 0x008a,
-      EVR_SS, "CollimaterDiaphragmMode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x008a, 0x0019, 0x008a,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
@@ -8651,13 +8639,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x008c, 0x0019, 0x008c,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x008c, 0x0019, 0x008c,
       EVR_SS, "CollimaterBeamLimitBreadth", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x008c, 0x0019, 0x008c,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
   , { 0x0019, 0x008c, 0x0019, 0x008c,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8667,13 +8655,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x008e, 0x0019, 0x008e,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x008e, 0x0019, 0x008e,
       EVR_SS, "CollimaterBeamLimitHeight", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x008e, 0x0019, 0x008e,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
   , { 0x0019, 0x008e, 0x0019, 0x008e,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8681,71 +8669,67 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0019, 0x008f, 0x0019, 0x008f,
       EVR_SS, "SwapPhaseFrequency", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
+      "GE_GENESIS_REV3.0" }
   , { 0x0019, 0x008f, 0x0019, 0x008f,
       EVR_SS, "SwapPhaseFrequency", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GE_GENESIS_REV3.0" }
-  , { 0x0019, 0x0090, 0x0019, 0x0090,
-      EVR_LO, "UnprocessedFlag", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "DIDI TO PCR 1.1" }
-  , { 0x0019, 0x0090, 0x0019, 0x0090,
-      EVR_SH, "FilmAnnotationCharacterString1", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
-  , { 0x0019, 0x0090, 0x0019, 0x0090,
-      EVR_LO, "CRFilmOutputExposures", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GE ??? From Adantage Review CS" }
-  , { 0x0019, 0x0090, 0x0019, 0x0090,
-      EVR_SS, "PauseInterval", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x0090, 0x0019, 0x0090,
-      EVR_DS, "OsteoOffset", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x0090, 0x0019, 0x0090,
-      EVR_LT, "PLAOfSecondaryDestination", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
-  , { 0x0019, 0x0090, 0x0019, 0x0090,
-      EVR_LT, "SensitivityCorrectionLabel", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x0090, 0x0019, 0x0090,
-      EVR_IS, "NumberOfSaturationRegions", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0090, 0x0019, 0x0090,
       EVR_SS, "CollimaterBeamLimitDiameter", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0090, 0x0019, 0x0090,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      EVR_LO, "UnprocessedFlag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
+      "DIDI TO PCR 1.1" }
   , { 0x0019, 0x0090, 0x0019, 0x0090,
-      EVR_CS, "VideoWhiteCompression", 1, 1, "PrivateTag",
+      EVR_SS, "PauseInterval", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x0090, 0x0019, 0x0090,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
   , { 0x0019, 0x0090, 0x0019, 0x0090,
+      EVR_CS, "VideoWhiteCompression", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
+  , { 0x0019, 0x0090, 0x0019, 0x0090,
+      EVR_LO, "CRFilmOutputExposures", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GE ??? From Adantage Review CS" }
+  , { 0x0019, 0x0090, 0x0019, 0x0090,
       EVR_LO, "DeskCommand", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0019, 0x0090, 0x0019, 0x0090,
+      EVR_LT, "SensitivityCorrectionLabel", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  COAD" }
+  , { 0x0019, 0x0090, 0x0019, 0x0090,
+      EVR_DS, "OsteoOffset", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x0090, 0x0019, 0x0090,
+      EVR_SH, "FilmAnnotationCharacterString1", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
+  , { 0x0019, 0x0090, 0x0019, 0x0090,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0090, 0x0019, 0x0090,
+      EVR_IS, "NumberOfSaturationRegions", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x0090, 0x0019, 0x0090,
+      EVR_LT, "PLAOfSecondaryDestination", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
   , { 0x0019, 0x0091, 0x0019, 0x0091,
       EVR_UN, "KeyValues", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DIDI TO PCR 1.1" }
-  , { 0x0019, 0x0091, 0x0019, 0x0091,
-      EVR_SH, "FilmAnnotationCharacterString2", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
   , { 0x0019, 0x0091, 0x0019, 0x0091,
       EVR_DS, "PulseTime", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8755,9 +8739,17 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x0091, 0x0019, 0x0091,
+      EVR_SH, "FilmAnnotationCharacterString2", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
+  , { 0x0019, 0x0091, 0x0019, 0x0091,
       EVR_DS, "SaturationPhaseEncodingVectorSagittalComponent", 6, 6, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x0092, 0x0019, 0x0092,
+      EVR_SS, "X-RayControlMOde", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0092, 0x0019, 0x0092,
       EVR_UN, "DestinationPostprocessingFunction", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8767,29 +8759,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x0092, 0x0019, 0x0092,
-      EVR_DS, "OsteoRegressionLineSlope", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x0092, 0x0019, 0x0092,
       EVR_DS, "SaturationReadoutVectorCoronalComponent", 6, 6, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x0092, 0x0019, 0x0092,
-      EVR_DS, "SaturationReadoutVectorSagittalComponent", 6, 6, "PrivateTag",
+      EVR_DS, "OsteoRegressionLineSlope", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
+      "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x0092, 0x0019, 0x0092,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0092, 0x0019, 0x0092,
-      EVR_SS, "X-RayControlMOde", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0092, 0x0019, 0x0092,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0092, 0x0019, 0x0092,
+      EVR_DS, "SaturationReadoutVectorSagittalComponent", 6, 6, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0093, 0x0019, 0x0093,
       EVR_DS, "CenterFrequency", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8803,6 +8791,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0094, 0x0019, 0x0094,
+      EVR_SS, "X-RaySystem", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0094, 0x0019, 0x0094,
       EVR_SS, "TransmitGain", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -8811,25 +8803,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x0094, 0x0019, 0x0094,
-      EVR_DS, "ImageRotationAngle", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0094, 0x0019, 0x0094,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0094, 0x0019, 0x0094,
-      EVR_SS, "X-RaySystem", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0094, 0x0019, 0x0094,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0094, 0x0019, 0x0094,
+      EVR_DS, "ImageRotationAngle", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0095, 0x0019, 0x0095,
       EVR_SS, "AnalogReceiverGain", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
+  , { 0x0019, 0x0096, 0x0019, 0x0096,
+      EVR_SS, "FocalSpot", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0096, 0x0019, 0x0096,
       EVR_SS, "DigitalReceiverGain", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8839,21 +8831,17 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x0096, 0x0019, 0x0096,
-      EVR_UL, "CoilIDMask", 3, 3, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x0096, 0x0019, 0x0096,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0096, 0x0019, 0x0096,
-      EVR_SS, "FocalSpot", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0096, 0x0019, 0x0096,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0096, 0x0019, 0x0096,
+      EVR_UL, "CoilIDMask", 3, 3, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0097, 0x0019, 0x0097,
       EVR_SL, "BitmapDefiningCVs", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8863,37 +8851,37 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0098, 0x0019, 0x0098,
+      EVR_SS, "ExposureControl", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x0098, 0x0019, 0x0098,
       EVR_SS, "CenterFrequencyMethod", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x0098, 0x0019, 0x0098,
-      EVR_DS, "CoilPosition", 3, 3, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0098, 0x0019, 0x0098,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0098, 0x0019, 0x0098,
-      EVR_SS, "ExposureControl", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x0098, 0x0019, 0x0098,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x0098, 0x0019, 0x0098,
+      EVR_DS, "CoilPosition", 3, 3, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0099, 0x0019, 0x0099,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x009a, 0x0019, 0x009a,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x009a, 0x0019, 0x009a,
       EVR_SL, "XRayVoltage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x009a, 0x0019, 0x009a,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
   , { 0x0019, 0x009a, 0x0019, 0x009a,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8903,21 +8891,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x009c, 0x0019, 0x009c,
-      EVR_LO, "PulseSequenceName", 1, 1, "PrivateTag",
+      EVR_SL, "XRayCurrent", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x009c, 0x0019, 0x009c,
       EVR_SS, "PulseSequenceName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GE_GENESIS_REV3.0" }
   , { 0x0019, 0x009c, 0x0019, 0x009c,
+      EVR_LO, "PulseSequenceName", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x009c, 0x0019, 0x009c,
       EVR_SL, "IntensifierLevelCalibrationFactor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
-  , { 0x0019, 0x009c, 0x0019, 0x009c,
-      EVR_SL, "XRayCurrent", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x009c, 0x0019, 0x009c,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8927,6 +8915,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x009e, 0x0019, 0x009e,
+      EVR_SL, "XRayCurrentTimeProduct", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x009e, 0x0019, 0x009e,
       EVR_LO, "InternalPulseSequenceName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -8935,21 +8927,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x009e, 0x0019, 0x009e,
-      EVR_SL, "XRayCurrentTimeProduct", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x009e, 0x0019, 0x009e,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
   , { 0x0019, 0x009f, 0x0019, 0x009f,
-      EVR_SS, "TransmittingCoil", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x009f, 0x0019, 0x009f,
       EVR_SS, "CoilType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GE_GENESIS_REV3.0" }
+  , { 0x0019, 0x009f, 0x0019, 0x009f,
+      EVR_SS, "TransmittingCoil", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x00a0, 0x0019, 0x00a0,
+      EVR_SL, "XRayPulseTime", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00a0, 0x0019, 0x00a0,
       EVR_UN, "Version", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8959,30 +8951,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00a0, 0x0019, 0x00a0,
-      EVR_DS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
-  , { 0x0019, 0x00a0, 0x0019, 0x00a0,
-      EVR_US, "RFWatchdogMask", 3, 3, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x00a0, 0x0019, 0x00a0,
-      EVR_DS, "EPIReconstructionPhase", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0019, 0x00a0, 0x0019, 0x00a0,
-      EVR_SL, "XRayPulseTime", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00a0, 0x0019, 0x00a0,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x00a0, 0x0019, 0x00a0,
-      EVR_US, "Angulation", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
-  , { 0x0019, 0x00a0, 0x0019, 0x00a0,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
@@ -8990,6 +8958,26 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "ExtendedExposureTime", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0019, 0x00a0, 0x0019, 0x00a0,
+      EVR_US, "Angulation", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
+  , { 0x0019, 0x00a0, 0x0019, 0x00a0,
+      EVR_US, "RFWatchdogMask", 3, 3, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  COAD" }
+  , { 0x0019, 0x00a0, 0x0019, 0x00a0,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x00a0, 0x0019, 0x00a0,
+      EVR_DS, "EPIReconstructionPhase", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x00a0, 0x0019, 0x00a0,
+      EVR_DS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS DLR.01" }
   , { 0x0019, 0x00a1, 0x0019, 0x00a1,
       EVR_UN, "RangingMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -8999,9 +8987,17 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00a1, 0x0019, 0x00a1,
-      EVR_DS, "Unknown", 1, 1, "PrivateTag",
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS DLR.01" }
+      "SPI-P-GV-CT Release 1" }
+  , { 0x0019, 0x00a1, 0x0019, 0x00a1,
+      EVR_DS, "ActualExposureTime", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
+  , { 0x0019, 0x00a1, 0x0019, 0x00a1,
+      EVR_US, "Rotation", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
   , { 0x0019, 0x00a1, 0x0019, 0x00a1,
       EVR_DS, "EPIReconstructionSlope", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9011,17 +9007,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x00a1, 0x0019, 0x00a1,
-      EVR_US, "Rotation", 1, 1, "PrivateTag",
+      EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
-  , { 0x0019, 0x00a1, 0x0019, 0x00a1,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      "SIEMENS DLR.01" }
+  , { 0x0019, 0x00a2, 0x0019, 0x00a2,
+      EVR_SL, "XRaySceneTimeFluoroClock", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
-  , { 0x0019, 0x00a1, 0x0019, 0x00a1,
-      EVR_DS, "ActualExposureTime", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00a2, 0x0019, 0x00a2,
       EVR_UN, "AbdomenBrightness", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9031,6 +9023,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00a2, 0x0019, 0x00a2,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-GV-CT Release 1" }
+  , { 0x0019, 0x00a2, 0x0019, 0x00a2,
       EVR_DS, "RFPowerErrorIndicator", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
@@ -9039,17 +9035,9 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x00a2, 0x0019, 0x00a2,
-      EVR_SL, "XRaySceneTimeFluoroClock", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00a2, 0x0019, 0x00a2,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x00a2, 0x0019, 0x00a2,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
   , { 0x0019, 0x00a3, 0x0019, 0x00a3,
       EVR_UN, "FixedBrightness", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9059,13 +9047,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00a3, 0x0019, 0x00a3,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x00a3, 0x0019, 0x00a3,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
+  , { 0x0019, 0x00a3, 0x0019, 0x00a3,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x00a4, 0x0019, 0x00a4,
+      EVR_SS, "MaximumPulseRate", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00a4, 0x0019, 0x00a4,
+      EVR_SS, "SATFatWaterBone", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GE_GENESIS_REV3.0" }
   , { 0x0019, 0x00a4, 0x0019, 0x00a4,
       EVR_UN, "DetailContrast", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9075,10 +9071,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00a4, 0x0019, 0x00a4,
-      EVR_SS, "SATFatWaterBone", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GE_GENESIS_REV3.0" }
-  , { 0x0019, 0x00a4, 0x0019, 0x00a4,
       EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
@@ -9086,10 +9078,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "AcquisitionMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
-  , { 0x0019, 0x00a4, 0x0019, 0x00a4,
-      EVR_SS, "MaximumPulseRate", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00a4, 0x0019, 0x00a4,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9103,37 +9091,37 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00a5, 0x0019, 0x00a5,
-      EVR_DS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x00a5, 0x0019, 0x00a5,
       EVR_DS, "SpecificAbsorptionRateWholeBody", 3, 3, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x00a5, 0x0019, 0x00a5,
-      EVR_SS, "AcquisitonFrameRate", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0019, 0x00a6, 0x0019, 0x00a6,
-      EVR_UN, "StructureBoost", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "DIDI TO PCR 1.1" }
-  , { 0x0019, 0x00a6, 0x0019, 0x00a6,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x00a6, 0x0019, 0x00a6,
-      EVR_DS, "SpecificEnergyDose", 3, 3, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x00a6, 0x0019, 0x00a6,
-      EVR_SL, "ECGFlag", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00a5, 0x0019, 0x00a5,
+      EVR_SS, "AcquisitonFrameRate", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x00a6, 0x0019, 0x00a6,
       EVR_SS, "PulsesPerScene", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00a6, 0x0019, 0x00a6,
+      EVR_UN, "StructureBoost", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "DIDI TO PCR 1.1" }
+  , { 0x0019, 0x00a6, 0x0019, 0x00a6,
+      EVR_DS, "SpecificEnergyDose", 3, 3, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  COAD" }
+  , { 0x0019, 0x00a6, 0x0019, 0x00a6,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x00a6, 0x0019, 0x00a6,
+      EVR_SL, "ECGFlag", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
   , { 0x0019, 0x00a6, 0x0019, 0x00a6,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9155,6 +9143,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x00a8, 0x0019, 0x00a8,
+      EVR_SL, "DoseAreaProductOfScene", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00a8, 0x0019, 0x00a8,
       EVR_UN, "NoiseRobustness", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DIDI TO PCR 1.1" }
@@ -9162,6 +9154,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "UserData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
+  , { 0x0019, 0x00a8, 0x0019, 0x00a8,
+      EVR_DS, "ExtendedXRayTubeCurrent", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
   , { 0x0019, 0x00a8, 0x0019, 0x00a8,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9171,17 +9167,9 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x00a8, 0x0019, 0x00a8,
-      EVR_SL, "DoseAreaProductOfScene", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00a8, 0x0019, 0x00a8,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
-  , { 0x0019, 0x00a8, 0x0019, 0x00a8,
-      EVR_DS, "ExtendedXRayTubeCurrent", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
   , { 0x0019, 0x00a9, 0x0019, 0x00a9,
       EVR_UN, "NoiseDoseLimit", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9199,6 +9187,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x00aa, 0x0019, 0x00aa,
+      EVR_SS, "Dose", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00aa, 0x0019, 0x00aa,
       EVR_UN, "NoiseDoseStep", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DIDI TO PCR 1.1" }
@@ -9214,10 +9206,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SL, "Co2Flag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
-  , { 0x0019, 0x00aa, 0x0019, 0x00aa,
-      EVR_SS, "Dose", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00aa, 0x0019, 0x00aa,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9239,6 +9227,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x00ac, 0x0019, 0x00ac,
+      EVR_SS, "DoseRate", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00ac, 0x0019, 0x00ac,
       EVR_UN, "WeakContrastLimit", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DIDI TO PCR 1.1" }
@@ -9254,10 +9246,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "StepWidth", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
-  , { 0x0019, 0x00ac, 0x0019, 0x00ac,
-      EVR_SS, "DoseRate", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00ac, 0x0019, 0x00ac,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9279,6 +9267,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x00ae, 0x0019, 0x00ae,
+      EVR_SL, "IIToCoverDistance", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00ae, 0x0019, 0x00ae,
       EVR_UN, "StructureBoostOffset", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DIDI TO PCR 1.1" }
@@ -9290,10 +9282,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x00ae, 0x0019, 0x00ae,
-      EVR_SL, "IIToCoverDistance", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00af, 0x0019, 0x00af,
       EVR_UN, "SmoothGain", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9307,6 +9295,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
   , { 0x0019, 0x00b0, 0x0019, 0x00b0,
+      EVR_SS, "LastFramePhase1", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00b0, 0x0019, 0x00b0,
       EVR_UN, "MeasureField1", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DIDI TO PCR 1.1" }
@@ -9315,21 +9307,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00b0, 0x0019, 0x00b0,
-      EVR_DS, "FeedPerRotation", 1, 1, "PrivateTag",
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
+      "SPI-P-GV-CT Release 1" }
   , { 0x0019, 0x00b0, 0x0019, 0x00b0,
       EVR_UL, "AdjustmentStatusMask", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x00b0, 0x0019, 0x00b0,
-      EVR_SS, "LastFramePhase1", 1, 1, "PrivateTag",
+      EVR_DS, "FeedPerRotation", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x00b1, 0x0019, 0x00b1,
+      EVR_SS, "FrameRatePhase1", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00b0, 0x0019, 0x00b0,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00b1, 0x0019, 0x00b1,
+      EVR_IS, "MinimumRRInterval", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
+      "PHILIPS MR/LAST" }
   , { 0x0019, 0x00b1, 0x0019, 0x00b1,
       EVR_UN, "MeasureField2", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9339,17 +9335,17 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00b1, 0x0019, 0x00b1,
-      EVR_IS, "MinimumRRInterval", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0019, 0x00b1, 0x0019, 0x00b1,
-      EVR_SS, "FrameRatePhase1", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00b1, 0x0019, 0x00b1,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
+  , { 0x0019, 0x00b2, 0x0019, 0x00b2,
+      EVR_SS, "LastFramePhase2", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00b2, 0x0019, 0x00b2,
+      EVR_IS, "MaximumRRInterval", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
   , { 0x0019, 0x00b2, 0x0019, 0x00b2,
       EVR_UN, "KeyPercentile1", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9358,14 +9354,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "UserData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x00b2, 0x0019, 0x00b2,
-      EVR_IS, "MaximumRRInterval", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0019, 0x00b2, 0x0019, 0x00b2,
-      EVR_SS, "LastFramePhase2", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00b3, 0x0019, 0x00b3,
+      EVR_SS, "FrameRatePhase2", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00b3, 0x0019, 0x00b3,
+      EVR_IS, "NumberOfRejections", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
   , { 0x0019, 0x00b3, 0x0019, 0x00b3,
       EVR_UN, "KeyPercentile2", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9374,14 +9370,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "UserData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x00b3, 0x0019, 0x00b3,
-      EVR_IS, "NumberOfRejections", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0019, 0x00b3, 0x0019, 0x00b3,
-      EVR_SS, "FrameRatePhase2", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00b4, 0x0019, 0x00b4,
+      EVR_SS, "LastFramePhase3", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00b4, 0x0019, 0x00b4,
+      EVR_IS, "NumberOfRRIntervals", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
   , { 0x0019, 0x00b4, 0x0019, 0x00b4,
       EVR_UN, "DensityLUT", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9390,14 +9386,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "UserData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x00b4, 0x0019, 0x00b4,
-      EVR_IS, "NumberOfRRIntervals", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0019, 0x00b4, 0x0019, 0x00b4,
-      EVR_SS, "LastFramePhase3", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00b5, 0x0019, 0x00b5,
+      EVR_SS, "FrameRatePhase3", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00b5, 0x0019, 0x00b5,
+      EVR_IS, "ArrhythmiaRejection", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
   , { 0x0019, 0x00b5, 0x0019, 0x00b5,
       EVR_UN, "Brightness", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9406,12 +9402,8 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "UserData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x00b5, 0x0019, 0x00b5,
-      EVR_IS, "ArrhythmiaRejection", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0019, 0x00b5, 0x0019, 0x00b5,
-      EVR_SS, "FrameRatePhase3", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00b6, 0x0019, 0x00b6,
+      EVR_SS, "LastFramePhase4", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00b6, 0x0019, 0x00b6,
@@ -9422,19 +9414,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "UserData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x00b6, 0x0019, 0x00b6,
-      EVR_SS, "LastFramePhase4", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00b7, 0x0019, 0x00b7,
-      EVR_DS, "UserData", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
   , { 0x0019, 0x00b7, 0x0019, 0x00b7,
       EVR_SS, "FrameRatePhase4", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00b8, 0x0019, 0x00b8,
+  , { 0x0019, 0x00b7, 0x0019, 0x00b7,
       EVR_DS, "UserData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -9442,7 +9426,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "GammaOfNativeImage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00b9, 0x0019, 0x00b9,
+  , { 0x0019, 0x00b8, 0x0019, 0x00b8,
       EVR_DS, "UserData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -9450,11 +9434,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "GammaOfTVSystem", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00ba, 0x0019, 0x00ba,
+  , { 0x0019, 0x00b9, 0x0019, 0x00b9,
       EVR_DS, "UserData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x00bb, 0x0019, 0x00bb,
+  , { 0x0019, 0x00ba, 0x0019, 0x00ba,
       EVR_DS, "UserData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -9462,12 +9446,20 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SL, "PixelshiftX", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00bc, 0x0019, 0x00bc,
+  , { 0x0019, 0x00bb, 0x0019, 0x00bb,
       EVR_DS, "UserData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00bc, 0x0019, 0x00bc,
       EVR_SL, "PixelshiftY", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00bc, 0x0019, 0x00bc,
+      EVR_DS, "UserData", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x00bd, 0x0019, 0x00bd,
+      EVR_SL, "MaskAverageFactor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00bd, 0x0019, 0x00bd,
@@ -9478,8 +9470,8 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "PulmoTriggerLevel", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x00bd, 0x0019, 0x00bd,
-      EVR_SL, "MaskAverageFactor", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00be, 0x0019, 0x00be,
+      EVR_SL, "BlankingCircleFlag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00be, 0x0019, 0x00be,
@@ -9490,56 +9482,56 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "ExpiratoricReserveVolume", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x00be, 0x0019, 0x00be,
-      EVR_SL, "BlankingCircleFlag", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00bf, 0x0019, 0x00bf,
+      EVR_SL, "CircleRowStart", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00bf, 0x0019, 0x00bf,
       EVR_DS, "VitalCapacity", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x00bf, 0x0019, 0x00bf,
-      EVR_SL, "CircleRowStart", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00c0, 0x0019, 0x00c0,
-      EVR_SS, "SaturationPlanes", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x00c0, 0x0019, 0x00c0,
-      EVR_SS, "BitmapOfSATSelections", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GE_GENESIS_REV3.0" }
   , { 0x0019, 0x00c0, 0x0019, 0x00c0,
       EVR_DS, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
   , { 0x0019, 0x00c0, 0x0019, 0x00c0,
+      EVR_SL, "CircleRowEnd", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00c0, 0x0019, 0x00c0,
+      EVR_SS, "BitmapOfSATSelections", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GE_GENESIS_REV3.0" }
+  , { 0x0019, 0x00c0, 0x0019, 0x00c0,
+      EVR_SS, "SaturationPlanes", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x00c0, 0x0019, 0x00c0,
       EVR_DS, "PulmoWater", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x00c0, 0x0019, 0x00c0,
-      EVR_SL, "CircleRowEnd", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00c1, 0x0019, 0x00c1,
+      EVR_SL, "CircleColumnStart", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00c1, 0x0019, 0x00c1,
       EVR_SS, "SurfaceCoilIntensityCorrectionFlag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
+      "GE_GENESIS_REV3.0" }
   , { 0x0019, 0x00c1, 0x0019, 0x00c1,
       EVR_SS, "SurfaceCoilIntensityCorrectionFlag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GE_GENESIS_REV3.0" }
-  , { 0x0019, 0x00c1, 0x0019, 0x00c1,
-      EVR_DS, "PulmoAir", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x00c1, 0x0019, 0x00c1,
       EVR_DS, "EPICapacity", 6, 6, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x00c1, 0x0019, 0x00c1,
-      EVR_SL, "CircleColumnStart", 1, 1, "PrivateTag",
+      EVR_DS, "PulmoAir", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x00c2, 0x0019, 0x00c2,
+      EVR_SL, "CircleColumnEnd", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00c2, 0x0019, 0x00c2,
@@ -9547,15 +9539,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00c2, 0x0019, 0x00c2,
-      EVR_DA, "PulmoDate", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x00c2, 0x0019, 0x00c2,
       EVR_DS, "EPIInductance", 3, 3, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x00c2, 0x0019, 0x00c2,
-      EVR_SL, "CircleColumnEnd", 1, 1, "PrivateTag",
+      EVR_DA, "PulmoDate", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x00c3, 0x0019, 0x00c3,
+      EVR_SL, "CircleDiameter", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00c3, 0x0019, 0x00c3,
@@ -9563,15 +9555,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00c3, 0x0019, 0x00c3,
-      EVR_TM, "PulmoTime", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  COAD" }
-  , { 0x0019, 0x00c3, 0x0019, 0x00c3,
       EVR_IS, "EPISwitchConfigurationCode", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x00c3, 0x0019, 0x00c3,
-      EVR_SL, "CircleDiameter", 1, 1, "PrivateTag",
+      EVR_TM, "PulmoTime", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  COAD" }
+  , { 0x0019, 0x00c4, 0x0019, 0x00c4,
+      EVR_SL, "RectangularCollimaterFlag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00c4, 0x0019, 0x00c4,
@@ -9582,8 +9574,8 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "EPISwitchHardwareCode", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x00c4, 0x0019, 0x00c4,
-      EVR_SL, "RectangularCollimaterFlag", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00c5, 0x0019, 0x00c5,
+      EVR_SL, "RectangleRowStart", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00c5, 0x0019, 0x00c5,
@@ -9594,14 +9586,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "EPISwitchDelayTime", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x00c5, 0x0019, 0x00c5,
-      EVR_SL, "RectangleRowStart", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00c6, 0x0019, 0x00c6,
-      EVR_SS, "SATLocationH", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
   , { 0x0019, 0x00c6, 0x0019, 0x00c6,
       EVR_IS, "CycledMultipleSlice", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9610,72 +9594,72 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SL, "RectangleRowEnd", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00c7, 0x0019, 0x00c7,
-      EVR_SS, "SATLocationF", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00c6, 0x0019, 0x00c6,
+      EVR_SS, "SATLocationH", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00c7, 0x0019, 0x00c7,
       EVR_SL, "RectangleColumnStart", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00c8, 0x0019, 0x00c8,
-      EVR_SS, "SATThicknessRL", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00c7, 0x0019, 0x00c7,
+      EVR_SS, "SATLocationF", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00c8, 0x0019, 0x00c8,
       EVR_SL, "RectangleColumnEnd", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00c9, 0x0019, 0x00c9,
-      EVR_SS, "SATThicknessAP", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00c8, 0x0019, 0x00c8,
+      EVR_SS, "SATThicknessRL", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00c9, 0x0019, 0x00c9,
       EVR_SL, "RectangleAngulation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00ca, 0x0019, 0x00ca,
-      EVR_SS, "SATThicknessHF", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00c9, 0x0019, 0x00c9,
+      EVR_SS, "SATThicknessAP", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00ca, 0x0019, 0x00ca,
       EVR_SL, "IrisCollimatorFlag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00cb, 0x0019, 0x00cb,
-      EVR_SS, "PrescribedFlowAxis", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00ca, 0x0019, 0x00ca,
+      EVR_SS, "SATThicknessHF", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
+  , { 0x0019, 0x00cb, 0x0019, 0x00cb,
+      EVR_SL, "IrisRowStart", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00cb, 0x0019, 0x00cb,
       EVR_SS, "PhaseContrastFlowAxis", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GE_GENESIS_REV3.0" }
   , { 0x0019, 0x00cb, 0x0019, 0x00cb,
-      EVR_SL, "IrisRowStart", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00cc, 0x0019, 0x00cc,
-      EVR_SS, "VelocityEncoding", 1, 1, "PrivateTag",
+      EVR_SS, "PrescribedFlowAxis", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
+  , { 0x0019, 0x00cc, 0x0019, 0x00cc,
+      EVR_SL, "IrisRowEnd", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00cc, 0x0019, 0x00cc,
       EVR_SS, "PhaseContrastVelocityEncoding", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GE_GENESIS_REV3.0" }
   , { 0x0019, 0x00cc, 0x0019, 0x00cc,
-      EVR_SL, "IrisRowEnd", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00cd, 0x0019, 0x00cd,
-      EVR_SS, "ThicknessDisclaimer", 1, 1, "PrivateTag",
+      EVR_SS, "VelocityEncoding", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00cd, 0x0019, 0x00cd,
       EVR_SL, "IrisColumnStart", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00ce, 0x0019, 0x00ce,
-      EVR_SS, "PrescanType", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00cd, 0x0019, 0x00cd,
+      EVR_SS, "ThicknessDisclaimer", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00ce, 0x0019, 0x00ce,
@@ -9686,24 +9670,32 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SL, "IrisColumnEnd", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00cf, 0x0019, 0x00cf,
-      EVR_SS, "PrescanStatus", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00ce, 0x0019, 0x00ce,
+      EVR_SS, "PrescanType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00cf, 0x0019, 0x00cf,
       EVR_SL, "IrisAngulation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00cf, 0x0019, 0x00cf,
+      EVR_SS, "PrescanStatus", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x00d0, 0x0019, 0x00d0,
       EVR_SH, "RawDataType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00d1, 0x0019, 0x00d1,
+      EVR_SS, "NumberOfFramesPlane", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00d1, 0x0019, 0x00d1,
       EVR_DS, "FlowSensitivity", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x00d1, 0x0019, 0x00d1,
-      EVR_SS, "NumberOfFramesPlane", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00d2, 0x0019, 0x00d2,
+      EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00d2, 0x0019, 0x00d2,
@@ -9714,7 +9706,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LT, "CalculationSubmode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x00d2, 0x0019, 0x00d2,
+  , { 0x0019, 0x00d3, 0x0019, 0x00d3,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
@@ -9726,7 +9718,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "FieldOfViewRatio", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x00d3, 0x0019, 0x00d3,
+  , { 0x0019, 0x00d4, 0x0019, 0x00d4,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
@@ -9738,28 +9730,32 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "BaseRawMatrixSize", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x00d4, 0x0019, 0x00d4,
+  , { 0x0019, 0x00d5, 0x0019, 0x00d5,
+      EVR_DS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
+  , { 0x0019, 0x00d5, 0x0019, 0x00d5,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00d5, 0x0019, 0x00d5,
       EVR_SS, "FractionalEcho", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
+      "GE_GENESIS_REV3.0" }
   , { 0x0019, 0x00d5, 0x0019, 0x00d5,
       EVR_SS, "FractionalEcho", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GE_GENESIS_REV3.0" }
-  , { 0x0019, 0x00d5, 0x0019, 0x00d5,
-      EVR_DS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x00d5, 0x0019, 0x00d5,
       EVR_IS, "2DOversamplingLines", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x00d5, 0x0019, 0x00d5,
-      EVR_SS, "Internal", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00d6, 0x0019, 0x00d6,
+      EVR_IS, "FourierInterpolation", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
+  , { 0x0019, 0x00d6, 0x0019, 0x00d6,
+      EVR_SS, "Internal", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00d6, 0x0019, 0x00d6,
@@ -9767,14 +9763,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00d6, 0x0019, 0x00d6,
-      EVR_IS, "FourierInterpolation", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0019, 0x00d6, 0x0019, 0x00d6,
       EVR_IS, "3DPhaseOversamplingPartitions", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x00d6, 0x0019, 0x00d6,
+  , { 0x0019, 0x00d7, 0x0019, 0x00d7,
       EVR_SS, "Internal", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
@@ -9786,43 +9778,43 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "EchoLinePosition", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x00d7, 0x0019, 0x00d7,
-      EVR_SS, "Internal", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00d8, 0x0019, 0x00d8,
-      EVR_SS, "VariableEchoFlag", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x00d8, 0x0019, 0x00d8,
-      EVR_SS, "VariableEchoFlag", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GE_GENESIS_REV3.0" }
-  , { 0x0019, 0x00d8, 0x0019, 0x00d8,
-      EVR_IS, "EchoColumnPosition", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x00d8, 0x0019, 0x00d8,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00d9, 0x0019, 0x00d9,
-      EVR_DS, "ConcatenatedSAT", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x00d9, 0x0019, 0x00d9,
-      EVR_DS, "ConcatenatedSat", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00d8, 0x0019, 0x00d8,
+      EVR_SS, "VariableEchoFlag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GE_GENESIS_REV3.0" }
+  , { 0x0019, 0x00d8, 0x0019, 0x00d8,
+      EVR_SS, "VariableEchoFlag", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x00d8, 0x0019, 0x00d8,
+      EVR_IS, "EchoColumnPosition", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  COAD" }
   , { 0x0019, 0x00d9, 0x0019, 0x00d9,
       EVR_IS, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
   , { 0x0019, 0x00d9, 0x0019, 0x00d9,
+      EVR_SS, "Internal", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA PLANE A" }
+  , { 0x0019, 0x00d9, 0x0019, 0x00d9,
+      EVR_DS, "ConcatenatedSat", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GE_GENESIS_REV3.0" }
+  , { 0x0019, 0x00d9, 0x0019, 0x00d9,
+      EVR_DS, "ConcatenatedSAT", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
+  , { 0x0019, 0x00d9, 0x0019, 0x00d9,
       EVR_IS, "LinesPerSegment", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x00d9, 0x0019, 0x00d9,
+  , { 0x0019, 0x00da, 0x0019, 0x00da,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
@@ -9834,7 +9826,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LT, "PhaseCodingDirection", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  COAD" }
-  , { 0x0019, 0x00da, 0x0019, 0x00da,
+  , { 0x0019, 0x00db, 0x0019, 0x00db,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
@@ -9842,7 +9834,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "BackProjectorCoefficient", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x00db, 0x0019, 0x00db,
+  , { 0x0019, 0x00dc, 0x0019, 0x00dc,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
@@ -9850,35 +9842,27 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "PrimarySpeedCorrectionUsed", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x00dc, 0x0019, 0x00dc,
-      EVR_SS, "Internal", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00dd, 0x0019, 0x00dd,
+      EVR_SL, "AnatomicBackground", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00dd, 0x0019, 0x00dd,
       EVR_SS, "OverrangeCorrectionUsed", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x00dd, 0x0019, 0x00dd,
-      EVR_SL, "AnatomicBackground", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00de, 0x0019, 0x00de,
+      EVR_SL, "AutoWindowBase", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x00de, 0x0019, 0x00de,
       EVR_DS, "DynamicZAlphaValue", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
-  , { 0x0019, 0x00de, 0x0019, 0x00de,
-      EVR_SL, "AutoWindowBase", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00df, 0x0019, 0x00df,
-      EVR_DS, "UserData", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
   , { 0x0019, 0x00df, 0x0019, 0x00df,
       EVR_SS, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00e0, 0x0019, 0x00e0,
+  , { 0x0019, 0x00df, 0x0019, 0x00df,
       EVR_DS, "UserData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
@@ -9890,30 +9874,34 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SL, "Internal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
-  , { 0x0019, 0x00e1, 0x0019, 0x00e1,
-      EVR_DS, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00e0, 0x0019, 0x00e0,
+      EVR_DS, "UserData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00e1, 0x0019, 0x00e1,
       EVR_DS, "PrepulseDelay", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
-  , { 0x0019, 0x00e2, 0x0019, 0x00e2,
-      EVR_DS, "VelocityEncodeScale", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00e1, 0x0019, 0x00e1,
+      EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00e2, 0x0019, 0x00e2,
       EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
-  , { 0x0019, 0x00e3, 0x0019, 0x00e3,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00e2, 0x0019, 0x00e2,
+      EVR_DS, "VelocityEncodeScale", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00e3, 0x0019, 0x00e3,
       EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
+  , { 0x0019, 0x00e3, 0x0019, 0x00e3,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x00e4, 0x0019, 0x00e4,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9943,41 +9931,41 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00f0, 0x0019, 0x00f0,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACQU_01" }
-  , { 0x0019, 0x00f0, 0x0019, 0x00f0,
       EVR_LT, "WSProtocolString1", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
-  , { 0x0019, 0x00f1, 0x0019, 0x00f1,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00f0, 0x0019, 0x00f0,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00f1, 0x0019, 0x00f1,
       EVR_LT, "WSProtocolString2", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
-  , { 0x0019, 0x00f2, 0x0019, 0x00f2,
-      EVR_SS, "FastPhases", 1, 1, "PrivateTag",
+  , { 0x0019, 0x00f1, 0x0019, 0x00f1,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
+  , { 0x0019, 0x00f2, 0x0019, 0x00f2,
+      EVR_LT, "WSProtocolString3", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
   , { 0x0019, 0x00f2, 0x0019, 0x00f2,
       EVR_SS, "NumberOfPhases", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GE_GENESIS_REV3.0" }
   , { 0x0019, 0x00f2, 0x0019, 0x00f2,
-      EVR_LT, "WSProtocolString3", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0019, 0x00f3, 0x0019, 0x00f3,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      EVR_SS, "FastPhases", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
   , { 0x0019, 0x00f3, 0x0019, 0x00f3,
       EVR_LT, "WSProtocolString4", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
+  , { 0x0019, 0x00f3, 0x0019, 0x00f3,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACQU_01" }
   , { 0x0019, 0x00f4, 0x0019, 0x00f4,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10765,14 +10753,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
   , { 0x0021, 0x0000, 0x0021, 0x0000,
-      EVR_LT, "SequenceType", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  RAW" }
-  , { 0x0021, 0x0000, 0x0021, 0x0000,
-      EVR_US, "AcquisitionType", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  ACQ 1.0" }
-  , { 0x0021, 0x0000, 0x0021, 0x0000,
       EVR_LT, "WindowOfImagesID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private-CWS Release 1" }
@@ -10780,22 +10760,22 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "NoiseReduction", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0021, 0x0001, 0x0021, 0x0001,
-      EVR_IS, "ReconstructionNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS-MR-1" }
-  , { 0x0021, 0x0001, 0x0021, 0x0001,
-      EVR_IS, "VectorSizeOriginal", 1, 1, "PrivateTag",
+  , { 0x0021, 0x0000, 0x0021, 0x0000,
+      EVR_LT, "SequenceType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
-  , { 0x0021, 0x0001, 0x0021, 0x0001,
-      EVR_US, "AcquisitionMode", 1, 1, "PrivateTag",
+  , { 0x0021, 0x0000, 0x0021, 0x0000,
+      EVR_US, "AcquisitionType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0001, 0x0021, 0x0001,
       EVR_CS, "WindowOfImagesType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private-CWS Release 1" }
+  , { 0x0021, 0x0001, 0x0021, 0x0001,
+      EVR_IS, "ReconstructionNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS-MR-1" }
   , { 0x0021, 0x0001, 0x0021, 0x0001,
       EVR_DS, "ContrastAmplification", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10804,22 +10784,22 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_1.0" }
-  , { 0x0021, 0x0002, 0x0021, 0x0002,
-      EVR_IS, "SliceNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS-MR-1" }
-  , { 0x0021, 0x0002, 0x0021, 0x0002,
-      EVR_IS, "VectorSizeExtended", 1, 1, "PrivateTag",
+  , { 0x0021, 0x0001, 0x0021, 0x0001,
+      EVR_IS, "VectorSizeOriginal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
-  , { 0x0021, 0x0002, 0x0021, 0x0002,
-      EVR_US, "FootswitchIndex", 1, 1, "PrivateTag",
+  , { 0x0021, 0x0001, 0x0021, 0x0001,
+      EVR_US, "AcquisitionMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0002, 0x0021, 0x0002,
       EVR_IS, "WindowOfImagesScope", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private-CWS Release 1" }
+  , { 0x0021, 0x0002, 0x0021, 0x0002,
+      EVR_IS, "SliceNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS-MR-1" }
   , { 0x0021, 0x0002, 0x0021, 0x0002,
       EVR_DS, "EdgeContrastBoosting", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10828,18 +10808,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_1.0" }
+  , { 0x0021, 0x0002, 0x0021, 0x0002,
+      EVR_IS, "VectorSizeExtended", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0002, 0x0021, 0x0002,
+      EVR_US, "FootswitchIndex", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0003, 0x0021, 0x0003,
       EVR_SS, "SeriesFromWhichPrescribed", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_RELA_01" }
-  , { 0x0021, 0x0003, 0x0021, 0x0003,
-      EVR_DS, "AcquiredSpectralRange", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  RAW" }
-  , { 0x0021, 0x0003, 0x0021, 0x0003,
-      EVR_US, "AcquisitionRoom", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0003, 0x0021, 0x0003,
       EVR_DS, "LatitudeReduction", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10848,6 +10828,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_1.0" }
+  , { 0x0021, 0x0003, 0x0021, 0x0003,
+      EVR_DS, "AcquiredSpectralRange", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0003, 0x0021, 0x0003,
+      EVR_US, "AcquisitionRoom", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0004, 0x0021, 0x0004,
       EVR_DS, "VOIPosition", 3, 3, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10925,21 +10913,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0010, 0x0021, 0x0010,
-      EVR_CS, "FCRImageID", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
-  , { 0x0021, 0x0010, 0x0021, 0x0010,
       EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
   , { 0x0021, 0x0010, 0x0021, 0x0010,
-      EVR_IS, "RotationAngle", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  GEN" }
-  , { 0x0021, 0x0010, 0x0021, 0x0010,
       EVR_UL, "CreationMask", 2, 2, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  RAW" }
+  , { 0x0021, 0x0010, 0x0021, 0x0010,
+      EVR_LO, "FindRangeAlgorithm", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
+  , { 0x0021, 0x0010, 0x0021, 0x0010,
+      EVR_IS, "RotationAngle", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  GEN" }
   , { 0x0021, 0x0010, 0x0021, 0x0010,
       EVR_DS, "Zoom", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10949,11 +10937,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
   , { 0x0021, 0x0010, 0x0021, 0x0010,
+      EVR_CS, "FCRImageID", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
+  , { 0x0021, 0x0010, 0x0021, 0x0010,
       EVR_US, "ModalityLUTInputGamma", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ACQ 1.0" }
-  , { 0x0021, 0x0010, 0x0021, 0x0010,
-      EVR_LO, "FindRangeAlgorithm", 1, 1, "PrivateTag",
+  , { 0x0021, 0x0011, 0x0021, 0x0011,
+      EVR_DS, "ThresholdCAlgorithm", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
   , { 0x0021, 0x0011, 0x0021, 0x0011,
@@ -10972,14 +10964,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "ModalityLUTOutputGamma", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ACQ 1.0" }
-  , { 0x0021, 0x0011, 0x0021, 0x0011,
-      EVR_DS, "ThresholdCAlgorithm", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
   , { 0x0021, 0x0012, 0x0021, 0x0012,
       EVR_IS, "ExposureNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "INTEGRIS 1.0" }
+  , { 0x0021, 0x0012, 0x0021, 0x0012,
+      EVR_LT, "SeriesUniqueIdentifier", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
   , { 0x0021, 0x0012, 0x0021, 0x0012,
       EVR_IS, "TubeAngle", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10992,10 +10984,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_OB, "SH_STPAR", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ACQ 1.0" }
-  , { 0x0021, 0x0012, 0x0021, 0x0012,
-      EVR_LT, "SeriesUniqueIdentifier", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
   , { 0x0021, 0x0013, 0x0021, 0x0013,
       EVR_IS, "ImageSequenceNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11009,6 +10997,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0014, 0x0021, 0x0014,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
+  , { 0x0021, 0x0014, 0x0021, 0x0014,
       EVR_DS, "EPITimeRateOfChangeOfYComponent", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
@@ -11016,22 +11008,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "DynaAngulationStepWidth", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ACQ 1.0" }
-  , { 0x0021, 0x0014, 0x0021, 0x0014,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
   , { 0x0021, 0x0015, 0x0021, 0x0015,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_RELA_01" }
   , { 0x0021, 0x0015, 0x0021, 0x0015,
-      EVR_DS, "EPITimeRateOfChangeOfZComponent", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  RAW" }
-  , { 0x0021, 0x0015, 0x0021, 0x0015,
       EVR_SS, "ImagesInStudy", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
+  , { 0x0021, 0x0015, 0x0021, 0x0015,
+      EVR_DS, "EPITimeRateOfChangeOfZComponent", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  RAW" }
   , { 0x0021, 0x0015, 0x0021, 0x0015,
       EVR_US, "Harmonization", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11105,77 +11093,77 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0020, 0x0021, 0x0020,
-      EVR_DS, "TableStartLocation", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_RELA_01" }
-  , { 0x0021, 0x0020, 0x0021, 0x0020,
-      EVR_IS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0021, 0x0020, 0x0021, 0x0020,
       EVR_DS, "FoV", 2, 2, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
-  , { 0x0021, 0x0020, 0x0021, 0x0020,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  GEN" }
-  , { 0x0021, 0x0020, 0x0021, 0x0020,
-      EVR_UL, "EvaluationMask", 2, 2, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  RAW" }
-  , { 0x0021, 0x0020, 0x0021, 0x0020,
-      EVR_US, "ROIMask", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED" }
-  , { 0x0021, 0x0020, 0x0021, 0x0020,
-      EVR_IS, "PhaseCorrectionRowsSequence", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0021, 0x0020, 0x0021, 0x0020,
-      EVR_DS, "EPILegalLimit2OfChangeValue", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  RAW" }
-  , { 0x0021, 0x0020, 0x0021, 0x0020,
-      EVR_SS, "ScenesInStudy", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0021, 0x0020, 0x0021, 0x0020,
-      EVR_US, "RestoreFlag", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0020, 0x0021, 0x0020,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
   , { 0x0021, 0x0020, 0x0021, 0x0020,
+      EVR_IS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
+  , { 0x0021, 0x0020, 0x0021, 0x0020,
+      EVR_UL, "EvaluationMask", 2, 2, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  RAW" }
+  , { 0x0021, 0x0020, 0x0021, 0x0020,
+      EVR_DS, "TableStartLocation", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_RELA_01" }
+  , { 0x0021, 0x0020, 0x0021, 0x0020,
       EVR_LO, "SensometricCurve", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0021, 0x0020, 0x0021, 0x0020,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  GEN" }
+  , { 0x0021, 0x0020, 0x0021, 0x0020,
+      EVR_SS, "ScenesInStudy", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
+  , { 0x0021, 0x0020, 0x0021, 0x0020,
+      EVR_US, "ROIMask", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED" }
+  , { 0x0021, 0x0020, 0x0021, 0x0020,
+      EVR_DS, "EPILegalLimit2OfChangeValue", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0020, 0x0021, 0x0020,
+      EVR_IS, "PhaseCorrectionRowsSequence", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
+  , { 0x0021, 0x0020, 0x0021, 0x0020,
+      EVR_US, "RestoreFlag", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0021, 0x0021, 0x0021,
       EVR_DS, "SliceGap", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
   , { 0x0021, 0x0021, 0x0021, 0x0021,
-      EVR_IS, "PhaseCorrectionColumnsSequence", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0021, 0x0021, 0x0021, 0x0021,
       EVR_DS, "EPIRiseTime", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0021, 0x0021, 0x0021,
+      EVR_IS, "PhaseCorrectionColumnsSequence", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0021, 0x0021, 0x0021, 0x0021,
       EVR_US, "StandMovementFlag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0022, 0x0021, 0x0022,
-      EVR_DS, "StackRadialAngle", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0021, 0x0022, 0x0021, 0x0022,
       EVR_DS, "ImageMagnificationFactor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
+  , { 0x0021, 0x0022, 0x0021, 0x0022,
+      EVR_DS, "StackRadialAngle", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
   , { 0x0021, 0x0022, 0x0021, 0x0022,
       EVR_IS, "PhaseCorrectionRowsReconstruction", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11225,53 +11213,53 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0021, 0x0030, 0x0021, 0x0030,
-      EVR_CS, "SetNo", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
-  , { 0x0021, 0x0030, 0x0021, 0x0030,
       EVR_LT, "ViewDirection", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
-  , { 0x0021, 0x0030, 0x0021, 0x0030,
-      EVR_IS, "TopogramTubePosition", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  GEN" }
-  , { 0x0021, 0x0030, 0x0021, 0x0030,
-      EVR_US, "ExtendedProcessingMask", 7, 7, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  RAW" }
-  , { 0x0021, 0x0030, 0x0021, 0x0030,
-      EVR_IS, "NumberOf3DRawPartitionsNominal", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0021, 0x0030, 0x0021, 0x0030,
-      EVR_DS, "ArrayCoilADCOffset", 16, 16, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  RAW" }
-  , { 0x0021, 0x0030, 0x0021, 0x0030,
-      EVR_SS, "ImagesInAllScenes", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
   , { 0x0021, 0x0030, 0x0021, 0x0030,
       EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
   , { 0x0021, 0x0030, 0x0021, 0x0030,
+      EVR_US, "ExtendedProcessingMask", 7, 7, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  RAW" }
+  , { 0x0021, 0x0030, 0x0021, 0x0030,
       EVR_DS, "LowerWindowOffset", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0021, 0x0031, 0x0021, 0x0031,
-      EVR_IS, "NumberOf3DRawPartitionsCurrent", 1, 1, "PrivateTag",
+  , { 0x0021, 0x0030, 0x0021, 0x0030,
+      EVR_IS, "TopogramTubePosition", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  GEN" }
+  , { 0x0021, 0x0030, 0x0021, 0x0030,
+      EVR_SS, "ImagesInAllScenes", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
+  , { 0x0021, 0x0030, 0x0021, 0x0030,
+      EVR_DS, "ArrayCoilADCOffset", 16, 16, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0030, 0x0021, 0x0030,
+      EVR_IS, "NumberOf3DRawPartitionsNominal", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
+  , { 0x0021, 0x0030, 0x0021, 0x0030,
+      EVR_CS, "SetNo", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
+  , { 0x0021, 0x0031, 0x0021, 0x0031,
+      EVR_DS, "UpperWindowOffset", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
   , { 0x0021, 0x0031, 0x0021, 0x0031,
       EVR_DS, "ArrayCoilPreamplifierGain", 16, 16, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
   , { 0x0021, 0x0031, 0x0021, 0x0031,
-      EVR_DS, "UpperWindowOffset", 1, 1, "PrivateTag",
+      EVR_IS, "NumberOf3DRawPartitionsCurrent", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
+      "SIEMENS MR VA0  GEN" }
   , { 0x0021, 0x0032, 0x0021, 0x0032,
       EVR_CS, "PatientRestDirection", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11313,49 +11301,49 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
   , { 0x0021, 0x0040, 0x0021, 0x0040,
-      EVR_IS, "ImageNoInTheSet", 1, 1, "PrivateTag",
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
-  , { 0x0021, 0x0040, 0x0021, 0x0040,
-      EVR_IS, "TableMoveDirectionCode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  GEN" }
+      "SPI-P-GV-CT Release 1" }
   , { 0x0021, 0x0040, 0x0021, 0x0040,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  RAW" }
-  , { 0x0021, 0x0040, 0x0021, 0x0040,
-      EVR_IS, "NumberOfSlicesNominal", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0021, 0x0040, 0x0021, 0x0040,
-      EVR_SS, "ArchiveSWInternalVersion", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS RA GEN" }
-  , { 0x0021, 0x0040, 0x0021, 0x0040,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
   , { 0x0021, 0x0040, 0x0021, 0x0040,
       EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_CDS Release 1" }
   , { 0x0021, 0x0040, 0x0021, 0x0040,
+      EVR_SS, "ArchiveSWInternalVersion", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS RA GEN" }
+  , { 0x0021, 0x0040, 0x0021, 0x0040,
+      EVR_IS, "TableMoveDirectionCode", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  GEN" }
+  , { 0x0021, 0x0040, 0x0021, 0x0040,
       EVR_DS, "MinPrintableDensity", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0021, 0x0040, 0x0021, 0x0040,
+      EVR_IS, "NumberOfSlicesNominal", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
+  , { 0x0021, 0x0040, 0x0021, 0x0040,
+      EVR_IS, "ImageNoInTheSet", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
   , { 0x0021, 0x0041, 0x0021, 0x0041,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  RAW" }
   , { 0x0021, 0x0041, 0x0021, 0x0041,
-      EVR_IS, "NumberOfSlicesCurrent", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0021, 0x0041, 0x0021, 0x0041,
       EVR_DS, "MaxPrintableDensity", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0021, 0x0041, 0x0021, 0x0041,
+      EVR_IS, "NumberOfSlicesCurrent", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0021, 0x0042, 0x0021, 0x0042,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11445,9 +11433,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
   , { 0x0021, 0x0050, 0x0021, 0x0050,
-      EVR_CS, "PairProcessingInformation", 1, 1, "PrivateTag",
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
+      "SPI-P-GV-CT Release 1" }
+  , { 0x0021, 0x0050, 0x0021, 0x0050,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CT VA0  RAW" }
   , { 0x0021, 0x0050, 0x0021, 0x0050,
       EVR_SS, "GraphicallyPrescribed", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11457,21 +11449,17 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
   , { 0x0021, 0x0050, 0x0021, 0x0050,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      EVR_LT, "SaturationType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CT VA0  RAW" }
+      "SIEMENS MR VA0  RAW" }
   , { 0x0021, 0x0050, 0x0021, 0x0050,
       EVR_US, "SignalMask", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
   , { 0x0021, 0x0050, 0x0021, 0x0050,
-      EVR_LT, "SaturationType", 1, 1, "PrivateTag",
+      EVR_CS, "PairProcessingInformation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  RAW" }
-  , { 0x0021, 0x0050, 0x0021, 0x0050,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
+      "FDMS 1.0" }
   , { 0x0021, 0x0051, 0x0021, 0x0051,
       EVR_DS, "RotationFromSourceXRot", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11493,13 +11481,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
   , { 0x0021, 0x0052, 0x0021, 0x0052,
-      EVR_DS, "DelayAfterTrigger", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0021, 0x0052, 0x0021, 0x0052,
       EVR_DS, "SaturationPositionVector", 3, 3, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0052, 0x0021, 0x0052,
+      EVR_DS, "DelayAfterTrigger", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0021, 0x0053, 0x0021, 0x0053,
       EVR_DS, "RotationFromSourceZRot", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11509,25 +11497,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
   , { 0x0021, 0x0053, 0x0021, 0x0053,
-      EVR_IS, "RRInterval", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0021, 0x0053, 0x0021, 0x0053,
       EVR_DS, "SaturationThickness", 6, 6, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0053, 0x0021, 0x0053,
+      EVR_IS, "RRInterval", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0021, 0x0054, 0x0021, 0x0054,
       EVR_SH, "ImagePosition", 3, 3, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_RELA_01" }
   , { 0x0021, 0x0054, 0x0021, 0x0054,
-      EVR_DS, "NumberOfTriggerPulses", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0021, 0x0054, 0x0021, 0x0054,
       EVR_DS, "SaturationWidth", 6, 6, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0054, 0x0021, 0x0054,
+      EVR_DS, "NumberOfTriggerPulses", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0021, 0x0055, 0x0021, 0x0055,
       EVR_SH, "ImageOrientation", 6, 6, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11597,6 +11585,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
   , { 0x0021, 0x0060, 0x0021, 0x0060,
+      EVR_DS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-GV-CT Release 1" }
+  , { 0x0021, 0x0060, 0x0021, 0x0060,
       EVR_IS, "RangeTypeCode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
@@ -11604,10 +11596,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "NumberOfInterpolatedImages", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
-  , { 0x0021, 0x0060, 0x0021, 0x0060,
-      EVR_DS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
   , { 0x0021, 0x0061, 0x0021, 0x0061,
       EVR_DS, "ImageNormal", 3, 3, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11633,13 +11621,17 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
   , { 0x0021, 0x0070, 0x0021, 0x0070,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_RELA_01" }
-  , { 0x0021, 0x0070, 0x0021, 0x0070,
       EVR_LT, "PatientOrientationSet1", 3, 3, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
+  , { 0x0021, 0x0070, 0x0021, 0x0070,
+      EVR_DS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-GV-CT Release 1" }
+  , { 0x0021, 0x0070, 0x0021, 0x0070,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_RELA_01" }
   , { 0x0021, 0x0070, 0x0021, 0x0070,
       EVR_DS, "ObjectOrientation", 3, 3, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11648,18 +11640,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "NumberOfEchoes", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
-  , { 0x0021, 0x0070, 0x0021, 0x0070,
-      EVR_DS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
-  , { 0x0021, 0x0071, 0x0021, 0x0071,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_RELA_01" }
   , { 0x0021, 0x0071, 0x0021, 0x0071,
       EVR_LT, "PatientOrientationSet2", 3, 3, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
+  , { 0x0021, 0x0071, 0x0021, 0x0071,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_RELA_01" }
   , { 0x0021, 0x0072, 0x0021, 0x0072,
       EVR_DS, "LightOrientation", 3, 3, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11693,33 +11681,33 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CT VA0  GEN" }
   , { 0x0021, 0x0080, 0x0021, 0x0080,
-      EVR_OB, "EquipmentTypeSpecificInformation", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
-  , { 0x0021, 0x0080, 0x0021, 0x0080,
       EVR_LT, "StudyName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
   , { 0x0021, 0x0080, 0x0021, 0x0080,
-      EVR_IS, "CardiacCode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0021, 0x0080, 0x0021, 0x0080,
       EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
+  , { 0x0021, 0x0080, 0x0021, 0x0080,
+      EVR_OB, "EquipmentTypeSpecificInformation", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
+  , { 0x0021, 0x0080, 0x0021, 0x0080,
+      EVR_IS, "CardiacCode", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0021, 0x0081, 0x0021, 0x0081,
       EVR_DS, "AutoWindowLevelAlpha", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_RELA_01" }
-  , { 0x0021, 0x0082, 0x0021, 0x0082,
-      EVR_DS, "AutoWindowLevelBeta", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_RELA_01" }
   , { 0x0021, 0x0082, 0x0021, 0x0082,
       EVR_LT, "StudyType", 3, 3, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
+  , { 0x0021, 0x0082, 0x0021, 0x0082,
+      EVR_DS, "AutoWindowLevelBeta", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_RELA_01" }
   , { 0x0021, 0x0083, 0x0021, 0x0083,
       EVR_DS, "AutoWindowLevelWindow", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11729,13 +11717,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_RELA_01" }
   , { 0x0021, 0x0090, 0x0021, 0x0090,
-      EVR_SS, "TubeFocalSpotPosition", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_RELA_01" }
-  , { 0x0021, 0x0090, 0x0021, 0x0090,
       EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
+  , { 0x0021, 0x0090, 0x0021, 0x0090,
+      EVR_SS, "TubeFocalSpotPosition", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_RELA_01" }
   , { 0x0021, 0x0090, 0x0021, 0x0090,
       EVR_DS, "Brightness", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11745,25 +11733,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_RELA_01" }
   , { 0x0021, 0x0091, 0x0021, 0x0091,
-      EVR_DS, "SaturationPhaseEncodingVectorTransverseComponent", 6, 6, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0021, 0x0091, 0x0021, 0x0091,
       EVR_DS, "Contrast", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0021, 0x0091, 0x0021, 0x0091,
+      EVR_DS, "SaturationPhaseEncodingVectorTransverseComponent", 6, 6, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0021, 0x0092, 0x0021, 0x0092,
       EVR_FL, "BiopsyTLocation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_RELA_01" }
   , { 0x0021, 0x0092, 0x0021, 0x0092,
-      EVR_DS, "SaturationReadoutVectorTransverseComponent", 6, 6, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MR VA0  GEN" }
-  , { 0x0021, 0x0092, 0x0021, 0x0092,
       EVR_DS, "ShapeFactor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0021, 0x0092, 0x0021, 0x0092,
+      EVR_DS, "SaturationReadoutVectorTransverseComponent", 6, 6, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MR VA0  GEN" }
   , { 0x0021, 0x0093, 0x0021, 0x0093,
       EVR_FL, "BiopsyRefLocation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -12323,69 +12311,69 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
 #ifdef WITH_PRIVATE_TAGS
   , { 0x0023, 0x0000, 0x0023, 0x0000,
+      EVR_DS, "CRDRE", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_2.0 BLOCK3" }
+  , { 0x0023, 0x0000, 0x0023, 0x0000,
+      EVR_DS, "CRDRE", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_1.0 BLOCK3" }
+  , { 0x0023, 0x0000, 0x0023, 0x0000,
+      EVR_LO, "ImageLaterality", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
+  , { 0x0023, 0x0000, 0x0023, 0x0000,
+      EVR_DS, "HorizontalCalibrationPixelSize", 2, 2, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  QUANT 1.0" }
+  , { 0x0023, 0x0000, 0x0023, 0x0000,
+      EVR_LO, "CRExposureMenuCode", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_2.0 BLOCK1" }
+  , { 0x0023, 0x0000, 0x0023, 0x0000,
       EVR_LO, "CRExposureMenuCode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_1.0 BLOCK1" }
   , { 0x0023, 0x0000, 0x0023, 0x0000,
       EVR_US, "CRSShift", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK2" }
-  , { 0x0023, 0x0000, 0x0023, 0x0000,
-      EVR_DS, "CRDRE", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK3" }
-  , { 0x0023, 0x0000, 0x0023, 0x0000,
-      EVR_LO, "CRExposureMenuCode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK1" }
+      "GEMS_ACRQA_2.0 BLOCK2" }
   , { 0x0023, 0x0000, 0x0023, 0x0000,
       EVR_US, "CRSShift", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK2" }
-  , { 0x0023, 0x0000, 0x0023, 0x0000,
-      EVR_DS, "CRDRE", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK3" }
-  , { 0x0023, 0x0000, 0x0023, 0x0000,
-      EVR_DS, "HorizontalCalibrationPixelSize", 2, 2, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  QUANT 1.0" }
-  , { 0x0023, 0x0000, 0x0023, 0x0000,
-      EVR_LO, "ImageLaterality", 1, 1, "PrivateTag",
+      "GEMS_ACRQA_1.0 BLOCK2" }
+  , { 0x0023, 0x0001, 0x0023, 0x0001,
+      EVR_IS, "LetterPosition", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0023, 0x0001, 0x0023, 0x0001,
-      EVR_SL, "NumberOfSeriesInStudy", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_STDY_01" }
   , { 0x0023, 0x0001, 0x0023, 0x0001,
       EVR_DS, "VerticalCalibrationPixelSize", 2, 2, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  QUANT 1.0" }
   , { 0x0023, 0x0001, 0x0023, 0x0001,
-      EVR_IS, "LetterPosition", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
-  , { 0x0023, 0x0002, 0x0023, 0x0002,
-      EVR_SL, "NumberOfUnarchivedSeries", 1, 1, "PrivateTag",
+      EVR_SL, "NumberOfSeriesInStudy", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_STDY_01" }
+  , { 0x0023, 0x0002, 0x0023, 0x0002,
+      EVR_IS, "BurnedInAnnotation", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
   , { 0x0023, 0x0002, 0x0023, 0x0002,
       EVR_LO, "CalibrationObject", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  QUANT 1.0" }
   , { 0x0023, 0x0002, 0x0023, 0x0002,
-      EVR_IS, "BurnedInAnnotation", 1, 1, "PrivateTag",
+      EVR_SL, "NumberOfUnarchivedSeries", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_STDY_01" }
+  , { 0x0023, 0x0003, 0x0023, 0x0003,
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
   , { 0x0023, 0x0003, 0x0023, 0x0003,
       EVR_DS, "CalibrationObjectSize", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  QUANT 1.0" }
-  , { 0x0023, 0x0003, 0x0023, 0x0003,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
   , { 0x0023, 0x0004, 0x0023, 0x0004,
       EVR_LO, "CalibrationMethod", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -12415,37 +12403,45 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 2;1" }
   , { 0x0023, 0x0010, 0x0023, 0x0010,
+      EVR_US, "CRDRN", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_2.0 BLOCK3" }
+  , { 0x0023, 0x0010, 0x0023, 0x0010,
+      EVR_US, "CRDRN", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_1.0 BLOCK3" }
+  , { 0x0023, 0x0010, 0x0023, 0x0010,
+      EVR_SS, "ReferenceImageField", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_STDY_01" }
+  , { 0x0023, 0x0010, 0x0023, 0x0010,
       EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
   , { 0x0023, 0x0010, 0x0023, 0x0010,
       EVR_LO, "CRExposureMenuString", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK1" }
-  , { 0x0023, 0x0010, 0x0023, 0x0010,
-      EVR_DS, "CRCShift", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK2" }
-  , { 0x0023, 0x0010, 0x0023, 0x0010,
-      EVR_US, "CRDRN", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK3" }
+      "GEMS_ACRQA_2.0 BLOCK1" }
   , { 0x0023, 0x0010, 0x0023, 0x0010,
       EVR_LO, "CRExposureMenuString", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK1" }
+      "GEMS_ACRQA_1.0 BLOCK1" }
   , { 0x0023, 0x0010, 0x0023, 0x0010,
       EVR_LO, "CRCShift", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK2" }
   , { 0x0023, 0x0010, 0x0023, 0x0010,
-      EVR_US, "CRDRN", 1, 1, "PrivateTag",
+      EVR_DS, "CRCShift", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_1.0 BLOCK2" }
+  , { 0x0023, 0x0020, 0x0023, 0x0020,
+      EVR_DS, "CRORE", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK3" }
-  , { 0x0023, 0x0010, 0x0023, 0x0010,
-      EVR_SS, "ReferenceImageField", 1, 1, "PrivateTag",
+  , { 0x0023, 0x0020, 0x0023, 0x0020,
+      EVR_DS, "CRORE", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_STDY_01" }
+      "GEMS_ACRQA_1.0 BLOCK3" }
   , { 0x0023, 0x0020, 0x0023, 0x0020,
       EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -12453,27 +12449,27 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0023, 0x0020, 0x0023, 0x0020,
       EVR_LO, "CREDRMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK1" }
-  , { 0x0023, 0x0020, 0x0023, 0x0020,
-      EVR_DS, "CRGT", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK2" }
-  , { 0x0023, 0x0020, 0x0023, 0x0020,
-      EVR_DS, "CRORE", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK3" }
+      "GEMS_ACRQA_2.0 BLOCK1" }
   , { 0x0023, 0x0020, 0x0023, 0x0020,
       EVR_LO, "CREDRMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK1" }
+      "GEMS_ACRQA_1.0 BLOCK1" }
   , { 0x0023, 0x0020, 0x0023, 0x0020,
       EVR_LO, "CRGT", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK2" }
   , { 0x0023, 0x0020, 0x0023, 0x0020,
-      EVR_DS, "CRORE", 1, 1, "PrivateTag",
+      EVR_DS, "CRGT", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_1.0 BLOCK2" }
+  , { 0x0023, 0x0030, 0x0023, 0x0030,
+      EVR_US, "CRORN", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK3" }
+  , { 0x0023, 0x0030, 0x0023, 0x0030,
+      EVR_US, "CRORN", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_1.0 BLOCK3" }
   , { 0x0023, 0x0030, 0x0023, 0x0030,
       EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -12481,35 +12477,23 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0023, 0x0030, 0x0023, 0x0030,
       EVR_LO, "CRLatitude", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK1" }
-  , { 0x0023, 0x0030, 0x0023, 0x0030,
-      EVR_DS, "CRGA", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK2" }
-  , { 0x0023, 0x0030, 0x0023, 0x0030,
-      EVR_US, "CRORN", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK3" }
+      "GEMS_ACRQA_2.0 BLOCK1" }
   , { 0x0023, 0x0030, 0x0023, 0x0030,
       EVR_LO, "CRLatitude", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK1" }
+      "GEMS_ACRQA_1.0 BLOCK1" }
   , { 0x0023, 0x0030, 0x0023, 0x0030,
       EVR_DS, "CRGA", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK2" }
   , { 0x0023, 0x0030, 0x0023, 0x0030,
-      EVR_US, "CRORN", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK3" }
-  , { 0x0023, 0x0040, 0x0023, 0x0040,
-      EVR_LO, "CRGroupNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK1" }
-  , { 0x0023, 0x0040, 0x0023, 0x0040,
-      EVR_DS, "CRGC", 1, 1, "PrivateTag",
+      EVR_DS, "CRGA", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_1.0 BLOCK2" }
+  , { 0x0023, 0x0040, 0x0023, 0x0040,
+      EVR_US, "CRORD", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_2.0 BLOCK3" }
   , { 0x0023, 0x0040, 0x0023, 0x0040,
       EVR_US, "CRORD", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -12519,49 +12503,49 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK1" }
   , { 0x0023, 0x0040, 0x0023, 0x0040,
+      EVR_LO, "CRGroupNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_1.0 BLOCK1" }
+  , { 0x0023, 0x0040, 0x0023, 0x0040,
       EVR_DS, "CRGC", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK2" }
   , { 0x0023, 0x0040, 0x0023, 0x0040,
-      EVR_US, "CRORD", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK3" }
-  , { 0x0023, 0x0050, 0x0023, 0x0050,
-      EVR_US, "CRImageSerialNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK1" }
-  , { 0x0023, 0x0050, 0x0023, 0x0050,
-      EVR_DS, "CRGS", 1, 1, "PrivateTag",
+      EVR_DS, "CRGC", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_1.0 BLOCK2" }
   , { 0x0023, 0x0050, 0x0023, 0x0050,
       EVR_LO, "CRCassetteSize", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK3" }
-  , { 0x0023, 0x0050, 0x0023, 0x0050,
-      EVR_US, "CRImageSerialNumber", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK1" }
-  , { 0x0023, 0x0050, 0x0023, 0x0050,
-      EVR_DS, "CRGS", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK2" }
+      "GEMS_ACRQA_2.0 BLOCK3" }
   , { 0x0023, 0x0050, 0x0023, 0x0050,
       EVR_LO, "CRCassetteSize", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK3" }
+      "GEMS_ACRQA_1.0 BLOCK3" }
   , { 0x0023, 0x0050, 0x0023, 0x0050,
       EVR_SS, "SummaryImage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_STDY_01" }
-  , { 0x0023, 0x0060, 0x0023, 0x0060,
-      EVR_LO, "CRBarCodeNumber", 1, 1, "PrivateTag",
+  , { 0x0023, 0x0050, 0x0023, 0x0050,
+      EVR_US, "CRImageSerialNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_2.0 BLOCK1" }
+  , { 0x0023, 0x0050, 0x0023, 0x0050,
+      EVR_US, "CRImageSerialNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_1.0 BLOCK1" }
-  , { 0x0023, 0x0060, 0x0023, 0x0060,
-      EVR_DS, "CRRT", 1, 1, "PrivateTag",
+  , { 0x0023, 0x0050, 0x0023, 0x0050,
+      EVR_DS, "CRGS", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_2.0 BLOCK2" }
+  , { 0x0023, 0x0050, 0x0023, 0x0050,
+      EVR_DS, "CRGS", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_1.0 BLOCK2" }
+  , { 0x0023, 0x0060, 0x0023, 0x0060,
+      EVR_LO, "CRMachineID", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_2.0 BLOCK3" }
   , { 0x0023, 0x0060, 0x0023, 0x0060,
       EVR_LO, "CRMachineID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -12570,14 +12554,34 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LO, "CRBarCodeNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK1" }
+  , { 0x0023, 0x0060, 0x0023, 0x0060,
+      EVR_LO, "CRBarCodeNumber", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_1.0 BLOCK1" }
   , { 0x0023, 0x0060, 0x0023, 0x0060,
       EVR_LO, "CRRT", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK2" }
   , { 0x0023, 0x0060, 0x0023, 0x0060,
-      EVR_LO, "CRMachineID", 1, 1, "PrivateTag",
+      EVR_DS, "CRRT", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_1.0 BLOCK2" }
+  , { 0x0023, 0x0070, 0x0023, 0x0070,
+      EVR_LO, "CRMachineType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK3" }
+  , { 0x0023, 0x0070, 0x0023, 0x0070,
+      EVR_LO, "CRMachineType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_1.0 BLOCK3" }
+  , { 0x0023, 0x0070, 0x0023, 0x0070,
+      EVR_FD, "StartTimeSecsInFirstAxial", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_STDY_01" }
+  , { 0x0023, 0x0070, 0x0023, 0x0070,
+      EVR_LO, "CRFilmOutputExposure", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_2.0 BLOCK1" }
   , { 0x0023, 0x0070, 0x0023, 0x0070,
       EVR_LO, "CRFilmOutputExposure", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -12585,27 +12589,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0023, 0x0070, 0x0023, 0x0070,
       EVR_DS, "CRRE", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK2" }
-  , { 0x0023, 0x0070, 0x0023, 0x0070,
-      EVR_LO, "CRMachineType", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK3" }
-  , { 0x0023, 0x0070, 0x0023, 0x0070,
-      EVR_LO, "CRFilmOutputExposure", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK1" }
+      "GEMS_ACRQA_2.0 BLOCK2" }
   , { 0x0023, 0x0070, 0x0023, 0x0070,
       EVR_DS, "CRRE", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK2" }
-  , { 0x0023, 0x0070, 0x0023, 0x0070,
-      EVR_LO, "CRMachineType", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK3" }
-  , { 0x0023, 0x0070, 0x0023, 0x0070,
-      EVR_FD, "StartTimeSecsInFirstAxial", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_STDY_01" }
+      "GEMS_ACRQA_1.0 BLOCK2" }
   , { 0x0023, 0x0074, 0x0023, 0x0074,
       EVR_SL, "NumberOfUpdatesToHeader", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -12617,37 +12605,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0023, 0x0080, 0x0023, 0x0080,
       EVR_LO, "CRFilmFormat", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK1" }
-  , { 0x0023, 0x0080, 0x0023, 0x0080,
-      EVR_US, "CRRN", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK2" }
-  , { 0x0023, 0x0080, 0x0023, 0x0080,
-      EVR_LO, "CRTechnicianCode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK3" }
+      "GEMS_ACRQA_2.0 BLOCK1" }
   , { 0x0023, 0x0080, 0x0023, 0x0080,
       EVR_LO, "CRFilmFormat", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK1" }
+      "GEMS_ACRQA_1.0 BLOCK1" }
   , { 0x0023, 0x0080, 0x0023, 0x0080,
       EVR_US, "CRRN", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK2" }
   , { 0x0023, 0x0080, 0x0023, 0x0080,
+      EVR_US, "CRRN", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_1.0 BLOCK2" }
+  , { 0x0023, 0x0080, 0x0023, 0x0080,
       EVR_LO, "CRTechnicianCode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK3" }
-  , { 0x0023, 0x0090, 0x0023, 0x0090,
-      EVR_LO, "CRSShiftString", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK1" }
-  , { 0x0023, 0x0090, 0x0023, 0x0090,
-      EVR_DS, "CRDRT", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_1.0 BLOCK2" }
-  , { 0x0023, 0x0090, 0x0023, 0x0090,
-      EVR_LO, "CREnergySubtractionParameters", 1, 1, "PrivateTag",
+  , { 0x0023, 0x0080, 0x0023, 0x0080,
+      EVR_LO, "CRTechnicianCode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_1.0 BLOCK3" }
   , { 0x0023, 0x0090, 0x0023, 0x0090,
@@ -12655,21 +12631,33 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK1" }
   , { 0x0023, 0x0090, 0x0023, 0x0090,
+      EVR_LO, "CRSShiftString", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_1.0 BLOCK1" }
+  , { 0x0023, 0x0090, 0x0023, 0x0090,
       EVR_DS, "CRDRT", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK2" }
   , { 0x0023, 0x0090, 0x0023, 0x0090,
+      EVR_DS, "CRDRT", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_1.0 BLOCK2" }
+  , { 0x0023, 0x0090, 0x0023, 0x0090,
       EVR_LO, "CREnergySubtractionParameters", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK3" }
-  , { 0x0023, 0x00f0, 0x0023, 0x00f0,
-      EVR_LO, "CRDistributionCode", 1, 1, "PrivateTag",
+  , { 0x0023, 0x0090, 0x0023, 0x0090,
+      EVR_LO, "CREnergySubtractionParameters", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_ACRQA_2.0 BLOCK3" }
+      "GEMS_ACRQA_1.0 BLOCK3" }
   , { 0x0023, 0x00f0, 0x0023, 0x00f0,
       EVR_IS, "ImageSOPClass", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0023, 0x00f0, 0x0023, 0x00f0,
+      EVR_LO, "CRDistributionCode", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_ACRQA_2.0 BLOCK3" }
   , { 0x0023, 0x00ff, 0x0023, 0x00ff,
       EVR_US, "CRShuttersApplied", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -13077,85 +13065,85 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
 #ifdef WITH_PRIVATE_TAGS
   , { 0x0025, 0x0000, 0x0025, 0x0000,
-      EVR_US, "ViewNative", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
-  , { 0x0025, 0x0000, 0x0025, 0x0000,
       EVR_IS, "OriginalImage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0025, 0x0001, 0x0025, 0x0001,
-      EVR_US, "OriginalSeriesNumber", 1, 1, "PrivateTag",
+  , { 0x0025, 0x0000, 0x0025, 0x0000,
+      EVR_US, "ViewNative", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0001, 0x0025, 0x0001,
       EVR_IS, "NotProcessedImage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0025, 0x0002, 0x0025, 0x0002,
-      EVR_US, "OriginalImageNumber", 1, 1, "PrivateTag",
+  , { 0x0025, 0x0001, 0x0025, 0x0001,
+      EVR_US, "OriginalSeriesNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0002, 0x0025, 0x0002,
       EVR_IS, "CutOutImage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0025, 0x0003, 0x0025, 0x0003,
-      EVR_US, "WinCenter", 1, 1, "PrivateTag",
+  , { 0x0025, 0x0002, 0x0025, 0x0002,
+      EVR_US, "OriginalImageNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0003, 0x0025, 0x0003,
       EVR_IS, "DuplicatedImage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0025, 0x0004, 0x0025, 0x0004,
-      EVR_US, "WinWidth", 1, 1, "PrivateTag",
+  , { 0x0025, 0x0003, 0x0025, 0x0003,
+      EVR_US, "WinCenter", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0004, 0x0025, 0x0004,
       EVR_IS, "StoredImage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0025, 0x0005, 0x0025, 0x0005,
-      EVR_US, "WinBrightness", 1, 1, "PrivateTag",
+  , { 0x0025, 0x0004, 0x0025, 0x0004,
+      EVR_US, "WinWidth", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0005, 0x0025, 0x0005,
       EVR_IS, "RetrievedImage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0025, 0x0006, 0x0025, 0x0006,
-      EVR_SS, "LastPulseSequenceUsed", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_SERS_01" }
-  , { 0x0025, 0x0006, 0x0025, 0x0006,
-      EVR_US, "WinContrast", 1, 1, "PrivateTag",
+  , { 0x0025, 0x0005, 0x0025, 0x0005,
+      EVR_US, "WinBrightness", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0006, 0x0025, 0x0006,
       EVR_IS, "RemoteImage", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0025, 0x0007, 0x0025, 0x0007,
-      EVR_SL, "ImagesInSeries", 1, 1, "PrivateTag",
+  , { 0x0025, 0x0006, 0x0025, 0x0006,
+      EVR_US, "WinContrast", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x0006, 0x0025, 0x0006,
+      EVR_SS, "LastPulseSequenceUsed", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_SERS_01" }
+  , { 0x0025, 0x0007, 0x0025, 0x0007,
+      EVR_IS, "MediaStoredImage", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
   , { 0x0025, 0x0007, 0x0025, 0x0007,
       EVR_US, "OriginalFrameNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0007, 0x0025, 0x0007,
-      EVR_IS, "MediaStoredImage", 1, 1, "PrivateTag",
+      EVR_SL, "ImagesInSeries", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_SERS_01" }
+  , { 0x0025, 0x0008, 0x0025, 0x0008,
+      EVR_IS, "ImageState", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
   , { 0x0025, 0x0008, 0x0025, 0x0008,
       EVR_US, "OriginalMaskFrameNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
-  , { 0x0025, 0x0008, 0x0025, 0x0008,
-      EVR_IS, "ImageState", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
   , { 0x0025, 0x0009, 0x0025, 0x0009,
       EVR_US, "Opac", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -13189,25 +13177,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
   , { 0x0025, 0x0010, 0x0025, 0x0010,
-      EVR_SL, "LandmarkCounter", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_SERS_01" }
-  , { 0x0025, 0x0010, 0x0025, 0x0010,
       EVR_SS, "ZoomFlag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x0010, 0x0025, 0x0010,
+      EVR_SL, "LandmarkCounter", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_SERS_01" }
   , { 0x0025, 0x0011, 0x0025, 0x0011,
       EVR_US, "TermOfCorrectionForEachIPTypeSt", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
   , { 0x0025, 0x0011, 0x0025, 0x0011,
-      EVR_SS, "NumberOfAcquisitions", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_SERS_01" }
-  , { 0x0025, 0x0011, 0x0025, 0x0011,
       EVR_US, "Flex", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x0011, 0x0025, 0x0011,
+      EVR_SS, "NumberOfAcquisitions", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_SERS_01" }
   , { 0x0025, 0x0012, 0x0025, 0x0012,
       EVR_US, "ReadingGainGp", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -13225,13 +13213,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0014, 0x0025, 0x0014,
-      EVR_SL, "IndicatesNumberOfUpdatesToHeader", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_SERS_01" }
-  , { 0x0025, 0x0014, 0x0025, 0x0014,
       EVR_US, "SeriesNumber", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x0014, 0x0025, 0x0014,
+      EVR_SL, "IndicatesNumberOfUpdatesToHeader", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_SERS_01" }
   , { 0x0025, 0x0015, 0x0025, 0x0015,
       EVR_CS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -13257,21 +13245,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_SERS_01" }
   , { 0x0025, 0x0020, 0x0025, 0x0020,
-      EVR_US, "Unknown", 2, 2, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
-  , { 0x0025, 0x0020, 0x0025, 0x0020,
       EVR_LO, "SourceImageFile", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0025, 0x0021, 0x0025, 0x0021,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0025, 0x0020, 0x0025, 0x0020,
+      EVR_US, "Unknown", 2, 2, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
   , { 0x0025, 0x0021, 0x0025, 0x0021,
       EVR_UI, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0025, 0x0021, 0x0025, 0x0021,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
   , { 0x0025, 0x0030, 0x0025, 0x0030,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -13437,13 +13425,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "CMR42 CIRCLECVI" }
   , { 0x0027, 0x0000, 0x0027, 0x0000,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0027, 0x0000, 0x0027, 0x0000,
       EVR_IS, "NumberOfSeries", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0027, 0x0000, 0x0027, 0x0000,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
   , { 0x0027, 0x0001, 0x0027, 0x0001,
       EVR_IS, "NumberOfStudies", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -13453,6 +13441,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IMAG_01" }
   , { 0x0027, 0x0010, 0x0027, 0x0010,
+      EVR_DT, "OldestSeries", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SVISION" }
+  , { 0x0027, 0x0010, 0x0027, 0x0010,
       EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
@@ -13460,27 +13452,19 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "ScoutType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IMAG_01" }
-  , { 0x0027, 0x0010, 0x0027, 0x0010,
-      EVR_DT, "OldestSeries", 1, 1, "PrivateTag",
+  , { 0x0027, 0x0011, 0x0027, 0x0011,
+      EVR_DT, "NewestSeries", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
   , { 0x0027, 0x0011, 0x0027, 0x0011,
       EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
-  , { 0x0027, 0x0011, 0x0027, 0x0011,
-      EVR_DT, "NewestSeries", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SVISION" }
-  , { 0x0027, 0x0012, 0x0027, 0x0012,
-      EVR_DS, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
   , { 0x0027, 0x0012, 0x0027, 0x0012,
       EVR_DT, "OldestStudy", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
-  , { 0x0027, 0x0013, 0x0027, 0x0013,
+  , { 0x0027, 0x0012, 0x0027, 0x0012,
       EVR_DS, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
@@ -13488,6 +13472,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DT, "NewestStudy", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0027, 0x0013, 0x0027, 0x0013,
+      EVR_DS, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
   , { 0x0027, 0x0014, 0x0027, 0x0014,
       EVR_DS, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -14443,75 +14431,67 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
 #ifdef WITH_PRIVATE_TAGS
   , { 0x0029, 0x0000, 0x0029, 0x0000,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      EVR_LT, "ImageEnhancementID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "AEGIS_DICOM_2.00" }
-  , { 0x0029, 0x0000, 0x0029, 0x0000,
-      EVR_SQ, "EdgeEnhancementSequence", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
-  , { 0x0029, 0x0000, 0x0029, 0x0000,
-      EVR_DS, "Unknown", 2, 2, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/PART" }
-  , { 0x0029, 0x0000, 0x0029, 0x0000,
-      EVR_DS, "Unknown", 4, 4, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
-  , { 0x0029, 0x0000, 0x0029, 0x0000,
-      EVR_LT, "ZoomID", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
+      "SPI-P Release 1;3" }
   , { 0x0029, 0x0000, 0x0029, 0x0000,
       EVR_LT, "SubtractionMaskID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;2" }
   , { 0x0029, 0x0000, 0x0029, 0x0000,
-      EVR_LT, "ImageEnhancementID", 1, 1, "PrivateTag",
+      EVR_SL, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;3" }
+      "SPI-P-Private_ICS Release 1;1" }
+  , { 0x0029, 0x0000, 0x0029, 0x0000,
+      EVR_DS, "Unknown", 2, 2, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/PART" }
+  , { 0x0029, 0x0000, 0x0029, 0x0000,
+      EVR_SQ, "EdgeEnhancementSequence", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CARDIO-D.R. 1.0" }
+  , { 0x0029, 0x0000, 0x0029, 0x0000,
+      EVR_UI, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette Graphics Export V1.0" }
   , { 0x0029, 0x0000, 0x0029, 0x0000,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_CDS Release 1" }
   , { 0x0029, 0x0000, 0x0029, 0x0000,
-      EVR_SL, "Unknown", 1, 1, "PrivateTag",
+      EVR_LT, "ZoomID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-Private_ICS Release 1;1" }
+      "SPI-P Release 1;1" }
   , { 0x0029, 0x0000, 0x0029, 0x0000,
       EVR_FD, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1;2" }
   , { 0x0029, 0x0000, 0x0029, 0x0000,
-      EVR_UI, "Unknown", 1, 1, "PrivateTag",
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Graphics Export V1.0" }
-  , { 0x0029, 0x0001, 0x0029, 0x0001,
-      EVR_US, "ConvolutionKernelSize", 2, 2, "PrivateTag",
+      "AEGIS_DICOM_2.00" }
+  , { 0x0029, 0x0000, 0x0029, 0x0000,
+      EVR_DS, "Unknown", 4, 4, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
-  , { 0x0029, 0x0001, 0x0029, 0x0001,
-      EVR_FD, "ImageCompressionFraction", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "INTELERAD MEDICAL SYSTEMS" }
-  , { 0x0029, 0x0001, 0x0029, 0x0001,
-      EVR_DS, "ZoomRectangle", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
+      "SPI-P Release 1" }
   , { 0x0029, 0x0001, 0x0029, 0x0001,
       EVR_LT, "ImageEnhancement", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;3" }
   , { 0x0029, 0x0001, 0x0029, 0x0001,
+      EVR_US, "ConvolutionKernelSize", 2, 2, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CARDIO-D.R. 1.0" }
+  , { 0x0029, 0x0001, 0x0029, 0x0001,
+      EVR_DS, "ZoomRectangle", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;1" }
+  , { 0x0029, 0x0001, 0x0029, 0x0001,
       EVR_FD, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1;2" }
-  , { 0x0029, 0x0002, 0x0029, 0x0002,
-      EVR_DS, "ConvolutionKernelCoefficients", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
-  , { 0x0029, 0x0002, 0x0029, 0x0002,
-      EVR_FD, "ImageQuality", 1, 1, "PrivateTag",
+  , { 0x0029, 0x0001, 0x0029, 0x0001,
+      EVR_FD, "ImageCompressionFraction", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "INTELERAD MEDICAL SYSTEMS" }
   , { 0x0029, 0x0002, 0x0029, 0x0002,
@@ -14519,37 +14499,49 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;3" }
   , { 0x0029, 0x0002, 0x0029, 0x0002,
-      EVR_FD, "Unknown", 1, 1, "PrivateTag",
+      EVR_DS, "ConvolutionKernelCoefficients", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-Private_ICS Release 1;2" }
+      "CARDIO-D.R. 1.0" }
   , { 0x0029, 0x0002, 0x0029, 0x0002,
       EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1;4" }
-  , { 0x0029, 0x0003, 0x0029, 0x0003,
-      EVR_DS, "EdgeEnhancementGain", 1, 1, "PrivateTag",
+  , { 0x0029, 0x0002, 0x0029, 0x0002,
+      EVR_FD, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CARDIO-D.R. 1.0" }
-  , { 0x0029, 0x0003, 0x0029, 0x0003,
-      EVR_FD, "ImageBytesTransferred", 1, 1, "PrivateTag",
+      "SPI-P-Private_ICS Release 1;2" }
+  , { 0x0029, 0x0002, 0x0029, 0x0002,
+      EVR_FD, "ImageQuality", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "INTELERAD MEDICAL SYSTEMS" }
-  , { 0x0029, 0x0003, 0x0029, 0x0003,
-      EVR_DS, "ZoomFactor", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
   , { 0x0029, 0x0003, 0x0029, 0x0003,
       EVR_LT, "ConvolutionType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;3" }
   , { 0x0029, 0x0003, 0x0029, 0x0003,
+      EVR_DS, "EdgeEnhancementGain", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CARDIO-D.R. 1.0" }
+  , { 0x0029, 0x0003, 0x0029, 0x0003,
+      EVR_DS, "ZoomFactor", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;1" }
+  , { 0x0029, 0x0003, 0x0029, 0x0003,
       EVR_SL, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1;2" }
-  , { 0x0029, 0x0004, 0x0029, 0x0004,
-      EVR_SL, "LowerRangeOfPixels", 1, 1, "PrivateTag",
+  , { 0x0029, 0x0003, 0x0029, 0x0003,
+      EVR_FD, "ImageBytesTransferred", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_IMPS_01" }
+      "INTELERAD MEDICAL SYSTEMS" }
+  , { 0x0029, 0x0004, 0x0029, 0x0004,
+      EVR_LT, "ConvolutionKernelSizeID", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;3" }
+  , { 0x0029, 0x0004, 0x0029, 0x0004,
+      EVR_UN, "MaskingFunction", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;2" }
   , { 0x0029, 0x0004, 0x0029, 0x0004,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -14563,19 +14555,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
   , { 0x0029, 0x0004, 0x0029, 0x0004,
-      EVR_UN, "MaskingFunction", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;2" }
-  , { 0x0029, 0x0004, 0x0029, 0x0004,
-      EVR_LT, "ConvolutionKernelSizeID", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;3" }
-  , { 0x0029, 0x0004, 0x0029, 0x0004,
       EVR_SL, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1;2" }
-  , { 0x0029, 0x0005, 0x0029, 0x0005,
-      EVR_DS, "LowerRangeOfPixels", 1, 1, "PrivateTag",
+  , { 0x0029, 0x0004, 0x0029, 0x0004,
+      EVR_SL, "LowerRangeOfPixels", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IMPS_01" }
   , { 0x0029, 0x0005, 0x0029, 0x0005,
@@ -14590,7 +14574,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SL, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1;2" }
-  , { 0x0029, 0x0006, 0x0029, 0x0006,
+  , { 0x0029, 0x0005, 0x0029, 0x0005,
       EVR_DS, "LowerRangeOfPixels", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IMPS_01" }
@@ -14602,18 +14586,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_FL, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1;1" }
+  , { 0x0029, 0x0006, 0x0029, 0x0006,
+      EVR_DS, "LowerRangeOfPixels", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_IMPS_01" }
   , { 0x0029, 0x0007, 0x0029, 0x0007,
       EVR_SL, "LowerRangeOfPixels", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IMPS_01" }
   , { 0x0029, 0x0008, 0x0029, 0x0008,
-      EVR_SH, "LowerRangeOfPixels", 1, 1, "PrivateTag",
+      EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_IMPS_01" }
-  , { 0x0029, 0x0008, 0x0029, 0x0008,
-      EVR_IS, "NumberOfExposureResults", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "INTEGRIS 1.0" }
+      "SPI-P-Private_ICS Release 1" }
   , { 0x0029, 0x0008, 0x0029, 0x0008,
       EVR_CS, "CSAImageHeaderType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -14623,21 +14607,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CSA NON-IMAGE" }
   , { 0x0029, 0x0008, 0x0029, 0x0008,
-      EVR_CS, "MedComHeaderType", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MEDCOM HEADER" }
-  , { 0x0029, 0x0008, 0x0029, 0x0008,
       EVR_CS, "MEDCOMOOGType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM OOG" }
   , { 0x0029, 0x0008, 0x0029, 0x0008,
-      EVR_SQ, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-Private_ICS Release 1" }
-  , { 0x0029, 0x0009, 0x0029, 0x0009,
       EVR_SH, "LowerRangeOfPixels", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IMPS_01" }
+  , { 0x0029, 0x0008, 0x0029, 0x0008,
+      EVR_IS, "NumberOfExposureResults", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTEGRIS 1.0" }
+  , { 0x0029, 0x0008, 0x0029, 0x0008,
+      EVR_CS, "MedComHeaderType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x0009, 0x0029, 0x0009,
       EVR_LO, "CSAImageHeaderVersion", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -14647,57 +14631,61 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CSA NON-IMAGE" }
   , { 0x0029, 0x0009, 0x0029, 0x0009,
-      EVR_LO, "MedComHeaderVersion", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MEDCOM HEADER" }
-  , { 0x0029, 0x0009, 0x0029, 0x0009,
       EVR_LO, "MEDCOMOOGVersion", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM OOG" }
+  , { 0x0029, 0x0009, 0x0029, 0x0009,
+      EVR_SH, "LowerRangeOfPixels", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_IMPS_01" }
+  , { 0x0029, 0x0009, 0x0029, 0x0009,
+      EVR_LO, "MedComHeaderVersion", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x000a, 0x0029, 0x000a,
       EVR_SS, "LowerRangeOfPixels", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IMPS_01" }
   , { 0x0029, 0x000c, 0x0029, 0x000c,
-      EVR_UN, "ProprietaryMaskingParameters", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;2" }
-  , { 0x0029, 0x000c, 0x0029, 0x000c,
       EVR_DS, "EnhancementGain", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;3" }
+  , { 0x0029, 0x000c, 0x0029, 0x000c,
+      EVR_UN, "ProprietaryMaskingParameters", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;2" }
   , { 0x0029, 0x000e, 0x0029, 0x000e,
       EVR_CS, "ZoomEnableStatus", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;1" }
-  , { 0x0029, 0x000f, 0x0029, 0x000f,
-      EVR_CS, "ZoomSelectStatus", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
   , { 0x0029, 0x000f, 0x0029, 0x000f,
       EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1" }
-  , { 0x0029, 0x0010, 0x0029, 0x0010,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0029, 0x000f, 0x0029, 0x000f,
+      EVR_CS, "ZoomSelectStatus", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CAMTRONICS IP" }
+      "SPI-P Release 1;1" }
   , { 0x0029, 0x0010, 0x0029, 0x0010,
       EVR_LT, "Commentline", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "CAMTRONICS" }
   , { 0x0029, 0x0010, 0x0029, 0x0010,
-      EVR_SH, "J2cParameterType", 1, 1, "PrivateTag",
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "INTELERAD MEDICAL SYSTEMS" }
+      "CAMTRONICS IP" }
   , { 0x0029, 0x0010, 0x0029, 0x0010,
-      EVR_DS, "FPMin", 1, 1, "PrivateTag",
+      EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
+      "SPI-P-Private_ICS Release 1" }
   , { 0x0029, 0x0010, 0x0029, 0x0010,
       EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/PART" }
+  , { 0x0029, 0x0010, 0x0029, 0x0010,
+      EVR_US, "ListOfGroupNumbers", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED HG" }
   , { 0x0029, 0x0010, 0x0029, 0x0010,
       EVR_LT, "WindowStyle", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -14707,41 +14695,41 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CSA HEADER" }
   , { 0x0029, 0x0010, 0x0029, 0x0010,
-      EVR_OB, "CSADataInfo", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CSA NON-IMAGE" }
-  , { 0x0029, 0x0010, 0x0029, 0x0010,
       EVR_US, "RowsOfSubmatrix", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED DISPLAY" }
   , { 0x0029, 0x0010, 0x0029, 0x0010,
-      EVR_US, "ListOfGroupNumbers", 1, 1, "PrivateTag",
+      EVR_OB, "CSADataInfo", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED HG" }
-  , { 0x0029, 0x0010, 0x0029, 0x0010,
-      EVR_US, "ListOfGroupNumbers", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED MG" }
-  , { 0x0029, 0x0010, 0x0029, 0x0010,
-      EVR_OB, "MedComHeaderInfo", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MEDCOM HEADER" }
-  , { 0x0029, 0x0010, 0x0029, 0x0010,
-      EVR_OB, "MEDCOMOOGInfo", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MEDCOM OOG" }
+      "SIEMENS CSA NON-IMAGE" }
   , { 0x0029, 0x0010, 0x0029, 0x0010,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
   , { 0x0029, 0x0010, 0x0029, 0x0010,
-      EVR_SQ, "Unknown", 1, 1, "PrivateTag",
+      EVR_OB, "MEDCOMOOGInfo", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-Private_ICS Release 1" }
-  , { 0x0029, 0x0011, 0x0029, 0x0011,
-      EVR_US, "J2cPixelRepresentation", 1, 1, "PrivateTag",
+      "SIEMENS MEDCOM OOG" }
+  , { 0x0029, 0x0010, 0x0029, 0x0010,
+      EVR_OB, "MedComHeaderInfo", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0010, 0x0029, 0x0010,
+      EVR_DS, "FPMin", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
+  , { 0x0029, 0x0010, 0x0029, 0x0010,
+      EVR_SH, "J2cParameterType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "INTELERAD MEDICAL SYSTEMS" }
+  , { 0x0029, 0x0010, 0x0029, 0x0010,
+      EVR_US, "ListOfGroupNumbers", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED MG" }
+  , { 0x0029, 0x0011, 0x0029, 0x0011,
+      EVR_IS, "LineName", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette Line V1.0" }
   , { 0x0029, 0x0011, 0x0029, 0x0011,
       EVR_DS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -14755,25 +14743,17 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED DISPLAY" }
   , { 0x0029, 0x0011, 0x0029, 0x0011,
+      EVR_IS, "ROIName", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette ROI V1.0" }
+  , { 0x0029, 0x0011, 0x0029, 0x0011,
       EVR_IS, "AnnotationName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
   , { 0x0029, 0x0011, 0x0029, 0x0011,
-      EVR_IS, "LineName", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Line V1.0" }
-  , { 0x0029, 0x0011, 0x0029, 0x0011,
-      EVR_IS, "ROIName", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette ROI V1.0" }
-  , { 0x0029, 0x0012, 0x0029, 0x0012,
-      EVR_US, "J2cBitsAllocated", 1, 1, "PrivateTag",
+      EVR_US, "J2cPixelRepresentation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "INTELERAD MEDICAL SYSTEMS" }
-  , { 0x0029, 0x0012, 0x0029, 0x0012,
-      EVR_LT, "AnnotationFont", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Annot V1.0" }
   , { 0x0029, 0x0012, 0x0029, 0x0012,
       EVR_LT, "LineNameFont", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -14782,50 +14762,74 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LT, "ROINameFont", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
-  , { 0x0029, 0x0013, 0x0029, 0x0013,
-      EVR_US, "J2cPixelShiftValue", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "INTELERAD MEDICAL SYSTEMS" }
-  , { 0x0029, 0x0013, 0x0029, 0x0013,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  CMS" }
-  , { 0x0029, 0x0013, 0x0029, 0x0013,
-      EVR_LT, "AnnotationTextForegroundColor", 1, 1, "PrivateTag",
+  , { 0x0029, 0x0012, 0x0029, 0x0012,
+      EVR_LT, "AnnotationFont", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
+  , { 0x0029, 0x0012, 0x0029, 0x0012,
+      EVR_US, "J2cBitsAllocated", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTELERAD MEDICAL SYSTEMS" }
   , { 0x0029, 0x0013, 0x0029, 0x0013,
       EVR_UL, "LineNameDisplay", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Line V1.0" }
   , { 0x0029, 0x0013, 0x0029, 0x0013,
+      EVR_UL, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette V1.0" }
+  , { 0x0029, 0x0013, 0x0029, 0x0013,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CM VA0  CMS" }
+  , { 0x0029, 0x0013, 0x0029, 0x0013,
       EVR_LT, "ROINormalColor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0013, 0x0029, 0x0013,
-      EVR_UL, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
-  , { 0x0029, 0x0014, 0x0029, 0x0014,
-      EVR_US, "J2cPlanarConfiguration", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "INTELERAD MEDICAL SYSTEMS" }
-  , { 0x0029, 0x0014, 0x0029, 0x0014,
-      EVR_LT, "AnnotationTextBackgroundColor", 1, 1, "PrivateTag",
+      EVR_LT, "AnnotationTextForegroundColor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
+  , { 0x0029, 0x0013, 0x0029, 0x0013,
+      EVR_US, "J2cPixelShiftValue", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTELERAD MEDICAL SYSTEMS" }
   , { 0x0029, 0x0014, 0x0029, 0x0014,
       EVR_LT, "LineNormalColor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Line V1.0" }
   , { 0x0029, 0x0014, 0x0029, 0x0014,
+      EVR_UL, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette V1.0" }
+  , { 0x0029, 0x0014, 0x0029, 0x0014,
       EVR_UL, "ROIFillPattern", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0014, 0x0029, 0x0014,
-      EVR_UL, "Unknown", 1, 1, "PrivateTag",
+      EVR_LT, "AnnotationTextBackgroundColor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
+      "Silhouette Annot V1.0" }
+  , { 0x0029, 0x0014, 0x0029, 0x0014,
+      EVR_US, "J2cPlanarConfiguration", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTELERAD MEDICAL SYSTEMS" }
+  , { 0x0029, 0x0015, 0x0029, 0x0015,
+      EVR_UL, "LineType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette Line V1.0" }
+  , { 0x0029, 0x0015, 0x0029, 0x0015,
+      EVR_LT, "ListOfShadowOwnerCodes", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED HG" }
+  , { 0x0029, 0x0015, 0x0029, 0x0015,
+      EVR_UL, "ROIBpSeg", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette ROI V1.0" }
+  , { 0x0029, 0x0015, 0x0029, 0x0015,
+      EVR_UL, "AnnotationTextBackingMode", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette Annot V1.0" }
   , { 0x0029, 0x0015, 0x0029, 0x0015,
       EVR_SL, "LowerRangeOfPixels", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -14837,31 +14841,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0029, 0x0015, 0x0029, 0x0015,
       EVR_LT, "ListOfShadowOwnerCodes", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED HG" }
-  , { 0x0029, 0x0015, 0x0029, 0x0015,
-      EVR_LT, "ListOfShadowOwnerCodes", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED MG" }
-  , { 0x0029, 0x0015, 0x0029, 0x0015,
-      EVR_UL, "AnnotationTextBackingMode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Annot V1.0" }
-  , { 0x0029, 0x0015, 0x0029, 0x0015,
-      EVR_UL, "LineType", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Line V1.0" }
-  , { 0x0029, 0x0015, 0x0029, 0x0015,
-      EVR_UL, "ROIBpSeg", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette ROI V1.0" }
-  , { 0x0029, 0x0016, 0x0029, 0x0016,
-      EVR_SL, "LowerRangeOfPixels", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_IMPS_01" }
-  , { 0x0029, 0x0016, 0x0029, 0x0016,
-      EVR_UL, "AnnotationTextJustification", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Annot V1.0" }
   , { 0x0029, 0x0016, 0x0029, 0x0016,
       EVR_UL, "LineThickness", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -14870,48 +14850,64 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UN, "ROIBpSegPairs", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
-  , { 0x0029, 0x0017, 0x0029, 0x0017,
+  , { 0x0029, 0x0016, 0x0029, 0x0016,
+      EVR_UL, "AnnotationTextJustification", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette Annot V1.0" }
+  , { 0x0029, 0x0016, 0x0029, 0x0016,
       EVR_SL, "LowerRangeOfPixels", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IMPS_01" }
-  , { 0x0029, 0x0017, 0x0029, 0x0017,
-      EVR_UL, "AnnotationTextLocation", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Annot V1.0" }
   , { 0x0029, 0x0017, 0x0029, 0x0017,
       EVR_UL, "LineStyle", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Line V1.0" }
   , { 0x0029, 0x0017, 0x0029, 0x0017,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette V1.0" }
+  , { 0x0029, 0x0017, 0x0029, 0x0017,
       EVR_UL, "ROISeedSpace", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0017, 0x0029, 0x0017,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
-  , { 0x0029, 0x0018, 0x0029, 0x0018,
-      EVR_SL, "UpperRangeOfPixels", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_IMPS_01" }
-  , { 0x0029, 0x0018, 0x0029, 0x0018,
-      EVR_CS, "CSASeriesHeaderType", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CSA HEADER" }
-  , { 0x0029, 0x0018, 0x0029, 0x0018,
-      EVR_LT, "AnnotationTextString", 1, 1, "PrivateTag",
+      EVR_UL, "AnnotationTextLocation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
+  , { 0x0029, 0x0017, 0x0029, 0x0017,
+      EVR_SL, "LowerRangeOfPixels", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_IMPS_01" }
   , { 0x0029, 0x0018, 0x0029, 0x0018,
       EVR_UL, "LineDashLength", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Line V1.0" }
   , { 0x0029, 0x0018, 0x0029, 0x0018,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette V1.0" }
+  , { 0x0029, 0x0018, 0x0029, 0x0018,
+      EVR_CS, "CSASeriesHeaderType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CSA HEADER" }
+  , { 0x0029, 0x0018, 0x0029, 0x0018,
       EVR_UN, "ROISeeds", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0018, 0x0029, 0x0018,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      EVR_LT, "AnnotationTextString", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette Annot V1.0" }
+  , { 0x0029, 0x0018, 0x0029, 0x0018,
+      EVR_SL, "UpperRangeOfPixels", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_IMPS_01" }
+  , { 0x0029, 0x0019, 0x0029, 0x0019,
+      EVR_UL, "LineInteractivity", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette Line V1.0" }
+  , { 0x0029, 0x0019, 0x0029, 0x0019,
+      EVR_UL, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette V1.0" }
   , { 0x0029, 0x0019, 0x0029, 0x0019,
@@ -14919,29 +14915,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CSA HEADER" }
   , { 0x0029, 0x0019, 0x0029, 0x0019,
-      EVR_UL, "AnnotationTextAttachMode", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Annot V1.0" }
-  , { 0x0029, 0x0019, 0x0029, 0x0019,
-      EVR_UL, "LineInteractivity", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Line V1.0" }
-  , { 0x0029, 0x0019, 0x0029, 0x0019,
       EVR_UL, "ROILineThickness", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0019, 0x0029, 0x0019,
-      EVR_UL, "Unknown", 1, 1, "PrivateTag",
+      EVR_UL, "AnnotationTextAttachMode", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette Annot V1.0" }
+  , { 0x0029, 0x001a, 0x0029, 0x001a,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette V1.0" }
   , { 0x0029, 0x001a, 0x0029, 0x001a,
       EVR_SL, "LengthOfTotalHeaderInBytes", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_IMPS_01" }
-  , { 0x0029, 0x001a, 0x0029, 0x001a,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
   , { 0x0029, 0x001b, 0x0029, 0x001b,
       EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -14963,49 +14951,57 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette V1.0" }
   , { 0x0029, 0x001e, 0x0029, 0x001e,
-      EVR_CS, "SubtractionMaskEnableStatus", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;2" }
-  , { 0x0029, 0x001e, 0x0029, 0x001e,
       EVR_CS, "ImageEnhancementEnableStatus", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;3" }
+  , { 0x0029, 0x001e, 0x0029, 0x001e,
+      EVR_CS, "SubtractionMaskEnableStatus", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1;2" }
   , { 0x0029, 0x001e, 0x0029, 0x001e,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette V1.0" }
   , { 0x0029, 0x001f, 0x0029, 0x001f,
-      EVR_CS, "SubtractionMaskSelectStatus", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1;2" }
-  , { 0x0029, 0x001f, 0x0029, 0x001f,
       EVR_CS, "ImageEnhancementSelectStatus", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;3" }
-  , { 0x0029, 0x0020, 0x0029, 0x0020,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0029, 0x001f, 0x0029, 0x001f,
+      EVR_CS, "SubtractionMaskSelectStatus", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "CAMTRONICS IP" }
+      "SPI-P Release 1;2" }
+  , { 0x0029, 0x0020, 0x0029, 0x0020,
+      EVR_DS, "PixelAspectRatio", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
   , { 0x0029, 0x0020, 0x0029, 0x0020,
       EVR_DS, "EdgeEnhancementCoefficient", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "CAMTRONICS" }
   , { 0x0029, 0x0020, 0x0029, 0x0020,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CAMTRONICS IP" }
+  , { 0x0029, 0x0020, 0x0029, 0x0020,
+      EVR_LT, "LineMeasurementColor", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette Line V1.0" }
+  , { 0x0029, 0x0020, 0x0029, 0x0020,
+      EVR_FL, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1;1" }
+  , { 0x0029, 0x0020, 0x0029, 0x0020,
       EVR_CS, "ImageScanningDirection", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
   , { 0x0029, 0x0020, 0x0029, 0x0020,
-      EVR_LO, "PixelDataMD5SumPerFrame", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "INTELERAD MEDICAL SYSTEMS" }
-  , { 0x0029, 0x0020, 0x0029, 0x0020,
-      EVR_DS, "FPMax", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0029, 0x0020, 0x0029, 0x0020,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/PART" }
+  , { 0x0029, 0x0020, 0x0029, 0x0020,
+      EVR_US, "ListOfElementNumbers", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED HG" }
   , { 0x0029, 0x0020, 0x0029, 0x0020,
       EVR_LT, "PixelQualityCode", 3, 3, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15019,45 +15015,33 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED DISPLAY" }
   , { 0x0029, 0x0020, 0x0029, 0x0020,
-      EVR_US, "ListOfElementNumbers", 1, 1, "PrivateTag",
+      EVR_UL, "ROILineStyle", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED HG" }
-  , { 0x0029, 0x0020, 0x0029, 0x0020,
-      EVR_US, "ListOfElementNumbers", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED MG" }
-  , { 0x0029, 0x0020, 0x0029, 0x0020,
-      EVR_OB, "MedComHistoryInformation", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MEDCOM HEADER" }
-  , { 0x0029, 0x0020, 0x0029, 0x0020,
-      EVR_DS, "PixelAspectRatio", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
-  , { 0x0029, 0x0020, 0x0029, 0x0020,
-      EVR_FL, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-Private_ICS Release 1;1" }
+      "Silhouette ROI V1.0" }
   , { 0x0029, 0x0020, 0x0029, 0x0020,
       EVR_UL, "AnnotationTextCursorMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
   , { 0x0029, 0x0020, 0x0029, 0x0020,
-      EVR_LT, "LineMeasurementColor", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Line V1.0" }
-  , { 0x0029, 0x0020, 0x0029, 0x0020,
-      EVR_UL, "ROILineStyle", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette ROI V1.0" }
-  , { 0x0029, 0x0021, 0x0029, 0x0021,
-      EVR_US, "HistogramPercentileLabels", 1, 1, "PrivateTag",
+      EVR_LO, "PixelDataMD5SumPerFrame", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "INTELERAD MEDICAL SYSTEMS" }
-  , { 0x0029, 0x0021, 0x0029, 0x0021,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0029, 0x0020, 0x0029, 0x0020,
+      EVR_OB, "MedComHistoryInformation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED DISPLAY" }
+      "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0020, 0x0029, 0x0020,
+      EVR_DS, "FPMax", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
+  , { 0x0029, 0x0020, 0x0029, 0x0020,
+      EVR_US, "ListOfElementNumbers", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED MG" }
+  , { 0x0029, 0x0021, 0x0029, 0x0021,
+      EVR_LT, "LineMeasurementFont", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette Line V1.0" }
   , { 0x0029, 0x0021, 0x0029, 0x0021,
       EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15067,63 +15051,63 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1;1" }
   , { 0x0029, 0x0021, 0x0029, 0x0021,
-      EVR_UL, "AnnotationTextShadowOffsetX", 1, 1, "PrivateTag",
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Annot V1.0" }
+      "Silhouette V1.0" }
   , { 0x0029, 0x0021, 0x0029, 0x0021,
-      EVR_LT, "LineMeasurementFont", 1, 1, "PrivateTag",
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Line V1.0" }
+      "SIEMENS MED DISPLAY" }
   , { 0x0029, 0x0021, 0x0029, 0x0021,
       EVR_UL, "ROILineDashLength", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0021, 0x0029, 0x0021,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
-  , { 0x0029, 0x0022, 0x0029, 0x0022,
-      EVR_FD, "HistogramPercentileValues", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "INTELERAD MEDICAL SYSTEMS" }
-  , { 0x0029, 0x0022, 0x0029, 0x0022,
-      EVR_IS, "PixelQualityValue", 3, 3, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS CM VA0  CMS" }
-  , { 0x0029, 0x0022, 0x0029, 0x0022,
-      EVR_UL, "AnnotationTextShadowOffsetY", 1, 1, "PrivateTag",
+      EVR_UL, "AnnotationTextShadowOffsetX", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
+  , { 0x0029, 0x0021, 0x0029, 0x0021,
+      EVR_US, "HistogramPercentileLabels", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTELERAD MEDICAL SYSTEMS" }
   , { 0x0029, 0x0022, 0x0029, 0x0022,
       EVR_UL, "LineMeasurementDashLength", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Line V1.0" }
   , { 0x0029, 0x0022, 0x0029, 0x0022,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette V1.0" }
+  , { 0x0029, 0x0022, 0x0029, 0x0022,
+      EVR_IS, "PixelQualityValue", 3, 3, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS CM VA0  CMS" }
+  , { 0x0029, 0x0022, 0x0029, 0x0022,
       EVR_UL, "ROIInteractivity", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0022, 0x0029, 0x0022,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
-  , { 0x0029, 0x0023, 0x0029, 0x0023,
-      EVR_LT, "AnnotationLineColor", 1, 1, "PrivateTag",
+      EVR_UL, "AnnotationTextShadowOffsetY", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
+  , { 0x0029, 0x0022, 0x0029, 0x0022,
+      EVR_FD, "HistogramPercentileValues", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTELERAD MEDICAL SYSTEMS" }
   , { 0x0029, 0x0023, 0x0029, 0x0023,
       EVR_UL, "LinePointSpace", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Line V1.0" }
   , { 0x0029, 0x0023, 0x0029, 0x0023,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette V1.0" }
+  , { 0x0029, 0x0023, 0x0029, 0x0023,
       EVR_UL, "ROINamePosition", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0023, 0x0029, 0x0023,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
-  , { 0x0029, 0x0024, 0x0029, 0x0024,
-      EVR_UL, "AnnotationLineThickness", 1, 1, "PrivateTag",
+      EVR_LT, "AnnotationLineColor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
   , { 0x0029, 0x0024, 0x0029, 0x0024,
@@ -15131,19 +15115,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Line V1.0" }
   , { 0x0029, 0x0024, 0x0029, 0x0024,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette V1.0" }
+  , { 0x0029, 0x0024, 0x0029, 0x0024,
       EVR_UL, "ROINameDisplay", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0024, 0x0029, 0x0024,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
-  , { 0x0029, 0x0025, 0x0029, 0x0025,
-      EVR_LO, "ProcessedPixelDataQuality", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
-  , { 0x0029, 0x0025, 0x0029, 0x0025,
-      EVR_UL, "AnnotationLineType", 1, 1, "PrivateTag",
+      EVR_UL, "AnnotationLineThickness", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
   , { 0x0029, 0x0025, 0x0029, 0x0025,
@@ -15151,21 +15131,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Line V1.0" }
   , { 0x0029, 0x0025, 0x0029, 0x0025,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette V1.0" }
+  , { 0x0029, 0x0025, 0x0029, 0x0025,
       EVR_LT, "ROILabel", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0025, 0x0029, 0x0025,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
-  , { 0x0029, 0x0026, 0x0029, 0x0026,
-      EVR_SS, "VersionOfHeaderStructure", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_IMPS_01" }
-  , { 0x0029, 0x0026, 0x0029, 0x0026,
-      EVR_UL, "AnnotationLineStyle", 1, 1, "PrivateTag",
+      EVR_UL, "AnnotationLineType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
+  , { 0x0029, 0x0025, 0x0029, 0x0025,
+      EVR_LO, "ProcessedPixelDataQuality", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
   , { 0x0029, 0x0026, 0x0029, 0x0026,
       EVR_UL, "LineControlPointSpace", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15174,24 +15154,28 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UL, "ROIShape", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
-  , { 0x0029, 0x0027, 0x0029, 0x0027,
-      EVR_UL, "AnnotationLineDashLength", 1, 1, "PrivateTag",
+  , { 0x0029, 0x0026, 0x0029, 0x0026,
+      EVR_UL, "AnnotationLineStyle", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
+  , { 0x0029, 0x0026, 0x0029, 0x0026,
+      EVR_SS, "VersionOfHeaderStructure", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_IMPS_01" }
   , { 0x0029, 0x0027, 0x0029, 0x0027,
       EVR_FD, "LineControlPoints", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Line V1.0" }
   , { 0x0029, 0x0027, 0x0029, 0x0027,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette V1.0" }
+  , { 0x0029, 0x0027, 0x0029, 0x0027,
       EVR_FD, "ROIShapeTilt", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0027, 0x0029, 0x0027,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
-  , { 0x0029, 0x0028, 0x0029, 0x0028,
-      EVR_UL, "AnnotationLineAttachMode", 1, 1, "PrivateTag",
+      EVR_UL, "AnnotationLineDashLength", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
   , { 0x0029, 0x0028, 0x0029, 0x0028,
@@ -15199,15 +15183,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Line V1.0" }
   , { 0x0029, 0x0028, 0x0029, 0x0028,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette V1.0" }
+  , { 0x0029, 0x0028, 0x0029, 0x0028,
       EVR_UL, "ROIShapePointsCount", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0028, 0x0029, 0x0028,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
-  , { 0x0029, 0x0029, 0x0029, 0x0029,
-      EVR_UL, "AnnotationLinePointCount", 1, 1, "PrivateTag",
+      EVR_UL, "AnnotationLineAttachMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
   , { 0x0029, 0x0029, 0x0029, 0x0029,
@@ -15215,13 +15199,21 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Line V1.0" }
   , { 0x0029, 0x0029, 0x0029, 0x0029,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette V1.0" }
+  , { 0x0029, 0x0029, 0x0029, 0x0029,
       EVR_UL, "ROIShapePointsSpace", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0029, 0x0029, 0x0029,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      EVR_UL, "AnnotationLinePointCount", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
+      "Silhouette Annot V1.0" }
+  , { 0x0029, 0x0030, 0x0029, 0x0030,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
   , { 0x0029, 0x0030, 0x0029, 0x0030,
       EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15231,21 +15223,17 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
   , { 0x0029, 0x0030, 0x0029, 0x0030,
-      EVR_DS, "ScaledMinimum", 1, 1, "PrivateTag",
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
+      "Silhouette V1.0" }
   , { 0x0029, 0x0030, 0x0029, 0x0030,
       EVR_US, "ListOfTotalDisplayLength", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED HG" }
   , { 0x0029, 0x0030, 0x0029, 0x0030,
-      EVR_US, "ListOfTotalDisplayLength", 1, 1, "PrivateTag",
+      EVR_FD, "ROIShapePoints", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED MG" }
-  , { 0x0029, 0x0030, 0x0029, 0x0030,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
+      "Silhouette ROI V1.0" }
   , { 0x0029, 0x0030, 0x0029, 0x0030,
       EVR_UL, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15255,79 +15243,87 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
   , { 0x0029, 0x0030, 0x0029, 0x0030,
-      EVR_FD, "ROIShapePoints", 1, 1, "PrivateTag",
+      EVR_DS, "ScaledMinimum", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette ROI V1.0" }
+      "PHILIPS MR/LAST" }
   , { 0x0029, 0x0030, 0x0029, 0x0030,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+      EVR_US, "ListOfTotalDisplayLength", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
-  , { 0x0029, 0x0031, 0x0029, 0x0031,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "DIGISCAN IMAGE" }
+      "SIEMENS MED MG" }
   , { 0x0029, 0x0031, 0x0029, 0x0031,
       EVR_DS, "Unknown", 2, 2, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/PART" }
   , { 0x0029, 0x0031, 0x0029, 0x0031,
-      EVR_LO, "PMTFInformation1", 1, 1, "PrivateTag",
+      EVR_UL, "ROIShapeControlPointsCount", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MEDCOM HEADER" }
+      "Silhouette ROI V1.0" }
   , { 0x0029, 0x0031, 0x0029, 0x0031,
       EVR_UL, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
+  , { 0x0029, 0x0031, 0x0029, 0x0031,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "DIGISCAN IMAGE" }
   , { 0x0029, 0x0031, 0x0029, 0x0031,
       EVR_UL, "AnnotationLineControlSize", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
   , { 0x0029, 0x0031, 0x0029, 0x0031,
-      EVR_UL, "ROIShapeControlPointsCount", 1, 1, "PrivateTag",
+      EVR_LO, "PMTFInformation1", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette ROI V1.0" }
-  , { 0x0029, 0x0032, 0x0029, 0x0032,
-      EVR_US, "Unknown", 1, -1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "DIGISCAN IMAGE" }
+      "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x0032, 0x0029, 0x0032,
       EVR_DS, "Unknown", 2, 2, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/PART" }
   , { 0x0029, 0x0032, 0x0029, 0x0032,
-      EVR_UL, "PMTFInformation2", 1, 1, "PrivateTag",
+      EVR_UL, "ROIShapeControlPointsSpace", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MEDCOM HEADER" }
+      "Silhouette ROI V1.0" }
   , { 0x0029, 0x0032, 0x0029, 0x0032,
       EVR_UL, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
+  , { 0x0029, 0x0032, 0x0029, 0x0032,
+      EVR_US, "Unknown", 1, -1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "DIGISCAN IMAGE" }
   , { 0x0029, 0x0032, 0x0029, 0x0032,
       EVR_LT, "AnnotationMarkerColor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
   , { 0x0029, 0x0032, 0x0029, 0x0032,
-      EVR_UL, "ROIShapeControlPointsSpace", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette ROI V1.0" }
-  , { 0x0029, 0x0033, 0x0029, 0x0033,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "DIGISCAN IMAGE" }
-  , { 0x0029, 0x0033, 0x0029, 0x0033,
-      EVR_UL, "PMTFInformation3", 1, 1, "PrivateTag",
+      EVR_UL, "PMTFInformation2", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0033, 0x0029, 0x0033,
+      EVR_FD, "ROIShapeControlPoints", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette ROI V1.0" }
   , { 0x0029, 0x0033, 0x0029, 0x0033,
       EVR_UL, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
   , { 0x0029, 0x0033, 0x0029, 0x0033,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "DIGISCAN IMAGE" }
+  , { 0x0029, 0x0033, 0x0029, 0x0033,
       EVR_UL, "AnnotationMarkerType", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
   , { 0x0029, 0x0033, 0x0029, 0x0033,
-      EVR_FD, "ROIShapeControlPoints", 1, 1, "PrivateTag",
+      EVR_UL, "PMTFInformation3", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0034, 0x0029, 0x0034,
+      EVR_US, "MagnificationReductionRatio", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "FDMS 1.0" }
+  , { 0x0029, 0x0034, 0x0029, 0x0034,
+      EVR_UL, "ROIDontSave", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette ROI V1.0" }
   , { 0x0029, 0x0034, 0x0029, 0x0034,
@@ -15335,9 +15331,9 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DIGISCAN IMAGE" }
   , { 0x0029, 0x0034, 0x0029, 0x0034,
-      EVR_US, "MagnificationReductionRatio", 1, 1, "PrivateTag",
+      EVR_UL, "AnnotationMarkerSize", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "FDMS 1.0" }
+      "Silhouette Annot V1.0" }
   , { 0x0029, 0x0034, 0x0029, 0x0034,
       EVR_SL, "AdvantageCompOverflow", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15346,14 +15342,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "PMTFInformation4", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM HEADER" }
-  , { 0x0029, 0x0034, 0x0029, 0x0034,
-      EVR_UL, "AnnotationMarkerSize", 1, 1, "PrivateTag",
+  , { 0x0029, 0x0035, 0x0029, 0x0035,
+      EVR_FD, "AnnotationMarkerLocation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
-  , { 0x0029, 0x0034, 0x0029, 0x0034,
-      EVR_UL, "ROIDontSave", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette ROI V1.0" }
   , { 0x0029, 0x0035, 0x0029, 0x0035,
       EVR_SL, "AdvantageCompUnderflow", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15362,10 +15354,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UL, "PMTFInformation5", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM HEADER" }
-  , { 0x0029, 0x0035, 0x0029, 0x0035,
-      EVR_FD, "AnnotationMarkerLocation", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Annot V1.0" }
   , { 0x0029, 0x0036, 0x0029, 0x0036,
       EVR_UL, "AnnotationMarkerAttachMode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15391,21 +15379,9 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "CAMTRONICS IP" }
   , { 0x0029, 0x0040, 0x0029, 0x0040,
-      EVR_DS, "ScaledMaximum", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0029, 0x0040, 0x0029, 0x0040,
       EVR_LT, "ListOfDisplayPrefix", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED HG" }
-  , { 0x0029, 0x0040, 0x0029, 0x0040,
-      EVR_LT, "ListOfDisplayPrefix", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED MG" }
-  , { 0x0029, 0x0040, 0x0029, 0x0040,
-      EVR_SQ, "ApplicationHeaderSequence", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x0040, 0x0029, 0x0040,
       EVR_LT, "MagnifyingGlassID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15414,10 +15390,22 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UL, "AnnotationGeomDashLength", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
-  , { 0x0029, 0x0041, 0x0029, 0x0041,
-      EVR_CS, "ApplicationHeaderType", 1, 1, "PrivateTag",
+  , { 0x0029, 0x0040, 0x0029, 0x0040,
+      EVR_SQ, "ApplicationHeaderSequence", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0040, 0x0029, 0x0040,
+      EVR_DS, "ScaledMaximum", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
+  , { 0x0029, 0x0040, 0x0029, 0x0040,
+      EVR_LT, "ListOfDisplayPrefix", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED MG" }
+  , { 0x0029, 0x0041, 0x0029, 0x0041,
+      EVR_SQ, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette Sequence Ids V1.0" }
   , { 0x0029, 0x0041, 0x0029, 0x0041,
       EVR_DS, "MagnifyingGlassRectangle", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15427,61 +15415,61 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
   , { 0x0029, 0x0041, 0x0029, 0x0041,
+      EVR_CS, "ApplicationHeaderType", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0042, 0x0029, 0x0042,
       EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Sequence Ids V1.0" }
-  , { 0x0029, 0x0042, 0x0029, 0x0042,
-      EVR_LO, "ApplicationHeaderID", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x0042, 0x0029, 0x0042,
       EVR_UL, "AnnotationInteractivity", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
   , { 0x0029, 0x0042, 0x0029, 0x0042,
+      EVR_LO, "ApplicationHeaderID", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0043, 0x0029, 0x0043,
+      EVR_SQ, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1" }
+  , { 0x0029, 0x0043, 0x0029, 0x0043,
       EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Sequence Ids V1.0" }
-  , { 0x0029, 0x0043, 0x0029, 0x0043,
-      EVR_LO, "ApplicationHeaderVersion", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x0043, 0x0029, 0x0043,
       EVR_DS, "MagnifyingGlassFactor", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
   , { 0x0029, 0x0043, 0x0029, 0x0043,
-      EVR_SQ, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-Private_ICS Release 1" }
-  , { 0x0029, 0x0043, 0x0029, 0x0043,
       EVR_FD, "AnnotationArrowLength", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
   , { 0x0029, 0x0043, 0x0029, 0x0043,
+      EVR_LO, "ApplicationHeaderVersion", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0044, 0x0029, 0x0044,
       EVR_SQ, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette Sequence Ids V1.0" }
+      "SPI-P-Private_ICS Release 1" }
   , { 0x0029, 0x0044, 0x0029, 0x0044,
       EVR_CS, "LineDensityCode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
   , { 0x0029, 0x0044, 0x0029, 0x0044,
-      EVR_OB, "ApplicationHeaderInfo", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MEDCOM HEADER" }
-  , { 0x0029, 0x0044, 0x0029, 0x0044,
       EVR_US, "MagnifyingGlassFunction", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
   , { 0x0029, 0x0044, 0x0029, 0x0044,
-      EVR_SQ, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-Private_ICS Release 1" }
-  , { 0x0029, 0x0044, 0x0029, 0x0044,
       EVR_FD, "AnnotationArrowAngle", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
+  , { 0x0029, 0x0044, 0x0029, 0x0044,
+      EVR_OB, "ApplicationHeaderInfo", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x0045, 0x0029, 0x0045,
       EVR_UL, "AnnotationDontSave", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15507,33 +15495,33 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
   , { 0x0029, 0x0050, 0x0029, 0x0050,
-      EVR_DS, "WindowMinimum", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0029, 0x0050, 0x0029, 0x0050,
       EVR_LT, "ArchiveCode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
-  , { 0x0029, 0x0050, 0x0029, 0x0050,
-      EVR_US, "OriginOfSubmatrix", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED DISPLAY" }
   , { 0x0029, 0x0050, 0x0029, 0x0050,
       EVR_LT, "ListOfDisplayPostfix", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED HG" }
   , { 0x0029, 0x0050, 0x0029, 0x0050,
-      EVR_LT, "ListOfDisplayPostfix", 1, 1, "PrivateTag",
+      EVR_US, "OriginOfSubmatrix", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED MG" }
+      "SIEMENS MED DISPLAY" }
+  , { 0x0029, 0x0050, 0x0029, 0x0050,
+      EVR_CS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1;5" }
   , { 0x0029, 0x0050, 0x0029, 0x0050,
       EVR_LO, "WorkflowControlFlags", 8, 8, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x0050, 0x0029, 0x0050,
-      EVR_CS, "Unknown", 1, 1, "PrivateTag",
+      EVR_DS, "WindowMinimum", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-Private_ICS Release 1;5" }
+      "PHILIPS MR/LAST" }
+  , { 0x0029, 0x0050, 0x0029, 0x0050,
+      EVR_LT, "ListOfDisplayPostfix", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED MG" }
   , { 0x0029, 0x0051, 0x0029, 0x0051,
       EVR_LT, "ExposureCode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15543,6 +15531,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x0052, 0x0029, 0x0052,
+      EVR_US, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Silhouette V1.0" }
+  , { 0x0029, 0x0052, 0x0029, 0x0052,
       EVR_LT, "SortCode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
@@ -15550,8 +15542,8 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "ArchiveManagementFlagDoNotArchive", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM HEADER" }
-  , { 0x0029, 0x0052, 0x0029, 0x0052,
-      EVR_US, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0029, 0x0053, 0x0029, 0x0053,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette V1.0" }
   , { 0x0029, 0x0053, 0x0029, 0x0053,
@@ -15562,30 +15554,26 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "ImageLocationStatus", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM HEADER" }
-  , { 0x0029, 0x0053, 0x0029, 0x0053,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0029, 0x0054, 0x0029, 0x0054,
+      EVR_UN, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette V1.0" }
   , { 0x0029, 0x0054, 0x0029, 0x0054,
       EVR_DS, "EstimatedRetrieveTime", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM HEADER" }
-  , { 0x0029, 0x0054, 0x0029, 0x0054,
-      EVR_UN, "Unknown", 1, 1, "PrivateTag",
+  , { 0x0029, 0x0055, 0x0029, 0x0055,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette V1.0" }
-  , { 0x0029, 0x0055, 0x0029, 0x0055,
-      EVR_DS, "DataSizeOfRetrievedImages", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x0055, 0x0029, 0x0055,
       EVR_CS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1;5" }
   , { 0x0029, 0x0055, 0x0029, 0x0055,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      EVR_DS, "DataSizeOfRetrievedImages", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Silhouette V1.0" }
+      "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x0056, 0x0029, 0x0056,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15599,9 +15587,9 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "CAMTRONICS" }
   , { 0x0029, 0x0060, 0x0029, 0x0060,
-      EVR_DS, "WindowMaximum", 1, 1, "PrivateTag",
+      EVR_LT, "CompressionAlgorithm", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
+      "SPI Release 1" }
   , { 0x0029, 0x0060, 0x0029, 0x0060,
       EVR_LT, "Splash", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15611,29 +15599,29 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED HG" }
   , { 0x0029, 0x0060, 0x0029, 0x0060,
-      EVR_US, "ListOfTextPosition", 1, 1, "PrivateTag",
+      EVR_LT, "CompressionAlgorithm", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED MG" }
+      "SPI" }
   , { 0x0029, 0x0060, 0x0029, 0x0060,
       EVR_LO, "SeriesWorkflowStatus", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM HEADER2" }
   , { 0x0029, 0x0060, 0x0029, 0x0060,
-      EVR_LT, "CompressionAlgorithm", 1, 1, "PrivateTag",
+      EVR_DS, "WindowMaximum", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI RELEASE 1" }
-  , { 0x0029, 0x0060, 0x0029, 0x0060,
-      EVR_LT, "CompressionAlgorithm", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI Release 1" }
-  , { 0x0029, 0x0060, 0x0029, 0x0060,
-      EVR_LT, "CompressionAlgorithm", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI" }
+      "PHILIPS MR/LAST" }
   , { 0x0029, 0x0060, 0x0029, 0x0060,
       EVR_LT, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x0029, 0x0060, 0x0029, 0x0060,
+      EVR_LT, "CompressionAlgorithm", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI RELEASE 1" }
+  , { 0x0029, 0x0060, 0x0029, 0x0060,
+      EVR_US, "ListOfTextPosition", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED MG" }
   , { 0x0029, 0x0061, 0x0029, 0x0061,
       EVR_IS, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15643,13 +15631,13 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
   , { 0x0029, 0x0067, 0x0029, 0x0067,
-      EVR_LT, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P Release 1" }
-  , { 0x0029, 0x0067, 0x0029, 0x0067,
       EVR_LO, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1" }
+  , { 0x0029, 0x0067, 0x0029, 0x0067,
+      EVR_LT, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P Release 1" }
   , { 0x0029, 0x0068, 0x0029, 0x0068,
       EVR_US, "Unknown", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15671,33 +15659,33 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "ISG shadow" }
   , { 0x0029, 0x0070, 0x0029, 0x0070,
-      EVR_DS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0029, 0x0070, 0x0029, 0x0070,
       EVR_LT, "ListOfTextConcatenation", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED HG" }
-  , { 0x0029, 0x0070, 0x0029, 0x0070,
-      EVR_LT, "ListOfTextConcatenation", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SIEMENS MED MG" }
   , { 0x0029, 0x0070, 0x0029, 0x0070,
       EVR_SQ, "SiemensLinkSequence", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM HEADER" }
   , { 0x0029, 0x0070, 0x0029, 0x0070,
+      EVR_DS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
+  , { 0x0029, 0x0070, 0x0029, 0x0070,
+      EVR_LT, "ListOfTextConcatenation", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MED MG" }
+  , { 0x0029, 0x0070, 0x0029, 0x0070,
       EVR_LT, "WindowID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
   , { 0x0029, 0x0071, 0x0029, 0x0071,
-      EVR_DS, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "PHILIPS MR/LAST" }
-  , { 0x0029, 0x0071, 0x0029, 0x0071,
       EVR_AT, "ReferencedTag", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM HEADER" }
+  , { 0x0029, 0x0071, 0x0029, 0x0071,
+      EVR_DS, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR/LAST" }
   , { 0x0029, 0x0071, 0x0029, 0x0071,
       EVR_CS, "VideoInvertSubtracted", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15759,6 +15747,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "ISG shadow" }
   , { 0x0029, 0x0080, 0x0029, 0x0080,
+      EVR_LO, "Unknown", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-GV-CT Release 1" }
+  , { 0x0029, 0x0080, 0x0029, 0x0080,
       EVR_IS, "ViewCenter", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
@@ -15766,10 +15758,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LT, "PhysiologicalDisplayID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
-  , { 0x0029, 0x0080, 0x0029, 0x0080,
-      EVR_LO, "Unknown", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "SPI-P-GV-CT Release 1" }
   , { 0x0029, 0x0081, 0x0029, 0x0081,
       EVR_IS, "ViewSize", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -17311,6 +17299,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UT, "TextValue", 1, 1, "DICOM_2011",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0040, 0xa161, 0x0040, 0xa161,
+      EVR_FD, "FloatingPointValue", 1, -1, "CP_1064",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xa162, 0x0040, 0xa162,
+      EVR_SL, "RationalNumeratorValue", 1, -1, "CP_1064",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xa163, 0x0040, 0xa163,
+      EVR_UL, "RationalDenominatorValue", 1, -1, "CP_1064",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0040, 0xa167, 0x0040, 0xa167,
       EVR_SQ, "RETIRED_ObservationCategoryCodeSequenceTrial", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -17657,10 +17657,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PAPYRUS 3.0" }
   , { 0x0041, 0x0020, 0x0041, 0x0020,
-      EVR_FL, "AccumulatedFluoroscopyDose", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "INTEGRIS 1.0" }
-  , { 0x0041, 0x0020, 0x0041, 0x0020,
       EVR_LT, "FolderName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PAPYRUS" }
@@ -17668,6 +17664,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LT, "FilmFormat", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
+  , { 0x0041, 0x0020, 0x0041, 0x0020,
+      EVR_FL, "AccumulatedFluoroscopyDose", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTEGRIS 1.0" }
   , { 0x0041, 0x0021, 0x0041, 0x0021,
       EVR_UI, "ReferencedSOPClassUID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -17677,10 +17677,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PAPYRUS 3.0" }
   , { 0x0041, 0x0030, 0x0041, 0x0030,
-      EVR_FL, "AccumulatedExposureDose", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "INTEGRIS 1.0" }
-  , { 0x0041, 0x0030, 0x0041, 0x0030,
       EVR_DA, "CreationDate", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PAPYRUS" }
@@ -17688,6 +17684,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LT, "FilmSize", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS DLR.01" }
+  , { 0x0041, 0x0030, 0x0041, 0x0030,
+      EVR_FL, "AccumulatedExposureDose", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTEGRIS 1.0" }
   , { 0x0041, 0x0031, 0x0041, 0x0031,
       EVR_LT, "ReferencedFileName", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -17713,29 +17713,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PAPYRUS" }
   , { 0x0041, 0x0040, 0x0041, 0x0040,
-      EVR_FL, "TotalDose", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "INTEGRIS 1.0" }
-  , { 0x0041, 0x0040, 0x0041, 0x0040,
       EVR_LT, "OwnerName", 1, -1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PAPYRUS" }
-  , { 0x0041, 0x0041, 0x0041, 0x0041,
-      EVR_FL, "TotalNumberOfFrames", 1, 1, "PrivateTag",
+  , { 0x0041, 0x0040, 0x0041, 0x0040,
+      EVR_FL, "TotalDose", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "INTEGRIS 1.0" }
   , { 0x0041, 0x0041, 0x0041, 0x0041,
       EVR_UI, "ReferencedImageSOPClassUID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PAPYRUS 3.0" }
+  , { 0x0041, 0x0041, 0x0041, 0x0041,
+      EVR_FL, "TotalNumberOfFrames", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTEGRIS 1.0" }
   , { 0x0041, 0x0042, 0x0041, 0x0042,
       EVR_UI, "ReferencedImageSOPInstanceUID", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PAPYRUS 3.0" }
-  , { 0x0041, 0x0050, 0x0041, 0x0050,
-      EVR_SQ, "ExposureInformationSequence", 1, 1, "PrivateTag",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "INTEGRIS 1.0" }
   , { 0x0041, 0x0050, 0x0041, 0x0050,
       EVR_SQ, "ImageSequence", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -17744,6 +17740,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LT, "FolderStatus", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PAPYRUS" }
+  , { 0x0041, 0x0050, 0x0041, 0x0050,
+      EVR_SQ, "ExposureInformationSequence", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTEGRIS 1.0" }
   , { 0x0041, 0x0060, 0x0041, 0x0060,
       EVR_UL, "NumberOfImages", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -17925,11 +17925,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0043, 0x001e, 0x0043, 0x001e,
       EVR_DS, "DeltaStartTime", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_PARM_01" }
+      "GE_GENESIS_REV3.0" }
   , { 0x0043, 0x001e, 0x0043, 0x001e,
       EVR_DS, "DeltaStartTime", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GE_GENESIS_REV3.0" }
+      "GEMS_PARM_01" }
   , { 0x0043, 0x001f, 0x0043, 0x001f,
       EVR_SL, "MaxOverrangesInAView", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -17953,11 +17953,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0043, 0x0027, 0x0043, 0x0027,
       EVR_SH, "ScanPitchRatio", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GEMS_PARM_01" }
+      "GE_GENESIS_REV3.0" }
   , { 0x0043, 0x0027, 0x0043, 0x0027,
       EVR_SH, "ScanPitchRatio", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "GE_GENESIS_REV3.0" }
+      "GEMS_PARM_01" }
   , { 0x0043, 0x0028, 0x0043, 0x0028,
       EVR_OB, "UniqueImageIdentifier", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
