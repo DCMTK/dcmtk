@@ -3,6 +3,20 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.06 (elgazzar)
 
+- Added a function to handle N-ACTION request.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
+- Also added a function to send N-EVENT-REPORT request on the current
+  association. Intended to be used for a storage commitment server.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
+- Also added a function to find a presentation context given a presentation
+  context ID.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
 - Fixed wrong logger name which caused compiler error.
   Affects: dcmnet/libsrc/scu.cc
 
