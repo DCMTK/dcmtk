@@ -18,9 +18,9 @@
  *  Purpose: General SCP class that can be used to implement derived SCP
  *           applications.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-08-05 08:25:29 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-09-06 16:11:06 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -520,6 +520,40 @@ protected:
                                                DcmDataset *&reqDataset,
                                                Uint16 &eventTypeID);
 
+  /** Receives N-ACTION request and sends a corresponding response.
+   *  @param reqMessage  [in]  The N-ACTION request message that was received
+   *  @param presID      [in]  The presentation context to be used. By default, the
+   *                           presentation context of the request is used.
+   *  @param reqDataset  [out] Pointer to the dataset received
+   *  @param actionTypeID [out] Action Type ID from the command set received
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
+                                          T_ASC_PresentationContextID presID,
+                                          DcmDataset *&reqDataset,
+                                          Uint16 &actionTypeID);
+
+  /** sends N-EVENT-REPORT request on the current  association and receives a
+   *  corresponding response.
+   *  @param presID         [in]  The ID of the presentation context to be used for sending
+   *                              the request message. Should not be 0.
+   *  @param sopInstanceUID [in]  The requested SOP Instance UID
+   *  @param messageID      [in]  The request message ID
+   *  @param eventTypeID    [in]  The event type ID to be used
+   *  @param reqDataset     [in]  The request dataset to be sent
+   *  @param rspStatusCode  [out] The response status code received. 0 means success,
+   *                              others can be found in the DICOM standard.
+   *  @return EC_Normal if request could be issued and response was received successfully,
+   *          an error code otherwise. That means that if the receiver sends a response
+   *          denoting failure of the storage request, EC_Normal will be returned.
+   */
+  virtual OFCondition sendEVENTREPORTRequest(const T_ASC_PresentationContextID presID,
+                                             const OFString &sopInstanceUID,
+                                             Uint16 messageID,
+                                             const Uint16 eventTypeID,
+                                             DcmDataset *reqDataset,
+                                             Uint16 &rspStatusCode);
+
   /** Check given N-EVENT-REPORT request and dataset for validity. This method is called by
    *  handleEVENTREPORTRequest() before sending the response in order to determine the
    *  DIMSE status code to be used for the response message.
@@ -551,6 +585,18 @@ protected:
    *  Further functions and member variables
    * *********************************************************************
    */
+
+  /** This call returns the presentation context belonging to the given
+   *  presentation context ID.
+   *  @param presID         [in]  The presentation context ID to look for
+   *  @param abstractSyntax [out] The abstract syntax (UID) for that ID.
+   *                              Empty, if such a presentation context does not exist.
+   *  @param transferSyntax [out] The transfer syntax (UID) for that ID.
+   *                              Empty, if such a presentation context does not exist.
+   */
+  void findPresentationContext(const T_ASC_PresentationContextID presID,
+                               OFString &abstractSyntax,
+                               OFString &transferSyntax);
 
   /** This function takes care of receiving, negotiating and accepting/refusing an
    *  association request. Additionally, if negotiation was successful, it handles any
@@ -789,6 +835,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.14  2011-09-06 16:11:06  ogazzar
+ *  Added functions to handle N-ACTION and to send N-EVENT-REPORT requests.
+ *
  *  Revision 1.13  2011-08-05 08:25:29  onken
  *  Added function to find out whether current process was "forked" under
  *  windows as a child. Added functions to switch between blocking and

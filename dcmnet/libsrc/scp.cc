@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-08-05 08:25:28 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-09-06 16:12:53 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -376,7 +376,42 @@ void DcmSCP::refuseAssociation(DcmRefuseReasonType reason)
   ASC_rejectAssociation( m_assoc, &rej );
 
   // Drop and destroy the association.
-  dropAndDestroyAssociation();}
+  dropAndDestroyAssociation();
+}
+
+// ----------------------------------------------------------------------------
+
+void DcmSCP::findPresentationContext(const T_ASC_PresentationContextID presID,
+                                     OFString &abstractSyntax,
+                                     OFString &transferSyntax)
+{
+  transferSyntax.clear();
+  abstractSyntax.clear();
+  if (m_assoc == NULL)
+    return;
+
+  DUL_PRESENTATIONCONTEXT *pc;
+  LST_HEAD **l;
+
+  /* first of all we look for a presentation context
+   * matching both abstract and transfer syntax
+   */
+  l = &m_assoc->params->DULparams.acceptedPresentationContext;
+  pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
+  (void)LST_Position(l, (LST_NODE*)pc);
+  while (pc)
+  {
+     if ((presID == pc->presentationContextID) && (pc->result == ASC_P_ACCEPTANCE))
+     {
+       // found a match
+       transferSyntax = pc->acceptedTransferSyntax;
+       abstractSyntax = pc->abstractSyntax;
+       return;
+     }
+     pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
+  }
+  return;   /* not found */
+}
 
 // ----------------------------------------------------------------------------
 
@@ -825,6 +860,201 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
   reqDataset = dataset;
   eventTypeID = reqMessage.EventTypeID;
 
+  return cond;
+}
+
+// ----------------------------------------------------------------------------
+// Handle N-ACTION request and send N-ACTION response
+OFCondition DcmSCP::handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
+                                        T_ASC_PresentationContextID presID,
+                                        DcmDataset *&reqDataset,
+                                        Uint16 &actionTypeID)
+{
+  // Do some basic validity checks
+  if (m_assoc == NULL)
+    return DIMSE_ILLEGALASSOCIATION;
+
+  OFCondition cond;
+  OFString tempStr;
+  T_ASC_PresentationContextID presIDdset;
+  DcmDataset *dataset = NULL;
+  Uint16 statusCode = 0;
+
+  // Dump debug information
+  DCMNET_INFO("Received N-ACTION Request");
+
+  // Check if dataset is announced correctly
+  if (reqMessage.DataSetType == DIMSE_DATASET_NULL)
+  {
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+    DCMNET_ERROR("Received N-ACTION request but no dataset announced, aborting");
+    return DIMSE_BADMESSAGE;
+  }
+
+  // Receive dataset
+  cond = receiveDIMSEDataset(&presIDdset, &dataset, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+    DCMNET_ERROR("Unable to receive N-ACTION dataset on presentation context " << OFstatic_cast(unsigned int, presID));
+    return DIMSE_BADDATA;
+  }
+
+  // Output request message only if trace level is enabled
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, dataset, presID));
+  else
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+
+  // Compare presentation context ID of command and data set
+  if (presIDdset != presID)
+  {
+    DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID)
+      << ") and data set (" << OFstatic_cast(unsigned int, presIDdset) << ") differs");
+    delete dataset;
+    return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error,
+      "DIMSE: Presentation Contexts of Command and Data Set differ");
+  }
+
+  // Send back response
+  T_DIMSE_Message response;
+  T_DIMSE_N_ActionRSP &nActionRsp = response.msg.NActionRSP;
+  response.CommandField = DIMSE_N_ACTION_RSP;
+  nActionRsp.MessageIDBeingRespondedTo = reqMessage.MessageID;
+  nActionRsp.DimseStatus = statusCode;
+  nActionRsp.DataSetType = DIMSE_DATASET_NULL;
+  nActionRsp.opts = 0;
+  //user option. may be set to zero
+  nActionRsp.AffectedSOPClassUID[0] = 0;
+  nActionRsp.AffectedSOPInstanceUID[0] = 0;
+
+  DCMNET_INFO("Sending N-ACTION Response");
+  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
+  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending N-ACTION response: " << DimseCondition::dump(tempStr, cond));
+    delete dataset;
+    return cond;
+  }
+
+  // Set return values
+  reqDataset = dataset;
+  actionTypeID = reqMessage.ActionTypeID;
+
+  return cond;
+}
+
+// ----------------------------------------------------------------------------
+// Sends N-EVENT-REPORT request on the current association and receives a response.
+OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID presID,
+                                           const OFString &sopInstanceUID,
+                                           Uint16 messageID,
+                                           const Uint16 eventTypeID,
+                                           DcmDataset *reqDataset,
+                                           Uint16 &rspStatusCode)
+{
+  // Do some basic validity checks
+  if (m_assoc == NULL)
+    return DIMSE_ILLEGALASSOCIATION;
+  if (sopInstanceUID.empty() || (reqDataset == NULL))
+    return DIMSE_NULLKEY;
+
+  // Prepare DIMSE data structures for issuing request
+  OFCondition cond;
+  OFString tempStr;
+  T_ASC_PresentationContextID pcid = presID;
+  T_DIMSE_Message request;
+  T_DIMSE_N_EventReportRQ &eventRepReq = request.msg.NEventReportRQ;
+  DcmDataset *statusDetail = NULL;
+
+  request.CommandField = DIMSE_N_EVENT_REPORT_RQ;
+
+  // Generate a new message ID
+  eventRepReq.MessageID = messageID;
+
+  eventRepReq.DataSetType = DIMSE_DATASET_PRESENT;
+  eventRepReq.EventTypeID = eventTypeID;
+
+  // Determine SOP Class from presentation context
+  OFString abstractSyntax, transferSyntax;
+
+  findPresentationContext(pcid, abstractSyntax, transferSyntax);
+  if (abstractSyntax.empty() || transferSyntax.empty())
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+  OFStandard::strlcpy(eventRepReq.AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(eventRepReq.AffectedSOPClassUID));
+  OFStandard::strlcpy(eventRepReq.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(eventRepReq.AffectedSOPInstanceUID));
+
+  // Send request
+  DCMNET_INFO("Sending N-EVENT-REPORT Request");
+  // Output dataset only if trace level is enabled
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, reqDataset, pcid));
+  else
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, NULL, pcid));
+  cond = sendDIMSEMessage(pcid, &request, reqDataset, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending N-EVENT-REPORT request: " << DimseCondition::dump(tempStr, cond));
+    return cond;
+  }
+  // Receive response
+  T_DIMSE_Message response;
+  cond = receiveDIMSECommand(&pcid, &response, &statusDetail, NULL /* commandSet */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, cond));
+    return cond;
+  }
+
+  // Check command set
+  if (response.CommandField == DIMSE_N_EVENT_REPORT_RSP)
+  {
+    DCMNET_INFO("Received N-EVENT-REPORT Response");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
+  } else {
+    DCMNET_ERROR("Expected N-EVENT-REPORT response but received DIMSE command 0x"
+        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+        << OFstatic_cast(unsigned int, response.CommandField));
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
+    delete statusDetail;
+    return DIMSE_BADCOMMANDTYPE;
+  }
+  if (statusDetail != NULL)
+  {
+    DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+    delete statusDetail;
+  }
+
+  // Set return value
+  T_DIMSE_N_EventReportRSP &eventRepRsp = response.msg.NEventReportRSP;
+  rspStatusCode = eventRepRsp.DimseStatus;
+
+  // Check whether there is a dataset to be received
+  if (eventRepRsp.DataSetType == DIMSE_DATASET_PRESENT)
+  {
+    // this should never happen
+    DcmDataset *tempDataset = NULL;
+    T_ASC_PresentationContextID tempID;
+    cond = receiveDIMSEDataset(&tempID, &tempDataset, NULL /* callback */, NULL /* callbackContext */);
+    if (cond.good())
+    {
+      DCMNET_WARN("Received unexpected dataset after N-EVENT-REPORT response, ignoring");
+      delete tempDataset;
+    } else {
+      DCMNET_ERROR("Failed receiving unexpected dataset after N-EVENT-REPORT response: "
+        << DimseCondition::dump(tempStr, cond));
+      return DIMSE_BADDATA;
+    }
+  }
+
+  // Check whether the message ID being responded to is equal to the message ID of the request
+  if (eventRepRsp.MessageIDBeingRespondedTo != eventRepReq.MessageID)
+  {
+    DCMNET_ERROR("Received response with wrong message ID ("
+      << eventRepRsp.MessageIDBeingRespondedTo << " instead of " << eventRepReq.MessageID << ")");
+    return DIMSE_BADMESSAGE;
+  }
   return cond;
 }
 
@@ -1534,6 +1764,9 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.21  2011-09-06 16:12:53  ogazzar
+** Added functions to handle N-ACTION and to send N-EVENT-REPORT requests.
+**
 ** Revision 1.20  2011-08-05 08:25:28  onken
 ** Added function to find out whether current process was "forked" under
 ** windows as a child. Added functions to switch between blocking and
