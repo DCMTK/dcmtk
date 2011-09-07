@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.09.07 (riesmeier)
+
+- Made more clear that option --key also supports path expressions.
+  Affects: dcmnet/apps/getscu.cc
+
 **** Changes from 2011.09.06 (elgazzar)
 
 - Added a function to handle N-ACTION request.

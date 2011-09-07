@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-GET operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-25 15:05:04 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-09-07 12:40:45 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -232,7 +232,7 @@ main(int argc, char *argv[])
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
-      cmd.addOption("--key",                 "-k",   1, "[k]ey: gggg,eeee=\"str\" or dict. name=\"str\"",
+      cmd.addOption("--key",                 "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dic. name=\"str\"",
                                                         "override matching key");
     cmd.addSubGroup("retrieve information model:");
       cmd.addOption("--patient",             "-P",      "use patient root information model (default)");
@@ -502,7 +502,7 @@ main(int argc, char *argv[])
     return 1;
   }
 
-  // Setup scu
+  // Setup SCU
   OFList<OFString> syntaxes;
   prepareTS(opt_get_networkTransferSyntax, syntaxes);
   DcmSCU scu;
@@ -615,7 +615,6 @@ main(int argc, char *argv[])
     }
   }
 
-
   /* tear down association */
   if (cond == EC_Normal)
   {
@@ -680,75 +679,78 @@ static void applyOverrideKeys(DcmDataset *dataset)
 static void prepareTS(E_TransferSyntax ts,
                       OFList<OFString>& syntaxes)
 {
-    /*
-    ** We prefer to use Explicitly encoded transfer syntaxes.
-    ** If we are running on a Little Endian machine we prefer
-    ** LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
-    ** Some SCP implementations will just select the first transfer
-    ** syntax they support (this is not part of the standard) so
-    ** organise the proposed transfer syntaxes to take advantage
-    ** of such behaviour.
-    **
-    ** The presentation contexts proposed here are only used for
-    ** C-FIND and C-MOVE, so there is no need to support compressed
-    ** transmission.
-    */
+  /*
+  ** We prefer to use Explicitly encoded transfer syntaxes.
+  ** If we are running on a Little Endian machine we prefer
+  ** LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
+  ** Some SCP implementations will just select the first transfer
+  ** syntax they support (this is not part of the standard) so
+  ** organise the proposed transfer syntaxes to take advantage
+  ** of such behaviour.
+  **
+  ** The presentation contexts proposed here are only used for
+  ** C-FIND and C-MOVE, so there is no need to support compressed
+  ** transmission.
+  */
 
-    switch (ts)
-    {
+  switch (ts)
+  {
     case EXS_LittleEndianImplicit:
-        /* we only support Little Endian Implicit */
-        syntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
-        break;
+      /* we only support Little Endian Implicit */
+      syntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
+      break;
     case EXS_LittleEndianExplicit:
-        /* we prefer Little Endian Explicit */
-        syntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
-        syntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
-        syntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
-        break;
+      /* we prefer Little Endian Explicit */
+      syntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
+      syntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
+      syntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
+      break;
     case EXS_BigEndianExplicit:
-        /* we prefer Big Endian Explicit */
-        syntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
-        syntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
-        syntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
-        break;
+      /* we prefer Big Endian Explicit */
+      syntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
+      syntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
+      syntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
+      break;
 #ifdef WITH_ZLIB
     case EXS_DeflatedLittleEndianExplicit:
-        /* we prefer Deflated Little Endian Explicit */
-        syntaxes.push_back(UID_DeflatedExplicitVRLittleEndianTransferSyntax);
-        syntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
-        syntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
-        syntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
-        break;
+      /* we prefer Deflated Little Endian Explicit */
+      syntaxes.push_back(UID_DeflatedExplicitVRLittleEndianTransferSyntax);
+      syntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
+      syntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
+      syntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
+      break;
 #endif
     default:
-        DcmXfer xfer(ts);
-        if (xfer.isEncapsulated())
-        {
-          syntaxes.push_back(xfer.getXferID());
-        }
-        /* We prefer explicit transfer syntaxes.
-         * If we are running on a Little Endian machine we prefer
-         * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
-         */
-        if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
-        {
-           syntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
-           syntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
-        } else
-        {
-          syntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
-          syntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
-        }
-        syntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
-        break;
-    }
+      DcmXfer xfer(ts);
+      if (xfer.isEncapsulated())
+      {
+        syntaxes.push_back(xfer.getXferID());
+      }
+      /* We prefer explicit transfer syntaxes.
+       * If we are running on a Little Endian machine we prefer
+       * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
+       */
+      if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+      {
+        syntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
+        syntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
+      } else
+      {
+        syntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
+        syntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
+      }
+      syntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
+      break;
+  }
 }
 
 
 /*
 ** CVS Log
 ** $Log: getscu.cc,v $
+** Revision 1.4  2011-09-07 12:40:45  joergr
+** Made more clear that option --key also supports path expressions.
+**
 ** Revision 1.3  2011-08-25 15:05:04  joergr
 ** Changed data structure for Q/R responses from OFVector to OFList. Also fixed
 ** some possible memory leaks and made the FIND/MOVE/GET code more consistent.
