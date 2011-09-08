@@ -17,9 +17,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-11 10:03:35 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-09-08 15:24:53 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,7 +62,7 @@ const unsigned short OFM_dcmrt    = 21;
 const unsigned short OFM_dcmloco  = 22;
 const unsigned short OFM_dcmstcom = 23;
 const unsigned short OFM_dcmppscu = 24;
-
+const unsigned short OFM_dcmstscp = 25;
 
 // condition constants
 
@@ -143,6 +143,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.38  2011-09-08 15:24:53  ogazzar
+** Added module number for the dcmstscp module.
+**
 ** Revision 1.37  2011-05-11 10:03:35  uli
 ** Improved handling of files which ended before the end of a sequence.
 **
