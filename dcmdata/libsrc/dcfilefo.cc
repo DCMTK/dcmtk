@@ -18,8 +18,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-05-13 12:24:31 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Update Date:      $Date: 2011-09-08 08:55:00 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -303,7 +303,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                         char *uid = NULL;
                         l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
                         OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
-                        DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() use SOPClassUID [" << uid << "]");
+                        DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() use SOPClassUID [" << uid << "] from Dataset");
                     }
                     else if (elem->getLength() == 0)
                     {
@@ -966,6 +966,9 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.67  2011-09-08 08:55:00  joergr
+** Fixed log message in checkMetaHeaderValue() for reasons of consistency.
+**
 ** Revision 1.66  2011-05-13 12:24:31  joergr
 ** Output log messages if value of SOPClassUID or SOPInstanceUID in file meta
 ** information header and dataset is different.

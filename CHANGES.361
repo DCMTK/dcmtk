@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.09.08 (riesmeier)
+
+- Fixed log message in checkMetaHeaderValue() for reasons of consistency.
+  Affects: dcmdata/libsrc/dcfilefo.cc
+
 **** Changes from 2011.09.07 (riesmeier)
 
 - Made more clear that option --key also supports path expressions.
