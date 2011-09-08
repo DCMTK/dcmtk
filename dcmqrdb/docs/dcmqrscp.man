@@ -547,8 +547,8 @@ OphthalmicAxialMeasurementsStorage                   1.2.840.10008.5.1.4.1.1.78.
 IntraocularLensCalculationsStorage                   1.2.840.10008.5.1.4.1.1.78.8
 MacularGridThicknessAndVolumeReportStorage           1.2.840.10008.5.1.4.1.1.79.1
 OphthalmicVisualFieldStaticPerimetryMeasurementsSt.  1.2.840.10008.5.1.4.1.1.80.1
+OphthalmicThicknessMapStorage                        1.2.840.10008.5.1.4.1.1.81.1
 DRAFT_SRTextStorage                                  1.2.840.10008.5.1.4.1.1.88.1
-DRAFT_SRDetailStorage                                1.2.840.10008.5.1.4.1.1.88.3
 DRAFT_SRComprehensiveStorage                         1.2.840.10008.5.1.4.1.1.88.4
 BasicTextSRStorage                                   1.2.840.10008.5.1.4.1.1.88.11
 EnhancedSRStorage                                    1.2.840.10008.5.1.4.1.1.88.22
@@ -719,6 +719,7 @@ OphthalmicAxialMeasurementsStorage                   1.2.840.10008.5.1.4.1.1.78.
 IntraocularLensCalculationsStorage                   1.2.840.10008.5.1.4.1.1.78.8
 MacularGridThicknessAndVolumeReportStorage           1.2.840.10008.5.1.4.1.1.79.1
 OphthalmicVisualFieldStaticPerimetryMeasurementsSt.  1.2.840.10008.5.1.4.1.1.80.1
+OphthalmicThicknessMapStorage                        1.2.840.10008.5.1.4.1.1.81.1
 DRAFT_SRTextStorage                                  1.2.840.10008.5.1.4.1.1.88.1
 DRAFT_SRDetailStorage                                1.2.840.10008.5.1.4.1.1.88.3
 DRAFT_SRComprehensiveStorage                         1.2.840.10008.5.1.4.1.1.88.4

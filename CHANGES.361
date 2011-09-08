@@ -3,6 +3,17 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.08 (riesmeier)
 
+- Added support for new SOP Class UID from Supplement 152 (Ophthalmic Thickness
+  Map Storage SOP Class).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
 - Added support for final text version of Supplement 152 (Ophthalmic Thickness
   Map Storage SOP Class) to the data dictionary.
   Affects: dcmdata/data/dicom.dic

@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-11 10:51:12 $
- *  CVS/RCS Revision: $Revision: 1.95 $
+ *  Update Date:      $Date: 2011-09-08 12:40:50 $
+ *  CVS/RCS Revision: $Revision: 1.96 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -200,6 +200,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_OphthalmicAxialMeasurementsStorage,                  "OphthalmicAxialMeasurementsStorage" },
     { UID_OphthalmicPhotography16BitImageStorage,              "OphthalmicPhotography16BitImageStorage" },
     { UID_OphthalmicPhotography8BitImageStorage,               "OphthalmicPhotography8BitImageStorage" },
+    { UID_OphthalmicThicknessMapStorage,                       "OphthalmicThicknessMapStorage" },
     { UID_OphthalmicTomographyImageStorage,                    "OphthalmicTomographyImageStorage" },
     { UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage, "OphthalmicVisualFieldStaticPerimetryMeasurementsStorage" },
     { UID_PositronEmissionTomographyImageStorage,              "PositronEmissionTomographyImageStorage" },
@@ -570,6 +571,7 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_OphthalmicAxialMeasurementsStorage,
     UID_OphthalmicPhotography16BitImageStorage,
     UID_OphthalmicPhotography8BitImageStorage,
+    UID_OphthalmicThicknessMapStorage,
     UID_OphthalmicTomographyImageStorage,
     UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage,
     UID_PositronEmissionTomographyImageStorage,
@@ -717,6 +719,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_OphthalmicAxialMeasurementsStorage,
     UID_OphthalmicPhotography16BitImageStorage,
     UID_OphthalmicPhotography8BitImageStorage,
+    UID_OphthalmicThicknessMapStorage,
     UID_OphthalmicTomographyImageStorage,
     UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage,
     UID_PositronEmissionTomographyImageStorage,
@@ -780,7 +783,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_DRAFT_RTBeamsDeliveryInstructionStorage,
 //  UID_DRAFT_SRAudioStorage,
     UID_DRAFT_SRComprehensiveStorage,
-    UID_DRAFT_SRDetailStorage,
+//  UID_DRAFT_SRDetailStorage,
     UID_DRAFT_SRTextStorage,
 //  UID_DRAFT_WaveformStorage,
     // DICOS
@@ -924,6 +927,7 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_NuclearMedicineImageStorage,
     UID_OphthalmicPhotography16BitImageStorage,
     UID_OphthalmicPhotography8BitImageStorage,
+    UID_OphthalmicThicknessMapStorage,
     UID_OphthalmicTomographyImageStorage,
     UID_PositronEmissionTomographyImageStorage,
     UID_RTImageStorage,
@@ -1037,6 +1041,7 @@ static const DcmModalityTable modalities[] = {
     { UID_OphthalmicAxialMeasurementsStorage,                      "OPx", 4096 },
     { UID_OphthalmicPhotography16BitImageStorage,                  "OPw", 768 * 576 * 6 },
     { UID_OphthalmicPhotography8BitImageStorage,                   "OPb", 768 * 576 * 3 },
+    { UID_OphthalmicThicknessMapStorage,                           "OPm", 768 * 576 },
     { UID_OphthalmicTomographyImageStorage,                        "OPt", 768 * 576 * 3 },
     { UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage, "OPp", 4096 },
     { UID_PositronEmissionTomographyImageStorage,                  "PI",  512 * 512 * 2 },
@@ -1683,6 +1688,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.96  2011-09-08 12:40:50  joergr
+** Added support for new SOP Class UID from Supplement 152 (Ophthalmic Thickness
+** Map Storage SOP Class).
+**
 ** Revision 1.95  2011-08-11 10:51:12  joergr
 ** Added new Storage SOP Classes from DICOM 2011, which are originally defined
 ** in DICOS and DICONDE standard, respectively.

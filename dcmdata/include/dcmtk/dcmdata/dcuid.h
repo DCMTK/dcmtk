@@ -20,8 +20,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-11 10:51:09 $
- *  CVS/RCS Revision: $Revision: 1.95 $
+ *  Update Date:      $Date: 2011-09-08 12:40:44 $
+ *  CVS/RCS Revision: $Revision: 1.96 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -438,6 +438,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_IntraocularLensCalculationsStorage                     "1.2.840.10008.5.1.4.1.1.78.8"
 #define UID_MacularGridThicknessAndVolumeReportStorage             "1.2.840.10008.5.1.4.1.1.79.1"
 #define UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage "1.2.840.10008.5.1.4.1.1.80.1"
+#define UID_OphthalmicThicknessMapStorage                          "1.2.840.10008.5.1.4.1.1.81.1"
 #define UID_BasicTextSRStorage                                     "1.2.840.10008.5.1.4.1.1.88.11"
 #define UID_EnhancedSRStorage                                      "1.2.840.10008.5.1.4.1.1.88.22"
 #define UID_ComprehensiveSRStorage                                 "1.2.840.10008.5.1.4.1.1.88.33"
@@ -737,6 +738,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.96  2011-09-08 12:40:44  joergr
+** Added support for new SOP Class UID from Supplement 152 (Ophthalmic Thickness
+** Map Storage SOP Class).
+**
 ** Revision 1.95  2011-08-11 10:51:09  joergr
 ** Added new Storage SOP Classes from DICOM 2011, which are originally defined
 ** in DICOS and DICONDE standard, respectively.
