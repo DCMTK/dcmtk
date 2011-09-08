@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-09-06 15:04:02
+**   Date: 2011-09-08 13:08:17
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2011-09-06 15:04:02";
+const char* dcmBuiltinDictBuildDate = "2011-09-08 13:08:17";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -12307,6 +12307,78 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0022, 0x1330, 0x0022, 0x1330,
       EVR_SQ, "ReferencedOphthalmicAxialLengthMeasurementQCImageSequence", 1, 1, "DICOM_2011",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1415, 0x0022, 0x1415,
+      EVR_CS, "OphthalmicMappingDeviceType", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1420, 0x0022, 0x1420,
+      EVR_SQ, "AcquisitionTypeMethodSequence", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1423, 0x0022, 0x1423,
+      EVR_SQ, "AcquisitonMethodAlgorithmSequence", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1436, 0x0022, 0x1436,
+      EVR_SQ, "OphthalmicThicknessMapTypeCodeSequence", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1443, 0x0022, 0x1443,
+      EVR_SQ, "OphthalmicThicknessMappingNormalsSequence", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1445, 0x0022, 0x1445,
+      EVR_SQ, "RetinalThicknessDefinitionCodeSequence", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1450, 0x0022, 0x1450,
+      EVR_SQ, "PixelValueMappingtoCodedConceptSequence", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1452, 0x0022, 0x1452,
+      EVR_xs, "MappedPixelValue", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1454, 0x0022, 0x1454,
+      EVR_LO, "PixelValueMappingExplanation", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1458, 0x0022, 0x1458,
+      EVR_SQ, "OphthalmicThicknessMapQualityThresholdSequence", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1460, 0x0022, 0x1460,
+      EVR_FL, "OphthalmicThicknessMapThresholdQualityRating", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1463, 0x0022, 0x1463,
+      EVR_FL, "AnatomicStructureReferencePoint", 2, 2, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1465, 0x0022, 0x1465,
+      EVR_SQ, "RegistrationtoLocalizerSequence", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1466, 0x0022, 0x1466,
+      EVR_CS, "RegisteredLocalizerUnits", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1467, 0x0022, 0x1467,
+      EVR_FL, "RegisteredTopLeftHandCorner", 2, 2, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1468, 0x0022, 0x1468,
+      EVR_FL, "RegisteredBottomRightHandCorner", 2, 2, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1470, 0x0022, 0x1470,
+      EVR_SQ, "OphthalmicThicknessMapQualityRatingSequence", 1, 1, "Supplement_152",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1472, 0x0022, 0x1472,
+      EVR_SQ, "RelevantOPTAttributesSequence", 1, 1, "Supplement_152",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef WITH_PRIVATE_TAGS

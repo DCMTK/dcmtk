@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-09-06 15:03:57
+**   Date: 2011-09-08 13:08:12
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2011-09-06 15:03:57"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2011-09-08 13:08:12"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3584
+** Number of entries: 3602
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1395,6 +1395,24 @@
 #define DCM_IntraocularLensCalculationsRightEyeSequence DcmTagKey(0x0022, 0x1300)
 #define DCM_IntraocularLensCalculationsLeftEyeSequence DcmTagKey(0x0022, 0x1310)
 #define DCM_ReferencedOphthalmicAxialLengthMeasurementQCImageSequence DcmTagKey(0x0022, 0x1330)
+#define DCM_OphthalmicMappingDeviceType          DcmTagKey(0x0022, 0x1415)
+#define DCM_AcquisitionTypeMethodSequence        DcmTagKey(0x0022, 0x1420)
+#define DCM_AcquisitonMethodAlgorithmSequence    DcmTagKey(0x0022, 0x1423)
+#define DCM_OphthalmicThicknessMapTypeCodeSequence DcmTagKey(0x0022, 0x1436)
+#define DCM_OphthalmicThicknessMappingNormalsSequence DcmTagKey(0x0022, 0x1443)
+#define DCM_RetinalThicknessDefinitionCodeSequence DcmTagKey(0x0022, 0x1445)
+#define DCM_PixelValueMappingtoCodedConceptSequence DcmTagKey(0x0022, 0x1450)
+#define DCM_MappedPixelValue                     DcmTagKey(0x0022, 0x1452)
+#define DCM_PixelValueMappingExplanation         DcmTagKey(0x0022, 0x1454)
+#define DCM_OphthalmicThicknessMapQualityThresholdSequence DcmTagKey(0x0022, 0x1458)
+#define DCM_OphthalmicThicknessMapThresholdQualityRating DcmTagKey(0x0022, 0x1460)
+#define DCM_AnatomicStructureReferencePoint      DcmTagKey(0x0022, 0x1463)
+#define DCM_RegistrationtoLocalizerSequence      DcmTagKey(0x0022, 0x1465)
+#define DCM_RegisteredLocalizerUnits             DcmTagKey(0x0022, 0x1466)
+#define DCM_RegisteredTopLeftHandCorner          DcmTagKey(0x0022, 0x1467)
+#define DCM_RegisteredBottomRightHandCorner      DcmTagKey(0x0022, 0x1468)
+#define DCM_OphthalmicThicknessMapQualityRatingSequence DcmTagKey(0x0022, 0x1470)
+#define DCM_RelevantOPTAttributesSequence        DcmTagKey(0x0022, 0x1472)
 #define DCM_VisualFieldHorizontalExtent          DcmTagKey(0x0024, 0x0010)
 #define DCM_VisualFieldVerticalExtent            DcmTagKey(0x0024, 0x0011)
 #define DCM_VisualFieldShape                     DcmTagKey(0x0024, 0x0012)

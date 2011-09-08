@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.08 (riesmeier)
 
+- Added support for final text version of Supplement 152 (Ophthalmic Thickness
+  Map Storage SOP Class) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 - Fixed log message in checkMetaHeaderValue() for reasons of consistency.
   Affects: dcmdata/libsrc/dcfilefo.cc
 
