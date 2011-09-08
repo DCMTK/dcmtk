@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.09.08 (elgazzar)
+
+- Added a module number for the dcmstscp module for the error codes.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+
 **** Changes from 2011.09.08 (riesmeier)
 
 - Added support for new SOP Class UID from Supplement 152 (Ophthalmic Thickness
