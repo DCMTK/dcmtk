@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DVPSPrintSCP
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:32 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2011-09-09 13:16:10 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,7 +126,7 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
 
   void *associatePDU=NULL;
   unsigned long associatePDUlength=0;
-  
+
   OFCondition cond = ASC_receiveAssociation(&net, &assoc, maxPDU, &associatePDU, &associatePDUlength, useTLS);
   if (errorCond(cond, "Failed to receive association:"))
   {
@@ -135,7 +135,7 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
   }
   else
   {
-    DCMPSTAT_INFO("Association Received (" 
+    DCMPSTAT_INFO("Association Received ("
            << assoc->params->DULparams.callingPresentationAddress
            << ":" << assoc->params->DULparams.callingAPTitle << " -> "
            << assoc->params->DULparams.calledAPTitle
@@ -216,12 +216,12 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
       DcmElement *assocData = new DcmOtherByteOtherWord(PSTAT_DCM_AssociateData);
       if (assocData)
       {
-        assocData->putUint8Array((Uint8 *) associatePDU, associatePDUlength);    
+        assocData->putUint8Array((Uint8 *) associatePDU, associatePDUlength);
         newItem->insert(assocData, OFTrue /*replaceOld*/);
         acseSequence->insert(newItem);
       } else delete newItem;
-    }    
-  }  
+    }
+  }
   delete[] (char *)associatePDU;
   return result;
 }
@@ -259,12 +259,12 @@ OFCondition DVPSPrintSCP::refuseAssociation(OFBool isBadContext)
       DcmElement *assocData = new DcmOtherByteOtherWord(PSTAT_DCM_AssociateData);
       if (assocData)
       {
-        assocData->putUint8Array((Uint8 *) associatePDU, associatePDUlength);    
+        assocData->putUint8Array((Uint8 *) associatePDU, associatePDUlength);
         newItem->insert(assocData, OFTrue /*replaceOld*/);
         acseSequence->insert(newItem);
       } else delete newItem;
-    }    
-  }  
+    }
+  }
   delete[] (char *)associatePDU;
   errorCond(cond, "Association Reject Failed:");
   return cond;
@@ -300,12 +300,12 @@ void DVPSPrintSCP::handleClient()
       DcmElement *assocData = new DcmOtherByteOtherWord(PSTAT_DCM_AssociateData);
       if (assocData)
       {
-        assocData->putUint8Array((Uint8 *) associatePDU, associatePDUlength);    
+        assocData->putUint8Array((Uint8 *) associatePDU, associatePDUlength);
         newItem->insert(assocData, OFTrue /*replaceOld*/);
         acseSequence->insert(newItem);
       } else delete newItem;
-    }    
-  }    
+    }
+  }
   delete[] (char *)associatePDU;
 
   if (! errorCond(cond, "Cannot acknowledge association:"))
@@ -318,13 +318,13 @@ void DVPSPrintSCP::handleClient()
     T_ASC_PresentationContextID presID;
     cond = EC_Normal;
     DcmDataset *rawCommandSet=NULL;
-    
+
     /* do real work */
     while (cond.good())
     {
       cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID, &msg, NULL, &rawCommandSet);
       /* did peer release, abort, or do we have a valid message ? */
-      
+
       if (cond.good())
       {
     	addLogEntry(logSequence, "RECEIVE");
@@ -365,11 +365,13 @@ void DVPSPrintSCP::handleClient()
             default:
               cond = DIMSE_BADCOMMANDTYPE; /* unsupported command */
               dumpNMessage(msg, NULL, OFFalse);
-              DCMPSTAT_INFO("Cannot handle command: 0x" << STD_NAMESPACE hex << (unsigned)msg.CommandField << STD_NAMESPACE dec);
+              DCMPSTAT_ERROR("Cannot handle command: 0x"
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+                << OFstatic_cast(unsigned int, msg.CommandField));
               break;
           }
       }
-      else 
+      else
       {
           /* finish processing loop */
       }
@@ -425,7 +427,7 @@ OFCondition DVPSPrintSCP::handleNGet(T_DIMSE_Message& rq, T_ASC_PresentationCont
      DcmDataset *dataset = NULL;
      // should not happen
      cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &dataset, NULL, NULL);
-     if (cond.good()) 
+     if (cond.good())
      {
        if (logSequence) logSequence->insert(new DcmItem(*dataset));
        dumpNMessage(rq, dataset, OFFalse);
@@ -668,7 +670,7 @@ OFCondition DVPSPrintSCP::handleNDelete(T_DIMSE_Message& rq, T_ASC_PresentationC
      // should not happen
      DcmDataset *dataset = NULL;
      cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &dataset, NULL, NULL);
-     if (cond.good()) 
+     if (cond.good())
      {
        if (logSequence) logSequence->insert(new DcmItem(*dataset));
        dumpNMessage(rq, dataset, OFFalse);
@@ -781,7 +783,7 @@ void DVPSPrintSCP::filmSessionNSet(T_DIMSE_Message& rq, DcmDataset *rqDataset, T
   if (filmSession && (filmSession->isInstance(rq.msg.NSetRQ.RequestedSOPInstanceUID)))
   {
     OFBool usePLUTinFilmSession = OFFalse;
-    if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass))) 
+    if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass)))
     {
       if (dviface.getTargetPrinterPresentationLUTinFilmSession(cfgname)) usePLUTinFilmSession = OFTrue;
     }
@@ -808,7 +810,7 @@ void DVPSPrintSCP::filmSessionNSet(T_DIMSE_Message& rq, DcmDataset *rqDataset, T
 void DVPSPrintSCP::filmBoxNSet(T_DIMSE_Message& rq, DcmDataset *rqDataset, T_DIMSE_Message& rsp, DcmDataset *& rspDataset)
 {
   OFBool usePLUTinFilmBox = OFFalse;
-  if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass))) 
+  if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass)))
   {
     if (! dviface.getTargetPrinterPresentationLUTinFilmSession(cfgname)) usePLUTinFilmBox = OFTrue;
   }
@@ -842,19 +844,19 @@ void DVPSPrintSCP::filmSessionNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rs
     rsp.msg.NCreateRSP.opts = 0;  // don't include affected SOP instance UID
   } else {
     OFBool usePLUTinFilmSession = OFFalse;
-    if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass))) 
+    if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass)))
     {
       if (dviface.getTargetPrinterPresentationLUTinFilmSession(cfgname)) usePLUTinFilmSession = OFTrue;
     }
-    
+
     DVPSFilmSession *newSession = new DVPSFilmSession(DEFAULT_illumination, DEFAULT_reflectedAmbientLight);
     if (newSession)
     {
       DIC_AE peerTitle;
       peerTitle[0]=0;
       ASC_getAPTitles(assoc->params, peerTitle, NULL, NULL);
-      if (newSession->printSCPCreate(dviface, cfgname, rqDataset, rsp, rspDataset, 
-          peerTitle, usePLUTinFilmSession, presentationLUTList)) 
+      if (newSession->printSCPCreate(dviface, cfgname, rqDataset, rsp, rspDataset,
+          peerTitle, usePLUTinFilmSession, presentationLUTList))
           filmSession = newSession;
       char uid[100];
       studyInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
@@ -886,12 +888,12 @@ void DVPSPrintSCP::filmBoxNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rsp, D
         // get AETITLE from config file
         const char *aetitle = dviface.getTargetAETitle(cfgname);
         if (aetitle==NULL) aetitle = dviface.getNetworkAETitle(); // default if AETITLE is missing
-        newSPrint->setDestination(aetitle);          
-        newSPrint->setPrinterName(cfgname);                  
-        
+        newSPrint->setDestination(aetitle);
+        newSPrint->setPrinterName(cfgname);
+
         OFBool usePLUTinFilmBox = OFFalse;
         OFBool usePLUTinFilmSession = OFFalse;
-        if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass))) 
+        if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass)))
         {
           if (dviface.getTargetPrinterPresentationLUTinFilmSession(cfgname)) usePLUTinFilmSession = OFTrue;
           else usePLUTinFilmBox = OFTrue;
@@ -995,7 +997,7 @@ void DVPSPrintSCP::addLogEntry(DcmSequenceOfItems *seq, const char *text)
 
   DcmItem *newItem = new DcmItem();
   if (!newItem) return;
-  
+
   OFString aString;
   DcmElement *logEntryType = new DcmCodeString(PSTAT_DCM_LogEntryType);
   if (logEntryType)
@@ -1042,10 +1044,10 @@ void DVPSPrintSCP::saveDimseLog()
   if (logSequence == NULL) return;
 
   DcmFileFormat fformat;
-  DcmDataset *dset = fformat.getDataset();  
+  DcmDataset *dset = fformat.getDataset();
   if (! dset) return;
 
-  dset->insert(logSequence, OFTrue /*replaceOld*/);  
+  dset->insert(logSequence, OFTrue /*replaceOld*/);
   logSequence = NULL;
   if (acseSequence) dset->insert(acseSequence, OFTrue /*replaceOld*/);
   acseSequence = NULL;
@@ -1065,9 +1067,9 @@ void DVPSPrintSCP::saveDimseLog()
     logReserve->putString(aString.c_str());
     dset->insert(logReserve, OFTrue /*replaceOld*/);
   }
-    
+
   DVPSHelper::putStringValue(dset, DCM_SOPClassUID, PSTAT_DIMSE_LOG_STORAGE_UID);
-  DVPSHelper::putStringValue(dset, DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid));  
+  DVPSHelper::putStringValue(dset, DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid));
   DVPSHelper::currentDate(aString);
   DVPSHelper::putStringValue(dset, DCM_InstanceCreationDate, aString.c_str());
   DVPSHelper::currentTime(aString);
@@ -1097,6 +1099,9 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
 
 /*
  *  $Log: dvpsprt.cc,v $
+ *  Revision 1.23  2011-09-09 13:16:10  joergr
+ *  Output error message on bad command type to ERROR instead of INFO logger.
+ *
  *  Revision 1.22  2010-10-14 13:14:32  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
