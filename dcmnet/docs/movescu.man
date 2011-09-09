@@ -433,6 +433,7 @@ MultiframeGrayscaleWordSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.3
 MultiframeTrueColorSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.4
 RETIRED_StandaloneOverlayStorage                     1.2.840.10008.5.1.4.1.1.8
 RETIRED_StandaloneCurveStorage                       1.2.840.10008.5.1.4.1.1.9
+DRAFT_WaveformStorage                                1.2.840.10008.5.1.4.1.1.9.1
 TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
 GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
 AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
@@ -493,6 +494,8 @@ MacularGridThicknessAndVolumeReportStorage           1.2.840.10008.5.1.4.1.1.79.
 OphthalmicVisualFieldStaticPerimetryMeasurementsSt.  1.2.840.10008.5.1.4.1.1.80.1
 OphthalmicThicknessMapStorage                        1.2.840.10008.5.1.4.1.1.81.1
 DRAFT_SRTextStorage                                  1.2.840.10008.5.1.4.1.1.88.1
+DRAFT_SRAudioStorage                                 1.2.840.10008.5.1.4.1.1.88.2
+DRAFT_SRDetailStorage                                1.2.840.10008.5.1.4.1.1.88.3
 DRAFT_SRComprehensiveStorage                         1.2.840.10008.5.1.4.1.1.88.4
 BasicTextSRStorage                                   1.2.840.10008.5.1.4.1.1.88.11
 EnhancedSRStorage                                    1.2.840.10008.5.1.4.1.1.88.22
@@ -519,6 +522,12 @@ RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481
 RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
 RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481.8
 RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
+DICOS_CTImageStorage                                 1.2.840.10008.5.1.4.1.1.501.1
+DICOS_DigitalXRayImageStorageForPresentation         1.2.840.10008.5.1.4.1.1.501.2.1
+DICOS_DigitalXRayImageStorageForProcessing           1.2.840.10008.5.1.4.1.1.501.2.2
+DICOS_ThreatDetectionReportStorage                   1.2.840.10008.5.1.4.1.1.501.3
+DICONDE_EddyCurrentImageStorage                      1.2.840.10008.5.1.4.1.1.601.1
+DICONDE_EddyCurrentMultiframeImageStorage            1.2.840.10008.5.1.4.1.1.601.2
 DRAFT_RTBeamsDeliveryInstructionStorage              1.2.840.10008.5.1.4.34.1
 RTBeamsDeliveryInstructionStorage                    1.2.840.10008.5.1.4.34.7
 GenericImplantTemplateStorage                        1.2.840.10008.5.1.4.43.1
