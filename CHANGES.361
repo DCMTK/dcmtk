@@ -12,6 +12,9 @@ Changes between releases are documented here.
            dcmnet/docs/storescp.man
            dcmqrdb/docs/dcmqrscp.man
 
+- Fixed outdated notes on the --port option and some other minor issues.
+  Affects: dcmnet/docs/movescu.man
+
 **** Changes from 2011.09.08 (elgazzar)
 
 - Added a module number for the dcmstscp module for the error codes.
