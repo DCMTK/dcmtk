@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-03 13:31:42 $
- *  CVS/RCS Revision: $Revision: 1.95 $
+ *  Update Date:      $Date: 2011-09-09 13:27:01 $
+ *  CVS/RCS Revision: $Revision: 1.96 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1408,16 +1408,22 @@ subOpSCP(T_ASC_Association **subAssoc)
     if (cond == EC_Normal) {
       switch (msg.CommandField)
       {
-        case DIMSE_C_STORE_RQ:
-          cond = storeSCP(*subAssoc, &msg, presID);
-          break;
         case DIMSE_C_ECHO_RQ:
+          // process C-ECHO-Request
           cond = echoSCP(*subAssoc, &msg, presID);
           break;
+        case DIMSE_C_STORE_RQ:
+          // process C-STORE-Request
+          cond = storeSCP(*subAssoc, &msg, presID);
+          break;
         default:
+          OFString tempStr;
+          // we cannot handle this kind of message
           cond = DIMSE_BADCOMMANDTYPE;
-          OFLOG_ERROR(movescuLogger, "cannot handle command: 0x"
-              << STD_NAMESPACE hex << OFstatic_cast(unsigned, msg.CommandField));
+          OFLOG_ERROR(movescuLogger, "Expected C-ECHO or C-STORE request but received DIMSE command 0x"
+              << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+              << OFstatic_cast(unsigned, msg.CommandField));
+          OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(tempStr, msg, DIMSE_INCOMING, NULL, presID));
           break;
       }
     }
@@ -1599,6 +1605,9 @@ cmove(T_ASC_Association *assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.96  2011-09-09 13:27:01  joergr
+** Output more details in case of bad command to the ERROR and DEBUG logger.
+**
 ** Revision 1.95  2011-08-03 13:31:42  joergr
 ** Added macro that allows for disabling the port permission check in SCPs.
 **

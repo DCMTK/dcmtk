@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.09 (riesmeier)
 
+- Output more details in case of bad command to the ERROR and DEBUG logger.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+
 - Output error message on bad command type to ERROR instead of INFO logger.
   Affects: dcmpstat/libsrc/dvpsprt.cc
 

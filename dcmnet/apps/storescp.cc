@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-19 10:31:49 $
- *  CVS/RCS Revision: $Revision: 1.145 $
+ *  Update Date:      $Date: 2011-09-09 13:27:01 $
+ *  CVS/RCS Revision: $Revision: 1.146 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1797,10 +1797,13 @@ processCommands(T_ASC_Association * assoc)
           cond = storeSCP(assoc, &msg, presID);
           break;
         default:
+          OFString tempStr;
           // we cannot handle this kind of message
           cond = DIMSE_BADCOMMANDTYPE;
-          OFLOG_ERROR(storescpLogger, "cannot handle command: 0x"
-               << STD_NAMESPACE hex << OFstatic_cast(unsigned, msg.CommandField));
+          OFLOG_ERROR(storescpLogger, "Expected C-ECHO or C-STORE request but received DIMSE command 0x"
+               << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+               << OFstatic_cast(unsigned, msg.CommandField));
+          OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(tempStr, msg, DIMSE_INCOMING, NULL, presID));
           break;
       }
     }
@@ -2660,7 +2663,7 @@ findPresentationContextID(LST_HEAD * head,
 }
 
 
-/** accept all presenstation contexts for unknown SOP classes,
+/** accept all presentation contexts for unknown SOP classes,
  *  i.e. UIDs appearing in the list of abstract syntaxes
  *  where no corresponding name is defined in the UID dictionary.
  *  @param params pointer to association parameters structure
@@ -2785,6 +2788,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.146  2011-09-09 13:27:01  joergr
+** Output more details in case of bad command to the ERROR and DEBUG logger.
+**
 ** Revision 1.145  2011-08-19 10:31:49  joergr
 ** Moved "TLS options" section closer to the related "network options" section.
 **
