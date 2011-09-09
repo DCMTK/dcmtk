@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-GET operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-07 12:40:45 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2011-09-09 08:58:11 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,121 +60,11 @@ typedef enum {
   QMPatientStudyOnly = 2
 } QueryModel;
 
-// We support all storage SOP classes (no retired ones, no draft ones)
-// Taken from dcuid.cc
-static const char* supportedStorageSOPClassUIDs[] =
-{
-  UID_AmbulatoryECGWaveformStorage,
-  UID_ArterialPulseWaveformStorage,
-  UID_AutorefractionMeasurementsStorage,
-  UID_BasicStructuredDisplayStorage,
-  UID_BasicTextSRStorage,
-  UID_BasicVoiceAudioWaveformStorage,
-  UID_BlendingSoftcopyPresentationStateStorage,
-  UID_BreastTomosynthesisImageStorage,
-  UID_CardiacElectrophysiologyWaveformStorage,
-  UID_ChestCADSRStorage,
-  UID_ColonCADSRStorage,
-  UID_ColorSoftcopyPresentationStateStorage,
-  UID_ComprehensiveSRStorage,
-  UID_ComputedRadiographyImageStorage,
-  UID_CTImageStorage,
-  UID_DeformableSpatialRegistrationStorage,
-  UID_DigitalIntraOralXRayImageStorageForPresentation,
-  UID_DigitalIntraOralXRayImageStorageForProcessing,
-  UID_DigitalMammographyXRayImageStorageForPresentation,
-  UID_DigitalMammographyXRayImageStorageForProcessing,
-  UID_DigitalXRayImageStorageForPresentation,
-  UID_DigitalXRayImageStorageForProcessing,
-  UID_EncapsulatedCDAStorage,
-  UID_EncapsulatedPDFStorage,
-  UID_EnhancedCTImageStorage,
-  UID_EnhancedMRColorImageStorage,
-  UID_EnhancedMRImageStorage,
-  UID_EnhancedPETImageStorage,
-  UID_EnhancedSRStorage,
-  UID_EnhancedUSVolumeStorage,
-  UID_EnhancedXAImageStorage,
-  UID_EnhancedXRFImageStorage,
-  UID_GeneralAudioWaveformStorage,
-  UID_GeneralECGWaveformStorage,
-  UID_GenericImplantTemplateStorage,
-  UID_GrayscaleSoftcopyPresentationStateStorage,
-  UID_HemodynamicWaveformStorage,
-  UID_ImplantAssemblyTemplateStorage,
-  UID_ImplantationPlanSRDocumentStorage,
-  UID_ImplantTemplateGroupStorage,
-  UID_IntraocularLensCalculationsStorage,
-  UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation,
-  UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing,
-  UID_KeratometryMeasurementsStorage,
-  UID_KeyObjectSelectionDocumentStorage,
-  UID_LensometryMeasurementsStorage,
-  UID_MacularGridThicknessAndVolumeReportStorage,
-  UID_MammographyCADSRStorage,
-  UID_MRImageStorage,
-  UID_MRSpectroscopyStorage,
-  UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage,
-  UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage,
-  UID_MultiframeSingleBitSecondaryCaptureImageStorage,
-  UID_MultiframeTrueColorSecondaryCaptureImageStorage,
-  UID_NuclearMedicineImageStorage,
-  UID_OphthalmicAxialMeasurementsStorage,
-  UID_OphthalmicPhotography16BitImageStorage,
-  UID_OphthalmicPhotography8BitImageStorage,
-  UID_OphthalmicTomographyImageStorage,
-  UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage,
-  UID_PositronEmissionTomographyImageStorage,
-  UID_ProcedureLogStorage,
-  UID_PseudoColorSoftcopyPresentationStateStorage,
-  UID_RawDataStorage,
-  UID_RealWorldValueMappingStorage,
-  UID_RespiratoryWaveformStorage,
-  UID_RTBeamsDeliveryInstructionStorage,
-  UID_RTBeamsTreatmentRecordStorage,
-  UID_RTBrachyTreatmentRecordStorage,
-  UID_RTDoseStorage,
-  UID_RTImageStorage,
-  UID_RTIonBeamsTreatmentRecordStorage,
-  UID_RTIonPlanStorage,
-  UID_RTPlanStorage,
-  UID_RTStructureSetStorage,
-  UID_RTTreatmentSummaryRecordStorage,
-  UID_SecondaryCaptureImageStorage,
-  UID_SegmentationStorage,
-  UID_SpatialFiducialsStorage,
-  UID_SpatialRegistrationStorage,
-  UID_SpectaclePrescriptionReportStorage,
-  UID_StereometricRelationshipStorage,
-  UID_SubjectiveRefractionMeasurementsStorage,
-  UID_SurfaceSegmentationStorage,
-  UID_TwelveLeadECGWaveformStorage,
-  UID_UltrasoundImageStorage,
-  UID_UltrasoundMultiframeImageStorage,
-  UID_VideoEndoscopicImageStorage,
-  UID_VideoMicroscopicImageStorage,
-  UID_VideoPhotographicImageStorage,
-  UID_VisualAcuityMeasurementsStorage,
-  UID_VLEndoscopicImageStorage,
-  UID_VLMicroscopicImageStorage,
-  UID_VLPhotographicImageStorage,
-  UID_VLSlideCoordinatesMicroscopicImageStorage,
-  UID_VLWholeSlideMicroscopyImageStorage,
-  UID_XAXRFGrayscaleSoftcopyPresentationStateStorage,
-  UID_XRay3DAngiographicImageStorage,
-  UID_XRay3DCraniofacialImageStorage,
-  UID_XRayAngiographicImageStorage,
-  UID_XRayRadiationDoseSRStorage,
-  UID_XRayRadiofluoroscopicImageStorage
-};
-
 static const char* querySyntax[3] = {
   UID_GETPatientRootQueryRetrieveInformationModel,
   UID_GETStudyRootQueryRetrieveInformationModel,
   UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel
 };
-
-static const int numberOfSupportedStorageSOPClassUIDs = (sizeof(supportedStorageSOPClassUIDs) / sizeof(const char*)) - 1;
 
 OFCmdUnsignedInt        opt_maxPDU = ASC_DEFAULTMAXPDU;
 E_TransferSyntax        opt_store_networkTransferSyntax = EXS_Unknown;
@@ -520,12 +410,12 @@ main(int argc, char *argv[])
   // (only uncompressed)
   scu.addPresentationContext(querySyntax[opt_queryModel], syntaxes);
 
-  // Add storage presentation contexts (all known Storage SOP classes, uncompressed)
+  // Add storage presentation contexts (long list of storage SOP classes, uncompressed)
   syntaxes.clear();
   prepareTS(opt_store_networkTransferSyntax, syntaxes);
-  for (Uint16 i=0; i < numberOfSupportedStorageSOPClassUIDs; i++)
+  for (Uint16 i = 0; i < numberOfDcmLongSCUStorageSOPClassUIDs; i++)
   {
-    scu.addPresentationContext(supportedStorageSOPClassUIDs[i], syntaxes, ASC_SC_ROLE_SCP);
+    scu.addPresentationContext(dcmLongSCUStorageSOPClassUIDs[i], syntaxes, ASC_SC_ROLE_SCP);
   }
 
   // Set the storage mode
@@ -557,7 +447,7 @@ main(int argc, char *argv[])
   }
 
   /* Do the real work, i.e. send C-GET requests and receive objects */
-  for (Uint16 repeat=0; repeat < opt_repeatCount; repeat++)
+  for (Uint16 repeat = 0; repeat < opt_repeatCount; repeat++)
   {
     Uint16 numRuns = 1;
     DcmFileFormat dcmff;
@@ -578,7 +468,7 @@ main(int argc, char *argv[])
     }
     OFList<RetrieveResponse*> responses;
     /* For all files (or at least one run from override keys) */
-    for (Uint16 i=0; i < numRuns; i++)
+    for (Uint16 i = 0; i < numRuns; i++)
     {
       applyOverrideKeys(dset);
       cond = scu.sendCGETRequest(pcid, dset, &responses);
@@ -748,6 +638,10 @@ static void prepareTS(E_TransferSyntax ts,
 /*
 ** CVS Log
 ** $Log: getscu.cc,v $
+** Revision 1.5  2011-09-09 08:58:11  joergr
+** Replaced local list of supported storage SOP classes by the global variable
+** dcmLongSCUStorageSOPClassUIDs, which is maintained at a central location.
+**
 ** Revision 1.4  2011-09-07 12:40:45  joergr
 ** Made more clear that option --key also supports path expressions.
 **

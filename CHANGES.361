@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.09 (riesmeier)
 
+- Replaced local list of supported storage SOP classes by the global variable
+  dcmLongSCUStorageSOPClassUIDs, which is maintained at a central location.
+  Affects: dcmnet/apps/getscu.cc
+
 - Aligned list of documented SOP classes with the actual implementation.
   Affects: dcmnet/docs/movescu.man
 
