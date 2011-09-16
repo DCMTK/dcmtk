@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.09.16 (riesmeier)
+
+- Fixed some typos and other small inconsistencies.
+  Affects: dcmnet/libsrc/scu.cc
+
 **** Changes from 2011.09.09 (riesmeier)
 
 - Output more details in case of bad command to the ERROR and DEBUG logger.

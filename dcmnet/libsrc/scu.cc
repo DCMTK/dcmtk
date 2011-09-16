@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-09-06 16:12:53 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-09-16 09:38:40 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -554,7 +554,6 @@ void DcmSCU::closeAssociation(const DcmCloseAssociationType closeType)
 /*                            C-ECHO functionality                           */
 /* ************************************************************************* */
 
-
 // Sends C-ECHO request to another DICOM application
 OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
 {
@@ -757,7 +756,6 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
 /* ************************************************************************* */
 /*                            C-MOVE functionality                           */
 /* ************************************************************************* */
-
 
 // Sends a C-MOVE Request on given presentation context
 OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
@@ -1127,7 +1125,7 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* presI
     // Handle other DIMSE command (error since other command than GET/STORE not expected)
     else
     {
-      DCMNET_ERROR("Expected C-GET Response or C-STORE Request but received DIMSE command 0x"
+      DCMNET_ERROR("Expected C-GET response or C-STORE request but received DIMSE command 0x"
         << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
         << OFstatic_cast(unsigned int, rsp.CommandField));
       DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
@@ -1240,6 +1238,7 @@ OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID /* pres
 
   return result;
 }
+
 
 OFCondition DcmSCU::handleSTORERequestFile(T_ASC_PresentationContextID *presID,
                                            const OFString& filename,
@@ -1555,7 +1554,7 @@ OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID)
      dataset is transported at all, i.e. we trust that the user provided
      the correct presentation context ID (could be private one).
    */
-  DCMNET_INFO("Send C-CAMCEL Request");
+  DCMNET_INFO("Send C-CANCEL Request");
   DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, NULL, pcid));
   cond = sendDIMSEMessage(pcid, &msg, NULL /* dataset */, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
@@ -1563,7 +1562,7 @@ OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID)
     DCMNET_ERROR("Failed sending C-CANCEL request: " << DimseCondition::dump(tempStr, cond));
   }
 
-  DCMNET_TRACE("There is no C-CAMCEL response in DICOM, so none expected");
+  DCMNET_TRACE("There is no C-CANCEL response in DICOM, so none expected");
   return cond;
 }
 
@@ -1707,7 +1706,7 @@ OFCondition DcmSCU::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
   DcmDataset *statusDetail = NULL;
 
   request.CommandField = DIMSE_N_EVENT_REPORT_RQ;
-  
+
   // Generate a new message ID
   eventRepReq.MessageID = nextMessageID();
   eventRepReq.DataSetType = DIMSE_DATASET_PRESENT;
@@ -2189,9 +2188,13 @@ void RetrieveResponse::print()
   DCMNET_INFO("  Number of Warning Suboperations   : " << m_numberOfWarningSubops);
 }
 
+
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.46  2011-09-16 09:38:40  joergr
+** Fixed some typos and other small inconsistencies.
+**
 ** Revision 1.45  2011-09-06 16:12:53  ogazzar
 ** Fixed typos in a log commit message.
 **
