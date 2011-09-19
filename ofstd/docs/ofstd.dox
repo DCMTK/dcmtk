@@ -8,12 +8,21 @@ DICOM standard. They are used extensively throughout the toolkit.
 The main classes are (in alphabetical order):
 \li \b OFCommandLine
 \li \b OFCondition
-\li \b OFConsole
 \li \b OFFile
 \li \b OFList
 \li \b OFStack
 \li \b OFStandard
 \li \b OFString
+\li \b OFVector
+
+Here are some further helper classes that are of interest:
+\li \b OFConsole
+\li \b OFConsoleApplication
+\li \b OFDate
+\li \b OFDateTime
+\li \b OFMap
+\li \b OFThread
+\li \b OFTime
 
 \section Testing
 
