@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-09 13:27:01 $
- *  CVS/RCS Revision: $Revision: 1.96 $
+ *  Update Date:      $Date: 2011-09-19 10:22:10 $
+ *  CVS/RCS Revision: $Revision: 1.97 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -984,10 +984,14 @@ acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc)
     };
     const char *transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
     int numTransferSyntaxes;
+    OFString temp_str;
 
     OFCondition cond = ASC_receiveAssociation(aNet, assoc, opt_maxPDU);
     if (cond.good())
     {
+      OFLOG_INFO(movescuLogger, "Sub-Association Received");
+      OFLOG_DEBUG(movescuLogger, "Parameters:" << OFendl << ASC_dumpParameters(temp_str, (*assoc)->params, ASC_ASSOC_RQ));
+
       switch (opt_in_networkTransferSyntax)
       {
         case EXS_LittleEndianImplicit:
@@ -1179,8 +1183,17 @@ acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc)
                 transferSyntaxes, numTransferSyntaxes);
         }
     }
-    if (cond.good()) cond = ASC_acknowledgeAssociation(*assoc);
-    if (cond.bad()) {
+    if (cond.good())
+        cond = ASC_acknowledgeAssociation(*assoc);
+    if (cond.good())
+    {
+        OFLOG_INFO(movescuLogger, "Sub-Association Acknowledged (Max Send PDV: " << (*assoc)->sendPDVLength << ")");
+        if (ASC_countAcceptedPresentationContexts((*assoc)->params) == 0)
+            OFLOG_INFO(movescuLogger, "    (but no valid presentation contexts)");
+        /* dump the presentation contexts which have been accepted/refused */
+        OFLOG_DEBUG(movescuLogger, ASC_dumpParameters(temp_str, (*assoc)->params, ASC_ASSOC_AC));
+    } else {
+        OFLOG_ERROR(movescuLogger, DimseCondition::dump(temp_str, cond));
         ASC_dropAssociation(*assoc);
         ASC_destroyAssociation(assoc);
     }
@@ -1476,11 +1489,16 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 {
     OFCondition cond = EC_Normal;
     MyCallbackInfo *myCallbackData;
+    OFString temp_str;
 
     myCallbackData = OFstatic_cast(MyCallbackInfo*, callbackData);
 
-    OFString temp_str;
-    OFLOG_INFO(movescuLogger, "Move Response " << responseCount << ":" << OFendl << DIMSE_dumpMessage(temp_str, *response, DIMSE_INCOMING));
+    if (movescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL)) {
+        OFLOG_INFO(movescuLogger, "Received Move Response " << responseCount);
+        OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, *response, DIMSE_INCOMING));
+    } else {
+        OFLOG_INFO(movescuLogger, "Received Move Response " << responseCount << " (" << DU_cmoveStatusString(response->DimseStatus) << ")");
+    }
 
     /* should we send a cancel back ?? */
     if (opt_cancelAfterNResponses == responseCount) {
@@ -1526,6 +1544,7 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
     const char          *sopClass;
     DcmDataset          *statusDetail = NULL;
     MyCallbackInfo      callbackData;
+    OFString            temp_str;
 
     DcmFileFormat dcmff;
 
@@ -1545,10 +1564,9 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
 
-    if (movescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
-        OFLOG_INFO(movescuLogger, "Sending Move Request: MsgID " << msgId);
-        OFLOG_INFO(movescuLogger, "Request:" << OFendl << DcmObject::PrintHelper(*dcmff.getDataset()));
-    }
+    OFLOG_INFO(movescuLogger, "Sending Move Request: MsgID " << msgId);
+    OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, req, DIMSE_OUTGOING, NULL, presId));
+    OFLOG_INFO(movescuLogger, "Request Identifiers:" << OFendl << DcmObject::PrintHelper(*dcmff.getDataset()));
 
     callbackData.assoc = assoc;
     callbackData.presId = presId;
@@ -1571,9 +1589,14 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
 
     if (cond == EC_Normal) {
         OFString temp_str;
-        OFLOG_INFO(movescuLogger, DIMSE_dumpMessage(temp_str, rsp, DIMSE_INCOMING));
-        if (rspIds != NULL) {
-            OFLOG_INFO(movescuLogger, "Response Identifiers:" << OFendl << DcmObject::PrintHelper(*rspIds));
+        if (movescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL)) {
+            OFLOG_INFO(movescuLogger, "Received Final Move Response");
+            OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, rsp, DIMSE_INCOMING));
+            if (rspIds != NULL) {
+                OFLOG_DEBUG(movescuLogger, "Response Identifiers:" << OFendl << DcmObject::PrintHelper(*rspIds));
+            }
+        } else {
+            OFLOG_INFO(movescuLogger, "Received Final Move Response (" << DU_cmoveStatusString(rsp.DimseStatus) << ")");
         }
     } else {
         OFString temp_str;
@@ -1605,6 +1628,10 @@ cmove(T_ASC_Association *assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.97  2011-09-19 10:22:10  joergr
+** Output more details on incoming sub-associations (e.g. presentation
+** contexts). Also fixed some other inconsistencies regarding the logging.
+**
 ** Revision 1.96  2011-09-09 13:27:01  joergr
 ** Output more details in case of bad command to the ERROR and DEBUG logger.
 **
