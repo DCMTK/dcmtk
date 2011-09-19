@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.19 (riesmeier)
 
+- Made output of C-FIND responses to logger more consistent with movescu.
+  Affects: dcmnet/libsrc/dfindscu.cc
+
 - Output more details on incoming sub-associations (e.g. presentation
   contexts). Also fixed some other inconsistencies regarding the logging.
   Affects: dcmnet/apps/movescu.cc

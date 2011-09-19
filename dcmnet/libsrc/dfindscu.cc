@@ -18,8 +18,8 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-19 09:35:47 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2011-09-19 10:31:56 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,15 +96,23 @@ void DcmFindSCUDefaultCallback::callback(
     DcmDataset *responseIdentifiers)
  {
     OFLogger rspLogger = OFLog::getLogger(DCMNET_LOGGER_NAME ".responses");
-
-    /* dump delimiter */
-    OFLOG_INFO(rspLogger, "---------------------------");
-
-    /* dump response number */
-    OFLOG_INFO(rspLogger, "Find Response: " << responseCount << " (" << DU_cfindStatusString(rsp->DimseStatus) << ")");
-
-    /* dump data set which was received */
-    OFLOG_INFO(rspLogger, DcmObject::PrintHelper(*responseIdentifiers));
+    /* check whether debug mode is enabled */
+    if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL)) {
+        OFString temp_str;
+        DCMNET_INFO("Received Find Response " << responseCount);
+        DCMNET_DEBUG(DIMSE_dumpMessage(temp_str, *rsp, DIMSE_INCOMING));
+        if (rspLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+            DCMNET_DEBUG("Response Identifiers:" << OFendl << DcmObject::PrintHelper(*responseIdentifiers));
+        }
+    }
+    /* otherwise check whether special response logger is enabled */
+    else if (rspLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
+        OFLOG_INFO(rspLogger, "---------------------------");
+        OFLOG_INFO(rspLogger, "Find Response: " << responseCount << " (" << DU_cfindStatusString(rsp->DimseStatus) << ")");
+        OFLOG_INFO(rspLogger, DcmObject::PrintHelper(*responseIdentifiers));
+    } else {
+        DCMNET_INFO("Received Find Response " << responseCount << " (" << DU_cfindStatusString(rsp->DimseStatus) << ")");
+    }
 
     /* in case extractResponsesToFile is set the responses shall be extracted to a certain file */
     if (extractResponsesToFile_) {
@@ -513,8 +521,9 @@ OFCondition DcmFindSCU::findSCU(
         req.MessageID = assoc->nextMsgID++;
 
         /* if required, dump some more general information */
-        DCMNET_INFO(DIMSE_dumpMessage(temp_str, req, DIMSE_OUTGOING, NULL, presId));
-        DCMNET_INFO("Find SCU Request Identifiers:" << OFendl << DcmObject::PrintHelper(*dset));
+        DCMNET_INFO("Sending Find Request: MsgID " << req.MessageID);
+        DCMNET_DEBUG(DIMSE_dumpMessage(temp_str, req, DIMSE_OUTGOING, NULL, presId));
+        DCMNET_INFO("Request Identifiers:" << OFendl << DcmObject::PrintHelper(*dset));
 
         /* finally conduct transmission of data */
         cond = DIMSE_findUser(assoc, presId, &req, dset,
@@ -523,12 +532,11 @@ OFCondition DcmFindSCU::findSCU(
 
         /* dump some more general information */
         if (cond.good()) {
-            if (DCM_dcmnetLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
-                DCMNET_INFO(DIMSE_dumpMessage(temp_str, rsp, DIMSE_INCOMING));
+            if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL)) {
+                DCMNET_INFO("Received Final Find Response");
+                DCMNET_DEBUG(DIMSE_dumpMessage(temp_str, rsp, DIMSE_INCOMING));
             } else {
-                if (rsp.DimseStatus != STATUS_Success) {
-                    DCMNET_ERROR("Find Response: " << DU_cfindStatusString(rsp.DimseStatus));
-                }
+                DCMNET_INFO("Received Final Find Response (" << DU_cfindStatusString(rsp.DimseStatus) << ")");
             }
         } else {
             if (fname) {
@@ -555,6 +563,9 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.18  2011-09-19 10:31:56  joergr
+ * Made output of C-FIND responses to logger more consistent with movescu.
+ *
  * Revision 1.17  2011-08-19 09:35:47  joergr
  * Added support for specifying the directory where the response messages are
  * stored. Also output the name of the created file to the logger.
