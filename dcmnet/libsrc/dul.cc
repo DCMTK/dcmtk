@@ -67,8 +67,8 @@
 ** Author, Date:  Stephen M. Moore, 14-Apr-93
 ** Intent:        This module contains the public entry points for the
 **                DICOM Upper Layer (DUL) protocol package.
-** Last Update:   $Author: joergr $, $Date: 2011-08-03 11:00:02 $
-** Revision:      $Revision: 1.96 $
+** Last Update:   $Author: uli $, $Date: 2011-09-20 07:45:52 $
+** Revision:      $Revision: 1.97 $
 ** Status:        $State: Exp $
 */
 
@@ -638,7 +638,10 @@ DUL_ReceiveAssociationRQ(
     if (cond.bad())
         return cond;
 
-    cond = PRV_NextPDUType(association, block, timeout, &pduType);
+    /* This is the first time we read from this new connection, so in case it
+     * doesn't speak DICOM, we shouldn't wait forever (= DUL_NOBLOCK).
+     */
+    cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType);
 
     if (cond == DUL_NETWORKCLOSED)
         event = TRANS_CONN_CLOSED;
@@ -2740,6 +2743,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.97  2011-09-20 07:45:52  uli
+** Fixed a badly choosen timeout when accepting a new association.
+**
 ** Revision 1.96  2011-08-03 11:00:02  joergr
 ** Added blocking mode and timeout parameter to request association functions.
 **
