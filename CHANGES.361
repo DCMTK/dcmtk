@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.09.20 (schlachter)
+
+- Correctly signal timeouts while accepting an association.
+  Thanks to Kornelius Sohn <k.sohn@starc-medical.de> for the report.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
 **** Changes from 2011.09.19 (riesmeier)
 
 - Made output of C-FIND responses to logger more consistent with movescu.

@@ -59,8 +59,8 @@
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
 ** Intent:        Define tables and provide functions that implement
 **                the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:   $Author: uli $, $Date: 2011-08-30 13:35:22 $
-** Revision:      $Revision: 1.78 $
+** Last Update:   $Author: uli $, $Date: 2011-09-20 07:25:49 $
+** Revision:      $Revision: 1.79 $
 ** Status:        $State: Exp $
 */
 
@@ -609,7 +609,7 @@ static FSM_ENTRY StateTable[DUL_NUMBER_OF_EVENTS][DUL_NUMBER_OF_STATES] = {
 
     {
         {ARTIM_TIMER_EXPIRED, STATE1, NOACTION, NOSTATE, "", "", NULL},
-        {ARTIM_TIMER_EXPIRED, STATE2, AA_2, STATE1, "", "", NULL},
+        {ARTIM_TIMER_EXPIRED, STATE2, AA_2T, STATE1, "", "", NULL},
         {ARTIM_TIMER_EXPIRED, STATE3, NOACTION, NOSTATE, "", "", NULL},
         {ARTIM_TIMER_EXPIRED, STATE4, NOACTION, NOSTATE, "", "", NULL},
         {ARTIM_TIMER_EXPIRED, STATE5, NOACTION, NOSTATE, "", "", NULL},
@@ -3966,6 +3966,9 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.79  2011-09-20 07:25:49  uli
+** Correctly signal timeouts while accepting an association.
+**
 ** Revision 1.78  2011-08-30 13:35:22  uli
 ** Fix compilation on Solaris and possibly other systems.
 **
