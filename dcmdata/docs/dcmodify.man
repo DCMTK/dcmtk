@@ -40,7 +40,7 @@ VR=UN attributes as OB.
 sequences.  The (pseudo-formalized) syntax is
 
 \verbatim
-  {sequence[item-no].}*element
+{sequence[item-no].}*element
 \endverbatim
 \if MANPAGES
 .fi
@@ -101,12 +101,6 @@ dcmfile-in  DICOM input filename(s) to be modified
 
   -lc   --log-config  [f]ilename: string
           use config file f for the logger
-
-  -ie   --ignore-errors
-          continue with file, if modify error occurs
-
-  -nb   --no-backup
-          don't backup files (DANGEROUS)
 \endverbatim
 
 \subsection input_options input options
@@ -167,9 +161,16 @@ bitstream format of deflated input:
           expect deflated zlib bitstream
 \endverbatim
 
-
 \subsection processing_options processing options
 \verbatim
+backup input files:
+
+        --backup
+          backup files before modifying (default)
+
+  -nb   --no-backup
+          don't backup files (DANGEROUS)
+
 insert mode:
 
   -i    --insert  "[t]ag-path=[v]alue"
@@ -218,15 +219,18 @@ unique identifier:
           do not update metaheader UIDs if related
           UIDs in the dataset are modified
 
-other processing options:
+error handling:
+
+  -ie   --ignore-errors
+          continue with file, if modify error occurs
 
   -imt  --ignore-missing-tags
           treat 'tag not found' as success
           when modifying or erasing in files
 
   -iun  --ignore-un-values
-          do not try writing any values to
-          elements having VR of UN
+          do not try writing any values to elements
+          having a VR of UN
 \endverbatim
 
 \subsection output_options output options
@@ -337,7 +341,7 @@ are handled.
 When you use \b dcmodify to delete a private reservation tag, please note that
 \b dcmodify won't touch the private tags that are under this reservation.  The
 user is forced to handle the consistency between reservations and their
-pending private tags.
+associated private tags.
 
 For the deletion of private non-reservation tags there are no special issues.
 

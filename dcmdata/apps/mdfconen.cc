@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2011-08-25 08:39:30 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-09-21 14:32:26 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,8 +94,6 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         cmd->addOption("--help",                    "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
         cmd->addOption("--version",                            "print version information and exit", OFCommandLine::AF_Exclusive);
         OFLog::addOptions(*cmd);
-        cmd->addOption("--ignore-errors",           "-ie",     "continue with file, if modify error occurs");
-        cmd->addOption("--no-backup",               "-nb",     "don't backup files (DANGEROUS)");
     cmd->addGroup("input options:");
         cmd->addSubGroup("input file format:");
             cmd->addOption("--read-file",           "+f",      "read file format or data set (default)");
@@ -121,6 +119,9 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
 #endif
 
     cmd->addGroup("processing options:");
+        cmd->addSubGroup("backup input files:");
+            cmd->addOption("--backup",                         "backup files before modifying (default)");
+            cmd->addOption("--no-backup",           "-nb",     "don't backup files (DANGEROUS)");
         cmd->addSubGroup("insert mode:");
             cmd->addOption("--insert",              "-i",   1, "\"[t]ag-path=[v]alue\"",
                                                                "insert (or overwrite) path at position t\nwith value v", OFCommandLine::AF_NoWarning);
@@ -145,9 +146,10 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
             cmd->addOption("--gen-ser-uid",         "-gse",    "generate new Series Instance UID", OFCommandLine::AF_NoWarning);
             cmd->addOption("--gen-inst-uid",        "-gin",    "generate new SOP Instance UID", OFCommandLine::AF_NoWarning);
             cmd->addOption("--no-meta-uid",         "-nmu",    "do not update metaheader UIDs if related\nUIDs in the dataset are modified");
-        cmd->addSubGroup("other processing options:");
+        cmd->addSubGroup("error handling:");
+            cmd->addOption("--ignore-errors",       "-ie",     "continue with file, if modify error occurs");
             cmd->addOption("--ignore-missing-tags", "-imt",    "treat 'tag not found' as success\nwhen modifying or erasing in datasets");
-            cmd->addOption("--ignore-un-values",    "-iun",    "do not try writing any values\nto elements having VR of UN");
+            cmd->addOption("--ignore-un-values",    "-iun",    "do not try writing any values to elements\nhaving a VR of UN");
     cmd->addGroup("output options:");
         cmd->addSubGroup("output file format:");
             cmd->addOption("--write-file",          "+F",      "write file format (default)");
@@ -232,12 +234,6 @@ void MdfConsoleEngine::parseNonJobOptions()
 {
     // catch "general" options
     OFLog::configureFromCommandLine(*cmd, *app);
-    if (cmd->findOption("--ignore-errors"))
-        ignore_errors_option = OFTrue;
-    if (cmd->findOption("--no-meta-uid"))
-        update_metaheader_uids_option = OFFalse;
-    if (cmd->findOption("--no-backup"))
-        no_backup_option = OFTrue;
 
     // input options
     cmd->beginOptionBlock();
@@ -276,38 +272,47 @@ void MdfConsoleEngine::parseNonJobOptions()
 
     cmd->beginOptionBlock();
     if (cmd->findOption("--accept-odd-length"))
-    {
         dcmAcceptOddAttributeLength.set(OFTrue);
-    }
     if (cmd->findOption("--assume-even-length"))
-    {
         dcmAcceptOddAttributeLength.set(OFFalse);
-    }
     cmd->endOptionBlock();
 
     cmd->beginOptionBlock();
     if (cmd->findOption("--enable-correction"))
-    {
         dcmEnableAutomaticInputDataCorrection.set(OFTrue);
-    }
     if (cmd->findOption("--disable-correction"))
-    {
         dcmEnableAutomaticInputDataCorrection.set(OFFalse);
-    }
     cmd->endOptionBlock();
 
 #ifdef WITH_ZLIB
     cmd->beginOptionBlock();
     if (cmd->findOption("--bitstream-deflated"))
-    {
         dcmZlibExpectRFC1950Encoding.set(OFFalse);
-    }
     if (cmd->findOption("--bitstream-zlib"))
-    {
         dcmZlibExpectRFC1950Encoding.set(OFTrue);
-    }
     cmd->endOptionBlock();
 #endif
+
+    // processing options
+    cmd->beginOptionBlock();
+    if (cmd->findOption("--backup"))
+        no_backup_option = OFFalse;
+    if (cmd->findOption("--no-backup"))
+        no_backup_option = OFTrue;
+    cmd->endOptionBlock();
+
+    if (cmd->findOption("--no-reserv-check"))
+        no_reservation_checks = OFTrue;
+
+    if (cmd->findOption("--no-meta-uid"))
+        update_metaheader_uids_option = OFFalse;
+
+    if (cmd->findOption("--ignore-errors"))
+        ignore_errors_option = OFTrue;
+    if (cmd->findOption("--ignore-missing-tags"))
+        ignore_missing_tags_option = OFTrue;
+    if (cmd->findOption("--ignore-un-values"))
+        ignore_un_modifies = OFTrue;
 
     // output options
     cmd->beginOptionBlock();
@@ -376,18 +381,6 @@ void MdfConsoleEngine::parseNonJobOptions()
         padenc_option = EPD_withPadding;
     }
     cmd->endOptionBlock();
-    if (cmd->findOption("--ignore-missing-tags"))
-    {
-        ignore_missing_tags_option = OFTrue;
-    }
-    if (cmd->findOption("--no-reserv-check"))
-    {
-        no_reservation_checks = OFTrue;
-    }
-    if (cmd->findOption("--ignore-un-values"))
-    {
-        ignore_un_modifies = OFTrue;
-    }
 }
 
 
@@ -614,24 +607,24 @@ OFCondition MdfConsoleEngine::loadFile(const char *filename)
 }
 
 
-OFCondition MdfConsoleEngine::backupFile(const char *file_name)
+OFCondition MdfConsoleEngine::backupFile(const char *filename)
 {
-    OFCondition backup_result;
     int result;
-    OFString backup = file_name;
+    OFString backup = filename;
     backup += ".bak";
+    OFLOG_INFO(dcmodifyLogger, "Creating backup of input file: " << backup);
     // delete backup file, if it already exists
     if (OFStandard::fileExists(backup.c_str()))
     {
-        int del_result = remove(backup.c_str());
-        if (del_result != 0)
+        result = remove(backup.c_str());
+        if (result != 0)
         {
             OFLOG_ERROR(dcmodifyLogger, "couldn't delete previous backup file, unable to backup!");
             return EC_IllegalCall;
         }
     }
     // if backup file could be removed, backup original file
-    result = rename(file_name, backup.c_str());
+    result = rename(filename, backup.c_str());
     // set return value
     if (result != 0)
     {
@@ -648,6 +641,7 @@ OFCondition MdfConsoleEngine::restoreFile(const char *filename)
     int result;
     OFString backup = filename;
     backup += ".bak";
+    OFLOG_INFO(dcmodifyLogger, "Restoring original file from backup");
     // delete the (original) file that dcmodify couldn't modify
     if (OFStandard::fileExists(filename))
     {
@@ -666,9 +660,6 @@ OFCondition MdfConsoleEngine::restoreFile(const char *filename)
         OFLOG_ERROR(dcmodifyLogger, "unable to rename backup file to original filename!");
         return EC_IllegalCall;
     }
-    // successfully restored, throw out message
-    else
-        OFLOG_INFO(dcmodifyLogger, "Renamed backup file to original");
     // you only get to this point, if restoring was completely successful
     return EC_Normal;
 }
@@ -687,6 +678,11 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.41  2011-09-21 14:32:26  joergr
+** Moved two options from the "general" section to more appropriate subsections.
+** Introduced new --backup option to indicate what the default behavior is and
+** modified some backup-related log messages.
+**
 ** Revision 1.40  2011-08-25 08:39:30  onken
 ** Added dcmodify option tgat permits creation of files from scratch.
 **

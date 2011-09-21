@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.21 (riesmeier)
 
+- Moved two options from the "general" section to more appropriate subsections.
+  Introduced new --backup option to indicate what the default behavior is and
+  modified some backup-related log messages.
+  Affects: dcmdata/apps/mdfconen.cc
+           dcmdata/docs/dcmodify.man
+
 - Added missing man page for the new C-GET SCU command line tool.
   Added:   dcmnet/docs/getscu.man
   Affects: dcmnet/docs/dcmnet.dox
