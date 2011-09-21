@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.09.21 (riesmeier)
+
+- Removed version check for "Darwin" in order to always support the most recent
+  Mac OS X version. Thanks to forum user "coach4ae" for the original report.
+  Affects: config/configure
+           config/configure.in
+
 **** Changes from 2011.09.20 (schlachter)
 
 - Fixed a badly choosen timeout when accepting a new association. Thanks to

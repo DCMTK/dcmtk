@@ -616,7 +616,7 @@ if test $THREADSUPPORT = posix ; then
 	  ;;
 	*-*-netbsdelf2*)
 	  ;;
-	*-*-darwin[[8-9]].*|*-*-darwin1[[0-1]].*)
+	*-*-darwin*)
 	  dnl On Mac OS X we need to have _DARWIN_C_SOURCE defined to enable UNIX standard API for system headers
 	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
 	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
@@ -659,7 +659,7 @@ if test $THREADSUPPORT = posix ; then
 	  ;;
 	*-*-netbsdelf2*)
 	  ;;
-	*-*-darwin[[8-9]].*|*-*-darwin1[[0-1]].*)
+	*-*-darwin*)
 	  dnl On Mac OS X we need to have _DARWIN_C_SOURCE source defined to enable UNIX standard API for system headers
 	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
 	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
