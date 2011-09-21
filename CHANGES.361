@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.21 (riesmeier)
 
+- Removed option --disable-host-lookup which is not really useful for an SCU.
+  Affects: dcmnet/apps/getscu.cc
+
 - Removed version check for "Darwin" in order to always support the most recent
   Mac OS X version. Thanks to forum user "coach4ae" for the original report.
   Affects: config/configure

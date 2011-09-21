@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-GET operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-09 08:58:11 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2011-09-21 11:06:28 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -187,7 +187,6 @@ main(int argc, char *argv[])
       opt4 += tempstr;
       opt4 += ")";
       cmd.addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
-      cmd.addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
       cmd.addOption("--repeat",                      1, "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                          "abort association instead of releasing it");
   cmd.addGroup("output options:");
@@ -322,7 +321,6 @@ main(int argc, char *argv[])
   }
 
   if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
-  if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
   if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
   if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
   if (cmd.findOption("--ignore"))  opt_storageMode = DCMSCU_STORAGE_IGNORE;
@@ -638,6 +636,9 @@ static void prepareTS(E_TransferSyntax ts,
 /*
 ** CVS Log
 ** $Log: getscu.cc,v $
+** Revision 1.6  2011-09-21 11:06:28  joergr
+** Removed option --disable-host-lookup which is not really useful for an SCU.
+**
 ** Revision 1.5  2011-09-09 08:58:11  joergr
 ** Replaced local list of supported storage SOP classes by the global variable
 ** dcmLongSCUStorageSOPClassUIDs, which is maintained at a central location.
