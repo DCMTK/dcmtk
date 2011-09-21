@@ -326,7 +326,7 @@ example:
 \endverbatim
 
 Individual attributes of each file sent can be modified or supplemented
-using the "-k key" option.  For example the command:
+using the \e -k (or \e --key) option.  For example the command:
 
 \verbatim
 movescu -k 0010,0020=PAT002 caesar 5678 patqry.dcm
@@ -340,7 +340,7 @@ causing the attribute to be sent with zero length.  It is not possible to
 replace or insert attributes within sequences using the \e -k option.
 
 If no file is specified on the command line, the query must be specified
-completely with one or more \e -k (or \e --key) options.
+completely with one or more \e -k options.
 
 For all uses of \b movescu, the SCP must be configured to "know" about the AE
 title where the images are to be transmitted.  This is required since the

@@ -14,6 +14,9 @@ Changes between releases are documented here.
   Affects: config/configure
            config/configure.in
 
+- Fixed minor issue regarding the --key option.
+  Affects: dcmnet/docs/movescu.man
+
 **** Changes from 2011.09.20 (schlachter)
 
 - Fixed a badly choosen timeout when accepting a new association. Thanks to
