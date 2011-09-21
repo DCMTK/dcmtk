@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.21 (riesmeier)
 
+- Removed TCP wrapper support (libwrap) which is not really useful for an SCU.
+  Affects: dcmnet/apps/getscu.cc
+
 - Removed option --disable-host-lookup which is not really useful for an SCU.
   Affects: dcmnet/apps/getscu.cc
 

@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-GET operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-21 11:06:28 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2011-09-21 12:57:47 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,11 +165,6 @@ main(int argc, char *argv[])
       cmd.addOption("--propose-deflated",    "-xd",     "propose deflated explicit VR little endian TS\nand all uncompressed transfer syntaxes");
 #endif
       cmd.addOption("--propose-implicit",    "-xi",     "propose implicit VR little endian TS only");
-#ifdef WITH_TCPWRAPPER
-    cmd.addSubGroup("network host access control (tcp wrapper):");
-      cmd.addOption("--access-full",         "-ac",     "accept connections from any host (default)");
-      cmd.addOption("--access-control",      "+ac",     "enforce host access control rules");
-#endif
     cmd.addSubGroup("other network options:");
       cmd.addOption("--timeout",             "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
       cmd.addOption("--acse-timeout",        "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
@@ -210,16 +205,10 @@ main(int argc, char *argv[])
     {
       app.printHeader(OFTrue /*print host identifier*/);
       COUT << OFendl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
-      COUT << " none" << OFendl;
-#else
-      COUT << OFendl;
-#endif
 #ifdef WITH_ZLIB
-      COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
-#endif
-#ifdef WITH_TCPWRAPPER
-      COUT << "- LIBWRAP" << OFendl;
+      COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
+#else
+      COUT << " none" << OFendl;
 #endif
       return 0;
     }
@@ -290,13 +279,6 @@ main(int argc, char *argv[])
   if (cmd.findOption("--propose-deflated")) opt_get_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 #endif
   cmd.endOptionBlock();
-
-#ifdef WITH_TCPWRAPPER
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--access-full")) dcmTCPWrapperDaemonName.set(NULL);
-  if (cmd.findOption("--access-control")) dcmTCPWrapperDaemonName.set(OFFIS_CONSOLE_APPLICATION);
-  cmd.endOptionBlock();
-#endif
 
   if (cmd.findOption("--timeout"))
   {
@@ -636,6 +618,9 @@ static void prepareTS(E_TransferSyntax ts,
 /*
 ** CVS Log
 ** $Log: getscu.cc,v $
+** Revision 1.7  2011-09-21 12:57:47  joergr
+** Removed TCP wrapper support (libwrap) which is not really useful for an SCU.
+**
 ** Revision 1.6  2011-09-21 11:06:28  joergr
 ** Removed option --disable-host-lookup which is not really useful for an SCU.
 **
