@@ -1,0 +1,535 @@
+/*!
+
+\if MANPAGES
+\page getscu DICOM retrieve (C-GET) SCU
+\else
+\page getscu getscu: DICOM retrieve (C-GET) SCU
+\endif
+
+\section synopsis SYNOPSIS
+
+\verbatim
+getscu [options] peer port [dcmfile-in...]
+\endverbatim
+
+\section description DESCRIPTION
+
+The \b getscu application implements an SCU for the Query/Retrieve Service
+Class.  \b getscu supports retrieve functionality using the C-GET message.
+It sends query keys to an SCP and waits for responses with images or other
+DICOM objects sent via C-STORE.  As the DICOM service demands, C-GET and the
+accompanying C-STORE messages are handled on the same association.  Therefore,
+objects can only be received by \b getscu itself and cannot be sent to a third
+party (\b movescu would be the right tool for this task).
+
+\section parameters PARAMETERS
+
+\verbatim
+peer        hostname of DICOM peer
+
+port        tcp/ip port number of peer
+
+dcmfile-in  DICOM query file(s)
+\endverbatim
+
+\section options OPTIONS
+
+\subsection general_options general options
+\verbatim
+  -h    --help
+          print this help text and exit
+
+        --version
+          print version information and exit
+
+  +v    --verbose-pc
+          show presentation contexts in verbose mode
+
+        --arguments
+          print expanded command line arguments
+
+  -q    --quiet
+          quiet mode, print no warnings and errors
+
+  -v    --verbose
+          verbose mode, print processing details
+
+  -d    --debug
+          debug mode, print debug information
+
+  -ll   --log-level  [l]evel: string constant
+          (fatal, error, warn, info, debug, trace)
+          use level l for the logger
+
+  -lc   --log-config  [f]ilename: string
+          use config file f for the logger
+\endverbatim
+
+\subsection network_options network options
+\verbatim
+override matching keys:
+
+  -k    --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
+          override matching key
+
+query information model:
+
+  -P    --patient
+          use patient root information model (default)
+
+  -S    --study
+          use study root information model
+
+  -O    --psonly
+          use patient/study only information model
+
+application entity titles:
+
+  -aet  --aetitle  [a]etitle: string
+          set my calling AE title (default: GETSCU)
+
+  -aec  --call  [a]etitle: string
+          set called AE title of peer (default: ANY-SCP)
+
+preferred storage transfer syntaxes (incoming associations):
+
+  +x=   --prefer-uncompr
+          prefer explicit VR local byte order (default)
+
+  +xe   --prefer-little
+          prefer explicit VR little endian TS
+
+  +xb   --prefer-big
+          prefer explicit VR big endian TS
+
+  +xs   --prefer-lossless
+          prefer default JPEG lossless TS
+
+  +xy   --prefer-jpeg8
+          prefer default JPEG lossy TS for 8 bit data
+
+  +xx   --prefer-jpeg12
+          prefer default JPEG lossy TS for 12 bit data
+
+  +xv   --prefer-j2k-lossless
+          prefer JPEG 2000 lossless TS
+
+  +xw   --prefer-j2k-lossy
+          prefer JPEG 2000 lossy TS
+
+  +xt   --prefer-jls-lossless
+          prefer JPEG-LS lossless TS
+
+  +xu   --prefer-jls-lossy
+          prefer JPEG-LS lossy TS
+
+  +xm   --prefer-mpeg2
+          prefer MPEG2 Main Profile @ Main Level TS
+
+  +xh   --prefer-mpeg2-high
+          prefer MPEG2 Main Profile @ High Level TS
+
+  +xn   --prefer-mpeg4
+          prefer MPEG4 AVC/H.264 HP / Level 4.1 TS
+
+  +xl   --prefer-mpeg4-bd
+          prefer MPEG4 AVC/H.264 BD-compatible TS
+
+  +xr   --prefer-rle
+          prefer RLE lossless TS
+
+  +xd   --prefer-deflated
+          prefer deflated explicit VR little endian TS
+
+  +xi   --implicit
+          accept implicit VR little endian TS only
+
+ proposed retrieve transfer syntaxes (outgoing associations):
+
+  -x=   --propose-uncompr
+          propose all uncompressed TS, explicit VR
+          with local byte ordering first (default)
+
+  -xe   --propose-little
+          propose all uncompressed TS, explicit VR little endian first
+
+  -xb   --propose-big
+          propose all uncompressed TS, explicit VR big endian first
+
+  -xd   --propose-deflated
+          propose deflated explicit VR little endian TS
+          and all uncompressed transfer syntaxes
+
+  -xi   --propose-implicit
+          propose implicit VR little endian TS only
+
+other network options:
+
+  -to   --timeout  [s]econds: integer (default: unlimited)
+          timeout for connection requests
+
+  -ta   --acse-timeout  [s]econds: integer (default: 30)
+          timeout for ACSE messages
+
+  -td   --dimse-timeout  [s]econds: integer (default: unlimited)
+          timeout for DIMSE messages
+
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
+          set max receive pdu to n bytes (default: 16384)
+
+        --repeat  [n]umber: integer
+          repeat n times
+
+        --abort
+          abort association instead of releasing it
+\endverbatim
+
+\subsection output_options output options
+\verbatim
+general:
+
+  -od   --output-directory  [d]irectory: string (default: ".")
+          write received objects to existing directory d
+
+storage mode:
+
+  -B    --normal
+          receive in memory, then write to disk (default)
+
+  +B    --bit-preserving
+          receive directly to disk
+
+        --ignore
+          ignore store data, receive but do not store
+\endverbatim
+
+\section notes NOTES
+
+Each file supplied on the command line will be sent to the SCP as part of a
+C-GET request.  The query file must be a valid DICOM data set containing the
+dataset part of a C-GET-RQ message.  The query file could, for instance, be
+created with the \b dump2dcm utility from a script like the following example:
+
+\verbatim
+# request all images for the patient with ID=PAT001
+(0008,0052) CS [PATIENT]     # QueryRetrieveLevel
+(0010,0020) LO [PAT001]      # PatientID
+\endverbatim
+
+Another possibility is to use the \b dcmodify tool to create a file from
+scratch using the option \e --create-file with successive calls to the
+\e --insert option.  Individual attributes can be modified or supplemented
+using the \e -k (or \e --key) option.  For example the command:
+
+\verbatim
+getscu -k "0010,0020=PAT002" caesar 5678 patqry.dcm
+\endverbatim
+
+will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientID
+attribute in patqry.dcm to have the value 'PAT002'.  If such an attribute is
+present it will be replaced, if absent it will be inserted.  The \e -k option
+can be present more than once.  The value part (after the '=') may be absent
+causing the attribute to be sent with zero length.  It is also possible to
+specify sequences, items and nested attributes using the \e -k option.  In
+these cases, a special "path" notation has to be used.  Details can be found
+in the \b dcmodify documentation.
+
+If no file is specified on the command line, the query must be specified
+completely with one or more \e -k options.
+
+\subsection known_problems Known Problems
+
+\b getscu is intended to be used as a testing tool for DICOM software
+developers.  The query keys file must be created by hand based upon the
+contents of the SCP.
+
+C-GET is not supported by all Query/Retrieve SCPs.  The C-MOVE protocol which
+is implemented by the \b movescu tool is more commonly found in practice.
+
+The \b getscu application makes no attempt to prevent incorrect queries.  In
+particular, the query keys of a C-MOVE request should only contain the
+QueryRetrieveLevel attribute and one or more of the so-called "unique key
+attributes" (PatientID, StudyInstanceUID, SeriesInstanceUID and
+SOPInstanceUID).
+
+\subsection dicom_conformance DICOM Conformance
+
+\subsubsection scu_conformance SCU Conformance
+
+The \b getscu application supports the following SOP Classes as an SCU:
+
+\verbatim
+GETPatientRootQueryRetrieveInformationModel          1.2.840.10008.5.1.4.1.2.1.3
+GETStudyRootQueryRetrieveInformationModel            1.2.840.10008.5.1.4.1.2.2.3
+GETPatientStudyOnlyQueryRetrieveInformationModel     1.2.840.10008.5.1.4.1.2.3.3
+\endverbatim
+
+The \b getscu application will propose presentation contexts for one of the
+abovementioned supported SOP Classes depending on command line options (\e -P,
+\e -S, or \e -O).  For outgoing associations, the following transfer syntaxes
+are supported:
+
+\verbatim
+LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
+\endverbatim
+
+(*) if compiled with zlib support enabled (see \e --version output)
+
+Which transfer syntaxes are actually proposed in what order, can be specified
+with the \e --propose options.
+
+\subsubsection storage_conformance Storage Conformance
+
+The \b getscu application supports the following SOP Classes as an SCP:
+
+\verbatim
+VerificationSOPClass                                 1.2.840.10008.1.1
+
+RETIRED_StoredPrintStorage                           1.2.840.10008.5.1.1.27
+RETIRED_HardcopyGrayscaleImageStorage                1.2.840.10008.5.1.1.29
+RETIRED_HardcopyColorImageStorage                    1.2.840.10008.5.1.1.30
+ComputedRadiographyImageStorage                      1.2.840.10008.5.1.4.1.1.1
+DigitalXRayImageStorageForPresentation               1.2.840.10008.5.1.4.1.1.1.1
+DigitalXRayImageStorageForProcessing                 1.2.840.10008.5.1.4.1.1.1.1.1
+DigitalMammographyXRayImageStorageForPresentation    1.2.840.10008.5.1.4.1.1.1.2
+DigitalMammographyXRayImageStorageForProcessing      1.2.840.10008.5.1.4.1.1.1.2.1
+DigitalIntraOralXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.1.3
+DigitalIntraOralXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.1.3.1
+CTImageStorage                                       1.2.840.10008.5.1.4.1.1.2
+EnhancedCTImageStorage                               1.2.840.10008.5.1.4.1.1.2.1
+RETIRED_UltrasoundMultiframeImageStorage             1.2.840.10008.5.1.4.1.1.3
+UltrasoundMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.3.1
+MRImageStorage                                       1.2.840.10008.5.1.4.1.1.4
+EnhancedMRImageStorage                               1.2.840.10008.5.1.4.1.1.4.1
+MRSpectroscopyStorage                                1.2.840.10008.5.1.4.1.1.4.2
+EnhancedMRColorImageStorage                          1.2.840.10008.5.1.4.1.1.4.3
+RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
+RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
+UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
+EnhancedUSVolumeStorage                              1.2.840.10008.5.1.4.1.1.6.2
+SecondaryCaptureImageStorage                         1.2.840.10008.5.1.4.1.1.7
+MultiframeSingleBitSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.1
+MultiframeGrayscaleByteSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.2
+MultiframeGrayscaleWordSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.3
+MultiframeTrueColorSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.4
+RETIRED_StandaloneOverlayStorage                     1.2.840.10008.5.1.4.1.1.8
+RETIRED_StandaloneCurveStorage                       1.2.840.10008.5.1.4.1.1.9
+TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
+GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
+AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
+HemodynamicWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.2.1
+CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3.1
+BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
+GeneralAudioWaveformStorage                          1.2.840.10008.5.1.4.1.1.9.4.2
+ArterialPulseWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.5.1
+RespiratoryWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.6.1
+RETIRED_StandaloneModalityLUTStorage                 1.2.840.10008.5.1.4.1.1.10
+RETIRED_StandaloneVOILUTStorage                      1.2.840.10008.5.1.4.1.1.11
+GrayscaleSoftcopyPresentationStateStorage            1.2.840.10008.5.1.4.1.1.11.1
+ColorSoftcopyPresentationStateStorage                1.2.840.10008.5.1.4.1.1.11.2
+PseudoColorSoftcopyPresentationStateStorage          1.2.840.10008.5.1.4.1.1.11.3
+BlendingSoftcopyPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.4
+XAXRFGrayscaleSoftcopyPresentationStateStorage       1.2.840.10008.5.1.4.1.1.11.5
+XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
+EnhancedXAImageStorage                               1.2.840.10008.5.1.4.1.1.12.1.1
+XRayRadiofluoroscopicImageStorage                    1.2.840.10008.5.1.4.1.1.12.2
+EnhancedXRFImageStorage                              1.2.840.10008.5.1.4.1.1.12.2.1
+RETIRED_XRayAngiographicBiPlaneImageStorage          1.2.840.10008.5.1.4.1.1.12.3
+XRay3DAngiographicImageStorage                       1.2.840.10008.5.1.4.1.1.13.1.1
+XRay3DCraniofacialImageStorage                       1.2.840.10008.5.1.4.1.1.13.1.2
+BreastTomosynthesisImageStorage                      1.2.840.10008.5.1.4.1.1.13.1.3
+IntravascularOpt.Coh.Tom.ImageStorageForPresentation 1.2.840.10008.5.1.4.1.1.14.1
+IntravascularOpt.Coh.Tom.ImageStorageForProcessing   1.2.840.10008.5.1.4.1.1.14.2
+NuclearMedicineImageStorage                          1.2.840.10008.5.1.4.1.1.20
+RawDataStorage                                       1.2.840.10008.5.1.4.1.1.66
+SpatialRegistrationStorage                           1.2.840.10008.5.1.4.1.1.66.1
+SpatialFiducialsStorage                              1.2.840.10008.5.1.4.1.1.66.2
+DeformableSpatialRegistrationStorage                 1.2.840.10008.5.1.4.1.1.66.3
+SegmentationStorage                                  1.2.840.10008.5.1.4.1.1.66.4
+SurfaceSegmentationStorage                           1.2.840.10008.5.1.4.1.1.66.5
+RealWorldValueMappingStorage                         1.2.840.10008.5.1.4.1.1.67
+RETIRED_VLImageStorage                               1.2.840.10008.5.1.4.1.1.77.1
+VLEndoscopicImageStorage                             1.2.840.10008.5.1.4.1.1.77.1.1
+VideoEndoscopicImageStorage                          1.2.840.10008.5.1.4.1.1.77.1.1.1
+VLMicroscopicImageStorage                            1.2.840.10008.5.1.4.1.1.77.1.2
+VideoMicroscopicImageStorage                         1.2.840.10008.5.1.4.1.1.77.1.2.1
+VLSlideCoordinatesMicroscopicImageStorage            1.2.840.10008.5.1.4.1.1.77.1.3
+VLPhotographicImageStorage                           1.2.840.10008.5.1.4.1.1.77.1.4
+VideoPhotographicImageStorage                        1.2.840.10008.5.1.4.1.1.77.1.4.1
+OphthalmicPhotography8BitImageStorage                1.2.840.10008.5.1.4.1.1.77.1.5.1
+OphthalmicPhotography16BitImageStorage               1.2.840.10008.5.1.4.1.1.77.1.5.2
+StereometricRelationshipStorage                      1.2.840.10008.5.1.4.1.1.77.1.5.3
+OphthalmicTomographyImageStorage                     1.2.840.10008.5.1.4.1.1.77.1.5.4
+VLWholeSlideMicroscopyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.6
+RETIRED_VLMultiFrameImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
+LensometryMeasurementsStorage                        1.2.840.10008.5.1.4.1.1.78.1
+AutorefractionMeasurementsStorage                    1.2.840.10008.5.1.4.1.1.78.2
+KeratometryMeasurementsStorage                       1.2.840.10008.5.1.4.1.1.78.3
+SubjectiveRefractionMeasurementsStorage              1.2.840.10008.5.1.4.1.1.78.4
+VisualAcuityMeasurementsStorage                      1.2.840.10008.5.1.4.1.1.78.5
+SpectaclePrescriptionReportStorage                   1.2.840.10008.5.1.4.1.1.78.6
+OphthalmicAxialMeasurementsStorage                   1.2.840.10008.5.1.4.1.1.78.7
+IntraocularLensCalculationsStorage                   1.2.840.10008.5.1.4.1.1.78.8
+MacularGridThicknessAndVolumeReportStorage           1.2.840.10008.5.1.4.1.1.79.1
+OphthalmicVisualFieldStaticPerimetryMeasurementsSt.  1.2.840.10008.5.1.4.1.1.80.1
+OphthalmicThicknessMapStorage                        1.2.840.10008.5.1.4.1.1.81.1
+DRAFT_SRTextStorage                                  1.2.840.10008.5.1.4.1.1.88.1
+DRAFT_SRComprehensiveStorage                         1.2.840.10008.5.1.4.1.1.88.4
+BasicTextSRStorage                                   1.2.840.10008.5.1.4.1.1.88.11
+EnhancedSRStorage                                    1.2.840.10008.5.1.4.1.1.88.22
+ComprehensiveSRStorage                               1.2.840.10008.5.1.4.1.1.88.33
+ProcedureLogStorage                                  1.2.840.10008.5.1.4.1.1.88.40
+MammographyCADSRStorage                              1.2.840.10008.5.1.4.1.1.88.50
+KeyObjectSelectionDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.59
+ChestCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.65
+XRayRadiationDoseSRStorage                           1.2.840.10008.5.1.4.1.1.88.67
+ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.69
+ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.70
+EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
+EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
+PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
+RETIRED_StandalonePETCurveStorage                    1.2.840.10008.5.1.4.1.1.129
+EnhancedPETImageStorage                              1.2.840.10008.5.1.4.1.1.130
+BasicStructuredDisplayStorage                        1.2.840.10008.5.1.4.1.1.131
+RTImageStorage                                       1.2.840.10008.5.1.4.1.1.481.1
+RTDoseStorage                                        1.2.840.10008.5.1.4.1.1.481.2
+RTStructureSetStorage                                1.2.840.10008.5.1.4.1.1.481.3
+RTBeamsTreatmentRecordStorage                        1.2.840.10008.5.1.4.1.1.481.4
+RTPlanStorage                                        1.2.840.10008.5.1.4.1.1.481.5
+RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481.6
+RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
+RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481.8
+RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
+DRAFT_RTBeamsDeliveryInstructionStorage              1.2.840.10008.5.1.4.34.1
+RTBeamsDeliveryInstructionStorage                    1.2.840.10008.5.1.4.34.7
+GenericImplantTemplateStorage                        1.2.840.10008.5.1.4.43.1
+ImplantAssemblyTemplateStorage                       1.2.840.10008.5.1.4.44.1
+ImplantTemplateGroupStorage                          1.2.840.10008.5.1.4.45.1
+\endverbatim
+
+The \b getscu application will usually accept presentation contexts for all of
+the abovementioned supported SOP Classes using any of the following transfer
+syntaxes:
+
+\verbatim
+LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
+\endverbatim
+
+When acting as a storage SCP, the \b getscu application will prefer transfer
+syntaxes having an explicit encoding over the default implicit transfer syntax.
+If \b getscu is running on big-endian hardware it will prefer BigEndianExplicit
+to LittleEndianExplicit transfer syntax (and vice versa).  This behaviour can
+be changed with the \e --prefer options (see above).  Depending on the
+\e --prefer option actually used, a combination of the following transfer
+syntaxes is supported:
+
+\verbatim
+LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                         1.2.840.10008.1.2.4.51
+JPEGProcess14SV1TransferSyntax                       1.2.840.10008.1.2.4.70
+JPEGLSLosslessTransferSyntax                         1.2.840.10008.1.2.4.80
+JPEGLSLossyTransferSyntax                            1.2.840.10008.1.2.4.81
+JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
+JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
+MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
+MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
+MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
+MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
+RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
+\endverbatim
+
+(*) if compiled with zlib support enabled (see \e --version output)
+
+The \b getscu application does not support extended negotiation.
+
+\section examples EXAMPLES
+
+\verbatim
+getscu --patient --call ARCHIVE caesar 104 q.dcm
+\endverbatim
+
+sends the attributes contained in the DICOM file "q.dcm" as part of a C-GET
+request to application entity ARCHIVE on the host caesar at port 104 using the
+Patient Root query model.  \b getscu itself uses the default AE title GETSCU.
+
+In contrast to C-MOVE-based Query/Retrieve SOP Classes, the C-GET-based SOP
+Classes utilized by \b getscu only permit retrieving the desired objects on
+the same connection, i.e. \b getscu will receive the objects itself.  Thus, it
+is not possible to tell the SCP to transmit the objects to a third party.
+This is a limitation of the DICOM protocol and not of the \b getscu tool.
+
+\section logging LOGGING
+
+The level of logging output of the various command line tools and underlying
+libraries can be specified by the user.  By default, only errors and warnings
+are written to the standard error stream.  Using option \e --verbose also
+informational messages like processing details are reported.  Option
+\e --debug can be used to get more details on the internal activity, e.g. for
+debugging purposes.  Other logging levels can be selected using option
+\e --log-level.  In \e --quiet mode only fatal errors are reported.  In such
+very severe error events, the application will usually terminate.  For more
+details on the different logging levels, see documentation of module "oflog".
+
+In case the logging output should be written to file (optionally with logfile
+rotation), to syslog (Unix) or the event log (Windows) option \e --log-config
+can be used.  This configuration file also allows for directing only certain
+messages to a particular output stream and for filtering certain messages
+based on the module or application where they are generated.  An example
+configuration file is provided in <em>\<etcdir\>/logger.cfg</em>).
+
+\section command_line COMMAND LINE
+
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
+multiple values are allowed (1-n), a combination of both means 0 to n values.
+
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively.  Usually, order and position of command line options are
+arbitrary (i.e. they can appear anywhere).  However, if options are mutually
+exclusive the rightmost appearance is used.  This behaviour conforms to the
+standard evaluation rules of common Unix shells.
+
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator unless they appear between two
+quotation marks) prior to any further evaluation.  Please note that a command
+file cannot contain another command file.  This simple but effective approach
+allows to summarize common combinations of options/parameters and avoids
+longish and confusing command lines (an example is provided in file
+<em>\<datadir\>/dumppat.txt</em>).
+
+\section environment ENVIRONMENT
+
+The \b getscu utility will attempt to load DICOM data dictionaries specified
+in the \e DCMDICTPATH environment variable.  By default, i.e. if the
+\e DCMDICTPATH environment variable is not set, the file
+<em>\<datadir\>/dicom.dic</em> will be loaded unless the dictionary is built
+into the application (default for Windows).
+
+The default behaviour should be preferred and the \e DCMDICTPATH environment
+variable only used when alternative data dictionaries are required.  The
+\e DCMDICTPATH environment variable has the same format as the Unix shell
+\e PATH variable in that a colon (":") separates entries.  On Windows systems,
+a semicolon (";") is used as a separator.  The data dictionary code will
+attempt to load each file specified in the \e DCMDICTPATH environment variable.
+It is an error if no data dictionary can be loaded.
+
+\section see_also SEE ALSO
+
+<b>findscu</b>(1), <b>movescu</b>(1), <b>dump2dcm</b>(1), <b>dcmodify</b>(1)
+
+\section copyright COPYRIGHT
+
+Copyright (C) 2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+
+*/

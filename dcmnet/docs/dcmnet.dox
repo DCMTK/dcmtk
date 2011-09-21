@@ -19,6 +19,7 @@ User and Provider:
 This module contains the following command line tools:
 \li \ref echoscu
 \li \ref findscu
+\li \ref getscu
 \li \ref movescu
 \li \ref storescp
 \li \ref storescu

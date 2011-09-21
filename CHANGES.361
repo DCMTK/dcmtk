@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.21 (riesmeier)
 
+- Added missing man page for the new C-GET SCU command line tool.
+  Added:   dcmnet/docs/getscu.man
+  Affects: dcmnet/docs/dcmnet.dox
+
 - Added explicit typecast in order to correctly output the presentation context
   ID to the logger.
   Affects: dcmnet/libsrc/dfindscu.cc
@@ -715,7 +719,6 @@ Changes between releases are documented here.
   Affects: dcmdata/libsrc/dcdatset.cc
            dcmdata/libsrc/dcmetinf.cc
 
->>>>>>> 1.257
 **** Changes from 2011.07.07 (riesmeier)
 
 - Updated man pages for new development snapshot.
@@ -865,7 +868,6 @@ Changes between releases are documented here.
 - Fixed mismatched delete vs. delete[] statements reported by valgrind.
   Affects: dcmwlm/libsrc/wlmactmg.cc
 
->>>>>>> 1.172
 **** Changes from 2011.06.21 (riesmeier)
 
 - Separated JPEG and JPEG 2000 variants of General Purpose DVD and USB/Flash
@@ -1221,7 +1223,6 @@ Changes between releases are documented here.
            dcmwlm/libsrc/wlds.cc
            dcmwlm/libsrc/wlmactmg.cc
 
->>>>>>> 1.153
 **** Changes from 2011.05.26 (onken)
 
 - Fixed build of ofstd tests with CMake.
