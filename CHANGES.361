@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.21 (riesmeier)
 
+- Added explicit typecast in order to correctly output the presentation context
+  ID to the logger.
+  Affects: dcmnet/libsrc/dfindscu.cc
+           dcmnet/apps/movescu.cc
+
 - Removed TCP wrapper support (libwrap) which is not really useful for an SCU.
   Affects: dcmnet/apps/getscu.cc
 

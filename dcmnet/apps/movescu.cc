@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-19 10:22:10 $
- *  CVS/RCS Revision: $Revision: 1.97 $
+ *  Update Date:      $Date: 2011-09-21 13:09:24 $
+ *  CVS/RCS Revision: $Revision: 1.98 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1410,7 +1410,7 @@ static OFCondition storeSCP(
 static OFCondition
 subOpSCP(T_ASC_Association **subAssoc)
 {
-    T_DIMSE_Message     msg;
+    T_DIMSE_Message msg;
     T_ASC_PresentationContextID presID;
 
     if (!ASC_dataWaiting(*subAssoc, 0)) /* just in case */
@@ -1503,7 +1503,7 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
     /* should we send a cancel back ?? */
     if (opt_cancelAfterNResponses == responseCount) {
         OFLOG_INFO(movescuLogger, "Sending Cancel Request: MsgID " << request->MessageID
-            << ", PresID " << myCallbackData->presId);
+            << ", PresID " << OFstatic_cast(unsigned int, myCallbackData->presId));
         cond = DIMSE_sendCancelRequest(myCallbackData->assoc,
             myCallbackData->presId, request->MessageID);
         if (cond != EC_Normal) {
@@ -1628,6 +1628,10 @@ cmove(T_ASC_Association *assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.98  2011-09-21 13:09:24  joergr
+** Added explicit typecast in order to correctly output the presentation context
+** ID to the logger.
+**
 ** Revision 1.97  2011-09-19 10:22:10  joergr
 ** Output more details on incoming sub-associations (e.g. presentation
 ** contexts). Also fixed some other inconsistencies regarding the logging.

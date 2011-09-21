@@ -18,8 +18,8 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-19 10:31:56 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2011-09-21 13:09:22 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,7 +127,7 @@ void DcmFindSCUDefaultCallback::callback(
     /* should we send a cancel back ?? */
     if (cancelAfterNResponses_ == responseCount)
     {
-        DCMNET_INFO("Sending Cancel Request, MsgID: " << request->MessageID << ", PresID: " << presId_);
+        DCMNET_INFO("Sending Cancel Request, MsgID: " << request->MessageID << ", PresID: " << OFstatic_cast(unsigned int, presId_));
         OFCondition cond = DIMSE_sendCancelRequest(assoc_, presId_, request->MessageID);
         if (cond.bad())
         {
@@ -563,6 +563,10 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.19  2011-09-21 13:09:22  joergr
+ * Added explicit typecast in order to correctly output the presentation context
+ * ID to the logger.
+ *
  * Revision 1.18  2011-09-19 10:31:56  joergr
  * Made output of C-FIND responses to logger more consistent with movescu.
  *
