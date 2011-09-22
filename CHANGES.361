@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.22 (riesmeier)
 
+- Output DIMSE status of the response message to the INFO logger (if DEBUG mode
+  if not enabled). Thanks to forum user "kron24" for the original report.
+  Affects: dcmnet/apps/storescu.cc
+
 - Added note that the three FIND SOP classes are also proposed, even though
   they are not used (a relict of the RSNA'93 demonstration).
   Affects: dcmnet/docs/movescu.man

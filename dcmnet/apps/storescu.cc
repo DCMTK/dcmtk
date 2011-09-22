@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-17 09:46:03 $
- *  CVS/RCS Revision: $Revision: 1.100 $
+ *  Update Date:      $Date: 2011-09-22 08:17:35 $
+ *  CVS/RCS Revision: $Revision: 1.101 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1572,9 +1572,14 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   /* dump some more general information */
   if (cond == EC_Normal)
   {
-    OFString str;
-    OFLOG_INFO(storescuLogger, "Received Store Response");
-    OFLOG_DEBUG(storescuLogger, DIMSE_dumpMessage(str, rsp, DIMSE_INCOMING, NULL, presID));
+    OFString temp_str;
+    if (storescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+      OFLOG_INFO(storescuLogger, "Received Store Response");
+      OFLOG_DEBUG(storescuLogger, DIMSE_dumpMessage(temp_str, rsp, DIMSE_INCOMING, NULL, presID));
+    } else {
+      OFLOG_INFO(storescuLogger, "Received Store Response (" << DU_cstoreStatusString(rsp.DimseStatus) << ")");
+    }
   }
   else
   {
@@ -1743,6 +1748,10 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.101  2011-09-22 08:17:35  joergr
+** Output DIMSE status of the response message to the INFO logger (if DEBUG mode
+** if not enabled).
+**
 ** Revision 1.100  2011-03-17 09:46:03  joergr
 ** Added support for MPEG4 transfer syntaxes to network tools.
 **
