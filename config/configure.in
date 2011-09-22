@@ -96,9 +96,9 @@ AH_TOP([#ifndef OSCONFIG_H
  * The following settings are not tested by configure but need to be set for MinGW.
  */
 #ifdef __MINGW32__
-#define HAVE_WINDOWS_H
-#define HAVE_WINSOCK_H
-#define NO_IOS_BASE_ASSIGN
+#define HAVE_WINDOWS_H 1
+#define HAVE_WINSOCK_H 1
+#define NO_IOS_BASE_ASSIGN 1
 #define ENVIRONMENT_PATH_SEPARATOR ';'
 #endif])
 

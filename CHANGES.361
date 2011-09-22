@@ -7,6 +7,9 @@ Changes between releases are documented here.
   Added:   doxygen/manpages/man1/getscu.1
   Affects: doxygen/manpages/man1/*
 
+- Fixed MinGW defines by explicitly specifying the value.
+  Affects: config/configure.in
+
 - Output status detail information (if any) to the DEBUG logger and not to the
   WARN or INFO logger. This is now consistent for all DCMTK network tools.
   Affects: dcmnet/apps/echoscu.cc
