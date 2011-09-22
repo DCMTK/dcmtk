@@ -377,9 +377,18 @@ MOVEPatientStudyOnlyQueryRetrieveInformationModel    1.2.840.10008.5.1.4.1.2.3.2
 \endverbatim
 
 The \b movescu application will propose presentation contexts for one of the
-abovementioned supported SOP Classes depending on command line options (\e -P,
-\e -S, or \e -O).  For outgoing associations, the following transfer syntaxes
-are supported:
+abovementioned supported SOP Classes depending on the command line options
+(\e -P, \e -S, or \e -O).  It will also propose the corresponding SOP Class
+from the following list, although it is not really used (this is a relict of
+the RSNA'93 demonstration):
+
+\verbatim
+FINDPatientRootQueryRetrieveInformationModel         1.2.840.10008.5.1.4.1.2.1.1
+FINDStudyRootQueryRetrieveInformationModel           1.2.840.10008.5.1.4.1.2.2.1
+FINDPatientStudyOnlyQueryRetrieveInformationModel    1.2.840.10008.5.1.4.1.2.3.1
+\endverbatim
+
+For outgoing associations, the following transfer syntaxes are supported:
 
 \verbatim
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2

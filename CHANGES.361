@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.09.22 (riesmeier)
+
+- Added note that the three FIND SOP classes are also proposed, even though
+  they are not used (a relict of the RSNA'93 demonstration).
+  Affects: dcmnet/docs/movescu.man
+
 **** Changes from 2011.09.21 (riesmeier)
 
 - Moved two options from the "general" section to more appropriate subsections.
