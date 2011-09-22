@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.22 (riesmeier)
 
+- Fixed incorrect comment on return code of some sendXXXRequest() methods.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+
 - Removed "dcmtls" headers, which were used/needed in a previous version.
   Affects: dcmnet/include/dcmtk/dcmnet/scp.h
 

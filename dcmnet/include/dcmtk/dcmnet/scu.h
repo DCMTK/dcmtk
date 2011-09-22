@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-09-06 16:11:06 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-09-22 13:49:03 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -550,8 +550,7 @@ public:
    *  @param rspStatusCode  [out] The response status code received. 0 means success,
    *                              others can be found in the DICOM standard.
    *  @return EC_Normal if request could be issued and response was received successfully,
-   *          an error code otherwise. That means that if the receiver sends a response
-   *          denoting failure of the storage request, EC_Normal will be returned.
+   *          an error code otherwise
    */
   virtual OFCondition sendACTIONRequest(const T_ASC_PresentationContextID presID,
                                         const OFString &sopInstanceUID,
@@ -569,8 +568,7 @@ public:
    *  @param rspStatusCode  [out] The response status code received. 0 means success,
    *                              others can be found in the DICOM standard.
    *  @return EC_Normal if request could be issued and response was received successfully,
-   *          an error code otherwise. That means that if the receiver sends a response
-   *          denoting failure of the storage request, EC_Normal will be returned.
+   *          an error code otherwise
    */
   virtual OFCondition sendEVENTREPORTRequest(const T_ASC_PresentationContextID presID,
                                              const OFString &sopInstanceUID,
@@ -1002,6 +1000,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.34  2011-09-22 13:49:03  joergr
+** Fixed incorrect comment on return code of some sendXXXRequest() methods.
+**
 ** Revision 1.33  2011-09-06 16:11:06  ogazzar
 ** Fixed typos in a log commit message.
 **

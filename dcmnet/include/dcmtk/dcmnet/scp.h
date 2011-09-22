@@ -19,8 +19,8 @@
  *           applications.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-22 11:11:25 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-09-22 13:49:03 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,7 +151,7 @@ public:
    */
   OFCondition markAsForkedChild();
 
-  /** Return whether this process is a forked child, i.e. whether this
+  /** Return whether this process is a forked child, i.e.\ whether this
    *  is a process started during windows multi process mode via dcmnet's
    *  built-in CreateProcess() "forking" mode for windows.
    *  @return OFTrue if process is forked child, OFFalse otherwise.
@@ -171,7 +171,7 @@ public:
   /* ************************************************************* */
 
   /** Add abstract syntax to presentation contexts the SCP is able to negotiate with SCUs.
-   *  @param abstractSyntax [in] The UID of the abstract syntax (e.g. SOP class) to add
+   *  @param abstractSyntax [in] The UID of the abstract syntax (e.g.\ SOP class) to add
    *  @param xferSyntaxes   [in] List of transfer syntaxes (UIDs) that should be supported
    *                             for the given abstract syntax name
    *  @param role           [in] The role to be negotiated
@@ -539,8 +539,7 @@ protected:
    *  @param rspStatusCode  [out] The response status code received. 0 means success,
    *                              others can be found in the DICOM standard.
    *  @return EC_Normal if request could be issued and response was received successfully,
-   *          an error code otherwise. That means that if the receiver sends a response
-   *          denoting failure of the storage request, EC_Normal will be returned.
+   *          an error code otherwise
    */
   virtual OFCondition sendEVENTREPORTRequest(const T_ASC_PresentationContextID presID,
                                              const OFString &sopInstanceUID,
@@ -830,6 +829,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.16  2011-09-22 13:49:03  joergr
+ *  Fixed incorrect comment on return code of some sendXXXRequest() methods.
+ *
  *  Revision 1.15  2011-09-22 11:11:25  joergr
  *  Removed "dcmtls" headers, which were used/needed in a previous version.
  *
