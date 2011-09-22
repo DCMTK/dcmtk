@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.22 (riesmeier)
 
+- Removed "dcmtls" headers, which were used/needed in a previous version.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+
 - Updated man pages for new development snapshot.
   Added:   doxygen/manpages/man1/getscu.1
   Affects: doxygen/manpages/man1/*

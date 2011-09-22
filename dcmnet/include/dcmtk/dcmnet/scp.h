@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2010, OFFIS e.V.
+ *  Copyright (C) 2009-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: General SCP class that can be used to implement derived SCP
  *           applications.
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-09-06 16:11:06 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-09-22 11:11:25 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,11 +40,6 @@
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
-#endif
-
-#ifdef WITH_OPENSSL
-#include "dcmtk/dcmtls/tlstrans.h"
-#include "dcmtk/dcmtls/tlslayer.h"
 #endif
 
 
@@ -533,7 +528,7 @@ protected:
                                           DcmDataset *&reqDataset,
                                           Uint16 &actionTypeID);
 
-  /** sends N-EVENT-REPORT request on the current  association and receives a
+  /** sends N-EVENT-REPORT request on the current association and receives a
    *  corresponding response.
    *  @param presID         [in]  The ID of the presentation context to be used for sending
    *                              the request message. Should not be 0.
@@ -835,6 +830,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.15  2011-09-22 11:11:25  joergr
+ *  Removed "dcmtls" headers, which were used/needed in a previous version.
+ *
  *  Revision 1.14  2011-09-06 16:11:06  ogazzar
  *  Added functions to handle N-ACTION and to send N-EVENT-REPORT requests.
  *
