@@ -1,4 +1,4 @@
-.TH "dcmodify" 1 "7 Jul 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmodify" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmodify \- Modify DICOM files
@@ -23,7 +23,7 @@ If \fBdcmodify\fP doesn't know the tag it should insert, then the tag's VR is se
 .PP
 .nf
 
-  {sequence[item-no].}*element
+{sequence[item-no].}*element
 .fi
 .PP
 .PP
@@ -72,12 +72,6 @@ dcmfile-in  DICOM input filename(s) to be modified
 
   -lc   --log-config  [f]ilename: string
           use config file f for the logger
-
-  -ie   --ignore-errors
-          continue with file, if modify error occurs
-
-  -nb   --no-backup
-          don't backup files (DANGEROUS)
 .fi
 .PP
 .SS "input options"
@@ -94,6 +88,9 @@ input file format:
 
   -f    --read-dataset
           read data set without file meta information
+
+  +fc   --create-file
+          create file format if file does not exist
 
 input transfer syntax:
 
@@ -140,6 +137,14 @@ bitstream format of deflated input:
 .SS "processing options"
 .PP
 .nf
+
+backup input files:
+
+        --backup
+          backup files before modifying (default)
+
+  -nb   --no-backup
+          don't backup files (DANGEROUS)
 
 insert mode:
 
@@ -189,15 +194,18 @@ unique identifier:
           do not update metaheader UIDs if related
           UIDs in the dataset are modified
 
-other processing options:
+error handling:
+
+  -ie   --ignore-errors
+          continue with file, if modify error occurs
 
   -imt  --ignore-missing-tags
           treat 'tag not found' as success
           when modifying or erasing in files
 
   -iun  --ignore-un-values
-          do not try writing any values to
-          elements having VR of UN
+          do not try writing any values to elements
+          having a VR of UN
 .fi
 .PP
 .SS "output options"
@@ -282,7 +290,7 @@ If you wish to change a private tags value \fIand\fP VR, because you just added 
 .PP
 Also, see description above how inserting values into elements with unknown VR are handled.
 .SS "Deletions"
-When you use \fBdcmodify\fP to delete a private reservation tag, please note that \fBdcmodify\fP won't touch the private tags that are under this reservation. The user is forced to handle the consistency between reservations and their pending private tags.
+When you use \fBdcmodify\fP to delete a private reservation tag, please note that \fBdcmodify\fP won't touch the private tags that are under this reservation. The user is forced to handle the consistency between reservations and their associated private tags.
 .PP
 For the deletion of private non-reservation tags there are no special issues.
 .SH "CHANGING UIDS"
@@ -292,6 +300,9 @@ For the deletion of private non-reservation tags there are no special issues.
 If you generate new UID's with \fI-gst\fP, \fI-gse\fP or \fI-gin\fP, this will only affect the UID you choosed to generate. So if you use \fI-gst\fP to generate a new 'Study Instance UID', then 'Series Instance UID' and 'SOP Instance UID' will not be affected! This gives you the possibility to generate each value separately. Normally, you would also modify the 'underlying' UIDs. As a disadvantage of this flexibility, the user has to assure, that when creating 'new' DICOM files with new UIDs with \fBdcmodify\fP, other UIDs have to be updated by the user as necessary.
 .PP
 When choosing the \fI-gin\fP option, the related metaheader tag ('Media Storage SOP Instance UID') is updated automatically. This behaviour cannot be disabled.
+.SH "CREATING NEW FILES"
+.PP
+Option \fI--create-file\fP lets \fBdcmodify\fP create a file if it does not already exist on disk. This can be used in order to create files from scratch by performing consecutive insertions with options like \fI--insert\fP. This might especially become handy when creating query files for tools like findscu or movescu. In case no specific output transfer syntax is defined, \fBdcmodify\fP chooses Little Endian Explicit Uncompressed for output. Files that are newly created are always written as DICOM file format, i.e. option \fI--write-dataset\fP is not permitted together with \fI--create\fP. This way, at least the metaheader is written and no file with zero byte length is created in a case where no insertions are performed in the \fBdcmodify\fP call.
 .SH "ELEMENT VALUES FROM FILE"
 .PP
 In order to read the element value from a file instead of specifying it on the command line, option \fI-mf\fP and \fI-if\fP can be used. Please note that for OW elements, the data is expected to be little endian ordered and will be swapped if necessary. The file size should always be an even number of bytes, i.e. no automatic padding is performed.
@@ -409,6 +420,7 @@ The options \fI-ma\fP and \fI-ea\fP for modifying or deleting all occurences of 
        This will modify the SOPInstanceUID to the given [UID],
        but -nmu avoids, that dcmodify adjusts the
        MediaStorageSOPInstanceUID in the metaheader, too.
+
 .fi
 .PP
 .SH "ERROR HANDLING"
@@ -435,4 +447,4 @@ The \fBdcmodify\fP utility will attempt to load DICOM data dictionaries specifie
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2003-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2003-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

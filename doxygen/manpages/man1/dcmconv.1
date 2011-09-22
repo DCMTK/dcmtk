@@ -1,4 +1,4 @@
-.TH "dcmconv" 1 "7 Jul 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmconv" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmconv \- Convert DICOM file encoding
@@ -102,6 +102,14 @@ parsing of odd-length attributes:
 
   +ae  --assume-even-length
          assume real length is one byte larger
+
+handling of explicit VR:
+
+  +ev  --use-explicit-vr
+         use explicit VR from dataset (default)
+
+  -ev  --ignore-explicit-vr
+         ignore explicit VR (prefer data dictionary)
 
 handling of non-standard VR:
 
@@ -276,4 +284,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

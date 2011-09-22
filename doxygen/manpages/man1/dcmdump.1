@@ -1,4 +1,4 @@
-.TH "dcmdump" 1 "7 Jul 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdump" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdump \- Dump DICOM file and data set
@@ -118,6 +118,14 @@ parsing of odd-length attributes:
 
   +ae  --assume-even-length
          assume real length is one byte larger
+
+handling of explicit VR:
+
+  +ev  --use-explicit-vr
+         use explicit VR from dataset (default)
+
+  -ev  --ignore-explicit-vr
+         ignore explicit VR (prefer data dictionary)
 
 handling of non-standard VR:
 

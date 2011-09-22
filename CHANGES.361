@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.22 (riesmeier)
 
+- Updated man pages for new development snapshot.
+  Added:   doxygen/manpages/man1/getscu.1
+  Affects: doxygen/manpages/man1/*
+
 - Output DIMSE status of the response message to the INFO logger (if DEBUG mode
   if not enabled). Thanks to forum user "kron24" for the original report.
   Affects: dcmnet/apps/storescu.cc

@@ -1,4 +1,4 @@
-.TH "findscu" 1 "7 Jul 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 findscu \- DICOM query (C-FIND) SCU
@@ -144,9 +144,6 @@ other network options:
 
         --cancel  [n]umber: integer
           cancel after n responses (default: never)
-
-  -X    --extract
-          extract responses to file (rsp0001.dcm, ...)
 .fi
 .PP
 .SS "transport layer security (TLS) options"
@@ -222,6 +219,27 @@ peer authentication:
           don't verify peer certificate
 .fi
 .PP
+.SS "output options"
+.PP
+.nf
+
+general:
+
+  -od   --output-directory  [d]irectory: string (default: ".")
+          write output files to existing directory d
+
+C-FIND responses:
+
+  +sr   --show-responses
+          always output responses to the logger
+
+  -sr   --hide-responses
+          do not output responses to the logger
+
+  -X    --extract
+          extract responses to file (rsp0001.dcm, ...)
+.fi
+.PP
 .SH "NOTES"
 .PP
 Each file supplied on the command line will be sent to the SCP as part of a C-FIND request. The query file must be a valid DICOM data set containing the dataset part of a C-FIND-RQ message. The query file could, for instance, be created with the \fBdump2dcm\fP utility from a script like the following example:
@@ -271,7 +289,7 @@ This call queries a worklist server at host caesar for any planned procedures fo
 .PP
 If no file is specified on the command line, the query must be specified completely with one or more \fI-k\fP options.
 .PP
-Each set of response identifiers received will be printed to stdout unless option \fI--extract\fP is used.
+Each set of response identifiers received will be output to the logger unless option \fI--hide-responses\fP, \fI--extract\fP, \fI--quiet\fP or an appropriate logger configuration is used. Option \fI--show-responses\fP can be used to force the output to the logger.
 .SS "DICOM Conformance"
 The \fBfindscu\fP application supports the following SOP Classes as an SCU:
 .PP

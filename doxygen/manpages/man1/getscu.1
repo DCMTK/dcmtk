@@ -1,18 +1,18 @@
-.TH "movescu" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "getscu" 1 "22 Sep 2011" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-movescu \- DICOM retrieve (C-MOVE) SCU
+getscu \- DICOM retrieve (C-GET) SCU
 .SH "SYNOPSIS"
 .PP
 .PP
 .nf
 
-movescu [options] peer port [dcmfile-in...]
+getscu [options] peer port [dcmfile-in...]
 .fi
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBmovescu\fP application implements both an SCU for the Query/Retrieve Service Class and an SCP for the Storage Service Class. \fBmovescu\fP supports retrieve functionality using the C-MOVE message. It sends query keys to an SCP and awaits responses. It will accept associations for the purpose of receiving images sent as a result of the C-MOVE request. The application can be used to test SCPs of the Query/Retrieve Service Class. The \fBmovescu\fP application can initiate the transfer of images to a third party or can retrieve images to itself. Note that the use of the term 'move' is a misnomer. The C-MOVE operation actually performs an image copy (no images will be deleted from the SCP).
+The \fBgetscu\fP application implements an SCU for the Query/Retrieve Service Class. \fBgetscu\fP supports retrieve functionality using the C-GET message. It sends query keys to an SCP and waits for responses with images or other DICOM objects sent via C-STORE. As the DICOM service demands, C-GET and the accompanying C-STORE messages are handled on the same association. Therefore, objects can only be received by \fBgetscu\fP itself and cannot be sent to a third party (\fBmovescu\fP would be the right tool for this task).
 .SH "PARAMETERS"
 .PP
 .PP
@@ -36,6 +36,9 @@ dcmfile-in  DICOM query file(s)
 
         --version
           print version information and exit
+
+  +v    --verbose-pc
+          show presentation contexts in verbose mode
 
         --arguments
           print expanded command line arguments
@@ -63,7 +66,7 @@ dcmfile-in  DICOM query file(s)
 
 override matching keys:
 
-  -k    --key  [k]ey: gggg,eeee="str" or dictionary name="str"
+  -k    --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
           override matching key
 
 query information model:
@@ -80,15 +83,12 @@ query information model:
 application entity titles:
 
   -aet  --aetitle  [a]etitle: string
-          set my calling AE title (default: MOVESCU)
+          set my calling AE title (default: GETSCU)
 
   -aec  --call  [a]etitle: string
           set called AE title of peer (default: ANY-SCP)
 
-  -aem  --move  [a]etitle: string
-          set move destination AE title (default: MOVESCU)
-
-preferred network transfer syntaxes (incoming associations):
+preferred storage transfer syntaxes (incoming associations):
 
   +x=   --prefer-uncompr
           prefer explicit VR local byte order (default)
@@ -127,10 +127,10 @@ preferred network transfer syntaxes (incoming associations):
           prefer MPEG2 Main Profile @ High Level TS
 
   +xn   --prefer-mpeg4
-          prefer MPEG4 AVC/H.264 High Profile / Level 4.1 TS
+          prefer MPEG4 AVC/H.264 HP / Level 4.1 TS
 
   +xl   --prefer-mpeg4-bd
-          prefer MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS
+          prefer MPEG4 AVC/H.264 BD-compatible TS
 
   +xr   --prefer-rle
           prefer RLE lossless TS
@@ -141,10 +141,7 @@ preferred network transfer syntaxes (incoming associations):
   +xi   --implicit
           accept implicit VR little endian TS only
 
-  +xa   --accept-all
-          accept all supported transfer syntaxes
-
-proposed transmission transfer syntaxes (outgoing associations):
+ proposed retrieve transfer syntaxes (outgoing associations):
 
   -x=   --propose-uncompr
           propose all uncompressed TS, explicit VR
@@ -163,30 +160,6 @@ proposed transmission transfer syntaxes (outgoing associations):
   -xi   --propose-implicit
           propose implicit VR little endian TS only
 
-network host access control (tcp wrapper):
-
-  -ac   --access-full
-          accept connections from any host (default)
-
-  +ac   --access-control
-          enforce host access control rules
-
-port for incoming network associations:
-
-        --no-port
-          no port for incoming associations (default)
-
-  +P    --port  [n]umber: integer
-          port number for incoming associations
-
-handling of illegal datasets following 'pending' move responses:
-
-  -pi   --pending-ignore
-          assume no dataset present (default)
-
-  -pr   --pending-read
-          read and ignore dataset
-
 other network options:
 
   -to   --timeout  [s]econds: integer (default: unlimited)
@@ -201,23 +174,11 @@ other network options:
   -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
           set max receive pdu to n bytes (default: 16384)
 
-  -dhl  --disable-host-lookup
-          disable hostname lookup
-
         --repeat  [n]umber: integer
           repeat n times
 
         --abort
           abort association instead of releasing it
-
-        --ignore
-          ignore store data, receive but do not store
-
-        --cancel  [n]umber: integer
-          cancel after n responses (default: never)
-
-  -up   --uid-padding
-          silently correct space-padded UIDs
 .fi
 .PP
 .SS "output options"
@@ -229,87 +190,21 @@ general:
   -od   --output-directory  [d]irectory: string (default: ".")
           write received objects to existing directory d
 
-bit preserving mode:
+storage mode:
 
   -B    --normal
-          allow implicit format conversions (default)
+          receive in memory, then write to disk (default)
 
   +B    --bit-preserving
-          write data exactly as read
+          receive directly to disk
 
-output file format:
-
-  +F    --write-file
-          write file format (default)
-
-  -F    --write-dataset
-          write data set without file meta information
-
-output transfer syntax
-(not with --bit-preserving or compressed transmission):
-
-  +t=   --write-xfer-same
-          write with same TS as input (default)
-
-  +te   --write-xfer-little
-          write with explicit VR little endian TS
-
-  +tb   --write-xfer-big
-          write with explicit VR big endian TS
-
-  +ti   --write-xfer-implicit
-          write with implicit VR little endian TS
-
-  +td   --write-xfer-deflated
-          write with deflated explicit VR little endian TS
-
-post-1993 value representations (not with --bit-preserving):
-
-  +u    --enable-new-vr
-          enable support for new VRs (UN/UT) (default)
-
-  -u    --disable-new-vr
-          disable support for new VRs, convert to OB
-
-group length encoding (not with --bit-preserving):
-
-  +g=   --group-length-recalc
-          recalculate group lengths if present (default)
-
-  +g    --group-length-create
-          always write with group length elements
-
-  -g    --group-length-remove
-          always write without group length elements
-
-length encoding in sequences and items (not with --bit-preserving):
-
-  +e    --length-explicit
-          write with explicit lengths (default)
-
-  -e    --length-undefined
-          write with undefined lengths
-
-data set trailing padding
-(not with --write-dataset or --bit-preserving):
-
-  -p    --padding-off
-          no padding (default)
-
-  +p    --padding-create  [f]ile-pad [i]tem-pad: integer
-          align file on multiple of f bytes and items on
-          multiple of i bytes
-
-deflate compression level
-(only with --propose-deflated or --write-xfer-deflated/same):
-
-  +cl   --compression-level  [l]evel: integer (default: 6)
-          0=uncompressed, 1=fastest, 9=best compression
+        --ignore
+          ignore store data, receive but do not store
 .fi
 .PP
 .SH "NOTES"
 .PP
-Each file supplied on the command line will be sent to the SCP as part of a C-MOVE request. The query file must be a valid DICOM data set containing the dataset part of a C-MOVE-RQ message. The query file could, for instance, be created with the \fBdump2dcm\fP utility from a script like the following example:
+Each file supplied on the command line will be sent to the SCP as part of a C-GET request. The query file must be a valid DICOM data set containing the dataset part of a C-GET-RQ message. The query file could, for instance, be created with the \fBdump2dcm\fP utility from a script like the following example:
 .PP
 .PP
 .nf
@@ -320,51 +215,38 @@ Each file supplied on the command line will be sent to the SCP as part of a C-MO
 .fi
 .PP
 .PP
-Individual attributes of each file sent can be modified or supplemented using the \fI-k\fP (or \fI--key\fP) option. For example the command:
+Another possibility is to use the \fBdcmodify\fP tool to create a file from scratch using the option \fI--create-file\fP with successive calls to the \fI--insert\fP option. Individual attributes can be modified or supplemented using the \fI-k\fP (or \fI--key\fP) option. For example the command:
 .PP
 .PP
 .nf
 
-movescu -k 0010,0020=PAT002 caesar 5678 patqry.dcm
+getscu -k "0010,0020=PAT002" caesar 5678 patqry.dcm
 .fi
 .PP
 .PP
-will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientID attribute in patqry.dcm to have the value 'PAT002'. If such an attribute is present it will be replaced, if absent it will be inserted. The \fI-k\fP option can be present more than once. The value part (after the '=') may be absent causing the attribute to be sent with zero length. It is not possible to replace or insert attributes within sequences using the \fI-k\fP option.
+will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientID attribute in patqry.dcm to have the value 'PAT002'. If such an attribute is present it will be replaced, if absent it will be inserted. The \fI-k\fP option can be present more than once. The value part (after the '=') may be absent causing the attribute to be sent with zero length. It is also possible to specify sequences, items and nested attributes using the \fI-k\fP option. In these cases, a special 'path' notation has to be used. Details can be found in the \fBdcmodify\fP documentation.
 .PP
 If no file is specified on the command line, the query must be specified completely with one or more \fI-k\fP options.
-.PP
-For all uses of \fBmovescu\fP, the SCP must be configured to 'know' about the AE title where the images are to be transmitted. This is required since the C-MOVE request only contains the AE Title of the target and the SCP must be able to convert this AE Title into TCP/IP address and port number in order to actually send the images over a separate association.
-.PP
-The C-MOVE operation of the Query/Retrieve Service Class is able retrieve images (when option \fI--port\fP is used) or to initiate a copy of images to a third party.
 .SS "Known Problems"
-\fBmovescu\fP is intended to be used as a testing tool for DICOM software developers. The query keys file must be created by hand based upon the contents of the SCP.
+\fBgetscu\fP is intended to be used as a testing tool for DICOM software developers. The query keys file must be created by hand based upon the contents of the SCP.
 .PP
-The \fBmovescu\fP application makes no attempt to prevent incorrect queries. In particular, the query keys of a C-MOVE request should only contain the QueryRetrieveLevel attribute and one or more of the so-called 'unique key attributes' (PatientID, StudyInstanceUID, SeriesInstanceUID and SOPInstanceUID).
+C-GET is not supported by all Query/Retrieve SCPs. The C-MOVE protocol which is implemented by the \fBmovescu\fP tool is more commonly found in practice.
+.PP
+The \fBgetscu\fP application makes no attempt to prevent incorrect queries. In particular, the query keys of a C-MOVE request should only contain the QueryRetrieveLevel attribute and one or more of the so-called 'unique key attributes' (PatientID, StudyInstanceUID, SeriesInstanceUID and SOPInstanceUID).
 .SS "DICOM Conformance"
 .SS "SCU Conformance"
-The \fBmovescu\fP application supports the following SOP Classes as an SCU:
+The \fBgetscu\fP application supports the following SOP Classes as an SCU:
 .PP
 .PP
 .nf
 
-MOVEPatientRootQueryRetrieveInformationModel         1.2.840.10008.5.1.4.1.2.1.2
-MOVEStudyRootQueryRetrieveInformationModel           1.2.840.10008.5.1.4.1.2.2.2
-MOVEPatientStudyOnlyQueryRetrieveInformationModel    1.2.840.10008.5.1.4.1.2.3.2
+GETPatientRootQueryRetrieveInformationModel          1.2.840.10008.5.1.4.1.2.1.3
+GETStudyRootQueryRetrieveInformationModel            1.2.840.10008.5.1.4.1.2.2.3
+GETPatientStudyOnlyQueryRetrieveInformationModel     1.2.840.10008.5.1.4.1.2.3.3
 .fi
 .PP
 .PP
-The \fBmovescu\fP application will propose presentation contexts for one of the abovementioned supported SOP Classes depending on the command line options (\fI-P\fP, \fI-S\fP, or \fI-O\fP). It will also propose the corresponding SOP Class from the following list, although it is not really used (this is a relict of the RSNA'93 demonstration):
-.PP
-.PP
-.nf
-
-FINDPatientRootQueryRetrieveInformationModel         1.2.840.10008.5.1.4.1.2.1.1
-FINDStudyRootQueryRetrieveInformationModel           1.2.840.10008.5.1.4.1.2.2.1
-FINDPatientStudyOnlyQueryRetrieveInformationModel    1.2.840.10008.5.1.4.1.2.3.1
-.fi
-.PP
-.PP
-For outgoing associations, the following transfer syntaxes are supported:
+The \fBgetscu\fP application will propose presentation contexts for one of the abovementioned supported SOP Classes depending on command line options (\fI-P\fP, \fI-S\fP, or \fI-O\fP). For outgoing associations, the following transfer syntaxes are supported:
 .PP
 .PP
 .nf
@@ -379,8 +261,8 @@ BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 (*) if compiled with zlib support enabled (see \fI--version\fP output)
 .PP
 Which transfer syntaxes are actually proposed in what order, can be specified with the \fI--propose\fP options.
-.SS "SCP Conformance"
-The \fBmovescu\fP application supports the following SOP Classes as an SCP:
+.SS "Storage Conformance"
+The \fBgetscu\fP application supports the following SOP Classes as an SCP:
 .PP
 .PP
 .nf
@@ -416,7 +298,6 @@ MultiframeGrayscaleWordSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.3
 MultiframeTrueColorSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.4
 RETIRED_StandaloneOverlayStorage                     1.2.840.10008.5.1.4.1.1.8
 RETIRED_StandaloneCurveStorage                       1.2.840.10008.5.1.4.1.1.9
-DRAFT_WaveformStorage                                1.2.840.10008.5.1.4.1.1.9.1
 TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
 GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
 AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
@@ -477,8 +358,6 @@ MacularGridThicknessAndVolumeReportStorage           1.2.840.10008.5.1.4.1.1.79.
 OphthalmicVisualFieldStaticPerimetryMeasurementsSt.  1.2.840.10008.5.1.4.1.1.80.1
 OphthalmicThicknessMapStorage                        1.2.840.10008.5.1.4.1.1.81.1
 DRAFT_SRTextStorage                                  1.2.840.10008.5.1.4.1.1.88.1
-DRAFT_SRAudioStorage                                 1.2.840.10008.5.1.4.1.1.88.2
-DRAFT_SRDetailStorage                                1.2.840.10008.5.1.4.1.1.88.3
 DRAFT_SRComprehensiveStorage                         1.2.840.10008.5.1.4.1.1.88.4
 BasicTextSRStorage                                   1.2.840.10008.5.1.4.1.1.88.11
 EnhancedSRStorage                                    1.2.840.10008.5.1.4.1.1.88.22
@@ -505,12 +384,6 @@ RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481
 RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
 RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481.8
 RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
-DICOS_CTImageStorage                                 1.2.840.10008.5.1.4.1.1.501.1
-DICOS_DigitalXRayImageStorageForPresentation         1.2.840.10008.5.1.4.1.1.501.2.1
-DICOS_DigitalXRayImageStorageForProcessing           1.2.840.10008.5.1.4.1.1.501.2.2
-DICOS_ThreatDetectionReportStorage                   1.2.840.10008.5.1.4.1.1.501.3
-DICONDE_EddyCurrentImageStorage                      1.2.840.10008.5.1.4.1.1.601.1
-DICONDE_EddyCurrentMultiframeImageStorage            1.2.840.10008.5.1.4.1.1.601.2
 DRAFT_RTBeamsDeliveryInstructionStorage              1.2.840.10008.5.1.4.34.1
 RTBeamsDeliveryInstructionStorage                    1.2.840.10008.5.1.4.34.7
 GenericImplantTemplateStorage                        1.2.840.10008.5.1.4.43.1
@@ -519,7 +392,7 @@ ImplantTemplateGroupStorage                          1.2.840.10008.5.1.4.45.1
 .fi
 .PP
 .PP
-The \fBmovescu\fP application will usually accept presentation contexts for all of the abovementioned supported SOP Classes using any of the following transfer syntaxes:
+The \fBgetscu\fP application will usually accept presentation contexts for all of the abovementioned supported SOP Classes using any of the following transfer syntaxes:
 .PP
 .PP
 .nf
@@ -530,7 +403,7 @@ BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 .fi
 .PP
 .PP
-When acting as an SCP, the \fBmovescu\fP application will prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBmovescu\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa). This behaviour can be changed with the \fI--prefer\fP options (see above). Using option \fI--accept-all\fP any of the following transfer syntaxes is supported:
+When acting as a storage SCP, the \fBgetscu\fP application will prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBgetscu\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa). This behaviour can be changed with the \fI--prefer\fP options (see above). Depending on the \fI--prefer\fP option actually used, a combination of the following transfer syntaxes is supported:
 .PP
 .PP
 .nf
@@ -556,21 +429,19 @@ RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .PP
 (*) if compiled with zlib support enabled (see \fI--version\fP output)
 .PP
-The \fBmovescu\fP application does not support extended negotiation.
-.SS "Access Control"
-When compiled on Unix platforms with TCP wrapper support, host-based access control can be enabled with the \fI--access-control\fP command line option. In this case the access control rules defined in the system's host access control tables for \fBmovescu\fP are enforced. The default locations of the host access control tables are \fI/etc/hosts.allow\fP and \fI/etc/hosts.deny\fP. Further details are described in \fBhosts_access\fP(5).
+The \fBgetscu\fP application does not support extended negotiation.
 .SH "EXAMPLES"
 .PP
 .PP
 .nf
 
-movescu --patient --port 9876 --move TEST_AE --call ARCHIVE caesar 104 q.dcm
+getscu --patient --call ARCHIVE caesar 104 q.dcm
 .fi
 .PP
 .PP
-sends the attributes contained in the DICOM file 'q.dcm' as part of a C-MOVE request to application entity ARCHIVE on the host caesar at port 104 using the Patient Root query model. \fBmovescu\fP itself uses the default AE title MOVESCU. The C-MOVE request will specifiy that images should be transferred to the destination AE title TEST_AE (via the \fI--move\fP option). How the SCP interprets this request depends on its configuration. \fBmovescu\fP will listen on part 9876 for incoming associations in order to receive the requested images from the SCP.
+sends the attributes contained in the DICOM file 'q.dcm' as part of a C-GET request to application entity ARCHIVE on the host caesar at port 104 using the Patient Root query model. \fBgetscu\fP itself uses the default AE title GETSCU.
 .PP
-Images can be copied to a third party by using a different destination AE title (e.g. \fI--move\fP ANOTHER_AE). Of course, the SCP must 'know' this AE title and the destination must be acting as an SCP of the Storage Service Class (the \fBstorescp\fP application can be used for this purpose).
+In contrast to C-MOVE-based Query/Retrieve SOP Classes, the C-GET-based SOP Classes utilized by \fBgetscu\fP only permit retrieving the desired objects on the same connection, i.e. \fBgetscu\fP will receive the objects itself. Thus, it is not possible to tell the SCP to transmit the objects to a third party. This is a limitation of the DICOM protocol and not of the \fBgetscu\fP tool.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user. By default, only errors and warnings are written to the standard error stream. Using option \fI--verbose\fP also informational messages like processing details are reported. Option \fI--debug\fP can be used to get more details on the internal activity, e.g. for debugging purposes. Other logging levels can be selected using option \fI--log-level\fP. In \fI--quiet\fP mode only fatal errors are reported. In such very severe error events, the application will usually terminate. For more details on the different logging levels, see documentation of module 'oflog'.
@@ -585,12 +456,12 @@ Command line options are distinguished from parameters by a leading '+' or '-' s
 In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
 .SH "ENVIRONMENT"
 .PP
-The \fBmovescu\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBgetscu\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
 .PP
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "SEE ALSO"
 .PP
-\fBfindscu\fP(1), \fBstorescp\fP(1), \fBdump2dcm\fP(1)
+\fBfindscu\fP(1), \fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
