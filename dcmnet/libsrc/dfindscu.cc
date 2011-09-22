@@ -18,8 +18,8 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-21 13:09:22 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2011-09-22 08:46:29 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -550,7 +550,7 @@ OFCondition DcmFindSCU::findSCU(
 
         /* dump status detail information if there is some */
         if (statusDetail != NULL) {
-            DCMNET_WARN("Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+            DCMNET_DEBUG("Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
             delete statusDetail;
         }
     }
@@ -563,6 +563,10 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.20  2011-09-22 08:46:29  joergr
+ * Output status detail information (if any) to the DEBUG logger and not to the
+ * WARN or INFO logger. This is now consistent for all DCMTK network tools.
+ *
  * Revision 1.19  2011-09-21 13:09:22  joergr
  * Added explicit typecast in order to correctly output the presentation context
  * ID to the logger.

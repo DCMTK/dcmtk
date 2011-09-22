@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-09 13:27:01 $
- *  CVS/RCS Revision: $Revision: 1.146 $
+ *  Update Date:      $Date: 2011-09-22 08:46:27 $
+ *  CVS/RCS Revision: $Revision: 1.147 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1315,7 +1315,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
         << " process (pid: " << OFStandard::getProcessID() << ")");
   else
 #endif
-    OFLOG_INFO(storescpLogger, "Association Received");
+  OFLOG_INFO(storescpLogger, "Association Received");
 
   /* dump presentation contexts if required */
   if (opt_showPresentationContexts)
@@ -1777,7 +1777,7 @@ processCommands(T_ASC_Association * assoc)
     // detail information, dump this information
     if (statusDetail != NULL)
     {
-      OFLOG_WARN(storescpLogger, "Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+      OFLOG_DEBUG(storescpLogger, "Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
       delete statusDetail;
     }
 
@@ -2788,6 +2788,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.147  2011-09-22 08:46:27  joergr
+** Output status detail information (if any) to the DEBUG logger and not to the
+** WARN or INFO logger. This is now consistent for all DCMTK network tools.
+**
 ** Revision 1.146  2011-09-09 13:27:01  joergr
 ** Output more details in case of bad command to the ERROR and DEBUG logger.
 **

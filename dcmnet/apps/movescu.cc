@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-21 13:09:24 $
- *  CVS/RCS Revision: $Revision: 1.98 $
+ *  Update Date:      $Date: 2011-09-22 08:46:27 $
+ *  CVS/RCS Revision: $Revision: 1.99 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1603,7 +1603,7 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
         OFLOG_ERROR(movescuLogger, "Move Request Failed: " << DimseCondition::dump(temp_str, cond));
     }
     if (statusDetail != NULL) {
-        OFLOG_WARN(movescuLogger, "Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+        OFLOG_DEBUG(movescuLogger, "Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
         delete statusDetail;
     }
 
@@ -1628,6 +1628,10 @@ cmove(T_ASC_Association *assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.99  2011-09-22 08:46:27  joergr
+** Output status detail information (if any) to the DEBUG logger and not to the
+** WARN or INFO logger. This is now consistent for all DCMTK network tools.
+**
 ** Revision 1.98  2011-09-21 13:09:24  joergr
 ** Added explicit typecast in order to correctly output the presentation context
 ** ID to the logger.

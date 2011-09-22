@@ -7,6 +7,14 @@ Changes between releases are documented here.
   Added:   doxygen/manpages/man1/getscu.1
   Affects: doxygen/manpages/man1/*
 
+- Output status detail information (if any) to the DEBUG logger and not to the
+  WARN or INFO logger. This is now consistent for all DCMTK network tools.
+  Affects: dcmnet/apps/echoscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/libsrc/dfindscu.cc
+
 - Output DIMSE status of the response message to the INFO logger (if DEBUG mode
   if not enabled). Thanks to forum user "kron24" for the original report.
   Affects: dcmnet/apps/storescu.cc

@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-22 08:17:35 $
- *  CVS/RCS Revision: $Revision: 1.101 $
+ *  Update Date:      $Date: 2011-09-22 08:46:27 $
+ *  CVS/RCS Revision: $Revision: 1.102 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1589,7 +1589,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
 
   /* dump status detail information if there is some */
   if (statusDetail != NULL) {
-    OFLOG_WARN(storescuLogger, "Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+    OFLOG_DEBUG(storescuLogger, "Status Detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
     delete statusDetail;
   }
   /* return */
@@ -1748,6 +1748,10 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.102  2011-09-22 08:46:27  joergr
+** Output status detail information (if any) to the DEBUG logger and not to the
+** WARN or INFO logger. This is now consistent for all DCMTK network tools.
+**
 ** Revision 1.101  2011-09-22 08:17:35  joergr
 ** Output DIMSE status of the response message to the INFO logger (if DEBUG mode
 ** if not enabled).

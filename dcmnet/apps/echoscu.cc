@@ -18,8 +18,8 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-17 09:46:02 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Update Date:      $Date: 2011-09-22 08:46:27 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -715,7 +715,7 @@ echoSCU(T_ASC_Association * assoc)
 
     /* check for status detail information, there should never be any */
     if (statusDetail != NULL) {
-        OFLOG_INFO(echoscuLogger, "Status Detail (should never be any):" << OFendl << DcmObject::PrintHelper(*statusDetail));
+        OFLOG_DEBUG(echoscuLogger, "Status Detail (should never be any):" << OFendl << DcmObject::PrintHelper(*statusDetail));
         delete statusDetail;
     }
 
@@ -747,6 +747,10 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
+** Revision 1.55  2011-09-22 08:46:27  joergr
+** Output status detail information (if any) to the DEBUG logger and not to the
+** WARN or INFO logger. This is now consistent for all DCMTK network tools.
+**
 ** Revision 1.54  2011-03-17 09:46:02  joergr
 ** Added support for MPEG4 transfer syntaxes to network tools.
 **
