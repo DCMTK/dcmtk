@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-16 09:38:40 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2011-09-23 15:27:02 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1411,7 +1411,6 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
     if (cond.bad())
     {
       DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, cond));
-      delete statusDetail;
       return cond;
     }
 
@@ -2192,6 +2191,9 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.47  2011-09-23 15:27:02  joergr
+** Removed needless deletion of the "statusDetail" variable.
+**
 ** Revision 1.46  2011-09-16 09:38:40  joergr
 ** Fixed some typos and other small inconsistencies.
 **
