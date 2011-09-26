@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.26 (riesmeier)
 
+- Added definitions for enabling full support for the ON_THE_FLY_COMPRESSION
+  feature by uncommenting a single line in the (C)make file.
+  Affects: dcmnet/apps/CMakeLists.txt
+           dcmnet/apps/Makefile.in
+
 - Removed superfluous include directories (to IJG headers).
   Affects: dcmjpeg/apps/CMakeLists.txt
 

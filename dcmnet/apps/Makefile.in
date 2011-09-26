@@ -17,12 +17,23 @@ oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmtlsdir = $(top_srcdir)/../dcmtls
 
+# these defines are used when compression support is needed for one of the tools
+compr_includes = -I$(top_srcdir)/../dcmimgle/include -I$(top_srcdir)/../dcmimage/include \
+	-I$(top_srcdir)/../dcmjpeg/include -I$(top_srcdir)/../dcmjpls/include
+compr_libdirs = -L$(top_srcdir)/../dcmimgle/libsrc -L$(top_srcdir)/../dcmimage/libsrc \
+	-L$(top_srcdir)/../dcmjpeg/libsrc -L$(top_srcdir)/../dcmjpeg/libijg8 \
+	-L$(top_srcdir)/../dcmjpeg/libijg12 -L$(top_srcdir)/../dcmjpeg/libijg16 \
+	-L$(top_srcdir)/../dcmjpls/libsrc -L$(top_srcdir)/../dcmjpls/libcharls
+
+# add $(compr_includes) to the following line if compression libraries are needed
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmtlsdir)/include
+# add $(compr_libdirs) to the following line if compression libraries are needed
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmtlsdir)/libsrc
 LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS)
 DCMTLSLIBS = -ldcmtls
+COMPR_LIBS = -ldcmjpls -lcharls -ldcmjpeg -lijg8 -lijg12 -lijg16 -ldcmimage -ldcmimgle
 
 objs = echoscu.o storescu.o storescp.o findscu.o movescu.o termscu.o getscu.o
 progs = echoscu storescu storescp findscu movescu termscu getscu
@@ -33,6 +44,8 @@ all: $(progs)
 echoscu: echoscu.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(MATHLIBS) $(LIBS)
 
+# add $(COMPR_LIBS) to the linking instructions if "storescu" is compiled
+# with ON_THE_FLY_COMPRESSION defined (see "config/docs/macros.txt")
 storescu: storescu.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(MATHLIBS) $(LIBS)
 
@@ -47,7 +60,7 @@ movescu: movescu.o
 
 termscu: termscu.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
-  
+
 getscu: getscu.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
