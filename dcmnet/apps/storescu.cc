@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-26 08:13:53 $
- *  CVS/RCS Revision: $Revision: 1.103 $
+ *  Update Date:      $Date: 2011-09-26 12:25:56 $
+ *  CVS/RCS Revision: $Revision: 1.104 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,10 +64,12 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcostrmz.h"  /* for dcmZlibCompressionLevel */
 
 #ifdef ON_THE_FLY_COMPRESSION
-#include "dcmtk/dcmjpeg/djdecode.h"  /* for dcmjpeg decoders */
-#include "dcmtk/dcmjpeg/djencode.h"  /* for dcmjpeg encoders */
-#include "dcmtk/dcmdata/dcrledrg.h"  /* for DcmRLEDecoderRegistration */
-#include "dcmtk/dcmdata/dcrleerg.h"  /* for DcmRLEEncoderRegistration */
+#include "dcmtk/dcmjpeg/djdecode.h"  /* for JPEG decoders */
+#include "dcmtk/dcmjpeg/djencode.h"  /* for JPEG encoders */
+#include "dcmtk/dcmjpls/djdecode.h"  /* for JPEG-LS decoders */
+#include "dcmtk/dcmjpls/djencode.h"  /* for JPEG-LS encoders */
+#include "dcmtk/dcmdata/dcrledrg.h"  /* for RLE decoder */
+#include "dcmtk/dcmdata/dcrleerg.h"  /* for RLE encoder */
 #include "dcmtk/dcmjpeg/dipijpeg.h"  /* for dcmimage JPEG plugin */
 #endif
 
@@ -372,6 +374,7 @@ int main(int argc, char *argv[])
 #endif
 #ifdef ON_THE_FLY_COMPRESSION
           COUT << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
+          COUT << "- " << DJLSDecoderRegistration::getLibraryVersionString() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
           COUT << "- " << OPENSSL_VERSION_TEXT << OFendl;
@@ -801,6 +804,12 @@ int main(int argc, char *argv[])
     // register global JPEG compression codecs
     DJEncoderRegistration::registerCodecs();
 
+    // register JPEG-LS decompression codecs
+    DJLSDecoderRegistration::registerCodecs();
+
+    // register JPEG-LS compression codecs
+    DJLSEncoderRegistration::registerCodecs();
+
     // register RLE compression codec
     DcmRLEEncoderRegistration::registerCodecs();
 
@@ -1104,6 +1113,10 @@ int main(int argc, char *argv[])
     // deregister JPEG codecs
     DJDecoderRegistration::cleanup();
     DJEncoderRegistration::cleanup();
+
+    // deregister JPEG-LS codecs
+    DJLSDecoderRegistration::cleanup();
+    DJLSEncoderRegistration::cleanup();
 
     // deregister RLE codecs
     DcmRLEDecoderRegistration::cleanup();
@@ -1748,6 +1761,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.104  2011-09-26 12:25:56  joergr
+** Added support for JPEG-LS to the experimental ON_THE_FLY_COMPRESSION feature.
+**
 ** Revision 1.103  2011-09-26 08:13:53  joergr
 ** Moved --verbose-pc option to the end of the "general options" section.
 **
