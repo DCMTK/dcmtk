@@ -7,34 +7,34 @@ configdir = config
 
 include $(configdir)/Makefile.def
 
-all:  config-all ofstd-all oflog-all dcmdata-all dcmtls-all dcmnet-all dcmqrdb-all dcmwlm-all dcmimgle-all dcmsr-all dcmsign-all dcmpstat-all dcmimage-all dcmjpeg-all dcmjpls-all
+all:  config-all ofstd-all oflog-all dcmdata-all dcmimgle-all dcmimage-all dcmjpeg-all dcmjpls-all dcmtls-all dcmnet-all dcmsr-all dcmsign-all dcmwlm-all dcmqrdb-all dcmpstat-all
 
-libsrc-all:  ofstd-libsrc-all oflog-libsrc-all dcmdata-libsrc-all dcmtls-libsrc-all dcmnet-libsrc-all dcmqrdb-libsrc-all dcmwlm-libsrc-all dcmimgle-libsrc-all dcmsr-libsrc-all dcmsign-libsrc-all dcmpstat-libsrc-all dcmimage-libsrc-all dcmjpeg-libsrc-all dcmjpls-libsrc-all
+libsrc-all:  ofstd-libsrc-all oflog-libsrc-all dcmdata-libsrc-all dcmimgle-libsrc-all dcmimage-libsrc-all dcmjpeg-libsrc-all dcmjpls-libsrc-all dcmtls-libsrc-all dcmnet-libsrc-all dcmsr-libsrc-all dcmsign-libsrc-all dcmwlm-libsrc-all dcmqrdb-libsrc-all dcmpstat-libsrc-all
 
-tests-all:  config-tests-all ofstd-tests-all oflog-tests-all dcmdata-tests-all dcmtls-tests-all dcmnet-tests-all dcmqrdb-tests-all dcmwlm-tests-all dcmimgle-tests-all dcmsr-tests-all dcmsign-tests-all dcmpstat-tests-all dcmimage-tests-all dcmjpeg-tests-all dcmjpls-tests-all
+tests-all:  config-tests-all ofstd-tests-all oflog-tests-all dcmdata-tests-all dcmimgle-tests-all dcmimage-tests-all dcmjpeg-tests-all dcmjpls-tests-all dcmtls-tests-all dcmnet-tests-all dcmsr-tests-all dcmsign-tests-all dcmwlm-tests-all dcmqrdb-tests-all dcmpstat-tests-all
 
-install:  config-install ofstd-install oflog-install dcmdata-install dcmtls-install dcmnet-install dcmqrdb-install dcmwlm-install dcmimgle-install dcmsr-install dcmsign-install dcmpstat-install dcmimage-install dcmjpeg-install dcmjpls-install dcmtk-install-doc install-man
+install:  config-install ofstd-install oflog-install dcmdata-install dcmimgle-install dcmimage-install dcmjpeg-install dcmjpls-install dcmtls-install dcmnet-install dcmsr-install dcmsign-install dcmwlm-install dcmqrdb-install dcmpstat-install dcmtk-install-doc install-man
 
 install-all: install install-lib install-html
 
-install-bin:  config-install-bin ofstd-install-bin oflog-install-bin dcmdata-install-bin dcmtls-install-bin dcmnet-install-bin dcmqrdb-install-bin dcmwlm-install-bin dcmimgle-install-bin dcmsr-install-bin dcmsign-install-bin dcmpstat-install-bin dcmimage-install-bin dcmjpeg-install-bin dcmjpls-install-bin
+install-bin:  config-install-bin ofstd-install-bin oflog-install-bin dcmdata-install-bin dcmimgle-install-bin dcmimage-install-bin dcmjpeg-install-bin dcmjpls-install-bin dcmtls-install-bin dcmnet-install-bin dcmsr-install-bin dcmsign-install-bin dcmwlm-install-bin dcmqrdb-install-bin dcmpstat-install-bin
 
-install-doc:  config-install-doc ofstd-install-doc oflog-install-doc dcmdata-install-doc dcmtls-install-doc dcmnet-install-doc dcmqrdb-install-doc dcmwlm-install-doc dcmimgle-install-doc dcmsr-install-doc dcmsign-install-doc dcmpstat-install-doc dcmimage-install-doc dcmjpeg-install-doc dcmjpls-install-doc
+install-doc:  config-install-doc ofstd-install-doc oflog-install-doc dcmdata-install-doc dcmimgle-install-doc dcmimage-install-doc dcmjpeg-install-doc dcmjpls-install-doc dcmtls-install-doc dcmnet-install-doc dcmsr-install-doc dcmsign-install-doc dcmwlm-install-doc dcmqrdb-install-doc dcmpstat-install-doc
 
-install-data:  config-install-data ofstd-install-data oflog-install-data dcmdata-install-data dcmtls-install-data dcmnet-install-data dcmqrdb-install-data dcmwlm-install-data dcmimgle-install-data dcmsr-install-data dcmsign-install-data dcmpstat-install-data dcmimage-install-data dcmjpeg-install-data dcmjpls-install-data
+install-data:  config-install-data ofstd-install-data oflog-install-data dcmdata-install-data dcmimgle-install-data dcmimage-install-data dcmjpeg-install-data dcmjpls-install-data dcmtls-install-data dcmnet-install-data dcmsr-install-data dcmsign-install-data dcmwlm-install-data dcmqrdb-install-data dcmpstat-install-data
 
-install-etc:  config-install-etc ofstd-install-etc oflog-install-etc dcmdata-install-etc dcmtls-install-etc dcmnet-install-etc dcmqrdb-install-etc dcmwlm-install-etc dcmimgle-install-etc dcmsr-install-etc dcmsign-install-etc dcmpstat-install-etc dcmimage-install-etc dcmjpeg-install-etc dcmjpls-install-etc
+install-etc:  config-install-etc ofstd-install-etc oflog-install-etc dcmdata-install-etc dcmimgle-install-etc dcmimage-install-etc dcmjpeg-install-etc dcmjpls-install-etc dcmtls-install-etc dcmnet-install-etc dcmsr-install-etc dcmsign-install-etc dcmwlm-install-etc dcmqrdb-install-etc dcmpstat-install-etc
 
-install-lib:  config-install-lib ofstd-install-lib oflog-install-lib dcmdata-install-lib dcmtls-install-lib dcmnet-install-lib dcmqrdb-install-lib dcmwlm-install-lib dcmimgle-install-lib dcmsr-install-lib dcmsign-install-lib dcmpstat-install-lib dcmimage-install-lib dcmjpeg-install-lib dcmjpls-install-lib
+install-lib:  config-install-lib ofstd-install-lib oflog-install-lib dcmdata-install-lib dcmimgle-install-lib dcmimage-install-lib dcmjpeg-install-lib dcmjpls-install-lib dcmtls-install-lib dcmnet-install-lib dcmsr-install-lib dcmsign-install-lib dcmwlm-install-lib dcmqrdb-install-lib dcmpstat-install-lib
 
-install-include:  config-install-include ofstd-install-include oflog-install-include dcmdata-install-include dcmtls-install-include dcmnet-install-include dcmqrdb-install-include dcmwlm-install-include dcmimgle-install-include dcmsr-install-include dcmsign-install-include dcmpstat-install-include dcmimage-install-include dcmjpeg-install-include dcmjpls-install-include
+install-include:  config-install-include ofstd-install-include oflog-install-include dcmdata-install-include dcmimgle-install-include dcmimage-install-include dcmjpeg-install-include dcmjpls-install-include dcmtls-install-include dcmnet-install-include dcmsr-install-include dcmsign-install-include dcmwlm-install-include dcmqrdb-install-include dcmpstat-install-include
 
-install-support:  config-install-support ofstd-install-support oflog-install-support dcmdata-install-support dcmtls-install-support dcmnet-install-support dcmqrdb-install-support dcmwlm-install-support dcmimgle-install-support dcmsr-install-support dcmsign-install-support dcmpstat-install-support dcmimage-install-support dcmjpeg-install-support dcmjpls-install-support
+install-support:  config-install-support ofstd-install-support oflog-install-support dcmdata-install-support dcmimgle-install-support dcmimage-install-support dcmjpeg-install-support dcmjpls-install-support dcmtls-install-support dcmnet-install-support dcmsr-install-support dcmsign-install-support dcmwlm-install-support dcmqrdb-install-support dcmpstat-install-support
 
 check: tests-all
 	$(MAKE) -s check-nosilent
 
-check-nosilent:  config-check ofstd-check oflog-check dcmdata-check dcmtls-check dcmnet-check dcmqrdb-check dcmwlm-check dcmimgle-check dcmsr-check dcmsign-check dcmpstat-check dcmimage-check dcmjpeg-check dcmjpls-check
+check-nosilent:  config-check ofstd-check oflog-check dcmdata-check dcmimgle-check dcmimage-check dcmjpeg-check dcmjpls-check dcmtls-check dcmnet-check dcmsr-check dcmsign-check dcmwlm-check dcmqrdb-check dcmpstat-check
 
 dcmtk-install-doc:
 	$(configdir)/mkinstalldirs $(DESTDIR)$(docdir)
@@ -198,150 +198,6 @@ dcmdata-install-support:
 dcmdata-check:
 	(cd dcmdata && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
 
-dcmtls-all:
-	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
-
-dcmtls-libsrc-all:
-	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
-
-dcmtls-tests-all:
-	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
-
-dcmtls-install:
-	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
-
-dcmtls-install-bin:
-	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
-
-dcmtls-install-doc:
-	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
-
-dcmtls-install-data:
-	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
-
-dcmtls-install-etc:
-	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
-
-dcmtls-install-lib:
-	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
-
-dcmtls-install-include:
-	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
-
-dcmtls-install-support:
-	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
-
-dcmtls-check:
-	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
-
-dcmnet-all:
-	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
-
-dcmnet-libsrc-all:
-	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
-
-dcmnet-tests-all:
-	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
-
-dcmnet-install:
-	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
-
-dcmnet-install-bin:
-	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
-
-dcmnet-install-doc:
-	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
-
-dcmnet-install-data:
-	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
-
-dcmnet-install-etc:
-	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
-
-dcmnet-install-lib:
-	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
-
-dcmnet-install-include:
-	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
-
-dcmnet-install-support:
-	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
-
-dcmnet-check:
-	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
-
-dcmqrdb-all:
-	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
-
-dcmqrdb-libsrc-all:
-	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
-
-dcmqrdb-tests-all:
-	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
-
-dcmqrdb-install:
-	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
-
-dcmqrdb-install-bin:
-	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
-
-dcmqrdb-install-doc:
-	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
-
-dcmqrdb-install-data:
-	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
-
-dcmqrdb-install-etc:
-	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
-
-dcmqrdb-install-lib:
-	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
-
-dcmqrdb-install-include:
-	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
-
-dcmqrdb-install-support:
-	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
-
-dcmqrdb-check:
-	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
-
-dcmwlm-all:
-	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
-
-dcmwlm-libsrc-all:
-	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
-
-dcmwlm-tests-all:
-	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
-
-dcmwlm-install:
-	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
-
-dcmwlm-install-bin:
-	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
-
-dcmwlm-install-doc:
-	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
-
-dcmwlm-install-data:
-	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
-
-dcmwlm-install-etc:
-	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
-
-dcmwlm-install-lib:
-	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
-
-dcmwlm-install-include:
-	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
-
-dcmwlm-install-support:
-	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
-
-dcmwlm-check:
-	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
-
 dcmimgle-all:
 	(cd dcmimgle && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
 
@@ -377,114 +233,6 @@ dcmimgle-install-support:
 
 dcmimgle-check:
 	(cd dcmimgle && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
-
-dcmsr-all:
-	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
-
-dcmsr-libsrc-all:
-	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
-
-dcmsr-tests-all:
-	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
-
-dcmsr-install:
-	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
-
-dcmsr-install-bin:
-	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
-
-dcmsr-install-doc:
-	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
-
-dcmsr-install-data:
-	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
-
-dcmsr-install-etc:
-	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
-
-dcmsr-install-lib:
-	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
-
-dcmsr-install-include:
-	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
-
-dcmsr-install-support:
-	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
-
-dcmsr-check:
-	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
-
-dcmsign-all:
-	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
-
-dcmsign-libsrc-all:
-	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
-
-dcmsign-tests-all:
-	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
-
-dcmsign-install:
-	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
-
-dcmsign-install-bin:
-	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
-
-dcmsign-install-doc:
-	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
-
-dcmsign-install-data:
-	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
-
-dcmsign-install-etc:
-	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
-
-dcmsign-install-lib:
-	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
-
-dcmsign-install-include:
-	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
-
-dcmsign-install-support:
-	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
-
-dcmsign-check:
-	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
-
-dcmpstat-all:
-	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
-
-dcmpstat-libsrc-all:
-	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
-
-dcmpstat-tests-all:
-	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
-
-dcmpstat-install:
-	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
-
-dcmpstat-install-bin:
-	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
-
-dcmpstat-install-doc:
-	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
-
-dcmpstat-install-data:
-	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
-
-dcmpstat-install-etc:
-	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
-
-dcmpstat-install-lib:
-	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
-
-dcmpstat-install-include:
-	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
-
-dcmpstat-install-support:
-	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
-
-dcmpstat-check:
-	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
 
 dcmimage-all:
 	(cd dcmimage && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
@@ -594,38 +342,290 @@ dcmjpls-install-support:
 dcmjpls-check:
 	(cd dcmjpls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
 
+dcmtls-all:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
+
+dcmtls-libsrc-all:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmtls-tests-all:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
+dcmtls-install:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
+
+dcmtls-install-bin:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
+
+dcmtls-install-doc:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmtls-install-data:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
+dcmtls-install-etc:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
+
+dcmtls-install-lib:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
+
+dcmtls-install-include:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
+
+dcmtls-install-support:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmtls-check:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
+dcmnet-all:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
+
+dcmnet-libsrc-all:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmnet-tests-all:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
+dcmnet-install:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
+
+dcmnet-install-bin:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
+
+dcmnet-install-doc:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmnet-install-data:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
+dcmnet-install-etc:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
+
+dcmnet-install-lib:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
+
+dcmnet-install-include:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
+
+dcmnet-install-support:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmnet-check:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
+dcmsr-all:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
+
+dcmsr-libsrc-all:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmsr-tests-all:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
+dcmsr-install:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
+
+dcmsr-install-bin:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
+
+dcmsr-install-doc:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmsr-install-data:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
+dcmsr-install-etc:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
+
+dcmsr-install-lib:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
+
+dcmsr-install-include:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
+
+dcmsr-install-support:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmsr-check:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
+dcmsign-all:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
+
+dcmsign-libsrc-all:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmsign-tests-all:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
+dcmsign-install:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
+
+dcmsign-install-bin:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
+
+dcmsign-install-doc:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmsign-install-data:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
+dcmsign-install-etc:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
+
+dcmsign-install-lib:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
+
+dcmsign-install-include:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
+
+dcmsign-install-support:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmsign-check:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
+dcmwlm-all:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
+
+dcmwlm-libsrc-all:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmwlm-tests-all:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
+dcmwlm-install:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
+
+dcmwlm-install-bin:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
+
+dcmwlm-install-doc:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmwlm-install-data:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
+dcmwlm-install-etc:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
+
+dcmwlm-install-lib:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
+
+dcmwlm-install-include:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
+
+dcmwlm-install-support:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmwlm-check:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
+dcmqrdb-all:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
+
+dcmqrdb-libsrc-all:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmqrdb-tests-all:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
+dcmqrdb-install:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
+
+dcmqrdb-install-bin:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
+
+dcmqrdb-install-doc:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmqrdb-install-data:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
+dcmqrdb-install-etc:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
+
+dcmqrdb-install-lib:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
+
+dcmqrdb-install-include:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
+
+dcmqrdb-install-support:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmqrdb-check:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
+dcmpstat-all:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
+
+dcmpstat-libsrc-all:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+dcmpstat-tests-all:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
+dcmpstat-install:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
+
+dcmpstat-install-bin:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
+
+dcmpstat-install-doc:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmpstat-install-data:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
+dcmpstat-install-etc:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
+
+dcmpstat-install-lib:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
+
+dcmpstat-install-include:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
+
+dcmpstat-install-support:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+dcmpstat-check:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
 dependencies:
 	(cd ofstd && $(MAKE) dependencies)
 	(cd oflog && $(MAKE) dependencies)
 	(cd dcmdata && $(MAKE) dependencies)
-	(cd dcmtls && $(MAKE) dependencies)
-	(cd dcmnet && $(MAKE) dependencies)
-	(cd dcmqrdb && $(MAKE) dependencies)
-	(cd dcmwlm && $(MAKE) dependencies)
 	(cd dcmimgle && $(MAKE) dependencies)
-	(cd dcmsr && $(MAKE) dependencies)
-	(cd dcmsign && $(MAKE) dependencies)
-	(cd dcmpstat && $(MAKE) dependencies)
 	(cd dcmimage && $(MAKE) dependencies)
 	(cd dcmjpeg && $(MAKE) dependencies)
 	(cd dcmjpls && $(MAKE) dependencies)
+	(cd dcmtls && $(MAKE) dependencies)
+	(cd dcmnet && $(MAKE) dependencies)
+	(cd dcmsr && $(MAKE) dependencies)
+	(cd dcmsign && $(MAKE) dependencies)
+	(cd dcmwlm && $(MAKE) dependencies)
+	(cd dcmqrdb && $(MAKE) dependencies)
+	(cd dcmpstat && $(MAKE) dependencies)
 	-(cd config && $(MAKE) dependencies)
 
 clean:
 	(cd ofstd && $(MAKE) clean)
 	(cd oflog && $(MAKE) clean)
 	(cd dcmdata && $(MAKE) clean)
-	(cd dcmtls && $(MAKE) clean)
-	(cd dcmnet && $(MAKE) clean)
-	(cd dcmqrdb && $(MAKE) clean)
-	(cd dcmwlm && $(MAKE) clean)
 	(cd dcmimgle && $(MAKE) clean)
-	(cd dcmsr && $(MAKE) clean)
-	(cd dcmsign && $(MAKE) clean)
-	(cd dcmpstat && $(MAKE) clean)
 	(cd dcmimage && $(MAKE) clean)
 	(cd dcmjpeg && $(MAKE) clean)
 	(cd dcmjpls && $(MAKE) clean)
+	(cd dcmtls && $(MAKE) clean)
+	(cd dcmnet && $(MAKE) clean)
+	(cd dcmsr && $(MAKE) clean)
+	(cd dcmsign && $(MAKE) clean)
+	(cd dcmwlm && $(MAKE) clean)
+	(cd dcmqrdb && $(MAKE) clean)
+	(cd dcmpstat && $(MAKE) clean)
 	(cd doxygen && $(MAKE) clean)
 	-(cd config && $(MAKE) clean)
 	rm -f $(TRASH)
@@ -634,17 +634,17 @@ distclean:
 	(cd ofstd && $(MAKE) distclean)
 	(cd oflog && $(MAKE) distclean)
 	(cd dcmdata && $(MAKE) distclean)
-	(cd dcmtls && $(MAKE) distclean)
-	(cd dcmnet && $(MAKE) distclean)
-	(cd dcmqrdb && $(MAKE) distclean)
-	(cd dcmwlm && $(MAKE) distclean)
 	(cd dcmimgle && $(MAKE) distclean)
-	(cd dcmsr && $(MAKE) distclean)
-	(cd dcmsign && $(MAKE) distclean)
-	(cd dcmpstat && $(MAKE) distclean)
 	(cd dcmimage && $(MAKE) distclean)
 	(cd dcmjpeg && $(MAKE) distclean)
 	(cd dcmjpls && $(MAKE) distclean)
+	(cd dcmtls && $(MAKE) distclean)
+	(cd dcmnet && $(MAKE) distclean)
+	(cd dcmsr && $(MAKE) distclean)
+	(cd dcmsign && $(MAKE) distclean)
+	(cd dcmwlm && $(MAKE) distclean)
+	(cd dcmqrdb && $(MAKE) distclean)
+	(cd dcmpstat && $(MAKE) distclean)
 	(cd doxygen && $(MAKE) distclean)
 	-(cd config && $(MAKE) distclean)
 	rm -f $(TRASH)

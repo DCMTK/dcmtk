@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.26 (riesmeier)
 
+- Changed order of DCMTK modules in order to allow network applications to
+  depend on the image compression libraries. Of course, this is only a
+  modification of the default configuration. The user can still change the
+  order or disable particular modules (see INSTALL file for details).
+  Affects: CMakeLists.txt
+           Makefile
+           config/modules
+
 - Moved --verbose-pc option to the end of the "general options" section.
   Affects: dcmnet/apps/getscu.cc
            dcmnet/apps/storescu.cc
