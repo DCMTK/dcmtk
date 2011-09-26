@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-GET operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-21 12:57:47 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2011-09-26 08:13:53 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,8 +117,8 @@ main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                   "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                           "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--verbose-pc",             "+v",      "show presentation contexts in verbose mode");
    OFLog::addOptions(cmd);
+   cmd.addOption("--verbose-pc",             "+v",      "show presentation contexts in verbose mode");
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
@@ -618,6 +618,9 @@ static void prepareTS(E_TransferSyntax ts,
 /*
 ** CVS Log
 ** $Log: getscu.cc,v $
+** Revision 1.8  2011-09-26 08:13:53  joergr
+** Moved --verbose-pc option to the end of the "general options" section.
+**
 ** Revision 1.7  2011-09-21 12:57:47  joergr
 ** Removed TCP wrapper support (libwrap) which is not really useful for an SCU.
 **

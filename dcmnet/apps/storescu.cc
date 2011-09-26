@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-22 08:46:27 $
- *  CVS/RCS Revision: $Revision: 1.102 $
+ *  Update Date:      $Date: 2011-09-26 08:13:53 $
+ *  CVS/RCS Revision: $Revision: 1.103 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -228,8 +228,8 @@ int main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                    "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                            "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--verbose-pc",              "+v",      "show presentation contexts in verbose mode");
    OFLog::addOptions(cmd);
+   cmd.addOption("--verbose-pc",              "+v",      "show presentation contexts in verbose mode");
 
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
@@ -1748,6 +1748,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.103  2011-09-26 08:13:53  joergr
+** Moved --verbose-pc option to the end of the "general options" section.
+**
 ** Revision 1.102  2011-09-22 08:46:27  joergr
 ** Output status detail information (if any) to the DEBUG logger and not to the
 ** WARN or INFO logger. This is now consistent for all DCMTK network tools.

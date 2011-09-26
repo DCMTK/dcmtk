@@ -42,9 +42,6 @@ dcmfile-in  DICOM query file(s)
         --version
           print version information and exit
 
-  +v    --verbose-pc
-          show presentation contexts in verbose mode
-
         --arguments
           print expanded command line arguments
 
@@ -63,6 +60,9 @@ dcmfile-in  DICOM query file(s)
 
   -lc   --log-config  [f]ilename: string
           use config file f for the logger
+
+  +v    --verbose-pc
+          show presentation contexts in verbose mode
 \endverbatim
 
 \subsection network_options network options
