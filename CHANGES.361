@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.26 (riesmeier)
 
+- Removed superfluous include directories (to IJG headers).
+  Affects: dcmjpeg/apps/CMakeLists.txt
+
 - Added support for JPEG-LS to the experimental ON_THE_FLY_COMPRESSION feature.
   Affects: dcmnet/apps/storescu.cc
 
