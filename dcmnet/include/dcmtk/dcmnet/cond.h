@@ -18,8 +18,8 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-03 13:31:44 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2011-09-28 13:29:04 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,8 +186,14 @@ extern const OFCondition DUL_UNEXPECTEDPDU;             /* Received unexpected P
 extern const OFCondition DUL_UNSUPPORTEDPEERPROTOCOL;   /* DUL Unsupported peer protocol */
 extern const OFCondition DUL_WRONGDATATYPE;             /* DUL Wrong Data Type Specified for Request */
 
-// other condition constants used in the network module
-extern const OFCondition NET_EC_InsufficientPortPrivileges;  /* Insufficient Port Privileges (code: 1023) */
+// other condition constants used in the network module (codes 1000 to 1023)
+extern const OFCondition NET_EC_InvalidSOPClassUID;            /* Invalid SOP Class UID */
+extern const OFCondition NET_EC_UnknownStorageSOPClass;        /* Unknown Storage SOP Class */
+extern const OFCondition NET_EC_InvalidSOPInstanceUID;         /* Invalid SOP Instance UID */
+extern const OFCondition NET_EC_InvalidTransferSyntaxUID;      /* Invalid Transfer Syntax UID */
+extern const OFCondition NET_EC_UnknownTransferSyntax;         /* Unknown Transfer Syntax */
+extern const OFCondition NET_EC_NoPresentationContextsDefined; /* No Presentation Contexts defined */
+extern const OFCondition NET_EC_InsufficientPortPrivileges;    /* Insufficient Port Privileges */
 // codes 1024 to 1073 are used for the association negotiation profile classes
 
 
@@ -285,6 +291,9 @@ typedef OFCondition CONDITION;
 /*
  * CVS Log
  * $Log: cond.h,v $
+ * Revision 1.18  2011-09-28 13:29:04  joergr
+ * Introduced a couple of new network-related error codes (aka OFCondition).
+ *
  * Revision 1.17  2011-08-03 13:31:44  joergr
  * Added macro that allows for disabling the port permission check in SCPs.
  *

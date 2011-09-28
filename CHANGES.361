@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.09.28 (riesmeier)
+
+- Introduced a couple of new network-related error codes (aka OFCondition).
+  Affects: dcmnet/libsrc/cond.cc
+           dcmnet/include/dcmtk/dcmnet/cond.h
+
 **** Changes from 2011.09.26 (riesmeier)
 
 - Added definitions for enabling full support for the ON_THE_FLY_COMPRESSION
