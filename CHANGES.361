@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.28 (riesmeier)
 
+- Simplified code for reporting the conversion of transfer syntaxes to logger.
+  Affects: dcmnet/apps/storescu.cc
+
 - Return a more appropriate error code in case the dataset to be sent is
   invalid. This also required to introduce a return value for getDatasetInfo().
   Affects: dcmnet/include/dcmtk/dcmnet/scu.h

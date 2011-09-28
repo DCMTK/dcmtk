@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-26 12:25:56 $
- *  CVS/RCS Revision: $Revision: 1.104 $
+ *  Update Date:      $Date: 2011-09-28 16:10:32 $
+ *  CVS/RCS Revision: $Revision: 1.105 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1528,8 +1528,10 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
     filexfer = EXS_DeflatedLittleEndianExplicit;
   }
 
-  if (filexfer.getXfer() != EXS_Unknown) presID = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
-  else presID = ASC_findAcceptedPresentationContextID(assoc, sopClass);
+  if (filexfer.getXfer() != EXS_Unknown)
+    presID = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
+  else
+    presID = ASC_findAcceptedPresentationContextID(assoc, sopClass);
   if (presID == 0) {
     const char *modalityName = dcmSOPClassUIDToModality(sopClass);
     if (!modalityName) modalityName = dcmFindNameOfUID(sopClass);
@@ -1545,8 +1547,8 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   /* if required, dump general information concerning transfer syntaxes */
   if (storescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL)) {
     DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
-    OFLOG_INFO(storescuLogger, "Transfer Syntax: " << dcmFindNameOfUID(fileTransfer.getXferID(), "")
-        << " -> " << dcmFindNameOfUID(netTransfer.getXferID(), ""));
+    OFLOG_INFO(storescuLogger, "Converting transfer syntax: " << fileTransfer.getXferName()
+      << " -> " << netTransfer.getXferName());
   }
 
 #ifdef ON_THE_FLY_COMPRESSION
@@ -1761,6 +1763,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.105  2011-09-28 16:10:32  joergr
+** Simplified code for reporting the conversion of transfer syntaxes to logger.
+**
 ** Revision 1.104  2011-09-26 12:25:56  joergr
 ** Added support for JPEG-LS to the experimental ON_THE_FLY_COMPRESSION feature.
 **
