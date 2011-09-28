@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-09-06 16:12:53 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-09-28 14:37:01 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1010,8 +1010,13 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
   // Check command set
   if (response.CommandField == DIMSE_N_EVENT_REPORT_RSP)
   {
-    DCMNET_INFO("Received N-EVENT-REPORT Response");
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
+    if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+      DCMNET_INFO("Received N-EVENT-REPORT Response");
+      DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
+    } else {
+      DCMNET_INFO("Received N-EVENT-REPORT Response (" << DU_neventReportStatusString(response.msg.NEventReportRSP.DimseStatus) << ")");
+    }
   } else {
     DCMNET_ERROR("Expected N-EVENT-REPORT response but received DIMSE command 0x"
         << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
@@ -1764,6 +1769,9 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.22  2011-09-28 14:37:01  joergr
+** Output the DIMSE status in verbose mode (if debug mode is not enabled).
+**
 ** Revision 1.21  2011-09-06 16:12:53  ogazzar
 ** Added functions to handle N-ACTION and to send N-EVENT-REPORT requests.
 **

@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.28 (riesmeier)
 
+- Output the DIMSE status in verbose mode (if debug mode is not enabled).
+  Affects: dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+
 - Completed implementation of function DU_cgetStatusString().
   Affects: dcmnet/libsrc/diutil.cc
 
