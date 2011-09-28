@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-28 13:31:56 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2011-09-28 15:25:34 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -759,7 +759,7 @@ protected:
    *                               indicating function
    *  @param commandSet      [out] If this parameter is not NULL it will return a copy of the
    *                               DIMSE command which is sent to the other DICOM application
-   *  @return Returns EC_Normal if sending request was successful, an error code otherwise
+   *  @return EC_Normal if sending request was successful, an error code otherwise
    */
   OFCondition sendDIMSEMessage(const T_ASC_PresentationContextID presID,
                                T_DIMSE_Message *msg,
@@ -768,19 +768,20 @@ protected:
                                void *callbackContext,
                                DcmDataset **commandSet = NULL);
 
-  /** Returns SOP Class UID, SOP Instance UID and original transfer
-   *  syntax for a given dataset. If the dataset is NULL, all returned values
-   *  will be undefined (i.e. empty or EXS_Unknown)
+  /** Returns SOP Class UID, SOP Instance UID and original transfer syntax for a given dataset.
+   *  If the dataset is NULL, all returned values will be undefined (i.e. empty or EXS_Unknown).
    *  @param dataset        [in]  The dataset to read from
    *  @param sopClassUID    [out] The value of attribute SOP Class UID if present
    *  @param sopInstanceUID [out] The value of attribute SOP Instance UID if present
    *  @param transferSyntax [out] The value of transfer syntax that originally was read from
-   *                              disk.
+   *                              disk.  Will be unknown if the dataset was created in memory.
+   *  @return EC_Normal if all information could be retrieved and is valid, an error code
+   *    otherwise
    */
-  void getDatasetInfo(DcmDataset *dataset,
-                      OFString &sopClassUID,
-                      OFString &sopInstanceUID,
-                      E_TransferSyntax &transferSyntax);
+  OFCondition getDatasetInfo(DcmDataset *dataset,
+                             OFString &sopClassUID,
+                             OFString &sopInstanceUID,
+                             E_TransferSyntax &transferSyntax);
 
   /** Tells DcmSCU to use a secure TLS connection described by the given TLS layer
    *  @param tlayer [in] The TLS transport layer including all TLS parameters
@@ -1005,6 +1006,10 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.36  2011-09-28 15:25:34  joergr
+** Return a more appropriate error code in case the dataset to be sent is
+** invalid. This also required to introduce a return value for getDatasetInfo().
+**
 ** Revision 1.35  2011-09-28 13:31:56  joergr
 ** Added method that allows for clearing the list of presentation contexts.
 **

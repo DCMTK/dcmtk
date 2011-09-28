@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-28 14:37:01 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2011-09-28 15:25:36 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -688,20 +688,22 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   }
 
   /* Fill message according to dataset to be sent */
-  getDatasetInfo(dataset, sopClass, sopInstance, transferSyntax);
+  cond = getDatasetInfo(dataset, sopClass, sopInstance, transferSyntax);
   if (sopClass.empty() || sopInstance.empty() || ((pcid == 0) && (transferSyntax == EXS_Unknown)))
   {
-    DCMNET_ERROR("Cannot send DICOM file, missing information:");
-    DCMNET_ERROR("  SOP Class UID: " << sopClass);
-    DCMNET_ERROR("  SOP Instance UID: " << sopInstance);
-    DCMNET_ERROR("  Transfer Syntax: " << DcmXfer(transferSyntax).getXferName());
+    DCMNET_ERROR("Cannot send SOP instance, missing information:");
+    if (!dicomFile.empty())
+      DCMNET_ERROR("  DICOM File       : " << dicomFile);
+    DCMNET_ERROR("  SOP Class UID    : " << sopClass);
+    DCMNET_ERROR("  SOP Instance UID : " << sopInstance);
+    DCMNET_ERROR("  Transfer Syntax  : " << DcmXfer(transferSyntax).getXferName());
     if (pcid == 0)
-      DCMNET_ERROR("  Presentation Context ID: 0 (find via SOP Class and Transfer Syntax)");
+      DCMNET_ERROR("  Pres. Context ID : 0 (find via SOP Class and Transfer Syntax)");
     else
-      DCMNET_ERROR("  Presentation Context ID: " << pcid);
+      DCMNET_ERROR("  Pres. Context ID : " << OFstatic_cast(unsigned int, pcid));
     delete dcmff;
     dcmff = NULL;
-    return EC_IllegalParameter;
+    return cond;
   }
   OFStandard::strlcpy(req->AffectedSOPClassUID, sopClass.c_str(), sizeof(req->AffectedSOPClassUID));
   OFStandard::strlcpy(req->AffectedSOPInstanceUID, sopInstance.c_str(), sizeof(req->AffectedSOPInstanceUID));
@@ -2201,20 +2203,32 @@ DcmStorageMode DcmSCU::getStorageMode() const
 }
 
 
-void DcmSCU::getDatasetInfo(DcmDataset *dataset,
-                            OFString &sopClassUID,
-                            OFString &sopInstanceUID,
-                            E_TransferSyntax &transferSyntax)
+OFCondition DcmSCU::getDatasetInfo(DcmDataset *dataset,
+                                   OFString &sopClassUID,
+                                   OFString &sopInstanceUID,
+                                   E_TransferSyntax &transferSyntax)
 {
+  OFCondition status = EC_IllegalParameter;
   sopClassUID.clear();
   sopInstanceUID.clear();
   transferSyntax = EXS_Unknown;
-  if (dataset == NULL) return;
-
-  // ignore returned condition codes (e.g. EC_TagNotFound)
-  dataset->findAndGetOFString(DCM_SOPClassUID, sopClassUID);
-  dataset->findAndGetOFString(DCM_SOPInstanceUID, sopInstanceUID);
-  transferSyntax = dataset->getOriginalXfer();
+  if (dataset != NULL)
+  {
+    // ignore returned condition codes (e.g. EC_TagNotFound)
+    dataset->findAndGetOFString(DCM_SOPClassUID, sopClassUID);
+    dataset->findAndGetOFString(DCM_SOPInstanceUID, sopInstanceUID);
+    transferSyntax = dataset->getOriginalXfer();
+    // check return values for validity
+    if (sopClassUID.empty())
+      status = NET_EC_InvalidSOPClassUID;
+    else if (sopInstanceUID.empty())
+      status = NET_EC_InvalidSOPInstanceUID;
+    else if (transferSyntax == EXS_Unknown)
+      status = NET_EC_UnknownTransferSyntax;
+    else
+      status = EC_Normal;
+  }
+  return status;
 }
 
 
@@ -2234,6 +2248,10 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.50  2011-09-28 15:25:36  joergr
+** Return a more appropriate error code in case the dataset to be sent is
+** invalid. This also required to introduce a return value for getDatasetInfo().
+**
 ** Revision 1.49  2011-09-28 14:37:01  joergr
 ** Output the DIMSE status in verbose mode (if debug mode is not enabled).
 **

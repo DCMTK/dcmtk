@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.28 (riesmeier)
 
+- Return a more appropriate error code in case the dataset to be sent is
+  invalid. This also required to introduce a return value for getDatasetInfo().
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+
 - Introduced new isLossy() and isLossless() methods in order to check whether
   a transfer syntax uses a lossy or lossless compression (if any at all).
   Affects: dcmdata/include/dcmtk/dcmdata/dcxfer.h
@@ -21,13 +26,13 @@ Changes between releases are documented here.
            dcmnet/libsrc/diutil.cc
 
 - Added method that allows for clearing the list of presentation contexts.
-  Affects: dcmnet/libsrc/scu.cc
-           dcmnet/include/dcmtk/dcmnet/scu.h
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
 
 - Introduced a couple of new network-related error codes (aka OFCondition).
-  Affects: dcmnet/libsrc/cond.cc
+  Affects: dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/libsrc/cond.cc
            dcmnet/libsrc/scu.cc
-           dcmnet/include/dcmtk/dcmnet/cond.h
 
 **** Changes from 2011.09.26 (riesmeier)
 
