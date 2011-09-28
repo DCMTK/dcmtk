@@ -3,8 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.28 (riesmeier)
 
+- Added method that allows for clearing the list of presentation contexts.
+  Affects: dcmnet/libsrc/scu.cc
+           dcmnet/include/dcmtk/dcmnet/scu.h
+
 - Introduced a couple of new network-related error codes (aka OFCondition).
   Affects: dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/scu.cc
            dcmnet/include/dcmtk/dcmnet/cond.h
 
 **** Changes from 2011.09.26 (riesmeier)

@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-23 15:27:02 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2011-09-28 13:31:54 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,7 +176,7 @@ OFCondition DcmSCU::initNetwork()
 
   // First, import from config file, if specified
   OFCondition result;
-  if (m_assocConfigFilename.length() != 0)
+  if (!m_assocConfigFilename.empty())
   {
     DcmAssociationConfiguration assocConfig;
     result = DcmAssociationConfigurationFile::initialize(assocConfig, m_assocConfigFilename.c_str());
@@ -266,7 +266,7 @@ OFCondition DcmSCU::initNetwork()
   if (numContexts == 0)
   {
     DCMNET_ERROR("Cannot initialize network: No presentation contexts defined");
-    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+    return NET_EC_NoPresentationContextsDefined;
   }
   DCMNET_DEBUG("Configured a total of " << numContexts << " presentation contexts for SCU");
 
@@ -354,6 +354,14 @@ OFCondition DcmSCU::useSecureConnection(DcmTransportLayer *tlayer)
   if (cond.good())
     cond = ASC_setTransportLayerType(m_params, OFTrue /* use TLS */);
   return cond;
+}
+
+
+void DcmSCU::clearPresentationContexts()
+{
+  m_presContexts.clear();
+  m_assocConfigFilename.clear();
+  m_assocConfigProfile.clear();
 }
 
 
@@ -2191,6 +2199,9 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.48  2011-09-28 13:31:54  joergr
+** Added method that allows for clearing the list of presentation contexts.
+**
 ** Revision 1.47  2011-09-23 15:27:02  joergr
 ** Removed needless deletion of the "statusDetail" variable.
 **

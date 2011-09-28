@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-22 13:49:03 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2011-09-28 13:31:56 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -833,6 +833,11 @@ protected:
                                   DIMSE_ProgressCallback callback,
                                   void *callbackContext);
 
+  /** clear list of presentation contexts.  In addition, any currently selected association
+   *  configuration file is disabled.
+   */
+  void clearPresentationContexts();
+
    /** After negotiation association, this call returns the presentation context belonging
     *  to the given presentation context ID
     *  @param presID         [in]  The presentation context ID to look for
@@ -1000,6 +1005,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.35  2011-09-28 13:31:56  joergr
+** Added method that allows for clearing the list of presentation contexts.
+**
 ** Revision 1.34  2011-09-22 13:49:03  joergr
 ** Fixed incorrect comment on return code of some sendXXXRequest() methods.
 **
