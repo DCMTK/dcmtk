@@ -18,8 +18,8 @@
  *  Purpose: Handling of transfer syntaxes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-11 13:33:11 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2011-09-28 14:47:48 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -240,14 +240,38 @@ public:
      */
     inline Uint32 getJPEGProcess12Bit() const { return JPEGProcess12;}
 
-    /// return true if transfer syntax is retired, false otherwise
+    /** check whether transfer syntax uses a lossy compression
+     *  @return true if transfer syntax uses a lossy compression, false otherwise
+     */
+    inline OFBool isLossy() const
+    {
+        return lossy;
+    }
+
+    /** check whether transfer syntax uses a lossless compression or no compression
+     *  @return true if transfer syntax uses a lossless compression or no compression,
+     *    false otherwise
+     */
+    inline OFBool isLossless() const
+    {
+        return !lossy;
+    }
+
+    /** check whether transfer syntax is retired
+     *  @return true if transfer syntax is retired, false otherwise
+     */
     inline OFBool isRetired() const
     {
         return retired;
     }
 
-    /// return stream compression type for this transfer syntax
-    inline E_StreamCompression getStreamCompression() const { return streamCompression;}
+    /** get stream compression type for this transfer syntax
+     *  @return stream compression type for this transfer syntax
+     */
+    inline E_StreamCompression getStreamCompression() const
+    {
+        return streamCompression;
+    }
 
     /** return the number of bytes needed to describe the tag, length, VR
      *  and any reserved fields for this transfer syntax when encoding the
@@ -282,12 +306,14 @@ private:
     /// 12-bit lossy JPEG process ID for this transfer syntax, 0 if not applicable
     Uint32              JPEGProcess12;
 
+    /// flag indicating whether this transfer syntax uses a lossy compression
+    OFBool              lossy;
+
     /// flag indicating whether this transfer syntax has been retired from DICOM
     OFBool              retired;
 
     /// transfer syntax stream compression type
     E_StreamCompression streamCompression;
-
 };
 
 /** global constant describing the byte order on the machine the application
@@ -301,6 +327,10 @@ extern const E_ByteOrder gLocalByteOrder;
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
+ * Revision 1.27  2011-09-28 14:47:48  joergr
+ * Introduced new isLossy() and isLossless() methods in order to check whether
+ * a transfer syntax uses a lossy or lossless compression (if any at all).
+ *
  * Revision 1.26  2011-02-11 13:33:11  joergr
  * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
  *

@@ -18,8 +18,8 @@
  *  Purpose: handling of transfer syntaxes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-11 13:33:16 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2011-09-28 14:47:46 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,7 @@ typedef struct
     E_JPEGEncapsulated  encapsulated;
     Uint32              JPEGProcess8;
     Uint32              JPEGProcess12;
+    OFBool              lossy;
     OFBool              retired;
     E_StreamCompression streamCompression;
 } S_XferNames;
@@ -62,6 +63,7 @@ const S_XferNames XferNames[] =
       EJE_NotEncapsulated,
       0L, 0L,
       OFFalse,
+      OFFalse,
       ESC_none },
     { "",  // illegal type
       "Virtual Big Endian Implicit",
@@ -70,6 +72,7 @@ const S_XferNames XferNames[] =
       EVT_Implicit,
       EJE_NotEncapsulated,
       0L, 0L,
+      OFFalse,
       OFFalse,
       ESC_none },
     { UID_LittleEndianExplicitTransferSyntax,
@@ -80,6 +83,7 @@ const S_XferNames XferNames[] =
       EJE_NotEncapsulated,
       0L, 0L,
       OFFalse,
+      OFFalse,
       ESC_none },
     { UID_BigEndianExplicitTransferSyntax,  // defined in dctypes.h
       "Big Endian Explicit",
@@ -88,6 +92,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_NotEncapsulated,
       0L, 0L,
+      OFFalse,
       OFTrue,
       ESC_none },
     { UID_JPEGProcess1TransferSyntax,
@@ -97,6 +102,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       1L, 1L,
+      OFTrue,
       OFFalse,
       ESC_none },
     { UID_JPEGProcess2_4TransferSyntax,
@@ -106,6 +112,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       2L ,4L,
+      OFTrue,
       OFFalse,
       ESC_none },
     { UID_JPEGProcess3_5TransferSyntax,
@@ -116,6 +123,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       3L ,5L,
       OFTrue,
+      OFTrue,
       ESC_none },
     { UID_JPEGProcess6_8TransferSyntax,
       "JPEG Spectral Selection, Non-hierarchical, Process 6+8",
@@ -124,6 +132,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       6L ,8L,
+      OFTrue,
       OFTrue,
       ESC_none },
     { UID_JPEGProcess7_9TransferSyntax,
@@ -134,6 +143,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       7L ,9L,
       OFTrue,
+      OFTrue,
       ESC_none },
     { UID_JPEGProcess10_12TransferSyntax,
       "JPEG Full Progression, Non-hierarchical, Process 10+12",
@@ -142,6 +152,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       10L ,12L,
+      OFTrue,
       OFTrue,
       ESC_none },
     { UID_JPEGProcess11_13TransferSyntax,
@@ -152,6 +163,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       11L ,13L,
       OFTrue,
+      OFTrue,
       ESC_none },
     { UID_JPEGProcess14TransferSyntax,
       "JPEG Lossless, Non-hierarchical, Process 14",
@@ -160,6 +172,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       14L ,14L,
+      OFFalse,
       OFFalse,
       ESC_none },
     { UID_JPEGProcess15TransferSyntax,
@@ -170,6 +183,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       15L ,15L,
       OFTrue,
+      OFTrue,
       ESC_none },
     { UID_JPEGProcess16_18TransferSyntax,
       "JPEG Extended, Hierarchical, Process 16+18",
@@ -178,6 +192,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       16L ,18L,
+      OFTrue,
       OFTrue,
       ESC_none },
     { UID_JPEGProcess17_19TransferSyntax,
@@ -188,6 +203,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       17L ,19L,
       OFTrue,
+      OFTrue,
       ESC_none },
     { UID_JPEGProcess20_22TransferSyntax,
       "JPEG Spectral Selection, Hierarchical, Process 20+22",
@@ -196,6 +212,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       20L ,22L,
+      OFTrue,
       OFTrue,
       ESC_none },
     { UID_JPEGProcess21_23TransferSyntax,
@@ -206,6 +223,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       21L ,23L,
       OFTrue,
+      OFTrue,
       ESC_none },
     { UID_JPEGProcess24_26TransferSyntax,
       "JPEG Full Progression, Hierarchical, Process 24+26",
@@ -214,6 +232,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       24L ,26L,
+      OFTrue,
       OFTrue,
       ESC_none },
     { UID_JPEGProcess25_27TransferSyntax,
@@ -224,6 +243,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       25L ,27L,
       OFTrue,
+      OFTrue,
       ESC_none },
     { UID_JPEGProcess28TransferSyntax,
       "JPEG Lossless, Hierarchical, Process 28",
@@ -232,6 +252,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       28L ,28L,
+      OFTrue,
       OFTrue,
       ESC_none },
     { UID_JPEGProcess29TransferSyntax,
@@ -242,6 +263,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       29L ,29L,
       OFTrue,
+      OFTrue,
       ESC_none },
     { UID_JPEGProcess14SV1TransferSyntax,
       "JPEG Lossless, Non-hierarchical, 1st Order Prediction",
@@ -250,6 +272,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       14L ,14L,
+      OFFalse,
       OFFalse,
       ESC_none },
     { UID_RLELosslessTransferSyntax,
@@ -260,6 +283,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       0L, 0L,
       OFFalse,
+      OFFalse,
       ESC_none },
     { UID_JPEGLSLosslessTransferSyntax,
       "JPEG-LS Lossless",
@@ -269,6 +293,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       0L, 0L,
       OFFalse,
+      OFFalse,
       ESC_none },
     { UID_JPEGLSLossyTransferSyntax,
       "JPEG-LS Lossy (Near-lossless)",
@@ -277,6 +302,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       0L, 0L,
+      OFTrue,
       OFFalse,
       ESC_none },
     { UID_DeflatedExplicitVRLittleEndianTransferSyntax,
@@ -286,6 +312,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_NotEncapsulated,
       0L, 0L,
+      OFFalse,
       OFFalse,
 #ifdef WITH_ZLIB
       ESC_zlib
@@ -301,6 +328,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       0L, 0L,
       OFFalse,
+      OFFalse,
       ESC_none },
     { UID_JPEG2000TransferSyntax,
       "JPEG 2000 (Lossless or Lossy)",
@@ -309,6 +337,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       0L, 0L,
+      OFTrue,
       OFFalse,
       ESC_none },
     { UID_MPEG2MainProfileAtMainLevelTransferSyntax,
@@ -318,6 +347,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       0L, 0L,
+      OFTrue,
       OFFalse,
       ESC_none },
     { UID_MPEG2MainProfileAtHighLevelTransferSyntax,
@@ -327,6 +357,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       0L, 0L,
+      OFTrue,
       OFFalse,
       ESC_none },
     { UID_MPEG4HighProfileLevel4_1TransferSyntax,
@@ -336,6 +367,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       0L, 0L,
+      OFTrue,
       OFFalse,
       ESC_none },
     { UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
@@ -345,6 +377,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       0L, 0L,
+      OFTrue,
       OFFalse,
       ESC_none },
    { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
@@ -355,6 +388,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       0L, 0L,
       OFFalse,
+      OFFalse,
       ESC_none },
    { UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,
       "JPEG 2000 Part 2 Multicomponent Image Compression (Lossless or Lossy)",
@@ -363,6 +397,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       0L, 0L,
+      OFTrue,
       OFFalse,
       ESC_none },
    { UID_JPIPReferencedTransferSyntax,
@@ -372,6 +407,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_NotEncapsulated,  // in fact, pixel data shall be referenced via (0028,7FE0) Pixel Data Provider URL
       0L, 0L,
+      OFTrue,               // really lossy?
       OFFalse,
       ESC_none },
    { UID_JPIPReferencedDeflateTransferSyntax,
@@ -381,6 +417,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_NotEncapsulated,  // in fact, pixel data shall be referenced via (0028,7FE0) Pixel Data Provider URL
       0L, 0L,
+      OFTrue,               // really lossy?
       OFFalse,
 #ifdef WITH_ZLIB
       ESC_zlib
@@ -407,6 +444,7 @@ DcmXfer::DcmXfer(E_TransferSyntax xfer)
     encapsulated(EJE_NotEncapsulated),
     JPEGProcess8(0L),
     JPEGProcess12(0L),
+    lossy(OFFalse),
     retired(OFFalse),
     streamCompression(ESC_none)
 {
@@ -423,6 +461,7 @@ DcmXfer::DcmXfer(E_TransferSyntax xfer)
         encapsulated      = XferNames[i].encapsulated;
         JPEGProcess8      = XferNames[i].JPEGProcess8;
         JPEGProcess12     = XferNames[i].JPEGProcess12;
+        lossy             = XferNames[i].lossy;
         retired           = XferNames[i].retired;
         streamCompression = XferNames[i].streamCompression;
     }
@@ -441,6 +480,7 @@ DcmXfer::DcmXfer(const char* xferName_xferID)
     encapsulated(EJE_NotEncapsulated),
     JPEGProcess8(0L),
     JPEGProcess12(0L),
+    lossy(OFFalse),
     retired(OFFalse),
     streamCompression(ESC_none)
 {
@@ -460,6 +500,7 @@ DcmXfer::DcmXfer(const char* xferName_xferID)
             encapsulated      = XferNames[i].encapsulated;
             JPEGProcess8      = XferNames[i].JPEGProcess8;
             JPEGProcess12     = XferNames[i].JPEGProcess12;
+            lossy             = XferNames[i].lossy;
             retired           = XferNames[i].retired;
             streamCompression = XferNames[i].streamCompression;
         }
@@ -478,6 +519,7 @@ DcmXfer::DcmXfer(const char* xferName_xferID)
                 encapsulated      = XferNames[i].encapsulated;
                 JPEGProcess8      = XferNames[i].JPEGProcess8;
                 JPEGProcess12     = XferNames[i].JPEGProcess12;
+                lossy             = XferNames[i].lossy;
                 retired           = XferNames[i].retired;
                 streamCompression = XferNames[i].streamCompression;
             }
@@ -498,6 +540,7 @@ DcmXfer::DcmXfer(const DcmXfer &newXfer)
     encapsulated(newXfer.encapsulated),
     JPEGProcess8(newXfer.JPEGProcess8),
     JPEGProcess12(newXfer.JPEGProcess12),
+    lossy(newXfer.lossy),
     retired(newXfer.retired),
     streamCompression(newXfer.streamCompression)
 {
@@ -530,6 +573,7 @@ DcmXfer &DcmXfer::operator=(const E_TransferSyntax xfer)
         encapsulated      = XferNames[i].encapsulated;
         JPEGProcess8      = XferNames[i].JPEGProcess8;
         JPEGProcess12     = XferNames[i].JPEGProcess12;
+        lossy             = XferNames[i].lossy;
         retired           = XferNames[i].retired;
         streamCompression = XferNames[i].streamCompression;
     } else {
@@ -541,6 +585,7 @@ DcmXfer &DcmXfer::operator=(const E_TransferSyntax xfer)
         encapsulated      = EJE_NotEncapsulated;
         JPEGProcess8      = 0L;
         JPEGProcess12     = 0L;
+        lossy             = OFFalse;
         retired           = OFFalse;
         streamCompression = ESC_none;
     }
@@ -563,6 +608,7 @@ DcmXfer &DcmXfer::operator=(const DcmXfer &newXfer)
         encapsulated      = newXfer.encapsulated;
         JPEGProcess8      = newXfer.JPEGProcess8;
         JPEGProcess12     = newXfer.JPEGProcess12;
+        lossy             = newXfer.lossy;
         retired           = newXfer.retired;
         streamCompression = newXfer.streamCompression;
     }
@@ -628,6 +674,10 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
+ * Revision 1.36  2011-09-28 14:47:46  joergr
+ * Introduced new isLossy() and isLossless() methods in order to check whether
+ * a transfer syntax uses a lossy or lossless compression (if any at all).
+ *
  * Revision 1.35  2011-02-11 13:33:16  joergr
  * Removed redundant "TransferSyntax" suffix from "EXS_..." enum definitions.
  *
