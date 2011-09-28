@@ -74,8 +74,8 @@
 ** Module Prefix: DU_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2011-08-19 07:40:30 $
-** CVS/RCS Revision:    $Revision: 1.15 $
+** Update Date:         $Date: 2011-09-28 14:07:26 $
+** CVS/RCS Revision:    $Revision: 1.16 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -125,6 +125,7 @@ OFBool DU_findSOPClassAndInstanceInFile(
   char* sopInstance,
   OFBool tolerateSpacePaddedUIDs = OFFalse);
 
+const char *DU_cechoStatusString(Uint16 statusCode);
 const char *DU_cstoreStatusString(Uint16 statusCode);
 const char *DU_cfindStatusString(Uint16 statusCode);
 const char *DU_cmoveStatusString(Uint16 statusCode);
@@ -142,6 +143,9 @@ const char *DU_neventReportStatusString(Uint16 statusCode);
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
+** Revision 1.16  2011-09-28 14:07:26  joergr
+** Added function that converts the status of a C-ECHO response to a string.
+**
 ** Revision 1.15  2011-08-19 07:40:30  joergr
 ** Output C-FIND response messages to a separate logger (on INFO level).
 **

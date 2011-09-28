@@ -74,8 +74,8 @@
 ** Module Prefix: DU_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2011-08-19 07:40:32 $
-** CVS/RCS Revision:    $Revision: 1.33 $
+** Update Date:         $Date: 2011-09-28 14:07:23 $
+** CVS/RCS Revision:    $Revision: 1.34 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -96,7 +96,7 @@
 /* unix.h defines timeval incompatible with winsock.h */
 #define timeval _UNWANTED_timeval
 #endif
-#include <unix.h>	/* for unlink() under Metrowerks C++ (Macintosh) */
+#include <unix.h>       /* for unlink() under Metrowerks C++ (Macintosh) */
 #undef timeval
 #endif
 #ifdef HAVE_SYS_TYPES_H
@@ -143,20 +143,20 @@ DU_stripLeadingSpaces(char *s)
     if (s == NULL) return;
     n = strlen(s);
     if (n == 0) return;
-    if (!isspace(s[0])) return;	/* no leading space */
+    if (!isspace(s[0])) return; /* no leading space */
 
     /* first non-space */
     for (i=0; i<n && isspace(TO_UCHAR(s[i])); i++)
         /* do nothing, just iterate */
-	;
+        ;
     if (i<n) {
         /* found non-space, pull to front (inclusive '\0') */
         for (j=i; j<=n; j++) {
-	    s[j-i] = s[j];
-	}
+            s[j-i] = s[j];
+        }
     } else {
         /* all spaces */
-	s[0] = '\0';
+        s[0] = '\0';
     }
 }
 
@@ -179,8 +179,8 @@ DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
     ec = obj->search(t, stack);
     elem = (DcmByteString*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
-	if (elem->getLength() == 0) {
-	    s[0] = '\0';
+        if (elem->getLength() == 0) {
+            s[0] = '\0';
         } else {
             ec =  elem->getString(aString);
             strcpy(s, aString);
@@ -248,7 +248,7 @@ DU_findSOPClassAndInstanceInDataSet(
   OFBool tolerateSpacePaddedUIDs)
 {
     OFBool result = (DU_getStringDOElement(obj, DCM_SOPClassUID, sopClass) &&
-	DU_getStringDOElement(obj, DCM_SOPInstanceUID, sopInstance));
+        DU_getStringDOElement(obj, DCM_SOPInstanceUID, sopInstance));
 
     if (tolerateSpacePaddedUIDs)
     {
@@ -287,51 +287,66 @@ DU_findSOPClassAndInstanceInFile(
 }
 
 const char *
+DU_cechoStatusString(Uint16 statusCode)
+{
+    const char *s = NULL;
+
+    if (statusCode == STATUS_Success)
+        s = "Success";
+    else {
+        sprintf(staticBuf, "Unknown Status: 0x%x",
+                (unsigned int)statusCode);
+        s = staticBuf;
+    }
+    return s;
+}
+
+const char *
 DU_cstoreStatusString(Uint16 statusCode)
 {
     const char *s = NULL;
 
     switch (statusCode) {
     case STATUS_Success:
-	s = "Success";
-	break;
+        s = "Success";
+        break;
     case STATUS_STORE_Warning_CoersionOfDataElements:
-	s = "Warning: CoersionOfDataElements";
-	break;
+        s = "Warning: CoersionOfDataElements";
+        break;
     case STATUS_STORE_Warning_DataSetDoesNotMatchSOPClass:
-	s = "Warning: DataSetDoesNotMatchSOPClass";
-	break;
+        s = "Warning: DataSetDoesNotMatchSOPClass";
+        break;
     case STATUS_STORE_Warning_ElementsDiscarded:
-	s = "Warning: ElementsDiscarded";
-	break;
+        s = "Warning: ElementsDiscarded";
+        break;
     }
     if (s)
-	return s;
+        return s;
 
-    switch (statusCode & 0xff00) {	/* high byte significant */
-    case STATUS_STORE_Refused_OutOfResources:	/* high byte */
-	s = "Refused: OutOfResources";
-	break;
-    case STATUS_STORE_Refused_SOPClassNotSupported:	/* high byte */
-	s = "Error: SOPClassNotSupported";
-	break;
-    case STATUS_STORE_Error_DataSetDoesNotMatchSOPClass:	/* high byte */
-	s = "Error: DataSetDoesNotMatchSOPClass";
-	break;
+    switch (statusCode & 0xff00) {      /* high byte significant */
+    case STATUS_STORE_Refused_OutOfResources:   /* high byte */
+        s = "Refused: OutOfResources";
+        break;
+    case STATUS_STORE_Refused_SOPClassNotSupported:     /* high byte */
+        s = "Error: SOPClassNotSupported";
+        break;
+    case STATUS_STORE_Error_DataSetDoesNotMatchSOPClass:        /* high byte */
+        s = "Error: DataSetDoesNotMatchSOPClass";
+        break;
     }
     if (s)
-	return s;
+        return s;
 
-    switch (statusCode & 0xf000) {	/* high nibble significant */
-    case STATUS_STORE_Error_CannotUnderstand:	/* high nibble */
-	s = "Error: CannotUnderstand";
-	break;
+    switch (statusCode & 0xf000) {      /* high nibble significant */
+    case STATUS_STORE_Error_CannotUnderstand:   /* high nibble */
+        s = "Error: CannotUnderstand";
+        break;
     }
 
     if (s == NULL) {
-	sprintf(staticBuf, "Unknown Status: 0x%x",
-		(unsigned int)statusCode);
-	s = staticBuf;
+        sprintf(staticBuf, "Unknown Status: 0x%x",
+                (unsigned int)statusCode);
+        s = staticBuf;
     }
     return s;
 }
@@ -344,40 +359,40 @@ DU_cfindStatusString(Uint16 statusCode)
 
     switch (statusCode) {
     case STATUS_Success:
-	s = "Success";
-	break;
+        s = "Success";
+        break;
     case STATUS_Pending:
-	s = "Pending";
-	break;
+        s = "Pending";
+        break;
     case STATUS_FIND_Refused_OutOfResources:
-	s = "Refused: OutOfResources";
-	break;
+        s = "Refused: OutOfResources";
+        break;
     case STATUS_FIND_Refused_SOPClassNotSupported:
-	s = "Refused: SOPClassNotSupported";
-	break;
+        s = "Refused: SOPClassNotSupported";
+        break;
     case STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass:
-	s = "Failed: IdentifierDoesNotMatchSOPClass";
-	break;
+        s = "Failed: IdentifierDoesNotMatchSOPClass";
+        break;
     case STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest:
-	s = "Cancel: MatchingTerminatedDueToCancelRequest";
-	break;
+        s = "Cancel: MatchingTerminatedDueToCancelRequest";
+        break;
     case STATUS_FIND_Pending_WarningUnsupportedOptionalKeys:
-	s = "Pending: WarningUnsupportedOptionalKeys";
-	break;
+        s = "Pending: WarningUnsupportedOptionalKeys";
+        break;
     }
     if (s)
-	return s;
+        return s;
 
-    switch (statusCode & 0xf000) {	/* high nibble significant */
-    case STATUS_FIND_Failed_UnableToProcess:	/* high nibble */
-	s = "Failed: UnableToProcess";
-	break;
+    switch (statusCode & 0xf000) {      /* high nibble significant */
+    case STATUS_FIND_Failed_UnableToProcess:    /* high nibble */
+        s = "Failed: UnableToProcess";
+        break;
     }
 
     if (s == NULL) {
-	sprintf(staticBuf, "Unknown Status: 0x%x",
-		(unsigned int)statusCode);
-	s = staticBuf;
+        sprintf(staticBuf, "Unknown Status: 0x%x",
+                (unsigned int)statusCode);
+        s = staticBuf;
     }
     return s;
 }
@@ -389,47 +404,47 @@ DU_cmoveStatusString(Uint16 statusCode)
 
     switch (statusCode) {
     case STATUS_Success:
-	s = "Success";
-	break;
+        s = "Success";
+        break;
     case STATUS_Pending:
-	s = "Pending";
-	break;
+        s = "Pending";
+        break;
     case STATUS_MOVE_Refused_OutOfResourcesNumberOfMatches:
-	s = "Refused: OutOfResourcesNumberOfMatches";
-	break;
+        s = "Refused: OutOfResourcesNumberOfMatches";
+        break;
     case STATUS_MOVE_Refused_OutOfResourcesSubOperations:
-	s = "Refused: OutOfResourcesSubOperations";
-	break;
+        s = "Refused: OutOfResourcesSubOperations";
+        break;
     case STATUS_MOVE_Failed_SOPClassNotSupported:
-	s = "Failed: SOPClassNotSupported";
-	break;
+        s = "Failed: SOPClassNotSupported";
+        break;
     case STATUS_MOVE_Failed_MoveDestinationUnknown:
-	s = "Failed: MoveDestinationUnknown";
-	break;
+        s = "Failed: MoveDestinationUnknown";
+        break;
     case STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass:
-	s = "Failed: IdentifierDoesNotMatchSOPClass";
-	break;
+        s = "Failed: IdentifierDoesNotMatchSOPClass";
+        break;
     case STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication:
-	s = "Cancel: SubOperationsTerminatedDueToCancelIndication";
-	break;
+        s = "Cancel: SubOperationsTerminatedDueToCancelIndication";
+        break;
     case STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures:
-	s = "Warning: SubOperationsCompleteOneOrMoreFailures";
-	break;
+        s = "Warning: SubOperationsCompleteOneOrMoreFailures";
+        break;
 
     }
     if (s)
-	return s;
+        return s;
 
-    switch (statusCode & 0xf000) {	/* high nibble significant */
-    case STATUS_MOVE_Failed_UnableToProcess:	/* high nibble */
-	s = "Failed: UnableToProcess";
-	break;
+    switch (statusCode & 0xf000) {      /* high nibble significant */
+    case STATUS_MOVE_Failed_UnableToProcess:    /* high nibble */
+        s = "Failed: UnableToProcess";
+        break;
     }
 
     if (s == NULL) {
-	sprintf(staticBuf, "Unknown Status: 0x%x",
-		(unsigned int)statusCode);
-	s = staticBuf;
+        sprintf(staticBuf, "Unknown Status: 0x%x",
+                (unsigned int)statusCode);
+        s = staticBuf;
     }
     return s;
 }
@@ -449,63 +464,63 @@ DU_ncreateStatusString(Uint16 statusCode)
 
   switch (statusCode) {
     case STATUS_Success:
-	    s = "Success";
-	    break;
+            s = "Success";
+            break;
     case STATUS_N_ClassInstanceConflict:
       s = "Failure: ClassInstanceConflict";
-	    break;
+            break;
     case STATUS_N_DuplicateInvocation:
-	    s = "Failure: DuplicateInvocation";
-	    break;
+            s = "Failure: DuplicateInvocation";
+            break;
     case STATUS_N_DuplicateSOPInstance:
-	    s = "Failure: DuplicateSOPInstance";
-	    break;
+            s = "Failure: DuplicateSOPInstance";
+            break;
     case STATUS_N_InvalidAttributeValue:
-	    s = "Failure: InvalidAttributeValue";
-	    break;
+            s = "Failure: InvalidAttributeValue";
+            break;
     case STATUS_N_InvalidObjectInstance:
-	    s = "Failure: InvalidObjectInstance";
-	    break;
+            s = "Failure: InvalidObjectInstance";
+            break;
     case STATUS_N_MissingAttribute:
-	    s = "Failure: MissingAttribute";
-	    break;
+            s = "Failure: MissingAttribute";
+            break;
     case STATUS_N_MissingAttributeValue:
-	    s = "Failure: MissingAttributeValue";
-	    break;
+            s = "Failure: MissingAttributeValue";
+            break;
     case STATUS_N_MistypedArgument:
-	    s = "Failure: MistypedArgument";
-	    break;
+            s = "Failure: MistypedArgument";
+            break;
     case STATUS_N_NoSuchAttribute:
-	    s = "Failure: NoSuchAttribute";
-	    break;
+            s = "Failure: NoSuchAttribute";
+            break;
     case STATUS_N_NoSuchSOPClass:
-	    s = "Failure: NoSuchSOPClass";
-	    break;
+            s = "Failure: NoSuchSOPClass";
+            break;
     case STATUS_N_NoSuchObjectInstance:
-	    s = "Failure: NoSuchObjectInstance";
-	    break;
+            s = "Failure: NoSuchObjectInstance";
+            break;
     case STATUS_N_ProcessingFailure:
-	    s = "Failure: ProcessingFailure";
-	    break;
+            s = "Failure: ProcessingFailure";
+            break;
     case STATUS_N_ResourceLimitation:
-	    s = "Failure: ResourceLimitation";
-	    break;
+            s = "Failure: ResourceLimitation";
+            break;
     case STATUS_N_UnrecognizedOperation:
-	    s = "Failure: UnrecognizedOperation";
-	    break;
+            s = "Failure: UnrecognizedOperation";
+            break;
   }
   if (s)
-	  return s;
+          return s;
 
-  switch (statusCode & 0xf000) {	/* high nibble significant */
-    case STATUS_FIND_Failed_UnableToProcess:	/* high nibble */
-	    s = "Failed: UnableToProcess";
-	    break;
+  switch (statusCode & 0xf000) {        /* high nibble significant */
+    case STATUS_FIND_Failed_UnableToProcess:    /* high nibble */
+            s = "Failed: UnableToProcess";
+            break;
   }
 
   if (s == NULL) {
-  	sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
-	  s = staticBuf;
+        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+          s = staticBuf;
   }
   return s;
 }
@@ -517,48 +532,48 @@ DU_ngetStatusString(Uint16 statusCode)
 
   switch (statusCode) {
     case STATUS_Success:
-	    s = "Success";
-	    break;
+            s = "Success";
+            break;
     case STATUS_N_AttributeListError:
       s = "Warning: AttributeListError";
-	    break;
+            break;
     case STATUS_N_ClassInstanceConflict:
       s = "Failure: ClassInstanceConflict";
-	    break;
+            break;
     case STATUS_N_DuplicateInvocation:
-	    s = "Failure: DuplicateInvocation";
-	    break;
+            s = "Failure: DuplicateInvocation";
+            break;
     case STATUS_N_InvalidObjectInstance:
-	    s = "Failure: InvalidObjectInstance";
-	    break;
+            s = "Failure: InvalidObjectInstance";
+            break;
     case STATUS_N_MistypedArgument:
-	    s = "Failure: MistypedArgument";
-	    break;
+            s = "Failure: MistypedArgument";
+            break;
     case STATUS_N_NoSuchSOPClass:
-	    s = "Failure: NoSuchSOPClass";
-	    break;
+            s = "Failure: NoSuchSOPClass";
+            break;
     case STATUS_N_NoSuchObjectInstance:
-	    s = "Failure: NoSuchObjectInstance";
-	    break;
+            s = "Failure: NoSuchObjectInstance";
+            break;
     case STATUS_N_ProcessingFailure:
-	    s = "Failure: ProcessingFailure";
-	    break;
+            s = "Failure: ProcessingFailure";
+            break;
     case STATUS_N_ResourceLimitation:
-	    s = "Failure: ResourceLimitation";
-	    break;
+            s = "Failure: ResourceLimitation";
+            break;
   }
   if (s)
-	  return s;
+          return s;
 
-  switch (statusCode & 0xf000) {	/* high nibble significant */
-    case STATUS_FIND_Failed_UnableToProcess:	/* high nibble */
-	    s = "Failed: UnableToProcess";
-	    break;
+  switch (statusCode & 0xf000) {        /* high nibble significant */
+    case STATUS_FIND_Failed_UnableToProcess:    /* high nibble */
+            s = "Failed: UnableToProcess";
+            break;
   }
 
   if (s == NULL) {
-  	sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
-	  s = staticBuf;
+        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+          s = staticBuf;
   }
   return s;
 }
@@ -570,57 +585,57 @@ DU_nsetStatusString(Uint16 statusCode)
 
   switch (statusCode) {
     case STATUS_Success:
-	    s = "Success";
-	    break;
+            s = "Success";
+            break;
     case STATUS_N_ClassInstanceConflict:
       s = "Failure: ClassInstanceConflict";
-	    break;
+            break;
     case STATUS_N_DuplicateInvocation:
-	    s = "Failure: DuplicateInvocation";
-	    break;
+            s = "Failure: DuplicateInvocation";
+            break;
     case STATUS_N_InvalidAttributeValue:
-	    s = "Failure: InvalidAttributeValue";
-	    break;
+            s = "Failure: InvalidAttributeValue";
+            break;
     case STATUS_N_MistypedArgument:
-	    s = "Failure: MistypedArgument";
-	    break;
+            s = "Failure: MistypedArgument";
+            break;
     case STATUS_N_InvalidObjectInstance:
-	    s = "Failure: InvalidObjectInstance";
-	    break;
+            s = "Failure: InvalidObjectInstance";
+            break;
     case STATUS_N_MissingAttributeValue:
-	    s = "Failure: MissingAttributeValue";
-	    break;
+            s = "Failure: MissingAttributeValue";
+            break;
     case STATUS_N_NoSuchAttribute:
-	    s = "Failure: NoSuchAttribute";
-	    break;
+            s = "Failure: NoSuchAttribute";
+            break;
     case STATUS_N_NoSuchSOPClass:
-	    s = "Failure: NoSuchSOPClass";
-	    break;
+            s = "Failure: NoSuchSOPClass";
+            break;
     case STATUS_N_NoSuchObjectInstance:
-	    s = "Failure: NoSuchObjectInstance";
-	    break;
+            s = "Failure: NoSuchObjectInstance";
+            break;
     case STATUS_N_ProcessingFailure:
-	    s = "Failure: ProcessingFailure";
-	    break;
+            s = "Failure: ProcessingFailure";
+            break;
     case STATUS_N_ResourceLimitation:
-	    s = "Failure: ResourceLimitation";
-	    break;
+            s = "Failure: ResourceLimitation";
+            break;
     case STATUS_N_UnrecognizedOperation:
-	    s = "Failure: UnrecognizedOperation";
-	    break;
+            s = "Failure: UnrecognizedOperation";
+            break;
   }
   if (s)
-	  return s;
+          return s;
 
-  switch (statusCode & 0xf000) {	/* high nibble significant */
-    case STATUS_FIND_Failed_UnableToProcess:	/* high nibble */
-	    s = "Failed: UnableToProcess";
-	    break;
+  switch (statusCode & 0xf000) {        /* high nibble significant */
+    case STATUS_FIND_Failed_UnableToProcess:    /* high nibble */
+            s = "Failed: UnableToProcess";
+            break;
   }
 
   if (s == NULL) {
-  	sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
-	  s = staticBuf;
+        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+          s = staticBuf;
   }
   return s;
 }
@@ -632,57 +647,57 @@ DU_nactionStatusString(Uint16 statusCode)
 
   switch (statusCode) {
     case STATUS_Success:
-	    s = "Success";
-	    break;
+            s = "Success";
+            break;
     case STATUS_N_ClassInstanceConflict:
       s = "Failure: ClassInstanceConflict";
-	    break;
+            break;
     case STATUS_N_DuplicateInvocation:
-	    s = "Failure: DuplicateInvocation";
-	    break;
+            s = "Failure: DuplicateInvocation";
+            break;
     case STATUS_N_InvalidArgumentValue:
-	    s = "Failure: InvalidArgumentValue";
-	    break;
+            s = "Failure: InvalidArgumentValue";
+            break;
      case STATUS_N_InvalidObjectInstance:
-	    s = "Failure: InvalidObjectInstance";
-	    break;
+            s = "Failure: InvalidObjectInstance";
+            break;
      case STATUS_N_MistypedArgument:
-	    s = "Failure: MistypedArgument";
-	    break;
+            s = "Failure: MistypedArgument";
+            break;
      case STATUS_N_NoSuchAction:
-	    s = "Failure: NoSuchAction";
-	    break;
+            s = "Failure: NoSuchAction";
+            break;
      case STATUS_N_NoSuchArgument:
-	    s = "Failure: NoSuchArgument";
-	    break;
+            s = "Failure: NoSuchArgument";
+            break;
     case STATUS_N_NoSuchSOPClass:
-	    s = "Failure: NoSuchSOPClass";
-	    break;
+            s = "Failure: NoSuchSOPClass";
+            break;
     case STATUS_N_NoSuchObjectInstance:
-	    s = "Failure: NoSuchObjectInstance";
-	    break;
+            s = "Failure: NoSuchObjectInstance";
+            break;
     case STATUS_N_ProcessingFailure:
-	    s = "Failure: ProcessingFailure";
-	    break;
+            s = "Failure: ProcessingFailure";
+            break;
     case STATUS_N_ResourceLimitation:
-	    s = "Failure: ResourceLimitation";
-	    break;
+            s = "Failure: ResourceLimitation";
+            break;
     case STATUS_N_UnrecognizedOperation:
-	    s = "Failure: UnrecognizedOperation";
-	    break;
+            s = "Failure: UnrecognizedOperation";
+            break;
   }
   if (s)
-	  return s;
+          return s;
 
-  switch (statusCode & 0xf000) {	/* high nibble significant */
-    case STATUS_FIND_Failed_UnableToProcess:	/* high nibble */
-	    s = "Failed: UnableToProcess";
-	    break;
+  switch (statusCode & 0xf000) {        /* high nibble significant */
+    case STATUS_FIND_Failed_UnableToProcess:    /* high nibble */
+            s = "Failed: UnableToProcess";
+            break;
   }
 
   if (s == NULL) {
-  	sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
-	  s = staticBuf;
+        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+          s = staticBuf;
   }
   return s;
 }
@@ -694,48 +709,48 @@ DU_ndeleteStatusString(Uint16 statusCode)
 
   switch (statusCode) {
     case STATUS_Success:
-	    s = "Success";
-	    break;
+            s = "Success";
+            break;
     case STATUS_N_ClassInstanceConflict:
       s = "Failure: ClassInstanceConflict";
-	    break;
+            break;
     case STATUS_N_DuplicateInvocation:
-	    s = "Failure: DuplicateInvocation";
-	    break;
+            s = "Failure: DuplicateInvocation";
+            break;
      case STATUS_N_InvalidObjectInstance:
-	    s = "Failure: InvalidObjectInstance";
-	    break;
+            s = "Failure: InvalidObjectInstance";
+            break;
      case STATUS_N_MistypedArgument:
-	    s = "Failure: MistypedArgument";
-	    break;
+            s = "Failure: MistypedArgument";
+            break;
     case STATUS_N_NoSuchSOPClass:
-	    s = "Failure: NoSuchSOPClass";
-	    break;
+            s = "Failure: NoSuchSOPClass";
+            break;
     case STATUS_N_NoSuchObjectInstance:
-	    s = "Failure: NoSuchObjectInstance";
-	    break;
+            s = "Failure: NoSuchObjectInstance";
+            break;
     case STATUS_N_ProcessingFailure:
-	    s = "Failure: ProcessingFailure";
-	    break;
+            s = "Failure: ProcessingFailure";
+            break;
     case STATUS_N_ResourceLimitation:
-	    s = "Failure: ResourceLimitation";
-	    break;
+            s = "Failure: ResourceLimitation";
+            break;
     case STATUS_N_UnrecognizedOperation:
-	    s = "Failure: UnrecognizedOperation";
-	    break;
+            s = "Failure: UnrecognizedOperation";
+            break;
   }
   if (s)
-	  return s;
+          return s;
 
-  switch (statusCode & 0xf000) {	/* high nibble significant */
-    case STATUS_FIND_Failed_UnableToProcess:	/* high nibble */
-	    s = "Failed: UnableToProcess";
-	    break;
+  switch (statusCode & 0xf000) {        /* high nibble significant */
+    case STATUS_FIND_Failed_UnableToProcess:    /* high nibble */
+            s = "Failed: UnableToProcess";
+            break;
   }
 
   if (s == NULL) {
-  	sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
-	  s = staticBuf;
+        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+          s = staticBuf;
   }
   return s;
 }
@@ -747,57 +762,57 @@ DU_neventReportStatusString(Uint16 statusCode)
 
   switch (statusCode) {
     case STATUS_Success:
-	    s = "Success";
-	    break;
+            s = "Success";
+            break;
     case STATUS_N_ClassInstanceConflict:
       s = "Failure: ClassInstanceConflict";
-	    break;
+            break;
     case STATUS_N_DuplicateInvocation:
-	    s = "Failure: DuplicateInvocation";
-	    break;
+            s = "Failure: DuplicateInvocation";
+            break;
     case STATUS_N_InvalidArgumentValue:
-	    s = "Failure: InvalidArgumentValue";
-	    break;
+            s = "Failure: InvalidArgumentValue";
+            break;
     case STATUS_N_InvalidObjectInstance:
-	    s = "Failure: InvalidObjectInstance";
-	    break;
+            s = "Failure: InvalidObjectInstance";
+            break;
     case STATUS_N_MistypedArgument:
-	    s = "Failure: MistypedArgument";
-	    break;
+            s = "Failure: MistypedArgument";
+            break;
     case STATUS_N_NoSuchArgument:
-	    s = "Failure: NoSuchArgument";
-	    break;
+            s = "Failure: NoSuchArgument";
+            break;
     case STATUS_N_NoSuchEventType:
-	    s = "Failure: NoSuchEventType";
-	    break;
+            s = "Failure: NoSuchEventType";
+            break;
     case STATUS_N_NoSuchSOPClass:
-	    s = "Failure: NoSuchSOPClass";
-	    break;
+            s = "Failure: NoSuchSOPClass";
+            break;
     case STATUS_N_NoSuchObjectInstance:
-	    s = "Failure: NoSuchObjectInstance";
-	    break;
+            s = "Failure: NoSuchObjectInstance";
+            break;
     case STATUS_N_ProcessingFailure:
-	    s = "Failure: ProcessingFailure";
-	    break;
+            s = "Failure: ProcessingFailure";
+            break;
     case STATUS_N_ResourceLimitation:
-	    s = "Failure: ResourceLimitation";
-	    break;
+            s = "Failure: ResourceLimitation";
+            break;
     case STATUS_N_UnrecognizedOperation:
-	    s = "Failure: UnrecognizedOperation";
-	    break;
+            s = "Failure: UnrecognizedOperation";
+            break;
   }
   if (s)
-	  return s;
+          return s;
 
-  switch (statusCode & 0xf000) {	/* high nibble significant */
-    case STATUS_FIND_Failed_UnableToProcess:	/* high nibble */
-	    s = "Failed: UnableToProcess";
-	    break;
+  switch (statusCode & 0xf000) {        /* high nibble significant */
+    case STATUS_FIND_Failed_UnableToProcess:    /* high nibble */
+            s = "Failed: UnableToProcess";
+            break;
   }
 
   if (s == NULL) {
-  	sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
-	  s = staticBuf;
+        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+          s = staticBuf;
   }
   return s;
 }
@@ -806,6 +821,9 @@ DU_neventReportStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
+** Revision 1.34  2011-09-28 14:07:23  joergr
+** Added function that converts the status of a C-ECHO response to a string.
+**
 ** Revision 1.33  2011-08-19 07:40:32  joergr
 ** Output C-FIND response messages to a separate logger (on INFO level).
 **

@@ -18,8 +18,8 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-22 08:46:27 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2011-09-28 14:08:17 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -707,7 +707,7 @@ echoSCU(T_ASC_Association * assoc)
 
     /* depending on if a response was received, dump some information */
     if (cond.good()) {
-        OFLOG_INFO(echoscuLogger, "Received Echo Response (Status: " << DU_cstoreStatusString(status) << ")");
+        OFLOG_INFO(echoscuLogger, "Received Echo Response (" << DU_cechoStatusString(status) << ")");
     } else {
         OFString temp_str;
         OFLOG_ERROR(echoscuLogger, "Echo Failed: " << DimseCondition::dump(temp_str, cond));
@@ -747,6 +747,9 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
+** Revision 1.56  2011-09-28 14:08:17  joergr
+** Added function that converts the status of a C-ECHO response to a string.
+**
 ** Revision 1.55  2011-09-22 08:46:27  joergr
 ** Output status detail information (if any) to the DEBUG logger and not to the
 ** WARN or INFO logger. This is now consistent for all DCMTK network tools.

@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.28 (riesmeier)
 
+- Added function that converts the status of a C-ECHO response to a string.
+  Affects: dcmnet/include/dcmtk/dcmnet/diutil.h
+           dcmnet/libsrc/diutil.cc
+
 - Added method that allows for clearing the list of presentation contexts.
   Affects: dcmnet/libsrc/scu.cc
            dcmnet/include/dcmtk/dcmnet/scu.h
