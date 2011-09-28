@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.28 (riesmeier)
 
+- Added general support for transfer syntax conversions to sendSTORERequest().
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+
 - Simplified code for reporting the conversion of transfer syntaxes to logger.
   Affects: dcmnet/apps/storescu.cc
 

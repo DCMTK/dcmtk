@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-28 15:25:34 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2011-09-28 16:28:20 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -265,7 +265,9 @@ public:
   virtual OFCondition sendECHORequest(const T_ASC_PresentationContextID presID);
 
   /** This function sends a C-STORE request on the currently opened association and receives
-   *  the corresponding response then
+   *  the corresponding response then.  If required and supported, the SOP instance is
+   *  automatically converted to the network transfer syntax that was negotiated (and is
+   *  specified by the parameter 'presID').
    *  @param presID          [in]  Contains in the end the ID of the presentation context which
    *                               was specified in the DIMSE command. If 0 is given, the
    *                               function tries to find an approriate presentation context
@@ -296,8 +298,8 @@ public:
   virtual OFCondition sendSTORERequest(const T_ASC_PresentationContextID presID,
                                        const OFString &dicomFile,
                                        DcmDataset *dataset,
-                                       DcmDataset *&rspCommandSet,
-                                       DcmDataset *&rspStatusDetail,
+                                       DcmDataset *&rspCommandSet,   // TODO
+                                       DcmDataset *&rspStatusDetail, // TODO
                                        Uint16 &rspStatusCode);
 
   /** Sends a C-MOVE Request on given presentation context and receives list of responses.
@@ -1006,6 +1008,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.37  2011-09-28 16:28:20  joergr
+** Added general support for transfer syntax conversions to sendSTORERequest().
+**
 ** Revision 1.36  2011-09-28 15:25:34  joergr
 ** Return a more appropriate error code in case the dataset to be sent is
 ** invalid. This also required to introduce a return value for getDatasetInfo().

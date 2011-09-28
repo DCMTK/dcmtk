@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-28 15:25:36 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2011-09-28 16:28:18 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -474,8 +474,8 @@ void DcmSCU::findPresentationContext(const T_ASC_PresentationContextID presID,
   DUL_PRESENTATIONCONTEXT *pc;
   LST_HEAD **l;
 
-  /* first of all we look for a presentation context
-   * matching both abstract and transfer syntax
+  /* we look for a presentation context matching
+   * both abstract and transfer syntax
    */
   l = &m_assoc->params->DULparams.acceptedPresentationContext;
   pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
@@ -673,8 +673,6 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   /* Set message ID */
   req->MessageID = nextMessageID();
   /* Load file if necessary */
-  OFString sopClass, sopInstance;
-  E_TransferSyntax transferSyntax = EXS_Unknown; // Initialized in getDatasetInfo()
   DcmFileFormat *dcmff = NULL;
   if (!dicomFile.empty())
   {
@@ -688,15 +686,20 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   }
 
   /* Fill message according to dataset to be sent */
-  cond = getDatasetInfo(dataset, sopClass, sopInstance, transferSyntax);
-  if (sopClass.empty() || sopInstance.empty() || ((pcid == 0) && (transferSyntax == EXS_Unknown)))
+  OFString sopClassUID;
+  OFString sopInstanceUID;
+  E_TransferSyntax xferSyntax = EXS_Unknown;
+  cond = getDatasetInfo(dataset, sopClassUID, sopInstanceUID, xferSyntax);
+  DcmXfer xfer(xferSyntax);
+  /* Check whether the information is sufficient */
+  if (sopClassUID.empty() || sopInstanceUID.empty() || ((pcid == 0) && (xferSyntax == EXS_Unknown)))
   {
     DCMNET_ERROR("Cannot send SOP instance, missing information:");
     if (!dicomFile.empty())
       DCMNET_ERROR("  DICOM File       : " << dicomFile);
-    DCMNET_ERROR("  SOP Class UID    : " << sopClass);
-    DCMNET_ERROR("  SOP Instance UID : " << sopInstance);
-    DCMNET_ERROR("  Transfer Syntax  : " << DcmXfer(transferSyntax).getXferName());
+    DCMNET_ERROR("  SOP Class UID    : " << sopClassUID);
+    DCMNET_ERROR("  SOP Instance UID : " << sopInstanceUID);
+    DCMNET_ERROR("  Transfer Syntax  : " << xfer.getXferName());
     if (pcid == 0)
       DCMNET_ERROR("  Pres. Context ID : 0 (find via SOP Class and Transfer Syntax)");
     else
@@ -705,22 +708,32 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     dcmff = NULL;
     return cond;
   }
-  OFStandard::strlcpy(req->AffectedSOPClassUID, sopClass.c_str(), sizeof(req->AffectedSOPClassUID));
-  OFStandard::strlcpy(req->AffectedSOPInstanceUID, sopInstance.c_str(), sizeof(req->AffectedSOPInstanceUID));
+  OFStandard::strlcpy(req->AffectedSOPClassUID, sopClassUID.c_str(), sizeof(req->AffectedSOPClassUID));
+  OFStandard::strlcpy(req->AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(req->AffectedSOPInstanceUID));
   req->DataSetType = DIMSE_DATASET_PRESENT;
   req->Priority = DIMSE_PRIORITY_LOW;
 
   /* If necessary, find appropriate presentation context */
   if (pcid == 0)
-    pcid = findPresentationContextID(sopClass, DcmXfer(transferSyntax).getXferID());
+    pcid = findPresentationContextID(sopClassUID, xfer.getXferID());
   if (pcid == 0)
   {
-    OFString sopname = dcmFindNameOfUID(sopClass.c_str(), sopClass.c_str());
-    OFString tsname = DcmXfer(transferSyntax).getXferName();
+    OFString sopClassName = dcmFindNameOfUID(sopClassUID.c_str(), sopClassUID.c_str());
+    OFString xferName = xfer.getXferName();
     DCMNET_ERROR("No presentation context found for sending C-STORE with SOP Class / Transfer Syntax: "
-      << sopname << " / "
-      << (tsname.empty() ? DcmXfer(transferSyntax).getXferName() : tsname));
+      << sopClassName << " / " << xferName);
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+  }
+
+  /* Convert to network transfer syntax (if required) */
+  OFString abstractSyntax, transferSyntax;
+  findPresentationContext(pcid, abstractSyntax, transferSyntax);
+  DcmXfer netXfer = DcmXfer(transferSyntax.c_str()).getXfer();
+  if (netXfer.getXfer() != xferSyntax)
+  {
+    DCMNET_INFO("Converting transfer syntax: " << xfer.getXferName() << " -> "
+      << netXfer.getXferName());
+    dataset->chooseRepresentation(netXfer.getXfer(), NULL);
   }
 
   /* Send request */
@@ -1241,9 +1254,11 @@ OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID /* pres
   if (incomingObject == NULL)
     return DIMSE_NULLKEY;
 
-  OFString sopClass, instanceUID;
-  OFCondition result = incomingObject->findAndGetOFString(DCM_SOPClassUID, sopClass);
-  if (result.good()) result = incomingObject->findAndGetOFString(DCM_SOPInstanceUID, instanceUID);
+  OFString sopClassUID;
+  OFString sopInstanceUID;
+  OFCondition result = incomingObject->findAndGetOFString(DCM_SOPClassUID, sopClassUID);
+  if (result.good())
+    result = incomingObject->findAndGetOFString(DCM_SOPInstanceUID, sopInstanceUID);
   if (result.bad())
   {
     DCMNET_ERROR("Cannot store received object: either SOP Instance or SOP Class UID not present");
@@ -1255,10 +1270,9 @@ OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID /* pres
   result = incomingObject->saveFile(filename.c_str());
   if (result.good())
   {
-    OFString sopclass, sopuid;
-    E_TransferSyntax ts;
-    getDatasetInfo(incomingObject, sopclass, sopuid, ts);
-    notifyInstanceStored(filename, sopclass, sopuid);
+    E_TransferSyntax xferSyntax;
+    getDatasetInfo(incomingObject, sopClassUID, sopInstanceUID, xferSyntax);
+    notifyInstanceStored(filename, sopClassUID, sopInstanceUID);
     cStoreReturnStatus = STATUS_Success;
   }
   else
@@ -2248,6 +2262,9 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.51  2011-09-28 16:28:18  joergr
+** Added general support for transfer syntax conversions to sendSTORERequest().
+**
 ** Revision 1.50  2011-09-28 15:25:36  joergr
 ** Return a more appropriate error code in case the dataset to be sent is
 ** invalid. This also required to introduce a return value for getDatasetInfo().
