@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:41 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2011-09-29 14:39:09 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -180,7 +180,7 @@ class DcmMetaInfo
     virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
                                  const size_t flags = 0);
 
-    /** load object from a DICOM file
+    /** load object from a DICOM file.  If the file preamble is missing, an error is returned.
      *  @param fileName name of the file to load
      *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown)
      *  @param groupLength flag, specifying how to handle the group length tags
@@ -258,6 +258,9 @@ class DcmMetaInfo
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
+** Revision 1.34  2011-09-29 14:39:09  joergr
+** Enhanced loadFile() method by making sure that the file preamble is present.
+**
 ** Revision 1.33  2010-10-14 13:15:41  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

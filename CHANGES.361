@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.29 (riesmeier)
 
+- Enhanced loadFile() method by making sure that the file preamble is present.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcmetinf.h
+           dcmdata/libsrc/dcmetinf.cc
+
 - Introduced new network-related error codes, e.g. in case that none of the
   proposed presentation contexts were accepted by the association acceptor.
   Affects: dcmnet/include/dcmtk/dcmnet/cond.h

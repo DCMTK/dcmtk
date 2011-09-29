@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-07-12 15:38:44 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2011-09-29 14:39:10 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -613,6 +613,9 @@ OFCondition DcmMetaInfo::loadFile(const char *fileName,
                 transferInit();
                 l_error = read(fileStream, readXfer, groupLength, maxReadLength);
                 transferEnd();
+                /* make sure that the file preamble is present */
+                if (l_error.good() && !preambleUsed)
+                    l_error = EC_FileMetaInfoHeaderMissing;
             }
         }
     }
@@ -623,6 +626,9 @@ OFCondition DcmMetaInfo::loadFile(const char *fileName,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.60  2011-09-29 14:39:10  joergr
+** Enhanced loadFile() method by making sure that the file preamble is present.
+**
 ** Revision 1.59  2011-07-12 15:38:44  joergr
 ** Output information on removed invalid data elements to debug logger.
 **
