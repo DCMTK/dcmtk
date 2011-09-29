@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 09:04:26 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2011-09-29 12:56:21 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -482,16 +482,18 @@ void DcmSCU::findPresentationContext(const T_ASC_PresentationContextID presID,
   (void)LST_Position(l, (LST_NODE*)pc);
   while (pc)
   {
-    if ((presID == pc->presentationContextID) && (pc->result == ASC_P_ACCEPTANCE))
+    if (presID == pc->presentationContextID)
     {
-      // found a match
-      transferSyntax = pc->acceptedTransferSyntax;
-      abstractSyntax = pc->abstractSyntax;
-      return;
+      if (pc->result == ASC_P_ACCEPTANCE)
+      {
+        // found a match
+        transferSyntax = pc->acceptedTransferSyntax;
+        abstractSyntax = pc->abstractSyntax;
+      }
+      break;
     }
     pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
   }
-  return;   /* not found */
 }
 
 
@@ -2318,6 +2320,10 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.53  2011-09-29 12:56:21  joergr
+** Enhanced implementation of the function that retrieves the abstract syntax
+** and transfer syntax of a particular presentation context (using the ID).
+**
 ** Revision 1.52  2011-09-29 09:04:26  joergr
 ** Output message ID of request and DIMSE status of response messages to the
 ** INFO logger (if DEBUG level is not enabled). All tools and classes in the

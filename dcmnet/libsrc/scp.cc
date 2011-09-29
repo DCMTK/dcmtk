@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 09:04:26 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2011-09-29 12:56:21 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -393,24 +393,26 @@ void DcmSCP::findPresentationContext(const T_ASC_PresentationContextID presID,
   DUL_PRESENTATIONCONTEXT *pc;
   LST_HEAD **l;
 
-  /* first of all we look for a presentation context
-   * matching both abstract and transfer syntax
+  /* we look for a presentation context matching
+   * both abstract and transfer syntax
    */
   l = &m_assoc->params->DULparams.acceptedPresentationContext;
   pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
   (void)LST_Position(l, (LST_NODE*)pc);
   while (pc)
   {
-     if ((presID == pc->presentationContextID) && (pc->result == ASC_P_ACCEPTANCE))
+     if (presID == pc->presentationContextID)
      {
-       // found a match
-       transferSyntax = pc->acceptedTransferSyntax;
-       abstractSyntax = pc->abstractSyntax;
-       return;
+       if (pc->result == ASC_P_ACCEPTANCE)
+       {
+         // found a match
+         transferSyntax = pc->acceptedTransferSyntax;
+         abstractSyntax = pc->abstractSyntax;
+       }
+       break;
      }
      pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
   }
-  return;   /* not found */
 }
 
 // ----------------------------------------------------------------------------
@@ -1796,6 +1798,10 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.24  2011-09-29 12:56:21  joergr
+** Enhanced implementation of the function that retrieves the abstract syntax
+** and transfer syntax of a particular presentation context (using the ID).
+**
 ** Revision 1.23  2011-09-29 09:04:26  joergr
 ** Output message ID of request and DIMSE status of response messages to the
 ** INFO logger (if DEBUG level is not enabled). All tools and classes in the
