@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.29 (riesmeier)
 
+- Added check whether the presentation context specified by the caller of the
+  method was really accepted before sending a C-STORE request.
+  Affects: dcmnet/libsrc/scu.cc
+
 - Enhanced implementation of the function that retrieves the abstract syntax
   and transfer syntax of a particular presentation context (using the ID).
   Affects: dcmnet/libsrc/scp.cc

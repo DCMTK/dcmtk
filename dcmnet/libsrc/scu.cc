@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 12:56:21 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2011-09-29 13:04:09 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -720,9 +720,32 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   req->DataSetType = DIMSE_DATASET_PRESENT;
   req->Priority = DIMSE_PRIORITY_LOW;
 
-  /* If necessary, find appropriate presentation context */
+  /* If no presentation context is specified by the caller ... */
   if (pcid == 0)
+  {
+      /* ... try to find an appropriate presentation context automatically */
     pcid = findPresentationContextID(sopClassUID, xfer.getXferID());
+  } else {
+    /* Convert dataset to network transfer syntax (if required) */
+    OFString abstractSyntax, transferSyntax;
+    findPresentationContext(pcid, abstractSyntax, transferSyntax);
+    /* Check whether given presentation context was accepted by the peer */
+    if (abstractSyntax.empty() || transferSyntax.empty())
+    {
+      /* Mark presentation context as invalid */
+      pcid = 0;
+    } else {
+      /* Try to convert to the negotiated transfer syntax */
+      DcmXfer netXfer = DcmXfer(transferSyntax.c_str()).getXfer();
+      if (netXfer.getXfer() != xferSyntax)
+      {
+        DCMNET_INFO("Converting transfer syntax: " << xfer.getXferName() << " -> "
+          << netXfer.getXferName());
+        dataset->chooseRepresentation(netXfer.getXfer(), NULL);
+      }
+    }
+  }
+  /* No appropriate presentation context for sending */
   if (pcid == 0)
   {
     OFString sopClassName = dcmFindNameOfUID(sopClassUID.c_str(), sopClassUID.c_str());
@@ -730,17 +753,6 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     DCMNET_ERROR("No presentation context found for sending C-STORE with SOP Class / Transfer Syntax: "
       << sopClassName << " / " << xferName);
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
-  }
-
-  /* Convert to network transfer syntax (if required) */
-  OFString abstractSyntax, transferSyntax;
-  findPresentationContext(pcid, abstractSyntax, transferSyntax);
-  DcmXfer netXfer = DcmXfer(transferSyntax.c_str()).getXfer();
-  if (netXfer.getXfer() != xferSyntax)
-  {
-    DCMNET_INFO("Converting transfer syntax: " << xfer.getXferName() << " -> "
-      << netXfer.getXferName());
-    dataset->chooseRepresentation(netXfer.getXfer(), NULL);
   }
 
   /* Send request */
@@ -2320,6 +2332,10 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.54  2011-09-29 13:04:09  joergr
+** Added check whether the presentation context specified by the caller of the
+** method was really accepted before sending a C-STORE request.
+**
 ** Revision 1.53  2011-09-29 12:56:21  joergr
 ** Enhanced implementation of the function that retrieves the abstract syntax
 ** and transfer syntax of a particular presentation context (using the ID).
