@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 13:04:09 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Update Date:      $Date: 2011-09-29 13:12:01 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -318,7 +318,7 @@ OFCondition DcmSCU::negotiateAssociation()
   if (ASC_countAcceptedPresentationContexts(m_params) == 0)
   {
     DCMNET_ERROR("No Acceptable Presentation Contexts");
-    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+    return NET_EC_NoAcceptablePresentationContexts;
   }
 
   /* dump general information concerning the establishment of the network connection if required */
@@ -2332,6 +2332,10 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.55  2011-09-29 13:12:01  joergr
+** Introduced new network-related error codes, e.g. in case that none of the
+** proposed presentation contexts were accepted by the association acceptor.
+**
 ** Revision 1.54  2011-09-29 13:04:09  joergr
 ** Added check whether the presentation context specified by the caller of the
 ** method was really accepted before sending a C-STORE request.

@@ -18,8 +18,8 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-28 13:29:02 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2011-09-29 13:12:01 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,21 +123,25 @@ const OFCondition DUL_UNEXPECTEDPDU(            DULE_UNEXPECTEDPDU);
 const OFCondition DUL_UNSUPPORTEDPEERPROTOCOL(  DULE_UNSUPPORTEDPEERPROTOCOL);
 const OFCondition DUL_WRONGDATATYPE(            DULE_WRONGDATATYPE);
 
-const OFConditionConst NET_ECC_InvalidSOPClassUID            (OFM_dcmnet, 1000, OF_error, "Invalid SOP Class UID");
-const OFConditionConst NET_ECC_UnknownStorageSOPClass        (OFM_dcmnet, 1001, OF_error, "Unknown Storage SOP Class");
-const OFConditionConst NET_ECC_InvalidSOPInstanceUID         (OFM_dcmnet, 1002, OF_error, "Invalid SOP Instance UID");
-const OFConditionConst NET_ECC_InvalidTransferSyntaxUID      (OFM_dcmnet, 1003, OF_error, "Invalid Transfer Syntax UID");
-const OFConditionConst NET_ECC_UnknownTransferSyntax         (OFM_dcmnet, 1004, OF_error, "Unknown Transfer Syntax");
-const OFConditionConst NET_ECC_NoPresentationContextsDefined (OFM_dcmnet, 1005, OF_error, "No Presentation Contexts defined");
-const OFConditionConst NET_ECC_InsufficientPortPrivileges    (OFM_dcmnet, 1023, OF_error, "Insufficient Port Privileges");
+const OFConditionConst NET_ECC_InvalidSOPClassUID              (OFM_dcmnet, 1000, OF_error, "Invalid SOP Class UID");
+const OFConditionConst NET_ECC_UnknownStorageSOPClass          (OFM_dcmnet, 1001, OF_error, "Unknown Storage SOP Class");
+const OFConditionConst NET_ECC_InvalidSOPInstanceUID           (OFM_dcmnet, 1002, OF_error, "Invalid SOP Instance UID");
+const OFConditionConst NET_ECC_InvalidTransferSyntaxUID        (OFM_dcmnet, 1003, OF_error, "Invalid Transfer Syntax UID");
+const OFConditionConst NET_ECC_UnknownTransferSyntax           (OFM_dcmnet, 1004, OF_error, "Unknown Transfer Syntax");
+const OFConditionConst NET_ECC_NoPresentationContextsDefined   (OFM_dcmnet, 1005, OF_error, "No Presentation Contexts defined");
+const OFConditionConst NET_ECC_NoAcceptablePresentationContexts(OFM_dcmnet, 1006, OF_error, "No acceptable Presentation Contexts");
+const OFConditionConst NET_ECC_NoInstancesToBeSent             (OFM_dcmnet, 1007, OF_error, "No instances to be sent");
+const OFConditionConst NET_ECC_InsufficientPortPrivileges      (OFM_dcmnet, 1023, OF_error, "Insufficient Port Privileges");
 
-const OFCondition NET_EC_InvalidSOPClassUID            (NET_ECC_InvalidSOPClassUID);
-const OFCondition NET_EC_UnknownStorageSOPClass        (NET_ECC_UnknownStorageSOPClass);
-const OFCondition NET_EC_InvalidSOPInstanceUID         (NET_ECC_InvalidSOPInstanceUID);
-const OFCondition NET_EC_InvalidTransferSyntaxUID      (NET_ECC_InvalidTransferSyntaxUID);
-const OFCondition NET_EC_UnknownTransferSyntax         (NET_ECC_UnknownTransferSyntax);
-const OFCondition NET_EC_NoPresentationContextsDefined (NET_ECC_NoPresentationContextsDefined);
-const OFCondition NET_EC_InsufficientPortPrivileges    (NET_ECC_InsufficientPortPrivileges);
+const OFCondition NET_EC_InvalidSOPClassUID              (NET_ECC_InvalidSOPClassUID);
+const OFCondition NET_EC_UnknownStorageSOPClass          (NET_ECC_UnknownStorageSOPClass);
+const OFCondition NET_EC_InvalidSOPInstanceUID           (NET_ECC_InvalidSOPInstanceUID);
+const OFCondition NET_EC_InvalidTransferSyntaxUID        (NET_ECC_InvalidTransferSyntaxUID);
+const OFCondition NET_EC_UnknownTransferSyntax           (NET_ECC_UnknownTransferSyntax);
+const OFCondition NET_EC_NoPresentationContextsDefined   (NET_ECC_NoPresentationContextsDefined);
+const OFCondition NET_EC_NoAcceptablePresentationContexts(NET_ECC_NoAcceptablePresentationContexts);
+const OFCondition NET_EC_NoInstancesToBeSent             (NET_ECC_NoInstancesToBeSent);
+const OFCondition NET_EC_InsufficientPortPrivileges      (NET_ECC_InsufficientPortPrivileges);
 
 
 OFString& DimseCondition::dump(OFString& str, OFCondition cond)
@@ -187,6 +191,10 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
+ * Revision 1.24  2011-09-29 13:12:01  joergr
+ * Introduced new network-related error codes, e.g. in case that none of the
+ * proposed presentation contexts were accepted by the association acceptor.
+ *
  * Revision 1.23  2011-09-28 13:29:02  joergr
  * Introduced a couple of new network-related error codes (aka OFCondition).
  *

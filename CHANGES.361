@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.29 (riesmeier)
 
+- Introduced new network-related error codes, e.g. in case that none of the
+  proposed presentation contexts were accepted by the association acceptor.
+  Affects: dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/dfindscu.cc
+           dcmnet/libsrc/scu.cc
+
 - Added check whether the presentation context specified by the caller of the
   method was really accepted before sending a C-STORE request.
   Affects: dcmnet/libsrc/scu.cc

@@ -18,8 +18,8 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-28 13:29:04 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2011-09-29 13:11:59 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -187,13 +187,15 @@ extern const OFCondition DUL_UNSUPPORTEDPEERPROTOCOL;   /* DUL Unsupported peer 
 extern const OFCondition DUL_WRONGDATATYPE;             /* DUL Wrong Data Type Specified for Request */
 
 // other condition constants used in the network module (codes 1000 to 1023)
-extern const OFCondition NET_EC_InvalidSOPClassUID;            /* Invalid SOP Class UID */
-extern const OFCondition NET_EC_UnknownStorageSOPClass;        /* Unknown Storage SOP Class */
-extern const OFCondition NET_EC_InvalidSOPInstanceUID;         /* Invalid SOP Instance UID */
-extern const OFCondition NET_EC_InvalidTransferSyntaxUID;      /* Invalid Transfer Syntax UID */
-extern const OFCondition NET_EC_UnknownTransferSyntax;         /* Unknown Transfer Syntax */
-extern const OFCondition NET_EC_NoPresentationContextsDefined; /* No Presentation Contexts defined */
-extern const OFCondition NET_EC_InsufficientPortPrivileges;    /* Insufficient Port Privileges */
+extern const OFCondition NET_EC_InvalidSOPClassUID;               /* Invalid SOP Class UID */
+extern const OFCondition NET_EC_UnknownStorageSOPClass;           /* Unknown Storage SOP Class */
+extern const OFCondition NET_EC_InvalidSOPInstanceUID;            /* Invalid SOP Instance UID */
+extern const OFCondition NET_EC_InvalidTransferSyntaxUID;         /* Invalid Transfer Syntax UID */
+extern const OFCondition NET_EC_UnknownTransferSyntax;            /* Unknown Transfer Syntax */
+extern const OFCondition NET_EC_NoPresentationContextsDefined;    /* No Presentation Contexts defined */
+extern const OFCondition NET_EC_NoAcceptablePresentationContexts; /* No acceptable Presentation Contexts */
+extern const OFCondition NET_EC_NoInstancesToBeSent;              /* No instances to be sent */
+extern const OFCondition NET_EC_InsufficientPortPrivileges;       /* Insufficient Port Privileges */
 // codes 1024 to 1073 are used for the association negotiation profile classes
 
 
@@ -291,6 +293,10 @@ typedef OFCondition CONDITION;
 /*
  * CVS Log
  * $Log: cond.h,v $
+ * Revision 1.19  2011-09-29 13:11:59  joergr
+ * Introduced new network-related error codes, e.g. in case that none of the
+ * proposed presentation contexts were accepted by the association acceptor.
+ *
  * Revision 1.18  2011-09-28 13:29:04  joergr
  * Introduced a couple of new network-related error codes (aka OFCondition).
  *

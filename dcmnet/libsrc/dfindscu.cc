@@ -18,8 +18,8 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 09:04:25 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2011-09-29 13:12:01 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -247,7 +247,7 @@ OFCondition DcmFindSCU::performQuery(
     /* If there are none, finish the execution */
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
         DCMNET_ERROR("No Acceptable Presentation Contexts");
-        return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+        return NET_EC_NoAcceptablePresentationContexts;
     }
 
     /* dump general information concerning the establishment of the network connection if required */
@@ -569,6 +569,10 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.22  2011-09-29 13:12:01  joergr
+ * Introduced new network-related error codes, e.g. in case that none of the
+ * proposed presentation contexts were accepted by the association acceptor.
+ *
  * Revision 1.21  2011-09-29 09:04:25  joergr
  * Output message ID of request and DIMSE status of response messages to the
  * INFO logger (if DEBUG level is not enabled). All tools and classes in the
