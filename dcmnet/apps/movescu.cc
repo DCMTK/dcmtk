@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 09:04:23 $
- *  CVS/RCS Revision: $Revision: 1.100 $
+ *  Update Date:      $Date: 2011-09-29 09:13:32 $
+ *  CVS/RCS Revision: $Revision: 1.101 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1208,8 +1208,13 @@ static OFCondition echoSCP(
     OFString temp_str;
     // assign the actual information of the C-Echo-RQ command to a local variable
     T_DIMSE_C_EchoRQ *req = &msg->msg.CEchoRQ;
-    OFLOG_INFO(movescuLogger, "Received Echo Request (MsgID " << req->MessageID << ")");
-    OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
+    if (movescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+        OFLOG_INFO(movescuLogger, "Received Echo Request");
+        OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
+    } else {
+        OFLOG_INFO(movescuLogger, "Received Echo Request (MsgID " << req->MessageID << ")");
+    }
 
     /* the echo succeeded !! */
     OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, req, STATUS_Success, NULL);
@@ -1358,9 +1363,14 @@ static OFCondition storeSCP(
     }
 
     OFString temp_str;
-    OFLOG_INFO(movescuLogger, "Received Store Request (MsgID " << req->MessageID << ", "
-        << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
-    OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
+    if (movescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+        OFLOG_INFO(movescuLogger, "Received Store Request");
+        OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
+    } else {
+        OFLOG_INFO(movescuLogger, "Received Store Request (MsgID " << req->MessageID << ", "
+            << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
+    }
 
     StoreCallbackData callbackData;
     callbackData.assoc = assoc;
@@ -1564,8 +1574,13 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
 
-    OFLOG_INFO(movescuLogger, "Sending Move Request (MsgID " << msgId << ")");
-    OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, req, DIMSE_OUTGOING, NULL, presId));
+    if (movescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+        OFLOG_INFO(movescuLogger, "Sending Move Request");
+        OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, req, DIMSE_OUTGOING, NULL, presId));
+    } else {
+        OFLOG_INFO(movescuLogger, "Sending Move Request (MsgID " << msgId << ")");
+    }
     OFLOG_INFO(movescuLogger, "Request Identifiers:" << OFendl << DcmObject::PrintHelper(*dcmff.getDataset()));
 
     callbackData.assoc = assoc;
@@ -1628,6 +1643,9 @@ cmove(T_ASC_Association *assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.101  2011-09-29 09:13:32  joergr
+** Further cleanup of the log output (verbose vs. debug mode).
+**
 ** Revision 1.100  2011-09-29 09:04:23  joergr
 ** Output message ID of request and DIMSE status of response messages to the
 ** INFO logger (if DEBUG level is not enabled). All tools and classes in the

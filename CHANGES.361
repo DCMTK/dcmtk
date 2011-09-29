@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.09.29 (riesmeier)
 
+- Further cleanup of the log output (verbose vs. debug mode).
+  Affects: dcmnet/apps/movescu.cc
+
 - Output message ID of request and DIMSE status of response messages to the
   INFO logger (if DEBUG level is not enabled). All tools and classes in the
   "dcmnet" module now use (more or less) the same output in verbose mode.
