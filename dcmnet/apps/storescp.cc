@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-22 08:46:27 $
- *  CVS/RCS Revision: $Revision: 1.147 $
+ *  Update Date:      $Date: 2011-09-29 09:04:23 $
+ *  CVS/RCS Revision: $Revision: 1.148 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1817,8 +1817,13 @@ static OFCondition echoSCP( T_ASC_Association * assoc, T_DIMSE_Message * msg, T_
   OFString temp_str;
   // assign the actual information of the C-Echo-RQ command to a local variable
   T_DIMSE_C_EchoRQ *req = &msg->msg.CEchoRQ;
-  OFLOG_INFO(storescpLogger, "Received Echo Request: MsgID " << req->MessageID);
-  OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
+  if (storescpLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    OFLOG_INFO(storescpLogger, "Received Echo Request");
+    OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
+  } else {
+    OFLOG_INFO(storescpLogger, "Received Echo Request (MsgID " << req->MessageID << ")");
+  }
 
   /* the echo succeeded !! */
   OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, req, STATUS_Success, NULL);
@@ -2242,9 +2247,14 @@ static OFCondition storeSCP(
 
   // dump some information if required
   OFString str;
-  OFLOG_INFO(storescpLogger, "Received Store Request: MsgID " << req->MessageID << ", ("
-    << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
-  OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(str, *req, DIMSE_INCOMING, NULL, presID));
+  if (storescpLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    OFLOG_INFO(storescpLogger, "Received Store Request");
+    OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(str, *req, DIMSE_INCOMING, NULL, presID));
+  } else {
+    OFLOG_INFO(storescpLogger, "Received Store Request (MsgID " << req->MessageID << ", "
+      << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
+  }
 
   // intialize some variables
   StoreCallbackData callbackData;
@@ -2788,6 +2798,11 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.148  2011-09-29 09:04:23  joergr
+** Output message ID of request and DIMSE status of response messages to the
+** INFO logger (if DEBUG level is not enabled). All tools and classes in the
+** "dcmnet" module now use (more or less) the same output in verbose mode.
+**
 ** Revision 1.147  2011-09-22 08:46:27  joergr
 ** Output status detail information (if any) to the DEBUG logger and not to the
 ** WARN or INFO logger. This is now consistent for all DCMTK network tools.

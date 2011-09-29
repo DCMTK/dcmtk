@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-28 16:10:32 $
- *  CVS/RCS Revision: $Revision: 1.105 $
+ *  Update Date:      $Date: 2011-09-29 09:04:23 $
+ *  CVS/RCS Revision: $Revision: 1.106 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1564,7 +1564,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   req.Priority = DIMSE_PRIORITY_LOW;
 
   /* if required, dump some more general information */
-  OFLOG_INFO(storescuLogger, "Sending Store Request: MsgID " << msgId << ", ("
+  OFLOG_INFO(storescuLogger, "Sending Store Request (MsgID " << msgId << ", "
     << dcmSOPClassUIDToModality(sopClass, "OT") << ")");
 
   /* finally conduct transmission of data */
@@ -1763,6 +1763,11 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.106  2011-09-29 09:04:23  joergr
+** Output message ID of request and DIMSE status of response messages to the
+** INFO logger (if DEBUG level is not enabled). All tools and classes in the
+** "dcmnet" module now use (more or less) the same output in verbose mode.
+**
 ** Revision 1.105  2011-09-28 16:10:32  joergr
 ** Simplified code for reporting the conversion of transfer syntaxes to logger.
 **

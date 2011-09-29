@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-22 08:46:27 $
- *  CVS/RCS Revision: $Revision: 1.99 $
+ *  Update Date:      $Date: 2011-09-29 09:04:23 $
+ *  CVS/RCS Revision: $Revision: 1.100 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1208,7 +1208,7 @@ static OFCondition echoSCP(
     OFString temp_str;
     // assign the actual information of the C-Echo-RQ command to a local variable
     T_DIMSE_C_EchoRQ *req = &msg->msg.CEchoRQ;
-    OFLOG_INFO(movescuLogger, "Received Echo Request: MsgID " << req->MessageID);
+    OFLOG_INFO(movescuLogger, "Received Echo Request (MsgID " << req->MessageID << ")");
     OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
 
     /* the echo succeeded !! */
@@ -1358,7 +1358,7 @@ static OFCondition storeSCP(
     }
 
     OFString temp_str;
-    OFLOG_INFO(movescuLogger, "Received Store Request: MsgID " << req->MessageID << ", ("
+    OFLOG_INFO(movescuLogger, "Received Store Request (MsgID " << req->MessageID << ", "
         << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
     OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, *req, DIMSE_INCOMING, NULL, presID));
 
@@ -1502,8 +1502,8 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 
     /* should we send a cancel back ?? */
     if (opt_cancelAfterNResponses == responseCount) {
-        OFLOG_INFO(movescuLogger, "Sending Cancel Request: MsgID " << request->MessageID
-            << ", PresID " << OFstatic_cast(unsigned int, myCallbackData->presId));
+        OFLOG_INFO(movescuLogger, "Sending Cancel Request (MsgID " << request->MessageID
+            << ", PresID " << OFstatic_cast(unsigned int, myCallbackData->presId) << ")");
         cond = DIMSE_sendCancelRequest(myCallbackData->assoc,
             myCallbackData->presId, request->MessageID);
         if (cond != EC_Normal) {
@@ -1564,7 +1564,7 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
 
-    OFLOG_INFO(movescuLogger, "Sending Move Request: MsgID " << msgId);
+    OFLOG_INFO(movescuLogger, "Sending Move Request (MsgID " << msgId << ")");
     OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, req, DIMSE_OUTGOING, NULL, presId));
     OFLOG_INFO(movescuLogger, "Request Identifiers:" << OFendl << DcmObject::PrintHelper(*dcmff.getDataset()));
 
@@ -1628,6 +1628,11 @@ cmove(T_ASC_Association *assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.100  2011-09-29 09:04:23  joergr
+** Output message ID of request and DIMSE status of response messages to the
+** INFO logger (if DEBUG level is not enabled). All tools and classes in the
+** "dcmnet" module now use (more or less) the same output in verbose mode.
+**
 ** Revision 1.99  2011-09-22 08:46:27  joergr
 ** Output status detail information (if any) to the DEBUG logger and not to the
 ** WARN or INFO logger. This is now consistent for all DCMTK network tools.

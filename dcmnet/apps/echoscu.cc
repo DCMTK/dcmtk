@@ -18,8 +18,8 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-28 14:08:17 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2011-09-29 09:04:23 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -700,7 +700,7 @@ echoSCU(T_ASC_Association * assoc)
     DcmDataset *statusDetail = NULL;
 
     /* dump information if required */
-    OFLOG_INFO(echoscuLogger, "Sending Echo Request: MsgID " << msgId);
+    OFLOG_INFO(echoscuLogger, "Sending Echo Request (MsgID " << msgId << ")");
 
     /* send C-ECHO-RQ and handle response */
     OFCondition cond = DIMSE_echoUser(assoc, msgId, opt_blockMode, opt_dimse_timeout, &status, &statusDetail);
@@ -747,6 +747,11 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
+** Revision 1.57  2011-09-29 09:04:23  joergr
+** Output message ID of request and DIMSE status of response messages to the
+** INFO logger (if DEBUG level is not enabled). All tools and classes in the
+** "dcmnet" module now use (more or less) the same output in verbose mode.
+**
 ** Revision 1.56  2011-09-28 14:08:17  joergr
 ** Added function that converts the status of a C-ECHO response to a string.
 **

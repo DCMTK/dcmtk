@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-28 14:37:01 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2011-09-29 09:04:26 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -752,9 +752,15 @@ OFCondition DcmSCP::handleECHORequest(T_DIMSE_C_EchoRQ &reqMessage,
 {
   OFString tempStr;
   // Dump debug information
-  DCMNET_INFO("Received C-ECHO Request");
-  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
-  DCMNET_INFO("Sending C-ECHO Response");
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DCMNET_INFO("Received C-ECHO Request");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+    DCMNET_INFO("Sending C-ECHO Response");
+  } else {
+    DCMNET_INFO("Received C-ECHO Request (MsgID " << reqMessage.MessageID << ")");
+    DCMNET_INFO("Sending C-ECHO Response (" << DU_cechoStatusString(STATUS_Success) << ")");
+  }
 
   // Send an echo response
   OFCondition cond = DIMSE_sendEchoResponse( m_assoc, presID, &reqMessage, STATUS_Success, NULL );
@@ -797,7 +803,10 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
   Uint16 statusCode = 0;
 
   // Dump debug information
-  DCMNET_INFO("Received N-EVENT-REPORT Request");
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+    DCMNET_INFO("Received N-EVENT-REPORT Request");
+  else
+    DCMNET_INFO("Received N-EVENT-REPORT Request (MsgID " << reqMessage.MessageID << ")");
 
   // Check if dataset is announced correctly
   if (reqMessage.DataSetType == DIMSE_DATASET_NULL)
@@ -846,8 +855,13 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
   eventReportRsp.AffectedSOPClassUID[0] = 0;
   eventReportRsp.AffectedSOPInstanceUID[0] = 0;
 
-  DCMNET_INFO("Sending N-EVENT-REPORT Response");
-  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DCMNET_INFO("Sending N-EVENT-REPORT Response");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
+  } else {
+    DCMNET_INFO("Sending N-EVENT-REPORT Response (" << DU_neventReportStatusString(statusCode) << ")");
+  }
   cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
@@ -881,7 +895,10 @@ OFCondition DcmSCP::handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
   Uint16 statusCode = 0;
 
   // Dump debug information
-  DCMNET_INFO("Received N-ACTION Request");
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    DCMNET_INFO("Received N-ACTION Request");
+  else
+    DCMNET_INFO("Received N-ACTION Request (MsgID " << reqMessage.MessageID << ")");
 
   // Check if dataset is announced correctly
   if (reqMessage.DataSetType == DIMSE_DATASET_NULL)
@@ -918,18 +935,23 @@ OFCondition DcmSCP::handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
 
   // Send back response
   T_DIMSE_Message response;
-  T_DIMSE_N_ActionRSP &nActionRsp = response.msg.NActionRSP;
+  T_DIMSE_N_ActionRSP &actionRsp = response.msg.NActionRSP;
   response.CommandField = DIMSE_N_ACTION_RSP;
-  nActionRsp.MessageIDBeingRespondedTo = reqMessage.MessageID;
-  nActionRsp.DimseStatus = statusCode;
-  nActionRsp.DataSetType = DIMSE_DATASET_NULL;
-  nActionRsp.opts = 0;
+  actionRsp.MessageIDBeingRespondedTo = reqMessage.MessageID;
+  actionRsp.DimseStatus = statusCode;
+  actionRsp.DataSetType = DIMSE_DATASET_NULL;
+  actionRsp.opts = 0;
   //user option. may be set to zero
-  nActionRsp.AffectedSOPClassUID[0] = 0;
-  nActionRsp.AffectedSOPInstanceUID[0] = 0;
+  actionRsp.AffectedSOPClassUID[0] = 0;
+  actionRsp.AffectedSOPInstanceUID[0] = 0;
 
-  DCMNET_INFO("Sending N-ACTION Response");
-  DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DCMNET_INFO("Sending N-ACTION Response");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
+  } else {
+    DCMNET_INFO("Sending N-ACTION Response (" << DU_nactionStatusString(statusCode) << ")");
+  }
   cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
@@ -965,16 +987,16 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
   OFString tempStr;
   T_ASC_PresentationContextID pcid = presID;
   T_DIMSE_Message request;
-  T_DIMSE_N_EventReportRQ &eventRepReq = request.msg.NEventReportRQ;
+  T_DIMSE_N_EventReportRQ &eventReportReq = request.msg.NEventReportRQ;
   DcmDataset *statusDetail = NULL;
 
   request.CommandField = DIMSE_N_EVENT_REPORT_RQ;
 
   // Generate a new message ID
-  eventRepReq.MessageID = messageID;
+  eventReportReq.MessageID = messageID;
 
-  eventRepReq.DataSetType = DIMSE_DATASET_PRESENT;
-  eventRepReq.EventTypeID = eventTypeID;
+  eventReportReq.DataSetType = DIMSE_DATASET_PRESENT;
+  eventReportReq.EventTypeID = eventTypeID;
 
   // Determine SOP Class from presentation context
   OFString abstractSyntax, transferSyntax;
@@ -982,16 +1004,21 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
   findPresentationContext(pcid, abstractSyntax, transferSyntax);
   if (abstractSyntax.empty() || transferSyntax.empty())
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
-  OFStandard::strlcpy(eventRepReq.AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(eventRepReq.AffectedSOPClassUID));
-  OFStandard::strlcpy(eventRepReq.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(eventRepReq.AffectedSOPInstanceUID));
+  OFStandard::strlcpy(eventReportReq.AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(eventReportReq.AffectedSOPClassUID));
+  OFStandard::strlcpy(eventReportReq.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(eventReportReq.AffectedSOPInstanceUID));
 
   // Send request
-  DCMNET_INFO("Sending N-EVENT-REPORT Request");
-  // Output dataset only if trace level is enabled
-  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, reqDataset, pcid));
-  else
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, NULL, pcid));
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DCMNET_INFO("Sending N-EVENT-REPORT Request");
+    // Output dataset only if trace level is enabled
+    if (DCM_dcmnetLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
+      DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, reqDataset, pcid));
+    else
+      DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, NULL, pcid));
+  } else {
+    DCMNET_INFO("Sending N-EVENT-REPORT Request (MsgID " << eventReportReq.MessageID << ")");
+  }
   cond = sendDIMSEMessage(pcid, &request, reqDataset, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
@@ -1032,11 +1059,11 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
   }
 
   // Set return value
-  T_DIMSE_N_EventReportRSP &eventRepRsp = response.msg.NEventReportRSP;
-  rspStatusCode = eventRepRsp.DimseStatus;
+  T_DIMSE_N_EventReportRSP &eventReportRsp = response.msg.NEventReportRSP;
+  rspStatusCode = eventReportRsp.DimseStatus;
 
   // Check whether there is a dataset to be received
-  if (eventRepRsp.DataSetType == DIMSE_DATASET_PRESENT)
+  if (eventReportRsp.DataSetType == DIMSE_DATASET_PRESENT)
   {
     // this should never happen
     DcmDataset *tempDataset = NULL;
@@ -1054,10 +1081,10 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
   }
 
   // Check whether the message ID being responded to is equal to the message ID of the request
-  if (eventRepRsp.MessageIDBeingRespondedTo != eventRepReq.MessageID)
+  if (eventReportRsp.MessageIDBeingRespondedTo != eventReportReq.MessageID)
   {
-    DCMNET_ERROR("Received response with wrong message ID ("
-      << eventRepRsp.MessageIDBeingRespondedTo << " instead of " << eventRepReq.MessageID << ")");
+    DCMNET_ERROR("Received response with wrong message ID (" << eventReportRsp.MessageIDBeingRespondedTo
+      << " instead of " << eventReportReq.MessageID << ")");
     return DIMSE_BADMESSAGE;
   }
   return cond;
@@ -1769,6 +1796,11 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.23  2011-09-29 09:04:26  joergr
+** Output message ID of request and DIMSE status of response messages to the
+** INFO logger (if DEBUG level is not enabled). All tools and classes in the
+** "dcmnet" module now use (more or less) the same output in verbose mode.
+**
 ** Revision 1.22  2011-09-28 14:37:01  joergr
 ** Output the DIMSE status in verbose mode (if debug mode is not enabled).
 **

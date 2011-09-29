@@ -18,8 +18,8 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-22 08:46:29 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2011-09-29 09:04:25 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,7 +127,8 @@ void DcmFindSCUDefaultCallback::callback(
     /* should we send a cancel back ?? */
     if (cancelAfterNResponses_ == responseCount)
     {
-        DCMNET_INFO("Sending Cancel Request, MsgID: " << request->MessageID << ", PresID: " << OFstatic_cast(unsigned int, presId_));
+        DCMNET_INFO("Sending Cancel Request (MsgID " << request->MessageID
+            << ", PresID " << OFstatic_cast(unsigned int, presId_) << ")");
         OFCondition cond = DIMSE_sendCancelRequest(assoc_, presId_, request->MessageID);
         if (cond.bad())
         {
@@ -521,8 +522,13 @@ OFCondition DcmFindSCU::findSCU(
         req.MessageID = assoc->nextMsgID++;
 
         /* if required, dump some more general information */
-        DCMNET_INFO("Sending Find Request: MsgID " << req.MessageID);
-        DCMNET_DEBUG(DIMSE_dumpMessage(temp_str, req, DIMSE_OUTGOING, NULL, presId));
+        if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+        {
+            DCMNET_INFO("Sending Find Request");
+            DCMNET_DEBUG(DIMSE_dumpMessage(temp_str, req, DIMSE_OUTGOING, NULL, presId));
+        } else {
+            DCMNET_INFO("Sending Find Request (MsgID " << req.MessageID << ")");
+        }
         DCMNET_INFO("Request Identifiers:" << OFendl << DcmObject::PrintHelper(*dset));
 
         /* finally conduct transmission of data */
@@ -563,6 +569,11 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.21  2011-09-29 09:04:25  joergr
+ * Output message ID of request and DIMSE status of response messages to the
+ * INFO logger (if DEBUG level is not enabled). All tools and classes in the
+ * "dcmnet" module now use (more or less) the same output in verbose mode.
+ *
  * Revision 1.20  2011-09-22 08:46:29  joergr
  * Output status detail information (if any) to the DEBUG logger and not to the
  * WARN or INFO logger. This is now consistent for all DCMTK network tools.
