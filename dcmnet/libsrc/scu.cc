@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 13:12:01 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2011-09-29 17:12:03 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -680,16 +680,19 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   /* Set message ID */
   req->MessageID = nextMessageID();
   /* Load file if necessary */
-  DcmFileFormat *dcmff = NULL;
+  DcmFileFormat *fileformat = NULL;
   if (!dicomFile.empty())
   {
-    dcmff = new DcmFileFormat();
-    if (dcmff == NULL)
+    fileformat = new DcmFileFormat();
+    if (fileformat == NULL)
       return EC_MemoryExhausted;
-    cond = dcmff->loadFile(dicomFile.c_str());
+    cond = fileformat->loadFile(dicomFile.c_str());
     if (cond.bad())
+    {
+      delete fileformat;
       return cond;
-    dataset = dcmff->getDataset();
+    }
+    dataset = fileformat->getDataset();
   }
 
   /* Fill message according to dataset to be sent */
@@ -711,8 +714,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
       DCMNET_ERROR("  Pres. Context ID : 0 (find via SOP Class and Transfer Syntax)");
     else
       DCMNET_ERROR("  Pres. Context ID : " << OFstatic_cast(unsigned int, pcid));
-    delete dcmff;
-    dcmff = NULL;
+    delete fileformat;
     return cond;
   }
   OFStandard::strlcpy(req->AffectedSOPClassUID, sopClassUID.c_str(), sizeof(req->AffectedSOPClassUID));
@@ -765,8 +767,8 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
       << dcmSOPClassUIDToModality(sopClassUID.c_str(), "OT") << ")");
   }
   cond = sendDIMSEMessage(pcid, &msg, dataset, NULL /* callback */, NULL /* callbackContext */);
-  delete dcmff;
-  dcmff = NULL;
+  delete fileformat;
+  fileformat = NULL;
   if (cond.bad())
   {
     DCMNET_ERROR("Failed sending C-STORE request: " << DimseCondition::dump(tempStr, cond));
@@ -2332,6 +2334,9 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.56  2011-09-29 17:12:03  joergr
+** Fixed memory leak in sendSTORERequest(), a DICOM dataset was not deleted.
+**
 ** Revision 1.55  2011-09-29 13:12:01  joergr
 ** Introduced new network-related error codes, e.g. in case that none of the
 ** proposed presentation contexts were accepted by the association acceptor.
