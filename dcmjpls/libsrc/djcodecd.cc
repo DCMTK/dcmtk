@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2010, OFFIS e.V.
+ *  Copyright (C) 2007-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: codec classes for JPEG-LS decoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:24 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-09-30 14:41:58 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,7 +167,7 @@ OFCondition DJLSDecoderBase::decode(
 
   while (result.good() && !done)
   {
-      DCMJPLS_INFO("Current Frame Number: " << currentFrame);
+      DCMJPLS_DEBUG("JPEG-LS decoder processes frame " << (currentFrame+1));
 
       result = decodeFrame(pixSeq, djcp, dataset, currentFrame, currentItem, pixeldata8, frameSize,
           imageFrames, imageColumns, imageRows, imageSamplesPerPixel, bytesPerSample);
@@ -751,6 +751,9 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.16  2011-09-30 14:41:58  uli
+ * Improved log output and moved to DEBUG log level.
+ *
  * Revision 1.15  2010-10-14 13:14:24  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -18,8 +18,8 @@
  *  Purpose: codec classes for JPEG-LS encoders.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-03-08 10:38:27 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2011-09-30 14:41:58 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -517,7 +517,7 @@ OFCondition DJLSEncoderBase::losslessRawEncode(
     for (unsigned long i=0; (i<frameCount) && (result.good()); ++i)
     {
       // compress frame
-      DCMJPLS_INFO("Encoding frame " << (i+1) << " of " << frameCount);
+      DCMJPLS_DEBUG("JPEG-LS encoder processes frame " << (i+1) << " of " << frameCount);
       result = compressRawFrame(framePointer, bitsAllocated, columns, rows,
           samplesPerPixel, planarConfiguration, photometricInterpretation,
           pixelSequence, offsetList, compressedFrameSize, djcp);
@@ -648,7 +648,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   if ((jls_params.ilv == ILV_NONE && (ilv == ILV_SAMPLE || ilv == ILV_LINE)) ||
       (ilv == ILV_NONE && (jls_params.ilv == ILV_SAMPLE || jls_params.ilv == ILV_LINE)))
   {
-    DCMJPLS_INFO("Converting image from " << (ilv == ILV_NONE ? "color-by-plane" : "color-by-pixel")
+    DCMJPLS_DEBUG("Converting image from " << (ilv == ILV_NONE ? "color-by-plane" : "color-by-pixel")
           << " to " << (jls_params.ilv == ILV_NONE ? "color-by-plane" : "color-by-pixel"));
 
     frameBuffer = new Uint8[frameSize];
@@ -803,7 +803,7 @@ OFCondition DJLSEncoderBase::losslessCookedEncode(
     for (unsigned long i=0; (i<frameCount) && (result.good()); ++i)
     {
       // compress frame
-      DCMJPLS_INFO("Encoding frame " << (i+1) << " of " << frameCount);
+      DCMJPLS_DEBUG("JPEG-LS encoder processes frame " << (i+1) << " of " << frameCount);
       result = compressCookedFrame(pixelSequence, dimage,
           photometricInterpretation, offsetList, compressedFrameSize, djcp, i, nearLosslessDeviation);
 
@@ -1053,7 +1053,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   // Do we have to convert the image to color-by-plane now?
   if (jls_params.ilv == ILV_NONE && jls_params.components != 1)
   {
-    DCMJPLS_INFO("Converting image from color-by-pixel to color-by-plane");
+    DCMJPLS_DEBUG("Converting image from color-by-pixel to color-by-plane");
 
     frameBuffer = new Uint8[buffer_size];
     framePointer = frameBuffer;
@@ -1142,6 +1142,9 @@ OFCondition DJLSEncoderBase::convertToSampleInterleaved(
 /*
  * CVS/RCS Log:
  * $Log: djcodece.cc,v $
+ * Revision 1.14  2011-09-30 14:41:58  uli
+ * Improved log output and moved to DEBUG log level.
+ *
  * Revision 1.13  2011-03-08 10:38:27  uli
  * Fixed crash in dcmjpls if no representation parameter is given.
  *

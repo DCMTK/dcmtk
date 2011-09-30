@@ -40,6 +40,10 @@ Changes between releases are documented here.
            dcmjpeg/libijg8/jerror8.h
            dcmjpeg/libijg8/jmemsys8.h
 
+- Improved log output and moved to DEBUG log level.
+  Affects: dcmjpls/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodece.cc
+
 **** Changes from 2011.09.29 (riesmeier)
 
 - Fixed memory leak in sendSTORERequest(), a DICOM dataset was not deleted.
