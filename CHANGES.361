@@ -24,6 +24,9 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcuid.cc
            oflog/include/dcmtk/oflog/config/defines.h
 
+- Made CHECK_FUNCTIONWITHHEADER_EXISTS generate an unique message.
+  Affects: CMake/CheckFunctionWithHeaderExists.cmake
+
 **** Changes from 2011.09.29 (riesmeier)
 
 - Fixed memory leak in sendSTORERequest(), a DICOM dataset was not deleted.

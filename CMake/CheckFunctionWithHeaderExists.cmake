@@ -25,7 +25,7 @@ MACRO(CHECK_FUNCTIONWITHHEADER_EXISTS SYMBOL FILES VARIABLE)
     FILE(WRITE ${CMAKE_BINARY_DIR}/CMakeTmp/CheckSymbolExists.cxx
       "${CHECK_SYMBOL_EXISTS_CONTENT}")
 
-    MESSAGE(STATUS "Looking for ${SYMBOL}")
+    MESSAGE(STATUS "Looking for prototype of ${SYMBOL}")
     TRY_COMPILE(${VARIABLE}
       ${CMAKE_BINARY_DIR}
       ${CMAKE_BINARY_DIR}/CMakeTmp/CheckSymbolExists.cxx
@@ -34,7 +34,7 @@ MACRO(CHECK_FUNCTIONWITHHEADER_EXISTS SYMBOL FILES VARIABLE)
       "${CHECK_SYMBOL_EXISTS_LIBS}"
       OUTPUT_VARIABLE OUTPUT)
     IF(${VARIABLE})
-      MESSAGE(STATUS "Looking for ${SYMBOL} - found")
+      MESSAGE(STATUS "Looking for prototype of ${SYMBOL} - found")
       SET(${VARIABLE} 1 CACHE INTERNAL "Have symbol ${SYMBOL}")
       FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
         "Determining if the ${SYMBOL} "
@@ -42,7 +42,7 @@ MACRO(CHECK_FUNCTIONWITHHEADER_EXISTS SYMBOL FILES VARIABLE)
         "${OUTPUT}\nFile ${CMAKE_BINARY_DIR}/CMakeTmp/CheckSymbolExists.ccc:\n"
         "${CHECK_SYMBOL_EXISTS_CONTENT}\n")
     ELSE(${VARIABLE})
-      MESSAGE(STATUS "Looking for ${SYMBOL} - not found.")
+      MESSAGE(STATUS "Looking for prototype of ${SYMBOL} - not found.")
       SET(${VARIABLE} "" CACHE INTERNAL "Have symbol ${SYMBOL}")
       FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
         "Determining if the ${SYMBOL} "
