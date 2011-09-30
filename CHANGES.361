@@ -27,6 +27,19 @@ Changes between releases are documented here.
 - Made CHECK_FUNCTIONWITHHEADER_EXISTS generate an unique message.
   Affects: CMake/CheckFunctionWithHeaderExists.cmake
 
+- Corrected accidentally broken log output.
+  Affects: dcmjpeg/libijg12/jdhuff.c
+           dcmjpeg/libijg12/jdhuff12.h
+           dcmjpeg/libijg12/jdmarker.c
+           dcmjpeg/libijg12/jerror12.h
+           dcmjpeg/libijg12/jmemsys12.h
+           dcmjpeg/libijg16/jdhuff16.h
+           dcmjpeg/libijg16/jerror16.h
+           dcmjpeg/libijg16/jmemsys16.h
+           dcmjpeg/libijg8/jdhuff8.h
+           dcmjpeg/libijg8/jerror8.h
+           dcmjpeg/libijg8/jmemsys8.h
+
 **** Changes from 2011.09.29 (riesmeier)
 
 - Fixed memory leak in sendSTORERequest(), a DICOM dataset was not deleted.
