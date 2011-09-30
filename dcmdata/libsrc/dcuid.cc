@@ -19,9 +19,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-08 12:40:50 $
- *  CVS/RCS Revision: $Revision: 1.96 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-09-30 08:36:24 $
+ *  CVS/RCS Revision: $Revision: 1.97 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1481,7 +1481,7 @@ static long gethostid(void)
     */
     if (gethostname(name, 1024) == 0)
     {
-#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+#if defined(HAVE_GETHOSTBYNAME_R)
         // use gethostbyname_r instead of gethostbyname
         int h_errnop=0;
         struct hostent theHostent;
@@ -1688,6 +1688,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.97  2011-09-30 08:36:24  uli
+** Added a proper check for gethostbyname_r().
+**
 ** Revision 1.96  2011-09-08 12:40:50  joergr
 ** Added support for new SOP Class UID from Supplement 152 (Ophthalmic Thickness
 ** Map Storage SOP Class).

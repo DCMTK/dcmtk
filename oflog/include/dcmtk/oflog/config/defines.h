@@ -42,12 +42,6 @@
 #endif
 
 /* */
-// This is from dcuid.cc
-#if defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME) && defined(_REENTRANT)
-#define DCMTK_LOG4CPLUS_HAVE_GETHOSTBYNAME_R
-#endif
-
-/* */
 #ifdef HAVE_GETPID
 #define DCMTK_LOG4CPLUS_HAVE_GETPID
 #endif

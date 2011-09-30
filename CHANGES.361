@@ -10,6 +10,15 @@ Changes between releases are documented here.
 - Replaced an ugly "else while" construct with a clearer version.
   Affects: dcmdata/libsrc/dcdicdir.cc
 
+- Added a proper check for gethostbyname_r().
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/osconfig.h.in
+           dcmdata/libsrc/dcuid.cc
+           oflog/include/dcmtk/oflog/config/defines.h
+
 **** Changes from 2011.09.29 (riesmeier)
 
 - Fixed memory leak in sendSTORERequest(), a DICOM dataset was not deleted.

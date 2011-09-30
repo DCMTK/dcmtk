@@ -198,6 +198,9 @@
 /* Define to 1 if you have the `gethostbyname' function. */
 #undef HAVE_GETHOSTBYNAME
 
+/* Define to 1 if you have the `gethostbyname_r' function. */
+#undef HAVE_GETHOSTBYNAME_R
+
 /* Define to 1 if you have the `gethostid' function. */
 #undef HAVE_GETHOSTID
 
@@ -468,6 +471,10 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for gethostbyname in libc.h unistd.h
    stdlib.h netdb.h */
 #undef HAVE_PROTOTYPE_GETHOSTBYNAME
+
+/* Define if your system has a prototype for gethostbyname_r in libc.h
+   unistd.h stdlib.h netdb.h */
+#undef HAVE_PROTOTYPE_GETHOSTBYNAME_R
 
 /* Define if your system has a prototype for gethostid in libc.h unistd.h
    stdlib.h netdb.h */
