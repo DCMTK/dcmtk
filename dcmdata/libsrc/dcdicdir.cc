@@ -18,8 +18,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-09-30 07:26:44 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2011-09-30 08:17:44 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -416,49 +416,52 @@ OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
 
     if (toRecord  == NULL)
         l_error = EC_IllegalCall;
-    else while ( startRec != NULL )
+    else
     {
-        DcmDirectoryRecord *lowerRec = NULL;
-        DcmDirectoryRecord *nextRec = NULL;
-
-        DcmUnsignedLongOffset *offElem;
-        offElem = lookForOffsetElem( startRec, DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
-        if ( offElem != NULL )
-            lowerRec = OFstatic_cast(DcmDirectoryRecord *, offElem->getNextRecord());
-        offElem = lookForOffsetElem( startRec, DCM_OffsetOfTheNextDirectoryRecord );
-        if ( offElem != NULL )
-            nextRec = OFstatic_cast(DcmDirectoryRecord *, offElem->getNextRecord());
-
-        DCMDATA_TRACE("DcmDicomDir::moveRecordToTree() Record ("
-            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-            << STD_NAMESPACE setw(4) << startRec->getGTag() << ","
-            << STD_NAMESPACE setw(4) << startRec->getETag()
-            << ") p=" << OFstatic_cast(void *, startRec)
-            << " has lower=" << OFstatic_cast(void *, lowerRec)
-            << " and next=" << OFstatic_cast(void *, nextRec) << " Record");
-
-        linkMRDRtoRecord( startRec );
-
-        // use protected method for insertion without type check:
-        if ( toRecord->masterInsertSub( startRec ) == EC_Normal )
+        while ( startRec != NULL )
         {
-            // only works since friend class
-            DcmItem *dit = fromDirSQ.remove( startRec );
-            if ( dit == NULL )
+            DcmDirectoryRecord *lowerRec = NULL;
+            DcmDirectoryRecord *nextRec = NULL;
+
+            DcmUnsignedLongOffset *offElem;
+            offElem = lookForOffsetElem( startRec, DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
+            if ( offElem != NULL )
+                lowerRec = OFstatic_cast(DcmDirectoryRecord *, offElem->getNextRecord());
+            offElem = lookForOffsetElem( startRec, DCM_OffsetOfTheNextDirectoryRecord );
+            if ( offElem != NULL )
+                nextRec = OFstatic_cast(DcmDirectoryRecord *, offElem->getNextRecord());
+
+            DCMDATA_TRACE("DcmDicomDir::moveRecordToTree() Record ("
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+                << STD_NAMESPACE setw(4) << startRec->getGTag() << ","
+                << STD_NAMESPACE setw(4) << startRec->getETag()
+                << ") p=" << OFstatic_cast(void *, startRec)
+                << " has lower=" << OFstatic_cast(void *, lowerRec)
+                << " and next=" << OFstatic_cast(void *, nextRec) << " Record");
+
+            linkMRDRtoRecord( startRec );
+
+            // use protected method for insertion without type check:
+            if ( toRecord->masterInsertSub( startRec ) == EC_Normal )
             {
-                DCMDATA_ERROR("DcmDicomDir::moveRecordToTree() DirRecord is part of unknown Sequence");
+                // only works since friend class
+                DcmItem *dit = fromDirSQ.remove( startRec );
+                if ( dit == NULL )
+                {
+                    DCMDATA_ERROR("DcmDicomDir::moveRecordToTree() DirRecord is part of unknown Sequence");
+                }
             }
-        }
-        else
-        {
-            DCMDATA_ERROR("DcmDicomDir::moveRecordToTree() Cannot insert DirRecord (=NULL?)");
-        }
-        moveRecordToTree( lowerRec, fromDirSQ, startRec );
+            else
+            {
+                DCMDATA_ERROR("DcmDicomDir::moveRecordToTree() Cannot insert DirRecord (=NULL?)");
+            }
+            moveRecordToTree( lowerRec, fromDirSQ, startRec );
 
-        // We handled this record, now move on to the next one on this level.
-        // The next while-loop iteration does the equivalent of the following:
-        // moveRecordToTree( nextRec, fromDirSQ, toRecord );
-        startRec = nextRec;
+            // We handled this record, now move on to the next one on this level.
+            // The next while-loop iteration does the equivalent of the following:
+            // moveRecordToTree( nextRec, fromDirSQ, toRecord );
+            startRec = nextRec;
+        }
     }
 
     return l_error;
@@ -1352,6 +1355,9 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.68  2011-09-30 08:17:44  uli
+** Replaced an ugly "else while" construct with a clearer version.
+**
 ** Revision 1.67  2011-09-30 07:26:44  uli
 ** Removed a recursion in moveRecordToTree() which could cause stack overflows.
 **
