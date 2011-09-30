@@ -18,8 +18,8 @@
  *  Purpose: Interface of the class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-06 11:42:58 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2011-09-30 09:05:50 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,7 +108,8 @@ class DcmDataset
     virtual void removeInvalidGroups(const OFBool cmdSet = OFFalse);
 
     /** return the transfer syntax in which this dataset was originally read.
-     *  @return transfer syntax in which this dataset was originally read, EXS_Unknown if the dataset was created in memory
+     *  @return transfer syntax in which this dataset was originally read,
+     *    EXS_Unknown if the dataset was created in memory
      */
     E_TransferSyntax getOriginalXfer() const;
 
@@ -223,11 +224,10 @@ class DcmDataset
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache);
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype,
+                                             DcmWriteCache *wcache);
 
     /** write object in XML format.
      *  The XML declaration (e.g. <?xml version="1.0"?>) is not written by this function.
@@ -308,7 +308,7 @@ class DcmDataset
 
   private:
 
-    /// current transfer syntax of the dataset
+    /// original transfer syntax of the dataset, i.e. the one in which this dataset was read
     E_TransferSyntax Xfer;
 };
 
@@ -319,6 +319,9 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.39  2011-09-30 09:05:50  joergr
+** Fixed wrong or misleading comment on the member variable "Xfer".
+**
 ** Revision 1.38  2011-09-06 11:42:58  joergr
 ** Also remove elements of group 0x0006 from sequence items (see CP-1129).
 **
