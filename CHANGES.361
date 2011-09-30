@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.09.30 (schlachter)
+
+- Removed a recursion in moveRecordToTree() which could cause stack overflows.
+  Thanks to forum user "flang" for the report and the original patch.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
 **** Changes from 2011.09.29 (riesmeier)
 
 - Fixed memory leak in sendSTORERequest(), a DICOM dataset was not deleted.

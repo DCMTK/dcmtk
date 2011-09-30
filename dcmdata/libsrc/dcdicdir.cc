@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-03 08:53:45 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-09-30 07:26:44 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -416,7 +416,7 @@ OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
 
     if (toRecord  == NULL)
         l_error = EC_IllegalCall;
-    else if ( startRec != NULL )
+    else while ( startRec != NULL )
     {
         DcmDirectoryRecord *lowerRec = NULL;
         DcmDirectoryRecord *nextRec = NULL;
@@ -454,7 +454,11 @@ OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
             DCMDATA_ERROR("DcmDicomDir::moveRecordToTree() Cannot insert DirRecord (=NULL?)");
         }
         moveRecordToTree( lowerRec, fromDirSQ, startRec );
-        moveRecordToTree( nextRec, fromDirSQ, toRecord );
+
+        // We handled this record, now move on to the next one on this level.
+        // The next while-loop iteration does the equivalent of the following:
+        // moveRecordToTree( nextRec, fromDirSQ, toRecord );
+        startRec = nextRec;
     }
 
     return l_error;
@@ -1348,6 +1352,9 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.67  2011-09-30 07:26:44  uli
+** Removed a recursion in moveRecordToTree() which could cause stack overflows.
+**
 ** Revision 1.66  2011-08-03 08:53:45  joergr
 ** Include "io.h" required for mktemp() on Windows with VisualStudio.
 **
