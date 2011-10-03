@@ -459,10 +459,7 @@ get_dht (j_decompress_ptr cinfo)
       ERREXIT(cinfo, JERR_BAD_HUFF_TABLE);
 
     for (i = 0; i < count; i++)
-    {
       INPUT_BYTE(cinfo, huffval[i], return FALSE);
-      TRACEMS2(cinfo, 0, JERR_BAD_LIB_VERSION, i, huffval[i]);
-      }
 
     length -= count;
 

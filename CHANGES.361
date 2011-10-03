@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.03 (schlachter)
+
+- Reverted some accidentally committed changes.
+  Affects: dcmjpeg/libijg12/jdhuff.c
+           dcmjpeg/libijg12/jdmarker.c
+
 **** Changes from 2011.09.30 (riesmeier)
 
 - Fixed wrong or misleading comment on the member variable "Xfer".
