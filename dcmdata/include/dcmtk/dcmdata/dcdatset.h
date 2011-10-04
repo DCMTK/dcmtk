@@ -18,8 +18,8 @@
  *  Purpose: Interface of the class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-04 16:12:12 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2011-10-04 16:47:59 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,8 +108,9 @@ class DcmDataset
     virtual void removeInvalidGroups(const OFBool cmdSet = OFFalse);
 
     /** return the transfer syntax in which this dataset was originally read or created.
-     *  @return transfer syntax in which this dataset was originally read, might be
-     *    EXS_Unknown if the dataset was created in memory
+     *  See updateOriginalXfer() on how to update this value when created in memory.
+     *  @return transfer syntax in which this dataset was originally read. Might be
+     *    EXS_Unknown if the dataset was created in memory.
      */
     E_TransferSyntax getOriginalXfer() const;
 
@@ -119,9 +120,20 @@ class DcmDataset
      *  encoding rules.  The default value is the transfer syntax in which this dataset was
      *  originally read (see getOriginalXfer()) or, if this dataset was created from memory,
      *  the explicit VR with local endianness.
+     *  Please note that the current transfer syntax might also change after calling
+     *  updateOriginalXfer().
      *  @return transfer syntax in which this dataset is currently stored (see above)
      */
     E_TransferSyntax getCurrentXfer() const;
+
+    /** update the original transfer syntax, e.g.\ in case the dataset was created in memory
+     *  and pixel data was added with a particular representation. Icon images and other
+     *  nested pixel data elements are not checked. If previously unknown, the original
+     *  transfer syntax is set to the default EXS_LittleEndianExplicit. Please note that the
+     *  current transfer syntax might also be updated if its value was not in sync with the
+     *  internal representation of the pixel data.
+     */
+    virtual void updateOriginalXfer();
 
     /** print all elements of the dataset to a stream
      *  @param out output stream
@@ -332,6 +344,10 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.41  2011-10-04 16:47:59  joergr
+** Added method that allows for updating the original transfer syntax (e.g.
+** after pixel data with a particular representation has been added).
+**
 ** Revision 1.40  2011-10-04 16:12:12  joergr
 ** Added support for storing the current transfer syntax of the dataset (in
 ** addition to the original one). The transfer syntax is also used for the

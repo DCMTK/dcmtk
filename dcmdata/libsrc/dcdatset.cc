@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-04 16:12:10 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2011-10-04 16:47:57 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,6 +126,58 @@ E_TransferSyntax DcmDataset::getOriginalXfer() const
 E_TransferSyntax DcmDataset::getCurrentXfer() const
 {
     return CurrentXfer;
+}
+
+
+void DcmDataset::updateOriginalXfer()
+{
+    DcmStack resultStack;
+    /* Check for pixel data element on main dataset level only. */
+    /* Icon images and other nested pixel data elements are not checked. */
+    if (search(DCM_PixelData, resultStack, ESM_fromHere, OFFalse).good())
+    {
+        if (resultStack.top()->ident() == EVR_PixelData)
+        {
+            /* determine the transfer syntax of the original and current representation */
+            E_TransferSyntax repType = EXS_Unknown;
+            const DcmRepresentationParameter *repParam = NULL;
+            DcmPixelData *pixelData = OFstatic_cast(DcmPixelData *, resultStack.top());
+            pixelData->getOriginalRepresentationKey(OriginalXfer, repParam);
+            pixelData->getCurrentRepresentationKey(repType, repParam);
+            /* check whether we also need to change the current transfer syntax */
+            if (repType == EXS_LittleEndianExplicit /* default */)
+            {
+                /* only change the value if not already uncompressed */
+                if ((CurrentXfer != EXS_LittleEndianImplicit) &&
+                    (CurrentXfer != EXS_LittleEndianExplicit) &&
+                    (CurrentXfer != EXS_BigEndianExplicit))
+                {
+                    CurrentXfer = repType;
+                }
+            }
+            else if (repType != EXS_Unknown)
+            {
+                CurrentXfer = repType;
+            }
+        } else {
+            /* something is fishy with the pixel data element (wrong class) */
+            DCMDATA_WARN("DcmDataset: Wrong class for pixel data element, cannot update original transfer syntax");
+        }
+    }
+    /* if no pixel data was found, update only in case of unknown representation */
+    else
+    {
+        if (OriginalXfer == EXS_Unknown)
+        {
+            /* this is also the default in DcmPixelData::getOriginalRepresentationKey() */
+            OriginalXfer = EXS_LittleEndianExplicit;
+        }
+        if (CurrentXfer == EXS_Unknown)
+        {
+            /* this is also the default in DcmPixelData::getCurrentRepresentationKey() */
+            CurrentXfer = EXS_LittleEndianExplicit;
+        }
+    }
 }
 
 
@@ -692,6 +744,10 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
+** Revision 1.57  2011-10-04 16:47:57  joergr
+** Added method that allows for updating the original transfer syntax (e.g.
+** after pixel data with a particular representation has been added).
+**
 ** Revision 1.56  2011-10-04 16:12:10  joergr
 ** Added support for storing the current transfer syntax of the dataset (in
 ** addition to the original one). The transfer syntax is also used for the

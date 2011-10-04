@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.04 (riesmeier)
 
+- Added method that allows for updating the original transfer syntax (e.g.
+  after pixel data with a particular representation has been added).
+  Affects: dcmdata/libsrc/dcdatset.cc
+           dcmdata/include/dcmtk/dcmdata/dcdatset.h
+
 - Added support for storing the current transfer syntax of the dataset (in
   addition to the original one). The transfer syntax is also used for the
   print() and writeXML() methods. The default is explicit VR local endian.
