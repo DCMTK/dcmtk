@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-28 16:28:20 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2011-10-04 08:58:14 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,8 +205,8 @@ public:
 
   /** Add presentation context to be used for association negotiation
    *  @param abstractSyntax [in] Abstract syntax name in UID format
-   *  @param xferSyntaxes   [in] List of transfer syntaxes to be added for the given
-   *                             abstract syntax
+   *  @param xferSyntaxes   [in] List of transfer syntaxes to be added for the given abstract
+   *                             syntax
    *  @param role           [in] The role to be negotiated
    *  @return EC_Normal if adding was successful, otherwise error code
    */
@@ -214,42 +214,41 @@ public:
                                      const OFList<OFString> &xferSyntaxes,
                                      const T_ASC_SC_ROLE role = ASC_SC_ROLE_DEFAULT);
 
-  /** Initialize network, i.e.\ prepare for association negotiation.
-   *  If the SCU is already connected, the call will not be successful and the
-   *  old connection keeps open.
+  /** Initialize network, i.e.\ prepare for association negotiation. If the SCU is already
+   *  connected, the call will not be successful and the old connection keeps open.
    *  @return EC_Normal if initialization was successful, otherwise error code.
    *          SCU_EC_AlreadyConnected if SCU is already connected.
    */
   virtual OFCondition initNetwork();
 
   /** Negotiate association by using presentation contexts and parameters as defined by
-   *  earlier function calls. If negotiation fails, there is no need to close the
-   *  association or to do anything else with this class.
+   *  earlier function calls. If negotiation fails, there is no need to close the association
+   *  or to do anything else with this class.
    *  @return EC_Normal if negotiation was successful, otherwise error code.
    *          SCU_EC_AlreadyConnected if SCU is already connected.
    */
   virtual OFCondition negotiateAssociation();
 
-  /** After negotiation association, this call returns the first usable presentation
-  *  context given the desired abstract syntax and transfer syntax
-  *  @param abstractSyntax [in] The abstract syntax (UID) to look for
-  *  @param transferSyntax [in] The transfer syntax (UID) to look for.
-  *                             If empty, the transfer syntax is not checked.
-  *  @return Adequate Presentation context ID that can be used. 0 if none found.
-  */
+  /** After negotiation association, this call returns the first usable presentation context
+   *  given the desired abstract syntax and transfer syntax
+   *  @param abstractSyntax [in] The abstract syntax (UID) to look for
+   *  @param transferSyntax [in] The transfer syntax (UID) to look for. If empty, the transfer
+   *                             syntax is not checked.
+   *  @return Adequate Presentation context ID that can be used. 0 if none found.
+   */
   T_ASC_PresentationContextID findPresentationContextID(const OFString &abstractSyntax,
                                                         const OFString &transferSyntax);
 
   /** After a successful association negotiation, this function is called to return the
    *  presentation context ID that best matches the desired abstract syntax and transfer
-   *  syntax. The function tries to do the following:
-   * - If possible finds a presentation context with matching TS
-   * - Else then tries to find an explicit VR uncompressed TS presentation ctx
-   * - Else then tries to find an implicit VR uncompressed TS presentation ctx
-   * - Else finally accepts each matching presentation ctx independent of TS.
+   *  syntax (TS). The function tries to do the following:
+   *  - If possible finds a presentation context with matching TS
+   *  - Else then tries to find an explicit VR uncompressed TS presentation context
+   *  - Else then tries to find an implicit VR uncompressed TS presentation context
+   *  - Else finally accepts each matching presentation ctx independent of TS.
    *  @param abstractSyntax [in] The abstract syntax (UID) to look for
-   *  @param transferSyntax [in] The transfer syntax (UID) to look for.
-   *                             If empty, the transfer syntax is not checked.
+   *  @param transferSyntax [in] The transfer syntax (UID) to look for. If empty, the transfer
+   *                             syntax is not checked.
    *  @return Adequate Presentation context ID that can be used. 0 if no appropriate
    *  presentation context could be found at all.
    */
@@ -265,41 +264,30 @@ public:
   virtual OFCondition sendECHORequest(const T_ASC_PresentationContextID presID);
 
   /** This function sends a C-STORE request on the currently opened association and receives
-   *  the corresponding response then.  If required and supported, the SOP instance is
-   *  automatically converted to the network transfer syntax that was negotiated (and is
-   *  specified by the parameter 'presID').
-   *  @param presID          [in]  Contains in the end the ID of the presentation context which
-   *                               was specified in the DIMSE command. If 0 is given, the
-   *                               function tries to find an approriate presentation context
-   *                               itself (based on SOP class and original transfer syntax of
-   *                               the 'dicomFile' or 'dataset').
-   *  @param dicomFile       [in]  The filename of the DICOM file to be sent. Alternatively, a
-   *                               dataset can be given in the next parameter. If both are
-   *                               given the dataset from the file name is used.
-   *  @param dataset         [in]  The dataset to be sent. Alternatively, a filename can be
-   *                               specified in the previous parameter. If both are given the
-   *                               dataset from the filename is used.
-   *  @param rspCommandSet   [out] If this parameter is not NULL it will return a copy of the
-   *                               DIMSE command which was received from the other DICOM
-   *                               application.
-   *  @param rspStatusDetail [out] If a non-NULL value is passed this variable will in the end
-   *                               contain detailed information with regard to the status
-   *                               information which is captured in the status element
-   *                               (0000,0900). Note that the value for element (0000,0900) is
-   *                               not contained in this return value but in internal msg. For
-   *                               details on the structure of this object, see DICOM standard
-   *                               part 7, annex C).
-   *  @param rspStatusCode   [out] The response status code received. 0 means success,
-   *                               others can be found in the DICOM standard.
+   *  the corresponding response then.  If required and supported, the dataset of the SOP
+   *  instance can be converted automatically to the network transfer syntax that was
+   *  negotiated (and is specified by the parameter 'presID').  However, this feature is
+   *  disabled by default. See setDatasetConversionMode() on how to enable it.
+   *  @param presID        [in]  Contains in the end the ID of the presentation context which
+   *                             was specified in the DIMSE command. If 0 is given, the
+   *                             function tries to find an approriate presentation context
+   *                             itself (based on SOP class and original transfer syntax of
+   *                             the 'dicomFile' or 'dataset').
+   *  @param dicomFile     [in]  The filename of the DICOM file to be sent. Alternatively, a
+   *                             dataset can be given in the next parameter. If both are given
+   *                             the dataset from the file name is used.
+   *  @param dataset       [in]  The dataset to be sent. Alternatively, a filename can be
+   *                             specified in the previous parameter. If both are given the
+   *                             dataset from the filename is used.
+   *  @param rspStatusCode [out] The response status code received. 0 means success, others
+   *                             can be found in the DICOM standard.
    *  @return EC_Normal if request could be issued and response was received successfully,
-   *          error code otherwise. That means that if the receiver sends a response
-   *          denoting failure of the storage request, EC_Normal will be returned.
+   *          error code otherwise. That means that if the receiver sends a response denoting
+   *          failure of the storage request, EC_Normal will be returned.
    */
   virtual OFCondition sendSTORERequest(const T_ASC_PresentationContextID presID,
                                        const OFString &dicomFile,
                                        DcmDataset *dataset,
-                                       DcmDataset *&rspCommandSet,   // TODO
-                                       DcmDataset *&rspStatusDetail, // TODO
                                        Uint16 &rspStatusCode);
 
   /** Sends a C-MOVE Request on given presentation context and receives list of responses.
@@ -311,46 +299,41 @@ public:
    *  responses=NULL when calling the function.
    *  This function can be overwritten by actual SCU implementations but just should work fine
    *  for most people.
-   *  @param presID      [in]  The presentation context ID that should be used.
-   *                           Must be an odd number.
-   *  @param moveDestinationAETitle [in]  The move destination's AE title, ie the one that
+   *  @param presID      [in]  The presentation context ID that should be used. Must be an odd
+   *                           number.
+   *  @param moveDestinationAETitle [in]  The move destination's AE title, i.e.\ the one that
    *                           is used for connection to the storage server.
-   *  @param dataset     [in]  The dataset containing the information about the
-   *                           object(s) to be retrieved
-   *  @param responses   [out] The incoming C-MOVE responses for this request.
-   *                           The caller is responsible for providing a
-   *                           non-NULL pointer for this case. After receiving
-   *                           the results, the caller is responsible for
-   *                           freeing the memory of this variable.
-   *                           If NULL is specified, the responses will be
-   *                           not returned to the caller.
-   *  @return                  EC_Normal if everything went fine, i.e.
-   *                           if request could be send and responses
-   *                           (with whatever status) could be received.
+   *  @param dataset     [in]  The dataset containing the information about the object(s) to
+   *                           be retrieved
+   *  @param responses   [out] The incoming C-MOVE responses for this request. The caller is
+   *                           responsible for providing a non-NULL pointer for this case.
+   *                           After receiving the results, the caller is responsible for
+   *                           freeing the memory of this variable. If NULL is specified, the
+   *                           responses will not bereturned to the caller.
+   *  @return EC_Normal if everything went fine, i.e.\ if request could be send and responses
+   *          (with whatever status) could be received.
    */
   virtual OFCondition sendMOVERequest(const T_ASC_PresentationContextID presID,
                                       const OFString &moveDestinationAETitle,
                                       DcmDataset *dataset,
                                       OFList<RetrieveResponse*> *responses);
 
-  /** This is the standard handler for C-MOVE message responses: It just adds up all
-   *  responses it receives and prints a DEBUG message. Therefore, it is called by for
-   *  each response received in sendMOVERequest(). The idea is of course to overwrite
-   *  this function in a derived, actual SCU implementation if required. Thus, after
-   *  each response, the caller of sendMOVERequest() can decide on its own whether he
-   *  wants to cancel the C-MOVE session, terminate the association, do something useful
-   *  or whatever. Thus this function is a more object oriented kind of callback.
+  /** This is the standard handler for C-MOVE message responses: It just adds up all responses
+   *  it receives and prints a DEBUG message. Therefore, it is called for each response
+   *  received in sendMOVERequest(). The idea is of course to overwrite this function in a
+   *  derived, actual SCU implementation if required. Thus, after each response, the caller of
+   *  sendMOVERequest() can decide on its own whether he wants to cancel the C-MOVE session,
+   *  terminate the association, do something useful or whatever. Thus this function is a more
+   *  object-oriented kind of callback.
    *  @param presID   [in] The presentation context ID where the response was received on.
    *  @param response [in] The C-MOVE response received.
-   *  @param waitForNextResponse [out] Denotes whether SCU should try to
-   *                                   receive another response. If set to
-   *                                   OFTrue, then sendMOVERequest() will
-   *                                   continue waiting for responses. The
-   *                                   current implementation does that for
-   *                                   all responses do not have status
-   *                                   Failed, Warning, Success or unknown.
-   *                                   If set to OFFalse, sendMOVERequest() will
-   *                                   return control to the caller.
+   *  @param waitForNextResponse [out] Denotes whether SCU should try to receive another
+   *                                   response. If set to OFTrue, then sendMOVERequest() will
+   *                                   continue waiting for responses. The current
+   *                                   implementation does that for all responses do not have
+   *                                   status Failed, Warning, Success or unknown. If set to
+   *                                   OFFalse, sendMOVERequest() will return control to the
+   *                                   caller.
    *  @return EC_Normal, if response could be handled. Error code otherwise.
    *          The current implementation always returns EC_Normal.
    */
@@ -358,53 +341,48 @@ public:
                                          RetrieveResponse *response,
                                          OFBool &waitForNextResponse);
 
-  /** Sends a C-GET Request on given presentation context and receives list
-   *  of responses. It then switches control to the function
-   *  handleCGETSession().
-   *  The full list of responses is returned to the caller. If he is not
-   *  interested, he can set responses=NULL when calling the function.
-   *  This function can be overwritten by actual SCU implementations but just
-   *  should work fine for most people.
-   *  @param presID    [in] The presentation context ID that should be used.
-   *                        Must be an odd number.
-   *  @param dataset   [in] The dataset containing the information about the
-   *                        object(s) to be retrieved
-   *  @param responses [out] The incoming C-GET responses for this request.
-   *                         If the caller specifies NULL, no responses will be
-   *                         returned; otherwise there should be at least one
-   *                         final C-GET response (mandatory). C-GET responses
-   *                         after each DICOM object received are optional and
-   *                         may have been ommitted by the server.
-   *  @return EC_Normal if everything went fine, i.e.\ if request could be
-   *          sent and expected responses (with whatever status) could be
-   *          received.
+  /** Sends a C-GET Request on given presentation context and receives list of responses. It
+   *  then switches control to the function handleCGETSession().
+   *  The full list of responses is returned to the caller. If he is not interested, he can
+   *  set responses=NULL when calling the function.
+   *  This function can be overwritten by actual SCU implementations but just should work fine
+   *  for most people.
+   *  @param presID    [in]  The presentation context ID that should be used. Must be an odd
+   *                         number.
+   *  @param dataset   [in]  The dataset containing the information about the
+   *                         object(s) to be retrieved
+   *  @param responses [out] The incoming C-GET responses for this request. If the caller
+   *                         specifies NULL, no responses will be returned; otherwise there
+   *                         should be at least one final C-GET response (mandatory). C-GET
+   *                         responses after each DICOM object received are optional and may
+   *                         have been ommitted by the server.
+   *  @return EC_Normal if everything went fine, i.e.\ if request could be sent and expected
+   *          responses (with whatever status) could be received.
    */
   virtual OFCondition sendCGETRequest(const T_ASC_PresentationContextID presID,
                                       DcmDataset *dataset,
                                       OFList<RetrieveResponse*> *responses);
 
-  /** Does the logic for switching between C-GET Response and C-STORE Requests.
-   *  Sends a C-GET Request on given presentation context and receives list
-   *  of responses. Ihe full list of responses is returned to the caller. If he
-   *  is not interested, he can set responses=NULL when calling the function.
-   *  After sending a C-GET Request, there might be two different responses
-   *  coming in: C-GET-RSP (optional after each received object and mandatory
-   *  after the last object) or a mandatory C-STORE for each incoming object
-   *  that is received due to the request. This function therefore either calls
-   *  handleCGETResponse() or handleSTORERequest() in order to deal with the
-   *  incoming message. All other messages lead to an error within this handler.
-   *  This function can be overwritten by actual SCU implementations but just
-   *  should work fine for most people.
-   *  @param presID    [in]  The presentation context ID that should be used.
-   *                         Must be an odd number.
-   *  @param dataset   [in]  The dataset containing the information about the
-   *                         object(s) to be retrieved
-   *  @param responses [out] The incoming C-GET responses for this request.
-   *                         If the caller specifies NULL, no responses will be
-   *                         returned; otherwise there should be at least one
-   *                         final C-GET response (mandatory). C-GET responses
-   *                         after each DICOM object received are optional and
-   *                         may have been ommitted by the server.
+  /** Does the logic for switching between C-GET Response and C-STORE Requests. Sends a C-GET
+   *  Request on given presentation context and receives list of responses. Ihe full list of
+   *  responses is returned to the caller. If he is not interested, he can set responses=NULL
+   *  when calling the function. After sending a C-GET Request, there might be two different
+   *  responses coming in: C-GET-RSP (optional after each received object and mandatory after
+   *  the last object) or a mandatory C-STORE for each incoming object that is received due to
+   *  the request. This function therefore either calls handleCGETResponse() or
+   *  handleSTORERequest() in order to deal with the incoming message. All other messages lead
+   *  to an error within this handler.
+   *  This function can be overwritten by actual SCU implementations but just should work fine
+   *  for most people.
+   *  @param presID    [in]  The presentation context ID that should be used. Must be an odd
+   *                         number.
+   *  @param dataset   [in]  The dataset containing the information about the object(s) to be
+   *                         retrieved
+   *  @param responses [out] The incoming C-GET responses for this request. If the caller
+   *                         specifies NULL, no responses will be returned; otherwise there
+   *                         should be at least one final C-GET response (mandatory). C-GET
+   *                         responses after each DICOM object received are optional and may
+   *                         have been ommitted by the server.
    *  @return EC_Normal if everything went fine, i.e.\ if request could be send
    *          and expected responses (with whatever status) could be received.
    */
@@ -412,55 +390,49 @@ public:
                                         DcmDataset *dataset,
                                         OFList<RetrieveResponse*> *responses);
 
-  /** Function handling a single C-GET Response. This standard handler
-   *  reads the status of the response and decides whether to receive
-   *  any further messages related to the original C-GET Request or whether
-   *  the last response was received or an error occured.
-   *  @param presID              [in]  The presentation context the C-GET
-   *                                   Response was received on.
+  /** Function handling a single C-GET Response. This standard handler reads the status of the
+   *  response and decides whether to receive any further messages related to the original
+   *  C-GET Request or whether the last response was received or an error occured.
+   *  @param presID              [in]  The presentation context the C-GET Response was
+   *                                   received on.
    *  @param response            [in]  The response received
-   *  @param continueCGETSession [out] Defines whether it is decided to
-   *                                   wait for further C-GET Responses/C-STORE
-   *                                   requests within this C-GET session
-   *  @return If no errors occur (dataset response NULL, SCU not connected),
-   *          this method will return EC_Normal, otherwise error code.
+   *  @param continueCGETSession [out] Defines whether it is decided to wait for further C-GET
+   *                                   Responses/C-STORE Requests within this C-GET session
+   *  @return If no errors occur (dataset response NULL, SCU not connected), this method will
+   *          return EC_Normal, otherwise error code.
    */
   virtual OFCondition handleCGETResponse(const T_ASC_PresentationContextID presID,
                                          RetrieveResponse* response,
                                          OFBool& continueCGETSession);
 
-  /** Function handling a single C-STORE Request. If storage mode is set
-   *  to disk (default), this function is called and the incoming object
-   *  stored to disk.
-   *  @param presID               [in]  The presentation context the C-STORE
-   *                                    Response was received on.
+  /** Function handling a single C-STORE Request. If storage mode is set to disk (default),
+   *  this function is called and the incoming object stored to disk.
+   *  @param presID               [in]  The presentation context the C-STORE Response was
+   *                                    received on.
    *  @param incomingObject       [in]  The dataset (the object) received
-   *  @param continueCGETSession  [out] Defines whether it is decided to
-   *                                    wait for further C-GET Responses/C-STORE
-   *                                    requests within this C-GET session.
-   *  @param cStoreReturnStatus   [out] Denotes the desired C-STORE return
-   *                                    status.
-   *  @return If errors occur (incomingObject NULL or SCU not connected
-   *          or file could not be stored), this method will return an error code
-   *          otherwise EC_Normal.
+   *  @param continueCGETSession  [out] Defines whether it is decided to wait for further
+   *                                    C-GET Responses/C-STORE requests within this C-GET
+   *                                    session.
+   *  @param cStoreReturnStatus   [out] Denotes the desired C-STORE return status.
+   *  @return If errors occur (incomingObject NULL or SCU not connected or file could not be
+   *          stored), this method will return an error code otherwise EC_Normal.
    */
   virtual OFCondition handleSTORERequest(const T_ASC_PresentationContextID presID,
                                          DcmDataset *incomingObject,
                                          OFBool& continueCGETSession,
                                          Uint16& cStoreReturnStatus);
 
-  /** Function handling a single C-STORE Request. If storage mode is set
-   *  to bit preserving, this function is called and the incoming object
-   *  stored directly to disk, i.e. not stored fully in memory.
-   *  @param presID          [in] The presentation context the C-STORE
-   *                              Response was received on.
+  /** Function handling a single C-STORE Request. If storage mode is set to bit preserving,
+   *  this function is called and the incoming object stored directly to disk, i.e. not stored
+   *  fully in memory.
+   *  @param presID          [in] The presentation context the C-STORE Response was received
+   *                              on.
    *  @param filename        [in] The filename to store to
    *  @param request         [in] The incoming C-STORE request command set
    *  @param callback        [in] The desired user callback
    *  @param callbackContext [in] The desired user callback data
-   *  @return If errors occur (incomingObject NULL or SCU not connected
-   *          filename not specifiied), this method will return
-   *          an error code otherwise EC_Normal.
+   *  @return If errors occur (incomingObject NULL or SCU not connected filename not
+   *          specified), this method will return an error code otherwise EC_Normal.
    */
   virtual OFCondition handleSTORERequestFile(T_ASC_PresentationContextID *presID,
                                              const OFString& filename,
@@ -468,10 +440,10 @@ public:
                                              DIMSE_ProgressCallback callback,
                                              void *callbackContext);
 
-  /** This function is called if an object was receveid due to a C-GET request
-   *  and can be overwritten by a user in order to be informed about such
-   *  an event. The standard handles just prints a message. Note that this
-   *  function is not called if the SCU is in storage mode DCMSCU_STORAGE_IGNORE.
+  /** This function is called if an object was receveid due to a C-GET request and can be
+   *  overwritten by a user in order to be informed about such an event. The standard handles
+   *  just prints a message. Note that this function is not called if the SCU is in storage
+   *  mode DCMSCU_STORAGE_IGNORE.
    *  @param filename       [in] The filename written
    *  @param sopClassUID    [in] The SOP Class UID of the object written
    *  @param sopInstanceUID [in] The SOP Instance UID of the object written
@@ -489,17 +461,15 @@ public:
    *  responses=NULL when calling the function.
    *  This function can be overwritten by actual SCU implementations but just should work fine
    *  for most people.
-   *  @param presID      [in]  The presentation context ID that should be used.
-   *                           Must be an odd number.
-   *  @param queryKeys   [in]  The dataset containing the query keys to be
-   *                           searched for on the server (SCP).
-   *  @param responses   [out] The incoming C-FIND responses for this request.
-   *                           The caller is responsible for providing a
-   *                           non-NULL pointer for this case. After receiving
-   *                           the results, the caller is responsible for
-   *                           freeing the memory of this variable.
-   *                           If NULL is specified, the responses will be
-   *                           not returned to the caller.
+   *  @param presID      [in]  The presentation context ID that should be used. Must be an odd
+   *                           number.
+   *  @param queryKeys   [in]  The dataset containing the query keys to be searched for on the
+   *                           server (SCP).
+   *  @param responses   [out] The incoming C-FIND responses for this request. The caller is
+   *                           responsible for providing a non-NULL pointer for this case.
+   *                           After receiving the results, the caller is responsible for
+   *                           freeing the memory of this variable. If NULL is specified, the
+   *                           responses will be not returned to the caller.
    *  @return EC_Normal if everything went fine, i.e.\ if request could be send and responses
    *          (with whatever status) could be received.
    */
@@ -507,24 +477,21 @@ public:
                                       DcmDataset *queryKeys,
                                       OFList<QRResponse*> *responses);
 
-  /** This is the standard handler for C-FIND message responses: It just adds up all
-   *  responses it receives and prints a DEBUG message. Therefore, it is called by for
-   *  each response received in sendFINDRequest(). The idea is of course to overwrite
-   *  this function in a derived, actual SCU implementation if required. Thus, after
-   *  each response, the caller of sendFINDRequest() can decide on its own whether he
-   *  wants to cancel the C-FIND session, terminate the association, do something useful
-   *  or whatever. That way this is a more object oriented kind of callback.
+  /** This is the standard handler for C-FIND message responses: It just adds up all responses
+   *  it receives and prints a DEBUG message. Therefore, it is called for each response
+   *  received in sendFINDRequest(). The idea is of course to overwrite this function in a
+   *  derived, actual SCU implementation if required. Thus, after each response, the caller of
+   *  sendFINDRequest() can decide on its own whether he wants to cancel the C-FIND session,
+   *  terminate the association, do something useful or whatever. That way this is a more
+   *  object-oriented kind of callback.
    *  @param presID   [in] The presentation context ID where the response was received on.
    *  @param response [in] The C-FIND response received.
-   *  @param waitForNextResponse [out] Denotes whether SCU should try to
-   *                                   receive another response. If set to
-   *                                   OFTrue, then sendFINDRequest() will
-   *                                   continue waiting for responses. The
-   *                                   current implementation does that for
-   *                                   all responses do not have status
-   *                                   SUCESSS. If set to OFFalse,
-   *                                   sendFINDRequest() will return control
-   *                                   to the caller.
+   *  @param waitForNextResponse [out] Denotes whether SCU should try to receive another
+   *                                   response. If set to OFTrue, then sendFINDRequest()
+   *                                   will continue waiting for responses. The current
+   *                                   implementation does that for all responses do not have
+   *                                   status SUCESSS. If set to OFFalse, sendFINDRequest()
+   *                                   will return control to the caller.
    *  @return EC_Normal, if response could be handled. Error code otherwise.
    *          The current implementation always returns EC_Normal.
    */
@@ -532,11 +499,11 @@ public:
                                          QRResponse *response,
                                          OFBool &waitForNextResponse);
 
-  /** Send C-CANCEL and, therefore, ends the C-FIND -GET or -MOVE session, i.e.\ no
-   *  further responses will be handled. A call to this function only makes sense
-   *  if an association is open, the given presentation context represents a
-   *  valid C-FIND/GET/MOVE-enabled SOP class and usually only, if the last command
-   *  send on that presentation context was a C-FIND message.
+  /** Send C-CANCEL and, therefore, ends the C-FIND -GET or -MOVE session, i.e.\ no further
+   *  responses will be handled. A call to this function only makes sense if an association
+   *  is open, the given presentation context represents a valid C-FIND/GET/MOVE-enabled SOP
+   *  class and usually only, if the last command send on that presentation context was a
+   *  C-FIND message.
    *  @param presID [in] The presentation context ID where the C-CANCEL should be sent on.
    *  @return The current implementation always returns EC_Normal.
    */
@@ -560,8 +527,7 @@ public:
                                         DcmDataset *reqDataset,
                                         Uint16 &rspStatusCode);
 
-  /** This function sends N-EVENT-REPORT request and receives
-   *  the corresponding response
+  /** This function sends N-EVENT-REPORT request and receives the corresponding response
    *  @param presID         [in]  The ID of the presentation context to be used for sending
    *                              the request message. Should not be 0.
    *  @param sopInstanceUID [in]  The requested SOP Instance UID
@@ -649,13 +615,11 @@ public:
   void setAssocConfigFileAndProfile(const OFString &filename,
                                     const OFString &profile);
 
-  /** Set the directory that should be used by the standard C-GET
-   *  handler to store objects that come in with the corresponding
-   *  C-STORE rqeuests
-   *  @param storeDir [in] The directory to store to. It is checked in
-   *                       handleSTORERequest() whether the directory is
-   *                       writeable and readable. Per default, the received
-   *                       objects are stored in the current working directory.
+  /** Set the directory that should be used by the standard C-GET handler to store objects
+   *  that come in with the corresponding C-STORE rqeuests
+   *  @param storeDir [in] The directory to store to. It is checked in handleSTORERequest()
+   *                       whether the directory is writeable and readable. Per default, the
+   *                       received objects are stored in the current working directory.
    */
   void setStorageDir(const OFString& storeDir);
 
@@ -669,6 +633,13 @@ public:
    *                   presentation contexts are shown in debug mode.
    */
   void setVerbosePCMode(const OFBool mode);
+
+  /** Set the mode that specifies whether the transfer syntax of the dataset can be changed
+   *  for network transmission.  This mainly covers the compression/decompression of datasets,
+   *  which is disabled by default.
+   *  @param mode [in] Allow dataset conversion if OFTrue
+   */
+  void setDatasetConversionMode(const OFBool mode);
 
   /* Get methods */
 
@@ -707,34 +678,40 @@ public:
    */
   Uint16 getPeerPort() const;
 
-  /** Returns the DIMSE timeout configured defining how long SCU will wait for DIMSE
-   *  responses
+  /** Returns the DIMSE timeout configured defining how long SCU will wait for DIMSE responses
    *  @return The DIMSE timeout configured
    */
   Uint32 getDIMSETimeout() const;
 
-  /** Returns the timeout configured defining how long SCU will wait for messages
-   *  during ACSE messaging (association negotiation)
+  /** Returns the timeout configured defining how long SCU will wait for messages during ACSE
+   *  messaging (association negotiation)
    *  @return The ACSE timeout configured
    */
   Uint32 getACSETimeout() const;
 
-  /** Returns the verbose presentation context mode configured specifying whether
-   *  details on the presentation contexts (negotiated during association setup)
-   *  should be shown in verbose or debug mode. The latter is the default.
+  /** Returns the verbose presentation context mode configured specifying whether details on
+   *  the presentation contexts (negotiated during association setup) should be shown in
+   *  verbose or debug mode. The latter is the default.
    *  @return The verbose presentation context mode configured
    */
   OFBool getVerbosePCMode() const;
 
-  /** Returns the storage directory used for storing objects received with
-   *  C-STORE requests in the context of C-GET sessions. Default is empty
-   *  string which refers to the current working directory.
+  /** Returns the mode that specifies whether the transfer syntax of the dataset can be
+   *  changed for network transmission.  This mainly covers the compression/decompression
+   *  of datasets, which is disabled by default.
+   *  @return The transfer syntax conversion mode
+   */
+  OFBool getDatasetConversionMode() const;
+
+  /** Returns the storage directory used for storing objects received with C-STORE requests
+   *  in the context of C-GET sessions. Default is empty string which refers to the current
+   *  working directory.
    *  @return The storage directory
    */
   OFString getStorageDir() const;
 
-  /** Returns the storage mode enabled.
-   *  @return The storage mode enabled.
+  /** Returns the storage mode enabled
+   *  @return The storage mode enabled
    */
   DcmStorageMode getStorageMode() const;
 
@@ -866,8 +843,8 @@ protected:
   virtual Uint16 checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &request,
                                          DcmDataset *reqDataset);
 
-  /** Sends back a C-STORE response on the given presentation context,
-   *  with the designated status, fitting the corresponding C-STORE request.
+  /** Sends back a C-STORE response on the given presentation context, with the designated
+   *  status, fitting the corresponding C-STORE request.
    *  @param presID  [in] The presentation context ID to be used.
    *  @param status  [in] The storage DIMSE status to be used.
    *  @param request [in] The C-STORE request that should be responded to.
@@ -877,23 +854,20 @@ protected:
                                         Uint16 status,
                                         const T_DIMSE_C_StoreRQ& request);
 
-  /** Helper function that generates a storage filename by extracting
-   *  SOP Class and SOP Instance UID from a dataset and combining that
-   *  with the configured storage directory. The SOP class is used
-   *  to create an initial two letter abbreviation for the corresponding
-   *  modality, e.g. CT. An example for a storage filename created by this
-   *  function is /storage_dir/CT.1.2.3.4.5 for a CT with SOP Instance UID
-   *  1.2.3.4.
-   *  This function might be overwritten to change the filename behaviour
-   *  completely. This function is only called if the SCU is in
-   *  DCMSCU_STORAGE_DISK mode.
+  /** Helper function that generates a storage filename by extracting SOP Class and SOP
+   *  Instance UID from a dataset and combining that with the configured storage directory.
+   *  The SOP class is used to create an initial two letter abbreviation for the
+   *  corresponding modality, e.g. CT. An example for a storage filename created by this
+   *  function is /storage_dir/CT.1.2.3.4.5 for a CT with SOP Instance UID 1.2.3.4.
+   *  This function might be overwritten to change the filename behaviour completely. This
+   *  function is only called if the SCU is in DCMSCU_STORAGE_DISK mode.
    *  @param dataset [in] The dataset that should be stored to disk
    *  @result Non-empty string if successful, otherwise empty string.
    */
   virtual OFString createStorageFilename(DcmDataset *dataset);
 
-  /** Receives a DICOM dataset on a given presentation context ID
-   *  but does not store it in memory or disk, thus ignoring it.
+  /** Receives a DICOM dataset on a given presentation context ID but does not store it in
+   *  memory or disk, thus ignoring it.
    *  @param presID  [in] The presentation context to be used
    *  @param request [in] The corresponding C-STORE request
    *  @return EC_Normal if ignoring worked, error code otherwise.
@@ -984,6 +958,9 @@ private:
   /// Verbose PC mode
   OFBool m_verbosePCMode;
 
+  /// Dataset conversion mode
+  OFBool m_datasetConversionMode;
+
   /// Storage directory for objects received with C-STORE due to a
   /// running C-GET session. Per default, the received objects
   /// are stored in the current working directory.
@@ -1008,6 +985,11 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.38  2011-10-04 08:58:14  joergr
+** Added flag that allows for specifying whether to convert a dataset to be
+** transferred to the network transfer syntax. Also removed unused parameters
+** "rspCommandSet" and "rspStatusDetail" from method sendSTORERequest().
+**
 ** Revision 1.37  2011-09-28 16:28:20  joergr
 ** Added general support for transfer syntax conversions to sendSTORERequest().
 **

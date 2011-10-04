@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.04 (riesmeier)
+
+- Added flag that allows for specifying whether to convert a dataset to be
+  transferred to the network transfer syntax. Also removed unused parameters
+  "rspCommandSet" and "rspStatusDetail" from method sendSTORERequest().
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+
 **** Changes from 2011.10.03 (schlachter)
 
 - Reverted some accidentally committed changes.

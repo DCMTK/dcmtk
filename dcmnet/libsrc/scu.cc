@@ -18,8 +18,8 @@
  *  Purpose: Base class for Service Class Users (SCUs)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 17:12:03 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2011-10-04 08:58:16 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,6 +59,7 @@ DcmSCU::DcmSCU() :
   m_dimseTimeout(0),
   m_acseTimeout(30),
   m_verbosePCMode(OFFalse),
+  m_datasetConversionMode(OFFalse),
   m_storageDir(),
   m_storageMode(DCMSCU_STORAGE_DISK)
 {
@@ -660,8 +661,6 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
 OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
                                      const OFString &dicomFile,
                                      DcmDataset *dataset,
-                                     DcmDataset *& /* rspCommandSet */,    // TODO
-                                     DcmDataset *& /* rspStatusDetail */,  // TODO
                                      Uint16 &rspStatusCode)
 {
   // Do some basic validity checks
@@ -706,7 +705,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   {
     DCMNET_ERROR("Cannot send SOP instance, missing information:");
     if (!dicomFile.empty())
-      DCMNET_ERROR("  DICOM File       : " << dicomFile);
+      DCMNET_ERROR("  DICOM Filename   : " << dicomFile);
     DCMNET_ERROR("  SOP Class UID    : " << sopClassUID);
     DCMNET_ERROR("  SOP Instance UID : " << sopInstanceUID);
     DCMNET_ERROR("  Transfer Syntax  : " << xfer.getXferName());
@@ -727,7 +726,9 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   {
       /* ... try to find an appropriate presentation context automatically */
     pcid = findPresentationContextID(sopClassUID, xfer.getXferID());
-  } else {
+  }
+  else if (m_datasetConversionMode)
+  {
     /* Convert dataset to network transfer syntax (if required) */
     OFString abstractSyntax, transferSyntax;
     findPresentationContext(pcid, abstractSyntax, transferSyntax);
@@ -737,6 +738,11 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
       /* Mark presentation context as invalid */
       pcid = 0;
     } else {
+      if (abstractSyntax != sopClassUID)
+      {
+        DCMNET_WARN("Inappropriate presentation context with ID " << OFstatic_cast(unsigned int, pcid)
+          << ": abstract syntax does not match SOP class UID");
+      }
       /* Try to convert to the negotiated transfer syntax */
       DcmXfer netXfer = DcmXfer(transferSyntax.c_str()).getXfer();
       if (netXfer.getXfer() != xferSyntax)
@@ -2198,6 +2204,13 @@ void DcmSCU::setVerbosePCMode(const OFBool mode)
   m_verbosePCMode = mode;
 }
 
+
+void DcmSCU::setDatasetConversionMode(const OFBool mode)
+{
+  m_datasetConversionMode = mode;
+}
+
+
 void DcmSCU::setStorageDir(const OFString& storeDir)
 {
   m_storageDir = storeDir;
@@ -2277,6 +2290,12 @@ OFBool DcmSCU::getVerbosePCMode() const
 }
 
 
+OFBool DcmSCU::getDatasetConversionMode() const
+{
+  return m_datasetConversionMode;
+}
+
+
 OFString DcmSCU::getStorageDir() const
 {
   return m_storageDir;
@@ -2334,6 +2353,11 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.57  2011-10-04 08:58:16  joergr
+** Added flag that allows for specifying whether to convert a dataset to be
+** transferred to the network transfer syntax. Also removed unused parameters
+** "rspCommandSet" and "rspStatusDetail" from method sendSTORERequest().
+**
 ** Revision 1.56  2011-09-29 17:12:03  joergr
 ** Fixed memory leak in sendSTORERequest(), a DICOM dataset was not deleted.
 **
