@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-19 09:35:42 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Update Date:      $Date: 2011-10-04 14:15:15 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -635,8 +635,6 @@ int main(int argc, char *argv[])
       &fileNameList,
       opt_outputDirectory.c_str());
 
-    if (cond.bad()) OFLOG_ERROR(findscuLogger, DimseCondition::dump(temp_str, cond));
-
     // destroy network structure
     cond = findscu.dropNetwork();
     if (cond.bad()) OFLOG_ERROR(findscuLogger, DimseCondition::dump(temp_str, cond));
@@ -668,6 +666,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
+** Revision 1.67  2011-10-04 14:15:15  joergr
+** Avoid double output of particular error messages to the logger.
+**
 ** Revision 1.66  2011-08-19 09:35:42  joergr
 ** Added support for specifying the directory where the response messages are
 ** stored. Also output the name of the created file to the logger.

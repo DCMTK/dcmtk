@@ -18,8 +18,8 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 13:12:01 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2011-10-04 14:15:16 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -319,6 +319,8 @@ OFCondition DcmFindSCU::performQuery(
     /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
     /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
     cond = ASC_destroyAssociation(&assoc);
+    if (cond.bad())
+        DCMNET_ERROR(DimseCondition::dump(temp_str, cond));
     return cond;
 }
 
@@ -569,6 +571,9 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.23  2011-10-04 14:15:16  joergr
+ * Avoid double output of particular error messages to the logger.
+ *
  * Revision 1.22  2011-09-29 13:12:01  joergr
  * Introduced new network-related error codes, e.g. in case that none of the
  * proposed presentation contexts were accepted by the association acceptor.

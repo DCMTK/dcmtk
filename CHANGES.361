@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.04 (riesmeier)
 
+- Avoid double output of particular error messages to the logger.
+  Affects: dcmnet/apps/findscu.cc
+           dcmnet/libsrc/dfindscu.cc
+
 - Added flag that allows for specifying whether to convert a dataset to be
   transferred to the network transfer syntax. Also removed unused parameters
   "rspCommandSet" and "rspStatusDetail" from method sendSTORERequest().
