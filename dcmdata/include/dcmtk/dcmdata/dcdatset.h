@@ -18,8 +18,8 @@
  *  Purpose: Interface of the class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-30 09:05:50 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2011-10-04 16:12:12 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,11 +107,21 @@ class DcmDataset
      */
     virtual void removeInvalidGroups(const OFBool cmdSet = OFFalse);
 
-    /** return the transfer syntax in which this dataset was originally read.
-     *  @return transfer syntax in which this dataset was originally read,
+    /** return the transfer syntax in which this dataset was originally read or created.
+     *  @return transfer syntax in which this dataset was originally read, might be
      *    EXS_Unknown if the dataset was created in memory
      */
     E_TransferSyntax getOriginalXfer() const;
+
+    /** return the current transfer syntax, i.e.\ the one that was last used with
+     *  chooseRepresentation() in order to select a specific representation or with write()
+     *  or writeSignatureFormat() in order to create a byte stream according to the DICOM
+     *  encoding rules.  The default value is the transfer syntax in which this dataset was
+     *  originally read (see getOriginalXfer()) or, if this dataset was created from memory,
+     *  the explicit VR with local endianness.
+     *  @return transfer syntax in which this dataset is currently stored (see above)
+     */
+    E_TransferSyntax getCurrentXfer() const;
 
     /** print all elements of the dataset to a stream
      *  @param out output stream
@@ -120,7 +130,7 @@ class DcmDataset
      *  @param pixelFileName optional filename used to write the raw pixel data file
      *  @param pixelCounter optional counter used for automatic pixel data filename creation
      */
-    virtual void print(STD_NAMESPACE ostream&out,
+    virtual void print(STD_NAMESPACE ostream &out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
@@ -141,7 +151,8 @@ class DcmDataset
 
     /** check if this DICOM object can be encoded in the given transfer syntax.
      *  @param newXfer transfer syntax in which the DICOM object is to be encoded
-     *  @param oldXfer transfer syntax in which the DICOM object was read or created.
+     *  @param oldXfer transfer syntax in which the DICOM object was read or created
+     *    (optional). If EXS_Unknown, the return value of getOriginalXfer() is used.
      *  @return true if object can be encoded in desired transfer syntax, false otherwise.
      */
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
@@ -308,8 +319,10 @@ class DcmDataset
 
   private:
 
-    /// original transfer syntax of the dataset, i.e. the one in which this dataset was read
-    E_TransferSyntax Xfer;
+    /// original transfer syntax of the dataset
+    E_TransferSyntax OriginalXfer;
+    /// current transfer syntax of the dataset
+    E_TransferSyntax CurrentXfer;
 };
 
 
@@ -319,6 +332,11 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.40  2011-10-04 16:12:12  joergr
+** Added support for storing the current transfer syntax of the dataset (in
+** addition to the original one). The transfer syntax is also used for the
+** print() and writeXML() methods. The default is explicit VR local endian.
+**
 ** Revision 1.39  2011-09-30 09:05:50  joergr
 ** Fixed wrong or misleading comment on the member variable "Xfer".
 **

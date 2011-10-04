@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.04 (riesmeier)
 
+- Added support for storing the current transfer syntax of the dataset (in
+  addition to the original one). The transfer syntax is also used for the
+  print() and writeXML() methods. The default is explicit VR local endian.
+  Afefcts: dcmdata/libsrc/dcdatset.cc
+           dcmdata/include/dcmtk/dcmdata/dcdatset.h
+
 - Avoid double output of particular error messages to the logger.
   Affects: dcmnet/apps/findscu.cc
            dcmnet/libsrc/dfindscu.cc
