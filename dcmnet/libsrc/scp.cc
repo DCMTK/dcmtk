@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 12:56:21 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-10-05 15:42:25 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -777,6 +777,55 @@ OFCondition DcmSCP::handleECHORequest(T_DIMSE_C_EchoRQ &reqMessage,
 
 // ----------------------------------------------------------------------------
 
+OFCondition DcmSCP::sendActionResponse(T_ASC_PresentationContextID presID,
+                                       Uint16 messageID,
+                                       const OFString sopClassUID,
+                                       const OFString sopInstanceUID,
+                                       const Uint16 actionTypeID,
+                                       DcmDataset *rspDataset,
+                                       Uint16 rspStatusCode)
+{
+  OFCondition cond;
+  OFString tempStr;
+
+  // Send back response
+  T_DIMSE_Message response;
+  T_DIMSE_N_ActionRSP &actionRsp = response.msg.NActionRSP;
+  response.CommandField = DIMSE_N_ACTION_RSP;
+  actionRsp.MessageIDBeingRespondedTo = messageID;
+  actionRsp.DimseStatus = rspStatusCode;
+  actionRsp.ActionTypeID = actionTypeID;
+  actionRsp.AffectedSOPClassUID[0] = *(sopClassUID.c_str());
+  actionRsp.AffectedSOPInstanceUID[0] = *(sopInstanceUID.c_str());
+  actionRsp.opts = 0;
+
+  if (rspDataset)
+    actionRsp.DataSetType = DIMSE_DATASET_PRESENT;
+  else
+    actionRsp.DataSetType = DIMSE_DATASET_NULL;
+  
+  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    DCMNET_INFO("Sending N-ACTION Response");
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, rspDataset, presID));
+  } 
+  else 
+  {
+    DCMNET_INFO("Sending N-ACTION Response (" << DU_nactionStatusString(rspStatusCode) << ")");
+  }
+  
+  cond = sendDIMSEMessage(presID, &response, rspDataset /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
+  if (cond.bad())
+  {
+    DCMNET_ERROR("Failed sending N-ACTION response: " << DimseCondition::dump(tempStr, cond));
+    return cond;
+  }
+  return cond;
+}
+
+
+// ----------------------------------------------------------------------------
+
 // Send response to former storage request
 OFCondition DcmSCP::sendSTOREResponse(T_ASC_PresentationContextID presID,
                                       T_DIMSE_C_StoreRQ &reqMessage,
@@ -933,33 +982,6 @@ OFCondition DcmSCP::handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
     delete dataset;
     return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error,
       "DIMSE: Presentation Contexts of Command and Data Set differ");
-  }
-
-  // Send back response
-  T_DIMSE_Message response;
-  T_DIMSE_N_ActionRSP &actionRsp = response.msg.NActionRSP;
-  response.CommandField = DIMSE_N_ACTION_RSP;
-  actionRsp.MessageIDBeingRespondedTo = reqMessage.MessageID;
-  actionRsp.DimseStatus = statusCode;
-  actionRsp.DataSetType = DIMSE_DATASET_NULL;
-  actionRsp.opts = 0;
-  //user option. may be set to zero
-  actionRsp.AffectedSOPClassUID[0] = 0;
-  actionRsp.AffectedSOPInstanceUID[0] = 0;
-
-  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
-  {
-    DCMNET_INFO("Sending N-ACTION Response");
-    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
-  } else {
-    DCMNET_INFO("Sending N-ACTION Response (" << DU_nactionStatusString(statusCode) << ")");
-  }
-  cond = sendDIMSEMessage(presID, &response, NULL /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
-  if (cond.bad())
-  {
-    DCMNET_ERROR("Failed sending N-ACTION response: " << DimseCondition::dump(tempStr, cond));
-    delete dataset;
-    return cond;
   }
 
   // Set return values
@@ -1798,6 +1820,9 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.25  2011-10-05 15:42:25  ogazzar
+** Added a function to respond to N-Action request.
+**
 ** Revision 1.24  2011-09-29 12:56:21  joergr
 ** Enhanced implementation of the function that retrieves the abstract syntax
 ** and transfer syntax of a particular presentation context (using the ID).

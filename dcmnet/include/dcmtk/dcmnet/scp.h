@@ -18,9 +18,9 @@
  *  Purpose: General SCP class that can be used to implement derived SCP
  *           applications.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-22 13:49:03 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-10-05 15:42:11 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -478,6 +478,25 @@ protected:
    */
   virtual OFBool stopAfterCurrentAssociation();
 
+  /** Respond to the N-Action request
+   *  @param presID         [in] The presentation context ID to respond to
+   *  @param messageID      [in] The message ID being responded to
+   *  @param sopClassUID    [in] The affected SOP class UID
+   *  @param sopInstanceUID [in] The affected SOP instance UID
+   *  @param actionTypeID   [in] The type of action performed
+   *  @param rspDataset     [in] The response dataset
+   *  @param rspStatusCode  [in] The status of the response code. 0 means success,
+   *                             others can found in the DICOM standard.
+   *  @return EC_Normal, if responding was successful, an error code otherwise
+   */
+  virtual OFCondition sendActionResponse(T_ASC_PresentationContextID presID,
+                                         Uint16 messageID,
+                                         const OFString sopClassUID,
+                                         const OFString sopInstanceUID,
+                                         const Uint16 actionTypeID,
+                                         DcmDataset *rspDataset,
+                                         Uint16 rspStatusCode); 
+
   /** Respond to storage request
    *  @param presID       [in] The presentation context ID to respond to
    *  @param reqMessage   [in] The C-STORE request that is responded to
@@ -829,6 +848,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.17  2011-10-05 15:42:11  ogazzar
+ *  Added a function to respond to N-Action request.
+ *
  *  Revision 1.16  2011-09-22 13:49:03  joergr
  *  Fixed incorrect comment on return code of some sendXXXRequest() methods.
  *
