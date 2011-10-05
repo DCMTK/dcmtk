@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.05 (riesmeier)
+
+- Added easy-to-use interface class for a Storage Service Class User (SCU).
+  Added:   dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/libsrc/dstorscu.cc
+  Affects: dcmnet/docs/dcmnet.dox
+           dcmnet/libsrc/CMakeLists.txt
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/libsrc/Makefile.in
+
 **** Changes from 2011.10.04 (riesmeier)
 
 - Added method that allows for updating the original transfer syntax (e.g.
@@ -11,7 +21,7 @@ Changes between releases are documented here.
 - Added support for storing the current transfer syntax of the dataset (in
   addition to the original one). The transfer syntax is also used for the
   print() and writeXML() methods. The default is explicit VR local endian.
-  Afefcts: dcmdata/libsrc/dcdatset.cc
+  Affects: dcmdata/libsrc/dcdatset.cc
            dcmdata/include/dcmtk/dcmdata/dcdatset.h
 
 - Avoid double output of particular error messages to the logger.
