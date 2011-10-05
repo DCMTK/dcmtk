@@ -18,8 +18,8 @@
  *  Purpose: DICOM Storage Service Class User (SCU)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-05 13:33:29 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-10-05 15:20:58 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -778,8 +778,17 @@ OFCondition DcmStorageSCU::checkSOPInstance(const OFString &sopClassUID,
                 // check whether the DICOM standard prefix for UIDs is used
                 else if (sopClassUID.compare(0, 13, "1.2.840.10008") == 0)
                 {
-                    DCMNET_DEBUG("unknown standard UID (probably no storage SOP class): " << sopClassUID);
-                    status = NET_EC_UnknownStorageSOPClass;
+                    // try to find the human-readable name of this UID
+                    const char *uidName = dcmFindNameOfUID(sopClassUID.c_str(), NULL /* defaultValue */);
+                    if (uidName != NULL)
+                    {
+                        DCMNET_DEBUG("unexpected standard UID (no storage SOP class): " << sopClassUID
+                            << " (" << uidName << ")");
+                        status = NET_EC_InvalidSOPClassUID;
+                    } else {
+                        DCMNET_DEBUG("unknown standard UID (probably no storage SOP class): " << sopClassUID);
+                        status = NET_EC_UnknownStorageSOPClass;
+                    }
                 } else {
                     // do not reject supposed private SOP classes
                     DCMNET_DEBUG("unknown UID (possibly private storage SOP class): " << sopClassUID);
@@ -859,6 +868,9 @@ OFCondition DcmStorageSCU::checkSOPInstance(const OFString &sopClassUID,
 /*
  * CVS Log
  * $Log: dstorscu.cc,v $
+ * Revision 1.2  2011-10-05 15:20:58  joergr
+ * Enhanced code that checks for valid and supported Storage SOP Classes.
+ *
  * Revision 1.1  2011-10-05 13:33:29  joergr
  * Added easy-to-use interface class for a Storage Service Class User (SCU).
  *
