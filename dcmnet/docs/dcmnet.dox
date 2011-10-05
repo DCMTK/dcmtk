@@ -21,6 +21,7 @@ provide a particular DICOM Service:
 \section Tools
 
 This module contains the following command line tools:
+\li \ref dcmsend
 \li \ref echoscu
 \li \ref findscu
 \li \ref getscu

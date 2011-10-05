@@ -1,0 +1,376 @@
+/*!
+
+\if MANPAGES
+\page dcmsend Simple DICOM storage SCU (sender)
+\else
+\page dcmsend dcmsend: Simple DICOM storage SCU (sender)
+\endif
+
+\section synopsis SYNOPSIS
+
+\verbatim
+dcmsend [options] peer port dcmfile-in...
+\endverbatim
+
+\section description DESCRIPTION
+
+The \b dcmsend application implements a Service Class User (SCU) for the
+Storage Service Class.  In contrast to the well-known \b storescu utility,
+\b dcmsend has less options and is, therefore, easier to use - this also
+explains the term "simple" in the title.  The main purpose of this application
+is to send a whole bunch of DICOM files to a Storage Service Class Provider
+(SCP).  \b dcmsend supports both multiple associations (one after the other)
+and decompression of DICOM SOP instances if needed to transfer them.
+
+\section parameters PARAMETERS
+
+\verbatim
+peer        hostname of DICOM peer
+
+port        tcp/ip port number of peer
+
+dcmfile-in  DICOM file or directory to be transmitted
+\endverbatim
+
+\section options OPTIONS
+
+\subsection general_options general options
+\verbatim
+  -h    --help
+          print this help text and exit
+
+        --version
+          print version information and exit
+
+        --list-decoders
+          list transfer syntaxes of decoders and exit
+
+        --arguments
+          print expanded command line arguments
+
+  -q    --quiet
+          quiet mode, print no warnings and errors
+
+  -v    --verbose
+          verbose mode, print processing details
+
+  -d    --debug
+          debug mode, print debug information
+
+  -ll   --log-level  [l]evel: string constant
+          (fatal, error, warn, info, debug, trace)
+          use level l for the logger
+
+  -lc   --log-config  [f]ilename: string
+          use config file f for the logger
+
+  +v    --verbose-pc
+          show presentation contexts in verbose mode
+\endverbatim
+
+\subsection input_options input options
+\verbatim
+input file format:
+
+  +f    --read-file
+          read file format or data set
+
+  +fo   --read-file-only
+          read file format only (default)
+
+  -f    --read-dataset
+          read data set without file meta information
+
+input files:
+
+  +sd   --scan-directories
+          scan directories for input files (dcmfile-in)
+
+  +sp   --scan-pattern  [p]attern: string (only with --scan-directories)
+          pattern for filename matching (wildcards)
+
+          # possibly not available on all systems
+
+  -r    --no-recurse
+          do not recurse within directories (default)
+
+  +r    --recurse
+          recurse within specified directories
+\endverbatim
+
+\subsection processing_options processing options
+\verbatim
+transfer syntax conversion:
+
+  -dn   --decompress-never
+          never decompress compressed data sets
+
+  +dls  --decompress-lossless
+          only decompress lossless compression (default)
+
+  +dly  --decompress-lossy
+          decompress both lossy and lossless compression
+
+deflate compression level:
+
+  +cl   --compression-level  [l]evel: integer (default: 6)
+          0=uncompressed, 1=fastest, 9=best compression
+
+other processing options:
+
+  -nh   --no-halt
+          do not halt on first invalid input file
+          or if unsuccessful store encountered
+
+  -nip  --no-illegal-proposal
+          do not propose any presentation context that does
+          not contain the default transfer syntax (if needed)
+
+  -nuc  --no-uid-checks
+          do not check UID values of input files
+\endverbatim
+
+\subsection network_options network options
+\verbatim
+application entity titles:
+
+  -aet  --aetitle  [a]etitle: string
+          set my calling AE title (default: DCMSEND)
+
+  -aec  --call  [a]etitle: string
+          set called AE title of peer (default: ANY-SCP)
+
+association handling:
+
+  +ma   --multi-associations
+          use multiple associations (one after the other)
+          if needed to transfer the instances (default)
+
+  -ma   --single-association
+          always use a single association
+
+other network options:
+
+  -to   --timeout  [s]econds: integer (default: unlimited)
+          timeout for connection requests
+
+  -ta   --acse-timeout  [s]econds: integer (default: 30)
+          timeout for ACSE messages
+
+  -td   --dimse-timeout  [s]econds: integer (default: unlimited)
+          timeout for DIMSE messages
+
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
+          set max receive pdu to n bytes (default: 16384)
+
+        --max-send-pdu  [n]umber of bytes: integer (4096..131072)
+          restrict max send pdu to n bytes
+\endverbatim
+
+\subsection output_options output options
+\verbatim
+general:
+
+  +crf  --create-report-file  [f]ilename: string
+          create a detailed report on the transfer
+          (if successful) and write it to text file f
+\endverbatim
+
+\section notes NOTES
+
+A typical use case of \b dcmsend is to send arbitrary SOP instances that are
+stored as DICOM files to a storage SCP.  The following command does exactly
+this:
+
+\verbatim
+dcmsend --verbose <peer> <port> *.dcm
+\endverbatim
+
+If the DICOM files are stored in a hierarchy of directories below the directory
+"IMAGES", the following command can be used:
+
+\verbatim
+dcmsend -v <peer> <port> --scan-directories --recurse IMAGES
+\endverbatim
+
+It is also possible to specify multiple directories and to combine the
+aforementioned approaches (using both file and directory names):
+
+\verbatim
+dcmsend -v +sd +r <peer> <port> IMAGES_1 IMAGES_2 test.img *.dcm
+\endverbatim
+
+The default option \e --read-file-only makes sure that only DICOM files (i.e.
+the ones with meta-header and magic word "DICM" after the preamble) are
+processed.  In addition, a pattern for filename matching can be specified with
+option \e --scan-pattern.  Usually, if processing a whole bunch of files, it is
+also a good idea not to halt on the first invalid input file or if an
+unsuccessful store was encountered.  This can be accomplished by using option
+\e --no-halt.  Please note, however, that "unsuccessful store" does not mean
+that the DIMSE status of the C-STORE response indicates an error.  It means that
+the C-STORE request could not be sent to the storage SCP.
+
+If more than 128 presentation contexts are needed, which is the maximum number
+allowed according to the DICOM standard, a new association is started after the
+previous one has been completed.  In cases where this behaviour is unwanted, it
+can be disabled using option \e --single-association.  In addition, whether
+only lossless compressed data sets are decompressed (if needed), which is the
+default, or also lossy compressed data sets can be specified using the
+\e --decompress-xxx options.
+
+In order to get both an overview and detailed information on the transfer of
+the DICOM SOP instances, option \e --create-report-file can be used to create
+a corresponding text file.  However, this file is only created as a final step
+if the application did not terminate before (with an error).
+
+\subsection dicom_conformance DICOM Conformance
+
+Basically, the \b dcmsend application supports all Storage SOP Classes as an
+SCU, including private ones.  By default, the application checks the SOP Class
+UID of the DICOM file in order to make sure that only valid SOP instances are
+sent.  With option \e --no-uid-checks this check can be disabled.
+
+The \b dcmsend application also supports all Transfer Syntaxes that are defined
+in the DICOM standard.  Private transfer syntaxes can only be used if the UID
+check is disabled with option \e --no-uid-checks.  Please note, however, that
+only a limited number of transfer syntaxes are supported for converting them to
+the default transfer syntax (Implicit VR Little Endian).  With option
+\e --list-decoders the transfer syntaxes supported natively or by decoders are
+listed.  The output typically looks like the following:
+
+\verbatim
+Transfer syntaxes supported natively:
+- Little Endian Implicit
+- Little Endian Explicit
+- Big Endian Explicit
+
+Transfer syntaxes supported by decoders:
+- Deflated Explicit VR Little Endian
+- JPEG Baseline
+- JPEG Extended, Process 2+4
+- JPEG Spectral Selection, Non-hierarchical, Process 6+8
+- JPEG Full Progression, Non-hierarchical, Process 10+12
+- JPEG Lossless, Non-hierarchical, Process 14
+- JPEG Lossless, Non-hierarchical, 1st Order Prediction
+- JPEG-LS Lossless
+- JPEG-LS Lossy (Near-lossless)
+- RLE Lossless
+\endverbatim
+
+Since \b dcmsend tries to be as simple as possible for the user, by default
+presentation contexts might be proposed to the SCP that are strictly speaking
+"illegal".  This is because, according to the DICOM standard, the SCU always
+has to propose the default transfer syntax in at least one presentation context
+associated with each abstract syntax (i.e. SOP class).  This requirement is
+waived when the SCU only has access to the SOP instance in lossy compressed
+form.  With option \e --no-illegal-proposal the strict DICOM-conformant
+behaviour can be enforced, i.e. no possibly illegal presentation context will
+be proposed but the corresponding SOP instance will be rejected (if needed).
+
+Please note, however, that the default transfer syntax for "Lossless JPEG
+Compression", "Lossy JPEG Compression" and so on are not always proposed as
+also required by the DICOM standard.  The same limitation applies to other
+compression schemes.  See DICOM PS 3.5 section 10 for details.
+
+\section logging LOGGING
+
+The level of logging output of the various command line tools and underlying
+libraries can be specified by the user.  By default, only errors and warnings
+are written to the standard error stream.  Using option \e --verbose also
+informational messages like processing details are reported.  Option
+\e --debug can be used to get more details on the internal activity, e.g. for
+debugging purposes.  Other logging levels can be selected using option
+\e --log-level.  In \e --quiet mode only fatal errors are reported.  In such
+very severe error events, the application will usually terminate.  For more
+details on the different logging levels, see documentation of module "oflog".
+
+In case the logging output should be written to file (optionally with logfile
+rotation), to syslog (Unix) or the event log (Windows) option \e --log-config
+can be used.  This configuration file also allows for directing only certain
+messages to a particular output stream and for filtering certain messages
+based on the module or application where they are generated.  An example
+configuration file is provided in <em>\<etcdir\>/logger.cfg</em>).
+
+\section command_line COMMAND LINE
+
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
+multiple values are allowed (1-n), a combination of both means 0 to n values.
+
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively.  Usually, order and position of command line options are
+arbitrary (i.e. they can appear anywhere).  However, if options are mutually
+exclusive the rightmost appearance is used.  This behaviour conforms to the
+standard evaluation rules of common Unix shells.
+
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator unless they appear between two
+quotation marks) prior to any further evaluation.  Please note that a command
+file cannot contain another command file.  This simple but effective approach
+allows to summarize common combinations of options/parameters and avoids
+longish and confusing command lines (an example is provided in file
+<em>\<datadir\>/dumppat.txt</em>).
+
+\section exit_codes EXIT CODES
+
+The \b dcmsend utility uses the following exit codes when terminating.  This
+enables the user to check for the reason why the application terminated.
+
+\subsection exit_codes_general general
+\verbatim
+EXITCODE_NO_ERROR                         0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
+\endverbatim
+
+\subsection exit_codes_input_file_errors input file errors
+\verbatim
+EXITCODE_CANNOT_READ_INPUT_FILE          20 (*)
+EXITCODE_NO_INPUT_FILES                  21
+EXITCODE_INVALID_INPUT_FILE              22
+EXITCODE_NO_VALID_INPUT_FILES            23
+\endverbatim
+
+\subsection exit_codes_output_file_errors output file errors
+\verbatim
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40 (*)
+EXITCODE_CANNOT_WRITE_REPORT_FILE        43
+\endverbatim
+
+\subsection exit_codes_network_errors network errors
+\verbatim
+EXITCODE_CANNOT_INITIALIZE_NETWORK       60
+EXITCODE_CANNOT_NEGOTIATE_ASSOCIATION    61
+EXITCODE_CANNOT_SEND_REQUEST             62
+EXITCODE_CANNOT_ADD_PRESENTATION_CONTEXT 65
+\endverbatim
+
+(*) Actually, these codes are currently not used by \b dcmsend but serve as a
+placeholder for the corresponding group of exit codes.
+
+\section environment ENVIRONMENT
+
+The \b dcmsend utility will attempt to load DICOM data dictionaries specified
+in the \e DCMDICTPATH environment variable.  By default, i.e. if the
+\e DCMDICTPATH environment variable is not set, the file
+<em>\<datadir\>/dicom.dic</em> will be loaded unless the dictionary is built
+into the application (default for Windows).
+
+The default behaviour should be preferred and the \e DCMDICTPATH environment
+variable only used when alternative data dictionaries are required.  The
+\e DCMDICTPATH environment variable has the same format as the Unix shell
+\e PATH variable in that a colon (":") separates entries.  On Windows systems,
+a semicolon (";") is used as a separator.  The data dictionary code will
+attempt to load each file specified in the \e DCMDICTPATH environment variable.
+It is an error if no data dictionary can be loaded.
+
+\section see_also SEE ALSO
+
+<b>storescu</b>(1), <b>storescp</b>(1)
+
+\section copyright COPYRIGHT
+
+Copyright (C) 2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+
+*/

@@ -25,18 +25,16 @@ compr_libdirs = -L$(top_srcdir)/../dcmimgle/libsrc -L$(top_srcdir)/../dcmimage/l
 	-L$(top_srcdir)/../dcmjpeg/libijg12 -L$(top_srcdir)/../dcmjpeg/libijg16 \
 	-L$(top_srcdir)/../dcmjpls/libsrc -L$(top_srcdir)/../dcmjpls/libcharls
 
-# add $(compr_includes) to the following line if compression libraries are needed
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
-	-I$(dcmdatadir)/include -I$(dcmtlsdir)/include
-# add $(compr_libdirs) to the following line if compression libraries are needed
+	-I$(dcmdatadir)/include -I$(dcmtlsdir)/include $(compr_includes)
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
-	-L$(dcmdatadir)/libsrc -L$(dcmtlsdir)/libsrc
+	-L$(dcmdatadir)/libsrc -L$(dcmtlsdir)/libsrc $(compr_libdirs)
 LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS)
 DCMTLSLIBS = -ldcmtls
 COMPR_LIBS = -ldcmjpls -lcharls -ldcmjpeg -lijg8 -lijg12 -lijg16 -ldcmimage -ldcmimgle
 
-objs = echoscu.o storescu.o storescp.o findscu.o movescu.o termscu.o getscu.o
-progs = echoscu storescu storescp findscu movescu termscu getscu
+objs = echoscu.o storescu.o storescp.o findscu.o movescu.o termscu.o getscu.o dcmsend.o
+progs = echoscu storescu storescp findscu movescu termscu getscu dcmsend
 
 
 all: $(progs)
@@ -63,6 +61,9 @@ termscu: termscu.o
 
 getscu: getscu.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+
+dcmsend: dcmsend.o
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(COMPR_LIBS) $(MATHLIBS) $(LIBS)
 
 install: all
 	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)

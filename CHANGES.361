@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.05 (riesmeier)
 
+- Added new command line tool "dcmsend", which is a Simple Storage Service
+  Class User based on the recently introduced network class DcmStorageSCU.
+  Added:   dcmnet/apps/dcmsend.cc
+           dcmnet/docs/dcmsend.man
+           doxygen/manpages/man1/dcmsend.1
+  Affects: dcmnet/apps/CMakeLists.txt
+           dcmnet/apps/Makefile.dep
+           dcmnet/apps/Makefile.in
+           dcmnet/docs/dcmnet.dox
+
 - Added easy-to-use interface class for a Storage Service Class User (SCU).
   Added:   dcmnet/include/dcmtk/dcmnet/dstorscu.h
            dcmnet/libsrc/dstorscu.cc
