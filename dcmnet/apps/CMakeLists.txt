@@ -4,7 +4,7 @@ INCLUDE_DIRECTORIES(${dcmjpls_SOURCE_DIR}/include ${dcmjpeg_SOURCE_DIR}/include 
 # declare directories containing used libraries
 LINK_DIRECTORIES(${dcmnet_BINARY_DIR} ${ofstd_BINARY_DIR} ${oflog_BINARY_DIR} ${dcmdata_BINARY_DIR} ${dcmtls_BINARY_DIR} ${ZLIB_LIBDIR} ${OPENSSL_LIBDIR})
 # declare additional library directories needed for compression support
-LINK_DIRECTORIES(${dcmjpls_BINARY_DIR} ${dcmjpeg_BINARY_DIR} ${dcmimage_BINARY_DIR} ${dcmimgle_BINARY_DIR})
+LINK_DIRECTORIES(${dcmjpls_BINARY_DIR} ${dcmjpeg_BINARY_DIR} ${dcmimage_BINARY_DIR} ${dcmimgle_BINARY_DIR} ${LIBTIFF_LIBDIR} ${LIBPNG_LIBDIR})
 
 # declare executables
 FOREACH(PROGRAM dcmsend echoscu findscu getscu movescu storescp storescu termscu)
@@ -28,7 +28,7 @@ FOREACH(PROGRAM echoscu findscu storescp storescu)
 ENDFOREACH(PROGRAM)
 
 # uncomment the following line if "storescu" is compiled with ON_THE_FLY_COMPRESSION defined
-#TARGET_LINK_LIBRARIES(storescu dcmjpls charls dcmjpeg ijg8 ijg12 ijg16 dcmimage dcmimgle)
+#TARGET_LINK_LIBRARIES(storescu dcmjpls charls dcmjpeg ijg8 ijg12 ijg16 dcmimage dcmimgle ${LIBTIFF_LIBS} ${LIBPNG_LIBS})
 
 # "dcmsend" always needs compression support
-TARGET_LINK_LIBRARIES(dcmsend dcmjpls charls dcmjpeg ijg8 ijg12 ijg16 dcmimage dcmimgle)
+TARGET_LINK_LIBRARIES(dcmsend dcmjpls charls dcmjpeg ijg8 ijg12 ijg16 dcmimage dcmimgle ${LIBTIFF_LIBS} ${LIBPNG_LIBS})

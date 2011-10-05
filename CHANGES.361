@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.05 (riesmeier)
 
+- Make sure to link LIBTIFF and LIBPNG to the new "dcmsend" command line tool
+  in order to avoid linker errors when using DCMTK with shared libraries.
+  Affects: dcmnet/apps/CMakeLists.txt
+           dcmnet/apps/Makefile.in
+
 - Added new command line tool "dcmsend", which is a Simple Storage Service
   Class User based on the recently introduced network class DcmStorageSCU.
   Added:   dcmnet/apps/dcmsend.cc
