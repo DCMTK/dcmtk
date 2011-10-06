@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-10-05 15:42:25 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-06 13:05:57 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -803,17 +803,17 @@ OFCondition DcmSCP::sendActionResponse(T_ASC_PresentationContextID presID,
     actionRsp.DataSetType = DIMSE_DATASET_PRESENT;
   else
     actionRsp.DataSetType = DIMSE_DATASET_NULL;
-  
+
   if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
   {
     DCMNET_INFO("Sending N-ACTION Response");
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, rspDataset, presID));
-  } 
-  else 
+  }
+  else
   {
     DCMNET_INFO("Sending N-ACTION Response (" << DU_nactionStatusString(rspStatusCode) << ")");
   }
-  
+
   cond = sendDIMSEMessage(presID, &response, rspDataset /* dataObject */, NULL /* callback */, NULL /* callbackContext */);
   if (cond.bad())
   {
@@ -943,7 +943,6 @@ OFCondition DcmSCP::handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
   OFString tempStr;
   T_ASC_PresentationContextID presIDdset;
   DcmDataset *dataset = NULL;
-  Uint16 statusCode = 0;
 
   // Dump debug information
   if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
@@ -1820,6 +1819,9 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.26  2011-10-06 13:05:57  joergr
+** Removed unused local variable.
+**
 ** Revision 1.25  2011-10-05 15:42:25  ogazzar
 ** Added a function to respond to N-Action request.
 **

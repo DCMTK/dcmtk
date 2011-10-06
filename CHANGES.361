@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.06 (riesmeier)
 
+- Removed unused local variable.
+  Affects: dcmnet/libsrc/scp.cc
+
 - Added new method compactElements() for compacting all elements which exceed
   a given length and which can be loaded from file when needed again.
   Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
