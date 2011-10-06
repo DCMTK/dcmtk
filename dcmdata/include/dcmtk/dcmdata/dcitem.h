@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-26 09:28:29 $
- *  CVS/RCS Revision: $Revision: 1.85 $
+ *  Update Date:      $Date: 2011-10-06 12:58:09 $
+ *  CVS/RCS Revision: $Revision: 1.86 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -215,11 +215,10 @@ class DcmItem
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache);
+    virtual OFCondition write(DcmOutputStream &outStream,
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype,
+                              DcmWriteCache *wcache);
 
     /** write object in XML format
      *  @param out output stream to which the XML document is written
@@ -236,11 +235,10 @@ class DcmItem
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache);
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype,
+                                             DcmWriteCache *wcache);
 
     /** returns true if the object contains an element with Unknown VR at any nesting level
      *  @return true if the object contains an element with Unknown VR, false otherwise
@@ -391,6 +389,13 @@ class DcmItem
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition loadAllDataIntoMemory();
+
+    /** iterate over all elements and remove those element values from memory which exceed
+     *  a given length and which can be loaded from file when needed again. For all other
+     *  elements, nothing is done.
+     *  @param maxLength maximum length (number of bytes) allowed without removing the value
+     */
+    virtual void compactElements(const Uint32 maxLength);
 
     /** This function takes care of group length and padding elements
      *  in the current element list according to what is specified in
@@ -1198,6 +1203,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.86  2011-10-06 12:58:09  joergr
+** Added new method compactElements() for compacting all elements which exceed
+** a given length and which can be loaded from file when needed again.
+**
 ** Revision 1.85  2011-08-26 09:28:29  joergr
 ** Added new helper methods putAndInsertFloat32/64Array().
 **

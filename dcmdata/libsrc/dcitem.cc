@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-26 10:45:29 $
- *  CVS/RCS Revision: $Revision: 1.156 $
+ *  Update Date:      $Date: 2011-10-06 12:58:11 $
+ *  CVS/RCS Revision: $Revision: 1.157 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1341,11 +1341,10 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
 
 // ********************************
 
-OFCondition DcmItem::writeSignatureFormat(
-  DcmOutputStream &outStream,
-   const E_TransferSyntax oxfer,
-   const E_EncodingType enctype,
-   DcmWriteCache *wcache)
+OFCondition DcmItem::writeSignatureFormat(DcmOutputStream &outStream,
+                                          const E_TransferSyntax oxfer,
+                                          const E_EncodingType enctype,
+                                          DcmWriteCache *wcache)
 {
   if (getTransferState() == ERW_notInitialized)
     errorFlag = EC_IllegalCall;
@@ -1917,6 +1916,23 @@ OFCondition DcmItem::loadAllDataIntoMemory()
     return l_error;
 }
 
+
+// ********************************
+
+
+void DcmItem::compactElements(const Uint32 maxLength)
+{
+    DcmStack stack;
+    DcmObject *object = NULL;
+    /* iterate over all elements */
+    while (nextObject(stack, OFTrue).good())
+    {
+        object = stack.top();
+        // compact element if maximum length is exceeded
+        if (object->isLeaf() && (object->getLength() > maxLength))
+            OFstatic_cast(DcmElement *, object)->compact();
+    }
+}
 
 
 // ********************************
@@ -3789,6 +3805,10 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.157  2011-10-06 12:58:11  joergr
+** Added new method compactElements() for compacting all elements which exceed
+** a given length and which can be loaded from file when needed again.
+**
 ** Revision 1.156  2011-08-26 10:45:29  joergr
 ** Fixed issue with possibly wrong status return value in putAndInsertFloat32().
 **
