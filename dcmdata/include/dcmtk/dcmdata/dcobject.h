@@ -20,8 +20,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-08 11:01:44 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Update Date:      $Date: 2011-10-06 12:52:19 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -598,11 +598,11 @@ class DcmObject
      */
     virtual Uint32 getTagAndLengthSize(const E_TransferSyntax oxfer) const;
 
-	/** return the DICOM attribute tag name for this object. If not known yet, will
-	 *  be looked up in the dictionary and cached. Therefore, method is not const.
-	 *  @return tag name for this attribute
-	 */
-	const char *getTagName() { return Tag.getTagName(); }
+    /** return the DICOM attribute tag name for this object. If not known yet, will
+     *  be looked up in the dictionary and cached. Therefore, method is not const.
+     *  @return tag name for this attribute
+     */
+    const char *getTagName() { return Tag.getTagName(); }
 
     /** set the VR for this attribute
      *  @param vr new VR for this attribute.
@@ -705,6 +705,9 @@ static inline STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream &stream, D
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.72  2011-10-06 12:52:19  joergr
+ * Replaced remaining tabs by spaces.
+ *
  * Revision 1.71  2011-08-08 11:01:44  joergr
  * Added new parser flag that allows for ignoring the element's VR read from the
  * dataset and for preferring the VR defined in the data dictionary.

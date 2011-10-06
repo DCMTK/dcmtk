@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.06 (riesmeier)
+
+- Replaced remaining tabs by spaces.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcobject.h
+
 **** Changes from 2011.10.05 (elgazzar)
 
 - Added a function to respond to N-Action request.
