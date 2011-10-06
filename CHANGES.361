@@ -1,10 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.05 (elgazzar)
+
+- Added a function to respond to N-Action request.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
 **** Changes from 2011.10.05 (riesmeier)
 
 - Enhanced code that checks for valid and supported Storage SOP Classes.
-  Affects: dcmnet/libsrc/dstorscu.c
+  Affects: dcmnet/libsrc/dstorscu.cc
 
 - Make sure to link LIBTIFF and LIBPNG to the new "dcmsend" command line tool
   in order to avoid linker errors when using DCMTK with shared libraries.
