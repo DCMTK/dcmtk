@@ -18,8 +18,8 @@
  *  Purpose: DICOM Storage Service Class User (SCU)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-05 15:20:58 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-10-06 14:16:10 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,9 +36,83 @@
 #include "dcmtk/dcmnet/diutil.h"
 
 
-// this is a private DIMSE status code of the class "pending"
+// these are private DIMSE status codes of the class "pending"
 #define STATUS_STORE_Pending_NoPresentationContext 0xffff
+#define STATUS_STORE_Pending_InvalidDatasetPointer 0xfffe
 
+
+// implementation of the internal class/struct for a single transfer entry
+
+DcmStorageSCU::TransferEntry::TransferEntry(const OFString &filename,
+                                            const E_FileReadMode readMode,
+                                            const OFString &sopClassUID,
+                                            const OFString &sopInstanceUID,
+                                            const OFString &transferSyntaxUID)
+  : Filename(filename),
+    FileReadMode(readMode),
+    Dataset(NULL),
+    DatasetHandlingMode(HM_doNothing),
+    SOPClassUID(sopClassUID),
+    SOPInstanceUID(sopInstanceUID),
+    TransferSyntaxUID(transferSyntaxUID),
+    NetworkTransferSyntax(EXS_Unknown),
+    Uncompressed(OFFalse),
+    AssociationNumber(0),
+    PresentationContextID(0),
+    RequestSent(OFFalse),
+    ResponseStatusCode(0)
+{
+    Init();
+}
+
+
+DcmStorageSCU::TransferEntry::TransferEntry(DcmDataset *dataset,
+                                            const E_HandlingMode handlingMode,
+                                            const OFString &sopClassUID,
+                                            const OFString &sopInstanceUID,
+                                            const OFString &transferSyntaxUID)
+  : Filename(),
+    FileReadMode(ERM_autoDetect),
+    Dataset(dataset),
+    DatasetHandlingMode(handlingMode),
+    SOPClassUID(sopClassUID),
+    SOPInstanceUID(sopInstanceUID),
+    TransferSyntaxUID(transferSyntaxUID),
+    NetworkTransferSyntax(EXS_Unknown),
+    Uncompressed(OFFalse),
+    AssociationNumber(0),
+    PresentationContextID(0),
+    RequestSent(OFFalse),
+    ResponseStatusCode(0)
+{
+    Init();
+}
+
+
+DcmStorageSCU::TransferEntry::~TransferEntry()
+{
+    if ((DatasetHandlingMode == HM_deleteAfterSend) ||
+        (DatasetHandlingMode == HM_deleteAfterRemove))
+    {
+        delete Dataset;
+    }
+}
+
+
+void DcmStorageSCU::TransferEntry::Init()
+{
+    // check whether transfer syntax is uncompressed, because we can convert between
+    // these three without any loss of information
+    if ((TransferSyntaxUID == UID_LittleEndianExplicitTransferSyntax) ||
+        (TransferSyntaxUID == UID_BigEndianExplicitTransferSyntax) ||
+        (TransferSyntaxUID == UID_LittleEndianImplicitTransferSyntax))
+    {
+        Uncompressed = OFTrue;
+    }
+}
+
+
+// implementation of the main interface class
 
 DcmStorageSCU::DcmStorageSCU()
   : DcmSCU(),
@@ -69,16 +143,7 @@ void DcmStorageSCU::clear()
     DecompressionMode = DM_default;
     HaltOnUnsuccessfulStoreMode = OFTrue;
     AllowIllegalProposalMode = OFTrue;
-    // clear list of SOP instances to be sent (and free memory)
-    CurrentTransferEntry = TransferList.begin();
-    OFListConstIterator(TransferEntry *) lastEntry = TransferList.end();
-    while (CurrentTransferEntry != lastEntry)
-    {
-        delete (*CurrentTransferEntry);
-        CurrentTransferEntry = TransferList.erase(CurrentTransferEntry);
-    }
-    TransferList.clear();
-    CurrentTransferEntry = TransferList.begin();
+    removeAllSOPInstances();
 }
 
 
@@ -147,22 +212,82 @@ void DcmStorageSCU::setAllowIllegalProposalMode(const OFBool allowMode)
 }
 
 
-void DcmStorageSCU::resetSentStatus()
+void DcmStorageSCU::resetSentStatus(const OFBool sameAssociation)
 {
-    CurrentTransferEntry = TransferList.begin();
-    OFListConstIterator(TransferEntry *) lastEntry = TransferList.end();
-    // iterate over all SOP instances to be sent
-    while (CurrentTransferEntry != lastEntry)
+    if (!TransferList.empty())
     {
-        // reset flag indicating that the C-STORE request has been sent
-        (*CurrentTransferEntry)->RequestSent = OFFalse;
-        // we also need to reset the presentation context ID in order
-        // to make sure that it is not used on a different association
-        (*CurrentTransferEntry)->PresentationContextID = 0;
-        ++CurrentTransferEntry;
+        CurrentTransferEntry = TransferList.begin();
+        OFListConstIterator(TransferEntry *) lastEntry = TransferList.end();
+        // output some debug information
+        DCMNET_DEBUG("resetting sent status of " << TransferList.size() << " SOP instances "
+            << "to be sent on " << (sameAssociation ? "the same" : "a new") << " association");
+        // iterate over all SOP instances to be sent
+        while (CurrentTransferEntry != lastEntry)
+        {
+            // reset flag indicating that the C-STORE request has been sent
+            (*CurrentTransferEntry)->RequestSent = OFFalse;
+            if (!sameAssociation)
+            {
+                // we also need to reset the presentation context ID in order
+                // to make sure that it is not reused on a different association
+                (*CurrentTransferEntry)->PresentationContextID = 0;
+            }
+            ++CurrentTransferEntry;
+        }
     }
     // also reset the reference to the current entry
     CurrentTransferEntry = TransferList.begin();
+}
+
+
+void DcmStorageSCU::removeAllSOPInstances()
+{
+    // clear list of SOP instances to be sent (and free memory)
+    CurrentTransferEntry = TransferList.begin();
+    OFListConstIterator(TransferEntry *) lastEntry = TransferList.end();
+    while (CurrentTransferEntry != lastEntry)
+    {
+        // delete the transfer entry and remove it from the list
+        delete (*CurrentTransferEntry);
+        CurrentTransferEntry = TransferList.erase(CurrentTransferEntry);
+    }
+    // make sure that the list is really empty
+    TransferList.clear();
+    CurrentTransferEntry = TransferList.begin();
+}
+
+
+OFCondition DcmStorageSCU::removeSOPInstance(const OFString &sopClassUID,
+                                             const OFString &sopInstanceUID,
+                                             const OFBool allOccurrences)
+{
+    OFCondition status = NET_EC_NoSuchSOPInstance;
+    // iterate over the transfer list
+    OFListIterator(TransferEntry *) transferEntry = TransferList.begin();
+    OFListConstIterator(TransferEntry *) lastEntry = TransferList.end();
+    while (transferEntry != lastEntry)
+    {
+        // check whether this is the entry we are looking for
+        if (((*transferEntry)->SOPClassUID == sopClassUID) &&
+            ((*transferEntry)->SOPInstanceUID == sopInstanceUID))
+        {
+            // make sure that the reference to the current entry remains valid
+            if (CurrentTransferEntry == transferEntry)
+                ++CurrentTransferEntry;
+            // delete the transfer entry and remove it from the list
+            delete (*transferEntry);
+            transferEntry = TransferList.erase(transferEntry);
+            // output some debug information
+            DCMNET_DEBUG("successfully removed SOP instance " << sopInstanceUID << " from the transfer list");
+            status = EC_Normal;
+            // decide whether to exit the loop or to search for any duplicates
+            if (!allOccurrences)
+                break;
+        } else {
+            ++transferEntry;
+        }
+    }
+    return status;
 }
 
 
@@ -203,6 +328,49 @@ OFCondition DcmStorageSCU::addDicomFile(const OFString &filename,
         }
     } else {
         DCMNET_ERROR("cannot add DICOM file with empty filename");
+    }
+    return status;
+}
+
+
+OFCondition DcmStorageSCU::addDataset(DcmDataset *dataset,
+                                      const E_TransferSyntax datasetXfer,
+                                      const E_HandlingMode handlingMode,
+                                      const OFBool checkValues)
+{
+    OFCondition status = NET_EC_InvalidDatasetPointer;
+    // check for invalid dataset pointer
+    if (dataset != NULL)
+    {
+        DCMNET_DEBUG("adding DICOM dataset");
+        // get relevant information from the DICOM dataset
+        OFString sopClassUID, sopInstanceUID, transferSyntaxUID;
+        status = getSOPInstanceFromDataset(dataset, datasetXfer, sopClassUID, sopInstanceUID, transferSyntaxUID);
+        if (status.good())
+        {
+            // check the SOP instance before adding it
+            status = checkSOPInstance(sopClassUID, sopInstanceUID, transferSyntaxUID, checkValues);
+            if (status.good())
+            {
+                // create a new entry ...
+                TransferEntry *entry = new TransferEntry(dataset, handlingMode, sopClassUID, sopInstanceUID, transferSyntaxUID);
+                if (entry != NULL)
+                {
+                    // ... and add it to the list of SOP instances to be transferred
+                    TransferList.push_back(entry);
+                } else
+                    status = EC_MemoryExhausted;
+            }
+        }
+        // finally, do some error/debug logging
+        if (status.good())
+        {
+            DCMNET_DEBUG("successfully added SOP instance " << sopInstanceUID << " to the transfer list");
+        } else {
+            DCMNET_ERROR("cannot add DICOM dataset to the transfer list: " << status.text());
+        }
+    } else {
+        DCMNET_ERROR("cannot add DICOM dataset (NULL pointer)");
     }
     return status;
 }
@@ -411,7 +579,7 @@ OFCondition DcmStorageSCU::addPresentationContexts()
             status = NET_EC_NoPresentationContextsDefined;
     } else {
         // report an error to the caller
-        status = NET_EC_NoInstancesToBeSent;
+        status = NET_EC_NoSOPInstancesToSend;
     }
     return status;
 }
@@ -472,8 +640,20 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                 // output debug information on the SOP instance to be sent
                 if ((*CurrentTransferEntry)->Filename.empty())
                 {
-                    DCMNET_DEBUG("sending SOP instance with UID: " << (*CurrentTransferEntry)->SOPInstanceUID);
-                    dataset = (*CurrentTransferEntry)->Dataset;
+                    if ((*CurrentTransferEntry)->Dataset != NULL)
+                    {
+                        DCMNET_DEBUG("sending SOP instance with UID: " << (*CurrentTransferEntry)->SOPInstanceUID);
+                        dataset = (*CurrentTransferEntry)->Dataset;
+                    } else {
+                        DCMNET_ERROR("cannot send SOP instance with UID: " << (*CurrentTransferEntry)->SOPInstanceUID
+                            << ": invalid dataset pointer");
+                        // mark the SOP instance as being sent with an error that is not defined for C-STORE;
+                        // the DIMSE status indicates "pending" (see above)
+                        (*CurrentTransferEntry)->RequestSent = OFTrue;
+                        (*CurrentTransferEntry)->ResponseStatusCode = STATUS_STORE_Pending_InvalidDatasetPointer;
+                        // return with an error
+                        status = NET_EC_InvalidDatasetPointer;
+                    }
                 } else {
                     DCMNET_DEBUG("sending SOP instance from file: " << (*CurrentTransferEntry)->Filename);
                     // load SOP instance from DICOM file
@@ -489,16 +669,31 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                     // call the inherited method from the base class doing the real work
                     status = sendSTORERequest((*CurrentTransferEntry)->PresentationContextID, "" /* filename */,
                         dataset, (*CurrentTransferEntry)->ResponseStatusCode);
-                }
-                // store some further information (even in case of error)
-                (*CurrentTransferEntry)->AssociationNumber = AssociationCounter;
-                if (dataset != NULL)
+                    // store some further information (even in case of error)
+                    (*CurrentTransferEntry)->AssociationNumber = AssociationCounter;
                     (*CurrentTransferEntry)->NetworkTransferSyntax = dataset->getCurrentXfer();
+                }
                 // if it was successful (i.e. even if DIMSE status is not 0x0000 = success) ...
                 if (status.good())
                 {
                     // ... remember that this SOP instance has already been sent
                     (*CurrentTransferEntry)->RequestSent = OFTrue;
+                    // check whether we need to compact or delete the dataset
+                    if ((*CurrentTransferEntry)->Filename.empty() && ((*CurrentTransferEntry)->Dataset != NULL))
+                    {
+                        if ((*CurrentTransferEntry)->DatasetHandlingMode == HM_compactAfterSend)
+                        {
+                            DCMNET_DEBUG("compacting dataset after successful send");
+                            (*CurrentTransferEntry)->Dataset->compactElements(256 /* maxLength */);
+                        }
+                        else if ((*CurrentTransferEntry)->DatasetHandlingMode == HM_deleteAfterSend)
+                        {
+                            DCMNET_DEBUG("deleting dataset after successful send");
+                            delete (*CurrentTransferEntry)->Dataset;
+                            // forget about this dataset (e.g. in order to avoid double deletion)
+                            (*CurrentTransferEntry)->Dataset = NULL;
+                        }
+                    }
                 } else {
                     // if the SOP instance could not be sent because no acceptable presentation context was found
                     if (status == DIMSE_NOVALIDPRESENTATIONCONTEXTID)
@@ -517,7 +712,7 @@ OFCondition DcmStorageSCU::sendSOPInstances()
         }
     } else {
         // report an error to the caller
-        status = NET_EC_NoInstancesToBeSent;
+        status = NET_EC_NoSOPInstancesToSend;
     }
     return status;
 }
@@ -552,6 +747,7 @@ void DcmStorageSCU::getStatusSummary(OFString &summary) const
     size_t numWarning = 0;
     size_t numSuccess = 0;
     size_t numPending = 0;
+    size_t numInvalid = 0;
     OFListConstIterator(TransferEntry *) transferEntry = TransferList.begin();
     OFListConstIterator(TransferEntry *) lastEntry = TransferList.end();
     while (transferEntry != lastEntry)
@@ -588,6 +784,11 @@ void DcmStorageSCU::getStatusSummary(OFString &summary) const
                 --numSent;
                 ++numPending;
             }
+            else if (rspStatus == STATUS_STORE_Pending_InvalidDatasetPointer)
+            {
+                --numSent;
+                ++numInvalid;
+            }
         }
         ++transferEntry;
     }
@@ -605,6 +806,8 @@ void DcmStorageSCU::getStatusSummary(OFString &summary) const
         stream << OFendl << "- NOT sent to the peer   : " << (numInstances - numSent);
     if (numPending > 0)
         stream << OFendl << "  * no acceptable pres.  : " << numPending;
+    if (numInvalid > 0)
+        stream << OFendl << "  * invalid dataset ptr. : " << numInvalid;
     stream << OFStringStream_ends;
     // convert stream to a string
     OFSTRINGSTREAM_GETSTR(stream, tmpString);
@@ -662,6 +865,8 @@ OFCondition DcmStorageSCU::createReportFile(const OFString &filename) const
                 {
                     if (rspStatus == STATUS_STORE_Pending_NoPresentationContext)
                         stream << "<no acceptable presentation context>";
+                    else if (rspStatus == STATUS_STORE_Pending_InvalidDatasetPointer)
+                        stream << "<invalid dataset pointer>";
                     else {
                         stream << "0x" << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
                             << rspStatus << " (" << DU_cstoreStatusString(rspStatus) << ")" << STD_NAMESPACE dec;
@@ -744,6 +949,52 @@ OFCondition DcmStorageSCU::getSOPInstanceFromFile(const OFString &filename,
                 }
             }
         }
+    }
+    return status;
+}
+
+
+OFCondition DcmStorageSCU::getSOPInstanceFromDataset(DcmDataset *dataset,
+                                                     const E_TransferSyntax datasetXfer,
+                                                     OFString &sopClassUID,
+                                                     OFString &sopInstanceUID,
+                                                     OFString &transferSyntaxUID)
+{
+    OFCondition status = EC_IllegalParameter;
+    // check for invalid dataset pointer
+    if (dataset != NULL)
+    {
+        DCMNET_DEBUG("getting SOP Class UID, SOP Instance UID and Transfer Syntax UID from DICOM dataset");
+        sopClassUID.clear();
+        sopInstanceUID.clear();
+        transferSyntaxUID.clear();
+        // check for correct class type
+        if (dataset->ident() == EVR_dataset)
+        {
+            // try to determine the transfer syntax of the dataset
+            E_TransferSyntax xfer = datasetXfer;
+            if (xfer == EXS_Unknown)
+                xfer = dataset->getOriginalXfer();
+            if (xfer == EXS_Unknown)
+            {
+                // update the internally stored transfer syntax based on the pixel data (if any)
+                dataset->updateOriginalXfer();
+                xfer = dataset->getOriginalXfer();
+            }
+            if (xfer != EXS_Unknown)
+            {
+                status = EC_Normal;
+                // store UID of the transfers syntax in result variable
+                transferSyntaxUID = DcmXfer(xfer).getXferID();
+                // get other UIDs directly from the dataset
+                dataset->findAndGetOFStringArray(DCM_SOPClassUID, sopClassUID);
+                dataset->findAndGetOFStringArray(DCM_SOPInstanceUID, sopInstanceUID);
+            } else {
+                DCMNET_DEBUG("unable to determine transfer syntax from dataset");
+                status = NET_EC_UnknownTransferSyntax;
+            }
+        } else
+            status = EC_CorruptedData;
     }
     return status;
 }
@@ -868,6 +1119,10 @@ OFCondition DcmStorageSCU::checkSOPInstance(const OFString &sopClassUID,
 /*
  * CVS Log
  * $Log: dstorscu.cc,v $
+ * Revision 1.3  2011-10-06 14:16:10  joergr
+ * Now also SOP instances from DICOM datasets can be added to the transfer list.
+ * This allows for sending datasets created or received in memory.
+ *
  * Revision 1.2  2011-10-05 15:20:58  joergr
  * Enhanced code that checks for valid and supported Storage SOP Classes.
  *

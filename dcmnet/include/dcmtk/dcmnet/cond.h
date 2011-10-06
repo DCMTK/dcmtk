@@ -18,8 +18,8 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 13:11:59 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2011-10-06 14:16:08 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,10 +111,10 @@ extern const OFCondition DIMSE_BADCOMMANDTYPE;           /* Bad command type */
 extern const OFCondition DIMSE_BADDATA;                  /* Inappropriate data for message (send) */
 extern const OFCondition DIMSE_BADMESSAGE;               /* Badly formed message (send) */
 extern const OFCondition DIMSE_ILLEGALASSOCIATION;       /* Caller passed in an illegal association */
-extern const OFCondition DIMSE_NODATAAVAILABLE;          /* no data (timeout in non-blocking mode) */
-extern const OFCondition DIMSE_NOVALIDPRESENTATIONCONTEXTID;  /* no valid presentation context ID */
+extern const OFCondition DIMSE_NODATAAVAILABLE;          /* No data (timeout in non-blocking mode) */
+extern const OFCondition DIMSE_NOVALIDPRESENTATIONCONTEXTID;  /* No valid presentation context ID */
 extern const OFCondition DIMSE_NULLKEY;                  /* Caller passed in a NULL key */
-extern const OFCondition DIMSE_OUTOFRESOURCES;           /* out of resources */
+extern const OFCondition DIMSE_OUTOFRESOURCES;           /* Out of resources */
 extern const OFCondition DIMSE_PARSEFAILED;              /* Failed to parse received message*/
 extern const OFCondition DIMSE_READPDVFAILED;            /* Read PDV failed */
 extern const OFCondition DIMSE_RECEIVEFAILED;            /* Failed to receive message */
@@ -194,7 +194,9 @@ extern const OFCondition NET_EC_InvalidTransferSyntaxUID;         /* Invalid Tra
 extern const OFCondition NET_EC_UnknownTransferSyntax;            /* Unknown Transfer Syntax */
 extern const OFCondition NET_EC_NoPresentationContextsDefined;    /* No Presentation Contexts defined */
 extern const OFCondition NET_EC_NoAcceptablePresentationContexts; /* No acceptable Presentation Contexts */
-extern const OFCondition NET_EC_NoInstancesToBeSent;              /* No instances to be sent */
+extern const OFCondition NET_EC_NoSOPInstancesToSend;             /* No SOP instances to send */
+extern const OFCondition NET_EC_NoSuchSOPInstance;                /* No such SOP instance */
+extern const OFCondition NET_EC_InvalidDatasetPointer;            /* Invalid dataset pointer */
 extern const OFCondition NET_EC_InsufficientPortPrivileges;       /* Insufficient Port Privileges */
 // codes 1024 to 1073 are used for the association negotiation profile classes
 
@@ -293,6 +295,10 @@ typedef OFCondition CONDITION;
 /*
  * CVS Log
  * $Log: cond.h,v $
+ * Revision 1.20  2011-10-06 14:16:08  joergr
+ * Now also SOP instances from DICOM datasets can be added to the transfer list.
+ * This allows for sending datasets created or received in memory.
+ *
  * Revision 1.19  2011-09-29 13:11:59  joergr
  * Introduced new network-related error codes, e.g. in case that none of the
  * proposed presentation contexts were accepted by the association acceptor.

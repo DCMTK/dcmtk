@@ -18,8 +18,8 @@
  *  Purpose: DICOM Storage Service Class User (SCU)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-05 13:33:34 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-10-06 14:16:08 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,12 +40,11 @@
 
 /** Interface class for a Storage Service Class User (SCU).
  *  This class supports C-STORE messages as an SCU.  Currently, only DICOM files can be sent
- *  via network to a particular storage SCP.  Sending DICOM datasets from memory will probably
- *  be supported in a future version.  In a first step, the SOP instances to be sent are added
- *  to a transfer list.  In a second step, the association negotiation takes place where the
- *  required presentation contexts are proposed, i.e. it is checked which SOP classes and
- *  transfer syntaxes are needed for transferring the SOP instances.  Finally, the SOP
- *  instances are sent to the SCP (if possible).
+ *  via network to a particular storage SCP.  In a first step, the SOP instances to be sent
+ *  are added to a transfer list.  In a second step, the association negotiation takes place
+ *  where the required presentation contexts are proposed, i.e. it is checked which SOP
+ *  classes and transfer syntaxes are needed for transferring the SOP instances.  Finally, the
+ *  SOP instances are sent to the SCP (if possible).
  *  \note The current implementation does not sort the transfer list according to the SOP
  *        Class UID and Transfer Syntax UID of the SOP instances and, therefore, might propose
  *        more presentation contexts than required for the transfer of all SOP instances.  A
@@ -76,10 +75,24 @@ class DcmStorageSCU
         DM_never,
         /// decompress lossless only
         DM_losslessOnly,
-        // default value: decompress lossless only
+        /// default value: decompress lossless only
         DM_default = DM_losslessOnly,
         /// decompress both lossy and lossless
         DM_lossyAndLossless
+    };
+
+    /** dataset handling modes
+     */
+    enum E_HandlingMode
+    {
+        /// do nothing with the dataset
+        HM_doNothing,
+        /// compact the dataset after it has been sent
+        HM_compactAfterSend,
+        /// delete the dataset after it has been sent
+        HM_deleteAfterSend,
+        /// delete the dataset after it is has been removed from the transfer list
+        HM_deleteAfterRemove
     };
 
     /** default constructor
@@ -155,21 +168,44 @@ class DcmStorageSCU
      */
     void setAllowIllegalProposalMode(const OFBool allowMode);
 
-    /** reset the sent status for all SOP instances.  This alllows for sending the same SOP
-     *  instances (in the list of SOP instances to be transferred) again.
+    /** reset the sent status for all SOP instances in the transfer list.  This alllows for
+     *  sending the same SOP instances again - on the same or a different association.
+     *  @param  sameAssociation  flag indicating whether the same assocation will be used for
+     *                           the transfer as last time.  If a different association will
+     *                           be used, also the presentation context IDs are set to 0
+     *                           (undefined), which means that addPresentationContexts() has
+     *                           to be called again.  Please make sure that all dataset
+     *                           pointers in the transfer list are still valid, i.e. the
+     *                           datasets have not been deleted.
      */
-    void resetSentStatus();
+    void resetSentStatus(const OFBool sameAssociation = OFFalse);
+
+    /** remove all SOP instances from the transfer list.  If an entry contains a reference to
+     *  a DICOM dataset, this dataset is deleted if the handling mode HM_deleteAfterRemove was
+     *  used to add it to the transfer list.
+     */
+    void removeAllSOPInstances();
+
+    /** remove a particular SOP instance from the transfer list.  If the corresponding entry
+     *  contains a reference to a DICOM dataset, this dataset is deleted if the handling mode
+     *  HM_deleteAfterRemove was used to add it to the transfer list.
+     *  @param  sopClassUID     SOP Class UID of the SOP instance to be removed
+     *  @param  sopInstanceUID  SOP Instance UID of the SOP instance to be removed
+     *  @param  allOccurrences  flag specifying whether to delete all occurrences of the
+     *                          SOP instance if has been added to the list multiple times.
+     *                          If OFFalse, only the first occurrence is removed.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition removeSOPInstance(const OFString &sopClassUID,
+                                  const OFString &sopInstanceUID,
+                                  const OFBool allOccurrences = OFTrue);
 
     /** add a SOP instance stored as a DICOM file to the list of instances to be transferred.
      *  Before adding the SOP instance to the list, it is checked for validity and conformance
      *  to the DICOM standard (see checkSOPInstance() for details).  However, duplicate
      *  instances are not recognized, i.e. they are added to the list and later on transferred
      *  to the storage SCP when calling sendSOPInstances().
-     *  @param  filename     name of the DICOM file from which the SOP Class UID, SOP Instance
-     *                       UID and Transfer Syntax UID values are retrieved.  The first two
-     *                       UID values are either copied from the meta-header (preferred) or
-     *                       from the dataset.  The latter is either copied from the
-     *                       meta-header (preferred) or determined automatically (if possible).
+     *  @param  filename     name of the DICOM file that contains the SOP instance to be sent
      *  @param  readMode     read mode passed to the DcmFileFormat::loadFile() method.  If
      *                       ERM_fileOnly, only the file meta information header is loaded,
      *                       i.e. the behavior is identical to using ERM_metaOnly.
@@ -180,6 +216,29 @@ class DcmStorageSCU
     OFCondition addDicomFile(const OFString &filename,
                              const E_FileReadMode readMode = ERM_fileOnly,
                              const OFBool checkValues = OFTrue);
+
+    /** add a SOP instance from a given DICOM dataset to the list of instances to be
+     *  transferred. Before adding the SOP instance to the list, it is checked for validity
+     *  and conformance to the DICOM standard (see checkSOPInstance() for details).  However,
+     *  duplicate instances are not recognized, i.e. they are added to the list and later on
+     *  transferred to the storage SCP when calling sendSOPInstances().
+     *  @param  dataset       DICOM dataset that contains the SOP instance to be sent
+     *  @param  datasetXfer   transfer syntax of the dataset (determined automatically if
+     *                        unknown, which is also the default)
+     *  @param  handlingMode  mode specifying what to do with the dataset if no longer needed.
+     *                        HM_xxxAfterSend has no effect if the C-STORE request could not
+     *                        be sent.
+     *                        Please do not add the same dataset multiple times with a mode of
+     *                        HM_deleteAfterXXX, since it will result in deleting the same
+     *                        object multiple times!
+     *  @param  checkValues   flag indicating whether to check the UID values for validity and
+     *                        conformance.  If OFFalse, only empty values are rejected.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition addDataset(DcmDataset *dataset,
+                           const E_TransferSyntax datasetXfer = EXS_Unknown,
+                           const E_HandlingMode handlingMode = HM_compactAfterSend,
+                           const OFBool checkValues = OFTrue);
 
     /** add presentation contexts for all SOP instances in the transfer list, which were not
      *  yet sent (either successfully or unsuccessfully).  Initially, the internal list of
@@ -266,36 +325,36 @@ class DcmStorageSCU
                       const E_FileReadMode readMode,
                       const OFString &sopClassUID,
                       const OFString &sopInstanceUID,
-                      const OFString &transferSyntaxUID)
-          : Filename(filename),
-            FileReadMode(readMode),
-            Dataset(NULL),
-            SOPClassUID(sopClassUID),
-            SOPInstanceUID(sopInstanceUID),
-            TransferSyntaxUID(transferSyntaxUID),
-            NetworkTransferSyntax(EXS_Unknown),
-            Uncompressed(OFFalse),
-            AssociationNumber(0),
-            PresentationContextID(0),
-            RequestSent(OFFalse),
-            ResponseStatusCode(0)
-        {
-            // check whether transfer syntax is uncompressed, because we can convert between
-            // these three without any loss of information
-            if ((TransferSyntaxUID == UID_LittleEndianExplicitTransferSyntax) ||
-                (TransferSyntaxUID == UID_BigEndianExplicitTransferSyntax) ||
-                (TransferSyntaxUID == UID_LittleEndianImplicitTransferSyntax))
-            {
-                Uncompressed = OFTrue;
-            }
-        }
+                      const OFString &transferSyntaxUID);
+
+        /** constructor. Initializes member variables with reasonable values.
+         *  @param  dataset            pointer to the dataset of the SOP instance to be
+         *                             transferred
+         *  @param  handlingMode       mode specifying what to do with the dataset if no
+         *                             longer needed
+         *  @param  sopClassUID        SOP Class UID of the SOP instance to be transferred
+         *  @param  sopInstanceUID     SOP Instance UID of the SOP instance to be transferred
+         *  @param  transferSyntaxUID  Transfer Syntax UID of the SOP instance to be
+         *                             transferred
+         */
+        TransferEntry(DcmDataset *dataset,
+                      const E_HandlingMode handlingMode,
+                      const OFString &sopClassUID,
+                      const OFString &sopInstanceUID,
+                      const OFString &transferSyntaxUID);
+
+        /** destructor
+         */
+        ~TransferEntry();
 
         /// filename of the SOP instance to be transferred (if no 'Dataset' given)
         const OFString Filename;
         /// read mode that should be used to read the given SOP instance from file
         const E_FileReadMode FileReadMode;
-        /// dataset of the SOP instance to be transferred (if no 'Filename' given) - TODO
+        /// dataset of the SOP instance to be transferred (if no 'Filename' given)
         DcmDataset *Dataset;
+        /// handling mode specifying what to do with the dataset if no longer needed
+        const E_HandlingMode DatasetHandlingMode;
         /// SOP Class UID of the SOP instance to be transferred
         const OFString SOPClassUID;
         /// SOP Instance UID of the SOP instance to be transferred
@@ -317,6 +376,10 @@ class DcmStorageSCU
         Uint16 ResponseStatusCode;
 
       private:
+
+        /** initialize further member variables
+         */
+        void Init();
 
         // private undefined copy constructor
         TransferEntry(const TransferEntry &);
@@ -349,6 +412,27 @@ class DcmStorageSCU
                                               OFString &sopInstanceUID,
                                               OFString &transferSyntaxUID,
                                               const E_FileReadMode readMode);
+
+    /** get SOP Class UID, SOP Instance UID and Transfer Syntax UID from a DICOM dataset.
+     *  The first two UID values are directly copied from the dataset.  The latter is either
+     *  taken from the parameter 'datasetXfer' or, if it is unknown, determined automatically
+     *  from the dataset (if possible).
+     *  @param  dataset            DICOM dataset from which the SOP Class UID and SOP Instance
+     *                             UID values are retrieved
+     *  @param  datasetXfer        transfer syntax of the dataset (if known, otherwise it is
+     *                             determined automatically)
+     *  @param  sopClassUID        variable in which the value of the SOP Class UID is stored
+     *  @param  sopInstanceUID     variable in which the value of the SOP Instance UID is
+     *                             stored
+     *  @param  transferSyntaxUID  variable in which the value of the Transfer Syntax UID is
+     *                             stored
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    static OFCondition getSOPInstanceFromDataset(DcmDataset *dataset,
+                                                 const E_TransferSyntax datasetXfer,
+                                                 OFString &sopClassUID,
+                                                 OFString &sopInstanceUID,
+                                                 OFString &transferSyntaxUID);
 
     /** check given SOP Class UID, SOP Instance UID and Transfer Syntax UID for validity and
      *  conformance to the DICOM standard.  For all UID values, the compliance with the
@@ -402,6 +486,10 @@ class DcmStorageSCU
 /*
  * CVS Log
  * $Log: dstorscu.h,v $
+ * Revision 1.2  2011-10-06 14:16:08  joergr
+ * Now also SOP instances from DICOM datasets can be added to the transfer list.
+ * This allows for sending datasets created or received in memory.
+ *
  * Revision 1.1  2011-10-05 13:33:34  joergr
  * Added easy-to-use interface class for a Storage Service Class User (SCU).
  *

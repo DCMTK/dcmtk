@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.06 (riesmeier)
 
+- Now also SOP instances from DICOM datasets can be added to the transfer list.
+  This allows for sending datasets created or received in memory.
+  Affects: dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/dstorscu.cc
+
 - Removed unused local variable.
   Affects: dcmnet/libsrc/scp.cc
 

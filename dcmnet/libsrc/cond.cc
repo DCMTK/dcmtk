@@ -18,8 +18,8 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 13:12:01 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2011-10-06 14:16:10 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,8 +130,10 @@ const OFConditionConst NET_ECC_InvalidTransferSyntaxUID        (OFM_dcmnet, 1003
 const OFConditionConst NET_ECC_UnknownTransferSyntax           (OFM_dcmnet, 1004, OF_error, "Unknown Transfer Syntax");
 const OFConditionConst NET_ECC_NoPresentationContextsDefined   (OFM_dcmnet, 1005, OF_error, "No Presentation Contexts defined");
 const OFConditionConst NET_ECC_NoAcceptablePresentationContexts(OFM_dcmnet, 1006, OF_error, "No acceptable Presentation Contexts");
-const OFConditionConst NET_ECC_NoInstancesToBeSent             (OFM_dcmnet, 1007, OF_error, "No instances to be sent");
-const OFConditionConst NET_ECC_InsufficientPortPrivileges      (OFM_dcmnet, 1023, OF_error, "Insufficient Port Privileges");
+const OFConditionConst NET_ECC_NoSOPInstancesToSend            (OFM_dcmnet, 1007, OF_error, "No SOP instances to send");
+const OFConditionConst NET_ECC_NoSuchSOPInstance               (OFM_dcmnet, 1008, OF_error, "No such SOP instance");
+const OFConditionConst NET_ECC_InvalidDatasetPointer           (OFM_dcmnet, 1009, OF_error, "Invalid dataset pointer");
+const OFConditionConst NET_ECC_InsufficientPortPrivileges      (OFM_dcmnet, 1023, OF_error, "Insufficient port privileges");
 
 const OFCondition NET_EC_InvalidSOPClassUID              (NET_ECC_InvalidSOPClassUID);
 const OFCondition NET_EC_UnknownStorageSOPClass          (NET_ECC_UnknownStorageSOPClass);
@@ -140,7 +142,9 @@ const OFCondition NET_EC_InvalidTransferSyntaxUID        (NET_ECC_InvalidTransfe
 const OFCondition NET_EC_UnknownTransferSyntax           (NET_ECC_UnknownTransferSyntax);
 const OFCondition NET_EC_NoPresentationContextsDefined   (NET_ECC_NoPresentationContextsDefined);
 const OFCondition NET_EC_NoAcceptablePresentationContexts(NET_ECC_NoAcceptablePresentationContexts);
-const OFCondition NET_EC_NoInstancesToBeSent             (NET_ECC_NoInstancesToBeSent);
+const OFCondition NET_EC_NoSOPInstancesToSend            (NET_ECC_NoSOPInstancesToSend);
+const OFCondition NET_EC_NoSuchSOPInstance               (NET_ECC_NoSuchSOPInstance);
+const OFCondition NET_EC_InvalidDatasetPointer           (NET_ECC_InvalidDatasetPointer);
 const OFCondition NET_EC_InsufficientPortPrivileges      (NET_ECC_InsufficientPortPrivileges);
 
 
@@ -191,6 +195,10 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
+ * Revision 1.25  2011-10-06 14:16:10  joergr
+ * Now also SOP instances from DICOM datasets can be added to the transfer list.
+ * This allows for sending datasets created or received in memory.
+ *
  * Revision 1.24  2011-09-29 13:12:01  joergr
  * Introduced new network-related error codes, e.g. in case that none of the
  * proposed presentation contexts were accepted by the association acceptor.
