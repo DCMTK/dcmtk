@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.06 (riesmeier)
 
+- Output some useful information to the DEBUG logger when compacting a value.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 - Replaced remaining tabs by spaces.
   Affects: dcmdata/include/dcmtk/dcmdata/dcobject.h
 

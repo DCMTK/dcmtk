@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-07 07:07:40 $
- *  CVS/RCS Revision: $Revision: 1.93 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-06 12:53:52 $
+ *  CVS/RCS Revision: $Revision: 1.94 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1563,6 +1563,8 @@ void DcmElement::compact()
 {
   if (fLoadValue && fValue)
   {
+    DCMDATA_DEBUG("DcmElement::compact() removed element value of " << getTag()
+        << " with " << getTransferredBytes() << " bytes");
     delete[] fValue;
     fValue = NULL;
     setTransferredBytes(0);
@@ -1778,6 +1780,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.94  2011-10-06 12:53:52  joergr
+** Output some useful information to the DEBUG logger when compacting a value.
+**
 ** Revision 1.93  2011-06-07 07:07:40  uli
 ** Again fixed a case where calcElementLength() used a wrong header length.
 **
