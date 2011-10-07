@@ -235,7 +235,8 @@ these cases, a special "path" notation has to be used.  Details can be found
 in the \b dcmodify documentation.
 
 If no file is specified on the command line, the query must be specified
-completely with one or more \e -k options.
+completely with one or more \e -k options.  If multiple query files are
+provided, \b getscu will send multiple C-GET requests to the SCP.
 
 \subsection known_problems Known Problems
 
