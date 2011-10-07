@@ -174,7 +174,7 @@
 /* Define to 1 if you have the `gethostbyname' function. */
 #cmakedefine HAVE_GETHOSTBYNAME @HAVE_GETHOSTBYNAME@
 
-/* Define to 1 if you have the `gethostbyname' function. */
+/* Define to 1 if you have the `gethostbyname_r' function. */
 #cmakedefine HAVE_GETHOSTBYNAME_R @HAVE_GETHOSTBYNAME_R@
 
 /* Define to 1 if you have the `gethostid' function. */
@@ -377,7 +377,7 @@
    stdlib.h netdb.h */
 #cmakedefine HAVE_PROTOTYPE_GETHOSTBYNAME @HAVE_PROTOTYPE_GETHOSTBYNAME@
 
-/* Define if your system has a prototype for gethostbyname in libc.h unistd.h
+/* Define if your system has a prototype for gethostbyname_r in libc.h unistd.h
    stdlib.h netdb.h */
 #cmakedefine HAVE_PROTOTYPE_GETHOSTBYNAME_R @HAVE_PROTOTYPE_GETHOSTBYNAME_R@
 

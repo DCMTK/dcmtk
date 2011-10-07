@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.07 (riesmeier)
+
+- Fixed typo in comments introduced with a recent commit.
+  Affects: CMake/osconfig.h.in
+
 **** Changes from 2011.10.06 (riesmeier)
 
 - On non-Windows systems, make sure that the pre-defined man pages (shipped
