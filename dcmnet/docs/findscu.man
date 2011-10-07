@@ -292,7 +292,8 @@ value "CT".  Details on this path notation can be found in the documentation
 of \b dcmodify.
 
 If no file is specified on the command line, the query must be specified
-completely with one or more \e -k options.
+completely with one or more \e -k options.  If multiple query files are
+provided, \b findscu will send multiple C-FIND requests to the SCP.
 
 Each set of response identifiers received will be output to the logger unless
 option \e --hide-responses, \e --extract, \e --quiet or an appropriate logger
