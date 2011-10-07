@@ -340,7 +340,8 @@ causing the attribute to be sent with zero length.  It is not possible to
 replace or insert attributes within sequences using the \e -k option.
 
 If no file is specified on the command line, the query must be specified
-completely with one or more \e -k options.
+completely with one or more \e -k options.  If multiple query files are
+provided, \b movescu will send multiple C-MOVE requests to the SCP.
 
 For all uses of \b movescu, the SCP must be configured to "know" about the AE
 title where the images are to be transmitted.  This is required since the

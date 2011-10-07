@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.07 (riesmeier)
 
+- Added explaining sentence to the NOTES section that specifying multiple query
+  files results in sending multiple C-MOVE request to the SCP.
+  Affects: dcmnet/docs/movescu.man
+
 - Fixed typo in comments introduced with a recent commit.
   Affects: CMake/osconfig.h.in
 
