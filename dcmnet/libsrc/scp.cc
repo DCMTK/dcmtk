@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-06 13:05:57 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-10-07 16:56:01 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -795,8 +795,8 @@ OFCondition DcmSCP::sendActionResponse(T_ASC_PresentationContextID presID,
   actionRsp.MessageIDBeingRespondedTo = messageID;
   actionRsp.DimseStatus = rspStatusCode;
   actionRsp.ActionTypeID = actionTypeID;
-  actionRsp.AffectedSOPClassUID[0] = *(sopClassUID.c_str());
-  actionRsp.AffectedSOPInstanceUID[0] = *(sopInstanceUID.c_str());
+  OFStandard::strlcpy(actionRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(actionRsp.AffectedSOPClassUID));
+  OFStandard::strlcpy(actionRsp.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(actionRsp.AffectedSOPInstanceUID));
   actionRsp.opts = 0;
 
   if (rspDataset)
@@ -1819,6 +1819,9 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.27  2011-10-07 16:56:01  ogazzar
+** Fixed source code bug in the sendActionResponse() function.
+**
 ** Revision 1.26  2011-10-06 13:05:57  joergr
 ** Removed unused local variable.
 **
