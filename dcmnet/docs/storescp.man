@@ -729,9 +729,9 @@ described above and \e -od (\e --output-directory) defines the directory in
 which \b storescp stores incoming DICOM objects.  Note that the service name
 ("acr-nema" in this example) determines the port number on which DICOM
 associations are accepted and must be defined in <em>/etc/services</em>.
-When runnning from inetd, the stdout and stderr streams are redirected to
-files in the <em>/tmp</em> filesystem which can be identified by the
-filename starting with the prefix "storescp_".
+When runnning from inetd, the stdout and stderr streams are discarded.
+However, you can still configure logging via the \e --log-config
+option (see below).
 
 Please note that when run through inetd, \b storescp is executed with root
 privileges, which may be a security risk.

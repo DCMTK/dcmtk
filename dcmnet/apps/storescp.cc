@@ -17,9 +17,9 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 09:04:23 $
- *  CVS/RCS Revision: $Revision: 1.148 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-10 14:13:48 $
+ *  CVS/RCS Revision: $Revision: 1.149 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,10 +135,6 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
          const char* transferSyntaxes[],
          int transferSyntaxCount,
          T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
-
-#ifdef INETD_AVAILABLE
-static int makeTempFile();
-#endif
 
 /* sort study mode */
 enum E_SortStudyMode
@@ -508,11 +504,11 @@ int main(int argc, char *argv[])
       if (fd != 0) exit(99);
 
       // create new file descriptor for stdout
-      fd = makeTempFile();
+      fd = open("/dev/null", O_WRONLY);
       if (fd != 1) exit(99);
 
       // create new file descriptor for stderr
-      fd = makeTempFile();
+      fd = open("/dev/null", O_WRONLY);
       if (fd != 2) exit(99);
 
       dcmExternalSocketHandle.set(inetd_fd);
@@ -2778,26 +2774,12 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 }
 
 
-#ifdef INETD_AVAILABLE
-
-static int makeTempFile()
-{
-  char tempfile[30];
-  OFStandard::strlcpy(tempfile, "/tmp/storescp_XXXXXX", 30);
-#ifdef HAVE_MKSTEMP
-  return mkstemp(tempfile);
-#else /* ! HAVE_MKSTEMP */
-  mktemp(tempfile);
-  return open(tempfile, O_WRONLY|O_CREAT|O_APPEND, 0644);
-#endif
-}
-
-#endif
-
-
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.149  2011-10-10 14:13:48  uli
+** Discard all console output in inetd mode.
+**
 ** Revision 1.148  2011-09-29 09:04:23  joergr
 ** Output message ID of request and DIMSE status of response messages to the
 ** INFO logger (if DEBUG level is not enabled). All tools and classes in the

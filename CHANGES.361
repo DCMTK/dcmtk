@@ -19,6 +19,10 @@ Changes between releases are documented here.
            dcmnet/libsrc/cond.cc
            dcmnet/libsrc/scu.cc
 
+- Discard all console output in inetd mode.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+
 **** Changes from 2011.10.10 (riesmeier)
 
 - Added output stream operator in order to use different time units depending
