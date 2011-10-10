@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -74,8 +74,8 @@
 ** Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2010-12-01 08:26:10 $
-** CVS/RCS Revision:    $Revision: 1.23 $
+** Update Date:         $Date: 2011-10-10 07:53:51 $
+** CVS/RCS Revision:    $Revision: 1.24 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -127,8 +127,8 @@ extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
 #define STATUS_Success  0x0000
 #define STATUS_Pending  0xff00
 
-#define DICOM_PENDING_STATUS(status) (((status)&0xff00) == 0xff00)
-#define DICOM_WARNING_STATUS(status) (((status)&0xf000) == 0xb000)
+#define DICOM_PENDING_STATUS(status)  (((status) & 0xff00) == 0xff00)
+#define DICOM_WARNING_STATUS(status) ((((status) & 0xf000) == 0xb000) || ((status) == 0x0107) || ((status) == 0x0116))
 
 /*
  * Service Class Specific Status Codes
@@ -172,7 +172,7 @@ extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
 #define STATUS_GET_Warning_SubOperationsCompleteOneOrMoreFailures       0xb000
 
 /* DIMSE-N Specific Codes */
-#define STATUS_N_Cancel                                                 0xFE00
+#define STATUS_N_Cancel                                                 0xfe00
 #define STATUS_N_AttributeListError                                     0x0107
 #define STATUS_N_SOPClassNotSupported                                   0x0122
 #define STATUS_N_ClassInstanceConflict                                  0x0119
@@ -180,6 +180,7 @@ extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
 #define STATUS_N_DuplicateInvocation                                    0x0210
 #define STATUS_N_InvalidArgumentValue                                   0x0115
 #define STATUS_N_InvalidAttributeValue                                  0x0106
+#define STATUS_N_AttributeValueOutOfRange                               0x0116
 #define STATUS_N_InvalidObjectInstance                                  0x0117
 #define STATUS_N_MissingAttribute                                       0x0120
 #define STATUS_N_MissingAttributeValue                                  0x0121
@@ -195,17 +196,17 @@ extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
 #define STATUS_N_NoSuchAction                                           0x0123
 
 /* Print Management Service Class Specific Codes */
-#define STATUS_N_PRINT_BFS_Warn_MemoryAllocation                        0xB600
-#define STATUS_N_PRINT_BFS_Warn_NoSessionPrinting                       0xB601
-#define STATUS_N_PRINT_BFS_Warn_EmptyPage                               0xB602
-#define STATUS_N_PRINT_BFB_Warn_EmptyPage                               0xB603
-#define STATUS_N_PRINT_BFS_Fail_NoFilmBox                               0xC600
-#define STATUS_N_PRINT_BFS_Fail_PrintQueueFull                          0xC601
-#define STATUS_N_PRINT_BSB_Fail_PrintQueueFull                          0xC602
-#define STATUS_N_PRINT_BFS_BFB_Fail_ImageSize                           0xC603
-#define STATUS_N_PRINT_BFS_BFB_Fail_PositionCollision                   0xC604
-#define STATUS_N_PRINT_IB_Fail_InsufficientMemory                       0xC605
-#define STATUS_N_PRINT_IB_Fail_MoreThanOneVOILUT                        0xC606
+#define STATUS_N_PRINT_BFS_Warn_MemoryAllocation                        0xb600
+#define STATUS_N_PRINT_BFS_Warn_NoSessionPrinting                       0xb601
+#define STATUS_N_PRINT_BFS_Warn_EmptyPage                               0xb602
+#define STATUS_N_PRINT_BFB_Warn_EmptyPage                               0xb603
+#define STATUS_N_PRINT_BFS_Fail_NoFilmBox                               0xc600
+#define STATUS_N_PRINT_BFS_Fail_PrintQueueFull                          0xc601
+#define STATUS_N_PRINT_BSB_Fail_PrintQueueFull                          0xc602
+#define STATUS_N_PRINT_BFS_BFB_Fail_ImageSize                           0xc603
+#define STATUS_N_PRINT_BFS_BFB_Fail_PositionCollision                   0xc604
+#define STATUS_N_PRINT_IB_Fail_InsufficientMemory                       0xc605
+#define STATUS_N_PRINT_IB_Fail_MoreThanOneVOILUT                        0xc606
 
 
 /*
@@ -250,7 +251,7 @@ typedef enum {                  /* DIC_US */
  */
 
 typedef enum {                  /* DIC_US */
-    DIMSE_DATASET_PRESENT = 0x0001,     /* anything other than 0x0101) */
+    DIMSE_DATASET_PRESENT = 0x0001,     /* anything other than 0x0101 */
     DIMSE_DATASET_NULL = 0x0101
 } T_DIMSE_DataSetType;
 
@@ -1109,6 +1110,11 @@ DIMSE_COMPAT_WRAP_R(DIMSE_printNDelete, T_DIMSE_N_Delete)
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
+** Revision 1.24  2011-10-10 07:53:51  joergr
+** Added missing DIMSE-N status code "Attribute Value out of Range" (0116h) used
+** for Print Management. Also fixed some other small inconsistencies regarding
+** the DIMSE status codes.
+**
 ** Revision 1.23  2010-12-01 08:26:10  joergr
 ** Added OFFIS copyright header (beginning with the year 1994).
 **

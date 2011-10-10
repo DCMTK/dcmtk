@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.10 (riesmeier)
+
+- Added missing DIMSE-N status code "Attribute Value out of Range" (0116h) used
+  for Print Management. Thanks to forum user "Yves Neumann" for the report.
+  Affects: dcmnet/include/dcmtk/dcmnet/dimse.h
+           dcmnet/libsrc/dimdump.cc
+           dcmnet/libsrc/diutil.cc
+
+- Fixed some other small inconsistencies regarding the DIMSE status codes.
+  Affects: dcmnet/include/dcmtk/dcmnet/dimse.h
+           dcmnet/libsrc/dimdump.cc
+           dcmnet/libsrc/diutil.cc
+
 **** Changes from 2011.10.07 (elgazzar)
 
 - Fixed source code bug in the sendActionResponse() function.

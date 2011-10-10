@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,8 +22,8 @@
  *    Module Prefix: DIMSE_
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:28 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2011-10-10 07:53:53 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,6 +104,9 @@ static void DIMSE_printNStatusString(STD_NAMESPACE ostream& dumpStream, int stat
       break;
     case STATUS_N_InvalidAttributeValue:
       dumpStream << "0x0106: Invalid attribute value";
+      break;
+    case STATUS_N_AttributeValueOutOfRange:
+      dumpStream << "0x0116: Attribute value out of range";
       break;
     case STATUS_N_InvalidObjectInstance:
       dumpStream << "0x0117: Invalid object instance";
@@ -1094,11 +1097,6 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_N_DeleteRSP &msg, enum DIMSE_
 OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_Message &msg, enum DIMSE_direction dir, DcmItem *dataset, T_ASC_PresentationContextID presID)
 {
     switch (msg.CommandField) {
-    case DIMSE_NOTHING:
-        DIMSE_dumpMessage_start(str, dir);
-        str += "Undefined Request/Response";
-        DIMSE_dumpMessage_end(str, dataset);
-        break;
     case DIMSE_C_STORE_RQ:
         DIMSE_dumpMessage(str, msg.msg.CStoreRQ, dir, dataset, presID);
         break;
@@ -1170,7 +1168,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_Message &msg, enum DIMSE_dire
         break;
     default:
         DIMSE_dumpMessage_start(str, dir);
-        str += "DIMSE_printCommand: Bad msg->CommandField";
+        str += "Message Type                  : UNKNOWN (DIMSE Protocol Error)";
         DIMSE_dumpMessage_end(str, dataset);
         break;
     }
@@ -1181,6 +1179,11 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_Message &msg, enum DIMSE_dire
 /*
  * CVS Log
  * $Log: dimdump.cc,v $
+ * Revision 1.18  2011-10-10 07:53:53  joergr
+ * Added missing DIMSE-N status code "Attribute Value out of Range" (0116h) used
+ * for Print Management. Also fixed some other small inconsistencies regarding
+ * the DIMSE status codes.
+ *
  * Revision 1.17  2010-10-14 13:14:28  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

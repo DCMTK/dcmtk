@@ -74,8 +74,8 @@
 ** Module Prefix: DU_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2011-09-28 14:33:47 $
-** CVS/RCS Revision:    $Revision: 1.35 $
+** Update Date:         $Date: 2011-10-10 07:53:54 $
+** CVS/RCS Revision:    $Revision: 1.36 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -544,6 +544,9 @@ DU_ncreateStatusString(Uint16 statusCode)
       case STATUS_N_UnrecognizedOperation:
           s = "Failure: UnrecognizedOperation";
           break;
+      case STATUS_N_AttributeValueOutOfRange:
+          s = "Warning: AttributeValueOutOfRange";
+          break;
     }
     if (s)
           return s;
@@ -570,9 +573,6 @@ DU_ngetStatusString(Uint16 statusCode)
       case STATUS_Success:
           s = "Success";
           break;
-      case STATUS_N_AttributeListError:
-          s = "Warning: AttributeListError";
-          break;
       case STATUS_N_ClassInstanceConflict:
           s = "Failure: ClassInstanceConflict";
           break;
@@ -596,6 +596,12 @@ DU_ngetStatusString(Uint16 statusCode)
           break;
       case STATUS_N_ResourceLimitation:
           s = "Failure: ResourceLimitation";
+          break;
+      case STATUS_N_AttributeListError:
+          s = "Warning: AttributeListError";
+          break;
+      case STATUS_N_AttributeValueOutOfRange:
+          s = "Warning: AttributeValueOutOfRange";
           break;
     }
     if (s)
@@ -658,6 +664,9 @@ DU_nsetStatusString(Uint16 statusCode)
           break;
       case STATUS_N_UnrecognizedOperation:
           s = "Failure: UnrecognizedOperation";
+          break;
+      case STATUS_N_AttributeValueOutOfRange:
+          s = "Warning: AttributeValueOutOfRange";
           break;
     }
     if (s)
@@ -857,6 +866,11 @@ DU_neventReportStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
+** Revision 1.36  2011-10-10 07:53:54  joergr
+** Added missing DIMSE-N status code "Attribute Value out of Range" (0116h) used
+** for Print Management. Also fixed some other small inconsistencies regarding
+** the DIMSE status codes.
+**
 ** Revision 1.35  2011-09-28 14:33:47  joergr
 ** Completed implementation of function DU_cgetStatusString().
 **
