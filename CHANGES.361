@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.07 (elgazzar)
+
+- Fixed source code bug in the sendActionResponse() function.
+  Affects: dcmnet/libsrc/scp.cc
+
 **** Changes from 2011.10.07 (riesmeier)
 
 - Added explaining sentence to the NOTES section that specifying multiple query
