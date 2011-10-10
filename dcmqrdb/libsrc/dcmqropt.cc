@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveOptions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:36 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-10 13:50:08 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +32,11 @@
 #define INCLUDE_CSTDARG
 #include "dcmtk/ofstd/ofstdinc.h"
 
-const OFConditionConst APPE_INVALIDPEER(1024, 1, OF_error, "dcmqrdb: invalid peer for move operation");
-const OFCondition APP_INVALIDPEER(APPE_INVALIDPEER);
+const OFConditionConst QR_ECC_IndexDatabaseError(OFM_dcmqrdb, 1, OF_error, "Index database error");
+const OFConditionConst QR_ECC_InvalidPeer       (OFM_dcmqrdb, 2, OF_error, "Invalid peer for move operation");
+
+const OFCondition QR_EC_IndexDatabaseError(QR_ECC_IndexDatabaseError);
+const OFCondition QR_EC_InvalidPeer       (QR_ECC_InvalidPeer);
 
 DcmQueryRetrieveOptions::DcmQueryRetrieveOptions()
 : allowShutdown_(OFFalse)
@@ -88,6 +91,9 @@ DcmQueryRetrieveOptions::~DcmQueryRetrieveOptions()
 /*
  * CVS Log
  * $Log: dcmqropt.cc,v $
+ * Revision 1.9  2011-10-10 13:50:08  uli
+ * Slightly improved the error condition names and definition.
+ *
  * Revision 1.8  2010-10-14 13:14:36  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

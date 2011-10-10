@@ -7,6 +7,12 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
            dcmqrdb/libsrc/dcmqrdbi.cc
 
+- Slightly improved the error condition names and definition.
+  Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqropt.h
+           dcmqrdb/libsrc/dcmqrcbm.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmqrdb/libsrc/dcmqropt.cc
+
 **** Changes from 2011.10.10 (riesmeier)
 
 - Added output stream operator in order to use different time units depending

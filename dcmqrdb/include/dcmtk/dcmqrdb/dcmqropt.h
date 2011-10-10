@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-02-04 11:24:40 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2011-10-10 13:50:07 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,8 @@
 #include "dcmtk/dcmnet/dimse.h"
 
 /// invalid peer for move operation
-extern const OFCondition APP_INVALIDPEER;
+extern const OFCondition QR_EC_InvalidPeer;
+extern const OFCondition QR_EC_IndexDatabaseError;
 
 /** this class encapsulates all the various options that affect the
  *  operation of the SCP, in addition to those defined in the config file
@@ -174,6 +175,9 @@ public:
 /*
  * CVS Log
  * $Log: dcmqropt.h,v $
+ * Revision 1.10  2011-10-10 13:50:07  uli
+ * Slightly improved the error condition names and definition.
+ *
  * Revision 1.9  2011-02-04 11:24:40  uli
  * Added private undefined functions where gcc's -Weffc++ warns otherwise.
  *

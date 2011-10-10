@@ -19,8 +19,8 @@
  *                   DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-10 12:57:22 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2011-10-10 13:50:07 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,14 +48,12 @@ END_EXTERN_C
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"
 #include "dcmtk/dcmqrdb/dcmqrcnf.h"
+#include "dcmtk/dcmqrdb/dcmqropt.h"
 
 #include "dcmtk/dcmqrdb/dcmqridx.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/ofstd/ofstd.h"
-
-const OFConditionConst DcmQRIndexDatabaseErrorC(OFM_dcmqrdb, 0x001, OF_error, "DcmQR Index Database Error");
-const OFCondition DcmQRIndexDatabaseError(DcmQRIndexDatabaseErrorC);
 
 /* ========================= static data ========================= */
 
@@ -459,7 +457,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRead (int idx, IdxRecord 
     **/
 
     if (read (handle_ -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
-        return (DcmQRIndexDatabaseError) ;
+        return (QR_EC_IndexDatabaseError) ;
 
     DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
 
@@ -500,7 +498,7 @@ static OFCondition DB_IdxAdd (DB_Private_Handle *phandle, int *idx, IdxRecord *i
     DB_lseek (phandle -> pidx, (long) (SIZEOF_STUDYDESC + (*idx) * SIZEOF_IDXRECORD), SEEK_SET) ;
 
     if (write (phandle -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
-        cond = DcmQRIndexDatabaseError ;
+        cond = QR_EC_IndexDatabaseError ;
     else
         cond = EC_Normal ;
 
@@ -518,7 +516,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_StudyDescChange(StudyDescRec
 {
     OFCondition cond = EC_Normal;
     DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
-    if (write (handle_ -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) != SIZEOF_STUDYDESC) cond = DcmQRIndexDatabaseError;
+    if (write (handle_ -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) != SIZEOF_STUDYDESC)
+        cond = QR_EC_IndexDatabaseError;
     DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
     return cond ;
 }
@@ -555,7 +554,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxGetNext(int *idx, IdxReco
 
     DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
 
-    return DcmQRIndexDatabaseError ;
+    return QR_EC_IndexDatabaseError ;
 }
 
 
@@ -573,7 +572,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_GetStudyDesc (StudyDescRecor
 
     DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
 
-    return DcmQRIndexDatabaseError ;
+    return QR_EC_IndexDatabaseError ;
 }
 
 
@@ -594,7 +593,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRemove(int idx)
     if (write (handle_ -> pidx, (char *) &rec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD)
         cond = EC_Normal ;
     else
-        cond = DcmQRIndexDatabaseError ;
+        cond = QR_EC_IndexDatabaseError ;
 
     DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
 
@@ -612,7 +611,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_lock(OFBool exclusive)
     }
     if (dcmtk_flock(handle_->pidx, lockmode) < 0) {
         dcmtk_plockerr("DB_lock");
-        return DcmQRIndexDatabaseError;
+        return QR_EC_IndexDatabaseError;
     }
     return EC_Normal;
 }
@@ -621,7 +620,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_unlock()
 {
     if (dcmtk_flock(handle_->pidx, LOCK_UN) < 0) {
         dcmtk_plockerr("DB_unlock");
-        return DcmQRIndexDatabaseError;
+        return QR_EC_IndexDatabaseError;
     }
     return EC_Normal;
 }
@@ -729,7 +728,7 @@ static OFCondition DB_GetUIDTag (DB_LEVEL level, DcmTagKey *tag)
         return (EC_Normal);
     }
     else
-    return (DcmQRIndexDatabaseError);
+    return (QR_EC_IndexDatabaseError);
 
 }
 
@@ -750,7 +749,7 @@ static OFCondition DB_GetTagLevel (DcmTagKey tag, DB_LEVEL *level)
         return (EC_Normal);
     }
     else
-    return (DcmQRIndexDatabaseError);
+    return (QR_EC_IndexDatabaseError);
 }
 
 /*******************
@@ -770,7 +769,7 @@ static OFCondition DB_GetTagKeyAttr (DcmTagKey tag, DB_KEY_TYPE *keyAttr)
         return (EC_Normal);
     }
     else
-    return (DcmQRIndexDatabaseError);
+    return (QR_EC_IndexDatabaseError);
 }
 
 /*******************
@@ -790,7 +789,7 @@ static OFCondition DB_GetTagKeyClass (DcmTagKey tag, DB_KEY_CLASS *keyAttr)
         return (EC_Normal);
     }
     else
-    return (DcmQRIndexDatabaseError);
+    return (QR_EC_IndexDatabaseError);
 }
 
 
@@ -1350,7 +1349,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
 
 /************
 **      Test a Find Request List
-**      Returns EC_Normal if ok, else returns DcmQRIndexDatabaseError
+**      Returns EC_Normal if ok, else returns QR_EC_IndexDatabaseError
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
@@ -1370,12 +1369,12 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
 
     if (queryLevel < infLevel) {
         DCMQRDB_INFO("Level incompatible with Information Model (level " << queryLevel << ")");
-        return DcmQRIndexDatabaseError ;
+        return QR_EC_IndexDatabaseError ;
     }
 
     if (queryLevel > lowestLevel) {
         DCMQRDB_DEBUG("Level incompatible with Information Model (level " << queryLevel << ")");
-        return DcmQRIndexDatabaseError ;
+        return QR_EC_IndexDatabaseError ;
     }
 
     for (level = PATIENT_LEVEL ; level <= IMAGE_LEVEL ; level++) {
@@ -1399,7 +1398,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
             }
             if (atLeastOneKeyFound && (queryLevel != STUDY_LEVEL)) {
                 DCMQRDB_DEBUG("Key found in Study Root Information Model (level " << level << ")");
-                return DcmQRIndexDatabaseError ;
+                return QR_EC_IndexDatabaseError ;
             }
         }
 
@@ -1422,11 +1421,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
                 DB_GetTagKeyAttr (plist->elem. XTag, &XTagType) ;
                 if (XTagType != UNIQUE_KEY) {
                     DCMQRDB_DEBUG("Non Unique Key found (level " << level << ")");
-                    return DcmQRIndexDatabaseError ;
+                    return QR_EC_IndexDatabaseError ;
                 }
                 else if (uniqueKeyFound) {
                     DCMQRDB_DEBUG("More than one Unique Key found (level " << level << ")");
-                    return DcmQRIndexDatabaseError ;
+                    return QR_EC_IndexDatabaseError ;
                 }
                 else
                     uniqueKeyFound = OFTrue ;
@@ -1453,7 +1452,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
             }
             if (! atLeastOneKeyFound) {
                 DCMQRDB_DEBUG("No Key found at query level (level " << level << ")");
-                return DcmQRIndexDatabaseError ;
+                return QR_EC_IndexDatabaseError ;
             }
         }
 
@@ -1477,7 +1476,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
             }
             if (atLeastOneKeyFound) {
                 DCMQRDB_DEBUG("Key found beyond query level (level " << level << ")");
-                return DcmQRIndexDatabaseError ;
+                return QR_EC_IndexDatabaseError ;
             }
         }
 
@@ -1526,7 +1525,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
         if (plist == NULL) {
             *match = OFFalse ;
             DCMQRDB_WARN("hierarchicalCompare : No UID Key found at level " << (int) level);
-            return DcmQRIndexDatabaseError ;
+            return QR_EC_IndexDatabaseError ;
         }
 
         /** Find element with the same XTag in index record
@@ -1609,7 +1608,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
         return EC_Normal ;
 
     }
-    return DcmQRIndexDatabaseError;
+    return QR_EC_IndexDatabaseError;
 }
 
 /********************
@@ -1645,7 +1644,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 #endif
     else {
         status->setStatus(STATUS_FIND_Refused_SOPClassNotSupported);
-        return (DcmQRIndexDatabaseError) ;
+        return (QR_EC_IndexDatabaseError) ;
     }
 
 
@@ -1668,7 +1667,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
                 elem.PValueField = NULL ;
             } else if ((elem.PValueField = (char*)malloc((size_t)(elem.ValueLength+1))) == NULL) {
                 status->setStatus(STATUS_FIND_Refused_OutOfResources);
-                return (DcmQRIndexDatabaseError) ;
+                return (QR_EC_IndexDatabaseError) ;
             } else {
                 /* only char string type tags are supported at the moment */
                 char *s = NULL;
@@ -1710,7 +1709,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
                     DCMQRDB_DEBUG("DB_startFindRequest () : Illegal query level (" << level << ")");
 #endif
                     status->setStatus(STATUS_FIND_Failed_UnableToProcess);
-                    return (DcmQRIndexDatabaseError) ;
+                    return (QR_EC_IndexDatabaseError) ;
                 }
                 qrLevelFound = OFTrue;
             } else {
@@ -1722,7 +1721,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
                     plist = (DB_ElementList *) malloc (sizeof (DB_ElementList)) ;
                     if (plist == NULL) {
                         status->setStatus(STATUS_FIND_Refused_OutOfResources);
-                        return (DcmQRIndexDatabaseError) ;
+                        return (QR_EC_IndexDatabaseError) ;
                     }
                     plist->next = NULL ;
                     DB_DuplicateElement (&elem, &(plist->elem)) ;
@@ -1748,7 +1747,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
         handle_->idxCounter = -1 ;
         DB_FreeElementList (handle_->findRequestList) ;
         handle_->findRequestList = NULL ;
-        return (DcmQRIndexDatabaseError) ;
+        return (QR_EC_IndexDatabaseError) ;
     }
 
     switch (handle_->rootLevel)
@@ -1911,7 +1910,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
             DcmElement *dce = newDicomElement(t);
             if (dce == NULL) {
                 status->setStatus(STATUS_FIND_Refused_OutOfResources);
-                return DcmQRIndexDatabaseError;
+                return QR_EC_IndexDatabaseError;
             }
             if (plist->elem.PValueField != NULL &&
                 strlen(plist->elem.PValueField) > 0) {
@@ -1919,14 +1918,14 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
                 if (ec != EC_Normal) {
                     DCMQRDB_WARN("dbfind: DB_nextFindResponse: cannot put()");
                     status->setStatus(STATUS_FIND_Failed_UnableToProcess);
-                    return DcmQRIndexDatabaseError;
+                    return QR_EC_IndexDatabaseError;
                 }
             }
             OFCondition ec = (*findResponseIdentifiers)->insert(dce, OFTrue /*replaceOld*/);
             if (ec != EC_Normal) {
                 DCMQRDB_WARN("dbfind: DB_nextFindResponse: cannot insert()");
                 status->setStatus(STATUS_FIND_Failed_UnableToProcess);
-                return DcmQRIndexDatabaseError;
+                return QR_EC_IndexDatabaseError;
             }
         }
 
@@ -1958,7 +1957,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
 
         DB_unlock();
 
-        return (DcmQRIndexDatabaseError) ;
+        return (QR_EC_IndexDatabaseError) ;
     }
 
     switch (handle_->rootLevel) {
@@ -2083,7 +2082,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::cancelFindRequest (DcmQueryRetr
 
 /************
  *      Test a Move Request List
- *      Returns EC_Normal if ok, else returns DcmQRIndexDatabaseError
+ *      Returns EC_Normal if ok, else returns QR_EC_IndexDatabaseError
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
@@ -2103,12 +2102,12 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
 
     if (queryLevel < infLevel) {
         DCMQRDB_DEBUG("Level incompatible with Information Model (level " << (int)queryLevel << ")");
-        return DcmQRIndexDatabaseError ;
+        return QR_EC_IndexDatabaseError ;
     }
 
     if (queryLevel > lowestLevel) {
         DCMQRDB_DEBUG("Level incompatible with Information Model (level " << (int)queryLevel << ")");
-        return DcmQRIndexDatabaseError ;
+        return QR_EC_IndexDatabaseError ;
     }
 
     for (level = PATIENT_LEVEL ; level <= IMAGE_LEVEL ; level++) {
@@ -2133,7 +2132,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
             }
             if (atLeastOneKeyFound) {
                 DCMQRDB_DEBUG("Key found in Study Root Information Model (level " << level << ")");
-                return DcmQRIndexDatabaseError ;
+                return QR_EC_IndexDatabaseError ;
             }
         }
 
@@ -2156,18 +2155,18 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
                 DB_GetTagKeyAttr (plist->elem. XTag, &XTagType) ;
                 if (XTagType != UNIQUE_KEY) {
                     DCMQRDB_DEBUG("Non Unique Key found (level " << level << ")");
-                    return DcmQRIndexDatabaseError ;
+                    return QR_EC_IndexDatabaseError ;
                 }
                 else if (uniqueKeyFound) {
                     DCMQRDB_DEBUG("More than one Unique Key found (level " << level << ")");
-                    return DcmQRIndexDatabaseError ;
+                    return QR_EC_IndexDatabaseError ;
                 }
                 else
                     uniqueKeyFound = OFTrue ;
             }
             if (! uniqueKeyFound) {
                 DCMQRDB_DEBUG("No Unique Key found (level " << level << ")");
-                return DcmQRIndexDatabaseError ;
+                return QR_EC_IndexDatabaseError ;
             }
         }
 
@@ -2191,7 +2190,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
             }
             if (atLeastOneKeyFound) {
                 DCMQRDB_DEBUG("Key found beyond query level (level " << level << ")");
-                return DcmQRIndexDatabaseError ;
+                return QR_EC_IndexDatabaseError ;
             }
         }
 
@@ -2244,7 +2243,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 
     else {
         status->setStatus(STATUS_MOVE_Failed_SOPClassNotSupported);
-        return (DcmQRIndexDatabaseError) ;
+        return (QR_EC_IndexDatabaseError) ;
     }
 
 
@@ -2265,7 +2264,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
                 elem.PValueField = NULL ;
             } else if ((elem.PValueField = (char*)malloc((size_t)(elem.ValueLength+1))) == NULL) {
                 status->setStatus(STATUS_MOVE_Failed_UnableToProcess);
-                return (DcmQRIndexDatabaseError) ;
+                return (QR_EC_IndexDatabaseError) ;
             } else {
                 /* only char string type tags are supported at the moment */
                 char *s = NULL;
@@ -2305,7 +2304,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
                     DCMQRDB_DEBUG("DB_startMoveRequest : STATUS_MOVE_Failed_UnableToProcess");
 #endif
                     status->setStatus(STATUS_MOVE_Failed_UnableToProcess);
-                    return (DcmQRIndexDatabaseError) ;
+                    return (QR_EC_IndexDatabaseError) ;
                 }
                 qrLevelFound = OFTrue;
             } else {
@@ -2318,7 +2317,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
                 plist = (DB_ElementList *) malloc (sizeof( DB_ElementList ) ) ;
                 if (plist == NULL) {
                     status->setStatus(STATUS_FIND_Refused_OutOfResources);
-                    return (DcmQRIndexDatabaseError) ;
+                    return (QR_EC_IndexDatabaseError) ;
                 }
                 plist->next = NULL ;
                 DB_DuplicateElement (&elem, & (plist->elem)) ;
@@ -2343,7 +2342,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
         handle_->idxCounter = -1 ;
         DB_FreeElementList (handle_->findRequestList) ;
         handle_->findRequestList = NULL ;
-        return (DcmQRIndexDatabaseError) ;
+        return (QR_EC_IndexDatabaseError) ;
     }
 
     switch (handle_->rootLevel)
@@ -2410,7 +2409,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
             pidxlist = (DB_CounterList *) malloc (sizeof( DB_CounterList ) ) ;
             if (pidxlist == NULL) {
                 status->setStatus(STATUS_FIND_Refused_OutOfResources);
-                return (DcmQRIndexDatabaseError) ;
+                return (QR_EC_IndexDatabaseError) ;
             }
 
             pidxlist->next = NULL ;
@@ -2493,7 +2492,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
 
         DB_unlock();
 
-        return (DcmQRIndexDatabaseError) ;
+        return (QR_EC_IndexDatabaseError) ;
     }
 
     strcpy (SOPClassUID, (char *) idxRec. SOPClassUID) ;
@@ -2564,7 +2563,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
 #endif
     if (lockfd < 0) {
       DCMQRDB_WARN("DB ERROR: cannot open image file for deleting: " << imgFile);
-      return DcmQRIndexDatabaseError;
+      return QR_EC_IndexDatabaseError;
     }
     if (dcmtk_flock(lockfd, LOCK_EX) < 0) { /* exclusive lock (blocking) */
       DCMQRDB_WARN("DB ERROR: cannot lock image file  for deleting: " << imgFile);
@@ -2576,7 +2575,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
         char buf[256];
         /* delete file */
         DCMQRDB_ERROR("DB ERROR: cannot delete image file: " << imgFile << OFendl
-            << "DcmQRIndexDatabaseError: " << OFStandard::strerror(errno, buf, sizeof(buf)));
+            << "QR_EC_IndexDatabaseError: " << OFStandard::strerror(errno, buf, sizeof(buf)));
     }
 
 #ifdef LOCK_IMAGE_FILES
@@ -2662,7 +2661,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
 
     if (StudyArray == NULL) {
         DCMQRDB_WARN("deleteOldestImages: out of memory");
-        return DcmQRIndexDatabaseError;
+        return QR_EC_IndexDatabaseError;
     }
 
     /** Find all images having the same StudyUID
@@ -2776,7 +2775,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
 #ifdef DEBUG
             DCMQRDB_DEBUG("checkupinStudyDesc: imageSize = " << imageSize << " too large");
 #endif
-            return ( DcmQRIndexDatabaseError ) ;
+            return ( QR_EC_IndexDatabaseError ) ;
         }
 
         RequiredSize = imageSize -
@@ -2794,7 +2793,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
 #ifdef DEBUG
         DCMQRDB_DEBUG("checkupinStudyDesc: imageSize = " << imageSize << " too large");
 #endif
-        return ( DcmQRIndexDatabaseError ) ;
+        return ( QR_EC_IndexDatabaseError ) ;
     }
     if ( s > ( handle_ -> maxStudiesAllowed - 1 ) )
         s = deleteOldestStudy(pStudyDesc) ;
@@ -2815,7 +2814,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
     if ( DB_StudyDescChange (pStudyDesc) == EC_Normal)
         return ( EC_Normal ) ;
     else
-        return ( DcmQRIndexDatabaseError ) ;
+        return ( QR_EC_IndexDatabaseError ) ;
 }
 
 /*
@@ -2904,7 +2903,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
       DCMQRDB_WARN("DB: Cannot open file: " << imageFileName << ": "
           << OFStandard::strerror(errno, buf, sizeof(buf)));
       status->setStatus(STATUS_STORE_Error_CannotUnderstand);
-      return (DcmQRIndexDatabaseError) ;
+      return (QR_EC_IndexDatabaseError) ;
     }
 
     DcmDataset *dset = dcmff.getDataset();
@@ -3034,7 +3033,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
       DCMQRDB_ERROR("DB_storeRequest: out of memory");
       status->setStatus(STATUS_STORE_Refused_OutOfResources);
       DB_unlock();
-      return (DcmQRIndexDatabaseError) ;
+      return (QR_EC_IndexDatabaseError) ;
     }
 
     bzero((char *)pStudyDesc, SIZEOF_STUDYDESC);
@@ -3062,7 +3061,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
 
         DB_unlock();
 
-        return (DcmQRIndexDatabaseError) ;
+        return (QR_EC_IndexDatabaseError) ;
     }
 
     free (pStudyDesc) ;
@@ -3078,7 +3077,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
         status->setStatus(STATUS_STORE_Refused_OutOfResources);
         DB_unlock();
     }
-    return DcmQRIndexDatabaseError;
+    return QR_EC_IndexDatabaseError;
 }
 
 /*
@@ -3097,7 +3096,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::pruneInvalidRecords()
     if (pStudyDesc == NULL) {
       DCMQRDB_WARN("DB_pruneInvalidRecords: out of memory");
       DB_unlock();
-      return (DcmQRIndexDatabaseError) ;
+      return (QR_EC_IndexDatabaseError) ;
     }
 
     for (int i = 0 ; i < handle_ -> maxStudiesAllowed ; i++ )
@@ -3311,7 +3310,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
         if (f == NULL) {
             char buf[256];
             DCMQRDB_ERROR(handle_->indexFilename << ": " << OFStandard::strerror(errno, buf, sizeof(buf)));
-            result = DcmQRIndexDatabaseError;
+            result = QR_EC_IndexDatabaseError;
             return;
         }
         fclose(f);
@@ -3324,7 +3323,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
 #endif
         if ( handle_ -> pidx == (-1) )
         {
-           result = DcmQRIndexDatabaseError;
+           result = QR_EC_IndexDatabaseError;
            return;
         }
         else {
@@ -3340,7 +3339,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
     }
     else
     {
-        result = DcmQRIndexDatabaseError;
+        result = QR_EC_IndexDatabaseError;
         return;
     }
 }
@@ -3391,7 +3390,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::makeNewStoreFileName(
     // unsigned int seed = fnamecreator.hashString(SOPInstanceUID);
     unsigned int seed = (unsigned int)time(NULL);
     newImageFileName[0]=0; // return empty string in case of error
-    if (! fnamecreator.makeFilename(seed, handle_->storageArea, prefix, ".dcm", filename)) return DcmQRIndexDatabaseError;
+    if (! fnamecreator.makeFilename(seed, handle_->storageArea, prefix, ".dcm", filename))
+        return QR_EC_IndexDatabaseError;
 
     strcpy(newImageFileName, filename.c_str());
     return EC_Normal;
@@ -3468,6 +3468,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.34  2011-10-10 13:50:07  uli
+ * Slightly improved the error condition names and definition.
+ *
  * Revision 1.33  2011-10-10 12:57:22  uli
  * Replaced the old OFM_imagectn with OFM_dcmqrdb and OFM_dcmqrdbx.
  *

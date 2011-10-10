@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-17 09:46:26 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-10 13:50:07 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,7 +99,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
              * a new association to the move destination.
              */
             cond = buildSubAssociation(request);
-            if (cond == APP_INVALIDPEER) {
+            if (cond == QR_EC_InvalidPeer) {
                 dbStatus.setStatus(STATUS_MOVE_Failed_MoveDestinationUnknown);
             } else if (cond.bad()) {
                 /* failed to build association, must fail move */
@@ -315,7 +315,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
 
     if (!mapMoveDestination(origHostName, origAETitle,
         request->MoveDestination, dstHostName, &dstPortNumber)) {
-        return APP_INVALIDPEER;
+        return QR_EC_InvalidPeer;
     }
     if (cond.good()) {
         cond = ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU);
@@ -687,6 +687,9 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
+ * Revision 1.22  2011-10-10 13:50:07  uli
+ * Slightly improved the error condition names and definition.
+ *
  * Revision 1.21  2011-03-17 09:46:26  joergr
  * Added support for MPEG4 transfer syntaxes to network tools.
  *
