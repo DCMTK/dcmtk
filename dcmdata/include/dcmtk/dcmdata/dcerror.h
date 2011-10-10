@@ -17,9 +17,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-09-08 15:24:53 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-10 12:57:22 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,7 @@ const unsigned short OFM_dcmpstat =  8;
 const unsigned short OFM_dcmsign  =  9;
 const unsigned short OFM_dcmsr    = 10;
 const unsigned short OFM_dcmtls   = 11;
-const unsigned short OFM_imagectn = 12;
+const unsigned short OFM_dcmqrdb  = 12;
 const unsigned short OFM_wlistctn = 13;   /* retired */
 const unsigned short OFM_dcmwlm   = 14;
 const unsigned short OFM_dcmpps   = 15;
@@ -63,6 +63,7 @@ const unsigned short OFM_dcmloco  = 22;
 const unsigned short OFM_dcmstcom = 23;
 const unsigned short OFM_dcmppscu = 24;
 const unsigned short OFM_dcmstscp = 25;
+const unsigned short OFM_dcmqrdbx = 26;
 
 // condition constants
 
@@ -143,6 +144,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.39  2011-10-10 12:57:22  uli
+** Replaced the old OFM_imagectn with OFM_dcmqrdb and OFM_dcmqrdbx.
+**
 ** Revision 1.38  2011-09-08 15:24:53  ogazzar
 ** Added module number for the dcmstscp module.
 **

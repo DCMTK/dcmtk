@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.10 (schlachter)
+
+- Replaced the old OFM_imagectn with OFM_dcmqrdb and OFM_dcmqrdbx.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmqrdb/libsrc/dcmqrdbi.cc
+
 **** Changes from 2011.10.10 (riesmeier)
 
 - Added output stream operator in order to use different time units depending

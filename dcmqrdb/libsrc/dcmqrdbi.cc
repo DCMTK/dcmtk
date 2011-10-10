@@ -18,9 +18,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle,
  *                   DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-05-30 15:52:03 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-10 12:57:22 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/ofstd/ofstd.h"
 
-const OFConditionConst DcmQRIndexDatabaseErrorC(OFM_imagectn, 0x001, OF_error, "DcmQR Index Database Error");
+const OFConditionConst DcmQRIndexDatabaseErrorC(OFM_dcmqrdb, 0x001, OF_error, "DcmQR Index Database Error");
 const OFCondition DcmQRIndexDatabaseError(DcmQRIndexDatabaseErrorC);
 
 /* ========================= static data ========================= */
@@ -3468,6 +3468,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.33  2011-10-10 12:57:22  uli
+ * Replaced the old OFM_imagectn with OFM_dcmqrdb and OFM_dcmqrdbx.
+ *
  * Revision 1.32  2011-05-30 15:52:03  joergr
  * Removed unused variables and fixed other compiler warnings.
  *
