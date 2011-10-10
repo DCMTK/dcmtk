@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.10 (riesmeier)
 
+- Added output stream operator in order to use different time units depending
+  on the value range, i.e. "ms", "s", "m" and "h".
+  Affects: ofstd/include/dcmtk/ofstd/oftimer.h
+           ofstd/libsrc/oftimer.cc
+
 - Moved implementation from header to source file in order to avoid unwanted
   header file inclusion.
   Added:   ofstd/libsrc/oftimer.cc

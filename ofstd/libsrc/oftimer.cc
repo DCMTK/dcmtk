@@ -18,8 +18,8 @@
  *  Purpose: Class for measurement of time (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-10 09:12:25 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-10-10 09:25:58 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,10 +79,30 @@ double OFTimer::getTime()
 }
 
 
+STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream, const OFTimer &timer)
+{
+    const double timeDiff = timer.getDiff();
+    // output time difference in units depending on the value range
+    if ((timeDiff < 1) && (timeDiff > -1))
+        stream << (timeDiff * 1000) << " ms";
+    else if ((timeDiff < 60) && (timeDiff > -60))
+        stream << timeDiff << " s";
+    else if ((timeDiff < 3600) && (timeDiff > -3600))
+        stream << (timeDiff / 60) << " m";
+    else
+        stream << (timeDiff / 3600) << " h";
+    return stream;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: oftimer.cc,v $
+ * Revision 1.2  2011-10-10 09:25:58  joergr
+ * Added output stream operator in order to use different time units depending
+ * on the value range, i.e. "ms", "s", "m" and "h".
+ *
  * Revision 1.1  2011-10-10 09:12:25  joergr
  * Moved implementation from header to source file in order to avoid unwanted
  * header file inclusion.

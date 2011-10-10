@@ -18,8 +18,8 @@
  *  Purpose: Class for measurement of time (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-10 09:12:23 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2011-10-10 09:25:56 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,6 +84,19 @@ class OFTimer
 };
 
 
+/** output the current time difference to the given stream.
+ *  The output format is "<numeric value> <unit>" where "unit" is:
+ *  - "ms" for milliseconds if the time difference is less than 1 second
+ *  - "s" for seconds if the time difference is less than 60 seconds
+ *  - "m" for minutes if the time difference is less than 3600 seconds
+ *  - "h" for hours otherwise (i.e. the difference is 3600 seconds or more)
+ *  @param stream output stream
+ *  @param timer OFTimer object to print
+ *  @return reference to the output stream
+ */
+STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream, const OFTimer &timer);
+
+
 #endif
 
 
@@ -91,6 +104,10 @@ class OFTimer
  *
  * CVS/RCS Log:
  * $Log: oftimer.h,v $
+ * Revision 1.15  2011-10-10 09:25:56  joergr
+ * Added output stream operator in order to use different time units depending
+ * on the value range, i.e. "ms", "s", "m" and "h".
+ *
  * Revision 1.14  2011-10-10 09:12:23  joergr
  * Moved implementation from header to source file in order to avoid unwanted
  * header file inclusion.
