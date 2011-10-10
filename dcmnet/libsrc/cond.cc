@@ -17,9 +17,9 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-06 14:16:10 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-10 14:01:29 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,6 +133,7 @@ const OFConditionConst NET_ECC_NoAcceptablePresentationContexts(OFM_dcmnet, 1006
 const OFConditionConst NET_ECC_NoSOPInstancesToSend            (OFM_dcmnet, 1007, OF_error, "No SOP instances to send");
 const OFConditionConst NET_ECC_NoSuchSOPInstance               (OFM_dcmnet, 1008, OF_error, "No such SOP instance");
 const OFConditionConst NET_ECC_InvalidDatasetPointer           (OFM_dcmnet, 1009, OF_error, "Invalid dataset pointer");
+const OFConditionConst NET_ECC_AlreadyConnected                (OFM_dcmnet, 1010, OF_error, "Already connected");
 const OFConditionConst NET_ECC_InsufficientPortPrivileges      (OFM_dcmnet, 1023, OF_error, "Insufficient port privileges");
 
 const OFCondition NET_EC_InvalidSOPClassUID              (NET_ECC_InvalidSOPClassUID);
@@ -145,6 +146,7 @@ const OFCondition NET_EC_NoAcceptablePresentationContexts(NET_ECC_NoAcceptablePr
 const OFCondition NET_EC_NoSOPInstancesToSend            (NET_ECC_NoSOPInstancesToSend);
 const OFCondition NET_EC_NoSuchSOPInstance               (NET_ECC_NoSuchSOPInstance);
 const OFCondition NET_EC_InvalidDatasetPointer           (NET_ECC_InvalidDatasetPointer);
+const OFCondition NET_EC_AlreadyConnected                (NET_ECC_AlreadyConnected);
 const OFCondition NET_EC_InsufficientPortPrivileges      (NET_ECC_InsufficientPortPrivileges);
 
 
@@ -195,6 +197,9 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
+ * Revision 1.26  2011-10-10 14:01:29  uli
+ * Moved SCU-specific error condition to the correct place.
+ *
  * Revision 1.25  2011-10-06 14:16:10  joergr
  * Now also SOP instances from DICOM datasets can be added to the transfer list.
  * This allows for sending datasets created or received in memory.

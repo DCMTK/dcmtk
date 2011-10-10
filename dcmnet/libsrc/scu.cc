@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-04 08:58:16 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-10 14:01:29 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,9 +36,6 @@
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
 #endif
-
-const OFConditionConst SCU_ECC_AlreadyConnected (OFM_dcmnet,  1, OF_error, "SCU already connected");
-const OFCondition SCU_EC_AlreadyConnected       (SCU_ECC_AlreadyConnected);
 
 
 DcmSCU::DcmSCU() :
@@ -125,7 +122,7 @@ OFCondition DcmSCU::initNetwork()
 {
   /* Return if SCU is already connected */
   if (isConnected())
-    return SCU_EC_AlreadyConnected;
+    return NET_EC_AlreadyConnected;
 
   /* Be sure internal network structures are clean (delete old) */
   freeNetwork();
@@ -279,7 +276,7 @@ OFCondition DcmSCU::negotiateAssociation()
 {
   /* Return error if SCU is already connected */
   if (isConnected())
-    return SCU_EC_AlreadyConnected;
+    return NET_EC_AlreadyConnected;
 
   /* dump presentation contexts if required */
   OFString tempStr;
@@ -2353,6 +2350,9 @@ void RetrieveResponse::print()
 /*
 ** CVS Log
 ** $Log: scu.cc,v $
+** Revision 1.58  2011-10-10 14:01:29  uli
+** Moved SCU-specific error condition to the correct place.
+**
 ** Revision 1.57  2011-10-04 08:58:16  joergr
 ** Added flag that allows for specifying whether to convert a dataset to be
 ** transferred to the network transfer syntax. Also removed unused parameters

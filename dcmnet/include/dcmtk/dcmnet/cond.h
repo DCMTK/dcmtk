@@ -17,9 +17,9 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-06 14:16:08 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-10 14:01:29 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -197,6 +197,7 @@ extern const OFCondition NET_EC_NoAcceptablePresentationContexts; /* No acceptab
 extern const OFCondition NET_EC_NoSOPInstancesToSend;             /* No SOP instances to send */
 extern const OFCondition NET_EC_NoSuchSOPInstance;                /* No such SOP instance */
 extern const OFCondition NET_EC_InvalidDatasetPointer;            /* Invalid dataset pointer */
+extern const OFCondition NET_EC_AlreadyConnected;                 /* Already connected */
 extern const OFCondition NET_EC_InsufficientPortPrivileges;       /* Insufficient Port Privileges */
 // codes 1024 to 1073 are used for the association negotiation profile classes
 
@@ -295,6 +296,9 @@ typedef OFCondition CONDITION;
 /*
  * CVS Log
  * $Log: cond.h,v $
+ * Revision 1.21  2011-10-10 14:01:29  uli
+ * Moved SCU-specific error condition to the correct place.
+ *
  * Revision 1.20  2011-10-06 14:16:08  joergr
  * Now also SOP instances from DICOM datasets can be added to the transfer list.
  * This allows for sending datasets created or received in memory.

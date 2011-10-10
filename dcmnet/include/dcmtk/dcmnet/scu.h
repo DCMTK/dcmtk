@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Users (SCUs)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-04 08:58:14 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-10 14:01:29 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,9 +38,6 @@
 #include "dcmtk/dcmnet/dcasccfg.h"  /* For holding association cfg file infos */
 #include "dcmtk/ofstd/oflist.h"
 
-
-/// const error objects used for SCU
-extern const OFCondition SCU_EC_AlreadyConnected;
 
 /** Different types of closing an association
  */
@@ -217,7 +214,7 @@ public:
   /** Initialize network, i.e.\ prepare for association negotiation. If the SCU is already
    *  connected, the call will not be successful and the old connection keeps open.
    *  @return EC_Normal if initialization was successful, otherwise error code.
-   *          SCU_EC_AlreadyConnected if SCU is already connected.
+   *          NET_EC_AlreadyConnected if SCU is already connected.
    */
   virtual OFCondition initNetwork();
 
@@ -225,7 +222,7 @@ public:
    *  earlier function calls. If negotiation fails, there is no need to close the association
    *  or to do anything else with this class.
    *  @return EC_Normal if negotiation was successful, otherwise error code.
-   *          SCU_EC_AlreadyConnected if SCU is already connected.
+   *          NET_EC_AlreadyConnected if SCU is already connected.
    */
   virtual OFCondition negotiateAssociation();
 
@@ -985,6 +982,9 @@ private:
 /*
 ** CVS Log
 ** $Log: scu.h,v $
+** Revision 1.39  2011-10-10 14:01:29  uli
+** Moved SCU-specific error condition to the correct place.
+**
 ** Revision 1.38  2011-10-04 08:58:14  joergr
 ** Added flag that allows for specifying whether to convert a dataset to be
 ** transferred to the network transfer syntax. Also removed unused parameters

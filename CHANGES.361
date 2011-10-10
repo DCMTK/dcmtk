@@ -13,6 +13,12 @@ Changes between releases are documented here.
            dcmqrdb/libsrc/dcmqrdbi.cc
            dcmqrdb/libsrc/dcmqropt.cc
 
+- Moved SCU-specific error condition to the correct place.
+  Affects: dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/scu.cc
+
 **** Changes from 2011.10.10 (riesmeier)
 
 - Added output stream operator in order to use different time units depending
