@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.10 (riesmeier)
 
+- Moved implementation from header to source file in order to avoid unwanted
+  header file inclusion.
+  Added:   ofstd/libsrc/oftimer.cc
+  Affects: ofstd/include/dcmtk/ofstd/oftimer.h
+           ofstd/libsrc/CMakeLists.txt
+           ofstd/libsrc/Makefile.dep
+           ofstd/libsrc/Makefile.in
+
 - Added missing DIMSE-N status code "Attribute Value out of Range" (0116h) used
   for Print Management. Thanks to forum user "Yves Neumann" for the report.
   Affects: dcmnet/include/dcmtk/dcmnet/dimse.h

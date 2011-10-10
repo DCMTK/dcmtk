@@ -95,3 +95,7 @@ oftime.o: oftime.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofcast.h ../include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oflist.h \
   ../include/dcmtk/ofstd/ofcond.h
+oftimer.o: oftimer.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../include/dcmtk/ofstd/oftimer.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofcast.h

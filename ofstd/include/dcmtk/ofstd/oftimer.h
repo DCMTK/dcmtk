@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1999-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Class for measurement of time (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2011-10-10 09:12:23 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,16 +31,8 @@
 #define OFTIMER_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofcast.h"
 
-#ifdef HAVE_WINDOWS_H
-#include <windows.h>
-#else /* UNIX */
-#include <sys/time.h>
-#endif
-
-#define INCLUDE_CSTDDEF               /* For NULL */
-#include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 
 /*---------------------*
@@ -57,27 +49,18 @@ class OFTimer
 
     /** constructor
      */
-    OFTimer()
-      : Start(getTime())
-    {
-    }
-    
+    OFTimer();
+
     /** reset start time
      */
-    inline void reset()
-    {
-        Start = getTime();
-    }
-    
+    void reset();
+
     /** get elapsed time.
      *  i.e. difference between current and start time
      *
      ** @return elapsed time in seconds
      */
-    inline double getDiff() const
-    {
-        return getTime() - Start;
-    }
+    double getDiff() const;
 
     /** get difference between current time and specified time
      *
@@ -85,31 +68,19 @@ class OFTimer
      *
      ** @return difference between the two times (in seconds)
      */
-    inline static double getDiff(double start)
-    {
-        return getTime() - start;
-    }
+    static double getDiff(double start);
 
     /** get current time
      *
      ** @return current time in seconds
      */
-    inline static double getTime()
-    {
-#ifdef HAVE_WINDOWS_H
-        return OFstatic_cast(double, GetTickCount()) / 1000;
-#else /* tested on solaris */
-        timeval c_time;
-        gettimeofday(&c_time, NULL);
-        return OFstatic_cast(double, c_time.tv_sec) + OFstatic_cast(double, c_time.tv_usec) / 1000000;
-#endif
-    }
+    static double getTime();
 
 
  private:
 
     /// reference/start time
-    double Start; 
+    double Start;
 };
 
 
@@ -120,6 +91,10 @@ class OFTimer
  *
  * CVS/RCS Log:
  * $Log: oftimer.h,v $
+ * Revision 1.14  2011-10-10 09:12:23  joergr
+ * Moved implementation from header to source file in order to avoid unwanted
+ * header file inclusion.
+ *
  * Revision 1.13  2010-10-14 13:15:50  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
