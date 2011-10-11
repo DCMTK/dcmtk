@@ -1,0 +1,21 @@
+/* DCMTK modifications for a better output (based on the default CSS) */
+
+@import "doxygen.css";
+
+/* increase the line space for some elements */
+
+#projectbrief {
+    margin-bottom: 0.5em;
+}
+
+div.contents ul li {
+    line-height: 140%;
+}
+
+div.textblock h2 {
+    margin-top: 1.5em;
+}
+
+pre.fragment {
+    line-height: 140%;
+}
