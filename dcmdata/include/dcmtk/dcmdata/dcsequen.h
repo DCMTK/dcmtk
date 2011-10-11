@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:50 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2011-10-11 16:34:13 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -307,7 +307,7 @@ public:
     /** get cardinality of this sequence
      *  @return number of items in this sequence
      */
-    virtual unsigned long card();
+    virtual unsigned long card() const;
 
     /** insert the given item at the start of the item list maintained by this sequence.
      *  Ownership of the item, which must be allocated on the heap, is transferred to the sequence.
@@ -582,6 +582,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.60  2011-10-11 16:34:13  joergr
+** Made methods card() and cardSub() const.
+**
 ** Revision 1.59  2011-02-02 15:13:50  joergr
 ** Moved documentation of valid values for the VMs that can be checked to a
 ** central place, i.e. DcmElement::checkVM().

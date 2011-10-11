@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-02 13:01:26 $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-11 16:34:10 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1384,7 +1384,7 @@ OFCondition DcmDirectoryRecord::assignToMRDR(DcmDirectoryRecord *mrdr)
 // ********************************
 
 
-unsigned long DcmDirectoryRecord::cardSub()
+unsigned long DcmDirectoryRecord::cardSub() const
 {
     return lowerLevelList->card();
 }
@@ -1560,6 +1560,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.84  2011-10-11 16:34:10  joergr
+ * Made methods card() and cardSub() const.
+ *
  * Revision 1.83  2011-08-02 13:01:26  uli
  * Don't load files twice when constructing a DICOMDIR.
  *

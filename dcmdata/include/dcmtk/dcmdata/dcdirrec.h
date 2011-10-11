@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-02 13:01:26 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-11 16:34:13 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -319,7 +319,7 @@ public:
                                         const char *sourceFileName);
 
     /// return number of directory records that are child record of this one
-    virtual unsigned long cardSub();
+    virtual unsigned long cardSub() const;
 
     /** insert a child directory record
      *  @param dirRec directory record to be inserted. Must be allocated on heap, ownership is transferred to this object
@@ -465,6 +465,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
+** Revision 1.50  2011-10-11 16:34:13  joergr
+** Made methods card() and cardSub() const.
+**
 ** Revision 1.49  2011-08-02 13:01:26  uli
 ** Don't load files twice when constructing a DICOMDIR.
 **

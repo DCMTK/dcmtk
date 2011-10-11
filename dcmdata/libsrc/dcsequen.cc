@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-11 10:03:36 $
- *  CVS/RCS Revision: $Revision: 1.95 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-11 16:34:09 $
+ *  CVS/RCS Revision: $Revision: 1.96 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -851,7 +851,7 @@ void DcmSequenceOfItems::transferEnd()
 // ********************************
 
 
-unsigned long DcmSequenceOfItems::card()
+unsigned long DcmSequenceOfItems::card() const
 {
     return itemList->card();
 }
@@ -1316,6 +1316,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.96  2011-10-11 16:34:09  joergr
+** Made methods card() and cardSub() const.
+**
 ** Revision 1.95  2011-05-11 10:03:36  uli
 ** Improved handling of files which ended before the end of a sequence.
 **

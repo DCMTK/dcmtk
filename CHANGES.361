@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.11 (riesmeier)
 
+- Made methods card() and cardSub() const.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcsequen.cc
+
 - Added content of "doxygen.css" to the modified style sheet since the standard
   CSS is not copied to the output directory if replaced by a user-defined CSS.
   Affects: doxygen/htmldocs.css
