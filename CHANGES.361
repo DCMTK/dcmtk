@@ -18,6 +18,10 @@ Changes between releases are documented here.
            ofstd/libsrc/offname.cc
            ofstd/libsrc/ofstd.cc
 
+- Made sure that makeFilename() influences the caller's seed.
+  Affects: ofstd/include/dcmtk/ofstd/offname.h
+           ofstd/libsrc/offname.cc
+
 **** Changes from 2011.10.10 (schlachter)
 
 - Replaced the old OFM_imagectn with OFM_dcmqrdb and OFM_dcmqrdbx.

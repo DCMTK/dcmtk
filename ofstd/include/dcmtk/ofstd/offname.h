@@ -19,8 +19,8 @@
  *    classes: OFFilenameCreator
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-11 09:57:42 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2011-10-11 10:57:29 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,7 @@ public:
    *  @param filename string in which the filename (path) is returned
    *  @return OFTrue if successful, OFFalse if no filename could be created.
    */
-  OFBool makeFilename(unsigned int seed, const char *dir, const char *prefix, const char *postfix, OFString &filename);
+  OFBool makeFilename(unsigned int &seed, const char *dir, const char *prefix, const char *postfix, OFString &filename);
 
   /** creates hash value. (i.e. random seed) from character string.
    *  @param str null-terminated string
@@ -84,6 +84,9 @@ private:
 
 /*
  *  $Log: offname.h,v $
+ *  Revision 1.11  2011-10-11 10:57:29  uli
+ *  Made sure that makeFilename() influences the caller's seed.
+ *
  *  Revision 1.10  2011-10-11 09:57:42  uli
  *  Move OFFileNameCreator::myrand_r to class OFStandard.
  *

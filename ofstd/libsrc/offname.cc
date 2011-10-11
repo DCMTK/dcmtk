@@ -19,8 +19,8 @@
  *    classes: OFFilenameCreator
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-11 09:57:42 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2011-10-11 10:57:29 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ OFFilenameCreator &OFFilenameCreator::operator=(const OFFilenameCreator& copy)
   return *this;
 }
 
-OFBool OFFilenameCreator::makeFilename(unsigned int seed, const char *dir, const char *prefix, const char *postfix, OFString &filename)
+OFBool OFFilenameCreator::makeFilename(unsigned int &seed, const char *dir, const char *prefix, const char *postfix, OFString &filename)
 {
   OFBool done = OFFalse;
   OFBool result = OFTrue;
@@ -147,6 +147,9 @@ unsigned int OFFilenameCreator::hashString(const char *str)
 
 /*
  *  $Log: offname.cc,v $
+ *  Revision 1.14  2011-10-11 10:57:29  uli
+ *  Made sure that makeFilename() influences the caller's seed.
+ *
  *  Revision 1.13  2011-10-11 09:57:42  uli
  *  Move OFFileNameCreator::myrand_r to class OFStandard.
  *
