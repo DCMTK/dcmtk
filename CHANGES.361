@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.11 (schlachter)
+
+- Move OFFileNameCreator::myrand_r to class OFStandard.
+  Affects: dcmimage/libsrc/diqtfs.cc
+           ofstd/include/dcmtk/ofstd/offname.h
+           ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/offname.cc
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2011.10.10 (schlachter)
 
 - Replaced the old OFM_imagectn with OFM_dcmqrdb and OFM_dcmqrdbx.

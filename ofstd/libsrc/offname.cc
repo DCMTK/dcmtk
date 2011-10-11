@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: OFFilenameCreator
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:53 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-11 09:57:42 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,6 +30,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/offname.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofstd.h"        /* for OFString::myrand_r */
 
 #define INCLUDE_CERRNO
 #define INCLUDE_CSTRING
@@ -88,7 +89,7 @@ OFBool OFFilenameCreator::makeFilename(unsigned int seed, const char *dir, const
     }
     if (prefix) filename += prefix;
     addLongToString(creation_time, filename);
-    addLongToString(((myrand_r(&seed) << 16) | myrand_r(&seed)), filename);
+    addLongToString(((OFStandard::myrand_r(&seed) << 16) | OFStandard::myrand_r(&seed)), filename);
     if (postfix) filename += postfix;
     
     // check if filename exists
@@ -144,16 +145,11 @@ unsigned int OFFilenameCreator::hashString(const char *str)
   return result;
 }
 
-int OFFilenameCreator::myrand_r(unsigned int *seed)
-{
-  unsigned long val = OFstatic_cast(unsigned long, *seed);  
-  val = val * 1103515245 + 12345;
-  *seed = OFstatic_cast(unsigned int, val %(OFstatic_cast(unsigned long, 0x80000000)));
-  return OFstatic_cast(int, *seed);
-}
-
 /*
  *  $Log: offname.cc,v $
+ *  Revision 1.13  2011-10-11 09:57:42  uli
+ *  Move OFFileNameCreator::myrand_r to class OFStandard.
+ *
  *  Revision 1.12  2010-10-14 13:14:53  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

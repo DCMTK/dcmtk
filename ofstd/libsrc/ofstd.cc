@@ -88,8 +88,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-19 12:04:07 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2011-10-11 09:57:42 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1884,9 +1884,22 @@ long OFStandard::getProcessID()
 #endif
 }
 
+const unsigned int OFStandard::myrand_max = 0x7fffffff;
+
+int OFStandard::myrand_r(unsigned int *seed)
+{
+  unsigned long val = OFstatic_cast(unsigned long, *seed);  
+  val = val * 1103515245 + 12345;
+  *seed = OFstatic_cast(unsigned int, val %(OFstatic_cast(unsigned long, 0x80000000)));
+  return OFstatic_cast(int, *seed);
+}
+
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.68  2011-10-11 09:57:42  uli
+ *  Move OFFileNameCreator::myrand_r to class OFStandard.
+ *
  *  Revision 1.67  2011-08-19 12:04:07  uli
  *  Added a function for sleeping with a millisecond timeout.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose:
  *    classes: OFFilenameCreator
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-11 09:57:42 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,15 +67,6 @@ public:
    */
   static unsigned int hashString(const char *str);
 
-  /** simple but thread safe random number generator. The interface is derived
-   *  from the Posix rand_r function. Uses a multiplicative congruential 
-   *  random-number generator with period 2**32 that returns successive 
-   *  pseudo-random numbers in the range of 0 to 0x7fffffff.
-   *  @param seed pointer to seed of random number generator, must not be NULL.
-   *  @return pseudo-random number in the range of 0 to 0x7fffffff.
-   */
-  static int myrand_r(unsigned int *seed);
-
 private:
 
   /// date/time of creation of this object
@@ -93,6 +84,9 @@ private:
 
 /*
  *  $Log: offname.h,v $
+ *  Revision 1.10  2011-10-11 09:57:42  uli
+ *  Move OFFileNameCreator::myrand_r to class OFStandard.
+ *
  *  Revision 1.9  2010-10-14 13:15:50  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

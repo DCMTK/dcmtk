@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmQuantFloydSteinberg
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:14 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-11 09:57:42 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -29,7 +29,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmimage/diqtfs.h"
-#include "dcmtk/ofstd/offname.h"    /* for OFFilenameCreator::myrand_r */
+#include "dcmtk/ofstd/ofstd.h"       /* for OFStandard::myrand_r */
 
 #define INCLUDE_CTIME
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -97,9 +97,9 @@ OFCondition DcmQuantFloydSteinberg::initialize(unsigned long cols)
 
   for (unsigned long col = 0; col < columns + 2; ++col)
   {
-      thisrerr[col] = OFFilenameCreator::myrand_r(&now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
-      thisgerr[col] = OFFilenameCreator::myrand_r(&now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
-      thisberr[col] = OFFilenameCreator::myrand_r(&now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
+      thisrerr[col] = OFStandard::myrand_r(&now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
+      thisgerr[col] = OFStandard::myrand_r(&now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
+      thisberr[col] = OFStandard::myrand_r(&now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
       /* (random errors in [-1 .. 1]) */
   }
   fs_direction = 1;
@@ -112,6 +112,9 @@ OFCondition DcmQuantFloydSteinberg::initialize(unsigned long cols)
  *
  * CVS/RCS Log:
  * $Log: diqtfs.cc,v $
+ * Revision 1.6  2011-10-11 09:57:42  uli
+ * Move OFFileNameCreator::myrand_r to class OFStandard.
+ *
  * Revision 1.5  2010-10-14 13:14:14  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

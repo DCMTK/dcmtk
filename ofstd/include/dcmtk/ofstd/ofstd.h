@@ -18,8 +18,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-19 12:04:07 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2011-10-11 09:57:42 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -573,6 +573,18 @@ class OFStandard
       return (0xffffffff - summand1 < summand2);
     }
 
+    /** simple but thread safe random number generator. The interface is derived
+     *  from the Posix rand_r function. Uses a multiplicative congruential 
+     *  random-number generator with period 2**32 that returns successive 
+     *  pseudo-random numbers in the range of 0 to myrandr_max (0x7fffffff).
+     *  @param seed pointer to seed of random number generator, must not be NULL.
+     *  @return pseudo-random number in the range of 0 to myrandr_max.
+     */
+    static int myrand_r(unsigned int *seed);
+
+    /// maximum value that can be returned by myrand_r()
+    static const unsigned int myrand_max;
+
  private:
 
     /** private implementation of strlcpy. Called when strlcpy
@@ -611,6 +623,9 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.44  2011-10-11 09:57:42  uli
+ * Move OFFileNameCreator::myrand_r to class OFStandard.
+ *
  * Revision 1.43  2011-08-19 12:04:07  uli
  * Added a function for sleeping with a millisecond timeout.
  *
