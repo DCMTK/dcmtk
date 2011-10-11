@@ -41,6 +41,14 @@ Changes between releases are documented here.
            ofstd/libsrc/offname.cc
            ofstd/libsrc/ofstd.cc
 
+- Switched to autoconf 2.68.
+  Affects: config/aclocal.m4
+           config/autoall
+           config/configure
+           config/configure.in
+           config/confmod
+           config/include/dcmtk/config/osconfig.h.in
+
 **** Changes from 2011.10.10 (schlachter)
 
 - Replaced the old OFM_imagectn with OFM_dcmqrdb and OFM_dcmqrdbx.

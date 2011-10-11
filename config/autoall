@@ -8,10 +8,10 @@ sed -e 's|^datadir=.*|datadir='\''${datarootdir}/dcmtk'\''|' \
     -e 's|^sysconfdir=.*|sysconfdir='\''${prefix}/etc/dcmtk'\''|' \
     -e 's|^docdir=.*|docdir='\''${datarootdir}/doc/dcmtk'\''|' \
     -e 's|^htmldir=.*|htmldir='\''${docdir}/html'\''|' \
-    -e 's|^  --datadir=DIR.*|  --datadir=DIR          read-only arch.-independent data [DATAROOTDIR/dcmtk]|' \
-    -e 's|^  --sysconfdir=DIR.*|  --sysconfdir=DIR       read-only single-machine data [PREFIX/etc/dcmtk]|' \
-    -e 's|^  --docdir=DIR.*|  --docdir=DIR           documentation root [DATAROOTDIR/doc/dcmtk]|' \
-    -e 's|^  --htmldir=DIR.*|  --htmldir=DIR          html documentation [DOCDIR/html]|' \
+    -e 's|^  --datadir=DIR.*|  --datadir=DIR           read-only arch.-independent data [DATAROOTDIR/dcmtk]|' \
+    -e 's|^  --sysconfdir=DIR.*|  --sysconfdir=DIR        read-only single-machine data [PREFIX/etc/dcmtk]|' \
+    -e 's|^  --docdir=DIR.*|  --docdir=DIR            documentation root [DATAROOTDIR/doc/dcmtk]|' \
+    -e 's|^  --htmldir=DIR.*|  --htmldir=DIR           html documentation [DOCDIR/html]|' \
     configure > configure.tmp
 mv configure.tmp configure
 chmod a+x configure
@@ -20,10 +20,10 @@ sed -e 's|^datadir=.*|datadir='\''${datarootdir}/dcmtk'\''|' \
     -e 's|^sysconfdir=.*|sysconfdir='\''${prefix}/etc/dcmtk'\''|' \
     -e 's|^docdir=.*|docdir='\''${datarootdir}/doc/dcmtk'\''|' \
     -e 's|^htmldir=.*|htmldir='\''${docdir}/html'\''|' \
-    -e 's|^  --datadir=DIR.*|  --datadir=DIR          read-only arch.-independent data [DATAROOTDIR/dcmtk]|' \
-    -e 's|^  --sysconfdir=DIR.*|  --sysconfdir=DIR       read-only single-machine data [PREFIX/etc/dcmtk]|' \
-    -e 's|^  --docdir=DIR.*|  --docdir=DIR           documentation root [DATAROOTDIR/doc/dcmtk]|' \
-    -e 's|^  --htmldir=DIR.*|  --htmldir=DIR          html documentation [DOCDIR/html]|' \
+    -e 's|^  --datadir=DIR.*|  --datadir=DIR           read-only arch.-independent data [DATAROOTDIR/dcmtk]|' \
+    -e 's|^  --sysconfdir=DIR.*|  --sysconfdir=DIR        read-only single-machine data [PREFIX/etc/dcmtk]|' \
+    -e 's|^  --docdir=DIR.*|  --docdir=DIR            documentation root [DATAROOTDIR/doc/dcmtk]|' \
+    -e 's|^  --htmldir=DIR.*|  --htmldir=DIR           html documentation [DOCDIR/html]|' \
     confmod > confmod.tmp
 mv confmod.tmp confmod
 chmod a+x confmod

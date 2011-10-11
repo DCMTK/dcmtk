@@ -5,8 +5,8 @@ dnl Purpose: additional M4 macros for GNU autoconf
 dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
-dnl Last Update:  $Author: joergr $
-dnl Revision:     $Revision: 1.46 $
+dnl Last Update:  $Author: uli $
+dnl Revision:     $Revision: 1.47 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -1531,9 +1531,7 @@ AS_VAR_POPDEF([ac_Type])dnl
 ])# AC_TYPEDEF_HELPER
 
 AC_DEFUN(AC_TYPEDEF_HELPER2,[
-AH_VERBATIM([$3], [/* Define `$1' to `$2' if <sys/types.h> does not define. */
-#undef $3
-#ifdef $3
+AH_VERBATIM([$3[_TYPEDEF]], [#ifdef ]$3[
 typedef $2 $1;
 #endif])])# AC_TYPEDEF_HELPER2
 
@@ -1547,7 +1545,7 @@ typedef $2 $1;
 AC_DEFUN(AC_TYPEDEF,[
 m4_define(AC_TYPEDEF_TEMP,[AS_TR_CPP(HAVE_NO_TYPEDEF_$1)])
 AC_TYPEDEF_HELPER2([$1],[$2],AC_TYPEDEF_TEMP)
-AC_TYPEDEF_HELPER([$1],[],[AC_DEFINE_UNQUOTED(AC_TYPEDEF_TEMP)])
+AC_TYPEDEF_HELPER([$1],[],[AC_DEFINE_UNQUOTED(AC_TYPEDEF_TEMP, [1], [Define `$1' to `$2' if <sys/types.h> does not define.])])
 ])# AC_TYPEDEF
 
 
@@ -1751,6 +1749,9 @@ fi
 
 dnl
 dnl $Log: aclocal.m4,v $
+dnl Revision 1.47  2011-10-11 14:25:30  uli
+dnl Switched to autoconf 2.68.
+dnl
 dnl Revision 1.46  2010-12-13 11:40:28  joergr
 dnl Consistently use "large file support" for LFS instead of "long file support".
 dnl
