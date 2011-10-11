@@ -22,6 +22,14 @@ Changes between releases are documented here.
   Affects: ofstd/include/dcmtk/ofstd/offname.h
            ofstd/libsrc/offname.cc
 
+- Renamed myrand_r(int*) a to rand_r(int&).
+  Affects: dcmimage/libsrc/Makefile.dep
+           dcmimage/libsrc/diqtfs.cc
+           ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/Makefile.dep
+           ofstd/libsrc/offname.cc
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2011.10.10 (schlachter)
 
 - Replaced the old OFM_imagectn with OFM_dcmqrdb and OFM_dcmqrdbx.

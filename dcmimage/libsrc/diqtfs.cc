@@ -18,8 +18,8 @@
  *  Purpose: class DcmQuantFloydSteinberg
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-11 09:57:42 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2011-10-11 12:47:34 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,9 +97,9 @@ OFCondition DcmQuantFloydSteinberg::initialize(unsigned long cols)
 
   for (unsigned long col = 0; col < columns + 2; ++col)
   {
-      thisrerr[col] = OFStandard::myrand_r(&now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
-      thisgerr[col] = OFStandard::myrand_r(&now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
-      thisberr[col] = OFStandard::myrand_r(&now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
+      thisrerr[col] = OFStandard::rand_r(now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
+      thisgerr[col] = OFStandard::rand_r(now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
+      thisberr[col] = OFStandard::rand_r(now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
       /* (random errors in [-1 .. 1]) */
   }
   fs_direction = 1;
@@ -112,6 +112,9 @@ OFCondition DcmQuantFloydSteinberg::initialize(unsigned long cols)
  *
  * CVS/RCS Log:
  * $Log: diqtfs.cc,v $
+ * Revision 1.7  2011-10-11 12:47:34  uli
+ * Renamed myrand_r(int*) a to rand_r(int&).
+ *
  * Revision 1.6  2011-10-11 09:57:42  uli
  * Move OFFileNameCreator::myrand_r to class OFStandard.
  *

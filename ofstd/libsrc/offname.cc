@@ -19,8 +19,8 @@
  *    classes: OFFilenameCreator
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-11 10:57:29 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2011-10-11 12:47:34 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ OFBool OFFilenameCreator::makeFilename(unsigned int &seed, const char *dir, cons
     }
     if (prefix) filename += prefix;
     addLongToString(creation_time, filename);
-    addLongToString(((OFStandard::myrand_r(&seed) << 16) | OFStandard::myrand_r(&seed)), filename);
+    addLongToString(((OFStandard::rand_r(seed) << 16) | OFStandard::rand_r(seed)), filename);
     if (postfix) filename += postfix;
     
     // check if filename exists
@@ -147,6 +147,9 @@ unsigned int OFFilenameCreator::hashString(const char *str)
 
 /*
  *  $Log: offname.cc,v $
+ *  Revision 1.15  2011-10-11 12:47:34  uli
+ *  Renamed myrand_r(int*) a to rand_r(int&).
+ *
  *  Revision 1.14  2011-10-11 10:57:29  uli
  *  Made sure that makeFilename() influences the caller's seed.
  *

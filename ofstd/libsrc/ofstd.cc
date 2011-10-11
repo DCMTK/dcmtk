@@ -88,8 +88,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-11 09:57:42 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Update Date:      $Date: 2011-10-11 12:47:34 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1884,19 +1884,22 @@ long OFStandard::getProcessID()
 #endif
 }
 
-const unsigned int OFStandard::myrand_max = 0x7fffffff;
+const unsigned int OFStandard::rand_max = 0x7fffffff;
 
-int OFStandard::myrand_r(unsigned int *seed)
+int OFStandard::rand_r(unsigned int &seed)
 {
-  unsigned long val = OFstatic_cast(unsigned long, *seed);  
+  unsigned long val = OFstatic_cast(unsigned long, seed);  
   val = val * 1103515245 + 12345;
-  *seed = OFstatic_cast(unsigned int, val %(OFstatic_cast(unsigned long, 0x80000000)));
-  return OFstatic_cast(int, *seed);
+  seed = OFstatic_cast(unsigned int, val %(OFstatic_cast(unsigned long, 0x80000000)));
+  return OFstatic_cast(int, seed);
 }
 
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.69  2011-10-11 12:47:34  uli
+ *  Renamed myrand_r(int*) a to rand_r(int&).
+ *
  *  Revision 1.68  2011-10-11 09:57:42  uli
  *  Move OFFileNameCreator::myrand_r to class OFStandard.
  *
