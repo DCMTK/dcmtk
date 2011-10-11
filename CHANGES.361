@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.11 (riesmeier)
 
+- Added content of "doxygen.css" to the modified style sheet since the standard
+  CSS is not copied to the output directory if replaced by a user-defined CSS.
+  Affects: doxygen/htmldocs.css
+
 - Added extra newline in order to make sure that the "\if ... \endif" blocks
   still work correctly with the new Doxygen version.
   Affects: doxygen/htmldocs.dox
