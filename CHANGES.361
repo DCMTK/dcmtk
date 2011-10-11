@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.11 (riesmeier)
 
+- Sort classes by fully-qualified names, including namespaces.
+  Affects: doxygen/htmldocs.cfg
+
 - Updated Doxygen configuration files for latest release version 1.7.5.1.
   As a result, the output in HTML format also changed at little.
   Added:   doxygen/htmldocs.css
