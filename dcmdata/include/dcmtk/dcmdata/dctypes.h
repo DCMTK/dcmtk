@@ -17,9 +17,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:00:58 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-12 13:24:19 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -187,6 +187,9 @@ struct DCMTypes
     /// quote non-ASCII string content as XML markup
     static const size_t PF_convertToMarkup;
 
+    /// quote non-ASCII string content as octal numbers
+    static const size_t PF_convertToOctalNumbers;
+
     /// use ANSI escape codes for output
     static const size_t PF_useANSIEscapeCodes;
     //@}
@@ -227,6 +230,10 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.38  2011-10-12 13:24:19  joergr
+ * Added new print() flag that allows for converting non-ASCII and control
+ * characters to their octal representation ('\ooo').
+ *
  * Revision 1.37  2011-04-18 07:00:58  uli
  * Use global variables for the logger objects. This removes the thread-unsafe
  * static local variables which were used before.

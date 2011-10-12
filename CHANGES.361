@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.12 (riesmeier)
 
+- Added new print() flag that allows for converting non-ASCII and control
+  characters to their octal representation ('\ooo').
+  Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dctypes.cc
+
 - Added methods for converting non-ASCII and control characters to their octal
   representation, i.e. to '\ooo' where 'ooo' are the three octal digits.
   Affects: ofstd/include/dcmtk/ofstd/ofstd.h

@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmByteString
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-08 09:49:03 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-12 13:24:20 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,9 +186,24 @@ void DcmByteString::print(STD_NAMESPACE ostream& out,
             out << '[';
 
             OFString outString;
+            /* check whether string has to be converted to markup or octal representation */
             if (flags & DCMTypes::PF_convertToMarkup)
-              OFStandard::convertToMarkupString(stringVal, outString, OFTrue, OFStandard::MM_XML, OFFalse);
-              else outString = stringVal;
+            {
+                /* check whether the entire value is needed (or not) */
+                if (flags & DCMTypes::PF_shortenLongTagValues)
+                    OFStandard::convertToMarkupString(stringVal, outString, OFTrue, OFStandard::MM_XML, OFFalse, DCM_OptPrintLineLength);
+                else
+                    OFStandard::convertToMarkupString(stringVal, outString, OFTrue, OFStandard::MM_XML, OFFalse);
+            }
+            else if (flags & DCMTypes::PF_convertToOctalNumbers)
+            {
+                /* check whether the entire value is needed (or not) */
+                if (flags & DCMTypes::PF_shortenLongTagValues)
+                    OFStandard::convertToOctalString(stringVal, outString, DCM_OptPrintLineLength);
+                else
+                    OFStandard::convertToOctalString(stringVal, outString);
+            } else
+                outString = stringVal;
 
             unsigned long printedLength = outString.length() + 2 /* for enclosing brackets */;
 
@@ -727,6 +742,10 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.62  2011-10-12 13:24:20  joergr
+** Added new print() flag that allows for converting non-ASCII and control
+** characters to their octal representation ('\ooo').
+**
 ** Revision 1.61  2010-11-08 09:49:03  uli
 ** Fixed even more gcc warnings caused by additional compiler flags.
 **
