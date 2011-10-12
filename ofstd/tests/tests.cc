@@ -17,9 +17,9 @@
  *
  *  Purpose: main test program
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 13:04:18 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-12 12:03:04 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,18 +54,25 @@ OFTEST_REGISTER(ofstd_ftoa);
 OFTEST_REGISTER(ofstd_thread);
 OFTEST_REGISTER(ofstd_testPaths);
 OFTEST_REGISTER(ofstd_OFStandard_isReadWriteable);
+OFTEST_REGISTER(ofstd_markup_1);
+OFTEST_REGISTER(ofstd_markup_2);
+OFTEST_REGISTER(ofstd_markup_3);
+OFTEST_REGISTER(ofstd_markup_4);
+OFTEST_REGISTER(ofstd_markup_5);
 OFTEST_MAIN("ofstd")
 
 /*
-**
-** CVS/RCS Log:
-** $Log: tests.cc,v $
-** Revision 1.2  2011-07-06 13:04:18  uli
-** Fixed some inconsistencies in test names.
-**
-** Revision 1.1  2011-05-25 10:05:57  uli
-** Imported oftest and converted existing tests to oftest.
-**
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: tests.cc,v $
+ * Revision 1.3  2011-10-12 12:03:04  joergr
+ * Added tests for convertToMarkupString() method.
+ *
+ * Revision 1.2  2011-07-06 13:04:18  uli
+ * Fixed some inconsistencies in test names.
+ *
+ * Revision 1.1  2011-05-25 10:05:57  uli
+ * Imported oftest and converted existing tests to oftest.
+ *
+ *
+ */

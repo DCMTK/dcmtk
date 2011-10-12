@@ -52,6 +52,15 @@ tmap.o: tmap.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/ofstream.h \
   ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
   ../include/dcmtk/ofstd/ofmap.h
+tmarkup.o: tmarkup.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../include/dcmtk/ofstd/oftest.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../include/dcmtk/ofstd/ofconapp.h ../include/dcmtk/ofstd/oftypes.h \
+  ../include/dcmtk/ofstd/ofcmdln.h ../include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/ofstd/ofcast.h ../include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/ofstream.h \
+  ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
+  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/ofcond.h
 tofdatim.o: tofdatim.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofdate.h \
   ../../config/include/dcmtk/config/osconfig.h \
