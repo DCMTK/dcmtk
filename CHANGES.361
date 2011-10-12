@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.12 (riesmeier)
+
+- Added support for strings containing NULL bytes to "convert to markup"
+  methods. Also added optional parameter for specifying the maximum length.
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2011.10.11 (riesmeier)
 
 - Made methods card() and cardSub() const.

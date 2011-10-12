@@ -87,9 +87,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-11 12:47:34 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-12 11:59:39 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -745,22 +745,28 @@ size_t OFStandard::getFileSize(const OFString &filename)
 
 
 OFBool OFStandard::checkForMarkupConversion(const OFString &sourceString,
-                                            const OFBool convertNonASCII)
+                                            const OFBool convertNonASCII,
+                                            const size_t maxLength)
 {
     OFBool result = OFFalse;
-    /* char pointer allows faster access to the string */
-    const char *str = sourceString.c_str();
-    unsigned char c;
+    size_t pos = 0;
+    const size_t strLen = sourceString.length();
+    /* determine maximum number of characters to be converted */
+    const size_t length = (maxLength == 0) ? strLen : ((strLen < maxLength) ? strLen : maxLength);
     /* check for characters to be converted */
-    do {
-        c = OFstatic_cast(unsigned char, *(str++));
+    while (pos < length)
+    {
+        const size_t c = OFstatic_cast(unsigned char, sourceString.at(pos));
+        /* TODO: do we always need to check for the NULL byte? */
         if ((c == '<') || (c == '>') || (c == '&') || (c == '"') || (c == '\'') ||
             (c == 10) || (c == 13) || (convertNonASCII && ((c < 32) || (c >= 127))))
         {
+            /* return on the first character that needs to be converted */
             result = OFTrue;
-            c = 0;
+            break;
         }
-    } while (c != 0);
+        ++pos;
+    }
     return result;
 }
 
@@ -769,24 +775,28 @@ OFCondition OFStandard::convertToMarkupStream(STD_NAMESPACE ostream &out,
                                               const OFString &sourceString,
                                               const OFBool convertNonASCII,
                                               const E_MarkupMode markupMode,
-                                              const OFBool newlineAllowed)
+                                              const OFBool newlineAllowed,
+                                              const size_t maxLength)
 {
-    /* char pointer allows faster access to the string */
-    const char *str = sourceString.c_str();
+    size_t pos = 0;
+    const size_t strLen = sourceString.length();
+    /* determine maximum number of characters to be converted */
+    const size_t length = (maxLength == 0) ? strLen : ((strLen < maxLength) ? strLen : maxLength);
     /* replace HTML/XHTML/XML reserved characters */
-    while (*str != 0)
+    while (pos < length)
     {
+        const char c = sourceString.at(pos);
         /* less than */
-        if (*str == '<')
+        if (c == '<')
             out << "&lt;";
         /* greater than */
-        else if (*str == '>')
+        else if (c == '>')
             out << "&gt;";
         /* ampers and */
-        else if (*str == '&')
+        else if (c == '&')
             out << "&amp;";
         /* quotation mark */
-        else if (*str == '"')
+        else if (c == '"')
         {
             /* entity "&quot;" is not defined in HTML 3.2 */
             if (markupMode == MM_HTML32)
@@ -795,7 +805,7 @@ OFCondition OFStandard::convertToMarkupStream(STD_NAMESPACE ostream &out,
                 out << "&quot;";
         }
         /* apostrophe */
-        else if (*str == '\'')
+        else if (c == '\'')
         {
             /* entity "&apos;" is not defined in HTML */
             if ((markupMode == MM_HTML) || (markupMode == MM_HTML32))
@@ -804,19 +814,19 @@ OFCondition OFStandard::convertToMarkupStream(STD_NAMESPACE ostream &out,
                 out << "&apos;";
         }
         /* newline: LF, CR, LF CR, CR LF */
-        else if ((*str == '\012') || (*str == '\015'))
+        else if ((c == '\012') || (c == '\015'))
         {
             if (markupMode == MM_XML)
             {
                 /* encode CR and LF exactly as specified */
-                if (*str == '\012')
+                if (c == '\012')
                     out << "&#10;";    // '\n'
                 else
                     out << "&#13;";    // '\r'
             } else {  /* HTML/XHTML mode */
                 /* skip next character if it belongs to the newline sequence */
-                if (((*str == '\012') && (*(str + 1) == '\015')) || ((*str == '\015') && (*(str + 1) == '\012')))
-                    str++;
+                if (((c == '\012') && (sourceString[pos + 1] == '\015')) || ((c == '\015') && (sourceString[pos + 1] == '\012')))
+                    ++pos;
                 if (newlineAllowed)
                 {
                     if (markupMode == MM_XHTML)
@@ -827,18 +837,18 @@ OFCondition OFStandard::convertToMarkupStream(STD_NAMESPACE ostream &out,
                     out << "&para;";
             }
         } else {
+            const size_t charValue = OFstatic_cast(unsigned char, c);
             /* other character: ... */
-            const size_t charValue = OFstatic_cast(unsigned char, *str);
             if ((convertNonASCII || (markupMode == MM_HTML32)) && ((charValue < 32) || (charValue >= 127)))
             {
                 /* convert < #32 and >= #127 to Unicode (ISO Latin-1) */
                 out << "&#" << charValue << ";";
             } else {
-                /* just append */
-                out << *str;
+                /* just append (TODO: what about the NULL byte?) */
+                out << c;
             }
         }
-        ++str;
+        ++pos;
     }
     return EC_Normal;
 }
@@ -848,11 +858,12 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
                                                   OFString &markupString,
                                                   const OFBool convertNonASCII,
                                                   const E_MarkupMode markupMode,
-                                                  const OFBool newlineAllowed)
+                                                  const OFBool newlineAllowed,
+                                                  const size_t maxLength)
 {
     OFStringStream stream;
     /* call stream variant of convert to markup */
-    if (OFStandard::convertToMarkupStream(stream, sourceString, convertNonASCII, markupMode, newlineAllowed).good())
+    if (OFStandard::convertToMarkupStream(stream, sourceString, convertNonASCII, markupMode, newlineAllowed, maxLength).good())
     {
         stream << OFStringStream_ends;
         /* convert string stream into a character string */
@@ -1888,7 +1899,7 @@ const unsigned int OFStandard::rand_max = 0x7fffffff;
 
 int OFStandard::rand_r(unsigned int &seed)
 {
-  unsigned long val = OFstatic_cast(unsigned long, seed);  
+  unsigned long val = OFstatic_cast(unsigned long, seed);
   val = val * 1103515245 + 12345;
   seed = OFstatic_cast(unsigned int, val %(OFstatic_cast(unsigned long, 0x80000000)));
   return OFstatic_cast(int, seed);
@@ -1897,6 +1908,10 @@ int OFStandard::rand_r(unsigned int &seed)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.70  2011-10-12 11:59:39  joergr
+ *  Added support for strings containing NULL bytes to "convert to markup"
+ *  methods. Also added optional parameter for specifying the maximum length.
+ *
  *  Revision 1.69  2011-10-11 12:47:34  uli
  *  Renamed myrand_r(int*) a to rand_r(int&).
  *

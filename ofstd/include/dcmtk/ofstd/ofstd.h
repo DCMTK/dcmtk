@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-11 12:47:34 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-12 11:59:42 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -328,13 +328,16 @@ class OFStandard
     /** check whether conversion to HTML/XML mnenonic string is required.
      *  This check can be performed before convertToMarkupStream() or convertToMarkupString()
      *  is called in order to speed up the process in case the conversion is not required.
-     ** @param sourceString source string to be checked
+     ** @param sourceString source string to be checked.  May contain one or more NULL bytes.
      *  @param convertNonASCII convert non-ASCII characters (< #32 and >= #127) to numeric
      *    value (@&@#nnn;) if OFTrue
+     *  @param maxLength maximum number of characters from the source string to be converted.
+     *    A value of 0 means all characters.
      ** @return OFTrue if markup conversion is required, OFFalse otherwise
      */
     static OFBool checkForMarkupConversion(const OFString &sourceString,
-                                           const OFBool convertNonASCII = OFFalse);
+                                           const OFBool convertNonASCII = OFFalse,
+                                           const size_t maxLength = 0);
 
     /** convert character string to HTML/XHTML/XML mnenonic stream.
      *  Characters with special meaning for HTML/XHTML/XML (e.g. '<' and '&') are replaced by the
@@ -345,22 +348,25 @@ class OFStandard
      *  In HTML mode, the apostrophe sign (') is converted to "&#39;" instead of "&apos;" for the
      *  same reason.
      ** @param out stream used for the HTML/XHTML/XML mnenonic output
-     *  @param sourceString source string to be converted
+     *  @param sourceString source string to be converted.  May contain one or more NULL bytes.
      *  @param convertNonASCII convert non-ASCII characters (< # 32 and >= #127) to numeric value
      *    (@&@#nnn;) if OFTrue
      *  @param markupMode convert to HTML, HTML 3.2, XHTML or XML markup.
      *    LF and CR are encoded as "&#10;" and "&#13;" in XML mode, the flag 'newlineAllowed'
      *    has no meaning in this case.
      *  @param newlineAllowed optional flag indicating whether newlines are allowed or not.
-     *    If they are allowed the text "<br>" (HTML) or "<br />" (XHTML) is used, "&para;" otherwise.
-     *    The following combinations are accepted: LF, CR, LF CR, CF LF.
+     *    If they are allowed, the text "<br>" (HTML) or "<br />" (XHTML) is used, "&para;"
+     *    otherwise.  The following combinations are accepted: LF, CR, LF CR, CF LF.
+     *  @param maxLength maximum number of characters from the source string to be converted.
+     *    A value of 0 means all characters.
      ** @return status, always returns EC_Normal
      */
     static OFCondition convertToMarkupStream(STD_NAMESPACE ostream &out,
                                              const OFString &sourceString,
                                              const OFBool convertNonASCII = OFFalse,
                                              const E_MarkupMode markupMode = MM_XML,
-                                             const OFBool newlineAllowed = OFFalse);
+                                             const OFBool newlineAllowed = OFFalse,
+                                             const size_t maxLength = 0);
 
     /** convert character string to HTML/XHTML/XML mnenonic string.
      *  Characters with special meaning for HTML/XHTML/XML (e.g. '<' and '&') are replaced by the
@@ -370,7 +376,7 @@ class OFStandard
      *  (") is converted to "&#34;" instead of "&quot;" because the latter entity is not defined.
      *  In HTML mode, the apostrophe sign (') is converted to "&#39;" instead of "&apos;" for the
      *  same reason.
-     ** @param sourceString source string to be converted
+     ** @param sourceString source string to be converted.  May also contain one or more NULL bytes.
      *  @param markupString reference to character string where the result should be stored
      *  @param convertNonASCII convert non-ASCII characters (< # 32 and >= #127) to numeric value
      *    (@&@#nnn;) if OFTrue
@@ -378,15 +384,18 @@ class OFStandard
      *    LF and CR are encoded as "@&@#10;" and "@&@#13;" in XML mode, the flag 'newlineAllowed'
      *    has no meaning in this case.
      *  @param newlineAllowed optional flag indicating whether newlines are allowed or not.
-     *    If they are allowed the text "<br>" (HTML) or "<br />" (XHTML) is used, "&para;" otherwise.
-     *    The following combinations are accepted: LF, CR, LF CR, CF LF.
+     *    If they are allowed, the text "<br>" (HTML) or "<br />" (XHTML) is used, "&para;"
+     *    otherwise.  The following combinations are accepted: LF, CR, LF CR, CF LF.
+     *  @param maxLength maximum number of characters from the source string to be converted.
+     *    A value of 0 means all characters.
      ** @return reference to resulting 'markupString' (might be empty if 'sourceString' was empty)
      */
     static const OFString &convertToMarkupString(const OFString &sourceString,
                                                  OFString &markupString,
                                                  const OFBool convertNonASCII = OFFalse,
                                                  const E_MarkupMode markupMode = MM_XML,
-                                                 const OFBool newlineAllowed = OFFalse);
+                                                 const OFBool newlineAllowed = OFFalse,
+                                                 const size_t maxLength = 0);
 
     /** encode binary data according to "Base64" as described in RFC 2045 (MIME).
      *  Basic algorithm: groups of 3 bytes from the binary input are coded as groups of 4 bytes in
@@ -574,8 +583,8 @@ class OFStandard
     }
 
     /** simple but thread safe random number generator. The interface is derived
-     *  from the Posix rand_r function. Uses a multiplicative congruential 
-     *  random-number generator with period 2**32 that returns successive 
+     *  from the Posix rand_r function. Uses a multiplicative congruential
+     *  random-number generator with period 2**32 that returns successive
      *  pseudo-random numbers in the range of 0 to randr_max (0x7fffffff).
      *  @param seed pointer to seed of random number generator, must not be NULL.
      *  @return pseudo-random number in the range of 0 to myrandr_max.
@@ -623,6 +632,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.46  2011-10-12 11:59:42  joergr
+ * Added support for strings containing NULL bytes to "convert to markup"
+ * methods. Also added optional parameter for specifying the maximum length.
+ *
  * Revision 1.45  2011-10-11 12:47:34  uli
  * Renamed myrand_r(int*) a to rand_r(int&).
  *
