@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.12 (riesmeier)
 
+- Added methods for converting non-ASCII and control characters to their octal
+  representation, i.e. to '\ooo' where 'ooo' are the three octal digits.
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 - Added tests for convertToMarkupString() method.
   Added:   ofstd/tests/tmarkup.cc
   Affects: ofstd/tests/CMakeLists.txt

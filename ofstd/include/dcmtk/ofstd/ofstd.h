@@ -18,8 +18,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-12 11:59:42 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2011-10-12 13:20:27 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -325,7 +325,7 @@ class OFStandard
 
     // --- other functions ---
 
-    /** check whether conversion to HTML/XML mnenonic string is required.
+    /** check whether conversion to a HTML/XML mnenonic string is required.
      *  This check can be performed before convertToMarkupStream() or convertToMarkupString()
      *  is called in order to speed up the process in case the conversion is not required.
      ** @param sourceString source string to be checked.  May contain one or more NULL bytes.
@@ -339,7 +339,7 @@ class OFStandard
                                            const OFBool convertNonASCII = OFFalse,
                                            const size_t maxLength = 0);
 
-    /** convert character string to HTML/XHTML/XML mnenonic stream.
+    /** convert character string to a HTML/XHTML/XML mnenonic stream.
      *  Characters with special meaning for HTML/XHTML/XML (e.g. '<' and '&') are replaced by the
      *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'convertNonASCII' is OFTrue,
      *  all characters < #32 and >= #127 are also converted (useful if only HTML 3.2 is supported
@@ -368,7 +368,7 @@ class OFStandard
                                              const OFBool newlineAllowed = OFFalse,
                                              const size_t maxLength = 0);
 
-    /** convert character string to HTML/XHTML/XML mnenonic string.
+    /** convert character string to a HTML/XHTML/XML mnenonic string.
      *  Characters with special meaning for HTML/XHTML/XML (e.g. '<' and '&') are replaced by the
      *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'convertNonASCII' is OFTrue,
      *  all characters < #32 and >= #127 are also converted (useful if only HTML 3.2 is supported
@@ -396,6 +396,45 @@ class OFStandard
                                                  const E_MarkupMode markupMode = MM_XML,
                                                  const OFBool newlineAllowed = OFFalse,
                                                  const size_t maxLength = 0);
+
+    /** check whether conversion to an octal format is required.
+     *  This check can be performed before convertToOctalStream() or convertToOctalString()
+     *  is called in order to speed up the process in case the conversion is not required.
+     ** @param sourceString source string to be checked.  May contain one or more NULL bytes.
+     *  @param maxLength maximum number of characters from the source string to be converted.
+     *    A value of 0 means all characters.
+     ** @return OFTrue if markup conversion is required, OFFalse otherwise
+     */
+    static OFBool checkForOctalConversion(const OFString &sourceString,
+                                          const size_t maxLength = 0);
+
+    /** convert character string to an octal format stream.
+     *  All non-ASCII and control characters (code < #32 and >= #127) are converted to their
+     *  octal representation, i.e. to '\ooo' where 'ooo' are the three octal digits of the
+     *  character.  All other characters are output as is.  See section 6.1.2.3 in DICOM PS 3.5.
+     ** @param out stream used for the output
+     *  @param sourceString source string to be converted.  May contain one or more NULL bytes.
+     *  @param maxLength maximum number of characters from the source string to be converted.
+     *    A value of 0 means all characters.
+     ** @return status, always returns EC_Normal
+     */
+    static OFCondition convertToOctalStream(STD_NAMESPACE ostream &out,
+                                            const OFString &sourceString,
+                                            const size_t maxLength = 0);
+
+    /** convert character string to an octal format string.
+     *  All non-ASCII and control characters (code < #32 and >= #127) are converted to their
+     *  octal representation, i.e. to '\ooo' where 'ooo' are the three octal digits of the
+     *  character.  All other characters are output as is.  See section 6.1.2.3 in DICOM PS 3.5.
+     ** @param sourceString source string to be converted.  May contain one or more NULL bytes.
+     *  @param octalString reference to character string where the result should be stored
+     *  @param maxLength maximum number of characters from the source string to be converted.
+     *    A value of 0 means all characters.
+     ** @return status, always returns EC_Normal
+     */
+    static const OFString &convertToOctalString(const OFString &sourceString,
+                                                OFString &octalString,
+                                                const size_t maxLength = 0);
 
     /** encode binary data according to "Base64" as described in RFC 2045 (MIME).
      *  Basic algorithm: groups of 3 bytes from the binary input are coded as groups of 4 bytes in
@@ -632,6 +671,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.47  2011-10-12 13:20:27  joergr
+ * Added methods for converting non-ASCII and control characters to their octal
+ * representation, i.e. to '\ooo' where 'ooo' are the three octal digits.
+ *
  * Revision 1.46  2011-10-12 11:59:42  joergr
  * Added support for strings containing NULL bytes to "convert to markup"
  * methods. Also added optional parameter for specifying the maximum length.

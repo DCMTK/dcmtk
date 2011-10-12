@@ -88,8 +88,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-12 11:59:39 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Update Date:      $Date: 2011-10-12 13:20:28 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -873,6 +873,76 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
     } else
         markupString.clear();
     return markupString;
+}
+
+
+OFBool OFStandard::checkForOctalConversion(const OFString &sourceString,
+                                           const size_t maxLength)
+{
+    OFBool result = OFFalse;
+    size_t pos = 0;
+    const size_t strLen = sourceString.length();
+    /* determine maximum number of characters to be converted */
+    const size_t length = (maxLength == 0) ? strLen : ((strLen < maxLength) ? strLen : maxLength);
+    /* check for characters to be converted */
+    while (pos < length)
+    {
+        const size_t c = OFstatic_cast(unsigned char, sourceString.at(pos));
+        if ((c < 32) || (c >= 127))
+        {
+            /* return on the first character that needs to be converted */
+            result = OFTrue;
+            break;
+        }
+        ++pos;
+    }
+    return result;
+}
+
+
+OFCondition OFStandard::convertToOctalStream(STD_NAMESPACE ostream &out,
+                                             const OFString &sourceString,
+                                             const size_t maxLength)
+{
+    size_t pos = 0;
+    const size_t strLen = sourceString.length();
+    /* determine maximum number of characters to be converted */
+    const size_t length = (maxLength == 0) ? strLen : ((strLen < maxLength) ? strLen : maxLength);
+    /* switch to octal mode for numbers */
+    out << STD_NAMESPACE oct << STD_NAMESPACE setfill('0');
+    while (pos < length)
+    {
+        const char c = sourceString.at(pos);
+        const size_t charValue = OFstatic_cast(unsigned char, c);
+        /* replace non-ASCII characters */
+        if ((charValue < 32) || (charValue >= 127))
+            out << '\\' << STD_NAMESPACE setw(3) << charValue;
+        else
+            out << c;
+        ++pos;
+    }
+    /* reset i/o manipulators */
+    out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+    return EC_Normal;
+}
+
+
+const OFString &OFStandard::convertToOctalString(const OFString &sourceString,
+                                                 OFString &octalString,
+                                                 const size_t maxLength)
+{
+    OFStringStream stream;
+    /* call stream variant of convert to octal notation */
+    if (OFStandard::convertToOctalStream(stream, sourceString, maxLength).good())
+    {
+        stream << OFStringStream_ends;
+        /* convert string stream into a character string */
+        OFSTRINGSTREAM_GETSTR(stream, buffer_str)
+        octalString.assign(buffer_str);
+        OFSTRINGSTREAM_FREESTR(buffer_str)
+    } else
+        octalString.clear();
+    return octalString;
 }
 
 
@@ -1908,6 +1978,10 @@ int OFStandard::rand_r(unsigned int &seed)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.71  2011-10-12 13:20:28  joergr
+ *  Added methods for converting non-ASCII and control characters to their octal
+ *  representation, i.e. to '\ooo' where 'ooo' are the three octal digits.
+ *
  *  Revision 1.70  2011-10-12 11:59:39  joergr
  *  Added support for strings containing NULL bytes to "convert to markup"
  *  methods. Also added optional parameter for specifying the maximum length.
