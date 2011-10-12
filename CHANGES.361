@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.12 (riesmeier)
 
+- Use CMake variable DOXYGEN_DATA_DIR in order to reference the CSS file.
+  Affects: doxygen/htmldocs.cfg
+
 - Added new command line option that quotes non-ASCII and control chars as
   octal numbers.
   Affects: dcmdata/apps/dcmdump.cc
