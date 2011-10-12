@@ -18,8 +18,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-08 11:01:41 $
- *  CVS/RCS Revision: $Revision: 1.90 $
+ *  Update Date:      $Date: 2011-10-12 13:26:46 $
+ *  CVS/RCS Revision: $Revision: 1.91 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -257,6 +257,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--map-uid-names",       "+Un",    "map well-known UID numbers to names (default)");
         cmd.addOption("--no-uid-names",        "-Un",    "do not map well-known UID numbers to names");
         cmd.addOption("--quote-nonascii",      "+Qn",    "quote non-ASCII and control chars as XML markup");
+        cmd.addOption("--quote-as-octal",      "+Qo",    "quote non-ASCII and control ch. as octal numbers");
         cmd.addOption("--print-nonascii",      "-Qn",    "print non-ASCII and control chars (default)");
 #ifdef ANSI_ESCAPE_CODES_AVAILABLE
         cmd.addOption("--print-color",         "+C",     "use ANSI escape codes for colored output");
@@ -497,8 +498,12 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--quote-nonascii")) printFlags |= DCMTypes::PF_convertToMarkup;
-      if (cmd.findOption("--print-nonascii")) printFlags &= ~DCMTypes::PF_convertToMarkup;
+      if (cmd.findOption("--quote-nonascii"))
+        printFlags = (printFlags & ~DCMTypes::PF_convertToOctalNumbers) | DCMTypes::PF_convertToMarkup;
+      if (cmd.findOption("--quote-as-octal"))
+        printFlags = (printFlags & ~DCMTypes::PF_convertToMarkup) | DCMTypes::PF_convertToOctalNumbers;
+      if (cmd.findOption("--print-nonascii"))
+        printFlags = printFlags & ~(DCMTypes::PF_convertToMarkup | DCMTypes::PF_convertToOctalNumbers);
       cmd.endOptionBlock();
 
 #ifdef ANSI_ESCAPE_CODES_AVAILABLE
@@ -771,6 +776,10 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.91  2011-10-12 13:26:46  joergr
+ * Added new command line option that quotes non-ASCII and control chars as
+ * octal numbers.
+ *
  * Revision 1.90  2011-08-08 11:01:41  joergr
  * Added new parser flag that allows for ignoring the element's VR read from the
  * dataset and for preferring the VR defined in the data dictionary.

@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.12 (riesmeier)
 
+- Added new command line option that quotes non-ASCII and control chars as
+  octal numbers.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+
 - Added new print() flag that allows for converting non-ASCII and control
   characters to their octal representation ('\ooo').
   Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h

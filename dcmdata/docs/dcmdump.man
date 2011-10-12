@@ -241,6 +241,9 @@ printing:
   +Qn  --quote-nonascii
          quote non-ASCII and control chars as XML markup
 
+  +Qo  --quote-as-octal
+         quote non-ASCII and control chars as octal numbers
+
   -Qn  --print-nonascii
          print non-ASCII and control chars (default)
 
