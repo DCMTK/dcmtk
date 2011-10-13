@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-23 14:24:30 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2011-10-13 14:12:14 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,10 @@ OFTEST_REGISTER(dcmdata_i2d_bmp);
 OFTEST_REGISTER(dcmdata_checkStringValue);
 OFTEST_REGISTER(dcmdata_pathAccess);
 OFTEST_REGISTER(dcmdata_dateTime);
+OFTEST_REGISTER(dcmdata_decimalString_1);
+OFTEST_REGISTER(dcmdata_decimalString_2);
+OFTEST_REGISTER(dcmdata_decimalString_3);
+OFTEST_REGISTER(dcmdata_decimalString_4);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AE);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AS);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AT);
@@ -87,6 +91,9 @@ OFTEST_MAIN("dcmdata")
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.8  2011-10-13 14:12:14  joergr
+** Added tests for class DcmDecimalString, especially for getFloat64Vector().
+**
 ** Revision 1.7  2011-08-23 14:24:30  joergr
 ** Fixed another inconsistent test name.
 **
