@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.13 (riesmeier)
 
+- Enhanced documentation in case more than one input file is given.
+  Affects: dcmpstat/docs/dcmpsmk.man
+
 - Added tests for class DcmDecimalString, especially for getFloat64Vector().
   Added:   dcmdata/tests/tvrds.cc
   Affects: dcmdata/tests/CMakeLists.txt

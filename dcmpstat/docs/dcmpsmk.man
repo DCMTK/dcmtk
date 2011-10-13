@@ -26,7 +26,7 @@ when rendered under control of the presentation state.
 \section parameters PARAMETERS
 
 \verbatim
-dcmfile-in   DICOM image file to be read
+dcmfile-in   DICOM image file(s) to be read
 
 dcmfile-out  DICOM presentation state file to be created
 \endverbatim
@@ -180,6 +180,12 @@ output transfer syntax:
           write with implicit VR little endian TS
 \endverbatim
 
+\section notes NOTES
+
+If more than one input file (\e dcmfile-in) is specified, the additional image
+files are only referenced from the created presentation state file, but no
+further (e.g. display-related) information is taken over.
+
 \section logging LOGGING
 
 The level of logging output of the various command line tools and underlying
@@ -239,6 +245,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1998-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
