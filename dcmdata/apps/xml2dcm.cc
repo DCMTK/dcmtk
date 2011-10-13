@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Convert XML document to DICOM file or data set
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-12-15 13:59:57 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-13 16:14:29 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -314,7 +314,7 @@ static OFCondition putElementContent(xmlNodePtr current,
                  (dcmEVR == EVR_ST) || (dcmEVR == EVR_LT) || (dcmEVR == EVR_UT)) &&
                 (xmlStrlen(elemVal) > 0) && convertUtf8ToCharset(elemVal, dicomVal))
             {
-                result = element->putString(dicomVal.c_str());
+                result = element->putOFStringArray(dicomVal);
             } else {
                 /* set the value of the newly created element */
                 result = element->putString(OFreinterpret_cast(char *, elemVal));
@@ -994,6 +994,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.35  2011-10-13 16:14:29  joergr
+ * Use putOFStringArray() instead of putString() where appropriate.
+ *
  * Revision 1.34  2010-12-15 13:59:57  uli
  * Fixed a problem with a missing prototype for vsnprintf on HP-UX.
  *

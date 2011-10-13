@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:18 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2011-10-13 16:14:30 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,7 +158,7 @@ OFCondition DcmTime::setCurrentTime(const OFBool seconds,
     /* set the element value to the current system time */
     OFCondition l_error = getCurrentTime(dicomTime, seconds, fraction);
     if (l_error.good())
-        l_error = putString(dicomTime.c_str());
+        l_error = putOFStringArray(dicomTime);
     return l_error;
 }
 
@@ -169,7 +169,7 @@ OFCondition DcmTime::setOFTime(const OFTime &timeValue)
     /* convert OFTime value to DICOM TM format and set the element value */
     OFCondition l_error = getDicomTimeFromOFTime(timeValue, dicomTime);
     if (l_error.good())
-        l_error = putString(dicomTime.c_str());
+        l_error = putOFStringArray(dicomTime);
     return l_error;
 }
 
@@ -400,6 +400,9 @@ OFCondition DcmTime::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
+** Revision 1.35  2011-10-13 16:14:30  joergr
+** Use putOFStringArray() instead of putString() where appropriate.
+**
 ** Revision 1.34  2010-10-20 16:44:18  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

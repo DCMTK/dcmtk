@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:17 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2011-10-13 16:14:30 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,7 +172,7 @@ OFCondition DcmDateTime::setCurrentDateTime(const OFBool seconds,
     OFString dicomDateTime;
     OFCondition l_error = getCurrentDateTime(dicomDateTime, seconds, fraction, timeZone);
     if (l_error.good())
-        l_error = putString(dicomDateTime.c_str());
+        l_error = putOFStringArray(dicomDateTime);
     return l_error;
 }
 
@@ -183,7 +183,7 @@ OFCondition DcmDateTime::setOFDateTime(const OFDateTime &dateTimeValue)
     /* convert OFDateTime value to DICOM DT format and set the element value */
     OFCondition l_error = getDicomDateTimeFromOFDateTime(dateTimeValue, dicomDateTime);
     if (l_error.good())
-        l_error = putString(dicomDateTime.c_str());
+        l_error = putOFStringArray(dicomDateTime);
     return l_error;
 }
 
@@ -397,6 +397,9 @@ OFCondition DcmDateTime::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
+** Revision 1.34  2011-10-13 16:14:30  joergr
+** Use putOFStringArray() instead of putString() where appropriate.
+**
 ** Revision 1.33  2010-10-20 16:44:17  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

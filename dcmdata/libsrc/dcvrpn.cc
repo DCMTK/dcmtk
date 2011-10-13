@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmPersonName
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:17 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2011-10-13 16:14:30 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -328,7 +328,7 @@ OFCondition DcmPersonName::putNameComponents(const OFString &lastName,
     OFCondition l_error = getStringFromNameComponents(lastName, firstName, middleName, namePrefix, nameSuffix, dicomName);
     /* put element value */
     if (l_error.good())
-        l_error = putString(dicomName.c_str());
+        l_error = putOFStringArray(dicomName);
     return l_error;
 }
 
@@ -376,6 +376,9 @@ OFCondition DcmPersonName::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
+** Revision 1.26  2011-10-13 16:14:30  joergr
+** Use putOFStringArray() instead of putString() where appropriate.
+**
 ** Revision 1.25  2010-10-20 16:44:17  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

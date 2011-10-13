@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.13 (riesmeier)
 
+- Use putOFStringArray() instead of putString() where appropriate.
+  Affects: dcmdata/apps/xml2dcm.cc
+           dcmdata/libsrc/dcvrda.cc
+           dcmdata/libsrc/dcvrdt.cc
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/libsrc/dcvrtm.cc
+
 - Commented out 2nd test since the required "dcmdata" method is not yet there.
   Affects: dcmdata/tests/tvrds.cc
 

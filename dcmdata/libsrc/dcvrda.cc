@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDate
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:17 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2011-10-13 16:14:30 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,7 +150,7 @@ OFCondition DcmDate::setCurrentDate()
     /* set the element value to the current system date */
     OFCondition l_error = getCurrentDate(dicomDate);
     if (l_error.good())
-        l_error = putString(dicomDate.c_str());
+        l_error = putOFStringArray(dicomDate);
     return l_error;
 }
 
@@ -161,7 +161,7 @@ OFCondition DcmDate::setOFDate(const OFDate &dateValue)
     /* convert OFDate value to DICOM DA format and set the element value */
     OFCondition l_error = getDicomDateFromOFDate(dateValue, dicomDate);
     if (l_error.good())
-        l_error = putString(dicomDate.c_str());
+        l_error = putOFStringArray(dicomDate);
     return l_error;
 }
 
@@ -191,7 +191,7 @@ OFCondition DcmDate::getCurrentDate(OFString &dicomDate)
 
 
 OFCondition DcmDate::getDicomDateFromOFDate(const OFDate &dateValue,
-	                                        OFString &dicomDate)
+	                                    OFString &dicomDate)
 {
     OFCondition l_error = EC_IllegalParameter;
     /* convert OFDate value to DICOM DA format */
@@ -296,6 +296,9 @@ OFCondition DcmDate::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.cc,v $
+** Revision 1.24  2011-10-13 16:14:30  joergr
+** Use putOFStringArray() instead of putString() where appropriate.
+**
 ** Revision 1.23  2010-10-20 16:44:17  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **
