@@ -18,8 +18,8 @@
  *  Purpose: test program for class DcmDecimalString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-13 13:44:02 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-10-13 15:12:12 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,10 +50,13 @@ OFTEST(dcmdata_decimalString_1)
 
 OFTEST(dcmdata_decimalString_2)
 {
+    /* this test does not yet work since "putString(val, len)" is not yet there */
+#if 0
     DcmDecimalString decStr(DCM_ContourData);
     OFVector<Float64> doubleVals;
     /* insert a NULL byte into the string */
     OFCHECK(decStr.putString("1\\2.0\\3.5\\-4.99\0\\+500.005\\6.66E-01", 37).good());
+    OFCHECK(decStr.putOFStringArray(OFString("1\\2.0\\3.5\\-4.99\0\\+500.005\\6.66E-01", 37)).good());
     OFCHECK(decStr.getFloat64Vector(doubleVals).good());
     OFCHECK_EQUAL(doubleVals.size(), 6);
     OFCHECK_EQUAL(doubleVals[0], 1);
@@ -62,6 +65,7 @@ OFTEST(dcmdata_decimalString_2)
     OFCHECK_EQUAL(doubleVals[3], -4.99);
     OFCHECK_EQUAL(doubleVals[4], 500.005);
     OFCHECK_EQUAL(doubleVals[5], 0.666);
+#endif
 }
 
 OFTEST(dcmdata_decimalString_3)
@@ -101,9 +105,11 @@ OFTEST(dcmdata_decimalString_4)
  *
  * CVS/RCS Log:
  * $Log: tvrds.cc,v $
+ * Revision 1.2  2011-10-13 15:12:12  joergr
+ * Commented out 2nd test since the required "dcmdata" method is not yet there.
+ *
  * Revision 1.1  2011-10-13 13:44:02  joergr
  * Added tests for class DcmDecimalString, especially for getFloat64Vector().
- *
  *
  *
  */

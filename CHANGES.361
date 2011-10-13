@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.13 (riesmeier)
 
+- Commented out 2nd test since the required "dcmdata" method is not yet there.
+  Affects: dcmdata/tests/tvrds.cc
+
 - Enhanced documentation in case more than one input file is given.
   Affects: dcmpstat/docs/dcmpsmk.man
 
