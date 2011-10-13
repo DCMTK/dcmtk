@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.13 (riesmeier)
+
+- Added tests for class DcmDecimalString, especially for getFloat64Vector().
+  Added:   dcmdata/tests/tvrds.cc
+  Affects: dcmdata/tests/CMakeLists.txt
+           dcmdata/tests/Makefile.dep
+           dcmdata/tests/Makefile.in
+           dcmdata/tests/tests.cc
+
 **** Changes from 2011.10.12 (riesmeier)
 
 - Use CMake variable DOXYGEN_DATA_DIR in order to reference the CSS file.
