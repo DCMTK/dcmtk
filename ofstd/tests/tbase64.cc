@@ -18,8 +18,8 @@
  *  Purpose: test program for base64-code in OFStandard
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 13:04:18 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-10-14 10:34:45 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,6 +113,7 @@ OFTEST(ofstd_base64_2)
         buffer[i] = OFstatic_cast(unsigned char, 510 - i);
 
     testBase64(buffer, bin_len, b64, b64_line_breaks);
+    delete[] buffer;
 }
 
 OFTEST(ofstd_base64_3)
@@ -126,16 +127,21 @@ OFTEST(ofstd_base64_3)
     length = OFStandard::decodeBase64(txt_data1, buffer);
     for (i = 0; i < length; i++)
         OFCHECK_EQUAL(buffer[i], dec[i]);
+    delete[] buffer;
 
     length = OFStandard::decodeBase64(txt_data2, buffer);
     for (i = 0; i < length; i++)
         OFCHECK_EQUAL(buffer[i], dec[i]);
+    delete[] buffer;
 }
 
 /*
  *
  * CVS/RCS Log:
  * $Log: tbase64.cc,v $
+ * Revision 1.3  2011-10-14 10:34:45  uli
+ * Fixed a minor memory leak in the base64 test.
+ *
  * Revision 1.2  2011-07-06 13:04:18  uli
  * Fixed some inconsistencies in test names.
  *
