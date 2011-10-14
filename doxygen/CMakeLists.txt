@@ -38,9 +38,12 @@ IF(DCMTK_WITH_DOXYGEN)
   ENDIF(NOT WIN32)
 
   # cleanup created files on "make clean" - directories are not removed with CMake 2.4 :-/
-  SET(make_clean_files ${CMAKE_CURRENT_BINARY_DIR}/htmldocs.tmp ${CMAKE_CURRENT_BINARY_DIR}/htmldocs
-                       ${CMAKE_CURRENT_BINARY_DIR}/manpages.tmp ${CMAKE_CURRENT_BINARY_DIR}/manpages)
+  SET(make_clean_files ${CMAKE_CURRENT_BINARY_DIR}/htmldocs ${CMAKE_CURRENT_BINARY_DIR}/manpages)
   SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${make_clean_files}")
+
+  # the created files "htmldocs.tmp" and "manpages.tmp" should be removed with "make distclean",
+  # which will (hopefully) be introduced in a future version, because they are only created during
+  # the configure/generate process
 
 ELSE(DCMTK_WITH_DOXYGEN)
 

@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.14 (riesmeier)
+
+- Do not delete "htmldocs.tmp" and "manpages.tmp" during "make clean" since
+  these files are only (re)generated during configure.
+  Affects: doxygen/CMakeLists.txt
+
 **** Changes from 2011.10.13 (riesmeier)
 
 - Use putOFStringArray() instead of putString() where appropriate.
