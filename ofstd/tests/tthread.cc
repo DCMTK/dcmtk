@@ -20,8 +20,8 @@
  *
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-19 12:07:02 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-10-14 13:28:19 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,6 +122,9 @@ static void mutex_test()
   while ((i++<5) && ((!mtx_cond2)||(!mtx_cond3))) OFStandard::milliSleep(wait_timeout);
   if ((!mtx_cond2) || (!mtx_cond3)) BAILOUT("mutex lock/unlock test failed");
 
+  if (0 != t1.join()) BAILOUT("unable to join thread, mutex test failed");
+  if (0 != t2.join()) BAILOUT("unable to join thread, mutex test failed");
+
   delete mutex;
 }
 
@@ -212,6 +215,9 @@ static void semaphore_test()
   i=0;
   while ((i++<5) && ((!sem_cond2)||(!sem_cond3)||(!sem_cond4))) OFStandard::milliSleep(wait_timeout);
   if ((!mtx_cond2) || (!mtx_cond3) || (!sem_cond4)) BAILOUT("semaphore lock/unlock test failed");
+
+  if (0 != t1.join()) BAILOUT("unable to join thread, semaphore test failed");
+  if (0 != t2.join()) BAILOUT("unable to join thread, semaphore test failed");
 
   delete mutex;
   delete semaphore;
@@ -325,6 +331,9 @@ static void rwlock_test()
   i=0;
   while ((i++<5) && ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7))) OFStandard::milliSleep(wait_timeout);
   if ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7)) BAILOUT("read/write lock/unlock test failed");
+
+  if (0 != t1.join()) BAILOUT("unable to join thread, semaphore test failed");
+  if (0 != t2.join()) BAILOUT("unable to join thread, semaphore test failed");
 
   delete mutex;
   delete mutex2;
@@ -444,6 +453,9 @@ static void rwlocker_test()
   while ((i++<5) && ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7))) OFStandard::milliSleep(wait_timeout);
   if ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7)) BAILOUT("read/write lock/unlock test failed");
 
+  if (0 != t1.join()) BAILOUT("unable to join thread, semaphore test failed");
+  if (0 != t2.join()) BAILOUT("unable to join thread, semaphore test failed");
+
   delete mutex;
   delete mutex2;
   delete rwlock;
@@ -558,6 +570,9 @@ static void tsdata_test()
   while ((i++<5) && ((!tsd_cond3)||(!tsd_cond4))) OFStandard::milliSleep(wait_timeout);
   if ((!tsd_cond3)||(!tsd_cond4)) BAILOUT("thread specific data read test failed");
 
+  if (0 != t1.join()) BAILOUT("unable to create thread, thread specific data test failed");
+  if (0 != t2.join()) BAILOUT("unable to create thread, thread specific data test failed");
+
   delete mutex;
   delete mutex2;
   delete tsdata;
@@ -581,6 +596,9 @@ OFTEST(ofstd_thread)
  *
  * CVS/RCS Log:
  * $Log: tthread.cc,v $
+ * Revision 1.4  2011-10-14 13:28:19  uli
+ * Fixed a memory leak due to unjoined threads.
+ *
  * Revision 1.3  2011-08-19 12:07:02  uli
  * Speed up the thread test by polling more often for events.
  *

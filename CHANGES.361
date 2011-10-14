@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Fixed a minor memory leak in the base64 test.
   Affects: ofstd/tests/tbase64.cc
 
+- Fixed a memory leak due to unjoined threads.
+  Affects: ofstd/tests/tthread.cc
+
 **** Changes from 2011.10.14 (riesmeier)
 
 - Replaced the "o umlaut" encoded in ISO 8859-1 with its octal representation.
