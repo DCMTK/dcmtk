@@ -18,8 +18,8 @@
  *  Purpose: test program for "convert to markup"-code in OFStandard
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-12 12:03:04 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-10-14 10:40:46 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,13 +34,17 @@
 #include "dcmtk/ofstd/ofstd.h"
 
 
+/*
+ *  Note: \366 is the a "o umlaut" encoded in ISO 8859-1 (Latin-1)
+ */
+
 OFTEST(ofstd_markup_1)
 {
     OFString resultStr;
     // XML: source source string contains both LF and CR
-    const OFString sourceStr = "This is a test, with <special> characters & \"some\" other 'dirty' tricks!\nJörg\r";
+    const OFString sourceStr = "This is a test, with <special> characters & \"some\" other 'dirty' tricks!\nJ\366rg\r";
     const OFString markupStr1 = "This is a test, with &lt;special&gt; characters &amp; &quot;some&quot; other &apos;dirty&apos; tricks!&#10;J&#246;rg&#13;";
-    const OFString markupStr2 = "This is a test, with &lt;special&gt; characters &amp; &quot;some&quot; other &apos;dirty&apos; tricks!&#10;Jörg&#13;";
+    const OFString markupStr2 = "This is a test, with &lt;special&gt; characters &amp; &quot;some&quot; other &apos;dirty&apos; tricks!&#10;J\366rg&#13;";
 
     OFCHECK(OFStandard::checkForMarkupConversion(sourceStr, OFTrue /* convertNonASCII */));
     OFCHECK(!OFStandard::checkForMarkupConversion(sourceStr, OFTrue /* convertNonASCII */, 20 /* maxLength */));
@@ -55,9 +59,9 @@ OFTEST(ofstd_markup_2)
 {
     OFString resultStr;
     // XML: source source string contains CR+LF
-    const OFString sourceStr = "This is a test, with <special> characters & \"some\" other 'dirty' tricks!\r\nJörg";
+    const OFString sourceStr = "This is a test, with <special> characters & \"some\" other 'dirty' tricks!\r\nJ\366rg";
     const OFString markupStr1 = "This is a test, with &lt;special&gt; characters &amp; &quot;some&quot; other &apos;dirty&apos; tricks!&#13;&#10;J&#246;rg";
-    const OFString markupStr2 = "This is a test, with &lt;special&gt; characters &amp; &quot;some&quot; other &apos;dirty&apos; tricks!&#13;&#10;Jörg";
+    const OFString markupStr2 = "This is a test, with &lt;special&gt; characters &amp; &quot;some&quot; other &apos;dirty&apos; tricks!&#13;&#10;J\366rg";
 
     OFStandard::convertToMarkupString(sourceStr, resultStr, OFTrue /* convertNonASCII */, OFStandard::MM_XML);
     OFCHECK_EQUAL(resultStr, markupStr1);
@@ -69,9 +73,9 @@ OFTEST(ofstd_markup_3)
 {
     OFString resultStr;
     // HTML: source source string contains LF+CR
-    const OFString sourceStr = "This is a test, with <special> characters & \"some\" other 'dirty' tricks!\n\rJörg";
+    const OFString sourceStr = "This is a test, with <special> characters & \"some\" other 'dirty' tricks!\n\rJ\366rg";
     const OFString markupStr1 = "This is a test, with &lt;special&gt; characters &amp; &quot;some&quot; other &#39;dirty&#39; tricks!<br>\nJ&#246;rg";
-    const OFString markupStr2 = "This is a test, with &lt;special&gt; characters &amp; &quot;some&quot; other &#39;dirty&#39; tricks!&para;Jörg";
+    const OFString markupStr2 = "This is a test, with &lt;special&gt; characters &amp; &quot;some&quot; other &#39;dirty&#39; tricks!&para;J\366rg";
 
     OFStandard::convertToMarkupString(sourceStr, resultStr, OFTrue /* convertNonASCII */, OFStandard::MM_HTML, OFTrue /* newlineAllowed */);
     OFCHECK_EQUAL(resultStr, markupStr1);
@@ -83,9 +87,9 @@ OFTEST(ofstd_markup_4)
 {
     OFString resultStr;
     // XHTML: source source string contains CR+LF
-    const OFString sourceStr = "This is a test, with <special> characters & \"some\" other 'dirty' tricks!\r\nJörg";
+    const OFString sourceStr = "This is a test, with <special> characters & \"some\" other 'dirty' tricks!\r\nJ\366rg";
     const OFString markupStr1 = "This is a test, with &lt;special&gt; characters &amp; &quot;some&quot; other &apos;dirty&apos; tricks!<br />\nJ&#246;rg";
-    const OFString markupStr2 = "This is a test, with &lt;special&gt; characters &amp; &quot;some&quot; other &apos;dirty&apos; tricks!&para;Jörg";
+    const OFString markupStr2 = "This is a test, with &lt;special&gt; characters &amp; &quot;some&quot; other &apos;dirty&apos; tricks!&para;J\366rg";
 
     OFStandard::convertToMarkupString(sourceStr, resultStr, OFTrue /* convertNonASCII */, OFStandard::MM_XHTML, OFTrue /* newlineAllowed */);
     OFCHECK_EQUAL(resultStr, markupStr1);
@@ -98,7 +102,7 @@ OFTEST(ofstd_markup_5)
     OFString resultStr;
     const size_t sourceLen = 79;
     // HTML 3.2: the source string contains a NULL byte!
-    const OFString sourceStr(("This is a test\0, with <special> characters & \"some\" other 'dirty' tricks!\rJörg\n"), sourceLen);
+    const OFString sourceStr(("This is a test\0, with <special> characters & \"some\" other 'dirty' tricks!\rJ\366rg\n"), sourceLen);
     const OFString markupStr1 = "This is a test&#0;, with &lt;special&gt; characters &amp; &#34;some&#34; other &#39;dirty&#39; tricks!<br>\nJ&#246;rg<br>\n";
     const OFString markupStr2 = "This is a test&#0;, with &lt;special&gt; characters &amp; &#34;some&#34; other &#39;dirty&#39; tricks!&para;J&#246;rg&para;";
     const OFString markupStr3 = "This is a test\0, with &lt;special&gt; characters &amp; &#34;some&#34; other &#39;dirty&#39; tricks!&para;J&#246;rg&para;";
@@ -119,9 +123,11 @@ OFTEST(ofstd_markup_5)
  *
  * CVS/RCS Log:
  * $Log: tmarkup.cc,v $
+ * Revision 1.2  2011-10-14 10:40:46  joergr
+ * Replaced the "o umlaut" encoded in ISO 8859-1 with its octal representation.
+ *
  * Revision 1.1  2011-10-12 12:03:04  joergr
  * Added tests for convertToMarkupString() method.
- *
  *
  *
  */

@@ -1,12 +1,15 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2011.10.11 (schlachter)
+**** Changes from 2011.10.14 (schlachter)
 
 - Fixed a minor memory leak in the base64 test.
   Affects: ofstd/tests/tbase64.cc
 
 **** Changes from 2011.10.14 (riesmeier)
+
+- Replaced the "o umlaut" encoded in ISO 8859-1 with its octal representation.
+  Affects: ofstd/tests/tmarkup.cc
 
 - Do not delete "htmldocs.tmp" and "manpages.tmp" during "make clean" since
   these files are only (re)generated during configure.
