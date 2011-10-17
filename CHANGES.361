@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.17 (riesmeier)
 
+- Made sure that non-ASCII characters are quoted appropriately if the Specific
+  Character Set is not supported.
+  Affects: dcmdata/apps/dcm2xml.cc
+
 - Added writeXML() flag that allows for converting all non-ASCII characters.
   Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h
            dcmdata/libsrc/dcelem.cc

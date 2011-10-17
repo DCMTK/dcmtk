@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:30 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2011-10-17 12:32:28 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                              const OFBool loadIntoMemory,
                              const char *dtdFilename,
                              const char *defaultCharset,
-                             const size_t writeFlags,
+                             /*const*/ size_t writeFlags,
                              const OFBool checkAllStrings)
 {
     OFCondition result = EC_IllegalParameter;
@@ -94,8 +94,13 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 encString = "ISO-8859-7";
             else if (csetString == "ISO_IR 138")
                 encString = "ISO-8859-8";
-            else if (!csetString.empty())
-                OFLOG_WARN(dcm2xmlLogger, "(0008,0005) Specific Character Set '" << csetString << "' not supported");
+            else
+            {
+                if (!csetString.empty())
+                    OFLOG_WARN(dcm2xmlLogger, "(0008,0005) Specific Character Set '" << csetString << "' not supported");
+                /* make sure that non-ASCII characters are quoted appropriately */
+                writeFlags |= DCMTypes::XF_convertNonASCII;
+            }
         } else {
             /* SpecificCharacterSet is not present in the dataset */
             if (dset->containsExtendedCharacters(checkAllStrings))
@@ -188,9 +193,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                     /* copy all characters */
                     while (dtdFile.get(c))
                         out << c;
-                }
-                else
-                {
+                } else {
                     OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": cannot open DTD file: " << dtdFilename);
                 }
                 out << "]";
@@ -464,6 +467,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
+ * Revision 1.40  2011-10-17 12:32:28  joergr
+ * Made sure that non-ASCII characters are quoted appropriately if the Specific
+ * Character Set is not supported.
+ *
  * Revision 1.39  2010-10-14 13:13:30  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
