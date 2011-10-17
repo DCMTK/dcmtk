@@ -18,8 +18,8 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-12 13:24:20 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-10-17 12:30:22 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,11 +48,15 @@ const size_t DCMTypes::XF_encodeBase64          = 1 << 2;
 const size_t DCMTypes::XF_useDcmtkNamespace     = 1 << 3;
 const size_t DCMTypes::XF_embedDocumentType     = 1 << 4;
 const size_t DCMTypes::XF_omitDataElementName   = 1 << 5;
+const size_t DCMTypes::XF_convertNonASCII       = 1 << 6;
 
 
 /*
  * CVS/RCS Log:
  * $Log: dctypes.cc,v $
+ * Revision 1.16  2011-10-17 12:30:22  joergr
+ * Added writeXML() flag that allows for converting all non-ASCII characters.
+ *
  * Revision 1.15  2011-10-12 13:24:20  joergr
  * Added new print() flag that allows for converting non-ASCII and control
  * characters to their octal representation ('\ooo').

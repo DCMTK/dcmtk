@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDecimalString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-27 09:18:31 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2011-10-17 12:30:22 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -200,9 +200,10 @@ OFCondition DcmDecimalString::writeXML(STD_NAMESPACE ostream &out,
         getString(value);
         if (value != NULL)
         {
+            const OFBool converNonASCII = (flags & DCMTypes::XF_convertNonASCII);
             /* check whether conversion to XML markup string is required */
-            if (OFStandard::checkForMarkupConversion(value))
-                OFStandard::convertToMarkupStream(out, value);
+            if (OFStandard::checkForMarkupConversion(value, converNonASCII))
+                OFStandard::convertToMarkupStream(out, value, converNonASCII);
             else
                 out << value;
         }
@@ -227,6 +228,9 @@ OFCondition DcmDecimalString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
+** Revision 1.29  2011-10-17 12:30:22  joergr
+** Added writeXML() flag that allows for converting all non-ASCII characters.
+**
 ** Revision 1.28  2010-10-27 09:18:31  joergr
 ** Added getFloat64Vector() method which allows for retrieving the stored
 ** floating point values more efficiently (especially when there are many

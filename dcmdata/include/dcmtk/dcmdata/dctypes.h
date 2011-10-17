@@ -18,8 +18,8 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-12 13:24:19 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2011-10-17 12:30:20 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -28,7 +28,7 @@
 
 
 #ifndef DCTYPES_H
-#define DCTYPES_H 1
+#define DCTYPES_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/oflog/oflog.h"
@@ -216,6 +216,9 @@ struct DCMTypes
 
     /// don't write name of the DICOM data elements
     static const size_t XF_omitDataElementName;
+
+    /// convert non-ASCII characters to numeric values
+    static const size_t XF_convertNonASCII;
     //@}
 };
 
@@ -230,6 +233,9 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.39  2011-10-17 12:30:20  joergr
+ * Added writeXML() flag that allows for converting all non-ASCII characters.
+ *
  * Revision 1.38  2011-10-12 13:24:19  joergr
  * Added new print() flag that allows for converting non-ASCII and control
  * characters to their octal representation ('\ooo').

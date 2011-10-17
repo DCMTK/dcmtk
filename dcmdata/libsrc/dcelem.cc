@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-06 12:53:52 $
- *  CVS/RCS Revision: $Revision: 1.94 $
+ *  Update Date:      $Date: 2011-10-17 12:30:22 $
+ *  CVS/RCS Revision: $Revision: 1.95 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1321,9 +1321,10 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
         OFString value;
         if (getOFStringArray(value).good())
         {
+            const OFBool converNonASCII = (flags & DCMTypes::XF_convertNonASCII);
             /* check whether conversion to XML markup string is required */
-            if (OFStandard::checkForMarkupConversion(value))
-                OFStandard::convertToMarkupStream(out, value);
+            if (OFStandard::checkForMarkupConversion(value, converNonASCII))
+                OFStandard::convertToMarkupStream(out, value, converNonASCII);
             else
                 out << value;
         }
@@ -1780,6 +1781,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.95  2011-10-17 12:30:22  joergr
+** Added writeXML() flag that allows for converting all non-ASCII characters.
+**
 ** Revision 1.94  2011-10-06 12:53:52  joergr
 ** Output some useful information to the DEBUG logger when compacting a value.
 **

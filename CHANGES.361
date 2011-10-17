@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.17 (riesmeier)
+
+- Added writeXML() flag that allows for converting all non-ASCII characters.
+  Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dctypes.cc
+           dcmdata/libsrc/dcvrds.cc
+
 **** Changes from 2011.10.14 (schlachter)
 
 - Fixed a minor memory leak in the base64 test.
