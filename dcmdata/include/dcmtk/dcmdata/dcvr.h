@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -17,9 +17,9 @@
  *
  *  Purpose: Definition of the DcmVR class for Value Representation
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-07 07:22:13 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-18 14:15:12 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -27,7 +27,7 @@
  */
 
 #ifndef DCMVR_H
-#define DCMVR_H 1
+#define DCMVR_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofglobal.h"
@@ -53,7 +53,6 @@ extern OFGlobal<OFBool> dcmEnableUnknownVRConversion; /* default OFFalse */
 */
 enum DcmEVR
 {
-
     /// application entity title
     EVR_AE,
 
@@ -347,6 +346,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcvr.h,v $
+ * Revision 1.30  2011-10-18 14:15:12  joergr
+ * Removed global helper functions that were replaced in a previously commit.
+ *
  * Revision 1.29  2011-06-07 07:22:13  uli
  * Enhance the documentation for DcmVR::getValidEVR().
  *

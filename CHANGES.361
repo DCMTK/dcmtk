@@ -3,6 +3,31 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.18 (riesmeier)
 
+- Removed global helper functions that were replaced in a previously commit.
+  Removed: dcmdata/include/dcmtk/dcmdata/dcvm.h
+           dcmdata/libsrc/dcvm.cc
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/include/dcmtk/dcmdata/dctk.h
+           dcmdata/include/dcmtk/dcmdata/dcvr.h
+           dcmdata/libsrc/CMakeLists.txt
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/Makefile.in
+           dcmdata/tests/Makefile.dep
+           dcmimage/apps/Makefile.dep
+           dcmimgle/apps/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+           dcmjpeg/apps/Makefile.dep
+           dcmjpls/apps/Makefile.dep
+           dcmnet/apps/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+           dcmsign/apps/Makefile.dep
+           dcmsr/apps/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/tests/Makefile.dep
+           dcmtls/libsrc/Makefile.dep
+
 - Added test program for various "string value" methods.
   Added:   dcmdata/tests/tstrval.cc
   Affects: dcmdata/tests/CMakeLists.txt
