@@ -21,7 +21,7 @@ LOCALLIBS = -ldcmdata -loflog -lofstd $(ZLIBLIBS)
 I2DLIBS = -li2d
 
 objs = tests.o tpread.o ti2dbmp.o tchval.o tpath.o tvrdatim.o telemlen.o tparser.o tdict.o \
-	tvrds.o
+	tvrds.o tstrval.o
 progs = tests
 
 

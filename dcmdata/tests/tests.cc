@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-13 14:12:14 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2011-10-18 14:03:05 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,8 @@
 OFTEST_REGISTER(dcmdata_partialElementAccess);
 OFTEST_REGISTER(dcmdata_i2d_bmp);
 OFTEST_REGISTER(dcmdata_checkStringValue);
+OFTEST_REGISTER(dcmdata_determineVM);
+OFTEST_REGISTER(dcmdata_getValueFromString);
 OFTEST_REGISTER(dcmdata_pathAccess);
 OFTEST_REGISTER(dcmdata_dateTime);
 OFTEST_REGISTER(dcmdata_decimalString_1);
@@ -91,6 +93,9 @@ OFTEST_MAIN("dcmdata")
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.9  2011-10-18 14:03:05  joergr
+** Added test program for various "string value" methods.
+**
 ** Revision 1.8  2011-10-13 14:12:14  joergr
 ** Added tests for class DcmDecimalString, especially for getFloat64Vector().
 **

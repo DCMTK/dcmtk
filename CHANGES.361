@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.18 (riesmeier)
 
+- Added test program for various "string value" methods.
+  Added:   dcmdata/tests/tstrval.cc
+  Affects: dcmdata/tests/CMakeLists.txt
+           dcmdata/tests/Makefile.in
+           dcmdata/tests/tests.cc
+
 - Added support for embedded NULL bytes in string element values.
   Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
            dcmdata/include/dcmtk/dcmdata/dcchrstr.h
