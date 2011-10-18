@@ -685,6 +685,12 @@ dcmqrdbi.o: dcmqrdbi.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmqrdb/dcmqrcnf.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../include/dcmtk/dcmqrdb/dcmqropt.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmnet/include/dcmtk/dcmnet/cond.h \
+  ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
+  ../include/dcmtk/dcmqrdb/dcmqrcnf.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
   ../include/dcmtk/dcmqrdb/dcmqridx.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \

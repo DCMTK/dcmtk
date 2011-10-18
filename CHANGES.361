@@ -28,6 +28,13 @@ Changes between releases are documented here.
            dcmsr/tests/Makefile.dep
            dcmtls/libsrc/Makefile.dep
 
+- Rebuilt Makefile dependencies.
+  Affects: dcmqrdb/apps/Makefile.dep
+           dcmqrdb/libsrc/Makefile.dep
+           dcmwlm/apps/Makefile.dep
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/wwwapps/Makefile.dep
+
 - Added test program for various "string value" methods.
   Added:   dcmdata/tests/tstrval.cc
   Affects: dcmdata/tests/CMakeLists.txt
