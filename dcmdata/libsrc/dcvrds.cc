@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDecimalString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-17 12:30:22 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2011-10-18 14:00:13 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,7 +124,8 @@ OFCondition DcmDecimalString::getFloat64Vector(OFVector<Float64> &doubleVals)
 {
     /* get stored value */
     char *strVal = NULL;
-    OFCondition l_error = getString(strVal);
+    Uint32 strLen = 0;
+    OFCondition l_error = getString(strVal, strLen);
     /* clear result variable */
     doubleVals.clear();
     if (l_error.good() && (strVal != NULL))
@@ -133,7 +134,6 @@ OFCondition DcmDecimalString::getFloat64Vector(OFVector<Float64> &doubleVals)
         const unsigned long vm = getVM();
         if (vm > 0)
         {
-            char c;
             Float64 doubleVal;
             OFString doubleStr;
             char *p = strVal;
@@ -141,9 +141,9 @@ OFCondition DcmDecimalString::getFloat64Vector(OFVector<Float64> &doubleVals)
             /* avoid memory re-allocations by specifying the expected size */
             doubleVals.reserve(vm);
             /* iterate over the string value and search for delimiters */
-            do {
-                c = *p;
-                if ((c == '\\') || (c == '\0'))
+            for (Uint32 i = 0; i <= strLen; i++)
+            {
+                if ((i == strLen) || (*p == '\\'))
                 {
                     /* extract single value and convert it to floating point */
                     doubleStr.assign(strVal, p - strVal);
@@ -161,7 +161,7 @@ OFCondition DcmDecimalString::getFloat64Vector(OFVector<Float64> &doubleVals)
                     }
                 }
                 ++p;
-            } while (c != '\0');
+            }
         }
     }
     return l_error;
@@ -197,13 +197,16 @@ OFCondition DcmDecimalString::writeXML(STD_NAMESPACE ostream &out,
     {
         /* get string data (without normalization) */
         char *value = NULL;
-        getString(value);
-        if (value != NULL)
+        Uint32 length = 0;
+        getString(value, length);
+        if ((value != NULL) && (length > 0))
         {
+            /* explicitly convert to OFString because of possible NULL bytes */
+            OFString stringVal(value, length);
             const OFBool converNonASCII = (flags & DCMTypes::XF_convertNonASCII);
             /* check whether conversion to XML markup string is required */
-            if (OFStandard::checkForMarkupConversion(value, converNonASCII))
-                OFStandard::convertToMarkupStream(out, value, converNonASCII);
+            if (OFStandard::checkForMarkupConversion(stringVal, converNonASCII))
+                OFStandard::convertToMarkupStream(out, stringVal, converNonASCII);
             else
                 out << value;
         }
@@ -228,6 +231,9 @@ OFCondition DcmDecimalString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
+** Revision 1.30  2011-10-18 14:00:13  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.29  2011-10-17 12:30:22  joergr
 ** Added writeXML() flag that allows for converting all non-ASCII characters.
 **

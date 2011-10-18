@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:43 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2011-10-18 14:00:10 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,11 +144,10 @@ class DcmOtherByteOtherWord
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache);
+    virtual OFCondition write(DcmOutputStream &outStream,
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype,
+                              DcmWriteCache *wcache);
 
     /** write object in XML format to a stream
      *  @param out output stream to which the XML document is written
@@ -165,11 +164,10 @@ class DcmOtherByteOtherWord
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache);
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype,
+                                             DcmWriteCache *wcache);
 
     /** get particular 8 bit value.
      *  This method is only applicable to non-OW data, e.g. OB.
@@ -220,7 +218,7 @@ class DcmOtherByteOtherWord
      *  The numeric values are converted to hex mode, i.e. an 8 bit value is
      *  represented by 2 characters (00..ff) and a 16 bit value by 4 characters
      *  (0000..ffff).
-     *  In case of VM > 1 the single values are separated by a backslash ('\').
+     *  In case of VM > 1 the individual values are separated by a backslash ('\').
      *  @param stringVal variable in which the result value is stored
      *  @param normalize not used
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -276,6 +274,20 @@ class DcmOtherByteOtherWord
      */
     virtual OFCondition putString(const char *stringVal);
 
+    /** set element value from the given character string.
+     *  The input string is expected to have the same format as described for
+     *  'getOFStringArray()' above, i.e. a backslash separated sequence of
+     *  hexa-decimal numbers.
+     *  The length of the string has to be specified explicitly. The string can, therefore,
+     *  also contain more than one NULL byte.
+     *  @param stringVal input character string
+     *  @param stringLen length of the string (number of characters without the
+     *    trailing NULL byte)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putString(const char *stringVal,
+                                  const Uint32 stringLen);
+
     /** check the currently stored element value
      *  @param autocorrect correct value padding (even length) if OFTrue
      *  @return status, EC_Normal if value length is correct, an error code otherwise
@@ -325,6 +337,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
+** Revision 1.36  2011-10-18 14:00:10  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.35  2010-10-14 13:15:43  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **

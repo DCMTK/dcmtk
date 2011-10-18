@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmSignedShort
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:17 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2011-10-18 14:00:13 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,7 +30,6 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcvrss.h"
-#include "dcmtk/dcmdata/dcvm.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -245,32 +244,37 @@ OFCondition DcmSignedShort::putSint16Array(const Sint16 *sintVals,
 
 OFCondition DcmSignedShort::putString(const char *stringVal)
 {
+    /* determine length of the string value */
+    const Uint32 stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
+    /* call the real function */
+    return putString(stringVal, stringLen);
+}
+
+
+OFCondition DcmSignedShort::putString(const char *stringVal,
+                                      const Uint32 stringLen)
+{
     errorFlag = EC_Normal;
-    /* check input string */
-    if ((stringVal != NULL) && (strlen(stringVal) > 0))
+    /* determine VM of the string */
+    const unsigned long vm = DcmElement::determineVM(stringVal, stringLen);
+    if (vm > 0)
     {
-        const unsigned long vm = getVMFromString(stringVal);
-        if (vm > 0)
+        Sint16 *field = new Sint16[vm];
+        OFString value;
+        size_t pos = 0;
+        /* retrieve signed integer data from character string */
+        for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
         {
-            Sint16 *field = new Sint16[vm];
-            const char *s = stringVal;
-            char *value;
-            /* retrieve signed integer data from character string */
-            for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
-            {
-                /* get first value stored in 's', set 's' to beginning of the next value */
-                value = getFirstValueFromString(s);
-                if ((value == NULL) || (sscanf(value, "%hd", &field[i]) != 1))
-                    errorFlag = EC_CorruptedData;
-                delete[] value;
-            }
-            /* set binary data as the element value */
-            if (errorFlag.good())
-                errorFlag = putSint16Array(field, vm);
-            /* delete temporary buffer */
-            delete[] field;
-        } else
-            errorFlag = putValue(NULL, 0);
+            /* get specified value from multi-valued string */
+            pos = DcmElement::getValueFromString(stringVal, pos, stringLen, value);
+            if (value.empty() || (sscanf(value.c_str(), "%hd", &field[i]) != 1))
+                errorFlag = EC_CorruptedData;
+        }
+        /* set binary data as the element value */
+        if (errorFlag.good())
+            errorFlag = putSint16Array(field, vm);
+        /* delete temporary buffer */
+        delete[] field;
     } else
         errorFlag = putValue(NULL, 0);
     return errorFlag;
@@ -300,6 +304,9 @@ OFCondition DcmSignedShort::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrss.cc,v $
+** Revision 1.32  2011-10-18 14:00:13  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.31  2010-10-20 16:44:17  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

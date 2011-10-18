@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmFloatingPointDouble
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-26 09:29:32 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2011-10-18 14:00:10 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,6 +173,19 @@ class DcmFloatingPointDouble
      */
     virtual OFCondition putString(const char *stringVal);
 
+    /** set element value from the given character string.
+     *  The input string is expected to be a backslash separated sequence of
+     *  numeric characters, e.g. "12.3456\1\-123.456\1234.0".
+     *  The length of the string has to be specified explicitly. The string can, therefore,
+     *  also contain more than one NULL byte.
+     *  @param stringVal input character string
+     *  @param stringLen length of the string (number of characters without the trailing
+     *    NULL byte)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putString(const char *stringVal,
+                                  const Uint32 stringLen);
+
     /** check the currently stored element value
      *  @param autocorrect correct value length if OFTrue
      *  @return status, EC_Normal if value length is correct, an error code otherwise
@@ -187,6 +200,9 @@ class DcmFloatingPointDouble
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.h,v $
+** Revision 1.30  2011-10-18 14:00:10  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.29  2011-08-26 09:29:32  joergr
 ** Replaced remaining tabs by spaces.
 **

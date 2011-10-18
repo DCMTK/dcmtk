@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:51 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2011-10-18 14:00:10 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,7 @@ class DcmUniqueIdentifier
      *  components. In case of a single component the UID number is mapped to the
      *  corresponding UID name (using "dcmFindNameOfUID()") if available. A "=" is
      *  used as a prefix to distinguish the UID name from the UID number.
-     *  NB: this mapping of UID names only works for single-valued strings.
+     *  NB: This mapping of UID names only works for single-valued strings.
      *  @param out output stream
      *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
      *  @param level current level of nested items. Used for indentation.
@@ -123,11 +123,26 @@ class DcmUniqueIdentifier
      *  If the string starts with a "=" the subsequent characters are interpreted as a
      *  UID name and mapped to the corresponding UID number (using "dcmFindUIDFromName()")
      *  if possible. Otherwise the leading "=" is removed.
-     *  NB: this mapping of UID names only works for single-valued input strings.
+     *  NB: This mapping of UID names only works for single-valued input strings.
      *  @param stringVal input character string (possibly multi-valued)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition putString(const char *stringVal);
+
+    /** set element value from the given character string.
+     *  If the string starts with a "=" the subsequent characters are interpreted as a
+     *  UID name and mapped to the corresponding UID number (using "dcmFindUIDFromName()")
+     *  if possible. Otherwise the leading "=" is removed.
+     *  NB: This mapping of UID names only works for single-valued input strings.
+     *  The length of the string has to be specified explicitly. The string can, therefore,
+     *  also contain more than one NULL byte.
+     *  @param stringVal input character string (possibly multi-valued)
+     *  @param stringLen length of the string (number of characters without the trailing
+     *    NULL byte)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putString(const char *stringVal,
+                                  const Uint32 stringLen);
 
     /* --- static helper functions --- */
 
@@ -147,9 +162,10 @@ class DcmUniqueIdentifier
      *  It removes any leading, embedded and trailing space character and recomputes
      *  the string length. This manipulation attempts to correct problems with
      *  incorrectly encoded UIDs which have been observed in some images.
+     *  @param length number of characters of the string value (optional)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition makeMachineByteString();
+    virtual OFCondition makeMachineByteString(const Uint32 length = 0);
 };
 
 
@@ -159,6 +175,9 @@ class DcmUniqueIdentifier
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.h,v $
+** Revision 1.32  2011-10-18 14:00:10  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.31  2011-02-02 15:13:51  joergr
 ** Moved documentation of valid values for the VMs that can be checked to a
 ** central place, i.e. DcmElement::checkVM().

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmCharString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:16 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-10-18 14:00:12 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 // DcmCharString is derived from DcmByteString without any extensions.
 // No special implementation is necessary.
 //
-// If the extension for 16 bit character sets will be implemented this class
+// If the extension for > 8 bit character sets will be implemented this class
 // must be derived directly from DcmElement. This class is designed to support
 // the value representations (LO, LT, PN, SH, ST, UT). They are a problem because
 // their value width (1, 2, .. Bytes) is specified by the element
@@ -80,17 +80,79 @@ OFCondition DcmCharString::copyFrom(const DcmObject& rhs)
 }
 
 
+// ********************************
+
+
+OFCondition DcmCharString::verify(const OFBool autocorrect)
+{
+    const Uint32 maxLen = getMaxLength();
+    char *str = NULL;
+    Uint32 len = 0;
+    /* get string data */
+    errorFlag = getString(str, len);
+    /* check for non-empty string */
+    if ((str != NULL) && (len > 0))
+    {
+        /* check whether there is anything to verify at all */
+        if (maxLen != DCM_UndefinedLength)
+        {
+            /* TODO: is it really a good idea to create a copy of the string? */
+            OFString value(str, len);
+            size_t posStart = 0;
+            unsigned long vmNum = 0;
+            /* check all string components */
+            while (posStart != OFString_npos)
+            {
+                ++vmNum;
+                /* search for next component separator */
+                const size_t posEnd = value.find('\\', posStart);
+                const size_t fieldLen = (posEnd == OFString_npos) ? value.length() - posStart : posEnd - posStart;
+                /* check size limit for each string component */
+                if (fieldLen > maxLen)
+                {
+                    DCMDATA_DEBUG("DcmCharString::verify() Maximum length violated in element "
+                        << getTagName() << " " << getTag() << " value " << vmNum << ": "
+                        << fieldLen << " bytes found but only " << maxLen << " characters allowed");
+                    errorFlag = EC_MaximumLengthViolated;
+                    if (autocorrect)
+                    {
+                        /*  We are currently not removing any charaters since we do not know
+                         *  whether a character consists of one or more bytes.  This will be
+                         *  fixed in a future version.
+                         */
+                        DCMDATA_DEBUG("DcmCharString::verify() Not correcting value length since "
+                            << "multi-byte character sets are not yet supported, so cannot decide");
+                    }
+                }
+                posStart = (posEnd == OFString_npos) ? posEnd : posEnd + 1;
+            }
+        }
+    }
+    /* report a debug message if an error occurred */
+    if (errorFlag.bad())
+    {
+        DCMDATA_WARN("DcmCharString: One or more illegal values in element "
+            << getTagName() << " " << getTag() << " with VM=" << getVM());
+        /* do not return with an error since we do not know whether there really is a violation */
+        errorFlag = EC_Normal;
+    }
+    return errorFlag;
+}
+
+
 OFBool DcmCharString::containsExtendedCharacters(const OFBool /*checkAllStrings*/)
 {
-    char *c = NULL;
-    if (getString(c).good() && c)
+    char *str = NULL;
+    Uint32 len = 0;
+    /* determine length in order to support possibly embedded NULL bytes */
+    if (getString(str, len).good() && (str != NULL))
     {
-        while (*c)
+        const char *p = str;
+        for (Uint32 i = 0; i < len; i++)
         {
             /* check for 8 bit characters */
-            if (OFstatic_cast(unsigned char, *c) > 127)
+            if (OFstatic_cast(unsigned char, *p++) > 127)
                 return OFTrue;
-            ++c;
         }
     }
     return OFFalse;
@@ -106,6 +168,9 @@ OFBool DcmCharString::isAffectedBySpecificCharacterSet() const
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.cc,v $
+ * Revision 1.16  2011-10-18 14:00:12  joergr
+ * Added support for embedded NULL bytes in string element values.
+ *
  * Revision 1.15  2010-10-20 16:44:16  joergr
  * Use type cast macros (e.g. OFstatic_cast) where appropriate.
  *

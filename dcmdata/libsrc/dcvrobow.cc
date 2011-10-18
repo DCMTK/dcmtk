@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-03-15 11:23:49 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-18 14:00:13 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcswap.h"
-#include "dcmtk/dcmdata/dcvm.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTDLIB
@@ -354,55 +353,60 @@ OFCondition DcmOtherByteOtherWord::createUint16Array(const Uint32 numWords,
 
 OFCondition DcmOtherByteOtherWord::putString(const char *stringVal)
 {
+    /* determine length of the string value */
+    const Uint32 stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
+    /* call the real function */
+    return putString(stringVal, stringLen);
+}
+
+
+OFCondition DcmOtherByteOtherWord::putString(const char *stringVal,
+                                             const Uint32 stringLen)
+{
     errorFlag = EC_Normal;
-    /* check input string */
-    if ((stringVal != NULL) && (strlen(stringVal) > 0))
+    /* determine VM of the string */
+    unsigned long vm = DcmElement::determineVM(stringVal, stringLen);
+    if (vm > 0)
     {
-        unsigned long vm = getVMFromString(stringVal);
-        if (vm > 0)
+        const DcmEVR evr = getTag().getEVR();
+        Uint8 *byteField = NULL;
+        Uint16 *wordField = NULL;
+        /* create new value field */
+        if (evr == EVR_OW || evr == EVR_lt)
+            wordField = new Uint16[vm];
+        else
+            byteField = new Uint8[vm];
+        Uint16 intVal = 0;
+        OFString value;
+        size_t pos = 0;
+        /* retrieve binary data from hexa-decimal string */
+        for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
         {
-            const DcmEVR evr = getTag().getEVR();
-            Uint8 *byteField = NULL;
-            Uint16 *wordField = NULL;
-            /* create new value field */
-            if (evr == EVR_OW || evr == EVR_lt)
-                wordField = new Uint16[vm];
-            else
-                byteField = new Uint8[vm];
-            const char *s = stringVal;
-            Uint16 intVal = 0;
-            char *value;
-            /* retrieve binary data from hexa-decimal string */
-            for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
+            /* get specified value from multi-valued string */
+            pos = DcmElement::getValueFromString(stringVal, pos, stringLen, value);
+            if (!value.empty())
             {
-                /* get first value stored in 's', set 's' to beginning of the next value */
-                value = getFirstValueFromString(s);
-                if (value != NULL)
-                {
-                    /* integer overflow is currently not checked! */
-                    if (sscanf(value, "%hx", &intVal) != 1)
-                        errorFlag = EC_CorruptedData;
-                    else if (evr == EVR_OW || evr == EVR_lt)
-                        wordField[i] = OFstatic_cast(Uint16, intVal);
-                    else
-                        byteField[i] = OFstatic_cast(Uint8, intVal);
-                    delete[] value;
-                } else
+                /* integer overflow is currently not checked! */
+                if (sscanf(value.c_str(), "%hx", &intVal) != 1)
                     errorFlag = EC_CorruptedData;
-            }
-            /* set binary data as the element value */
-            if (errorFlag.good())
-            {
-                if (evr == EVR_OW || evr == EVR_lt)
-                    errorFlag = putUint16Array(wordField, vm);
+                else if (evr == EVR_OW || evr == EVR_lt)
+                    wordField[i] = OFstatic_cast(Uint16, intVal);
                 else
-                    errorFlag = putUint8Array(byteField, vm);
-            }
-            /* delete temporary buffers */
-            delete[] byteField;
-            delete[] wordField;
-        } else
-            putValue(NULL, 0);
+                    byteField[i] = OFstatic_cast(Uint8, intVal);
+            } else
+                errorFlag = EC_CorruptedData;
+        }
+        /* set binary data as the element value */
+        if (errorFlag.good())
+        {
+            if (evr == EVR_OW || evr == EVR_lt)
+                errorFlag = putUint16Array(wordField, vm);
+            else
+                errorFlag = putUint8Array(byteField, vm);
+        }
+        /* delete temporary buffers */
+        delete[] byteField;
+        delete[] wordField;
     } else
         putValue(NULL, 0);
     return errorFlag;
@@ -736,6 +740,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.66  2011-10-18 14:00:13  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.65  2011-03-15 11:23:49  uli
 ** Make sure we don't accidentally append a padding byte twice.
 **

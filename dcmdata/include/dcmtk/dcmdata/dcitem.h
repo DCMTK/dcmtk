@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-06 12:58:09 $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  Update Date:      $Date: 2011-10-18 14:00:09 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -479,7 +479,7 @@ class DcmItem
     OFCondition findAndGetElements(const DcmTagKey &tagKey,
                                    DcmStack &resultStack);
 
-    /** find element and get value as a reference to a C string.
+    /** find element and get value as a reference to a C string. NB: The string is not copied!
      *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UT
      *  Since the getString() routine is called internally the resulting string reference represents
      *  the (possibly multi-valued) value as stored in the dataset, i.e. no normalization is performed.
@@ -491,6 +491,25 @@ class DcmItem
      */
     OFCondition findAndGetString(const DcmTagKey &tagKey,
                                  const char *&value,
+                                 const OFBool searchIntoSub = OFFalse);
+
+    /** find element and get value as a reference to a C string. NB: The string is not copied!
+     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UT
+     *  Since the getString() routine is called internally the resulting string reference represents
+     *  the (possibly multi-valued) value as stored in the dataset, i.e. no normalization is performed.
+     *  The result variable 'value' is automatically set to NULL and 'length' is set to 0 if an error
+     *  occurs.
+     *  Please note that since the length is returned separately, the string value can contain more
+     *  than one NULL byte.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the reference to the element value is stored (might be NULL)
+     *  @param length length of the string (number of characters without the trailing NULL byte)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetString(const DcmTagKey &tagKey,
+                                 const char *&value,
+                                 Uint32 &length,
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a C++ string (only one component).
@@ -836,12 +855,28 @@ class DcmItem
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OF, OW,
      *  PN, SH, SL, SS, ST, TM, UI, UL, US, UT
      *  @param tag DICOM tag specifying the attribute to be created
-     *  @param value value to be set for the new element (might be empty or NULL)
+     *  @param value string value to be set for the new element (might be empty or NULL)
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition putAndInsertString(const DcmTag &tag,
                                    const char *value,
+                                   const OFBool replaceOld = OFTrue);
+
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OF, OW,
+     *  PN, SH, SL, SS, ST, TM, UI, UL, US, UT
+     *  Please note that since the length of the string has to be specified explicitly, the string
+     *  can contain more than one NULL byte.
+     *  @param tag DICOM tag specifying the attribute to be created
+     *  @param value string value to be set for the new element (might be empty or NULL)
+     *  @param length length of the string (number of characters without the trailing NULL byte)
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertString(const DcmTag &tag,
+                                   const char *value,
+                                   const Uint32 length,
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
@@ -1203,6 +1238,9 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.87  2011-10-18 14:00:09  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.86  2011-10-06 12:58:09  joergr
 ** Added new method compactElements() for compacting all elements which exceed
 ** a given length and which can be loaded from file when needed again.

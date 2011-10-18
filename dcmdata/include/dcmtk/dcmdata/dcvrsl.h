@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmSignedLong
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:51 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2011-10-18 14:00:10 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,6 +170,19 @@ class DcmSignedLong
      */
     virtual OFCondition putString(const char *stringVal);
 
+    /** set element value from the given character string.
+     *  The input string is expected to be a backslash separated sequence of
+     *  numeric characters, e.g. "-333\-22\-1\0\1\22\333".
+     *  The length of the string has to be specified explicitly. The string can, therefore,
+     *  also contain more than one NULL byte.
+     *  @param stringVal input character string
+     *  @param stringLen length of the string (number of characters without the trailing
+     *    NULL byte)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putString(const char *stringVal,
+                                  const Uint32 stringLen);
+
     /** check the currently stored element value
      *  @param autocorrect correct value length if OFTrue
      *  @return status, EC_Normal if value length is correct, an error code otherwise
@@ -184,6 +197,9 @@ class DcmSignedLong
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.h,v $
+** Revision 1.30  2011-10-18 14:00:10  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.29  2011-02-02 15:13:51  joergr
 ** Moved documentation of valid values for the VMs that can be checked to a
 ** central place, i.e. DcmElement::checkVM().

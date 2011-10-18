@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-06 12:58:11 $
- *  CVS/RCS Revision: $Revision: 1.157 $
+ *  Update Date:      $Date: 2011-10-18 14:00:12 $
+ *  CVS/RCS Revision: $Revision: 1.158 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1734,9 +1734,6 @@ OFBool DcmItem::isEmpty(const OFBool /*normalize*/)
 
 OFCondition DcmItem::verify(const OFBool autocorrect)
 {
-    DCMDATA_TRACE("DcmItem::verify() Element " << getTag()
-        << " VR=\"" << DcmVR(getVR()).getVRName() << "\"");
-
     errorFlag = EC_Normal;
     if (!elementList->empty())
     {
@@ -2291,6 +2288,29 @@ OFCondition DcmItem::findAndGetString(const DcmTagKey& tagKey,
     /* reset value */
     if (status.bad())
         value = NULL;
+    return status;
+}
+
+
+OFCondition DcmItem::findAndGetString(const DcmTagKey& tagKey,
+                                      const char *&value,
+                                      Uint32 &length,
+                                      const OFBool searchIntoSub)
+{
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
+    if (status.good())
+    {
+        /* get the value */
+        status = elem->getString(OFconst_cast(char *&, value), length);
+    }
+    /* reset values */
+    if (status.bad())
+    {
+        value = NULL;
+        length = 0;
+    }
     return status;
 }
 
@@ -3010,6 +3030,18 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
                                         const char *value,
                                         const OFBool replaceOld)
 {
+    /* determine length of the string value */
+    const Uint32 length = (value != NULL) ? strlen(value) : 0;
+    /* call the real function */
+    return putAndInsertString(tag, value, length, replaceOld);
+}
+
+
+OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
+                                        const char *value,
+                                        const Uint32 length,
+                                        const OFBool replaceOld)
+{
     OFCondition status = EC_Normal;
     /* create new element */
     DcmElement *elem = NULL;
@@ -3095,7 +3127,7 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
     if (elem != NULL)
     {
         /* put value */
-        status = elem->putString(value);
+        status = elem->putString(value, length);
         /* insert into dataset/item */
         if (status.good())
             status = insert(elem, replaceOld);
@@ -3805,6 +3837,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.158  2011-10-18 14:00:12  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.157  2011-10-06 12:58:11  joergr
 ** Added new method compactElements() for compacting all elements which exceed
 ** a given length and which can be loaded from file when needed again.

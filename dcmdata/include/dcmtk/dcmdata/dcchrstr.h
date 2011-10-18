@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmCharString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:40 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2011-10-18 14:00:09 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ class DcmCharString
     {
       return new DcmCharString(*this);
     }
-    
+
     /** Virtual object copying. This method can be used for DcmObject
      *  and derived classes to get a deep copy of an object. Internally
      *  the assignment operator is called if the given DcmObject parameter
@@ -99,7 +99,18 @@ class DcmCharString
      *                class type as "this" object
      *  @return EC_Normal if copying was successful, error otherwise
      */
-    virtual OFCondition copyFrom(const DcmObject& rhs);    
+    virtual OFCondition copyFrom(const DcmObject& rhs);
+
+    /** check the currently stored string value.
+     *  Checks every string component for the maximum length specified for the particular
+     *  value representation.
+     *  @param autocorrect correct value and value component length if OFTrue.
+     *    NB: This parameter does currently nothing since it is unknown to this class
+     *        whether a character consists of one or more bytes.  To be fixed in a future
+     *        version when multi-byte character sets are (hopefully) supported.
+     *  @return status, EC_Normal if value length is correct, an error code otherwise
+     */
+    virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 
     /** check if this element contains non-ASCII characters
      *  @param checkAllStrings not used in this class
@@ -120,6 +131,9 @@ class DcmCharString
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.h,v $
+ * Revision 1.17  2011-10-18 14:00:09  joergr
+ * Added support for embedded NULL bytes in string element values.
+ *
  * Revision 1.16  2010-10-14 13:15:40  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmFloatingPointSingle
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:17 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2011-10-18 14:00:13 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,6 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcvrfl.h"
-#include "dcmtk/dcmdata/dcvm.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -251,38 +250,43 @@ OFCondition DcmFloatingPointSingle::putFloat32Array(const Float32 *floatVals,
 
 OFCondition DcmFloatingPointSingle::putString(const char *stringVal)
 {
+    /* determine length of the string value */
+    const Uint32 stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
+    /* call the real function */
+    return putString(stringVal, stringLen);
+}
+
+
+OFCondition DcmFloatingPointSingle::putString(const char *stringVal,
+                                              const Uint32 stringLen)
+{
     errorFlag = EC_Normal;
-    /* check input string */
-    if ((stringVal != NULL) && (strlen(stringVal) > 0))
+    /* determine VM of the string */
+    const unsigned long vm = DcmElement::determineVM(stringVal, stringLen);
+    if (vm > 0)
     {
-        const unsigned long vm = getVMFromString(stringVal);
-        if (vm > 0)
+        Float32 *field = new Float32[vm];
+        OFBool success = OFFalse;
+        OFString value;
+        size_t pos = 0;
+        /* retrieve float data from character string */
+        for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
         {
-            Float32 *field = new Float32[vm];
-            OFBool success = OFFalse;
-            const char *s = stringVal;
-            char *value;
-            /* retrieve float data from character string */
-            for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
+            /* get specified value from multi-valued string */
+            pos = DcmElement::getValueFromString(stringVal, pos, stringLen, value);
+            if (!value.empty())
             {
-                /* get first value stored in 's', set 's' to beginning of the next value */
-                value = getFirstValueFromString(s);
-                if (value != NULL)
-                {
-                    field[i] = OFstatic_cast(Float32, OFStandard::atof(value, &success));
-                    if (!success)
-                        errorFlag = EC_CorruptedData;
-                    delete[] value;
-                } else
+                field[i] = OFstatic_cast(Float32, OFStandard::atof(value.c_str(), &success));
+                if (!success)
                     errorFlag = EC_CorruptedData;
-            }
-            /* set binary data as the element value */
-            if (errorFlag.good())
-                errorFlag = putFloat32Array(field, vm);
-            /* delete temporary buffer */
-            delete[] field;
-        } else
-            errorFlag = putValue(NULL, 0);
+            } else
+                errorFlag = EC_CorruptedData;
+        }
+        /* set binary data as the element value */
+        if (errorFlag.good())
+            errorFlag = putFloat32Array(field, vm);
+        /* delete temporary buffer */
+        delete[] field;
     } else
         errorFlag = putValue(NULL, 0);
     return errorFlag;
@@ -312,6 +316,9 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
+** Revision 1.37  2011-10-18 14:00:13  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.36  2010-10-20 16:44:17  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

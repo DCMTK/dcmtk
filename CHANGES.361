@@ -3,6 +3,36 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.18 (riesmeier)
 
+- Added support for embedded NULL bytes in string element values.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcchrstr.h
+           dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcvrat.h
+           dcmdata/include/dcmtk/dcmdata/dcvrfd.h
+           dcmdata/include/dcmtk/dcmdata/dcvrfl.h
+           dcmdata/include/dcmtk/dcmdata/dcvrobow.h
+           dcmdata/include/dcmtk/dcmdata/dcvrsl.h
+           dcmdata/include/dcmtk/dcmdata/dcvrss.h
+           dcmdata/include/dcmtk/dcmdata/dcvrui.h
+           dcmdata/include/dcmtk/dcmdata/dcvrul.h
+           dcmdata/include/dcmtk/dcmdata/dcvrus.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcchrstr.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcvrat.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmdata/libsrc/dcvrfd.cc
+           dcmdata/libsrc/dcvrfl.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrsl.cc
+           dcmdata/libsrc/dcvrss.cc
+           dcmdata/libsrc/dcvrui.cc
+           dcmdata/libsrc/dcvrul.cc
+           dcmdata/libsrc/dcvrus.cc
+           dcmdata/tests/tvrds.cc
+
 - Removed redundant variable declaration that shadowed a previous local
   (reported by gcc with additional warning flags).
   Affects: dcmnet/apps/movescu.cc

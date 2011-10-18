@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:04:04 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2011-10-18 14:00:09 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -306,7 +306,7 @@ class DcmElement
                                     OFBool normalize = OFTrue);
 
     /** get entire element value as a character string.
-     *  In case of VM > 1 the single values are separated by a backslash ('\').
+     *  In case of VM > 1 the individual values are separated by a backslash ('\').
      *  This method implements a general approach by concatenating the results of
      *  getOFString() for each value component. Derived class may implement more
      *  sophisticated methods.
@@ -326,6 +326,18 @@ class DcmElement
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition getString(char *&val);        // for strings
+
+    /** get a pointer to the element value of the current element as type string.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  This method does not copy, but returns a pointer to the element value,
+     *  which remains under control of this object and is valid only until the next
+     *  read, write or put operation.
+     *  @param val pointer to value returned in this parameter upon success
+     *  @param len length of the returned value (number of characters)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    virtual OFCondition getString(char *&val,
+                                  Uint32 &len);
 
     /** get a pointer to the element value of the current element as type string.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
@@ -401,35 +413,49 @@ class DcmElement
      *  After detaching the calling part of the application has total control
      *  over the element value, especially the value must be deleted from the
      *  heap after use. The DICOM element remains a copy of the value if the
-     *  copy parameter is OFTrue; otherwise the value is erased in the DICOM element.
-     *  @param copy if true, copy value field before detaching; if false, do not retain a copy.
+     *  copy parameter is OFTrue; otherwise the value is erased in the DICOM
+     *  element.
+     *  @param copy if true, copy value field before detaching; if false, do not
+     *    retain a copy.
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition detachValueField(OFBool copy = OFFalse);
 
     // PUT operations
 
-    /** replace the element value by a copy of the given string (which is possibly multi-valued).
-     *  Requires element to be of corresponding VR, otherwise an error is returned.
+    /** replace the element value by a copy of the given string (which is possibly
+     *  multi-valued). Requires element to be of corresponding VR, otherwise an error
+     *  is returned.
      *  @param stringValue new attribute value
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition putOFStringArray(const OFString &stringValue);
 
-    /** replace the element value by a copy of the given string (which is possibly multi-valued).
-     *  Requires element to be of corresponding VR, otherwise an error is returned.
+    /** replace the element value by a copy of the given string (which is possibly
+     *  multi-valued). Requires element to be of corresponding VR, otherwise an error
+     *  is returned.
      *  @param val new attribute value
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition putString(const char *val);
 
+    /** replace the element value by a copy of the given string (which is possibly
+     *  multi-valued). Requires element to be of corresponding VR, otherwise an error
+     *  is returned.
+     *  @param val new attribute value
+     *  @param len length of the new attribute value (number of characters)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    virtual OFCondition putString(const char *val,
+                                  const Uint32 len);
+
     /** insert into the element value a copy of the given Sint16 value. If the
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param val new value to be inserted
-     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
-     *  a value can be appended to the end of the current element or inserted within
-     *  the existing value field.
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e. a value
+     *    can be appended to the end of the current element or inserted within the
+     *    existing value field.
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition putSint16(const Sint16 val, const unsigned long pos = 0);
@@ -438,9 +464,9 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param val new value to be inserted
-     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
-     *  a value can be appended to the end of the current element or inserted within
-     *  the existing value field.
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e. a value
+     *    can be appended to the end of the current element or inserted within the
+     *    existing value field.
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition putUint16(const Uint16 val, const unsigned long pos = 0);
@@ -449,9 +475,9 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param val new value to be inserted
-     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
-     *  a value can be appended to the end of the current element or inserted within
-     *  the existing value field.
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e. a value
+     *    can be appended to the end of the current element or inserted within the
+     *    existing value field.
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition putSint32(const Sint32 val, const unsigned long pos = 0);
@@ -460,9 +486,9 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param val new value to be inserted
-     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
-     *  a value can be appended to the end of the current element or inserted within
-     *  the existing value field.
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e. a value
+     *    can be appended to the end of the current element or inserted within the
+     *    existing value field.
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition putUint32(const Uint32 val, const unsigned long pos = 0);
@@ -471,9 +497,9 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param val new value to be inserted
-     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
-     *  a value can be appended to the end of the current element or inserted within
-     *  the existing value field.
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e. a value
+     *    can be appended to the end of the current element or inserted within the
+     *    existing value field.
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition putFloat32(const Float32 val, const unsigned long pos = 0);
@@ -482,9 +508,9 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param val new value to be inserted
-     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
-     *  a value can be appended to the end of the current element or inserted within
-     *  the existing value field.
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e. a value
+     *    can be appended to the end of the current element or inserted within the
+     *    existing value field.
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition putFloat64(const Float64 val, const unsigned long pos = 0);
@@ -493,9 +519,9 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param attrTag new value to be inserted
-     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
-     *  a value can be appended to the end of the current element or inserted within
-     *  the existing value field.
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e. a value
+     *    can be appended to the end of the current element or inserted within the
+     *    existing value field.
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition putTagVal(const DcmTagKey &attrTag, const unsigned long pos = 0);
@@ -673,7 +699,7 @@ class DcmElement
     virtual OFCondition getDecompressedColorModel(DcmItem *dataset,
                                                   OFString &decompressedColorModel);
 
-	/* --- static helper functions --- */
+    /* --- static helper functions --- */
 
     /** scan string value for conformance with given value representation (VR)
      *  @param value string value to be scanned
@@ -687,11 +713,31 @@ class DcmElement
                          const size_t pos = 0,
                          const size_t num = OFString_npos);
 
+    /** determine the number of values stored in a string, i.e.\ the value multiplicity (VM)
+     *  @param str character string
+     *  @param len length of the string (number of characters without the trailing NULL byte)
+     *  @return number of values separated by backslash characters in the given string
+     */
+    static unsigned long determineVM(const char *str,
+                                     const size_t len);
+
+    /** get the first value stored in the given string.  The individual values are separated by
+     *  a backslash.  Successive calls of this function allow for extracting all stored values.
+     *  @param str character string
+     *  @param pos position of the first character in the string to search from
+     *  @param len length of the string (number of characters without the trailing NULL byte)
+     *  @param val variable in which the result is stored (empty string in case of error)
+     *  @return position to be used for the next search, identical to 'pos' in case of error
+     */
+    static size_t getValueFromString(const char *str,
+                                     const size_t pos,
+                                     const size_t len,
+                                     OFString &val);
+
   protected:
 
-    /** This function returns this element's value. The returned value
-     *  corresponds to the byte ordering (little or big endian) that
-     *  was passed.
+    /** This function returns this element's value. The returned value corresponds to the
+    *   byte ordering (little or big endian) that was passed.
      *  @param newByteOrder The byte ordering that shall be accounted
      *                      for (little or big endian).
      */
@@ -701,9 +747,9 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Only works for fixed-size VRs, not for strings.
      *  @param value new value to be inserted
-     *  @param position position for insert operation. Value: pos <= getVM(), i.e.
-     *  a value can be appended to the end of the current element or inserted within
-     *  the existing value field.
+     *  @param position position for insert operation. Value: pos <= getVM(), i.e.\ a value
+     *    can be appended to the end of the current element or inserted within the existing
+     *    value field.
      *  @param num number of bytes for each value in the value field.
      *  @return EC_Normal upon success, an error code otherwise
      */
@@ -813,6 +859,9 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
+** Revision 1.51  2011-10-18 14:00:09  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.50  2011-02-02 15:04:04  joergr
 ** Added support for further VMs required for tags in the private dictionary.
 **

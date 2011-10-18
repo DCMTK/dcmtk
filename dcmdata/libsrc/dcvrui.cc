@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-29 10:57:21 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2011-10-18 14:00:13 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,8 +120,9 @@ void DcmUniqueIdentifier::print(STD_NAMESPACE ostream &out,
     {
         /* get string data (possibly multi-valued) */
         char *stringVal = NULL;
-        getString(stringVal);
-        if (stringVal != NULL)
+        Uint32 stringLen = 0;
+        getString(stringVal, stringLen);
+        if ((stringVal != NULL) && (stringLen > 0))
         {
             const char *symbol = NULL;
             if (!(flags & DCMTypes::PF_doNotMapUIDsToNames))
@@ -157,45 +158,72 @@ void DcmUniqueIdentifier::print(STD_NAMESPACE ostream &out,
 
 OFCondition DcmUniqueIdentifier::putString(const char *stringVal)
 {
+    /* determine length of the string value */
+    const Uint32 stringLen = (stringVal != NULL) ? strlen(stringVal) : 0;
+    /* call the real function */
+    return putString(stringVal, stringLen);
+}
+
+
+OFCondition DcmUniqueIdentifier::putString(const char *stringVal,
+                                           const Uint32 stringLen)
+{
     const char *uid = stringVal;
     /* check whether parameter contains a UID name instead of a UID number */
     if ((stringVal != NULL) && (stringVal[0] == '='))
         uid = dcmFindUIDFromName(stringVal + 1);
     /* call inherited method to set the UID string */
-    return DcmByteString::putString(uid);
+    return DcmByteString::putString(uid, stringLen);
 }
 
 
 // ********************************
 
 
-OFCondition DcmUniqueIdentifier::makeMachineByteString()
+OFCondition DcmUniqueIdentifier::makeMachineByteString(const Uint32 length)
 {
     /* get string data */
     char *value = OFstatic_cast(char *, getValue());
-    /* check whether automatic input data correction is enabled */
-    if ((value != NULL) && dcmEnableAutomaticInputDataCorrection.get())
+    /* determine initial string length */
+    const size_t len = (length == 0) ? getLengthField() : length;
+    if ((value != NULL) && (len > 0))
     {
-        const int len = strlen(value);
-        /*
-        ** Remove any leading, embedded, or trailing white space.
-        ** This manipulation attempts to correct problems with
-        ** incorrectly encoded UIDs which have been observed in
-        ** some images.
-        */
-        int k = 0;
-        for (int i = 0; i < len; i++)
+        /* check whether string representation is not the internal one */
+        if (getStringMode() != DCM_MachineString)
         {
-           if (!isspace(OFstatic_cast(unsigned char, value[i])))
-           {
-              value[k] = value[i];
-              k++;
-           }
+            /* check whether automatic input data correction is enabled */
+            if (dcmEnableAutomaticInputDataCorrection.get())
+            {
+                /*
+                ** Remove any leading, embedded, or trailing white space.
+                ** This manipulation attempts to correct problems with
+                ** incorrectly encoded UIDs which have been observed in
+                ** some images.
+                */
+                size_t curPos = 0;
+                for (size_t i = 0; i < len; i++)
+                {
+                   if (!isspace(OFstatic_cast(unsigned char, value[i])))
+                      value[curPos++] = value[i];
+                }
+                /* there was at least one space character in the string */
+                if (curPos < len)
+                {
+                    DCMDATA_WARN("DcmUniqueIdentifier: Element " << getTagName() << " " << getTag()
+                        << " contains one or more space characters, which were removed");
+                    /* remember new length */
+                    const Uint32 newLen = curPos;
+                    /* blank out all trailing characters */
+                    while (curPos < len)
+                        value[curPos++] = '\0';
+                    /* call inherited method: re-computes the string length, etc. */
+                    return DcmByteString::makeMachineByteString(newLen);
+                }
+            }
         }
-        value[k] = '\0';
     }
     /* call inherited method: re-computes the string length, etc. */
-    return DcmByteString::makeMachineByteString();
+    return DcmByteString::makeMachineByteString(len);
 }
 
 
@@ -212,6 +240,9 @@ OFCondition DcmUniqueIdentifier::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
+** Revision 1.36  2011-10-18 14:00:13  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.35  2010-10-29 10:57:21  joergr
 ** Added support for colored output to the print() method.
 **

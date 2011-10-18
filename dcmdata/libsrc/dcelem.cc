@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-17 12:30:22 $
- *  CVS/RCS Revision: $Revision: 1.95 $
+ *  Update Date:      $Date: 2011-10-18 14:00:12 $
+ *  CVS/RCS Revision: $Revision: 1.96 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -380,7 +380,7 @@ OFCondition DcmElement::getTagVal(DcmTagKey & /*val*/,
 }
 
 
-OFCondition DcmElement::getOFString(OFString &/*val*/,
+OFCondition DcmElement::getOFString(OFString & /*val*/,
                                     const unsigned long /*pos*/,
                                     OFBool /*normalize*/)
 {
@@ -389,7 +389,15 @@ OFCondition DcmElement::getOFString(OFString &/*val*/,
 }
 
 
-OFCondition DcmElement::getString(char * &/*val*/)
+OFCondition DcmElement::getString(char * & /*val*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
+OFCondition DcmElement::getString(char * & /*val*/,
+                                  Uint32 & /*len*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -426,49 +434,49 @@ OFCondition DcmElement::getOFStringArray(OFString &value,
 }
 
 
-OFCondition DcmElement::getUint8Array(Uint8 * &/*val*/)
+OFCondition DcmElement::getUint8Array(Uint8 * & /*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-OFCondition DcmElement::getSint16Array(Sint16 * &/*val*/)
+OFCondition DcmElement::getSint16Array(Sint16 * & /*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-OFCondition DcmElement::getUint16Array(Uint16 * &/*val*/)
+OFCondition DcmElement::getUint16Array(Uint16 * & /*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-OFCondition DcmElement::getSint32Array(Sint32 * &/*val*/)
+OFCondition DcmElement::getSint32Array(Sint32 * & /*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-OFCondition DcmElement::getUint32Array(Uint32 * &/*val*/)
+OFCondition DcmElement::getUint32Array(Uint32 * & /*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-OFCondition DcmElement::getFloat32Array(Float32 * &/*val*/)
+OFCondition DcmElement::getFloat32Array(Float32 * & /*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-OFCondition DcmElement::getFloat64Array(Float64 * &/*val*/)
+OFCondition DcmElement::getFloat64Array(Float64 * & /*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -626,8 +634,7 @@ Uint8 *DcmElement::newValueField()
              * which would an overflow on some systems as well as being illegal in DICOM
              */
               DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
-                  << " has odd, maximum length (" << DCM_UndefinedLength
-                  << ") and therefore is not loaded");
+                  << " has odd maximum length (" << DCM_UndefinedLength << ") and therefore is not loaded");
               errorFlag = EC_CorruptedData;
               return NULL;
         }
@@ -755,7 +762,7 @@ OFCondition DcmElement::changeValue(const void *value,
 // ********************************
 
 
-OFCondition DcmElement::putOFStringArray(const OFString& /* stringValue*/)
+OFCondition DcmElement::putOFStringArray(const OFString& /*stringValue*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -763,6 +770,14 @@ OFCondition DcmElement::putOFStringArray(const OFString& /* stringValue*/)
 
 
 OFCondition DcmElement::putString(const char * /*val*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
+OFCondition DcmElement::putString(const char * /*val*/,
+                                  const Uint32 /*len*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -1296,7 +1311,7 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
     if (!valueLoaded())
         out << " loaded=\"no\"";
     /* write additional attributes (if any) */
-    if ((attrText != NULL) && (strlen(attrText) > 0))
+    if ((attrText != NULL) && (attrText[0] != '\0'))
         out << " " << attrText;
     out << ">";
 }
@@ -1669,6 +1684,48 @@ int DcmElement::scanValue(const OFString &value,
 }
 
 
+unsigned long DcmElement::determineVM(const char *str,
+                                      const size_t len)
+{
+    unsigned long vm = 0;
+    // check for non-empty string
+    if ((str != NULL) && (len > 0))
+    {
+        // count number of delimiters (plus 1)
+        vm = 1;
+        const char *p = str;
+        for (size_t i = 0; i < len; i++)
+        {
+            if (*p++ == '\\')
+                vm++;
+        }
+    }
+    return vm;
+}
+
+
+size_t DcmElement::getValueFromString(const char *str,
+                                      const size_t pos,
+                                      const size_t len,
+                                      OFString &val)
+{
+    size_t newPos = pos;
+    // check for non-empty string or invalid start position
+    if ((str != NULL) && (len > 0) && (pos < len))
+    {
+        // start at given position
+        const char *p = str + pos;
+        // search for next backslash (if any)
+        while ((newPos++ < len) && (*p != '\\'))
+            p++;
+        // extract selected value from string
+        val.assign(str + pos, newPos - pos - 1);
+    } else
+        val.clear();
+    return newPos;
+}
+
+
 OFCondition DcmElement::checkVM(const unsigned long vmNum,
                                 const OFString &vmStr)
 {
@@ -1781,6 +1838,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.96  2011-10-18 14:00:12  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.95  2011-10-17 12:30:22  joergr
 ** Added writeXML() flag that allows for converting all non-ASCII characters.
 **

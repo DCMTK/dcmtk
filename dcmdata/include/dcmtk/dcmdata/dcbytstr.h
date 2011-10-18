@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:49 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2011-10-18 14:00:09 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,18 +41,6 @@
  */
 class DcmByteString: public DcmElement
 {
-
-    /// internal type used to specify the current string representation
-    enum E_StringMode
-    {
-        /// string has internal representation (no padding)
-        DCM_MachineString,
-        /// string has DICOM representation (even length)
-        DCM_DicomString,
-        /// string has unknown representation (maybe multiple padding chars?)
-        DCM_UnknownString
-    };
-
 
  public:
 
@@ -164,11 +152,10 @@ class DcmByteString: public DcmElement
      *  @param enctype flag, specifying the encoding with undefined or explicit length
      *  @param wcache pointer to write cache object, may be NULL
      */
-    virtual OFCondition writeSignatureFormat(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache);
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype,
+                                             DcmWriteCache *wcache);
 
     /** get a copy of a particular string component
      *  @param stringVal variable in which the result value is stored
@@ -180,19 +167,53 @@ class DcmByteString: public DcmElement
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
 
+    /** get entire element value as a character string.
+     *  In case of VM > 1 the individual values are separated by a backslash ('\').
+     *  @param stringVal variable in which the result value is stored
+     *  @param normalize normalize each element value prior to concatenation
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFStringArray(OFString &stringVal,
+                                         OFBool normalize = OFTrue);
+
     /** get a pointer to the current string value.
-     *  This includes all string components and separators. NB: this method does
-     *  not copy the stored value.
+     *  This includes all string components and separators.
+     *  NB: This method does not copy the stored value.
      *  @param stringVal reference to the pointer variable
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getString(char *&stringVal);
 
-    /** set element value from the given character string
+    /** get a pointer to the current string value.
+     *  This includes all string components and separators. Since the length is returned
+     *  separately, the string value can contain more than one NULL byte.
+     *  NB: This method does not copy the stored value.
+     *  @param stringVal reference to the pointer variable
+     *  @param stringLen length of the string (number of characters without the trailing
+     *    NULL byte)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getString(char *&stringVal,
+                                  Uint32 &stringLen);
+
+    /** set element value from the given character string.
+     *  The length of the given string is determined automatically by searching for the
+     *  first NULL byte.
      *  @param stringVal input character string (possibly multi-valued)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition putString(const char *stringVal);
+
+    /** set element value from the given character string.
+     *  The length of the string has to be specified explicitly. The string can, therefore,
+     *  also contain more than one NULL byte.
+     *  @param stringVal input character string (possibly multi-valued)
+     *  @param stringLen length of the string (number of characters without the trailing
+     *    NULL byte)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putString(const char *stringVal,
+                                  const Uint32 stringLen);
 
     /** set element value from the given character string.
      *  @param stringVal input character string (possibly multi-valued)
@@ -222,11 +243,22 @@ class DcmByteString: public DcmElement
 
     /** check if this object is empty
      *  @param normalize normalize value before checking (ignore non-significant characters)
-     *  @return true if object is empty, i.e. has no value, false otherwise
+     *  @return true if object is empty, i.e.\ has no value, false otherwise
      */
     virtual OFBool isEmpty(const OFBool normalize = OFTrue);
 
  protected:
+
+    /// internal type used to specify the current string representation
+    enum E_StringMode
+    {
+        /// string has internal representation (no padding)
+        DCM_MachineString,
+        /// string has DICOM representation (even length)
+        DCM_DicomString,
+        /// string has unknown representation (maybe multiple padding chars?)
+        DCM_UnknownString
+    };
 
     /** create a new value field (string buffer) of the previously defined size
      *  (member variable 'Length'). Also handles odd value length by allocating
@@ -241,11 +273,17 @@ class DcmByteString: public DcmElement
      */
     virtual void postLoadValue();
 
+    /** get current representation of the string value
+     *  @return current representation of the string value
+     */
+    E_StringMode getStringMode() const { return fStringMode; }
+
     /** convert currently stored string value to internal representation.
      *  It removes any trailing space character and recomputes the string length.
+     *  @param length number of characters of the string value (optional)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition makeMachineByteString();
+    virtual OFCondition makeMachineByteString(const Uint32 length = 0);
 
     /** convert currently stored string value to DICOM representation.
      *  It removes trailing spaces apart from a possibly required single padding
@@ -260,6 +298,11 @@ class DcmByteString: public DcmElement
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition getStringValue(OFString &stringVal);
+
+    /** get the maximum number of characters for each string component
+     *  @return maximum number of characters for each string component
+     */
+    Uint32 getMaxLength() { return maxLength; }
 
     /** set the end-of-string padding character
      *  @param c end-of-string padding character
@@ -329,19 +372,7 @@ const OFBool MULTIPART = OFTrue;
 
 /* Function to get part out of a String for VM > 1 */
 
-/** extract particular component from a string value.
- *  String components are expected to be separated by a backslash character ('\').
- *  @param result reference to the result variable
- *  @param orgStr input string value
- *  @param pos index of the string component to be extracted (0..vm-1)
- *  @return status, EC_Normal if successful, an error code otherwise
- */
-OFCondition getStringPart(OFString &result,
-                          const char *orgStr,
-                          const unsigned long pos);
-
-
-/** normalize the given string value, i.e. remove leading and/or trailing spaces
+/** normalize the given string value, i.e.\ remove leading and/or trailing spaces
  *  @param string input and output string value to be normalized
  *  @param multiPart handle string as multi-valued if OFTrue
  *  @param leading delete leading spaces if OFTrue
@@ -359,6 +390,9 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
+** Revision 1.48  2011-10-18 14:00:09  joergr
+** Added support for embedded NULL bytes in string element values.
+**
 ** Revision 1.47  2011-02-02 15:13:49  joergr
 ** Moved documentation of valid values for the VMs that can be checked to a
 ** central place, i.e. DcmElement::checkVM().
