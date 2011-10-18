@@ -29,7 +29,8 @@ Changes between releases are documented here.
            dcmtls/libsrc/Makefile.dep
 
 - Rebuilt Makefile dependencies.
-  Affects: dcmqrdb/apps/Makefile.dep
+  Affects: dcmpstat/tests/Makefile.dep
+           dcmqrdb/apps/Makefile.dep
            dcmqrdb/libsrc/Makefile.dep
            dcmwlm/apps/Makefile.dep
            dcmwlm/libsrc/Makefile.dep
