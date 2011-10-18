@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.18 (riesmeier)
+
+- Removed redundant variable declaration that shadowed a previous local
+  (reported by gcc with additional warning flags).
+  Affects: dcmnet/apps/movescu.cc
+
 **** Changes from 2011.10.17 (riesmeier)
 
 - Made sure that non-ASCII characters are quoted appropriately if the Specific

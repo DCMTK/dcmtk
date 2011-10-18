@@ -18,8 +18,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 09:13:32 $
- *  CVS/RCS Revision: $Revision: 1.101 $
+ *  Update Date:      $Date: 2011-10-18 10:03:49 $
+ *  CVS/RCS Revision: $Revision: 1.102 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1603,7 +1603,6 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
         NULL, &rsp, &statusDetail, &rspIds, opt_ignorePendingDatasets);
 
     if (cond == EC_Normal) {
-        OFString temp_str;
         if (movescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL)) {
             OFLOG_INFO(movescuLogger, "Received Final Move Response");
             OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, rsp, DIMSE_INCOMING));
@@ -1614,7 +1613,6 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
             OFLOG_INFO(movescuLogger, "Received Final Move Response (" << DU_cmoveStatusString(rsp.DimseStatus) << ")");
         }
     } else {
-        OFString temp_str;
         OFLOG_ERROR(movescuLogger, "Move Request Failed: " << DimseCondition::dump(temp_str, cond));
     }
     if (statusDetail != NULL) {
@@ -1643,6 +1641,10 @@ cmove(T_ASC_Association *assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.102  2011-10-18 10:03:49  joergr
+** Removed redundant variable declaration that shadowed a previous local
+** (reported by gcc with additional warning flags).
+**
 ** Revision 1.101  2011-09-29 09:13:32  joergr
 ** Further cleanup of the log output (verbose vs. debug mode).
 **
