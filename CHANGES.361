@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.19 (riesmeier)
+
+- Fixed unexpected behavior of getOFString() method when called for an empty
+  element value. Thanks to forum user "aprogrammer" for the original report.
+  Affects: dcmdata/libsrc/dcbytstr.cc
+
 **** Changes from 2011.10.18 (riesmeier)
 
 - Removed global helper functions that were replaced in a previously commit.

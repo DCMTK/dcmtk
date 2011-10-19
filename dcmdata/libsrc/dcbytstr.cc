@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:12 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Update Date:      $Date: 2011-10-19 09:09:34 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -305,9 +305,15 @@ OFCondition DcmByteString::getOFString(OFString &stringVal,
 {
     /* check given string position index */
     if (pos >= getVM())
-        errorFlag = EC_IllegalParameter;
-    else
     {
+        /* treat an empty string as a special case */
+        if (pos == 0)
+        {
+            errorFlag = EC_Normal;
+            stringVal.clear();
+        } else
+            errorFlag = EC_IllegalParameter;
+    } else {
         /* get string data */
         char *str = NULL;
         Uint32 len = 0;
@@ -788,6 +794,10 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.64  2011-10-19 09:09:34  joergr
+** Fixed unexpected behavior of getOFString() method when called for an empty
+** element value.
+**
 ** Revision 1.63  2011-10-18 14:00:12  joergr
 ** Added support for embedded NULL bytes in string element values.
 **
