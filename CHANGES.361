@@ -7,6 +7,10 @@ Changes between releases are documented here.
   element value. Thanks to forum user "aprogrammer" for the original report.
   Affects: dcmdata/libsrc/dcbytstr.cc
 
+- Fixed some typos and other minor issues regarding the comments.
+  Affects: ofstd/include/dcmtk/ofstd/ofaptr.h
+           dcmnet/include/dcmtk/dcmnet/dstorscu.h
+
 **** Changes from 2011.10.18 (riesmeier)
 
 - Removed global helper functions that were replaced in a previously commit.

@@ -18,9 +18,9 @@
  *  Purpose: Template class for automatically deleting pointers when they go out
  *           of scope.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-01 09:38:19 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-19 13:26:43 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ template <class T> class OFauto_ptr
     }
 
     /** constructs a OFauto_ptr from another OFauto_ptr. The other OFauto_ptr
-     *  will be invalidated. This means he will point to NULL from now on!.
+     *  will be invalidated. This means he will point to NULL from now on!
      *  @param other the OFauto_ptr to get the pointer from.
      */
     OFauto_ptr(OFauto_ptr<T>& other) : ptr(other.release())
@@ -112,7 +112,7 @@ template <class T> class OFauto_ptr
     }
 
     /** assign another pointer to this OFauto_ptr, possibly deleting our
-     *  current pointer.
+     *  current pointer
      *  @param p the new pointer
      */
     void reset(T* p = NULL)
@@ -122,23 +122,23 @@ template <class T> class OFauto_ptr
         this->ptr = p;
     }
 
-    /** get the pointer that is managed by this class.
+    /** get the pointer that is managed by this class
      *  @return the pointer
      */
     T* get() const { return this->ptr; }
 
-    /** get the pointer that is managed by this class.
+    /** get the pointer that is managed by this class
      *  @return the pointer
      */
     T* operator->() const { return get(); }
 
-    /** get the pointer that is managed by this class.
-     *  @return the pointer
+    /** dereference the pointer that is managed by this class
+     *  @return the reference
      */
     T& operator*() const { return *get(); }
 
-    /** this is used automatically by the compiler, don't call directly.
-     *  @return an OFauto_ptr_ref that stores this objects's pointer.
+    /** this is used automatically by the compiler, don't call directly
+     *  @return an OFauto_ptr_ref that stores this object's pointer
      */
     operator OFauto_ptr_ref<T>()
     {
@@ -146,7 +146,7 @@ template <class T> class OFauto_ptr
     }
 
     /** assigns the other pointer to this OFauto_ptr
-     *  @param other other Ofauto_ptr which will be invalidated
+     *  @param other other OFauto_ptr which will be invalidated
      *  @return reference to this object
      */
     OFauto_ptr& operator=(OFauto_ptr<T>& other)
@@ -156,7 +156,7 @@ template <class T> class OFauto_ptr
     }
 
     /** assigns the other pointer to this OFauto_ptr
-     *  @param other other Ofauto_ptr_ref
+     *  @param other other OFauto_ptr_ref
      *  @return reference to this object
      */
     OFauto_ptr& operator=(OFauto_ptr_ref<T> other)
@@ -185,6 +185,9 @@ template <class T> class OFauto_ptr
 /*
 ** CVS/RCS Log:
 ** $Log: ofaptr.h,v $
+** Revision 1.10  2011-10-19 13:26:43  joergr
+** Fixed some typos and other minor issues regarding the comments.
+**
 ** Revision 1.9  2010-11-01 09:38:19  uli
 ** Fixed some compiler warnings reported by gcc with additional flags.
 **

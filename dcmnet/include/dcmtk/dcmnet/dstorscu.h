@@ -18,8 +18,8 @@
  *  Purpose: DICOM Storage Service Class User (SCU)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-06 14:16:08 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-10-19 13:26:44 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,21 +39,21 @@
  *---------------------*/
 
 /** Interface class for a Storage Service Class User (SCU).
- *  This class supports C-STORE messages as an SCU.  Currently, only DICOM files can be sent
- *  via network to a particular storage SCP.  In a first step, the SOP instances to be sent
- *  are added to a transfer list.  In a second step, the association negotiation takes place
- *  where the required presentation contexts are proposed, i.e. it is checked which SOP
+ *  This class supports C-STORE messages as an SCU.  In a first step, the SOP instances to be
+ *  sent are added to a transfer list.  In a second step, the association negotiation takes
+ *  place where the required presentation contexts are proposed, i.e. it is checked which SOP
  *  classes and transfer syntaxes are needed for transferring the SOP instances.  Finally, the
  *  SOP instances are sent to the SCP (if possible).
- *  \note The current implementation does not sort the transfer list according to the SOP
+ *  \note
+ *    \li The current implementation does not sort the transfer list according to the SOP
  *        Class UID and Transfer Syntax UID of the SOP instances and, therefore, might propose
  *        more presentation contexts than required for the transfer of all SOP instances.  A
- *        simple optimization that is performed internally is to check whether the current
- *        SOP instance can be sent using a presentation context that has previously been added
- *        for another SOP instance (of the same kind).  This approach also makes sure that
- *        studies and series are not mixed up, assuming that they have been added to the
- *        transfer list in the correct order.
- *  \note Another limitation of the current implementation is the handling of the "Default
+ *        simple optimization that is performed internally is to check whether the current SOP
+ *        instance can be sent using a presentation context that has previously been added for
+ *        another SOP instance (of the same kind).  This approach also makes sure that studies
+ *        and series are not mixed up, assuming that they have been added to the transfer list
+ *        in the "correct" order.
+ *    \li Another limitation of the current implementation is the handling of the "Default
  *        Transfer Syntax" in case of compression.  According to the DICOM standard, the
  *        default transfer syntax for "Lossless JPEG Compression", "Lossy JPEG Compression"
  *        and so on has to be proposed in at least one presentation context for the particular
@@ -148,7 +148,7 @@ class DcmStorageSCU
     /** set mode that specifies whether or not compressed datasets are decompressed if needed,
      *  i.e.\ whether the transfer syntax of the dataset is changed for network transmission.
      *  @param  decompressionMode  decompression mode. See definition of E_DecompressionMode
-     *    for both possible values and the default value.
+     *                             for both possible values and the default value.
      */
     void setDecompressionMode(const E_DecompressionMode decompressionMode);
 
@@ -164,7 +164,7 @@ class DcmStorageSCU
      *  sent, there should be at least one presentation context for this SOP class that also
      *  proposes the default transfer syntax (Implicit VR Little Endian).
      *  @param  allowMode  mode indicating whether illegal proposals are allowed or not
-     *    (default: OFTrue, i.e.\ allowed)
+     *                     (default: OFTrue, i.e.\ allowed)
      */
     void setAllowIllegalProposalMode(const OFBool allowMode);
 
@@ -192,7 +192,7 @@ class DcmStorageSCU
      *  @param  sopClassUID     SOP Class UID of the SOP instance to be removed
      *  @param  sopInstanceUID  SOP Instance UID of the SOP instance to be removed
      *  @param  allOccurrences  flag specifying whether to delete all occurrences of the
-     *                          SOP instance if has been added to the list multiple times.
+     *                          SOP instance if it has been added to the list multiple times.
      *                          If OFFalse, only the first occurrence is removed.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
@@ -486,6 +486,9 @@ class DcmStorageSCU
 /*
  * CVS Log
  * $Log: dstorscu.h,v $
+ * Revision 1.3  2011-10-19 13:26:44  joergr
+ * Fixed some typos and other minor issues regarding the comments.
+ *
  * Revision 1.2  2011-10-06 14:16:08  joergr
  * Now also SOP instances from DICOM datasets can be added to the transfer list.
  * This allows for sending datasets created or received in memory.
