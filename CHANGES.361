@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.20 (schlachter)
 
+- Disable option checking in individual module's configure scripts.
+  Affects: config/confmod
+           config/confmod.in
+
 - Abort if a module's configure script fails.
   Affects: configure
 
