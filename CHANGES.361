@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.20 (schlachter)
+
+- Abort if a module's configure script fails.
+  Affects: configure
+
 **** Changes from 2011.10.19 (riesmeier)
 
 - Fixed unexpected behavior of getOFString() method when called for an empty

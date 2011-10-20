@@ -27,6 +27,6 @@ elif test "x--version" = "x$*"; then
 else
 	for module in $modules ; do
 		echo "Running configure for module $module."
-		(cd $module && ./configure $* )
+		(cd $module && ./configure $* ) || exit 1
 	done
 fi
