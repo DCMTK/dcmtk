@@ -18,8 +18,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-17 12:32:28 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2011-10-21 10:31:34 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,10 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
             else
             {
                 if (!csetString.empty())
-                    OFLOG_WARN(dcm2xmlLogger, "(0008,0005) Specific Character Set '" << csetString << "' not supported");
+                {
+                    OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": Specific Character Set (0008,0005) '"
+                        << csetString << "' not supported ... quoting non-ASCII characters");
+                }
                 /* make sure that non-ASCII characters are quoted appropriately */
                 writeFlags |= DCMTypes::XF_convertNonASCII;
             }
@@ -108,8 +111,9 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 if (defaultCharset == NULL)
                 {
                     /* the dataset contains non-ASCII characters that really should not be there */
-                    OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": (0008,0005) Specific Character Set absent "
-                        << "but extended characters used in file: " << ifname);
+                    OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": Specific Character Set (0008,0005) "
+                        << "absent but extended characters used in file: " << ifname);
+                    OFLOG_DEBUG(dcm2xmlLogger, "use option --charset-assume to manually specify an appropriate character set");
                     return EC_IllegalCall;
                 } else {
                     OFString charset(defaultCharset);
@@ -456,9 +460,9 @@ int main(int argc, char *argv[])
                     result = 3;
             }
         } else
-            OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": (" << status.text() << ") reading file: "<< ifname);
+            OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") reading file: "<< ifname);
     } else
-        OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
+        OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
 
     return result;
 }
@@ -467,6 +471,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
+ * Revision 1.41  2011-10-21 10:31:34  joergr
+ * Fixed some log messages.
+ *
  * Revision 1.40  2011-10-17 12:32:28  joergr
  * Made sure that non-ASCII characters are quoted appropriately if the Specific
  * Character Set is not supported.

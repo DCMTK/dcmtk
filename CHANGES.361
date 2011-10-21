@@ -27,6 +27,12 @@ Changes between releases are documented here.
            ofstd/tests/Makefile.in
            ofstd/tests/tests.cc
 
+- Fixed some log messages.
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/apps/xml2dsr.cc
+
 - Minor fix to keep VisualStudio from moaning.
   Affects: dcmdata/libsrc/dcelem.cc
            dcmdata/libsrc/dcvrds.cc

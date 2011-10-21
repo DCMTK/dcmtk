@@ -19,8 +19,8 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-18 10:52:10 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2011-10-21 10:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,8 +101,8 @@ static OFCondition renderFile(STD_NAMESPACE ostream &out,
                     if (defaultCharset == NULL)
                     {
                         /* the dataset contains non-ASCII characters that really should not be there */
-                        OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": (0008,0005) Specific Character Set absent "
-                            << "but extended characters used in file: " << ifname);
+                        OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": Specific Character Set (0008,0005) "
+                            << "absent but extended characters used in file: " << ifname);
                         result = EC_IllegalCall;
                     } else {
                         OFString charsetStr(defaultCharset);
@@ -425,6 +425,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
+ * Revision 1.39  2011-10-21 10:31:36  joergr
+ * Fixed some log messages.
+ *
  * Revision 1.38  2011-03-18 10:52:10  joergr
  * Introduced new read flag that allows for accepting an invalid content item
  * value (e.g. violation of VR or VM definition).

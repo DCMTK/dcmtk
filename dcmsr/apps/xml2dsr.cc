@@ -19,8 +19,8 @@
  *            reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:13:52 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2011-10-21 10:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -306,11 +306,11 @@ int main(int argc, char *argv[])
         {
             DcmFileFormat fileformat;
 #ifdef LIBXML_SCHEMAS_ENABLED
-			if (opt_readFlags & DSRTypes::XF_validateSchema)
-				OFLOG_INFO(xml2dsrLogger, "reading and validating XML input file: " << opt_ifname);
-			else
+            if (opt_readFlags & DSRTypes::XF_validateSchema)
+                OFLOG_INFO(xml2dsrLogger, "reading and validating XML input file: " << opt_ifname);
+            else
 #endif
-				OFLOG_INFO(xml2dsrLogger, "reading XML input file: " << opt_ifname);
+                OFLOG_INFO(xml2dsrLogger, "reading XML input file: " << opt_ifname);
             /* read XML file and feed data into DICOM fileformat */
             result = dsrdoc->readXML(opt_ifname, opt_readFlags);
             if (result.good())
@@ -376,6 +376,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
+ * Revision 1.17  2011-10-21 10:31:36  joergr
+ * Fixed some log messages.
+ *
  * Revision 1.16  2010-10-14 13:13:52  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

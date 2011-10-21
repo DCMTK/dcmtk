@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-21 09:10:08 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2011-10-21 10:31:36 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,8 +76,8 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                     if (defaultCharset == NULL)
                     {
                       /* the dataset contains non-ASCII characters that really should not be there */
-                      OFLOG_FATAL(dsr2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
-                          << "but extended characters used in file: " << ifname);
+                      OFLOG_FATAL(dsr2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": Specific Character Set (0008,0005) "
+                          << "absent but extended characters used in file: " << ifname);
                       result = EC_IllegalCall;
                     } else {
                         OFString charsetStr(defaultCharset);
@@ -342,6 +342,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
+ * Revision 1.43  2011-10-21 10:31:36  joergr
+ * Fixed some log messages.
+ *
  * Revision 1.42  2010-10-21 09:10:08  joergr
  * Renamed variable to avoid warning reported by gcc with additional flags.
  *
