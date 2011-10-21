@@ -605,6 +605,7 @@ ac_includes_default="\
 
 ac_subst_vars='LTLIBOBJS
 DEBUG
+ICONVLIBS
 SNDFILELIBS
 TCPWRAPPERLIBS
 XMLLIBS
@@ -702,7 +703,8 @@ with_libtiff
 with_libpng
 with_libxml
 with_libwrap
-with_sndfile
+with_libsndfile
+with_libiconv
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1364,9 +1366,12 @@ Optional Packages:
   --with-libwrap          include libwrap (TCP wrapper) support (default: auto)
   --without-libwrap       don't include libwrap support
   --with-libwrapinc=DIR   location of libwrap includes and libraries
-  --with-libsndfile          include libsndfile support (default: auto)
-  --without-libsndfile       don't include libsndfile support
-  --with-libsndfileinc=DIR   location of libsndfile includes and libraries
+  --with-libsndfile         include libsndfile support (default: auto)
+  --without-libsndfile      don't include libsndfile support
+  --with-libsndfileinc=DIR  location of libsndfile includes and libraries
+  --with-libiconv         include libiconv support (default: auto)
+  --without-libiconv      don't include libiconv support
+  --with-libiconvinc=DIR  location of libiconv includes and libraries
 
 Some influential environment variables:
   CC          C compiler command
@@ -12067,7 +12072,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12070 "configure"
+#line 12075 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -12539,7 +12544,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12542 "configure"
+#line 12547 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -12611,7 +12616,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12614 "configure"
+#line 12619 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -12683,7 +12688,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12686 "configure"
+#line 12691 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13724,27 +13729,13 @@ if test "${with_libsndfileinc+set}" = set; then
     esac
 fi
 
-for ac_header in sndfile.h
-do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "sndfile.h" "ac_cv_header_sndfile_h" "$ac_includes_default"
-if test "x$ac_cv_header_sndfile_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_SNDFILE_H 1
-_ACEOF
-
-fi
-
-done
-
-
 SNDFILELIBS=""
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to include sndfile support" >&5
-$as_echo_n "checking whether to include sndfile support... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to include libsndfile support" >&5
+$as_echo_n "checking whether to include libsndfile support... " >&6; }
 
-
-# Check whether --with-sndfile was given.
-if test "${with_sndfile+set}" = set; then :
-  withval=$with_sndfile;  case "$withval" in
+# Check whether --with-libsndfile was given.
+if test "${with_libsndfile+set}" = set; then :
+  withval=$with_libsndfile;  case "$withval" in
     yes)
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
@@ -13767,8 +13758,7 @@ else
 int
 main ()
 {
-char buffer [128];
-    sf_command (NULL, SFC_GET_LIB_VERSION, buffer, sizeof (buffer));
+char buffer [128]; sf_command (NULL, SFC_GET_LIB_VERSION, buffer, sizeof (buffer));
   ;
   return 0;
 }
@@ -13791,8 +13781,79 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 
 
+
+if test "${with_libiconvinc+set}" = set; then
+
+    case "$with_libiconvinc" in
+    yes|no)
+      echo "configure: warning: --with-libiconvinc called without argument - will use default" 1>&2
+    ;;
+    * )
+      if test ! -d ${with_libiconvinc}; then
+        echo "configure: warning: called with --with-libiconvinc, but libiconv base directory ${withval} does not exist or is not a directory." 1>&2
+        exit 1
+      fi
+      CPPFLAGS="-I${with_libiconvinc}/include $CPPFLAGS"
+      LDFLAGS="-L${with_libiconvinc}/lib $LDFLAGS"
+    ;;
+    esac
+
+fi
+
+ICONVLIBS=""
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to include libiconv support" >&5
+$as_echo_n "checking whether to include libiconv support... " >&6; }
+
+# Check whether --with-libiconv was given.
+if test "${with_libiconv+set}" = set; then :
+  withval=$with_libiconv;  case "$withval" in
+  yes)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define WITH_LIBICONV /**/" >>confdefs.h
+
+    ICONVLIBS="-liconv -lcharset"
+    ;;
+  *)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    ;;
+  esac
+else
+   SAVELIBS="$LIBS"
+  LIBS="$LIBS -liconv -lcharset"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <iconv.h>
+int
+main ()
+{
+iconv_t cd = iconv_open("", ""); iconv(cd, NULL, NULL, NULL, NULL); iconv_close(cd);
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define WITH_LIBICONV /**/" >>confdefs.h
+
+      ICONVLIBS="-liconv -lcharset"
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+  LIBS="$SAVELIBS"
+fi
+
+
 CFLAGS="$DEBUGCFLAGS $CFLAGS"
 CXXFLAGS="$DEBUGCXXFLAGS $CXXFLAGS"
+
 
 
 

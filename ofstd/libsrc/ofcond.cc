@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:53 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2011-10-21 09:14:59 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,17 +32,28 @@
 
 /* ---------- global condition constants ---------- */
 
-const OFConditionConst ECC_Normal(          0, 0, OF_ok,      "Normal");
-const OFConditionConst ECC_IllegalParameter(0, 1, OF_error,   "Illegal parameter");
-const OFConditionConst ECC_MemoryExhausted( 0, 2, OF_failure, "Virtual Memory exhausted");
+const OFConditionConst ECC_Normal            (0, 0, OF_ok,      "Normal");
+const OFConditionConst ECC_IllegalParameter  (0, 1, OF_error,   "Illegal parameter");
+const OFConditionConst ECC_MemoryExhausted   (0, 2, OF_failure, "Virtual Memory exhausted");
+const OFConditionConst ECC_NoEncodingLibrary (0, 3, OF_error,   "No character encoding library available");
+const OFConditionConst ECC_NoEncodingSelected(0, 4, OF_error,   "No character encoding selected");
+// codes 5..7 are used for dynamically created error messages (see below constants)
 
-// NOTE: 
-// error codes 1024..2047 are reserved for inter-process communication 
+
+// NOTE:
+// error codes 1024..2047 are reserved for inter-process communication
 // errors defined elsewhere in module ofstd
 
-const OFCondition EC_Normal(ECC_Normal);
-const OFCondition EC_IllegalParameter(ECC_IllegalParameter);
-const OFCondition EC_MemoryExhausted(ECC_MemoryExhausted);
+const OFCondition EC_Normal            (ECC_Normal);
+const OFCondition EC_IllegalParameter  (ECC_IllegalParameter);
+const OFCondition EC_MemoryExhausted   (ECC_MemoryExhausted);
+const OFCondition EC_NoEncodingLibrary (ECC_NoEncodingLibrary);
+const OFCondition EC_NoEncodingSelected(ECC_NoEncodingSelected);
+
+const unsigned short EC_CODE_IllegalEncoding        = 5;
+const unsigned short EC_CODE_CannotConvertEncoding  = 6;
+const unsigned short EC_CODE_CannotControlConverter = 7;
+
 
 /* ---------- class OFConditionConst ---------- */
 
@@ -106,6 +117,10 @@ OFBool OFConditionString::deletable() const
  *
  * CVS/RCS Log:
  * $Log: ofcond.cc,v $
+ * Revision 1.6  2011-10-21 09:14:59  joergr
+ * Added class for managing and converting between different character encodings
+ * based on the libiconv toolkit.
+ *
  * Revision 1.5  2010-10-14 13:14:53  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

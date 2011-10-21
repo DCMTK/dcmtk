@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-12 12:03:04 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-10-21 09:15:03 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,12 +59,21 @@ OFTEST_REGISTER(ofstd_markup_2);
 OFTEST_REGISTER(ofstd_markup_3);
 OFTEST_REGISTER(ofstd_markup_4);
 OFTEST_REGISTER(ofstd_markup_5);
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_1);
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_2);
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_3);
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_4);
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_5);
 OFTEST_MAIN("ofstd")
 
 /*
  *
  * CVS/RCS Log:
  * $Log: tests.cc,v $
+ * Revision 1.4  2011-10-21 09:15:03  joergr
+ * Added class for managing and converting between different character encodings
+ * based on the libiconv toolkit.
+ *
  * Revision 1.3  2011-10-12 12:03:04  joergr
  * Added tests for convertToMarkupString() method.
  *

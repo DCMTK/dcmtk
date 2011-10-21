@@ -1,6 +1,32 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.21 (riesmeier)
+
+- Added class for managing and converting between different character encodings
+  based on the libiconv toolkit.
+  Added:   ofstd/include/dcmtk/ofstd/ofchrenc.h
+           ofstd/libsrc/ofchrenc.cc
+           ofstd/tests/tchrenc.cc
+  Affects: CMakeLists.txt
+           INSTALL
+           CMake/3rdparty.cmake
+           CMake/osconfig.h.in
+           config/Makefile.def.in
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/osconfig.h.in
+           doxygen/htmldocs.cfg
+           ofstd/include/dcmtk/ofstd/ofcond.h
+           ofstd/libsrc/CMakeLists.txt
+           ofstd/libsrc/Makefile.dep
+           ofstd/libsrc/Makefile.in
+           ofstd/libsrc/ofcond.cc
+           ofstd/tests/CMakeLists.txt
+           ofstd/tests/Makefile.dep
+           ofstd/tests/Makefile.in
+           ofstd/tests/tests.cc
+
 **** Changes from 2011.10.21 (schlachter)
 
 - Don't define a static version of isatty() since it seems to be not needed.

@@ -6,7 +6,8 @@ DICOM TOOLKIT (DCMTK) INSTALLATION
 -------------------------------------------------------------------------------
  Please note that most sections of this document refer to the official release
  DCMTK 3.6.0, i.e. they are not yet updated for the changes of the latest
- development snapshot (version 3.6.1).  This will be done for the next release.
+ development snapshot (version 3.6.1).  This will be done for the next release,
+ which will probably be called version 3.6.2.
 
  The toolkit should compile on Linux systems with gcc 4.1 since this is our
  main development platform.  Also on Windows systems, it usually works with
@@ -310,6 +311,24 @@ distributions ship with an ANSI C compatible header file.
 On Windows platforms, TCP wrappers are currently not supported.
 
 
+LIBICONV SUPPORT
+================
+
+Starting with release 3.6.2, DCMTK supports the conversion between different
+character encodings.  For this purpose, DCMTK relies on the libiconv toolkit
+(www.gnu.org/s/libiconv/).  This release of DCMTK is known to compile with the
+libiconv release 1.14, although other releases may work as well.
+
+On Unix platforms, if support for libiconv conversion is desired, a compiled
+version of the libiconv library and include files must be available during
+compilation of DCMTK.  By default, DCMTK checks whether libiconv is installed
+in the standard path and enables support automatically if present.
+
+On Windows platforms, a compiled version of the libiconv libraries and include
+files must be available during compilation of DCMTK.  See discussion on CMake
+below.
+
+
 BUILDING (Unix)
 ===============
 
@@ -353,14 +372,16 @@ Configure will assume that the OpenSSL include files are installed in
 "/usr/local/apps/openssl-1.0.0/lib".  Appropriate options will be passed to
 the compiler and the linker.
 
-Support for zlib, libtiff, libpng, libxml2 and libwrap can be enabled in a
-similar way (in case these libraries are not installed in the standard path):
+Support for zlib, libtiff, libpng, libxml2, libwrap and libiconv can be enabled
+in a similar way (in case these libraries are not installed in the standard
+path):
 
     ./configure --with-libzlibinc=/usr/local/apps/zlib-1.2.5
                 --with-libtiffinc=/usr/local/apps/libtiff-3.9.4
                 --with-libpnginc=/usr/local/apps/libpng-1.4.3
                 --with-libxmlinc=/usr/local/apps/libxml-2.7.7
                 --with-libwrapinc=/usr/local/apps/tcp_wrappers-7.6
+                --with-libiconvinc=/usr/local/apps/libiconv-1.14
 
 Different configure options can be combined in any order.  configure --help
 will print a list of all existing configure options.  configure --help=short
@@ -471,8 +492,8 @@ the following steps to install CMake on your machine:
    Follow all install instructions appropriately.
 
 In order to manually configure the support for the above mentioned external
-libraries (OpenSSL, zlib, libtiff, libpng and libxml2) through CMake, perform
-the following steps:
+libraries (OpenSSL, zlib, libtiff, libpng, libxml2 and libiconv) through CMake,
+perform the following steps:
 
 1. Go Start -> Programs -> CMake -> "CMake" or "CMake (cmake-gui)" to start the
    CMake utility through which the configuration can be done.
@@ -510,20 +531,25 @@ the following steps:
        set "DCMTK_WITH_ZLIB" to "ON" and
        set "WITH_ZLIBINC" e.g. to "C:\zlib-1.2.5"
 
+     libiconv support:
+       set "DCMTK_WITH_ICONV" to "ON" and
+       set "WITH_LIBICONVINC" e.g. to "C:\libiconv-1.14"
+
    In order to turn the support of a certain external library off, set the
    value of the corresponding variable ("DCMTK_WITH_XML", "DCMTK_WITH_PNG",
-   "DCMTK_WITH_TIFF", "DCMTK_WITH_OPENSSL", or "DCMTK_WITH_ZLIB") to "OFF".
+   "DCMTK_WITH_TIFF", "DCMTK_WITH_OPENSSL", "DCMTK_WITH_ZLIB" or
+   "DCMTK_WITH_ICONV") to "OFF".
 
    (Please note that the include files of all external libraries are always
    expected in a directory named "include" below the directory which is
    specified in "WITH_LIBXMLINC", "WITH_LIBPNGINC", "WITH_LIBTIFFINC",
-   "WITH_OPENSSLINC", or "WITH_ZLIBINC".)
+   "WITH_OPENSSLINC", "WITH_ZLIBINC" or "WITH_LIBICONVINC".)
 
    (Please note also that the library files of all external libraries are
    always expected in directory named "lib" below the directory which is
    specified in "WITH_LIBXMLINC", "WITH_LIBPNGINC", "WITH_LIBTIFFINC",
-   "WITH_OPENSSLINC", or "WITH_ZLIBINC".  Moreover, note that the following
-   filenames must be used for the corresponding lib files:
+   "WITH_OPENSSLINC", "WITH_ZLIBINC" or "WITH_LIBICONV".  Moreover, note that
+   the following filenames must be used for the corresponding lib files:
 
      libxml2:
        "iconv_d.lib"    - debug version
@@ -548,6 +574,12 @@ the following steps:
      zlib:
        "zlib_d.lib"     - debug version
        "zlib_o.lib"     - release version (optimized)
+
+     libiconv:
+       "libiconv_d.lib" - debug version
+       "libiconv_o.lib" - release version (optimized)
+       "libchset_d.lib" - debug version
+       "libchset_o.lib" - release version (optimized)
 
    The debug versions of all libraries must be compiled for the multithread
    debug version of the runtime (/MTd), the release version must be compiled
@@ -665,4 +697,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken, Uli Schlachter
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2011-08-23 (Riesmeier)
+Last revised: 2011-10-21 (Riesmeier)

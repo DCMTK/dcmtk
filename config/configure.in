@@ -1245,39 +1245,78 @@ if test "${with_libsndfileinc+set}" = set; then
     esac
 fi
 
-dnl perform check for <sndfile.h> only after we have evaluated --with-libsndfileinc
-AC_CHECK_HEADERS(sndfile.h)
-
 SNDFILELIBS=""
-AC_MSG_CHECKING(whether to include sndfile support)
-
-AC_ARG_WITH(sndfile,
-
-  [  --with-libsndfile          include libsndfile support (default: auto)
-  --without-libsndfile       don't include libsndfile support
-  --with-libsndfileinc=DIR   location of libsndfile includes and libraries],
-
+AC_MSG_CHECKING(whether to include libsndfile support)
+AC_ARG_WITH(libsndfile,
+  [  --with-libsndfile         include libsndfile support (default: auto)
+  --without-libsndfile      don't include libsndfile support
+  --with-libsndfileinc=DIR  location of libsndfile includes and libraries],
   [ case "$withval" in
     yes)
       AC_MSG_RESULT(yes)
-      AC_DEFINE(WITH_SNDFILE, , [Define if we are compiling with sndfile support.])
+      AC_DEFINE(WITH_SNDFILE, , [Define if we are compiling with libsndfile support.])
       SNDFILELIBS="-lsndfile"
       ;;
     *)
       AC_MSG_RESULT(no)
       ;;
     esac ],
-
   [ SAVELIBS="$LIBS"
     LIBS="$LIBS -lsndfile"
-    AC_TRY_LINK([#include <sndfile.h>], [char buffer [128];
-    sf_command (NULL, SFC_GET_LIB_VERSION, buffer, sizeof (buffer));],
+    AC_TRY_LINK([#include <sndfile.h>], [char buffer [128]; sf_command (NULL, SFC_GET_LIB_VERSION, buffer, sizeof (buffer));],
       [ AC_MSG_RESULT(yes)
-        AC_DEFINE(WITH_SNDFILE, , [Define if we are compiling with sndfile support.])
+        AC_DEFINE(WITH_SNDFILE, , [Define if we are compiling with libsndfile support.])
         SNDFILELIBS="-lsndfile" ],
       [AC_MSG_RESULT(no)])
     LIBS="$SAVELIBS"]
 )
+
+dnl -------------------------------------------------------
+dnl Check for libiconv support
+dnl -------------------------------------------------------
+
+if test "${with_libiconvinc+set}" = set; then
+
+    case "$with_libiconvinc" in
+    yes|no)
+      echo "configure: warning: --with-libiconvinc called without argument - will use default" 1>&2
+    ;;
+    * )
+      if test ! -d ${with_libiconvinc}; then
+        echo "configure: warning: called with --with-libiconvinc, but libiconv base directory ${withval} does not exist or is not a directory." 1>&2
+        exit 1
+      fi
+      CPPFLAGS="-I${with_libiconvinc}/include $CPPFLAGS"
+      LDFLAGS="-L${with_libiconvinc}/lib $LDFLAGS"
+    ;;
+    esac
+
+fi
+
+ICONVLIBS=""
+AC_MSG_CHECKING(whether to include libiconv support)
+AC_ARG_WITH(libiconv,
+[  --with-libiconv         include libiconv support (default: auto)
+  --without-libiconv      don't include libiconv support
+  --with-libiconvinc=DIR  location of libiconv includes and libraries],
+[ case "$withval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(WITH_LIBICONV, , [Define if we are compiling with libiconv support.])
+    ICONVLIBS="-liconv -lcharset"
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac ],
+[ SAVELIBS="$LIBS"
+  LIBS="$LIBS -liconv -lcharset"
+  AC_TRY_LINK([#include <iconv.h>], [iconv_t cd = iconv_open("", ""); iconv(cd, NULL, NULL, NULL, NULL); iconv_close(cd);],
+    [ AC_MSG_RESULT(yes)
+      AC_DEFINE(WITH_LIBICONV, , [Define if we are compiling with libiconv support.])
+      ICONVLIBS="-liconv -lcharset" ],
+    [AC_MSG_RESULT(no)])
+  LIBS="$SAVELIBS"] )
 
 dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags
@@ -1297,6 +1336,7 @@ AC_SUBST(ZLIBLIBS)
 AC_SUBST(XMLLIBS)
 AC_SUBST(TCPWRAPPERLIBS)
 AC_SUBST(SNDFILELIBS)
+AC_SUBST(ICONVLIBS)
 AC_SUBST(DEBUG)
 
 AC_OUTPUT(Makefile.def Makefile)
