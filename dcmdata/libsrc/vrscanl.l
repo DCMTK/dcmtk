@@ -19,12 +19,15 @@
  *    These are the regular expressions for the value representations
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-11 11:00:46 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2011-10-21 08:53:44 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log:
  *  $Log: vrscanl.l,v $
+ *  Revision 1.8  2011-10-21 08:53:44  uli
+ *  Don't define a static version of isatty() since it seems to be not needed.
+ *
  *  Revision 1.7  2011-05-11 11:00:46  uli
  *  Fixed a bug where the VR scanner wrote output to stdout.
  *
@@ -116,12 +119,12 @@
 
 /* Make this work on windows (we don't need interactivity anyway) */
 %option nointeractive
-/* This seems to be a bug: The .c file won't include it, but .h will still.
- * %option nounistd
+/* This seems to be a bug: The .c file won't include it, but .h will
+ * nevertheless.
+ *  %option nounistd
+ * Our workaround: Define YY_NO_UNISTD_H in vrscani.h and make
+ * sure that header is included before vrscanl.h.
  */
-%{
-static int isatty(int fd) { return 0; }
-%}
 
 default_charset_without_control_chars [\041-\133\135-\176][\040-\133\135-\176]*
 charset_without_control_chars         [\040-\133\135-\176\240-\377\033]+

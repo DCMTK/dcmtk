@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.21 (schlachter)
+
+- Don't define a static version of isatty() since it seems to be not needed.
+  Affects: dcmdata/libsrc/vrscanl.c
+           dcmdata/libsrc/vrscanl.h
+           dcmdata/libsrc/vrscanl.l
+
 **** Changes from 2011.10.20 (schlachter)
 
 - Disable option checking in individual module's configure scripts.
