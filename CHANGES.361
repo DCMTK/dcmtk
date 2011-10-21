@@ -39,6 +39,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.21 (schlachter)
 
+- Improved the handling of some configure options.
+  Affects: config/aclocal.m4
+           config/configure
+           config/configure.in
+
 - Don't define a static version of isatty() since it seems to be not needed.
   Affects: dcmdata/libsrc/vrscanl.c
            dcmdata/libsrc/vrscanl.h

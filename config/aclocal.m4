@@ -6,7 +6,7 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: uli $
-dnl Revision:     $Revision: 1.47 $
+dnl Revision:     $Revision: 1.48 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -1748,7 +1748,42 @@ fi
 ])
 
 dnl
+dnl This macro adds the option --with-[OPTION_NAME]inc to configure. If this option
+dnl is specified, include/ and lib/ are added to CPPFLAGS / LDFLAGS.
+dnl
+dnl AC_MY_LIB_PATH(OPTION_NAME, LIB_NAME)
+AC_DEFUN([AC_MY_LIB_PATH],
+[
+  m4_pushdef([OPTION], [$1inc])dnl
+  m4_pushdef([LONGOPTION], [--with-$1inc])dnl
+  m4_pushdef([LIBNAME], [m4_default([$2], [$1])])dnl
+  AC_ARG_WITH([OPTION], dnl
+dnl The following line is underquoted on purpose, else the help line will be
+dnl discarded because it is equal to an earlier help line.
+AS_HELP_STRING([LONGOPTION=DIR], [location of LIBNAME includes and libraries]),
+    [AS_CASE([$withval],
+      [yes|no], [
+        AC_MSG_WARN([LONGOPTION called without argument - will use default])
+      ],
+      [
+        if test ! -d ${withval}; then
+          AC_MSG_ERROR([called with LONGOPTION but LIBNAME base directory ${withval} does not exist or is not a directory.])
+        fi
+
+        CPPFLAGS="-I${withval}/include $CPPFLAGS"
+        LDFLAGS="-L${withval}/lib $LDFLAGS"
+      ])
+    ])dnl
+  m4_popdef([OPTION])dnl
+  m4_popdef([LONGOPTION])dnl
+  m4_popdef([LIBNAME])dnl
+])
+
+dnl
 dnl $Log: aclocal.m4,v $
+dnl Revision 1.48  2011-10-21 12:31:47  uli
+dnl Improved the handling of some configure options.
+dnl
 dnl Revision 1.47  2011-10-11 14:25:30  uli
 dnl Switched to autoconf 2.68.
 dnl

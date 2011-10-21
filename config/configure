@@ -697,13 +697,21 @@ enable_threads
 enable_lfs
 enable_std_includes
 with_private_tags
+with_opensslinc
 with_openssl
+with_zlibinc
 with_zlib
+with_libtiffinc
 with_libtiff
+with_libpnginc
 with_libpng
+with_libxmlinc
 with_libxml
+with_libwrapinc
 with_libwrap
+with_libsndfileinc
 with_libsndfile
+with_libiconvinc
 with_libiconv
 '
       ac_precious_vars='build_alias
@@ -1348,30 +1356,31 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-private-tags     enable private tag dictionary
   --without-private-tags  don't enable private tag dictionary (default)
+  --with-opensslinc=DIR   location of OpenSSL includes and libraries
   --with-openssl          include OpenSSL support (default: auto)
   --without-openssl       don't include OpenSSL support
-  --with-opensslinc=DIR   location of OpenSSL includes and libraries
+  --with-zlibinc=DIR      location of zlib includes and libraries
   --with-zlib             include zlib support (default: auto)
   --without-zlib          don't include zlib support
-  --with-zlibinc=DIR      location of zlib includes and libraries
+  --with-libtiffinc=DIR   location of libtiff includes and libraries
   --with-libtiff          include libtiff support (default: auto)
   --without-libtiff       don't include libtiff support
-  --with-libtiffinc=DIR   location of libtiff includes and libraries
+  --with-libpnginc=DIR    location of libpng includes and libraries
   --with-libpng           include libpng support (default: auto)
   --without-libpng        don't include libpng support
-  --with-libpnginc=DIR    location of libpng includes and libraries
+  --with-libxmlinc=DIR    location of libxml includes and libraries
   --with-libxml           include libxml support (default: auto)
   --without-libxml        don't include libxml support
-  --with-libxmlinc=DIR    location of libxml includes and libraries
-  --with-libwrap          include libwrap (TCP wrapper) support (default: auto)
-  --without-libwrap       don't include libwrap support
   --with-libwrapinc=DIR   location of libwrap includes and libraries
-  --with-libsndfile         include libsndfile support (default: auto)
-  --without-libsndfile      don't include libsndfile support
-  --with-libsndfileinc=DIR  location of libsndfile includes and libraries
+  --with-libwrap          include libwrap support (default: auto)
+  --without-libwrap       don't include libwrap support
+  --with-libsndfileinc=DIR
+                          location of libsndfile includes and libraries
+  --with-libsndfile       include libsndfile support (default: auto)
+  --without-libsndfile    don't include libsndfile support
+  --with-libiconvinc=DIR  location of libiconv includes and libraries
   --with-libiconv         include libiconv support (default: auto)
   --without-libiconv      don't include libiconv support
-  --with-libiconvinc=DIR  location of libiconv includes and libraries
 
 Some influential environment variables:
   CC          C compiler command
@@ -12072,7 +12081,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12075 "configure"
+#line 12084 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -12544,7 +12553,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12547 "configure"
+#line 12556 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -12616,7 +12625,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12619 "configure"
+#line 12628 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -12688,7 +12697,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12691 "configure"
+#line 12700 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13006,24 +13015,29 @@ fi
 
 
 
-if test "${with_opensslinc+set}" = set; then
 
-    case "$with_opensslinc" in
-    yes|no)
-      echo "configure: warning: --with-opensslinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_opensslinc}; then
-        echo "configure: warning: called with --with-opensslinc, but openssl base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
 
-      CPPFLAGS="-I${with_opensslinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_opensslinc}/lib $LDFLAGS"
-    ;;
-    esac
+# Check whether --with-opensslinc was given.
+if test "${with_opensslinc+set}" = set; then :
+  withval=$with_opensslinc; case $withval in #(
+  yes|no) :
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --with-opensslinc called without argument - will use default" >&5
+$as_echo "$as_me: WARNING: --with-opensslinc called without argument - will use default" >&2;}
+       ;; #(
+  *) :
+
+        if test ! -d ${withval}; then
+          as_fn_error $? "called with --with-opensslinc but OpenSSL base directory ${withval} does not exist or is not a directory." "$LINENO" 5
+        fi
+
+        CPPFLAGS="-I${withval}/include $CPPFLAGS"
+        LDFLAGS="-L${withval}/lib $LDFLAGS"
+       ;;
+esac
 
 fi
+
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to include OpenSSL support" >&5
 $as_echo_n "checking whether to include OpenSSL support... " >&6; }
@@ -13165,23 +13179,29 @@ fi
 fi
 
 
-if test "${with_zlibinc+set}" = set; then
 
-    case "$with_zlibinc" in
-    yes|no)
-      echo "configure: warning: --with-zlibinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_zlibinc}; then
-        echo "configure: warning: called with --with-zlibinc, but zlib base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_zlibinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_zlibinc}/lib $LDFLAGS"
-    ;;
-    esac
+
+# Check whether --with-zlibinc was given.
+if test "${with_zlibinc+set}" = set; then :
+  withval=$with_zlibinc; case $withval in #(
+  yes|no) :
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --with-zlibinc called without argument - will use default" >&5
+$as_echo "$as_me: WARNING: --with-zlibinc called without argument - will use default" >&2;}
+       ;; #(
+  *) :
+
+        if test ! -d ${withval}; then
+          as_fn_error $? "called with --with-zlibinc but zlib base directory ${withval} does not exist or is not a directory." "$LINENO" 5
+        fi
+
+        CPPFLAGS="-I${withval}/include $CPPFLAGS"
+        LDFLAGS="-L${withval}/lib $LDFLAGS"
+       ;;
+esac
 
 fi
+
 
 ZLIBLIBS=""
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to include zlib support" >&5
@@ -13235,23 +13255,29 @@ fi
 
 
 
-if test "${with_libtiffinc+set}" = set; then
 
-    case "$with_libtiffinc" in
-    yes|no)
-      echo "configure: warning: --with-libtiffinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_libtiffinc}; then
-        echo "configure: warning: called with --with-libtiffinc, but libtiff base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_libtiffinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_libtiffinc}/lib $LDFLAGS"
-    ;;
-    esac
+
+# Check whether --with-libtiffinc was given.
+if test "${with_libtiffinc+set}" = set; then :
+  withval=$with_libtiffinc; case $withval in #(
+  yes|no) :
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --with-libtiffinc called without argument - will use default" >&5
+$as_echo "$as_me: WARNING: --with-libtiffinc called without argument - will use default" >&2;}
+       ;; #(
+  *) :
+
+        if test ! -d ${withval}; then
+          as_fn_error $? "called with --with-libtiffinc but libtiff base directory ${withval} does not exist or is not a directory." "$LINENO" 5
+        fi
+
+        CPPFLAGS="-I${withval}/include $CPPFLAGS"
+        LDFLAGS="-L${withval}/lib $LDFLAGS"
+       ;;
+esac
 
 fi
+
 
 TIFFLIBS=""
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to include libtiff support" >&5
@@ -13450,22 +13476,29 @@ fi
 
 
 
-if test "${with_libpnginc+set}" = set; then
 
-    case "$with_libpnginc" in
-    yes|no)
-      echo "configure: warning: --with-libpnginc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_libpnginc}; then
-        echo "configure: warning: called with --with-libpnginc, but libpng base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_libpnginc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_libpnginc}/lib $LDFLAGS"
-    ;;
-    esac
+
+# Check whether --with-libpnginc was given.
+if test "${with_libpnginc+set}" = set; then :
+  withval=$with_libpnginc; case $withval in #(
+  yes|no) :
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --with-libpnginc called without argument - will use default" >&5
+$as_echo "$as_me: WARNING: --with-libpnginc called without argument - will use default" >&2;}
+       ;; #(
+  *) :
+
+        if test ! -d ${withval}; then
+          as_fn_error $? "called with --with-libpnginc but libpng base directory ${withval} does not exist or is not a directory." "$LINENO" 5
+        fi
+
+        CPPFLAGS="-I${withval}/include $CPPFLAGS"
+        LDFLAGS="-L${withval}/lib $LDFLAGS"
+       ;;
+esac
+
 fi
+
 
 for ac_header in libpng/png.h
 do :
@@ -13549,23 +13582,29 @@ fi
 
 
 
-if test "${with_libxmlinc+set}" = set; then
 
-    case "$with_libxmlinc" in
-    yes|no)
-      echo "configure: warning: --with-libxmlinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_libxmlinc}; then
-        echo "configure: warning: called with --with-libxmlinc, but libxml base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_libxmlinc}/include/libxml2 $CPPFLAGS"
-      LDFLAGS="-L${with_libxmlinc}/lib $LDFLAGS"
-    ;;
-    esac
+
+# Check whether --with-libxmlinc was given.
+if test "${with_libxmlinc+set}" = set; then :
+  withval=$with_libxmlinc; case $withval in #(
+  yes|no) :
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --with-libxmlinc called without argument - will use default" >&5
+$as_echo "$as_me: WARNING: --with-libxmlinc called without argument - will use default" >&2;}
+       ;; #(
+  *) :
+
+        if test ! -d ${withval}; then
+          as_fn_error $? "called with --with-libxmlinc but libxml base directory ${withval} does not exist or is not a directory." "$LINENO" 5
+        fi
+
+        CPPFLAGS="-I${withval}/include $CPPFLAGS"
+        LDFLAGS="-L${withval}/lib $LDFLAGS"
+       ;;
+esac
 
 fi
+
 
 LIBXMLCFLAGS=`xml2-config --cflags 2>/dev/null`
 if test "${LIBXMLCFLAGS+set}" = set; then
@@ -13625,23 +13664,29 @@ fi
 
 
 
-if test "${with_libwrapinc+set}" = set; then
 
-    case "$with_libwrapinc" in
-    yes|no)
-      echo "configure: warning: --with-libwrapinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_libwrapinc}; then
-        echo "configure: warning: called with --with-libwrapinc, but libwrap base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_libwrapinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_libwrapinc}/lib $LDFLAGS"
-    ;;
-    esac
+
+# Check whether --with-libwrapinc was given.
+if test "${with_libwrapinc+set}" = set; then :
+  withval=$with_libwrapinc; case $withval in #(
+  yes|no) :
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --with-libwrapinc called without argument - will use default" >&5
+$as_echo "$as_me: WARNING: --with-libwrapinc called without argument - will use default" >&2;}
+       ;; #(
+  *) :
+
+        if test ! -d ${withval}; then
+          as_fn_error $? "called with --with-libwrapinc but libwrap base directory ${withval} does not exist or is not a directory." "$LINENO" 5
+        fi
+
+        CPPFLAGS="-I${withval}/include $CPPFLAGS"
+        LDFLAGS="-L${withval}/lib $LDFLAGS"
+       ;;
+esac
 
 fi
+
 
 TCPWRAPPERLIBS=""
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to include libwrap support" >&5
@@ -13712,22 +13757,29 @@ fi
 
 
 
-if test "${with_libsndfileinc+set}" = set; then
 
-    case "$with_libsndfileinc" in
-    yes|no)
-      echo "configure: warning: --with-libsndfileinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_libsndfileinc}; then
-        echo "configure: warning: called with --with-libsndfileinc, but libsndfile base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_libsndfileinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_libsndfileinc}/lib $LDFLAGS"
-    ;;
-    esac
+
+# Check whether --with-libsndfileinc was given.
+if test "${with_libsndfileinc+set}" = set; then :
+  withval=$with_libsndfileinc; case $withval in #(
+  yes|no) :
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --with-libsndfileinc called without argument - will use default" >&5
+$as_echo "$as_me: WARNING: --with-libsndfileinc called without argument - will use default" >&2;}
+       ;; #(
+  *) :
+
+        if test ! -d ${withval}; then
+          as_fn_error $? "called with --with-libsndfileinc but libsndfile base directory ${withval} does not exist or is not a directory." "$LINENO" 5
+        fi
+
+        CPPFLAGS="-I${withval}/include $CPPFLAGS"
+        LDFLAGS="-L${withval}/lib $LDFLAGS"
+       ;;
+esac
+
 fi
+
 
 SNDFILELIBS=""
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to include libsndfile support" >&5
@@ -13782,23 +13834,29 @@ fi
 
 
 
-if test "${with_libiconvinc+set}" = set; then
 
-    case "$with_libiconvinc" in
-    yes|no)
-      echo "configure: warning: --with-libiconvinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_libiconvinc}; then
-        echo "configure: warning: called with --with-libiconvinc, but libiconv base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_libiconvinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_libiconvinc}/lib $LDFLAGS"
-    ;;
-    esac
+
+# Check whether --with-libiconvinc was given.
+if test "${with_libiconvinc+set}" = set; then :
+  withval=$with_libiconvinc; case $withval in #(
+  yes|no) :
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --with-libiconvinc called without argument - will use default" >&5
+$as_echo "$as_me: WARNING: --with-libiconvinc called without argument - will use default" >&2;}
+       ;; #(
+  *) :
+
+        if test ! -d ${withval}; then
+          as_fn_error $? "called with --with-libiconvinc but libiconv base directory ${withval} does not exist or is not a directory." "$LINENO" 5
+        fi
+
+        CPPFLAGS="-I${withval}/include $CPPFLAGS"
+        LDFLAGS="-L${withval}/lib $LDFLAGS"
+       ;;
+esac
 
 fi
+
 
 ICONVLIBS=""
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to include libiconv support" >&5

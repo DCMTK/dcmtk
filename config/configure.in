@@ -884,30 +884,12 @@ dnl -------------------------------------------------------
 dnl Check for OpenSSL support
 dnl -------------------------------------------------------
 
-if test "${with_opensslinc+set}" = set; then
-
-    case "$with_opensslinc" in
-    yes|no)
-      echo "configure: warning: --with-opensslinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_opensslinc}; then
-        echo "configure: warning: called with --with-opensslinc, but openssl base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-
-      CPPFLAGS="-I${with_opensslinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_opensslinc}/lib $LDFLAGS"
-    ;;
-    esac
-
-fi
+AC_MY_LIB_PATH([openssl], [OpenSSL])
 
 AC_MSG_CHECKING([whether to include OpenSSL support])
 AC_ARG_WITH(openssl,
-[  --with-openssl          include OpenSSL support (default: auto)
-  --without-openssl       don't include OpenSSL support
-  --with-opensslinc=DIR   location of OpenSSL includes and libraries],
+[AS_HELP_STRING([--with-openssl], [include OpenSSL support (default: auto)])
+AS_HELP_STRING([--without-openssl], [don't include OpenSSL support])],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
@@ -945,30 +927,13 @@ dnl -------------------------------------------------------
 dnl Check for zlib support
 dnl -------------------------------------------------------
 
-if test "${with_zlibinc+set}" = set; then
-
-    case "$with_zlibinc" in
-    yes|no)
-      echo "configure: warning: --with-zlibinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_zlibinc}; then
-        echo "configure: warning: called with --with-zlibinc, but zlib base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_zlibinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_zlibinc}/lib $LDFLAGS"
-    ;;
-    esac
-
-fi
+AC_MY_LIB_PATH([zlib])
 
 ZLIBLIBS=""
 AC_MSG_CHECKING(whether to include zlib support)
 AC_ARG_WITH(zlib,
-[  --with-zlib             include zlib support (default: auto)
-  --without-zlib          don't include zlib support
-  --with-zlibinc=DIR      location of zlib includes and libraries],
+[AS_HELP_STRING([--with-zlib], [include zlib support (default: auto)])
+AS_HELP_STRING([--without-zlib], [don't include zlib support])],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
@@ -992,30 +957,13 @@ dnl -------------------------------------------------------
 dnl Check for libtiff support
 dnl -------------------------------------------------------
 
-if test "${with_libtiffinc+set}" = set; then
-
-    case "$with_libtiffinc" in
-    yes|no)
-      echo "configure: warning: --with-libtiffinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_libtiffinc}; then
-        echo "configure: warning: called with --with-libtiffinc, but libtiff base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_libtiffinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_libtiffinc}/lib $LDFLAGS"
-    ;;
-    esac
-
-fi
+AC_MY_LIB_PATH([libtiff])
 
 TIFFLIBS=""
 AC_MSG_CHECKING(whether to include libtiff support)
 AC_ARG_WITH(libtiff,
-[  --with-libtiff          include libtiff support (default: auto)
-  --without-libtiff       don't include libtiff support
-  --with-libtiffinc=DIR   location of libtiff includes and libraries],
+[AS_HELP_STRING([--with-libtiff], [include libtiff support (default: auto)])
+AS_HELP_STRING([--without-libtiff], [don't include libtiff support])],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
@@ -1046,22 +994,7 @@ dnl -------------------------------------------------------
 dnl Check for libpng support
 dnl -------------------------------------------------------
 
-if test "${with_libpnginc+set}" = set; then
-
-    case "$with_libpnginc" in
-    yes|no)
-      echo "configure: warning: --with-libpnginc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_libpnginc}; then
-        echo "configure: warning: called with --with-libpnginc, but libpng base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_libpnginc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_libpnginc}/lib $LDFLAGS"
-    ;;
-    esac
-fi
+AC_MY_LIB_PATH([libpng])
 
 dnl perform check for <libpng/png.h> only after we have evaluated --with-libpnginc
 AC_CHECK_HEADERS(libpng/png.h)
@@ -1069,9 +1002,8 @@ AC_CHECK_HEADERS(libpng/png.h)
 PNGLIBS=""
 AC_MSG_CHECKING(whether to include libpng support)
 AC_ARG_WITH(libpng,
-[  --with-libpng           include libpng support (default: auto)
-  --without-libpng        don't include libpng support
-  --with-libpnginc=DIR    location of libpng includes and libraries],
+[AS_HELP_STRING([--with-libpng], [include libpng support (default: auto)])
+AS_HELP_STRING([--without-libpng], [don't include libpng support])],
 [ case "$withval" in
   yes)
     if test "x$ZLIBLIBS" != x; then
@@ -1110,23 +1042,7 @@ dnl -------------------------------------------------------
 dnl Check for libxml support
 dnl -------------------------------------------------------
 
-if test "${with_libxmlinc+set}" = set; then
-
-    case "$with_libxmlinc" in
-    yes|no)
-      echo "configure: warning: --with-libxmlinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_libxmlinc}; then
-        echo "configure: warning: called with --with-libxmlinc, but libxml base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_libxmlinc}/include/libxml2 $CPPFLAGS"
-      LDFLAGS="-L${with_libxmlinc}/lib $LDFLAGS"
-    ;;
-    esac
-
-fi
+AC_MY_LIB_PATH([libxml])
 
 LIBXMLCFLAGS=`xml2-config --cflags 2>/dev/null`
 if test "${LIBXMLCFLAGS+set}" = set; then
@@ -1137,9 +1053,8 @@ fi
 XMLLIBS=""
 AC_MSG_CHECKING(whether to include libxml support)
 AC_ARG_WITH(libxml,
-[  --with-libxml           include libxml support (default: auto)
-  --without-libxml        don't include libxml support
-  --with-libxmlinc=DIR    location of libxml includes and libraries],
+[AS_HELP_STRING([--with-libxml], [include libxml support (default: auto)])
+AS_HELP_STRING([--without-libxml], [don't include libxml support])],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
@@ -1163,30 +1078,13 @@ dnl -------------------------------------------------------
 dnl Check for libwrap (TCP wrapper) support
 dnl -------------------------------------------------------
 
-if test "${with_libwrapinc+set}" = set; then
-
-    case "$with_libwrapinc" in
-    yes|no)
-      echo "configure: warning: --with-libwrapinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_libwrapinc}; then
-        echo "configure: warning: called with --with-libwrapinc, but libwrap base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_libwrapinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_libwrapinc}/lib $LDFLAGS"
-    ;;
-    esac
-
-fi
+AC_MY_LIB_PATH([libwrap])
 
 TCPWRAPPERLIBS=""
 AC_MSG_CHECKING(whether to include libwrap support)
 AC_ARG_WITH(libwrap,
-[  --with-libwrap          include libwrap (TCP wrapper) support (default: auto)
-  --without-libwrap       don't include libwrap support
-  --with-libwrapinc=DIR   location of libwrap includes and libraries],
+[AS_HELP_STRING([--with-libwrap], [include libwrap support (default: auto)])
+AS_HELP_STRING([--without-libwrap], [don't include libwrap support])],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
@@ -1228,29 +1126,13 @@ dnl -------------------------------------------------------
 dnl Check for libsndfile support
 dnl -------------------------------------------------------
 
-if test "${with_libsndfileinc+set}" = set; then
-
-    case "$with_libsndfileinc" in
-    yes|no)
-      echo "configure: warning: --with-libsndfileinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_libsndfileinc}; then
-        echo "configure: warning: called with --with-libsndfileinc, but libsndfile base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_libsndfileinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_libsndfileinc}/lib $LDFLAGS"
-    ;;
-    esac
-fi
+AC_MY_LIB_PATH([libsndfile])
 
 SNDFILELIBS=""
 AC_MSG_CHECKING(whether to include libsndfile support)
 AC_ARG_WITH(libsndfile,
-  [  --with-libsndfile         include libsndfile support (default: auto)
-  --without-libsndfile      don't include libsndfile support
-  --with-libsndfileinc=DIR  location of libsndfile includes and libraries],
+  [AS_HELP_STRING([--with-libsndfile], [include libsndfile support (default: auto)])
+AS_HELP_STRING([--without-libsndfile], [don't include libsndfile support])],
   [ case "$withval" in
     yes)
       AC_MSG_RESULT(yes)
@@ -1275,30 +1157,13 @@ dnl -------------------------------------------------------
 dnl Check for libiconv support
 dnl -------------------------------------------------------
 
-if test "${with_libiconvinc+set}" = set; then
-
-    case "$with_libiconvinc" in
-    yes|no)
-      echo "configure: warning: --with-libiconvinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_libiconvinc}; then
-        echo "configure: warning: called with --with-libiconvinc, but libiconv base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_libiconvinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_libiconvinc}/lib $LDFLAGS"
-    ;;
-    esac
-
-fi
+AC_MY_LIB_PATH([libiconv])
 
 ICONVLIBS=""
 AC_MSG_CHECKING(whether to include libiconv support)
 AC_ARG_WITH(libiconv,
-[  --with-libiconv         include libiconv support (default: auto)
-  --without-libiconv      don't include libiconv support
-  --with-libiconvinc=DIR  location of libiconv includes and libraries],
+[AS_HELP_STRING([--with-libiconv], [include libiconv support (default: auto)])
+AS_HELP_STRING([--without-libiconv], [don't include libiconv support])],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
