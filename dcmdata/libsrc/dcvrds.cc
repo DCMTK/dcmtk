@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDecimalString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:13 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2011-10-21 10:09:09 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,10 +203,10 @@ OFCondition DcmDecimalString::writeXML(STD_NAMESPACE ostream &out,
         {
             /* explicitly convert to OFString because of possible NULL bytes */
             OFString stringVal(value, length);
-            const OFBool converNonASCII = (flags & DCMTypes::XF_convertNonASCII);
+            const OFBool convertNonASCII = (flags & DCMTypes::XF_convertNonASCII) > 0;
             /* check whether conversion to XML markup string is required */
-            if (OFStandard::checkForMarkupConversion(stringVal, converNonASCII))
-                OFStandard::convertToMarkupStream(out, stringVal, converNonASCII);
+            if (OFStandard::checkForMarkupConversion(stringVal, convertNonASCII))
+                OFStandard::convertToMarkupStream(out, stringVal, convertNonASCII);
             else
                 out << value;
         }
@@ -231,6 +231,9 @@ OFCondition DcmDecimalString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
+** Revision 1.31  2011-10-21 10:09:09  joergr
+** Minor fix to keep VisualStudio from moaning.
+**
 ** Revision 1.30  2011-10-18 14:00:13  joergr
 ** Added support for embedded NULL bytes in string element values.
 **

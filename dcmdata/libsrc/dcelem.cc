@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:12 $
- *  CVS/RCS Revision: $Revision: 1.96 $
+ *  Update Date:      $Date: 2011-10-21 10:09:09 $
+ *  CVS/RCS Revision: $Revision: 1.97 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1336,10 +1336,10 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
         OFString value;
         if (getOFStringArray(value).good())
         {
-            const OFBool converNonASCII = (flags & DCMTypes::XF_convertNonASCII);
+            const OFBool convertNonASCII = (flags & DCMTypes::XF_convertNonASCII) > 0;
             /* check whether conversion to XML markup string is required */
-            if (OFStandard::checkForMarkupConversion(value, converNonASCII))
-                OFStandard::convertToMarkupStream(out, value, converNonASCII);
+            if (OFStandard::checkForMarkupConversion(value, convertNonASCII))
+                OFStandard::convertToMarkupStream(out, value, convertNonASCII);
             else
                 out << value;
         }
@@ -1838,6 +1838,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.97  2011-10-21 10:09:09  joergr
+** Minor fix to keep VisualStudio from moaning.
+**
 ** Revision 1.96  2011-10-18 14:00:12  joergr
 ** Added support for embedded NULL bytes in string element values.
 **

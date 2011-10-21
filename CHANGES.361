@@ -27,6 +27,10 @@ Changes between releases are documented here.
            ofstd/tests/Makefile.in
            ofstd/tests/tests.cc
 
+- Minor fix to keep VisualStudio from moaning.
+  Affects: dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcvrds.cc
+
 **** Changes from 2011.10.21 (schlachter)
 
 - Don't define a static version of isatty() since it seems to be not needed.
