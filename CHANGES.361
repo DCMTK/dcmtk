@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.23 (riesmeier)
+
+- Removed reference to libiconv header file "localcharset.h".
+  Affects: ofstd/libsrc/Makefile.dep
+
 **** Changes from 2011.10.21 (riesmeier)
 
 - Added class for managing and converting between different character encodings
