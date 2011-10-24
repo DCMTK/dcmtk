@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-24 12:49:34 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-10-24 13:03:09 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,7 +143,7 @@ OFCondition OFCharacterEncoding::selectEncoding(const OFString &fromEncoding,
     {
         // if not, return with an appropriate error message
         createErrnoCondition(status, "Cannot select character encoding: ",
-            EC_CODE_IllegalEncoding);
+            EC_CODE_CannotSelectEncoding);
     }
     return status;
 #else
@@ -286,6 +286,9 @@ OFString OFCharacterEncoding::getLibraryVersionString()
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.cc,v $
+ * Revision 1.3  2011-10-24 13:03:09  joergr
+ * Changed name of status code constant for "illegal character encoding".
+ *
  * Revision 1.2  2011-10-24 12:49:34  joergr
  * Made sure that iconvctl() is really supported by the libiconv toolkit.
  *

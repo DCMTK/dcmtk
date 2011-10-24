@@ -18,8 +18,8 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-21 09:14:59 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2011-10-24 13:03:10 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@ const OFCondition EC_MemoryExhausted   (ECC_MemoryExhausted);
 const OFCondition EC_NoEncodingLibrary (ECC_NoEncodingLibrary);
 const OFCondition EC_NoEncodingSelected(ECC_NoEncodingSelected);
 
-const unsigned short EC_CODE_IllegalEncoding        = 5;
+const unsigned short EC_CODE_CannotSelectEncoding   = 5;
 const unsigned short EC_CODE_CannotConvertEncoding  = 6;
 const unsigned short EC_CODE_CannotControlConverter = 7;
 
@@ -117,6 +117,9 @@ OFBool OFConditionString::deletable() const
  *
  * CVS/RCS Log:
  * $Log: ofcond.cc,v $
+ * Revision 1.7  2011-10-24 13:03:10  joergr
+ * Changed name of status code constant for "illegal character encoding".
+ *
  * Revision 1.6  2011-10-21 09:14:59  joergr
  * Added class for managing and converting between different character encodings
  * based on the libiconv toolkit.

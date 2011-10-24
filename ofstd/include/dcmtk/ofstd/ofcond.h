@@ -18,8 +18,8 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-21 09:14:57 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2011-10-24 13:03:07 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -465,8 +465,8 @@ extern const OFCondition EC_NoEncodingLibrary;
 /// condition constant: error, no character encoding selected
 extern const OFCondition EC_NoEncodingSelected;
 
-/// status code constant: error, illegal character encoding
-extern const unsigned short EC_CODE_IllegalEncoding;
+/// status code constant: error, cannot select character encoding
+extern const unsigned short EC_CODE_CannotSelectEncoding;
 
 /// status code constant: error, cannot convert character encoding
 extern const unsigned short EC_CODE_CannotConvertEncoding;
@@ -484,6 +484,9 @@ extern const unsigned short EC_CODE_CannotControlConverter;
 /*
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
+ * Revision 1.12  2011-10-24 13:03:07  joergr
+ * Changed name of status code constant for "illegal character encoding".
+ *
  * Revision 1.11  2011-10-21 09:14:57  joergr
  * Added class for managing and converting between different character encodings
  * based on the libiconv toolkit.
