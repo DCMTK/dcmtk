@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.24 (riesmeier)
+
+- Removed outdated comment that the "implementation of sigmoid transformation
+  is still missing".
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+
 **** Changes from 2011.10.23 (riesmeier)
 
 - Removed reference to libiconv header file "localcharset.h".

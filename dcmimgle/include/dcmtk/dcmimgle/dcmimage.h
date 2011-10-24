@@ -18,8 +18,8 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-27 10:01:06 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Update Date:      $Date: 2011-10-24 10:42:37 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -700,8 +700,7 @@ class DicomImage
             Image->getMonoImagePtr()->getWindowCount() : 0;
     }
 
-    /** set VOI LUT function.
-     *  NB: Implementation of sigmoid transformation in "dimoopxt.h" is still missing.
+    /** set VOI LUT function
      *
      ** @param  function  type of VOI LUT function (default, linear or sigmoid).
      *                    'default' basically means the same as 'linear'.
@@ -718,7 +717,6 @@ class DicomImage
 
     /** get VOI LUT function.
      *  possible values are: EFV_Default, EFV_Linear, EFV_Sigmoid.
-     *  NB: Implementation of sigmoid transformation in "dimoopxt.h" is still missing.
      *
      ** @return currently active VOI LUT function or EFV_Default if not set
      */
@@ -1891,6 +1889,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
+ * Revision 1.67  2011-10-24 10:42:37  joergr
+ * Removed outdated comment that the "implementation of sigmoid transformation
+ * is still missing".
+ *
  * Revision 1.66  2011-04-27 10:01:06  joergr
  * Added more checks on the type of DICOM object passed to the constructor.
  *
