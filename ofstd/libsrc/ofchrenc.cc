@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-24 13:03:09 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-10-24 15:07:34 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -282,10 +282,27 @@ OFString OFCharacterEncoding::getLibraryVersionString()
 }
 
 
+size_t OFCharacterEncoding::countCharactersInUTF8String(const OFString &utf8String)
+{
+    const size_t length = utf8String.length();
+    size_t count = 0;
+    // iterate over all bytes and count start of UTF-8 characters
+    for (size_t i = 0; i < length; i++)
+    {
+        if ((utf8String.at(i) & 0xc0) != 0x80)
+            count++;
+    }
+    return count;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.cc,v $
+ * Revision 1.4  2011-10-24 15:07:34  joergr
+ * Added static method counting the characters in a given UTF-8 string.
+ *
  * Revision 1.3  2011-10-24 13:03:09  joergr
  * Changed name of status code constant for "illegal character encoding".
  *

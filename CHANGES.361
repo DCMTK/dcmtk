@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.24 (riesmeier)
 
+- Added static method counting the characters in a given UTF-8 string.
+  Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
+           ofstd/libsrc/ofchrenc.cc
+           ofstd/tests/tchrenc.cc
+           ofstd/tests/tests.cc
+
 - Changed name of status code constant for "illegal character encoding".
   Affects: ofstd/include/dcmtk/ofstd/ofcond.h
            ofstd/libsrc/ofchrenc.cc

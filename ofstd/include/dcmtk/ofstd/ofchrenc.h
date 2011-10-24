@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-24 12:49:33 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-10-24 15:07:33 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,6 +153,15 @@ class OFCharacterEncoding
      */
     static OFString getLibraryVersionString();
 
+    /** count characters in given UTF-8 string and return the resulting number.
+     *  Please note that invalid UTF-8 encodings are not handled properly.
+     *  ASCII strings (7-bit) are also supported, although OFString::length()
+     *  is probably much faster.
+     *  @param  utf8String  valid character string with UTF-8 encoding
+     *  @return number of characters in given UTF-8 string
+     */
+    static size_t countCharactersInUTF8String(const OFString &utf8String);
+
 
   protected:
 
@@ -207,6 +216,9 @@ class OFCharacterEncoding
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.h,v $
+ * Revision 1.3  2011-10-24 15:07:33  joergr
+ * Added static method counting the characters in a given UTF-8 string.
+ *
  * Revision 1.2  2011-10-24 12:49:33  joergr
  * Made sure that iconvctl() is really supported by the libiconv toolkit.
  *

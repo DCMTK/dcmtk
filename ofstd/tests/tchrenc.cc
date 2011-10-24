@@ -18,8 +18,8 @@
  *  Purpose: test program for OFCharacterEncoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-24 12:49:36 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-10-24 15:07:36 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,10 +142,36 @@ OFTEST(ofstd_OFCharacterEncoding_5)
 }
 
 
+OFTEST(ofstd_OFCharacterEncoding_6)
+{
+    if (OFCharacterEncoding::isLibraryAvailable())
+    {
+        OFCharacterEncoding charEnc;
+        OFString resultStr1, resultStr2;
+        OFCHECK(charEnc.selectEncoding("ISO-8859-1", "UTF-8").good());
+        OFCHECK(charEnc.convertString("J\366rg", resultStr1).good());
+        // count number of bytes and number of characters
+        OFCHECK_EQUAL(resultStr1.length(), 5);
+        OFCHECK_EQUAL(charEnc.countCharactersInUTF8String(resultStr1), 4);
+        OFCHECK_EQUAL(charEnc.countCharactersInUTF8String("Joerg"), 5);
+        OFCHECK(charEnc.convertString("J\351r\364me", resultStr2).good());
+        // count number of bytes and number of characters
+        OFCHECK_EQUAL(resultStr2.length(), 8);
+        OFCHECK_EQUAL(charEnc.countCharactersInUTF8String(resultStr2), 6);
+        OFCHECK_EQUAL(charEnc.countCharactersInUTF8String("Jerome"), 6);
+        // final test: empty string
+        OFCHECK_EQUAL(charEnc.countCharactersInUTF8String(""), 0);
+    }
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: tchrenc.cc,v $
+ * Revision 1.3  2011-10-24 15:07:36  joergr
+ * Added static method counting the characters in a given UTF-8 string.
+ *
  * Revision 1.2  2011-10-24 12:49:36  joergr
  * Made sure that iconvctl() is really supported by the libiconv toolkit.
  *

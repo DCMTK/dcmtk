@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-21 09:15:03 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2011-10-24 15:07:36 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,12 +64,16 @@ OFTEST_REGISTER(ofstd_OFCharacterEncoding_2);
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_3);
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_4);
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_5);
+OFTEST_REGISTER(ofstd_OFCharacterEncoding_6);
 OFTEST_MAIN("ofstd")
 
 /*
  *
  * CVS/RCS Log:
  * $Log: tests.cc,v $
+ * Revision 1.5  2011-10-24 15:07:36  joergr
+ * Added static method counting the characters in a given UTF-8 string.
+ *
  * Revision 1.4  2011-10-21 09:15:03  joergr
  * Added class for managing and converting between different character encodings
  * based on the libiconv toolkit.
