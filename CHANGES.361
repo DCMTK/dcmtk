@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.24 (riesmeier)
 
+- Made sure that iconvctl() is really supported by the libiconv toolkit.
+  Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
+           ofstd/libsrc/ofchrenc.cc
+           ofstd/tests/tchrenc.cc
+
 - Removed outdated comment that the "implementation of sigmoid transformation
   is still missing".
   Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h

@@ -18,8 +18,8 @@
  *  Purpose: test program for OFCharacterEncoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-21 09:15:03 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-10-24 12:49:36 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,15 +108,17 @@ OFTEST(ofstd_OFCharacterEncoding_4)
     if (OFCharacterEncoding::isLibraryAvailable())
     {
         OFCharacterEncoding charEnc;
-        OFString resultStr;
         // enable transliteration mode
-        charEnc.setTransliterationMode(OFTrue);
-        OFCHECK(charEnc.selectEncoding("ISO-8859-1", "ASCII").good());
-        OFCHECK(charEnc.convertString("J\366rg", resultStr).good());
-        OFCHECK_EQUAL(resultStr, "J\"org");
-        // disable transliteration mode
-        charEnc.setTransliterationMode(OFFalse);
-        OFCHECK(charEnc.convertString("J\366rg", resultStr).bad());
+        if (charEnc.setTransliterationMode(OFTrue).good())
+        {
+            OFString resultStr;
+            OFCHECK(charEnc.selectEncoding("ISO-8859-1", "ASCII").good());
+            OFCHECK(charEnc.convertString("J\366rg", resultStr).good());
+            OFCHECK_EQUAL(resultStr, "J\"org");
+            // disable transliteration mode
+            charEnc.setTransliterationMode(OFFalse);
+            OFCHECK(charEnc.convertString("J\366rg", resultStr).bad());
+        }
     }
 }
 
@@ -125,15 +127,17 @@ OFTEST(ofstd_OFCharacterEncoding_5)
     if (OFCharacterEncoding::isLibraryAvailable())
     {
         OFCharacterEncoding charEnc;
-        OFString resultStr;
         // enable discard illegal sequence mode
-        charEnc.setDiscardIllegalSequenceMode(OFTrue);
-        OFCHECK(charEnc.selectEncoding("ISO-8859-1", "ASCII").good());
-        OFCHECK(charEnc.convertString("J\366rg", resultStr).good());
-        OFCHECK_EQUAL(resultStr, "Jrg");
-        // disable discard illegal sequence mode
-        charEnc.setDiscardIllegalSequenceMode(OFFalse);
-        OFCHECK(charEnc.convertString("J\366rg", resultStr).bad());
+        if (charEnc.setDiscardIllegalSequenceMode(OFTrue).good())
+        {
+            OFString resultStr;
+            OFCHECK(charEnc.selectEncoding("ISO-8859-1", "ASCII").good());
+            OFCHECK(charEnc.convertString("J\366rg", resultStr).good());
+            OFCHECK_EQUAL(resultStr, "Jrg");
+            // disable discard illegal sequence mode
+            charEnc.setDiscardIllegalSequenceMode(OFFalse);
+            OFCHECK(charEnc.convertString("J\366rg", resultStr).bad());
+        }
     }
 }
 
@@ -142,10 +146,12 @@ OFTEST(ofstd_OFCharacterEncoding_5)
  *
  * CVS/RCS Log:
  * $Log: tchrenc.cc,v $
+ * Revision 1.2  2011-10-24 12:49:36  joergr
+ * Made sure that iconvctl() is really supported by the libiconv toolkit.
+ *
  * Revision 1.1  2011-10-21 09:15:03  joergr
  * Added class for managing and converting between different character encodings
  * based on the libiconv toolkit.
- *
  *
  *
  */

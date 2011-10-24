@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-21 09:14:59 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-10-24 12:49:34 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,15 +85,29 @@ OFBool OFCharacterEncoding::getDiscardIllegalSequenceMode() const
 }
 
 
-void OFCharacterEncoding::setTransliterationMode(const OFBool mode)
+OFCondition OFCharacterEncoding::setTransliterationMode(const OFBool mode)
 {
+#if _LIBICONV_VERSION >= 0x0108
     TransliterationMode = mode;
+    return EC_Normal;
+#else
+    // return with an error because iconvctl() is not supported
+    return makeOFCondition(0, EC_CODE_CannotControlConverter, OF_error,
+        "Cannot control character encoding converter: iconvctl() not supported");
+#endif
 }
 
 
-void OFCharacterEncoding::setDiscardIllegalSequenceMode(const OFBool mode)
+OFCondition OFCharacterEncoding::setDiscardIllegalSequenceMode(const OFBool mode)
 {
+#if _LIBICONV_VERSION >= 0x0108
     DiscardIllegalSequenceMode = mode;
+    return EC_Normal;
+#else
+    // return with an error because iconvctl() is not supported
+    return makeOFCondition(0, EC_CODE_CannotControlConverter, OF_error,
+        "Cannot control character encoding converter: iconvctl() not supported");
+#endif
 }
 
 
@@ -128,7 +142,8 @@ OFCondition OFCharacterEncoding::selectEncoding(const OFString &fromEncoding,
     if (!isConversionDescriptorValid())
     {
         // if not, return with an appropriate error message
-        createErrnoCondition(status, "Illegal character encoding: ", EC_CODE_IllegalEncoding);
+        createErrnoCondition(status, "Cannot select character encoding: ",
+            EC_CODE_IllegalEncoding);
     }
     return status;
 #else
@@ -149,20 +164,24 @@ OFCondition OFCharacterEncoding::convertString(const OFString &fromString,
     // check whether a conversion descriptor has been allocated
     if (isConversionDescriptorValid())
     {
+#if _LIBICONV_VERSION >= 0x0108
         // enable/disable transliteration (use of similar characters) in the conversion
         int translit = (TransliterationMode) ? 1 : 0;
         if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &translit) < 0)
         {
             // if this didn't work, return with an appropriate error message
-            createErrnoCondition(status, "Cannot control character encoding converter: ", EC_CODE_CannotControlConverter);
+            createErrnoCondition(status, "Cannot control character encoding feature TRANSLITERATE: ",
+                EC_CODE_CannotControlConverter);
         }
         // enable/disable discarding of illegal sequences in the conversion
         int discard = (DiscardIllegalSequenceMode) ? 1 : 0;
         if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &discard) < 0)
         {
             // if this didn't work, return with an appropriate error message
-            createErrnoCondition(status, "Cannot control character encoding converter: ", EC_CODE_CannotControlConverter);
+            createErrnoCondition(status, "Cannot control character encoding feature DISCARD_ILSEQ: ",
+                EC_CODE_CannotControlConverter);
         }
+#endif
         // if the input string is empty, we are done
         if (status.good() && !fromString.empty())
         {
@@ -189,7 +208,8 @@ OFCondition OFCharacterEncoding::convertString(const OFString &fromString,
                     if ((errno != E2BIG) || (bufferLeft == bufferLength))
                     {
                         // if the conversion was unsuccessful, return with an appropriate error message
-                        createErrnoCondition(status, "Cannot convert character encoding: ", EC_CODE_CannotConvertEncoding);
+                        createErrnoCondition(status, "Cannot convert character encoding: ",
+                            EC_CODE_CannotConvertEncoding);
                         break;
                     }
                 }
@@ -266,10 +286,12 @@ OFString OFCharacterEncoding::getLibraryVersionString()
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.cc,v $
+ * Revision 1.2  2011-10-24 12:49:34  joergr
+ * Made sure that iconvctl() is really supported by the libiconv toolkit.
+ *
  * Revision 1.1  2011-10-21 09:14:59  joergr
  * Added class for managing and converting between different character encodings
  * based on the libiconv toolkit.
- *
  *
  *
  */

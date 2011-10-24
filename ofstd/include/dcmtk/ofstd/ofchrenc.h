@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-21 09:14:57 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-10-24 12:49:33 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,15 +83,17 @@ class OFCharacterEncoding
      *  characters that look similar to the original one.  By default, this
      *  mode is disabled.
      *  @param  mode  enable mode by OFTrue or disable it by OFFalse
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
-    void setTransliterationMode(const OFBool mode);
+    OFCondition setTransliterationMode(const OFBool mode);
 
     /** set mode specifying whether characters that cannot be represented in
      *  the destination character encoding will be silently discarded.  By
      *  default, this mode is disabled.
      *  @param  mode  enable mode by OFTrue or disable it by OFFalse
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
-    void setDiscardIllegalSequenceMode(const OFBool mode);
+    OFCondition setDiscardIllegalSequenceMode(const OFBool mode);
 
     /** get the current locale's character encoding
      *  @return the current locale's character encoding, should never be empty
@@ -205,10 +207,12 @@ class OFCharacterEncoding
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.h,v $
+ * Revision 1.2  2011-10-24 12:49:33  joergr
+ * Made sure that iconvctl() is really supported by the libiconv toolkit.
+ *
  * Revision 1.1  2011-10-21 09:14:57  joergr
  * Added class for managing and converting between different character encodings
  * based on the libiconv toolkit.
- *
  *
  *
  */
