@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-25 07:10:04 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2011-10-25 17:14:00 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,8 +121,9 @@ OFCondition OFCharacterEncoding::updateLocaleEncoding()
 {
 #ifdef WITH_LIBICONV
     // determine current locale's character encoding
-    LocaleEncoding = ::locale_charset();
-    // the above function always returns a non-empty string
+    LocaleEncoding = OFSTRING_GUARD(::locale_charset());
+    // basically, the above function should always return a non-empty string
+    // but older versions of libiconv might return NULL is certain cases
     return EC_Normal;
 #else
     return EC_NoEncodingLibrary;
@@ -310,6 +311,9 @@ size_t OFCharacterEncoding::countCharactersInUTF8String(const OFString &utf8Stri
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.cc,v $
+ * Revision 1.6  2011-10-25 17:14:00  joergr
+ * Be prepared that older versions of locale_charset() might return NULL.
+ *
  * Revision 1.5  2011-10-25 07:10:04  joergr
  * Added new convert method that accepts a C string and its length as input.
  *

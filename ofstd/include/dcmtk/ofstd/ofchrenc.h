@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-25 07:10:02 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2011-10-25 17:13:59 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@
 class OFCharacterEncoding
 {
 
- public:
+  public:
 
     /** constructor. Initializes the member variables, which includes the
      *  current locale's character encoding.
@@ -96,7 +96,7 @@ class OFCharacterEncoding
     OFCondition setDiscardIllegalSequenceMode(const OFBool mode);
 
     /** get the current locale's character encoding
-     *  @return the current locale's character encoding, should never be empty
+     *  @return the current locale's character encoding
      */
     const OFString &getLocaleEncoding() const;
 
@@ -236,6 +236,9 @@ class OFCharacterEncoding
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.h,v $
+ * Revision 1.5  2011-10-25 17:13:59  joergr
+ * Be prepared that older versions of locale_charset() might return NULL.
+ *
  * Revision 1.4  2011-10-25 07:10:02  joergr
  * Added new convert method that accepts a C string and its length as input.
  *

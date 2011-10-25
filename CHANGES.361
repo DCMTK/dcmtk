@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.25 (riesmeier)
 
+- Be prepared that older versions of locale_charset() might return NULL.
+  Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
+           ofstd/libsrc/ofchrenc.cc
+
 - Added new convert method that accepts a C string and its length as input.
   Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
            ofstd/libsrc/ofchrenc.cc
