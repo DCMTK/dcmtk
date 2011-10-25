@@ -18,8 +18,8 @@
  *  Purpose: test program for OFCharacterEncoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-24 15:07:36 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-10-25 07:10:05 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,17 @@ OFTEST(ofstd_OFCharacterEncoding_1)
         OFCHECK(charEnc.selectEncoding("ASCII", "UTF-8").good());
         OFCHECK(charEnc.convertString("Simple Text", resultStr).good());
         OFCHECK_EQUAL(resultStr, "Simple Text");
+        OFCHECK(charEnc.convertString("", resultStr, OFFalse /*clear*/).good());
+        OFCHECK_EQUAL(resultStr, "Simple Text");
+        OFCHECK(charEnc.convertString(NULL, 1, resultStr).good());
+        OFCHECK(resultStr.empty());
+        OFCHECK(charEnc.convertString("", 0, resultStr).good());
+        OFCHECK(resultStr.empty());
+        OFCHECK(charEnc.convertString(" ", 0, resultStr).good());
+        OFCHECK(resultStr.empty());
+        // check string with embedded NULL byte
+        OFCHECK(charEnc.convertString(" \0 ", 3, resultStr).good());
+        OFCHECK_EQUAL(resultStr, OFString(" \0 ", 3));
         OFCHECK(charEnc.selectEncoding("ASCII", "DCMTK").bad());
         OFCHECK(charEnc.selectEncoding("DCMTK", "ASCII").bad());
         OFCHECK(charEnc.selectEncoding("", "ASCII").good());
@@ -169,6 +180,9 @@ OFTEST(ofstd_OFCharacterEncoding_6)
  *
  * CVS/RCS Log:
  * $Log: tchrenc.cc,v $
+ * Revision 1.4  2011-10-25 07:10:05  joergr
+ * Added new convert method that accepts a C string and its length as input.
+ *
  * Revision 1.3  2011-10-24 15:07:36  joergr
  * Added static method counting the characters in a given UTF-8 string.
  *

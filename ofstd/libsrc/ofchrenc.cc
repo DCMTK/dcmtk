@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-24 15:07:34 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2011-10-25 07:10:04 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,6 +156,16 @@ OFCondition OFCharacterEncoding::convertString(const OFString &fromString,
                                                OFString &toString,
                                                const OFBool clear)
 {
+    // call the real method converting the given string
+    return convertString(fromString.c_str(), fromString.length(), toString, clear);
+}
+
+
+OFCondition OFCharacterEncoding::convertString(const char *fromString,
+                                               const size_t fromLength,
+                                               OFString &toString,
+                                               const OFBool clear)
+{
     // first, clear result variable if requested
     if (clear)
         toString.clear();
@@ -182,15 +192,15 @@ OFCondition OFCharacterEncoding::convertString(const OFString &fromString,
                 EC_CODE_CannotControlConverter);
         }
 #endif
-        // if the input string is empty, we are done
-        if (status.good() && !fromString.empty())
+        // if the input string is empty or NULL, we are done
+        if (status.good() && (fromString != NULL) && (fromLength > 0))
         {
 #ifdef _WIN32
-            const char *inputPos = fromString.c_str();
+            const char *inputPos = fromString;
 #else
-            char *inputPos = OFconst_cast(char *, fromString.c_str());
+            char *inputPos = OFconst_cast(char *, fromString);
 #endif
-            size_t inputLeft = fromString.length();
+            size_t inputLeft = fromLength;
             // set the conversion descriptor to the initial state
             ::iconv(ConversionDescriptor, NULL, NULL, NULL, NULL);
             // iterate as long as there are characters to be converted
@@ -300,6 +310,9 @@ size_t OFCharacterEncoding::countCharactersInUTF8String(const OFString &utf8Stri
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.cc,v $
+ * Revision 1.5  2011-10-25 07:10:04  joergr
+ * Added new convert method that accepts a C string and its length as input.
+ *
  * Revision 1.4  2011-10-24 15:07:34  joergr
  * Added static method counting the characters in a given UTF-8 string.
  *

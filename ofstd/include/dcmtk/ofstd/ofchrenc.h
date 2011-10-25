@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-24 15:07:33 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-10-25 07:10:02 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,6 +136,26 @@ class OFCharacterEncoding
                               OFString &toString,
                               const OFBool clear = OFTrue);
 
+    /** convert the given string between the selected character encodings.
+     *  That means selectEncoding() has to be called prior to this method.
+     *  Since the length of the input string has to be specified explicitly,
+     *  the string can contain more than one NULL byte.
+     *  @param  fromString  input string to be converted (using the source
+     *                      character encoding)
+     *  @param  fromLength  length of the input string (number of bytes
+     *                      without the trailing NULL byte)
+     *  @param  toString    reference to variable where the converted string
+     *                      (using the destination character encoding) is
+     *                      stored (or appended, see parameter 'clear')
+     *  @param  clear       flag indicating whether to clear the variable
+     *                      'toString' before appending the converted string
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition convertString(const char *fromString,
+                              const size_t fromLength,
+                              OFString &toString,
+                              const OFBool clear = OFTrue);
+
     // --- static helper functions ---
 
     /** check whether the underlying character encoding library is available.
@@ -153,12 +173,12 @@ class OFCharacterEncoding
      */
     static OFString getLibraryVersionString();
 
-    /** count characters in given UTF-8 string and return the resulting number.
-     *  Please note that invalid UTF-8 encodings are not handled properly.
-     *  ASCII strings (7-bit) are also supported, although OFString::length()
-     *  is probably much faster.
+    /** count characters in given UTF-8 string and return the resulting number
+     *  of so-called "code points".  Please note that invalid UTF-8 encodings
+     *  are not handled properly.  ASCII strings (7-bit) are also supported,
+     *  although OFString::length() is probably much faster.
      *  @param  utf8String  valid character string with UTF-8 encoding
-     *  @return number of characters in given UTF-8 string
+     *  @return number of characters (code points) in given UTF-8 string
      */
     static size_t countCharactersInUTF8String(const OFString &utf8String);
 
@@ -216,6 +236,9 @@ class OFCharacterEncoding
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.h,v $
+ * Revision 1.4  2011-10-25 07:10:02  joergr
+ * Added new convert method that accepts a C string and its length as input.
+ *
  * Revision 1.3  2011-10-24 15:07:33  joergr
  * Added static method counting the characters in a given UTF-8 string.
  *
