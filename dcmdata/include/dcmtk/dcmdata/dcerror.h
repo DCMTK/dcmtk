@@ -17,9 +17,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-10 12:57:22 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-26 16:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,6 +126,12 @@ extern const OFCondition EC_ElemLengthExceeds16BitField;
 /// Missing Delimitation Item while reading a sequence
 extern const OFCondition EC_DelimitationItemMissing;
 
+// status code constants
+
+/// error, cannot select specific character set
+extern const unsigned short EC_CODE_CannotSelectCharacterSet;
+
+
 #ifndef OFCONDITION_STRICT_MODE
 
 // for backward compatibility with existing software
@@ -144,6 +150,11 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.40  2011-10-26 16:12:59  joergr
+** Added helper class for converting between different DICOM character sets.
+** This initial version only supports the conversion to UTF-8 (Unicode) and only
+** from DICOM characters sets without code extension techniques (i.e. ISO 2022).
+**
 ** Revision 1.39  2011-10-10 12:57:22  uli
 ** Replaced the old OFM_imagectn with OFM_dcmqrdb and OFM_dcmqrdbx.
 **

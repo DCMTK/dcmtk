@@ -17,9 +17,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-11 10:03:36 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-26 16:13:01 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,7 @@ const OFConditionConst ECC_ValueMultiplicityViolated(  OFM_dcmdata, 31, OF_error
 const OFConditionConst ECC_MaximumLengthViolated(      OFM_dcmdata, 32, OF_error, "Maximum VR length violated"                 );
 const OFConditionConst ECC_ElemLengthExceeds16BitField(OFM_dcmdata, 33, OF_error, "Length of element value exceeds maximum of 16-bit length field" );
 const OFConditionConst ECC_DelimitationItemMissing(    OFM_dcmdata, 34, OF_error, "Item- or SequenceDelimitationItem missing at end of sequence" );
+// error code 35 is reserved for specific character set error messages (see below)
 
 const OFCondition EC_InvalidTag(                 ECC_InvalidTag);
 const OFCondition EC_TagNotFound(                ECC_TagNotFound);
@@ -96,6 +97,7 @@ const OFCondition EC_MaximumLengthViolated(      ECC_MaximumLengthViolated);
 const OFCondition EC_ElemLengthExceeds16BitField(ECC_ElemLengthExceeds16BitField);
 const OFCondition EC_DelimitationItemMissing(    ECC_DelimitationItemMissing);
 
+const unsigned short EC_CODE_CannotSelectCharacterSet = 35;
 
 const char *dcmErrorConditionToString(OFCondition cond)
 {
@@ -106,6 +108,11 @@ const char *dcmErrorConditionToString(OFCondition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
+** Revision 1.28  2011-10-26 16:13:01  joergr
+** Added helper class for converting between different DICOM character sets.
+** This initial version only supports the conversion to UTF-8 (Unicode) and only
+** from DICOM characters sets without code extension techniques (i.e. ISO 2022).
+**
 ** Revision 1.27  2011-05-11 10:03:36  uli
 ** Improved handling of files which ended before the end of a sequence.
 **

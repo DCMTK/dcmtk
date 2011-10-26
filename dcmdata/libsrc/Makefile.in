@@ -35,7 +35,7 @@ privatedic = $(top_srcdir)/data/private.dic
 dictobjs = dctagkey.o dcdicent.o dcdict.o dcdictbi.o dcvr.o dchashdi.o
 objs = dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
 	dcstack.o dclist.o dcswap.o dctag.o dcxfer.o \
-	dcobject.o dcelem.o dcitem.o dcmetinf.o dcdatset.o \
+	dcobject.o dcelem.o dcitem.o dcmetinf.o dcdatset.o dcspchrs.o \
 	dcsequen.o dcfilefo.o dcbytstr.o dcpixel.o dcvrae.o dcvras.o dcvrcs.o \
 	dccodec.o dcvrda.o dcvrds.o dcvrdt.o dcvris.o dcvrtm.o dcvrui.o \
 	dcchrstr.o dcvrlo.o dcvrlt.o dcvrpn.o dcvrsh.o dcvrst.o dcvrobow.o \

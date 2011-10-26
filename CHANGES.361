@@ -1,6 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.26 (riesmeier)
+
+- Added helper class for converting between different DICOM character sets.
+  This initial version only supports the conversion to UTF-8 (Unicode) and only
+  from DICOM characters sets without code extension techniques (i.e. ISO 2022).
+  Added:   dcmdata/include/dcmtk/dcmdata/dcspchrs.h
+           dcmdata/libsrc/dcspchrs.cc
+           dcmdata/tests/tspchrs.cc
+  Affects: dcmdata/apps/CMakeLists.txt
+           dcmdata/apps/Makefile.in
+           dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/libsrc/CMakeLists.txt
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/Makefile.in
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/tests/CMakeLists.txt
+           dcmdata/tests/Makefile.dep
+           dcmdata/tests/Makefile.in
+           dcmdata/tests/tests.cc
+
 **** Changes from 2011.10.25 (riesmeier)
 
 - Be prepared that older versions of locale_charset() might return NULL.

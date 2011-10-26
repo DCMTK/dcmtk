@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:03:05 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2011-10-26 16:13:03 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,6 +86,8 @@ OFTEST_REGISTER(dcmdata_parser_wrongExplicitVRinDataset_default);
 OFTEST_REGISTER(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict);
 OFTEST_REGISTER(dcmdata_readingDataDictionary);
 OFTEST_REGISTER(dcmdata_usingDataDictionary);
+OFTEST_REGISTER(dcmdata_specificCharacterSet_1);
+OFTEST_REGISTER(dcmdata_specificCharacterSet_2);
 OFTEST_MAIN("dcmdata")
 
 
@@ -93,6 +95,11 @@ OFTEST_MAIN("dcmdata")
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.10  2011-10-26 16:13:03  joergr
+** Added helper class for converting between different DICOM character sets.
+** This initial version only supports the conversion to UTF-8 (Unicode) and only
+** from DICOM characters sets without code extension techniques (i.e. ISO 2022).
+**
 ** Revision 1.9  2011-10-18 14:03:05  joergr
 ** Added test program for various "string value" methods.
 **
