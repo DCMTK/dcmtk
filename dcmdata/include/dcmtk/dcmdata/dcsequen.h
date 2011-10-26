@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-11 16:34:13 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2011-10-26 16:20:18 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -304,6 +304,17 @@ public:
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
 
+    /** convert all element values that are contained in this sequence and that are
+     *  affected by SpecificCharacterSet to UTF-8 (Unicode)
+     *  @param converter character set converter to be used to convert the affected
+     *    element values. The source character set has to be selected in advance.
+     *    Should never be NULL.
+     *  @param checkCharset not used (only used for the implementation in DcmItem)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition convertToUTF8(DcmSpecificCharacterSet *converter,
+                                      const OFBool checkCharset = OFFalse);
+
     /** get cardinality of this sequence
      *  @return number of items in this sequence
      */
@@ -582,6 +593,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.61  2011-10-26 16:20:18  joergr
+** Added method that allows for converting a dataset or element value to UTF-8.
+**
 ** Revision 1.60  2011-10-11 16:34:13  joergr
 ** Made methods card() and cardSub() const.
 **

@@ -20,8 +20,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-08 11:01:46 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Update Date:      $Date: 2011-10-26 16:20:20 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -515,6 +515,13 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 }
 
 
+OFCondition DcmObject::convertToUTF8(DcmSpecificCharacterSet * /*converter*/,
+                                     const OFBool /*checkCharset*/)
+{
+    return EC_Normal;
+}
+
+
 OFBool DcmObject::isEmpty(const OFBool /*normalize*/)
 {
     return (Length == 0);
@@ -524,6 +531,9 @@ OFBool DcmObject::isEmpty(const OFBool /*normalize*/)
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.71  2011-10-26 16:20:20  joergr
+ * Added method that allows for converting a dataset or element value to UTF-8.
+ *
  * Revision 1.70  2011-08-08 11:01:46  joergr
  * Added new parser flag that allows for ignoring the element's VR read from the
  * dataset and for preferring the VR defined in the data dictionary.

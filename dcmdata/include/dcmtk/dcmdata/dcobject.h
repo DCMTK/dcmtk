@@ -20,8 +20,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-06 12:52:19 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Update Date:      $Date: 2011-10-26 16:20:18 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@
 class DcmOutputStream;
 class DcmInputStream;
 class DcmWriteCache;
+class DcmSpecificCharacterSet;
 
 // Undefined Length Identifier now defined in dctypes.h
 
@@ -423,6 +424,14 @@ class DcmObject
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
 
+    /** convert this object to UTF-8 (Unicode) if affected by SpecificCharacterSet
+     *  @param converter character set converter to be used to convert the element values
+     *  @param checkCharset not used (only used for the implementation in DcmItem)
+     *  @return always returns EC_Normal, since nothing to do in this base class
+     */
+    virtual OFCondition convertToUTF8(DcmSpecificCharacterSet *converter,
+                                      const OFBool checkCharset = OFFalse);
+
     /** check if this object is empty
      *  @param normalize normalize value before checking (ignore non-significant characters)
      *  @return true if object is empty, i.e. has no value, false otherwise
@@ -705,6 +714,9 @@ static inline STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream &stream, D
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.73  2011-10-26 16:20:18  joergr
+ * Added method that allows for converting a dataset or element value to UTF-8.
+ *
  * Revision 1.72  2011-10-06 12:52:19  joergr
  * Replaced remaining tabs by spaces.
  *

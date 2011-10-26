@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:34:08 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2011-10-26 16:20:18 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -359,6 +359,19 @@ class DcmFileFormat
      */
     virtual DcmItem *remove(DcmItem *item);
 
+    /** convert all element values that are contained in the dataset and that are
+     *  affected by SpecificCharacterSet to UTF-8 (Unicode). The value of the data
+     *  element SpecificCharacterSet (0008,0005) is updated, set or deleted
+     *  automatically if needed.
+     *  NB: In case of a DICOMDIR, the SpecificCharacterSet on the main dataset is
+     *  neither checked nor updated, since this IOD has no SOP Common Module.
+     *  @param converter not used for this class (any given value is ignored)
+     *  @param checkCharset not used for this class (any given value is ignored)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition convertToUTF8(DcmSpecificCharacterSet *converter = NULL,
+                                      const OFBool checkCharset = OFTrue);
+
   private:
 
     /** This function checks if a particular data element of the file meta information header is
@@ -397,6 +410,9 @@ class DcmFileFormat
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
+** Revision 1.39  2011-10-26 16:20:18  joergr
+** Added method that allows for converting a dataset or element value to UTF-8.
+**
 ** Revision 1.38  2010-10-20 16:34:08  joergr
 ** Renamed method to avoid warnings reported by gcc with additional flags.
 **

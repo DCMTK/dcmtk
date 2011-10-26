@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-11 16:34:10 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Update Date:      $Date: 2011-10-26 16:20:20 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1122,6 +1122,20 @@ DcmEVR DcmDirectoryRecord::ident() const
 // ********************************
 
 
+OFCondition DcmDirectoryRecord::convertToUTF8(DcmSpecificCharacterSet *converter,
+                                              const OFBool /*checkCharset*/)
+{
+    DCMDATA_DEBUG("DcmDirectoryRecord::convertToUTF8() processing directory record with offset "
+        << getFileOffset());
+    // handle special case of DICOMDIR: the Specific Character Set (0008,0005)
+    // can be specified individually for each directory record (i.e. item)
+    return DcmItem::convertToUTF8(converter, OFTrue /*checkCharset*/);
+}
+
+
+// ********************************
+
+
 void DcmDirectoryRecord::print(STD_NAMESPACE ostream&out,
                                const size_t flags,
                                const int level,
@@ -1335,7 +1349,8 @@ OFCondition DcmDirectoryRecord::assignToSOPFile(const char *referencedFileID,
 
     if (DirRecordType != ERT_root)
     {
-        DCMDATA_DEBUG("DcmDirectoryRecord::assignToSOPFile() old Referenced File ID was " << getReferencedFileName());
+        DCMDATA_DEBUG("DcmDirectoryRecord::assignToSOPFile() old Referenced File ID was "
+            << getReferencedFileName());
         DCMDATA_DEBUG("new Referenced File ID is " << referencedFileID);
 
         // update against the old reference counter
@@ -1361,7 +1376,8 @@ OFCondition DcmDirectoryRecord::assignToMRDR(DcmDirectoryRecord *mrdr)
         && mrdr != referencedMRDR              // old MRDR != new MRDR
       )
     {
-        DCMDATA_DEBUG("DcmDirectoryRecord::assignToMRDR() old Referenced File ID was " << getReferencedFileName());
+        DCMDATA_DEBUG("DcmDirectoryRecord::assignToMRDR() old Referenced File ID was "
+            << getReferencedFileName());
         DCMDATA_DEBUG("new Referenced File ID is " << mrdr->lookForReferencedFileID());
 
         // set internal pointer to mrdr and update against the old value
@@ -1560,6 +1576,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.85  2011-10-26 16:20:20  joergr
+ * Added method that allows for converting a dataset or element value to UTF-8.
+ *
  * Revision 1.84  2011-10-11 16:34:10  joergr
  * Made methods card() and cardSub() const.
  *

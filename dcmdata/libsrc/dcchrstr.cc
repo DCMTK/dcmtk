@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmCharString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:12 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2011-10-26 16:20:19 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -28,6 +28,8 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "dcmtk/dcmdata/dcspchrs.h"   /* for class DcmSpecificCharacterSet */
 
 //
 // This implementation does not support 16 bit character sets. Since 8 bit
@@ -110,7 +112,7 @@ OFCondition DcmCharString::verify(const OFBool autocorrect)
                 /* check size limit for each string component */
                 if (fieldLen > maxLen)
                 {
-                    DCMDATA_DEBUG("DcmCharString::verify() Maximum length violated in element "
+                    DCMDATA_DEBUG("DcmCharString::verify() maximum length violated in element "
                         << getTagName() << " " << getTag() << " value " << vmNum << ": "
                         << fieldLen << " bytes found but only " << maxLen << " characters allowed");
                     errorFlag = EC_MaximumLengthViolated;
@@ -120,7 +122,7 @@ OFCondition DcmCharString::verify(const OFBool autocorrect)
                          *  whether a character consists of one or more bytes.  This will be
                          *  fixed in a future version.
                          */
-                        DCMDATA_DEBUG("DcmCharString::verify() Not correcting value length since "
+                        DCMDATA_DEBUG("DcmCharString::verify() not correcting value length since "
                             << "multi-byte character sets are not yet supported, so cannot decide");
                     }
                 }
@@ -165,9 +167,42 @@ OFBool DcmCharString::isAffectedBySpecificCharacterSet() const
 }
 
 
+OFCondition DcmCharString::convertToUTF8(DcmSpecificCharacterSet *converter,
+                                         const OFBool /*checkCharset*/)
+{
+    OFCondition status = EC_IllegalParameter;
+    // it is an error if no converter is specified
+    if (converter != NULL)
+    {
+        char *str = NULL;
+        Uint32 len = 0;
+        status = getString(str, len);
+        // do nothing if string value is empty
+        if (status.good() && (str != NULL) && (len > 0))
+        {
+            OFString resultStr;
+            // convert string to UTF-8 and replace the element value
+            status = converter->convertToUTF8String(str, len, resultStr);
+            if (status.good())
+            {
+                DCMDATA_TRACE("DcmCharString::convertToUTF8() updating value of element "
+                    << getTagName() << " " << getTag());
+                // currently, we are not checking whether the value has really changed
+                // during the character set conversion - would that make any sense?
+                status = putOFStringArray(resultStr);
+            }
+        }
+    }
+    return status;
+}
+
+
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.cc,v $
+ * Revision 1.17  2011-10-26 16:20:19  joergr
+ * Added method that allows for converting a dataset or element value to UTF-8.
+ *
  * Revision 1.16  2011-10-18 14:00:12  joergr
  * Added support for embedded NULL bytes in string element values.
  *

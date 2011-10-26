@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-04 16:47:57 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2011-10-26 16:20:20 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -741,9 +741,29 @@ void DcmDataset::removeAllButOriginalRepresentations()
 }
 
 
+// ********************************
+
+
+OFCondition DcmDataset::convertToUTF8(DcmSpecificCharacterSet *converter,
+                                      const OFBool checkCharset)
+{
+    if (!checkCharset)
+    {
+        DCMDATA_DEBUG("DcmDataset::convertToUTF8() method called with a 'checkCharset' value of OFFalse, "
+            << "i.e. the value of SpecificCharacterSet " << DCM_SpecificCharacterSet << " is ignored");
+    }
+    // usually, we want check for Specific Character Set (0008,0005) element in the dataset,
+    // therefore, this method is reimplemented with a slightly different API documentation
+    return DcmItem::convertToUTF8(converter, checkCharset);
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
+** Revision 1.58  2011-10-26 16:20:20  joergr
+** Added method that allows for converting a dataset or element value to UTF-8.
+**
 ** Revision 1.57  2011-10-04 16:47:57  joergr
 ** Added method that allows for updating the original transfer syntax (e.g.
 ** after pixel data with a particular representation has been added).

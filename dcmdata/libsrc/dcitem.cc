@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:12 $
- *  CVS/RCS Revision: $Revision: 1.158 $
+ *  Update Date:      $Date: 2011-10-26 16:20:20 $
+ *  CVS/RCS Revision: $Revision: 1.159 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,6 +72,8 @@
 #include "dcmtk/dcmdata/dcvrus.h"
 #include "dcmtk/dcmdata/dcvrut.h"
 #include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/dcmdata/dcspchrs.h"   /* for class DcmSpecificCharacterSet */
+
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofcast.h"
@@ -3834,9 +3836,74 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 }
 
 
+OFCondition DcmItem::convertToUTF8(DcmSpecificCharacterSet *converter,
+                                   const OFBool checkCharset)
+{
+    OFCondition status = EC_Normal;
+    if (!elementList->empty())
+    {
+        DcmSpecificCharacterSet *localConverter = NULL;
+        if (checkCharset || (converter == NULL))
+        {
+            OFString charset;
+            // check whether Specific Character Set (0008,0005) is present in this item
+            if (checkCharset)
+                findAndGetOFStringArray(DCM_SpecificCharacterSet, charset, OFFalse /*searchIntoSub*/);
+            // check whether we need a new character set converter
+            if ((converter == NULL) || (converter->getCharacterSet() != charset))
+            {
+                DCMDATA_DEBUG("DcmItem::convertToUTF8() creating a new character set converter for '"
+                    << (charset.empty() ? "ISO_IR 6" : charset) << "' to 'ISO_IR 192'");
+                localConverter = new DcmSpecificCharacterSet();
+                if (localConverter != NULL)
+                {
+                    status = localConverter->selectCharacterSet(charset);
+                    converter = localConverter;
+                } else
+                    status = EC_MemoryExhausted;
+            }
+        }
+        if (status.good())
+        {
+            // iterate over all data elements in this item and convert the strings
+            elementList->seek(ELP_first);
+            do {
+                status = elementList->get()->convertToUTF8(converter, OFFalse /*checkCharset*/);
+            } while (status.good() && elementList->seek(ELP_next));
+            if (status.good())
+            {
+                if (checkCharset)
+                {
+                    DCMDATA_DEBUG("DcmItem::convertToUTF8() updating value of element SpecificCharacterSet "
+                        << DCM_SpecificCharacterSet << " to 'ISO_IR 192'");
+                    // update/set value of Specific Character Set (0008,0005) if needed
+                    status = putAndInsertOFStringArray(DCM_SpecificCharacterSet, "ISO_IR 192");
+                } else {
+                    // otherwise delete it (if present)
+                    if (findAndDeleteElement(DCM_SpecificCharacterSet, OFFalse /*allOccurrences*/, OFFalse /*searchIntoSub*/).good())
+                    {
+                        DCMDATA_WARN("DcmItem: Deleted element SpecificCharacterSet " << DCM_SpecificCharacterSet
+                            << " during the conversion to UTF-8 encoding");
+                    }
+                }
+            } else {
+                DCMDATA_WARN("DcmItem: An error occurred during the conversion to UTF-8 encoding, "
+                    << "the value of SpecificCharacterSet " << DCM_SpecificCharacterSet << " is not updated");
+            }
+        }
+        // free memory (if needed)
+        delete localConverter;
+    }
+    return status;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.159  2011-10-26 16:20:20  joergr
+** Added method that allows for converting a dataset or element value to UTF-8.
+**
 ** Revision 1.158  2011-10-18 14:00:12  joergr
 ** Added support for embedded NULL bytes in string element values.
 **

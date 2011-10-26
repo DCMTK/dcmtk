@@ -18,8 +18,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-08 08:55:00 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2011-10-26 16:20:20 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -490,7 +490,7 @@ OFCondition DcmFileFormat::validateMetaInfo(const E_TransferSyntax oxfer,
     {
         if (writeMode == EWM_dontUpdateMeta)
         {
-            DCMDATA_WARN("DcmFileFormat::validateMetaInfo(): Meta Information Header is not updated!");
+            DCMDATA_WARN("DcmFileFormat: Meta Information Header is not updated!");
         } else {
             /* start with empty file meta information */
             if (writeMode == EWM_createNewMeta)
@@ -529,13 +529,13 @@ OFCondition DcmFileFormat::validateMetaInfo(const E_TransferSyntax oxfer,
             checkMetaHeaderValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer, writeMode);
 
             /* dump some information if required */
-            DCMDATA_DEBUG("DcmFileFormat: Found " << metinf->card() << " Elements in DcmMetaInfo 'metinf'");
+            DCMDATA_DEBUG("DcmFileFormat::validateMetaInfo() found " << metinf->card() << " Elements in DcmMetaInfo 'metinf'");
 
             /* calculate new GroupLength for meta header */
             if (metinf->computeGroupLengthAndPadding(EGL_withGL, EPD_noChange,
                 META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_UndefinedLength).bad())
             {
-                DCMDATA_ERROR("DcmFileFormat::validateMetaInfo() Group length of Meta Information Header not adapted");
+                DCMDATA_ERROR("DcmFileFormat: Group length of Meta Information Header not adapted");
             }
         }
     } else {
@@ -772,7 +772,7 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
         /* in case the transfer syntax which shall be used is indeed the */
         /* BigEndianImplicit transfer syntax dump some error information */
         if (outxfer == EXS_BigEndianImplicit)
-            DCMDATA_ERROR("DcmFileFormat::write() Illegal TransferSyntax (BigEndianImplicit) used");
+            DCMDATA_ERROR("DcmFileFormat: Illegal TransferSyntax (BigEndianImplicit) used in write method");
     }
     /* return result value */
     return errorFlag;
@@ -963,9 +963,32 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 }
 
 
+// ********************************
+
+
+OFCondition DcmFileFormat::convertToUTF8(DcmSpecificCharacterSet * /*converter*/,
+                                         const OFBool /*checkCharset*/)
+{
+    OFString sopClass;
+    OFBool checkCharset = OFTrue;
+    // check whether this dataset belongs to a DICOMDIR (because it has no SOP Common Module)
+    if (getMetaInfo()->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass).good() &&
+        (sopClass == UID_MediaStorageDirectoryStorage))
+    {
+        DCMDATA_DEBUG("DcmFileFormat::convertToUTF8() according to the value of MediaStorageSOPClassUID "
+            << DCM_MediaStorageSOPClassUID << " this is a DICOMDIR, which has no SOP Common Module");
+        checkCharset = OFFalse;
+    }
+    // usually, we check for Specific Character Set (0008,0005) element in the dataset
+    return getDataset()->convertToUTF8(NULL /*converter*/, checkCharset);
+}
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.68  2011-10-26 16:20:20  joergr
+** Added method that allows for converting a dataset or element value to UTF-8.
+**
 ** Revision 1.67  2011-09-08 08:55:00  joergr
 ** Fixed log message in checkMetaHeaderValue() for reasons of consistency.
 **

@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:09 $
- *  CVS/RCS Revision: $Revision: 1.87 $
+ *  Update Date:      $Date: 2011-10-26 16:20:18 $
+ *  CVS/RCS Revision: $Revision: 1.88 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,7 @@
 // forward declaration
 class DcmSequenceOfItems;
 class DcmElement;
+class DcmSpecificCharacterSet;
 
 
 /** a class representing a list of DICOM elements in which each
@@ -259,6 +260,21 @@ class DcmItem
      *  @return true if object is affected by SpecificCharacterSet, false otherwise
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
+
+    /** convert all element values that are contained in this item and that are
+     *  affected by SpecificCharacterSet to UTF-8 (Unicode). The value of the data
+     *  element SpecificCharacterSet (0008,0005) is updated, set or deleted
+     *  automatically if needed.
+     *  @param converter character set converter to be used to convert the affected
+     *    element values. If non-NULL, the source character set has to be selected
+     *    in advance.
+     *  @param checkCharset check value of element SpecificCharacterSet (0008,0005)
+     *    in the dataset/item. If different from the one selected in 'converter', a
+     *    new character set converter is created locally.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition convertToUTF8(DcmSpecificCharacterSet *converter = NULL,
+                                      const OFBool checkCharset = OFFalse);
 
     /** insert a new element into the list of elements maintained by this item.
      *  The list of elements is always kept in ascending tag order.
@@ -1238,6 +1254,9 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.88  2011-10-26 16:20:18  joergr
+** Added method that allows for converting a dataset or element value to UTF-8.
+**
 ** Revision 1.87  2011-10-18 14:00:09  joergr
 ** Added support for embedded NULL bytes in string element values.
 **

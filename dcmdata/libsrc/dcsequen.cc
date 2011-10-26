@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-11 16:34:09 $
- *  CVS/RCS Revision: $Revision: 1.96 $
+ *  Update Date:      $Date: 2011-10-26 16:20:20 $
+ *  CVS/RCS Revision: $Revision: 1.97 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -514,13 +514,13 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmInputStream &inStream,
         inStream.putback();
         DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found " << newTag
             << " instead of item tag");
-        DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem(): parse error occurred: " << newTag);
+        DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem() parse error occurred: " << newTag);
     }
     else if (l_error != EC_SequEnd)
     {
         DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found " << newTag
             << " instead of a sequence delimiter");
-        DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem(): cannot create Sub Item " << newTag);
+        DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem() cannot create Sub Item " << newTag);
     } else {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
     }
@@ -566,7 +566,7 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
                 {
                     if (inStream.eos())
                     {
-                        DCMDATA_WARN("Reached end of stream before the end of sequence "
+                        DCMDATA_WARN("DcmSequenceOfItems: Reached end of stream before the end of sequence "
                                 << getTagName() << " " << getTag());
                         if (dcmIgnoreParsingErrors.get())
                         {
@@ -1302,6 +1302,22 @@ OFBool DcmSequenceOfItems::isAffectedBySpecificCharacterSet() const
 }
 
 
+OFCondition DcmSequenceOfItems::convertToUTF8(DcmSpecificCharacterSet *converter,
+                                              const OFBool /*checkCharset*/)
+{
+    OFCondition status = EC_Normal;
+    if (!itemList->empty())
+    {
+        // iterate over all items in this sequence and convert the string elements
+        itemList->seek(ELP_first);
+        do {
+            status = itemList->get()->convertToUTF8(converter, OFFalse /*checkCharset*/);
+        } while (status.good() && itemList->seek(ELP_next));
+    }
+    return status;
+}
+
+
 OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
                                                 const Uint32 /* offset */,
                                                 Uint32 /* numBytes */,
@@ -1316,6 +1332,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.97  2011-10-26 16:20:20  joergr
+** Added method that allows for converting a dataset or element value to UTF-8.
+**
 ** Revision 1.96  2011-10-11 16:34:09  joergr
 ** Made methods card() and cardSub() const.
 **

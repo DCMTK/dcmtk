@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-11 16:34:13 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2011-10-26 16:20:18 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -219,6 +219,22 @@ public:
     /// returns current status flag
     inline OFCondition error() const { return errorFlag; }
 
+    /** convert all element values that are contained in this item and that are
+     *  affected by SpecificCharacterSet to UTF-8 (Unicode). The value of the data
+     *  element SpecificCharacterSet (0008,0005) is updated, set or deleted
+     *  automatically if needed.
+     *  @param converter character set converter to be used to convert the affected
+     *    element values. If non-NULL, the source character set has to be selected
+     *    in advance.
+     *  @param checkCharset not used for this class, i.e.\ the value of the element
+     *    SpecificCharacterSet (0008,0005) is always checked (see default). If the
+     *    value is different from the one selected in 'converter', a new character
+     *    set converter is created locally.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition convertToUTF8(DcmSpecificCharacterSet *converter = NULL,
+                                      const OFBool checkCharset = OFTrue);
+
     /** print all elements of the item to a stream
      *  @param out output stream
      *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
@@ -231,7 +247,6 @@ public:
                        const int level = 0,
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
-
 
     /** This function reads the information of all attributes which
      *  are captured in the input stream and captures this information
@@ -465,6 +480,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
+** Revision 1.51  2011-10-26 16:20:18  joergr
+** Added method that allows for converting a dataset or element value to UTF-8.
+**
 ** Revision 1.50  2011-10-11 16:34:13  joergr
 ** Made methods card() and cardSub() const.
 **

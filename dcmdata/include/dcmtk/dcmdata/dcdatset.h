@@ -18,8 +18,8 @@
  *  Purpose: Interface of the class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-04 16:47:59 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2011-10-26 16:20:18 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -328,6 +328,23 @@ class DcmDataset
      */
     void removeAllButCurrentRepresentations();
 
+    /** convert all element values that are contained in this dataset and that are
+     *  affected by SpecificCharacterSet to UTF-8 (Unicode). The value of the data
+     *  element SpecificCharacterSet (0008,0005) is updated, set or deleted
+     *  automatically if needed.
+     *  @param converter character set converter to be used to convert the affected
+     *    element values. If non-NULL, the source character set has to be selected
+     *    in advance. Please note that the default value should usually not be changed.
+     *  @param checkCharset check value of element SpecificCharacterSet (0008,0005)
+     *    in the dataset/item. Depending on its value, a new character set converter
+     *    is created locally. Please note that the default value should usually not
+     *    be changed. Only in cases where no SpecificCharacterSet element exists on
+     *    the main dataset level, e.g. for a DICOMDIR, this value should be set to
+     *    OFFalse.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition convertToUTF8(DcmSpecificCharacterSet *converter = NULL,
+                                      const OFBool checkCharset = OFTrue);
 
   private:
 
@@ -344,6 +361,9 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.42  2011-10-26 16:20:18  joergr
+** Added method that allows for converting a dataset or element value to UTF-8.
+**
 ** Revision 1.41  2011-10-04 16:47:59  joergr
 ** Added method that allows for updating the original transfer syntax (e.g.
 ** after pixel data with a particular representation has been added).
