@@ -18,8 +18,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-08 11:01:41 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Update Date:      $Date: 2011-10-26 16:24:03 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,9 @@
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
+#endif
+#ifdef WITH_LIBICONV
+#include "dcmtk/ofstd/ofchrenc.h"
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmconv"
@@ -109,6 +112,7 @@ int main(int argc, char *argv[])
 #ifdef WITH_ZLIB
   OFCmdUnsignedInt opt_compressionLevel = 0;
 #endif
+  OFBool opt_convertToUTF8 = OFFalse;
   OFBool opt_noInvalidGroups = OFFalse;
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert DICOM file encoding", rcsid);
@@ -171,6 +175,14 @@ int main(int argc, char *argv[])
       cmd.addOption("--bitstream-zlib",      "+bz",    "expect deflated zlib bitstream");
 #endif
 
+  cmd.addGroup("processing options:");
+#ifdef WITH_LIBICONV
+    cmd.addSubGroup("specific character set:");
+      cmd.addOption("--convert-to-utf8",     "+U8",    "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
+#endif
+    cmd.addSubGroup("other processing options:");
+      cmd.addOption("--no-invalid-groups",   "-ig",    "remove elements with invalid group number");
+
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
       cmd.addOption("--write-file",          "+F",     "write file format (default)");
@@ -207,9 +219,6 @@ int main(int argc, char *argv[])
                                                        "0=uncompressed, 1=fastest, 9=best compression");
 #endif
 
-    cmd.addSubGroup("other output options:");
-      cmd.addOption("--no-invalid-groups",   "-ig",    "don't write elements with invalid group number");
-
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
@@ -221,10 +230,16 @@ int main(int argc, char *argv[])
           {
               app.printHeader(OFTrue /*print host identifier*/);
               COUT << OFendl << "External libraries used:";
-#ifdef WITH_ZLIB
-              COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
-#else
+#if !defined(WITH_ZLIB) && !defined(WITH_LIBICONV)
               COUT << " none" << OFendl;
+#else
+              COUT << OFendl;
+#endif
+#ifdef WITH_ZLIB
+              COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
+#endif
+#ifdef WITH_LIBICONV
+              COUT << "- " << OFCharacterEncoding::getLibraryVersionString() << OFendl;
 #endif
               return 0;
           }
@@ -236,6 +251,8 @@ int main(int argc, char *argv[])
       cmd.getParam(2, opt_ofname);
 
       OFLog::configureFromCommandLine(cmd, app);
+
+      /* input options */
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
@@ -385,6 +402,13 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 #endif
 
+      /* processing options */
+
+      if (cmd.findOption("--convert-to-utf8")) opt_convertToUTF8 = OFTrue;
+      if (cmd.findOption("--no-invalid-groups")) opt_noInvalidGroups = OFTrue;
+
+      /* output options */
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--write-file")) opt_writeMode = EWM_fileformat;
       if (cmd.findOption("--write-new-meta-info")) opt_writeMode = EWM_createNewMeta;
@@ -454,8 +478,6 @@ int main(int argc, char *argv[])
         dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
       }
 #endif
-
-      if (cmd.findOption("--no-invalid-groups")) opt_noInvalidGroups = OFTrue;
     }
 
     /* print resource identifier */
@@ -496,6 +518,16 @@ int main(int argc, char *argv[])
     {
         OFLOG_INFO(dcmconvLogger, "remove all elements with an invalid group number");
         fileformat.removeInvalidGroups();
+    }
+    if (opt_convertToUTF8)
+    {
+        OFLOG_INFO(dcmconvLogger, "converting all element values that are affected by Specific Character Set (0008,0005) to UTF-8");
+        error = fileformat.convertToUTF8();
+        if (error.bad())
+        {
+            OFLOG_FATAL(dcmconvLogger, error.text() << ": converting file to UTF-8: " <<  opt_ifname);
+            return 1;
+        }
     }
 
     if (opt_oxfer == EXS_Unknown)
@@ -538,6 +570,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.74  2011-10-26 16:24:03  joergr
+** Added new command line option for converting a DICOM file/dataset to UTF-8.
+**
 ** Revision 1.73  2011-08-08 11:01:41  joergr
 ** Added new parser flag that allows for ignoring the element's VR read from the
 ** dataset and for preferring the VR defined in the data dictionary.

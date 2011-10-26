@@ -171,6 +171,22 @@ bitstream format of deflated input:
          expect deflated zlib bitstream
 \endverbatim
 
+\subsection processing_options processing options
+\verbatim
+specific character set:
+
+  +U8  --convert-to-utf8
+         convert all element values that are affected
+         by Specific Character Set (0008,0005) to UTF-8
+
+         # requires support from the libiconv toolkit
+
+other processing options:
+
+  -ig  --no-invalid-groups
+         remove elements with invalid group number
+\endverbatim
+
 \subsection output_options output options
 \verbatim
 output file format:
@@ -251,11 +267,6 @@ deflate compression level (only with --write-xfer-deflated):
 
   +cl  --compression-level  [l]evel: integer (default: 6)
          0=uncompressed, 1=fastest, 9=best compression
-
-other output options:
-
-  -ig  --no-invalid-groups
-         don't write elements with invalid group number
 \endverbatim
 
 \section logging LOGGING

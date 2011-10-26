@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.26 (riesmeier)
 
+- Added new command line option for converting a DICOM file/dataset to UTF-8.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/apps/dcmconv.cc
+           dcmdata/docs/dcmconv.man
+
 - Added method that allows for converting a dataset or element value to UTF-8.
   Affects: dcmdata/include/dcmtk/dcmdata/dcchrstr.h
            dcmdata/include/dcmtk/dcmdata/dcdatset.h
