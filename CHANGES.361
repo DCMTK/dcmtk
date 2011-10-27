@@ -1,6 +1,39 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.27 (riesmeier)
+
+- Added libiconv to all "apps" that depend on dcmdata to avoid linker errors.
+  Affects: dcmdata/apps/CMakeLists.txt
+           dcmdata/apps/Makefile.in
+           dcmdata/tests/Makefile.in
+           dcmimage/apps/CMakeLists.txt
+           dcmimage/apps/Makefile.in
+           dcmimgle/apps/CMakeLists.txt
+           dcmimgle/apps/Makefile.in
+           dcmjpeg/apps/CMakeLists.txt
+           dcmjpeg/apps/Makefile.in
+           dcmjpls/apps/CMakeLists.txt
+           dcmjpls/apps/Makefile.in
+           dcmnet/apps/CMakeLists.txt
+           dcmnet/apps/Makefile.in
+           dcmpstat/apps/CMakeLists.txt
+           dcmpstat/apps/Makefile.in
+           dcmpstat/tests/Makefile.in
+           dcmqrdb/apps/CMakeLists.txt
+           dcmqrdb/apps/Makefile.in
+           dcmsign/apps/CMakeLists.txt
+           dcmsign/apps/Makefile.in
+           dcmsr/apps/CMakeLists.txt
+           dcmsr/apps/Makefile.in
+           dcmsr/tests/CMakeLists.txt
+           dcmsr/tests/Makefile.in
+           dcmwlm/apps/CMakeLists.txt
+           dcmwlm/apps/Makefile.in
+           dcmwlm/tests/Makefile.in
+           dcmwlm/wwwapps/CMakeLists.txt
+           dcmwlm/wwwapps/Makefile.in
+
 **** Changes from 2011.10.27 (schlachter)
 
 - Fixed some compiler warnings when libiconv was not found.

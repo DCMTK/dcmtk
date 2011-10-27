@@ -67,10 +67,12 @@ LOCALINCLUDES = $(dcmpstatinc) $(ofstdinc) $(ofloginc) $(dcmnetinc) $(dcmdatainc
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(dcmqrdblibdir) $(dcmnetlibdir) \
 	$(dcmtlslibdir) $(dcmsignlibdir) $(dcmsrlibdir) $(dcmdatalibdir) $(ofstdlibdir) \
 	$(ofloglibdir) $(dcmimglelibdir)
-LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmimglelib) $(dcmsrlib) $(dcmqrdblib) $(dcmnetlib) \
-	$(dcmtlslib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS)
-DCMMKLUT_LIBS = $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
-DCMMKCRV_LIBS = $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
+LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmimglelib) $(dcmsrlib) $(dcmqrdblib) \
+	$(dcmnetlib) $(dcmtlslib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) \
+	$(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS) $(ICONVLIBS)
+DCMMKLUT_LIBS = $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) \
+	$(ICONVLIBS)
+DCMMKCRV_LIBS = $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) $(ICONVLIBS)
 
 objs = dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o dcmpsprt.o dcmprscu.o \
 	dcmprscp.o dcmpschk.o

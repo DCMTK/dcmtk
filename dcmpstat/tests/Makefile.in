@@ -30,7 +30,8 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(ofstddir)/libsrc \
 	-L$(dcmtlsdir)/libsrc -L$(dcmqrdbdir)/libsrc -L$(dcmimgledir)/libsrc \
 	-L$(dcmsrdir)/libsrc
 LOCALLIBS = -ldcmpstat -ldcmdsig -ldcmimgle -ldcmsr -ldcmqrdb -ldcmnet -ldcmtls \
-	-ldcmdata -loflog -lofstd $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS)
+	-ldcmdata -loflog -lofstd $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) \
+	$(OPENSSLLIBS) $(ICONVLIBS)
 
 objs = msgserv.o
 progs = msgserv

@@ -21,7 +21,8 @@ LOCALINCLUDES = -I$(dcmnetdir)/include -I$(dcmdatadir)/include \
 	-I$(oflogdir)/include -I$(ofstddir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(dcmdatadir)/libsrc \
 	-L$(oflogdir)/libsrc -L$(ofstddir)/libsrc
-LOCALLIBS = -ldcmwlm -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS)
+LOCALLIBS = -ldcmwlm -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) \
+	$(TCPWRAPPERLIBS) $(ICONVLIBS)
 
 objs = wltest.o
 progs = wltest

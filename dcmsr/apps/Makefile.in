@@ -17,8 +17,9 @@ oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(oflogdir)/include
-LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc -L$(oflogdir)/libsrc
-LOCALLIBS = -ldcmsr -ldcmdata -loflog -lofstd $(XMLLIBS) $(ZLIBLIBS)
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc \
+	-L$(oflogdir)/libsrc
+LOCALLIBS = -ldcmsr -ldcmdata -loflog -lofstd $(XMLLIBS) $(ZLIBLIBS) $(ICONVLIBS)
 
 objs = dsrdump.o dsr2html.o dsr2xml.o xml2dsr.o
 progs = dsrdump dsr2html dsr2xml xml2dsr

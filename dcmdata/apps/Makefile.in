@@ -16,7 +16,8 @@ ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include
-LIBDIRS = -L$(top_srcdir)/libi2d -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc
+LIBDIRS = -L$(top_srcdir)/libi2d -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc \
+	-L$(oflogdir)/libsrc
 LOCALLIBS = -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(ICONVLIBS)
 LIBI2D = -li2d
 

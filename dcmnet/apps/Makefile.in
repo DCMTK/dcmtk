@@ -29,7 +29,8 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmtlsdir)/include $(compr_includes)
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmtlsdir)/libsrc $(compr_libdirs)
-LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS)
+LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS) \
+	$(ICONVLIBS)
 DCMTLSLIBS = -ldcmtls
 COMPR_LIBS = -ldcmjpls -lcharls -ldcmjpeg -lijg8 -lijg12 -lijg16 -ldcmimage -ldcmimgle
 

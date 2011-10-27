@@ -29,8 +29,7 @@ dcmdatalib = -ldcmdata
 
 LOCALINCLUDES = $(dcmdatainc) $(ofloginc) $(ofstdinc)
 LIBDIRS = $(dcmdatalibdir) $(ofloglibdir) $(ofstdlibdir)
-LOCALLIBS = $(dcmdatalib) $(ofloglib) $(ofstdlib) $(ZLIBLIBS)
-LOCALDEFS =
+LOCALLIBS = $(dcmdatalib) $(ofloglib) $(ofstdlib) $(ZLIBLIBS) $(ICONVLIBS)
 
 objs = preplock.o readoviw.o readwlst.o writwlst.o
 progs = preplock readoviw readwlst writwlst

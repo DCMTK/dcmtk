@@ -44,11 +44,12 @@ dcmjpeglibdir = -L$(dcmjpegdir)/libsrc -L$(dcmjpegdir)/libijg8 -L$(dcmjpegdir)/l
 	-L$(dcmjpegdir)/libijg16
 dcmjpeglib = -ldcmjpeg -lijg8 -lijg12 -lijg16
 
-LOCALINCLUDES = $(dcmjpeginc) $(ofstdinc) $(ofloginc) $(dcmdatainc) $(dcmimageinc) $(dcmimgleinc)
+LOCALINCLUDES = $(dcmjpeginc) $(ofstdinc) $(ofloginc) $(dcmdatainc) $(dcmimageinc) \
+	$(dcmimgleinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmjpeglibdir) $(dcmimagelibdir) $(dcmimglelibdir) \
 	$(dcmdatalibdir) $(ofloglibdir) $(ofstdlibdir)
-LOCALLIBS = $(dcmjpeglib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
-	$(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS)
+LOCALLIBS = $(dcmjpeglib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofloglib) \
+	$(ofstdlib) $(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(ICONVLIBS)
 
 objs = dcmdjpeg.o dcmcjpeg.o dcmj2pnm.o dcmmkdir.o
 progs = dcmdjpeg dcmcjpeg dcmj2pnm dcmmkdir
@@ -74,6 +75,7 @@ install: all
 	for prog in $(progs); do \
 		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(DESTDIR)$(bindir) && strip $(DESTDIR)$(bindir)/$$prog$(BINEXT) ;\
 	done
+
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)

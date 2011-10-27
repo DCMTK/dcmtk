@@ -2,7 +2,7 @@
 INCLUDE_DIRECTORIES(${dcmjpls_SOURCE_DIR}/include ${dcmjpeg_SOURCE_DIR}/include ${dcmimage_SOURCE_DIR}/include ${dcmimgle_SOURCE_DIR}/include)
 
 # declare directories containing used libraries
-LINK_DIRECTORIES(${dcmnet_BINARY_DIR} ${ofstd_BINARY_DIR} ${oflog_BINARY_DIR} ${dcmdata_BINARY_DIR} ${dcmtls_BINARY_DIR} ${ZLIB_LIBDIR} ${OPENSSL_LIBDIR})
+LINK_DIRECTORIES(${dcmnet_BINARY_DIR} ${ofstd_BINARY_DIR} ${oflog_BINARY_DIR} ${dcmdata_BINARY_DIR} ${dcmtls_BINARY_DIR} ${ZLIB_LIBDIR} ${LIBICONV_LIBDIR} ${OPENSSL_LIBDIR})
 # declare additional library directories needed for compression support
 LINK_DIRECTORIES(${dcmjpls_BINARY_DIR} ${dcmjpeg_BINARY_DIR} ${dcmimage_BINARY_DIR} ${dcmimgle_BINARY_DIR} ${LIBTIFF_LIBDIR} ${LIBPNG_LIBDIR})
 
@@ -21,7 +21,7 @@ ENDIF(WITH_OPENSSL)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcmsend echoscu findscu getscu movescu storescp storescu termscu)
-  TARGET_LINK_LIBRARIES(${PROGRAM} dcmnet dcmdata oflog ofstd ${ZLIB_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
+  TARGET_LINK_LIBRARIES(${PROGRAM} dcmnet dcmdata oflog ofstd ${ZLIB_LIBS} ${LIBICONV_LIBS} ${WIN32_STD_LIBRARIES} ${THREAD_LIBS})
 ENDFOREACH(PROGRAM)
 FOREACH(PROGRAM echoscu findscu storescp storescu)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmtls ${OPENSSL_LIBS})
