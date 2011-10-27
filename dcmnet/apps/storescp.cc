@@ -18,8 +18,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-10 14:13:48 $
- *  CVS/RCS Revision: $Revision: 1.149 $
+ *  Update Date:      $Date: 2011-10-27 10:45:53 $
+ *  CVS/RCS Revision: $Revision: 1.150 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,19 +80,6 @@ END_EXTERN_C
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
-#endif
-
-#if defined(HAVE_MKTEMP) && !defined(HAVE_PROTOTYPE_MKTEMP)
-extern "C" {
-char * mktemp(char *);
-}
-#endif
-
-// Solaris 2.5.1 has mkstemp() in libc.a but no prototype
-#if defined(HAVE_MKSTEMP) && !defined(HAVE_PROTOTYPE_MKSTEMP)
-extern "C" {
-int mkstemp(char *);
-}
 #endif
 
 // we assume that the inetd super server is available on all non-Windows systems
@@ -2777,6 +2764,9 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.150  2011-10-27 10:45:53  uli
+** Dropped some unused prototypes for mktemp() and mkstemp().
+**
 ** Revision 1.149  2011-10-10 14:13:48  uli
 ** Discard all console output in inetd mode.
 **

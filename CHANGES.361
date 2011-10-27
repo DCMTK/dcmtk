@@ -36,6 +36,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.27 (schlachter)
 
+- Dropped some unused prototypes for mktemp() and mkstemp().
+  Affects: dcmnet/apps/storescp.cc
+
 - Added rpaths to configure which can be disabled via --disable-rpath.
   Affects: config/aclocal.m4
            config/configure
