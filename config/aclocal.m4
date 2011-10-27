@@ -6,7 +6,7 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: uli $
-dnl Revision:     $Revision: 1.48 $
+dnl Revision:     $Revision: 1.49 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -1748,12 +1748,32 @@ fi
 ])
 
 dnl
+dnl This macro adds the --disable-rpath option to configure
+dnl and sets the variable $dcmtk_cv_rpath_works to "no", if needed.
+dnl If that option isn't given, the availability of the rpath option is tested
+AC_DEFUN([AC_MY_LIB_PATH_RPATH],
+[
+  AC_CACHE_CHECK([whether -Wl,-rpath is supported], [dcmtk_cv_rpath_works],
+                 [AC_ARG_ENABLE([rpath],
+                                [AS_HELP_STRING([--disable-rpath], [do not hardcode runtime library paths])],
+                                [dcmtk_cv_rpath_works=$enableval],
+                                [old_LDFLAGS="$LDFLAGS"
+                                 LDFLAGS="-Wl,-rpath,$srcdir $LDFLAGS"
+                                 AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
+                                                [dcmtk_cv_rpath_works=yes],
+                                                [dcmtk_cv_rpath_works=no])
+                                 LDFLAGS="$old_LDFLAGS"])
+                 ])
+])
+
+dnl
 dnl This macro adds the option --with-[OPTION_NAME]inc to configure. If this option
 dnl is specified, include/ and lib/ are added to CPPFLAGS / LDFLAGS.
 dnl
 dnl AC_MY_LIB_PATH(OPTION_NAME, LIB_NAME)
 AC_DEFUN([AC_MY_LIB_PATH],
 [
+  AC_REQUIRE([AC_MY_LIB_PATH_RPATH])dnl
   m4_pushdef([OPTION], [$1inc])dnl
   m4_pushdef([LONGOPTION], [--with-$1inc])dnl
   m4_pushdef([LIBNAME], [m4_default([$2], [$1])])dnl
@@ -1772,6 +1792,9 @@ AS_HELP_STRING([LONGOPTION=DIR], [location of LIBNAME includes and libraries]),
 
         CPPFLAGS="-I${withval}/include $CPPFLAGS"
         LDFLAGS="-L${withval}/lib $LDFLAGS"
+        if test "x$dcmtk_cv_rpath_works" = "xyes"; then
+          LDFLAGS="-Wl,-rpath,${withval}/lib $LDFLAGS"
+        fi
       ])
     ])dnl
   m4_popdef([OPTION])dnl
@@ -1781,6 +1804,9 @@ AS_HELP_STRING([LONGOPTION=DIR], [location of LIBNAME includes and libraries]),
 
 dnl
 dnl $Log: aclocal.m4,v $
+dnl Revision 1.49  2011-10-27 10:23:51  uli
+dnl Added rpaths to configure which can be disabled via --disable-rpath.
+dnl
 dnl Revision 1.48  2011-10-21 12:31:47  uli
 dnl Improved the handling of some configure options.
 dnl

@@ -36,6 +36,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.27 (schlachter)
 
+- Added rpaths to configure which can be disabled via --disable-rpath.
+  Affects: config/aclocal.m4
+           config/configure
+
 - Fixed some compiler warnings when libiconv was not found.
   Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
            ofstd/libsrc/ofchrenc.cc

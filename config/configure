@@ -697,6 +697,7 @@ enable_threads
 enable_lfs
 enable_std_includes
 with_private_tags
+enable_rpath
 with_opensslinc
 with_openssl
 with_zlibinc
@@ -1350,6 +1351,7 @@ Optional Features:
   --disable-lfs           compile without LFS support
   --enable-std-includes   use C++ ANSI standard includes (default: auto)
   --disable-std-includes  use old C++ includes
+  --disable-rpath         do not hardcode runtime library paths
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -12081,7 +12083,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12084 "configure"
+#line 12086 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -12553,7 +12555,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12556 "configure"
+#line 12558 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -12625,7 +12627,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12628 "configure"
+#line 12630 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -12697,7 +12699,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12700 "configure"
+#line 12702 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13016,6 +13018,44 @@ fi
 
 
 
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether -Wl,-rpath is supported" >&5
+$as_echo_n "checking whether -Wl,-rpath is supported... " >&6; }
+if ${dcmtk_cv_rpath_works+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  # Check whether --enable-rpath was given.
+if test "${enable_rpath+set}" = set; then :
+  enableval=$enable_rpath; dcmtk_cv_rpath_works=$enableval
+else
+  old_LDFLAGS="$LDFLAGS"
+                                 LDFLAGS="-Wl,-rpath,$srcdir $LDFLAGS"
+                                 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  dcmtk_cv_rpath_works=yes
+else
+  dcmtk_cv_rpath_works=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+                                 LDFLAGS="$old_LDFLAGS"
+fi
+
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $dcmtk_cv_rpath_works" >&5
+$as_echo "$dcmtk_cv_rpath_works" >&6; }
+
+
 
 # Check whether --with-opensslinc was given.
 if test "${with_opensslinc+set}" = set; then :
@@ -13033,6 +13073,9 @@ $as_echo "$as_me: WARNING: --with-opensslinc called without argument - will use 
 
         CPPFLAGS="-I${withval}/include $CPPFLAGS"
         LDFLAGS="-L${withval}/lib $LDFLAGS"
+        if test "x$dcmtk_cv_rpath_works" = "xyes"; then
+          LDFLAGS="-Wl,-rpath,${withval}/lib $LDFLAGS"
+        fi
        ;;
 esac
 
@@ -13197,6 +13240,9 @@ $as_echo "$as_me: WARNING: --with-zlibinc called without argument - will use def
 
         CPPFLAGS="-I${withval}/include $CPPFLAGS"
         LDFLAGS="-L${withval}/lib $LDFLAGS"
+        if test "x$dcmtk_cv_rpath_works" = "xyes"; then
+          LDFLAGS="-Wl,-rpath,${withval}/lib $LDFLAGS"
+        fi
        ;;
 esac
 
@@ -13273,6 +13319,9 @@ $as_echo "$as_me: WARNING: --with-libtiffinc called without argument - will use 
 
         CPPFLAGS="-I${withval}/include $CPPFLAGS"
         LDFLAGS="-L${withval}/lib $LDFLAGS"
+        if test "x$dcmtk_cv_rpath_works" = "xyes"; then
+          LDFLAGS="-Wl,-rpath,${withval}/lib $LDFLAGS"
+        fi
        ;;
 esac
 
@@ -13494,6 +13543,9 @@ $as_echo "$as_me: WARNING: --with-libpnginc called without argument - will use d
 
         CPPFLAGS="-I${withval}/include $CPPFLAGS"
         LDFLAGS="-L${withval}/lib $LDFLAGS"
+        if test "x$dcmtk_cv_rpath_works" = "xyes"; then
+          LDFLAGS="-Wl,-rpath,${withval}/lib $LDFLAGS"
+        fi
        ;;
 esac
 
@@ -13600,6 +13652,9 @@ $as_echo "$as_me: WARNING: --with-libxmlinc called without argument - will use d
 
         CPPFLAGS="-I${withval}/include $CPPFLAGS"
         LDFLAGS="-L${withval}/lib $LDFLAGS"
+        if test "x$dcmtk_cv_rpath_works" = "xyes"; then
+          LDFLAGS="-Wl,-rpath,${withval}/lib $LDFLAGS"
+        fi
        ;;
 esac
 
@@ -13682,6 +13737,9 @@ $as_echo "$as_me: WARNING: --with-libwrapinc called without argument - will use 
 
         CPPFLAGS="-I${withval}/include $CPPFLAGS"
         LDFLAGS="-L${withval}/lib $LDFLAGS"
+        if test "x$dcmtk_cv_rpath_works" = "xyes"; then
+          LDFLAGS="-Wl,-rpath,${withval}/lib $LDFLAGS"
+        fi
        ;;
 esac
 
@@ -13775,6 +13833,9 @@ $as_echo "$as_me: WARNING: --with-libsndfileinc called without argument - will u
 
         CPPFLAGS="-I${withval}/include $CPPFLAGS"
         LDFLAGS="-L${withval}/lib $LDFLAGS"
+        if test "x$dcmtk_cv_rpath_works" = "xyes"; then
+          LDFLAGS="-Wl,-rpath,${withval}/lib $LDFLAGS"
+        fi
        ;;
 esac
 
@@ -13852,6 +13913,9 @@ $as_echo "$as_me: WARNING: --with-libiconvinc called without argument - will use
 
         CPPFLAGS="-I${withval}/include $CPPFLAGS"
         LDFLAGS="-L${withval}/lib $LDFLAGS"
+        if test "x$dcmtk_cv_rpath_works" = "xyes"; then
+          LDFLAGS="-Wl,-rpath,${withval}/lib $LDFLAGS"
+        fi
        ;;
 esac
 
