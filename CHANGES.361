@@ -7,6 +7,9 @@ Changes between releases are documented here.
   Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
            ofstd/libsrc/ofchrenc.cc
 
+- Ported recent change to configure into the correct file.
+  Affects: config/rootconf
+
 **** Changes from 2011.10.26 (riesmeier)
 
 - Added new command line option for converting a DICOM file/dataset to UTF-8.
