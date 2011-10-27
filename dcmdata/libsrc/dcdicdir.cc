@@ -18,8 +18,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-09-30 08:17:44 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Update Date:      $Date: 2011-10-27 13:31:43 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1023,11 +1023,8 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     E_TransferSyntax outxfer = DICOMDIR_DEFAULT_TRANSFERSYNTAX;
 
     /* find the path of the dicomdir to be created */
-    OFString tempfilename = dicomDirFileName;
-    size_t pathsepposition = tempfilename.rfind(PATH_SEPARATOR);
-    if (pathsepposition == OFString_npos)
-      tempfilename.erase();
-      else tempfilename.erase(pathsepposition +1);
+    OFString tempfilename;
+    OFStandard::getDirNameFromPath(tempfilename, dicomDirFileName, OFFalse);
 
     // create template for temporary file
     tempfilename += TEMPNAME_TEMPLATE;
@@ -1355,6 +1352,9 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.69  2011-10-27 13:31:43  uli
+** Use existing code for extracting directory name from a path.
+**
 ** Revision 1.68  2011-09-30 08:17:44  uli
 ** Replaced an ugly "else while" construct with a clearer version.
 **

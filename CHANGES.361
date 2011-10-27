@@ -39,6 +39,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.27 (schlachter)
 
+- Use existing code for extracting directory name from a path.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
 - Added new macro for trying to compile C++ source code.
   Added:   CMake/dcmtkTryCompile.cmake
   Removed: CMake/dcmtkTestBoolType.cc
