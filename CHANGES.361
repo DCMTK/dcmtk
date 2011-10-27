@@ -39,6 +39,19 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.27 (schlachter)
 
+- Added new macro for trying to compile C++ source code.
+  Added:   CMake/dcmtkTryCompile.cmake
+  Removed: CMake/dcmtkTestBoolType.cc
+           CMake/dcmtkTestCharPStrerror.cc
+           CMake/dcmtkTestNameTooLong.cc
+           CMake/dcmtkTestPThreadType.cc
+           CMake/dcmtkTestSelectIntP.cc
+           CMake/dcmtkTestSocketIntP.cc
+           CMake/dcmtkTestStdIosNocreate.cc
+           CMake/dcmtkTestTypename.cc
+           CMake/dcmtkTestVariableLengthArrays.cc
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
 - Dropped some unused prototypes for mktemp() and mkstemp().
   Affects: dcmnet/apps/storescp.cc
 

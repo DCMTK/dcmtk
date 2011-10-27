@@ -412,30 +412,7 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_FUNCTIONWITHHEADER_EXISTS("ulonglong definition" "${HEADERS}" HAVE_ULONGLONG)
 
 # Tests that require a try-compile
-
-# Check for HAVE_CXX_BOOL
-IF("HAVE_CXX_BOOL" MATCHES "^HAVE_CXX_BOOL$")
-  MESSAGE(STATUS "Checking support for C++ type bool")
-  TRY_COMPILE(HAVE_CXX_BOOL
-              ${CMAKE_BINARY_DIR}/CMakeTmp/Bool
-              ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestBoolType.cc
-              OUTPUT_VARIABLE OUTPUT)
-  IF(HAVE_CXX_BOOL)
-    MESSAGE(STATUS "Checking support for C++ type bool -- yes")
-    SET(HAVE_CXX_BOOL 1 CACHE INTERNAL "Support for C++ type bool")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
-      "Determining if the C++ compiler supports type bool "
-      "passed with the following output:\n"
-      "${OUTPUT}\n")
-  ELSE(HAVE_CXX_BOOL)
-    MESSAGE(STATUS "Checking support for C++ type bool -- no")
-    SET(HAVE_CXX_BOOL 0 CACHE INTERNAL "Support for C++ type bool")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-      "Determining if the C++ compiler supports type bool "
-      "failed with the following output:\n"
-      "${OUTPUT}\n")
-  ENDIF(HAVE_CXX_BOOL)
-ENDIF("HAVE_CXX_BOOL" MATCHES "^HAVE_CXX_BOOL$")
+INCLUDE(${DCMTK_SOURCE_DIR}/CMake/dcmtkTryCompile.cmake)
 
 IF("C_CHAR_UNSIGNED" MATCHES "^C_CHAR_UNSIGNED$")
   MESSAGE(STATUS "Checking signedness of char")
@@ -454,153 +431,104 @@ IF("C_CHAR_UNSIGNED" MATCHES "^C_CHAR_UNSIGNED$")
   ENDIF(C_CHAR_SIGNED_COMPILED)
 ENDIF("C_CHAR_UNSIGNED" MATCHES "^C_CHAR_UNSIGNED$")
 
+DCMTK_TRY_COMPILE(HAVE_CXX_BOOL "C++ type bool exists"
+    "// Minimal test for existence of 'bool' type.
+void TestBool(bool) {}
+
+int main()
+{
+  TestBool(false);
+  TestBool(true);
+  return 0;
+}")
+
 # Check for thread type
-IF("HAVE_POINTER_TYPE_PTHREAD_T" MATCHES "^HAVE_POINTER_TYPE_PTHREAD_T$")
-  MESSAGE(STATUS "Checking whether pthread_t is a pointer type")
-  IF (HAVE_WINDOWS_H)
+IF (HAVE_WINDOWS_H)
     SET(HAVE_INT_TYPE_PTHREAD_T 1)
-  ELSE (HAVE_WINDOWS_H)
-    TRY_COMPILE(HAVE_INT_TYPE_PTHREAD_T
-      ${CMAKE_BINARY_DIR}/CMakeTmp/PThreadType
-      ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestPThreadType.cc
-      OUTPUT_VARIABLE OUTPUT)
-  ENDIF(HAVE_WINDOWS_H)
-  IF(NOT HAVE_INT_TYPE_PTHREAD_T)
-    MESSAGE(STATUS "Checking whether pthread_t is a pointer type -- yes")
-    SET(HAVE_POINTER_TYPE_PTHREAD_T 1 CACHE INTERNAL "Set if pthread_t is a pointer type")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
-      "Determining if the C++ compiler supports type bool "
-      "passed with the following output:\n"
-      "${OUTPUT}\n")
-  ELSE(NOT HAVE_INT_TYPE_PTHREAD_T)
-    MESSAGE(STATUS "Checking whether pthread_t is a pointer type -- no")
-    SET(HAVE_POINTER_TYPE_PTHREAD_T 0 CACHE INTERNAL "Set if pthread_t is a pointer type")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-      "Determining if pthread_t is a pointer type "
-      "failed with the following output:\n"
-      "${OUTPUT}\n")
-  ENDIF(NOT HAVE_INT_TYPE_PTHREAD_T)
-ENDIF("HAVE_POINTER_TYPE_PTHREAD_T" MATCHES "^HAVE_POINTER_TYPE_PTHREAD_T$")
+ELSE (HAVE_WINDOWS_H)
+    DCMTK_TRY_COMPILE(HAVE_POINTER_TYPE_PTHREAD_T "pthread_t is a pointer type"
+        "// test to see if pthread_t is a pointer type or not
+
+#include <pthread.h>
+
+int main ()
+{
+  pthread_t p;
+  unsigned long l = p;
+  return 0;
+}")
+ENDIF(HAVE_WINDOWS_H)
 
 # Check if typename works properly. Only MSC6 really fails here.
-IF("HAVE_TYPENAME" MATCHES "^HAVE_TYPENAME$")
-  MESSAGE(STATUS "Checking whether typename works correctly")
-  TRY_COMPILE(HAVE_TYPENAME
-    ${CMAKE_BINARY_DIR}/CMakeTmp/Typename
-    ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestTypename.cc
-    OUTPUT_VARIABLE OUTPUT)
-  IF(HAVE_TYPENAME)
-    MESSAGE(STATUS "Checking whether typename works correctly -- yes")
-    SET(HAVE_TYPENAME 1 CACHE INTERNAL "Set if typename works correctly")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
-      "Determining if the C++ compiler supports typename "
-      "passed with the following output:\n"
-      "${OUTPUT}\n")
-  ELSE(HAVE_TYPENAME)
-    MESSAGE(STATUS "Checking whether typename works correctly -- no")
-    SET(HAVE_TYPENAME 0 CACHE INTERNAL "Set if typename works correctly")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-      "Determining if the C++ compiler supports typename "
-      "failed with the following output:\n"
-      "${OUTPUT}\n")
-  ENDIF(HAVE_TYPENAME)
-ENDIF("HAVE_TYPENAME" MATCHES "^HAVE_TYPENAME$")
+DCMTK_TRY_COMPILE(HAVE_TYPENAME "typename works correctly"
+    "
+template<typename type>
+type identical(type arg)
+{
+    return arg;
+}
+
+template<typename type>
+typename type::a foo(typename type::a arg)
+{
+    // This one is the usage of \"typename\" that we are checking for.
+    // MSC6 refuses this one incorrectly.
+    return identical<typename type::a>(arg);
+}
+
+class test {
+public:
+    typedef int a;
+};
+
+int main()
+{
+    return foo<test>(0);
+}")
 
 # Check if ENAMETOOLONG is defined.
-IF("HAVE_ENAMETOOLONG" MATCHES "^HAVE_ENAMETOOLONG$")
-  MESSAGE(STATUS "Checking whether ENAMETOOLONG is defined")
-  TRY_COMPILE(HAVE_ENAMETOOLONG
-    ${CMAKE_BINARY_DIR}/CMakeTmp/NameTooLong
-    ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestNameTooLong.cc
-    OUTPUT_VARIABLE OUTPUT)
-  IF(HAVE_ENAMETOOLONG)
-    MESSAGE(STATUS "Checking whether ENAMETOOLONG is defined -- yes")
-    SET(HAVE_ENAMETOOLONG 1 CACHE INTERNAL "Set if ENAMETOOLONG is defined")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
-      "Determining if ENAMETOOLONG is defined "
-      "passed with the following output:\n"
-      "${OUTPUT}\n")
-  ELSE(HAVE_ENAMETOOLONG)
-    MESSAGE(STATUS "Checking whether ENAMETOOLONG is defined -- no")
-    SET(HAVE_ENAMETOOLONG 0 CACHE INTERNAL "Set if ENAMETOOLONG is defined")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-      "Determining if ENAMETOOLONG is defined "
-      "failed with the following output:\n"
-      "${OUTPUT}\n")
-  ENDIF(HAVE_ENAMETOOLONG)
-ENDIF("HAVE_ENAMETOOLONG" MATCHES "^HAVE_ENAMETOOLONG$")
+DCMTK_TRY_COMPILE(HAVE_ENAMETOOLONG "ENAMETOOLONG is defined"
+    "#include <errno.h>
+
+int main()
+{
+    int value = ENAMETOOLONG;
+    return 0;
+}")
 
 # Check if strerror_r returns a char* is defined.
-IF("HAVE_CHARP_STRERROR_R" MATCHES "^HAVE_CHARP_STRERROR_R$")
-  MESSAGE(STATUS "Checking whether strerror_r returns an int")
-  TRY_COMPILE(HAVE_CHARP_STRERROR_R
-    ${CMAKE_BINARY_DIR}/CMakeTmp/CharPStrerror
-    ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestCharPStrerror.cc
-    OUTPUT_VARIABLE OUTPUT)
-  IF(HAVE_CHARP_STRERROR_R)
-    MESSAGE(STATUS "Checking whether strerror_r returns an int -- yes")
-    SET(HAVE_CHARP_STRERROR_R 0 CACHE INTERNAL "Set if strerror_r returns a char*")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
-      "Determining if strerror_r returns an int "
-      "passed with the following output:\n"
-      "${OUTPUT}\n")
-  ELSE(HAVE_CHARP_STRERROR_R)
-    MESSAGE(STATUS "Checking whether strerror_r returns an int -- no")
-    SET(HAVE_CHARP_STRERROR_R 1 CACHE INTERNAL "Set if strerror_r returns a char*")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-      "Determining if strerror_r returns an int "
-      "failed with the following output:\n"
-      "${OUTPUT}\n")
-  ENDIF(HAVE_CHARP_STRERROR_R)
-ENDIF("HAVE_CHARP_STRERROR_R" MATCHES "^HAVE_CHARP_STRERROR_R$")
+DCMTK_TRY_COMPILE(HAVE_CHARP_STRERROR_R "strerror_r returns an int"
+    "#include <string.h>
+
+int main()
+{
+    // We can't test \"char *p = strerror_r()\" because that only causes a
+    // compiler warning when strerror_r returns an integer.
+    char *buf = 0;
+    int i = strerror_r(0, buf, 100);
+    return i;
+}")
 
 # Check if variable length arrays are supported.
-IF("HAVE_VLA" MATCHES "^HAVE_VLA$")
-  MESSAGE(STATUS "Checking whether variable length arrays are supported")
-  TRY_COMPILE(HAVE_VLA
-    ${CMAKE_BINARY_DIR}/CMakeTmp/VariableLengthArray
-    ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestVariableLengthArrays.cc
-    OUTPUT_VARIABLE OUTPUT)
-  IF(HAVE_VLA)
-    MESSAGE(STATUS "Checking whether variable length arrays are supported -- yes")
-    SET(HAVE_VLA 1 CACHE INTERNAL "Set if variable length arrays are supported")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
-      "Determining if variable length arrays are supported "
-      "passed with the following output:\n"
-      "${OUTPUT}\n")
-  ELSE(HAVE_VLA)
-    MESSAGE(STATUS "Checking whether variable length arrays are supported -- no")
-    SET(HAVE_VLA 0 CACHE INTERNAL "Set if variable length arrays are supported")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-      "Determining if variable length arrays are supported "
-      "failed with the following output:\n"
-      "${OUTPUT}\n")
-  ENDIF(HAVE_VLA)
-ENDIF("HAVE_VLA" MATCHES "^HAVE_VLA$")
+DCMTK_TRY_COMPILE(HAVE_VLA "variable length arrays are supported"
+    "int main()
+{
+    int n = 42;
+    int foo[n];
+    return 0;
+}")
 
 # Check if std::ios::nocreate exists
-IF("HAVE_IOS_NOCREATE" MATCHES "^HAVE_IOS_NOCREATE$")
-  MESSAGE(STATUS "Checking whether std::ios::nocreate exists")
-  TRY_COMPILE(HAVE_IOS_NOCREATE
-    ${CMAKE_BINARY_DIR}/CMakeTmp/IosNocreate
-    ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestStdIosNocreate.cc
-    OUTPUT_VARIABLE OUTPUT)
-  IF(HAVE_IOS_NOCREATE)
-    MESSAGE(STATUS "Checking whether std::ios::nocreate exists -- yes")
-    SET(HAVE_IOS_NOCREATE 1 CACHE INTERNAL "Set if std::ios::nocreate is supported")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
-      "Determining if std::ios::nocreate is supported "
-      "passed with the following output:\n"
-      "${OUTPUT}\n")
-  ELSE(HAVE_IOS_NOCREATE)
-    MESSAGE(STATUS "Checking whether std::ios::nocreate exists -- no")
-    SET(HAVE_IOS_NOCREATE 0 CACHE INTERNAL "Set if std::ios::nocreate is supported")
-    FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-      "Determining if std::ios::nocreate is supported "
-      "failed with the following output:\n"
-      "${OUTPUT}\n")
-  ENDIF(HAVE_IOS_NOCREATE)
-ENDIF("HAVE_IOS_NOCREATE" MATCHES "^HAVE_IOS_NOCREATE$")
+DCMTK_TRY_COMPILE(HAVE_IOS_NOCREATE "std::ios::nocreate exists"
+    "#include <fstream>
+
+using namespace std;
+
+int main()
+{
+  std::ifstream file(\"name\", std::ios::nocreate);
+  return 0;
+}")
 
 IF(WIN32)
   # If someone can tell me how to convince TRY_COMPILE to link against winsock,
@@ -610,52 +538,65 @@ IF(WIN32)
   SET(HAVE_INTP_SELECT 0 CACHE INTERNAL "Set if select() accepts an int* argument")
 ELSE(WIN32)
   # Check if socket functions accept an int*
-  IF("HAVE_INTP_SOCKET" MATCHES "^HAVE_INTP_SOCKET$")
-    MESSAGE(STATUS "Checking whether socket functions accept an int* argument")
-    TRY_COMPILE(HAVE_INTP_SOCKET
-      ${CMAKE_BINARY_DIR}/CMakeTmp/testSocketIntP
-      ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestSocketIntP.cc
-      OUTPUT_VARIABLE OUTPUT)
-    IF(HAVE_INTP_SOCKET)
-      MESSAGE(STATUS "Checking whether socket functions accept an int* argument -- yes")
-      SET(HAVE_INTP_ACCEPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
-      SET(HAVE_INTP_GETSOCKOPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
-      FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
-        "Determining if socket functions accept an int* argument "
-        "passed with the following output:\n"
-        "${OUTPUT}\n")
-    ELSE(HAVE_INTP_SOCKET)
-      MESSAGE(STATUS "Checking whether socket functions accept an int* argument -- no")
-      SET(HAVE_INTP_ACCEPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
-      SET(HAVE_INTP_GETSOCKOPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
-      FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-        "Determining if socket functions accept an int* argument "
-        "failed with the following output:\n"
-        "${OUTPUT}\n")
-    ENDIF(HAVE_INTP_SOCKET)
-  ENDIF("HAVE_INTP_SOCKET" MATCHES "^HAVE_INTP_SOCKET$")
+  DCMTK_TRY_COMPILE(HAVE_INTP_SOCKET, "socket functions accept an int* argument"
+      "
+#ifdef __cplusplus
+extern \"C\" {
+#endif
+#ifdef _WIN32
+/* Windows is pure evil */
+#include <windows.h>
+#else
+#include <sys/socket.h>
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+int main()
+{
+    int i;
+    struct sockaddr *addr = 0;
+    int addrlen = 0;
+    int optlen = 0;
+
+    i = accept(1, addr, &addrlen);
+    i = getsockopt(0, 0, 0, 0, &optlen);
+
+    return 0;
+}")
+  IF(HAVE_INTP_SOCKET)
+    SET(HAVE_INTP_ACCEPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
+    SET(HAVE_INTP_GETSOCKOPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
+  ELSE(HAVE_INTP_SOCKET)
+    SET(HAVE_INTP_ACCEPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
+    SET(HAVE_INTP_GETSOCKOPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
+  ENDIF(HAVE_INTP_SOCKET)
 
   # Check if select() accepts an int*
-  IF("HAVE_INTP_SELECT" MATCHES "^HAVE_INTP_SELECT$")
-    MESSAGE(STATUS "Checking whether select() accepts an int* argument")
-    TRY_COMPILE(HAVE_INTP_SELECT
-      ${CMAKE_BINARY_DIR}/CMakeTmp/testSelectIntP
-      ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestSelectIntP.cc
-      OUTPUT_VARIABLE OUTPUT)
-    IF(HAVE_INTP_SELECT)
-      MESSAGE(STATUS "Checking whether select() accepts an int* argument -- yes")
-      SET(HAVE_INTP_SELECT 1 CACHE INTERNAL "Set if select() accepts an int* argument")
-      FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
-        "Determining if select() accepts an int* argument "
-        "passed with the following output:\n"
-        "${OUTPUT}\n")
-    ELSE(HAVE_INTP_SELECT)
-      MESSAGE(STATUS "Checking whether select() accepts an int* argument -- no")
-      SET(HAVE_INTP_SELECT 0 CACHE INTERNAL "Set if select() accepts an int* argument")
-      FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-        "Determining if select() accepts an int* argument "
-        "failed with the following output:\n"
-        "${OUTPUT}\n")
-    ENDIF(HAVE_INTP_SELECT)
-  ENDIF("HAVE_INTP_SELECT" MATCHES "^HAVE_INTP_SELECT$")
+  DCMTK_TRY_COMPILE(HAVE_INTP_SELECT "select() accepts an int* argument"
+      "
+#ifdef __cplusplus
+extern \"C\" {
+#endif
+#ifdef _WIN32
+/* Windows is pure evil */
+#include <windows.h>
+#else
+#include <sys/socket.h>
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+int main()
+{
+    int i;
+    int fds = 0;
+
+    i = select(1, &fds, &fds, &fds, 0);
+
+    return 0;
+}
+")
 ENDIF(WIN32)
