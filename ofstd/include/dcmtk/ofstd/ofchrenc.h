@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for character encoding conversion (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-25 17:13:59 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-27 09:21:39 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,13 +128,13 @@ class OFCharacterEncoding
      *  @param  toString    reference to variable where the converted string
      *                      (using the destination character encoding) is
      *                      stored (or appended, see parameter 'clear')
-     *  @param  clear       flag indicating whether to clear the variable
+     *  @param  clearMode   flag indicating whether to clear the variable
      *                      'toString' before appending the converted string
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition convertString(const OFString &fromString,
                               OFString &toString,
-                              const OFBool clear = OFTrue);
+                              const OFBool clearMode = OFTrue);
 
     /** convert the given string between the selected character encodings.
      *  That means selectEncoding() has to be called prior to this method.
@@ -147,14 +147,14 @@ class OFCharacterEncoding
      *  @param  toString    reference to variable where the converted string
      *                      (using the destination character encoding) is
      *                      stored (or appended, see parameter 'clear')
-     *  @param  clear       flag indicating whether to clear the variable
+     *  @param  clearMode   flag indicating whether to clear the variable
      *                      'toString' before appending the converted string
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition convertString(const char *fromString,
                               const size_t fromLength,
                               OFString &toString,
-                              const OFBool clear = OFTrue);
+                              const OFBool clearMode = OFTrue);
 
     // --- static helper functions ---
 
@@ -236,6 +236,9 @@ class OFCharacterEncoding
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.h,v $
+ * Revision 1.6  2011-10-27 09:21:39  uli
+ * Fixed some compiler warnings when libiconv was not found.
+ *
  * Revision 1.5  2011-10-25 17:13:59  joergr
  * Be prepared that older versions of locale_charset() might return NULL.
  *

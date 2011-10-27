@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.10.27 (schlachter)
+
+- Fixed some compiler warnings when libiconv was not found.
+  Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
+           ofstd/libsrc/ofchrenc.cc
+
 **** Changes from 2011.10.26 (riesmeier)
 
 - Added new command line option for converting a DICOM file/dataset to UTF-8.

@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for character encoding conversion (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-25 17:14:00 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-10-27 09:21:39 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ OFBool OFCharacterEncoding::getDiscardIllegalSequenceMode() const
 
 OFCondition OFCharacterEncoding::setTransliterationMode(const OFBool mode)
 {
-#if _LIBICONV_VERSION >= 0x0108
+#if defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
     TransliterationMode = mode;
     return EC_Normal;
 #else
@@ -100,7 +100,7 @@ OFCondition OFCharacterEncoding::setTransliterationMode(const OFBool mode)
 
 OFCondition OFCharacterEncoding::setDiscardIllegalSequenceMode(const OFBool mode)
 {
-#if _LIBICONV_VERSION >= 0x0108
+#if defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
     DiscardIllegalSequenceMode = mode;
     return EC_Normal;
 #else
@@ -155,20 +155,20 @@ OFCondition OFCharacterEncoding::selectEncoding(const OFString &fromEncoding,
 
 OFCondition OFCharacterEncoding::convertString(const OFString &fromString,
                                                OFString &toString,
-                                               const OFBool clear)
+                                               const OFBool clearMode)
 {
     // call the real method converting the given string
-    return convertString(fromString.c_str(), fromString.length(), toString, clear);
+    return convertString(fromString.c_str(), fromString.length(), toString, clearMode);
 }
 
 
 OFCondition OFCharacterEncoding::convertString(const char *fromString,
                                                const size_t fromLength,
                                                OFString &toString,
-                                               const OFBool clear)
+                                               const OFBool clearMode)
 {
     // first, clear result variable if requested
-    if (clear)
+    if (clearMode)
         toString.clear();
 #ifdef WITH_LIBICONV
     OFCondition status = EC_Normal;
@@ -311,6 +311,9 @@ size_t OFCharacterEncoding::countCharactersInUTF8String(const OFString &utf8Stri
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.cc,v $
+ * Revision 1.7  2011-10-27 09:21:39  uli
+ * Fixed some compiler warnings when libiconv was not found.
+ *
  * Revision 1.6  2011-10-25 17:14:00  joergr
  * Be prepared that older versions of locale_charset() might return NULL.
  *
