@@ -37,6 +37,7 @@ Changes between releases are documented here.
            dcmwlm/tests/Makefile.in
            dcmwlm/wwwapps/CMakeLists.txt
            dcmwlm/wwwapps/Makefile.in
+           ofstd/tests/CMakeLists.txt
 
 - Removed superfluous tab character from definition of compiler call.
   Affects: config/Makefile.def.in

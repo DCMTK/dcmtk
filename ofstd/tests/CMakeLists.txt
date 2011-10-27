@@ -1,5 +1,5 @@
 # declare directories containing used libraries
-LINK_DIRECTORIES(${ofstd_BINARY_DIR})
+LINK_DIRECTORIES(${ofstd_BINARY_DIR} ${LIBICONV_LIBDIR})
 
 # declare executables
 ADD_EXECUTABLE(ofstd_tests tests tatof tmap tvec tftoa tthread tbase64 tstring tlist tstack tofdatim tofstd tmarkup tchrenc)
