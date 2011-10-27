@@ -34,6 +34,9 @@ Changes between releases are documented here.
            dcmwlm/wwwapps/CMakeLists.txt
            dcmwlm/wwwapps/Makefile.in
 
+- Removed superfluous tab character from definition of compiler call.
+  Affects: config/Makefile.def.in
+
 **** Changes from 2011.10.27 (schlachter)
 
 - Dropped some unused prototypes for mktemp() and mkstemp().

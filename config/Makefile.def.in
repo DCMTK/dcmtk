@@ -99,8 +99,8 @@ defines = $(GLOBALDEFS) $(LOCALDEFS) $(DEBUG) $(LOCALDEBUG)
 
 .cc.o:
 	$(CXX)	$(defines) -c $(includes) $(ARCH) \
-		$(CPPFLAGS) $(CXXFLAGS) $<
+	$(CPPFLAGS) $(CXXFLAGS) $<
 
 .c.o:
 	$(CC)	$(defines) -c $(includes) $(ARCH) \
-		$(CPPFLAGS) $(CFLAGS) $<
+	$(CPPFLAGS) $(CFLAGS) $<
