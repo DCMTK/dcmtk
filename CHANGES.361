@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.27 (riesmeier)
 
+- Made sure that the character set conversion code (incl. checking the option)
+  is only compiled when the WITH_LIBICONV macro is defined.
+  Affects: dcmdata/apps/dcmconv.cc
+
 - Added libiconv to all "apps" that depend on dcmdata to avoid linker errors.
   Affects: dcmdata/apps/CMakeLists.txt
            dcmdata/apps/Makefile.in

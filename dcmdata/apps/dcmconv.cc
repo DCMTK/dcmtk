@@ -18,8 +18,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:24:03 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Update Date:      $Date: 2011-10-27 13:46:25 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,7 +112,9 @@ int main(int argc, char *argv[])
 #ifdef WITH_ZLIB
   OFCmdUnsignedInt opt_compressionLevel = 0;
 #endif
+#ifdef WITH_LIBICONV
   OFBool opt_convertToUTF8 = OFFalse;
+#endif
   OFBool opt_noInvalidGroups = OFFalse;
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert DICOM file encoding", rcsid);
@@ -404,7 +406,9 @@ int main(int argc, char *argv[])
 
       /* processing options */
 
+#ifdef WITH_LIBICONV
       if (cmd.findOption("--convert-to-utf8")) opt_convertToUTF8 = OFTrue;
+#endif
       if (cmd.findOption("--no-invalid-groups")) opt_noInvalidGroups = OFTrue;
 
       /* output options */
@@ -519,6 +523,7 @@ int main(int argc, char *argv[])
         OFLOG_INFO(dcmconvLogger, "remove all elements with an invalid group number");
         fileformat.removeInvalidGroups();
     }
+#ifdef WITH_LIBICONV
     if (opt_convertToUTF8)
     {
         OFLOG_INFO(dcmconvLogger, "converting all element values that are affected by Specific Character Set (0008,0005) to UTF-8");
@@ -529,6 +534,7 @@ int main(int argc, char *argv[])
             return 1;
         }
     }
+#endif
 
     if (opt_oxfer == EXS_Unknown)
     {
@@ -570,6 +576,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.75  2011-10-27 13:46:25  joergr
+** Made sure that the character set conversion code (incl. checking the option)
+** is only compiled when the WITH_LIBICONV macro is defined.
+**
 ** Revision 1.74  2011-10-26 16:24:03  joergr
 ** Added new command line option for converting a DICOM file/dataset to UTF-8.
 **
