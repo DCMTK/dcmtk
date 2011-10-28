@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for character encoding conversion (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-27 09:21:39 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-28 09:32:48 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #endif
 
 
-#define ILLEGAL_DESCRIPTOR     OFreinterpret_cast(void *, -1)
+#define ILLEGAL_DESCRIPTOR     OFreinterpret_cast(OFCharacterEncoding::T_Descriptor, -1)
 #define CONVERSION_ERROR       OFstatic_cast(size_t, -1)
 #define CONVERSION_BUFFER_SIZE 1024
 
@@ -65,8 +65,8 @@ OFCharacterEncoding::~OFCharacterEncoding()
 
 void OFCharacterEncoding::clear()
 {
-    // close any still open conversion descriptor
-    closeConversionDescriptor();
+    // close conversion descriptor (if needed)
+    closeDescriptor(ConversionDescriptor);
     // reset conversion modes
     TransliterationMode = OFFalse;
     DiscardIllegalSequenceMode = OFFalse;
@@ -135,18 +135,10 @@ OFCondition OFCharacterEncoding::selectEncoding(const OFString &fromEncoding,
                                                 const OFString &toEncoding)
 {
 #ifdef WITH_LIBICONV
-    OFCondition status = EC_Normal;
-    // first, close any open conversion descriptor
-    closeConversionDescriptor();
-    ConversionDescriptor = ::iconv_open(toEncoding.c_str(), fromEncoding.c_str());
-    // check whether the conversion descriptor could be allocated
-    if (!isConversionDescriptorValid())
-    {
-        // if not, return with an appropriate error message
-        createErrnoCondition(status, "Cannot select character encoding: ",
-            EC_CODE_CannotSelectEncoding);
-    }
-    return status;
+    // first, close the current conversion descriptor (if needed)
+    closeDescriptor(ConversionDescriptor);
+    // then, try to open a new descriptor for the specified character encodings
+    return openDescriptor(ConversionDescriptor, fromEncoding.c_str(), toEncoding.c_str());
 #else
     return EC_NoEncodingLibrary;
 #endif
@@ -158,11 +150,22 @@ OFCondition OFCharacterEncoding::convertString(const OFString &fromString,
                                                const OFBool clearMode)
 {
     // call the real method converting the given string
-    return convertString(fromString.c_str(), fromString.length(), toString, clearMode);
+    return convertString(ConversionDescriptor, fromString.c_str(), fromString.length(), toString, clearMode);
 }
 
 
 OFCondition OFCharacterEncoding::convertString(const char *fromString,
+                                               const size_t fromLength,
+                                               OFString &toString,
+                                               const OFBool clearMode)
+{
+    // call the real method converting the given string
+    return convertString(ConversionDescriptor, fromString, fromLength, toString, clearMode);
+}
+
+
+OFCondition OFCharacterEncoding::convertString(T_Descriptor descriptor,
+                                               const char *fromString,
                                                const size_t fromLength,
                                                OFString &toString,
                                                const OFBool clearMode)
@@ -172,13 +175,13 @@ OFCondition OFCharacterEncoding::convertString(const char *fromString,
         toString.clear();
 #ifdef WITH_LIBICONV
     OFCondition status = EC_Normal;
-    // check whether a conversion descriptor has been allocated
-    if (isConversionDescriptorValid())
+    // check whether the given conversion descriptor has been allocated
+    if (isDescriptorValid(descriptor))
     {
 #if _LIBICONV_VERSION >= 0x0108
         // enable/disable transliteration (use of similar characters) in the conversion
         int translit = (TransliterationMode) ? 1 : 0;
-        if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &translit) < 0)
+        if (::iconvctl(descriptor, ICONV_SET_TRANSLITERATE, &translit) < 0)
         {
             // if this didn't work, return with an appropriate error message
             createErrnoCondition(status, "Cannot control character encoding feature TRANSLITERATE: ",
@@ -186,7 +189,7 @@ OFCondition OFCharacterEncoding::convertString(const char *fromString,
         }
         // enable/disable discarding of illegal sequences in the conversion
         int discard = (DiscardIllegalSequenceMode) ? 1 : 0;
-        if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &discard) < 0)
+        if (::iconvctl(descriptor, ICONV_SET_DISCARD_ILSEQ, &discard) < 0)
         {
             // if this didn't work, return with an appropriate error message
             createErrnoCondition(status, "Cannot control character encoding feature DISCARD_ILSEQ: ",
@@ -203,7 +206,7 @@ OFCondition OFCharacterEncoding::convertString(const char *fromString,
 #endif
             size_t inputLeft = fromLength;
             // set the conversion descriptor to the initial state
-            ::iconv(ConversionDescriptor, NULL, NULL, NULL, NULL);
+            ::iconv(descriptor, NULL, NULL, NULL, NULL);
             // iterate as long as there are characters to be converted
             while (inputLeft > 0)
             {
@@ -212,7 +215,7 @@ OFCondition OFCharacterEncoding::convertString(const char *fromString,
                 const size_t bufferLength = sizeof(buffer);
                 size_t bufferLeft = bufferLength;
                 // convert the current block of the given string to the selected character encoding
-                if (::iconv(ConversionDescriptor, &inputPos, &inputLeft, &bufferPos, &bufferLeft) == CONVERSION_ERROR)
+                if (::iconv(descriptor, &inputPos, &inputLeft, &bufferPos, &bufferLeft) == CONVERSION_ERROR)
                 {
                     // check whether the output buffer was too small for the next converted character
                     // (also make sure that the output buffer has been filled to avoid an endless loop)
@@ -237,22 +240,61 @@ OFCondition OFCharacterEncoding::convertString(const char *fromString,
 }
 
 
-void OFCharacterEncoding::closeConversionDescriptor()
+OFCondition OFCharacterEncoding::openDescriptor(T_Descriptor &descriptor,
+                                                const OFString &fromEncoding,
+                                                const OFString &toEncoding)
 {
 #ifdef WITH_LIBICONV
-    if (isConversionDescriptorValid())
+    OFCondition status = EC_Normal;
+    // try to open a new descriptor for the specified character encodings
+    descriptor = ::iconv_open(toEncoding.c_str(), fromEncoding.c_str());
+    // check whether the conversion descriptor could be allocated
+    if (!isDescriptorValid(descriptor))
     {
-        ::iconv_close(ConversionDescriptor);
-        // make the descriptor invalid
-        ConversionDescriptor = ILLEGAL_DESCRIPTOR;
+        // if not, return with an appropriate error message
+        createErrnoCondition(status, "Cannot open character encoding: ",
+            EC_CODE_CannotOpenEncoding);
     }
+    return status;
+#else
+    descriptor = ILLEGAL_DESCRIPTOR;
+    return EC_NoEncodingLibrary;
 #endif
 }
 
 
-OFBool OFCharacterEncoding::isConversionDescriptorValid() const
+OFCondition OFCharacterEncoding::closeDescriptor(T_Descriptor &descriptor)
 {
-    return (ConversionDescriptor != ILLEGAL_DESCRIPTOR);
+#ifdef WITH_LIBICONV
+    OFCondition status = EC_Normal;
+    // check whether the conversion descriptor is valid
+    if (isDescriptorValid(descriptor))
+    {
+        // try to close given descriptor and check whether it worked
+        if (::iconv_close(descriptor) == -1)
+        {
+            // if not, return with an appropriate error message
+            createErrnoCondition(status, "Cannot close character encoding: ",
+                EC_CODE_CannotCloseEncoding);
+        }
+    }
+    // in any case, make the descriptor invalid
+    descriptor = ILLEGAL_DESCRIPTOR;
+    return status;
+#else
+    descriptor = ILLEGAL_DESCRIPTOR;
+    return EC_NoEncodingLibrary;
+#endif
+}
+
+
+OFBool OFCharacterEncoding::isDescriptorValid(const T_Descriptor descriptor)
+{
+#ifdef WITH_LIBICONV
+    return (descriptor != ILLEGAL_DESCRIPTOR);
+#else
+    return OFFalse;
+#endif
 }
 
 
@@ -311,6 +353,11 @@ size_t OFCharacterEncoding::countCharactersInUTF8String(const OFString &utf8Stri
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.cc,v $
+ * Revision 1.8  2011-10-28 09:32:48  joergr
+ * Restructured code of OFCharacterEncoding in order to allow particular classes
+ * to access more low-level functions, e.g. for opening multiple conversion
+ * descriptors at the same time. This will be needed for ISO 2022 support.
+ *
  * Revision 1.7  2011-10-27 09:21:39  uli
  * Fixed some compiler warnings when libiconv was not found.
  *

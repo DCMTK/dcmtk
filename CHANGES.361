@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.28 (riesmeier)
 
+- Restructured code of OFCharacterEncoding in order to allow particular classes
+  to access more low-level functions, e.g. for opening multiple conversion
+  descriptors at the same time. This will be needed for ISO 2022 support.
+  Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
+           ofstd/include/dcmtk/ofstd/ofcond.h
+           ofstd/libsrc/ofchrenc.cc
+           ofstd/libsrc/ofcond.cc
+
 - Added OFCharacterEncoding to the list of "further classes of interest".
   Affects: ofstd/docs/ofstd.dox
 

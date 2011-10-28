@@ -17,9 +17,9 @@
  *
  *  Purpose: Class for character encoding conversion (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-27 09:21:39 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-28 09:32:46 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,9 @@
  */
 class OFCharacterEncoding
 {
+
+  // allow the DICOM-specific character set class to access protected methods
+  friend class DcmSpecificCharacterSet;
 
   public:
 
@@ -127,7 +130,7 @@ class OFCharacterEncoding
      *                      character encoding)
      *  @param  toString    reference to variable where the converted string
      *                      (using the destination character encoding) is
-     *                      stored (or appended, see parameter 'clear')
+     *                      stored (or appended, see parameter 'clearMode')
      *  @param  clearMode   flag indicating whether to clear the variable
      *                      'toString' before appending the converted string
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -142,11 +145,11 @@ class OFCharacterEncoding
      *  the string can contain more than one NULL byte.
      *  @param  fromString  input string to be converted (using the source
      *                      character encoding)
-     *  @param  fromLength  length of the input string (number of bytes
-     *                      without the trailing NULL byte)
+     *  @param  fromLength  length of the input string (number of bytes without
+     *                      the trailing NULL byte)
      *  @param  toString    reference to variable where the converted string
      *                      (using the destination character encoding) is
-     *                      stored (or appended, see parameter 'clear')
+     *                      stored (or appended, see parameter 'clearMode')
      *  @param  clearMode   flag indicating whether to clear the variable
      *                      'toString' before appending the converted string
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -185,15 +188,61 @@ class OFCharacterEncoding
 
   protected:
 
-    /** close the conversion descriptor if it was allocated before
-     */
-    void closeConversionDescriptor();
+    /// type of the conversion descriptor (used by libiconv)
+    typedef void* T_Descriptor;
 
-    /** check whether the conversion descriptor is valid, i.e.\ has been
-     *  allocated by a previous call to selectEncoding()
+    /** allocate conversion descriptor for the given source and destination
+     *  character encoding.  Please make sure that the descriptor is
+     *  deallocated with closeDescriptor() when not needed any longer.
+     *  @param  descriptor    reference to variable where the newly allocated
+     *                        conversion descriptor is stored
+     *  @param  fromEncoding  name of the source character encoding
+     *  @param  toEncoding    name of the destination character encoding
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition openDescriptor(T_Descriptor &descriptor,
+                               const OFString &fromEncoding,
+                               const OFString &toEncoding);
+
+    /** deallocate the given conversion descriptor that was previously
+     *  allocated with openDescriptor().  Please do not pass arbitrary values
+     *  to this method, since this will result in a segmentation fault.
+     *  @param  descriptor  conversion descriptor to be closed.  After the
+     *                      descriptor has been deallocated, 'descriptor' is
+     *                      set to an invalid value - see isDescriptorValid().
+     *  @return status, EC_Normal if successful, an error code otherwise.  In
+     *    case an invalid descriptor is passed, it is not regarded as an error.
+     */
+    OFCondition closeDescriptor(T_Descriptor &descriptor);
+
+    /** check whether the given conversion descriptor is valid, i.e.\ has been
+     *  allocated by a previous call to openDescriptor()
+     *  @param  descriptor  conversion descriptor to be checked
      *  @return OFTrue if the conversion descriptor is valid, OFFalse otherwise
      */
-    OFBool isConversionDescriptorValid() const;
+    OFBool isDescriptorValid(const T_Descriptor descriptor);
+
+    /** convert the given string between the specified character encodings.
+     *  Since the length of the input string has to be specified explicitly,
+     *  the string can contain more than one NULL byte.
+     *  @param  descriptor  previously allocated conversion descriptor to be
+     *                      used for the conversion of the character encodings
+     *  @param  fromString  input string to be converted (using the source
+     *                      character encoding)
+     *  @param  fromLength  length of the input string (number of bytes without
+     *                      the trailing NULL byte)
+     *  @param  toString    reference to variable where the converted string
+     *                      (using the destination character encoding) is
+     *                      stored (or appended, see parameter 'clearMode')
+     *  @param  clearMode   flag indicating whether to clear the variable
+     *                      'toString' before appending the converted string
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition convertString(T_Descriptor descriptor,
+                              const char *fromString,
+                              const size_t fromLength,
+                              OFString &toString,
+                              const OFBool clearMode = OFTrue);
 
 
   private:
@@ -219,7 +268,7 @@ class OFCharacterEncoding
     OFString LocaleEncoding;
 
     /// conversion descriptor used by libiconv
-    void *ConversionDescriptor;
+    T_Descriptor ConversionDescriptor;
 
     /// transliteration mode (default: disabled)
     OFBool TransliterationMode;
@@ -236,6 +285,11 @@ class OFCharacterEncoding
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.h,v $
+ * Revision 1.7  2011-10-28 09:32:46  joergr
+ * Restructured code of OFCharacterEncoding in order to allow particular classes
+ * to access more low-level functions, e.g. for opening multiple conversion
+ * descriptors at the same time. This will be needed for ISO 2022 support.
+ *
  * Revision 1.6  2011-10-27 09:21:39  uli
  * Fixed some compiler warnings when libiconv was not found.
  *

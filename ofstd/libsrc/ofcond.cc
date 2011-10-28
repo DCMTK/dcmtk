@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-24 13:03:10 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2011-10-28 09:32:48 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@ const OFConditionConst ECC_IllegalParameter  (0, 1, OF_error,   "Illegal paramet
 const OFConditionConst ECC_MemoryExhausted   (0, 2, OF_failure, "Virtual Memory exhausted");
 const OFConditionConst ECC_NoEncodingLibrary (0, 3, OF_error,   "No character encoding library available");
 const OFConditionConst ECC_NoEncodingSelected(0, 4, OF_error,   "No character encoding selected");
-// codes 5..7 are used for dynamically created error messages (see below constants)
+// codes 5..8 are used for dynamically created error messages (see below constants)
 
 
 // NOTE:
@@ -50,13 +50,13 @@ const OFCondition EC_MemoryExhausted   (ECC_MemoryExhausted);
 const OFCondition EC_NoEncodingLibrary (ECC_NoEncodingLibrary);
 const OFCondition EC_NoEncodingSelected(ECC_NoEncodingSelected);
 
-const unsigned short EC_CODE_CannotSelectEncoding   = 5;
-const unsigned short EC_CODE_CannotConvertEncoding  = 6;
-const unsigned short EC_CODE_CannotControlConverter = 7;
+const unsigned short EC_CODE_CannotOpenEncoding     = 5;
+const unsigned short EC_CODE_CannotCloseEncoding    = 6;
+const unsigned short EC_CODE_CannotConvertEncoding  = 7;
+const unsigned short EC_CODE_CannotControlConverter = 8;
 
 
 /* ---------- class OFConditionConst ---------- */
-
 
 const OFConditionBase *OFConditionConst::clone() const
 {
@@ -85,7 +85,6 @@ OFBool OFConditionConst::deletable() const
 
 
 /* ---------- class OFConditionString ---------- */
-
 
 const OFConditionBase *OFConditionString::clone() const
 {
@@ -117,6 +116,11 @@ OFBool OFConditionString::deletable() const
  *
  * CVS/RCS Log:
  * $Log: ofcond.cc,v $
+ * Revision 1.8  2011-10-28 09:32:48  joergr
+ * Restructured code of OFCharacterEncoding in order to allow particular classes
+ * to access more low-level functions, e.g. for opening multiple conversion
+ * descriptors at the same time. This will be needed for ISO 2022 support.
+ *
  * Revision 1.7  2011-10-24 13:03:10  joergr
  * Changed name of status code constant for "illegal character encoding".
  *
@@ -139,7 +143,6 @@ OFBool OFConditionString::deletable() const
  *
  * Revision 1.1  2001/08/23 16:08:41  meichel
  * Initial release of class OFCondition, a generic approach for condition codes
- *
  *
  *
  */

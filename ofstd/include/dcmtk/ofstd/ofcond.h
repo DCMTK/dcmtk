@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 2001-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-24 13:03:07 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2011-10-28 09:32:47 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -452,25 +452,22 @@ private:
 
 /// condition constant: successful completion
 extern const OFCondition EC_Normal;
-
 /// condition constant: error, function called with illegal parameters
 extern const OFCondition EC_IllegalParameter;
-
 /// condition constant: failure, memory exhausted
 extern const OFCondition EC_MemoryExhausted;
 
 /// condition constant: error, no character encoding library available
 extern const OFCondition EC_NoEncodingLibrary;
-
 /// condition constant: error, no character encoding selected
 extern const OFCondition EC_NoEncodingSelected;
 
-/// status code constant: error, cannot select character encoding
-extern const unsigned short EC_CODE_CannotSelectEncoding;
-
+/// status code constant: error, cannot open character encoding
+extern const unsigned short EC_CODE_CannotOpenEncoding;
+/// status code constant: error, cannot close character encoding
+extern const unsigned short EC_CODE_CannotCloseEncoding;
 /// status code constant: error, cannot convert character encoding
 extern const unsigned short EC_CODE_CannotConvertEncoding;
-
 /// status code constant: error, cannot control character encoding converter
 extern const unsigned short EC_CODE_CannotControlConverter;
 
@@ -481,9 +478,16 @@ extern const unsigned short EC_CODE_CannotControlConverter;
 
 #endif
 
+
 /*
+ *
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
+ * Revision 1.13  2011-10-28 09:32:47  joergr
+ * Restructured code of OFCharacterEncoding in order to allow particular classes
+ * to access more low-level functions, e.g. for opening multiple conversion
+ * descriptors at the same time. This will be needed for ISO 2022 support.
+ *
  * Revision 1.12  2011-10-24 13:03:07  joergr
  * Changed name of status code constant for "illegal character encoding".
  *
