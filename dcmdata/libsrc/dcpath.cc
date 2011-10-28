@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2010, OFFIS e.V.
+ *  Copyright (C) 2008-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,9 +18,9 @@
  *  Purpose: Class definitions for accessing DICOM dataset structures (items,
  *           sequences and leaf elements via string-based path access.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2010-11-08 09:49:03 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-10-28 08:05:40 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,14 +38,15 @@
 /*******************************************************************/
 
 // Constructor
-DcmPath::DcmPath() : m_path()
+DcmPath::DcmPath() :
+  m_path()
 {
 }
 
 
 // Construct from existing path (kind of copy constructor)
-DcmPath::DcmPath(const OFList<DcmPathNode*>& currentPath)
-    : m_path()
+DcmPath::DcmPath(const OFList<DcmPathNode*>& currentPath) :
+  m_path()
 {
   OFListConstIterator(DcmPathNode*) it = currentPath.begin();
   OFListConstIterator(DcmPathNode*) endOfPath = currentPath.end();
@@ -68,7 +69,7 @@ void DcmPath::append(DcmPathNode* node)
 // Deletes last node from the path and frees corresponding memory
 void DcmPath::deleteBackNode()
 {
-  DcmPathNode *node = m_path.back();
+  DcmPathNode* node = m_path.back();
   m_path.pop_back();
   if (node)
   {
@@ -151,7 +152,7 @@ OFString DcmPath::toString() const
 
 
 // Checks whether a specific group number is used in the path's path nodes
-OFBool DcmPath::containsGroup(const Uint16& groupNo) const
+OFBool DcmPath::containsGroup(const Uint16 groupNo) const
 {
   OFListConstIterator(DcmPathNode*) it = m_path.begin();
   OFListConstIterator(DcmPathNode*) endOfList = m_path.end();
@@ -336,14 +337,14 @@ DcmPathProcessor::DcmPathProcessor() :
 
 
 // enables (class default:enabled) or disables checking of private reservations
-void DcmPathProcessor::checkPrivateReservations(const OFBool& doChecking)
+void DcmPathProcessor::checkPrivateReservations(const OFBool doChecking)
 {
   m_checkPrivateReservations = doChecking;
 }
 
 
 // enables (class default:enabled) or disables support for item wildcards
-void DcmPathProcessor::setItemWildcardSupport(const OFBool& supported)
+void DcmPathProcessor::setItemWildcardSupport(const OFBool supported)
 {
   m_itemWildcardsEnabled = supported;
 }
@@ -459,7 +460,7 @@ Uint32 DcmPathProcessor::getResults(OFList<DcmPath*>& searchResults)
 }
 
 // applies a string path (optionally with value) to a dataset
-OFCondition DcmPathProcessor::applyPathWithValue(DcmDataset *dataset,
+OFCondition DcmPathProcessor::applyPathWithValue(DcmDataset* dataset,
                                                  const OFString& overrideKey)
 {
   if (dataset == NULL) return EC_IllegalCall;
@@ -470,8 +471,8 @@ OFCondition DcmPathProcessor::applyPathWithValue(DcmDataset *dataset,
   // separate tag from value if there is one
   if (pos != OFString_npos)
   {
-    value = path.substr(pos+1); // value now contains value
-    path.erase(pos);            // pure path without value
+    value = path.substr(pos + 1); // value now contains value
+    path.erase(pos);              // pure path without value
   }
   clear();
 
@@ -483,7 +484,7 @@ OFCondition DcmPathProcessor::applyPathWithValue(DcmDataset *dataset,
   // prepare for value insertion
   OFListConstIterator(DcmPath*) it = m_results.begin();
   OFListConstIterator(DcmPath*) endList = m_results.end();
-  DcmPathNode *last = (*it)->back();
+  DcmPathNode* last = (*it)->back();
   if (last == NULL) return EC_IllegalCall;
   // if value is specified, be sure path does not end with item
   if ( !last->m_obj->isLeaf() )
@@ -498,7 +499,7 @@ OFCondition DcmPathProcessor::applyPathWithValue(DcmDataset *dataset,
   {
     last = (*it)->back();
     if (last == NULL) return EC_IllegalCall;
-    DcmElement *elem = OFstatic_cast(DcmElement*, last->m_obj);
+    DcmElement* elem = OFstatic_cast(DcmElement*, last->m_obj);
     if (elem == NULL) return EC_IllegalCall;
     result = elem->putString(value.c_str());
     if (result.bad())
@@ -548,11 +549,11 @@ DcmPathProcessor::~DcmPathProcessor()
 
 // Helper function that deletes last DICOM element from a path from the DICOM hierarchy
 OFCondition DcmPathProcessor::deleteLastElemFromPath(DcmObject* objSearchedIn,
-                                                     DcmPath *path,
+                                                     DcmPath* path,
                                                      DcmPathNode* toDelete)
 {
   // item containing the element to delete
-  DcmItem *containingItem = NULL;
+  DcmItem* containingItem = NULL;
   if ( path->size() == 1)
   {
     // if we have only a single elem in path, given object must be cont. item
@@ -579,10 +580,10 @@ OFCondition DcmPathProcessor::deleteLastElemFromPath(DcmObject* objSearchedIn,
 
 // Helper function that deletes last DICOM item from a path from the DICOM hierarchy
 OFCondition DcmPathProcessor::deleteLastItemFromPath(DcmObject* objSearchedIn,
-                                                     DcmPath *path,
+                                                     DcmPath* path,
                                                      DcmPathNode* toDelete)
 {
-  DcmSequenceOfItems *containingSeq = NULL;
+  DcmSequenceOfItems* containingSeq = NULL;
   if ( path->size() == 1)
   {
     // if we have only a single elem in path, given object must be cont. item
@@ -602,7 +603,7 @@ OFCondition DcmPathProcessor::deleteLastItemFromPath(DcmObject* objSearchedIn,
     containingSeq = OFstatic_cast(DcmSequenceOfItems*, (*temp)->m_obj);
   }
   if (containingSeq == NULL ) return EC_IllegalCall;
-  DcmItem *item2BDeleted = containingSeq->remove(OFstatic_cast(DcmItem*, toDelete->m_obj));
+  DcmItem* item2BDeleted = containingSeq->remove(OFstatic_cast(DcmItem*, toDelete->m_obj));
   if ( item2BDeleted == NULL )
     return EC_IllegalCall; // should not happen here...
   delete item2BDeleted; item2BDeleted = NULL;
@@ -625,7 +626,7 @@ OFCondition DcmPathProcessor::findOrCreateItemPath(DcmItem* item,
   DcmTag tag;
   OFString privCreator;
   OFBool newlyCreated = OFFalse; // denotes whether an element was created
-  DcmElement *elem = NULL;
+  DcmElement* elem = NULL;
   DcmPath* currentResult = NULL;
 
   // parse tag
@@ -730,7 +731,7 @@ OFCondition DcmPathProcessor::findOrCreateSequencePath(DcmSequenceOfItems* seq,
   // prepare variables
   OFString restPath(path);
   OFCondition status = EC_Normal;
-  DcmItem *resultItem = NULL;
+  DcmItem* resultItem = NULL;
   Uint32 itemNo = 0;
   Uint32 newlyCreated = 0;    // number of items created (appended) (only non-wildcard mode)
   Uint32 newPathsCreated = 0; // wildcard mode: number of paths found
@@ -845,7 +846,7 @@ OFCondition DcmPathProcessor::findOrCreateSequencePath(DcmSequenceOfItems* seq,
     {
       for (Uint32 i=newlyCreated; i > 0; i--)
       {
-        DcmItem *todelete = seq->remove(i-1);
+        DcmItem* todelete = seq->remove(i - 1);
         if (todelete != NULL)
         {
           delete todelete;
@@ -888,8 +889,8 @@ DcmTagKey DcmPathProcessor::calcPrivateReservationTag(const DcmTagKey &privateKe
 }
 
 
-OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem *item /* in */,
-                                                         DcmTag& tag /* in/out */)
+OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem* item /* in */,
+                                                         DcmTag& tag /* inout */)
 {
   OFCondition result;
   // if this is already a private reservation, there is nothing to do
@@ -928,6 +929,9 @@ OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem *item /* in */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.16  2011-10-28 08:05:40  joergr
+** Minor stylistic changes regarding parameter declaration and documentation.
+**
 ** Revision 1.15  2010-11-08 09:49:03  uli
 ** Fixed even more gcc warnings caused by additional compiler flags.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2010, OFFIS e.V.
+ *  Copyright (C) 2008-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:41 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2011-10-28 08:05:39 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 
 
 /** Class representing a node in DcmPath. A node contains just
-  * a pointer to a DcmObject (e. g. a sequence or an item). Additionally
+  * a pointer to a DcmObject (e.g. a sequence or an item). Additionally
   * an item number is stored which also makes sense in case that the
   * object pointed to is an item. The item number is necessary because
   * when having only a pointer to a DcmItem there is no way to find out
@@ -54,7 +54,7 @@ public:
   /** Constructor. Creates search node from object pointer and item number.
    *  @param obj [in] The object the search node points to. The memory of the
    *             given DICOM object is not handled by the node itself but
-   *             must be handled (ie. freed) from outside.
+   *             must be handled (i.e. freed) from outside.
    *  @param itemNo [in] The item number that should be set. Only relevant
    *                if obj parameter contains an item
    */
@@ -79,18 +79,16 @@ private:
   /** Private undefined assignment operator
    */
   DcmPathNode& operator=(const DcmPathNode& arg);
-
 };
 
 
 /** Class representing a path of DICOM objects. A path is a "way" through
- *  a DICOM dataset, ie. it starts e. g. with an item, follwed by a sequence
+ *  a DICOM dataset, i.e. it starts e.g. with an item, followed by a sequence
  *  originally contained in this item. The sequence then could be followed by
  *  another item which is part of the sequence and so on. Thus the path
- *  should be wellformed, but if it is created manually (e. g. using append())
+ *  should be well-formed, but if it is created manually (e.g. using append())
  *  there is no corresponding checking.
  */
-
 class DcmPath
 {
 
@@ -145,7 +143,7 @@ public:
   OFBool empty() const;
 
   /** Returns a string representation of the path,
-   *  e. g. "SourceImageSequence[0].ReferencedSOPInstanceUID"
+   *  e.g.\ "SourceImageSequence[0].ReferencedSOPInstanceUID"
    *  @return String representing path
    */
   OFString toString() const;
@@ -155,7 +153,7 @@ public:
    *  @param groupNo [in] The group number to look for
    *  @return OFTrue if group number is found in path, OFFalse otherwise
    */
-  OFBool containsGroup(const Uint16& groupNo) const;
+  OFBool containsGroup(const Uint16 groupNo) const;
 
   /** Returns a string representation of each path node separately.
    *  Tags are represented as numbers surrounded by braces "(gggg,eeee)",
@@ -171,13 +169,13 @@ public:
    *  the beginning of the path string. The item number must be positive,
    *  starting with 0.
    *  The path must start like "[itemnumber]...".
-   *  @param path - [in/out] The path starting with the item number
-   *                in square brackets, e. g. "[3]". The parsed item number
-   *                and a potentially following "." are removed from the path
-   *  @param itemNo - [out] The parsed item number. If a wildcard was parsed,
-   *                  this output parameter is not set at all.
-   *  @param wasWildcard - [out] Is set to OFTrue, if wildcard was parsed
-   *                       (instead of concrete item number).
+   *  @param path [in/out] The path starting with the item number in square
+   *              brackets, e.g.\ "[3]". The parsed item number and a
+   *              potentially following "." are removed from the path
+   *  @param itemNo [out] The parsed item number. If a wildcard was parsed,
+   *                this output parameter is not set at all.
+   *  @param wasWildcard [out] Is set to OFTrue, if wildcard was parsed
+   *                     (instead of concrete item number).
    *  @return EC_Normal, if concrete item number or wildcard was parsed
    */
   static OFCondition parseItemNoFromPath(OFString& path,                   // inout
@@ -185,12 +183,12 @@ public:
                                          OFBool& wasWildcard);             // out
 
   /** Function that parses a tag from the beginning of a path string.
-   *  The tag has to be either in numeric format, e. g. "(0010,0010)" or
-   *  a dictionary name, e. g. "PatientName". If successful, the
+   *  The tag has to be either in numeric format, e.g. "(0010,0010)" or
+   *  a dictionary name, e.g. "PatientName". If successful, the
    *  parsed tag is removed from the path string.
-   *  @param path - [in/out] The path string, starting with the attribute
-   *                to parse
-   *  @param tag - [out] The tag parsed
+   *  @param path [in/out] The path string, starting with the attribute
+   *              to parse
+   *  @param tag [out] The tag parsed
    *  @return EC_Normal if successful, error code otherwise
    */
   static OFCondition parseTagFromPath(OFString& path,         // inout
@@ -233,7 +231,7 @@ public:
    *  @param supported [in] If true, wildcard are enabled (default)
    *                   If false, item wildcard support is disabled.
    */
-  void setItemWildcardSupport(const OFBool& supported);
+  void setItemWildcardSupport(const OFBool supported);
 
 
   /** Enables (class default: enabled) or disables checking of private
@@ -244,7 +242,7 @@ public:
    *  @param doChecking [in] OFTrue enables reservation checking,
    *                    OFFalse disables it.
    */
-  void checkPrivateReservations(const OFBool& doChecking);
+  void checkPrivateReservations(const OFBool doChecking);
 
   /** Function that allows for finding and/or inserting a hierarchy of items
    *  and attributes as defined by a path string; also returns a list of
@@ -258,8 +256,8 @@ public:
    *  below would start with [ITEMNO] instead:
    *  SEQUENCE[ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
    *  . ITEMNO must be a positive integer starting with 0.
-   *  SEQUENCE and ATTRIBUTE must be a tag, written e. g.
-   *  "(0010,0010)" or as a dictionary name, e. g. "PatientName". If the
+   *  SEQUENCE and ATTRIBUTE must be a tag, written e.g.
+   *  "(0010,0010)" or as a dictionary name, e.g. "PatientName". If the
    *  path cannot be fully created (see option createIfNecessary), any
    *  possibly object changes are reverted. So a path is either fully created
    *  or no path component is created at all. The result can be obtained
@@ -295,8 +293,8 @@ public:
    *  below would start with [ITEMNO] instead:
    *  SEQUENCE[ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
    *  . ITEMNO must be a positive integer starting with 0.
-   *  SEQUENCE and ATTRIBUTE must be a tag, written e. g.
-   *  "(0010,0010)" or as a dictionary name, e. g. "PatientName".
+   *  SEQUENCE and ATTRIBUTE must be a tag, written e.g.
+   *  "(0010,0010)" or as a dictionary name, e.g. "PatientName".
    *
    *  Example: The path
    *  "ContentSequence[4].(0040,a043)[0].CodeValue" selects the Content
@@ -318,9 +316,9 @@ public:
 
   /** Returns the results from the search / creation call.
    *  @param searchResults [out] The resulting paths that were created/searched
-   *                       Note that the memory of the search results
-   *                       is freed automatically by the destructor and must
-   *                       not be freed by the caller.
+   *                       Note that the memory of the search results is freed
+   *                       automatically by the destructor and must not be freed
+   *                       by the caller.
    *  @return Number of results returned
    */
   Uint32 getResults(OFList<DcmPath*>& searchResults);
@@ -328,18 +326,19 @@ public:
 
   /** Helper function that applies a specified "override key" in path syntax
    *  to the given dataset. The name "override" indicates that these keys have
-   *  higher precedence than identical keys in a request dataset that might possibly read from
-   *  a DICOM query file.
-   *  @param dataset [in/out] the dataset (e.g. query keys) the override key is applied to.
-   *                          Must be non-NULL.
-   *  @param pathParam [in] the override key in path syntax (see class DcmPath). Also the
-   *                        path can end with a value assignment, e. g. "PatientName=Doe^John".
-   *                        An empty (or missing value) will not be ignored but will be
-   *                        written as empty to the attribute (if not a sequence or item)
+   *  higher precedence than identical keys in a request dataset that might
+   *  possibly read from a DICOM query file.
+   *  @param dataset [in/out] the dataset (e.g.\ query keys) the override key is
+   *                 applied to. Must be non-NULL.
+   *  @param overrideKey [in] the override key in path syntax (see class DcmPath).
+   *                     Also the path can end with a value assignment, e.g.
+   *                     "PatientName=Doe^John". An empty (or missing value) will
+   *                     not be ignored but will be written as empty to the
+   *                     attribute (if not a sequence or item).
    *  @return EC_Normal if adding was successful, error code otherwise
    */
-  OFCondition applyPathWithValue(DcmDataset *dataset,
-	     	             		         const OFString& overrideKey);
+  OFCondition applyPathWithValue(DcmDataset* dataset,
+                                 const OFString& overrideKey);
 
   /** Deconstructor, cleans up memory that was allocated for any
    *  search results.
@@ -359,8 +358,8 @@ protected:
    *  arbitrary depth).
    *  SEQUENCE[ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
    *  . ITEMNO must be a positive integer starting with 0.
-   *  SEQUENCE and ATTRIBUTE must be a tag, written e. g.
-   *  "(0010,0010)" or as a dictionary name, e. g. "PatientName". If the
+   *  SEQUENCE and ATTRIBUTE must be a tag, written e.g.
+   *  "(0010,0010)" or as a dictionary name, e.g. "PatientName". If the
    *  path cannot be fully created (see option createIfNecessary), any
    *  possibly object changes are reverted. So a path is either fully created
    *  or no path component is created at all. The result can be obtained
@@ -395,8 +394,8 @@ protected:
    *  arbitrary depth).
    *  [ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
    *  . ITEMNO must be a positive integer starting with 0.
-   *  SEQUENCE and ATTRIBUTE must be a tag, written e. g.
-   *  "(0010,0010)" or as a dictionary name, e. g. "PatientName". If the
+   *  SEQUENCE and ATTRIBUTE must be a tag, written e.g.
+   *  "(0010,0010)" or as a dictionary name, e.g. "PatientName". If the
    *  path cannot be fully created (see option createIfNecessary), any
    *  possibly object changes are reverted. So a path is either fully created
    *  or no path component is created at all. The result can be obtained
@@ -413,7 +412,7 @@ protected:
    *  (in total 1 sequence, 2 items, and one leaf element).
    *  @param seq  [in] The object to search (or create) a path in
    *  @param path [in] The path starting with an item. The parsed item number
-   *  (e. g. "[0]") is removed from the path string.
+   *  (e.g. "[0]") is removed from the path string.
    *  @return EC_Normal if successful, error code otherwise.
    */
   OFCondition findOrCreateSequencePath(DcmSequenceOfItems* seq,
@@ -431,7 +430,7 @@ protected:
    *                  the calling function, it is provided here for convenience.
    */
   static OFCondition deleteLastElemFromPath(DcmObject* objSearchedIn,
-                                            DcmPath *path,
+                                            DcmPath* path,
                                             DcmPathNode* toDelete);
 
   /** Helper function that looks at the last node in a given path and deletes
@@ -446,7 +445,7 @@ protected:
    *                  function, it is provided here for convenience.
    */
   static OFCondition deleteLastItemFromPath(DcmObject* objSearchedIn,
-                                            DcmPath *path,
+                                            DcmPath* path,
                                             DcmPathNode* toDelete);
 
   /** Checks in item, whether a private reservation for a given
@@ -458,7 +457,7 @@ protected:
    *  @return Return EC_Normal if reservation checking and updating the
    *          tag was successful. Otherwise an error code is returned.
    */
-  OFCondition checkPrivateTagReservation(DcmItem *item,
+  OFCondition checkPrivateTagReservation(DcmItem* item,
                                          DcmTag& tag);
   /** Returns the private reservation tag key for a given private tag
    *  @param privateKey [in] The private key to calculate reservation tag for
@@ -466,12 +465,12 @@ protected:
    *          return DCM_UndefinedTagKey. If the given key is a reservation
    *          itself, it is directly returned.
    */
-  static DcmTagKey calcPrivateReservationTag(const DcmTagKey &privateKey);
+  static DcmTagKey calcPrivateReservationTag(const DcmTagKey& privateKey);
 
   /** Cleans up memory that was allocated for any search results.
    *  Called when a new search is started or during object destruction.
    *  The DICOM data all freed paths and path nodes point to, is not
-   *  touched, ie. all memory to the DICOM objects pointed to must be
+   *  touched, i.e. all memory to the DICOM objects pointed to must be
    *  freed from outside. Processing options like checking for private
    *  reservations and so on are not reset to default values but
    *  keep valid.
@@ -505,7 +504,6 @@ private:
   /** Private undefined assignment operator
    */
   DcmPathProcessor& operator=(const DcmPathProcessor& arg);
-
 };
 
 
@@ -514,6 +512,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.h,v $
+** Revision 1.11  2011-10-28 08:05:39  joergr
+** Minor stylistic changes regarding parameter declaration and documentation.
+**
 ** Revision 1.10  2010-10-14 13:15:41  joergr
 ** Updated copyright header. Added reference to COPYRIGHT file.
 **
