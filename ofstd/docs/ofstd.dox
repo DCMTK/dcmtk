@@ -16,6 +16,7 @@ The main classes are (in alphabetical order):
 \li \b OFVector
 
 Here are some further helper classes that are of interest:
+\li \b OFCharacterEncoding
 \li \b OFConsole
 \li \b OFConsoleApplication
 \li \b OFDate
