@@ -18,8 +18,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-12 13:20:27 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2011-11-01 07:13:04 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -430,7 +430,7 @@ class OFStandard
      *  @param octalString reference to character string where the result should be stored
      *  @param maxLength maximum number of characters from the source string to be converted.
      *    A value of 0 means all characters.
-     ** @return status, always returns EC_Normal
+     ** @return reference to resulting 'octalString' (might be empty if 'sourceString' was empty)
      */
     static const OFString &convertToOctalString(const OFString &sourceString,
                                                 OFString &octalString,
@@ -671,6 +671,9 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.48  2011-11-01 07:13:04  joergr
+ * Fixed wrong comment on return value of method convertToOctalString().
+ *
  * Revision 1.47  2011-10-12 13:20:27  joergr
  * Added methods for converting non-ASCII and control characters to their octal
  * representation, i.e. to '\ooo' where 'ooo' are the three octal digits.
