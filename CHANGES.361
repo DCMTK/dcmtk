@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.01 (schlachter)
+
+- Fixed the test for pthread_t being a pointer type.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
 **** Changes from 2011.11.01 (riesmeier)
 
 - Added support for code extensions (escape sequences) according to ISO 2022

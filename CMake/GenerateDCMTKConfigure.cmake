@@ -446,7 +446,7 @@ int main()
 IF (HAVE_WINDOWS_H)
     SET(HAVE_INT_TYPE_PTHREAD_T 1)
 ELSE (HAVE_WINDOWS_H)
-    DCMTK_TRY_COMPILE(HAVE_POINTER_TYPE_PTHREAD_T "pthread_t is a pointer type"
+    DCMTK_TRY_COMPILE(HAVE_INT_TYPE_PTHREAD_T "pthread_t is an integer type"
         "// test to see if pthread_t is a pointer type or not
 
 #include <pthread.h>
@@ -457,6 +457,11 @@ int main ()
   unsigned long l = p;
   return 0;
 }")
+    IF (NOT HAVE_INT_TYPE_PTHREAD_T)
+        SET(HAVE_POINTER_TYPE_PTHREAD_T 1 CACHE INTERNAL "Set if pthread_t is a pointer type")
+    ELSE (NOT HAVE_INT_TYPE_PTHREAD_T)
+        SET(HAVE_POINTER_TYPE_PTHREAD_T 0 CACHE INTERNAL "Set if pthread_t is a pointer type")
+    ENDIF (NOT HAVE_INT_TYPE_PTHREAD_T)
 ENDIF(HAVE_WINDOWS_H)
 
 # Check if typename works properly. Only MSC6 really fails here.
