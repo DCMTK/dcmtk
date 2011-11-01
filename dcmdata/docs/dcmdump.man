@@ -293,6 +293,18 @@ writing:
          (little endian, filename created automatically)
 \endverbatim
 
+\section notes NOTES
+
+\subsection scanning_directories SCANNING DIRECTORIES
+
+Note that adding directories as arguments to the commandline only makes sense
+if option \e --scan-directories is also given.  If the files in the provided
+directories should be selected according to a specific file pattern, the option
+\e --scan-pattern has to be used.  The file pattern specified here only applies
+to the files within the directories, and, if any other patterns are specified
+on the commandline outside the \e --scan-pattern option (e.g. in order to
+select further files), these do not apply to the scanned directories.
+
 \section logging LOGGING
 
 The level of logging output of the various command line tools and underlying

@@ -177,6 +177,7 @@ general:
 \endverbatim
 
 \section notes NOTES
+\subsection typical_usage TYPICAL USAGE
 
 A typical use case of \b dcmsend is to send arbitrary SOP instances that are
 stored as DICOM files to a storage SCP.  The following command does exactly
@@ -200,15 +201,38 @@ aforementioned approaches (using both file and directory names):
 dcmsend -v +sd +r <peer> <port> IMAGES_1 IMAGES_2 test.img *.dcm
 \endverbatim
 
+\subsection scanning_directories SCANNING DIRECTORIES
+
+Note that adding directories as arguments to the commandline only makes sense
+if option \e --scan-directories is also given.  If the files in the provided
+directories should be selected according to a specific file pattern, the option
+\e --scan-pattern has to be used.  The file pattern specified here only applies
+to the files within the directories, and, if any other patterns are specified
+on the commandline outside the \e --scan-pattern option (e.g. in order to
+select further files), these do not apply to the scanned directories.
+
+Thus, the last of above examples will recurse over directories IMAGES_1 and
+IMAGES_2 and transmit files that are contained in these two folders and all
+their subfolders (due to option \e +r).  Additionally, \b dcmsend will transfer
+"test.img" and all files with extension "dcm" from the current working folder.
+Note that providing directory names without enabling option \e +sd does
+not make sense.
+
 The default option \e --read-file-only makes sure that only DICOM files (i.e.
 the ones with meta-header and magic word "DICM" after the preamble) are
-processed.  In addition, a pattern for filename matching can be specified with
-option \e --scan-pattern.  Usually, if processing a whole bunch of files, it is
-also a good idea not to halt on the first invalid input file or if an
-unsuccessful store was encountered.  This can be accomplished by using option
-\e --no-halt.  Please note, however, that "unsuccessful store" does not mean
-that the DIMSE status of the C-STORE response indicates an error.  It means that
-the C-STORE request could not be sent to the storage SCP.
+processed.  Usually, if processing a whole bunch of files, it is also a good
+idea not to halt on the first invalid input file or if an unsuccessful store
+was encountered.  This can be accomplished by using option \e --no-halt.
+Please note, however, that "unsuccessful store" does not mean that the DIMSE
+status of the C-STORE response indicates an error.  It means that the C-STORE
+request could not be sent to the storage SCP.
+
+In order to get both an overview and detailed information on the transfer of
+the DICOM SOP instances, option \e --create-report-file can be used to create
+a corresponding text file.  However, this file is only created as a final step
+if the application did not terminate before (with an error).
+
+\subsection presentation_contexts PRESENTATION CONTEXTS
 
 If more than 128 presentation contexts are needed, which is the maximum number
 allowed according to the DICOM standard, a new association is started after the
@@ -217,11 +241,6 @@ can be disabled using option \e --single-association.  In addition, whether
 only lossless compressed data sets are decompressed (if needed), which is the
 default, or also lossy compressed data sets can be specified using the
 \e --decompress-xxx options.
-
-In order to get both an overview and detailed information on the transfer of
-the DICOM SOP instances, option \e --create-report-file can be used to create
-a corresponding text file.  However, this file is only created as a final step
-if the application did not terminate before (with an error).
 
 \subsection dicom_conformance DICOM Conformance
 

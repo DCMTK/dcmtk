@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.01 (onken)
+
+- Added section regarding directory scanning, especially to make clear how to
+  work with the accompanying file pattern option.
+  Affects: dcmdata/docs/dcmdump.man
+           dcmdata/docs/dcmgpdir.man
+           dcmnet/docs/dcmsend.man
+           dcmnet/docs/storescu.man
+
 **** Changes from 2011.11.01 (schlachter)
 
 - Fixed CMake's output while running compile tests.
