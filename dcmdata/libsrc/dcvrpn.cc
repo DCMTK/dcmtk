@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmPersonName
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-13 16:14:30 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2011-11-01 14:54:05 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@ DcmPersonName::DcmPersonName(const DcmTag &tag,
 {
     setMaxLength(64);     // not correct: max length of PN is 3*64+2 = 194 characters (not bytes!)
     setNonSignificantChars(" \\^=");
+    setDelimiterChars("\\^=");
 }
 
 
@@ -64,12 +65,12 @@ DcmPersonName &DcmPersonName::operator=(const DcmPersonName &obj)
 
 OFCondition DcmPersonName::copyFrom(const DcmObject& rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmPersonName &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmPersonName &, rhs);
+    }
+    return EC_Normal;
 }
 
 
@@ -345,29 +346,29 @@ OFCondition DcmPersonName::checkStringValue(const OFString &value,
     const size_t valLen = value.length();
     if (valLen > 0)
     {
-      size_t posStart = 0;
-      unsigned long vmNum = 0;
-      /* iterate over all value components */
-      while (posStart != OFString_npos)
-      {
-        ++vmNum;
-        /* search for next component separator */
-        const size_t posEnd = value.find('\\', posStart);
-        const size_t length = (posEnd == OFString_npos) ? valLen - posStart : posEnd - posStart;
-        /* check value representation */
-        const int vrID = DcmElement::scanValue(value, "pn", posStart, length);
-        if ((vrID != 11) && (!oldFormat || (vrID != 15)))
+        size_t posStart = 0;
+        unsigned long vmNum = 0;
+        /* iterate over all value components */
+        while (posStart != OFString_npos)
         {
-          result = EC_ValueRepresentationViolated;
-          break;
+            ++vmNum;
+            /* search for next component separator */
+            const size_t posEnd = value.find('\\', posStart);
+            const size_t length = (posEnd == OFString_npos) ? valLen - posStart : posEnd - posStart;
+            /* check value representation */
+            const int vrID = DcmElement::scanValue(value, "pn", posStart, length);
+            if ((vrID != 11) && (!oldFormat || (vrID != 15)))
+            {
+              result = EC_ValueRepresentationViolated;
+              break;
+            }
+            posStart = (posEnd == OFString_npos) ? posEnd : posEnd + 1;
         }
-        posStart = (posEnd == OFString_npos) ? posEnd : posEnd + 1;
-      }
-      if (result.good() && !vm.empty())
-      {
-        /* check value multiplicity */
-        result = DcmElement::checkVM(vmNum, vm);
-      }
+        if (result.good() && !vm.empty())
+        {
+            /* check value multiplicity */
+            result = DcmElement::checkVM(vmNum, vm);
+        }
     }
     return result;
 }
@@ -376,6 +377,10 @@ OFCondition DcmPersonName::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
+** Revision 1.27  2011-11-01 14:54:05  joergr
+** Added support for code extensions (escape sequences) according to ISO 2022
+** to the character set conversion code.
+**
 ** Revision 1.26  2011-10-13 16:14:30  joergr
 ** Use putOFStringArray() instead of putString() where appropriate.
 **

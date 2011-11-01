@@ -1,7 +1,22 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2011.10.28 (riesmeier)
+**** Changes from 2011.11.01 (riesmeier)
+
+- Added support for code extensions (escape sequences) according to ISO 2022
+  to the character set conversion code.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcchrstr.h
+           dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/include/dcmtk/dcmdata/dcspchrs.h
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcchrstr.cc
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcspchrs.cc
+           dcmdata/libsrc/dcvrlo.cc
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/libsrc/dcvrsh.cc
+           dcmdata/tests/tests.cc
+           dcmdata/tests/tspchrs.cc
 
 - Fixed source code formatting and typo in a comment.
   Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h

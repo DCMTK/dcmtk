@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:13:03 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2011-11-01 14:54:07 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,6 +88,7 @@ OFTEST_REGISTER(dcmdata_readingDataDictionary);
 OFTEST_REGISTER(dcmdata_usingDataDictionary);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_1);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_2);
+OFTEST_REGISTER(dcmdata_specificCharacterSet_3);
 OFTEST_MAIN("dcmdata")
 
 
@@ -95,6 +96,10 @@ OFTEST_MAIN("dcmdata")
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.11  2011-11-01 14:54:07  joergr
+** Added support for code extensions (escape sequences) according to ISO 2022
+** to the character set conversion code.
+**
 ** Revision 1.10  2011-10-26 16:13:03  joergr
 ** Added helper class for converting between different DICOM character sets.
 ** This initial version only supports the conversion to UTF-8 (Unicode) and only

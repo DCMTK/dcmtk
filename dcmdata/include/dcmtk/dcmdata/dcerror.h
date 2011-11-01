@@ -18,8 +18,8 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:12:59 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2011-11-01 14:53:59 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,6 +130,8 @@ extern const OFCondition EC_DelimitationItemMissing;
 
 /// error, cannot select specific character set
 extern const unsigned short EC_CODE_CannotSelectCharacterSet;
+/// error, cannot convert specific character set
+extern const unsigned short EC_CODE_CannotConvertCharacterSet;
 
 
 #ifndef OFCONDITION_STRICT_MODE
@@ -150,6 +152,10 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.41  2011-11-01 14:53:59  joergr
+** Added support for code extensions (escape sequences) according to ISO 2022
+** to the character set conversion code.
+**
 ** Revision 1.40  2011-10-26 16:12:59  joergr
 ** Added helper class for converting between different DICOM character sets.
 ** This initial version only supports the conversion to UTF-8 (Unicode) and only

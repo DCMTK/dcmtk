@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Implementation class DcmLongString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-20 16:44:17 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2011-11-01 14:54:05 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@ DcmLongString::DcmLongString(const DcmTag &tag,
 {
     setMaxLength(64);
     setNonSignificantChars(" \\");
+    setDelimiterChars("\\");
 }
 
 
@@ -64,12 +65,12 @@ DcmLongString &DcmLongString::operator=(const DcmLongString &obj)
 
 OFCondition DcmLongString::copyFrom(const DcmObject& rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmLongString &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmLongString &, rhs);
+    }
+    return EC_Normal;
 }
 
 
@@ -121,6 +122,10 @@ OFCondition DcmLongString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlo.cc,v $
+** Revision 1.22  2011-11-01 14:54:05  joergr
+** Added support for code extensions (escape sequences) according to ISO 2022
+** to the character set conversion code.
+**
 ** Revision 1.21  2010-10-20 16:44:17  joergr
 ** Use type cast macros (e.g. OFstatic_cast) where appropriate.
 **

@@ -18,8 +18,8 @@
  *  Purpose: Class for supporting the Specfic Character Set attribute
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:12:59 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-11-01 14:53:59 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/ofstd/ofchrenc.h"
+#include "dcmtk/ofstd/ofmap.h"
 
 
 /** A class for managing and converting between different DICOM character sets.
@@ -87,10 +88,15 @@ class DcmSpecificCharacterSet
      *                      selected character set)
      *  @param  toString    reference to variable where the converted string
      *                      (using the UTF-8 character set) is stored
+     *  @param  delimiters  optional string of characters that are regarded as
+     *                      delimiters, i.e.\ when found the character set is
+     *                      switched back to the default.  CR, LF and FF are
+     *                      always regarded as delimiters (see DICOM PS 3.5).
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition convertToUTF8String(const OFString &fromString,
-                                    OFString &toString);
+                                    OFString &toString,
+                                    const OFString &delimiters = "");
 
     /** convert the given string from the selected character set(s) to UTF-8.
      *  That means selectCharacterSet() has to be called prior to this method.
@@ -102,11 +108,16 @@ class DcmSpecificCharacterSet
      *                      the trailing NULL byte)
      *  @param  toString    reference to variable where the converted string
      *                      (using the UTF-8 character set) is stored
+     *  @param  delimiters  optional string of characters that are regarded as
+     *                      delimiters, i.e.\ when found the character set is
+     *                      switched back to the default.  CR, LF and FF are
+     *                      always regarded as delimiters (see DICOM PS 3.5).
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition convertToUTF8String(const char *fromString,
                                     const size_t fromLength,
-                                    OFString &toString);
+                                    OFString &toString,
+                                    const OFString &delimiters = "");
 
     // --- static helper functions ---
 
@@ -128,6 +139,57 @@ class DcmSpecificCharacterSet
     static size_t countCharactersInUTF8String(const OFString &utf8String);
 
 
+  protected:
+
+    /// type definition of a map storing the identifier (key) of a character
+    /// set and the associated conversion descriptor
+    typedef OFMap<OFString, OFCharacterEncoding::T_Descriptor> T_DescriptorMap;
+
+    /** select a particular DICOM character set without code extensions for
+     *  subsequent conversions.  The corresponding DICOM defined term is
+     *  determined from the member variable 'SpecificCharacterSet'.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition selectCharacterSetWithoutCodeExtensions();
+
+    /** select a particular DICOM character set with code extensions for
+     *  subsequent conversions.  The corresponding DICOM defined terms are
+     *  determined from the member variable 'SpecificCharacterSet'.
+     *  @param  charsetVM  value multiplicity of the member variable
+     *                     'SpecificCharacterSet'.  Usually, this value has
+     *                     already been determined by the calling method.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition selectCharacterSetWithCodeExtensions(const unsigned long charsetVM);
+
+    /** close any currently open character set conversion descriptor(s).
+     *  Afterwards, no conversion descriptor is selected, pretty much like
+     *  after the initialization with the constructor.
+     */
+    void closeConversionDescriptors();
+
+    /** check whether the given string contains at least one escape character
+     *  (ESC), because it is used for code extension techniques like ISO 2022
+     *  @param  strValue   string to be checked for any escape character
+     *  @param  strLength  length of the string to be checked
+     *  @return OFTrue if an escape character has been found, OFFalse otherwise
+     */
+    OFBool checkForEscapeCharacter(const char *strValue,
+                                   const size_t strLength) const;
+
+    /** convert given string to octal format, i.e.\ all non-ASCII and control
+     *  characters are converted to their octal representation.  The total
+     *  length of the string is always limited to a particular maximum (see
+     *  implementation).  If the converted string would be longer, it is
+     *  cropped and "..." is appended to indicate this cropping.
+     *  @param  strValue   string to be checked for any escape character
+     *  @param  strLength  length of the string to be checked
+     *  @return resulting string in octal format
+     */
+    OFString convertToLengthLimitedOctalString(const char *strValue,
+                                               const size_t strLength) const;
+
+
   private:
 
     // private undefined copy constructor
@@ -136,11 +198,15 @@ class DcmSpecificCharacterSet
     // private undefined assignment operator
     DcmSpecificCharacterSet &operator=(const DcmSpecificCharacterSet &);
 
-    /// selected character set(s) based on DICOM defined terms
+    /// selected character set(s) based on one or more DICOM defined terms
     OFString SpecificCharacterSet;
 
     /// character encoding converter
     OFCharacterEncoding EncodingConverter;
+
+    /// map of character set conversion descriptors
+    /// (only used if multiple character sets are needed)
+    T_DescriptorMap ConversionDescriptors;
 };
 
 
@@ -151,11 +217,14 @@ class DcmSpecificCharacterSet
  *
  * CVS/RCS Log:
  * $Log: dcspchrs.h,v $
+ * Revision 1.2  2011-11-01 14:53:59  joergr
+ * Added support for code extensions (escape sequences) according to ISO 2022
+ * to the character set conversion code.
+ *
  * Revision 1.1  2011-10-26 16:12:59  joergr
  * Added helper class for converting between different DICOM character sets.
  * This initial version only supports the conversion to UTF-8 (Unicode) and only
  * from DICOM characters sets without code extension techniques (i.e. ISO 2022).
- *
  *
  *
  */

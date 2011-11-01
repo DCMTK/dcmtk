@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmCharString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:20:19 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2011-11-01 14:54:04 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,12 +50,14 @@
 
 
 DcmCharString::DcmCharString(const DcmTag &tag, const Uint32 len)
-  : DcmByteString(tag, len)
+  : DcmByteString(tag, len),
+    delimiterChars()
 {
 }
 
 DcmCharString::DcmCharString(const DcmCharString &old)
-  : DcmByteString(old)
+  : DcmByteString(old),
+    delimiterChars(old.delimiterChars)
 {
 }
 
@@ -66,19 +68,25 @@ DcmCharString::~DcmCharString(void)
 
 DcmCharString &DcmCharString::operator=(const DcmCharString &obj)
 {
-    DcmByteString::operator=(obj);
+    if (this != &obj)
+    {
+        DcmByteString::operator=(obj);
+
+        /* copy member variables */
+        delimiterChars = obj.delimiterChars;
+    }
     return *this;
 }
 
 
 OFCondition DcmCharString::copyFrom(const DcmObject& rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmCharString &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmCharString &, rhs);
+    }
+    return EC_Normal;
 }
 
 
@@ -182,7 +190,7 @@ OFCondition DcmCharString::convertToUTF8(DcmSpecificCharacterSet *converter,
         {
             OFString resultStr;
             // convert string to UTF-8 and replace the element value
-            status = converter->convertToUTF8String(str, len, resultStr);
+            status = converter->convertToUTF8String(str, len, resultStr, delimiterChars);
             if (status.good())
             {
                 DCMDATA_TRACE("DcmCharString::convertToUTF8() updating value of element "
@@ -200,6 +208,10 @@ OFCondition DcmCharString::convertToUTF8(DcmSpecificCharacterSet *converter,
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.cc,v $
+ * Revision 1.18  2011-11-01 14:54:04  joergr
+ * Added support for code extensions (escape sequences) according to ISO 2022
+ * to the character set conversion code.
+ *
  * Revision 1.17  2011-10-26 16:20:19  joergr
  * Added method that allows for converting a dataset or element value to UTF-8.
  *

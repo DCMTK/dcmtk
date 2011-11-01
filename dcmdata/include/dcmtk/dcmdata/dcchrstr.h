@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmCharString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:20:18 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2011-11-01 14:53:59 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,6 +132,20 @@ class DcmCharString
      */
     virtual OFCondition convertToUTF8(DcmSpecificCharacterSet *converter,
                                       const OFBool checkCharset = OFFalse);
+
+  protected:
+
+    /** delimiter characters specifying when to switch back to the default character set
+     *  (in case code extension techniques like ISO 2022 are used)
+     *  @param characters delimiter characters to be used for character set conversion
+     */
+    void setDelimiterChars(const OFString &characters) { delimiterChars = characters; }
+
+  private:
+
+    /// delimiter characters specifying when to switch back to the default character set
+    /// (in case code extension techniques like ISO 2022 are used)
+    OFString delimiterChars;
 };
 
 
@@ -141,6 +155,10 @@ class DcmCharString
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.h,v $
+ * Revision 1.19  2011-11-01 14:53:59  joergr
+ * Added support for code extensions (escape sequences) according to ISO 2022
+ * to the character set conversion code.
+ *
  * Revision 1.18  2011-10-26 16:20:18  joergr
  * Added method that allows for converting a dataset or element value to UTF-8.
  *
