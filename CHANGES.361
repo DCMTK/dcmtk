@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.28 (riesmeier)
 
+- Fixed source code formatting and typo in a comment.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/libsrc/dcbytstr.cc
+
 - Fixed typo in a comment.
   Affects: ofstd/tests/tmap.cc
 

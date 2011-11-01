@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-19 09:09:34 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Update Date:      $Date: 2011-11-01 07:22:12 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,28 +114,28 @@ DcmByteString::~DcmByteString()
 
 DcmByteString &DcmByteString::operator=(const DcmByteString &obj)
 {
-  if (this != &obj)
-  {
-    DcmElement::operator=(obj);
+    if (this != &obj)
+    {
+        DcmElement::operator=(obj);
 
-    /* copy member variables */
-    realLength = obj.realLength;
-    fStringMode = obj.fStringMode;
-    paddingChar = obj.paddingChar;
-    maxLength = obj.maxLength;
-  }
-  return *this;
+        /* copy member variables */
+        realLength = obj.realLength;
+        fStringMode = obj.fStringMode;
+        paddingChar = obj.paddingChar;
+        maxLength = obj.maxLength;
+    }
+    return *this;
 }
 
 
 OFCondition DcmByteString::copyFrom(const DcmObject& rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmByteString &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmByteString &, rhs);
+    }
+    return EC_Normal;
 }
 
 
@@ -733,6 +733,7 @@ void normalizeString(OFString &string,
     }
 }
 
+
 // ********************************
 
 
@@ -746,46 +747,46 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
     const size_t valLen = value.length();
     if (valLen > 0)
     {
-      /* do we need to search for value components at all? */
-      if (vm.empty())
-      {
-        /* check value length (if a maximum is specified) */
-        if ((maxLen > 0) && (value.length() > maxLen))
-          result = EC_MaximumLengthViolated;
-        /* check value representation */
-        else if (DcmElement::scanValue(value, vr) != vrID)
-          result = EC_ValueRepresentationViolated;
-      } else {
-        size_t posStart = 0;
-        unsigned long vmNum = 0;
-        /* iterate over all value components */
-        while (posStart != OFString_npos)
+        /* do we need to search for value components at all? */
+        if (vm.empty())
         {
-          ++vmNum;
-          /* search for next component separator */
-          const size_t posEnd = value.find('\\', posStart);
-          const size_t length = (posEnd == OFString_npos) ? valLen - posStart : posEnd - posStart;
-          /* check length of current value component */
-          if ((maxLen > 0) && (length > maxLen))
-          {
-            result = EC_MaximumLengthViolated;
-            break;
-          } else {
+            /* check value length (if a maximum is specified) */
+            if ((maxLen > 0) && (value.length() > maxLen))
+                result = EC_MaximumLengthViolated;
             /* check value representation */
-            if (DcmElement::scanValue(value, vr, posStart, length) != vrID)
+            else if (DcmElement::scanValue(value, vr) != vrID)
+                result = EC_ValueRepresentationViolated;
+        } else {
+            size_t posStart = 0;
+            unsigned long vmNum = 0;
+            /* iterate over all value components */
+            while (posStart != OFString_npos)
             {
-              result = EC_ValueRepresentationViolated;
-              break;
+                ++vmNum;
+                /* search for next component separator */
+                const size_t posEnd = value.find('\\', posStart);
+                const size_t length = (posEnd == OFString_npos) ? valLen - posStart : posEnd - posStart;
+                /* check length of current value component */
+                if ((maxLen > 0) && (length > maxLen))
+                {
+                    result = EC_MaximumLengthViolated;
+                    break;
+                } else {
+                    /* check value representation */
+                    if (DcmElement::scanValue(value, vr, posStart, length) != vrID)
+                    {
+                        result = EC_ValueRepresentationViolated;
+                        break;
+                    }
+                }
+                posStart = (posEnd == OFString_npos) ? posEnd : posEnd + 1;
             }
-          }
-          posStart = (posEnd == OFString_npos) ? posEnd : posEnd + 1;
+            if (result.good())
+            {
+                /* check value multiplicity */
+                result = DcmElement::checkVM(vmNum, vm);
+            }
         }
-        if (result.good())
-        {
-          /* check value multiplicity */
-          result = DcmElement::checkVM(vmNum, vm);
-        }
-      }
     }
     return result;
 }
@@ -794,6 +795,9 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.65  2011-11-01 07:22:12  joergr
+** Fixed source code formatting and typo in a comment.
+**
 ** Revision 1.64  2011-10-19 09:09:34  joergr
 ** Fixed unexpected behavior of getOFString() method when called for an empty
 ** element value.

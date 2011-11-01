@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:09 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2011-11-01 07:22:10 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -350,7 +350,7 @@ private:
     /// current representation of the string value
     E_StringMode fStringMode;
 
-    /// non significant characters used to determine whether the value is empty
+    /// non-significant characters used to determine whether the value is empty
     OFString nonSignificantChars;
 };
 
@@ -390,6 +390,9 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
+** Revision 1.49  2011-11-01 07:22:10  joergr
+** Fixed source code formatting and typo in a comment.
+**
 ** Revision 1.48  2011-10-18 14:00:09  joergr
 ** Added support for embedded NULL bytes in string element values.
 **
