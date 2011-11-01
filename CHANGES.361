@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.10.28 (riesmeier)
 
+- Fixed typo in a comment.
+  Affects: ofstd/tests/tmap.cc
+
 - Fixed wrong comment on return value of method convertToOctalString().
   Affects: ofstd/include/dcmtk/ofstd/ofstd.h
 

@@ -17,9 +17,9 @@
  *
  *  Purpose: test programm for class OFMap
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:57 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-11-01 07:14:59 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@ OFTEST(ofstd_OFMap)
     for (i = 1; i <= 6; ++i)
         m[i] = i;
 
-    // and verify they where really added
+    // and verify they were really added
     OFCHECK_EQUAL(m.size(), 6);
 
     it = m.begin();
@@ -85,6 +85,9 @@ OFTEST(ofstd_OFMap)
  *
  * CVS/RCS Log:
  * $Log: tmap.cc,v $
+ * Revision 1.4  2011-11-01 07:14:59  joergr
+ * Fixed typo in a comment.
+ *
  * Revision 1.3  2011-05-25 10:05:57  uli
  * Imported oftest and converted existing tests to oftest.
  *
