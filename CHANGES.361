@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.01 (schlachter)
 
+- Fixed CMake's output while running compile tests.
+  Affects: CMake/dcmtkTryCompile.cmake
+
 - Fixed the test for pthread_t being a pointer type.
   Affects: CMake/GenerateDCMTKConfigure.cmake
 

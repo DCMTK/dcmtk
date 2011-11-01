@@ -18,13 +18,13 @@ MACRO(DCMTK_TRY_COMPILE VAR MESSAGE SOURCE)
                     ${DCMTK_TRY_COMPILE_FILE}
                     OUTPUT_VARIABLE OUTPUT)
         IF(${VAR})
-            MESSAGE(STATUS "Checking for ${MESSAGE} -- yes")
+            MESSAGE(STATUS "Checking whether ${MESSAGE} -- yes")
             SET(${VAR} 1 CACHE INTERNAL "${MESSAGE}")
             FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
                  "${MESSAGE} passed with the following output:\n"
                  "${OUTPUT}\n")
         ELSE(${VAR})
-            MESSAGE(STATUS "Checking for ${MESSAGE} -- no")
+            MESSAGE(STATUS "Checking whether ${MESSAGE} -- no")
             SET(${VAR} 0 CACHE INTERNAL "${MESSAGE}")
             FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
                  "${MESSAGE} failed with the following output:\n"
