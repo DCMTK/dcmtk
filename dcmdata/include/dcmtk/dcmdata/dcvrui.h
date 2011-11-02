@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:10 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2011-11-02 11:21:58 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,6 +119,16 @@ class DcmUniqueIdentifier
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
+    /** get a copy of a particular string component
+     *  @param stringVal variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize delete trailing NULL-byte(s) if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringVal,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
+
     /** set element value from the given character string.
      *  If the string starts with a "=" the subsequent characters are interpreted as a
      *  UID name and mapped to the corresponding UID number (using "dcmFindUIDFromName()")
@@ -175,6 +185,9 @@ class DcmUniqueIdentifier
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.h,v $
+** Revision 1.33  2011-11-02 11:21:58  joergr
+** Fixed issue with UI values not being properly normalized in getOFString().
+**
 ** Revision 1.32  2011-10-18 14:00:10  joergr
 ** Added support for embedded NULL bytes in string element values.
 **

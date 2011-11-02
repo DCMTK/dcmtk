@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.02 (riesmeier)
 
+- Fixed issue with UI values not being properly normalized in getOFString().
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcvrui.h
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcvrui.cc
+
 - Fixed minor inconsistencies regarding documentation and formatting.
   Affects: dcmdata/apps/dcmconv.cc
 

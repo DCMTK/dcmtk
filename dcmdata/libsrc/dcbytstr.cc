@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-01 07:22:12 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2011-11-02 11:22:00 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -680,7 +680,8 @@ OFBool DcmByteString::isEmpty(const OFBool normalize)
 void normalizeString(OFString &string,
                      const OFBool multiPart,
                      const OFBool leading,
-                     const OFBool trailing)
+                     const OFBool trailing,
+                     const char paddingChar)
 {
     /* check for non-empty string */
     if (!string.empty())
@@ -694,7 +695,7 @@ void normalizeString(OFString &string,
             if (leading)
             {
                 offset = 0;
-                while ((partindex + offset < len) && (string[partindex + offset] == ' '))
+                while ((partindex + offset < len) && (string[partindex + offset] == paddingChar))
                     offset++;
                 if (offset > 0)
                     string.erase(partindex, offset);
@@ -712,7 +713,7 @@ void normalizeString(OFString &string,
             if (trailing && partindex)
             {
                 offset = partindex - 1;
-                while ((offset > 0) && (string[offset] == ' '))
+                while ((offset > 0) && (string[offset] == paddingChar))
                     offset--;
                 if (offset != partindex - 1)
                 {
@@ -721,8 +722,8 @@ void normalizeString(OFString &string,
                         string.erase(offset, partindex - offset);
                         partindex = offset;
                     } else {
-                        string.erase(offset+1, partindex - offset-1);
-                        partindex = offset+1;
+                        string.erase(offset + 1, partindex - offset - 1);
+                        partindex = offset + 1;
                     }
                 }
             }
@@ -795,6 +796,9 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.66  2011-11-02 11:22:00  joergr
+** Fixed issue with UI values not being properly normalized in getOFString().
+**
 ** Revision 1.65  2011-11-01 07:22:12  joergr
 ** Fixed source code formatting and typo in a comment.
 **

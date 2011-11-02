@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:13 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2011-11-02 11:22:00 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,6 +156,20 @@ void DcmUniqueIdentifier::print(STD_NAMESPACE ostream &out,
 // ********************************
 
 
+OFCondition DcmUniqueIdentifier::getOFString(OFString &stringVal,
+                                             const unsigned long pos,
+                                             OFBool normalize)
+{
+    OFCondition l_error = DcmByteString::getOFString(stringVal, pos, normalize);
+    if (l_error.good() && normalize)
+        normalizeString(stringVal, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING, getPaddingChar() /* NULL-byte */);
+    return l_error;
+}
+
+
+// ********************************
+
+
 OFCondition DcmUniqueIdentifier::putString(const char *stringVal)
 {
     /* determine length of the string value */
@@ -240,6 +254,9 @@ OFCondition DcmUniqueIdentifier::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
+** Revision 1.37  2011-11-02 11:22:00  joergr
+** Fixed issue with UI values not being properly normalized in getOFString().
+**
 ** Revision 1.36  2011-10-18 14:00:13  joergr
 ** Added support for embedded NULL bytes in string element values.
 **

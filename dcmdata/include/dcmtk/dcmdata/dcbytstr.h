@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-01 07:22:10 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2011-11-02 11:21:58 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -302,7 +302,12 @@ class DcmByteString: public DcmElement
     /** get the maximum number of characters for each string component
      *  @return maximum number of characters for each string component
      */
-    Uint32 getMaxLength() { return maxLength; }
+    Uint32 getMaxLength() const { return maxLength; }
+
+    /** get the end-of-string padding character
+     *  @return end-of-string padding character
+     */
+    char getPaddingChar() const { return paddingChar; }
 
     /** set the end-of-string padding character
      *  @param c end-of-string padding character
@@ -338,7 +343,7 @@ class DcmByteString: public DcmElement
 
 private:
 
-    /// padding character used to adjust odd value length (space)
+    /// padding character used to adjust odd value length (e.g. a space)
     char paddingChar;
 
     /// maximum number of characters for each string component
@@ -372,16 +377,18 @@ const OFBool MULTIPART = OFTrue;
 
 /* Function to get part out of a String for VM > 1 */
 
-/** normalize the given string value, i.e.\ remove leading and/or trailing spaces
+/** normalize the given string value, i.e.\ remove leading and/or trailing padding
  *  @param string input and output string value to be normalized
  *  @param multiPart handle string as multi-valued if OFTrue
  *  @param leading delete leading spaces if OFTrue
  *  @param trailing delete trailing spaces if OFTrue
+ *  @param paddingChar padding character to be removed (usually a space)
  */
 void normalizeString(OFString &string,
                      const OFBool multiPart,
                      const OFBool leading,
-                     const OFBool trailing);
+                     const OFBool trailing,
+                     const char paddingChar = ' ');
 
 
 #endif // DCBYTSTR_H
@@ -390,6 +397,9 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
+** Revision 1.50  2011-11-02 11:21:58  joergr
+** Fixed issue with UI values not being properly normalized in getOFString().
+**
 ** Revision 1.49  2011-11-01 07:22:10  joergr
 ** Fixed source code formatting and typo in a comment.
 **
