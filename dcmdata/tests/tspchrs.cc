@@ -18,8 +18,8 @@
  *  Purpose: test program for class DcmSpecificCharacterSet
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-01 14:54:07 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-11-02 16:21:04 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,6 +141,14 @@ OFTEST(dcmdata_specificCharacterSet_3)
         OFCHECK(converter.selectCharacterSet("GB18030").good());
         OFCHECK(converter.convertToUTF8String("Wang^XiaoDong=\315\365^\320\241\266\253=", resultStr, delimiters).good());
         OFCHECK_EQUAL(resultStr, "Wang^XiaoDong=\347\216\213^\345\260\217\344\270\234=");
+        // check whether CR and LF are detected correctly
+        OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 13").good());
+        OFCHECK(converter.convertToUTF8String("Japanese\r\033(J\324\317\300\336\nText", resultStr).good());
+        OFCHECK_EQUAL(resultStr, "Japanese\015\357\276\224\357\276\217\357\276\200\357\276\236\012Text");
+        // same with '\' (backslash), which is used for separating multiple values
+        OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 13").good());
+        OFCHECK(converter.convertToUTF8String("Japanese\\\033(J\324\317\300\336\\Text", resultStr, "\\").good());
+        OFCHECK_EQUAL(resultStr, "Japanese\\\357\276\224\357\276\217\357\276\200\357\276\236\\Text");
         // the following should fail (wrong character set)
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 166").good());
         OFCHECK(converter.convertToUTF8String("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr, delimiters).bad());
@@ -155,6 +163,9 @@ OFTEST(dcmdata_specificCharacterSet_3)
  *
  * CVS/RCS Log:
  * $Log: tspchrs.cc,v $
+ * Revision 1.3  2011-11-02 16:21:04  joergr
+ * Added two new tests for checking the correct handling of delimiters.
+ *
  * Revision 1.2  2011-11-01 14:54:07  joergr
  * Added support for code extensions (escape sequences) according to ISO 2022
  * to the character set conversion code.

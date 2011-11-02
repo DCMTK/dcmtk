@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.02 (riesmeier)
 
+- Added two new tests for checking the correct handling of delimiters.
+  Affects: dcmdata/tests/tspchrs.cc
+
 - Fixed minor issue with wrong/insufficient log output in case of delimiters.
   Affects: dcmdata/libsrc/dcspchrs.cc
 
