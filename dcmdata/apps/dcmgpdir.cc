@@ -50,8 +50,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-06-21 15:48:24 $
- *  CVS/RCS Revision: $Revision: 1.97 $
+ *  Update Date:      $Date: 2011-11-02 08:40:49 $
+ *  CVS/RCS Revision: $Revision: 1.98 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmfile-in", "referenced DICOM file", OFCmdParam::PM_MultiOptional);
+    cmd.addParam("dcmfile-in", "referenced DICOM file (or directory to be scanned)", OFCmdParam::PM_MultiOptional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                     "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
@@ -624,6 +624,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
+ * Revision 1.98  2011-11-02 08:40:49  joergr
+ * Added note on "directory to be scanned" to the "dcmfile-in" parameter.
+ *
  * Revision 1.97  2011-06-21 15:48:24  joergr
  * Added support for Blu-ray Disc Media Application Profiles (Supplement 153).
  *

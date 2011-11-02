@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.02 (riesmeier)
 
+- Added note on "directory to be scanned" to the "dcmfile-in" parameter.
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/docs/dcmgpdir.man
+
 - Slightly revised notes section on "Scanning Directories".
   Affects: dcmdata/docs/dcmdump.man
            dcmdata/docs/dcmgpdir.man

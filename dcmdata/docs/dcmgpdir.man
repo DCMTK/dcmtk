@@ -30,7 +30,7 @@ cardio profiles requiring the use of icon images).
 \section parameters PARAMETERS
 
 \verbatim
-dcmfile-in  referenced DICOM file
+dcmfile-in  referenced DICOM file (or directory to be scanned)
 \endverbatim
 
 \section options OPTIONS
