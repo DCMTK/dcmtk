@@ -61,7 +61,7 @@ equivalent to that of \b dcmgpdir.
 \section parameters PARAMETERS
 
 \verbatim
-dcmfile-in  referenced DICOM file
+dcmfile-in  referenced DICOM file (or directory to be scanned)
 \endverbatim
 
 \section options OPTIONS
@@ -373,6 +373,20 @@ The support for icon images is currently restricted to monochrome images.
 This might change in the future.  Till then, color images are automatically
 converted to grayscale mode.  The icon size is 128*128 pixels for the cardiac
 profiles (as required by the DICOM standard) and 64*64 for all others.
+
+\subsection scanning_directories Scanning Directories
+
+Adding files from directories is possible by using option \e --recurse.  If no
+further command line parameters are given, the directory specified by option
+\e --input-directory (default: current directory) is scanned for files.  If
+parameters are given, they can either specify a file or directory name; the
+input directory is always prepended.  If the files in the provided directories
+should be selected according to a specific name pattern (e.g. using wildcard
+matching), option \e --pattern has to be used.  Please note that this file
+pattern only applies to the files within the scanned directories, and, if any
+other patterns are specified on the command line outside the
+\e --input-directory option (e.g. in order to select further files), these do
+not apply to the specified directories.
 
 \section logging LOGGING
 
