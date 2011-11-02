@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.02 (riesmeier)
 
+- Fixed minor issue with wrong/insufficient log output in case of delimiters.
+  Affects: dcmdata/libsrc/dcspchrs.cc
+
 - Added new command line option for converting a DICOM file/dataset to UTF-8.
   Also fixed some small inconsistencies regarding the character set handling.
   Affects: dcmdata/apps/Makefile.dep

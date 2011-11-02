@@ -18,8 +18,8 @@
  *  Purpose: Class for supporting the Specfic Character Set attribute
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-01 14:54:05 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-11-02 16:18:36 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -335,7 +335,7 @@ OFCondition DcmSpecificCharacterSet::convertToUTF8String(const char *fromString,
         toString.clear();
         size_t pos = 0;
         // check whether '=' is a delimiter, as it is used in PN values
-        OFBool isFirstGroup = delimiters.find('=');
+        OFBool isFirstGroup = (delimiters.find('=') != OFString_npos);
         // by default, we expect that '^' and '=' (i.e. their ASCII codes) are valid PN delimiters
         // (this implies that the default character set is not "ISO 2022 IR 87" or "ISO 2022 IR 159")
         OFBool checkPNDelimiters = OFTrue;
@@ -492,12 +492,15 @@ OFCondition DcmSpecificCharacterSet::convertToUTF8String(const char *fromString,
             // the LF, FF, CR character or other delimiters (depending on the VR) also cause a switch
             else if (isDelimiter)
             {
+                // output some debug information
+                DCMDATA_TRACE("    Appending delimiter '"
+                    << convertToLengthLimitedOctalString(currentChar - 1 /* identical to c0 */, 1) << "' to the UTF-8 output");
                 // don't forget to append the delimiter
                 toString += c0;
                 // use the default descriptor again (see DICOM PS 3.5)
                 if (descriptor != EncodingConverter.ConversionDescriptor)
                 {
-                    DCMDATA_TRACE("  Switching back to the default character set (because the delimiter '" << c0 << "' was found)");
+                    DCMDATA_TRACE("  Switching back to the default character set (because a delimiter was found)");
                     descriptor = EncodingConverter.ConversionDescriptor;
                     checkPNDelimiters = OFTrue;
                 }
@@ -612,6 +615,9 @@ OFString DcmSpecificCharacterSet::convertToLengthLimitedOctalString(const char *
  *
  *  CVS/RCS Log:
  *  $Log: dcspchrs.cc,v $
+ *  Revision 1.3  2011-11-02 16:18:36  joergr
+ *  Fixed minor issue with wrong/insufficient log output in case of delimiters.
+ *
  *  Revision 1.2  2011-11-01 14:54:05  joergr
  *  Added support for code extensions (escape sequences) according to ISO 2022
  *  to the character set conversion code.
