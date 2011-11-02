@@ -96,7 +96,7 @@ input transfer syntax:
          read with implicit VR little endian TS
 \endverbatim
 
-\subsection parsing_options parsing options
+\subsection processing_options processing options
 \verbatim
 additional information:
 
@@ -122,7 +122,7 @@ error handling:
   -Ei  --skip-invalid-items
          skip invalid content items (incl. sub-tree)
 
-character set:
+specific character set:
 
   +Cr  --charset-require
          require declaration of extended charset (default)
@@ -130,6 +130,24 @@ character set:
   +Ca  --charset-assume  [c]harset: string constant
          (latin-1 to -5, greek, cyrillic, arabic, hebrew)
          assume c if undeclared extended charset found
+
+         # this option is only used for the mapping to an appropriate
+         # HTML/XHTML character encoding, but not for the conversion
+         # to UTF-8
+
+       --charset-check-all
+         check all data elements with string values
+         (default: only PN, LO, LT, SH, ST and UT)
+
+         # this option is only used for the mapping to an appropriate
+         # HTML/XHTML character encoding, but not for the conversion
+         # to UTF-8
+
+  +U8  --convert-to-utf8
+         convert all element values that are affected
+         by Specific Character Set (0008,0005) to UTF-8
+
+         # requires support from the libiconv toolkit
 \endverbatim
 
 \subsection output_options output options
@@ -228,6 +246,34 @@ XRayRadiationDoseSRStorage                  1.2.840.10008.5.1.4.1.1.88.67
 ColonCADSRStorage                           1.2.840.10008.5.1.4.1.1.88.69
 ImplantationPlanSRDocumentStorage           1.2.840.10008.5.1.4.1.1.88.70
 \endverbatim
+
+\subsection character_encoding Character Encoding
+
+The HTML/XHTML encoding is determined automatically from the DICOM attribute
+(0008,0005) "Specific Character Set" using the following mapping:
+
+\verbatim
+ASCII         "ISO_IR 6"    =>  "UTF-8"
+UTF-8         "ISO_IR 192"  =>  "UTF-8"
+ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"
+ISO Latin 2   "ISO_IR 101"  =>  "ISO-8859-2"
+ISO Latin 3   "ISO_IR 109"  =>  "ISO-8859-3"
+ISO Latin 4   "ISO_IR 110"  =>  "ISO-8859-4"
+ISO Latin 5   "ISO_IR 148"  =>  "ISO-8859-9"
+Cyrillic      "ISO_IR 144"  =>  "ISO-8859-5"
+Arabic        "ISO_IR 127"  =>  "ISO-8859-6"
+Greek         "ISO_IR 126"  =>  "ISO-8859-7"
+Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
+\endverbatim
+
+If this DICOM attribute is missing in the input file, although needed, option
+\e --charset-assume can be used to specify an appropriate character set
+manually.
+
+Multiple character sets are not supported (only the first attribute value is
+mapped in case of value multiplicity).  If needed, option \e --convert-to-utf8
+can be used to convert the DICOM file or data set to UTF-8 encoding prior to
+the rendering to HTML/XHTML format.
 
 \section logging LOGGING
 

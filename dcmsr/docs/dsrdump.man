@@ -94,7 +94,7 @@ input transfer syntax:
          read with implicit VR little endian TS
 \endverbatim
 
-\subsection parsing_options parsing options
+\subsection processing_options processing options
 \verbatim
 additional information:
 
@@ -119,6 +119,14 @@ error handling:
 
   -Ei  --skip-invalid-items
          skip invalid content items (incl. sub-tree)
+
+specific character set:
+
+  +U8  --convert-to-utf8
+         convert all element values that are affected
+         by Specific Character Set (0008,0005) to UTF-8
+
+         # requires support from the libiconv toolkit
 \endverbatim
 
 \subsection output_options output options

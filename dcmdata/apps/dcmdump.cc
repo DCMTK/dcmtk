@@ -18,8 +18,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-02 07:42:57 $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  Update Date:      $Date: 2011-11-02 11:51:10 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,9 @@
 
 #ifdef WITH_ZLIB
 #include <zlib.h>                     /* for zlibVersion() */
+#endif
+#ifdef WITH_LIBICONV
+#include "dcmtk/ofstd/ofchrenc.h"     /* for OFCharacterEncoding */
 #endif
 
 #if defined (HAVE_WINDOWS_H) || defined(HAVE_FNMATCH_H)
@@ -72,6 +75,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
                     const size_t printFlags,
                     const OFBool loadIntoMemory,
                     const OFBool stopOnErrors,
+                    const OFBool convertToUTF8,
                     const char *pixelDirectory);
 
 // ********************************************
@@ -161,6 +165,7 @@ int main(int argc, char *argv[])
     OFBool recurse = OFFalse;
     const char *scanPattern = "";
     const char *pixelDirectory = NULL;
+    OFBool convertToUTF8 = OFFalse;
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -246,6 +251,12 @@ int main(int argc, char *argv[])
         cmd.addOption("--bitstream-zlib",      "+bz",    "expect deflated zlib bitstream");
 #endif
 
+#ifdef WITH_LIBICONV
+    cmd.addGroup("processing options:");
+      cmd.addSubGroup("specific character set:");
+        cmd.addOption("--convert-to-utf8",     "+U8",    "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
+#endif
+
     cmd.addGroup("output options:");
       cmd.addSubGroup("printing:");
         cmd.addOption("--print-all",           "+L",     "print long tag values completely");
@@ -294,19 +305,25 @@ int main(int argc, char *argv[])
         {
           app.printHeader(OFTrue /*print host identifier*/);
           COUT << OFendl << "External libraries used:";
-#ifdef WITH_ZLIB
-          COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
-#else
+#if !defined(WITH_ZLIB) && !defined(WITH_LIBICONV)
           COUT << " none" << OFendl;
+#else
+          COUT << OFendl;
+#endif
+#ifdef WITH_ZLIB
+          COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
+#endif
+#ifdef WITH_LIBICONV
+          COUT << "- " << OFCharacterEncoding::getLibraryVersionString() << OFendl;
 #endif
           return 0;
         }
       }
 
+      /* general options */
       OFLog::configureFromCommandLine(cmd, app);
 
       /* input options */
-
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) readMode = ERM_autoDetect;
       if (cmd.findOption("--read-file-only")) readMode = ERM_fileOnly;
@@ -473,8 +490,12 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 #endif
 
-      /* output options */
+      /* processing options */
+#ifdef WITH_LIBICONV
+      if (cmd.findOption("--convert-to-utf8")) convertToUTF8 = OFTrue;
+#endif
 
+      /* output options */
       cmd.beginOptionBlock();
       if (cmd.findOption("--print-all")) printFlags &= ~DCMTypes::PF_shortenLongTagValues;
       if (cmd.findOption("--print-short")) printFlags |= DCMTypes::PF_shortenLongTagValues;
@@ -647,7 +668,7 @@ int main(int argc, char *argv[])
         /* print header with filename */
         COUT << "# " << OFFIS_CONSOLE_APPLICATION << " (" << fileCounter << "/" << count << "): " << current << OFendl;
       }
-      errorCount += dumpFile(COUT, current, readMode, xfer, printFlags, loadIntoMemory, stopOnErrors, pixelDirectory);
+      errorCount += dumpFile(COUT, current, readMode, xfer, printFlags, loadIntoMemory, stopOnErrors, convertToUTF8, pixelDirectory);
     }
 
     return errorCount;
@@ -691,6 +712,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
                     const size_t printFlags,
                     const OFBool loadIntoMemory,
                     const OFBool stopOnErrors,
+                    const OFBool convertToUTF8,
                     const char *pixelDirectory)
 {
     int result = 0;
@@ -714,6 +736,20 @@ static int dumpFile(STD_NAMESPACE ostream &out,
     }
 
     if (loadIntoMemory) dfile.loadAllDataIntoMemory();
+
+#ifdef WITH_LIBICONV
+    if (convertToUTF8)
+    {
+        OFLOG_INFO(dcmdumpLogger, "converting all element values that are affected by Specific Character Set (0008,0005) to UTF-8");
+        cond = dfile.convertToUTF8();
+        if (cond.bad())
+        {
+            OFLOG_FATAL(dcmdumpLogger, cond.text() << ": converting file to UTF-8: " << ifname);
+            result = 1;
+            if (stopOnErrors) return result;
+        }
+    }
+#endif
 
     size_t pixelCounter = 0;
     const char *pixelFileName = NULL;
@@ -782,6 +818,10 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.93  2011-11-02 11:51:10  joergr
+ * Added new command line option for converting a DICOM file/dataset to UTF-8.
+ * Also fixed some small inconsistencies regarding the character set handling.
+ *
  * Revision 1.92  2011-11-02 07:42:57  joergr
  * Slightly restructured command line options and introduced new subsections.
  *

@@ -18,8 +18,8 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-22 16:56:09 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2011-11-02 11:51:34 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,10 +33,13 @@
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>        /* for zlibVersion() */
+#include <zlib.h>                     /* for zlibVersion() */
+#endif
+#ifdef WITH_LIBICONV
+#include "dcmtk/ofstd/ofchrenc.h"     /* for OFCharacterEncoding */
 #endif
 
 #ifndef HAVE_WINDOWS_H
@@ -59,7 +62,8 @@ static OFCondition dumpFile(STD_NAMESPACE ostream &out,
                             const E_FileReadMode readMode,
                             const E_TransferSyntax xfer,
                             const size_t readFlags,
-                            const size_t printFlags)
+                            const size_t printFlags,
+                            const OFBool convertToUTF8)
 {
     OFCondition result = EC_Normal;
 
@@ -84,6 +88,20 @@ static OFCondition dumpFile(STD_NAMESPACE ostream &out,
     } else
         result = EC_MemoryExhausted;
 
+#ifdef WITH_LIBICONV
+    if (result.good())
+    {
+        if (convertToUTF8)
+        {
+            OFLOG_INFO(dsrdumpLogger, "converting all element values that are affected by Specific Character Set (0008,0005) to UTF-8");
+            result = dfile->convertToUTF8();
+            if (result.bad())
+            {
+                OFLOG_FATAL(dsrdumpLogger, result.text() << ": converting file to UTF-8: " << ifname);
+            }
+        }
+    }
+#endif
     if (result.good())
     {
         result = EC_CorruptedData;
@@ -121,6 +139,7 @@ int main(int argc, char *argv[])
     OFBool opt_printFilename = OFFalse;
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
+    OFBool opt_convertToUTF8 = OFFalse;
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Dump DICOM SR file and data set", rcsid);
     OFCommandLine cmd;
@@ -146,7 +165,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-big",        "-tb", "read with explicit VR big endian TS");
         cmd.addOption("--read-xfer-implicit",   "-ti", "read with implicit VR little endian TS");
 
-    cmd.addGroup("parsing options:");
+    cmd.addGroup("processing options:");
       cmd.addSubGroup("additional information:");
         cmd.addOption("--processing-details",   "-Ip", "show currently processed content item");
       cmd.addSubGroup("error handling:");
@@ -155,6 +174,10 @@ int main(int argc, char *argv[])
         cmd.addOption("--ignore-constraints",   "-Ec", "ignore relationship content constraints");
         cmd.addOption("--ignore-item-errors",   "-Ee", "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
         cmd.addOption("--skip-invalid-items",   "-Ei", "skip invalid content items (incl. sub-tree)");
+#ifdef WITH_LIBICONV
+      cmd.addSubGroup("specific character set:");
+        cmd.addOption("--convert-to-utf8",      "+U8", "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
+#endif
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("printing:");
@@ -183,18 +206,25 @@ int main(int argc, char *argv[])
             {
                 app.printHeader(OFTrue /*print host identifier*/);
                 COUT << OFendl << "External libraries used:";
-#ifdef WITH_ZLIB
-                COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
-#else
+#if !defined(WITH_ZLIB) && !defined(WITH_LIBICONV)
                 COUT << " none" << OFendl;
+#else
+                COUT << OFendl;
+#endif
+#ifdef WITH_ZLIB
+                COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
+#endif
+#ifdef WITH_LIBICONV
+                COUT << "- " << OFCharacterEncoding::getLibraryVersionString() << OFendl;
 #endif
                 return 0;
             }
         }
 
-        /* options */
+        /* general options */
         OFLog::configureFromCommandLine(cmd, app);
 
+        /* input options */
         cmd.beginOptionBlock();
         if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
         if (cmd.findOption("--read-file-only")) opt_readMode = ERM_fileOnly;
@@ -223,6 +253,7 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        /* processing options */
         if (cmd.findOption("--processing-details"))
         {
             app.checkDependence("--processing-details", "verbose mode", dsrdumpLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL));
@@ -238,7 +269,11 @@ int main(int argc, char *argv[])
             opt_readFlags |= DSRTypes::RF_ignoreContentItemErrors;
         if (cmd.findOption("--skip-invalid-items"))
             opt_readFlags |= DSRTypes::RF_skipInvalidContentItems;
+#ifdef WITH_LIBICONV
+        if (cmd.findOption("--convert-to-utf8")) opt_convertToUTF8 = OFTrue;
+#endif
 
+        /* output options */
         if (cmd.findOption("--print-filename"))
             opt_printFilename = OFTrue;
         if (cmd.findOption("--no-document-header"))
@@ -297,7 +332,7 @@ int main(int argc, char *argv[])
                 COUT << OFString(79, '-') << OFendl;
             COUT << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << OFendl << OFendl;
         }
-        if (dumpFile(COUT, current, opt_readMode, opt_ixfer, opt_readFlags, opt_printFlags).bad())
+        if (dumpFile(COUT, current, opt_readMode, opt_ixfer, opt_readFlags, opt_printFlags, opt_convertToUTF8).bad())
             errorCount++;
     }
 
@@ -311,6 +346,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
+ * Revision 1.37  2011-11-02 11:51:34  joergr
+ * Added new command line option for converting a DICOM file/dataset to UTF-8.
+ * Also fixed some small inconsistencies regarding the character set handling.
+ *
  * Revision 1.36  2011-03-22 16:56:09  joergr
  * Added new option for colored output of the textual dump - Unix only.
  *

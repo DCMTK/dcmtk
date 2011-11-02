@@ -19,8 +19,8 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-21 10:31:36 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2011-11-02 11:51:33 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,10 @@
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>       /* for zlibVersion() */
+#include <zlib.h>                     /* for zlibVersion() */
+#endif
+#ifdef WITH_LIBICONV
+#include "dcmtk/ofstd/ofchrenc.h"     /* for OFCharacterEncoding */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dsr2html"
@@ -58,7 +61,9 @@ static OFCondition renderFile(STD_NAMESPACE ostream &out,
                               const E_FileReadMode readMode,
                               const E_TransferSyntax xfer,
                               const size_t readFlags,
-                              const size_t renderFlags)
+                              const size_t renderFlags,
+                              const OFBool checkAllStrings,
+                              const OFBool convertToUTF8)
 {
     OFCondition result = EC_Normal;
 
@@ -83,6 +88,20 @@ static OFCondition renderFile(STD_NAMESPACE ostream &out,
     } else
         result = EC_MemoryExhausted;
 
+#ifdef WITH_LIBICONV
+    if (result.good())
+    {
+        if (convertToUTF8)
+        {
+            OFLOG_INFO(dsr2htmlLogger, "converting all element values that are affected by Specific Character Set (0008,0005) to UTF-8");
+            result = dfile->convertToUTF8();
+            if (result.bad())
+            {
+                OFLOG_FATAL(dsr2htmlLogger, result.text() << ": converting file to UTF-8: " << ifname);
+            }
+        }
+    }
+#endif
     if (result.good())
     {
         result = EC_CorruptedData;
@@ -95,7 +114,7 @@ static OFCondition renderFile(STD_NAMESPACE ostream &out,
             {
                 // check extended character set
                 const char *charset = dsrdoc->getSpecificCharacterSet();
-                if ((charset == NULL || strlen(charset) == 0) && dset->containsExtendedCharacters())
+                if ((charset == NULL || strlen(charset) == 0) && dset->containsExtendedCharacters(checkAllStrings))
                 {
                     // we have an unspecified extended character set
                     if (defaultCharset == NULL)
@@ -152,6 +171,8 @@ int main(int argc, char *argv[])
     const char *opt_defaultCharset = NULL;
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
+    OFBool opt_checkAllStrings = OFFalse;
+    OFBool opt_convertToUTF8 = OFFalse;
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Render DICOM SR file and data set to HTML/XHTML", rcsid);
     OFCommandLine cmd;
@@ -178,7 +199,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-big",        "-tb",    "read with explicit VR big endian TS");
         cmd.addOption("--read-xfer-implicit",   "-ti",    "read with implicit VR little endian TS");
 
-    cmd.addGroup("parsing options:");
+    cmd.addGroup("processing options:");
       cmd.addSubGroup("additional information:");
         cmd.addOption("--processing-details",   "-Ip",    "show currently processed content item");
       cmd.addSubGroup("error handling:");
@@ -192,6 +213,10 @@ int main(int argc, char *argv[])
         cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset: string constant (latin-1 to -5,",
                                                           "greek, cyrillic, arabic, hebrew)\n"
                                                           "assume c if undeclared extended charset found");
+        cmd.addOption("--charset-check-all",              "check all data elements with string values\n(default: only PN, LO, LT, SH, ST and UT)");
+#ifdef WITH_LIBICONV
+        cmd.addOption("--convert-to-utf8",      "+U8",    "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
+#endif
     cmd.addGroup("output options:");
       cmd.addSubGroup("HTML/XHTML compatibility:");
         cmd.addOption("--html-3.2",             "+H3",    "use only HTML version 3.2 compatible features");
@@ -233,19 +258,27 @@ int main(int argc, char *argv[])
             {
                 app.printHeader(OFTrue /*print host identifier*/);
                 COUT << OFendl << "External libraries used:";
-#ifdef WITH_ZLIB
-                COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
-#else
+#if !defined(WITH_ZLIB) && !defined(WITH_LIBICONV)
                 COUT << " none" << OFendl;
+#else
+                COUT << OFendl;
+#endif
+#ifdef WITH_ZLIB
+                COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
+#endif
+#ifdef WITH_LIBICONV
+                COUT << "- " << OFCharacterEncoding::getLibraryVersionString() << OFendl;
 #endif
                 return 0;
             }
         }
 
         /* general options */
+
         OFLog::configureFromCommandLine(cmd, app);
 
         /* input options */
+
         cmd.beginOptionBlock();
         if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
         if (cmd.findOption("--read-file-only")) opt_readMode = ERM_fileOnly;
@@ -274,6 +307,8 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        /* processing options */
+
         if (cmd.findOption("--processing-details"))
         {
             app.checkDependence("--processing-details", "verbose mode", dsr2htmlLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL));
@@ -290,7 +325,7 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--skip-invalid-items"))
             opt_readFlags |= DSRTypes::RF_skipInvalidContentItems;
 
-        /* charset options */
+        /* character set options */
         cmd.beginOptionBlock();
         if (cmd.findOption("--charset-require"))
         {
@@ -308,6 +343,14 @@ int main(int argc, char *argv[])
           }
         }
         cmd.endOptionBlock();
+        if (cmd.findOption("--charset-check-all"))
+            opt_checkAllStrings = OFTrue;
+#ifdef WITH_LIBICONV
+        if (cmd.findOption("--convert-to-utf8"))
+            opt_convertToUTF8 = OFTrue;
+#endif
+
+        /* output options */
 
         /* HTML compatibility */
         cmd.beginOptionBlock();
@@ -409,13 +452,19 @@ int main(int argc, char *argv[])
         STD_NAMESPACE ofstream stream(ofname);
         if (stream.good())
         {
-            if (renderFile(stream, ifname, opt_cssName, opt_defaultCharset, opt_readMode, opt_ixfer, opt_readFlags, opt_renderFlags).bad())
+            if (renderFile(stream, ifname, opt_cssName, opt_defaultCharset, opt_readMode, opt_ixfer, opt_readFlags,
+                opt_renderFlags, opt_checkAllStrings, opt_convertToUTF8).bad())
+            {
                 result = 2;
+            }
         } else
             result = 1;
     } else {
-        if (renderFile(COUT, ifname, opt_cssName, opt_defaultCharset, opt_readMode, opt_ixfer, opt_readFlags, opt_renderFlags).bad())
+        if (renderFile(COUT, ifname, opt_cssName, opt_defaultCharset, opt_readMode, opt_ixfer, opt_readFlags,
+            opt_renderFlags, opt_checkAllStrings, opt_convertToUTF8).bad())
+        {
             result = 3;
+        }
     }
 
     return result;
@@ -425,6 +474,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
+ * Revision 1.40  2011-11-02 11:51:33  joergr
+ * Added new command line option for converting a DICOM file/dataset to UTF-8.
+ * Also fixed some small inconsistencies regarding the character set handling.
+ *
  * Revision 1.39  2011-10-21 10:31:36  joergr
  * Fixed some log messages.
  *

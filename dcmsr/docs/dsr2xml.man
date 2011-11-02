@@ -69,7 +69,7 @@ xmlfile-out  XML output filename (default: stdout)
 
 \subsection processing_options processing options
 \verbatim
-character set:
+specific character set:
 
   +Cr  --charset-require
          require declaration of extended charset (default)
@@ -78,9 +78,21 @@ character set:
          (latin-1 to -5, greek, cyrillic, arabic, hebrew)
          assume charset c if no extended charset found
 
+         # this option is only used for the mapping to an appropriate
+         # XML character encoding, but not for the conversion to UTF-8
+
   +Cc  --charset-check-all
          check all data elements with string values
          (default: only PN, LO, LT, SH, ST and UT)
+
+         # this option is only used for the mapping to an appropriate
+         # XML character encoding, but not for the conversion to UTF-8
+
+  +U8  --convert-to-utf8
+         convert all element values that are affected
+         by Specific Character Set (0008,0005) to UTF-8
+
+         # requires support from the libiconv toolkit
 \endverbatim
 
 \subsection input_options input options
@@ -183,6 +195,34 @@ ImplantationPlanSRDocumentStorage           1.2.840.10008.5.1.4.1.1.88.70
 
 Please note that currently only mandatory and some optional attributes are
 supported.
+
+\subsection character_encoding Character Encoding
+
+The XML encoding is determined automatically from the DICOM attribute
+(0008,0005) "Specific Character Set" using the following mapping:
+
+\verbatim
+ASCII         "ISO_IR 6"    =>  "UTF-8"
+UTF-8         "ISO_IR 192"  =>  "UTF-8"
+ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"
+ISO Latin 2   "ISO_IR 101"  =>  "ISO-8859-2"
+ISO Latin 3   "ISO_IR 109"  =>  "ISO-8859-3"
+ISO Latin 4   "ISO_IR 110"  =>  "ISO-8859-4"
+ISO Latin 5   "ISO_IR 148"  =>  "ISO-8859-9"
+Cyrillic      "ISO_IR 144"  =>  "ISO-8859-5"
+Arabic        "ISO_IR 127"  =>  "ISO-8859-6"
+Greek         "ISO_IR 126"  =>  "ISO-8859-7"
+Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
+\endverbatim
+
+If this DICOM attribute is missing in the input file, although needed, option
+\e --charset-assume can be used to specify an appropriate character set
+manually.
+
+Multiple character sets are not supported (only the first attribute value is
+mapped in case of value multiplicity).  If needed, option \e --convert-to-utf8
+can be used to convert the DICOM file or data set to UTF-8 encoding prior to
+the conversion to XML format.
 
 \section logging LOGGING
 

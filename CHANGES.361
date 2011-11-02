@@ -3,6 +3,22 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.02 (riesmeier)
 
+- Added new command line option for converting a DICOM file/dataset to UTF-8.
+  Also fixed some small inconsistencies regarding the character set handling.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/apps/dcm2xml.cc
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcm2xml.man
+           dcmdata/docs/dcmdump.man
+           dcmsr/apps/Makefile.dep
+           dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/apps/dsrdump.cc
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsrdump.man
+
 - Fixed issue with UI values not being properly normalized in getOFString().
   Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
            dcmdata/include/dcmtk/dcmdata/dcvrui.h

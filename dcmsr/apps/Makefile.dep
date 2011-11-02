@@ -161,7 +161,8 @@ dsr2html.o: dsr2html.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../../ofstd/include/dcmtk/ofstd/ofchrenc.h
 dsr2xml.o: dsr2xml.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrdoc.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -325,7 +326,8 @@ dsr2xml.o: dsr2xml.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../../ofstd/include/dcmtk/ofstd/ofchrenc.h
 dsrdump.o: dsrdump.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrdoc.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -489,7 +491,8 @@ dsrdump.o: dsrdump.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../../ofstd/include/dcmtk/ofstd/ofchrenc.h
 xml2dsr.o: xml2dsr.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmsr/dsrdoc.h \
   ../../config/include/dcmtk/config/osconfig.h \

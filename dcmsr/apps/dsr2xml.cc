@@ -19,8 +19,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-21 10:31:36 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2011-11-02 11:51:33 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,10 @@
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>        /* for zlibVersion() */
+#include <zlib.h>                     /* for zlibVersion() */
+#endif
+#ifdef WITH_LIBICONV
+#include "dcmtk/ofstd/ofchrenc.h"     /* for OFCharacterEncoding */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dsr2xml"
@@ -127,6 +130,9 @@ int main(int argc, char *argv[])
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
     OFBool opt_checkAllStrings = OFFalse;
+#ifdef WITH_LIBICONV
+    OFBool opt_convertToUTF8 = OFFalse;
+#endif
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert DICOM SR file and data set to XML", rcsid);
     OFCommandLine cmd;
@@ -154,12 +160,15 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-implicit",   "-ti",    "read with implicit VR little endian TS");
 
     cmd.addGroup("processing options:");
-      cmd.addSubGroup("character set:");
+      cmd.addSubGroup("specific character set:");
         cmd.addOption("--charset-require",      "+Cr",    "require declaration of ext. charset (default)");
         cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset: string constant (latin-1 to -5,",
                                                           "greek, cyrillic, arabic, hebrew)\n"
                                                           "assume charset c if no extended charset found");
         cmd.addOption("--charset-check-all",    "+Cc",    "check all data elements with string values\n(default: only PN, LO, LT, SH, ST and UT)");
+#ifdef WITH_LIBICONV
+        cmd.addOption("--convert-to-utf8",      "+U8",    "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
+#endif
     cmd.addGroup("output options:");
       cmd.addSubGroup("encoding:");
         cmd.addOption("--attr-all",             "+Ea",    "encode everything as XML attribute\n(shortcut for +Ec, +Er, +Ev and +Et)");
@@ -187,10 +196,16 @@ int main(int argc, char *argv[])
             {
                 app.printHeader(OFTrue /*print host identifier*/);
                 COUT << OFendl << "External libraries used:";
-#ifdef WITH_ZLIB
-                COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
-#else
+#if !defined(WITH_ZLIB) && !defined(WITH_LIBICONV)
                 COUT << " none" << OFendl;
+#else
+                COUT << OFendl;
+#endif
+#ifdef WITH_ZLIB
+                COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
+#endif
+#ifdef WITH_LIBICONV
+                COUT << "- " << OFCharacterEncoding::getLibraryVersionString() << OFendl;
 #endif
                 return 0;
             }
@@ -228,6 +243,7 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        /* processing options */
         cmd.beginOptionBlock();
         if (cmd.findOption("--charset-require"))
             opt_defaultCharset = NULL;
@@ -245,6 +261,10 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
         if (cmd.findOption("--charset-check-all"))
             opt_checkAllStrings = OFTrue;
+#ifdef WITH_LIBICONV
+        if (cmd.findOption("--convert-to-utf8"))
+            opt_convertToUTF8 = OFTrue;
+#endif
 
         /* output options */
         if (cmd.findOption("--attr-all"))
@@ -309,24 +329,40 @@ int main(int argc, char *argv[])
         OFCondition status = dfile.loadFile(ifname, opt_ixfer);
         if (status.good())
         {
-            DcmDataset *dset = dfile.getDataset();
-            /* if second parameter is present, it is treated as the output filename ("stdout" otherwise) */
-            if (cmd.getParamCount() == 2)
+#ifdef WITH_LIBICONV
+            /* convert all DICOM strings to UTF-8 (if requested) */
+            if (opt_convertToUTF8)
             {
-                const char *ofname = NULL;
-                cmd.getParam(2, ofname);
-                STD_NAMESPACE ofstream stream(ofname);
-                if (stream.good())
+                OFLOG_INFO(dsr2xmlLogger, "converting all element values that are affected by Specific Character Set (0008,0005) to UTF-8");
+                status = dfile.convertToUTF8();
+                if (status.bad())
                 {
-                    /* write content in XML format to file */
-                    if (writeFile(stream, ifname, dset, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_checkAllStrings).bad())
-                        result = 2;
-                } else
-                    result = 1;
-            } else {
-                /* write content in XML format to standard output */
-                if (writeFile(COUT, ifname, dset, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_checkAllStrings).bad())
-                    result = 3;
+                    OFLOG_FATAL(dsr2xmlLogger, status.text() << ": converting file to UTF-8: " << ifname);
+                    result = 4;
+                }
+            }
+#endif
+            if (result == 0)
+            {
+                DcmDataset *dset = dfile.getDataset();
+                /* if second parameter is present, it is treated as the output filename ("stdout" otherwise) */
+                if (cmd.getParamCount() == 2)
+                {
+                    const char *ofname = NULL;
+                    cmd.getParam(2, ofname);
+                    STD_NAMESPACE ofstream stream(ofname);
+                    if (stream.good())
+                    {
+                        /* write content in XML format to file */
+                        if (writeFile(stream, ifname, dset, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_checkAllStrings).bad())
+                            result = 2;
+                    } else
+                        result = 1;
+                } else {
+                    /* write content in XML format to standard output */
+                    if (writeFile(COUT, ifname, dset, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_checkAllStrings).bad())
+                        result = 3;
+                }
             }
         } else {
             OFLOG_FATAL(dsr2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text()
@@ -342,6 +378,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
+ * Revision 1.44  2011-11-02 11:51:33  joergr
+ * Added new command line option for converting a DICOM file/dataset to UTF-8.
+ * Also fixed some small inconsistencies regarding the character set handling.
+ *
  * Revision 1.43  2011-10-21 10:31:36  joergr
  * Fixed some log messages.
  *
