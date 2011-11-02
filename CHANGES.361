@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.02 (riesmeier)
 
+- Slightly revised notes section on "Scanning Directories".
+  Affects: dcmdata/docs/dcmdump.man
+           dcmdata/docs/dcmgpdir.man
+           dcmnet/docs/dcmsend.man
+           dcmnet/docs/storescu.man
+
 - Slightly restructured command line options and introduced new subsections.
   Affects: dcmdata/apps/dcmdump.cc
            dcmdata/docs/dcmdump.man

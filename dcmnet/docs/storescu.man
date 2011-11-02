@@ -327,15 +327,16 @@ peer authentication:
 
 \section notes NOTES
 
-\subsection scanning_directories SCANNING DIRECTORIES
+\subsection scanning_directories Scanning Directories
 
-Note that adding directories as arguments to the commandline only makes sense
-if option \e --scan-directories is also given.  If the files in the provided
-directories should be selected according to a specific file pattern, the option
-\e --scan-pattern has to be used.  The file pattern specified here only applies
-to the files within the directories, and, if any other patterns are specified
-on the commandline outside the \e --scan-pattern option (e.g. in order to
-select further files), these do not apply to the scanned directories.
+Adding directories as a parameter to the command line only makes sense if
+option \e --scan-directories is also given.  If the files in the provided
+directories should be selected according to a specific name pattern (e.g.
+using wildcard matching), option \e --scan-pattern has to be used.  Please
+note that this file pattern only applies to the files within the scanned
+directories, and, if any other patterns are specified on the command line
+outside the \e --scan-pattern option (e.g. in order to select further
+files), these do not apply to the specified directories.
 
 \subsection dicom_conformance DICOM Conformance
 
