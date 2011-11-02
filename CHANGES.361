@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.02 (riesmeier)
 
+- Rebuilt Makefile dependencies.
+  Affects: dcmdata/tests/Makefile.dep
+
 - Added missing notes section on "Scanning Directories".
   Affects: dcmjpeg/docs/dcmmkdir.man
 
