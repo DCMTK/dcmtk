@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.02 (riesmeier)
+
+- Slightly restructured command line options and introduced new subsections.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+
 **** Changes from 2011.11.01 (onken)
 
 - Added section regarding directory scanning, especially to make clear how to

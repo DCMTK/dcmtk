@@ -112,6 +112,17 @@ input files:
   +r   --recurse
          recurse within specified directories
 
+long tag values:
+
+  +M   --load-all
+         load very long tag values (default)
+
+  -M   --load-short
+         do not load very long values (e.g. pixel data)
+
+  +R   --max-read-length  [k]bytes: integer (4..4194302, default: 4)
+         set threshold for long values to k kbytes
+
 parsing of file meta information:
 
   +ml  --use-meta-length
@@ -200,17 +211,6 @@ bitstream format of deflated input:
 
 \subsection output_options output options
 \verbatim
-loading:
-
-  +M   --load-all
-         load very long tag values (default)
-
-  -M   --load-short
-         do not load very long values (e.g. pixel data)
-
-  +R   --max-read-length  [k]bytes: integer (4..4194302, default: 4)
-         set threshold for long values to k kbytes
-
 printing:
 
   +L   --print-all
@@ -232,11 +232,15 @@ printing:
          print header with filename only for those input files
          that contain one of the searched tags
 
+mapping:
+
   +Un  --map-uid-names
          map well-known UID numbers to names (default)
 
   -Un  --no-uid-names
          do not map well-known UID numbers to names
+
+quoting:
 
   +Qn  --quote-nonascii
          quote non-ASCII and control chars as XML markup
@@ -246,6 +250,8 @@ printing:
 
   -Qn  --print-nonascii
          print non-ASCII and control chars (default)
+
+color:
 
   +C   --print-color
          use ANSI escape codes for colored output
@@ -295,9 +301,9 @@ writing:
 
 \section notes NOTES
 
-\subsection scanning_directories SCANNING DIRECTORIES
+\subsection scanning_directories Scanning Directories
 
-Note that adding directories as arguments to the commandline only makes sense
+Note that adding directories as arguments to the command line only makes sense
 if option \e --scan-directories is also given.  If the files in the provided
 directories should be selected according to a specific file pattern, the option
 \e --scan-pattern has to be used.  The file pattern specified here only applies

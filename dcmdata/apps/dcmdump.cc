@@ -18,8 +18,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-12 13:26:46 $
- *  CVS/RCS Revision: $Revision: 1.91 $
+ *  Update Date:      $Date: 2011-11-02 07:42:57 $
+ *  CVS/RCS Revision: $Revision: 1.92 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,6 +205,11 @@ int main(int argc, char *argv[])
 #endif
         cmd.addOption("--no-recurse",          "-r",     "do not recurse within directories (default)");
         cmd.addOption("--recurse",             "+r",     "recurse within specified directories");
+      cmd.addSubGroup("long tag values:");
+        cmd.addOption("--load-all",            "+M",     "load very long tag values (default)");
+        cmd.addOption("--load-short",          "-M",     "do not load very long values (e.g. pixel data)");
+        cmd.addOption("--max-read-length",     "+R",  1, "[k]bytes: integer (4..4194302, default: 4)",
+                                                         "set threshold for long values to k kbytes");
       cmd.addSubGroup("parsing of file meta information:");
         cmd.addOption("--use-meta-length",     "+ml",    "use file meta information group length (default)");
         cmd.addOption("--ignore-meta-length",  "-ml",    "ignore file meta information group length");
@@ -242,11 +247,6 @@ int main(int argc, char *argv[])
 #endif
 
     cmd.addGroup("output options:");
-      cmd.addSubGroup("loading:");
-        cmd.addOption("--load-all",            "+M",     "load very long tag values (default)");
-        cmd.addOption("--load-short",          "-M",     "do not load very long values (e.g. pixel data)");
-        cmd.addOption("--max-read-length",     "+R",  1, "[k]bytes: integer (4..4194302, default: 4)",
-                                                         "set threshold for long values to k kbytes");
       cmd.addSubGroup("printing:");
         cmd.addOption("--print-all",           "+L",     "print long tag values completely");
         cmd.addOption("--print-short",         "-L",     "print long tag values shortened (default)");
@@ -254,12 +254,15 @@ int main(int argc, char *argv[])
         cmd.addOption("--print-indented",      "-T",     "print hierarchical structure indented (default)");
         cmd.addOption("--print-filename",      "+F",     "print header with filename for each input file");
         cmd.addOption("--print-file-search",   "+Fs",    "print header with filename only for those input\nfiles that contain one of the searched tags");
+      cmd.addSubGroup("mapping:");
         cmd.addOption("--map-uid-names",       "+Un",    "map well-known UID numbers to names (default)");
         cmd.addOption("--no-uid-names",        "-Un",    "do not map well-known UID numbers to names");
+      cmd.addSubGroup("quoting:");
         cmd.addOption("--quote-nonascii",      "+Qn",    "quote non-ASCII and control chars as XML markup");
         cmd.addOption("--quote-as-octal",      "+Qo",    "quote non-ASCII and control ch. as octal numbers");
         cmd.addOption("--print-nonascii",      "-Qn",    "print non-ASCII and control chars (default)");
 #ifdef ANSI_ESCAPE_CODES_AVAILABLE
+      cmd.addSubGroup("color:");
         cmd.addOption("--print-color",         "+C",     "use ANSI escape codes for colored output");
         cmd.addOption("--no-color",            "-C",     "do not use any ANSI escape codes (default)");
 #endif
@@ -300,8 +303,9 @@ int main(int argc, char *argv[])
         }
       }
 
-      /* options */
       OFLog::configureFromCommandLine(cmd, app);
+
+      /* input options */
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) readMode = ERM_autoDetect;
@@ -346,6 +350,16 @@ int main(int argc, char *argv[])
         app.checkDependence("--recurse", "--scan-directories", scanDir);
         recurse = OFTrue;
       }
+      cmd.endOptionBlock();
+
+      if (cmd.findOption("--max-read-length"))
+      {
+        app.checkValue(cmd.getValueAndCheckMinMax(maxReadLength, 4, 4194302));
+        maxReadLength *= 1024; // convert kbytes to bytes
+      }
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--load-all")) loadIntoMemory = OFTrue;
+      if (cmd.findOption("--load-short")) loadIntoMemory = OFFalse;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -459,15 +473,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 #endif
 
-      if (cmd.findOption("--max-read-length"))
-      {
-        app.checkValue(cmd.getValueAndCheckMinMax(maxReadLength, 4, 4194302));
-        maxReadLength *= 1024; // convert kbytes to bytes
-      }
-      cmd.beginOptionBlock();
-      if (cmd.findOption("--load-all")) loadIntoMemory = OFTrue;
-      if (cmd.findOption("--load-short")) loadIntoMemory = OFFalse;
-      cmd.endOptionBlock();
+      /* output options */
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--print-all")) printFlags &= ~DCMTypes::PF_shortenLongTagValues;
@@ -776,6 +782,9 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.92  2011-11-02 07:42:57  joergr
+ * Slightly restructured command line options and introduced new subsections.
+ *
  * Revision 1.91  2011-10-12 13:26:46  joergr
  * Added new command line option that quotes non-ASCII and control chars as
  * octal numbers.
