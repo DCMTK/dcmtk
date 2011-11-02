@@ -18,8 +18,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-27 13:46:25 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Update Date:      $Date: 2011-11-02 10:19:16 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,10 +45,10 @@
 #include "dcmtk/dcmdata/dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>        /* for zlibVersion() */
+#include <zlib.h>                      /* for zlibVersion() */
 #endif
 #ifdef WITH_LIBICONV
-#include "dcmtk/ofstd/ofchrenc.h"
+#include "dcmtk/ofstd/ofchrenc.h"      /* for OFCharacterEncoding */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmconv"
@@ -248,14 +248,13 @@ int main(int argc, char *argv[])
       }
 
       /* command line parameters */
-
       cmd.getParam(1, opt_ifname);
       cmd.getParam(2, opt_ofname);
 
+      /* general options */
       OFLog::configureFromCommandLine(cmd, app);
 
       /* input options */
-
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
       if (cmd.findOption("--read-file-only")) opt_readMode = ERM_fileOnly;
@@ -405,14 +404,12 @@ int main(int argc, char *argv[])
 #endif
 
       /* processing options */
-
 #ifdef WITH_LIBICONV
       if (cmd.findOption("--convert-to-utf8")) opt_convertToUTF8 = OFTrue;
 #endif
       if (cmd.findOption("--no-invalid-groups")) opt_noInvalidGroups = OFTrue;
 
       /* output options */
-
       cmd.beginOptionBlock();
       if (cmd.findOption("--write-file")) opt_writeMode = EWM_fileformat;
       if (cmd.findOption("--write-new-meta-info")) opt_writeMode = EWM_createNewMeta;
@@ -530,7 +527,7 @@ int main(int argc, char *argv[])
         error = fileformat.convertToUTF8();
         if (error.bad())
         {
-            OFLOG_FATAL(dcmconvLogger, error.text() << ": converting file to UTF-8: " <<  opt_ifname);
+            OFLOG_FATAL(dcmconvLogger, error.text() << ": converting file to UTF-8: " << opt_ifname);
             return 1;
         }
     }
@@ -576,6 +573,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.76  2011-11-02 10:19:16  joergr
+** Fixed minor inconsistencies regarding documentation and formatting.
+**
 ** Revision 1.75  2011-10-27 13:46:25  joergr
 ** Made sure that the character set conversion code (incl. checking the option)
 ** is only compiled when the WITH_LIBICONV macro is defined.

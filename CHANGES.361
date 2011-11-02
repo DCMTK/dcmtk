@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.02 (riesmeier)
 
+- Fixed minor inconsistencies regarding documentation and formatting.
+  Affects: dcmdata/apps/dcmconv.cc
+
 - Rebuilt Makefile dependencies.
   Affects: dcmdata/tests/Makefile.dep
 
