@@ -18,8 +18,8 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-09 09:35:18 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2011-11-03 15:29:12 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,8 +30,16 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofstring.h"     /* for OFString */
 
+#ifdef WITH_LIBICONV
+#include "dcmtk/ofstd/ofchrenc.h"     /* for OFCharacterEncoding */
+
+#ifdef HAVE_LOCALE_H
+#include <locale.h>                   /* for setlocale() */
+#endif
+
+#endif // WITH_LIBICONV
 
 
 /*------------------*
@@ -110,7 +118,22 @@ void OFConsoleApplication::printHeader(const OFBool hostInfo,
     if (hostInfo)
     {
         (*output) << OFendl << "Host type: " << CANONICAL_HOST_TYPE << OFendl;
+#if defined(WITH_LIBICONV) && defined(HAVE_LOCALE_H)
+        /* determine system's current locale */
+        const char *currentLocale = setlocale(LC_CTYPE, NULL);
+        if (setlocale(LC_CTYPE, "") != NULL)
+        {
+          OFCharacterEncoding converter;
+          (*output) << "Character encoding: " << converter.getLocaleEncoding() << OFendl;
+          /* reset locale to the previous setting or to the default (7-bit ASCII) */
+          if (currentLocale != NULL)
+            setlocale(LC_CTYPE, currentLocale);
+          else
+            setlocale(LC_CTYPE, "C");
+        }
+#endif
 #ifdef DEBUG
+        /* indicate that debug code is present */
         (*output) << OFendl << "Compiled with DEBUG defined, i.e. with debug code" << OFendl;
 #endif
     }
@@ -295,6 +318,10 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
+ * Revision 1.32  2011-11-03 15:29:12  joergr
+ * Output the current locale's character encoding together with the host type.
+ * This info is shown when calling a command line tool with option --version.
+ *
  * Revision 1.31  2011-02-09 09:35:18  joergr
  * If DEBUG is defined, report on the presence of debug code when printing the
  * host information, e.g. by calling command line tools with option --version.

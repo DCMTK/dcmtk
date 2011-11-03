@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.03 (riesmeier)
 
+- Output the current locale's character encoding together with the host type.
+  This info is shown when calling a command line tool with option --version.
+  Affects: ofstd/include/dcmtk/ofstd/ofconapp.h
+           ofstd/libsrc/ofconapp.cc
+           dcmdata/libsrc/Makefile.in
+
 - Added support for CP-1147, which reintroduces ObservationUID (0040,A171).
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h

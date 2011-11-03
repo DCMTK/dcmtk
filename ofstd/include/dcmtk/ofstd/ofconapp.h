@@ -18,8 +18,8 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-09 09:35:16 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2011-11-03 15:29:10 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,9 @@ class OFConsoleApplication
     /** print header of console application (consisting of identifier, name and description)
      *
      ** @param  hostInfo  print host information as reported by 'config.guess' if OFTrue.
-     *                    If DEBUG is defined, a note on the presence of debug code is given.
+     *                    If compiled with 'libiconv' support, the current locale's character
+     *                    encoding is also shown.  Finally, if the DEBUG macro is defined, a
+     *                    note on the presence of debug code is given.
      *  @param  stdError  print to standard error stream if OFTrue (default: standard output)
      */
     void printHeader(const OFBool hostInfo = OFFalse,
@@ -212,6 +214,10 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
+ * Revision 1.27  2011-11-03 15:29:10  joergr
+ * Output the current locale's character encoding together with the host type.
+ * This info is shown when calling a command line tool with option --version.
+ *
  * Revision 1.26  2011-02-09 09:35:16  joergr
  * If DEBUG is defined, report on the presence of debug code when printing the
  * host information, e.g. by calling command line tools with option --version.
