@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2011-09-08 13:08:12
+**   Date: 2011-11-03 16:17:30
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2011-09-08 13:08:12"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2011-11-03 16:17:30"
 
 
 /*
@@ -2029,7 +2029,7 @@
 #define DCM_ConceptCodeSequence                  DcmTagKey(0x0040, 0xa168)
 #define DCM_RETIRED_BibliographicCitationTrial   DcmTagKey(0x0040, 0xa16a)
 #define DCM_PurposeOfReferenceCodeSequence       DcmTagKey(0x0040, 0xa170)
-#define DCM_RETIRED_ObservationUIDTrial          DcmTagKey(0x0040, 0xa171)
+#define DCM_ObservationUID                       DcmTagKey(0x0040, 0xa171)
 #define DCM_RETIRED_ReferencedObservationUIDTrial DcmTagKey(0x0040, 0xa172)
 #define DCM_RETIRED_ReferencedObservationClassTrial DcmTagKey(0x0040, 0xa173)
 #define DCM_RETIRED_ReferencedObjectObservationClassTrial DcmTagKey(0x0040, 0xa174)

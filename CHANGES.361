@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.03 (riesmeier)
+
+- Added support for CP-1147, which reintroduces ObservationUID (0040,A171).
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2011.11.02 (riesmeier)
 
 - Added two new tests for checking the correct handling of delimiters.
