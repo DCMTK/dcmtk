@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-28 09:32:46 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2011-11-07 07:45:40 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,7 @@ class OFCharacterEncoding
      */
     OFBool getDiscardIllegalSequenceMode() const;
 
-    /** get mode specifying whether a character that cannot be represented in
+    /** set mode specifying whether a character that cannot be represented in
      *  the destination character encoding is approximated through one or more
      *  characters that look similar to the original one.  By default, this
      *  mode is disabled.
@@ -285,6 +285,9 @@ class OFCharacterEncoding
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.h,v $
+ * Revision 1.8  2011-11-07 07:45:40  joergr
+ * Fixed problematical typo in a comment ("get" -> "set").
+ *
  * Revision 1.7  2011-10-28 09:32:46  joergr
  * Restructured code of OFCharacterEncoding in order to allow particular classes
  * to access more low-level functions, e.g. for opening multiple conversion

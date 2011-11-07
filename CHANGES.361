@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.07 (riesmeier)
+
+- Fixed problematical typo in a comment ("get" -> "set").
+  Affects: ofstd/include/dcmtk/ofstd/ofchrenc.h
+
 **** Changes from 2011.11.03 (riesmeier)
 
 - Output the current locale's character encoding together with the host type.
