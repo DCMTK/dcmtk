@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmCharString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-01 14:53:59 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2011-11-08 15:51:37 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,15 +123,12 @@ class DcmCharString
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
 
-    /** convert this element to UTF-8 (Unicode)
-     *  @param converter character set converter to be used to convert the element
-     *    value. The source character set has to be selected in advance. Should
-     *    never be NULL.
-     *  @param checkCharset not used (only used for the implementation in DcmItem)
+    /** convert this element value from the currently selected source character set to
+     *  the currently selected destination character set
+     *  @param converter character set converter to be used to convert the element value
      *  @return always returns EC_Normal, since nothing to do in this base class
      */
-    virtual OFCondition convertToUTF8(DcmSpecificCharacterSet *converter,
-                                      const OFBool checkCharset = OFFalse);
+    virtual OFCondition convertCharacterSet(DcmSpecificCharacterSet &converter);
 
   protected:
 
@@ -155,6 +152,11 @@ class DcmCharString
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.h,v $
+ * Revision 1.20  2011-11-08 15:51:37  joergr
+ * Added support for converting files, datasets and element values to any DICOM
+ * character set that does not require code extension techniques (if compiled
+ * with and supported by libiconv), not only to UTF-8 as before.
+ *
  * Revision 1.19  2011-11-01 14:53:59  joergr
  * Added support for code extensions (escape sequences) according to ISO 2022
  * to the character set conversion code.

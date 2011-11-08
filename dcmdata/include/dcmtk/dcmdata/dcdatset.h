@@ -18,8 +18,8 @@
  *  Purpose: Interface of the class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:20:18 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2011-11-08 15:51:37 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -328,23 +328,13 @@ class DcmDataset
      */
     void removeAllButCurrentRepresentations();
 
-    /** convert all element values that are contained in this dataset and that are
-     *  affected by SpecificCharacterSet to UTF-8 (Unicode). The value of the data
-     *  element SpecificCharacterSet (0008,0005) is updated, set or deleted
-     *  automatically if needed.
-     *  @param converter character set converter to be used to convert the affected
-     *    element values. If non-NULL, the source character set has to be selected
-     *    in advance. Please note that the default value should usually not be changed.
-     *  @param checkCharset check value of element SpecificCharacterSet (0008,0005)
-     *    in the dataset/item. Depending on its value, a new character set converter
-     *    is created locally. Please note that the default value should usually not
-     *    be changed. Only in cases where no SpecificCharacterSet element exists on
-     *    the main dataset level, e.g. for a DICOMDIR, this value should be set to
-     *    OFFalse.
-     *  @return status, EC_Normal if successful, an error code otherwise
+  protected:
+
+    /** mode specifying whether the SpecificCharacterSet (0008,0005) element should
+     *  be checked by convertCharacterSet() or not
+     *  @return always returns OFTrue, i.e.\ SpecificCharacterSet should be checked
      */
-    virtual OFCondition convertToUTF8(DcmSpecificCharacterSet *converter = NULL,
-                                      const OFBool checkCharset = OFTrue);
+    virtual OFBool checkForSpecificCharacterSet() const { return OFTrue; }
 
   private:
 
@@ -361,6 +351,11 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.43  2011-11-08 15:51:37  joergr
+** Added support for converting files, datasets and element values to any DICOM
+** character set that does not require code extension techniques (if compiled
+** with and supported by libiconv), not only to UTF-8 as before.
+**
 ** Revision 1.42  2011-10-26 16:20:18  joergr
 ** Added method that allows for converting a dataset or element value to UTF-8.
 **

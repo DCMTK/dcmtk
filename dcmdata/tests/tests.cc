@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-01 14:54:07 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2011-11-08 15:51:39 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,6 +89,7 @@ OFTEST_REGISTER(dcmdata_usingDataDictionary);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_1);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_2);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_3);
+OFTEST_REGISTER(dcmdata_specificCharacterSet_4);
 OFTEST_MAIN("dcmdata")
 
 
@@ -96,6 +97,11 @@ OFTEST_MAIN("dcmdata")
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.12  2011-11-08 15:51:39  joergr
+** Added support for converting files, datasets and element values to any DICOM
+** character set that does not require code extension techniques (if compiled
+** with and supported by libiconv), not only to UTF-8 as before.
+**
 ** Revision 1.11  2011-11-01 14:54:07  joergr
 ** Added support for code extensions (escape sequences) according to ISO 2022
 ** to the character set conversion code.

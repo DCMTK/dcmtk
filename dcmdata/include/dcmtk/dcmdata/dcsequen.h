@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:20:18 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2011-11-08 15:51:38 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -304,16 +304,13 @@ public:
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
 
-    /** convert all element values that are contained in this sequence and that are
-     *  affected by SpecificCharacterSet to UTF-8 (Unicode)
-     *  @param converter character set converter to be used to convert the affected
-     *    element values. The source character set has to be selected in advance.
-     *    Should never be NULL.
-     *  @param checkCharset not used (only used for the implementation in DcmItem)
+    /** convert all element values that are contained in this item and that are affected
+     *  by SpecificCharacterSet from the currently selected source character set to the
+     *  currently selected destination character set
+     *  @param converter character set converter to be used to convert the element values
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition convertToUTF8(DcmSpecificCharacterSet *converter,
-                                      const OFBool checkCharset = OFFalse);
+    virtual OFCondition convertCharacterSet(DcmSpecificCharacterSet &converter);
 
     /** get cardinality of this sequence
      *  @return number of items in this sequence
@@ -332,7 +329,8 @@ public:
      *  @param item pointer to DcmItem instance allocated on the heap, must not be NULL.
      *  @param where index of the item after or before which the new item is to be inserted.
      *    Value must be < card() or equal to DCM_EndOfListIndex.
-     *  @param before indicates whether the new item should be inserted before or after the item identified by "where"
+     *  @param before indicates whether the new item should be inserted before or after the item
+     *    identified by "where"
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition insert(DcmItem *item,
@@ -593,6 +591,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.62  2011-11-08 15:51:38  joergr
+** Added support for converting files, datasets and element values to any DICOM
+** character set that does not require code extension techniques (if compiled
+** with and supported by libiconv), not only to UTF-8 as before.
+**
 ** Revision 1.61  2011-10-26 16:20:18  joergr
 ** Added method that allows for converting a dataset or element value to UTF-8.
 **

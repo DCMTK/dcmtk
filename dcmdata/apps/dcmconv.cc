@@ -18,8 +18,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-02 10:19:16 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Update Date:      $Date: 2011-11-08 15:51:34 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,7 +113,8 @@ int main(int argc, char *argv[])
   OFCmdUnsignedInt opt_compressionLevel = 0;
 #endif
 #ifdef WITH_LIBICONV
-  OFBool opt_convertToUTF8 = OFFalse;
+  const char *opt_convertToCharset = NULL;
+  OFBool opt_transliterate = OFFalse;
 #endif
   OFBool opt_noInvalidGroups = OFFalse;
 
@@ -181,6 +182,11 @@ int main(int argc, char *argv[])
 #ifdef WITH_LIBICONV
     cmd.addSubGroup("specific character set:");
       cmd.addOption("--convert-to-utf8",     "+U8",    "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
+      cmd.addOption("--convert-to-latin-1",  "+L1",    "convert affected element values to ISO 8859-1");
+      cmd.addOption("--convert-to-ascii",    "+A7",    "convert affected element values to 7-bit ASCII");
+      cmd.addOption("--convert-to-charset",  "+C",  1, "[c]harset: string",
+                                                       "convert affected element values to the character\nset specified by the DICOM defined term c");
+      cmd.addOption("--transliterate",       "-Ct",    "try to approximate characters that cannot be\nrepresented through similar looking characters");
 #endif
     cmd.addSubGroup("other processing options:");
       cmd.addOption("--no-invalid-groups",   "-ig",    "remove elements with invalid group number");
@@ -405,7 +411,17 @@ int main(int argc, char *argv[])
 
       /* processing options */
 #ifdef WITH_LIBICONV
-      if (cmd.findOption("--convert-to-utf8")) opt_convertToUTF8 = OFTrue;
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--convert-to-utf8")) opt_convertToCharset = "ISO_IR 192";
+      if (cmd.findOption("--convert-to-latin-1")) opt_convertToCharset = "ISO_IR 100";
+      if (cmd.findOption("--convert-to-ascii")) opt_convertToCharset = "";
+      if (cmd.findOption("--convert-to-charset")) app.checkValue(cmd.getValue(opt_convertToCharset));
+      cmd.endOptionBlock();
+      if (cmd.findOption("--transliterate"))
+      {
+        app.checkDependence("--transliterate", "one of the --convert-to-xxx options", opt_convertToCharset != NULL);
+        opt_transliterate = OFTrue;
+      }
 #endif
       if (cmd.findOption("--no-invalid-groups")) opt_noInvalidGroups = OFTrue;
 
@@ -491,7 +507,7 @@ int main(int argc, char *argv[])
             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
-    // open inputfile
+    /* open input file */
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
         OFLOG_FATAL(dcmconvLogger, "invalid filename: <empty string>");
@@ -521,13 +537,17 @@ int main(int argc, char *argv[])
         fileformat.removeInvalidGroups();
     }
 #ifdef WITH_LIBICONV
-    if (opt_convertToUTF8)
+    if (opt_convertToCharset != NULL)
     {
-        OFLOG_INFO(dcmconvLogger, "converting all element values that are affected by Specific Character Set (0008,0005) to UTF-8");
-        error = fileformat.convertToUTF8();
+        OFString toCharset(opt_convertToCharset);
+        /* convert the complete dataset to a new character encoding */
+        OFLOG_INFO(dcmconvLogger, "converting all element values that are affected by "
+            << "Specific Character Set (0008,0005) to '" << opt_convertToCharset << "'"
+            << (toCharset.empty() ? " (ASCII)" : ""));
+        error = fileformat.convertCharacterSet(toCharset, opt_transliterate);
         if (error.bad())
         {
-            OFLOG_FATAL(dcmconvLogger, error.text() << ": converting file to UTF-8: " << opt_ifname);
+            OFLOG_FATAL(dcmconvLogger, error.text() << ": processing file: " << opt_ifname);
             return 1;
         }
     }
@@ -573,6 +593,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.77  2011-11-08 15:51:34  joergr
+** Added support for converting files, datasets and element values to any DICOM
+** character set that does not require code extension techniques (if compiled
+** with and supported by libiconv), not only to UTF-8 as before.
+**
 ** Revision 1.76  2011-11-02 10:19:16  joergr
 ** Fixed minor inconsistencies regarding documentation and formatting.
 **

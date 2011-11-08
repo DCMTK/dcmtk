@@ -18,8 +18,8 @@
  *  Purpose: test program for class DcmSpecificCharacterSet
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-02 16:21:04 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-11-08 15:51:39 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,6 +83,11 @@ OFTEST(dcmdata_specificCharacterSet_1)
         OFCHECK(converter.selectCharacterSet("ISO 2022 IR 6\\ISO 2022 IR 100").good());
         OFCHECK(converter.selectCharacterSet("ISO 2022 IR 100\\ISO 2022 IR 126").good());
         OFCHECK(converter.selectCharacterSet("ISO 2022 IR 144\\ISO 2022 IR 138").good());
+        // use a different destination character set than the default (UTF-8)
+        OFCHECK(converter.selectCharacterSet("", "ISO_IR 100").good());
+        OFCHECK(converter.selectCharacterSet("ISO_IR 6", "ISO_IR 100").good());
+        OFCHECK(converter.selectCharacterSet("ISO_IR 192", " ISO_IR 100 ").good());
+        OFCHECK(converter.selectCharacterSet("ISO_IR 192", "ISO 2022 IR 100\\ISO 2022 IR 126").bad());
     } else {
         // in case there is no libiconv, report a warning but do not fail
         DCMDATA_WARN("Cannot test DcmSpecificCharacterSet since the underlying character set conversion library is not available");
@@ -97,16 +102,19 @@ OFTEST(dcmdata_specificCharacterSet_2)
         OFString resultStr;
         // check whether string conversion from Latin-1 to UTF-8 works
         OFCHECK(converter.selectCharacterSet("ISO_IR 100").good());
-        OFCHECK(converter.convertToUTF8String("J\366rg", resultStr).good());
+        OFCHECK(converter.convertString("J\366rg", resultStr).good());
         OFCHECK_EQUAL(resultStr, "J\303\266rg");
-        OFCHECK(converter.convertToUTF8String("J\351r\364me", resultStr).good());
+        OFCHECK(converter.convertString("J\351r\364me", resultStr).good());
         OFCHECK_EQUAL(resultStr, "J\303\251r\303\264me");
         // check whether string conversion from UTF-8 to UTF-8 works :-)
         OFCHECK(converter.selectCharacterSet("ISO_IR 192").good());
-        OFCHECK(converter.convertToUTF8String("J\303\266rg", resultStr).good());
+        OFCHECK(converter.convertString("J\303\266rg", resultStr).good());
         OFCHECK_EQUAL(resultStr, "J\303\266rg");
-        OFCHECK(converter.convertToUTF8String("J\303\251r\303\264me", resultStr).good());
+        OFCHECK(converter.convertString("J\303\251r\303\264me", resultStr).good());
         OFCHECK_EQUAL(resultStr, "J\303\251r\303\264me");
+        // the following should fail
+        converter.clear();
+        OFCHECK(converter.convertString("Some Text", resultStr).bad());
     } else {
         // in case there is no libiconv, report a warning but do not fail
         DCMDATA_WARN("Cannot test DcmSpecificCharacterSet since the underlying character set conversion library is not available");
@@ -125,33 +133,61 @@ OFTEST(dcmdata_specificCharacterSet_3)
         // check whether string conversion from Japanese language to UTF-8 works
         // example taken from DICOM PS 3.5 Annex H.3.1
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 87").good());
-        OFCHECK(converter.convertToUTF8String("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr, delimiters).good());
+        OFCHECK(converter.convertString("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr, delimiters).good());
         OFCHECK_EQUAL(resultStr, "Yamada^Tarou=\345\261\261\347\224\260^\345\244\252\351\203\216=\343\202\204\343\201\276\343\201\240^\343\201\237\343\202\215\343\201\206");
         // example taken from DICOM PS 3.5 Annex H.3.2
         OFCHECK(converter.selectCharacterSet("ISO 2022 IR 13\\ISO 2022 IR 87").good());
-        OFCHECK(converter.convertToUTF8String("\324\317\300\336^\300\333\263=\033$B;3ED\033(J^\033$BB@O:\033(J=\033$B$d$^$@\033(J^\033$B$?$m$&\033(J", resultStr, delimiters).good());
+        OFCHECK(converter.convertString("\324\317\300\336^\300\333\263=\033$B;3ED\033(J^\033$BB@O:\033(J=\033$B$d$^$@\033(J^\033$B$?$m$&\033(J", resultStr, delimiters).good());
         OFCHECK_EQUAL(resultStr, "\357\276\224\357\276\217\357\276\200\357\276\236^\357\276\200\357\276\233\357\275\263=\345\261\261\347\224\260^\345\244\252\351\203\216=\343\202\204\343\201\276\343\201\240^\343\201\237\343\202\215\343\201\206");
         // check whether string conversion from Korean language to UTF-8 works
         // example taken from DICOM PS 3.5 Annex I.2
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 149").good());
-        OFCHECK(converter.convertToUTF8String("Hong^Gildong=\033$)C\373\363^\033$)C\321\316\324\327=\033$)C\310\253^\033$)C\261\346\265\277", resultStr, delimiters).good());
+        OFCHECK(converter.convertString("Hong^Gildong=\033$)C\373\363^\033$)C\321\316\324\327=\033$)C\310\253^\033$)C\261\346\265\277", resultStr, delimiters).good());
         OFCHECK_EQUAL(resultStr, "Hong^Gildong=\346\264\252^\345\220\211\346\264\236=\355\231\215^\352\270\270\353\217\231");
         // check whether string conversion from Chinese language to UTF-8 works
         // example taken from DICOM PS 3.5 Annex J.2
         OFCHECK(converter.selectCharacterSet("GB18030").good());
-        OFCHECK(converter.convertToUTF8String("Wang^XiaoDong=\315\365^\320\241\266\253=", resultStr, delimiters).good());
+        OFCHECK(converter.convertString("Wang^XiaoDong=\315\365^\320\241\266\253=", resultStr, delimiters).good());
         OFCHECK_EQUAL(resultStr, "Wang^XiaoDong=\347\216\213^\345\260\217\344\270\234=");
         // check whether CR and LF are detected correctly
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 13").good());
-        OFCHECK(converter.convertToUTF8String("Japanese\r\033(J\324\317\300\336\nText", resultStr).good());
+        OFCHECK(converter.convertString("Japanese\r\033(J\324\317\300\336\nText", resultStr).good());
         OFCHECK_EQUAL(resultStr, "Japanese\015\357\276\224\357\276\217\357\276\200\357\276\236\012Text");
         // same with '\' (backslash), which is used for separating multiple values
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 13").good());
-        OFCHECK(converter.convertToUTF8String("Japanese\\\033(J\324\317\300\336\\Text", resultStr, "\\").good());
+        OFCHECK(converter.convertString("Japanese\\\033(J\324\317\300\336\\Text", resultStr, "\\").good());
         OFCHECK_EQUAL(resultStr, "Japanese\\\357\276\224\357\276\217\357\276\200\357\276\236\\Text");
         // the following should fail (wrong character set)
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 166").good());
-        OFCHECK(converter.convertToUTF8String("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr, delimiters).bad());
+        OFCHECK(converter.convertString("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr, delimiters).bad());
+    } else {
+        // in case there is no libiconv, report a warning but do not fail
+        DCMDATA_WARN("Cannot test DcmSpecificCharacterSet since the underlying character set conversion library is not available");
+    }
+}
+
+
+OFTEST(dcmdata_specificCharacterSet_4)
+{
+    DcmSpecificCharacterSet converter;
+    if (converter.isConversionLibraryAvailable())
+    {
+        OFString resultStr;
+        // check whether string conversion from UTF-8 to Latin-1 works
+        OFCHECK(converter.selectCharacterSet("ISO_IR 192", "ISO_IR 100").good());
+        OFCHECK(converter.convertString("J\303\266rg", resultStr).good());
+        OFCHECK_EQUAL(resultStr, "J\366rg");
+        OFCHECK(converter.convertString("J\303\251r\303\264me", resultStr).good());
+        OFCHECK_EQUAL(resultStr, "J\351r\364me");
+        // the following should fail
+        OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 87", "ISO_IR 100").good());
+        OFCHECK(converter.convertString("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr).bad());
+        OFCHECK(converter.selectCharacterSet("ISO_IR 100", "").good());
+        OFCHECK(converter.convertString("J\366rg", resultStr).bad());
+        // the following should work
+        OFCHECK(converter.selectCharacterSet("ISO_IR 100", "", OFTrue /*transliterate*/).good());
+        OFCHECK(converter.convertString("J\366rg", resultStr).good());
+        OFCHECK_EQUAL(resultStr, "J\"org");
     } else {
         // in case there is no libiconv, report a warning but do not fail
         DCMDATA_WARN("Cannot test DcmSpecificCharacterSet since the underlying character set conversion library is not available");
@@ -163,6 +199,11 @@ OFTEST(dcmdata_specificCharacterSet_3)
  *
  * CVS/RCS Log:
  * $Log: tspchrs.cc,v $
+ * Revision 1.4  2011-11-08 15:51:39  joergr
+ * Added support for converting files, datasets and element values to any DICOM
+ * character set that does not require code extension techniques (if compiled
+ * with and supported by libiconv), not only to UTF-8 as before.
+ *
  * Revision 1.3  2011-11-02 16:21:04  joergr
  * Added two new tests for checking the correct handling of delimiters.
  *

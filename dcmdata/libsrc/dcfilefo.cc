@@ -18,8 +18,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:20:20 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Update Date:      $Date: 2011-11-08 15:51:38 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -966,26 +966,56 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 // ********************************
 
 
-OFCondition DcmFileFormat::convertToUTF8(DcmSpecificCharacterSet * /*converter*/,
-                                         const OFBool /*checkCharset*/)
+OFCondition DcmFileFormat::convertCharacterSet(const OFString &fromCharset,
+                                               const OFString &toCharset,
+                                               const OFBool transliterate)
+{
+    // convert the dataset associated with this object
+    return getDataset()->convertCharacterSet(fromCharset, toCharset, transliterate);
+}
+
+
+OFCondition DcmFileFormat::convertCharacterSet(const OFString &toCharset,
+                                               const OFBool transliterate)
 {
     OFString sopClass;
-    OFBool checkCharset = OFTrue;
-    // check whether this dataset belongs to a DICOMDIR (because it has no SOP Common Module)
+    OFBool ignoreCharset = OFFalse;
+    // check whether this dataset belongs to a DICOMDIR,
+    // because the Basic Directory IOD has no SOP Common Module
     if (getMetaInfo()->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass).good() &&
         (sopClass == UID_MediaStorageDirectoryStorage))
     {
-        DCMDATA_DEBUG("DcmFileFormat::convertToUTF8() according to the value of MediaStorageSOPClassUID "
+        DCMDATA_DEBUG("DcmFileFormat::convertCharacterSet() according to the value of MediaStorageSOPClassUID "
             << DCM_MediaStorageSOPClassUID << " this is a DICOMDIR, which has no SOP Common Module");
-        checkCharset = OFFalse;
+        ignoreCharset = OFTrue;
     }
     // usually, we check for Specific Character Set (0008,0005) element in the dataset
-    return getDataset()->convertToUTF8(NULL /*converter*/, checkCharset);
+    return getDataset()->convertCharacterSet(toCharset, transliterate, ignoreCharset);
 }
+
+
+OFCondition DcmFileFormat::convertCharacterSet(DcmSpecificCharacterSet &converter)
+{
+    // convert the dataset associated with this object
+    return getDataset()->convertCharacterSet(converter);
+}
+
+
+OFCondition DcmFileFormat::convertToUTF8()
+{
+    // the DICOM defined term "ISO_IR 192" is used for "UTF-8"
+    return convertCharacterSet("ISO_IR 192", OFFalse /*transliterate*/);
+}
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.69  2011-11-08 15:51:38  joergr
+** Added support for converting files, datasets and element values to any DICOM
+** character set that does not require code extension techniques (if compiled
+** with and supported by libiconv), not only to UTF-8 as before.
+**
 ** Revision 1.68  2011-10-26 16:20:20  joergr
 ** Added method that allows for converting a dataset or element value to UTF-8.
 **

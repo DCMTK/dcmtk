@@ -20,8 +20,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:20:18 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Update Date:      $Date: 2011-11-08 15:51:38 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -188,7 +188,7 @@ extern OFGlobal<OFBool> dcmIgnoreFileMetaInformationGroupLength; /* default OFFa
  */
 class DcmObject
 {
-  public:
+ public:
 
     /** constructor.
      *  Create new object from given tag and length.
@@ -424,13 +424,12 @@ class DcmObject
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
 
-    /** convert this object to UTF-8 (Unicode) if affected by SpecificCharacterSet
+    /** convert this object from the currently selected source character set to the
+     *  currently selected destination character set (if affected by SpecificCharacterSet)
      *  @param converter character set converter to be used to convert the element values
-     *  @param checkCharset not used (only used for the implementation in DcmItem)
-     *  @return always returns EC_Normal, since nothing to do in this base class
+     *  @return always returns EC_Normal, since there is nothing to do in this base class
      */
-    virtual OFCondition convertToUTF8(DcmSpecificCharacterSet *converter,
-                                      const OFBool checkCharset = OFFalse);
+    virtual OFCondition convertCharacterSet(DcmSpecificCharacterSet &converter);
 
     /** check if this object is empty
      *  @param normalize normalize value before checking (ignore non-significant characters)
@@ -648,7 +647,8 @@ class DcmObject
      */
     void setLengthField(Uint32 val) { Length = val; }
 
-public:
+ public:
+
     /** helper class to print a DcmObject to an ostream using operator<<
      */
     class PrintHelper
@@ -676,12 +676,12 @@ public:
 
     /* member variables */
 
-protected:
+ protected:
 
     /// error flag for this object.
     OFCondition errorFlag;
 
-private:
+ private:
 
     /// the DICOM attribute tag and VR for this object
     DcmTag Tag;
@@ -714,6 +714,11 @@ static inline STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream &stream, D
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.74  2011-11-08 15:51:38  joergr
+ * Added support for converting files, datasets and element values to any DICOM
+ * character set that does not require code extension techniques (if compiled
+ * with and supported by libiconv), not only to UTF-8 as before.
+ *
  * Revision 1.73  2011-10-26 16:20:18  joergr
  * Added method that allows for converting a dataset or element value to UTF-8.
  *

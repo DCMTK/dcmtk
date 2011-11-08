@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmCharString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-01 14:54:04 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2011-11-08 15:51:38 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -175,29 +175,30 @@ OFBool DcmCharString::isAffectedBySpecificCharacterSet() const
 }
 
 
-OFCondition DcmCharString::convertToUTF8(DcmSpecificCharacterSet *converter,
-                                         const OFBool /*checkCharset*/)
+OFCondition DcmCharString::convertCharacterSet(DcmSpecificCharacterSet &converter)
 {
-    OFCondition status = EC_IllegalParameter;
-    // it is an error if no converter is specified
-    if (converter != NULL)
+    char *str = NULL;
+    Uint32 len = 0;
+    OFCondition status = getString(str, len);
+    // do nothing if string value is empty
+    if (status.good() && (str != NULL) && (len > 0))
     {
-        char *str = NULL;
-        Uint32 len = 0;
-        status = getString(str, len);
-        // do nothing if string value is empty
-        if (status.good() && (str != NULL) && (len > 0))
+        OFString resultStr;
+        // convert string to selected character string and replace the element value
+        status = converter.convertString(str, len, resultStr, delimiterChars);
+        if (status.good())
         {
-            OFString resultStr;
-            // convert string to UTF-8 and replace the element value
-            status = converter->convertToUTF8String(str, len, resultStr, delimiterChars);
-            if (status.good())
+            // check whether the value has changed during the conversion (slows down the process?)
+            if (OFString(str, len) != resultStr)
             {
-                DCMDATA_TRACE("DcmCharString::convertToUTF8() updating value of element "
-                    << getTagName() << " " << getTag());
-                // currently, we are not checking whether the value has really changed
-                // during the character set conversion - would that make any sense?
+                DCMDATA_TRACE("DcmCharString::convertCharacterSet() updating value of element "
+                    << getTagName() << " " << getTag() << " after the conversion to "
+                    << converter.getDestinationEncoding() << " encoding");
+                // update the element value
                 status = putOFStringArray(resultStr);
+            } else {
+                DCMDATA_TRACE("DcmCharString::convertCharacterSet() not updating value of element "
+                    << getTagName() << " " << getTag() << " because the value has not changed");
             }
         }
     }
@@ -208,6 +209,11 @@ OFCondition DcmCharString::convertToUTF8(DcmSpecificCharacterSet *converter,
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.cc,v $
+ * Revision 1.19  2011-11-08 15:51:38  joergr
+ * Added support for converting files, datasets and element values to any DICOM
+ * character set that does not require code extension techniques (if compiled
+ * with and supported by libiconv), not only to UTF-8 as before.
+ *
  * Revision 1.18  2011-11-01 14:54:04  joergr
  * Added support for code extensions (escape sequences) according to ISO 2022
  * to the character set conversion code.

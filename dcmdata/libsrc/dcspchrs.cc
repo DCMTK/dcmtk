@@ -18,8 +18,8 @@
  *  Purpose: Class for supporting the Specfic Character Set attribute
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-02 16:18:36 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-11-08 15:51:39 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,7 +30,9 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dcspchrs.h"
+#include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcbytstr.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstd.h"
 
@@ -43,7 +45,9 @@
  *------------------*/
 
 DcmSpecificCharacterSet::DcmSpecificCharacterSet()
-  : SpecificCharacterSet(),
+  : SourceCharacterSet(),
+    DestinationCharacterSet(),
+    DestinationEncoding(),
     EncodingConverter(),
     ConversionDescriptors()
 {
@@ -52,38 +56,160 @@ DcmSpecificCharacterSet::DcmSpecificCharacterSet()
 
 DcmSpecificCharacterSet::~DcmSpecificCharacterSet()
 {
+    // this frees all previously allocated ressources
     closeConversionDescriptors();
 }
 
 
-const OFString &DcmSpecificCharacterSet::getCharacterSet() const
+void DcmSpecificCharacterSet::clear()
 {
-    return SpecificCharacterSet;
+    // this also clears all other member variables
+    closeConversionDescriptors();
 }
 
 
-OFCondition DcmSpecificCharacterSet::selectCharacterSet(const OFString &charset)
+const OFString &DcmSpecificCharacterSet::getSourceCharacterSet() const
 {
-    OFCondition status = EC_Normal;
+    return SourceCharacterSet;
+}
+
+
+const OFString &DcmSpecificCharacterSet::getDestinationCharacterSet() const
+{
+    return DestinationCharacterSet;
+}
+
+
+const OFString &DcmSpecificCharacterSet::getDestinationEncoding() const
+{
+    return DestinationEncoding;
+}
+
+
+OFBool DcmSpecificCharacterSet::getTransliterationMode() const
+{
+    return EncodingConverter.getTransliterationMode();
+}
+
+
+OFCondition DcmSpecificCharacterSet::selectCharacterSet(const OFString &fromCharset,
+                                                        const OFString &toCharset,
+                                                        const OFBool transliterate)
+{
     // first, make sure that all conversion descriptors are closed
     closeConversionDescriptors();
-    // normalize the given string (original VR is "CS" with VM "1-n")
-    SpecificCharacterSet = charset;
-    normalizeString(SpecificCharacterSet, MULTIPART, DELETE_LEADING, DELETE_TRAILING);
-    // check whether it is multi-valued
-    const unsigned long charsetVM = DcmElement::determineVM(SpecificCharacterSet.c_str(), SpecificCharacterSet.length());
-    if (charsetVM == 0)
+    // determine the destination encoding (and check whether it is supported at all)
+    OFCondition status = determineDestinationEncoding(toCharset);
+    if (status.good())
     {
-        // no character set specified, use ASCII
-        status = EncodingConverter.selectEncoding("ASCII", "UTF-8");
+        // normalize the given string (original VR is "CS" with VM "1-n")
+        SourceCharacterSet = fromCharset;
+        normalizeString(SourceCharacterSet, MULTIPART, DELETE_LEADING, DELETE_TRAILING);
+        // check whether it is multi-valued
+        const unsigned long sourceVM = DcmElement::determineVM(SourceCharacterSet.c_str(), SourceCharacterSet.length());
+        if (sourceVM == 0)
+        {
+            // no character set specified, use ASCII
+            status = EncodingConverter.selectEncoding("ASCII", DestinationEncoding);
+            // output some useful debug information
+            if (status.good())
+            {
+                DCMDATA_DEBUG("DcmSpecificCharacterSet: Selected character set '' (ASCII) "
+                    << "for the conversion to " << DestinationEncoding);
+            }
+        }
+        else if (sourceVM == 1)
+        {
+            // a single character set specified (no code extensions)
+            status = selectCharacterSetWithoutCodeExtensions();
+        } else {
+            // multiple character sets specified (code extensions used)
+            status = selectCharacterSetWithCodeExtensions(sourceVM);
+        }
+        // enabled or disable the transliteration mode
+        if (status.good())
+        {
+            status = EncodingConverter.setTransliterationMode(transliterate);
+            if (status.good())
+            {
+                // output some useful debug information
+                if (transliterate)
+                {
+                    DCMDATA_DEBUG("DcmSpecificCharacterSet: Enabled transliteration mode, "
+                        << "i.e. the approximation of similar looking characters will be used");
+                } else {
+                    DCMDATA_DEBUG("DcmSpecificCharacterSet: Disabled transliteration mode, "
+                        << "i.e. the approximation of similar looking characters will not be used");
+                }
+            }
+        }
     }
-    else if (charsetVM == 1)
+    return status;
+}
+
+
+OFCondition DcmSpecificCharacterSet::selectCharacterSet(DcmItem &dataset,
+                                                        const OFString &toCharset,
+                                                        const OFBool transliterate)
+{
+    OFString fromCharset;
+    // check whether Specific Character Set (0008,0005) is present in the given item/dataset
+    dataset.findAndGetOFStringArray(DCM_SpecificCharacterSet, fromCharset, OFFalse /*searchIntoSub*/);
+    // if missing or empty, the default character set (ASCII) will be used
+    return selectCharacterSet(fromCharset, toCharset, transliterate);
+}
+
+
+OFCondition DcmSpecificCharacterSet::determineDestinationEncoding(const OFString &toCharset)
+{
+    OFCondition status = EC_Normal;
+    // normalize the given string (original VR is "CS" with VM "1-n", but we only support VM "1")
+    DestinationCharacterSet = toCharset;
+    normalizeString(DestinationCharacterSet, !MULTIPART, DELETE_LEADING, DELETE_TRAILING);
+    // there should only be a single character set specified (no code extensions)
+    if (DestinationCharacterSet.empty())                // ASCII (no value)
+        DestinationEncoding = "ASCII";
+    else if (DestinationCharacterSet == "ISO_IR 6")     // ASCII
     {
-        // a single character set specified (no code extensions)
-        status = selectCharacterSetWithoutCodeExtensions();
-    } else {
-        // multiple character sets specified (code extensions used)
-        status = selectCharacterSetWithCodeExtensions(charsetVM);
+        DCMDATA_WARN("DcmSpecificCharacterSet: 'ISO_IR 6' is not a defined term in DICOM, "
+            << "will be treated as an empty value (ASCII)");
+        DestinationCharacterSet.clear();
+        DestinationEncoding = "ASCII";
+    }
+    else if (DestinationCharacterSet == "ISO_IR 100")   // Latin alphabet No. 1
+        DestinationEncoding = "ISO-8859-1";
+    else if (DestinationCharacterSet == "ISO_IR 101")   // Latin alphabet No. 2
+        DestinationEncoding = "ISO-8859-2";
+    else if (DestinationCharacterSet == "ISO_IR 109")   // Latin alphabet No. 3
+        DestinationEncoding = "ISO-8859-3";
+    else if (DestinationCharacterSet == "ISO_IR 110")   // Latin alphabet No. 4
+        DestinationEncoding = "ISO-8859-4";
+    else if (DestinationCharacterSet == "ISO_IR 144")   // Cyrillic
+        DestinationEncoding = "ISO-8859-5";
+    else if (DestinationCharacterSet == "ISO_IR 127")   // Arabic
+        DestinationEncoding = "ISO-8859-6";
+    else if (DestinationCharacterSet == "ISO_IR 126")   // Greek
+        DestinationEncoding = "ISO-8859-7";
+    else if (DestinationCharacterSet == "ISO_IR 138")   // Hebrew
+        DestinationEncoding = "ISO-8859-8";
+    else if (DestinationCharacterSet == "ISO_IR 148")   // Latin alphabet No. 5
+        DestinationEncoding = "ISO-8859-9";
+    else if (DestinationCharacterSet == "ISO_IR 13")    // Japanese
+        DestinationEncoding = "JIS_X0201";              // - "ISO-IR-13" is not supported by libiconv
+    else if (DestinationCharacterSet == "ISO_IR 166")   // Thai
+        DestinationEncoding = "ISO-IR-166";
+    else if (DestinationCharacterSet == "ISO_IR 192")   // Unicode in UTF-8 (multi-byte)
+        DestinationEncoding = "UTF-8";
+    else if (DestinationCharacterSet == "GB18030")      // Chinese (multi-byte)
+        DestinationEncoding = "GB18030";
+    else {
+        DestinationEncoding.clear();
+        // create an appropriate error code
+        OFOStringStream stream;
+        stream << "Cannot select destination character set: SpecificCharacterSet (0008,0005) value '"
+            << DestinationCharacterSet << "' not supported" << OFStringStream_ends;
+        OFSTRINGSTREAM_GETOFSTRING(stream, message)
+        status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, message.c_str());
     }
     return status;
 }
@@ -93,59 +219,67 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithoutCodeExtensions()
 {
     OFCondition status = EC_Normal;
     // a single character set specified (no code extensions)
-    if (SpecificCharacterSet == "ISO_IR 6")            // ASCII
+    OFString fromEncoding;
+    if (SourceCharacterSet == "ISO_IR 6")           // ASCII
     {
         DCMDATA_WARN("DcmSpecificCharacterSet: 'ISO_IR 6' is not a defined term in DICOM, "
-            << "will be treated as ASCII");
-        status = EncodingConverter.selectEncoding("ASCII", "UTF-8");
+            << "will be treated as an empty value (ASCII)");
+        SourceCharacterSet.clear();
+        fromEncoding = "ASCII";
     }
-    else if (SpecificCharacterSet == "ISO_IR 100")     // Latin alphabet No. 1
-        status = EncodingConverter.selectEncoding("ISO-8859-1", "UTF-8");
-    else if (SpecificCharacterSet == "ISO_IR 101")     // Latin alphabet No. 2
-        status = EncodingConverter.selectEncoding("ISO-8859-2", "UTF-8");
-    else if (SpecificCharacterSet == "ISO_IR 109")     // Latin alphabet No. 3
-        status = EncodingConverter.selectEncoding("ISO-8859-3", "UTF-8");
-    else if (SpecificCharacterSet == "ISO_IR 110")     // Latin alphabet No. 4
-        status = EncodingConverter.selectEncoding("ISO-8859-4", "UTF-8");
-    else if (SpecificCharacterSet == "ISO_IR 144")     // Cyrillic
-        status = EncodingConverter.selectEncoding("ISO-8859-5", "UTF-8");
-    else if (SpecificCharacterSet == "ISO_IR 127")     // Arabic
-        status = EncodingConverter.selectEncoding("ISO-8859-6", "UTF-8");
-    else if (SpecificCharacterSet == "ISO_IR 126")     // Greek
-        status = EncodingConverter.selectEncoding("ISO-8859-7", "UTF-8");
-    else if (SpecificCharacterSet == "ISO_IR 138")     // Hebrew
-        status = EncodingConverter.selectEncoding("ISO-8859-8", "UTF-8");
-    else if (SpecificCharacterSet == "ISO_IR 148")     // Latin alphabet No. 5
-        status = EncodingConverter.selectEncoding("ISO-8859-9", "UTF-8");
-    else if (SpecificCharacterSet == "ISO_IR 13")      // Japanese
-        status = EncodingConverter.selectEncoding("JIS_X0201", "UTF-8");  // "ISO-IR-13" is not supported by libiconv
-    else if (SpecificCharacterSet == "ISO_IR 166")     // Thai
-        status = EncodingConverter.selectEncoding("ISO-IR-166", "UTF-8");
-    else if (SpecificCharacterSet == "ISO_IR 192")     // Unicode in UTF-8 (multi-byte)
-        status = EncodingConverter.selectEncoding("UTF-8", "UTF-8");
-    else if (SpecificCharacterSet == "GB18030")        // Chinese (multi-byte)
-        status = EncodingConverter.selectEncoding("GB18030", "UTF-8");
+    else if (SourceCharacterSet == "ISO_IR 100")    // Latin alphabet No. 1
+        fromEncoding = "ISO-8859-1";
+    else if (SourceCharacterSet == "ISO_IR 101")    // Latin alphabet No. 2
+        fromEncoding = "ISO-8859-2";
+    else if (SourceCharacterSet == "ISO_IR 109")    // Latin alphabet No. 3
+        fromEncoding = "ISO-8859-3";
+    else if (SourceCharacterSet == "ISO_IR 110")    // Latin alphabet No. 4
+        fromEncoding = "ISO-8859-4";
+    else if (SourceCharacterSet == "ISO_IR 144")    // Cyrillic
+        fromEncoding = "ISO-8859-5";
+    else if (SourceCharacterSet == "ISO_IR 127")    // Arabic
+        fromEncoding = "ISO-8859-6";
+    else if (SourceCharacterSet == "ISO_IR 126")    // Greek
+        fromEncoding = "ISO-8859-7";
+    else if (SourceCharacterSet == "ISO_IR 138")    // Hebrew
+        fromEncoding = "ISO-8859-8";
+    else if (SourceCharacterSet == "ISO_IR 148")    // Latin alphabet No. 5
+        fromEncoding = "ISO-8859-9";
+    else if (SourceCharacterSet == "ISO_IR 13")     // Japanese
+        fromEncoding = "JIS_X0201";                 // - "ISO-IR-13" is not supported by libiconv
+    else if (SourceCharacterSet == "ISO_IR 166")    // Thai
+        fromEncoding = "ISO-IR-166";
+    else if (SourceCharacterSet == "ISO_IR 192")    // Unicode in UTF-8 (multi-byte)
+        fromEncoding = "UTF-8";
+    else if (SourceCharacterSet == "GB18030")       // Chinese (multi-byte)
+        fromEncoding = "GB18030";
     else {
+        // create an appropriate error code
         OFOStringStream stream;
-        stream << "Cannot select character set: SpecificCharacterSet (0008,0005) value '"
-            << SpecificCharacterSet << "' not supported" << OFStringStream_ends;
+        stream << "Cannot select source character set: SpecificCharacterSet (0008,0005) value '"
+            << SourceCharacterSet << "' not supported" << OFStringStream_ends;
         OFSTRINGSTREAM_GETOFSTRING(stream, message)
         status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, message.c_str());
     }
-    // output some useful debug information
-    if (status.good())
+    // check whether an appropriate character encoding has been found
+    if (!fromEncoding.empty())
     {
-        DCMDATA_DEBUG("DcmSpecificCharacterSet: Selected character set '" << SpecificCharacterSet
-            << "' for the conversion to UTF-8");
+        status = EncodingConverter.selectEncoding(fromEncoding, DestinationEncoding);
+        // output some useful debug information
+        if (status.good())
+        {
+            DCMDATA_DEBUG("DcmSpecificCharacterSet: Selected character set '" << SourceCharacterSet
+                << "' (" << fromEncoding << ") for the conversion to " << DestinationEncoding);
+        }
     }
     return status;
 }
 
 
-OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const unsigned long charsetVM)
+OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const unsigned long sourceVM)
 {
     // first, check whether multiple character sets are specified (i.e. code extensions used)
-    if (charsetVM <= 1)
+    if (sourceVM <= 1)
         return EC_IllegalCall;
     // then proceed with the real work
     OFCondition status = EC_Normal;
@@ -155,10 +289,10 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
     OFString definedTerm;
     OFCharacterEncoding::T_Descriptor descriptor;
     unsigned long i = 0;
-    while ((i < charsetVM) && status.good())
+    while ((i < sourceVM) && status.good())
     {
         // extract single value from string (separated by a backslash)
-        pos = DcmElement::getValueFromString(SpecificCharacterSet.c_str(), pos, SpecificCharacterSet.length(), definedTerm);
+        pos = DcmElement::getValueFromString(SourceCharacterSet.c_str(), pos, SourceCharacterSet.length(), definedTerm);
         if (definedTerm.empty() && (i == 0))            // assuming ASCII (according to DICOM PS 3.5)
             definedTerm = "ISO 2022 IR 6";
         // determine character encoding from DICOM defined term
@@ -235,9 +369,10 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
             notFirstValue = OFTrue;                     //   "ISO-IR-149" does not work with the sample from DICOM PS 3.5
         }
         else {
+            // create an appropriate error code
             OFOStringStream stream;
-            stream << "Cannot select character set: SpecificCharacterSet (0008,0005) value " << (i + 1)
-                << " of " << charsetVM << " '" << definedTerm << "' not supported" << OFStringStream_ends;
+            stream << "Cannot select source character set: SpecificCharacterSet (0008,0005) value " << (i + 1)
+                << " of " << sourceVM << " '" << definedTerm << "' not supported" << OFStringStream_ends;
             OFSTRINGSTREAM_GETOFSTRING(stream, message)
             status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, message.c_str());
         }
@@ -245,7 +380,7 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
         if ((i == 0) && notFirstValue)
         {
             OFOStringStream stream;
-            stream << "Cannot select character set: '" << definedTerm << "' is not a allowed "
+            stream << "Cannot select source character set: '" << definedTerm << "' is not a allowed "
                 << "as the first value in SpecificCharacterSet (0008,0005)" << OFStringStream_ends;
             OFSTRINGSTREAM_GETOFSTRING(stream, message)
             status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, message.c_str());
@@ -256,13 +391,13 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
             // but first check whether this encoding has already been added before
             if (ConversionDescriptors.find(definedTerm) == ConversionDescriptors.end())
             {
-                status = EncodingConverter.openDescriptor(descriptor, encodingName, "UTF-8");
+                status = EncodingConverter.openDescriptor(descriptor, encodingName, DestinationEncoding);
                 if (status.good())
                 {
                     ConversionDescriptors[definedTerm] = descriptor;
                     // output some useful debug information
                     DCMDATA_DEBUG("DcmSpecificCharacterSet: Added character set '" << definedTerm
-                        << "' for the conversion to UTF-8");
+                        << "' (" << encodingName << ") for the conversion to " << DestinationEncoding);
                     // also remember the default descriptor, which refers to the first character set
                     if (i == 0)
                     {
@@ -283,13 +418,14 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
         // add ASCII to the map if needed but not already there
         if (needsASCII && (ConversionDescriptors.find("ISO 2022 IR 6") == ConversionDescriptors.end()))
         {
-            status = EncodingConverter.openDescriptor(descriptor, "ASCII", "UTF-8");
+            status = EncodingConverter.openDescriptor(descriptor, "ASCII", DestinationEncoding);
             if (status.good())
             {
                 ConversionDescriptors["ISO 2022 IR 6"] = descriptor;
                 // output some useful debug information
-                DCMDATA_DEBUG("DcmSpecificCharacterSet: Added character set 'ISO 2022 IR 6' for the conversion "
-                    << "to UTF-8 (because ASCII is needed for one or more of the previously added character sets)");
+                DCMDATA_DEBUG("DcmSpecificCharacterSet: Added character set 'ISO 2022 IR 6' (ASCII) "
+                    << "for the conversion to " << DestinationEncoding
+                    << " (because it is needed for one or more of the previously added character sets)");
             }
         }
     }
@@ -297,26 +433,26 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
 }
 
 
-OFCondition DcmSpecificCharacterSet::convertToUTF8String(const OFString &fromString,
-                                                         OFString &toString,
-                                                         const OFString &delimiters)
+OFCondition DcmSpecificCharacterSet::convertString(const OFString &fromString,
+                                                   OFString &toString,
+                                                   const OFString &delimiters)
 {
-    // call the real method converting the given string to UTF-8
-    return convertToUTF8String(fromString.c_str(), fromString.length(), toString, delimiters);
+    // call the real method converting the given string
+    return convertString(fromString.c_str(), fromString.length(), toString, delimiters);
 }
 
 
-OFCondition DcmSpecificCharacterSet::convertToUTF8String(const char *fromString,
-                                                         const size_t fromLength,
-                                                         OFString &toString,
-                                                         const OFString &delimiters)
+OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
+                                                   const size_t fromLength,
+                                                   OFString &toString,
+                                                   const OFString &delimiters)
 {
     OFCondition status = EC_Normal;
     // check whether there are any code extensions at all
     if ((ConversionDescriptors.size() == 0) || !checkForEscapeCharacter(fromString, fromLength))
     {
         DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
-            << convertToLengthLimitedOctalString(fromString, fromLength) << "' to UTF-8");
+            << convertToLengthLimitedOctalString(fromString, fromLength) << "'");
         // no code extensions according to ISO 2022 used - this is the simple case
         status = EncodingConverter.convertString(fromString, fromLength, toString, OFTrue /*clearMode*/);
     } else {
@@ -324,11 +460,11 @@ OFCondition DcmSpecificCharacterSet::convertToUTF8String(const char *fromString,
         {
             DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
                 << convertToLengthLimitedOctalString(fromString, fromLength)
-                << "' (with code extensions) to UTF-8");
+                << "' (with code extensions)");
         } else {
             DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
                 << convertToLengthLimitedOctalString(fromString, fromLength)
-                << "' (with code extensions and delimiters '" << delimiters << "') to UTF-8");
+                << "' (with code extensions and delimiters '" << delimiters << "')");
         }
         // code extensions according to ISO 2022 used, so we need to check for
         // particular escape sequences in order to switch between character sets
@@ -361,7 +497,7 @@ OFCondition DcmSpecificCharacterSet::convertToUTF8String(const char *fromString,
                 {
                     // output some debug information
                     DCMDATA_TRACE("    Converting sub-string '"
-                        << convertToLengthLimitedOctalString(firstChar, convertLength) << "' to UTF-8");
+                        << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
                     status = EncodingConverter.convertString(descriptor, firstChar, convertLength, toString, OFFalse /*clearMode*/);
                     if (status.bad())
                         DCMDATA_TRACE("    -> ERROR: " << status.text());
@@ -494,7 +630,8 @@ OFCondition DcmSpecificCharacterSet::convertToUTF8String(const char *fromString,
             {
                 // output some debug information
                 DCMDATA_TRACE("    Appending delimiter '"
-                    << convertToLengthLimitedOctalString(currentChar - 1 /* identical to c0 */, 1) << "' to the UTF-8 output");
+                    << convertToLengthLimitedOctalString(currentChar - 1 /* identical to c0 */, 1)
+                    << "' to the output");
                 // don't forget to append the delimiter
                 toString += c0;
                 // use the default descriptor again (see DICOM PS 3.5)
@@ -517,7 +654,7 @@ OFCondition DcmSpecificCharacterSet::convertToUTF8String(const char *fromString,
             {
                 // output some debug information
                 DCMDATA_TRACE("    Converting remaining sub-string '"
-                    << convertToLengthLimitedOctalString(firstChar, convertLength) << "' to UTF-8");
+                    << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
                 status = EncodingConverter.convertString(descriptor, firstChar, convertLength, toString, OFFalse /*clearMode*/);
                 if (status.bad())
                     DCMDATA_TRACE("    -> ERROR: " << status.text());
@@ -527,9 +664,16 @@ OFCondition DcmSpecificCharacterSet::convertToUTF8String(const char *fromString,
     if (status.good())
     {
         // finally, output some debug information
-        DCMDATA_TRACE("Converted result in UTF-8 is '"
-            << convertToLengthLimitedOctalString(toString.c_str(), toString.length()) << "' ("
-            << countCharactersInUTF8String(toString) << " code points)");
+        if (DestinationEncoding == "UTF-8")
+        {
+            // output code points only in case of UTF-8 output
+            DCMDATA_TRACE("Converted result in " << DestinationEncoding << " is '"
+                << convertToLengthLimitedOctalString(toString.c_str(), toString.length()) << "' ("
+                << countCharactersInUTF8String(toString) << " code points)");
+        } else {
+            DCMDATA_TRACE("Converted result in " << DestinationEncoding << " is '"
+                << convertToLengthLimitedOctalString(toString.c_str(), toString.length()) << "'");
+        }
     }
     return status;
 }
@@ -573,6 +717,10 @@ void DcmSpecificCharacterSet::closeConversionDescriptors()
     // and close the default descriptor
     if (EncodingConverter.closeDescriptor(EncodingConverter.ConversionDescriptor).bad())
         DCMDATA_ERROR("DcmSpecificCharacterSet: Cannot close currently selected conversion descriptor");
+    // also clear the various character set and encoding name variables
+    SourceCharacterSet.clear();
+    DestinationCharacterSet.clear();
+    DestinationEncoding.clear();
 }
 
 
@@ -615,6 +763,11 @@ OFString DcmSpecificCharacterSet::convertToLengthLimitedOctalString(const char *
  *
  *  CVS/RCS Log:
  *  $Log: dcspchrs.cc,v $
+ *  Revision 1.4  2011-11-08 15:51:39  joergr
+ *  Added support for converting files, datasets and element values to any DICOM
+ *  character set that does not require code extension techniques (if compiled
+ *  with and supported by libiconv), not only to UTF-8 as before.
+ *
  *  Revision 1.3  2011-11-02 16:18:36  joergr
  *  Fixed minor issue with wrong/insufficient log output in case of delimiters.
  *

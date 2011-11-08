@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:20:18 $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  Update Date:      $Date: 2011-11-08 15:51:38 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@
 #include "dcmtk/dcmdata/dcpcache.h"
 
 
-// forward declaration
+// forward declarations
 class DcmSequenceOfItems;
 class DcmElement;
 class DcmSpecificCharacterSet;
@@ -261,20 +261,67 @@ class DcmItem
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
 
-    /** convert all element values that are contained in this item and that are
-     *  affected by SpecificCharacterSet to UTF-8 (Unicode). The value of the data
-     *  element SpecificCharacterSet (0008,0005) is updated, set or deleted
-     *  automatically if needed.
-     *  @param converter character set converter to be used to convert the affected
-     *    element values. If non-NULL, the source character set has to be selected
-     *    in advance.
-     *  @param checkCharset check value of element SpecificCharacterSet (0008,0005)
-     *    in the dataset/item. If different from the one selected in 'converter', a
-     *    new character set converter is created locally.
+    /** convert all element values that are contained in this item and that are affected
+     *  by SpecificCharacterSet from the given source character set to the given
+     *  destination character set. The defined terms for a particular character set can
+     *  be found in the DICOM standard, e.g. "ISO_IR 100" for ISO 8859-1 (Latin 1) or
+     *  "ISO_IR 192" for Unicode in UTF-8. An empty string denotes the default character
+     *  repertoire, which is ASCII (7-bit). If multiple values are given for 'fromCharset'
+     *  (separated by a backslash) code extension techniques are used and escape sequences
+     *  may be encountered in the source string to switch between the specified character
+     *  sets.
+     *  @param fromCharset name of the source character set(s) used for the conversion
+     *  @param toCharset name of the destination character set used for the conversion.
+     *    Only a single value is permitted (i.e. no code extensions).
+     *  @param transliterate mode specifying whether a character that cannot be
+     *    represented in the destination character encoding is approximated through one
+     *    or more characters that look similar to the original one
+     *  @param updateCharset if OFTrue, the SpecificCharacterSet (0008,0005) element is
+     *    updated, i.e.\ the current value is either replaced or a new element is inserted
+     *    or the existing element is deleted. If OFFalse the SpecificCharacterSet element
+     *    remains unchanged.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition convertToUTF8(DcmSpecificCharacterSet *converter = NULL,
-                                      const OFBool checkCharset = OFFalse);
+    virtual OFCondition convertCharacterSet(const OFString &fromCharset,
+                                            const OFString &toCharset,
+                                            const OFBool transliterate = OFFalse,
+                                            const OFBool updateCharset = OFFalse);
+
+    /** convert all element values that are contained in this item and that are affected
+     *  by SpecificCharacterSet to the given destination character set. If not disabled,
+     *  the source character set is determined automatically from the value of the
+     *  SpecificCharacterSet (0008,0005) element. The defined terms for the destination
+     *  character set can be found in the DICOM standard, e.g. "ISO_IR 100" for ISO 8859-1
+     *  (Latin 1) or "ISO_IR 192" for Unicode in UTF-8. An empty string denotes the
+     *  default character repertoire, which is ASCII (7-bit).
+     *  @param toCharset name of the destination character set used for the conversion.
+     *    Only a single value is permitted (i.e. no code extensions).
+     *  @param transliterate mode specifying whether a character that cannot be
+     *    represented in the destination character encoding is approximated through one
+     *    or more characters that look similar to the original one
+     *  @param ignoreCharset if OFTrue, the value of SpecificCharacterSet is ignored.
+     *    Also see checkForSpecificCharacterSet().
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition convertCharacterSet(const OFString &toCharset,
+                                            const OFBool transliterate = OFFalse,
+                                            const OFBool ignoreCharset = OFFalse);
+
+    /** convert all element values that are contained in this item and that are affected
+     *  by SpecificCharacterSet from the currently selected source character set to the
+     *  currently selected destination character set
+     *  @param converter character set converter to be used to convert the element values
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition convertCharacterSet(DcmSpecificCharacterSet &converter);
+
+    /** convert all element values that are contained in this item and that are affected
+     *  by SpecificCharacterSet to UTF-8 (Unicode). The value of the SpecificCharacterSet
+     *  (0008,0005) element is updated, set or deleted automatically if needed. The
+     *  transliteration mode is disabled - see convertCharacterSet().
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition convertToUTF8();
 
     /** insert a new element into the list of elements maintained by this item.
      *  The list of elements is always kept in ascending tag order.
@@ -1172,6 +1219,22 @@ class DcmItem
     void checkAndUpdateVR(DcmItem &item,
                           DcmTag &tag);
 
+    /** update the SpecificCharacterSet (0008,0005) element depending on the given
+     *  parameters. The current value of this element is either replaced or a new
+     *  element is inserted or the existing element is deleted.
+     *  @param status error status of previous operations (might also be updated)
+     *  @param converter character set converter used to convert element values
+     */
+    void updateSpecificCharacterSet(OFCondition &status,
+                                    const DcmSpecificCharacterSet &converter);
+
+    /** mode specifying whether the SpecificCharacterSet (0008,0005) element should
+     *  be checked by convertCharacterSet() or not. This method is reimplemented in
+     *  derived classes.
+     *  @return always returns OFFalse, i.e.\ SpecificCharacterSet should not be checked
+     */
+    virtual OFBool checkForSpecificCharacterSet() const { return OFFalse; }
+
 
   private:
 
@@ -1254,6 +1317,11 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.89  2011-11-08 15:51:38  joergr
+** Added support for converting files, datasets and element values to any DICOM
+** character set that does not require code extension techniques (if compiled
+** with and supported by libiconv), not only to UTF-8 as before.
+**
 ** Revision 1.88  2011-10-26 16:20:18  joergr
 ** Added method that allows for converting a dataset or element value to UTF-8.
 **

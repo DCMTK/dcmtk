@@ -806,7 +806,9 @@ dcdirrec.o: dcdirrec.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
   ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/cmdlnarg.h \
   ../include/dcmtk/dcmdata/dcxfer.h ../include/dcmtk/dcmdata/dcvr.h \
-  ../include/dcmtk/dcmdata/dcvrus.h
+  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcspchrs.h \
+  ../../ofstd/include/dcmtk/ofstd/ofchrenc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofmap.h
 dcelem.o: dcelem.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -2884,7 +2886,10 @@ dcspchrs.o: dcspchrs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../include/dcmtk/dcmdata/dcbytstr.h ../include/dcmtk/dcmdata/dctypes.h \
+  ../include/dcmtk/dcmdata/dcitem.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+  ../include/dcmtk/dcmdata/dctypes.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
@@ -2933,7 +2938,7 @@ dcspchrs.o: dcspchrs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcobject.h \
+  ../include/dcmtk/dcmdata/dcobject.h \
   ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
   ../include/dcmtk/dcmdata/dcerror.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -2943,6 +2948,12 @@ dcspchrs.o: dcspchrs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../include/dcmtk/dcmdata/dcstack.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../include/dcmtk/dcmdata/dclist.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../include/dcmtk/dcmdata/dcpcache.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmdata/dcbytstr.h ../include/dcmtk/dcmdata/dcelem.h \
+  ../include/dcmtk/dcmdata/dcdeftag.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h
 dcstack.o: dcstack.cc ../../config/include/dcmtk/config/osconfig.h \

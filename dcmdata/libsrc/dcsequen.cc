@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:20:20 $
- *  CVS/RCS Revision: $Revision: 1.97 $
+ *  Update Date:      $Date: 2011-11-08 15:51:39 $
+ *  CVS/RCS Revision: $Revision: 1.98 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1302,8 +1302,7 @@ OFBool DcmSequenceOfItems::isAffectedBySpecificCharacterSet() const
 }
 
 
-OFCondition DcmSequenceOfItems::convertToUTF8(DcmSpecificCharacterSet *converter,
-                                              const OFBool /*checkCharset*/)
+OFCondition DcmSequenceOfItems::convertCharacterSet(DcmSpecificCharacterSet &converter)
 {
     OFCondition status = EC_Normal;
     if (!itemList->empty())
@@ -1311,7 +1310,7 @@ OFCondition DcmSequenceOfItems::convertToUTF8(DcmSpecificCharacterSet *converter
         // iterate over all items in this sequence and convert the string elements
         itemList->seek(ELP_first);
         do {
-            status = itemList->get()->convertToUTF8(converter, OFFalse /*checkCharset*/);
+            status = itemList->get()->convertCharacterSet(converter);
         } while (status.good() && itemList->seek(ELP_next));
     }
     return status;
@@ -1332,6 +1331,11 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.98  2011-11-08 15:51:39  joergr
+** Added support for converting files, datasets and element values to any DICOM
+** character set that does not require code extension techniques (if compiled
+** with and supported by libiconv), not only to UTF-8 as before.
+**
 ** Revision 1.97  2011-10-26 16:20:20  joergr
 ** Added method that allows for converting a dataset or element value to UTF-8.
 **

@@ -20,8 +20,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:20:20 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Update Date:      $Date: 2011-11-08 15:51:39 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -515,8 +515,7 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 }
 
 
-OFCondition DcmObject::convertToUTF8(DcmSpecificCharacterSet * /*converter*/,
-                                     const OFBool /*checkCharset*/)
+OFCondition DcmObject::convertCharacterSet(DcmSpecificCharacterSet & /*converter*/)
 {
     return EC_Normal;
 }
@@ -531,6 +530,11 @@ OFBool DcmObject::isEmpty(const OFBool /*normalize*/)
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.72  2011-11-08 15:51:39  joergr
+ * Added support for converting files, datasets and element values to any DICOM
+ * character set that does not require code extension techniques (if compiled
+ * with and supported by libiconv), not only to UTF-8 as before.
+ *
  * Revision 1.71  2011-10-26 16:20:20  joergr
  * Added method that allows for converting a dataset or element value to UTF-8.
  *

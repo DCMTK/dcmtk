@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:20:20 $
- *  CVS/RCS Revision: $Revision: 1.159 $
+ *  Update Date:      $Date: 2011-11-08 15:51:38 $
+ *  CVS/RCS Revision: $Revision: 1.160 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3836,71 +3836,129 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 }
 
 
-OFCondition DcmItem::convertToUTF8(DcmSpecificCharacterSet *converter,
-                                   const OFBool checkCharset)
+// ********************************
+
+
+void DcmItem::updateSpecificCharacterSet(OFCondition &status,
+                                         const DcmSpecificCharacterSet &converter)
 {
-    OFCondition status = EC_Normal;
-    if (!elementList->empty())
+    const OFString encoding = converter.getDestinationEncoding();
+    if (status.good())
     {
-        DcmSpecificCharacterSet *localConverter = NULL;
-        if (checkCharset || (converter == NULL))
+        // check whether the attribute Specific Character Set (0008,0005) should be present at all
+        if (checkForSpecificCharacterSet())
         {
-            OFString charset;
-            // check whether Specific Character Set (0008,0005) is present in this item
-            if (checkCharset)
-                findAndGetOFStringArray(DCM_SpecificCharacterSet, charset, OFFalse /*searchIntoSub*/);
-            // check whether we need a new character set converter
-            if ((converter == NULL) || (converter->getCharacterSet() != charset))
+            const OFString toCharset = converter.getDestinationCharacterSet();
+            // check for default character set (ASCII), also make sure that the value "ISO_IR 6" is never used
+            // in a dataset; open question: should we also check for non-ASCII characters in the element value?
+            if (toCharset.empty() || (toCharset == "ISO_IR 6"))
             {
-                DCMDATA_DEBUG("DcmItem::convertToUTF8() creating a new character set converter for '"
-                    << (charset.empty() ? "ISO_IR 6" : charset) << "' to 'ISO_IR 192'");
-                localConverter = new DcmSpecificCharacterSet();
-                if (localConverter != NULL)
+                // delete Specific Character Set (0008,0005) data element (type 1C)
+                if (findAndDeleteElement(DCM_SpecificCharacterSet, OFFalse /*allOccurrences*/, OFFalse /*searchIntoSub*/).good())
                 {
-                    status = localConverter->selectCharacterSet(charset);
-                    converter = localConverter;
-                } else
-                    status = EC_MemoryExhausted;
-            }
-        }
-        if (status.good())
-        {
-            // iterate over all data elements in this item and convert the strings
-            elementList->seek(ELP_first);
-            do {
-                status = elementList->get()->convertToUTF8(converter, OFFalse /*checkCharset*/);
-            } while (status.good() && elementList->seek(ELP_next));
-            if (status.good())
-            {
-                if (checkCharset)
-                {
-                    DCMDATA_DEBUG("DcmItem::convertToUTF8() updating value of element SpecificCharacterSet "
-                        << DCM_SpecificCharacterSet << " to 'ISO_IR 192'");
-                    // update/set value of Specific Character Set (0008,0005) if needed
-                    status = putAndInsertOFStringArray(DCM_SpecificCharacterSet, "ISO_IR 192");
-                } else {
-                    // otherwise delete it (if present)
-                    if (findAndDeleteElement(DCM_SpecificCharacterSet, OFFalse /*allOccurrences*/, OFFalse /*searchIntoSub*/).good())
-                    {
-                        DCMDATA_WARN("DcmItem: Deleted element SpecificCharacterSet " << DCM_SpecificCharacterSet
-                            << " during the conversion to UTF-8 encoding");
-                    }
+                    DCMDATA_DEBUG("DcmItem::convertCharacterSet() deleted element SpecificCharacterSet "
+                        << DCM_SpecificCharacterSet << " during the conversion to " << encoding << " encoding");
                 }
             } else {
-                DCMDATA_WARN("DcmItem: An error occurred during the conversion to UTF-8 encoding, "
-                    << "the value of SpecificCharacterSet " << DCM_SpecificCharacterSet << " is not updated");
+                DCMDATA_DEBUG("DcmItem::convertCharacterSet() updating value of element SpecificCharacterSet "
+                    << DCM_SpecificCharacterSet << " to '" << toCharset << "'");
+                // update/set value of Specific Character Set (0008,0005) if needed
+                status = putAndInsertOFStringArray(DCM_SpecificCharacterSet, toCharset);
+            }
+        } else {
+            // otherwise delete it (if present)
+            if (findAndDeleteElement(DCM_SpecificCharacterSet, OFFalse /*allOccurrences*/, OFFalse /*searchIntoSub*/).good())
+            {
+                DCMDATA_WARN("DcmItem: Deleted element SpecificCharacterSet " << DCM_SpecificCharacterSet
+                    << " during the conversion to " << encoding << " encoding");
             }
         }
-        // free memory (if needed)
-        delete localConverter;
+    } else {
+        // an error occurred in a previous processing step
+        DCMDATA_WARN("DcmItem: An error occurred during the conversion to " << encoding << " encoding, "
+            << "the value of SpecificCharacterSet " << DCM_SpecificCharacterSet << " is not updated");
+    }
+}
+
+
+OFCondition DcmItem::convertCharacterSet(const OFString &fromCharset,
+                                         const OFString &toCharset,
+                                         const OFBool transliterate,
+                                         const OFBool updateCharset)
+{
+    OFCondition status = EC_Normal;
+    // if the item is empty, there is nothing to do
+    if (!elementList->empty())
+    {
+        DcmSpecificCharacterSet converter;
+        // create a new character set converter
+        DCMDATA_DEBUG("DcmItem::convertCharacterSet() creating a new character set converter for '"
+            << fromCharset << "'" << (fromCharset.empty() ? " (ASCII)" : "") << " to '"
+            << toCharset << "'" << (toCharset.empty() ? " (ASCII)" : ""));
+        // select source and destination character set
+        status = converter.selectCharacterSet(fromCharset, toCharset, transliterate);
+        if (status.good())
+        {
+            // convert all affected element values in the item
+            status = convertCharacterSet(converter);
+            if (updateCharset)
+            {
+                // update the Specific Character Set (0008,0005) element
+                updateSpecificCharacterSet(status, converter);
+            }
+        }
     }
     return status;
+}
+
+
+OFCondition DcmItem::convertCharacterSet(const OFString &toCharset,
+                                         const OFBool transliterate,
+                                         const OFBool ignoreCharset)
+{
+    OFString fromCharset;
+    // check whether this item can contain the attribute SpecificCharacterSet (0008,0005)
+    if (checkForSpecificCharacterSet() && !ignoreCharset)
+    {
+        // determine value of Specific Character Set (0008,0005) if present in this item
+        findAndGetOFStringArray(DCM_SpecificCharacterSet, fromCharset, OFFalse /*searchIntoSub*/);
+    }
+    // do the real work, if Specific Character Set is missing or empty use the default (ASCII)
+    return convertCharacterSet(fromCharset, toCharset, transliterate, !ignoreCharset /*updateCharset*/);
+}
+
+
+OFCondition DcmItem::convertCharacterSet(DcmSpecificCharacterSet &converter)
+{
+    OFCondition status = EC_Normal;
+    // if the item is empty, there is nothing to do
+    if (!elementList->empty())
+    {
+        // iterate over all data elements in this item and convert the strings
+        elementList->seek(ELP_first);
+        do {
+            status = elementList->get()->convertCharacterSet(converter);
+        } while (status.good() && elementList->seek(ELP_next));
+    }
+    return status;
+}
+
+
+OFCondition DcmItem::convertToUTF8()
+{
+    // the DICOM defined term "ISO_IR 192" is used for "UTF-8"
+    return convertCharacterSet("ISO_IR 192", OFFalse /*transliterate*/);
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.160  2011-11-08 15:51:38  joergr
+** Added support for converting files, datasets and element values to any DICOM
+** character set that does not require code extension techniques (if compiled
+** with and supported by libiconv), not only to UTF-8 as before.
+**
 ** Revision 1.159  2011-10-26 16:20:20  joergr
 ** Added method that allows for converting a dataset or element value to UTF-8.
 **

@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:20:20 $
- *  CVS/RCS Revision: $Revision: 1.85 $
+ *  Update Date:      $Date: 2011-11-08 15:51:38 $
+ *  CVS/RCS Revision: $Revision: 1.86 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,7 @@
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcvr.h"
 #include "dcmtk/dcmdata/dcvrus.h"
+#include "dcmtk/dcmdata/dcspchrs.h"
 
 #ifdef HAVE_UNIX_H
 #if defined(macintosh) && defined (HAVE_WINSOCK_H)
@@ -1122,14 +1123,58 @@ DcmEVR DcmDirectoryRecord::ident() const
 // ********************************
 
 
-OFCondition DcmDirectoryRecord::convertToUTF8(DcmSpecificCharacterSet *converter,
-                                              const OFBool /*checkCharset*/)
+OFCondition DcmDirectoryRecord::convertCharacterSet(const OFString &fromCharset,
+                                                    const OFString &toCharset,
+                                                    const OFBool transliterate,
+                                                    const OFBool updateCharset)
 {
-    DCMDATA_DEBUG("DcmDirectoryRecord::convertToUTF8() processing directory record with offset "
+    // call the method of the base class; this method is only needed to avoid a compiler warning
+    return DcmItem::convertCharacterSet(fromCharset, toCharset, transliterate, updateCharset);
+}
+
+
+OFCondition DcmDirectoryRecord::convertCharacterSet(const OFString &toCharset,
+                                                    const OFBool transliterate,
+                                                    const OFBool ignoreCharset)
+{
+    // call the method of the base class; this method is only needed to avoid a compiler warning
+    return DcmItem::convertCharacterSet(toCharset, transliterate, ignoreCharset);
+}
+
+
+OFCondition DcmDirectoryRecord::convertCharacterSet(DcmSpecificCharacterSet &converter)
+{
+    DCMDATA_DEBUG("DcmDirectoryRecord::convertCharacterSet() processing directory record with offset "
         << getFileOffset());
     // handle special case of DICOMDIR: the Specific Character Set (0008,0005)
     // can be specified individually for each directory record (i.e. item)
-    return DcmItem::convertToUTF8(converter, OFTrue /*checkCharset*/);
+    OFCondition status;
+    OFString fromCharset;
+    const OFString toCharset = converter.getDestinationCharacterSet();
+    // determine value of Specific Character Set (0008,0005) if present in this item
+    if (findAndGetOFStringArray(DCM_SpecificCharacterSet, fromCharset, OFFalse /*searchIntoSub*/).good() &&
+        (fromCharset != converter.getSourceCharacterSet()))
+    {
+        DcmSpecificCharacterSet newConverter;
+        // create a new character set converter
+        DCMDATA_DEBUG("DcmDirectoryRecord::convertCharacterSet() creating a new character set converter for '"
+            << fromCharset << "'" << (fromCharset.empty() ? " (ASCII)" : "") << " to '"
+            << toCharset << "'" << (toCharset.empty() ? " (ASCII)" : ""));
+        // select source and destination character set, use same transliteration mode
+        status = newConverter.selectCharacterSet(fromCharset, toCharset, converter.getTransliterationMode());
+        if (status.good())
+        {
+            // convert all affected element values in the item with the new converter
+            status = DcmItem::convertCharacterSet(newConverter);
+            // update the Specific Character Set (0008,0005) element
+            updateSpecificCharacterSet(status, newConverter);
+        }
+    } else {
+        // no Specific Character Set attribute or the same character set,
+        // so proceed with the given converter
+        status = DcmItem::convertCharacterSet(converter);
+    }
+    return status;
 }
 
 
@@ -1576,6 +1621,11 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.86  2011-11-08 15:51:38  joergr
+ * Added support for converting files, datasets and element values to any DICOM
+ * character set that does not require code extension techniques (if compiled
+ * with and supported by libiconv), not only to UTF-8 as before.
+ *
  * Revision 1.85  2011-10-26 16:20:20  joergr
  * Added method that allows for converting a dataset or element value to UTF-8.
  *

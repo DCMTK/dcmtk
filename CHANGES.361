@@ -1,6 +1,33 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.08 (riesmeier)
+
+- Added support for converting files, datasets and element values to any DICOM
+  character set that does not require code extension techniques (if compiled
+  with and supported by libiconv), not only to UTF-8 as before.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/docs/dcmconv.man
+           dcmdata/include/dcmtk/dcmdata/dcchrstr.h
+           dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/include/dcmtk/dcmdata/dcspchrs.h
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcchrstr.cc
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcspchrs.cc
+           dcmdata/tests/tests.cc
+           dcmdata/tests/tspchrs.cc
+
 **** Changes from 2011.11.07 (riesmeier)
 
 - Fixed problematical typo in a comment ("get" -> "set").

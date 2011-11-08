@@ -175,11 +175,25 @@ bitstream format of deflated input:
 \verbatim
 specific character set:
 
+  # the following options require support from the libiconv toolkit
+
   +U8  --convert-to-utf8
          convert all element values that are affected
          by Specific Character Set (0008,0005) to UTF-8
 
-         # requires support from the libiconv toolkit
+  +L1  --convert-to-latin-1
+         convert affected element values to ISO 8859-1
+
+  +A7  --convert-to-ascii
+         convert affected element values to 7-bit ASCII
+
+  +C   --convert-to-charset  [c]harset: string
+         convert affected element values to the character
+         set specified by the DICOM defined term c
+
+  -Ct  --transliterate
+         try to approximate characters that cannot be
+         represented through similar looking characters
 
 other processing options:
 

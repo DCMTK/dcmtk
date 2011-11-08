@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-26 16:20:18 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2011-11-08 15:51:38 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -359,18 +359,63 @@ class DcmFileFormat
      */
     virtual DcmItem *remove(DcmItem *item);
 
-    /** convert all element values that are contained in the dataset and that are
-     *  affected by SpecificCharacterSet to UTF-8 (Unicode). The value of the data
-     *  element SpecificCharacterSet (0008,0005) is updated, set or deleted
-     *  automatically if needed.
-     *  NB: In case of a DICOMDIR, the SpecificCharacterSet on the main dataset is
-     *  neither checked nor updated, since this IOD has no SOP Common Module.
-     *  @param converter not used for this class (any given value is ignored)
-     *  @param checkCharset not used for this class (any given value is ignored)
+    /** convert all element values that are contained in the dataset and that are affected
+     *  by SpecificCharacterSet from the given source character set to the given
+     *  destination character set. The defined terms for a particular character set can
+     *  be found in the DICOM standard, e.g. "ISO_IR 100" for ISO 8859-1 (Latin 1) or
+     *  "ISO_IR 192" for Unicode in UTF-8. An empty string denotes the default character
+     *  repertoire, which is ASCII (7-bit). If multiple values are given for 'fromCharset'
+     *  (separated by a backslash) code extension techniques are used and escape sequences
+     *  may be encountered in the source string to switch between the specified character
+     *  sets.
+     *  @param fromCharset name of the source character set(s) used for the conversion
+     *  @param toCharset name of the destination character set used for the conversion.
+     *    Only a single value is permitted (i.e. no code extensions).
+     *  @param transliterate mode specifying whether a character that cannot be
+     *    represented in the destination character encoding is approximated through one
+     *    or more characters that look similar to the original one
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition convertToUTF8(DcmSpecificCharacterSet *converter = NULL,
-                                      const OFBool checkCharset = OFTrue);
+    virtual OFCondition convertCharacterSet(const OFString &fromCharset,
+                                            const OFString &toCharset,
+                                            const OFBool transliterate = OFFalse);
+
+    /** convert all element values that are contained in the dataset and that are affected
+     *  by SpecificCharacterSet to the given destination character set. The source
+     *  character set is determined automatically from the value of the
+     *  SpecificCharacterSet (0008,0005) element. The defined terms for the destination
+     *  character set can be found in the DICOM standard, e.g. "ISO_IR 100" for ISO 8859-1
+     *  (Latin 1) or "ISO_IR 192" for Unicode in UTF-8. An empty string denotes the
+     *  default character repertoire, which is ASCII (7-bit).
+     *  NB: In case of a DICOMDIR, the SpecificCharacterSet in the main dataset is neither
+     *      checked nor updated, since the Basic Directory IOD has no SOP Common Module.
+     *  @param toCharset name of the destination character set used for the conversion.
+     *    Only a single value is permitted (i.e. no code extensions).
+     *  @param transliterate mode specifying whether a character that cannot be
+     *    represented in the destination character encoding is approximated through one
+     *    or more characters that look similar to the original one
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition convertCharacterSet(const OFString &toCharset,
+                                            const OFBool transliterate = OFFalse);
+
+    /** convert all element values that are contained in the dataset and that are affected
+     *  by SpecificCharacterSet from the currently selected source character set to the
+     *  currently selected destination character set
+     *  @param converter character set converter to be used to convert the element values
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition convertCharacterSet(DcmSpecificCharacterSet &converter);
+
+    /** convert all element values that are contained in the dataset and that are
+     *  affected by SpecificCharacterSet to UTF-8 (Unicode). The value of the
+     *  SpecificCharacterSet (0008,0005) element is updated, set or deleted automatically
+     *  if needed. The transliteration mode is disabled - see convertCharacterSet().
+     *  NB: In case of a DICOMDIR, the SpecificCharacterSet in the main dataset is neither
+     *      checked nor updated, since the Basic Directory IOD has no SOP Common Module.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition convertToUTF8();
 
   private:
 
@@ -410,6 +455,11 @@ class DcmFileFormat
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
+** Revision 1.40  2011-11-08 15:51:38  joergr
+** Added support for converting files, datasets and element values to any DICOM
+** character set that does not require code extension techniques (if compiled
+** with and supported by libiconv), not only to UTF-8 as before.
+**
 ** Revision 1.39  2011-10-26 16:20:18  joergr
 ** Added method that allows for converting a dataset or element value to UTF-8.
 **
