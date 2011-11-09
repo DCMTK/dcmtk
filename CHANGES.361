@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.09 (riesmeier)
 
+- Avoid wrong error message / status code that a conversion descriptor cannot
+  be closed when libiconv is not available.
+  Affects: ofstd/libsrc/ofchrenc.cc
+
 - Renamed the new option "--convert-to-latin-1" to "--convert-to-latin1".
   Affects: dcmdata/apps/dcmconv.cc
            dcmdata/docs/dcmconv.man

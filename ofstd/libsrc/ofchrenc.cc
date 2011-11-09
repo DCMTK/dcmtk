@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-28 09:32:48 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2011-11-09 14:05:39 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -282,8 +282,14 @@ OFCondition OFCharacterEncoding::closeDescriptor(T_Descriptor &descriptor)
     descriptor = ILLEGAL_DESCRIPTOR;
     return status;
 #else
-    descriptor = ILLEGAL_DESCRIPTOR;
-    return EC_NoEncodingLibrary;
+    OFCondition status = EC_Normal;
+    // we cannot use isDescriptorValid() because it always returns OFFalse
+    if (descriptor != ILLEGAL_DESCRIPTOR)
+    {
+        descriptor = ILLEGAL_DESCRIPTOR;
+        status = EC_NoEncodingLibrary;
+    }
+    return status;
 #endif
 }
 
@@ -353,6 +359,10 @@ size_t OFCharacterEncoding::countCharactersInUTF8String(const OFString &utf8Stri
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.cc,v $
+ * Revision 1.9  2011-11-09 14:05:39  joergr
+ * Avoid wrong error message / status code that a conversion descriptor cannot
+ * be closed when libiconv is not available.
+ *
  * Revision 1.8  2011-10-28 09:32:48  joergr
  * Restructured code of OFCharacterEncoding in order to allow particular classes
  * to access more low-level functions, e.g. for opening multiple conversion
