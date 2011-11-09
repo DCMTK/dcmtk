@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveConfig
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:04 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2011-11-09 15:32:03 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,6 +146,8 @@ public:
   , CNF_VendorTable()
   {
   }
+
+  ~DcmQueryRetrieveConfig();
 
   /*
    *  read configuration file and initialize the
@@ -450,6 +452,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcnf.h,v $
+ * Revision 1.10  2011-11-09 15:32:03  uli
+ * Added a destructor to DcmQueryRetrieveConfig.
+ *
  * Revision 1.9  2011-04-18 07:01:04  uli
  * Use global variables for the logger objects. This removes the thread-unsafe
  * static local variables which were used before.

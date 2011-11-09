@@ -18,8 +18,8 @@
  *  Purpose: class DcmQueryRetrieveConfig
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-04-18 07:01:04 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-11-09 15:32:03 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,68 @@
 #include "dcmtk/ofstd/ofcmdln.h"
 
 OFLogger DCM_dcmqrdbLogger = OFLog::getLogger("dcmtk.dcmqrdb");
+
+static void freePeer(OFMap<const void *, OFBool> &pointersToFree, struct DcmQueryRetrieveConfigPeer *entry)
+{
+    // Hack to make sure we don't double-free
+    pointersToFree[entry->ApplicationTitle] = OFTrue;
+    pointersToFree[entry->HostName] = OFTrue;
+}
+
+static void freeConfigAEEntry(OFMap<const void *, OFBool> &pointersToFree, struct DcmQueryRetrieveConfigAEEntry *entry)
+{
+    for (int i = 0; i < entry->noOfPeers; i++) {
+        freePeer(pointersToFree, &entry->Peers[i]);
+    }
+    free(OFconst_cast(char *, entry->ApplicationTitle));
+    free(OFconst_cast(char *, entry->StorageArea));
+    free(OFconst_cast(char *, entry->Access));
+    free(entry->StorageQuota);
+    free(entry->Peers);
+}
+
+static void freeConfigHostEntry(OFMap<const void *, OFBool> &pointersToFree, struct DcmQueryRetrieveConfigHostEntry *entry)
+{
+    for (int i = 0; i< entry->noOfPeers; i++) {
+        freePeer(pointersToFree, &entry->Peers[i]);
+    }
+    free(OFconst_cast(char *, entry->SymbolicName));
+    free(entry->Peers);
+}
+
+DcmQueryRetrieveConfig::~DcmQueryRetrieveConfig()
+{
+    // There can be more than one DcmQueryRetrieveConfigPeer which points to the
+    // same strings. To make sure that we don't free them more than once, we use
+    // a std::set<void*> which contains the pointers which we have to free.
+    // This happens in DcmQueryRetrieveConfig::readPeerList() while handling
+    // symbolic names (DcmQueryRetrieveConfigPeer gets copied via memcpy()).
+    //
+    // TODO: Since OFSet and std::set have nothing in common, we have to fake a
+    // set via a map.
+    OFMap<const void *, OFBool> pointersToFree;
+    OFMap<const void *, OFBool>::const_iterator it;
+    int i;
+
+    for (i = 0; i < CNF_Config.noOfAEEntries; i++) {
+        freeConfigAEEntry(pointersToFree, &CNF_Config.AEEntries[i]);
+    }
+    free(CNF_Config.AEEntries);
+
+    for (i = 0; i < CNF_HETable.noOfHostEntries; i++) {
+        freeConfigHostEntry(pointersToFree, &CNF_HETable.HostEntries[i]);
+    }
+    free(CNF_HETable.HostEntries);
+
+    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++) {
+        freeConfigHostEntry(pointersToFree, &CNF_VendorTable.HostEntries[i]);
+    }
+    free(CNF_VendorTable.HostEntries);
+
+    for (it = pointersToFree.begin(); it != pointersToFree.end(); ++it) {
+        free(OFconst_cast(void *, it->first));
+    }
+}
 
 int DcmQueryRetrieveConfig::aeTitlesForPeer(const char *hostName, const char *** aeTitleList) const
 {
@@ -1004,6 +1066,9 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
+ * Revision 1.16  2011-11-09 15:32:03  uli
+ * Added a destructor to DcmQueryRetrieveConfig.
+ *
  * Revision 1.15  2011-04-18 07:01:04  uli
  * Use global variables for the logger objects. This removes the thread-unsafe
  * static local variables which were used before.

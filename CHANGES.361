@@ -26,6 +26,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.09 (schlachter)
 
+- Added a destructor to DcmQueryRetrieveConfig.
+  Thanks to forum user "st80rules" for reporting these memleaks.
+  Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcnf.h
+           dcmqrdb/libsrc/dcmqrcnf.cc
+
 - Changed the default for external libraries to be enabled if found.
   Affects: CMakeLists.txt
 
