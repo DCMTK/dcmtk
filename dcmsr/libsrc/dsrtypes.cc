@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 08:32:36 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Update Date:      $Date: 2011-11-09 11:15:50 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -421,7 +421,7 @@ static const S_CharacterSetNameMap CharacterSetNameMap[] =
 {
     // columns: enum, DICOM, HTML, XML (if "?" a warning is reported)
     {DSRTypes::CS_invalid,  "",           "",           ""},
-    {DSRTypes::CS_ASCII,    "ISO_IR 6",   "",           "UTF-8"},
+    {DSRTypes::CS_ASCII,    "ISO_IR 6",   "",           "UTF-8"},   /* "ISO_IR 6" is only used for reading */
     {DSRTypes::CS_Latin1,   "ISO_IR 100", "ISO-8859-1", "ISO-8859-1"},
     {DSRTypes::CS_Latin2,   "ISO_IR 101", "ISO-8859-2", "ISO-8859-2"},
     {DSRTypes::CS_Latin3,   "ISO_IR 109", "ISO-8859-3", "ISO-8859-3"},
@@ -649,8 +649,12 @@ const char *DSRTypes::verificationFlagToEnumeratedValue(const E_VerificationFlag
 const char *DSRTypes::characterSetToDefinedTerm(const E_CharacterSet characterSet)
 {
     const S_CharacterSetNameMap *iterator = CharacterSetNameMap;
-    while ((iterator->Type != CS_last) && (iterator->Type != characterSet))
-        iterator++;
+    /* make sure that we never return "ISO_IR 6", but an empty string instead */
+    if (characterSet != CS_ASCII)
+    {
+        while ((iterator->Type != CS_last) && (iterator->Type != characterSet))
+            iterator++;
+    }
     return iterator->DefinedTerm;
 }
 
@@ -1616,6 +1620,9 @@ OFLogger DCM_dcmsrLogger = OFLog::getLogger("dcmtk.dcmsr");
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.79  2011-11-09 11:15:50  joergr
+ *  Made sure that "ISO_IR 6" is never written as the defined term for ASCII.
+ *
  *  Revision 1.78  2011-08-02 08:32:36  joergr
  *  Added more general support for softcopy presentation states (not only GSPS).
  *

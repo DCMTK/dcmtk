@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.09 (riesmeier)
+
+- Made sure that "ISO_IR 6" is never written as the defined term for ASCII.
+  Affects: dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2011.11.09 (schlachter)
 
 - Fixed warnings from -Weffc++ and OFPair<OFString, void*>.
