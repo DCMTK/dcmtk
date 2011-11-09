@@ -12,6 +12,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.09 (schlachter)
 
+- Changed the default for external libraries to be enabled if found.
+  Affects: CMakeLists.txt
+
 - Made sure the recent changes work correctly with CMake GUIs.
   Affects: CMake/3rdparty.cmake
 
