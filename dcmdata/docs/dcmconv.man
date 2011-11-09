@@ -181,7 +181,7 @@ specific character set:
          convert all element values that are affected
          by Specific Character Set (0008,0005) to UTF-8
 
-  +L1  --convert-to-latin-1
+  +L1  --convert-to-latin1
          convert affected element values to ISO 8859-1
 
   +A7  --convert-to-ascii

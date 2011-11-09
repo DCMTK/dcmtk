@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.09 (riesmeier)
 
+- Renamed the new option "--convert-to-latin-1" to "--convert-to-latin1".
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/docs/dcmconv.man
+
 - Made sure that "ISO_IR 6" is never written as the defined term for ASCII.
   Affects: dcmsr/libsrc/dsrtypes.cc
 

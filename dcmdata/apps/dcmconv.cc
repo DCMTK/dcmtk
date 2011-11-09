@@ -18,8 +18,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:34 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2011-11-09 12:47:19 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
 #ifdef WITH_LIBICONV
     cmd.addSubGroup("specific character set:");
       cmd.addOption("--convert-to-utf8",     "+U8",    "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
-      cmd.addOption("--convert-to-latin-1",  "+L1",    "convert affected element values to ISO 8859-1");
+      cmd.addOption("--convert-to-latin1",   "+L1",    "convert affected element values to ISO 8859-1");
       cmd.addOption("--convert-to-ascii",    "+A7",    "convert affected element values to 7-bit ASCII");
       cmd.addOption("--convert-to-charset",  "+C",  1, "[c]harset: string",
                                                        "convert affected element values to the character\nset specified by the DICOM defined term c");
@@ -413,7 +413,7 @@ int main(int argc, char *argv[])
 #ifdef WITH_LIBICONV
       cmd.beginOptionBlock();
       if (cmd.findOption("--convert-to-utf8")) opt_convertToCharset = "ISO_IR 192";
-      if (cmd.findOption("--convert-to-latin-1")) opt_convertToCharset = "ISO_IR 100";
+      if (cmd.findOption("--convert-to-latin1")) opt_convertToCharset = "ISO_IR 100";
       if (cmd.findOption("--convert-to-ascii")) opt_convertToCharset = "";
       if (cmd.findOption("--convert-to-charset")) app.checkValue(cmd.getValue(opt_convertToCharset));
       cmd.endOptionBlock();
@@ -593,6 +593,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.78  2011-11-09 12:47:19  joergr
+** Renamed the new option "--convert-to-latin-1" to "--convert-to-latin1".
+**
 ** Revision 1.77  2011-11-08 15:51:34  joergr
 ** Added support for converting files, datasets and element values to any DICOM
 ** character set that does not require code extension techniques (if compiled
