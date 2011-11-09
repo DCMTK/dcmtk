@@ -19,8 +19,8 @@
  *           Standard
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-07-06 07:21:19 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2011-11-09 10:57:59 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,11 +74,21 @@ public:
     /** copy constructor
      *  @param p Other OFPair to copy from.
      */
+    OFPair(const OFPair<K, V>& p) : first(p.first), second(p.second) { }
+
+    /** copy constructor
+     *  @param p Other OFPair to copy from.
+     */
     template<class OK, class OV>
     OFPair(const OFPair<OK, OV>& p) : first(p.first), second(p.second) { }
 
-    /** This class uses the default assignment operator
-     */
+    /** assignment operator */
+    OFPair<K, V>& operator=(const OFPair<K, V>& other)
+    {
+        first = other.first;
+        second = other.second;
+        return *this;
+    }
 };
 
 /** helper function to create a pair. This is similar to std::make_pair()
@@ -267,6 +277,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofmap.h,v $
+** Revision 1.8  2011-11-09 10:57:59  uli
+** Fixed warnings from -Weffc++ and OFPair<OFString, void*>.
+**
 ** Revision 1.7  2011-07-06 07:21:19  uli
 ** Improved OFMap's and OFPair's standard conformance.
 **
