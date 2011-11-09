@@ -19,8 +19,8 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-02 11:51:33 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2011-11-09 14:11:08 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,16 +89,24 @@ static OFCondition renderFile(STD_NAMESPACE ostream &out,
         result = EC_MemoryExhausted;
 
 #ifdef WITH_LIBICONV
-    if (result.good())
+    /* convert all DICOM strings to UTF-8 (if requested) */
+    if (result.good() && convertToUTF8)
     {
-        if (convertToUTF8)
+        DcmDataset *dset = dfile->getDataset();
+        OFLOG_INFO(dsr2htmlLogger, "converting all element values that are affected by SpecificCharacterSet (0008,0005) to UTF-8");
+        // check whether SpecificCharacterSet is absent but needed
+        if ((defaultCharset != NULL) && !dset->tagExistsWithValue(DCM_SpecificCharacterSet) &&
+            dset->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
         {
-            OFLOG_INFO(dsr2htmlLogger, "converting all element values that are affected by Specific Character Set (0008,0005) to UTF-8");
-            result = dfile->convertToUTF8();
-            if (result.bad())
-            {
-                OFLOG_FATAL(dsr2htmlLogger, result.text() << ": converting file to UTF-8: " << ifname);
-            }
+            // use the manually specified source character set
+            result = dset->convertCharacterSet(defaultCharset, OFString("ISO_IR 192"));
+        } else {
+            // expect that SpecificCharacterSet contains the correct value
+            result = dset->convertToUTF8();
+        }
+        if (result.bad())
+        {
+            OFLOG_FATAL(dsr2htmlLogger, result.text() << ": converting file to UTF-8: " << ifname);
         }
     }
 #endif
@@ -114,38 +122,48 @@ static OFCondition renderFile(STD_NAMESPACE ostream &out,
             {
                 // check extended character set
                 const char *charset = dsrdoc->getSpecificCharacterSet();
-                if ((charset == NULL || strlen(charset) == 0) && dset->containsExtendedCharacters(checkAllStrings))
+                if (((charset == NULL) || (strlen(charset) == 0)) && dset->containsExtendedCharacters(checkAllStrings))
                 {
                     // we have an unspecified extended character set
                     if (defaultCharset == NULL)
                     {
-                        /* the dataset contains non-ASCII characters that really should not be there */
-                        OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": Specific Character Set (0008,0005) "
-                            << "absent but extended characters used in file: " << ifname);
+                        // the dataset contains non-ASCII characters that really should not be there
+                        OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) "
+                            << "element absent but extended characters used in file: " << ifname);
+                        OFLOG_DEBUG(dsr2htmlLogger, "use option --charset-assume to manually specify an appropriate character set");
                         result = EC_IllegalCall;
                     } else {
                         OFString charsetStr(defaultCharset);
-                        if (charsetStr == "latin-1")
+                        // use the default character set specified by the user
+                        if (charsetStr == "ISO_IR 192")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_UTF8);
+                        else if (charsetStr == "ISO_IR 100")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
-                        else if (charsetStr == "latin-2")
+                        else if (charsetStr == "ISO_IR 101")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin2);
-                        else if (charsetStr == "latin-3")
+                        else if (charsetStr == "ISO_IR 109")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin3);
-                        else if (charsetStr == "latin-4")
+                        else if (charsetStr == "ISO_IR 110")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin4);
-                        else if (charsetStr == "latin-5")
+                        else if (charsetStr == "ISO_IR 148")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin5);
-                        else if (charsetStr == "cyrillic")
+                        else if (charsetStr == "ISO_IR 144")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Cyrillic);
-                        else if (charsetStr == "arabic")
+                        else if (charsetStr == "ISO_IR 127")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Arabic);
-                        else if (charsetStr == "greek")
+                        else if (charsetStr == "ISO_IR 126")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Greek);
-                        else if (charsetStr == "hebrew")
+                        else if (charsetStr == "ISO_IR 138")
                             dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Hebrew);
+                        else {
+                            OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": Character set '"
+                                << defaultCharset << "' specified with option --charset-assume not supported");
+                            result = EC_IllegalCall;
+                        }
                     }
                 }
-                if (result.good()) result = dsrdoc->renderHTML(out, renderFlags, cssName);
+                if (result.good())
+                    result = dsrdoc->renderHTML(out, renderFlags, cssName);
             } else {
                 OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
                     << ") parsing file: " << ifname);
@@ -210,9 +228,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--skip-invalid-items",   "-Ei",    "skip invalid content items (incl. sub-tree)");
       cmd.addSubGroup("character set:");
         cmd.addOption("--charset-require",      "+Cr",    "require declaration of ext. charset (default)");
-        cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset: string constant (latin-1 to -5,",
-                                                          "greek, cyrillic, arabic, hebrew)\n"
-                                                          "assume c if undeclared extended charset found");
+        cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset: string",
+                                                          "assume charset c if no extended charset declared");
         cmd.addOption("--charset-check-all",              "check all data elements with string values\n(default: only PN, LO, LT, SH, ST and UT)");
 #ifdef WITH_LIBICONV
         cmd.addOption("--convert-to-utf8",      "+U8",    "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
@@ -328,20 +345,9 @@ int main(int argc, char *argv[])
         /* character set options */
         cmd.beginOptionBlock();
         if (cmd.findOption("--charset-require"))
-        {
            opt_defaultCharset = NULL;
-        }
         if (cmd.findOption("--charset-assume"))
-        {
           app.checkValue(cmd.getValue(opt_defaultCharset));
-          OFString charset(opt_defaultCharset);
-          if (charset != "latin-1" && charset != "latin-2" && charset != "latin-3" &&
-              charset != "latin-4" && charset != "latin-5" && charset != "cyrillic" &&
-              charset != "arabic" && charset != "greek" && charset != "hebrew")
-          {
-            app.printError("unknown value for --charset-assume. known values are latin-1 to -5, cyrillic, arabic, greek, hebrew.");
-          }
-        }
         cmd.endOptionBlock();
         if (cmd.findOption("--charset-check-all"))
             opt_checkAllStrings = OFTrue;
@@ -442,11 +448,37 @@ int main(int argc, char *argv[])
             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
+    // map "old" charset names to DICOM defined terms
+    if (opt_defaultCharset != NULL)
+    {
+        OFString charset(opt_defaultCharset);
+        if (charset == "latin-1")
+            opt_defaultCharset = "ISO_IR 100";
+        else if (charset == "latin-2")
+            opt_defaultCharset = "ISO_IR 101";
+        else if (charset == "latin-3")
+            opt_defaultCharset = "ISO_IR 109";
+        else if (charset == "latin-4")
+            opt_defaultCharset = "ISO_IR 110";
+        else if (charset == "latin-5")
+            opt_defaultCharset = "ISO_IR 148";
+        else if (charset == "cyrillic")
+            opt_defaultCharset = "ISO_IR 144";
+        else if (charset == "arabic")
+            opt_defaultCharset = "ISO_IR 127";
+        else if (charset == "greek")
+            opt_defaultCharset = "ISO_IR 126";
+        else if (charset == "hebrew")
+            opt_defaultCharset = "ISO_IR 138";
+    }
+
     int result = 0;
     const char *ifname = NULL;
+    /* first parameter is treated as the input filename */
     cmd.getParam(1, ifname);
     if (cmd.getParamCount() == 2)
     {
+        /* second parameter specifies the output filename */
         const char *ofname = NULL;
         cmd.getParam(2, ofname);
         STD_NAMESPACE ofstream stream(ofname);
@@ -460,6 +492,7 @@ int main(int argc, char *argv[])
         } else
             result = 1;
     } else {
+        /* use standard output */
         if (renderFile(COUT, ifname, opt_cssName, opt_defaultCharset, opt_readMode, opt_ixfer, opt_readFlags,
             opt_renderFlags, opt_checkAllStrings, opt_convertToUTF8).bad())
         {
@@ -474,6 +507,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
+ * Revision 1.41  2011-11-09 14:11:08  joergr
+ * Changed the way option --charset-assume works. Now, the DICOM defined term
+ * for the character set has to be used (old values are still supported). This
+ * makes sure that this option can be used together with --convert-to-utf8.
+ *
  * Revision 1.40  2011-11-02 11:51:33  joergr
  * Added new command line option for converting a DICOM file/dataset to UTF-8.
  * Also fixed some small inconsistencies regarding the character set handling.

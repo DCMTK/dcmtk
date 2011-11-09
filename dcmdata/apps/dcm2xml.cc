@@ -18,8 +18,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-02 11:51:10 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2011-11-09 14:11:05 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,9 +73,9 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
         /* determine dataset character encoding */
         OFString encString;
         OFString csetString;
-        if (dset->findAndGetOFString(DCM_SpecificCharacterSet, csetString).good())
+        if (dset->findAndGetOFStringArray(DCM_SpecificCharacterSet, csetString).good())
         {
-            if (csetString == "ISO_IR 6")
+            if (csetString == "ISO_IR 6")   // should not be present in a dataset, but ...
                 encString = "UTF-8";
             else if (csetString == "ISO_IR 192")
                 encString = "UTF-8";
@@ -97,12 +97,15 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 encString = "ISO-8859-7";
             else if (csetString == "ISO_IR 138")
                 encString = "ISO-8859-8";
-            else
-            {
+            else {
                 if (!csetString.empty())
                 {
-                    OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": Specific Character Set (0008,0005) '"
-                        << csetString << "' not supported ... quoting non-ASCII characters");
+                    OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) "
+                        << "value '" << csetString << "' not supported ... quoting non-ASCII characters");
+#ifdef WITH_LIBICONV
+                    OFLOG_DEBUG(dcm2xmlLogger, "using option --convert-to-utf8 to convert the DICOM file to "
+                        "UTF-8 encoding might also help to solve this problem more appropriately");
+#endif
                 }
                 /* make sure that non-ASCII characters are quoted appropriately */
                 writeFlags |= DCMTypes::XF_convertNonASCII;
@@ -114,59 +117,52 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 if (defaultCharset == NULL)
                 {
                     /* the dataset contains non-ASCII characters that really should not be there */
-                    OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": Specific Character Set (0008,0005) "
-                        << "absent but extended characters used in file: " << ifname);
+                    OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) "
+                        << "element absent (on the main dataset level) but extended characters used in file: " << ifname);
                     OFLOG_DEBUG(dcm2xmlLogger, "use option --charset-assume to manually specify an appropriate character set");
                     return EC_IllegalCall;
                 } else {
-                    OFString charset(defaultCharset);
-                    if (charset == "latin-1")
-                    {
-                        csetString = "ISO_IR 100";
+                    OFString sopClass;
+                    OFString csetString(defaultCharset);
+                    /* use the default character set specified by the user */
+                    if (csetString == "ISO_IR 192")
+                        encString = "UTF-8";
+                    else if (csetString == "ISO_IR 100")
                         encString = "ISO-8859-1";
-                    }
-                    else if (charset == "latin-2")
-                    {
-                        csetString = "ISO_IR 101";
+                    else if (csetString == "ISO_IR 101")
                         encString = "ISO-8859-2";
-                    }
-                    else if (charset == "latin-3")
-                    {
-                        csetString = "ISO_IR 109";
+                    else if (csetString == "ISO_IR 109")
                         encString = "ISO-8859-3";
-                    }
-                    else if (charset == "latin-4")
-                    {
-                      csetString = "ISO_IR 110";
-                      encString = "ISO-8859-4";
-                    }
-                    else if (charset == "latin-5")
-                    {
-                        csetString = "ISO_IR 148";
+                    else if (csetString == "ISO_IR 110")
+                        encString = "ISO-8859-4";
+                    else if (csetString == "ISO_IR 148")
                         encString = "ISO-8859-9";
-                    }
-                    else if (charset == "cyrillic")
-                    {
-                        csetString = "ISO_IR 144";
+                    else if (csetString == "ISO_IR 144")
                         encString = "ISO-8859-5";
-                    }
-                    else if (charset == "arabic")
-                    {
-                        csetString = "ISO_IR 127";
+                    else if (csetString == "ISO_IR 127")
                         encString = "ISO-8859-6";
-                    }
-                    else if (charset == "greek")
-                    {
-                        csetString = "ISO_IR 126";
+                    else if (csetString == "ISO_IR 126")
                         encString = "ISO-8859-7";
-                    }
-                    else if (charset == "hebrew")
-                    {
-                        csetString = "ISO_IR 138";
+                    else if (csetString == "ISO_IR 138")
                         encString = "ISO-8859-8";
+                    else {
+                        OFLOG_FATAL(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": Character set '"
+                            << defaultCharset << "' specified with option --charset-assume not supported");
+                        return EC_IllegalCall;
                     }
-                    dset->putAndInsertString(DCM_SpecificCharacterSet, csetString.c_str());
+                    /* check whether this file is a DICOMDIR */
+                    if (dfile->getMetaInfo()->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass).bad() ||
+                        (sopClass != UID_MediaStorageDirectoryStorage))
+                    {
+                        OFLOG_INFO(dcm2xmlLogger, "inserting SpecificCharacterSet (0008,0005) element with value '"
+                            << defaultCharset << "'");
+                        /* insert the SpecificCharacterSet (0008,0005) element */
+                        dset->putAndInsertString(DCM_SpecificCharacterSet, defaultCharset);
+                    }
                 }
+            } else {
+                /* by default, we use UTF-8 encoding */
+                encString = "UTF-8";
             }
         }
 
@@ -270,8 +266,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("processing options:");
       cmd.addSubGroup("specific character set:");
         cmd.addOption("--charset-require",    "+Cr",    "require declaration of extended charset (default)");
-        cmd.addOption("--charset-assume",     "+Ca", 1, "[c]harset: string constant",
-                                                        "(latin-1 to -5, cyrillic, arabic, greek, hebrew)\n"
+        cmd.addOption("--charset-assume",     "+Ca", 1, "[c]harset: string",
                                                         "assume charset c if no extended charset declared");
         cmd.addOption("--charset-check-all",  "+Cc",    "check all data elements with string values\n(default: only PN, LO, LT, SH, ST and UT)");
 #ifdef WITH_LIBICONV
@@ -369,16 +364,7 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--charset-require"))
            opt_defaultCharset = NULL;
         if (cmd.findOption("--charset-assume"))
-        {
             app.checkValue(cmd.getValue(opt_defaultCharset));
-            OFString charset(opt_defaultCharset);
-            if (charset != "latin-1" && charset != "latin-2" && charset != "latin-3" &&
-                charset != "latin-4" && charset != "latin-5" && charset != "cyrillic" &&
-                charset != "arabic" && charset != "greek" && charset != "hebrew")
-            {
-                app.printError("unknown value for --charset-assume. known values are latin-1 to -5, cyrillic, arabic, greek, hebrew.");
-            }
-        }
         cmd.endOptionBlock();
         if (cmd.findOption("--charset-check-all"))
             opt_checkAllStrings = OFTrue;
@@ -458,16 +444,62 @@ int main(int argc, char *argv[])
         OFCondition status = dfile.loadFile(ifname, opt_ixfer, EGL_noChange, opt_maxReadLength, opt_readMode);
         if (status.good())
         {
+            // map "old" charset names to DICOM defined terms
+            if (opt_defaultCharset != NULL)
+            {
+                OFString charset(opt_defaultCharset);
+                if (charset == "latin-1")
+                    opt_defaultCharset = "ISO_IR 100";
+                else if (charset == "latin-2")
+                    opt_defaultCharset = "ISO_IR 101";
+                else if (charset == "latin-3")
+                    opt_defaultCharset = "ISO_IR 109";
+                else if (charset == "latin-4")
+                    opt_defaultCharset = "ISO_IR 110";
+                else if (charset == "latin-5")
+                    opt_defaultCharset = "ISO_IR 148";
+                else if (charset == "cyrillic")
+                    opt_defaultCharset = "ISO_IR 144";
+                else if (charset == "arabic")
+                    opt_defaultCharset = "ISO_IR 127";
+                else if (charset == "greek")
+                    opt_defaultCharset = "ISO_IR 126";
+                else if (charset == "hebrew")
+                    opt_defaultCharset = "ISO_IR 138";
+            }
 #ifdef WITH_LIBICONV
+            DcmDataset *dset = dfile.getDataset();
             /* convert all DICOM strings to UTF-8 (if requested) */
             if (opt_convertToUTF8)
             {
-                OFLOG_INFO(dcm2xmlLogger, "converting all element values that are affected by Specific Character Set (0008,0005) to UTF-8");
-                status = dfile.convertToUTF8();
+                OFLOG_INFO(dcm2xmlLogger, "converting all element values that are affected by SpecificCharacterSet (0008,0005) to UTF-8");
+                // check whether SpecificCharacterSet is absent but needed
+                if ((opt_defaultCharset != NULL) && !dset->tagExistsWithValue(DCM_SpecificCharacterSet) &&
+                    dset->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
+                {
+                    // use the manually specified source character set
+                    status = dset->convertCharacterSet(opt_defaultCharset, OFString("ISO_IR 192"));
+                } else {
+                    // expect that SpecificCharacterSet contains the correct value
+                    status = dset->convertToUTF8();
+                }
                 if (status.bad())
                 {
                     OFLOG_FATAL(dcm2xmlLogger, status.text() << ": converting file to UTF-8: " << ifname);
                     result = 4;
+                }
+            } else {
+                OFString sopClass;
+                /* check whether the file is a DICOMDIR ... */
+                if (dfile.getMetaInfo()->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass).good() &&
+                    (sopClass == UID_MediaStorageDirectoryStorage))
+                {
+                    /* ... with one or more SpecificCharacterSet elements */
+                    if (dset->tagExistsWithValue(DCM_SpecificCharacterSet, OFTrue /*searchIntoSub*/))
+                    {
+                        OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": this is a DICOMDIR file, which can contain more than one "
+                            << "SpecificCharacterSet (0008,0005) element ... using option --convert-to-utf8 is strongly recommended");
+                    }
                 }
             }
 #endif
@@ -506,6 +538,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
+ * Revision 1.43  2011-11-09 14:11:05  joergr
+ * Changed the way option --charset-assume works. Now, the DICOM defined term
+ * for the character set has to be used (old values are still supported). This
+ * makes sure that this option can be used together with --convert-to-utf8.
+ *
  * Revision 1.42  2011-11-02 11:51:10  joergr
  * Added new command line option for converting a DICOM file/dataset to UTF-8.
  * Also fixed some small inconsistencies regarding the character set handling.

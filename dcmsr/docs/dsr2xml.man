@@ -74,12 +74,8 @@ specific character set:
   +Cr  --charset-require
          require declaration of extended charset (default)
 
-  +Ca  --charset-assume  [c]harset: string constant
-         (latin-1 to -5, greek, cyrillic, arabic, hebrew)
-         assume charset c if no extended charset found
-
-         # this option is only used for the mapping to an appropriate
-         # XML character encoding, but not for the conversion to UTF-8
+  +Ca  --charset-assume  [c]harset: string
+         assume charset c if no extended charset declared
 
   +Cc  --charset-check-all
          check all data elements with string values
@@ -202,7 +198,7 @@ The XML encoding is determined automatically from the DICOM attribute
 (0008,0005) "Specific Character Set" using the following mapping:
 
 \verbatim
-ASCII         "ISO_IR 6"    =>  "UTF-8"
+ASCII         (ISO_IR 6)    =>  "UTF-8"
 UTF-8         "ISO_IR 192"  =>  "UTF-8"
 ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"
 ISO Latin 2   "ISO_IR 101"  =>  "ISO-8859-2"
@@ -217,7 +213,7 @@ Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
 
 If this DICOM attribute is missing in the input file, although needed, option
 \e --charset-assume can be used to specify an appropriate character set
-manually.
+manually (using one of the DICOM defined terms).
 
 Multiple character sets are not supported (only the first attribute value is
 mapped in case of value multiplicity).  If needed, option \e --convert-to-utf8

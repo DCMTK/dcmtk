@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.09 (riesmeier)
 
+- Changed the way option --charset-assume works. Now, the DICOM defined term
+  for the character set has to be used (old values are still supported). This
+  makes sure that this option can be used together with --convert-to-utf8.
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmdata/docs/dcm2xml.man
+           dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+
 - Avoid wrong error message / status code that a conversion descriptor cannot
   be closed when libiconv is not available.
   Affects: ofstd/libsrc/ofchrenc.cc

@@ -113,12 +113,8 @@ specific character set:
   +Cr  --charset-require
          require declaration of extended charset (default)
 
-  +Ca  --charset-assume  [c]harset: string constant
-         (latin-1 to -5, cyrillic, arabic, greek, hebrew)
+  +Ca  --charset-assume  [c]harset: string
          assume charset c if no extended charset declared
-
-         # this option is only used for the mapping to an appropriate
-         # XML character encoding, but not for the conversion to UTF-8
 
   +Cc  --charset-check-all
          check all data elements with string values
@@ -222,7 +218,7 @@ The XML encoding is determined automatically from the DICOM attribute
 (0008,0005) "Specific Character Set" using the following mapping:
 
 \verbatim
-ASCII         "ISO_IR 6"    =>  "UTF-8"
+ASCII         (ISO_IR 6)    =>  "UTF-8"
 UTF-8         "ISO_IR 192"  =>  "UTF-8"
 ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"
 ISO Latin 2   "ISO_IR 101"  =>  "ISO-8859-2"
@@ -237,13 +233,13 @@ Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
 
 If this DICOM attribute is missing in the input file, although needed, option
 \e --charset-assume can be used to specify an appropriate character set
-manually.
+manually (using one of the DICOM defined terms).
 
-Multiple character sets are not supported (only the first attribute value is
-mapped in case of value multiplicity).  If needed, option \e --convert-to-utf8
-can be used to convert the DICOM file or data set to UTF-8 encoding prior to
-the conversion to XML format.  This is also useful for DICOMDIR files where
-each directory record can have a different character set.
+Multiple character sets using code extension techniques are not supported.  If
+needed, option \e --convert-to-utf8 can be used to convert the DICOM file or
+data set to UTF-8 encoding prior to the conversion to XML format.  This is also
+useful for DICOMDIR files where each directory record can have a different
+character set.
 
 \subsection xml_encoding XML Encoding
 
