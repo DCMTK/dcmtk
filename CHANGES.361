@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.09 (schlachter)
+
+- Added support for detecting iconv on non-Windows platforms.
+  Added:   CMake/FindICONV.cmake
+  Affects: CMakeLists.txt
+           CMake/3rdparty.cmake
+           dcmdata/apps/CMakeLists.txt
+
 **** Changes from 2011.11.08 (riesmeier)
 
 - Added support for converting files, datasets and element values to any DICOM

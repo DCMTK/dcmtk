@@ -29,6 +29,7 @@ SET(DCMTK_PACKAGE_VERSION_SUFFIX "")
 # General build options and settings
 OPTION(BUILD_SHARED_LIBS "Build with shared libraries." OFF)
 SET(CMAKE_DEBUG_POSTFIX "" CACHE STRING "Library postfix for debug builds. Usually left blank.")
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/")
 
 # DCMTK build options
 OPTION(DCMTK_WITH_TIFF "Configure DCMTK with support for TIFF." ON)
