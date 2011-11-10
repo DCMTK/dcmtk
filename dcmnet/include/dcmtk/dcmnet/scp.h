@@ -18,9 +18,9 @@
  *  Purpose: General SCP class that can be used to implement derived SCP
  *           applications.
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-10-05 15:42:11 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-11-10 17:00:48 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,20 +82,20 @@ enum DcmRefuseReasonType
   DCMSCP_CANNOT_FORK,
   /// Refusing association because of bad application context name
   DCMSCP_BAD_APPLICATION_CONTEXT_NAME,
-  /// Refusing association because of unacceppted AE name
+  /// Refusing association because of unaccepted AE name
   DCMSCP_BAD_APPLICATION_ENTITY_SERVICE,
   /// Refusing association because SCP was forced to do so
   DCMSCP_FORCED,
   /// Refusing association because of missing Implementation Class UID
   DCMSCP_NO_IMPLEMENTATION_CLASS_UID,
-  /// Refusing association because proposed Presentation Context is supported
+  /// Refusing association because of no acceptable Presentation Contexts
   DCMSCP_NO_PRESENTATION_CONTEXTS,
   /// Refusing association because of internal error
   DCMSCP_INTERNAL_ERROR
 };
 
 /** Structure representing a single Presentation Context. Fields "reserved" and "result"
- *  not included from DUL_PRESENTATIONCONTEXT which served as the blueprint for this
+ *  not included from DUL_PRESENTATIONCONTEXT, which served as the blueprint for this
  *  structure.
  */
 struct DcmPresentationContextInfo
@@ -237,12 +237,12 @@ public:
 
   /** Enable multi-process mode for SCP. For every incoming association, a new process is
    *  started. For Unix this is done with the fork() command that creates a copy of the
-   *  process running and continues executing the code after the fork() called seamlessy.
-   *  For Windows CreateProcess() is used given the commandline specified in the function's
-   *  parameters. The created process is handled a copy of the open TCP/IP connection and
-   *  then is responsible for handling the association. After process fork/creation, DcmSCP
-   *  is ready for listening to new connection requests.
-   *  @param argc [in] Number of commandline arguments (only Windows)
+   *  process running and continues executing the code after the fork() call seamlessly.
+   *  For Windows CreateProcess() is used given the command line specified in the function's
+   *  parameters. A handle of the open TCP/IP connection is passed to the created process,
+   *  which is then responsible for handling the association. After process fork/creation,
+   *  DcmSCP is ready for listening to new connection requests.
+   *  @param argc [in] Number of command line arguments (only Windows)
    *  @param argv [in] Command line (only Windows)
    *  @return EC_Normal, if single process mode could be enabled, an error otherwise
    */
@@ -288,9 +288,8 @@ public:
    */
   void setACSETimeout(const Uint32 acseTimeout);
 
-  /** Set the timeout that should be waited for connection request.
+  /** Set the timeout that should be waited for connection requests.
    *  Only relevant in non-blocking mode (default).
-   *
    *  @param timeout [in] TCP/IP connection timeout in seconds.
    */
   void setConnnectionTimeout(const Uint32 timeout);
@@ -344,7 +343,8 @@ public:
    */
   Uint16 getMaxAssociations() const;
 
-  /** Returns whether receiving of DIMSE messages is done in blocking or unblocking mode
+  /** Returns whether receiving of TCP/IP connection requests is done in blocking or
+   *  unblocking mode
    *  @return DUL_BLOCK if in blocking mode, otherwise DUL_NOBLOCK
    */
   DUL_BLOCKOPTIONS getConnectionBlockingMode() const;
@@ -428,9 +428,9 @@ protected:
    *  @param incomingMsg The DIMSE message received
    *  @param presContextInfo The presentation context the message was received on.
    *  @return EC_Normal if the message could be handled, error if not. Especially
-   *          DIMSE_BADCOMMANDTYPE shoule be returned if there is no handler for
+   *          DIMSE_BADCOMMANDTYPE should be returned if there is no handler for
    *          this particular type of DIMSE message. E.g. the default handler in
-   *          DcmSCP only handles C-ECHO requests and therefore returns
+   *          DcmSCP only handles C-ECHO requests and, therefore, returns
    *          DIMSE_BADCOMMANDTYPE otherwise.
    */
   virtual OFCondition handleIncomingCommand(T_DIMSE_Message *incomingMsg,
@@ -439,8 +439,7 @@ protected:
   /** Overwrite this function to be notified about an incoming association request.
    *  The standard handler only outputs some information to the logger.
    *  @param params The association parameters that were received.
-   *  @param desiredAction The desired action how to handle this association
-   *         request.
+   *  @param desiredAction The desired action how to handle this association request.
    */
   virtual void notifyAssociationRequest(const T_ASC_Parameters &params,
                                         DcmSCPActionType &desiredAction);
@@ -489,13 +488,13 @@ protected:
    *                             others can found in the DICOM standard.
    *  @return EC_Normal, if responding was successful, an error code otherwise
    */
-  virtual OFCondition sendActionResponse(T_ASC_PresentationContextID presID,
-                                         Uint16 messageID,
-                                         const OFString sopClassUID,
-                                         const OFString sopInstanceUID,
+  virtual OFCondition sendActionResponse(const T_ASC_PresentationContextID presID,
+                                         const Uint16 messageID,
+                                         const OFString &sopClassUID,
+                                         const OFString &sopInstanceUID,
                                          const Uint16 actionTypeID,
                                          DcmDataset *rspDataset,
-                                         Uint16 rspStatusCode); 
+                                         const Uint16 rspStatusCode);
 
   /** Respond to storage request
    *  @param presID       [in] The presentation context ID to respond to
@@ -504,7 +503,7 @@ protected:
    *  @param statusDetail [in] The status detail to be sent
    *  @return EC_Normal, if responding was successful, an error code otherwise
    */
-  virtual OFCondition sendSTOREResponse(T_ASC_PresentationContextID presID,
+  virtual OFCondition sendSTOREResponse(const T_ASC_PresentationContextID presID,
                                         T_DIMSE_C_StoreRQ &reqMessage,
                                         T_DIMSE_C_StoreRSP &rspMessage,
                                         DcmDataset *statusDetail);
@@ -517,7 +516,7 @@ protected:
    *  @return OFCondition value denoting success or error
    */
   virtual OFCondition handleECHORequest(T_DIMSE_C_EchoRQ &reqMessage,
-                                        T_ASC_PresentationContextID presID);
+                                        const T_ASC_PresentationContextID presID);
 
   /** Receives N-EVENT-REPORT request on the currently opened association and sends a
    *  corresponding response. Calls checkEVENTREPORTRequest() in order to determine the
@@ -530,20 +529,20 @@ protected:
    *  @return status, EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage,
-                                               T_ASC_PresentationContextID presID,
+                                               const T_ASC_PresentationContextID presID,
                                                DcmDataset *&reqDataset,
                                                Uint16 &eventTypeID);
 
   /** Receives N-ACTION request and sends a corresponding response.
-   *  @param reqMessage  [in]  The N-ACTION request message that was received
-   *  @param presID      [in]  The presentation context to be used. By default, the
-   *                           presentation context of the request is used.
-   *  @param reqDataset  [out] Pointer to the dataset received
+   *  @param reqMessage   [in]  The N-ACTION request message that was received
+   *  @param presID       [in]  The presentation context to be used. By default, the
+   *                            presentation context of the request is used.
+   *  @param reqDataset   [out] Pointer to the dataset received
    *  @param actionTypeID [out] Action Type ID from the command set received
    *  @return status, EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
-                                          T_ASC_PresentationContextID presID,
+                                          const T_ASC_PresentationContextID presID,
                                           DcmDataset *&reqDataset,
                                           Uint16 &actionTypeID);
 
@@ -562,7 +561,7 @@ protected:
    */
   virtual OFCondition sendEVENTREPORTRequest(const T_ASC_PresentationContextID presID,
                                              const OFString &sopInstanceUID,
-                                             Uint16 messageID,
+                                             const Uint16 messageID,
                                              const Uint16 eventTypeID,
                                              DcmDataset *reqDataset,
                                              Uint16 &rspStatusCode);
@@ -621,11 +620,11 @@ protected:
    */
   virtual OFCondition waitForAssociation(T_ASC_Network *network);
 
-    /** This function takes care of removing items referring to (terminated) subprocess from
-     *  the table which stores all subprocess information. This function does not make sense
-     *  for Windows operating systems where the SCP does not have any control over
-     *  additionally created processes.
-     */
+  /** This function takes care of removing items referring to (terminated) subprocesses from
+   *  the table which stores all subprocess information. This function does not make sense
+   *  for Windows operating systems where the SCP does not have any control over
+   *  additionally created processes.
+   */
   virtual void cleanChildren();
 
   /** This function checks all presentation contexts proposed by the SCU whether they are
@@ -641,7 +640,7 @@ protected:
    *  relevant for multi-process mode under Unix-like systems)
    *  @param pid [in] The process ID of the sub-process which was just started
    */
-  virtual void addProcessToTable(int pid);
+  virtual void addProcessToTable(const int pid);
 
   /** This function removes one particular item from the table which stores all subprocess
    *  information. The corresponding process item to be deleted will be identified by its
@@ -649,13 +648,13 @@ protected:
    *  systems.
    *  @param pid [in] Process ID.
    */
-  virtual void removeProcessFromTable(int pid);
+  virtual void removeProcessFromTable(const int pid);
 
   /** This function takes care of refusing an assocation request
    *  @param reason [in] The reason why the association request will be refused and that
    *                     will be reported to the SCU.
    */
-  virtual void refuseAssociation(DcmRefuseReasonType reason);
+  virtual void refuseAssociation(const DcmRefuseReasonType reason);
 
   /** This function takes care of handling the other DICOM application's request. After
    *  having accomplished all necessary steps, the association will be dropped and destroyed.
@@ -776,7 +775,7 @@ private:
   /// new associations. Under Unix, multi-process mode uses the fork command to spawn a
   /// process which is an exact copy of the parent and continues code execution after the
   /// fork command. For Windows, the programmer of the derived class is responsible for
-  /// setting the command line needed for the internal "CreateProcess" call. The commandline
+  /// setting the command line needed for the internal "CreateProcess" call. The command line
   /// arguments are specified with function enableMultiProcessMode().
   OFBool m_singleProcess;
 
@@ -785,7 +784,7 @@ private:
   OFBool m_forkedChild;
 
 #ifdef _WIN32
-  /// Number of arguments in commandline, needed for multiprocess mode on Windows sytems
+  /// Number of arguments in command line, needed for multiprocess mode on Windows sytems
   int m_cmd_argc;
 
   /// Complete command line, needed for multiprocess mode on Windows sytems
@@ -848,6 +847,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: scp.h,v $
+ *  Revision 1.18  2011-11-10 17:00:48  joergr
+ *  Fixed a couple of typos in comments and made some parameters "const".
+ *
  *  Revision 1.17  2011-10-05 15:42:11  ogazzar
  *  Added a function to respond to N-Action request.
  *

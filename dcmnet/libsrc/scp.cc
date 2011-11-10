@@ -17,9 +17,9 @@
  *
  *  Purpose: Base class for Service Class Providers (SCPs)
  *
- *  Last Update:      $Author: ogazzar $
- *  Update Date:      $Date: 2011-10-07 16:56:01 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-11-10 17:00:50 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -245,7 +245,7 @@ OFCondition DcmSCP::listen()
     }
   }
 #endif
-    // Initialize network, i.e. create an instance of T_ASC_Network*.
+  // Initialize network, i.e. create an instance of T_ASC_Network*.
   T_ASC_Network *m_net = NULL;
   cond = ASC_initializeNetwork( NET_ACCEPTOR, OFstatic_cast(int, m_port), m_acseTimeout, &m_net );
   if( cond.bad() )
@@ -296,7 +296,7 @@ OFCondition DcmSCP::listen()
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::refuseAssociation(DcmRefuseReasonType reason)
+void DcmSCP::refuseAssociation(const DcmRefuseReasonType reason)
 {
   if (m_assoc == NULL)
   {
@@ -441,7 +441,8 @@ OFCondition DcmSCP::waitForAssociation(T_ASC_Network *network)
   }
 
   // Listen to a socket for timeout seconds and wait for an association request
-  OFCondition cond = ASC_receiveAssociation( network, &m_assoc, m_maxReceivePDULength, NULL, NULL, OFFalse, m_connectionBlockingMode, OFstatic_cast(int, timeout) );
+  OFCondition cond = ASC_receiveAssociation( network, &m_assoc, m_maxReceivePDULength, NULL, NULL, OFFalse,
+                                             m_connectionBlockingMode, OFstatic_cast(int, timeout) );
 
   // just return, if timeout occured (DUL_NOASSOCIATIONREQUEST)
   // or (WIN32) if dcmnet has started a child for us, to handle this
@@ -718,7 +719,7 @@ void DcmSCP::handleAssociation()
   // Drop and destroy the association.
   dropAndDestroyAssociation();
 
-  // Dump some information if required.
+  // Output separator line.
   DCMNET_DEBUG( "+++++++++++++++++++++++++++++" );
 }
 
@@ -750,7 +751,7 @@ OFCondition DcmSCP::handleIncomingCommand(T_DIMSE_Message *msg,
 // ----------------------------------------------------------------------------
 
 OFCondition DcmSCP::handleECHORequest(T_DIMSE_C_EchoRQ &reqMessage,
-                                      T_ASC_PresentationContextID presID)
+                                      const T_ASC_PresentationContextID presID)
 {
   OFString tempStr;
   // Dump debug information
@@ -777,13 +778,13 @@ OFCondition DcmSCP::handleECHORequest(T_DIMSE_C_EchoRQ &reqMessage,
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::sendActionResponse(T_ASC_PresentationContextID presID,
-                                       Uint16 messageID,
-                                       const OFString sopClassUID,
-                                       const OFString sopInstanceUID,
+OFCondition DcmSCP::sendActionResponse(const T_ASC_PresentationContextID presID,
+                                       const Uint16 messageID,
+                                       const OFString &sopClassUID,
+                                       const OFString &sopInstanceUID,
                                        const Uint16 actionTypeID,
                                        DcmDataset *rspDataset,
-                                       Uint16 rspStatusCode)
+                                       const Uint16 rspStatusCode)
 {
   OFCondition cond;
   OFString tempStr;
@@ -808,9 +809,7 @@ OFCondition DcmSCP::sendActionResponse(T_ASC_PresentationContextID presID,
   {
     DCMNET_INFO("Sending N-ACTION Response");
     DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, rspDataset, presID));
-  }
-  else
-  {
+  } else {
     DCMNET_INFO("Sending N-ACTION Response (" << DU_nactionStatusString(rspStatusCode) << ")");
   }
 
@@ -827,7 +826,7 @@ OFCondition DcmSCP::sendActionResponse(T_ASC_PresentationContextID presID,
 // ----------------------------------------------------------------------------
 
 // Send response to former storage request
-OFCondition DcmSCP::sendSTOREResponse(T_ASC_PresentationContextID presID,
+OFCondition DcmSCP::sendSTOREResponse(const T_ASC_PresentationContextID presID,
                                       T_DIMSE_C_StoreRQ &reqMessage,
                                       T_DIMSE_C_StoreRSP &rspMessage,
                                       DcmDataset *statusDetail)
@@ -838,7 +837,7 @@ OFCondition DcmSCP::sendSTOREResponse(T_ASC_PresentationContextID presID,
 // ----------------------------------------------------------------------------
 
 OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage,
-                                             T_ASC_PresentationContextID presID,
+                                             const T_ASC_PresentationContextID presID,
                                              DcmDataset *&reqDataset,
                                              Uint16 &eventTypeID)
 {
@@ -929,9 +928,10 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ &reqMessage
 }
 
 // ----------------------------------------------------------------------------
+
 // Handle N-ACTION request and send N-ACTION response
 OFCondition DcmSCP::handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
-                                        T_ASC_PresentationContextID presID,
+                                        const T_ASC_PresentationContextID presID,
                                         DcmDataset *&reqDataset,
                                         Uint16 &actionTypeID)
 {
@@ -991,10 +991,11 @@ OFCondition DcmSCP::handleACTIONRequest(T_DIMSE_N_ActionRQ &reqMessage,
 }
 
 // ----------------------------------------------------------------------------
+
 // Sends N-EVENT-REPORT request on the current association and receives a response.
 OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID presID,
                                            const OFString &sopInstanceUID,
-                                           Uint16 messageID,
+                                           const Uint16 messageID,
                                            const Uint16 eventTypeID,
                                            DcmDataset *reqDataset,
                                            Uint16 &rspStatusCode)
@@ -1190,7 +1191,7 @@ OFCondition DcmSCP::receiveDIMSEDataset(T_ASC_PresentationContextID *presID,
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::addProcessToTable(int pid)
+void DcmSCP::addProcessToTable(const int pid)
 {
   DcmProcessSlotType *ps;
 
@@ -1210,7 +1211,7 @@ void DcmSCP::addProcessToTable(int pid)
 
 // ----------------------------------------------------------------------------
 
-void DcmSCP::removeProcessFromTable(int pid)
+void DcmSCP::removeProcessFromTable(const int pid)
 {
   DcmProcessSlotType *ps = NULL;
 
@@ -1819,6 +1820,9 @@ OFBool DcmSCP::stopAfterCurrentAssociation()
 /*
 ** CVS Log
 ** $Log: scp.cc,v $
+** Revision 1.28  2011-11-10 17:00:50  joergr
+** Fixed a couple of typos in comments and made some parameters "const".
+**
 ** Revision 1.27  2011-10-07 16:56:01  ogazzar
 ** Fixed source code bug in the sendActionResponse() function.
 **

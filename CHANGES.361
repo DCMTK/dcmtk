@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.10 (riesmeier)
+
+- Fixed a couple of typos in comments and made some parameters "const".
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
 **** Changes from 2011.11.09 (riesmeier)
 
 - Changed the way option --charset-assume works. Now, the DICOM defined term
