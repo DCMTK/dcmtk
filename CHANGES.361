@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.10 (riesmeier)
 
+- Fixed missing path separator issues in CMake configuration file.
+  Thanks to Michal Spacek <tupinek@gmail.com> for the original report.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
 - Fixed a couple of typos in comments and made some parameters "const".
   Affects: dcmnet/include/dcmtk/dcmnet/scp.h
            dcmnet/libsrc/scp.cc
