@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.11 (riesmeier)
 
+- Added support for retrieving Rescale Slope/Intercept from the Shared
+  Functional Groups Sequence (as used in many Enhanced Image IODs).
+  Affects: dcmimgle/libsrc/dimomod.cc
+
 - Changed optional DcmObject* parameter into DcmItem* and added this optional
   parameter to some further getValue() methods.
   Affects: dcmimgle/include/dcmtk/dcmimgle/didocu.h

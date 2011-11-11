@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:18 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2011-11-11 11:37:55 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
                 (strcmp(sopClassUID, UID_XRayRadiofluoroscopicImageStorage) != 0) &&
                 (strcmp(sopClassUID, UID_RETIRED_XRayAngiographicBiPlaneImageStorage) != 0)))
             {
-                EL_BitsPerTableEntry descMode = ELM_UseValue;
+                EL_BitsPerTableEntry descMode = ELM_UseValue;          // first search on main level
                 if (docu->getFlags() & CIF_IgnoreModalityLutBitDepth)
                     descMode = ELM_IgnoreValue;
                 else if (docu->getFlags() & CIF_CheckLutBitDepth)
@@ -74,8 +74,31 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
                 TableData = new DiLookupTable(docu, DCM_ModalityLUTSequence, DCM_LUTDescriptor, DCM_LUTData,
                     DCM_LUTExplanation, descMode);
                 checkTable();
+                if (LookupTable)
+                    DCMIMGLE_DEBUG("found modality LUT on main dataset level");
                 Rescaling = (docu->getValue(DCM_RescaleIntercept, RescaleIntercept) > 0);
                 Rescaling &= (docu->getValue(DCM_RescaleSlope, RescaleSlope) > 0);
+                if (Rescaling)
+                    DCMIMGLE_DEBUG("found 'RescaleSlope/Intercept' on main dataset level");
+                else if (!LookupTable)                                 // then check for functional groups sequence
+                {
+                    DcmSequenceOfItems *seq = NULL;
+                    if (docu->getSequence(DCM_SharedFunctionalGroupsSequence, seq))
+                    {
+                        DcmItem *item = seq->getItem(0);
+                        if ((item != NULL) && docu->getSequence(DCM_PixelValueTransformationSequence, seq, item))
+                        {
+                            item = seq->getItem(0);
+                            if (item != NULL)
+                            {
+                                Rescaling = (docu->getValue(DCM_RescaleIntercept, RescaleIntercept, 0, item) > 0);
+                                Rescaling &= (docu->getValue(DCM_RescaleSlope, RescaleSlope, 0, item) > 0);
+                                if (Rescaling)
+                                    DCMIMGLE_DEBUG("found 'RescaleSlope/Intercept' in 'SharedFunctionalGroupsSequence'");
+                            }
+                        }
+                    }
+                }
                 checkRescaling(pixel);
             } else {
                 DCMIMGLE_INFO("processing XA or XRF image ... ignoring possible modality transform");
@@ -266,6 +289,10 @@ void DiMonoModality::determineRepresentation(const DiDocument *docu)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
+ * Revision 1.31  2011-11-11 11:37:55  joergr
+ * Added support for retrieving Rescale Slope/Intercept from the Shared
+ * Functional Groups Sequence (as used in many Enhanced Image IODs).
+ *
  * Revision 1.30  2010-10-14 13:14:18  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
