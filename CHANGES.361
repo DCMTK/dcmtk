@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.11 (riesmeier)
 
+- Updated information on latest CMake version that has been tested to "2.8.6".
+  Affects: CMakeLists.txt
+
 - Added support for retrieving Rescale Slope/Intercept from the Shared
   Functional Groups Sequence (as used in many Enhanced Image IODs).
   Affects: dcmimgle/libsrc/dimomod.cc
