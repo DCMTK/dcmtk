@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:26 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2011-11-11 11:05:51 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@ class DcmObject;
 class DcmUnsignedShort;
 class DcmLongString;
 class DiDocument;
+class DcmItem;
 
 
 /*---------------------*
@@ -198,7 +199,7 @@ class DiLookupTable
     /** initialize lookup table
      *
      ** @param  docu         pointer to dataset (encapsulated)
-     *  @param  obj          pointer to item in dataset where to start (maybe NULL)
+     *  @param  item         pointer to item in dataset where to start (maybe NULL)
      *  @param  descriptor   tag key containing the LUT descriptor
      *  @param  data         tag key containing the LUT data
      *  @param  explanation  tag key containing the LUT explanation
@@ -206,7 +207,7 @@ class DiLookupTable
      *  @param  status       pointer to image status variable (optional)
      */
     void Init(const DiDocument *docu,
-              DcmObject *obj,
+              DcmItem *item,
               const DcmTagKey &descriptor,
               const DcmTagKey &data,
               const DcmTagKey &explanation,
@@ -261,6 +262,10 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
+ * Revision 1.27  2011-11-11 11:05:51  joergr
+ * Changed optional DcmObject* parameter into DcmItem* and added this optional
+ * parameter to some further getValue() methods.
+ *
  * Revision 1.26  2010-10-14 13:16:26  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

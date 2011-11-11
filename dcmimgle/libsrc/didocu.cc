@@ -18,8 +18,8 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-27 10:01:30 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2011-11-11 11:05:53 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -250,7 +250,7 @@ unsigned long DiDocument::getVM(const DcmTagKey &tag) const
 unsigned long DiDocument::getValue(const DcmTagKey &tag,
                                    Uint16 &returnVal,
                                    const unsigned long pos,
-                                   DcmObject *item,
+                                   DcmItem *item,
                                    const OFBool allowSigned) const
 {
     return getElemValue(search(tag, item), returnVal, pos, allowSigned);
@@ -259,9 +259,10 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 
 unsigned long DiDocument::getValue(const DcmTagKey &tag,
                                    Sint16 &returnVal,
-                                   const unsigned long pos) const
+                                   const unsigned long pos,
+                                   DcmItem *item) const
 {
-    DcmElement *elem = search(tag);
+    DcmElement *elem = search(tag, item);
     if (elem != NULL)
     {
         if (elem->getSint16(returnVal, pos).good())
@@ -273,9 +274,10 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 
 unsigned long DiDocument::getValue(const DcmTagKey &tag,
                                    Uint32 &returnVal,
-                                   const unsigned long pos) const
+                                   const unsigned long pos,
+                                   DcmItem *item) const
 {
-    DcmElement *elem = search(tag);
+    DcmElement *elem = search(tag, item);
     if (elem != NULL)
     {
         if (elem->getUint32(returnVal, pos).good())
@@ -287,9 +289,10 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 
 unsigned long DiDocument::getValue(const DcmTagKey &tag,
                                    Sint32 &returnVal,
-                                   const unsigned long pos) const
+                                   const unsigned long pos,
+                                   DcmItem *item) const
 {
-    DcmElement *elem = search(tag);
+    DcmElement *elem = search(tag, item);
     if (elem != NULL)
     {
         if (elem->getSint32(returnVal, pos).good())
@@ -301,9 +304,10 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 
 unsigned long DiDocument::getValue(const DcmTagKey &tag,
                                    double &returnVal,
-                                   const unsigned long pos) const
+                                   const unsigned long pos,
+                                   DcmItem *item) const
 {
-    DcmElement *elem = search(tag);
+    DcmElement *elem = search(tag, item);
     if (elem != NULL)
     {
         if (elem->getFloat64(returnVal, pos).good())
@@ -315,7 +319,7 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 
 unsigned long DiDocument::getValue(const DcmTagKey &tag,
                                    const Uint16 *&returnVal,
-                                   DcmObject *item) const
+                                   DcmItem *item) const
 {
     DcmElement *elem = search(tag, item);
     if (elem != NULL)
@@ -336,7 +340,7 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 
 unsigned long DiDocument::getValue(const DcmTagKey &tag,
                                    const char *&returnVal,
-                                   DcmObject *item) const
+                                   DcmItem *item) const
 {
     return getElemValue(search(tag, item), returnVal);
 }
@@ -345,16 +349,17 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 unsigned long DiDocument::getValue(const DcmTagKey &tag,
                                    OFString &returnVal,
                                    const unsigned long pos,
-                                   DcmObject *item) const
+                                   DcmItem *item) const
 {
     return getElemValue(search(tag, item), returnVal, pos);
 }
 
 
 unsigned long DiDocument::getSequence(const DcmTagKey &tag,
-                                      DcmSequenceOfItems *&seq) const
+                                      DcmSequenceOfItems *&seq,
+                                      DcmItem *item) const
 {
-    DcmElement *elem = search(tag);
+    DcmElement *elem = search(tag, item);
     if ((elem != NULL) && (elem->ident() == EVR_SQ))
         return (seq = OFstatic_cast(DcmSequenceOfItems *, elem))->card();
     return 0;
@@ -446,6 +451,10 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
+ * Revision 1.30  2011-11-11 11:05:53  joergr
+ * Changed optional DcmObject* parameter into DcmItem* and added this optional
+ * parameter to some further getValue() methods.
+ *
  * Revision 1.29  2011-04-27 10:01:30  joergr
  * Added more checks on the type of DICOM object passed to the constructor.
  * Added more log messages in order to get details on invalid DICOM objects.

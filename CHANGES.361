@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.11 (riesmeier)
+
+- Changed optional DcmObject* parameter into DcmItem* and added this optional
+  parameter to some further getValue() methods.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/didocu.h
+           dcmimgle/include/dcmtk/dcmimgle/diluptab.h
+           dcmimgle/libsrc/didocu.cc
+           dcmimgle/libsrc/diluptab.cc
+
 **** Changes from 2011.11.10 (riesmeier)
 
 - Fixed missing path separator issues in CMake configuration file.

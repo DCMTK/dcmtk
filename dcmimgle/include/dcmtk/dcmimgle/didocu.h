@@ -18,8 +18,8 @@
  *  Purpose: DicomDocument (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-27 10:01:06 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2011-11-11 11:05:51 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,7 +226,7 @@ class DiDocument
      ** @param  tag          tag to search for
      *  @param  returnVal    reference to the storage area for the resulting value
      *  @param  pos          position in muti-valued elements (starting with 0)
-     *  @param  item         element in the dataset where the search should start (default: root)
+     *  @param  item         pointer to item in dataset where to start (default: main dataset)
      *  @param  allowSigned  also allow signed value (Sint16) if true
      *
      ** @return VM if successful, 0 otherwise
@@ -234,7 +234,7 @@ class DiDocument
     unsigned long getValue(const DcmTagKey &tag,
                            Uint16 &returnVal,
                            const unsigned long pos = 0,
-                           DcmObject *item = NULL,
+                           DcmItem *item = NULL,
                            const OFBool allowSigned = OFFalse) const;
 
     /** get value of given tag (Sint16)
@@ -242,96 +242,106 @@ class DiDocument
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
      *  @param  pos        position in muti-valued elements (starting with 0)
+     *  @param  item       pointer to item in dataset where to start (default: main dataset)
      *
      ** @return VM if successful, 0 otherwise
      */
     unsigned long getValue(const DcmTagKey &tag,
                            Sint16 &returnVal,
-                           const unsigned long pos = 0) const;
+                           const unsigned long pos = 0,
+                           DcmItem *item = NULL) const;
 
     /** get value of given tag (Uint32)
      *
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
      *  @param  pos        position in muti-valued elements (starting with 0)
+     *  @param  item       pointer to item in dataset where to start (default: main dataset)
      *
      ** @return VM if successful, 0 otherwise
      */
     unsigned long getValue(const DcmTagKey &tag,
                            Uint32 &returnVal,
-                           const unsigned long pos = 0) const;
+                           const unsigned long pos = 0,
+                           DcmItem *item = NULL) const;
 
     /** get value of given tag (Sint32)
      *
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
      *  @param  pos        position in muti-valued elements (starting with 0)
+     *  @param  item       pointer to item in dataset where to start (default: main dataset)
      *
      ** @return VM if successful, 0 otherwise
      */
     unsigned long getValue(const DcmTagKey &tag,
                            Sint32 &returnVal,
-                           const unsigned long pos = 0) const;
+                           const unsigned long pos = 0,
+                           DcmItem *item = NULL) const;
 
     /** get value of given tag (double)
      *
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
      *  @param  pos        position in muti-valued elements (starting with 0)
+     *  @param  item       pointer to item in dataset where to start (default: main dataset)
      *
      ** @return VM if successful, 0 otherwise
      */
     unsigned long getValue(const DcmTagKey &tag,
                            double &returnVal,
-                           const unsigned long pos = 0) const;
+                           const unsigned long pos = 0,
+                           DcmItem *item = NULL) const;
 
     /** get value of given tag (Uint16 array)
      *
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
-     *  @param  item       element in the dataset where the search should start (default: root)
+     *  @param  item       pointer to item in dataset where to start (default: main dataset)
      *
      ** @return VM / number of values if successful, 0 otherwise
      */
     unsigned long getValue(const DcmTagKey &tag,
                            const Uint16 *&returnVal,
-                           DcmObject *item = NULL) const;
+                           DcmItem *item = NULL) const;
 
     /** get value of given tag (const char *)
      *
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
-     *  @param  item       element in the dataset where the search should start (default: root)
+     *  @param  item       pointer to item in dataset where to start (default: main dataset)
      *
      ** @return VM if successful, 0 otherwise
      */
     unsigned long getValue(const DcmTagKey &tag,
                            const char *&returnVal,
-                           DcmObject *item = NULL) const;
+                           DcmItem *item = NULL) const;
 
     /** get value of given tag (OFString)
      *
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
      *  @param  pos        position in muti-valued elements (starting with 0)
-     *  @param  item       element in the dataset where the search should start (default: root)
+     *  @param  item       pointer to item in dataset where to start (default: main dataset)
      *
      ** @return VM if successful, 0 otherwise
      */
     unsigned long getValue(const DcmTagKey &tag,
                            OFString &returnVal,
                            const unsigned long pos = 0,
-                           DcmObject *item = NULL) const;
+                           DcmItem *item = NULL) const;
 
     /** get sequence of given tag
      *
-     ** @param  tag  tag to search for
-     *  @param  seq  reference to the storage area for the resulting value
+     ** @param  tag   tag to search for
+     *  @param  seq   reference to the storage area for the resulting value
+     *  @param  item  pointer to item in dataset where to start (default: main dataset)
      *
      ** @return cardinality if successful, 0 otherwise
      */
     unsigned long getSequence(const DcmTagKey &tag,
-                              DcmSequenceOfItems *&seq) const;
+                              DcmSequenceOfItems *&seq,
+                              DcmItem *item = NULL) const;
 
   // --- static helper functions ---
 
@@ -425,6 +435,10 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
+ * Revision 1.24  2011-11-11 11:05:51  joergr
+ * Changed optional DcmObject* parameter into DcmItem* and added this optional
+ * parameter to some further getValue() methods.
+ *
  * Revision 1.23  2011-04-27 10:01:06  joergr
  * Added more checks on the type of DICOM object passed to the constructor.
  *

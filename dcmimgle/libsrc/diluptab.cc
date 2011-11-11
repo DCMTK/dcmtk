@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:18 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2011-11-11 11:05:53 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,7 +102,7 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
     if (DiDocument::getElemValue(descElem, us, 0, OFTrue /*allowSigned*/) >= 3)         // number of LUT entries
     {
         Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                                 // see DICOM supplement 5: "0" => 65536
-        DiDocument::getElemValue(descElem, FirstEntry, 1, OFTrue /*allowSigned*/);      // can be SS or US (will be type casted later)
+        DiDocument::getElemValue(descElem, FirstEntry, 1, OFTrue /*allowSigned*/);      // can be SS or US (will be typecasted later)
         if ((first >= 0) && (FirstEntry != OFstatic_cast(Uint16, first)))
         {
             DCMIMGLE_WARN("invalid value for 'FirstInputValueMapped' in lookup table ("
@@ -152,7 +152,7 @@ DiLookupTable::~DiLookupTable()
 
 
 void DiLookupTable::Init(const DiDocument *docu,
-                         DcmObject *obj,
+                         DcmItem *item,
                          const DcmTagKey &descriptor,
                          const DcmTagKey &data,
                          const DcmTagKey &explanation,
@@ -160,15 +160,15 @@ void DiLookupTable::Init(const DiDocument *docu,
                          EI_Status *status)
 {
     Uint16 us = 0;
-    if (docu->getValue(descriptor, us, 0, obj, OFTrue /*allowSigned*/) >= 3)    // number of LUT entries
+    if (docu->getValue(descriptor, us, 0, item, OFTrue /*allowSigned*/) >= 3)    // number of LUT entries
     {
-        Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                         // see DICOM supplement 5: "0" => 65536
-        docu->getValue(descriptor, FirstEntry, 1, obj, OFTrue /*allowSigned*/); // can be SS or US (will be type casted later)
-        docu->getValue(descriptor, us, 2, obj, OFTrue /*allowSigned*/);         // bits per entry (only informational)
-        unsigned long count = docu->getValue(data, Data, obj);
-        OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));     // store pointer to original data
+        Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                          // see DICOM supplement 5: "0" => 65536
+        docu->getValue(descriptor, FirstEntry, 1, item, OFTrue /*allowSigned*/); // can be SS or US (will be typecasted later)
+        docu->getValue(descriptor, us, 2, item, OFTrue /*allowSigned*/);         // bits per entry (only informational)
+        unsigned long count = docu->getValue(data, Data, item);
+        OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));      // store pointer to original data
         if (explanation != DCM_UndefinedTagKey)
-            docu->getValue(explanation, Explanation, 0 /*vm pos*/, obj);        // explanation (free form text)
+            docu->getValue(explanation, Explanation, 0 /*vm pos*/, item);        // explanation (free form text)
         checkTable(count, us, descripMode, status);
     } else {
         if (status != NULL)
@@ -556,6 +556,10 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
+ * Revision 1.41  2011-11-11 11:05:53  joergr
+ * Changed optional DcmObject* parameter into DcmItem* and added this optional
+ * parameter to some further getValue() methods.
+ *
  * Revision 1.40  2010-10-14 13:14:18  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
