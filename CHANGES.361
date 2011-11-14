@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.14 (riesmeier)
+
+- Fixed typo in comment. Also fixed wrong application name.
+  Thanks to Michal Spacek <tupinek@gmail.com> for the report and fix.
+  Affects: dcmqrdb/etc/dcmqrscp.cfg
+
 **** Changes from 2011.11.11 (riesmeier)
 
 - Updated information on latest CMake version that has been tested to "2.8.6".
