@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmCharString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:37 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2011-11-14 11:11:42 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,14 +112,19 @@ class DcmCharString
      */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 
-    /** check if this element contains non-ASCII characters
+    /** check if this element contains non-ASCII characters. Please note that this check
+     *  is pretty simple and only works for single-byte character sets that do include
+     *  the 7-bit ASCII codes, e.g. for the ISO 8859 family. In other words: All character
+     *  codes below 128 are considered to be ASCII codes and all others are considered to
+     *  be non-ASCII.
      *  @param checkAllStrings not used in this class
      *  @return true if element contains non-ASCII characters, false otherwise
      */
     virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
 
     /** check if this element is affected by SpecificCharacterSet
-     *  @return always returns true
+     *  @return always returns true since all derived VR classes are affected by the
+     *    SpecificCharacterSet (0008,0005) element
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
 
@@ -152,6 +157,10 @@ class DcmCharString
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.h,v $
+ * Revision 1.21  2011-11-14 11:11:42  joergr
+ * Slightly improved API documentation on containsExtendedCharacters() and
+ * isAffectedBySpecificCharacterSet().
+ *
  * Revision 1.20  2011-11-08 15:51:37  joergr
  * Added support for converting files, datasets and element values to any DICOM
  * character set that does not require code extension techniques (if compiled

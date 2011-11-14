@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:38 $
- *  CVS/RCS Revision: $Revision: 1.89 $
+ *  Update Date:      $Date: 2011-11-14 11:11:42 $
+ *  CVS/RCS Revision: $Revision: 1.90 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,7 +246,11 @@ class DcmItem
      */
     virtual OFBool containsUnknownVR() const;
 
-    /** check if this object contains non-ASCII characters at any nesting level
+    /** check if this object contains non-ASCII characters at any nesting level. Please note
+     *  that this check is pretty simple and only works for single-byte character sets that
+     *  do include the 7-bit ASCII codes, e.g. for the ISO 8859 family. In other words: All
+     *  character codes below 128 are considered to be ASCII codes and all others are
+     *  considered to be non-ASCII.
      *  @param checkAllStrings if true, also check elements with string values not affected
      *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UT
      *  @return true if object contains non-ASCII characters, false otherwise
@@ -1317,6 +1321,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.90  2011-11-14 11:11:42  joergr
+** Slightly improved API documentation on containsExtendedCharacters() and
+** isAffectedBySpecificCharacterSet().
+**
 ** Revision 1.89  2011-11-08 15:51:38  joergr
 ** Added support for converting files, datasets and element values to any DICOM
 ** character set that does not require code extension techniques (if compiled

@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-02 11:21:58 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2011-11-14 11:11:42 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -229,7 +229,11 @@ class DcmByteString: public DcmElement
      */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 
-    /** check if this element contains non-ASCII characters
+    /** check if this element contains non-ASCII characters. Please note that this check
+     *  is pretty simple and only works for single-byte character sets that do include
+     *  the 7-bit ASCII codes, e.g. for the ISO 8859 family. In other words: All character
+     *  codes below 128 are considered to be ASCII codes and all others are considered to
+     *  be non-ASCII.
      *  @param checkAllStrings if true, also check elements with string values not affected
      *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UT
      *  @return true if element contains non-ASCII characters, false otherwise
@@ -237,7 +241,8 @@ class DcmByteString: public DcmElement
     virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
 
     /** check if this element is affected by SpecificCharacterSet
-     *  @return always returns false
+     *  @return always returns false since none of the derived VR classes is affected by
+     *    the SpecificCharacterSet (0008,0005) element
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
 
@@ -397,6 +402,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
+** Revision 1.51  2011-11-14 11:11:42  joergr
+** Slightly improved API documentation on containsExtendedCharacters() and
+** isAffectedBySpecificCharacterSet().
+**
 ** Revision 1.50  2011-11-02 11:21:58  joergr
 ** Fixed issue with UI values not being properly normalized in getOFString().
 **

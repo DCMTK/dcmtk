@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.14 (riesmeier)
 
+- Slightly improved API documentation on containsExtendedCharacters() and
+  isAffectedBySpecificCharacterSet().
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcchrstr.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+
 - Fixed typo in comment. Also fixed wrong application name.
   Thanks to Michal Spacek <tupinek@gmail.com> for the report and fix.
   Affects: dcmqrdb/etc/dcmqrscp.cfg
