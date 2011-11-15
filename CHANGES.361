@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.15 (riesmeier)
 
+- Added check that specified input directory really exists. Also made sure that
+  directories are ignored as parameters if option --recurse is not set.
+  Affects: dcmdata/apps/dcmgpdir.cc
+
 - Moved command line option --output-file to the "output options" section.
   Affects: dcmdata/apps/dcmgpdir.cc
            dcmdata/docs/dcmgpdir.man

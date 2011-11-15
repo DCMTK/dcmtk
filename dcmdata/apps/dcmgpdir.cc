@@ -50,8 +50,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-15 17:09:05 $
- *  CVS/RCS Revision: $Revision: 1.99 $
+ *  Update Date:      $Date: 2011-11-15 17:37:14 $
+ *  CVS/RCS Revision: $Revision: 1.100 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -497,6 +497,16 @@ int main(int argc, char *argv[])
         return 1;  /* DcmDicomDir class dumps core when no data dictionary present */
     }
 
+    /* make sure input directory exists (if specified) */
+    if ((opt_directory != NULL) && (strlen(opt_directory) > 0))
+    {
+        if (!OFStandard::dirExists(opt_directory))
+        {
+            OFLOG_FATAL(dcmgpdirLogger, "specified input directory does not exist");
+            return 1;
+        }
+    }
+
     /* create list of input files */
     OFList<OFString> fileNames;
     OFString pathname;
@@ -521,9 +531,13 @@ int main(int argc, char *argv[])
             /* add input directory */
             OFStandard::combineDirAndFilename(pathname, opt_directory, param, OFTrue /*allowEmptyDirName*/);
             /* search directory recursively (if required) */
-            if (opt_recurse && OFStandard::dirExists(pathname))
-                OFStandard::searchDirectoryRecursively(param, fileNames, opt_pattern, opt_directory);
-            else
+            if (OFStandard::dirExists(pathname))
+            {
+                if (opt_recurse)
+                    OFStandard::searchDirectoryRecursively(param, fileNames, opt_pattern, opt_directory);
+                else
+                    OFLOG_WARN(dcmgpdirLogger, "ignoring directory because option --recurse is not set: " << param);
+            } else
                 fileNames.push_back(param);
         }
     }
@@ -626,6 +640,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
+ * Revision 1.100  2011-11-15 17:37:14  joergr
+ * Added check that specified input directory really exists. Also made sure that
+ * directories are ignored as parameters if option --recurse is not set.
+ *
  * Revision 1.99  2011-11-15 17:09:05  joergr
  * Moved command line option --output-file to the "output options" section.
  *
