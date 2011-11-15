@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.15 (riesmeier)
+
+- Added regression tests for class DcmUniqueIdentifier.
+  Added:   dcmdata/tests/tvrui.cc
+  Affects: dcmdata/tests/CMakeLists.txt
+           dcmdata/tests/Makefile.in
+           dcmdata/tests/tests.cc
+
 **** Changes from 2011.11.14 (riesmeier)
 
 - Slightly improved API documentation on containsExtendedCharacters() and

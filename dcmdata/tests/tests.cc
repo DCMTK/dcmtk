@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:39 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2011-11-15 08:04:58 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,8 @@ OFTEST_REGISTER(dcmdata_decimalString_1);
 OFTEST_REGISTER(dcmdata_decimalString_2);
 OFTEST_REGISTER(dcmdata_decimalString_3);
 OFTEST_REGISTER(dcmdata_decimalString_4);
+OFTEST_REGISTER(dcmdata_uniqueIdentifier_1);
+OFTEST_REGISTER(dcmdata_uniqueIdentifier_2);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AE);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AS);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AT);
@@ -97,6 +99,9 @@ OFTEST_MAIN("dcmdata")
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.13  2011-11-15 08:04:58  joergr
+** Added regression tests for class DcmUniqueIdentifier.
+**
 ** Revision 1.12  2011-11-08 15:51:39  joergr
 ** Added support for converting files, datasets and element values to any DICOM
 ** character set that does not require code extension techniques (if compiled
