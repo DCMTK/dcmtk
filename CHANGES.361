@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.15 (riesmeier)
 
+- Moved command line option --output-file to the "output options" section.
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/docs/dcmgpdir.man
+           dcmjpeg/docs/dcmmkdir.man
+
 - Added support for the following standard headers: locale, map, memory, vector
   Affects: ofstd/include/dcmtk/ofstd/ofstdinc.h
            ofstd/libsrc/ofconapp.cc

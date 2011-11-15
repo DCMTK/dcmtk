@@ -97,10 +97,6 @@ dcmfile-in  referenced DICOM file (or directory to be scanned)
 \verbatim
 DICOMDIR identifiers:
 
-  +D    --output-file  [f]ilename: string
-          generate specific DICOMDIR file
-          (default: DICOMDIR in current directory)
-
   +F    --fileset-id  [i]d: string (default: DCMTK_MEDIA_DEMO)
           use specific file set ID
 
@@ -202,6 +198,12 @@ icon images:
 
 \subsection output_options output options
 \verbatim
+DICOMDIR file:
+
+  +D    --output-file  [f]ilename: string
+          generate specific DICOMDIR file
+          (default: DICOMDIR in current directory)
+
 profiles:
 
   -Pgp  --general-purpose

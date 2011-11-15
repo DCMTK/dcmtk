@@ -67,10 +67,6 @@ dcmfile-in  referenced DICOM file (or directory to be scanned)
 \verbatim
 DICOMDIR identifiers:
 
-  +D    --output-file  [f]ilename: string
-          generate specific DICOMDIR file
-          (default: DICOMDIR in current directory)
-
   +F    --fileset-id  [i]d: string (default: DCMTK_MEDIA_DEMO)
           use specific file set ID
 
@@ -146,6 +142,12 @@ other checks:
 
 \subsection output_options output options
 \verbatim
+DICOMDIR file:
+
+  +D    --output-file  [f]ilename: string
+          generate specific DICOMDIR file
+          (default: DICOMDIR in current directory)
+
 writing:
 
   -A    --replace
@@ -288,6 +290,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

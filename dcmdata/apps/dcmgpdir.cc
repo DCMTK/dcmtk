@@ -50,8 +50,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-02 08:40:49 $
- *  CVS/RCS Revision: $Revision: 1.98 $
+ *  Update Date:      $Date: 2011-11-15 17:09:05 $
+ *  CVS/RCS Revision: $Revision: 1.99 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,8 +148,6 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("DICOMDIR identifiers:");
-        cmd.addOption("--output-file",           "+D",  1, "[f]ilename: string",
-                                                           "generate specific DICOMDIR file\n(default: " DEFAULT_DICOMDIR_NAME " in current directory)");
         cmd.addOption("--fileset-id",            "+F",  1, "[i]d: string (default: " DEFAULT_FILESETID ")",
                                                            "use specific file set ID");
         cmd.addOption("--descriptor",            "+R",  1, "[f]ilename: string",
@@ -192,6 +190,9 @@ int main(int argc, char *argv[])
                                                            "use specified PGM image if icon cannot be\ncreated automatically (default: black image)");
 #endif
     cmd.addGroup("output options:");
+      cmd.addSubGroup("DICOMDIR file:");
+        cmd.addOption("--output-file",           "+D",  1, "[f]ilename: string",
+                                                           "generate specific DICOMDIR file\n(default: " DEFAULT_DICOMDIR_NAME " in current directory)");
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
       cmd.addSubGroup("profiles:");
         cmd.addOption("--general-purpose",       "-Pgp",   "General Purpose Interchange on CD-R or\nDVD-RAM Media (STD-GEN-CD/DVD-RAM, default)");
@@ -271,8 +272,6 @@ int main(int argc, char *argv[])
         OFLog::configureFromCommandLine(cmd, app);
 
         /* input options */
-        if (cmd.findOption("--output-file"))
-            app.checkValue(cmd.getValue(opt_output));
         if (cmd.findOption("--fileset-id"))
             app.checkValue(cmd.getValue(opt_fileset));
         if (cmd.findOption("--descriptor"))
@@ -362,6 +361,9 @@ int main(int argc, char *argv[])
 #endif
 
         /* output options */
+        if (cmd.findOption("--output-file"))
+            app.checkValue(cmd.getValue(opt_output));
+
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
         cmd.beginOptionBlock();
         if (cmd.findOption("--general-purpose"))
@@ -624,6 +626,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
+ * Revision 1.99  2011-11-15 17:09:05  joergr
+ * Moved command line option --output-file to the "output options" section.
+ *
  * Revision 1.98  2011-11-02 08:40:49  joergr
  * Added note on "directory to be scanned" to the "dcmfile-in" parameter.
  *
