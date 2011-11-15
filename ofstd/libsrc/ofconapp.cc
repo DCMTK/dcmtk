@@ -18,8 +18,8 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-03 15:29:12 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2011-11-15 15:26:58 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,9 +35,8 @@
 #ifdef WITH_LIBICONV
 #include "dcmtk/ofstd/ofchrenc.h"     /* for OFCharacterEncoding */
 
-#ifdef HAVE_LOCALE_H
-#include <locale.h>                   /* for setlocale() */
-#endif
+#define INCLUDE_LOCALE
+#include "dcmtk/ofstd/ofstdinc.h"     /* for setlocale() */
 
 #endif // WITH_LIBICONV
 
@@ -318,6 +317,9 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
+ * Revision 1.33  2011-11-15 15:26:58  joergr
+ * Added support for the following standard headers: locale, map, memory, vector
+ *
  * Revision 1.32  2011-11-03 15:29:12  joergr
  * Output the current locale's character encoding together with the host type.
  * This info is shown when calling a command line tool with option --version.

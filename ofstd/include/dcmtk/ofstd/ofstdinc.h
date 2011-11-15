@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: encapsulation of old style vs. ISO C++ standard includes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-11-15 15:26:56 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -30,7 +30,7 @@
 
 #include "dcmtk/config/osconfig.h"
 
-/* DCMTK by default does not anymore pollute the default namespace by 
+/* DCMTK by default does not anymore pollute the default namespace by
  * importing namespace std. Earlier releases did this to simplify compatibility
  * with older compilers where STL classes were not consistently defined
  * in namespace std. We now have configure macros which should care for this.
@@ -76,7 +76,30 @@ using namespace std;
 #include "dcmtk/ofstd/oflist.h"
 #endif
 
-// we don't yet support <locale>, <map>, <memory>, <numeric>, <queue>, <set>
+// define INCLUDE_LOCALE to include <locale> or <locale.h> if available
+#ifdef INCLUDE_LOCALE
+#ifdef USE_STD_CXX_INCLUDES
+#include <locale>
+#elif defined(HAVE_LOCALE_H)
+#include <locale.h>
+#endif
+#endif
+
+// we don't yet support <numeric>, <queue>, <set>
+
+// define INCLUDE_MAP to include "ofmap.h"
+#ifdef INCLUDE_MAP
+#include "dcmtk/ofstd/ofmap.h"
+#endif
+
+// define INCLUDE_MEMORY to include <memory> or <memory.h> if available
+#ifdef INCLUDE_MEMORY
+#ifdef USE_STD_CXX_INCLUDES
+#include <memory>
+#elif defined(HAVE_MEMORY_H)
+#include <memory.h>
+#endif
+#endif
 
 // define INCLUDE_NEW to include <new> or <new.h> if available
 #ifdef INCLUDE_NEW
@@ -108,7 +131,12 @@ using namespace std;
 #include "dcmtk/ofstd/ofstring.h"
 #endif
 
-// we don't yet support <typeinfo>, <valarray>, <vector>
+// we don't yet support <typeinfo>, <valarray>
+
+// define INCLUDE_VECTOR to include "ofvector.h"
+#ifdef INCLUDE_VECTOR
+#include "dcmtk/ofstd/ofvector.h"
+#endif
 
 
 /* Header files as defined in ISO/IEC 14882:1998, Section 17.4.1.2, Table 12
@@ -292,7 +320,7 @@ BEGIN_EXTERN_C
 #include <string.h>
 END_EXTERN_C
 #endif
-// Some platforms define additional string functions like bzero or 
+// Some platforms define additional string functions like bzero or
 // strcasecmp in <strings.h>, so we always include this file if available.
 #ifdef HAVE_STRINGS_H
 BEGIN_EXTERN_C
@@ -354,6 +382,9 @@ END_EXTERN_C
 /*
  * CVS/RCS Log:
  * $Log: ofstdinc.h,v $
+ * Revision 1.16  2011-11-15 15:26:56  joergr
+ * Added support for the following standard headers: locale, map, memory, vector
+ *
  * Revision 1.15  2010-10-14 13:15:50  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

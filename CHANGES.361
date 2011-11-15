@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.15 (riesmeier)
 
+- Added support for the following standard headers: locale, map, memory, vector
+  Affects: ofstd/include/dcmtk/ofstd/ofstdinc.h
+           ofstd/libsrc/ofconapp.cc
+
 - Output information to debug logger when skipping application segments (APPn).
   Also added explicit type cast to integer variables when output to the logger.
   Affects: dcmdata/libi2d/i2djpgs.cc
