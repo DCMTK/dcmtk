@@ -17,9 +17,9 @@
  *
  *  Purpose: class OFCondition and helper classes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-28 09:32:48 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-11-16 13:50:37 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,23 +32,25 @@
 
 /* ---------- global condition constants ---------- */
 
-const OFConditionConst ECC_Normal            (0, 0, OF_ok,      "Normal");
-const OFConditionConst ECC_IllegalParameter  (0, 1, OF_error,   "Illegal parameter");
-const OFConditionConst ECC_MemoryExhausted   (0, 2, OF_failure, "Virtual Memory exhausted");
-const OFConditionConst ECC_NoEncodingLibrary (0, 3, OF_error,   "No character encoding library available");
-const OFConditionConst ECC_NoEncodingSelected(0, 4, OF_error,   "No character encoding selected");
+const OFConditionConst ECC_Normal                     (0, 0, OF_ok,      "Normal");
+const OFConditionConst ECC_IllegalParameter           (0, 1, OF_error,   "Illegal parameter");
+const OFConditionConst ECC_MemoryExhausted            (0, 2, OF_failure, "Virtual Memory exhausted");
+const OFConditionConst ECC_NoEncodingLibrary          (0, 3, OF_error,   "No character encoding library available");
+const OFConditionConst ECC_NoEncodingSelected         (0, 4, OF_error,   "No character encoding selected");
 // codes 5..8 are used for dynamically created error messages (see below constants)
+const OFConditionConst ECC_CouldNotCreateTemporaryFile(0, 9, OF_error,   "Could not create temporary file");
 
 
 // NOTE:
 // error codes 1024..2047 are reserved for inter-process communication
 // errors defined elsewhere in module ofstd
 
-const OFCondition EC_Normal            (ECC_Normal);
-const OFCondition EC_IllegalParameter  (ECC_IllegalParameter);
-const OFCondition EC_MemoryExhausted   (ECC_MemoryExhausted);
-const OFCondition EC_NoEncodingLibrary (ECC_NoEncodingLibrary);
-const OFCondition EC_NoEncodingSelected(ECC_NoEncodingSelected);
+const OFCondition EC_Normal                     (ECC_Normal);
+const OFCondition EC_IllegalParameter           (ECC_IllegalParameter);
+const OFCondition EC_MemoryExhausted            (ECC_MemoryExhausted);
+const OFCondition EC_NoEncodingLibrary          (ECC_NoEncodingLibrary);
+const OFCondition EC_NoEncodingSelected         (ECC_NoEncodingSelected);
+const OFCondition EC_CouldNotCreateTemporaryFile(ECC_CouldNotCreateTemporaryFile);
 
 const unsigned short EC_CODE_CannotOpenEncoding     = 5;
 const unsigned short EC_CODE_CannotCloseEncoding    = 6;
@@ -116,6 +118,9 @@ OFBool OFConditionString::deletable() const
  *
  * CVS/RCS Log:
  * $Log: ofcond.cc,v $
+ * Revision 1.9  2011-11-16 13:50:37  uli
+ * Added a new class for managing temporary files.
+ *
  * Revision 1.8  2011-10-28 09:32:48  joergr
  * Restructured code of OFCharacterEncoding in order to allow particular classes
  * to access more low-level functions, e.g. for opening multiple conversion

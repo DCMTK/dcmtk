@@ -18,8 +18,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-10-27 13:31:43 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Update Date:      $Date: 2011-11-16 13:50:36 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,25 +36,6 @@
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
 
-#ifdef HAVE_IO_H
-BEGIN_EXTERN_C
-#include <io.h>          /* for mktemp() on Win32 */
-END_EXTERN_C
-#endif
-
-#if defined(HAVE_MKTEMP) && !defined(HAVE_PROTOTYPE_MKTEMP)
-extern "C" {
-char * mktemp(char *);
-}
-#endif
-
-// Solaris 2.5.1 has mkstemp() in libc.a but no prototype
-#if defined(HAVE_MKSTEMP) && !defined(HAVE_PROTOTYPE_MKSTEMP)
-extern "C" {
-int mkstemp(char *);
-}
-#endif
-
 #ifdef HAVE_UNIX_H
 #if defined(macintosh) && defined (HAVE_WINSOCK_H)
 /* unix.h defines timeval incompatible with winsock.h */
@@ -66,6 +47,7 @@ int mkstemp(char *);
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofdefine.h"
+#include "dcmtk/ofstd/oftempf.h"
 #include "dcmtk/dcmdata/dcdicdir.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcdirrec.h"
@@ -1023,35 +1005,22 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     E_TransferSyntax outxfer = DICOMDIR_DEFAULT_TRANSFERSYNTAX;
 
     /* find the path of the dicomdir to be created */
-    OFString tempfilename;
-    OFStandard::getDirNameFromPath(tempfilename, dicomDirFileName, OFFalse);
+    OFString tempfiledir;
+    OFStandard::getDirNameFromPath(tempfiledir, dicomDirFileName, OFFalse);
 
-    // create template for temporary file
-    tempfilename += TEMPNAME_TEMPLATE;
+    OFString tempfile;
+    int tempfilefd;
+    OFCondition status;
 
-    // copy template into non-const buffer
-    char *tempfile = new char[tempfilename.size() + 1];
-    OFStandard::strlcpy(tempfile, tempfilename.c_str(), tempfilename.size() + 1);
-
-#ifdef HAVE_MKSTEMP
-    int tempfilefd = mkstemp(tempfile);
-    if (tempfilefd < 0)
-    {
-        char buf[256];
-        DCMDATA_ERROR("DcmDicomDir: Cannot create DICOMDIR temporary file: " << tempfile);
-        delete[] tempfile;
-        const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
-        if (text == NULL) text = "(unknown error code)";
-        errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
-        return errorFlag;
-    }
+    status = OFTempFile::createFile(tempfile, &tempfilefd, O_RDWR, tempfiledir, TEMPNAME_TEMPLATE_PREFIX, "");
+    if (status.bad())
+        return status;
 
     FILE *f = fdopen(tempfilefd, "wb");
     if (f == NULL)
     {
         char buf[256];
         DCMDATA_ERROR("DcmDicomDir: Cannot create DICOMDIR temporary file: " << tempfile);
-        delete[] tempfile;
         const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
         if (text == NULL) text = "(unknown error code)";
         errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
@@ -1059,20 +1028,10 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     }
 
     DcmOutputFileStream *outStream = new DcmOutputFileStream(f);
-#else /* ! HAVE_MKSTEMP */
-
-#ifdef HAVE_MKTEMP
-    mktemp( tempfile );
-#endif
-    DcmOutputFileStream *outStream = new DcmOutputFileStream(tempfile);
-
-#endif /* HAVE_MKSTEMP */
-
     if (! outStream->good())
     {
         DCMDATA_ERROR("DcmDicomDir: Cannot create DICOMDIR temporary file: " << tempfile);
         errorFlag = outStream->status();
-        delete[] tempfile;
         delete outStream;
         return errorFlag;
     }
@@ -1147,7 +1106,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 #endif
     }
 
-    if (errorFlag == EC_Normal && rename( tempfile, dicomDirFileName ) != 0)
+    if (errorFlag == EC_Normal && rename( tempfile.c_str(), dicomDirFileName ) != 0)
     {
       char buf[256];
       const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
@@ -1155,7 +1114,6 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
       errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
     }
 
-    delete[] tempfile;
     modified = OFFalse;
 
     if (errorFlag == EC_Normal && backupname != NULL) {
@@ -1352,6 +1310,9 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.70  2011-11-16 13:50:36  uli
+** Added a new class for managing temporary files.
+**
 ** Revision 1.69  2011-10-27 13:31:43  uli
 ** Use existing code for extracting directory name from a path.
 **

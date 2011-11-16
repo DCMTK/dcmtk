@@ -17,9 +17,9 @@
  *
  *  Purpose: class OFCondition and helper classes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-28 09:32:47 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-11-16 13:50:36 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -462,6 +462,9 @@ extern const OFCondition EC_NoEncodingLibrary;
 /// condition constant: error, no character encoding selected
 extern const OFCondition EC_NoEncodingSelected;
 
+/// condition constant: error, could not create temporary file
+extern const OFCondition EC_CouldNotCreateTemporaryFile;
+
 /// status code constant: error, cannot open character encoding
 extern const unsigned short EC_CODE_CannotOpenEncoding;
 /// status code constant: error, cannot close character encoding
@@ -483,6 +486,9 @@ extern const unsigned short EC_CODE_CannotControlConverter;
  *
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
+ * Revision 1.14  2011-11-16 13:50:36  uli
+ * Added a new class for managing temporary files.
+ *
  * Revision 1.13  2011-10-28 09:32:47  joergr
  * Restructured code of OFCharacterEncoding in order to allow particular classes
  * to access more low-level functions, e.g. for opening multiple conversion

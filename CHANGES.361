@@ -3,6 +3,21 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.16 (schlachter)
 
+- Added a new class for managing temporary files.
+  Added:   ofstd/include/dcmtk/ofstd/oftempf.h
+           ofstd/libsrc/oftempf.cc
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/include/dcmtk/dcmdata/dcdicdir.h
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/tests/Makefile.dep
+           dcmdata/tests/tparser.cc
+           ofstd/include/dcmtk/ofstd/ofcond.h
+           ofstd/libsrc/CMakeLists.txt
+           ofstd/libsrc/Makefile.dep
+           ofstd/libsrc/Makefile.in
+           ofstd/libsrc/ofcond.cc
+
 - Fixed and improved CMake's libiconv and libcharset detection.
   Added:   CMake/FindCharset.cmake
   Affects: CMake/3rdparty.cmake

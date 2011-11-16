@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmDicomDir
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-02 13:27:47 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2011-11-16 13:50:36 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,9 +35,9 @@
 #include "dcmtk/dcmdata/dcvrulup.h"
 
 
-#define DEFAULT_DICOMDIR_NAME  "DICOMDIR"
-#define TEMPNAME_TEMPLATE      "DDXXXXXX"
-#define DICOMDIR_BACKUP_SUFFIX ".$$$"
+#define DEFAULT_DICOMDIR_NAME    "DICOMDIR"
+#define TEMPNAME_TEMPLATE_PREFIX "DD"
+#define DICOMDIR_BACKUP_SUFFIX   ".$$$"
 #define DICOMDIR_DEFAULT_TRANSFERSYNTAX  EXS_LittleEndianExplicit
 
 /** helper structure for item offsets
@@ -229,6 +229,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
+** Revision 1.31  2011-11-16 13:50:36  uli
+** Added a new class for managing temporary files.
+**
 ** Revision 1.30  2011-08-02 13:27:47  uli
 ** Speed up the code for reading DICOMDIRs, too.
 **

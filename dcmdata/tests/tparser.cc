@@ -17,9 +17,9 @@
  *
  *  Purpose: test program for reading DICOM datasets
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-23 14:24:31 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-11-16 13:50:36 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,6 +31,7 @@
 
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/oftempf.h"
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/dcistrmb.h"
@@ -114,25 +115,25 @@ static void testOddLengthPartialValue(const Uint8* data, size_t length)
     OFCondition cond;
     DcmElement *elem;
     Uint8 buf[bytesToRead];
-    int randomInt = rand();
-    char temp[60]; // should be enough also for ints with 128 bit...
-    if (sprintf(temp, "dcmdata_tests%u.tmp", randomInt) == 0)
+    OFTempFile temp;
+
+    if (temp.getStatus().bad())
     {
-      OFCHECK_FAIL("Unable to create temporary filename");
-      return;
+        OFCHECK_FAIL("Could not create temporary file: " << temp.getStatus().text());
+        return;
     }
+
     // Deferred value loading only works with files
     OFFile f;
-    f.fopen(temp, "wb");
+    f.fopen(temp.getFilename(), "wb");
     f.fwrite(data, 1, length);
     f.fclose();
 
     // Everything larger than 1 byte won't be loaded now but only later
-    cond = dfile.loadFile(temp, TRANSFER_SYNTAX, EGL_noChange, 1, ERM_dataset);
+    cond = dfile.loadFile(temp.getFilename(), TRANSFER_SYNTAX, EGL_noChange, 1, ERM_dataset);
     if (cond.bad())
     {
         OFCHECK_FAIL(cond.text());
-        unlink(temp);
         return;
     }
 
@@ -140,7 +141,6 @@ static void testOddLengthPartialValue(const Uint8* data, size_t length)
     if (cond.bad())
     {
         OFCHECK_FAIL(cond.text());
-        unlink(temp);
         return;
     }
 
@@ -151,7 +151,6 @@ static void testOddLengthPartialValue(const Uint8* data, size_t length)
     if (cond.bad())
     {
         OFCHECK_FAIL(cond.text());
-        unlink(temp);
         return;
     }
 
@@ -159,7 +158,6 @@ static void testOddLengthPartialValue(const Uint8* data, size_t length)
     {
         OFCHECK_EQUAL(buf[i], VALUE);
     }
-    unlink(temp);
 }
 
 OFTEST(dcmdata_parser_oddLengthPartialValue_lastItem)
@@ -262,6 +260,9 @@ OFTEST(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict)
  *
  * CVS/RCS Log:
  * $Log: tparser.cc,v $
+ * Revision 1.8  2011-11-16 13:50:36  uli
+ * Added a new class for managing temporary files.
+ *
  * Revision 1.7  2011-08-23 14:24:31  joergr
  * Fixed another inconsistent test name.
  *
