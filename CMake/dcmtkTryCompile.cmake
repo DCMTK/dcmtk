@@ -5,6 +5,8 @@
 # MESSAGE - Description of the thing that we are checking for
 # SOURCE - Code to compile
 #
+# All extra arguments are passed to TRY_COMPILE().
+#
 
 MACRO(DCMTK_TRY_COMPILE VAR MESSAGE SOURCE)
     SET(DCMTK_TRY_COMPILE_FILE "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/src.cxx")
@@ -16,7 +18,8 @@ MACRO(DCMTK_TRY_COMPILE VAR MESSAGE SOURCE)
         TRY_COMPILE(${VAR}
                     ${CMAKE_BINARY_DIR}
                     ${DCMTK_TRY_COMPILE_FILE}
-                    OUTPUT_VARIABLE OUTPUT)
+                    OUTPUT_VARIABLE OUTPUT
+                    ${ARGN})
         IF(${VAR})
             MESSAGE(STATUS "Checking whether ${MESSAGE} -- yes")
             SET(${VAR} 1 CACHE INTERNAL "${MESSAGE}")
