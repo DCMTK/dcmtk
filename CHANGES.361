@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.16 (schlachter)
 
+- Corrected my broken Makefile.dep change.
+  Affects: ofstd/libsrc/Makefile.dep
+
 - Added a new class for managing temporary files.
   Added:   ofstd/include/dcmtk/ofstd/oftempf.h
            ofstd/libsrc/oftempf.cc
