@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.17 (riesmeier)
+
+- Made sure that the OFCondition member variable gets initialized in the
+  constructor. Thanks to Markus Mertens <markus.mertens@uni-muenster.de> for
+  the original issue report.
+  Affects: ofstd/libsrc/oftempf.cc
+
 **** Changes from 2011.11.16 (schlachter)
 
 - Corrected my broken Makefile.dep change.

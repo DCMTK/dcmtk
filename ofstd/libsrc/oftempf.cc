@@ -17,9 +17,9 @@
  *
  *  Purpose: Defines a class which manages a temporary file
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-11-16 13:50:37 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-11-17 09:34:58 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@
 #define MAX_ATTEMPTS 5
 
 OFTempFile::OFTempFile(unsigned int flags, const OFString& dir, const OFString& prefix, const OFString& postfix)
-: m_status()
+: m_status(EC_Normal /* no default constructor */)
 , m_fileName()
 , m_fileHandle(-1)
 {
@@ -137,6 +137,10 @@ void OFTempFile::getTempPath(OFString& sPath)
 /*
  * CVS/RCS Log:
  * $Log: oftempf.cc,v $
+ * Revision 1.2  2011-11-17 09:34:58  joergr
+ * Made sure that the OFCondition member variable gets initialized in the
+ * constructor.
+ *
  * Revision 1.1  2011-11-16 13:50:37  uli
  * Added a new class for managing temporary files.
  *
