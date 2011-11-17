@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.17 (riesmeier)
 
+- Define WIN32_LEAN_AND_MEAN in order to avoid unneeded header file inclusions
+  caused by "windows.h".
+  Affects: ofstd/libsrc/oftimer.cc
+           ofstd/libsrc/ofcmdln.cc
+
 - Made sure that the new OFTempFile class also compiles on Windows.
   Affects: ofstd/libsrc/oftempf.cc
 

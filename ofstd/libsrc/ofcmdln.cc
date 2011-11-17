@@ -18,8 +18,8 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-04-19 15:43:27 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2011-11-17 11:46:04 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "dcmtk/ofstd/ofcast.h"
 
 #ifdef HAVE_WINDOWS_H
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
 
@@ -1560,6 +1561,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
+ * Revision 1.52  2011-11-17 11:46:04  joergr
+ * Define WIN32_LEAN_AND_MEAN in order to avoid unneeded header file inclusions
+ * caused by "windows.h".
+ *
  * Revision 1.51  2011-04-19 15:43:27  joergr
  * Made sure that a negative number is not accepted when expecting an unsigned
  * integer (sscanf() resulted in the two's complement without this new check).
