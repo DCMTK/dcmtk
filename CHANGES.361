@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.17 (riesmeier)
 
+- Made sure that the new OFTempFile class also compiles on Windows.
+  Affects: ofstd/libsrc/oftempf.cc
+
 - Made sure that the OFCondition member variable gets initialized in the
   constructor. Thanks to Markus Mertens <markus.mertens@uni-muenster.de> for
   the original issue report.

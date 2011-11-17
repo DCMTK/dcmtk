@@ -18,8 +18,8 @@
  *  Purpose: Defines a class which manages a temporary file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 09:34:58 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2011-11-17 11:43:02 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -27,13 +27,26 @@
  */
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/oftempf.h"
 
+#include "dcmtk/ofstd/oftempf.h"
 #include "dcmtk/ofstd/offname.h"
 #include "dcmtk/ofstd/ofstd.h"
 
 #define INCLUDE_CERRNO
+#define INCLUDE_CTIME
 #include "dcmtk/ofstd/ofstdinc.h"
+
+BEGIN_EXTERN_C
+#ifdef HAVE_IO_H
+#include <io.h>          /* for open() and close() on Win32 */
+#endif
+END_EXTERN_C
+
+#ifdef HAVE_WINDOWS_H
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>     /* for GetTempPath() */
+#endif
+
 
 /* Maximum number of attempts to open a temporary file. Please not that
  * OFFilenameCreator already retries in a loop, so this can be quite low.
@@ -134,9 +147,13 @@ void OFTempFile::getTempPath(OFString& sPath)
 #endif
 }
 
+
 /*
  * CVS/RCS Log:
  * $Log: oftempf.cc,v $
+ * Revision 1.3  2011-11-17 11:43:02  joergr
+ * Made sure that the new OFTempFile class also compiles on Windows.
+ *
  * Revision 1.2  2011-11-17 09:34:58  joergr
  * Made sure that the OFCondition member variable gets initialized in the
  * constructor.
