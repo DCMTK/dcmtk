@@ -18,8 +18,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-09 14:11:05 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2011-11-17 18:03:06 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
         OFString csetString;
         if (dset->findAndGetOFStringArray(DCM_SpecificCharacterSet, csetString).good())
         {
-            if (csetString == "ISO_IR 6")   // should not be present in a dataset, but ...
+            if (csetString == "ISO_IR 6")   // should never be present in a dataset, but ...
                 encString = "UTF-8";
             else if (csetString == "ISO_IR 192")
                 encString = "UTF-8";
@@ -123,7 +123,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                     return EC_IllegalCall;
                 } else {
                     OFString sopClass;
-                    OFString csetString(defaultCharset);
+                    csetString = defaultCharset;
                     /* use the default character set specified by the user */
                     if (csetString == "ISO_IR 192")
                         encString = "UTF-8";
@@ -538,6 +538,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
+ * Revision 1.44  2011-11-17 18:03:06  joergr
+ * Fixed warning on declaration of local variable shadowing a previous local.
+ *
  * Revision 1.43  2011-11-09 14:11:05  joergr
  * Changed the way option --charset-assume works. Now, the DICOM defined term
  * for the character set has to be used (old values are still supported). This

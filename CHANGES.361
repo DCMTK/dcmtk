@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.17 (riesmeier)
 
+- Fixed warning on declaration of local variable shadowing a previous local.
+  Affects: dcmdata/apps/dcm2xml.cc
+
 - Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
   Thanks to Daniele Giunchi <d.giunchi@scsitaly.com> for the suggested patch.
   Affects: dcmimage/include/dcmtk/dcmimage/diargpxt.h
