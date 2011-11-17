@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.17 (riesmeier)
 
+- Slightly modified code in order to avoid the use of the OFCondition default
+  constructor.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcpath.cc
+
 - Define WIN32_LEAN_AND_MEAN in order to avoid unneeded header file inclusions
   caused by "windows.h".
   Affects: ofstd/libsrc/oftimer.cc

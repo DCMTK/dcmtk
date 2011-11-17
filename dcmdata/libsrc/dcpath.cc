@@ -19,8 +19,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-28 08:05:40 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2011-11-17 14:59:15 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -892,7 +892,6 @@ DcmTagKey DcmPathProcessor::calcPrivateReservationTag(const DcmTagKey &privateKe
 OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem* item /* in */,
                                                          DcmTag& tag /* inout */)
 {
-  OFCondition result;
   // if this is already a private reservation, there is nothing to do
   if (m_checkPrivateReservations && !tag.isPrivateReservation())
   {
@@ -911,8 +910,7 @@ OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem* item /* in */,
     {
       // set private creator for new element
       OFString privCreator;
-      result = item->findAndGetOFString(reservationKey, privCreator);
-      if (result.bad() || (privCreator.empty()))
+      if (item->findAndGetOFString(reservationKey, privCreator).bad() || (privCreator.empty()))
       {
         privCreator = "Invalid or empty private creator tag: "; privCreator += reservationKey.toString();
         return makeOFCondition(OFM_dcmdata, 25, OF_error, privCreator.c_str());
@@ -929,6 +927,10 @@ OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem* item /* in */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.17  2011-11-17 14:59:15  joergr
+** Slightly modified code in order to avoid the use of the OFCondition default
+** constructor.
+**
 ** Revision 1.16  2011-10-28 08:05:40  joergr
 ** Minor stylistic changes regarding parameter declaration and documentation.
 **

@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-11-16 13:50:36 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-11-17 14:59:15 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1010,9 +1010,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     OFString tempfile;
     int tempfilefd;
-    OFCondition status;
-
-    status = OFTempFile::createFile(tempfile, &tempfilefd, O_RDWR, tempfiledir, TEMPNAME_TEMPLATE_PREFIX, "");
+    OFCondition status = OFTempFile::createFile(tempfile, &tempfilefd, O_RDWR, tempfiledir, TEMPNAME_TEMPLATE_PREFIX, "");
     if (status.bad())
         return status;
 
@@ -1310,6 +1308,10 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.71  2011-11-17 14:59:15  joergr
+** Slightly modified code in order to avoid the use of the OFCondition default
+** constructor.
+**
 ** Revision 1.70  2011-11-16 13:50:36  uli
 ** Added a new class for managing temporary files.
 **
