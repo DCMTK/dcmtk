@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:29 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2011-11-17 16:13:14 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ class DiHSVPixelTemplate
                  const unsigned long planeSize,
                  const int bits)
     {
-        if (Init(pixel))
+        if (this->Init(pixel))
         {
             register T2 *r = this->Data[0];
             register T2 *g = this->Data[1];
@@ -221,6 +221,9 @@ class DiHSVPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dihsvpxt.h,v $
+ * Revision 1.26  2011-11-17 16:13:14  joergr
+ * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
+ *
  * Revision 1.25  2010-10-14 13:16:29  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

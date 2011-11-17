@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomRGBPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:30 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2011-11-17 16:13:14 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ class DiRGBPixelTemplate
                  const unsigned long planeSize,
                  const int bits)
     {
-        if (Init(pixel))
+        if (this->Init(pixel))
         {
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
@@ -129,9 +129,9 @@ class DiRGBPixelTemplate
             {
                 register int j;
                 register unsigned long i;
-                for (i = 0; i < count; ++i)                         /* for all pixel ... */
+                for (i = 0; i < count; ++i)                             /* for all pixel ... */
                     for (j = 0; j < 3; ++j)
-                        this->Data[j][i] = removeSign(*(p++), offset);    /* ... copy planes */
+                        this->Data[j][i] = removeSign(*(p++), offset);  /* ... copy planes */
             }
         }
     }
@@ -145,6 +145,9 @@ class DiRGBPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dirgbpxt.h,v $
+ * Revision 1.19  2011-11-17 16:13:14  joergr
+ * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
+ *
  * Revision 1.18  2010-10-14 13:16:30  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomYBRPart422PixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:30 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2011-11-17 16:13:14 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +91,7 @@ class DiYBRPart422PixelTemplate
     void convert(const T1 *pixel,
                  const int bits)
     {
-        if (Init(pixel))
+        if (this->Init(pixel))
         {
             register T2 *r = this->Data[0];
             register T2 *g = this->Data[1];
@@ -147,6 +147,9 @@ class DiYBRPart422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyp2pxt.h,v $
+ * Revision 1.24  2011-11-17 16:13:14  joergr
+ * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
+ *
  * Revision 1.23  2010-10-14 13:16:30  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

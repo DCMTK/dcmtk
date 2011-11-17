@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomYBR422PixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:30 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2011-11-17 16:13:14 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ class DiYBR422PixelTemplate
                  const int bits,
                  const OFBool rgb)
     {
-        if (Init(pixel))
+        if (this->Init(pixel))
         {
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             register unsigned long i;
@@ -167,6 +167,9 @@ class DiYBR422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyf2pxt.h,v $
+ * Revision 1.26  2011-11-17 16:13:14  joergr
+ * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
+ *
  * Revision 1.25  2010-10-14 13:16:30  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

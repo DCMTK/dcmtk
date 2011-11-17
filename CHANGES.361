@@ -3,6 +3,30 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.17 (riesmeier)
 
+- Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
+  Thanks to Daniele Giunchi <d.giunchi@scsitaly.com> for the suggested patch.
+  Affects: dcmimage/include/dcmtk/dcmimage/diargpxt.h
+           dcmimage/include/dcmtk/dcmimage/dicmypxt.h
+           dcmimage/include/dcmtk/dcmimage/dicocpt.h
+           dcmimage/include/dcmtk/dcmimage/dicoflt.h
+           dcmimage/include/dcmtk/dcmimage/dicorot.h
+           dcmimage/include/dcmtk/dcmimage/dicosct.h
+           dcmimage/include/dcmtk/dcmimage/dihsvpxt.h
+           dcmimage/include/dcmtk/dcmimage/dipalpxt.h
+           dcmimage/include/dcmtk/dcmimage/dirgbpxt.h
+           dcmimage/include/dcmtk/dcmimage/diybrpxt.h
+           dcmimage/include/dcmtk/dcmimage/diyf2pxt.h
+           dcmimage/include/dcmtk/dcmimage/diyp2pxt.h
+           dcmimgle/include/dcmtk/dcmimgle/diflipt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoflt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoipxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimorot.h
+           dcmimgle/include/dcmtk/dcmimgle/dimosct.h
+           dcmimgle/include/dcmtk/dcmimgle/dirotat.h
+           dcmimgle/include/dcmtk/dcmimgle/discalet.h
+           ofstd/include/dcmtk/ofstd/ofoset.h
+           ofstd/libsrc/ofchrenc.cc
+
 - Slightly modified code in order to avoid the use of the OFCondition default
   constructor.
   Affects: dcmdata/libsrc/dcdicdir.cc

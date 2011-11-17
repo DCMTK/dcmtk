@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:27 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2011-11-17 16:13:16 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,12 +206,12 @@ class DiScaleTemplate
                 (Left >= OFstatic_cast(signed long, Columns)) || (Top >= OFstatic_cast(signed long, Rows)))
             {                                                                         // no image to be displayed
                 DCMIMGLE_DEBUG("clipping area is fully outside the image boundaries");
-                fillPixel(dest, value);                                               // ... fill bitmap
+                this->fillPixel(dest, value);                                         // ... fill bitmap
             }
             else if ((this->Src_X == this->Dest_X) && (this->Src_Y == this->Dest_Y))  // no scaling
             {
                 if ((Left == 0) && (Top == 0) && (Columns == this->Src_X) && (Rows == this->Src_Y))
-                    copyPixel(src, dest);                                             // copying
+                    this->copyPixel(src, dest);                                       // copying
                 else if ((Left >= 0) && (OFstatic_cast(Uint16, Left + this->Src_X) <= Columns) &&
                          (Top >= 0) && (OFstatic_cast(Uint16, Top + this->Src_Y) <= Rows))
                     clipPixel(src, dest);                                             // clipping
@@ -567,7 +567,7 @@ class DiScaleTemplate
         if ((xtemp == NULL) || (xvalue == NULL))
         {
             DCMIMGLE_ERROR("can't allocate temporary buffers for interpolation scaling");
-            clearPixel(dest);
+            this->clearPixel(dest);
         } else {
             for (int j = 0; j < this->Planes; ++j)
             {
@@ -905,7 +905,7 @@ class DiScaleTemplate
         if (pTemp == NULL)
         {
             DCMIMGLE_ERROR("can't allocate temporary buffer for interpolation scaling");
-            clearPixel(dest);
+            this->clearPixel(dest);
         } else {
 
             /*
@@ -1029,7 +1029,7 @@ class DiScaleTemplate
         if (pTemp == NULL)
         {
             DCMIMGLE_ERROR("can't allocate temporary buffer for interpolation scaling");
-            clearPixel(dest);
+            this->clearPixel(dest);
         } else {
 
             /*
@@ -1190,6 +1190,9 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
+ * Revision 1.36  2011-11-17 16:13:16  joergr
+ * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
+ *
  * Revision 1.35  2010-10-14 13:16:27  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomARGBPixelTemplate (Header) - UNTESTED !!!
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:29 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2011-11-17 16:13:14 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +91,7 @@ class DiARGBPixelTemplate
                  const unsigned long planeSize,
                  const int bits)
     {                                             // not very much optimized, but no one really uses ARGB !!
-        if (Init(pixel))
+        if (this->Init(pixel))
         {
             register T2 value;
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
@@ -103,9 +103,9 @@ class DiARGBPixelTemplate
 /*
                 register const T1 *a = pixel;                                   // points to alpha plane
                 const T1 *rgb[3];
-                rgb[0] = a + this->InputCount;                                        // points to red plane
-                rgb[1] = rgb[0] + this->InputCount;                                   // points to green plane
-                rgb[2] = rgb[1] + this->InputCount;                                   // points to blue plane
+                rgb[0] = a + this->InputCount;                                  // points to red plane
+                rgb[1] = rgb[0] + this->InputCount;                             // points to green plane
+                rgb[2] = rgb[1] + this->InputCount;                             // points to blue plane
                 for (i = 0; i < count; ++i)
                 {
                     value = OFstatic_cast(T2, *(a++));                          // get alpha value
@@ -141,10 +141,10 @@ class DiARGBPixelTemplate
                     /* convert a single frame */
                     for (l = planeSize; (l != 0) && (i < count); --l, ++i)
                     {
-                        value = OFstatic_cast(T2, *(a++));                          // get alpha value
+                        value = OFstatic_cast(T2, *(a++));                      // get alpha value
                         if (value > 0)
                         {
-                            for (int j = 0; j < 3; ++j)                             // set palette color
+                            for (int j = 0; j < 3; ++j)                         // set palette color
                             {
                                 if (value <= palette[j]->getFirstEntry(value))
                                     this->Data[j][i] = OFstatic_cast(T3, palette[j]->getFirstValue());
@@ -152,12 +152,12 @@ class DiARGBPixelTemplate
                                     this->Data[j][i] = OFstatic_cast(T3, palette[j]->getLastValue());
                                 else
                                     this->Data[j][i] = OFstatic_cast(T3, palette[j]->getValue(value));
-                                ++rgb[j];                                           // skip RGB values
+                                ++rgb[j];                                       // skip RGB values
                             }
                         }
                         else
                         {
-                            for (int j = 0; j < 3; ++j)                             // copy RGB values
+                            for (int j = 0; j < 3; ++j)                         // copy RGB values
                                 this->Data[j][i] = OFstatic_cast(T3, removeSign(*(rgb[j]++), offset));
                         }
                     }
@@ -204,6 +204,9 @@ class DiARGBPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diargpxt.h,v $
+ * Revision 1.22  2011-11-17 16:13:14  joergr
+ * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
+ *
  * Revision 1.21  2010-10-14 13:16:29  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

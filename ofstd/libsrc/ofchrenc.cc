@@ -18,8 +18,8 @@
  *  Purpose: Class for character encoding conversion (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-09 14:05:39 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2011-11-17 16:13:19 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,12 @@
 #include <iconv.h>
 #include <localcharset.h>
 #endif
+
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_ERRNO_H
+#include <sys/errno.h>
+#endif
+END_EXTERN_C
 
 
 #define ILLEGAL_DESCRIPTOR     OFreinterpret_cast(OFCharacterEncoding::T_Descriptor, -1)
@@ -359,6 +365,9 @@ size_t OFCharacterEncoding::countCharactersInUTF8String(const OFString &utf8Stri
  *
  * CVS/RCS Log:
  * $Log: ofchrenc.cc,v $
+ * Revision 1.10  2011-11-17 16:13:19  joergr
+ * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
+ *
  * Revision 1.9  2011-11-09 14:05:39  joergr
  * Avoid wrong error message / status code that a conversion descriptor cannot
  * be closed when libiconv is not available.

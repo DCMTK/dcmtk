@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomMonochromeRotateTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:26 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2011-11-17 16:13:16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,11 +105,11 @@ class DiMonoRotateTemplate
             if (this->Data != NULL)
             {
                 if (degree == 90)
-                    rotateRight(&pixel, &(this->Data));
+                    this->rotateRight(&pixel, &(this->Data));
                 else if (degree == 180)
-                    rotateTopDown(&pixel, &(this->Data));
+                    this->rotateTopDown(&pixel, &(this->Data));
                 else if (degree == 270)
-                    rotateLeft(&pixel, &(this->Data));
+                    this->rotateLeft(&pixel, &(this->Data));
             }
         }
     }
@@ -123,6 +123,9 @@ class DiMonoRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dimorot.h,v $
+ * Revision 1.17  2011-11-17 16:13:16  joergr
+ * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
+ *
  * Revision 1.16  2010-10-14 13:16:26  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *

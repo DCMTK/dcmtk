@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: DicomColorRotateTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:29 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-11-17 16:13:14 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,14 +98,14 @@ class DiColorRotateTemplate
     inline void rotate(const T *pixel[3],
                        const int degree)
     {
-        if (Init(pixel))
+        if (this->Init(pixel))
         {
             if (degree == 90)
-                rotateRight(pixel, this->Data);
+                this->rotateRight(pixel, this->Data);
             else if (degree == 180)
-                rotateTopDown(pixel, this->Data);
+                this->rotateTopDown(pixel, this->Data);
             else  if (degree == 270)
-                rotateLeft(pixel, this->Data);
+                this->rotateLeft(pixel, this->Data);
         }
     }
 };
@@ -118,6 +118,9 @@ class DiColorRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dicorot.h,v $
+ * Revision 1.16  2011-11-17 16:13:14  joergr
+ * Minor fixes to keep XCode 4.2 on Mac OS X Lion (clang compiler) quiet.
+ *
  * Revision 1.15  2010-10-14 13:16:29  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
