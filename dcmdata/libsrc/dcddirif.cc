@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-08-02 13:01:26 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-11-21 09:25:39 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1380,7 +1380,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
         OFString mediaSOPClassUID;
         if (metainfo->findAndGetOFStringArray(DCM_MediaStorageSOPClassUID, mediaSOPClassUID).bad())
         {
-            DCMDATA_ERROR("MediaStorageSOPClassUID missing in metainfo-header: " << filename);
+            DCMDATA_ERROR("MediaStorageSOPClassUID missing in file meta information: " << filename);
             result = EC_TagNotFound;
         } else {
             /* check if the SOP Class is a known storage SOP class (an image, overlay, curve, etc.) */
@@ -1620,7 +1620,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                 OFString transferSyntax;
                 if (metainfo->findAndGetOFStringArray(DCM_TransferSyntaxUID, transferSyntax).bad())
                 {
-                    DCMDATA_ERROR("TransferSyntaxUID missing in metainfo-header: " << filename);
+                    DCMDATA_ERROR("TransferSyntaxUID missing in file meta information: " << filename);
                     result = EC_TagNotFound;
                 }
                 /* is transfer syntax supported */
@@ -1659,6 +1659,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                 /* compare expected and actual transfer syntax */
                 if (result.good())
                 {
+                    const OFString xferName = dcmFindNameOfUID(transferSyntax.c_str(), "");
                     switch (ApplicationProfile)
                     {
                         case AP_GeneralPurposeMIME:
@@ -1674,14 +1675,15 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                     compare(transferSyntax, UID_JPEGProcess2_4TransferSyntax);
                             if (!found)
                             {
-                                OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
-                                OFString xferName2 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax, "");
-                                OFString xferName3 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax, "");
-                                OFString xferName4 = dcmFindNameOfUID(UID_JPEGProcess2_4TransferSyntax, "");
+                                const OFString expXferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
+                                const OFString expXferName2 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax, "");
+                                const OFString expXferName3 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax, "");
+                                const OFString expXferName4 = dcmFindNameOfUID(UID_JPEGProcess2_4TransferSyntax, "");
                                 /* create error message */
                                 OFOStringStream oss;
-                                oss << xferName1 << ", " << xferName2 << ", " << xferName3 << " or " << xferName4
-                                    << " expected: " << filename << OFStringStream_ends;
+                                oss << expXferName1 << ", " << expXferName2 << ", " << expXferName3 << " or "
+                                    << expXferName4 << " expected but " << xferName << " found: " << filename
+                                    << OFStringStream_ends;
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
                                 {
@@ -1701,13 +1703,13 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                     compare(transferSyntax, UID_JPEG2000TransferSyntax);
                             if (!found)
                             {
-                                OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
-                                OFString xferName2 = dcmFindNameOfUID(UID_JPEG2000LosslessOnlyTransferSyntax, "");
-                                OFString xferName3 = dcmFindNameOfUID(UID_JPEG2000TransferSyntax, "");
+                                const OFString expXferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
+                                const OFString expXferName2 = dcmFindNameOfUID(UID_JPEG2000LosslessOnlyTransferSyntax, "");
+                                const OFString expXferName3 = dcmFindNameOfUID(UID_JPEG2000TransferSyntax, "");
                                 /* create error message */
                                 OFOStringStream oss;
-                                oss << xferName1 << ", " << xferName2 << " or " << xferName3
-                                    << " expected: " << filename << OFStringStream_ends;
+                                oss << expXferName1 << ", " << expXferName2 << " or " << expXferName3
+                                    << " expected but " << xferName << " found: " << filename << OFStringStream_ends;
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
                                 {
@@ -1729,10 +1731,10 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 /* check for multi-frame composite IOD */
                                 if (!isMultiframeStorageSOPClass(mediaSOPClassUID))
                                 {
-                                    OFString xferName = dcmFindNameOfUID(expectedTransferSyntax.c_str(), "");
                                     /* create error message */
                                     OFOStringStream oss;
-                                    oss << xferName << " only for multi-frame composite IODs: " << filename << OFStringStream_ends;
+                                    oss << xferName << " only for multi-frame composite IODs: " << filename
+                                        << OFStringStream_ends;
                                     OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                     if (TransferSyntaxCheck)
                                     {
@@ -1749,12 +1751,14 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 /* check for multi-frame composite IOD */
                                 if (isMultiframeStorageSOPClass(mediaSOPClassUID))
                                 {
-                                    OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
-                                    OFString xferName2 = dcmFindNameOfUID(expectedTransferSyntax.c_str(), "");
-                                    oss << xferName1 << " or " << xferName2 << " expected: " << filename << OFStringStream_ends;
+                                    const OFString expXferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
+                                    const OFString expXferName2 = dcmFindNameOfUID(expectedTransferSyntax.c_str(), "");
+                                    oss << expXferName1 << " or " << expXferName2 << " expected but " << xferName
+                                        << " found: " << filename << OFStringStream_ends;
                                 } else {
-                                    OFString xferName = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
-                                    oss << xferName << " expected: " << filename << OFStringStream_ends;
+                                    const OFString expXferName = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
+                                    oss << expXferName << " expected but " << xferName << " found: " << filename
+                                        << OFStringStream_ends;
                                 }
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
@@ -1775,13 +1779,13 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                         compare(transferSyntax, UID_JPEGProcess2_4TransferSyntax);
                                 if (!found)
                                 {
-                                    OFString xferName1 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax, "");
-                                    OFString xferName2 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax, "");
-                                    OFString xferName3 = dcmFindNameOfUID(UID_JPEGProcess2_4TransferSyntax, "");
+                                    const OFString expXferName1 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax, "");
+                                    const OFString expXferName2 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax, "");
+                                    const OFString expXferName3 = dcmFindNameOfUID(UID_JPEGProcess2_4TransferSyntax, "");
                                     /* create error message */
                                     OFOStringStream oss;
-                                    oss << xferName1 << ", " << xferName2 << " or " << xferName3
-                                        << " expected: " << filename << OFStringStream_ends;
+                                    oss << expXferName1 << ", " << expXferName2 << " or " << expXferName3
+                                        << " expected but " << xferName << " found: " << filename << OFStringStream_ends;
                                     OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                     if (TransferSyntaxCheck)
                                     {
@@ -1799,12 +1803,12 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                     compare(transferSyntax, UID_JPEGProcess14SV1TransferSyntax);
                             if (!found)
                             {
-                                OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
-                                OFString xferName2 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax, "");
+                                const OFString expXferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
+                                const OFString expXferName2 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax, "");
                                 /* create error message */
                                 OFOStringStream oss;
-                                oss << xferName1 << " or " << xferName2 << " expected: "
-                                    << filename << OFStringStream_ends;
+                                oss << expXferName1 << " or " << expXferName2 << " expected but " << xferName
+                                    << " found: " << filename << OFStringStream_ends;
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
                                 {
@@ -1827,13 +1831,14 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                     compare(transferSyntax, UID_JPEGProcess1TransferSyntax);
                             if (!found)
                             {
-                                OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
-                                OFString xferName2 = dcmFindNameOfUID(UID_RLELosslessTransferSyntax, "");
-                                OFString xferName3 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax, "");
+                                const OFString expXferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax, "");
+                                const OFString expXferName2 = dcmFindNameOfUID(UID_RLELosslessTransferSyntax, "");
+                                const OFString expXferName3 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax, "");
                                 /* create error message */
                                 OFOStringStream oss;
-                                oss << xferName1 << ", " << xferName2 << " or " << xferName3
-                                    << " expected: " << filename << OFStringStream_ends;
+                                oss << expXferName1 << ", " << expXferName2 << " or " << expXferName3
+                                    << " expected but " << xferName << " found: " << filename
+                                    << OFStringStream_ends;
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
                                 {
@@ -1857,10 +1862,12 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                             found = compare(transferSyntax, expectedTransferSyntax);
                             if (!found)
                             {
-                                OFString xferName = dcmFindNameOfUID(expectedTransferSyntax.c_str(), expectedTransferSyntax.c_str() /*defaultValue*/);
+                                const OFString expXferName = dcmFindNameOfUID(expectedTransferSyntax.c_str(),
+                                    expectedTransferSyntax.c_str() /*defaultValue*/);
                                 /* create error message */
                                 OFOStringStream oss;
-                                oss << xferName << " expected: " << filename << OFStringStream_ends;
+                                oss << expXferName << " expected but " << xferName << " found: " << filename
+                                    << OFStringStream_ends;
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
                                 {
@@ -2655,7 +2662,7 @@ OFCondition DicomDirInterface::loadAndCheckDicomFile(const char *filename,
             DcmMetaInfo *metainfo = fileformat.getMetaInfo();
             if ((metainfo == NULL) || (metainfo->card() == 0))
             {
-                DCMDATA_ERROR("file not in part 10 format (no metainfo-header): " << filename);
+                DCMDATA_ERROR("file not in part 10 format (no file meta information): " << filename);
                 result = EC_InvalidStream;
             }
             DcmDataset *dataset = fileformat.getDataset();
@@ -5334,7 +5341,7 @@ void DicomDirInterface::copyStringWithDefault(DcmItem *dataset,
 {
     if ((dataset != NULL) && (record != NULL))
     {
-        OFCondition status;
+        OFCondition status = EC_Normal;
         if (dataset->tagExistsWithValue(key))
         {
             OFString stringValue;
@@ -5473,6 +5480,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.64  2011-11-21 09:25:39  joergr
+ *  Improved log messages on transfer syntaxes and file meta information.
+ *
  *  Revision 1.63  2011-08-02 13:01:26  uli
  *  Don't load files twice when constructing a DICOMDIR.
  *

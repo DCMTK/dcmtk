@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.21 (riesmeier)
+
+- Improved log messages on transfer syntaxes and file meta information.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
+**** Changes from 2011.11.18 (riesmeier)
+
+- Output message to debug logger when value of --charset-assume is not needed.
+  Affects: dcmdata/apps/dcm2xml.cc
+
 **** Changes from 2011.11.17 (riesmeier)
 
 - Fixed warning on declaration of local variable shadowing a previous local.
