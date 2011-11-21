@@ -18,8 +18,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-17 18:03:06 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2011-11-21 09:29:22 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,6 +161,12 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                     }
                 }
             } else {
+                if (defaultCharset != NULL)
+                {
+                    /* use "debug" instead of "warn" in order to avoid too much output in default mode */
+                    OFLOG_DEBUG(dcm2xmlLogger, "ignoring character set '" << defaultCharset
+                        << "' specified with option --charset-assume since it is not needed for this dataset");
+                }
                 /* by default, we use UTF-8 encoding */
                 encString = "UTF-8";
             }
@@ -538,6 +544,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
+ * Revision 1.45  2011-11-21 09:29:22  joergr
+ * Output message to debug logger when value of --charset-assume is not needed.
+ *
  * Revision 1.44  2011-11-17 18:03:06  joergr
  * Fixed warning on declaration of local variable shadowing a previous local.
  *
