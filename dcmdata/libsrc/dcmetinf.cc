@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-09-29 14:39:10 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2011-11-21 11:01:01 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -224,7 +224,8 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
         inStream.mark();
         fPreambleTransferState = ERW_inWork;
     }
-    OFBool retval = OFFalse;
+    // by default, we assume that there is no preamble
+    OFBool hasPreamble = OFFalse;
     if (fPreambleTransferState == ERW_inWork)
     {
         const Uint32 preambleLen = DCM_PreambleLen + DCM_MagicLen;
@@ -236,19 +237,17 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
             inStream.putback();
             DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short ("
                 << preambleLen << ") < " << DCM_PreambleLen + DCM_MagicLen << " bytes");
-            retval = OFFalse;
             this -> setPreamble();
             fPreambleTransferState = ERW_ready;
         }
-        else if (getTransferredBytes() == preambleLen)    // check Preamble and Dicom Prefix
+        else if (getTransferredBytes() == preambleLen)    // check Preamble and DICOM Prefix
         {   // set prefix to appropriate position
             char *prefix = filePreamble + DCM_PreambleLen;
             if (memcmp(prefix, DCM_Magic, DCM_MagicLen) == 0)
             {
-                retval = OFTrue;  // Preamble present
+                hasPreamble = OFTrue;  // Preamble present
                 // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
-            } else {              // no Preamble
-                retval = OFFalse;
+            } else {                   // no Preamble
                 this -> setPreamble();
                 inStream.putback();
             }
@@ -259,31 +258,32 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
 
     if (fPreambleTransferState == ERW_ready)
     {
-        E_TransferSyntax tmpxfer = checkTransferSyntax(inStream);
-        DcmXfer tmpxferSyn(tmpxfer);
+        E_TransferSyntax tmpXfer = checkTransferSyntax(inStream);
+        DcmXfer tmpXferSyn(tmpXfer);
         DcmXfer xferSyn(newxfer);
-        if ((tmpxferSyn.isExplicitVR() && xferSyn.isImplicitVR()) ||
-            (tmpxferSyn.isImplicitVR() && xferSyn.isExplicitVR()) ||
+        // check determined transfer syntax
+        if ((tmpXferSyn.isExplicitVR() && xferSyn.isImplicitVR()) ||
+            (tmpXferSyn.isImplicitVR() && xferSyn.isExplicitVR()) ||
             xferSyn.getXfer() == EXS_Unknown)
         {
-            newxfer = tmpxferSyn.getXfer();   // use determined xfer
+            newxfer = tmpXferSyn.getXfer();   // use determined xfer
             if (xferSyn.getXfer() != EXS_Unknown)
                 DCMDATA_WARN("DcmMetaInfo: TransferSyntax of MetaInfo is other than expected");
         } else
             newxfer = xferSyn.getXfer();
     }
-    if (retval == OFTrue)
+    if (hasPreamble)
     {
         DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() Preamble = 0x"
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
             << STD_NAMESPACE setw(4) << OFstatic_cast(Uint32, *filePreamble));
+        DCMDATA_DEBUG("DcmMetaInfo::checkAndReadPreamble() TransferSyntax=\""
+            << DcmXfer(newxfer).getXferName() << "\"");
     } else
         DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() No Preambel found");
 
-    DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() TransferSyntax=\""
-        << DcmXfer(newxfer).getXferName() << "\"");
-    return retval;
-} // DcmMetaInfo::checkAndReadPreamble
+    return hasPreamble;
+}
 
 
 // ********************************
@@ -626,6 +626,9 @@ OFCondition DcmMetaInfo::loadFile(const char *fileName,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.61  2011-11-21 11:01:01  joergr
+** Moved log message on transfer syntax from DcmItem to DcmDataset/DcmMetaInfo.
+**
 ** Revision 1.60  2011-09-29 14:39:10  joergr
 ** Enhanced loadFile() method by making sure that the file preamble is present.
 **

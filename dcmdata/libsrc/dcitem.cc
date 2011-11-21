@@ -18,8 +18,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:38 $
- *  CVS/RCS Revision: $Revision: 1.160 $
+ *  Update Date:      $Date: 2011-11-21 11:01:00 $
+ *  CVS/RCS Revision: $Revision: 1.161 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -200,7 +200,7 @@ OFBool DcmItem::foundVR(const Uint8* atposition)
 // ********************************
 
 
-E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
+E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream &inStream)
 {
     E_TransferSyntax transferSyntax;
     Uint8 tagAndVR[6];
@@ -293,9 +293,6 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
             }
         }
     }
-    /* dump information on a certain debug level */
-    DCMDATA_DEBUG("DcmItem::checkTransferSyntax() TransferSyntax=\""
-        << DcmXfer(transferSyntax).getXferName() << "\"");
 
     /* return determined transfer syntax */
     return transferSyntax;
@@ -3954,6 +3951,9 @@ OFCondition DcmItem::convertToUTF8()
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.161  2011-11-21 11:01:00  joergr
+** Moved log message on transfer syntax from DcmItem to DcmDataset/DcmMetaInfo.
+**
 ** Revision 1.160  2011-11-08 15:51:38  joergr
 ** Added support for converting files, datasets and element values to any DICOM
 ** character set that does not require code extension techniques (if compiled

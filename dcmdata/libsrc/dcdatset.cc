@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:38 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2011-11-21 11:01:01 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -348,7 +348,7 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
             {
                 /* To support incorrectly encoded datasets detect the transfer syntax from the stream.  */
                 /* This is possible for given unknown and plain big or little endian transfer syntaxes. */
-                switch( xfer )
+                switch (xfer)
                 {
                     case EXS_Unknown:
                     case EXS_LittleEndianImplicit:
@@ -374,8 +374,11 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
                 else
                     OriginalXfer = xfer;
             }
+            /* dump information on debug level */
+            DCMDATA_DEBUG("DcmDataset::read() TransferSyntax=\""
+                << DcmXfer(OriginalXfer).getXferName() << "\"");
             CurrentXfer = OriginalXfer;
-            /* Check stream compression for this transfer syntax */
+            /* check stream compression for this transfer syntax */
             DcmXfer xf(OriginalXfer);
             E_StreamCompression sc = xf.getStreamCompression();
             switch (sc)
@@ -744,6 +747,9 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
+** Revision 1.60  2011-11-21 11:01:01  joergr
+** Moved log message on transfer syntax from DcmItem to DcmDataset/DcmMetaInfo.
+**
 ** Revision 1.59  2011-11-08 15:51:38  joergr
 ** Added support for converting files, datasets and element values to any DICOM
 ** character set that does not require code extension techniques (if compiled

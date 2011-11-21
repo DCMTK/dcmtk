@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.21 (riesmeier)
 
+- Moved log message on transfer syntax from DcmItem to DcmDataset/DcmMetaInfo.
+  Affects: dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcmetinf.cc
+
 - Output message to debug logger when value of --charset-assume is not needed.
   Affects: dcmdata/apps/dcm2xml.cc
 
