@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.23 (schlachter)
+
+- Remove a Latin-1 encoded umlaut from the source.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+
 **** Changes from 2011.11.21 (riesmeier)
 
 - Moved log message on transfer syntax from DcmItem to DcmDataset/DcmMetaInfo.

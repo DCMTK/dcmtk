@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:37 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2011-11-23 10:03:17 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -447,7 +447,7 @@ public:
      */
     virtual void setRecordsOriginFile(const char *fname);
 
-    /// get the filename from which this directory record was read from, NULL íf not set
+    /// get the filename from which this directory record was read from, NULL if not set
     virtual const char* getRecordsOriginFile();
 
     /// get the offset in file of this directory record
@@ -528,6 +528,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
+** Revision 1.53  2011-11-23 10:03:17  uli
+** Remove a Latin-1 encoded umlaut from the source.
+**
 ** Revision 1.52  2011-11-08 15:51:37  joergr
 ** Added support for converting files, datasets and element values to any DICOM
 ** character set that does not require code extension techniques (if compiled
