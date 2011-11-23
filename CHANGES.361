@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.23 (schlachter)
 
+- Change ADD_TEST() call so that we get the full path to the test driver.
+  Affects: CMake/dcmtkAddTests.cmake
+
 - Remove a Latin-1 encoded umlaut from the source.
   Affects: dcmdata/include/dcmtk/dcmdata/dcdirrec.h
 
