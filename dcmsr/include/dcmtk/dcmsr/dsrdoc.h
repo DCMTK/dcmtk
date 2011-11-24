@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:32 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2011-11-24 11:46:10 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,14 +72,14 @@ class DSRDocument
 
     /** clear all internal member variables
      */
-    void clear();
+    virtual void clear();
 
     /** check whether the current internal state is valid.
      *  The SR document is valid if the corresponding document tree is valid and
      *  the SOP instance UID as well as the SOP class UID are not "empty".
      ** @return OFTrue if valid, OFFalse otherwise
      */
-    OFBool isValid();
+    virtual OFBool isValid();
 
     /** check whether the document is finalized.
      *  A new document is originally not finalized but can be finalized using the method
@@ -88,7 +88,7 @@ class DSRDocument
      *  all previous signatures.
      ** @return OFTrue if finalized, OFFalse otherwise
      */
-    OFBool isFinalized() const;
+    virtual OFBool isFinalized() const;
 
 
   // --- input and output ---
@@ -99,8 +99,8 @@ class DSRDocument
      *  @param  flags   optional flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition print(STD_NAMESPACE ostream &stream,
-                      const size_t flags = 0);
+    virtual OFCondition print(STD_NAMESPACE ostream &stream,
+                              const size_t flags = 0);
 
     /** read SR document from DICOM dataset.
      *  Please note that the current document is also deleted if the reading process fails.
@@ -120,8 +120,8 @@ class DSRDocument
      *                   (e.g. VerifyingObserver or PredecessorDocuments) are never read.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition read(DcmItem &dataset,
-                     const size_t flags = 0);
+    virtual OFCondition read(DcmItem &dataset,
+                             const size_t flags = 0);
 
     /** write current SR document to DICOM dataset.
      *  Please note that the ContentTemplateSequence for the root content item is not written
@@ -136,8 +136,8 @@ class DSRDocument
      *                       Can be used to digitally sign parts of the document tree.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition write(DcmItem &dataset,
-                      DcmStack *markedItems = NULL);
+    virtual OFCondition write(DcmItem &dataset,
+                              DcmStack *markedItems = NULL);
 
     /** read SR document from XML file.
      *  The format (Schema) of the XML document is expected to conform to the output format
@@ -149,8 +149,8 @@ class DSRDocument
      *  @param  flags     optional flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition readXML(const OFString &filename,
-                        const size_t flags = 0);
+    virtual OFCondition readXML(const OFString &filename,
+                                const size_t flags = 0);
 
     /** write current SR document in XML format.
      *  The output format is identical to that of the dsr2xml command line tool.  Digital
@@ -159,8 +159,8 @@ class DSRDocument
      *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                         const size_t flags = 0);
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
+                                 const size_t flags = 0);
 
     /** render current SR document in HTML/XHTML format.
      *  The output format is identical to that of the dsr2html command line tool.
@@ -169,9 +169,9 @@ class DSRDocument
      *  @param  styleSheet  optional filename/URL of a Cascading Style Sheet (CSS)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition renderHTML(STD_NAMESPACE ostream &stream,
-                           const size_t flags = 0,
-                           const char *styleSheet = NULL);
+    virtual OFCondition renderHTML(STD_NAMESPACE ostream &stream,
+                                   const size_t flags = 0,
+                                   const char *styleSheet = NULL);
 
 
   // --- get/set misc attributes ---
@@ -179,7 +179,7 @@ class DSRDocument
     /** get the current SR document type
      ** @return document type (might be DT_invalid if read from dataset)
      */
-    E_DocumentType getDocumentType() const;
+    virtual E_DocumentType getDocumentType() const;
 
     /** get document tree
      ** @return reference to the document tree
@@ -193,47 +193,42 @@ class DSRDocument
      *  If the type is unknown the original DICOM defined term can be retrieved
      *  with the method getSpecificCharacterSet().  Please note that only the
      *  first of possibly multiple values is used to determine the type from the
-     *  DICOM code string (multiple character sets are not yet supported).
+     *  given DICOM code string (multiple character sets are not yet supported).
      ** @return character set (might be CS_invalid/unknown if not supported)
      */
-    E_CharacterSet getSpecificCharacterSetType() const;
+    virtual E_CharacterSet getSpecificCharacterSetType() const;
 
     /** set specific character set type.
      *  The DICOM defined term (see SpecificCharacterSet) is set accordingly.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setSpecificCharacterSetType(const E_CharacterSet characterSet);
+    virtual OFCondition setSpecificCharacterSetType(const E_CharacterSet characterSet);
 
     /** get document preliminary flag.
      *  Not applicable to Key Object Selection Documents.
      ** @return preliminary flag (might be PF_invalid if not specified)
      */
-    E_PreliminaryFlag getPreliminaryFlag() const;
+    virtual E_PreliminaryFlag getPreliminaryFlag() const;
+
+    /** set document preliminary flag.
+     *  According to the DICOM standard, the concept of "completeness" is independent of the
+     *  concept of "preliminary" or "final".  Therefore, this flag can be specified separately.
+     ** @param  flag  preliminary flag to be set (use PF_invalid to omit this optional value)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setPreliminaryFlag(const E_PreliminaryFlag flag);
 
     /** get document completion flag.
      *  Not applicable to Key Object Selection Documents.
      ** @return completion flag (might be CF_invalid if read from dataset)
      */
-    E_CompletionFlag getCompletionFlag() const;
-
-    /** get document completion flag description.
-     *  Not applicable to Key Object Selection Documents.
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getCompletionFlagDescription() const;
-
-    /** get document completion flag description.
-     *  Not applicable to Key Object Selection Documents.
-     ** @param  description  reference to character string in which the value should be stored
-     ** @return character string (might be empty)
-     */
-    const OFString &getCompletionFlagDescription(OFString &description) const;
+    virtual E_CompletionFlag getCompletionFlag() const;
 
     /** get document verification flag.
      *  Not applicable to Key Object Selection Documents.
      ** @return verification flag (might be VF_invalid if read from dataset)
      */
-    E_VerificationFlag getVerificationFlag() const;
+    virtual E_VerificationFlag getVerificationFlag() const;
 
     /** get number of verifying observers.
      *  A document can be verified more than once.  The verification flag should be VERIFIED
@@ -242,7 +237,7 @@ class DSRDocument
      *  Not applicable to Key Object Selection Documents.
      ** @return number of verifying observers (if any), 0 otherwise
      */
-    size_t getNumberOfVerifyingObservers();
+    virtual size_t getNumberOfVerifyingObservers();
 
     /** get information about a verifying observer.
      *  All reference variables are cleared before the information is retrieved, i.e. if an error
@@ -258,10 +253,10 @@ class DSRDocument
      *                        the observer belongs should be stored (required)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition getVerifyingObserver(const size_t idx,
-                                     OFString &dateTime,
-                                     OFString &observerName,
-                                     OFString &organization);
+    virtual OFCondition getVerifyingObserver(const size_t idx,
+                                             OFString &dateTime,
+                                             OFString &observerName,
+                                             OFString &organization);
 
     /** get information about a verifying observer.
      *  All reference variables are cleared before the information is retrieved, i.e. if an error
@@ -279,11 +274,11 @@ class DSRDocument
      *                        the observer belongs should be stored (required)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition getVerifyingObserver(const size_t idx,
-                                     OFString &dateTime,
-                                     OFString &observerName,
-                                     DSRCodedEntryValue &observerCode,
-                                     OFString &organization);
+    virtual OFCondition getVerifyingObserver(const size_t idx,
+                                             OFString &dateTime,
+                                             OFString &observerName,
+                                             DSRCodedEntryValue &observerCode,
+                                             OFString &organization);
 
     /** get list of predecessor documents.
      *  A document can have more than one (direct) predecessor document.  This is e.g. the case
@@ -297,7 +292,7 @@ class DSRDocument
      *  Not applicable to Key Object Selection Documents.
      ** @return reference to list object
      */
-    DSRSOPInstanceReferenceList &getPredecessorDocuments();
+    virtual DSRSOPInstanceReferenceList &getPredecessorDocuments();
 
     /** get list of identical documents.
      *  Please note that currently the user is responsible for filling and modifying the content of
@@ -312,7 +307,7 @@ class DSRDocument
      *  in each SOP Instance shall contain references to all other duplicate SOP Instances."
      ** @return reference to list object
      */
-    DSRSOPInstanceReferenceList &getIdenticalDocuments();
+    virtual DSRSOPInstanceReferenceList &getIdenticalDocuments();
 
     /** get list of referenced SOP instances (Current Requested Procedure Evidence).
      *  The DICOM standard states: "The intent of the Current Requested Procedure Evidence Sequence
@@ -328,7 +323,7 @@ class DSRDocument
      *  Object Selection."
      ** @return reference to list object
      */
-    DSRSOPInstanceReferenceList &getCurrentRequestedProcedureEvidence();
+    virtual DSRSOPInstanceReferenceList &getCurrentRequestedProcedureEvidence();
 
     /** get list of referenced SOP instances (Pertinent Other Evidence).
      *  The DICOM standard states: "The Pertinent Other Evidence Sequence attribute is used to
@@ -338,486 +333,417 @@ class DSRDocument
      *  Not applicable to Key Object Selection Documents.
      ** @return reference to list object
      */
-    DSRSOPInstanceReferenceList &getPertinentOtherEvidence();
+    virtual DSRSOPInstanceReferenceList &getPertinentOtherEvidence();
 
     /** get list of coding schemes used (Coding Scheme Identification).
      *  The Coding Scheme Identification Sequence maps Coding Scheme Designators to an external coding
      *  system registration, or to a private or local coding scheme.  See DICOM standard for details.
      *  @return reference to list object
      */
-    DSRCodingSchemeIdentificationList &getCodingSchemeIdentification();
+    virtual DSRCodingSchemeIdentificationList &getCodingSchemeIdentification();
 
 
-  // --- get DICOM string attributes (C string) ---
-  // --- (these functions return the whole string value,
-  // ---  i.e. all components of multi-valued attributes)
-
-    /** get modality
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getModality() const;
-
-    /** get SOP class UID
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getSOPClassUID() const;
-
-    /** get study instance UID
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getStudyInstanceUID() const;
-
-    /** get series instance UID
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getSeriesInstanceUID() const;
-
-    /** get SOP instance UID
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getSOPInstanceUID() const;
-
-    /** get instance creator UID
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getInstanceCreatorUID() const;
+  // --- get DICOM string attributes ---
 
     /** get specific character set
-     ** @return pointer to string value (might be NULL)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const char *getSpecificCharacterSet() const;
+    virtual OFCondition getSpecificCharacterSet(OFString &value,
+                                                const signed long pos = 0) const;
 
-    /** get patient's name
-     ** @return pointer to string value (might be NULL)
+    /** get completion flag description.
+     *  Not applicable to Key Object Selection Documents.
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const char *getPatientName() const;
-
-    /** get patient's birth date
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getPatientBirthDate() const;
-
-    /** get patient's sex
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getPatientSex() const;
-
-    /** get referring physicians name
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getReferringPhysicianName() const;
-
-    /** get study description
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getStudyDescription() const;
-
-    /** get series description
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getSeriesDescription() const;
-
-    /** get manufacturer
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getManufacturer() const;
-
-    /** get manufacturer's model name
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getManufacturerModelName() const;
-
-    /** get device serial number
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getDeviceSerialNumber() const;
-
-    /** get software version(s)
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getSoftwareVersions() const;
-
-    /** get study date
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getStudyDate() const;
-
-    /** get study time
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getStudyTime() const;
-
-    /** get instance creation date
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getInstanceCreationDate() const;
-
-    /** get instance creation time
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getInstanceCreationTime() const;
-
-    /** get content date
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getContentDate() const;
-
-    /** get content time
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getContentTime() const;
-
-    /** get study ID
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getStudyID() const;
-
-    /** get patient ID
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getPatientID() const;
-
-    /** get series number
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getSeriesNumber() const;
-
-    /** get instance number
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getInstanceNumber() const;
-
-    /** get accession number
-     ** @return pointer to string value (might be NULL)
-     */
-    const char *getAccessionNumber() const;
-
-
-  // --- get DICOM string attributes (C++ string) ---
-  // --- (these functions return only the first
-  // ---  component of multi-valued attributes)
+    virtual OFCondition getCompletionFlagDescription(OFString &value,
+                                                     const signed long pos = 0) const;
 
     /** get modality
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getModality(OFString &value) const;
+    virtual OFCondition getModality(OFString &value,
+                                    const signed long pos = 0) const;
 
     /** get SOP class UID
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getSOPClassUID(OFString &value) const;
+    virtual OFCondition getSOPClassUID(OFString &value,
+                                       const signed long pos = 0) const;
 
     /** get study instance UID
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getStudyInstanceUID(OFString &value) const;
+    virtual OFCondition getStudyInstanceUID(OFString &value,
+                                            const signed long pos = 0) const;
 
     /** get series instance UID
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getSeriesInstanceUID(OFString &value) const;
+    virtual OFCondition getSeriesInstanceUID(OFString &value,
+                                             const signed long pos = 0) const;
 
     /** get SOP instance UID
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getSOPInstanceUID(OFString &value) const;
+    virtual OFCondition getSOPInstanceUID(OFString &value,
+                                          const signed long pos = 0) const;
 
     /** get instance creator UID
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getInstanceCreatorUID(OFString &value) const;
-
-    /** get specific character set
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
-     */
-    const OFString &getSpecificCharacterSet(OFString &value) const;
+    virtual OFCondition getInstanceCreatorUID(OFString &value,
+                                              const signed long pos = 0) const;
 
     /** get patient's name
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getPatientName(OFString &value) const;
+    virtual OFCondition getPatientName(OFString &value,
+                                       const signed long pos = 0) const;
 
     /** get patient's birth date
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getPatientBirthDate(OFString &value) const;
+    virtual OFCondition getPatientBirthDate(OFString &value,
+                                            const signed long pos = 0) const;
 
     /** get patient's sex
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getPatientSex(OFString &value) const;
+    virtual OFCondition getPatientSex(OFString &value,
+                                      const signed long pos = 0) const;
 
-    /** get referring physicians name
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+    /** get referring physician's name
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getReferringPhysicianName(OFString &value) const;
+    virtual OFCondition getReferringPhysicianName(OFString &value,
+                                                  const signed long pos = 0) const;
 
     /** get study description
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getStudyDescription(OFString &value) const;
+    virtual OFCondition getStudyDescription(OFString &value,
+                                            const signed long pos = 0) const;
 
     /** get series description
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getSeriesDescription(OFString &value) const;
+    virtual OFCondition getSeriesDescription(OFString &value,
+                                             const signed long pos = 0) const;
 
     /** get manufacturer
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getManufacturer(OFString &value) const;
+    virtual OFCondition getManufacturer(OFString &value,
+                                        const signed long pos = 0) const;
 
     /** get manufacturer's model name
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getManufacturerModelName(OFString &value) const;
+    virtual OFCondition getManufacturerModelName(OFString &value,
+                                                 const signed long pos = 0) const;
 
     /** get device serial number
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getDeviceSerialNumber(OFString &value) const;
+    virtual OFCondition getDeviceSerialNumber(OFString &value,
+                                              const signed long pos = 0) const;
 
     /** get software version(s). Please note that only the first component is returned.
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getSoftwareVersions(OFString &value) const;
+    virtual OFCondition getSoftwareVersions(OFString &value,
+                                            const signed long pos = 0) const;
 
     /** get study date
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getStudyDate(OFString &value) const;
+    virtual OFCondition getStudyDate(OFString &value,
+                                     const signed long pos = 0) const;
 
     /** get study time
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getStudyTime(OFString &value) const;
+    virtual OFCondition getStudyTime(OFString &value,
+                                     const signed long pos = 0) const;
 
     /** get instance creation date
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getInstanceCreationDate(OFString &value) const;
+    virtual OFCondition getInstanceCreationDate(OFString &value,
+                                                const signed long pos = 0) const;
 
     /** get instance creation time
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getInstanceCreationTime(OFString &value) const;
+    virtual OFCondition getInstanceCreationTime(OFString &value,
+                                                const signed long pos = 0) const;
 
     /** get content date
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getContentDate(OFString &value) const;
+    virtual OFCondition getContentDate(OFString &value,
+                                       const signed long pos = 0) const;
 
     /** get content time
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getContentTime(OFString &value) const;
+    virtual OFCondition getContentTime(OFString &value,
+                                       const signed long pos = 0) const;
 
     /** get study ID
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getStudyID(OFString &value) const;
+    virtual OFCondition getStudyID(OFString &value,
+                                   const signed long pos = 0) const;
 
     /** get patient ID
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getPatientID(OFString &value) const;
+    virtual OFCondition getPatientID(OFString &value,
+                                     const signed long pos = 0) const;
 
     /** get series number
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getSeriesNumber(OFString &value) const;
+    virtual OFCondition getSeriesNumber(OFString &value,
+                                        const signed long pos = 0) const;
 
     /** get instance number
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getInstanceNumber(OFString &value) const;
+    virtual OFCondition getInstanceNumber(OFString &value,
+                                          const signed long pos = 0) const;
 
     /** get accession number
-     ** @param  value  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
-    const OFString &getAccessionNumber(OFString &value) const;
+    virtual OFCondition getAccessionNumber(OFString &value,
+                                           const signed long pos = 0) const;
 
 
   // --- set DICOM string attributes ---
 
-    /** set specific character set.
-     *  The passed string must be a valid DICOM Code String (CS).  The internal enumerated
-     *  value is set accordingly.
-     ** @param  value  character string specifying the value to be set
+    /** set specific character set.  The internal enumerated value is set accordingly.
+     *  Please note that code extensions techniques are not supported.  Therefore, only
+     *  a single value can be passed.
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setSpecificCharacterSet(const OFString &value);
+    virtual OFCondition setSpecificCharacterSet(const OFString &value,
+                                                const OFBool check = OFTrue);
 
-    /** set document preliminary flag.
-     *  According to the DICOM standard, the concept of "completeness" is independent of the
-     *  concept of "preliminary" or "final".  Therefore, this flag can be specified separately.
-     ** @param  flag  preliminary flag to be set (use PF_invalid to omit this optional value)
+    /** set completion flag description.
+     *  Not applicable to Key Object Selection Documents.
+     ** @param  value  explanation of the value that is set for completion flag.  If an empty
+     *                 string is passed, the description is removed from the dataset (type 3).
+     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPreliminaryFlag(const E_PreliminaryFlag flag);
+    virtual OFCondition setCompletionFlagDescription(const OFString &value,
+                                                     const OFBool check = OFTrue);
 
-    /** set document completion flag description.
-     *  The description can be removed from the DICOM dataset (type 3) by setting an empty
-     *  string.  Not applicable to Key Object Selection Documents.
-     ** @param  value  explanation of the value set for completion flag (optional, VR=LO)
+    /** set patient's name
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (PN) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setCompletionFlagDescription(const OFString &value);
+    virtual OFCondition setPatientName(const OFString &value,
+                                       const OFBool check = OFTrue);
 
-    /** set patient's name.
-     *  The passed string must be a valid DICOM Person Name (PN).
-     ** @param  value  character string specifying the value to be set
+    /** set patient's birth date
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (DA) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPatientName(const OFString &value);
+    virtual OFCondition setPatientBirthDate(const OFString &value,
+                                            const OFBool check = OFTrue);
 
-    /** set patient's birth date.
-     *  The passed string must be a valid DICOM Date (DA).
-     ** @param  value  character string specifying the value to be set
+    /** set patient's sex
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPatientBirthDate(const OFString &value);
+    virtual OFCondition setPatientSex(const OFString &value,
+                                      const OFBool check = OFTrue);
 
-    /** set patient's sex.
-     *  The passed string must be a valid DICOM Code String (CS).
-     ** @param  value  character string specifying the value to be set
+    /** set referring physician's name
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (PN) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPatientSex(const OFString &value);
+    virtual OFCondition setReferringPhysicianName(const OFString &value,
+                                                  const OFBool check = OFTrue);
 
-    /** set referring physicians name.
-     *  The passed string must be a valid DICOM Person Name (PN).
-     ** @param  value  character string specifying the value to be set
+    /** set study description
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setReferringPhysicianName(const OFString &value);
+    virtual OFCondition setStudyDescription(const OFString &value,
+                                            const OFBool check = OFTrue);
 
-    /** set study description.
-     *  The passed string must be a valid DICOM Long String (LO).
-     ** @param  value  character string specifying the value to be set
+    /** set series description
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setStudyDescription(const OFString &value);
+    virtual OFCondition setSeriesDescription(const OFString &value,
+                                             const OFBool check = OFTrue);
 
-    /** set series description.
-     *  The passed string must be a valid DICOM Long String (LO).
-     ** @param  value  character string specifying the value to be set
+    /** set manufacturer
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setSeriesDescription(const OFString &value);
+    virtual OFCondition setManufacturer(const OFString &value,
+                                        const OFBool check = OFTrue);
 
-    /** set manufacturer.
-     *  The passed string must be a valid DICOM Long String (LO).
-     ** @param  value  character string specifying the value to be set
+    /** set manufacturer's model name
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setManufacturer(const OFString &value);
+    virtual OFCondition setManufacturerModelName(const OFString &value,
+                                                 const OFBool check = OFTrue);
 
-    /** set manufacturer's model name.
-     *  The passed string must be a valid DICOM Long String (LO).
-     ** @param  value  character string specifying the value to be set
+    /** set device serial number
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setManufacturerModelName(const OFString &value);
+    virtual OFCondition setDeviceSerialNumber(const OFString &value,
+                                              const OFBool check = OFTrue);
 
-    /** set device serial number.
-     *  The passed string must be a valid DICOM Long String (LO).
-     ** @param  value  character string specifying the value to be set
+    /** set software version(s)
+     ** @param  value  value to be set (possibly multi-valued) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (LO) and VM (1-n) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setDeviceSerialNumber(const OFString &value);
+    virtual OFCondition setSoftwareVersions(const OFString &value,
+                                            const OFBool check = OFTrue);
 
-    /** set software version(s).
-     *  The passed string must be a valid DICOM Long String (LO).
-     ** @param  value  character string specifying the value to be set
+    /** set content date
+     ** @param  value  value to be set (single value only).  If an empty string is passed,
+     *                 the current date is set when displaying or writing the document since
+     *                 the corresponding DICOM attribute is mandatory.
+     *  @param  check  check 'value' for conformance with VR (DA) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setSoftwareVersions(const OFString &value);
+    virtual OFCondition setContentDate(const OFString &value,
+                                       const OFBool check = OFTrue);
 
-    /** set content date.
-     *  The passed string must be a valid DICOM Date (DA).  If an empty string
-     *  is passed the current date is set when displaying or writing the document
-     *  since the corresponding DICOM attribute is type 1 (= mandatory).
-     ** @param  value  character string specifying the value to be set
+    /** set content time
+     ** @param  value  value to be set (single value only).  If an empty string is passed,
+     *                 the current time is set when displaying or writing the document since
+     *                 the corresponding DICOM attribute is mandatory.
+     *  @param  check  check 'value' for conformance with VR (TM) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setContentDate(const OFString &value);
+    virtual OFCondition setContentTime(const OFString &value,
+                                       const OFBool check = OFTrue);
 
-    /** set content time.
-     *  The passed string must be a valid DICOM Time (TM).  If an empty string
-     *  is passed the current time is set when displaying or writing the document
-     *  since the corresponding DICOM attribute is type 1 (= mandatory).
-     ** @param  value  character string specifying the value to be set
+    /** set study ID
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setContentTime(const OFString &value);
+    virtual OFCondition setStudyID(const OFString &value,
+                                   const OFBool check = OFTrue);
 
-    /** set study ID.
-     *  The passed string must be a valid DICOM Short String (SH).
-     ** @param  value  character string specifying the value to be set
+    /** set patient ID
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setStudyID(const OFString &value);
+    virtual OFCondition setPatientID(const OFString &value,
+                                     const OFBool check = OFTrue);
 
-    /** set patient ID.
-     *  The passed string must be a valid DICOM Long String (LO).
-     ** @param  value  character string specifying the value to be set
+    /** set series number
+     ** @param  value  value to be set (single value only).  If an empty string is passed,
+     *                 the value "1" is set when displaying or writing the document since
+     *                 the corresponding DICOM attribute is mandatory.
+     *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPatientID(const OFString &value);
+    virtual OFCondition setSeriesNumber(const OFString &value,
+                                        const OFBool check = OFTrue);
 
-    /** set series number.
-     *  The passed string must be a valid DICOM Short String (SH).  If an empty
-     *  string is passed the value "1" is set when displaying or writing the
-     *  document since the corresponding DICOM attribute is type 1 (= mandatory).
-     ** @param  value  character string specifying the value to be set
+    /** set instance number
+     ** @param  value  value to be set (single value only).  If an empty string is passed,
+     *                 the value "1" is set when displaying or writing the document since
+     *                 the corresponding DICOM attribute is mandatory.
+     *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setSeriesNumber(const OFString &value);
+    virtual OFCondition setInstanceNumber(const OFString &value,
+                                          const OFBool check = OFTrue);
 
-    /** set instance number.
-     *  The passed string must be a valid DICOM Integer String (IS).  If an empty
-     *  string is passed the value "1" is set when displaying or writing the
-     *  document since the corresponding DICOM attribute is type 1 (= mandatory).
-     ** @param  value  character string specifying the value to be set
+    /** set accession number
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setInstanceNumber(const OFString &value);
-
-    /** set accession number.
-     *  The passed string must be a valid DICOM Short String (SH).
-     ** @param  value  character string specifying the value to be set
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    OFCondition setAccessionNumber(const OFString &value);
+    virtual OFCondition setAccessionNumber(const OFString &value,
+                                           const OFBool check = OFTrue);
 
 
   // --- document management functions ---
@@ -827,14 +753,14 @@ class DSRDocument
      *  i.e. also a new series instance UID and SOP instance UID are generated.  This is
      *  a requirement of the DICOM standard.
      */
-    void createNewStudy();
+    virtual void createNewStudy();
 
     /** create a new series.
      *  After generating a new series instance UID the method createNewSOPInstance() is
      *  called, i.e. also a SOP instance UID is generated.  This is a requirement of the
      *  DICOM standard.
      */
-    void createNewSeries();
+    virtual void createNewSeries();
 
     /** create a new series within a given study.
      *  After generating a new series instance UID within the given study the method
@@ -843,7 +769,7 @@ class DSRDocument
      ** @param  studyUID  study instance UID to be set (should be a valid UID)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition createNewSeriesInStudy(const OFString &studyUID);
+    virtual OFCondition createNewSeriesInStudy(const OFString &studyUID);
 
     /** create a new SOP instance.
      *  Generate a new SOP instance UID, set the instance creation date/time and reset the
@@ -856,14 +782,14 @@ class DSRDocument
      *  SR Document Content Module, see DICOM standard for details).
      *  This method also updates the other DICOM header attributes (calling updateAttributes()).
      */
-    void createNewSOPInstance();
+    virtual void createNewSOPInstance();
 
     /** create a new document.
      *  A new SOP instance is only created if the current document type was valid/supported.
      *  Please note that the current document is deleted (cleared).
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition createNewDocument();
+    virtual OFCondition createNewDocument();
 
     /** create a new document of the specified type.
      *  A new SOP instance is only created if the current document type was valid/supported.
@@ -871,7 +797,7 @@ class DSRDocument
      ** @param  documentType  type of the SR document (see DSRTypes::E_DocumentType)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition createNewDocument(const E_DocumentType documentType);
+    virtual OFCondition createNewDocument(const E_DocumentType documentType);
 
     /** create a revised version of the current document.
      *  A revised version can only be created if the current document is already completed
@@ -890,7 +816,7 @@ class DSRDocument
      *    document if OFTrue. Append current document to existing list otherwise.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition createRevisedVersion(const OFBool clearList = OFTrue);
+    virtual OFCondition createRevisedVersion(const OFBool clearList = OFTrue);
 
     /** complete the current document.
      *  Sets the completion flag to COMPLETE if not already done (fails otherwise).
@@ -899,7 +825,7 @@ class DSRDocument
      *  Not applicable to Key Object Selection Documents.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition completeDocument();
+    virtual OFCondition completeDocument();
 
     /** complete the current document and set a completion description.
      *  Sets the completion flag to COMPLETE if not already done (fails otherwise).
@@ -910,7 +836,7 @@ class DSRDocument
      *                       (optional, see previous method, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition completeDocument(const OFString &description);
+    virtual OFCondition completeDocument(const OFString &description);
 
     /** verify the current document by a specific observer.
      *  A document can be verified more than once.  The observer information is added to a
@@ -924,8 +850,8 @@ class DSRDocument
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition verifyDocument(const OFString &observerName,
-                               const OFString &organization);
+    virtual OFCondition verifyDocument(const OFString &observerName,
+                                       const OFString &organization);
 
     /** verify the current document by a specific observer.
      *  Same as above but allows to specify the verification date time value.
@@ -937,9 +863,9 @@ class DSRDocument
      *                        time are used.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition verifyDocument(const OFString &observerName,
-                               const OFString &organization,
-                               const OFString &dateTime /*= ""*/);
+    virtual OFCondition verifyDocument(const OFString &observerName,
+                                       const OFString &organization,
+                                       const OFString &dateTime /*= ""*/);
 
     /** verify the current document by a specific observer.
      *  A document can be verified more than once.  The observer information is added to a
@@ -954,9 +880,9 @@ class DSRDocument
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition verifyDocument(const OFString &observerName,
-                               const DSRCodedEntryValue &observerCode,
-                               const OFString &organization);
+    virtual OFCondition verifyDocument(const OFString &observerName,
+                                       const DSRCodedEntryValue &observerCode,
+                                       const OFString &organization);
 
     /** verify the current document by a specific observer.
      *  Same as above but allows to specify the verification date time value.
@@ -969,10 +895,10 @@ class DSRDocument
      *                        time are used.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition verifyDocument(const OFString &observerName,
-                               const DSRCodedEntryValue &observerCode,
-                               const OFString &organization,
-                               const OFString &dateTime /*= ""*/);
+    virtual OFCondition verifyDocument(const OFString &observerName,
+                                       const DSRCodedEntryValue &observerCode,
+                                       const OFString &organization,
+                                       const OFString &dateTime /*= ""*/);
 
     /** remove verification information.
      *  The list of verifying observers is cleared, the verification flag is set to UNVERIFIED and
@@ -981,7 +907,7 @@ class DSRDocument
      *  guarantee a consistent state when processing documents which have not been created with this
      *  module/toolkit.
      */
-    void removeVerification();
+    virtual void removeVerification();
 
     /** finalize the current state of the document.
      *  A new document is originally not finalized but can be finalized using this method.
@@ -996,7 +922,7 @@ class DSRDocument
      *  flag.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition finalizeDocument();
+    virtual OFCondition finalizeDocument();
 
 
   protected:
@@ -1256,6 +1182,12 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.54  2011-11-24 11:46:10  joergr
+ *  Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
+ *  now return a status code, the get methods provide a "pos" and the set methods
+ *  a "check" parameter. Please note that this is an incompatible API change!
+ *  Made all public methods "virtual" in order to better support derived classes.
+ *
  *  Revision 1.53  2010-10-14 13:16:32  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
