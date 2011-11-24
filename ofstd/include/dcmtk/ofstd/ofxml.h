@@ -18,8 +18,8 @@
  *  Purpose: Simple non-validating XML parser
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-11-24 10:38:32 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,7 +182,8 @@
 #define XML_NO_WIDE_CHAR
 
 #ifdef XML_NO_WIDE_CHAR
-#undef _XMLWINDOWS
+// DCMTK: we definitely need the following define on Windows systems
+//#undef _XMLWINDOWS
 #undef _XMLWIDECHAR
 #endif
 
@@ -671,7 +672,7 @@ typedef struct XMLNodeContents
 {
     // DCMTK: added default and copy constructor to avoid compiler warnings
     XMLNodeContents(): etype(),child(),attrib(),text(),clear() {};
-    XMLNodeContents(const XMLNodeContents&);
+    XMLNodeContents(const XMLNodeContents& c): etype(c.etype),child(c.child),attrib(c.attrib),text(c.text),clear(c.clear) {};
     /// This dictates what's the content of the XMLNodeContent
     enum XMLElementType etype;
     /**< should be an union to access the appropriate data. Compiler does not allow union of object with constructor... too bad. */
@@ -822,6 +823,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: ofxml.h,v $
+ * Revision 1.2  2011-11-24 10:38:32  joergr
+ * Minor fixes to also compile with VisualStudio 2008 on Windows systems.
+ *
  * Revision 1.1  2011-11-24 09:53:40  joergr
  * Added first version of a simple non-validating XML parser written by Frank
  * Vanden Berghen. This parser is intended to be used for configuration files

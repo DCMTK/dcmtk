@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.24 (riesmeier)
 
+- Minor fixes to also compile with VisualStudio 2008 on Windows systems.
+  Affects: ofstd/include/dcmtk/ofstd/ofxml.h
+
 - Added first version of a simple non-validating XML parser written by Frank
   Vanden Berghen. This parser is intended to be used for configuration files
   and the like. Therefore, it is integrated into the DCMTK (unlike libxml2).
