@@ -117,3 +117,7 @@ oftimer.o: oftimer.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/oftimer.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofcast.h
+ofxml.o: ofxml.cc ../include/dcmtk/ofstd/ofxml.h \
+  ../include/dcmtk/ofstd/ofstdinc.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../include/dcmtk/ofstd/ofstdinc.h

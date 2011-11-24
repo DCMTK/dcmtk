@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-24 15:07:36 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2011-11-24 09:53:43 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,12 +65,18 @@ OFTEST_REGISTER(ofstd_OFCharacterEncoding_3);
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_4);
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_5);
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_6);
+OFTEST_REGISTER(ofstd_xmlParser);
 OFTEST_MAIN("ofstd")
 
 /*
  *
  * CVS/RCS Log:
  * $Log: tests.cc,v $
+ * Revision 1.6  2011-11-24 09:53:43  joergr
+ * Added first version of a simple non-validating XML parser written by Frank
+ * Vanden Berghen. This parser is intended to be used for configuration files
+ * and the like. Therefore, it is integrated into the DCMTK (unlike libxml2).
+ *
  * Revision 1.5  2011-10-24 15:07:36  joergr
  * Added static method counting the characters in a given UTF-8 string.
  *

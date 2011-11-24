@@ -3,6 +3,21 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.24 (riesmeier)
 
+- Added first version of a simple non-validating XML parser written by Frank
+  Vanden Berghen. This parser is intended to be used for configuration files
+  and the like. Therefore, it is integrated into the DCMTK (unlike libxml2).
+  Added:   ofstd/include/dcmtk/ofstd/ofxml.h
+           ofstd/libsrc/ofxml.cc
+           ofstd/tests/tests.cc
+           ofstd/tests/txml.cc
+  Affects: COPYRIGHT
+           ofstd/libsrc/CMakeLists.txt
+           ofstd/libsrc/Makefile.dep
+           ofstd/libsrc/Makefile.in
+           ofstd/tests/CMakeLists.txt
+           ofstd/tests/Makefile.dep
+           ofstd/tests/Makefile.in
+
 - Moved implementation of putOFStringArray() from DcmByteString to DcmElement.
   Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
            dcmdata/include/dcmtk/dcmdata/dcelem.h
