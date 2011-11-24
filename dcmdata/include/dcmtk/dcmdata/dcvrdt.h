@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:51 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2011-11-24 14:46:36 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,8 +150,9 @@ class DcmDateTime
     /** get the current element value in ISO date/time format.
      *  The ISO date/time format supported by this function is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]]
      *  [&HH:MM]" where the brackets enclose optional parts. Please note that the element value
-     *  is expected to be in valid DICOM DT format ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]"). If
-     *  this function fails the result variable 'formattedDateTime' is cleared automatically.
+     *  is expected to be in valid DICOM DT format ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]").
+     *  If this function fails or the current element value is empty, the result variable
+     *  'formattedDateTime' is cleared automatically.
      *  @param formattedDateTime reference to string variable where the result is stored
      *  @param pos index of the element component in case of value multiplicity (0..vm-1)
      *  @param seconds add optional seconds (":SS") if OFTrue
@@ -244,8 +245,9 @@ class DcmDateTime
      *  Please note that the element value is expected to be in valid DICOM DT format
      *  ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]"). If the optional time zone ("&ZZZZ") is
      *  missing the local time zone is used.
-     *  If this function fails the result variable 'dateTimeValue' is cleared automatically.
-     *  @param dicomDateTime string value in DICOM DT format to be converted to ISO format
+     *  If this function fails, the result variable 'dateTimeValue' is cleared automatically.
+     *  @param dicomDateTime string value in DICOM DT format to be converted to ISO format.
+     *    An empty string is not regarded as valid input, since the date/time would be unknown.
      *  @param dateTimeValue reference to OFDateTime variable where the result is stored
      *  @return EC_Normal upon success, an error code otherwise
      */
@@ -256,7 +258,8 @@ class DcmDateTime
      *  The ISO date/time format supported by this function is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]]
      *  [&HH:MM]" where the brackets enclose optional parts. Please note that the specified
      *  value is expected to be in valid DICOM DT format ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]").
-     *  If this function fails the result variable 'formattedDateTime' is cleared automatically.
+     *  If this function fails or the specified DICOM datetime value is empty, the result
+     *  variable 'formattedDateTime' is cleared automatically.
      *  @param dicomDateTime string value in DICOM DT format to be converted to ISO format
      *  @param formattedDateTime reference to string variable where the result is stored
      *  @param seconds add optional seconds (":SS") if OFTrue
@@ -321,6 +324,10 @@ class DcmDateTime
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.h,v $
+** Revision 1.31  2011-11-24 14:46:36  joergr
+** Handle an empty element/input value as a special case in the "convert to ISO
+** format" methods, i.e. the resulting string is cleared and no error reported.
+**
 ** Revision 1.30  2011-02-02 15:13:51  joergr
 ** Moved documentation of valid values for the VMs that can be checked to a
 ** central place, i.e. DcmElement::checkVM().

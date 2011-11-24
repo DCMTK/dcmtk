@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:51 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2011-11-24 14:46:36 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,11 +152,11 @@ class DcmTime
      *  where the brackets enclose optional parts. Please note that the element value
      *  is expected to be in valid DICOM TM format ("[HH[MM[SS[.FFFFFF]]]]",
      *  "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons of backward compatibility).
-     *  If this function fails the result variable 'formattedTime' is cleared automatically.
-     *  Please note that if the "Timezone Offset From UTC" attribute (0008,0201) is present,
-     *  it applies to all TM attributes in the object. However, the time zone is not taken
-     *  into account for the creation of the ISO formatted time.
-     *  See also "getTimeZoneFromString()" below.
+     *  If this function fails or the current element value is empty, the result variable
+     *  'formattedTime' is cleared automatically. Please note that if the "Timezone Offset
+     *  From UTC" attribute (0008,0201) is present, it applies to all TM attributes in the
+     *  object. However, the time zone is not taken into account for the creation of the
+     *  ISO formatted time. See also "getTimeZoneFromString()" below.
      *  @param formattedTime reference to string variable where the result is stored
      *  @param pos index of the element component in case of value multiplicity (0..vm-1)
      *  @param seconds add optional seconds (":SS") if OFTrue
@@ -214,7 +214,8 @@ class DcmTime
      *  of backward compatibility). Since there is no time zone for the DICOM TM format
      *  local time is assumed (the time zone of 'timeValue' is set automatically).
      *  If this function fails the result variable 'timeValue' is cleared automatically.
-     *  @param dicomTime string value in DICOM TM format to be converted to ISO format
+     *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
+     *    An empty string is not regarded as valid input, since the time would be unknown.
      *  @param timeValue reference to OFTime variable where the result is stored
      *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
      *  @return EC_Normal upon success, an error code otherwise
@@ -224,11 +225,12 @@ class DcmTime
                                            const OFBool supportOldFormat = OFTrue);
 
     /** get the specified DICOM time value in ISO format.
-     *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]"
-     *  where the brackets enclose optional parts. Please note that the specified value
-     *  is expected to be in valid DICOM TM format ("[HH[MM[SS[.FFFFFF]]]]",
-     *  "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons of backward compatibility).
-     *  If this function fails the result variable 'formattedTime' is cleared automatically.
+     *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]" where the
+     *  brackets enclose optional parts. Please note that the specified value is expected
+     *  to be in valid DICOM TM format ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]"
+     *  is also supported for reasons of backward compatibility). If this function fails
+     *  or the specified DICOM time value is empty, the result variable 'formattedTime'
+     *  is cleared automatically.
      *  @param dicomTime string value in DICOM TM format to be converted to ISO format
      *  @param formattedTime reference to string variable where the result is stored
      *  @param seconds add optional seconds (":SS") if OFTrue
@@ -281,6 +283,10 @@ class DcmTime
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.h,v $
+** Revision 1.28  2011-11-24 14:46:36  joergr
+** Handle an empty element/input value as a special case in the "convert to ISO
+** format" methods, i.e. the resulting string is cleared and no error reported.
+**
 ** Revision 1.27  2011-02-02 15:13:51  joergr
 ** Moved documentation of valid values for the VMs that can be checked to a
 ** central place, i.e. DcmElement::checkVM().

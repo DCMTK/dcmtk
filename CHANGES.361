@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.24 (riesmeier)
 
+- Handle an empty element/input value as a special case in the "convert to ISO
+  format" methods, i.e. the resulting string is cleared and no error reported.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcvrda.h
+           dcmdata/include/dcmtk/dcmdata/dcvrdt.h
+           dcmdata/include/dcmtk/dcmdata/dcvrtm.h
+           dcmdata/libsrc/dcvrda.cc
+           dcmdata/libsrc/dcvrdt.cc
+           dcmdata/libsrc/dcvrtm.cc
+
 - Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
   now return a status code, the get methods provide a "pos" and the set methods
   a "check" parameter. Please note that this is an incompatible API change!

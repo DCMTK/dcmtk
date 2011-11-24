@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-13 16:14:30 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2011-11-24 14:46:38 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,6 +154,7 @@ OFCondition DcmDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
                                                  const OFString &dateTimeSeparator)
 {
     OFString dicomDateTime;
+    /* get current element value and convert to ISO formatted date/time */
     OFCondition l_error = getOFString(dicomDateTime, pos);
     if (l_error.good())
     {
@@ -305,7 +306,7 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
                                                            const OFBool createMissingPart,
                                                            const OFString &dateTimeSeparator)
 {
-    OFCondition l_error = EC_IllegalParameter;
+    OFCondition l_error = EC_Normal;
     const size_t length = dicomDateTime.length();
     /* minimum DT format: YYYYMMDD */
     if (length >= 8)
@@ -343,6 +344,15 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
             }
         }
     }
+    else if (length == 0)
+    {
+        /* an empty input string is no error ... */
+        formattedDateTime.clear();
+    } else {
+        /* ... but all other formats are (if not handled before) */
+        l_error = EC_IllegalParameter;
+    }
+    /* clear result variable in case of error */
     if (l_error.bad())
         formattedDateTime.clear();
     return l_error;
@@ -397,6 +407,10 @@ OFCondition DcmDateTime::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
+** Revision 1.35  2011-11-24 14:46:38  joergr
+** Handle an empty element/input value as a special case in the "convert to ISO
+** format" methods, i.e. the resulting string is cleared and no error reported.
+**
 ** Revision 1.34  2011-10-13 16:14:30  joergr
 ** Use putOFStringArray() instead of putString() where appropriate.
 **

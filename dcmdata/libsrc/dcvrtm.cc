@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-13 16:14:30 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2011-11-24 14:46:38 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -270,61 +270,72 @@ OFCondition DcmTime::getISOFormattedTimeFromString(const OFString &dicomTime,
                                                    const OFBool createMissingPart,
                                                    const OFBool supportOldFormat)
 {
-    OFCondition result = EC_IllegalParameter;
-    /* minimal check for valid format */
-    if (supportOldFormat || (dicomTime.find(":") == OFString_npos))
+    OFCondition result = EC_Normal;
+    if (!dicomTime.empty())
     {
-        const size_t length = dicomTime.length();
-        /* check for prior V3.0 version of VR=TM: HH:MM:SS.frac */
-        const size_t minPos = (supportOldFormat && (length > 2) && (dicomTime[2] == ':')) ? 3 : 2;
-        const size_t secPos = (supportOldFormat && (length > minPos + 2) && (dicomTime[minPos + 2] == ':')) ? minPos + 3 : minPos + 2;
-        /* decimal point for fractional seconds */
-        const size_t decPoint = dicomTime.find(".");
-        const size_t decLength = (decPoint != OFString_npos) ? decPoint : length;
-        OFString hourStr, minStr, secStr, fracStr;
-        /* hours */
-        if (decLength >= 2)
-            hourStr = dicomTime.substr(0, 2);
-        else
-            hourStr = "00";
-        /* minutes */
-        if (decLength >= minPos + 2)
-            minStr = dicomTime.substr(minPos, 2);
-        else
-            minStr = "00";
-        /* seconds */
-        if (decLength >= secPos + 2)
-            secStr = dicomTime.substr(secPos, 2);
-        else if (createMissingPart)
-            secStr = "00";
-        /* fractional seconds */
-        if ((length >= secPos + 4) && (decPoint == secPos + 2))
+        /* minimal check for valid format */
+        if (supportOldFormat || (dicomTime.find(":") == OFString_npos))
         {
-            if (length < secPos + 9)
+            const size_t length = dicomTime.length();
+            /* check for prior V3.0 version of VR=TM: HH:MM:SS.frac */
+            const size_t minPos = (supportOldFormat && (length > 2) && (dicomTime[2] == ':')) ? 3 : 2;
+            const size_t secPos = (supportOldFormat && (length > minPos + 2) && (dicomTime[minPos + 2] == ':')) ? minPos + 3 : minPos + 2;
+            /* decimal point for fractional seconds */
+            const size_t decPoint = dicomTime.find(".");
+            const size_t decLength = (decPoint != OFString_npos) ? decPoint : length;
+            OFString hourStr, minStr, secStr, fracStr;
+            /* hours */
+            if (decLength >= 2)
+                hourStr = dicomTime.substr(0, 2);
+            else
+                hourStr = "00";
+            /* minutes */
+            if (decLength >= minPos + 2)
+                minStr = dicomTime.substr(minPos, 2);
+            else
+                minStr = "00";
+            /* seconds */
+            if (decLength >= secPos + 2)
+                secStr = dicomTime.substr(secPos, 2);
+            else if (createMissingPart)
+                secStr = "00";
+            /* fractional seconds */
+            if ((length >= secPos + 4) && (decPoint == secPos + 2))
             {
-                fracStr = dicomTime.substr(secPos + 3);
-                fracStr.append(secPos + 9 - length, '0');
-            } else
-                fracStr = dicomTime.substr(secPos + 3, 6);
-        } else if (createMissingPart)
-            fracStr = "000000";
-        /* concatenate time components */
-        formattedTime = hourStr;
-        formattedTime += ":";
-        formattedTime += minStr;
-        if (seconds && (secStr.length() > 0))
-        {
+                if (length < secPos + 9)
+                {
+                    fracStr = dicomTime.substr(secPos + 3);
+                    fracStr.append(secPos + 9 - length, '0');
+                } else
+                    fracStr = dicomTime.substr(secPos + 3, 6);
+            } else if (createMissingPart)
+                fracStr = "000000";
+            /* concatenate time components */
+            formattedTime = hourStr;
             formattedTime += ":";
-            formattedTime += secStr;
-            if (fraction && (fracStr.length() > 0))
+            formattedTime += minStr;
+            if (seconds && (secStr.length() > 0))
             {
-                formattedTime += ".";
-                formattedTime += fracStr;
+                formattedTime += ":";
+                formattedTime += secStr;
+                if (fraction && (fracStr.length() > 0))
+                {
+                    formattedTime += ".";
+                    formattedTime += fracStr;
+                }
             }
+            result = EC_Normal;
+        } else {
+            /* invalid input format */
+            result = EC_IllegalParameter;
         }
-        result = EC_Normal;
-    } else
+        /* clear the result variable in case of error */
+        if (result.bad())
+            formattedTime.clear();
+    } else {
+        /* input string is empty, so is the result string */
         formattedTime.clear();
+    }
     return result;
 }
 
@@ -400,6 +411,10 @@ OFCondition DcmTime::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
+** Revision 1.36  2011-11-24 14:46:38  joergr
+** Handle an empty element/input value as a special case in the "convert to ISO
+** format" methods, i.e. the resulting string is cleared and no error reported.
+**
 ** Revision 1.35  2011-10-13 16:14:30  joergr
 ** Use putOFStringArray() instead of putString() where appropriate.
 **

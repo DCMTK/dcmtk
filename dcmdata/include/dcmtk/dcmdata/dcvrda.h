@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmDate
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:51 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2011-11-24 14:46:36 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,7 +143,8 @@ class DcmDate
      *  The ISO date format supported by this function is "YYYY-MM-DD". Please note
      *  that the element value is expected to be in valid DICOM DA format ("YYYYMMDD",
      *  "YYYY.MM.DD" is also supported for reasons of backward compatibility).
-     *  If this function fails the result variable 'formattedDate' is cleared automatically.
+     *  If this function fails or the current element value is empty, the result
+     *  variable 'formattedDate' is cleared automatically.
      *  @param formattedDate reference to string variable where the result is stored
      *  @param pos index of the element component in case of value multiplicity (0..vm-1)
      *  @param supportOldFormat if OFTrue support old (prior V3.0) date format (see above)
@@ -177,8 +178,9 @@ class DcmDate
     /** get the specified DICOM date value in OFDate format.
      *  Please note that the specified value is expected to be in valid DICOM DA format
      *  ("YYYYMMDD", "YYYY.MM.DD" is also supported for reasons of backward compatibility).
-     *  If this function fails the result variable 'dateValue' is cleared automatically.
-     *  @param dicomDate string value in DICOM DA format to be converted to ISO format
+     *  If this function fails, the result variable 'dateValue' is cleared automatically.
+     *  @param dicomDate string value in DICOM DA format to be converted to ISO format.
+     *    An empty string is not regarded as valid input, since the date would be unknown.
      *  @param dateValue reference to OFDate variable where the result is stored
      *  @param supportOldFormat if OFTrue support old (prior V3.0) date format (see above)
      *  @return EC_Normal upon success, an error code otherwise
@@ -191,7 +193,8 @@ class DcmDate
      *  The ISO date format supported by this function is "YYYY-MM-DD". Please note
      *  that the specified value is expected to be in valid DICOM DA format ("YYYYMMDD",
      *  "YYYY.MM.DD" is also supported for reasons of backward compatibility).
-     *  If this function fails the result variable 'formattedDate' is cleared automatically.
+     *  If this function fails or the specified DICOM date value is empty, the result
+     *  variable 'formattedDate' is cleared automatically.
      *  @param dicomDate string value in DICOM DA format to be converted to ISO format
      *  @param formattedDate reference to string variable where the result is stored
      *  @param supportOldFormat if OFTrue support old (prior V3.0) date format (see above)
@@ -221,6 +224,10 @@ class DcmDate
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.h,v $
+** Revision 1.25  2011-11-24 14:46:36  joergr
+** Handle an empty element/input value as a special case in the "convert to ISO
+** format" methods, i.e. the resulting string is cleared and no error reported.
+**
 ** Revision 1.24  2011-02-02 15:13:51  joergr
 ** Moved documentation of valid values for the VMs that can be checked to a
 ** central place, i.e. DcmElement::checkVM().

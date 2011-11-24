@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDate
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-13 16:14:30 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2011-11-24 14:46:38 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -238,18 +238,25 @@ OFCondition DcmDate::getISOFormattedDateFromString(const OFString &dicomDate,
                                                    OFString &formattedDate,
                                                    const OFBool supportOldFormat)
 {
-    OFDate dateValue;
-    /* convert string to OFDate */
-    OFCondition l_error = getOFDateFromString(dicomDate, dateValue, supportOldFormat);
-    if (l_error.good())
+    OFCondition l_error = EC_Normal;
+    if (!dicomDate.empty())
     {
-        /* convert OFDate to ISO formatted date */
-        if (!dateValue.getISOFormattedDate(formattedDate))
-            l_error = EC_CorruptedData;
-    }
-    /* in case of error clear result variable */
-    if (l_error.bad())
+        OFDate dateValue;
+        /* convert string to OFDate */
+        l_error = getOFDateFromString(dicomDate, dateValue, supportOldFormat);
+        if (l_error.good())
+        {
+            /* convert OFDate to ISO formatted date */
+            if (!dateValue.getISOFormattedDate(formattedDate))
+                l_error = EC_CorruptedData;
+        }
+        /* clear the result variable in case of error */
+        if (l_error.bad())
+            formattedDate.clear();
+    } else {
+        /* input string is empty, so is the result string */
         formattedDate.clear();
+    }
     return l_error;
 }
 
@@ -296,6 +303,10 @@ OFCondition DcmDate::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.cc,v $
+** Revision 1.25  2011-11-24 14:46:38  joergr
+** Handle an empty element/input value as a special case in the "convert to ISO
+** format" methods, i.e. the resulting string is cleared and no error reported.
+**
 ** Revision 1.24  2011-10-13 16:14:30  joergr
 ** Use putOFStringArray() instead of putString() where appropriate.
 **
