@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.24 (riesmeier)
+
+- Moved implementation of putOFStringArray() from DcmByteString to DcmElement.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcelem.cc
+
 **** Changes from 2011.11.23 (schlachter)
 
 - Change ADD_TEST() call so that we get the full path to the test driver.

@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-21 10:09:09 $
- *  CVS/RCS Revision: $Revision: 1.97 $
+ *  Update Date:      $Date: 2011-11-24 08:59:53 $
+ *  CVS/RCS Revision: $Revision: 1.98 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -762,10 +762,10 @@ OFCondition DcmElement::changeValue(const void *value,
 // ********************************
 
 
-OFCondition DcmElement::putOFStringArray(const OFString& /*stringValue*/)
+OFCondition DcmElement::putOFStringArray(const OFString &val)
 {
-    errorFlag = EC_IllegalCall;
-    return errorFlag;
+    /* sets the value of a complete (possibly multi-valued) string attribute */
+    return putString(val.c_str(), val.length());
 }
 
 
@@ -1838,6 +1838,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.98  2011-11-24 08:59:53  joergr
+** Moved implementation of putOFStringArray() from DcmByteString to DcmElement.
+**
 ** Revision 1.97  2011-10-21 10:09:09  joergr
 ** Minor fix to keep VisualStudio from moaning.
 **

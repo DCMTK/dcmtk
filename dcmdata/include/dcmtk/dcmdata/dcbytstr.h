@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-14 11:11:42 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2011-11-24 08:59:51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -215,12 +215,6 @@ class DcmByteString: public DcmElement
     virtual OFCondition putString(const char *stringVal,
                                   const Uint32 stringLen);
 
-    /** set element value from the given character string.
-     *  @param stringVal input character string (possibly multi-valued)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition putOFStringArray(const OFString &stringVal);
-
     /** check the currently stored string value.
      *  Checks every string component for the maximum length specified for the particular
      *  value representation.
@@ -402,6 +396,9 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
+** Revision 1.52  2011-11-24 08:59:51  joergr
+** Moved implementation of putOFStringArray() from DcmByteString to DcmElement.
+**
 ** Revision 1.51  2011-11-14 11:11:42  joergr
 ** Slightly improved API documentation on containsExtendedCharacters() and
 ** isAffectedBySpecificCharacterSet().

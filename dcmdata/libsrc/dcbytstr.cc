@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-02 11:22:00 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Update Date:      $Date: 2011-11-24 08:59:53 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -407,13 +407,6 @@ OFCondition DcmByteString::putString(const char *stringVal,
 }
 
 
-OFCondition DcmByteString::putOFStringArray(const OFString &stringVal)
-{
-    /* sets the value of a complete (possibly multi-valued) string attribute */
-    return putString(stringVal.c_str(), stringVal.length());
-}
-
-
 // ********************************
 
 
@@ -796,6 +789,9 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.67  2011-11-24 08:59:53  joergr
+** Moved implementation of putOFStringArray() from DcmByteString to DcmElement.
+**
 ** Revision 1.66  2011-11-02 11:22:00  joergr
 ** Fixed issue with UI values not being properly normalized in getOFString().
 **

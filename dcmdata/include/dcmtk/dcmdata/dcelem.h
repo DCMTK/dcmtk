@@ -18,8 +18,8 @@
  *  Purpose: Interface of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:09 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2011-11-24 08:59:51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,10 +426,10 @@ class DcmElement
     /** replace the element value by a copy of the given string (which is possibly
      *  multi-valued). Requires element to be of corresponding VR, otherwise an error
      *  is returned.
-     *  @param stringValue new attribute value
+     *  @param val new attribute value
      *  @return EC_Normal upon success, an error code otherwise
      */
-    virtual OFCondition putOFStringArray(const OFString &stringValue);
+    virtual OFCondition putOFStringArray(const OFString &val);
 
     /** replace the element value by a copy of the given string (which is possibly
      *  multi-valued). Requires element to be of corresponding VR, otherwise an error
@@ -859,6 +859,9 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
+** Revision 1.52  2011-11-24 08:59:51  joergr
+** Moved implementation of putOFStringArray() from DcmByteString to DcmElement.
+**
 ** Revision 1.51  2011-10-18 14:00:09  joergr
 ** Added support for embedded NULL bytes in string element values.
 **
