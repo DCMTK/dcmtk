@@ -19,8 +19,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-09 14:11:08 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2011-11-24 11:47:53 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,8 +72,9 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
             if (result.good())
             {
                 // check extended character set
-                const char *charset = dsrdoc->getSpecificCharacterSet();
-                if (((charset == NULL) || (strlen(charset) == 0)) && dset->containsExtendedCharacters(checkAllStrings))
+                OFString charset;
+                if ((dsrdoc->getSpecificCharacterSet(charset).bad() || charset.empty()) &&
+                    dset->containsExtendedCharacters(checkAllStrings))
                 {
                     // we have an unspecified extended character set
                     if (defaultCharset == NULL)
@@ -409,6 +410,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
+ * Revision 1.46  2011-11-24 11:47:53  joergr
+ * Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
+ * now return a status code, the get methods provide a "pos" and the set methods
+ * a "check" parameter. Please note that this is an incompatible API change!
+ *
  * Revision 1.45  2011-11-09 14:11:08  joergr
  * Changed the way option --charset-assume works. Now, the DICOM defined term
  * for the character set has to be used (old values are still supported). This

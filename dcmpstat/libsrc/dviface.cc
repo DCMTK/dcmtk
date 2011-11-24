@@ -17,9 +17,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-06-15 08:44:58 $
- *  CVS/RCS Revision: $Revision: 1.166 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-11-24 11:47:59 $
+ *  CVS/RCS Revision: $Revision: 1.167 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -780,14 +780,14 @@ OFCondition DVInterface::saveStructuredReport()
     if (pReport == NULL)
         return EC_IllegalCall;
     OFString sopClassUID;
-    if (pReport->getSOPClassUID(sopClassUID).length() == 0)
+    if (pReport->getSOPClassUID(sopClassUID).bad() || sopClassUID.empty())
         return EC_IllegalCall;
     OFString instanceUID;
-    if (pReport->getSOPInstanceUID(instanceUID).length() == 0)
+    if (pReport->getSOPInstanceUID(instanceUID).bad() || instanceUID.empty())
         return EC_IllegalCall;
 
     DcmQueryRetrieveDatabaseStatus dbStatus(STATUS_Success);
-    char filename[MAXPATHLEN+1];
+    char filename[MAXPATHLEN + 1];
     OFCondition result = EC_Normal;
 
     DcmQueryRetrieveIndexDatabaseHandle dbhandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, result);
@@ -4233,6 +4233,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
+ *  Revision 1.167  2011-11-24 11:47:59  joergr
+ *  Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
+ *  now return a status code, the get methods provide a "pos" and the set methods
+ *  a "check" parameter. Please note that this is an incompatible API change!
+ *
  *  Revision 1.166  2011-06-15 08:44:58  uli
  *  Moved log4cplus into namespace dcmtk::log4cplus.
  *

@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-08-02 08:32:34 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Update Date:      $Date: 2011-11-24 11:47:55 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1036,7 +1036,7 @@ class DSRTypes
      *  This method is used to convert character strings for text "print" output.  Newline characters
      *  "\n" are replaced by "\\n", return characters "\r" by "\\r", etc.
      ** @param  sourceString  source string to be converted
-     *  @param  printString   reference to character string where the result should be stored
+     *  @param  printString   reference to variable where the result should be stored
      ** @return reference to resulting 'printString' (might be empty if 'sourceString' was empty)
      */
     static const OFString &convertToPrintString(const OFString &sourceString,
@@ -1048,7 +1048,7 @@ class DSRTypes
      *  is set all characters > #127 are also converted (useful if only HTML 3.2 is supported which
      *  does not allow to specify the character set).
      ** @param  sourceString     source string to be converted
-     *  @param  markupString     reference to character string where the result should be stored
+     *  @param  markupString     reference to variable where the result should be stored
      *  @param  flags            optional flags, checking HF_convertNonASCIICharacters,
                                  HF_HTML32Compatibility and HF_XHTML11Compatibility only
      *  @param  newlineAllowed   optional flag indicating whether newlines are allowed or not.
@@ -1065,7 +1065,7 @@ class DSRTypes
      *  Characters with special meaning for XML (e.g. '<' and '&') are replace by the
      *  corresponding mnenonics (e.g. "&lt;" and "&amp;").
      ** @param  sourceString  source string to be converted
-     *  @param  markupString  reference to character string where the result should be stored
+     *  @param  markupString  reference to variable where the result should be stored
      ** @return reference to resulting 'markupString' (might be empty if 'sourceString' was empty)
      */
     static const OFString &convertToXMLString(const OFString &sourceString,
@@ -1144,25 +1144,39 @@ class DSRTypes
      */
     static const char *getStringValueFromElement(const DcmElement &delem);
 
-    /** get string value from element
-     ** @param  delem        reference to DICOM element from which the string value should be retrieved
-     *  @param  stringValue  reference to character string where the result should be stored
-     ** @return reference character string if successful, empty string otherwise
-     */
+   /** get string value from element.
+    *  Please note that only the first element value is retrieved (in case of multiple values).
+    ** @param  delem        DICOM element from which the string value should be retrieved
+    *  @param  stringValue  reference to variable where the result should be stored
+    ** @return reference character string if successful, empty string otherwise
+    */
     static const OFString &getStringValueFromElement(const DcmElement &delem,
                                                      OFString &stringValue);
 
-    /** get string value from element and convert to "print" format
-     ** @param  delem        reference to DICOM element from which the string value should be retrieved
-     *  @param  stringValue  reference to character string where the result should be stored
+    /** get string value from element
+     ** @param  delem        DICOM element from which the string value should be retrieved
+     *  @param  stringValue  reference to variable in which the result should be stored.
+     *                       (This parameter is automatically cleared if an error occurs.)
+     *  @param  pos          index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    static OFCondition getStringValueFromElement(const DcmElement &delem,
+                                                 OFString &stringValue,
+                                                 const signed long pos);
+
+    /** get string value from element and convert to "print" format.
+     *  Please note that only the first element value is retrieved (in case of multiple values).
+     ** @param  delem        DICOM element from which the string value should be retrieved
+     *  @param  stringValue  reference to variable in which the result should be stored
      ** @return reference character string if successful, empty string otherwise
      */
     static const OFString &getPrintStringFromElement(const DcmElement &delem,
                                                      OFString &stringValue);
 
-    /** get string value from element and convert to HTML/XML
-     ** @param  delem            reference to DICOM element from which the string value should be retrieved
-     *  @param  stringValue      reference to character string where the result should be stored
+    /** get string value from element and convert to HTML/XML.
+     *  Please note that only the first element value is retrieved (in case of multiple values).
+     ** @param  delem            DICOM element from which the string value should be retrieved
+     *  @param  stringValue      reference to variable in which the result should be stored
      *  @param  convertNonASCII  convert non-ASCII characters (> #127) to numeric value (&\#nnn;) if OFTrue
      ** @return reference character string if successful, empty string otherwise
      */
@@ -1170,11 +1184,12 @@ class DSRTypes
                                                       OFString &stringValue,
                                                       const OFBool convertNonASCII = OFFalse);
 
-    /** get string value from dataset
-     ** @param  dataset      reference to DICOM dataset from which the string should be retrieved.
+    /** get string value from dataset.
+     *  Please note that only the first element value is retrieved (in case of multiple values).
+     ** @param  dataset      DICOM dataset from which the string should be retrieved.
      *                       (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
      *  @param  tagKey       DICOM tag specifying the attribute from which the string should be retrieved
-     *  @param  stringValue  reference to character string in which the result should be stored.
+     *  @param  stringValue  reference to variable in which the result should be stored.
      *                       (This parameter is automatically cleared if the tag could not be found.)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -1212,7 +1227,7 @@ class DSRTypes
                                     const char *moduleName = NULL);
 
     /** get element from dataset and check it for correct value multipicity and type.
-     ** @param  dataset     reference to DICOM dataset from which the element should be retrieved.
+     ** @param  dataset     DICOM dataset from which the element should be retrieved.
      *                      (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
      *  @param  delem       DICOM element used to store the value
      *  @param  vm          value multiplicity (according to the data dictionary) to be checked for.
@@ -1229,10 +1244,10 @@ class DSRTypes
                                                      const char *moduleName = NULL);
 
     /** get string value from dataset and check it for correct value multipicity and type.
-     ** @param  dataset      reference to DICOM dataset from which the element should be retrieved.
+     ** @param  dataset      DICOM dataset from which the element should be retrieved.
      *                       (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
      *  @param  tagKey       DICOM tag specifying the attribute from which the string should be retrieved
-     *  @param  stringValue  reference to character string in which the result should be stored.
+     *  @param  stringValue  reference to variable in which the result should be stored.
      *                       (This parameter is automatically cleared if the tag could not be found.
      *                        It is not cleared if the retrieved string is invalid, e.g. violates VR or
      *                        VM definition.)
@@ -1300,7 +1315,7 @@ class DSRTypes
      *  The output looks like this: "<" tagName ">" stringValue "</" tagName ">"
      *  For elements with DICOM VR=PN the function dicomToXMLPersonName() is used internally.
      ** @param  stream           output stream to which the XML document is written
-     *  @param  delem            reference to DICOM element from which the value is retrieved
+     *  @param  delem            DICOM element from which the value is retrieved
      *  @param  tagName          name of the XML tag used to surround the string value
      *  @param  writeEmptyValue  optional flag indicating whether an empty value should be written
      ** @return OFTrue if tag/value has been written, OFFalse otherwise
@@ -1362,6 +1377,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.74  2011-11-24 11:47:55  joergr
+ *  Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
+ *  now return a status code, the get methods provide a "pos" and the set methods
+ *  a "check" parameter. Please note that this is an incompatible API change!
+ *
  *  Revision 1.73  2011-08-02 08:32:34  joergr
  *  Added more general support for softcopy presentation states (not only GSPS).
  *

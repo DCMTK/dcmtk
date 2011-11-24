@@ -3,6 +3,20 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.24 (riesmeier)
 
+- Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
+  now return a status code, the get methods provide a "pos" and the set methods
+  a "check" parameter. Please note that this is an incompatible API change!
+  Affects: dcmpstat/libsrc/dviface.cc
+           dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrtypes.cc
+
+- Made all public methods "virtual" in order to better support derived classes.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+
 - Minor fixes to also compile with VisualStudio 2008 on Windows systems.
   Affects: ofstd/include/dcmtk/ofstd/ofxml.h
 

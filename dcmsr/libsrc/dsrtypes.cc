@@ -19,8 +19,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-09 11:15:50 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Update Date:      $Date: 2011-11-24 11:47:57 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -932,6 +932,21 @@ const OFString &DSRTypes::getStringValueFromElement(const DcmElement &delem,
 }
 
 
+OFCondition DSRTypes::getStringValueFromElement(const DcmElement &delem,
+                                                OFString &stringValue,
+                                                const signed long pos)
+{
+    OFCondition result = EC_Normal;
+    if (pos < 0)
+        result = OFconst_cast(DcmElement &, delem).getOFStringArray(stringValue);
+    else
+        result = OFconst_cast(DcmElement &, delem).getOFString(stringValue, OFstatic_cast(unsigned long, pos));
+    if (result.bad())
+        stringValue.clear();
+    return result;
+}
+
+
 const OFString &DSRTypes::getPrintStringFromElement(const DcmElement &delem,
                                                     OFString &stringValue)
 {
@@ -964,7 +979,7 @@ OFCondition DSRTypes::putStringValueToDataset(DcmItem &dataset,
 {
     OFCondition result = EC_Normal;
     if (allowEmpty || !stringValue.empty())
-        result = dataset.putAndInsertString(tag, stringValue.c_str(), OFTrue /*replaceOld*/);
+        result = dataset.putAndInsertOFStringArray(tag, stringValue, OFTrue /*replaceOld*/);
     return result;
 }
 
@@ -1620,6 +1635,11 @@ OFLogger DCM_dcmsrLogger = OFLog::getLogger("dcmtk.dcmsr");
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.80  2011-11-24 11:47:57  joergr
+ *  Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
+ *  now return a status code, the get methods provide a "pos" and the set methods
+ *  a "check" parameter. Please note that this is an incompatible API change!
+ *
  *  Revision 1.79  2011-11-09 11:15:50  joergr
  *  Made sure that "ISO_IR 6" is never written as the defined term for ASCII.
  *

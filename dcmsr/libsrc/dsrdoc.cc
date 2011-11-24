@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-22 17:22:38 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Update Date:      $Date: 2011-11-24 11:47:57 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -672,8 +672,10 @@ OFCondition DSRDocument::readXML(const OFString &filename,
                 result = doc.getElementFromAttribute(cursor, SOPClassUID, "uid");
                 if (result.good())
                 {
+                    OFString sopClassUID;
+                    getSOPClassUID(sopClassUID);
                     /* create new document of specified type (also checks for support) */
-                    result = createNewDocument(sopClassUIDToDocumentType(getSOPClassUID()));
+                    result = createNewDocument(sopClassUIDToDocumentType(sopClassUID));
                     if (result.good())
                     {
                         /* proceed with document header */
@@ -732,7 +734,7 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                     /* Referring Physician's Name */
                     OFString tmpString;
                     DSRPNameTreeNode::getValueFromXMLNodeContent(doc, childNode.getChild(), tmpString);
-                    ReferringPhysicianName.putString(tmpString.c_str());
+                    ReferringPhysicianName.putOFStringArray(tmpString);
                 }
             }
             else if (doc.matchNode(cursor, "patient"))
@@ -802,13 +804,13 @@ OFCondition DSRDocument::readXMLPatientData(const DSRXMLDocument &doc,
             {
                 /* Patient's Name */
                 DSRPNameTreeNode::getValueFromXMLNodeContent(doc, cursor.getChild(), tmpString);
-                PatientName.putString(tmpString.c_str());
+                PatientName.putOFStringArray(tmpString);
             }
             else if (doc.matchNode(cursor, "birthday"))
             {
                 /* Patient's Birth Date */
                 DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(cursor.getChild(), "date"), tmpString);
-                PatientBirthDate.putString(tmpString.c_str());
+                PatientBirthDate.putOFStringArray(tmpString);
             }
             else if (doc.getElementFromNodeContent(cursor, PatientID, "id").bad() &&
                      doc.getElementFromNodeContent(cursor, PatientSex, "sex").bad())
@@ -847,12 +849,12 @@ OFCondition DSRDocument::readXMLStudyData(const DSRXMLDocument &doc,
             else if (doc.matchNode(cursor, "date"))
             {
                 DSRDateTreeNode::getValueFromXMLNodeContent(doc, cursor, tmpString);
-                StudyDate.putString(tmpString.c_str());
+                StudyDate.putOFStringArray(tmpString);
             }
             else if (doc.matchNode(cursor, "time"))
             {
                 DSRTimeTreeNode::getValueFromXMLNodeContent(doc, cursor, tmpString);
-                StudyTime.putString(tmpString.c_str());
+                StudyTime.putOFStringArray(tmpString);
             }
             else if (doc.getElementFromNodeContent(cursor, StudyID, "id").bad() &&
                      doc.getElementFromNodeContent(cursor, StudyDescription, "description", OFTrue /*encoding*/).bad())
@@ -920,10 +922,10 @@ OFCondition DSRDocument::readXMLInstanceData(const DSRXMLDocument &doc,
             {
                 /* Instance Creation Date */
                 DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(cursor.getChild(), "date"), tmpString);
-                InstanceCreationDate.putString(tmpString.c_str());
+                InstanceCreationDate.putOFStringArray(tmpString);
                 /* Instance Creation Time */
                 DSRTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(cursor.getChild(), "time"), tmpString);
-                InstanceCreationTime.putString(tmpString.c_str());
+                InstanceCreationTime.putOFStringArray(tmpString);
             }
             else if (doc.getElementFromNodeContent(cursor, InstanceNumber, "number").bad())
                 doc.printUnexpectedNodeWarning(cursor);
@@ -1001,10 +1003,10 @@ OFCondition DSRDocument::readXMLDocumentData(const DSRXMLDocument &doc,
                 const DSRXMLCursor childCursor = cursor.getChild();
                 /* Content Date */
                 DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(childCursor, "date"), tmpString);
-                ContentDate.putString(tmpString.c_str());
+                ContentDate.putOFStringArray(tmpString);
                 /* Content Time */
                 DSRTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(childCursor, "time"), tmpString);
-                ContentTime.putString(tmpString.c_str());
+                ContentTime.putOFStringArray(tmpString);
                 /* proceed with document tree */
                 result = DocumentTree.readXML(doc, childCursor, flags);
             } else
@@ -1731,21 +1733,22 @@ DSRTypes::E_PreliminaryFlag DSRDocument::getPreliminaryFlag() const
 }
 
 
+OFCondition DSRDocument::setPreliminaryFlag(const E_PreliminaryFlag flag)
+{
+    OFCondition result = EC_IllegalCall;
+    /* not applicable to Key Object Selection Documents */
+    if (getDocumentType() != DT_KeyObjectSelectionDocument)
+    {
+        PreliminaryFlagEnum = flag;
+        result = EC_Normal;
+    }
+    return result;
+}
+
+
 DSRTypes::E_CompletionFlag DSRDocument::getCompletionFlag() const
 {
     return CompletionFlagEnum;
-}
-
-
-const char *DSRDocument::getCompletionFlagDescription() const
-{
-    return getStringValueFromElement(CompletionFlagDescription);
-}
-
-
-const OFString &DSRDocument::getCompletionFlagDescription(OFString &description) const
-{
-    return getStringValueFromElement(CompletionFlagDescription, description);
 }
 
 
@@ -1840,502 +1843,410 @@ DSRCodingSchemeIdentificationList &DSRDocument::getCodingSchemeIdentification()
 }
 
 
-// --- get attributes (C string) ---
-
-const char *DSRDocument::getModality() const
-{
-    return getStringValueFromElement(Modality);
-}
-
-
-const char *DSRDocument::getSOPClassUID() const
-{
-    return getStringValueFromElement(SOPClassUID);
-}
-
-
-const char *DSRDocument::getStudyInstanceUID() const
-{
-    return getStringValueFromElement(StudyInstanceUID);
-}
-
-
-const char *DSRDocument::getSeriesInstanceUID() const
-{
-    return getStringValueFromElement(SeriesInstanceUID);
-}
-
-
-const char *DSRDocument::getSOPInstanceUID() const
-{
-    return getStringValueFromElement(SOPInstanceUID);
-}
-
-
-const char *DSRDocument::getInstanceCreatorUID() const
-{
-    return getStringValueFromElement(InstanceCreatorUID);
-}
-
-
-const char *DSRDocument::getSpecificCharacterSet() const
-{
-    return getStringValueFromElement(SpecificCharacterSet);
-}
-
-
-const char *DSRDocument::getPatientName() const
-{
-    return getStringValueFromElement(PatientName);
-}
-
-
-const char *DSRDocument::getPatientBirthDate() const
-{
-    return getStringValueFromElement(PatientBirthDate);
-}
-
-
-const char *DSRDocument::getPatientSex() const
-{
-    return getStringValueFromElement(PatientSex);
-}
-
-
-const char *DSRDocument::getReferringPhysicianName() const
-{
-    return getStringValueFromElement(ReferringPhysicianName);
-}
-
-
-const char *DSRDocument::getStudyDescription() const
-{
-    return getStringValueFromElement(StudyDescription);
-}
-
-
-const char *DSRDocument::getSeriesDescription() const
-{
-    return getStringValueFromElement(SeriesDescription);
-}
-
-
-const char *DSRDocument::getManufacturer() const
-{
-    return getStringValueFromElement(Manufacturer);
-}
-
-
-const char *DSRDocument::getManufacturerModelName() const
-{
-    return getStringValueFromElement(ManufacturerModelName);
-}
-
-
-const char *DSRDocument::getDeviceSerialNumber() const
-{
-    return getStringValueFromElement(DeviceSerialNumber);
-}
-
-
-const char *DSRDocument::getSoftwareVersions() const
-{
-    return getStringValueFromElement(SoftwareVersions);
-}
-
-
-const char *DSRDocument::getStudyDate() const
-{
-    return getStringValueFromElement(StudyDate);
-}
-
-
-const char *DSRDocument::getStudyTime() const
-{
-    return getStringValueFromElement(StudyTime);
-}
-
-
-const char *DSRDocument::getInstanceCreationDate() const
-{
-    return getStringValueFromElement(InstanceCreationDate);
-}
-
-
-const char *DSRDocument::getInstanceCreationTime() const
-{
-    return getStringValueFromElement(InstanceCreationTime);
-}
-
-
-const char *DSRDocument::getContentDate() const
-{
-    return getStringValueFromElement(ContentDate);
-}
-
-
-const char *DSRDocument::getContentTime() const
-{
-    return getStringValueFromElement(ContentTime);
-}
-
-
-const char *DSRDocument::getStudyID() const
-{
-    return getStringValueFromElement(StudyID);
-}
-
-
-const char *DSRDocument::getPatientID() const
-{
-    return getStringValueFromElement(PatientID);
-}
-
-
-const char *DSRDocument::getSeriesNumber() const
-{
-    return getStringValueFromElement(SeriesNumber);
-}
-
-
-const char *DSRDocument::getInstanceNumber() const
-{
-    return getStringValueFromElement(InstanceNumber);
-}
-
-
-const char *DSRDocument::getAccessionNumber() const
-{
-    return getStringValueFromElement(AccessionNumber);
-}
-
-
 // --- get attributes (C++ string) ---
 
-const OFString &DSRDocument::getModality(OFString &value) const
+OFCondition DSRDocument::getSpecificCharacterSet(OFString &value,
+                                                 const signed long pos) const
 {
-    return getStringValueFromElement(Modality, value);
+    return getStringValueFromElement(SpecificCharacterSet, value, pos);
 }
 
 
-const OFString &DSRDocument::getSOPClassUID(OFString &value) const
+OFCondition DSRDocument::getCompletionFlagDescription(OFString &value,
+                                                     const signed long pos) const
 {
-    return getStringValueFromElement(SOPClassUID, value);
+    return getStringValueFromElement(CompletionFlagDescription, value, pos);
 }
 
 
-const OFString &DSRDocument::getStudyInstanceUID(OFString &value) const
+OFCondition DSRDocument::getModality(OFString &value,
+                                     const signed long pos) const
 {
-    return getStringValueFromElement(StudyInstanceUID, value);
+    return getStringValueFromElement(Modality, value, pos);
 }
 
 
-const OFString &DSRDocument::getSeriesInstanceUID(OFString &value) const
+OFCondition DSRDocument::getSOPClassUID(OFString &value,
+                                        const signed long pos) const
 {
-    return getStringValueFromElement(SeriesInstanceUID, value);
+    return getStringValueFromElement(SOPClassUID, value, pos);
 }
 
 
-const OFString &DSRDocument::getSOPInstanceUID(OFString &value) const
+OFCondition DSRDocument::getStudyInstanceUID(OFString &value,
+                                             const signed long pos) const
 {
-    return getStringValueFromElement(SOPInstanceUID, value);
+    return getStringValueFromElement(StudyInstanceUID, value, pos);
 }
 
 
-const OFString &DSRDocument::getInstanceCreatorUID(OFString &value) const
+OFCondition DSRDocument::getSeriesInstanceUID(OFString &value,
+                                              const signed long pos) const
 {
-    return getStringValueFromElement(InstanceCreatorUID, value);
+    return getStringValueFromElement(SeriesInstanceUID, value, pos);
 }
 
 
-const OFString &DSRDocument::getSpecificCharacterSet(OFString &value) const
+OFCondition DSRDocument::getSOPInstanceUID(OFString &value,
+                                           const signed long pos) const
 {
-    return getStringValueFromElement(SpecificCharacterSet, value);
+    return getStringValueFromElement(SOPInstanceUID, value, pos);
 }
 
 
-const OFString &DSRDocument::getPatientName(OFString &value) const
+OFCondition DSRDocument::getInstanceCreatorUID(OFString &value,
+                                               const signed long pos) const
 {
-    return getStringValueFromElement(PatientName, value);
+    return getStringValueFromElement(InstanceCreatorUID, value, pos);
 }
 
 
-const OFString &DSRDocument::getPatientBirthDate(OFString &value) const
+OFCondition DSRDocument::getPatientName(OFString &value,
+                                        const signed long pos) const
 {
-    return getStringValueFromElement(PatientBirthDate, value);
+    return getStringValueFromElement(PatientName, value, pos);
 }
 
 
-const OFString &DSRDocument::getPatientSex(OFString &value) const
+OFCondition DSRDocument::getPatientBirthDate(OFString &value,
+                                             const signed long pos) const
 {
-    return getStringValueFromElement(PatientSex, value);
+    return getStringValueFromElement(PatientBirthDate, value, pos);
 }
 
 
-const OFString &DSRDocument::getReferringPhysicianName(OFString &value) const
+OFCondition DSRDocument::getPatientSex(OFString &value,
+                                       const signed long pos) const
 {
-    return getStringValueFromElement(ReferringPhysicianName, value);
+    return getStringValueFromElement(PatientSex, value, pos);
 }
 
 
-const OFString &DSRDocument::getStudyDescription(OFString &value) const
+OFCondition DSRDocument::getReferringPhysicianName(OFString &value,
+                                                   const signed long pos) const
 {
-    return getStringValueFromElement(StudyDescription, value);
+    return getStringValueFromElement(ReferringPhysicianName, value, pos);
 }
 
 
-const OFString &DSRDocument::getSeriesDescription(OFString &value) const
+OFCondition DSRDocument::getStudyDescription(OFString &value,
+                                             const signed long pos) const
 {
-    return getStringValueFromElement(SeriesDescription, value);
+    return getStringValueFromElement(StudyDescription, value, pos);
 }
 
 
-const OFString &DSRDocument::getManufacturer(OFString &value) const
+OFCondition DSRDocument::getSeriesDescription(OFString &value,
+                                              const signed long pos) const
 {
-    return getStringValueFromElement(Manufacturer, value);
+    return getStringValueFromElement(SeriesDescription, value, pos);
 }
 
 
-const OFString &DSRDocument::getManufacturerModelName(OFString &value) const
+OFCondition DSRDocument::getManufacturer(OFString &value,
+                                         const signed long pos) const
 {
-    return getStringValueFromElement(ManufacturerModelName, value);
+    return getStringValueFromElement(Manufacturer, value, pos);
 }
 
 
-const OFString &DSRDocument::getDeviceSerialNumber(OFString &value) const
+OFCondition DSRDocument::getManufacturerModelName(OFString &value,
+                                                  const signed long pos) const
 {
-    return getStringValueFromElement(DeviceSerialNumber, value);
+    return getStringValueFromElement(ManufacturerModelName, value, pos);
 }
 
 
-const OFString &DSRDocument::getSoftwareVersions(OFString &value) const
+OFCondition DSRDocument::getDeviceSerialNumber(OFString &value,
+                                               const signed long pos) const
 {
-    return getStringValueFromElement(SoftwareVersions, value);
+    return getStringValueFromElement(DeviceSerialNumber, value, pos);
 }
 
 
-const OFString &DSRDocument::getStudyDate(OFString &value) const
+OFCondition DSRDocument::getSoftwareVersions(OFString &value,
+                                             const signed long pos) const
 {
-    return getStringValueFromElement(StudyDate, value);
+    return getStringValueFromElement(SoftwareVersions, value, pos);
 }
 
 
-const OFString &DSRDocument::getStudyTime(OFString &value) const
+OFCondition DSRDocument::getStudyDate(OFString &value,
+                                      const signed long pos) const
 {
-    return getStringValueFromElement(StudyTime, value);
+    return getStringValueFromElement(StudyDate, value, pos);
 }
 
 
-const OFString &DSRDocument::getInstanceCreationDate(OFString &value) const
+OFCondition DSRDocument::getStudyTime(OFString &value,
+                                      const signed long pos) const
 {
-    return getStringValueFromElement(InstanceCreationDate, value);
+    return getStringValueFromElement(StudyTime, value, pos);
 }
 
 
-const OFString &DSRDocument::getInstanceCreationTime(OFString &value) const
+OFCondition DSRDocument::getInstanceCreationDate(OFString &value,
+                                                 const signed long pos) const
 {
-    return getStringValueFromElement(InstanceCreationTime, value);
+    return getStringValueFromElement(InstanceCreationDate, value, pos);
 }
 
 
-const OFString &DSRDocument::getContentDate(OFString &value) const
+OFCondition DSRDocument::getInstanceCreationTime(OFString &value,
+                                                 const signed long pos) const
 {
-    return getStringValueFromElement(ContentDate, value);
+    return getStringValueFromElement(InstanceCreationTime, value, pos);
 }
 
 
-const OFString &DSRDocument::getContentTime(OFString &value) const
+OFCondition DSRDocument::getContentDate(OFString &value,
+                                        const signed long pos) const
 {
-    return getStringValueFromElement(ContentTime, value);
+    return getStringValueFromElement(ContentDate, value, pos);
 }
 
 
-const OFString &DSRDocument::getStudyID(OFString &value) const
+OFCondition DSRDocument::getContentTime(OFString &value,
+                                        const signed long pos) const
 {
-    return getStringValueFromElement(StudyID, value);
+    return getStringValueFromElement(ContentTime, value, pos);
 }
 
 
-const OFString &DSRDocument::getPatientID(OFString &value) const
+OFCondition DSRDocument::getStudyID(OFString &value,
+                                    const signed long pos) const
 {
-    return getStringValueFromElement(PatientID, value);
+    return getStringValueFromElement(StudyID, value, pos);
 }
 
 
-const OFString &DSRDocument::getSeriesNumber(OFString &value) const
+OFCondition DSRDocument::getPatientID(OFString &value,
+                                      const signed long pos) const
 {
-    return getStringValueFromElement(SeriesNumber, value);
+    return getStringValueFromElement(PatientID, value, pos);
 }
 
 
-const OFString &DSRDocument::getInstanceNumber(OFString &value) const
+OFCondition DSRDocument::getSeriesNumber(OFString &value,
+                                         const signed long pos) const
 {
-    return getStringValueFromElement(InstanceNumber, value);
+    return getStringValueFromElement(SeriesNumber, value, pos);
 }
 
 
-const OFString &DSRDocument::getAccessionNumber(OFString &value) const
+OFCondition DSRDocument::getInstanceNumber(OFString &value,
+                                           const signed long pos) const
 {
-    return getStringValueFromElement(AccessionNumber, value);
+    return getStringValueFromElement(InstanceNumber, value, pos);
+}
+
+
+OFCondition DSRDocument::getAccessionNumber(OFString &value,
+                                            const signed long pos) const
+{
+    return getStringValueFromElement(AccessionNumber, value, pos);
 }
 
 
 // --- set attributes ---
 
-OFCondition DSRDocument::setSpecificCharacterSet(const OFString &value)
+OFCondition DSRDocument::setSpecificCharacterSet(const OFString &value,
+                                                 const OFBool check)
 {
-    SpecificCharacterSetEnum = definedTermToCharacterSet(value);
-    /* might add check for correct format (VR) later on */
-    return SpecificCharacterSet.putString(value.c_str());
-}
-
-
-OFCondition DSRDocument::setPreliminaryFlag(const E_PreliminaryFlag flag)
-{
-    OFCondition result = EC_IllegalCall;
-    /* not applicable to Key Object Selection Documents */
-    if (getDocumentType() != DT_KeyObjectSelectionDocument)
+    /* we only support a single value, i.e. no code extensions */
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
     {
-        PreliminaryFlagEnum = flag;
-        result = EC_Normal;
+        SpecificCharacterSetEnum = definedTermToCharacterSet(value);
+        result = SpecificCharacterSet.putOFStringArray(value);
     }
     return result;
 }
 
 
-OFCondition DSRDocument::setCompletionFlagDescription(const OFString &value)
+OFCondition DSRDocument::setCompletionFlagDescription(const OFString &value,
+                                                      const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* not applicable to Key Object Selection Documents */
     if (getDocumentType() != DT_KeyObjectSelectionDocument)
     {
-        if (value.empty())
-        {
-            CompletionFlagDescription.clear();
-            result = EC_Normal;
-        } else
-            result = CompletionFlagDescription.putString(value.c_str());
+        if (check)
+            result = DcmLongString::checkStringValue(value, "1");
+        if (result.good())
+            result = CompletionFlagDescription.putOFStringArray(value);
     }
     return result;
 }
 
 
-OFCondition DSRDocument::setPatientName(const OFString &value)
+OFCondition DSRDocument::setPatientName(const OFString &value,
+                                        const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return PatientName.putString(value.c_str());
+    OFCondition result = (check) ? DcmPersonName::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = PatientName.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setPatientBirthDate(const OFString &value)
+OFCondition DSRDocument::setPatientBirthDate(const OFString &value,
+                                             const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return PatientBirthDate.putString(value.c_str());
+    OFCondition result = (check) ? DcmDate::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = PatientBirthDate.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setPatientSex(const OFString &value)
+OFCondition DSRDocument::setPatientSex(const OFString &value,
+                                       const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return PatientSex.putString(value.c_str());
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = PatientSex.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setReferringPhysicianName(const OFString &value)
+OFCondition DSRDocument::setReferringPhysicianName(const OFString &value,
+                                                   const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return ReferringPhysicianName.putString(value.c_str());
+    OFCondition result = (check) ? DcmPersonName::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ReferringPhysicianName.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setStudyDescription(const OFString &value)
+OFCondition DSRDocument::setStudyDescription(const OFString &value,
+                                             const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return StudyDescription.putString(value.c_str());
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = StudyDescription.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setSeriesDescription(const OFString &value)
+OFCondition DSRDocument::setSeriesDescription(const OFString &value,
+                                              const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return SeriesDescription.putString(value.c_str());
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = SeriesDescription.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setManufacturer(const OFString &value)
+OFCondition DSRDocument::setManufacturer(const OFString &value,
+                                         const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return Manufacturer.putString(value.c_str());
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = Manufacturer.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setManufacturerModelName(const OFString &value)
+OFCondition DSRDocument::setManufacturerModelName(const OFString &value,
+                                                  const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return ManufacturerModelName.putString(value.c_str());
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ManufacturerModelName.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setDeviceSerialNumber(const OFString &value)
+OFCondition DSRDocument::setDeviceSerialNumber(const OFString &value,
+                                               const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return DeviceSerialNumber.putString(value.c_str());
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = DeviceSerialNumber.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setSoftwareVersions(const OFString &value)
+OFCondition DSRDocument::setSoftwareVersions(const OFString &value,
+                                             const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return SoftwareVersions.putString(value.c_str());
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1-n") : EC_Normal;
+    if (result.good())
+        result = SoftwareVersions.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setContentDate(const OFString &value)
+OFCondition DSRDocument::setContentDate(const OFString &value,
+                                        const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return ContentDate.putString(value.c_str());
+    OFCondition result = (check) ? DcmDate::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ContentDate.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setContentTime(const OFString &value)
+OFCondition DSRDocument::setContentTime(const OFString &value,
+                                        const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return ContentTime.putString(value.c_str());
+    OFCondition result = (check) ? DcmTime::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = ContentTime.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setStudyID(const OFString &value)
+OFCondition DSRDocument::setStudyID(const OFString &value,
+                                    const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return StudyID.putString(value.c_str());
+    OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = StudyID.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setPatientID(const OFString &value)
+OFCondition DSRDocument::setPatientID(const OFString &value,
+                                      const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return PatientID.putString(value.c_str());
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = PatientID.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setSeriesNumber(const OFString &value)
+OFCondition DSRDocument::setSeriesNumber(const OFString &value,
+                                         const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return SeriesNumber.putString(value.c_str());
+    OFCondition result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = SeriesNumber.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setInstanceNumber(const OFString &value)
+OFCondition DSRDocument::setInstanceNumber(const OFString &value,
+                                           const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return InstanceNumber.putString(value.c_str());
+    OFCondition result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = InstanceNumber.putOFStringArray(value);
+    return result;
 }
 
 
-OFCondition DSRDocument::setAccessionNumber(const OFString &value)
+OFCondition DSRDocument::setAccessionNumber(const OFString &value,
+                                            const OFBool check)
 {
-    /* might add check for correct format (VR) later on */
-    return AccessionNumber.putString(value.c_str());
+    OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = AccessionNumber.putOFStringArray(value);
+    return result;
 }
 
 
@@ -2362,7 +2273,7 @@ OFCondition DSRDocument::createNewSeriesInStudy(const OFString &studyUID)
     OFCondition result = EC_IllegalParameter;
     if (!studyUID.empty())
     {
-        StudyInstanceUID.putString(studyUID.c_str());
+        StudyInstanceUID.putOFStringArray(studyUID);
         /* also creates new SOP instance */
         createNewSeries();
         result = EC_Normal;
@@ -2415,10 +2326,11 @@ OFCondition DSRDocument::createRevisedVersion(const OFBool clearList)
             if (clearList)
                 PredecessorDocuments.clear();
             /* add current document */
-            result = PredecessorDocuments.addItem(getStringValueFromElement(StudyInstanceUID),
-                                                  getStringValueFromElement(SeriesInstanceUID),
-                                                  getStringValueFromElement(SOPClassUID),
-                                                  getStringValueFromElement(SOPInstanceUID));
+            OFString studyUID, seriesUID, classUID, instanceUID;
+            result = PredecessorDocuments.addItem(getStringValueFromElement(StudyInstanceUID, studyUID),
+                                                  getStringValueFromElement(SeriesInstanceUID, seriesUID),
+                                                  getStringValueFromElement(SOPClassUID, classUID),
+                                                  getStringValueFromElement(SOPInstanceUID, instanceUID));
             if (result.good())
             {
                 IdenticalDocuments.clear();
@@ -2590,9 +2502,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
             OFString tmpString;
             SOPInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
             /* set instance creation date to current date (YYYYMMDD) */
-            InstanceCreationDate.putString(currentDate(tmpString).c_str());
+            InstanceCreationDate.putOFStringArray(currentDate(tmpString));
             /* set instance creation time to current time (HHMMSS) */
-            InstanceCreationTime.putString(currentTime(tmpString).c_str());
+            InstanceCreationTime.putOFStringArray(currentTime(tmpString));
             /* set instance creator UID to identify instances that have been created by this toolkit */
             InstanceCreatorUID.putString(OFFIS_INSTANCE_CREATOR_UID);
         }
@@ -2629,6 +2541,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.77  2011-11-24 11:47:57  joergr
+ *  Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
+ *  now return a status code, the get methods provide a "pos" and the set methods
+ *  a "check" parameter. Please note that this is an incompatible API change!
+ *
  *  Revision 1.76  2011-03-22 17:22:38  joergr
  *  Made sure that the header delimiter " : " is only printed when needed.
  *
