@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.25 (riesmeier)
+
+- Output --version information whether LIBICONV support is included in LIBXML.
+  Affects: dcmdata/apps/xml2dcm.cc
+           dcmsr/apps/xml2dsr.cc
+
 **** Changes from 2011.11.24 (riesmeier)
 
 - Handle an empty element/input value as a special case in the "convert to ISO

@@ -18,8 +18,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-13 16:14:29 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2011-11-25 11:05:34 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -755,6 +755,9 @@ int main(int argc, char *argv[])
                 COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
                 COUT << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << OFendl;
+#ifdef LIBXML_ICONV_ENABLED
+                COUT << "  with built-in LIBICONV support" << OFendl;
+#endif
                 return 0;
             }
         }
@@ -994,6 +997,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.36  2011-11-25 11:05:34  joergr
+ * Output --version information whether LIBICONV support is included in LIBXML.
+ *
  * Revision 1.35  2011-10-13 16:14:29  joergr
  * Use putOFStringArray() instead of putString() where appropriate.
  *

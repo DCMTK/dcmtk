@@ -19,8 +19,8 @@
  *            reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-21 10:31:36 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2011-11-25 11:05:32 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,6 +153,9 @@ int main(int argc, char *argv[])
                 COUT << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << OFendl;
 #ifndef LIBXML_SCHEMAS_ENABLED
                 COUT << "  without XML Schema support" << OFendl;
+#endif
+#ifdef LIBXML_ICONV_ENABLED
+                COUT << "  with built-in LIBICONV support" << OFendl;
 #endif
                 return 0;
             }
@@ -376,6 +379,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
+ * Revision 1.18  2011-11-25 11:05:32  joergr
+ * Output --version information whether LIBICONV support is included in LIBXML.
+ *
  * Revision 1.17  2011-10-21 10:31:36  joergr
  * Fixed some log messages.
  *
