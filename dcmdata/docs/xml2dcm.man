@@ -254,6 +254,13 @@ expected to be little endian ordered and will be swapped if necessary.  No
 checks will be made to ensure that the amount of data is reasonable in terms
 of other attributes such as Rows or Columns.
 
+\subsection compression Compression
+
+If libxml is compiled with zlib support, the input file (\e xmlfile-in) can
+also be compressed with ZIP, which usually results in much smaller files.  See
+output of option \e --version in order to check whether zlib support is
+available.
+
 \subsection limitations Limitations
 
 Different versions of libxml seem to have different limits for the maximum

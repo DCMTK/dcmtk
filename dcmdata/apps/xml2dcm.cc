@@ -18,8 +18,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-25 11:05:34 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2011-11-25 11:49:36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -755,8 +755,12 @@ int main(int argc, char *argv[])
                 COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
                 COUT << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << OFendl;
-#ifdef LIBXML_ICONV_ENABLED
+#if defined(LIBXML_ICONV_ENABLED) && defined(LIBXML_ZLIB_ENABLED)
+                COUT << "  with built-in LIBICONV and ZLIB support" << OFendl;
+#elif defined(LIBXML_ICONV_ENABLED)
                 COUT << "  with built-in LIBICONV support" << OFendl;
+#elif defined(LIBXML_ZLIB_ENABLED)
+                COUT << "  with built-in ZLIB support" << OFendl;
 #endif
                 return 0;
             }
@@ -997,6 +1001,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.37  2011-11-25 11:49:36  joergr
+ * Added note that the XML input file can also be compressed with ZIP if libxml
+ * has been compiled with ZLIB support (see --version output).
+ *
  * Revision 1.36  2011-11-25 11:05:34  joergr
  * Output --version information whether LIBICONV support is included in LIBXML.
  *

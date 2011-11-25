@@ -19,8 +19,8 @@
  *            reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-25 11:05:32 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2011-11-25 11:49:40 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,8 +154,12 @@ int main(int argc, char *argv[])
 #ifndef LIBXML_SCHEMAS_ENABLED
                 COUT << "  without XML Schema support" << OFendl;
 #endif
-#ifdef LIBXML_ICONV_ENABLED
+#if defined(LIBXML_ICONV_ENABLED) && defined(LIBXML_ZLIB_ENABLED)
+                COUT << "  with built-in LIBICONV and ZLIB support" << OFendl;
+#elif defined(LIBXML_ICONV_ENABLED)
                 COUT << "  with built-in LIBICONV support" << OFendl;
+#elif defined(LIBXML_ZLIB_ENABLED)
+                COUT << "  with built-in ZLIB support" << OFendl;
 #endif
                 return 0;
             }
@@ -379,6 +383,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
+ * Revision 1.19  2011-11-25 11:49:40  joergr
+ * Added note that the XML input file can also be compressed with ZIP if libxml
+ * has been compiled with ZLIB support (see --version output).
+ *
  * Revision 1.18  2011-11-25 11:05:32  joergr
  * Output --version information whether LIBICONV support is included in LIBXML.
  *

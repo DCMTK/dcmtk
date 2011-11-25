@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.25 (riesmeier)
 
+- Added note that the XML input file can also be compressed with ZIP if libxml
+  has been compiled with ZLIB support (see --version output).
+  Affects: dcmdata/apps/xml2dcm.cc
+           dcmdata/docs/xml2dcm.man
+           dcmsr/apps/xml2dsr.cc
+           dcmsr/docs/xml2dsr.man
+
 - Added clarifying note on the maximum length of XML element values (introduced
   with libxml 2.7.3).
   Affects: dcmdata/docs/xml2dcm.man

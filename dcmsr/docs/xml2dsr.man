@@ -78,6 +78,8 @@ validation:
          validate XML document against Schema
          (not with --template-envelope)
 
+  # requires libxml to be compiled with XML Schema support
+
   +Vn  --check-namespace
          check XML namespace in document root
 
@@ -213,6 +215,13 @@ Hebrew        "ISO_IR 138"  (ISO-8859-8)
 Multiple character sets are not supported (only the first value of the
 "Specific Character Set" is used for the character encoding in case of value
 multiplicity).
+
+\subsection compression Compression
+
+If libxml is compiled with zlib support, the input file (\e xmlfile-in) can
+also be compressed with ZIP, which usually results in much smaller files.  See
+output of option \e --version in order to check whether zlib support is
+available.
 
 \subsection limitations Limitations
 
