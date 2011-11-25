@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.25 (riesmeier)
 
+- Added clarifying note on the maximum length of XML element values (introduced
+  with libxml 2.7.3).
+  Affects: dcmdata/docs/xml2dcm.man
+           dcmsr/docs/xml2dsr.man
+
 - Output --version information whether LIBICONV support is included in LIBXML.
   Affects: dcmdata/apps/xml2dcm.cc
            dcmsr/apps/xml2dsr.cc

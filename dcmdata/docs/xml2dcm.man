@@ -215,11 +215,11 @@ The "file-format" and "meta-header" tags may be absent for DICOM data sets.
 
 The DICOM character encoding is determined automatically from the element with
 tag "0008,0005" (Specific Character Set) - if present.  The following
-character sets are currently supported (requires \b libxml2 to include \b iconv
-support):
+character sets are currently supported (requires \b libxml to include \b iconv
+support, see \e --version output):
 
 \verbatim
-ASCII         "ISO_IR 6"    (UTF-8)
+ASCII         (ISO_IR 6)    (UTF-8)
 UTF-8         "ISO_IR 192"  (UTF-8)
 ISO Latin 1   "ISO_IR 100"  (ISO-8859-1)
 ISO Latin 2   "ISO_IR 101"  (ISO-8859-2)
@@ -255,6 +255,11 @@ checks will be made to ensure that the amount of data is reasonable in terms
 of other attributes such as Rows or Columns.
 
 \subsection limitations Limitations
+
+Different versions of libxml seem to have different limits for the maximum
+length of an XML element value.  Therefore, it should be avoided to use very
+long element values (e.g. for pixel data).  A typical limit for libxml version
+2.7.3 (and above) is 10 MB for a single element value.
 
 Please note that \b xml2dcm currently does not fully support DICOMDIR files.
 Specifically, the value of the various offset data elements is not updated
@@ -327,6 +332,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2003-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

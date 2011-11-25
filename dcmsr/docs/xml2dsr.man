@@ -189,6 +189,38 @@ ImplantationPlanSRDocumentStorage           1.2.840.10008.5.1.4.1.1.88.70
 Please note that currently only mandatory and some optional attributes are
 supported.
 
+\subsection character_encoding Character Encoding
+
+The DICOM character encoding is determined automatically from the element with
+tag "0008,0005" (Specific Character Set) - if present.  The following
+character sets are currently supported (requires \b libxml to include \b iconv
+support, see \e --version output):
+
+\verbatim
+ASCII         (ISO_IR 6)    (UTF-8)
+UTF-8         "ISO_IR 192"  (UTF-8)
+ISO Latin 1   "ISO_IR 100"  (ISO-8859-1)
+ISO Latin 2   "ISO_IR 101"  (ISO-8859-2)
+ISO Latin 3   "ISO_IR 109"  (ISO-8859-3)
+ISO Latin 4   "ISO_IR 110"  (ISO-8859-4)
+ISO Latin 5   "ISO_IR 148"  (ISO-8859-9)
+Cyrillic      "ISO_IR 144"  (ISO-8859-5)
+Arabic        "ISO_IR 127"  (ISO-8859-6)
+Greek         "ISO_IR 126"  (ISO-8859-7)
+Hebrew        "ISO_IR 138"  (ISO-8859-8)
+\endverbatim
+
+Multiple character sets are not supported (only the first value of the
+"Specific Character Set" is used for the character encoding in case of value
+multiplicity).
+
+\subsection limitations Limitations
+
+Different versions of libxml seem to have different limits for the maximum
+length of an XML element value.  Therefore, it should be avoided to use very
+long element values.  A typical limit for libxml version 2.7.3 (and above) is
+10 MB for a single element value.
+
 \section logging LOGGING
 
 The level of logging output of the various command line tools and underlying
@@ -256,6 +288,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2003-2010 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2011 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
