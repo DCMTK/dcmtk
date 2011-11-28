@@ -18,8 +18,8 @@
  *  Purpose: DICOM Storage Service Class User (SCU)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-19 13:26:44 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-11-28 14:16:40 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,6 +132,13 @@ class DcmStorageSCU
      */
     E_DecompressionMode getDecompressionMode() const;
 
+    /** get mode that specifies whether to halt if an invalid file is encountered during batch
+     *  processing (e.g. when adding SOP instances from a DICOMDIR) or whether to continue
+     *  with the next SOP instance.
+     *  @return mode indicating whether to halt on invalid file or not
+     */
+    OFBool getHaltOnInvalidFileMode() const;
+
     /** get mode that specifies whether to halt if unsuccessful store encountered or whether
      *  to continue with the next SOP instance.
      *  @return mode indicating whether to halt on unsuccessful store or not
@@ -145,12 +152,25 @@ class DcmStorageSCU
      */
     OFBool getAllowIllegalProposalMode() const;
 
+    /** get mode that specifies whether to read information on SOP instances to be sent from
+     *  the DICOMDIR files that are added to the transfer list.
+     *  @return mode indicating whether to read from DICOMDIR files or not
+     */
+    OFBool getReadFromDICOMDIRMode() const;
+
     /** set mode that specifies whether or not compressed datasets are decompressed if needed,
      *  i.e.\ whether the transfer syntax of the dataset is changed for network transmission.
      *  @param  decompressionMode  decompression mode. See definition of E_DecompressionMode
      *                             for both possible values and the default value.
      */
     void setDecompressionMode(const E_DecompressionMode decompressionMode);
+
+    /** set mode that specifies whether to halt if an invalid file is encountered during batch
+     *  processing (e.g. when adding SOP instances from a DICOMDIR) or whether to continue
+     *  with the next SOP instance.
+     *  @param  haltMode  mode indicating whether to halt or not (default: OFTrue, i.e.\ halt)
+     */
+    void setHaltOnInvalidFileMode(const OFBool haltMode);
 
     /** set mode that specifies whether to halt if unsuccessful store encountered or whether
      *  to continue with the next SOP instance.
@@ -167,6 +187,16 @@ class DcmStorageSCU
      *                     (default: OFTrue, i.e.\ allowed)
      */
     void setAllowIllegalProposalMode(const OFBool allowMode);
+
+    /** set mode that specifies whether to read information on SOP instances to be sent from
+     *  the DICOMDIR files that are added to the transfer list.  If this mode is disabled, a
+     *  DICOMDIR file is treated like any other input file.  If this mode is enabled, a
+     *  DICOMDIR file is not added to the transfer list, but the DICOM files referenced from
+     *  it are.
+     *  @param  readMode  mode indicating whether to read from DICOMDIR files or not
+     *                    (default: OFFalse, i.e.\ do not read)
+     */
+    void setReadFromDICOMDIRMode(const OFBool readMode);
 
     /** reset the sent status for all SOP instances in the transfer list.  This alllows for
      *  sending the same SOP instances again - on the same or a different association.
@@ -205,6 +235,11 @@ class DcmStorageSCU
      *  to the DICOM standard (see checkSOPInstance() for details).  However, duplicate
      *  instances are not recognized, i.e. they are added to the list and later on transferred
      *  to the storage SCP when calling sendSOPInstances().
+     *  If the specified DICOM file is a DICOMDIR and the 'ReadFromDICOMDIRMode' is enabled,
+     *  the referenced SOP instances are added to the transfer list (using the relevant
+     *  information from the DICOMDIR) and not the DICOMDIR itself, which is not meant to be
+     *  transferred anyway.  Please note that it is not checked whether the referenced files
+     *  really exist.
      *  @param  filename     name of the DICOM file that contains the SOP instance to be sent
      *  @param  readMode     read mode passed to the DcmFileFormat::loadFile() method.  If
      *                       ERM_fileOnly, only the file meta information header is loaded,
@@ -388,6 +423,22 @@ class DcmStorageSCU
         TransferEntry &operator=(const TransferEntry &);
     };
 
+    /** add SOP instances referenced from a given DICOMDIR to the list of instances to be
+     *  transferred.  Please note that the referenced DICOM files are not loaded during this
+     *  process.  Only the relevant information contained in the DICOMDIR is used.
+     *  @param  filename     name of the DICOMDIR file that contains the references to SOP
+     *                       instances to be sent
+     *  @param  readMode     read mode passed to the DcmFileFormat::loadFile() method when
+     *                       reading the referenced DICOM files.  Not used for the DICOMDIR.
+     *  @param  checkValues  flag indicating whether to check the UID values of the SOP
+     *                       instances to be added for validity and conformance.  If OFFalse,
+     *                       only empty values are rejected.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition addDicomFilesFromDICOMDIR(const OFString &filename,
+                                          const E_FileReadMode readMode,
+                                          const OFBool checkValues);
+
     // --- static methods ---
 
     /** get SOP Class UID, SOP Instance UID and Transfer Syntax UID from a DICOM file.  The
@@ -464,10 +515,14 @@ class DcmStorageSCU
     unsigned long PresentationContextCounter;
     /// decompression mode, i.e.\ whether a dataset is decompressed for transmission
     E_DecompressionMode DecompressionMode;
-    /// flag indicating whether to halt on unsuccessful
+    /// flag indicating whether to halt on invalid file
+    OFBool HaltOnInvalidFileMode;
+    /// flag indicating whether to halt on unsuccessful store
     OFBool HaltOnUnsuccessfulStoreMode;
     /// flag indicating whether to allow illegal proposals
     OFBool AllowIllegalProposalMode;
+    /// flag indicating whether to read from DICOMDIR files
+    OFBool ReadFromDICOMDIRMode;
     /// list of SOP instances to be transferred
     OFList<TransferEntry *> TransferList;
     /// iterator pointing to the current entry in the list of SOP instances to be transferred
@@ -486,6 +541,10 @@ class DcmStorageSCU
 /*
  * CVS Log
  * $Log: dstorscu.h,v $
+ * Revision 1.4  2011-11-28 14:16:40  joergr
+ * Added new option/mode that allows for sending all DICOM files referenced
+ * from a DICOMDIR without accessing the files for association negotiation.
+ *
  * Revision 1.3  2011-10-19 13:26:44  joergr
  * Fixed some typos and other minor issues regarding the comments.
  *

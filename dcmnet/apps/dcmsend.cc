@@ -18,8 +18,8 @@
  *  Purpose: Simple Storage Service Class User
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-05 13:53:38 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2011-11-28 14:16:37 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,6 +151,7 @@ int main(int argc, char *argv[])
     OFBool opt_multipleAssociations = OFTrue;
     DcmStorageSCU::E_DecompressionMode opt_decompressionMode = DcmStorageSCU::DM_losslessOnly;
 
+    OFBool opt_dicomDir = OFFalse;
     OFBool opt_scanDir = OFFalse;
     OFBool opt_recurse = OFFalse;
     const char *opt_scanPattern = "";
@@ -180,6 +181,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-file-only",      "+fo",     "read file format only (default)");
         cmd.addOption("--read-dataset",        "-f",      "read data set without file meta information");
       cmd.addSubGroup("input files:");
+        cmd.addOption("--read-from-dicomdir",  "+rd",     "read information on input files from DICOMDIR");
         cmd.addOption("--scan-directories",    "+sd",     "scan directories for input files (dcmfile-in)");
 #ifdef PATTERN_MATCHING_AVAILABLE
         cmd.addOption("--scan-pattern",        "+sp",  1, "[p]attern: string (only w/ --scan-directories)",
@@ -291,6 +293,7 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--read-dataset")) opt_readMode = ERM_dataset;
         cmd.endOptionBlock();
 
+        if (cmd.findOption("--read-from-dicomdir")) opt_dicomDir = OFTrue;
         if (cmd.findOption("--scan-directories")) opt_scanDir = OFTrue;
 #ifdef PATTERN_MATCHING_AVAILABLE
         if (cmd.findOption("--scan-pattern"))
@@ -416,6 +419,10 @@ int main(int argc, char *argv[])
     DcmStorageSCU storageSCU;
     OFCondition status;
     unsigned long numInvalidFiles = 0;
+
+    /* set parameters used for processing the input files */
+    storageSCU.setReadFromDICOMDIRMode(opt_dicomDir);
+    storageSCU.setHaltOnInvalidFileMode(opt_haltOnInvalidFile);
 
     OFLOG_INFO(dcmsendLogger, "checking input files ...");
     /* iterate over all input filenames */
@@ -592,6 +599,10 @@ int main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmsend.cc,v $
+ * Revision 1.2  2011-11-28 14:16:37  joergr
+ * Added new option/mode that allows for sending all DICOM files referenced
+ * from a DICOMDIR without accessing the files for association negotiation.
+ *
  * Revision 1.1  2011-10-05 13:53:38  joergr
  * Added new command line tool "dcmsend", which is a Simple Storage Service
  * Class User based on the recently introduced network class DcmStorageSCU.

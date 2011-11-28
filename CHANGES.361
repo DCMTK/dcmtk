@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.28 (riesmeier)
 
+- Added new option/mode that allows for sending all DICOM files referenced
+  from a DICOMDIR without accessing the files for association negotiation.
+  Thanks to forum user "Geof" for the initial idea.
+  Affects: dcmnet/apps/dcmsend.cc
+           dcmnet/docs/dcmsend.man
+           dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/libsrc/dstorscu.cc
+
 - Reserve expected size of resulting string in order to reduce number of memory
   allocations in helper functions.
   Affects: dcmdata/libsrc/dcddirif.cc

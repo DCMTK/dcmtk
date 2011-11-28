@@ -83,6 +83,9 @@ input file format:
 
 input files:
 
+  +rd   --read-from-dicomdir
+          read information on input files from DICOMDIR
+
   +sd   --scan-directories
           scan directories for input files (dcmfile-in)
 
@@ -202,6 +205,20 @@ aforementioned approaches (using both file and directory names):
 dcmsend -v +sd +r <peer> <port> IMAGES_1 IMAGES_2 test.img *.dcm
 \endverbatim
 
+If the SOP instances are referenced from a DICOMDIR file, option
+\e --read-from-dicomdir (or \e +rd) can be used to send all referenced DICOM
+files without loading them already for the association negotiation:
+
+\verbatim
+dcmsend -v <peer> <port> --read-from-dicomdir DICOMDIR
+\endverbatim
+
+And again, all of the above approaches can be combined like this:
+
+\verbatim
+dcmsend -v +sd +r +rd <peer> <port> IMAGES_1 IMAGES_2 test.img DICOMDIR *.dcm
+\endverbatim
+
 The default option \e --read-file-only makes sure that only DICOM files (i.e.
 the ones with meta-header and magic word "DICM" after the preamble) are
 processed.  Usually, if processing a whole bunch of files, it is also a good
@@ -235,8 +252,8 @@ directories, and, if any other patterns are specified on the command line
 outside the \e --scan-pattern option (e.g. in order to select further
 files), these do not apply to the specified directories.
 
-Thus, the last of above examples will recurse over directories IMAGES_1 and
-IMAGES_2 and transmit files that are contained in these two folders and all
+Thus, the third of the above examples will recurse over directories IMAGES_1
+and IMAGES_2 and transmit files that are contained in these two folders and all
 their subfolders (due to option \e +r).  Additionally, \b dcmsend will transfer
 "test.img" and all files with extension "dcm" from the current working folder.
 Note that providing directory names without enabling option \e +sd does

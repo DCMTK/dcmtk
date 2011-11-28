@@ -18,8 +18,8 @@
  *  Purpose: DICOM Storage Service Class User (SCU)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-06 14:16:10 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2011-11-28 14:16:43 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,30 @@
 // these are private DIMSE status codes of the class "pending"
 #define STATUS_STORE_Pending_NoPresentationContext 0xffff
 #define STATUS_STORE_Pending_InvalidDatasetPointer 0xfffe
+
+
+// helper functions
+
+static const OFString &dicomToHostFilename(const OFString &dicomFilename,
+                                           OFString &hostFilename,
+                                           OFBool mapToLower = OFFalse)
+{
+    hostFilename.clear();
+    const size_t length = dicomFilename.length();
+    hostFilename.reserve(length);
+    for (size_t i = 0; i < length; i++)
+    {
+        const char c = dicomFilename.at(i);
+        // the PATH_SEPARATOR depends on the operating system
+        if (c == '\\')
+            hostFilename += PATH_SEPARATOR;
+        else if (mapToLower)
+            hostFilename += OFstatic_cast(char, tolower(c));
+        else
+            hostFilename += c;
+    }
+    return hostFilename;
+}
 
 
 // implementation of the internal class/struct for a single transfer entry
@@ -119,8 +143,10 @@ DcmStorageSCU::DcmStorageSCU()
     AssociationCounter(0),
     PresentationContextCounter(0),
     DecompressionMode(DM_default),
+    HaltOnInvalidFileMode(OFTrue),
     HaltOnUnsuccessfulStoreMode(OFTrue),
     AllowIllegalProposalMode(OFTrue),
+    ReadFromDICOMDIRMode(OFFalse),
     TransferList(),
     CurrentTransferEntry()
 {
@@ -141,8 +167,10 @@ void DcmStorageSCU::clear()
     AssociationCounter = 0;
     PresentationContextCounter = 0;
     DecompressionMode = DM_default;
+    HaltOnInvalidFileMode = OFTrue;
     HaltOnUnsuccessfulStoreMode = OFTrue;
     AllowIllegalProposalMode = OFTrue;
+    ReadFromDICOMDIRMode = OFFalse;
     removeAllSOPInstances();
 }
 
@@ -182,6 +210,12 @@ DcmStorageSCU::E_DecompressionMode DcmStorageSCU::getDecompressionMode() const
 }
 
 
+OFBool DcmStorageSCU::getHaltOnInvalidFileMode() const
+{
+    return HaltOnInvalidFileMode;
+}
+
+
 OFBool DcmStorageSCU::getHaltOnUnsuccessfulStoreMode() const
 {
     return HaltOnUnsuccessfulStoreMode;
@@ -194,9 +228,21 @@ OFBool DcmStorageSCU::getAllowIllegalProposalMode() const
 }
 
 
+OFBool DcmStorageSCU::getReadFromDICOMDIRMode() const
+{
+    return ReadFromDICOMDIRMode;
+}
+
+
 void DcmStorageSCU::setDecompressionMode(const E_DecompressionMode decompressionMode)
 {
     DecompressionMode = decompressionMode;
+}
+
+
+void DcmStorageSCU::setHaltOnInvalidFileMode(const OFBool haltMode)
+{
+    HaltOnInvalidFileMode = haltMode;
 }
 
 
@@ -209,6 +255,12 @@ void DcmStorageSCU::setHaltOnUnsuccessfulStoreMode(const OFBool haltMode)
 void DcmStorageSCU::setAllowIllegalProposalMode(const OFBool allowMode)
 {
     AllowIllegalProposalMode = allowMode;
+}
+
+
+void DcmStorageSCU::setReadFromDICOMDIRMode(const OFBool readMode)
+{
+    ReadFromDICOMDIRMode = readMode;
 }
 
 
@@ -300,31 +352,52 @@ OFCondition DcmStorageSCU::addDicomFile(const OFString &filename,
     if (!filename.empty())
     {
         DCMNET_DEBUG("adding DICOM file '" << filename << "'");
+        const size_t numInstances = TransferList.size();
+        OFBool isDICOMDIR = OFFalse;
         // get relevant information from the DICOM file
         OFString sopClassUID, sopInstanceUID, transferSyntaxUID;
         status = getSOPInstanceFromFile(filename, sopClassUID, sopInstanceUID, transferSyntaxUID, readMode);
         if (status.good())
         {
-            // check the SOP instance before adding it
-            status = checkSOPInstance(sopClassUID, sopInstanceUID, transferSyntaxUID, checkValues);
-            if (status.good())
+            // check whether it is a DICOMDIR and should be treated in a special manner
+            if (ReadFromDICOMDIRMode && (sopClassUID == UID_MediaStorageDirectoryStorage))
             {
-                // create a new entry ...
-                TransferEntry *entry = new TransferEntry(filename, readMode, sopClassUID, sopInstanceUID, transferSyntaxUID);
-                if (entry != NULL)
+                DCMNET_DEBUG("processing a DICOMDIR file (Media Storage Directory Storage SOP Class)");
+                isDICOMDIR = OFTrue;
+                // add all DICOM files referenced from the DICOMDIR
+                status = addDicomFilesFromDICOMDIR(filename, readMode, checkValues);
+            } else {
+                // check the SOP instance before adding it
+                status = checkSOPInstance(sopClassUID, sopInstanceUID, transferSyntaxUID, checkValues);
+                if (status.good())
                 {
-                    // ... and add it to the list of SOP instances to be transferred
-                    TransferList.push_back(entry);
-                } else
-                    status = EC_MemoryExhausted;
+                    // create a new entry ...
+                    TransferEntry *entry = new TransferEntry(filename, readMode, sopClassUID, sopInstanceUID, transferSyntaxUID);
+                    if (entry != NULL)
+                    {
+                        // ... and add it to the list of SOP instances to be transferred
+                        TransferList.push_back(entry);
+                    } else
+                        status = EC_MemoryExhausted;
+                }
             }
         }
         // finally, do some error/debug logging
         if (status.good())
         {
-            DCMNET_DEBUG("successfully added SOP instance " << sopInstanceUID << " to the transfer list");
+            if (isDICOMDIR)
+            {
+                // check how many instances have been added
+                const size_t count = TransferList.size() - numInstances;
+                if (count > 0)
+                    DCMNET_DEBUG("successfully added " << count << " SOP instances from DICOMDIR to the transfer list");
+            } else
+                DCMNET_DEBUG("successfully added SOP instance " << sopInstanceUID << " to the transfer list");
         } else {
-            DCMNET_ERROR("cannot add DICOM file to the transfer list: " << filename << ": " << status.text());
+            if (isDICOMDIR)
+                DCMNET_ERROR("cannot add DICOM files from DICOMDIR to the transfer list: " << filename << ": " << status.text());
+            else
+                DCMNET_ERROR("cannot add DICOM file to the transfer list: " << filename << ": " << status.text());
         }
     } else {
         DCMNET_ERROR("cannot add DICOM file with empty filename");
@@ -371,6 +444,86 @@ OFCondition DcmStorageSCU::addDataset(DcmDataset *dataset,
         }
     } else {
         DCMNET_ERROR("cannot add DICOM dataset (NULL pointer)");
+    }
+    return status;
+}
+
+
+OFCondition DcmStorageSCU::addDicomFilesFromDICOMDIR(const OFString &filename,
+                                                     const E_FileReadMode readMode,
+                                                     const OFBool checkValues)
+{
+    DCMNET_DEBUG("adding DICOM files referenced from '" << filename << "'");
+    // read the DICOMDIR file (always require meta-header to be present)
+    DcmFileFormat fileformat;
+    OFCondition status = fileformat.loadFile(filename.c_str(), EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_fileOnly);
+    if (status.good())
+    {
+        DcmStack stack;
+        // do not use the DcmDirectoryRecord class, but access the data elements directly
+        DcmDataset *dataset = fileformat.getDataset();
+        OFString dirName;
+        OFStandard::getDirNameFromPath(dirName, filename, OFFalse /* assumeDirName */);
+        // iterate over all items (directory records) where ReferencedFileID is present
+        while (dataset->search(DCM_ReferencedFileID, stack, ESM_afterStackTop, OFTrue).good())
+        {
+            // make sure that the dataset and element pointer are there
+            if (stack.card() > 1)
+            {
+                OFString pathName, fileID, sopClassUID, sopInstanceUID, transferSyntaxUID;
+                // first, get the name of the referenced DICOM file
+                DcmElement *element = OFstatic_cast(DcmElement *, stack.top());
+                if (element != NULL)
+                    element->getOFStringArray(fileID);
+                // check for non-empty filename
+                if (!fileID.empty())
+                {
+                    DCMNET_DEBUG("adding DICOM file with Referenced File ID '" << fileID << "'");
+                    // then get all other relevant element values
+                    DcmItem *item = OFstatic_cast(DcmItem *, stack.elem(1));
+                    if (item != NULL)
+                    {
+                        DCMNET_DEBUG("getting SOP Class UID, SOP Instance UID and Transfer Syntax UID from DICOMDIR record");
+                        item->findAndGetOFStringArray(DCM_ReferencedSOPClassUIDInFile, sopClassUID);
+                        item->findAndGetOFStringArray(DCM_ReferencedSOPInstanceUIDInFile, sopInstanceUID);
+                        item->findAndGetOFStringArray(DCM_ReferencedTransferSyntaxUIDInFile, transferSyntaxUID);
+                    }
+                    // finally, try to add this information to the transfer list
+                    status = checkSOPInstance(sopClassUID, sopInstanceUID, transferSyntaxUID, checkValues);
+                    if (status.good())
+                    {
+                        OFString tmpString;
+                        // consider that the value of ReferencedFileID is relative to the DICOMDIR
+                        OFStandard::combineDirAndFilename(pathName, dirName, dicomToHostFilename(fileID, tmpString),
+                            OFTrue /* allowEmptyDirName */);
+                        // create a new entry ...
+                        TransferEntry *entry = new TransferEntry(pathName, readMode, sopClassUID, sopInstanceUID, transferSyntaxUID);
+                        if (entry != NULL)
+                        {
+                            // ... and add it to the list of SOP instances to be transferred
+                            TransferList.push_back(entry);
+                        } else {
+                            // this is considered a severe error, so always halt (see below)
+                            status = EC_MemoryExhausted;
+                        }
+                    }
+                    // finally, do some error/debug logging
+                    if (status.good())
+                    {
+                        DCMNET_DEBUG("successfully added SOP instance " << sopInstanceUID << " to the transfer list");
+                    } else {
+                        DCMNET_ERROR("cannot add DICOM file from DICOMDIR to the transfer list: "
+                            << (pathName.empty() ? fileID : pathName) << ": " << status.text());
+                    }
+                } else {
+                    DCMNET_ERROR("cannot add DICOM file from DICOMDIR with empty filename");
+                    status = EC_InvalidFilename;
+                }
+                // halt on invalid file or if memory is exhausted
+                if ((HaltOnInvalidFileMode && status.bad()) || (status == EC_MemoryExhausted))
+                    break;
+            }
+        }
     }
     return status;
 }
@@ -1119,6 +1272,10 @@ OFCondition DcmStorageSCU::checkSOPInstance(const OFString &sopClassUID,
 /*
  * CVS Log
  * $Log: dstorscu.cc,v $
+ * Revision 1.4  2011-11-28 14:16:43  joergr
+ * Added new option/mode that allows for sending all DICOM files referenced
+ * from a DICOMDIR without accessing the files for association negotiation.
+ *
  * Revision 1.3  2011-10-06 14:16:10  joergr
  * Now also SOP instances from DICOM datasets can be added to the transfer list.
  * This allows for sending datasets created or received in memory.
