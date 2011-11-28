@@ -263,10 +263,9 @@ available.
 
 \subsection limitations Limitations
 
-Different versions of libxml seem to have different limits for the maximum
+Different versions of libxml might have different limits for the maximum
 length of an XML element value.  Therefore, it should be avoided to use very
-long element values (e.g. for pixel data).  A typical limit for libxml version
-2.7.3 (and above) is 10 MB for a single element value.
+long element values (e.g. for pixel data).
 
 Please note that \b xml2dcm currently does not fully support DICOMDIR files.
 Specifically, the value of the various offset data elements is not updated

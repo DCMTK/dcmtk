@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.28 (riesmeier)
 
+- Fixed issue with libxml version 2.7.3 (and above): The maximum length of XML
+  element values was limited to 10 MB. This limit is now explicitly disabled.
+  Affects: dcmdata/apps/xml2dcm.cc
+           dcmdata/docs/xml2dcm.man
+
 - Added new option/mode that allows for sending all DICOM files referenced
   from a DICOMDIR without accessing the files for association negotiation.
   Thanks to forum user "Geof" for the initial idea.

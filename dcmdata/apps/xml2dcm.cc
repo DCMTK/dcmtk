@@ -18,8 +18,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-25 11:49:36 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2011-11-28 14:31:35 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -574,7 +574,15 @@ static OFCondition readXmlFile(const char *ifname,
     xfer = EXS_Unknown;
     xmlGenericError(xmlGenericErrorContext, "--- libxml parsing ------\n");
     /* build an XML tree from the file */
+#if LIBXML_VERSION >= 20703
+    /*
+     *  Starting with libxml version 2.7.3, the maximum length of XML element values
+     *  is limited to 10 MB.  The following code disables this default limitation.
+     */
+    xmlDocPtr doc = xmlReadFile(ifname, NULL /*encoding*/, XML_PARSE_HUGE);
+#else
     xmlDocPtr doc = xmlParseFile(ifname);
+#endif
     xmlGenericError(xmlGenericErrorContext, "-------------------------\n");
     if (doc != NULL)
     {
@@ -1001,6 +1009,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.38  2011-11-28 14:31:35  joergr
+ * Fixed issue with libxml version 2.7.3 (and above): The maximum length of XML
+ * element values was limited to 10 MB. This limit is now explicitly disabled.
+ *
  * Revision 1.37  2011-11-25 11:49:36  joergr
  * Added note that the XML input file can also be compressed with ZIP if libxml
  * has been compiled with ZLIB support (see --version output).
