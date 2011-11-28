@@ -17,9 +17,9 @@
  *
  *  Purpose: class OFCondition and helper classes
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-11-16 13:50:36 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-11-28 11:15:45 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -464,6 +464,8 @@ extern const OFCondition EC_NoEncodingSelected;
 
 /// condition constant: error, could not create temporary file
 extern const OFCondition EC_CouldNotCreateTemporaryFile;
+/// condition constant: error, invalid filename
+extern const OFCondition EC_InvalidFilename;
 
 /// status code constant: error, cannot open character encoding
 extern const unsigned short EC_CODE_CannotOpenEncoding;
@@ -486,6 +488,9 @@ extern const unsigned short EC_CODE_CannotControlConverter;
  *
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
+ * Revision 1.15  2011-11-28 11:15:45  joergr
+ * Added general condition constant for invalid filenames.
+ *
  * Revision 1.14  2011-11-16 13:50:36  uli
  * Added a new class for managing temporary files.
  *

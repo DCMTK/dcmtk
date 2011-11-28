@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.28 (riesmeier)
+
+- Added general condition constant for invalid filenames.
+  Affects: ofstd/include/dcmtk/ofstd/ofcond.h
+           ofstd/libsrc/ofcond.cc
+
 **** Changes from 2011.11.25 (riesmeier)
 
 - Added note that the XML input file can also be compressed with ZIP if libxml
