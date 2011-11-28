@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.28 (riesmeier)
 
+- Reserve expected size of resulting string in order to reduce number of memory
+  allocations in helper functions.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 - Added general condition constant for invalid filenames.
   Affects: ofstd/include/dcmtk/ofstd/ofcond.h
            ofstd/libsrc/ofcond.cc

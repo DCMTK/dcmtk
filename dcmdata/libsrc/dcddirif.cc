@@ -18,8 +18,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-21 09:25:39 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Update Date:      $Date: 2011-11-28 12:03:08 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -174,6 +174,7 @@ static OFString &hostToDicomFilename(const OFString &hostFilename,
 {
     dicomFilename.clear();
     const size_t length = hostFilename.length();
+    dicomFilename.reserve(length);
     for (size_t i = 0; i < length; i++)
     {
         const unsigned char c = hostFilename.at(i);
@@ -204,6 +205,7 @@ static OFString &dicomToHostFilename(const OFString &dicomFilename,
 {
     hostFilename.clear();
     const size_t length = dicomFilename.length();
+    hostFilename.reserve(length);
     for (size_t i = 0; i < length; i++)
     {
         const char c = dicomFilename.at(i);
@@ -5480,6 +5482,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.65  2011-11-28 12:03:08  joergr
+ *  Reserve expected size of resulting string in order to reduce number of memory
+ *  allocations in helper functions.
+ *
  *  Revision 1.64  2011-11-21 09:25:39  joergr
  *  Improved log messages on transfer syntaxes and file meta information.
  *
