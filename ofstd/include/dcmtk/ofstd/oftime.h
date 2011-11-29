@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,8 +18,8 @@
  *  Purpose: Class for time functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:15:50 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2011-11-29 15:57:30 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,7 +146,7 @@ class OFTime
 
     /** check whether the currently stored time value is valid.
      *  Valid ranges: [0,24[ for 'hour', [0,60[ for 'minute', [0.0,60.0[ for 'second'
-     *  and [-12.0,+12.0] for 'timeZone'
+     *  and [-12.0,+14.0] for 'timeZone'
      *  @return OFTrue if the current value is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -236,10 +236,11 @@ class OFTime
     OFBool setCurrentTime();
 
     /** set the time value to the given ISO formatted time string.
-     *  The two ISO time formats supported by this function are "HH:MM[:SS]" (with arbitrary
-     *  delimiters) and "HHMM[SS]" (without delimiters) where the brackets enclose optional
-     *  parts.  The optional fractional part of a second and the time zone (see getISO...)
-     *  are not yet supported.
+     *  The two ISO time formats supported by this function are
+     *  - "HH:MM[:SS [&ZZ:ZZ]]" (with arbitrary delimiters) and
+     *  - "HHMM[SS[&ZZZZ]]" (without delimiters)
+     *  where the brackets enclose optional parts. Please note that the optional fractional
+     *  part of a second ".FFFFFF" (see getISOFormattedTime()) is not yet supported.
      *  @param formattedTime ISO formatted time value to be set
      *  @return OFTrue if input is valid and result variable has been set, OFFalse otherwise
      */
@@ -315,9 +316,10 @@ class OFTime
     OFTime getLocalTime() const;
 
     /** get the current time value in ISO format.
-     *  The two ISO time formats supported by this function are "HH:MM[:SS[.FFFFFF]][&ZZ:ZZ]"
-     *  (with delimiters) and "HHMM[SS[.FFFFFF]][&ZZZZ]" (without delimiters, useful for DICOM
-     *  time type) where the brackets enclose optional parts.
+     *  The two ISO time formats supported by this function are
+     *  - "HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]" (with delimiters) and
+     *  - "HHMM[SS[.FFFFFF]][&ZZZZ]" (without delimiters, useful for DICOM time type)
+     *  where the brackets enclose optional parts.
      *  @param formattedTime reference to string variable where the result is stored
      *  @param showSeconds add optional seconds (":SS" or "SS") to the resulting string if OFTrue
      *  @param showFraction add optional fractional part of a second (".FFFFFF") if OFTrue.
@@ -326,13 +328,16 @@ class OFTime
      *    if OFTrue. The time zone indicates the offset from the Coordinated Universal Time (UTC)
      *    in hours and minutes. The "&" is a placeholder for the sign symbol ("+" or "-").
      *  @param showDelimiter flag, indicating whether to use delimiters (":") or not
+     *  @param timeZoneSeparator separator between ISO time value and time zone. Only used if
+     *    'showDelimiter' is true.
      *  @return OFTrue if result variable has been set, OFFalse otherwise
      */
     OFBool getISOFormattedTime(OFString &formattedTime,
                                const OFBool showSeconds = OFTrue,
                                const OFBool showFraction = OFFalse,
                                const OFBool showTimeZone = OFFalse,
-                               const OFBool showDelimiter = OFTrue) const;
+                               const OFBool showDelimiter = OFTrue,
+                               const OFString &timeZoneSeparator = " ") const;
 
     /* --- static helper functions --- */
 
@@ -363,7 +368,7 @@ class OFTime
 
     /** check whether the given time is valid.
      *  Valid ranges: [0,24[ for 'hour', [0,60[ for 'minute', [0.0,60.0[ for 'second'
-     *  and [-12.0,+12.0] for 'timeZone'
+     *  and [-12.0,+14.0] for 'timeZone'
      *  @param hour hour value to be checked
      *  @param minute minute value to be checked
      *  @param second second value to be checked
@@ -438,6 +443,10 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &t
  *
  * CVS/RCS Log:
  * $Log: oftime.h,v $
+ * Revision 1.12  2011-11-29 15:57:30  joergr
+ * Added support for the optional time zone to setISOFormattedTime(). Also made
+ * sure that all time zones in the range of -12 to +14 are regarded as valid.
+ *
  * Revision 1.11  2010-10-14 13:15:50  joergr
  * Updated copyright header. Added reference to COPYRIGHT file.
  *
