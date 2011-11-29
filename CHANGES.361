@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.29 (riesmeier)
 
+- Added support for the optional time zone to setISOFormattedDateTime().
+  Also removed some "hacks" that were needed for the old Sun CC 2.0.1 compiler.
+  Affects: ofstd/include/dcmtk/ofstd/ofdatime.h
+           ofstd/libsrc/ofdatime.cc
+
 - Added support for the optional time zone to setISOFormattedTime(). Also made
   sure that all time zones in the range of -12 to +14 are regarded as valid.
   Affects: ofstd/include/dcmtk/ofstd/oftime.h
