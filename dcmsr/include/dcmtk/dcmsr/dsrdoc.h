@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 11:46:10 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Update Date:      $Date: 2011-11-29 14:17:14 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -767,9 +767,11 @@ class DSRDocument
      *  createNewSOPInstance() is called, i.e. also a SOP instance UID is generated.
      *  This is a requirement of the DICOM standard.
      ** @param  studyUID  study instance UID to be set (should be a valid UID)
+     *  @param  check     check 'studyUID' for conformance with VR and VM if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition createNewSeriesInStudy(const OFString &studyUID);
+    virtual OFCondition createNewSeriesInStudy(const OFString &studyUID,
+                                               const OFBool check = OFTrue);
 
     /** create a new SOP instance.
      *  Generate a new SOP instance UID, set the instance creation date/time and reset the
@@ -834,9 +836,11 @@ class DSRDocument
      *  Not applicable to Key Object Selection Documents.
      ** @param  description  explanation of the value set for completion flag.
      *                       (optional, see previous method, VR=LO)
+     *  @param  check        check 'description' for conformance with VR and VM if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition completeDocument(const OFString &description);
+    virtual OFCondition completeDocument(const OFString &description,
+                                         const OFBool check = OFTrue);
 
     /** verify the current document by a specific observer.
      *  A document can be verified more than once.  The observer information is added to a
@@ -848,24 +852,16 @@ class DSRDocument
      *  Not applicable to Key Object Selection Documents.
      ** @param  observerName  name of the person who has verified this document (required, VR=PN)
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition verifyDocument(const OFString &observerName,
-                                       const OFString &organization);
-
-    /** verify the current document by a specific observer.
-     *  Same as above but allows to specify the verification date time value.
-     *  Only required since Sun CC 2.0.1 compiler does not support default parameter values for
-     *  "complex types" like OFString.  Reports the error message: "Sorry not implemented" :-/
-     ** @param  observerName  name of the person who has verified this document (required, VR=PN)
-     *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
      *  @param  dateTime      verification date time (optional). If empty/absent the current date and
      *                        time are used.
+     *  @param  check         check 'observerName', 'organization' and 'dateTime' for conformance with
+     *                        VR and VM if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition verifyDocument(const OFString &observerName,
                                        const OFString &organization,
-                                       const OFString &dateTime /*= ""*/);
+                                       const OFString &dateTime = "",
+                                       const OFBool check = OFTrue);
 
     /** verify the current document by a specific observer.
      *  A document can be verified more than once.  The observer information is added to a
@@ -878,27 +874,17 @@ class DSRDocument
      ** @param  observerName  name of the person who has verified this document (required, VR=PN)
      *  @param  observerCode  code identifying the verifying observer (optional, see previous method)
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition verifyDocument(const OFString &observerName,
-                                       const DSRCodedEntryValue &observerCode,
-                                       const OFString &organization);
-
-    /** verify the current document by a specific observer.
-     *  Same as above but allows to specify the verification date time value.
-     *  Only required since Sun CC 2.0.1 compiler does not support default parameter values for
-     *  "complex types" like OFString.  Reports the error message: "Sorry not implemented" :-/
-     ** @param  observerName  name of the person who has verified this document (required, VR=PN)
-     *  @param  observerCode  code identifying the verifying observer (optional, see previous method)
-     *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
      *  @param  dateTime      verification date time (optional). If empty/absent the current date and
      *                        time are used.
+     *  @param  check         check 'observerName', 'observerCode', 'organization' and 'dateTime' for
+     *                        conformance with VR and VM if enabled
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition verifyDocument(const OFString &observerName,
                                        const DSRCodedEntryValue &observerCode,
                                        const OFString &organization,
-                                       const OFString &dateTime /*= ""*/);
+                                       const OFString &dateTime = "",
+                                       const OFBool check = OFTrue);
 
     /** remove verification information.
      *  The list of verifying observers is cleared, the verification flag is set to UNVERIFIED and
@@ -1182,6 +1168,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.55  2011-11-29 14:17:14  joergr
+ *  Added optional "check" parameter to some further methods (not only "set").
+ *  Also removed some "hacks" that were needed for the old Sun CC 2.0.1 compiler.
+ *
  *  Revision 1.54  2011-11-24 11:46:10  joergr
  *  Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
  *  now return a status code, the get methods provide a "pos" and the set methods

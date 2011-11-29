@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 11:47:57 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2011-11-29 14:17:12 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2268,15 +2268,20 @@ void DSRDocument::createNewSeries()
 }
 
 
-OFCondition DSRDocument::createNewSeriesInStudy(const OFString &studyUID)
+OFCondition DSRDocument::createNewSeriesInStudy(const OFString &studyUID,
+                                                const OFBool check)
 {
     OFCondition result = EC_IllegalParameter;
     if (!studyUID.empty())
     {
-        StudyInstanceUID.putOFStringArray(studyUID);
-        /* also creates new SOP instance */
-        createNewSeries();
-        result = EC_Normal;
+        /* check parameter for conformance with VR and VM (if needed) */
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(studyUID, "1") : EC_Normal;
+        if (result.good())
+        {
+            StudyInstanceUID.putOFStringArray(studyUID);
+            /* also creates new SOP instance */
+            createNewSeries();
+        }
     }
     return result;
 }
@@ -2360,7 +2365,8 @@ OFCondition DSRDocument::completeDocument()
 }
 
 
-OFCondition DSRDocument::completeDocument(const OFString &description)
+OFCondition DSRDocument::completeDocument(const OFString &description,
+                                          const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* not applicable to Key Object Selection Documents */
@@ -2369,11 +2375,15 @@ OFCondition DSRDocument::completeDocument(const OFString &description)
         /* if document is not already completed */
         if (CompletionFlagEnum != CF_Complete)
         {
-            /* completed for now and ever */
-            CompletionFlagEnum = CF_Complete;
-            /* completion flag description */
-            setCompletionFlagDescription(description);
-            result = EC_Normal;
+            /* check parameter for conformance with VR and VM (if needed) */
+            result = (check) ? DcmLongString::checkStringValue(description, "1") : EC_Normal;
+            if (result.good())
+            {
+                /* completed for now and ever */
+                CompletionFlagEnum = CF_Complete;
+                /* completion flag description */
+                setCompletionFlagDescription(description);
+            }
         }
     }
     return result;
@@ -2381,35 +2391,20 @@ OFCondition DSRDocument::completeDocument(const OFString &description)
 
 
 OFCondition DSRDocument::verifyDocument(const OFString &observerName,
-                                        const OFString &organization)
-{
-    /* empty CodedEntryValue and VerificationDateTime */
-    return verifyDocument(observerName, DSRCodedEntryValue() /*dummy*/, organization, "" /*dateTime*/);
-}
-
-
-OFCondition DSRDocument::verifyDocument(const OFString &observerName,
                                         const OFString &organization,
-                                        const OFString &dateTime)
+                                        const OFString &dateTime,
+                                        const OFBool check)
 {
     /* empty CodedEntryValue */
-    return verifyDocument(observerName, DSRCodedEntryValue() /*dummy*/, organization, dateTime);
-}
-
-
-OFCondition DSRDocument::verifyDocument(const OFString &observerName,
-                                        const DSRCodedEntryValue &observerCode,
-                                        const OFString &organization)
-{
-    /* empty VerificationDateTime */
-    return verifyDocument(observerName, observerCode, organization, "" /*dateTime*/);
+    return verifyDocument(observerName, DSRCodedEntryValue() /*dummy*/, organization, dateTime, check);
 }
 
 
 OFCondition DSRDocument::verifyDocument(const OFString &observerName,
                                         const DSRCodedEntryValue &observerCode,
                                         const OFString &organization,
-                                        const OFString &dateTime)
+                                        const OFString &dateTime,
+                                        const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     /* not applicable to Key Object Selection Documents */
@@ -2421,32 +2416,49 @@ OFCondition DSRDocument::verifyDocument(const OFString &observerName,
             /* empty strings are not allowed (type 1 attributes) */
             if (!observerName.empty() && !organization.empty())
             {
-                DcmItem *ditem = new DcmItem();
-                if (ditem != NULL)
+                /* check parameters for conformance with VR and VM (if needed) */
+                if (check)
                 {
-                    /* write VerifyingObserverName */
-                    putStringValueToDataset(*ditem, DCM_VerifyingObserverName, observerName);
-                    /* write VerifyingObserverIdentificationCodeSequence (might be empty, type 2) */
-                    observerCode.writeSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence);
-                    /* write VerifyingOrganization */
-                    putStringValueToDataset(*ditem, DCM_VerifyingOrganization, organization);
-                    /* write VerificationDateTime */
-                    if (dateTime.empty())
-                    {
-                        OFString tmpString;
-                        currentDateTime(tmpString);
-                        putStringValueToDataset(*ditem, DCM_VerificationDateTime, tmpString);
-                    } else
-                        putStringValueToDataset(*ditem, DCM_VerificationDateTime, dateTime);
-                    /* insert items into sequence */
-                    VerifyingObserver.insert(ditem);
-                    /* set VerificationFlag to VERIFIED */
-                    VerificationFlagEnum = VF_Verified;
-                    /* reset FinalizedFlag */
-                    FinalizedFlag = OFFalse;
+                    if (observerCode.isEmpty() || observerCode.isValid())
+                        result = EC_Normal;
+                    if (result.good())
+                        result = DcmPersonName::checkStringValue(observerName, "1");
+                    if (result.good())
+                        result = DcmLongString::checkStringValue(organization, "1");
+                    if (result.good())
+                        result = DcmDateTime::checkStringValue(dateTime, "1");
+                } else {
+                    /* no checks, so everything is fine */
                     result = EC_Normal;
-                } else
-                    result = EC_MemoryExhausted;
+                }
+                if (result.good())
+                {
+                    DcmItem *ditem = new DcmItem();
+                    if (ditem != NULL)
+                    {
+                        /* write VerifyingObserverName */
+                        putStringValueToDataset(*ditem, DCM_VerifyingObserverName, observerName);
+                        /* write VerifyingObserverIdentificationCodeSequence (might be empty, type 2) */
+                        observerCode.writeSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence);
+                        /* write VerifyingOrganization */
+                        putStringValueToDataset(*ditem, DCM_VerifyingOrganization, organization);
+                        /* write VerificationDateTime */
+                        if (dateTime.empty())
+                        {
+                            OFString tmpString;
+                            currentDateTime(tmpString);
+                            putStringValueToDataset(*ditem, DCM_VerificationDateTime, tmpString);
+                        } else
+                            putStringValueToDataset(*ditem, DCM_VerificationDateTime, dateTime);
+                        /* insert items into sequence */
+                        VerifyingObserver.insert(ditem);
+                        /* set VerificationFlag to VERIFIED */
+                        VerificationFlagEnum = VF_Verified;
+                        /* reset FinalizedFlag */
+                        FinalizedFlag = OFFalse;
+                    } else
+                        result = EC_MemoryExhausted;
+                }
             } else
                 result = EC_IllegalParameter;
         }
@@ -2541,6 +2553,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.78  2011-11-29 14:17:12  joergr
+ *  Added optional "check" parameter to some further methods (not only "set").
+ *  Also removed some "hacks" that were needed for the old Sun CC 2.0.1 compiler.
+ *
  *  Revision 1.77  2011-11-24 11:47:57  joergr
  *  Made get/set methods consistent with upcoming DCMRT module, i.e. all methods
  *  now return a status code, the get methods provide a "pos" and the set methods

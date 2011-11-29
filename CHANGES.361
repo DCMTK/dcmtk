@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.29 (riesmeier)
+
+- Added optional "check" parameter to some further methods (not only "set").
+  Also removed some "hacks" that were needed for the old Sun CC 2.0.1 compiler.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/libsrc/dsrdoc.cc
+
 **** Changes from 2011.11.28 (riesmeier)
 
 - Fixed issue with libxml version 2.7.3 (and above): The maximum length of XML
