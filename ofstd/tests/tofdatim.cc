@@ -17,9 +17,9 @@
  *
  *  Purpose: test program for classes OFDate, OFTime and OFDateTime
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-25 10:05:57 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2011-11-29 16:06:27 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,12 +37,9 @@
 #include "dcmtk/ofstd/oftest.h"
 
 
-OFTEST(ofstd_OFDateTime)
+OFTEST(ofstd_OFDate)
 {
     OFDate date1, date2;
-    OFTime time1, time2;
-    OFDateTime dateTime1, dateTime2;
-    OFString tmpString;
 
     /* test OFDate */
     OFCHECK(!date1.isValid());
@@ -58,6 +55,16 @@ OFTEST(ofstd_OFDateTime)
     date2.clear();
     OFCHECK(!date2.isValid());
     OFCHECK(date1 < OFDate(2001, 1, 1));
+    OFCHECK(date1.setISOFormattedDate("20001231"));
+    OFCHECK(date2.setISOFormattedDate("2000-12-31"));
+    OFCHECK(date1 == date2);
+    OFCHECK(date2.setISOFormattedDate("2000.12.31"));
+}
+
+
+OFTEST(ofstd_OFTime)
+{
+    OFTime time1, time2;
 
     /* test OFTime */
     OFCHECK(time1.isValid());
@@ -84,6 +91,28 @@ OFTEST(ofstd_OFDateTime)
     time2.setSecond(30.1234);
     OFCHECK_EQUAL(time2.getSecond(), 30.1234);
     OFCHECK_EQUAL(time2.getIntSecond(), 30);
+    OFCHECK(time1.setISOFormattedTime("1215"));
+    OFCHECK(time1.setISOFormattedTime("12:15"));
+    OFCHECK(time1.setISOFormattedTime("121530"));
+    OFCHECK(time1.setISOFormattedTime("12:15:30"));
+    OFCHECK(time1.setISOFormattedTime("121530+0100"));
+    OFCHECK_EQUAL(time1.getTimeZone(), 1.0);
+    OFCHECK(time1.setISOFormattedTime("12:15:30 -02:30"));
+    OFCHECK_EQUAL(time1.getTimeZone(), -2.5);
+    /* the "seconds" part is mandatory if time zone is present */
+    OFCHECK(!time2.setISOFormattedTime("10:15 -02:30"));
+    OFCHECK(!time2.setISOFormattedTime("1015+0100"));
+}
+
+
+OFTEST(ofstd_OFDateTime)
+{
+    const OFDate date1(2000, 12, 31);
+    const OFDate date2;
+    const OFTime time1(12, 15, 30, 2);
+    const OFTime time2(12, 15, 30.1234);
+    OFDateTime dateTime1, dateTime2;
+    OFString tmpString;
 
     /* test OFDateTime */
     OFCHECK(!dateTime1.isValid());
@@ -100,11 +129,21 @@ OFTEST(ofstd_OFDateTime)
     OFCHECK(dateTime1 != OFDateTime(2001, 1, 1, 0, 15, 30, 12) /* should be equal */);
     dateTime1.getISOFormattedDateTime(tmpString);
     OFCHECK_EQUAL(tmpString, "2000-12-31 12:15:30");
-    dateTime1.getISOFormattedDateTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/, OFTrue /*showTimeZone*/, OFFalse /*showDelimiter*/, "" /*dateTimeSeparator*/);
+    dateTime1.getISOFormattedDateTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/, OFTrue /*showTimeZone*/,
+        OFFalse /*showDelimiter*/, "" /*dateTimeSeparator*/, "" /*timeZoneSeparator*/);
     OFCHECK_EQUAL(tmpString, "20001231121530.000000+0200");
     dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30" /*timeZone: 0*/);
     OFCHECK_EQUAL(dateTime1, dateTime2);
+    OFCHECK(dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30 +01:00"));
+    OFCHECK(dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30 -02:30"));
+    OFCHECK(dateTime1.setISOFormattedDateTime("2000-12-31T10:15:30+01:00"));
+    OFCHECK(dateTime2.setISOFormattedDateTime("20001231101530+0100"));
+    OFCHECK(dateTime1 == dateTime2);
+    /* the "seconds" part is mandatory if time zone is present */
+    OFCHECK(!dateTime2.setISOFormattedDateTime("2000-12-31 10:15 -02:30"));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("200012311015+0100"));
 }
+
 
 // These tests check that getting the current date and time works.
 // The results for this cannot(?) be verified automatically.
@@ -164,6 +203,9 @@ OFTEST(ofstd_OFDateTime)
  *
  * CVS/RCS Log:
  * $Log: tofdatim.cc,v $
+ * Revision 1.13  2011-11-29 16:06:27  joergr
+ * Added new tests and also separated tests for OFDate, OFTime and OFDateTime.
+ *
  * Revision 1.12  2011-05-25 10:05:57  uli
  * Imported oftest and converted existing tests to oftest.
  *

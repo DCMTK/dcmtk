@@ -18,8 +18,8 @@
  *  Purpose: main test program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 09:53:43 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2011-11-29 16:06:27 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,6 +31,8 @@
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
 
+OFTEST_REGISTER(ofstd_OFDate);
+OFTEST_REGISTER(ofstd_OFTime);
 OFTEST_REGISTER(ofstd_OFDateTime);
 OFTEST_REGISTER(ofstd_OFList_1);
 OFTEST_REGISTER(ofstd_OFList_2);
@@ -72,6 +74,9 @@ OFTEST_MAIN("ofstd")
  *
  * CVS/RCS Log:
  * $Log: tests.cc,v $
+ * Revision 1.7  2011-11-29 16:06:27  joergr
+ * Added new tests and also separated tests for OFDate, OFTime and OFDateTime.
+ *
  * Revision 1.6  2011-11-24 09:53:43  joergr
  * Added first version of a simple non-validating XML parser written by Frank
  * Vanden Berghen. This parser is intended to be used for configuration files
