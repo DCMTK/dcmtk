@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-22 16:55:18 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2011-11-29 16:19:12 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -272,8 +272,9 @@ OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
     {
         OFString tmpString;
         stream << "<observation>" << OFendl;
-        DcmDateTime::getISOFormattedDateTimeFromString(ObservationDateTime, tmpString, OFTrue /*seconds*/,
-            OFFalse /*fraction*/, OFFalse /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/);
+        /* output time in ISO 8601 format */
+        DcmDateTime::getISOFormattedDateTimeFromString(ObservationDateTime, tmpString, OFTrue /*seconds*/, OFFalse /*fraction*/,
+            OFTrue /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/, "" /*timeZoneSeparator*/);
         writeStringValueToXML(stream, tmpString, "datetime");
         stream << "</observation>" << OFendl;
     }
@@ -1141,6 +1142,9 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.58  2011-11-29 16:19:12  joergr
+ *  Added support for optional time zone to XML read/write methods of DT values.
+ *
  *  Revision 1.57  2011-03-22 16:55:18  joergr
  *  Added support for colored output to the print() method - Unix only.
  *

@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 14:17:12 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Update Date:      $Date: 2011-11-29 16:19:12 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1244,8 +1244,9 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
                 OFString dateTime, obsName, organization;
                 if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
                 {
+                    /* output time in ISO 8601 format */
                     DcmDateTime::getISOFormattedDateTimeFromString(dateTime, tmpString, OFTrue /*seconds*/, OFFalse /*fraction*/,
-                        OFFalse /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/);
+                        OFTrue /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/, "" /*timeZoneSeparator*/);
                     writeStringValueToXML(stream, tmpString, "datetime", (flags & XF_writeEmptyTags) > 0);
                     if (!obsName.empty() || (flags & XF_writeEmptyTags))
                         stream << "<name>" << OFendl << dicomToXMLPersonName(obsName, tmpString) << OFendl << "</name>" << OFendl;
@@ -2553,6 +2554,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.79  2011-11-29 16:19:12  joergr
+ *  Added support for optional time zone to XML read/write methods of DT values.
+ *
  *  Revision 1.78  2011-11-29 14:17:12  joergr
  *  Added optional "check" parameter to some further methods (not only "set").
  *  Also removed some "hacks" that were needed for the old Sun CC 2.0.1 compiler.
