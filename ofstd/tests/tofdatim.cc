@@ -18,8 +18,8 @@
  *  Purpose: test program for classes OFDate, OFTime and OFDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 16:06:27 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2011-11-29 18:03:22 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,7 @@ OFTEST(ofstd_OFDate)
     OFCHECK(date1 < OFDate(2001, 1, 1));
     OFCHECK(date1.setISOFormattedDate("20001231"));
     OFCHECK(date2.setISOFormattedDate("2000-12-31"));
-    OFCHECK(date1 == date2);
+    OFCHECK_EQUAL(date1, date2);
     OFCHECK(date2.setISOFormattedDate("2000.12.31"));
 }
 
@@ -79,16 +79,17 @@ OFTEST(ofstd_OFTime)
     OFCHECK(!(time1 != time2));
     time2.clear();
     OFCHECK(time2.isValid());
-    time1.setTime(12, 15, 30, -1);
+    OFCHECK(time1.setTime(12, 15, 30, -1));
     OFCHECK(time1 > OFTime(10, 0, 0, -1));
-    time1.setTimeZone(2);
+    OFCHECK(time1.setTimeZone(2));
+    OFCHECK(!time1.setTimeZone(-20));
     OFCHECK(time1 < OFTime(10, 0, 0, -1));
     OFCHECK_EQUAL(time1, OFTime(9, 15, 30, -1));
     OFCHECK_EQUAL(time1.getTimeZone(), 2);
-    time2.setTime(12, 15, 00);
+    OFCHECK(time2.setTime(12, 15, 00));
     OFCHECK_EQUAL(time2.getTimeInHours(), 12.25);
     OFCHECK_EQUAL(time1.getCoordinatedUniversalTime(), OFTime(10, 15, 30));
-    time2.setSecond(30.1234);
+    OFCHECK(time2.setSecond(30.1234));
     OFCHECK_EQUAL(time2.getSecond(), 30.1234);
     OFCHECK_EQUAL(time2.getIntSecond(), 30);
     OFCHECK(time1.setISOFormattedTime("1215"));
@@ -116,29 +117,31 @@ OFTEST(ofstd_OFDateTime)
 
     /* test OFDateTime */
     OFCHECK(!dateTime1.isValid());
-    dateTime1.setDateTime(date1, time1);
+    OFCHECK(dateTime1.setDateTime(date1, time1));
     OFCHECK(dateTime1.isValid());
     OFCHECK(!dateTime1.setDateTime(2000, 13, 1, 24, 0, 0));
     OFCHECK(!dateTime1.setDateTime(date2, time2));
-    dateTime1.setDateTime(date1, time1);
+    OFCHECK(dateTime1.setDateTime(date1, time1));
     OFCHECK_EQUAL(dateTime1.getDate(), date1);
     OFCHECK(!(dateTime1.getTime() != time1));
     dateTime2 = dateTime1;
     OFCHECK_EQUAL(dateTime1, dateTime2);
     /* "overflow" from one day to another is currently not handled by OFDateTime */
     OFCHECK(dateTime1 != OFDateTime(2001, 1, 1, 0, 15, 30, 12) /* should be equal */);
-    dateTime1.getISOFormattedDateTime(tmpString);
+    OFCHECK(dateTime1.getISOFormattedDateTime(tmpString));
     OFCHECK_EQUAL(tmpString, "2000-12-31 12:15:30");
-    dateTime1.getISOFormattedDateTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/, OFTrue /*showTimeZone*/,
-        OFFalse /*showDelimiter*/, "" /*dateTimeSeparator*/, "" /*timeZoneSeparator*/);
+    OFCHECK(dateTime1.getISOFormattedDateTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/,
+        OFTrue /*showTimeZone*/, OFFalse /*showDelimiter*/, "" /*dateTimeSeparator*/, "" /*timeZoneSeparator*/));
     OFCHECK_EQUAL(tmpString, "20001231121530.000000+0200");
-    dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30" /*timeZone: 0*/);
+    OFCHECK(dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30" /*timeZone: 0*/));
+    OFCHECK_EQUAL(dateTime1, dateTime2);
+    OFCHECK(dateTime2.setISOFormattedDateTime("2000.12.31  10-15-30" /*timeZone: 0*/));
     OFCHECK_EQUAL(dateTime1, dateTime2);
     OFCHECK(dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30 +01:00"));
     OFCHECK(dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30 -02:30"));
     OFCHECK(dateTime1.setISOFormattedDateTime("2000-12-31T10:15:30+01:00"));
     OFCHECK(dateTime2.setISOFormattedDateTime("20001231101530+0100"));
-    OFCHECK(dateTime1 == dateTime2);
+    OFCHECK_EQUAL(dateTime1, dateTime2);
     /* the "seconds" part is mandatory if time zone is present */
     OFCHECK(!dateTime2.setISOFormattedDateTime("2000-12-31 10:15 -02:30"));
     OFCHECK(!dateTime2.setISOFormattedDateTime("200012311015+0100"));
@@ -203,6 +206,9 @@ OFTEST(ofstd_OFDateTime)
  *
  * CVS/RCS Log:
  * $Log: tofdatim.cc,v $
+ * Revision 1.14  2011-11-29 18:03:22  joergr
+ * Enhanced some existing test cases and added two new OFDateTime tests.
+ *
  * Revision 1.13  2011-11-29 16:06:27  joergr
  * Added new tests and also separated tests for OFDate, OFTime and OFDateTime.
  *
