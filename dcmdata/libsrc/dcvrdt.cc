@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 14:46:38 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2011-11-29 16:11:36 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,21 +137,9 @@ OFCondition DcmDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
                                                  const OFBool seconds,
                                                  const OFBool fraction,
                                                  const OFBool timeZone,
-                                                 const OFBool createMissingPart)
-{
-    /* call the real function, required to make Sun CC 2.0.1 happy (see header file) */
-    return getISOFormattedDateTime(formattedDateTime, pos, seconds, fraction, timeZone,
-                                   createMissingPart, " " /*dateTimeSeparator*/);
-}
-
-
-OFCondition DcmDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
-                                                 const unsigned long pos,
-                                                 const OFBool seconds,
-                                                 const OFBool fraction,
-                                                 const OFBool timeZone,
                                                  const OFBool createMissingPart,
-                                                 const OFString &dateTimeSeparator)
+                                                 const OFString &dateTimeSeparator,
+                                                 const OFString &timeZoneSeparator)
 {
     OFString dicomDateTime;
     /* get current element value and convert to ISO formatted date/time */
@@ -159,7 +147,7 @@ OFCondition DcmDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
     if (l_error.good())
     {
         l_error = getISOFormattedDateTimeFromString(dicomDateTime, formattedDateTime, seconds, fraction,
-                                                    timeZone, createMissingPart, dateTimeSeparator);
+            timeZone, createMissingPart, dateTimeSeparator, timeZoneSeparator);
     } else
         formattedDateTime.clear();
     return l_error;
@@ -291,20 +279,9 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
                                                            const OFBool seconds,
                                                            const OFBool fraction,
                                                            const OFBool timeZone,
-                                                           const OFBool createMissingPart)
-{
-    return getISOFormattedDateTimeFromString(dicomDateTime, formattedDateTime, seconds, fraction, timeZone,
-                                             createMissingPart, " " /*dateTimeSeparator*/);
-}
-
-
-OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicomDateTime,
-                                                           OFString &formattedDateTime,
-                                                           const OFBool seconds,
-                                                           const OFBool fraction,
-                                                           const OFBool timeZone,
                                                            const OFBool createMissingPart,
-                                                           const OFString &dateTimeSeparator)
+                                                           const OFString &dateTimeSeparator,
+                                                           const OFString &timeZoneSeparator)
 {
     OFCondition l_error = EC_Normal;
     const size_t length = dicomDateTime.length();
@@ -333,13 +310,17 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
                     /* check whether optional time zone is present: &ZZZZ */
                     if ((posSign != OFString_npos) && (length >= posSign + 5))
                     {
-                        formattedDateTime += " ";
+                        formattedDateTime += timeZoneSeparator;
                         formattedDateTime += dicomDateTime[posSign];
                         formattedDateTime += dicomDateTime.substr(posSign + 1, 2);
                         formattedDateTime += ":";
                         formattedDateTime += dicomDateTime.substr(posSign + 3, 2);
-                    } else if (createMissingPart)
-                        formattedDateTime += " +00:00";
+                    }
+                    else if (createMissingPart)
+                    {
+                        formattedDateTime += timeZoneSeparator;
+                        formattedDateTime += "+00:00";
+                    }
                 }
             }
         }
@@ -407,6 +388,10 @@ OFCondition DcmDateTime::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
+** Revision 1.36  2011-11-29 16:11:36  joergr
+** Added support for optional "timeZoneSeparator" parameter to some get methods.
+** Also removed some "hacks" that were needed for the old Sun CC 2.0.1 compiler.
+**
 ** Revision 1.35  2011-11-24 14:46:38  joergr
 ** Handle an empty element/input value as a special case in the "convert to ISO
 ** format" methods, i.e. the resulting string is cleared and no error reported.

@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.29 (riesmeier)
 
+- Added support for optional "timeZoneSeparator" parameter to some get methods.
+  Also removed some "hacks" that were needed for the old Sun CC 2.0.1 compiler.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcvrdt.h
+           dcmdata/libsrc/dcvrdt.cc
+
 - Added new tests and also separated tests for OFDate, OFTime and OFDateTime.
   Affects: ofstd/tests/tests.cc
            ofstd/tests/tofdatim.cc
