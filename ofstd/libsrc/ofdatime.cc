@@ -18,8 +18,8 @@
  *  Purpose: Class for date and time functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 16:01:15 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-11-29 17:56:14 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,7 @@ OFBool OFDateTime::setDateTime(const unsigned int year,
     OFBool result = OFFalse;
     /* check whether new date and time are valid */
     if (OFDate::isDateValid(year, month, day) && OFTime::isTimeValid(hour, minute, second, timeZone))
-       result = Date.setDate(year, month, day) && Time.setTime(hour, minute, second, timeZone);
+        result = Date.setDate(year, month, day) && Time.setTime(hour, minute, second, timeZone);
     return result;
 }
 
@@ -145,8 +145,8 @@ OFBool OFDateTime::setDate(const OFDate &dateVal)
     /* check whether new date is valid */
     if (dateVal.isValid())
     {
-       Date = dateVal;
-       result = OFTrue;
+        Date = dateVal;
+        result = OFTrue;
     }
     return result;
 }
@@ -158,8 +158,8 @@ OFBool OFDateTime::setTime(const OFTime &timeVal)
     /* check whether new time is valid */
     if (timeVal.isValid())
     {
-       Time = timeVal;
-       result = OFTrue;
+        Time = timeVal;
+        result = OFTrue;
     }
     return result;
 }
@@ -186,10 +186,11 @@ OFBool OFDateTime::setISOFormattedDateTime(const OFString &formattedDateTime)
 {
     OFBool result = OFFalse;
     const size_t length = formattedDateTime.length();
-    const OFBool separators = (formattedDateTime.find_first_not_of("0123456789") != OFString_npos);
+    const size_t firstSep = formattedDateTime.find_first_not_of("0123456789");
+    const OFBool separators = (firstSep != OFString_npos);
     /* check for supported formats: "YYYYMMDDHHMM[SS]" or "YYYYMMDDHHMMSS&ZZZZ" */
     if (((((length == 12) || (length == 14)) && !separators) ||
-        ((length == 19) && ((formattedDateTime[14] == '+') || (formattedDateTime[14] == '-')))))
+        ((length == 19) && (firstSep == 14) && ((formattedDateTime[14] == '+') || (formattedDateTime[14] == '-')))))
     {
         if (Date.setISOFormattedDate(formattedDateTime.substr(0, 8)) && Time.setISOFormattedTime(formattedDateTime.substr(8)))
             result = OFTrue;
@@ -276,6 +277,9 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDateTim
  *
  * CVS/RCS Log:
  * $Log: ofdatime.cc,v $
+ * Revision 1.16  2011-11-29 17:56:14  joergr
+ * Made setISOFormattedDateTime() more robust with regard to input values.
+ *
  * Revision 1.15  2011-11-29 16:01:15  joergr
  * Added support for the optional time zone to setISOFormattedDateTime().
  * Also removed some "hacks" that were needed for the old Sun CC 2.0.1 compiler.

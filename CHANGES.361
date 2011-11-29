@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.29 (riesmeier)
 
+- Made setISOFormattedDateTime() more robust with regard to input values.
+  Affects: ofstd/libsrc/ofdatime.cc
+
 - Added support for optional time zone to XML read/write methods of DT values.
   Thanks to forum user "dclunie" for the original report.
   Affects: dcmsr/data/dsr2xml.xsd
