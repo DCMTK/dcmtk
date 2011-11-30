@@ -18,9 +18,9 @@
  *  Purpose:
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2011-05-10 07:51:14 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: ogazzar $
+ *  Update Date:      $Date: 2011-11-30 15:35:20 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -363,11 +363,23 @@ public:
      */
     T& front() { return *begin(); }
 
+    /** returns a constant reference to the first element in the list.
+     *  May only be called if list is non-empty.
+     *  @return first element in list, by constant reference
+     */
+    const T& front() const { return *begin(); }
+
     /** returns a reference to the last element in the list.
      *  May only be called if list is non-empty.
      *  @return last element in list, by reference
      */
     T& back() { return *(--end()); }
+
+    /** returns a constant reference to the last element in the list.
+     *  May only be called if list is non-empty.
+     *  @return last element in list, by constant reference
+     */
+    const T& back() const { return *(--end()); }
 
     /** inserts before the first element of the list.
      *  @param x value from which the new list entry is copy constructed
@@ -566,6 +578,9 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
+** Revision 1.30  2011-11-30 15:35:20  ogazzar
+** Added functions front() and back() to return const reference.
+**
 ** Revision 1.29  2011-05-10 07:51:14  uli
 ** Add an assignment operator to OFList.
 **
