@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.30 (elgazzar)
+
+- Added functions front() and back() to return const reference
+  Affects: ofstd/include/dcmtk/ofstd/oflist.h
+
 **** Changes from 2011.11.30 (schlachter)
 
 - Correctly clean up if libiconv was found but iconv.h wasn't.
