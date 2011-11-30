@@ -10,6 +10,9 @@ Changes between releases are documented here.
   Affects: CMakeLists.txt
            CMake/dcmtkAddTests.cmake
 
+- Don't overwrite the compiler flags if BUILD_SHARED_LIBS is set.
+  Affects: CMakeLists.txt
+
 **** Changes from 2011.11.30 (riesmeier)
 
 - Added missing support for value type SCOORD3D (Spatial Coordinates 3D).
