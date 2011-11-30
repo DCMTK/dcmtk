@@ -19,8 +19,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 16:19:12 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Update Date:      $Date: 2011-11-30 09:07:24 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,7 +190,7 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
     OFCondition result = SR_EC_InvalidDocument;
     if (isValid())
     {
-        OFString tmpString;
+        OFString tmpString, string2;
         /* update only some DICOM attributes */
         updateAttributes(OFFalse /*updateAll*/);
 
@@ -215,7 +215,7 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                 {
                    if (!patientStr.empty())
                        patientStr += ", ";
-                   patientStr += getPrintStringFromElement(PatientBirthDate, tmpString);
+                   patientStr += dicomToReadableDate(getStringValueFromElement(PatientBirthDate, tmpString), string2);
                 }
                 if (!PatientID.isEmpty())
                 {
@@ -318,7 +318,7 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                         } else {
                             DCMSR_PRINT_HEADER_FIELD_START("                   ", "   ")
                         }
-                        stream << dateTime << ": " << obsName;
+                        stream << dicomToReadableDateTime(dateTime, tmpString) << ", " << obsName;
                         if (obsCode.isValid())
                         {
                             stream << " ";
@@ -333,8 +333,8 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
             if (!ContentDate.isEmpty() && !ContentTime.isEmpty())
             {
                 DCMSR_PRINT_HEADER_FIELD_START("Content Date/Time  ", " : ")
-                stream << getPrintStringFromElement(ContentDate, tmpString) << " "
-                       << getPrintStringFromElement(ContentTime, tmpString);
+                stream << dicomToReadableDate(getStringValueFromElement(ContentDate, tmpString), string2) << " ";
+                stream << dicomToReadableTime(getStringValueFromElement(ContentTime, tmpString), string2);
                 DCMSR_PRINT_HEADER_FIELD_END
             }
             stream << OFendl;
@@ -2554,6 +2554,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.80  2011-11-30 09:07:24  joergr
+ *  Output date and time values in general header of print() method in a more
+ *  readable way by using separators for the date and time components.
+ *
  *  Revision 1.79  2011-11-29 16:19:12  joergr
  *  Added support for optional time zone to XML read/write methods of DT values.
  *

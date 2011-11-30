@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.30 (riesmeier)
 
+- Output date and time values in general header of print() method in a more
+  readable way by using separators for the date and time components.
+  Affects: dcmsr/libsrc/dsrdoc.c
+
 - Output optional observation date/time of each content item in print() method.
   Affects: dcmsr/libsrc/dsrdoctr.cc
 
