@@ -6,6 +6,10 @@ Changes between releases are documented here.
 - Correctly clean up if libiconv was found but iconv.h wasn't.
   Affects: CMake/FindICONV.cmake
 
+- Fix for CMake 2.6 which doesn't support the ADD_TEST syntax used.
+  Affects: CMakeLists.txt
+           CMake/dcmtkAddTests.cmake
+
 **** Changes from 2011.11.30 (riesmeier)
 
 - Output date and time values in general header of print() method in a more
