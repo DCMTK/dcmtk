@@ -12,6 +12,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.30 (riesmeier)
 
+- Added missing support for value type SCOORD3D (Spatial Coordinates 3D).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcitem.h
+           dcmsr/libsrc/dsrcitem.cc
+
 - Output date and time values in general header of print() method in a more
   readable way by using separators for the date and time components.
   Affects: dcmsr/libsrc/dsrdoc.c

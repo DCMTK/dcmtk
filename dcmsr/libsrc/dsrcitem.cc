@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:14:40 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2011-11-30 14:21:34 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 #include "dcmtk/dcmsr/dsruidtn.h"
 #include "dcmtk/dcmsr/dsrpnmtn.h"
 #include "dcmtk/dcmsr/dsrscotn.h"
+#include "dcmtk/dcmsr/dsrsc3tn.h"
 #include "dcmtk/dcmsr/dsrtcotn.h"
 #include "dcmtk/dcmsr/dsrcomtn.h"
 #include "dcmtk/dcmsr/dsrimgtn.h"
@@ -49,14 +50,15 @@
 
 
 // definition of empty default objects
-const OFString DSRContentItem::EmptyString;
-const DSRCodedEntryValue DSRContentItem::EmptyCodedEntry;
-const DSRNumericMeasurementValue DSRContentItem::EmptyNumericMeasurement;
-const DSRSpatialCoordinatesValue DSRContentItem::EmptySpatialCoordinates;
-const DSRTemporalCoordinatesValue DSRContentItem::EmptyTemporalCoordinates;
-const DSRCompositeReferenceValue DSRContentItem::EmptyCompositeReference;
-const DSRImageReferenceValue DSRContentItem::EmptyImageReference;
-const DSRWaveformReferenceValue DSRContentItem::EmptyWaveformReference;
+const OFString                     DSRContentItem::EmptyString;
+const DSRCodedEntryValue           DSRContentItem::EmptyCodedEntry;
+const DSRNumericMeasurementValue   DSRContentItem::EmptyNumericMeasurement;
+const DSRSpatialCoordinatesValue   DSRContentItem::EmptySpatialCoordinates;
+const DSRSpatialCoordinates3DValue DSRContentItem::EmptySpatialCoordinates3D;
+const DSRTemporalCoordinatesValue  DSRContentItem::EmptyTemporalCoordinates;
+const DSRCompositeReferenceValue   DSRContentItem::EmptyCompositeReference;
+const DSRImageReferenceValue       DSRContentItem::EmptyImageReference;
+const DSRWaveformReferenceValue    DSRContentItem::EmptyWaveformReference;
 
 
 DSRContentItem::DSRContentItem()
@@ -329,6 +331,56 @@ OFCondition DSRContentItem::setSpatialCoordinates(const DSRSpatialCoordinatesVal
     {
         if (TreeNode->getValueType() == VT_SCoord)
             result = OFstatic_cast(DSRSCoordTreeNode *, TreeNode)->setValue(coordinatesValue);
+    }
+    return result;
+}
+
+
+DSRSpatialCoordinates3DValue *DSRContentItem::getSpatialCoordinates3DPtr()
+{
+    DSRSpatialCoordinates3DValue *pointer = NULL;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_SCoord3D)
+            pointer = OFstatic_cast(DSRSCoord3DTreeNode *, TreeNode)->getValuePtr();
+    }
+    return pointer;
+}
+
+
+const DSRSpatialCoordinates3DValue &DSRContentItem::getSpatialCoordinates3D() const
+{
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_SCoord3D)
+            return OFstatic_cast(DSRSCoord3DTreeNode *, TreeNode)->getValue();
+    }
+    return EmptySpatialCoordinates3D;
+}
+
+
+OFCondition DSRContentItem::getSpatialCoordinates3D(DSRSpatialCoordinates3DValue &coordinatesValue) const
+{
+    OFCondition result = EC_IllegalCall;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_SCoord3D)
+            result= OFstatic_cast(DSRSCoord3DTreeNode *, TreeNode)->getValue(coordinatesValue);
+        else
+            coordinatesValue.clear();
+    } else
+        coordinatesValue.clear();
+    return result;
+}
+
+
+OFCondition DSRContentItem::setSpatialCoordinates3D(const DSRSpatialCoordinates3DValue &coordinatesValue)
+{
+    OFCondition result = EC_IllegalCall;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_SCoord3D)
+            result = OFstatic_cast(DSRSCoord3DTreeNode *, TreeNode)->setValue(coordinatesValue);
     }
     return result;
 }
@@ -644,6 +696,9 @@ OFCondition DSRContentItem::setTemplateIdentification(const OFString &templateId
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
+ *  Revision 1.16  2011-11-30 14:21:34  joergr
+ *  Added missing support for value type SCOORD3D (Spatial Coordinates 3D).
+ *
  *  Revision 1.15  2010-10-14 13:14:40  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *

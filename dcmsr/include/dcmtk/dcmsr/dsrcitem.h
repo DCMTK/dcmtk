@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2011, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2010-10-14 13:16:32 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2011-11-30 14:21:33 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dcmtk/dcmsr/dsrcodvl.h"
 #include "dcmtk/dcmsr/dsrnumvl.h"
 #include "dcmtk/dcmsr/dsrscovl.h"
+#include "dcmtk/dcmsr/dsrsc3vl.h"
 #include "dcmtk/dcmsr/dsrtcovl.h"
 #include "dcmtk/dcmsr/dsrcomvl.h"
 #include "dcmtk/dcmsr/dsrimgvl.h"
@@ -192,6 +193,32 @@ class DSRContentItem
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setSpatialCoordinates(const DSRSpatialCoordinatesValue &coordinatesValue);
+
+    /** get pointer to spatial coordinates 3D.
+     *  Applicable to: SCOORD3D
+     ** @return pointer to spatial coordinates 3D value of current content item if valid, NULL otherwise
+     */
+    DSRSpatialCoordinates3DValue *getSpatialCoordinates3DPtr();
+
+    /** get spatial coordinates 3D.
+     *  Applicable to: SCOORD3D
+     ** @return spatial coordinates 3D value of current content item if valid, EmptySpatialCoordinates3D otherwise
+     */
+    const DSRSpatialCoordinates3DValue &getSpatialCoordinates3D() const;
+
+    /** get copy of spatial coordinates 3D.
+     *  Applicable to: SCOORD3D
+     ** @param  coordinatesValue  variable where the copy should be stored (cleared if an error occurs)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition getSpatialCoordinates3D(DSRSpatialCoordinates3DValue &coordinatesValue) const;
+
+    /** set spatial coordinates 3D.
+     *  Applicable to: SCOORD3D
+     ** @param  coordinatesValue  value to be set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setSpatialCoordinates3D(const DSRSpatialCoordinates3DValue &coordinatesValue);
 
     /** get pointer to temporal coordinates.
      *  Applicable to: TCOORD
@@ -422,6 +449,8 @@ class DSRContentItem
     static const DSRNumericMeasurementValue  EmptyNumericMeasurement;
     /// empty spatial coordinates value. Used as default return value for getSpatialCoordinates()
     static const DSRSpatialCoordinatesValue  EmptySpatialCoordinates;
+    /// empty spatial coordinates 3D value. Used as default return value for getSpatialCoordinates3D()
+    static const DSRSpatialCoordinates3DValue EmptySpatialCoordinates3D;
     /// empty temporal coordinates value. Used as default return value for getTemporalCoordinates()
     static const DSRTemporalCoordinatesValue EmptyTemporalCoordinates;
     /// empty composite reference value. Used as default return value for getCompositeReference()
@@ -445,6 +474,9 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
+ *  Revision 1.20  2011-11-30 14:21:33  joergr
+ *  Added missing support for value type SCOORD3D (Spatial Coordinates 3D).
+ *
  *  Revision 1.19  2010-10-14 13:16:32  joergr
  *  Updated copyright header. Added reference to COPYRIGHT file.
  *
