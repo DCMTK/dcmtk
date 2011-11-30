@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.30 (schlachter)
+
+- Correctly clean up if libiconv was found but iconv.h wasn't.
+  Affects: CMake/FindICONV.cmake
+
 **** Changes from 2011.11.30 (riesmeier)
 
 - Output date and time values in general header of print() method in a more
