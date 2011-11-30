@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2011.11.30 (riesmeier)
 
+- Output optional observation date/time of each content item in print() method.
+  Affects: dcmsr/libsrc/dsrdoctr.cc
+
 - Made setISOFormattedeTime() more robust with regard to input values. Fixed
   an issue with determining the local time zone (introduced with last commit).
   Affects: ofstd/libsrc/oftime.cc

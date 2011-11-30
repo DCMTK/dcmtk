@@ -19,8 +19,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-03-22 16:55:18 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2011-11-30 08:48:09 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,6 +111,11 @@ OFCondition DSRDocumentTree::print(STD_NAMESPACE ostream &stream,
                 result = node->print(stream, flags);
                 DCMSR_PRINT_ANSI_ESCAPE_CODE(DCMSR_ANSI_ESCAPE_CODE_DELIMITER)
                 stream << ">";
+                /* print observation date/time (optional) */
+                if (!node->getObservationDateTime().empty())
+                {
+                    stream << " {" << dicomToReadableDateTime(node->getObservationDateTime(), tmpString) << "}";
+                }
                 if (flags & PF_printTemplateIdentification)
                 {
                     /* check for template identification */
@@ -678,6 +683,9 @@ void DSRDocumentTree::resetReferenceTargetFlag()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
+ *  Revision 1.38  2011-11-30 08:48:09  joergr
+ *  Output optional observation date/time of each content item in print() method.
+ *
  *  Revision 1.37  2011-03-22 16:55:18  joergr
  *  Added support for colored output to the print() method - Unix only.
  *
