@@ -18,8 +18,8 @@
  *  Purpose: Class for time functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 15:57:32 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2011-11-30 08:35:09 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -303,7 +303,7 @@ OFBool OFTime::setCurrentTime(const time_t &tt)
 {
     OFBool status = OFFalse;
 #ifdef HAVE_LOCALTIME_R
-    // use localtime_r instead of localtime
+    /* use localtime_r instead of localtime */
     struct tm ltBuf;
     struct tm *lt = &ltBuf;
     localtime_r(&tt, lt);
@@ -317,12 +317,12 @@ OFBool OFTime::setCurrentTime(const time_t &tt)
         Minute = lt->tm_min;
         Second = lt->tm_sec;
 #ifdef HAVE_GMTIME_R
-        // use gmtime_r instead of gmtime
+        /* use gmtime_r instead of gmtime */
         struct tm gtBuf;
         struct tm *gt = &gtBuf;
         gmtime_r(&tt, gt);
 #else
-        // avoid overwriting of local time structure by calling gmtime()
+        /* avoid overwriting of local time structure by calling gmtime() */
         struct tm ltBuf = *lt;
         lt = &ltBuf;
         struct tm *gt = gmtime(&tt);
@@ -334,7 +334,7 @@ OFBool OFTime::setCurrentTime(const time_t &tt)
             /* correct for "day overflow" */
             if (TimeZone < -12)
                 TimeZone += 24;
-            else if (TimeZone > 14)
+            else if (TimeZone > 12)   // cannot detect time zones in the range ]+12.0,+14.0]
                 TimeZone -= 24;
         } else {
             /* could not retrieve the time zone */
@@ -361,7 +361,8 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
 {
     OFBool status = OFFalse;
     const size_t length = formattedTime.length();
-    const OFBool separators = (formattedTime.find_first_not_of("0123456789") != OFString_npos);
+    const size_t firstSep = formattedTime.find_first_not_of("0123456789");
+    const OFBool separators = (firstSep != OFString_npos);
     unsigned int hours, minutes, seconds;
     /* check for supported formats: HHMM */
     if ((length == 4) && !separators)
@@ -392,7 +393,7 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
             status = setTime(hours, minutes, seconds);
     }
     /* HHMMSS&ZZZZ */
-    else if ((length == 11) && ((formattedTime[6] == '+') || (formattedTime[6] == '-')))
+    else if ((length == 11) && (firstSep == 6) && ((formattedTime[6] == '+') || (formattedTime[6] == '-')))
     {
         int tzHours;
         unsigned int tzMinutes;
@@ -405,18 +406,18 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
         }
     }
     /* HH:MM:SS &ZZ:ZZ */
-    else if (length >= 14)
+    else if ((length >= 14) && separators)
     {
-        /* first extract "HH", "MM" and "SS" components from time string */
+        /* first, extract "HH", "MM" and "SS" components from time string */
         if (sscanf(formattedTime.c_str(), "%02u%*c%02u%*c%02u", &hours, &minutes, &seconds) == 3)
         {
             size_t pos = 8;
-            /* search for first digit of the time zone value (skip arbitrary separators) */
+            /* then search for the first digit of the time zone value (skip arbitrary separators) */
             while ((pos < length) && !isdigit(OFstatic_cast(unsigned char, formattedTime.at(pos))))
                 ++pos;
             if (pos < length)
             {
-                /* then extract the time zone component from the time string */
+                /* and finally, extract the time zone component from the time string */
                 int tzHours;
                 unsigned int tzMinutes;
                 if (sscanf(formattedTime.c_str() + pos - 1, "%03i%*c%02u", &tzHours, &tzMinutes) == 2)
@@ -649,6 +650,10 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &t
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
+ * Revision 1.21  2011-11-30 08:35:09  joergr
+ * Made setISOFormattedeTime() more robust with regard to input values. Fixed
+ * an issue with determining the local time zone (introduced with last commit).
+ *
  * Revision 1.20  2011-11-29 15:57:32  joergr
  * Added support for the optional time zone to setISOFormattedTime(). Also made
  * sure that all time zones in the range of -12 to +14 are regarded as valid.

@@ -18,8 +18,8 @@
  *  Purpose: Class for time functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-29 15:57:30 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2011-11-30 08:35:11 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -349,6 +349,8 @@ class OFTime
     /** get the local time zone.
      *  This function uses operating system dependent routines. If they are unavailable
      *  for some reason the Coordinated Universal Time is assumed (time zone offset = 0).
+     *  Also please note that time zones in the range ]+12.0,+14.0] cannot be detected
+     *  due to the internally used algorithm.
      *  @return local time zone if available, 0 otherwise
      */
     static double getLocalTimeZone();
@@ -443,6 +445,10 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &t
  *
  * CVS/RCS Log:
  * $Log: oftime.h,v $
+ * Revision 1.13  2011-11-30 08:35:11  joergr
+ * Made setISOFormattedeTime() more robust with regard to input values. Fixed
+ * an issue with determining the local time zone (introduced with last commit).
+ *
  * Revision 1.12  2011-11-29 15:57:30  joergr
  * Added support for the optional time zone to setISOFormattedTime(). Also made
  * sure that all time zones in the range of -12 to +14 are regarded as valid.

@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2011.11.30 (riesmeier)
+
+- Made setISOFormattedeTime() more robust with regard to input values. Fixed
+  an issue with determining the local time zone (introduced with last commit).
+  Affects: ofstd/libsrc/oftime.cc
+
 **** Changes from 2011.11.29 (riesmeier)
 
 - Enhanced some existing test cases and added two new OFDateTime tests.
