@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmMetaInfo
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-21 11:01:01 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-12-01 13:14:02 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -180,6 +180,9 @@ void DcmMetaInfo::print(STD_NAMESPACE ostream&out,
 OFCondition DcmMetaInfo::writeXML(STD_NAMESPACE ostream&out,
                                   const size_t flags)
 {
+    if (flags & DCMTypes::XF_useNativeModel)
+        return EC_IllegalCall; // TODO: Dedicated error code
+
     OFString xmlString;
     DcmXfer xfer(Xfer);
     /* XML start tag for "meta-header" */
@@ -626,6 +629,10 @@ OFCondition DcmMetaInfo::loadFile(const char *fileName,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.62  2011-12-01 13:14:02  onken
+** Added support for Application Hosting's Native DICOM Model xml format
+** to dcm2xml.
+**
 ** Revision 1.61  2011-11-21 11:01:01  joergr
 ** Moved log message on transfer syntax from DcmItem to DcmDataset/DcmMetaInfo.
 **

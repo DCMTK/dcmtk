@@ -15,8 +15,11 @@ dcm2xml [options] dcmfile-in [xmlfile-out]
 \section description DESCRIPTION
 
 The \b dcm2xml utility converts the contents of a DICOM file (file format or
-raw data set) to XML (Extensible Markup Language).  The DTD (Document Type
-Definition) is described in the file <em>dcm2xml.dtd</em>.
+raw data set) to XML (Extensible Markup Language).  There are two output
+formats.  The first one is specific to DCMTK with its DTD (Document Type
+Definition) described in the file <em>dcm2xml.dtd</em>.  The second one is
+refers to the "Native DICOM Model" which is specified for the DICOM
+Application Hosting service found in DICOM part 19.
 
 If \b dcm2xml reads a raw data set (DICOM data without a file format
 meta-header) it will attempt to guess the transfer syntax by examining the
@@ -132,7 +135,18 @@ specific character set:
 
 \subsection output_options output options
 \verbatim
-XML structure:
+general XML format:
+
+  -dtk --dcmtk-format
+         output in DCMTK-specific format (default)
+
+  -nat --native-format
+         output in Native DICOM Model format
+
+  +Xn  --use-xml-namespace
+         add XML namespace declaration to root element
+
+DCMTK format (not with -nat):
 
   +Xd  --add-dtd-reference
          add reference to document type definition (DTD)
@@ -144,10 +158,7 @@ XML structure:
          use specified DTD file (only with +Xe)
          (default: /usr/local/share/dcmtk/dcm2xml.dtd)
 
-  +Xn  --use-xml-namespace
-         add XML namespace declaration to root element
-
-DICOM data elements:
+DICOM data elements (not with -nat):
 
   +Wn  --write-element-name
          write name of the DICOM data elements (default)
@@ -166,10 +177,10 @@ DICOM data elements:
          encode binary data as Base64 (RFC 2045, MIME)
 \endverbatim
 
-\section notes NOTES
+\section dcmtk_format DCMTK Format
 
-The basic structure of the XML output created from a DICOM file looks like the
-following:
+The basic structure of the DCMTK-specific XML output created from a DICOM file
+looks like the following:
 
 \verbatim
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -212,6 +223,47 @@ following:
 
 The "file-format" and "meta-header" tags are absent for DICOM data sets.
 
+\subsection xml_encoding XML Encoding
+
+Attributes with very large value fields (e.g. pixel data) are not loaded by
+default.  They can be identified by the additional attribute "loaded" with a
+value of "no" (see example above).  The command line option \e --load-all
+forces to load all value fields including the very long ones.
+
+Furthermore, binary information of OB and OW attributes are not written to the
+XML output file by default.  These elements can be identified by the
+additional attribute "binary" with a value of "hidden" (default is "no").  The
+command line option \e --write-binary-data causes also binary value fields to
+be printed (attribute value is "yes" or "base64").  But, be careful when using
+this option together with \e --load-all because of the large amounts of pixel
+data that might be printed to the output.
+
+Multiple values (i.e. where the DICOM value multiplicity is greater than 1)
+are separated by a backslash "\" (except for Base64 encoded data).  The "len"
+attribute indicates the number of bytes for the particular value field as
+stored in the DICOM data set, i.e. it might deviate from the XML encoded value
+length e.g. because of non-significant padding that has been removed.  If this
+attribute is missing in "sequence" or "item" start tags, the corresponding
+DICOM element has been stored with undefined length.
+
+\section native_format Native DICOM Model format
+
+The description of the Native DICOM Model format can be found in the DICOM
+standard, part 19 ("Application Hosting").
+
+\subsection binary_data Binary Data
+
+Binary data, i.e. DICOM element values with Value Representations of OB or OW
+are not written to the XML output.  Instead, for each element, a new Unique
+Identifier (UID) is being generated and written as a \<BulkData\> XML element.
+This conforms to the format specification in DICOM's part 19.  So far, there
+is possibility to write an additional file to hold the binary data for each
+of the binary data chunks.  This is not required by the standard, however,
+might be useful for implementing an Application Hosting interface; thus this
+feature may be available in future versions of \b dcm2xml.
+
+\section notes NOTES
+
 \subsection character_encoding Character Encoding
 
 The XML encoding is determined automatically from the DICOM attribute
@@ -240,29 +292,6 @@ needed, option \e --convert-to-utf8 can be used to convert the DICOM file or
 data set to UTF-8 encoding prior to the conversion to XML format.  This is also
 useful for DICOMDIR files where each directory record can have a different
 character set.
-
-\subsection xml_encoding XML Encoding
-
-Attributes with very large value fields (e.g. pixel data) are not loaded by
-default.  They can be identified by the additional attribute "loaded" with a
-value of "no" (see example above).  The command line option \e --load-all
-forces to load all value fields including the very long ones.
-
-Furthermore, binary information of OB and OW attributes are not written to the
-XML output file by default.  These elements can be identified by the
-additional attribute "binary" with a value of "hidden" (default is "no").  The
-command line option \e --write-binary-data causes also binary value fields to
-be printed (attribute value is "yes" or "base64").  But, be careful when using
-this option together with \e --load-all because of the large amounts of pixel
-data that might be printed to the output.
-
-Multiple values (i.e. where the DICOM value multiplicity is greater than 1)
-are separated by a backslash "\" (except for Base64 encoded data).  The "len"
-attribute indicates the number of bytes for the particular value field as
-stored in the DICOM data set, i.e. it might deviate from the XML encoded value
-length e.g. because of non-significant padding that has been removed.  If this
-attribute is missing in "sequence" or "item" start tags, the corresponding
-DICOM element has been stored with undefined length.
 
 \section logging LOGGING
 

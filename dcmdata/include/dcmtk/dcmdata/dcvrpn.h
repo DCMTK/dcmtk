@@ -17,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmPersonName
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-02-02 15:13:51 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-12-01 13:14:00 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,6 +172,14 @@ class DcmPersonName
                                   const OFString &namePrefix,
                                   const OFString &nameSuffix);
 
+    /** write object in XML format
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition writeXML(STD_NAMESPACE ostream &out,
+                         const size_t flags = 0);
+
     /* --- static helper functions --- */
 
     /** get name components from specified DICOM person name.
@@ -201,6 +209,25 @@ class DcmPersonName
                                                    OFString &namePrefix,
                                                    OFString &nameSuffix,
                                                    const unsigned int componentGroup = 0);
+
+    /** get single component group from specified DICOM person name.
+     *  The DICOM PN consists of up to three component groups separated by a "=". The
+     *  supported format is "[CG0][=CG1][=CG2]" where the brackets enclose optional
+     *  parts and CG0 is a single-byte character representation, CG1 an ideographic
+     *  representation, and CG2 a phonetic representation of the name.
+     *  The returned component group will contain component delimiters ("^") as they are
+     *  stored within the very component group, i.e. superfluous component delimiters are
+     *  not removed.
+     *  @param allCmpGroups string value in DICOM PN format to component group from
+     *  @param groupNo index of the component group (0..2) to be extracted
+     *  @param cmpGroup reference to string variable where selected component gruop shall be stored
+     *  @return EC_Normal upon success, an error code otherwise. Especially, if a component
+     *          group exists (always for group 0, for group 1 and 2 depending on whether
+     *          corresponding "=" is present) and is empty, EC_Normal is returned.
+     */
+    static OFCondition getComponentGroup(const OFString& allCmpGroups,
+                                         const unsigned int groupNo,
+                                         OFString& cmpGroup);
 
     /** get specified DICOM person name as a formatted/readable name.
      *  The specified 'dicomName' is expected to be in DICOM PN format as described above.
@@ -274,6 +301,10 @@ class DcmPersonName
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.h,v $
+** Revision 1.28  2011-12-01 13:14:00  onken
+** Added support for Application Hosting's Native DICOM Model xml format
+** to dcm2xml.
+**
 ** Revision 1.27  2011-02-02 15:13:51  joergr
 ** Moved documentation of valid values for the VMs that can be checked to a
 ** central place, i.e. DcmElement::checkVM().

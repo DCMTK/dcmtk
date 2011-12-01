@@ -895,7 +895,9 @@ dcelem.o: dcelem.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
   ../include/dcmtk/dcmdata/dcpcache.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/vrscan.h
+  ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/vrscan.h \
+  ../include/dcmtk/dcmdata/dcpath.h ../include/dcmtk/dcmdata/dcdatset.h \
+  ../include/dcmtk/dcmdata/dcitem.h
 dcerror.o: dcerror.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcerror.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -4181,6 +4183,7 @@ dcvrobow.o: dcvrobow.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcstack.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcswap.h \
+  ../include/dcmtk/dcmdata/dcuid.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dcvrof.o: dcvrof.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcvrof.h \

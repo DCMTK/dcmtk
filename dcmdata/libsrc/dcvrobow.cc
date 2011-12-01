@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-18 14:00:13 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-12-01 13:14:03 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcswap.h"
+#include "dcmtk/dcmdata/dcuid.h" // for UID generation
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTDLIB
@@ -674,6 +675,15 @@ OFCondition DcmOtherByteOtherWord::writeSignatureFormat(
 OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
                                             const size_t flags)
 {
+    if (flags & DCMTypes::XF_useNativeModel)
+    {
+        writeXMLStartTag(out, flags);
+        char uid[100];
+        dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT);
+        out << "<BulkData UUID=\" " << uid << "\"/>" << OFendl;
+        writeXMLEndTag(out, flags);
+        return EC_Normal;
+    }
     /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
     if (!(flags & DCMTypes::XF_writeBinaryData))
         writeXMLStartTag(out, flags, "binary=\"hidden\"");
@@ -740,6 +750,10 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.67  2011-12-01 13:14:03  onken
+** Added support for Application Hosting's Native DICOM Model xml format
+** to dcm2xml.
+**
 ** Revision 1.66  2011-10-18 14:00:13  joergr
 ** Added support for embedded NULL bytes in string element values.
 **

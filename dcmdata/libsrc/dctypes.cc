@@ -17,9 +17,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-17 12:30:22 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-12-01 13:14:03 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,15 +45,19 @@ const size_t DCMTypes::PF_useANSIEscapeCodes    = 1 << 5;
 const size_t DCMTypes::XF_addDocumentType       = 1 << 0;
 const size_t DCMTypes::XF_writeBinaryData       = 1 << 1;
 const size_t DCMTypes::XF_encodeBase64          = 1 << 2;
-const size_t DCMTypes::XF_useDcmtkNamespace     = 1 << 3;
+const size_t DCMTypes::XF_useXMLNamespace       = 1 << 3;
 const size_t DCMTypes::XF_embedDocumentType     = 1 << 4;
 const size_t DCMTypes::XF_omitDataElementName   = 1 << 5;
 const size_t DCMTypes::XF_convertNonASCII       = 1 << 6;
-
+const size_t DCMTypes::XF_useNativeModel        = 1 << 7;
 
 /*
  * CVS/RCS Log:
  * $Log: dctypes.cc,v $
+ * Revision 1.17  2011-12-01 13:14:03  onken
+ * Added support for Application Hosting's Native DICOM Model xml format
+ * to dcm2xml.
+ *
  * Revision 1.16  2011-10-17 12:30:22  joergr
  * Added writeXML() flag that allows for converting all non-ASCII characters.
  *

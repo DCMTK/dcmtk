@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:39 $
- *  CVS/RCS Revision: $Revision: 1.98 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-12-01 13:14:02 $
+ *  CVS/RCS Revision: $Revision: 1.99 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -248,6 +248,31 @@ void DcmSequenceOfItems::print(STD_NAMESPACE ostream&out,
 OFCondition DcmSequenceOfItems::writeXML(STD_NAMESPACE ostream&out,
                                          const size_t flags)
 {
+    if (flags & DCMTypes::XF_useNativeModel)
+    {
+        // use common method from DcmElement to write start tag
+        DcmElement::writeXMLStartTag(out, flags);
+        /* write sequence content */
+        if (!itemList->empty())
+        {
+            unsigned long itemno = 1;
+            /* write content of all children */
+            DcmObject *dO;
+            itemList->seek(ELP_first);
+            do
+            {
+                out << "<Item number=\"" << itemno << "\">" << OFendl;
+                dO = itemList->get();
+                dO->writeXML(out, flags);
+                itemno++;
+                out << "</Item>" << OFendl;
+            } while (itemList->seek(ELP_next));
+        }
+        // use common method from DcmElement to write end tag
+        DcmElement::writeXMLEndTag(out, flags);
+        return EC_Normal;
+    }
+
     OFString xmlString;
     DcmVR vr(getTag().getVR());
     /* XML start tag for "sequence" */
@@ -1331,6 +1356,10 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.99  2011-12-01 13:14:02  onken
+** Added support for Application Hosting's Native DICOM Model xml format
+** to dcm2xml.
+**
 ** Revision 1.98  2011-11-08 15:51:39  joergr
 ** Added support for converting files, datasets and element values to any DICOM
 ** character set that does not require code extension techniques (if compiled

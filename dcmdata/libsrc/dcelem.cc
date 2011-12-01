@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-24 08:59:53 $
- *  CVS/RCS Revision: $Revision: 1.98 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-12-01 13:14:02 $
+ *  CVS/RCS Revision: $Revision: 1.99 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,7 @@
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/vrscan.h"
+#include "dcmtk/dcmdata/dcpath.h"
 
 #define SWAPBUFFER_SIZE 16  /* sufficient for all DICOM VRs as per the 2007 edition */
 
@@ -1289,62 +1290,150 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
                                   const char *attrText)
 {
     OFString xmlString;
+    OFBool isPrivate = OFFalse;
     DcmVR vr(getTag().getVR());
-    /* write standardized XML start tag for all element types */
-    out << "<element";
-    /* attribute tag = (gggg,eeee) */
+    DcmTag tag = getTag();
+
+    /* write start XML tag for attribute */
+    if (flags & DCMTypes::XF_useNativeModel)
+    {
+        out << "<DicomAttribute";
+        // write attribute keyword if known
+        OFString tagname = getTagName();
+        if (tagname != DcmTag_ERROR_TagName)
+        {
+            out << " keyword=\"" << getTagName() << "\"";
+        }
+        isPrivate = tag.isPrivate();
+    }
+    else // DCMTK-style XML
+    {
+        /* write standardized XML start tag for all element types */
+        out << "<element";
+    }
+
+    /* write attribute tag */
     out << " tag=\"";
     out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-        << STD_NAMESPACE setw(4) << getTag().getGTag() << ","
-        << STD_NAMESPACE setw(4) << getTag().getETag() << "\""
-        << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+        << STD_NAMESPACE setw(4) << tag.getGTag();
+    // In DCMTK-style, write gggg,eeee
+    if (!(flags & DCMTypes::XF_useNativeModel))
+    {
+        out << "," << STD_NAMESPACE setw(4) << tag.getETag() << "\""
+            << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+    }
+    else  // native dicom model: do write ggggeeee (no comma)
+    {
+        // for private element numbers, zero out 2 first element digits
+        if (isPrivate)
+        {
+            out << STD_NAMESPACE setw(4) << (tag.getETag() & 0x00FF) << "\" "
+                << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+            if (!tag.isPrivateReservation())
+            {
+                const char* creator = tag.getPrivateCreator();
+                if (creator != NULL)
+                {
+                    out << "privateCreator=\"";
+                    out << creator << "\"";
+                }
+                else
+                {
+                    DCMDATA_WARN("Cannot write private creator to XML stream: Not present in dataset");
+                }
+            }
+        }
+        else // output full element number (eeee)
+        {
+            out << STD_NAMESPACE setw(4) << tag.getETag() << "\""
+            << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+        }
+    }
+
     /* value representation = VR */
     out << " vr=\"" << vr.getVRName() << "\"";
-    /* value multiplicity = 1..n */
-    out << " vm=\"" << getVM() << "\"";
-    /* value length in bytes = 0..max */
-    out << " len=\"" << getLengthField() << "\"";
-    /* tag name (if known and not suppressed) */
-    if (!(flags & DCMTypes::XF_omitDataElementName))
-        out << " name=\"" << OFStandard::convertToMarkupString(getTagName(), xmlString) << "\"";
-    /* value loaded = no (or absent)*/
-    if (!valueLoaded())
-        out << " loaded=\"no\"";
-    /* write additional attributes (if any) */
-    if ((attrText != NULL) && (attrText[0] != '\0'))
-        out << " " << attrText;
+
+    // DCMTK-style XML markup
+    if ( !(flags & DCMTypes::XF_useNativeModel) )
+    {
+        /* value multiplicity = 1..n */
+        out << " vm=\"" << getVM() << "\"";
+        /* value length in bytes = 0..max */
+        out << " len=\"" << getLengthField() << "\"";
+        /* tag name (if known and not suppressed) */
+        if (!(flags & DCMTypes::XF_omitDataElementName))
+            out << " name=\"" << OFStandard::convertToMarkupString(getTagName(), xmlString) << "\"";
+        /* value loaded = no (or absent)*/
+        if (!valueLoaded())
+            out << " loaded=\"no\"";
+        /* write additional attributes (if any) */
+        if ((attrText != NULL) && (attrText[0] != '\0'))
+            out << " " << attrText;
+    }
+    // close DicomAttribute/element start tag
     out << ">";
+    if (flags & DCMTypes::XF_useNativeModel)
+        out << OFendl;
 }
 
 
 void DcmElement::writeXMLEndTag(STD_NAMESPACE ostream &out,
-                                const size_t /*flags*/)
+                                const size_t flags)
 {
     /* write standardized XML end tag for all element types */
-    out << "</element>" << OFendl;
+    if (flags & DCMTypes::XF_useNativeModel)
+    {
+        out << "</DicomAttribute>" << OFendl;
+    }
+    else
+    {
+        out << "</element>" << OFendl;
+    }
 }
 
 
 OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags)
 {
-    /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
+    /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> or corresponding
+     * tags in Native DICOM Model mode
+     */
     writeXMLStartTag(out, flags);
     /* write element value (if loaded) */
     if (valueLoaded())
     {
         OFString value;
-        if (getOFStringArray(value).good())
+        const OFBool convertNonASCII = (flags & DCMTypes::XF_convertNonASCII) > 0;
+        if (flags & DCMTypes::XF_useNativeModel)
         {
-            const OFBool convertNonASCII = (flags & DCMTypes::XF_convertNonASCII) > 0;
-            /* check whether conversion to XML markup string is required */
-            if (OFStandard::checkForMarkupConversion(value, convertNonASCII))
-                OFStandard::convertToMarkupStream(out, value, convertNonASCII);
-            else
-                out << value;
+          unsigned long vm = getVM();
+          for (unsigned long valno=0; valno < vm; valno++)
+          {
+              if (getOFString(value, valno).good())
+              {
+                out << "<Value number=\"" << (valno +1) << "\">";
+                /* check whether conversion to XML markup string is required */
+                if (OFStandard::checkForMarkupConversion(value, convertNonASCII))
+                    OFStandard::convertToMarkupStream(out, value, convertNonASCII);
+                else
+                    out << value;
+                out << "</Value>" << OFendl;
+              }
+          }
+        }
+        else
+        {
+            if (getOFStringArray(value).good())
+            {
+                /* check whether conversion to XML markup string is required */
+                if (OFStandard::checkForMarkupConversion(value, convertNonASCII))
+                    OFStandard::convertToMarkupStream(out, value, convertNonASCII);
+                else
+                    out << value;
+            }
         }
     }
-    /* XML end tag: </element> */
+    /* XML end tag: </element> or </DicomAttribute> in Native Dicom Model mode*/
     writeXMLEndTag(out, flags);
     /* always report success */
     return EC_Normal;
@@ -1838,6 +1927,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.99  2011-12-01 13:14:02  onken
+** Added support for Application Hosting's Native DICOM Model xml format
+** to dcm2xml.
+**
 ** Revision 1.98  2011-11-24 08:59:53  joergr
 ** Moved implementation of putOFStringArray() from DcmByteString to DcmElement.
 **

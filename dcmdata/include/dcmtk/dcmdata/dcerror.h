@@ -17,9 +17,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-01 14:53:59 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-12-01 13:14:00 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,6 +133,9 @@ extern const unsigned short EC_CODE_CannotSelectCharacterSet;
 /// error, cannot convert specific character set
 extern const unsigned short EC_CODE_CannotConvertCharacterSet;
 
+/// error, cannot convert to XML
+extern const unsigned short EC_CODE_CannotConvertToXML;
+
 
 #ifndef OFCONDITION_STRICT_MODE
 
@@ -152,6 +155,10 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.42  2011-12-01 13:14:00  onken
+** Added support for Application Hosting's Native DICOM Model xml format
+** to dcm2xml.
+**
 ** Revision 1.41  2011-11-01 14:53:59  joergr
 ** Added support for code extensions (escape sequences) according to ISO 2022
 ** to the character set conversion code.

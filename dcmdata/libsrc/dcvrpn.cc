@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmPersonName
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-01 14:54:05 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-12-01 13:14:03 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,6 +109,82 @@ OFCondition DcmPersonName::getOFString(OFString &stringVal,
 }
 
 
+OFCondition DcmPersonName::writeXML(STD_NAMESPACE ostream &out,
+                                    const size_t flags)
+{
+    /* Person names require special handling in the Native DICOM Model format.
+     * For the DCMTK-style format the common DcmElement::writeXML() method
+     * can be used.
+     */
+
+    if (flags & DCMTypes::XF_useNativeModel)
+    {
+        // Write normal start tag
+        DcmElement::writeXMLStartTag(out, flags);
+        // If the value is zero lenght, we do not need to insert any PersonName attribute at all
+        if (getLength() == 0)
+        {
+            DcmElement::writeXMLEndTag(out, flags);
+            return EC_Normal;
+        }
+
+        OFCondition result;
+        // Iterate over multiple Person Names if necessary
+        unsigned long vm = getVM();
+        // strings to hold family, first, and middle name as well as prefix and suffix component
+        OFString components[5];
+        // arrays in order to permit looping while creating the output
+        const char* compGroupNames[3] = { "SingleByte", "Ideographic", "Phonetic" };
+        const char* compNames[5] = { "FamilyName", "GivenName", "MiddleName", "NamePrefix", "NameSuffix" };
+        for (unsigned int it = 0; it < vm; it++)
+        {
+            out << "<PersonName number=\"" << it+1 << "\">" << OFendl;
+            OFString allGroups, oneCompGroup;
+            result = getOFString(allGroups, it);
+            if (result.good())
+            {
+                // process alphabetic, ideographic and phonetic encoding, as available
+                for (unsigned int cg = 0; cg < 3; cg++)
+                {
+                    // get one component group (more efficient to check for non-zero length on whole group later)
+                    result = getComponentGroup(allGroups, cg, oneCompGroup);
+                    if (result.good() && !oneCompGroup.empty())
+                    {
+                      /* get all name components from current group, i.e. last, first, middle name, prefix, suffix.
+                       * uses single group, so the component group parameter is always 0
+                       */
+                      result = getNameComponentsFromString(oneCompGroup, components[0], components[1], components[2], components[3], components[4], 0);
+                    }
+                    // output one component group, e.g. <SingleByte> <FamilyName>Onken</FamilyName> </SingleByte>
+                    if (result.good())
+                    {
+                        out << "<" << compGroupNames[cg] << ">" << OFendl; // e.g. outputs '<SingleByte>'
+                        // go through components (last name, first name, ...)
+                        for (unsigned short c=0; c < 5; c++)
+                        {
+                            if (components[c].length() > 0)
+                            {
+                              // output name component, e.g. "<FamilyName>Onken</FamilyName>"
+                              out << "<" << compNames[c] << ">" << components[c] << "</" << compNames[c] << ">" << OFendl;
+                            }
+                        }
+                        out << "</" << compGroupNames[cg] << ">" << OFendl; // e.g. outputs '</SingleByte>'
+                    }
+                }
+            }
+            out << "</PersonName>" << OFendl;
+        }
+        DcmElement::writeXMLEndTag(out, flags);
+        return EC_Normal;
+    }
+    else
+    {
+        return DcmElement::writeXML(out, flags);
+    }
+}
+
+
+
 // ********************************
 
 
@@ -157,61 +233,42 @@ OFCondition DcmPersonName::getNameComponentsFromString(const OFString &dicomName
            "For the purpose of writing names in ideographic characters and in
             phonetic characters, up to 3 groups of components may be used."
         */
-        if (componentGroup < 3)
+        OFString name;
+        if (getComponentGroup(dicomName, componentGroup, name).bad())
         {
-            OFString name;
-            // find component group (0..2)
-            const size_t posA = dicomName.find('=');
-            if (posA != OFString_npos)
+            return EC_IllegalCall;
+        }
+        /* check whether component group is valid (= non-empty) */
+        if (name.length() > 0)
+        {
+            /* find caret separators */
+            /* (tbd: add more sophisticated heuristics for comma and space separated names) */
+            const size_t pos1 = name.find('^');
+            if (pos1 != OFString_npos)
             {
-                if (componentGroup > 0)
+                const size_t pos2 = name.find('^', pos1 + 1);
+                lastName = name.substr(0, pos1);
+                if (pos2 != OFString_npos)
                 {
-                    const size_t posB = dicomName.find('=', posA + 1);
-                    if (posB != OFString_npos)
+                    const size_t pos3 = name.find('^', pos2 + 1);
+                    firstName = name.substr(pos1 + 1, pos2 - pos1 - 1);
+                    if (pos3 != OFString_npos)
                     {
-                        if (componentGroup == 1)
-                            name = dicomName.substr(posA + 1, posB - posA - 1);
-                        else /* componentGroup == 2 */
-                            name = dicomName.substr(posB + 1);
-                    } else if (componentGroup == 1)
-                        name = dicomName.substr(posA + 1);
-                } else /* componentGroup == 0 */
-                    name = dicomName.substr(0, posA);
-            } else if (componentGroup == 0)
-                name = dicomName;
-            /* check whether component group is valid (= non-empty) */
-            if (name.length() > 0)
-            {
-                /* find caret separators */
-                /* (tbd: add more sophisticated heuristics for comma and space separated names) */
-                const size_t pos1 = name.find('^');
-                if (pos1 != OFString_npos)
-                {
-                    const size_t pos2 = name.find('^', pos1 + 1);
-                    lastName = name.substr(0, pos1);
-                    if (pos2 != OFString_npos)
-                    {
-                        const size_t pos3 = name.find('^', pos2 + 1);
-                        firstName = name.substr(pos1 + 1, pos2 - pos1 - 1);
-                        if (pos3 != OFString_npos)
+                        const size_t pos4 = name.find('^', pos3 + 1);
+                        middleName = name.substr(pos2 + 1, pos3 - pos2 - 1);
+                        if (pos4 != OFString_npos)
                         {
-                            const size_t pos4 = name.find('^', pos3 + 1);
-                            middleName = name.substr(pos2 + 1, pos3 - pos2 - 1);
-                            if (pos4 != OFString_npos)
-                            {
-                                namePrefix = name.substr(pos3 + 1, pos4 - pos3 - 1);
-                                nameSuffix = name.substr(pos4 + 1);
-                            } else
-                                namePrefix = name.substr(pos3 + 1);
+                            namePrefix = name.substr(pos3 + 1, pos4 - pos3 - 1);
+                            nameSuffix = name.substr(pos4 + 1);
                         } else
-                            middleName = name.substr(pos2 + 1);
+                            namePrefix = name.substr(pos3 + 1);
                     } else
-                        firstName = name.substr(pos1 + 1);
+                        middleName = name.substr(pos2 + 1);
                 } else
-                    lastName = name;
-            }
-        } else
-            l_error = EC_IllegalParameter;
+                    firstName = name.substr(pos1 + 1);
+            } else
+                lastName = name;
+        }
     }
     return l_error;
 }
@@ -231,6 +288,54 @@ OFCondition DcmPersonName::getFormattedName(OFString &formattedName,
     else
         formattedName.clear();
     return l_error;
+}
+
+
+OFCondition DcmPersonName::getComponentGroup(const OFString& allCmpGroups,
+                                             const unsigned int groupNo,
+                                             OFString& cmpGroup)
+{
+    cmpGroup.clear();
+
+    /* Excerpt from DICOM part 5:
+       "For the purpose of writing names in ideographic characters and in
+        phonetic characters, up to 3 groups of components may be used."
+    */
+    if (groupNo < 3)
+    {
+        // find component group (0..2)
+        const size_t posA = allCmpGroups.find('=');
+        if (posA != OFString_npos)
+        {
+            if (groupNo > 0)
+            {
+                const size_t posB = allCmpGroups.find('=', posA + 1);
+                if (posB != OFString_npos)
+                {
+                    if (groupNo == 1)
+                        cmpGroup = allCmpGroups.substr(posA + 1, posB - posA - 1);
+                    else /* groupNo == 2 */
+                        cmpGroup = allCmpGroups.substr(posB + 1);
+                } else if (groupNo == 1)
+                {
+                    cmpGroup = allCmpGroups.substr(posA + 1);
+                }
+                else
+                {
+                    return EC_IllegalCall;
+                }
+            } else /* groupNo == 0 */
+                cmpGroup = allCmpGroups.substr(0, posA);
+        } else if (groupNo == 0)
+            cmpGroup = allCmpGroups;
+        else
+          return EC_IllegalCall; // only component 1 available but > 1 requested
+    }
+    else
+    {
+        return EC_IllegalCall;
+    }
+    return EC_Normal;
 }
 
 
@@ -377,6 +482,10 @@ OFCondition DcmPersonName::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
+** Revision 1.28  2011-12-01 13:14:03  onken
+** Added support for Application Hosting's Native DICOM Model xml format
+** to dcm2xml.
+**
 ** Revision 1.27  2011-11-01 14:54:05  joergr
 ** Added support for code extensions (escape sequences) according to ISO 2022
 ** to the character set conversion code.

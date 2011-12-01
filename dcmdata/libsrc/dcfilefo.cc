@@ -17,9 +17,9 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:38 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-12-01 13:14:02 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -174,10 +174,18 @@ void DcmFileFormat::print(STD_NAMESPACE ostream &out,
 OFCondition DcmFileFormat::writeXML(STD_NAMESPACE ostream &out,
                                     const size_t flags)
 {
+    if (flags & DCMTypes::XF_useNativeModel)
+    {
+        DcmDataset *dset = getDataset();
+        if (dset == NULL)
+            return makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error, "No dataset present");
+        return dset->writeXML(out, flags);
+    }
+
     OFCondition result = EC_CorruptedData;
     /* XML start tag for "file-format" */
     out << "<file-format";
-    if (flags & DCMTypes::XF_useDcmtkNamespace)
+    if (flags & DCMTypes::XF_useXMLNamespace)
         out << " xmlns=\"" << DCMTK_XML_NAMESPACE_URI << "\"";
     out << ">" << OFendl;
     if (!itemList->empty())
@@ -187,7 +195,7 @@ OFCondition DcmFileFormat::writeXML(STD_NAMESPACE ostream &out,
         itemList->seek(ELP_first);
         do {
             dO = itemList->get();
-            dO->writeXML(out, flags & ~DCMTypes::XF_useDcmtkNamespace);
+            dO->writeXML(out, flags & ~DCMTypes::XF_useXMLNamespace);
         } while (itemList->seek(ELP_next));
         result = EC_Normal;
     }
@@ -1011,6 +1019,10 @@ OFCondition DcmFileFormat::convertToUTF8()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.70  2011-12-01 13:14:02  onken
+** Added support for Application Hosting's Native DICOM Model xml format
+** to dcm2xml.
+**
 ** Revision 1.69  2011-11-08 15:51:38  joergr
 ** Added support for converting files, datasets and element values to any DICOM
 ** character set that does not require code extension techniques (if compiled

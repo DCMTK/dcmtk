@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmDecimalString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-10-21 10:09:09 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-12-01 13:14:03 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,6 +190,11 @@ OFCondition DcmDecimalString::getOFString(OFString &stringVal,
 OFCondition DcmDecimalString::writeXML(STD_NAMESPACE ostream &out,
                                        const size_t flags)
 {
+    // For the Native DICOM Model output, we do not need specific DS handling
+    if (flags & DCMTypes::XF_useNativeModel)
+    {
+        return DcmElement::writeXML(out, flags);
+    }
     /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
     writeXMLStartTag(out, flags);
     /* write element value (if loaded) */
@@ -231,6 +236,10 @@ OFCondition DcmDecimalString::checkStringValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
+** Revision 1.32  2011-12-01 13:14:03  onken
+** Added support for Application Hosting's Native DICOM Model xml format
+** to dcm2xml.
+**
 ** Revision 1.31  2011-10-21 10:09:09  joergr
 ** Minor fix to keep VisualStudio from moaning.
 **

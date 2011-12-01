@@ -17,9 +17,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-01 14:54:04 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-12-01 13:14:02 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,7 @@ const OFConditionConst ECC_MaximumLengthViolated(      OFM_dcmdata, 32, OF_error
 const OFConditionConst ECC_ElemLengthExceeds16BitField(OFM_dcmdata, 33, OF_error, "Length of element value exceeds maximum of 16-bit length field" );
 const OFConditionConst ECC_DelimitationItemMissing(    OFM_dcmdata, 34, OF_error, "Item- or SequenceDelimitationItem missing at end of sequence" );
 // error codes 35..36 are reserved for specific character set error messages (see below)
+// error code 37 is is reserved for XML conversion error messages (see below)_
 
 const OFCondition EC_InvalidTag(                 ECC_InvalidTag);
 const OFCondition EC_TagNotFound(                ECC_TagNotFound);
@@ -99,6 +100,7 @@ const OFCondition EC_DelimitationItemMissing(    ECC_DelimitationItemMissing);
 
 const unsigned short EC_CODE_CannotSelectCharacterSet  = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet = 36;
+const unsigned short EC_CODE_CannotConvertToXML        = 37;
 
 const char *dcmErrorConditionToString(OFCondition cond)
 {
@@ -109,6 +111,10 @@ const char *dcmErrorConditionToString(OFCondition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
+** Revision 1.30  2011-12-01 13:14:02  onken
+** Added support for Application Hosting's Native DICOM Model xml format
+** to dcm2xml.
+**
 ** Revision 1.29  2011-11-01 14:54:04  joergr
 ** Added support for code extensions (escape sequences) according to ISO 2022
 ** to the character set conversion code.

@@ -17,9 +17,9 @@
  *
  *  Purpose: main test program
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-15 08:04:58 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-12-01 13:13:56 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@ OFTEST_REGISTER(dcmdata_decimalString_1);
 OFTEST_REGISTER(dcmdata_decimalString_2);
 OFTEST_REGISTER(dcmdata_decimalString_3);
 OFTEST_REGISTER(dcmdata_decimalString_4);
+OFTEST_REGISTER(dcmdata_checkDcmPersonName);
 OFTEST_REGISTER(dcmdata_uniqueIdentifier_1);
 OFTEST_REGISTER(dcmdata_uniqueIdentifier_2);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AE);
@@ -99,6 +100,10 @@ OFTEST_MAIN("dcmdata")
 **
 ** CVS/RCS Log:
 ** $Log: tests.cc,v $
+** Revision 1.14  2011-12-01 13:13:56  onken
+** Added support for Application Hosting's Native DICOM Model xml format
+** to dcm2xml.
+**
 ** Revision 1.13  2011-11-15 08:04:58  joergr
 ** Added regression tests for class DcmUniqueIdentifier.
 **

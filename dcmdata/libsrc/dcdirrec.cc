@@ -17,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-11-08 15:51:38 $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-12-01 13:14:02 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1259,6 +1259,9 @@ void DcmDirectoryRecord::print(STD_NAMESPACE ostream&out,
 OFCondition DcmDirectoryRecord::writeXML(STD_NAMESPACE ostream&out,
                                          const size_t flags)
 {
+    if (flags & DCMTypes::XF_useNativeModel)
+        return makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertToXML, OF_error, "Cannot convert DICOMDIR record to Native DICOM Model");
+
     /* XML start tag for "item" */
     out << "<item";
     /* cardinality (number of attributes) = 1..n */
@@ -1621,6 +1624,10 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.87  2011-12-01 13:14:02  onken
+ * Added support for Application Hosting's Native DICOM Model xml format
+ * to dcm2xml.
+ *
  * Revision 1.86  2011-11-08 15:51:38  joergr
  * Added support for converting files, datasets and element values to any DICOM
  * character set that does not require code extension techniques (if compiled
