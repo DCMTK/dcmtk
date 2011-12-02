@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2011.12.02 (riesmeier)
 
+- Made sure that the BulkData XML element is not written for empty values.
+  Affects: dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrof.cc
+
 - Various fixes after first commit of the Native DICOM Model format support.
   Affects: dcmdata/apps/dcm2xml.cc
            dcmdata/docs/dcm2xml.man

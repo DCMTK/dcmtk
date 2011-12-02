@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 11:02:50 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Update Date:      $Date: 2011-12-02 15:46:29 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -675,15 +675,21 @@ OFCondition DcmOtherByteOtherWord::writeSignatureFormat(
 OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
                                             const size_t flags)
 {
+    /* OB/OW data requires special handling in the Native DICOM Model format */
     if (flags & DCMTypes::XF_useNativeModel)
     {
-        /* OB/OW data requires special handling in the Native DICOM Model format */
+        /* write XML start tag */
         writeXMLStartTag(out, flags);
-        char uid[100];
-        /* generate a new UID but the binary data is not (yet) written. */
-        /* actually, it should be a UUID in hexadecimal representation. */
-        dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT);
-        out << "<BulkData UUID=\"" << OFSTRING_GUARD(uid) << "\"/>" << OFendl;
+        /* for an empty value field, we do not need to do anything */
+        if (getLengthField() > 0)
+        {
+            char uid[100];
+            /* generate a new UID but the binary data is not (yet) written. */
+            /* actually, it should be a UUID in hexadecimal representation. */
+            dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT);
+            out << "<BulkData UUID=\"" << OFSTRING_GUARD(uid) << "\"/>" << OFendl;
+        }
+        /* write XML end tag */
         writeXMLEndTag(out, flags);
     } else {
         /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
@@ -753,6 +759,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.69  2011-12-02 15:46:29  joergr
+** Made sure that the BulkData XML element is not written for empty values.
+**
 ** Revision 1.68  2011-12-02 11:02:50  joergr
 ** Various fixes after first commit of the Native DICOM Model format support.
 **

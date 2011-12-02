@@ -18,8 +18,8 @@
  *  Purpose: Implementation of class DcmOtherFloat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2011-12-02 09:54:18 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2011-12-02 15:46:29 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,17 +103,23 @@ unsigned long DcmOtherFloat::getVM()
 OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
                                     const size_t flags)
 {
-    /* write XML start tag */
+    /* always write XML start tag */
     writeXMLStartTag(out, flags);
-    /* OF data requires special handling in the Native DICOM Model format*/
+    /* OF data requires special handling in the Native DICOM Model format */
     if (flags & DCMTypes::XF_useNativeModel)
     {
-        char uid[100];
-        /* generate a new UID but the binary data is not (yet) written. */
-        /* actually, it should be a UUID in hexadecimal representation. */
-        dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT);
-        out << "<BulkData UUID=\"" << OFSTRING_GUARD(uid) << "\"/>" << OFendl;
+        /* for an empty value field, we do not need to do anything */
+        if (getLengthField() > 0)
+        {
+            char uid[100];
+            /* generate a new UID but the binary data is not (yet) written. */
+            /* actually, it should be a UUID in hexadecimal representation. */
+            dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT);
+            out << "<BulkData UUID=\"" << OFSTRING_GUARD(uid) << "\"/>" << OFendl;
+        }
     } else {
+        /* write XML start tag */
+        writeXMLStartTag(out, flags);
         /* write element value (if loaded) */
         if (valueLoaded())
         {
@@ -134,7 +140,7 @@ OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
             }
         }
     }
-    /* write XML end tag */
+    /* always write XML end tag */
     writeXMLEndTag(out, flags);
     /* always report success */
     return EC_Normal;
@@ -144,6 +150,9 @@ OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcvrof.cc,v $
+ * Revision 1.9  2011-12-02 15:46:29  joergr
+ * Made sure that the BulkData XML element is not written for empty values.
+ *
  * Revision 1.8  2011-12-02 09:54:18  joergr
  * Added dedicated writeXML() method for OF elements because the VM is always 1.
  *
